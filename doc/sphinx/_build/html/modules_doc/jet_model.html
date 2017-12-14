@@ -1,0 +1,616 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Module: jet_model &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Module: loglog_poly_model" href="loglog_poly_model.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="interactive_init.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="loglog_poly_model.html" title="Module: loglog_poly_model"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="interactive_init.html" title="&lt;no title&gt;"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../code.html" accesskey="U">Modules</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Module: jet_model</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#classes-relations">Classes relations</a></li>
+<li><a class="reference internal" href="#classes-and-inheritance-structure">Classes and Inheritance Structure</a></li>
+<li><a class="reference internal" href="#module-api">Module API</a></li>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="interactive_init.html"
+                        title="previous chapter">&lt;no title&gt;</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="loglog_poly_model.html"
+                        title="next chapter">Module: loglog_poly_model</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules_doc/jet_model.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <span class="target" id="module-BlazarSEDFit.jet_model"></span><div class="section" id="module-jet-model">
+<h1>Module: jet_model<a class="headerlink" href="#module-jet-model" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This module  provides an interface to call the BlazarSED code, setting the
+physical parameters and running the code. The BlazarSED code is a numerical 
+accurate C code, to evaluate SSC/EC emission processes in a relativistic jet. 
+The python wrappper is  built using SWIG.</p>
+<p>The <a class="reference internal" href="#BlazarSEDFit.jet_model.Jet" title="BlazarSEDFit.jet_model.Jet"><code class="xref py py-class docutils literal"><span class="pre">Jet</span></code></a> is used to create a <em>jet</em> object, providing the high 
+level interface to set the jet physical  paramters, and evaluater the SSC/EC 
+emission processes.</p>
+</div>
+<div class="section" id="classes-relations">
+<h2>Classes relations<a class="headerlink" href="#classes-relations" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center">
+<img alt="../_images/classes_jet_model.png" src="../_images/classes_jet_model.png" />
+</div>
+</div>
+<div class="section" id="classes-and-inheritance-structure">
+<h2>Classes and Inheritance Structure<a class="headerlink" href="#classes-and-inheritance-structure" title="Permalink to this headline">¶</a></h2>
+<img src="../_images/inheritance-3a285684feab0e538d6d7583329f678cf1c75fb5.png" alt="Inheritance diagram of BlazarSEDFit.jet_model" usemap="#inheritance1c2d92703e" class="inheritance"/>
+<map id="inheritance1c2d92703e" name="inheritance1c2d92703e">
+<area shape="rect" id="node1" href="base_model.html#BlazarSEDFit.base_model.Model" target="_top" title="BlazarSEDFit.base_model.Model" alt="" coords="56,103,275,129"/>
+<area shape="rect" id="node2" href="#BlazarSEDFit.jet_model.Jet" target="_top" title="This class allows to build a ``jet`` model providing the interface to the " alt="" coords="405,103,590,129"/>
+<area shape="rect" id="node3" href="#BlazarSEDFit.jet_model.JetParameter" target="_top" title="This class is a subclass of the :class:`.ModelParameter` class," alt="" coords="374,54,621,79"/>
+<area shape="rect" id="node4" href="model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter" target="_top" title="This class is the base class for models parameters. The following keywords " alt="" coords="6,54,325,79"/>
+<area shape="rect" id="node5" href="#BlazarSEDFit.jet_model.JetSpecComponent" target="_top" title="BlazarSEDFit.jet_model.JetSpecComponent" alt="" coords="23,5,307,30"/>
+</map>
+</div>
+<div class="section" id="module-api">
+<h2>Module API<a class="headerlink" href="#module-api" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#BlazarSEDFit.jet_model.JetParameter" title="BlazarSEDFit.jet_model.JetParameter"><code class="xref py py-obj docutils literal"><span class="pre">JetParameter</span></code></a>(blob,&nbsp;**keywords)</td>
+<td>This class is a subclass of the <a class="reference internal" href="model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter" title="BlazarSEDFit.model_parameters.ModelParameter"><code class="xref py py-class docutils literal"><span class="pre">ModelParameter</span></code></a> class,</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#BlazarSEDFit.jet_model.Jet" title="BlazarSEDFit.jet_model.Jet"><code class="xref py py-obj docutils literal"><span class="pre">Jet</span></code></a>([name,&nbsp;electron_distribution,&nbsp;…])</td>
+<td>This class allows to build a <code class="docutils literal"><span class="pre">jet</span></code> model providing the interface to the  BlazarSED code, giving  full access to the physical parameters and providing the methods to run the code.</td>
+</tr>
+</tbody>
+</table>
+<p>Module API</p>
+<dl class="class">
+<dt id="BlazarSEDFit.jet_model.Jet">
+<em class="property">class </em><code class="descclassname">BlazarSEDFit.jet_model.</code><code class="descname">Jet</code><span class="sig-paren">(</span><em>name='test'</em>, <em>electron_distribution='lp'</em>, <em>beaming_expr='delta'</em>, <em>jet_workplace=None</em>, <em>verbose=None</em>, <em>clean_work_dir=True</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_model.html#BlazarSEDFit.base_model.Model" title="BlazarSEDFit.base_model.Model"><code class="xref py py-class docutils literal"><span class="pre">BlazarSEDFit.base_model.Model</span></code></a></p>
+<p>This class allows to build a <code class="docutils literal"><span class="pre">jet</span></code> model providing the interface to the 
+BlazarSED code, giving  full access to the physical parameters and
+providing the methods to run the code.
+A <a class="reference internal" href="#BlazarSEDFit.jet_model.Jet" title="BlazarSEDFit.jet_model.Jet"><code class="xref py py-class docutils literal"><span class="pre">Jet</span></code></a> object  will store the
+the physical parameters in  the <a class="reference internal" href="model_parameters.html#BlazarSEDFit.model_parameters.ModelParameterArray" title="BlazarSEDFit.model_parameters.ModelParameterArray"><code class="xref py py-class docutils literal"><span class="pre">ModelParameterArray</span></code></a> class,
+that is a collection of <a class="reference internal" href="#BlazarSEDFit.jet_model.JetParameter" title="BlazarSEDFit.jet_model.JetParameter"><code class="xref py py-class docutils literal"><span class="pre">JetParameter</span></code></a> objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – (str), name id for the model</li>
+<li><strong>electron_distribution</strong> – (str), the type of electron distribution</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><p class="first last"><strong>parameters</strong> – instance of the <a class="reference internal" href="model_parameters.html#BlazarSEDFit.model_parameters.ModelParameterArray" title="BlazarSEDFit.model_parameters.ModelParameterArray"><code class="xref py py-class docutils literal"><span class="pre">ModelParameterArray</span></code></a> 
+storing and handling the array of  <code class="xref py py-class docutils literal"><span class="pre">JetParameters</span></code> instances</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">BlazarSEDFit</span> <span class="k">as</span> <span class="nn">SEDFit</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">create a Jet  object, named &quot;test&quot; , with a &quot;lppl&quot; electron  distribution</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">myJet</span><span class="o">=</span><span class="n">SEDFit</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="s1">&#39;lppl&#39;</span><span class="p">)</span>
+
+<span class="n">myJet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+
+<span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+<span class="n">myPlot</span><span class="o">=</span><span class="n">SEDFit</span><span class="o">.</span><span class="n">Plot</span><span class="p">()</span>
+
+<span class="n">myPlot</span><span class="o">.</span><span class="n">add_model_plot</span><span class="p">(</span><span class="n">myJet</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">myPlot</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;jet.png&#39;</span><span class="p">)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">chante the value of the &#39;gamma0_log_parab&#39; parameter</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1.0E5</span><span class="p">)</span>
+
+<span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+<span class="n">myPlot</span><span class="o">.</span><span class="n">add_model_plot</span><span class="p">(</span><span class="n">myJet</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;gamma0_log_parab=1.0E5&#39;</span><span class="p">)</span>
+
+<span class="n">myPlot</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;jet1.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.PlotModel">
+<code class="descname">PlotModel</code><span class="sig-paren">(</span><em>Plot</em>, <em>clean=False</em>, <em>autoscale=False</em>, <em>label=None</em>, <em>comp=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.PlotModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.PlotModel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.add_EC_component">
+<code class="descname">add_EC_component</code><span class="sig-paren">(</span><em>EC_components</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.add_EC_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.add_EC_component" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.add_par_from_dic">
+<code class="descname">add_par_from_dic</code><span class="sig-paren">(</span><em>model_dic</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.add_par_from_dic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.add_par_from_dic" title="Permalink to this definition">¶</a></dt>
+<dd><p>add the <a class="reference internal" href="#BlazarSEDFit.jet_model.JetParameter" title="BlazarSEDFit.jet_model.JetParameter"><code class="xref py py-class docutils literal"><span class="pre">JetParameter</span></code></a> object to the <a class="reference internal" href="model_parameters.html#BlazarSEDFit.model_parameters.ModelParameterArray" title="BlazarSEDFit.model_parameters.ModelParameterArray"><code class="xref py py-class docutils literal"><span class="pre">ModelParameterArray</span></code></a> 
+usign the dictionaries built by the <a class="reference internal" href="#BlazarSEDFit.jet_model.build_emitting_region_dic" title="BlazarSEDFit.jet_model.build_emitting_region_dic"><code class="xref py py-func docutils literal"><span class="pre">build_emitting_region_dic()</span></code></a> 
+and <a class="reference internal" href="#BlazarSEDFit.jet_model.build_electron_distribution_dic" title="BlazarSEDFit.jet_model.build_electron_distribution_dic"><code class="xref py py-func docutils literal"><span class="pre">build_electron_distribution_dic()</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.add_spectral_component">
+<code class="descname">add_spectral_component</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.add_spectral_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.add_spectral_component" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.debug_SSC">
+<code class="descname">debug_SSC</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.debug_SSC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.debug_SSC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.debug_synch">
+<code class="descname">debug_synch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.debug_synch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.debug_synch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.del_EC_component">
+<code class="descname">del_EC_component</code><span class="sig-paren">(</span><em>EC_components</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.del_EC_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.del_EC_component" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.del_par_from_dic">
+<code class="descname">del_par_from_dic</code><span class="sig-paren">(</span><em>model_dic</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.del_par_from_dic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.del_par_from_dic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.del_spectral_component">
+<code class="descname">del_spectral_component</code><span class="sig-paren">(</span><em>name</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.del_spectral_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.del_spectral_component" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>init=True</em>, <em>fill_SED=True</em>, <em>nu=None</em>, <em>get_model=False</em>, <em>loglog=False</em>, <em>plot=None</em>, <em>label=None</em>, <em>phys_output=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the BlazarSED  code for the current <cite>JetModel</cite> instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>init</strong> – (boolean), “defualt=True” initializes the BlazarSED code  
+for the current <cite>Jet</cite> instance parameters values.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_DL_cm">
+<code class="descname">get_DL_cm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_DL_cm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_DL_cm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_IC_mode">
+<code class="descname">get_IC_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_IC_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_IC_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_IC_nu_size">
+<code class="descname">get_IC_nu_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_IC_nu_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_IC_nu_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_SED_peak">
+<code class="descname">get_SED_peak</code><span class="sig-paren">(</span><em>peak_name=None</em>, <em>freq_range=None</em>, <em>log_log=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_SED_peak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_SED_peak" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_SED_points">
+<code class="descname">get_SED_points</code><span class="sig-paren">(</span><em>log_log=False</em>, <em>name='Sum'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_SED_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_SED_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_SSC_mode">
+<code class="descname">get_SSC_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_SSC_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_SSC_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_beaming">
+<code class="descname">get_beaming</code><span class="sig-paren">(</span><em>theta=None</em>, <em>bulk_factor=None</em>, <em>beaming=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_beaming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_beaming" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_electron_distribution">
+<code class="descname">get_electron_distribution</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_electron_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_electron_distribution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_flag">
+<code class="descname">get_flag</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_flag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_gamma_grid_size">
+<code class="descname">get_gamma_grid_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_gamma_grid_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_gamma_grid_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_par_by_name">
+<code class="descname">get_par_by_name</code><span class="sig-paren">(</span><em>par_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_par_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_par_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>get parameter by type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_par_by_type">
+<code class="descname">get_par_by_type</code><span class="sig-paren">(</span><em>par_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_par_by_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_par_by_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>get parameter by type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_path">
+<code class="descname">get_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_seed_nu_size">
+<code class="descname">get_seed_nu_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_seed_nu_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_seed_nu_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_spectral_component_by_name">
+<code class="descname">get_spectral_component_by_name</code><span class="sig-paren">(</span><em>name</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_spectral_component_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_spectral_component_by_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_sync_mode">
+<code class="descname">get_sync_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_sync_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_sync_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.get_verbosity">
+<code class="descname">get_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.get_verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.get_verbosity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.init_BlazarSED">
+<code class="descname">init_BlazarSED</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.init_BlazarSED"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.init_BlazarSED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.list_spectral_components">
+<code class="descname">list_spectral_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.list_spectral_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.list_spectral_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.set_IC_mode">
+<code class="descname">set_IC_mode</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.set_IC_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.set_IC_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.set_IC_nu_size">
+<code class="descname">set_IC_nu_size</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.set_IC_nu_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.set_IC_nu_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.set_SSC_mode">
+<code class="descname">set_SSC_mode</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.set_SSC_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.set_SSC_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.set_electron_distribution">
+<code class="descname">set_electron_distribution</code><span class="sig-paren">(</span><em>electron_distribution</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.set_electron_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.set_electron_distribution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.set_emitting_region">
+<code class="descname">set_emitting_region</code><span class="sig-paren">(</span><em>beaming_expr</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.set_emitting_region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.set_emitting_region" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.set_flag">
+<code class="descname">set_flag</code><span class="sig-paren">(</span><em>flag</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.set_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.set_flag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.set_gamma_grid_size">
+<code class="descname">set_gamma_grid_size</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.set_gamma_grid_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.set_gamma_grid_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.set_par">
+<code class="descname">set_par</code><span class="sig-paren">(</span><em>par_name</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.set_par"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.set_par" title="Permalink to this definition">¶</a></dt>
+<dd><p>shortcut to <code class="xref py py-class docutils literal"><span class="pre">ModelParametersArray.set</span></code> method 
+set a parameter value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>par_name</strong> – (srt), name of the parameter</li>
+<li><strong>val</strong> – parameter value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.set_path">
+<code class="descname">set_path</code><span class="sig-paren">(</span><em>path</em>, <em>clean_work_dir=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.set_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.set_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.set_seed_nu_size">
+<code class="descname">set_seed_nu_size</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.set_seed_nu_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.set_seed_nu_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.set_sync_mode">
+<code class="descname">set_sync_mode</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.set_sync_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.set_sync_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.set_verbosity">
+<code class="descname">set_verbosity</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.set_verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.set_verbosity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.show_model">
+<code class="descname">show_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.show_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.show_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.show_pars">
+<code class="descname">show_pars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.show_pars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.show_pars" title="Permalink to this definition">¶</a></dt>
+<dd><p>shortcut to <code class="xref py py-class docutils literal"><span class="pre">ModelParametersArray.show_pars</span></code> method 
+shows all the paramters in the model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.Jet.show_spectral_components">
+<code class="descname">show_spectral_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#Jet.show_spectral_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.Jet.show_spectral_components" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="BlazarSEDFit.jet_model.JetParameter">
+<em class="property">class </em><code class="descclassname">BlazarSEDFit.jet_model.</code><code class="descname">JetParameter</code><span class="sig-paren">(</span><em>blob</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#JetParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.JetParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter" title="BlazarSEDFit.model_parameters.ModelParameter"><code class="xref py py-class docutils literal"><span class="pre">BlazarSEDFit.model_parameters.ModelParameter</span></code></a></p>
+<p>This class is a subclass of the <a class="reference internal" href="model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter" title="BlazarSEDFit.model_parameters.ModelParameter"><code class="xref py py-class docutils literal"><span class="pre">ModelParameter</span></code></a> class,
+extending the base class to  handles SSC/EC parameters, 
+overriding the <a class="reference internal" href="model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter.set" title="BlazarSEDFit.model_parameters.ModelParameter.set"><code class="xref py py-meth docutils literal"><span class="pre">ModelParameter.set()</span></code></a> in order to propagate the
+parameter value to the BlazarSED object instance</p>
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.JetParameter.assign_val">
+<code class="descname">assign_val</code><span class="sig-paren">(</span><em>name</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#JetParameter.assign_val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.JetParameter.assign_val" title="Permalink to this definition">¶</a></dt>
+<dd><p>sets the <a class="reference internal" href="#BlazarSEDFit.jet_model.JetParameter" title="BlazarSEDFit.jet_model.JetParameter"><code class="xref py py-class docutils literal"><span class="pre">JetParameter</span></code></a> value in the BlazarSED object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.jet_model.JetParameter.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#JetParameter.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.JetParameter.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>overrides the  <a class="reference internal" href="model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter.set" title="BlazarSEDFit.model_parameters.ModelParameter.set"><code class="xref py py-meth docutils literal"><span class="pre">ModelParameter.set()</span></code></a> method in order to propagate the
+parameter value to the BlazarSED object instance</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="BlazarSEDFit.jet_model.JetSpecComponent">
+<em class="property">class </em><code class="descclassname">BlazarSEDFit.jet_model.</code><code class="descname">JetSpecComponent</code><span class="sig-paren">(</span><em>name</em>, <em>blob_object</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#JetSpecComponent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.JetSpecComponent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.jet_model.build_ExtFields_dic">
+<code class="descclassname">BlazarSEDFit.jet_model.</code><code class="descname">build_ExtFields_dic</code><span class="sig-paren">(</span><em>EC_model_list</em>, <em>allowed_EC_components_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#build_ExtFields_dic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.build_ExtFields_dic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.jet_model.build_electron_distribution_dic">
+<code class="descclassname">BlazarSEDFit.jet_model.</code><code class="descname">build_electron_distribution_dic</code><span class="sig-paren">(</span><em>electron_distribution</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#build_electron_distribution_dic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.build_electron_distribution_dic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds the dictionary to init the <a class="reference internal" href="#BlazarSEDFit.jet_model.JetParameter" title="BlazarSEDFit.jet_model.JetParameter"><code class="xref py py-class docutils literal"><span class="pre">JetParameter</span></code></a> 
+objects   for the electron  distribution:</p>
+<p>The following <a class="reference internal" href="#BlazarSEDFit.jet_model.JetParameter" title="BlazarSEDFit.jet_model.JetParameter"><code class="xref py py-class docutils literal"><span class="pre">JetParameter</span></code></a>: objects the <em>do not</em> depend
+on the type of electron distribution</p>
+<blockquote>
+<div><ul class="simple">
+<li>N, particle density in cm^-3</li>
+<li>gmin, the minimum value of the electron Lorentz factor</li>
+<li>gmax, the maximum value of the electron Lorentz factor</li>
+</ul>
+</div></blockquote>
+<p>The following <a class="reference internal" href="#BlazarSEDFit.jet_model.JetParameter" title="BlazarSEDFit.jet_model.JetParameter"><code class="xref py py-class docutils literal"><span class="pre">JetParameter</span></code></a>: objects <em>depend</em> on the type of electron distribution:</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>power law</strong>, electron_distribution=’pl’</p>
+<blockquote>
+<div><ul class="simple">
+<li>p</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>broken power-law</strong>, electron_distribution= <strong>‘bkn’</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>p</li>
+<li>p_1</li>
+<li>gamma_break</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>log-parabola</strong>, electron_distribution= <strong>‘lp’</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>r</li>
+<li>s</li>
+<li>gamma0_log_parab (fixed)</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>log-parabola</strong> with a low energy power-law tail, electron_distribution= <strong>‘lppl’</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>r</li>
+<li>s</li>
+<li>gamma0_log_parab</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>log-parabola</strong> defined by peak energy, electron_distribution= <strong>‘lpep’</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>r</li>
+<li>s</li>
+<li>gammap_log_parab,</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>power-law cut-off</strong>, lectron_distribution= <strong>‘plc’</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>p</li>
+<li>gamma_cut</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.jet_model.build_emitting_region_dic">
+<code class="descclassname">BlazarSEDFit.jet_model.</code><code class="descname">build_emitting_region_dic</code><span class="sig-paren">(</span><em>beaming_expr='delta'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#build_emitting_region_dic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.build_emitting_region_dic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a dictionary to init the <a class="reference internal" href="#BlazarSEDFit.jet_model.JetParameter" title="BlazarSEDFit.jet_model.JetParameter"><code class="xref py py-class docutils literal"><span class="pre">JetParameter</span></code></a> 
+objects   for the emitting region:</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>R</strong>, the radius of the emitting region in cm</li>
+<li><strong>B</strong>, the magnetic field in G</li>
+<li><strong>beaming</strong>, the beaming factor</li>
+<li><strong>z</strong>, the redshift</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.jet_model.init_SED">
+<code class="descclassname">BlazarSEDFit.jet_model.</code><code class="descname">init_SED</code><span class="sig-paren">(</span><em>verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/jet_model.html#init_SED"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.jet_model.init_SED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="loglog_poly_model.html" title="Module: loglog_poly_model"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="interactive_init.html" title="&lt;no title&gt;"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../code.html" >Modules</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

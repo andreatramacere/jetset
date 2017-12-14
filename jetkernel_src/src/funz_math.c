@@ -1,0 +1,614 @@
+//=======================================================================
+//
+//   FUNZIONI MATEMATICHE
+//=======================================================================
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
+#include <unistd.h>
+//#include "libmia.h"
+#include "Blazar_SED.h"
+#include "nrutil.h"
+
+/**
+ * \file funz_math.c
+ * \author Andrea Tramacere
+ * \date 27-04-2004
+ * \brief funzioni matematiche
+ *
+ */
+
+
+
+//=====================================================
+// funzione che resituisce la K di bessel di 5/3 per la F(x)
+// UTILIZZA ROUTINES NUM. RECIPES.
+//=====================================================
+
+double bessel_K_53(struct spettro *pt, double x) {
+    double ri, rip, rkp, ord, a;
+    ord = 5.0 / 3.0;
+    bessik(x, ord, &ri, &a, &rip, &rkp);
+    return a;
+}
+
+double bessel_K_pitch_ave(struct spettro *pt, double x) {
+    double ri, rip, rkp, ord, a, K_43,K_13;
+    ord = 4.0 / 3.0;
+    bessik(x, ord, &ri, &K_43, &rip, &rkp);
+    ord = 1.0 / 3.0;
+    bessik(x, ord, &ri, &K_13, &rip, &rkp);
+    a=(K_43*K_13 - 0.6*x*(K_43*K_43 - K_13*K_13));
+
+    return a;
+}
+
+//=========================================================================================
+
+
+
+//===================================================
+// funzione che costruisce la tabelle delle funz. di Bessel
+//===================================================
+
+void tabella_Bessel(struct spettro *pt_TB) {
+    double a, t_Bessel;
+    double ri, rip, rkp, K13, K43;
+    char in_x[80], in_y[80], in_ave_y[80], in_ave_x[80];
+    double x, x_c;
+    double (*pf) (struct spettro *, double x);
+    unsigned long i;
+    FILE *fp ;
+    char *f_bessel_file = malloc(512);
+
+    /*** kernel Sync per alfa fisso e kernel delta ***/
+    if (pt_TB->verbose>0) {
+    	printf("Evaluation of Bessel Tables\n");
+    }
+	//printf("start=%e\n", pt_TB->x_Bessel_min = (pt_TB->nu_start_Sync) /
+	//	((3.0 * pt_TB->nu_B * (pt_TB->gmax_griglia * pt_TB->gmax_griglia) / 2.0) * pt_TB->sin_psi));
+	//printf("stop=%e\n", pt_TB->x_Bessel_max = (pt_TB->nu_stop_Sync) /
+	//	((3.0 * pt_TB->nu_B * (pt_TB->gmin_griglia * pt_TB->gmin_griglia) / 2.0) * pt_TB->sin_psi));
+    //}
+    pt_TB->x_Bessel_min = 1E-17;
+    pt_TB->x_Bessel_max = 7.2E2;
+
+    pt_TB->x_ave_Bessel_min = 1E-16;
+    pt_TB->x_ave_Bessel_max = 3.5E2;
+
+    pt_TB->log_x_Bessel_min = log10(pt_TB->x_Bessel_min);
+    pt_TB->log_x_Bessel_max = log10(pt_TB->x_Bessel_max);
+    
+
+    pt_TB->log_x_ave_Bessel_min = log10(pt_TB->x_ave_Bessel_min);
+    pt_TB->log_x_ave_Bessel_max = log10(pt_TB->x_ave_Bessel_max);
+
+    //if(pt_TB->x_Bessel_max>Bessel_MAX)pt_TB->x_Bessel_max=Bessel_MAX;
+    pf = &bessel_K_53;
+
+    strcpy(f_bessel_file, SYSPATH);
+    sprintf(f_bessel_file, "%s/F_Sync.dat", f_bessel_file);
+
+    if (pt_TB->verbose>1) {
+	//printf("gmax_griglia=%e -> x/xc_min=%e    gmin_griglia=%e -> x/xc_max=%e\n",
+    //        pt_TB->gmax_griglia, pt_TB->x_Bessel_min,
+     //       pt_TB->gmin_griglia, pt_TB->x_Bessel_max);
+    	printf("Bessel Tables  in %s\n", f_bessel_file);
+    }
+    
+    fp = fopen(f_bessel_file, "r");
+
+	build_log_grid( pt_TB->x_Bessel_min,  pt_TB->x_Bessel_max, static_bess_table_size,  pt_TB->F_Sync_x);
+	build_log_grid( pt_TB->x_ave_Bessel_min,  pt_TB->x_ave_Bessel_max, static_bess_table_size, pt_TB->F_ave_Sync_x);
+
+    if (fp == NULL ) {
+        //fclose(fp);
+
+    	fp = fopen(f_bessel_file, "w");
+        printf("GENERATING F_Sync\n");
+
+
+        
+        for (i = 0; i < static_bess_table_size; i++) {
+            //x = pt_TB->x_Bessel_min *
+            //        pow((pt_TB->x_Bessel_max / pt_TB->x_Bessel_min),
+            //        ((double) i) / ((double) elementi_tabelle - 1.0));
+           
+            //pt_TB->F_Sync_x[i] = x;
+            pt_TB->F_Sync_y[i]= pt_TB->F_Sync_x[i] * integrale_trap_log_struct(pf, pt_TB, pt_TB->F_Sync_x[i], 1000, 1000);
+            pt_TB->log_F_Sync_x[i] = log10(pt_TB->F_Sync_x[i]);
+            if (pt_TB->F_Sync_y[i]>0.0){
+            	pt_TB->log_F_Sync_y[i] = log10(pt_TB->F_Sync_y[i]);
+            }
+            else{
+            	pt_TB->log_F_Sync_y[i] = -300.0;
+            }
+            //pt_TB->F_ave_Sync_x[i] = x;
+            pt_TB->F_ave_Sync_y[i]= pt_TB->F_ave_Sync_x[i] *pt_TB->F_ave_Sync_x[i]*  bessel_K_pitch_ave(pt_TB,  pt_TB->F_ave_Sync_x[i]);
+            pt_TB->log_F_ave_Sync_x[i] = log10(pt_TB->F_ave_Sync_x[i]);
+            if(pt_TB->F_ave_Sync_y[i]>0.0){
+            	pt_TB->log_F_ave_Sync_y[i] = log10(pt_TB->F_ave_Sync_y[i]);
+            }
+            else{
+            	pt_TB->log_F_ave_Sync_y[i]=-300.0;
+            }
+            fprintf(fp, "%e\t%e\t%e\t%e\n",
+            		pt_TB->F_Sync_x[i] , pt_TB->F_Sync_y[i] , pt_TB->F_ave_Sync_x[i], pt_TB->F_ave_Sync_y[i]);
+            
+            //printf("i=%d i_max=%d x=%e F(x)=%e\n",i,elementi_tabelle,x,pt_TB->tabella_F[i][1]);
+               
+        }
+    } else {
+        i = 0;
+        if (pt_TB->verbose>0) {
+            printf("reading K5/3\n");
+        }
+        while (!feof(fp)) {
+            fscanf(fp, "%s %s %s %s\n", in_x, in_y,in_ave_x,in_ave_y);
+            pt_TB->F_Sync_x[i] = strtod(in_x, NULL);
+            pt_TB->F_Sync_y[i] = strtod(in_y, NULL);
+
+            pt_TB->F_ave_Sync_x[i] = strtod(in_ave_x, NULL);
+            pt_TB->F_ave_Sync_y[i] = strtod(in_ave_y, NULL);
+
+            pt_TB->log_F_Sync_x[i] = log10(pt_TB->F_Sync_x[i]);
+
+            if (pt_TB->F_Sync_y[i]>0.0){
+            	pt_TB->log_F_Sync_y[i] = log10(pt_TB->F_Sync_y[i]);
+            }
+            else{
+            	pt_TB->log_F_Sync_y[i] = -300.0;
+            }
+
+            pt_TB->log_F_ave_Sync_x[i] =log10(pt_TB->F_ave_Sync_x[i]);
+
+            if(pt_TB->F_ave_Sync_y[i]>0.0){
+            	pt_TB->log_F_ave_Sync_y[i] = log10(pt_TB->F_ave_Sync_y[i]);
+            }
+            else{
+            	pt_TB->log_F_ave_Sync_y[i]=-300.0;
+            }
+
+            //printf("i=%d i_max=%d x=%e F(x)=%e\n",
+            //     i,elementi_tabelle,pt_TB->tabella_F[i][0],pt_TB->tabella_F[i][1]);
+            //printf("F_delta=%e\n",pt_TB->tabella_Fdelta[i][1]);
+            i++;
+        }
+        i--;
+
+        if ((i != static_bess_table_size - 1) ||
+                (pt_TB->F_Sync_x[0] != pt_TB->x_Bessel_min) ||
+                (pt_TB->F_Sync_x[static_bess_table_size - 1] != pt_TB->x_Bessel_max)
+                ) {
+        //    printf("i_max=%d elementi_tabelle=%d \n", i, elementi_tabelle);
+            printf("file %s not valid!!!!!!!!!!!!!!!!\n",f_bessel_file);
+            printf("delete it and re-execute the code\n");
+            exit(0);
+        }
+    }
+    
+    fclose(fp);
+    pt_TB->BESSEL_TABLE_DONE=1;
+}
+//=========================================================================================
+
+//=====================================================================
+//LOG-LINEAR INTERPOLATION
+//=====================================================================
+
+
+double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, double *  y_grid , unsigned long SIZE, double emiss_lim){
+	unsigned long ID;
+	double y1,y2,x1,x2,a_c;
+	ID=x_to_grid_index(x_grid,  x,   SIZE);
+
+	if (ID<0 || ID>SIZE-2){
+		return emiss_lim;
+	}
+
+	else if (x<x_min || x>x_max){
+		return emiss_lim;
+	}
+
+	else{
+		y1 = log10(y_grid[ID]);
+		y2 = log10(y_grid[ID + 1]);
+		x1 = log10(x_grid[ID]);
+		x2 = log10(x_grid[ID + 1]);
+		a_c = (log10(x) - x1)*(y2 - y1) / (x2 - x1);
+		a_c += y1;
+		//printf("nu=%e, ID=%lu, SIZE=%d x1=%e x2=%e y1=%e y2=%e a_c=%e  return=%e    %e %e\n",nu,ID,SIZE,x1,x2,y1,y2,a_c,pow(10,a_c),flux_grid[ID],flux_grid[ID + 1]);
+
+		return pow(10,a_c);
+	}
+}
+//=========================================================================================
+
+
+
+//=====================================================================
+//LOG-LOG INTERPOLATION
+//=====================================================================
+double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, double log_x_max, double *  log_y_grid , unsigned long SIZE, double emiss_lim){
+	unsigned long ID;
+	double y1,y2,x1,x2,a_c;
+	ID=x_to_grid_index(log_x_grid,  log_x,   SIZE);
+
+	if (ID<0 || ID>SIZE-2){
+		return emiss_lim;
+	}
+	else if (log_x<log_x_min || log_x>log_x_max){
+			return emiss_lim;
+		}
+	else{
+		y1 = log_y_grid[ID];
+		y2 = log_y_grid[ID + 1];
+		x1 = log_x_grid[ID];
+		x2 = log_x_grid[ID + 1];
+		a_c = (log_x - x1)*(y2 - y1) / (x2 - x1);
+		a_c += y1;
+		//printf("nu=%e, ID=%lu, SIZE=%d x1=%e x2=%e y1=%e y2=%e a_c=%e  return=%e    %e %e\n",log_x,ID,SIZE,x1,x2,y1,y2,a_c,pow(10,a_c),log_y_grid[ID],log_y_grid[ID + 1]);
+
+		return pow(10,a_c);
+	}
+}
+//=========================================================================================
+
+
+//=====================================================================
+//INTEGRAZIONE TRAPEZOIDALE CON INT APERTO E GRIGLIA  LINEARE
+//=====================================================================
+
+double trapzd(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned long n_intervalli) {
+    double x, sum, del;
+    double s;
+    unsigned long it, j;
+    del = (b - a) / (double) n_intervalli;
+    x = a + 0.5 * del;
+    for (sum = 0.0, j = 1; j <= n_intervalli; j++, x += del) sum += pf(pt, x);
+    s = del*sum;
+    s += (pf(pt, a) + pf(pt, b))*0.5 * del;
+    //printf("it=%d s=%e\n",it,s);
+    return s;
+}
+//=========================================================================================
+
+
+
+
+
+//============================================================================
+// INTEGRAZIONE TRAPEZOIDALE CON INT CHIUSO E GRIGLIA  EQUI_LOG
+//============================================================================
+
+double integrale_trap_log_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned long n_intervalli) {
+    double integr, h, k, griglia, ordinata, ordinata1;
+    double delta;
+    integr = 0.0;
+    griglia = 0.0;
+    ordinata = 0.0;
+    delta = log10(b) - log10(a);
+
+    //CALCOLO in a e b fuori dall loop
+    //per evitare errori di arrotondamento
+    //sulla griglia logaritmica
+
+    ordinata = a;
+    ordinata1 = pow(10, log10(a)+(delta * ((1) / ((double) n_intervalli - 1))));
+    griglia = ordinata1 - ordinata;
+    //printf("n_int=%e oridinata=%e ordinata1=%e,griglia=%e \n",n_intervalli,ordinata,ordinata1,griglia);
+    integr += griglia * (pf(pt, ordinata) + pf(pt, ordinata1));
+
+    ordinata = pow(10, log10(a)+(delta * (((double) n_intervalli - 2) / ((double) n_intervalli - 1))));
+    ordinata1 = b;
+    griglia = ordinata1 - ordinata;
+    //printf("n_int=%e oridinata=%e ordinata1=%e griglia=%e \n",n_intervalli,ordinata,ordinata1,griglia);
+    integr += griglia * (pf(pt, ordinata) + pf(pt, ordinata1));
+
+
+    for (k = 1; k < n_intervalli - 2; k = k + 1.0) {
+        ordinata = pow(10, log10(a)+(delta * (k / ((double) n_intervalli - 1))));
+        ordinata1 = pow(10, log10(a)+(delta * ((k + 1) / ((double) n_intervalli - 1))));
+        griglia = ordinata1 - ordinata;
+        integr += griglia * (pf(pt, ordinata) + pf(pt, ordinata1));
+        //if(k==0 || k==n_intervalli-1) printf("n_int=%e k=%e,oridinata=%e,griglia=%e ba=%e\n",n_intervalli,k,ordinata,griglia,ba);
+        //printf("integr=%e\n",integr);
+    }
+    //printf("integr=%e\n",integr);
+    return 0.5 * integr;
+}
+//=========================================================================================
+
+
+
+
+//=========================================================
+// INTEGRAZIONE ALLA SINPSON CON INT CHIUSO E GRIGLIA LIN                
+//=========================================================
+
+double integrale_simp(double (*pf) ( double x), double a, double b, unsigned long n_intervalli) {
+    double integr1, integr2, h, k, griglia;
+    
+    //CHECK on n_intervalli even
+    if (n_intervalli % 2 != 0) {
+        n_intervalli ++;
+    }
+
+    integr1 = 0.0;
+    integr2 = 0.0;
+    h = (b - a) / ((double) n_intervalli);
+    for (k = 1.0; k < n_intervalli; k = k + 2.0) {
+        integr1 += pf((a + (h * k)));
+    }
+    integr1 *= 4.0;
+    //printf("intgr=%e\n",integr);
+    for (k = 2.0; k < n_intervalli; k = k + 2.0) {
+        integr2 += pf((a + (h * k)));
+    }
+    integr2 *= 2.0;
+    //printf("intgr=%e x=%e \n",integr,a+(h*k));
+    return h * (integr1 + integr2 + ((pf((a)) + pf((b))))) / 3.0;
+}
+//=========================================================================================
+
+
+
+//=========================================================
+// INTEGRAZIONE ALLA SINPSON CON INT CHIUSO E GRIGLIA LIN                
+//=========================================================
+
+double integrale_simp_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned long n_intervalli) {
+    double integr1, integr2, h, k, griglia;
+    
+    //CHECK on n_intervalli even
+    if (n_intervalli % 2 != 0) {
+        n_intervalli ++;
+    }
+
+    integr1 = 0.0;
+    integr2 = 0.0;
+    h = (b - a) / ((double) n_intervalli);
+    for (k = 1.0; k < n_intervalli; k = k + 2.0) {
+        integr1 += pf(pt, (a + (h * k)));
+    }
+    integr1 *= 4.0;
+    //printf("intgr=%e\n",integr);
+    for (k = 2.0; k < n_intervalli; k = k + 2.0) {
+        integr2 += pf(pt, (a + (h * k)));
+    }
+    integr2 *= 2.0;
+    //printf("intgr=%e x=%e \n",integr,a+(h*k));
+    return h * (integr1 + integr2 + ((pf(pt, (a)) + pf(pt, (b))))) / 3.0;
+}
+//=========================================================================================
+
+double V_sphere(double R) {
+    return four_by_three_pi * R * R*R;
+}
+
+double S_sphere(double R) {
+    return four_pi * R*R;
+}
+
+double eval_beta_gamma(double gamma) {
+    return sqrt(1 - 1 / (gamma * gamma));
+}
+
+double Larmor_radius(double gamma,double B, double sin_alpha){
+
+	return (sqrt(gamma*gamma-1)*MEC2*sin_alpha)/(q_esu*B);
+}
+
+double Larmor_radius_to_gamma(double Larmor_radius,double B, double sin_alpha){
+	double c=(q_esu*B*Larmor_radius)/(MEC2*sin_alpha);
+	return sqrt(1+ c*c);
+}
+
+double get_beaming(double BulkFactor, double theta) {
+	return 1.0 / (BulkFactor * (1 - eval_beta_gamma(BulkFactor) * cos(theta * Deg_to_Rad)));
+
+}
+
+//==============================================================
+//FUNZIONE PER IL CALCOLO DELLA DERIVATA
+// f'~(f(x+h)-f(x-h))/2
+// h ~(machine_precision)^1/3*x
+//==============================================================
+
+double derivata(double (*pf) (struct spettro *, double x), struct spettro *pt_d, double x) {
+    double h;
+    h = x * 1e-7;
+    if ((x - h) < pt_d->gmin) return (pf(pt_d, x + h) - pf(pt_d, x)) / (h);
+    return (pf(pt_d, x + h) - pf(pt_d, x - h)) / (2 * h);
+}
+//=========================================================================================
+
+
+
+//==========================================================
+// FUNZIONE DI BESSEL MOD DA NUME RECIPES
+//
+//==========================================================
+
+void bessik(double x, double xnu, double *ri, double *rk, double *rip, double *rkp) {
+
+    double EPS;
+    double FPMIN;
+    int MAXIT;
+    double XMIN;
+
+    int i, l, nl;
+    double a, a1,
+            b, c,
+            d, del, del1, delh, dels, e,
+            f, fact, fact2, ff, gam1,
+            gam2, gammi, gampl, h, p,
+            pimu,
+            q0,
+            q1, q2, qnew, ril, ril1, rimu, rip1, ripl, ritemp, rk1, rkmu, rkmup, rktemp, s, sum, sum1, x2, xi, xi2, xmu, xmu2;
+
+    EPS = 1.0e-10;
+    FPMIN = 1.0e-30;
+    MAXIT = 10000;
+    XMIN = 2.0;
+
+    if (x <= 0.0 || xnu < 0.0) {
+    	printf("NRERROR bad arguments in bessik");
+    	exit(0);
+    }
+    nl = (int) (xnu + 0.5);
+    xmu = xnu - nl;
+    xmu2 = xmu*xmu;
+    xi = 1.0 / x;
+    xi2 = 2.0 * xi;
+    h = xnu*xi;
+    if (h < FPMIN) h = FPMIN;
+    b = xi2*xnu;
+    d = 0.0;
+    c = h;
+    for (i = 1; i <= MAXIT; i++) {
+        b += xi2;
+        d = 1.0 / (b + d);
+        c = b + 1.0 / c;
+        del = c*d;
+        h = del*h;
+        if (fabs(del - 1.0) < EPS) break;
+    }
+    if (i > MAXIT){
+
+    	printf("x too large in bessik; try asymptotic expansion");
+    	exit(0);
+    }
+    ril = FPMIN;
+    ripl = h*ril;
+    ril1 = ril;
+    rip1 = ripl;
+    fact = xnu*xi;
+    for (l = nl; l >= 1; l--) {
+        ritemp = fact * ril + ripl;
+        fact -= xi;
+        ripl = fact * ritemp + ril;
+        ril = ritemp;
+    }
+    f = ripl / ril;
+    if (x < XMIN) {
+        x2 = 0.5 * x;
+        pimu = pi*xmu;
+        fact = (fabs(pimu) < EPS ? 1.0 : pimu / sin(pimu));
+        d = -log(x2);
+        e = xmu*d;
+        fact2 = (fabs(e) < EPS ? 1.0 : sinh(e) / e);
+        beschb(xmu, &gam1, &gam2, &gampl, &gammi);
+        ff = fact * (gam1 * cosh(e) + gam2 * fact2 * d);
+        sum = ff;
+        e = exp(e);
+        p = 0.5 * e / gampl;
+        q0 = 0.5 / (e * gammi);
+        c = 1.0;
+        d = x2*x2;
+        sum1 = p;
+        for (i = 1; i <= MAXIT; i++) {
+            ff = (i * ff + p + q0) / (i * i - xmu2);
+            c *= (d / i);
+            p /= (i - xmu);
+            q0 /= (i + xmu);
+            del = c*ff;
+            sum += del;
+            del1 = c * (p - i * ff);
+            sum1 += del1;
+            if (fabs(del) < fabs(sum) * EPS) break;
+        }
+        if (i > MAXIT){
+        	printf("bessk series failed to converge");
+        	exit(0);
+        }
+        rkmu = sum;
+        rk1 = sum1*xi2;
+    } else {
+        b = 2.0 * (1.0 + x);
+        d = 1.0 / b;
+        h = delh = d;
+        q1 = 0.0;
+        q2 = 1.0;
+        a1 = 0.25 - xmu2;
+        q0 = c = a1;
+        a = -a1;
+        s = 1.0 + q0*delh;
+        for (i = 2; i <= MAXIT; i++) {
+            a -= 2 * (i - 1);
+            c = -a * c / i;
+            qnew = (q1 - b * q2) / a;
+            q1 = q2;
+            q2 = qnew;
+            q0 += c*qnew;
+            b += 2.0;
+            d = 1.0 / (b + a * d);
+            delh = (b * d - 1.0) * delh;
+            h += delh;
+            dels = q0*delh;
+            s += dels;
+            if (fabs(dels / s) < EPS) break;
+        }
+        if (i > MAXIT){
+
+        	printf("bessik: failure to converge in cf2");
+        	exit(0);
+        }
+        h = a1*h;
+        rkmu = sqrt(pi / (2.0 * x)) * exp(-x) / s;
+        rk1 = rkmu * (xmu + x + 0.5 - h) * xi;
+    }
+    rkmup = xmu * xi * rkmu - rk1;
+    rimu = xi / (f * rkmu - rkmup);
+    *ri = (rimu * ril1) / ril;
+    *rip = (rimu * rip1) / ril;
+    for (i = 1; i <= nl; i++) {
+        rktemp = (xmu + i) * xi2 * rk1 + rkmu;
+        rkmu = rk1;
+        rk1 = rktemp;
+    }
+    *rk = rkmu;
+    *rkp = xnu * xi * rkmu - rk1;
+}
+
+/* (C) Copr. 1986-92 Numerical Recipes Software !'K4$<%#110L&")|oV'4. */
+//=========================================================================================
+
+
+
+
+//==========================================================
+//   FUNZIONI PER TEST NUMERIC
+//
+//==========================================================
+
+double test_lunghezza_vettore(double mesh, double a, double b, int Max_elem) {
+    /* se la mesh da un vettore troppo lungo */
+    /* allora viene ricalcolata              */
+
+    double Delta_log;
+    int Num_int;
+    Delta_log = log10(b) - log10(a);
+    Num_int = (int) (Delta_log / mesh);
+    printf("Num_int=%d\n", Num_int);
+    if (Num_int > Max_elem) {
+        printf("!!!!!!!!!!!!!!!!!!!!!Attenzione ho cambiato il parametro mesh da %e", mesh);
+        mesh = (Delta_log / Max_elem);
+        printf(" a%e\n", mesh);
+    }
+    return mesh;
+}
+
+double test_int(struct spettro *pt_d, double x) {
+    //  printf("f=%e, x=%e\n",x*x,x);
+    return x*x;
+}
+
+double test_int1(double x) {
+    // printf("f=%e, x=%e\n",x*x,x);
+    return x*x;
+}
+//=========================================================================================
+
+

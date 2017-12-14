@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BlazarSEDFit.minimizer &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <h1>Source code for BlazarSEDFit.minimizer</h1><div class="highlight"><pre>
+<span></span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">===================================================================</span>
+<span class="sd">Module: minimizer</span>
+<span class="sd">===================================================================</span>
+
+<span class="sd">This module contains all the classes necessary to estimate the phenomenlogical</span>
+<span class="sd">characterization of the SED, such as spectral indices, peack frequenicies</span>
+<span class="sd">and fluxes</span>
+
+
+
+
+<span class="sd">Classes and Inheritance Structure</span>
+<span class="sd">-------------------------------------------------------------------</span>
+
+<span class="sd">.. inheritance-diagram:: BlazarSEDFit.minimizer</span>
+<span class="sd">   </span>
+
+
+<span class="sd">Classes relations</span>
+<span class="sd">----------------------------------------------</span>
+
+<span class="sd">.. figure::  classes_minimizer.png</span>
+<span class="sd">   :align:   center     </span>
+
+
+<span class="sd">  </span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">    </span>
+
+<span class="sd">   fit_SED</span>
+<span class="sd">   eval_SED</span>
+<span class="sd">   residuals_SED</span>
+<span class="sd">   </span>
+<span class="sd">    </span>
+<span class="sd">Module API</span>
+<span class="sd">-------------------------------------------------------------------</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">s</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">chi2</span>
+
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">leastsq</span>
+
+<span class="n">NOBOUND</span><span class="o">=</span><span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">leastsqbound.leastsqbound</span> <span class="k">import</span> <span class="n">leastsqbound</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span> <span class="s2">&quot;unable to import leastsqbound&quot;</span>
+    <span class="nb">print</span> <span class="s2">&quot;boundef fit disabled&quot;</span>
+    <span class="n">NOBOUND</span><span class="o">=</span><span class="kc">True</span>
+
+<span class="kn">from</span> <span class="nn">model_manager</span> <span class="k">import</span> <span class="n">FitModel</span>
+
+<span class="c1">#import model</span>
+
+
+
+<span class="kn">from</span> <span class="nn">output</span> <span class="k">import</span> <span class="n">section_separator</span><span class="p">,</span><span class="n">workplace</span><span class="p">,</span><span class="n">makedir</span>
+
+
+
+
+<div class="viewcode-block" id="fit_results"><a class="viewcode-back" href="../../modules_doc/minimizer.html#BlazarSEDFit.minimizer.fit_results">[docs]</a><span class="k">class</span> <span class="nc">fit_results</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to store the fit results </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">     </span>
+<span class="sd">    </span>
+<span class="sd">    Members</span>
+<span class="sd">    :ivar fit_par: fit_par</span>
+<span class="sd">    :ivar info: info</span>
+<span class="sd">    :ivar mesg: mesg</span>
+<span class="sd">    :ivar success: success</span>
+<span class="sd">    :ivar chisq: chisq</span>
+<span class="sd">    :ivar dof: dof</span>
+<span class="sd">    :ivar chisq_red: chisq_red</span>
+<span class="sd">    :ivar null_hyp_sig: null_hyp_sig</span>
+<span class="sd">    :ivar fit_report: ivar get_report()</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">parameters</span><span class="p">,</span><span class="n">info</span><span class="p">,</span><span class="n">mesg</span><span class="p">,</span><span class="n">success</span><span class="p">,</span><span class="n">chisq</span><span class="p">,</span><span class="n">dof</span><span class="p">,</span><span class="n">chisq_red</span><span class="p">,</span><span class="n">null_hyp_sig</span><span class="p">,</span><span class="n">wd</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">=</span><span class="n">info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesg</span><span class="o">=</span><span class="n">mesg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="o">=</span><span class="n">success</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chisq</span><span class="o">=</span><span class="n">chisq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dof</span><span class="o">=</span><span class="n">dof</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chisq_red</span><span class="o">=</span><span class="n">chisq_red</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">null_hyp_sig</span><span class="o">=</span><span class="n">null_hyp_sig</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_report</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_report</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wd</span><span class="o">=</span><span class="n">wd</span>
+         
+
+<div class="viewcode-block" id="fit_results.get_report"><a class="viewcode-back" href="../../modules_doc/minimizer.html#BlazarSEDFit.minimizer.fit_results.get_report">[docs]</a>    <span class="k">def</span> <span class="nf">get_report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">out</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>        
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;**************************************************************************************************&quot;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Fit report&quot;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Model: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">pars_rep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">(</span><span class="n">getstring</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">pars_rep</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+        
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;converged=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;calls=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;nfev&#39;</span><span class="p">])</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mesg=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">mesg</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;dof=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">dof</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;chisq=</span><span class="si">%f</span><span class="s2">, chisq/red=</span><span class="si">%f</span><span class="s2"> null hypothesis sig=</span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chisq</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">chisq_red</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">null_hyp_sig</span><span class="p">))</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;best fit pars&quot;</span><span class="p">)</span>
+        
+        <span class="n">pars_rep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_best_fit_pars</span><span class="p">(</span><span class="n">getstring</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">pars_rep</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+            
+        <span class="c1">#for pi in xrange(len(self.fit_par)): </span>
+            <span class="c1">#print pi,covar</span>
+        <span class="c1">#    out.append(&quot;par %2.2d, %16s&quot;%(pi,self.fit_par[pi].get_bestfit_description()))  </span>
+        <span class="c1">#out.append(&quot;-----------------------------------------------------------------------------------------&quot;)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;**************************************************************************************************&quot;</span><span class="p">)</span>    
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+        
+    
+<div class="viewcode-block" id="fit_results.show_report"><a class="viewcode-back" href="../../modules_doc/minimizer.html#BlazarSEDFit.minimizer.fit_results.show_report">[docs]</a>    <span class="k">def</span> <span class="nf">show_report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_report</span><span class="p">:</span>
+        
+            <span class="nb">print</span> <span class="n">text</span></div>
+    
+<div class="viewcode-block" id="fit_results.save_report"><a class="viewcode-back" href="../../modules_doc/minimizer.html#BlazarSEDFit.minimizer.fit_results.save_report">[docs]</a>    <span class="k">def</span> <span class="nf">save_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">wd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">wd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wd</span>
+        
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;report_</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;.txt&#39;</span>
+        
+            
+        <span class="n">outname</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">wd</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
+         
+        <span class="n">outfile</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">outname</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    
+        
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_report</span><span class="p">:</span>
+        
+            <span class="nb">print</span><span class="o">&gt;&gt;</span><span class="n">outfile</span><span class="p">,</span><span class="n">text</span>
+            
+        <span class="n">outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+        
+        
+        
+<div class="viewcode-block" id="fit_SED"><a class="viewcode-back" href="../../modules_doc/minimizer.html#BlazarSEDFit.minimizer.fit_SED">[docs]</a><span class="k">def</span> <span class="nf">fit_SED</span><span class="p">(</span><span class="n">fit_Model</span><span class="p">,</span><span class="n">SEDdata</span><span class="p">,</span><span class="n">nu_fit_start</span><span class="p">,</span><span class="n">nu_fit_stop</span><span class="p">,</span><span class="n">fitname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fit_workplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">loglog</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">get_conf_int</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">max_ev</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">use_facke_err</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function to run the minimization</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">     </span>
+
+<span class="sd">    :param SEDModel: :class:`BlazarSEDFit.model.SEDmodel` object</span>
+<span class="sd">    :param SEDdata:  :class:`BlazarSEDFit.data_loader.ObsData` object</span>
+<span class="sd">    :param nu_fit_start: (float) minimum value of the frequency fit range in Hz (logarithmic scale)</span>
+<span class="sd">    :param nu_fit_stop: (float) maximum value of the frequency fit range in Hz (logarithmic scale)</span>
+<span class="sd">    :param fitname: (str), optional, name for the fit</span>
+<span class="sd">    :param workplace:</span>
+<span class="sd">    :param components:</span>
+<span class="sd">    :param template:</span>
+<span class="sd">    :param template_func:</span>
+<span class="sd">    :param template_scale:</span>
+<span class="sd">    :param build_SEDModel:</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">fitname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fitname</span><span class="o">=</span><span class="n">fit_Model</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">workplace</span><span class="o">.</span><span class="n">flag</span>
+        
+    
+    <span class="n">cnt</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
+    <span class="n">res_check</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">fit_workplace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">out_dir</span><span class="o">=</span><span class="n">workplace</span><span class="o">.</span><span class="n">out_dir</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">fitname</span><span class="o">+</span><span class="s1">&#39;/&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out_dir</span><span class="o">=</span><span class="n">fit_workplace</span><span class="o">.</span><span class="n">out_dir</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">fitname</span><span class="o">+</span><span class="s1">&#39;/&#39;</span>
+
+    <span class="n">makedir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>    
+
+    <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">fit_Model</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">model_type</span><span class="o">==</span><span class="s1">&#39;jet&#39;</span><span class="p">:</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+           
+    
+    <span class="k">if</span> <span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+    
+
+    
+    
+    <span class="c1">#filter data points</span>
+    <span class="n">msk1</span><span class="o">=</span> <span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="n">nu_fit_start</span>
+    <span class="n">msk2</span><span class="o">=</span> <span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">nu_fit_stop</span>
+    <span class="n">msk_zero_error</span><span class="o">=</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mf">0.0</span>
+    <span class="c1">#msk = s.array([(el&gt;nu_fit_start) and (el&lt;nu_fit_stop) for el in SEDdata.data[&#39;nu_data&#39;]])</span>
+    <span class="c1">#print msk1.size,msk2.size,SEDdata.data[&#39;UL&#39;].size</span>
+    <span class="n">msk</span><span class="o">=</span><span class="n">msk1</span><span class="o">*</span><span class="n">msk2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;UL&#39;</span><span class="p">])</span><span class="o">*</span><span class="n">msk_zero_error</span>
+   
+    
+    <span class="k">if</span> <span class="n">loglog</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+        <span class="n">nu_fit</span><span class="o">=</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+        <span class="n">nuFnu_fit</span><span class="o">=</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">use_facke_err</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="n">err_nuFnu_fit</span><span class="o">=</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">err_nuFnu_fit</span><span class="o">=</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_facke&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nu_fit</span><span class="o">=</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+        <span class="n">nuFnu_fit</span><span class="o">=</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+        <span class="n">err_nuFnu_fit</span><span class="o">=</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">use_facke_err</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="n">err_nuFnu_fit</span><span class="o">=</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">err_nuFnu_fit</span><span class="o">=</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_facke_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">silent</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="s2">&quot;filtering data in fit range = [</span><span class="si">%e</span><span class="s2">,</span><span class="si">%e</span><span class="s2">]&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">nu_fit_start</span><span class="p">,</span><span class="n">nu_fit_stop</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="s2">&quot;data length&quot;</span><span class="p">,</span><span class="n">nu_fit</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="c1">#print nu_fit,len(nu_fit)</span>
+
+
+    
+    
+    
+    <span class="c1">#set starting value of parameters</span>
+    <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">fit_Model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">par_array</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">get_conf_int</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="n">par</span><span class="o">.</span><span class="n">set_fit_initial_value</span><span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">best_fit_val</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">par</span><span class="o">.</span><span class="n">set_fit_initial_value</span><span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+    
+    <span class="n">fit_par_free</span><span class="o">=</span><span class="p">[</span><span class="n">par</span> <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">fit_Model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">par_array</span> <span class="k">if</span> <span class="n">par</span><span class="o">.</span><span class="n">frozen</span><span class="o">==</span><span class="kc">False</span><span class="p">]</span>
+
+    <span class="n">pinit</span><span class="o">=</span><span class="p">[</span><span class="n">par</span><span class="o">.</span><span class="n">get_fit_initial_value</span><span class="p">()</span> <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">fit_par_free</span><span class="p">]</span>
+    
+    <span class="n">bounds</span><span class="o">=</span><span class="p">[(</span><span class="n">par</span><span class="o">.</span><span class="n">fit_range_min</span><span class="p">,</span><span class="n">par</span><span class="o">.</span><span class="n">fit_range_max</span><span class="p">)</span> <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">fit_par_free</span><span class="p">]</span>
+    
+    <span class="c1"># bounds</span>
+    <span class="n">free_pars</span><span class="o">=</span><span class="mi">0</span>
+     
+    <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fit_Model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">par_array</span><span class="p">)):</span> 
+        
+        <span class="k">if</span> <span class="n">fit_Model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">par_array</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">frozen</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="n">free_pars</span><span class="o">+=</span><span class="mi">1</span>
+   
+   
+        
+    <span class="k">if</span> <span class="n">silent</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+        <span class="nb">print</span>  <span class="n">section_separator</span>
+        <span class="nb">print</span> <span class="s2">&quot;*** start fit process ***&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;initial pars: &quot;</span>
+        
+        <span class="n">fit_Model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+    
+        
+    <span class="k">if</span> <span class="n">NOBOUND</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+        <span class="n">pout</span><span class="p">,</span><span class="n">covar</span><span class="p">,</span><span class="n">info</span><span class="p">,</span><span class="n">mesg</span><span class="p">,</span><span class="n">success</span> <span class="o">=</span> <span class="n">leastsqbound</span><span class="p">(</span><span class="n">residuals_Fit</span><span class="p">,</span> <span class="n">pinit</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">fit_par_free</span><span class="p">,</span><span class="n">nu_fit</span><span class="p">,</span><span class="n">nuFnu_fit</span><span class="p">,</span><span class="n">err_nuFnu_fit</span><span class="p">,</span><span class="n">fit_Model</span><span class="p">,</span><span class="n">loglog</span><span class="p">,</span><span class="n">cnt</span><span class="p">,</span><span class="n">res_check</span><span class="p">),</span><span class="n">xtol</span><span class="o">=</span><span class="mf">5.0E-8</span><span class="p">,</span><span class="n">ftol</span><span class="o">=</span><span class="mf">5.0E-8</span><span class="p">,</span><span class="n">full_output</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span><span class="n">maxfev</span><span class="o">=</span><span class="n">max_ev</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pout</span><span class="p">,</span><span class="n">covar</span><span class="p">,</span><span class="n">info</span><span class="p">,</span><span class="n">mesg</span><span class="p">,</span><span class="n">success</span> <span class="o">=</span> <span class="n">leastsq</span><span class="p">(</span><span class="n">residuals_Fit</span><span class="p">,</span> <span class="n">pinit</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">fit_par_free</span><span class="p">,</span><span class="n">nu_fit</span><span class="p">,</span><span class="n">nuFnu_fit</span><span class="p">,</span><span class="n">err_nuFnu_fit</span><span class="p">,</span><span class="n">fit_Model</span><span class="p">,</span><span class="n">loglog</span><span class="p">,</span><span class="n">cnt</span><span class="p">,</span><span class="n">res_check</span><span class="p">),</span><span class="n">xtol</span><span class="o">=</span><span class="mf">5.0E-8</span><span class="p">,</span><span class="n">ftol</span><span class="o">=</span><span class="mf">5.0E-8</span><span class="p">,</span><span class="n">full_output</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">maxfev</span><span class="o">=</span><span class="n">max_ev</span><span class="p">)</span>
+    
+    <span class="nb">print</span> <span class="s2">&quot;res check&quot;</span><span class="p">,</span><span class="n">res_check</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(),(</span><span class="n">res_check</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">res_check</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  
+
+    <span class="n">chisq</span><span class="o">=</span><span class="nb">sum</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;fvec&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;fvec&quot;</span><span class="p">])</span> 
+    <span class="n">dof</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">nu_fit</span><span class="p">)</span><span class="o">-</span><span class="n">free_pars</span>
+    <span class="n">chisq_red</span><span class="o">=</span><span class="n">chisq</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">dof</span><span class="p">)</span>
+    <span class="n">null_hyp_sig</span><span class="o">=</span><span class="mf">1.0</span><span class="o">-</span><span class="n">chi2</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">chisq</span><span class="p">,</span><span class="n">dof</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">get_conf_int</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">chisq</span>
+    
+
+
+    <span class="k">if</span> <span class="n">covar</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="s2">&quot;!Warning, no covariance matrix produced&quot;</span>
+        <span class="n">par_err</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pout</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1">#print &quot;cov matrix&quot;,covar</span>
+        <span class="n">par_err</span><span class="o">=</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">covar</span><span class="p">[</span><span class="n">pi</span><span class="p">,</span><span class="n">pi</span><span class="p">])</span><span class="o">*</span><span class="n">chisq_red</span><span class="p">)</span>  <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fit_par_free</span><span class="p">))]</span>     
+        <span class="c1">#print &quot;cov matrix&quot;    </span>
+        <span class="c1">#for i in  xrange(len(covar)):</span>
+        <span class="c1">#    print covar[i]  </span>
+    
+    <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fit_par_free</span><span class="p">)):</span>
+        <span class="n">fit_par_free</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">pout</span><span class="p">[</span><span class="n">pi</span><span class="p">])</span>
+        <span class="n">fit_par_free</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">best_fit_val</span><span class="o">=</span><span class="n">pout</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span>
+        <span class="n">fit_par_free</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">best_fit_err</span><span class="o">=</span><span class="n">par_err</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span>    
+        
+            
+    
+            
+            
+    <span class="n">best_fit</span><span class="o">=</span><span class="n">fit_results</span><span class="p">(</span><span class="n">fitname</span><span class="p">,</span><span class="n">fit_Model</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span><span class="n">info</span><span class="p">,</span><span class="n">mesg</span><span class="p">,</span><span class="n">success</span><span class="p">,</span><span class="n">chisq</span><span class="p">,</span><span class="n">dof</span><span class="p">,</span><span class="n">chisq_red</span><span class="p">,</span><span class="n">null_hyp_sig</span><span class="p">,</span><span class="n">out_dir</span><span class="p">)</span>
+   
+    <span class="k">if</span> <span class="n">silent</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+        <span class="n">best_fit</span><span class="o">.</span><span class="n">show_report</span><span class="p">()</span>
+   
+    <span class="c1">#print&quot;a&quot;</span>
+    <span class="n">fit_Model</span><span class="o">.</span><span class="n">set_nu_grid</span><span class="p">(</span><span class="n">nu_min</span><span class="o">=</span><span class="n">nu_fit_start</span><span class="p">,</span><span class="n">nu_max</span><span class="o">=</span><span class="n">nu_fit_stop</span><span class="p">)</span>
+    <span class="c1">#print &quot;c&quot;</span>
+    <span class="n">fit_Model</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">fill_SED</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">loglog</span><span class="o">=</span><span class="n">loglog</span><span class="p">,</span><span class="n">phys_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  
+    
+    <span class="c1">#print&quot;b&quot; </span>
+   
+    <span class="n">res_bestfit</span><span class="o">=</span><span class="n">residuals_Fit</span><span class="p">(</span><span class="n">pout</span><span class="p">,</span><span class="n">fit_par_free</span><span class="p">,</span><span class="n">nu_fit</span><span class="p">,</span><span class="n">nuFnu_fit</span><span class="p">,</span><span class="n">err_nuFnu_fit</span><span class="p">,</span><span class="n">fit_Model</span><span class="p">,</span><span class="n">loglog</span><span class="p">)</span>
+    <span class="c1">#print &quot;res=&quot;,res_bestfit.sum(),res_bestfit  </span>
+    <span class="c1">#print &quot;fvec=&quot;,info[&quot;fvec&quot;]</span>
+    <span class="k">if</span> <span class="n">loglog</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="n">fit_Model</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">nu_residuals</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">nu_fit</span><span class="p">),</span><span class="n">residuals</span><span class="o">=</span><span class="n">res_bestfit</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fit_Model</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">nu_residuals</span><span class="o">=</span><span class="n">nu_fit</span><span class="p">,</span><span class="n">residuals</span><span class="o">=</span><span class="n">res_bestfit</span><span class="p">)</span>     
+    
+    <span class="k">if</span> <span class="n">silent</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+        <span class="nb">print</span>  <span class="n">section_separator</span>
+     
+    <span class="k">return</span> <span class="n">best_fit</span></div>
+
+    
+
+
+<div class="viewcode-block" id="residuals_Fit"><a class="viewcode-back" href="../../modules_doc/minimizer.html#BlazarSEDFit.minimizer.residuals_Fit">[docs]</a><span class="k">def</span> <span class="nf">residuals_Fit</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">fit_par</span><span class="p">,</span><span class="n">nu_data</span><span class="p">,</span><span class="n">nuFnu_data</span><span class="p">,</span><span class="n">err_nuFnu_data</span><span class="p">,</span><span class="n">best_fit_SEDModel</span><span class="p">,</span><span class="n">loglog</span><span class="p">,</span><span class="n">cnt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">res_check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    
+
+    <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">fit_par</span><span class="p">)):</span> 
+        <span class="n">fit_par</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">p</span><span class="p">[</span><span class="n">pi</span><span class="p">])</span>
+        <span class="c1">#print &quot;-------------&quot;</span>
+        <span class="c1">#print p[pi]</span>
+        <span class="c1">#fit_par[pi].show()</span>
+        <span class="c1">#print &quot;-------------&quot;</span>
+
+    <span class="n">model</span><span class="o">=</span><span class="n">best_fit_SEDModel</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">nu</span><span class="o">=</span><span class="n">nu_data</span><span class="p">,</span><span class="n">fill_SED</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">get_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">loglog</span><span class="o">=</span><span class="n">loglog</span><span class="p">)</span>
+    
+    <span class="c1">#print &quot;loglog&quot;,loglog</span>
+   
+    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">nuFnu_data</span><span class="o">-</span><span class="n">model</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">err_nuFnu_data</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">res_check</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">res_check</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">res</span>
+    
+    <span class="c1">#print model</span>
+    <span class="c1">#print nuFnu_data</span>
+    <span class="c1">#print err_nuFnu_data,res</span>
+    
+    <span class="c1">#print (res*res).sum()</span>
+    <span class="k">if</span> <span class="n">cnt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cnt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">cnt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">cnt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">10</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">cnt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;minim function calls=</span><span class="si">%d</span><span class="s2">, res=</span><span class="si">%f</span><span class="s2">, chisq=</span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">cnt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">res</span><span class="o">.</span><span class="n">sum</span><span class="p">(),(</span><span class="n">res_check</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">res_check</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+        
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+
+
+
+
+
+</pre></div>
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

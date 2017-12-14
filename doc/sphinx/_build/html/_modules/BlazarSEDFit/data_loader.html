@@ -1,0 +1,1343 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BlazarSEDFit.data_loader &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <h1>Source code for BlazarSEDFit.data_loader</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Moudule: data_loader</span>
+<span class="sd">===================================================================</span>
+
+<span class="sd">This module contains all the classes necessary to load SED data</span>
+<span class="sd">from a file.  The most effective way to import the SED data is to create an object </span>
+<span class="sd">instance of :class:`ObsData` class.  </span>
+
+<span class="sd">Classes and Inheritance Structure</span>
+<span class="sd">-------------------------------------------------------------------</span>
+
+<span class="sd">.. inheritance-diagram:: BlazarSEDFit.data_loader</span>
+<span class="sd">   </span>
+
+
+<span class="sd">Classes relations</span>
+<span class="sd">----------------------------------------------</span>
+
+<span class="sd">.. figure::  classes_data_loader.png    </span>
+<span class="sd">   :align:   center     </span>
+
+
+<span class="sd">Summary</span>
+<span class="sd">---------</span>
+<span class="sd">.. autosummary::</span>
+<span class="sd">    ObsData</span>
+<span class="sd">    </span>
+
+<span class="sd">Module API</span>
+<span class="sd">-------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">cosmo_tools</span> <span class="k">import</span> <span class="n">Cosmo</span>
+<span class="c1">#from poly_fit import filter_interval</span>
+<span class="kn">from</span> <span class="nn">output</span> <span class="k">import</span> <span class="n">section_separator</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+
+
+
+
+<div class="viewcode-block" id="ObsData"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData">[docs]</a><span class="k">class</span> <span class="nc">ObsData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class provides a  powerful interface  to load observational data stored in a file.</span>
+<span class="sd">    The following parameters set the corresponding class members: </span>
+<span class="sd"> </span>
+<span class="sd">    :param data_file: (str), path to the data file</span>
+<span class="sd">    </span>
+<span class="sd">    :param  z: (float), redisfhit, if not provided it is looked up in the  file meta-data</span>
+<span class="sd">        </span>
+<span class="sd">    :param obj_name: (str), if not provided  it is looked up in the  file meta-data</span>
+<span class="sd">        </span>
+<span class="sd">    :param restframe: (str) restframe of the data, possible values are ``&#39;src&#39;`` or  ``&#39;obs&#39;``, </span>
+<span class="sd">        if not provided it is looked up in the  file meta-data</span>
+<span class="sd">        </span>
+<span class="sd">    :param col_types: (str), string specifying the way data are organized in columns in the input file. </span>
+<span class="sd">        This string is passed to the method  :func:`set_data_cols`. If not provided</span>
+<span class="sd">        it is looked up in the  file meta-data. See the corresponding :func:`set_data_cols` </span>
+<span class="sd">        documentation for details.</span>
+<span class="sd">    </span>
+<span class="sd">    :param col_nums: (str), string describing the corresponding column data number</span>
+<span class="sd">        </span>
+<span class="sd">    :param data_scale: (str) ``&#39;lin-lin&#39;`` or ``&#39;log-log&#39;``,it is looked up in the  file meta-data. </span>
+<span class="sd">        This parameter allows to specify      if the data in the file are stored as in log-log or lin-lin scale</span>
+<span class="sd">        </span>
+<span class="sd">    :param data_set_filter:  a filter to filter the SED data according to the data_set value,  eg: </span>
+<span class="sd">        ``&#39;data_set_filter=&#39;mw-1&#39;``, will filter data with ``data_set==&#39;mw-1&#39;``,        </span>
+<span class="sd">        ``&#39;data_set_filter=[&#39;mw-1&#39;,&#39;mw-2&#39;]&#39;`` will filter data with ``data_set==&#39;mw-1&#39;`` or ``data_set==&#39;mw-2&#39;``</span>
+<span class="sd">    </span>
+<span class="sd">        </span>
+<span class="sd">        .. note::</span>
+<span class="sd">            </span>
+<span class="sd">            Historical data will be only plotted but will not be used in the fit.</span>
+<span class="sd">    </span>
+<span class="sd">   </span>
+<span class="sd">    **Class Members storing the SED data:**</span>
+
+<span class="sd">     data used to fit </span>
+<span class="sd">     </span>
+<span class="sd">     - nu_data</span>
+<span class="sd">     - nuFnu_data </span>
+<span class="sd">     - dnu_data</span>
+<span class="sd">     - dnuFnu_data   </span>
+<span class="sd">     - T_data </span>
+<span class="sd">     - data_set </span>
+<span class="sd">     </span>
+<span class="sd">     upper limits</span>
+<span class="sd">     </span>
+<span class="sd">     - nu_data_UL</span>
+<span class="sd">     - UL_data</span>
+<span class="sd">   </span>
+
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    The private method   :func:`_load_data`  populates the data members starting from the data in the file. Data are properly transformed according</span>
+<span class="sd">    to the ``restframe`` and ``data_scale`` values.</span>
+<span class="sd">    </span>
+<span class="sd">      </span>
+<span class="sd">    </span>
+<span class="sd">    **Examples**</span>
+<span class="sd">    </span>
+
+<span class="sd">    The following lines shows and example of how to embed **meta-data** in the header of the SED data file,</span>
+<span class="sd">    just adding in the header of the file a line starting with ``#`` and followed by the </span>
+<span class="sd">    indetifier ``md``, the meta-data name and value :</span>
+<span class="sd">    </span>
+<span class="sd">    .. literalinclude:: ../../../BlazarSEDFit/test_data/SEDs_data/SED_MW_Mrk421.dat </span>
+<span class="sd">       :lines: 1-20</span>
+<span class="sd">        </span>
+<span class="sd">    </span>
+<span class="sd">    Assuming that the data file path has been stored in ``SED_file=/path/to/file/file.txt``, </span>
+<span class="sd">    the data can be imported as follows:    </span>
+<span class="sd">    </span>
+<span class="sd">    .. code::</span>
+<span class="sd">    </span>
+<span class="sd">        from BlazarSEDFit.data_loader import ObsData</span>
+<span class="sd">        mySEDdata=ObsData(data_file=SED_file)</span>
+<span class="sd">    </span>
+<span class="sd">    that is completely equivalent to:</span>
+<span class="sd">    </span>
+<span class="sd">    .. code::</span>
+<span class="sd">    </span>
+<span class="sd">        mySEDdata=ObsData(data_file=SED_file,col_types=&#39;x,y,dy,data_set&#39;,z=0.0308,data_scale=&#39;lin-lin&#39;)</span>
+<span class="sd">        </span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dupl_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">data_set_filter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">UL_filtering</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">UL_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restframe</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">col_nums</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_file</span><span class="o">=</span><span class="n">data_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">if</span> <span class="n">data_set_filter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_set_filter</span><span class="o">=</span><span class="n">data_set_filter</span><span class="o">.</span><span class="n">spliet</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_set_filter</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;No&#39;</span><span class="p">]</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_eval</span><span class="o">=</span><span class="n">Cosmo</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;cm&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">UL_value</span><span class="o">=</span><span class="n">UL_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">UL_filtering</span><span class="o">=</span><span class="n">UL_filtering</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zero_error_replacment</span><span class="o">=</span><span class="mf">0.2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span><span class="o">=</span><span class="mf">0.2</span>
+       
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            
+            <span class="nb">print</span> <span class="s2">&quot;you must provide a valid path for the SED  file&quot;</span>
+            
+            <span class="k">return</span> 
+       
+        
+      
+        
+        
+        <span class="nb">print</span>  <span class="n">section_separator</span>
+        
+        <span class="nb">print</span> <span class="s2">&quot;*** getting meta-data from file header&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_md_from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_file</span><span class="p">)</span>
+                
+      
+        
+        <span class="nb">print</span>  <span class="n">section_separator</span>
+        
+        
+        <span class="c1">#------------------------------</span>
+        <span class="c1">#builds a dictionary to bounds</span>
+        <span class="c1">#keyword to class members</span>
+        <span class="c1">#and to set allowed values</span>
+        <span class="c1">#------------------------------</span>
+        <span class="n">allowed_keywords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;z&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">}</span>
+        <span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;obj_name&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;None&#39;</span>
+        <span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;restframe&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;obs&#39;</span><span class="p">,</span><span class="s1">&#39;src&#39;</span><span class="p">]</span>
+        <span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;data_scale&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;lin-lin&#39;</span><span class="p">,</span><span class="s1">&#39;log-log&#39;</span><span class="p">]</span>
+        <span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;data_file&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;col_types&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;col_nums&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+
+        <span class="c1">#loops over keywords</span>
+        <span class="c1">#and set values</span>
+        <span class="c1">#values overwrite values from file metadata</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="nb">print</span> <span class="n">keys</span>
+        <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;kw &quot;</span><span class="p">,</span><span class="n">kw</span><span class="p">,</span><span class="n">keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">kw</span> <span class="ow">in</span>  <span class="n">allowed_keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+              
+                <span class="k">if</span> <span class="n">allowed_keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1">#check that the kyword value is correct</span>
+                    <span class="k">if</span> <span class="n">keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">]:</span>                         
+                        <span class="nb">print</span> <span class="s2">&quot;keyword=</span><span class="si">%s</span><span class="s2">, has wrong value=</span><span class="si">%s</span><span class="s2">, allowed are </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span><span class="n">keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">],</span> <span class="n">allowed_keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">])</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span>
+                        
+                    
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">kw</span><span class="p">,</span><span class="n">keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">])</span>
+                    
+            <span class="k">else</span><span class="p">:</span>
+                
+                <span class="nb">print</span> <span class="s2">&quot;wrong keyword=</span><span class="si">%s</span><span class="s2">, not in</span><span class="si">%s</span><span class="s2"> &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span> <span class="n">allowed_keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                
+                <span class="k">raise</span> <span class="ne">ValueError</span>
+        
+        <span class="c1">#reads metadata from file</span>
+       
+        <span class="c1">#checks that all the class members</span>
+        <span class="c1">#have been initilized correctly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_data_cols</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">col_nums</span><span class="p">)</span>
+        <span class="k">for</span>  <span class="n">var</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">var</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="s2">&quot;var &quot;</span><span class="p">,</span><span class="n">var</span> <span class="p">,</span> <span class="s2">&quot; is None, please set it&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span>
+       
+       
+        
+        
+        <span class="c1">#calls method to load data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_data</span><span class="p">(</span><span class="n">dupl_filter</span><span class="o">=</span><span class="n">dupl_filter</span><span class="p">)</span>
+
+
+        
+<div class="viewcode-block" id="ObsData._build_data"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData._build_data">[docs]</a>    <span class="k">def</span> <span class="nf">_build_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dupl_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        private method to load and build the SED data     </span>
+<span class="sd">        </span>
+<span class="sd">        :param dupl_filter: keyword to perfrom filtering of duplicated entries</span>
+<span class="sd">        :type dupl_filter: bool </span>
+<span class="sd">        :ivar dt: numpy dtype  for the SED data</span>
+<span class="sd">         </span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        **Data Processing**</span>
+<span class="sd">        </span>
+<span class="sd">        - checks if data errors are provided </span>
+<span class="sd">        - separates historical from simultaneosu (used in the fit) data</span>
+<span class="sd">        - filters upper limits </span>
+<span class="sd">        - removes duplicate entries</span>
+<span class="sd">        - performs restframe transformation</span>
+<span class="sd">        - performs `lin-lin`, `log-log` transformations</span>
+<span class="sd">        </span>
+
+<span class="sd">       </span>
+<span class="sd">       </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sed_dt</span> <span class="o">=</span><span class="p">[(</span><span class="s1">&#39;nu_data&#39;</span><span class="p">,</span><span class="s1">&#39;f8&#39;</span><span class="p">)]</span>
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;dnu_data&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;dnu_data_log&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;dnuFnu_facke&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;dnuFnu_facke_log&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;UL&#39;</span><span class="p">,</span><span class="s1">&#39;bool&#39;</span><span class="p">))</span>
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;zero_error&#39;</span><span class="p">,</span><span class="s1">&#39;bool&#39;</span><span class="p">))</span>
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;T_start&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;T_stop&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">))</span>
+        <span class="n">sed_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;data_set&#39;</span><span class="p">,</span> <span class="s1">&#39;S16&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">sed_dt</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_from_file</span><span class="o">=</span><span class="kc">None</span>
+
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_col_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="s1">&#39;nu_data&#39;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_col_dict</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;nuFnu_data&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_col_dict</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;dnu_data&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_col_dict</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;dnuFnu_data&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_col_dict</span><span class="p">[</span><span class="s1">&#39;T_start&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;T_start&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_col_dict</span><span class="p">[</span><span class="s1">&#39;T_stop&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;T_stop&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_col_dict</span><span class="p">[</span><span class="s1">&#39;data_set&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;data_set&#39;</span>
+        
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_col_dict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_col_dict</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;nuFnu_data_log&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_col_dict</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;dnu_data_log&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_col_dict</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;dnuFnu_data_log&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_col_dict</span><span class="p">[</span><span class="s1">&#39;T_start&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;T_start&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_col_dict</span><span class="p">[</span><span class="s1">&#39;T_stop&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;T_stop&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_col_dict</span><span class="p">[</span><span class="s1">&#39;data_set&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;data_set&#39;</span>
+        
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;lin-lin&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_file_col_dict</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_col_dict</span>
+            
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;log-log&#39;</span><span class="p">:</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_file_col_dict</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_col_dict</span>
+        
+        
+        <span class="nb">print</span>  <span class="n">section_separator</span>
+        
+        
+       
+
+        <span class="nb">print</span> <span class="s2">&quot;*** loading data ***&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; loading data for file=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">data_file</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; found these col ID=</span><span class="si">%s</span><span class="s2"> and names=</span><span class="si">%s</span><span class="s2">:&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">col_nums</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; z=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; restframe=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">restframe</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; obj_name=</span><span class="si">%s</span><span class="s2"> &quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; data_scale=</span><span class="si">%s</span><span class="s2"> &quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span>
+        
+            
+       
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_data</span><span class="p">()</span>
+
+        <span class="c1">#-------------------------------------------------------------------------</span>
+        <span class="c1"># duplicate entries </span>
+        <span class="k">if</span> <span class="n">dupl_filter</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; filtering for dupl entries&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_dupl_entries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+       
+        <span class="c1">#-------------------------------------------------------------------------          </span>
+        <span class="c1"># remove UL entries </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_UL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UL_value</span><span class="p">)</span>
+        <span class="c1">#print &quot;1,&quot;,self.data[&#39;nu_data_log&#39;]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_zero_error</span><span class="p">()</span>
+        <span class="c1">#print &quot;2,&quot;,self.data[&#39;nu_data_log&#39;]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">UL_filtering</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filter_UL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UL_value</span><span class="p">)</span>
+        
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_set_filter</span><span class="o">!=</span><span class="p">[</span><span class="s1">&#39;No&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filter_data_set</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_set_filter</span><span class="p">)</span>
+       
+        <span class="c1">#print &quot;3,&quot;,self.data[&#39;nu_data_log&#39;]</span>
+        <span class="c1">#self.set_error(self.zero_error_replacment, data_msk=self.data[&#39;zero_error&#39;])</span>
+        <span class="c1">#print &quot;4,&quot;,self.data[&#39;nu_data_log&#39;]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_data_frame_and_scale</span><span class="p">()</span>
+        <span class="nb">print</span> <span class="s2">&quot;5,&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span>
+        
+       
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;lin-lin&#39;</span><span class="p">:</span>
+        
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Fnu_data&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span>
+            
+            <span class="nb">print</span> <span class="s2">&quot;Warning: error were not provided &quot;</span>
+            <span class="nb">print</span> <span class="s2">&quot;         assigning </span><span class="si">%f</span><span class="s2">            &quot;</span>
+            <span class="nb">print</span> <span class="s2">&quot;         set error with .set_error&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span>
+            <span class="c1">#print self.data[&#39;dnuFnu_data&#39;]</span>
+        
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;log-log&#39;</span><span class="p">:</span>
+        
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span>
+            
+            <span class="nb">print</span> <span class="s2">&quot;Warning: error were not provided &quot;</span>
+            <span class="nb">print</span> <span class="s2">&quot;         assigning </span><span class="si">%f</span><span class="s2">           &quot;</span>
+            <span class="nb">print</span> <span class="s2">&quot;         set error with .set_error&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span>
+            <span class="c1">#print self.data[&#39;dnuFnu_data_log&#39;]</span>
+
+    
+        
+        <span class="c1">#print self.data_set_filter</span>
+        <span class="nb">print</span>  <span class="n">section_separator</span></div>
+    
+    
+<div class="viewcode-block" id="ObsData._load_data"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData._load_data">[docs]</a>    <span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        method to load the data from the file </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#data are loaded with the order of columns eg x,y,z=(1,0,3)</span>
+        <span class="c1">#hence just have to loop over columns_name and get the index</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_from_file</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_file</span><span class="p">,</span> <span class="n">usecols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_nums</span><span class="p">,</span> <span class="n">unpack</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_from_file</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
+        
+        <span class="c1">#print self._file_col_dict</span>
+        <span class="c1">#print self.columns_name</span>
+        <span class="k">for</span>  <span class="n">col_id</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="p">)):</span>
+            <span class="nb">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_col_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="p">[</span><span class="n">col_id</span><span class="p">]],</span><span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="p">[</span><span class="n">col_id</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_col_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="p">[</span><span class="n">col_id</span><span class="p">]]]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_from_file</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="p">[</span><span class="n">col_id</span><span class="p">]]</span>
+        
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; data len=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
+
+
+
+   
+        
+<div class="viewcode-block" id="ObsData.set_data_cols"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.set_data_cols">[docs]</a>    <span class="k">def</span>  <span class="nf">set_data_cols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">col_types</span><span class="p">,</span><span class="n">col_nums</span><span class="p">):</span>
+          <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">          This method build the data columns from the columns in the data file, </span>
+<span class="sd">          according to the  user supplied specifications. </span>
+<span class="sd">          </span>
+<span class="sd">          :param col_types: (str) string describing the column data names</span>
+<span class="sd">          :param col_nums: (str) string describing the corresponding column data number</span>
+<span class="sd">          </span>
+<span class="sd">          </span>
+<span class="sd">          as parameter a  strings listing the fields separated by a comma.</span>
+<span class="sd">          </span>
+<span class="sd">          .. note::</span>
+<span class="sd">              **if col_nums is not provide the order of the fields in the string </span>
+<span class="sd">              must have the same order of the</span>
+<span class="sd">              columns position in the input file, but is completely flexible**, meaning</span>
+<span class="sd">              that the order of the columns in the data file can be arbitrary. If you have an SED data file</span>
+<span class="sd">              ready, for example with the flux on the first column, and the freq on the</span>
+<span class="sd">              second, you have just to set </span>
+<span class="sd">              </span>
+<span class="sd">            </span>
+<span class="sd">          .. code:: </span>
+<span class="sd">              </span>
+<span class="sd">              set_data_cols(&#39;y,x&#39;)</span>
+<span class="sd">          </span>
+<span class="sd">          means that the y column is the first (i.e. number 0) and the x column is the second (i.e. number 1). </span>
+<span class="sd">          This is equivalent to </span>
+<span class="sd">          </span>
+<span class="sd">          .. code:: </span>
+<span class="sd">              </span>
+<span class="sd">             </span>
+<span class="sd">              set_data_cols(&#39;x,y&#39;,col_nums=[1,0])</span>
+<span class="sd">          </span>
+<span class="sd">          and equivalent to </span>
+<span class="sd">              </span>
+<span class="sd">          .. code:: </span>
+<span class="sd">              </span>
+<span class="sd">            </span>
+<span class="sd">              set_data_cols(&#39;y,x&#39;,col_nums=&#39;0,1&#39;)</span>
+<span class="sd">          </span>
+<span class="sd">              </span>
+<span class="sd">          The columns allowed for the SED ascii data file  are:</span>
+<span class="sd">          </span>
+<span class="sd">          - x, freq value</span>
+<span class="sd">          </span>
+<span class="sd">          - y, flux value</span>
+<span class="sd">          </span>
+<span class="sd">          - dx, error </span>
+<span class="sd">          </span>
+<span class="sd">          - dy, error</span>
+<span class="sd">          </span>
+<span class="sd">          - Tstart</span>
+<span class="sd">          </span>
+<span class="sd">          - Tstop</span>
+<span class="sd">          </span>
+<span class="sd">          - data_set, is a flag for a given data set. The user can flag different data_set</span>
+<span class="sd">            in the same ascii file, and it is possible to select which to use to fit and/or plot</span>
+<span class="sd">        </span>
+<span class="sd">          </span>
+<span class="sd">          **Examples**</span>
+<span class="sd">          </span>
+<span class="sd">          If your file has a structure like:</span>
+<span class="sd">          </span>
+<span class="sd">          .. code::</span>
+<span class="sd">             </span>
+<span class="sd">              # nu         flux         err           foo data_set   </span>
+<span class="sd">              2.299540e+09 1.340900e-14 3.910000e-16  xxx  mw-1</span>
+<span class="sd">              2.639697e+09 1.793088e-14 3.231099e-26  xxx  mw-1</span>
+<span class="sd">              4.799040e+09 2.313600e-14 2.400000e-16  xxx  mw-1</span>
+<span class="sd">              4.805039e+09 1.773414e-14 1.773414e-15  xxx  mw-1</span>
+<span class="sd">              ......</span>
+<span class="sd">          </span>
+<span class="sd">          </span>
+<span class="sd">            </span>
+<span class="sd">          .. code::</span>
+<span class="sd">             </span>
+<span class="sd">             set_data_cols(&#39;x,y,dy,data_set&#39;,col_nums=&#39;0,1,2,4&#39;) </span>
+<span class="sd">             </span>
+<span class="sd">         </span>
+<span class="sd">          </span>
+<span class="sd">          Alternatively the  dataCols specification can be stored as a metadata</span>
+<span class="sd">          in the header of the SED ascii file:</span>
+<span class="sd">          </span>
+<span class="sd">          .. code::</span>
+<span class="sd">              </span>
+<span class="sd">              #col_names x,y,dy,data_set</span>
+<span class="sd">              #col_nums 0,1,2,4</span>
+<span class="sd">              # nu         flux         err           foo data_set   </span>
+<span class="sd">              2.299540e+09 1.340900e-14 3.910000e-16  xxx  mw-1</span>
+<span class="sd">              2.639697e+09 1.793088e-14 3.231099e-26  xxx  mw-1</span>
+<span class="sd">              4.799040e+09 2.313600e-14 2.400000e-16  xxx  mw-1</span>
+<span class="sd">              4.805039e+09 1.773414e-14 1.773414e-15  xxx  mw-1</span>
+<span class="sd">              ......</span>
+<span class="sd">          </span>
+<span class="sd">          </span>
+<span class="sd">          &quot;&quot;&quot;</span>
+          
+          
+        
+              
+          
+        
+          <span class="n">allowed</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="s1">&#39;dx&#39;</span><span class="p">,</span><span class="s1">&#39;dy&#39;</span><span class="p">,</span><span class="s1">&#39;T_start&#39;</span><span class="p">,</span><span class="s1">&#39;Tstart&#39;</span><span class="p">,</span><span class="s1">&#39;T_stop&#39;</span><span class="p">,</span><span class="s1">&#39;Tstop&#39;</span><span class="p">,</span><span class="s1">&#39;data_set&#39;</span><span class="p">,</span><span class="s1">&#39;DataSet&#39;</span><span class="p">]</span>
+          <span class="n">name_list</span><span class="o">=</span><span class="n">col_types</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+          
+          <span class="k">if</span> <span class="n">col_nums</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+              <span class="n">col_list</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">col_nums</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+              <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_list</span><span class="p">)</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">name_list</span><span class="p">):</span>
+                  <span class="nb">print</span> <span class="s2">&quot;lenght of colum name</span><span class="si">%d</span><span class="s2"> different from lenght of columns number &quot;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">name_list</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">col_list</span><span class="p">))</span>
+                  
+                  <span class="k">raise</span> <span class="ne">ValueError</span>
+          <span class="k">else</span><span class="p">:</span>
+             <span class="n">col_list</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">name_list</span><span class="p">))</span>
+              
+          
+          <span class="k">for</span> <span class="n">i</span>  <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">name_list</span><span class="p">)):</span>
+              <span class="k">if</span> <span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span><span class="s1">&#39;Tstart&#39;</span><span class="p">:</span>
+                  <span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;T_start&#39;</span>
+              
+              <span class="k">if</span> <span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span><span class="s1">&#39;Tstop&#39;</span><span class="p">:</span>
+                  <span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;T_stop&#39;</span>
+              
+              <span class="k">if</span> <span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span><span class="s1">&#39;DataSet&#39;</span><span class="p">:</span>
+                  <span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;data_set&#39;</span>
+              
+              <span class="k">if</span> <span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
+                  <span class="nb">print</span> <span class="s1">&#39;wrong column name field=&#39;</span><span class="p">,</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s1">&#39; allowed values are&#39;</span><span class="p">,</span><span class="n">allowed</span>
+                  <span class="k">raise</span> <span class="ne">ValueError</span>
+        
+          <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="o">=</span><span class="n">name_list</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">col_nums</span><span class="o">=</span><span class="n">col_list</span></div>
+                  
+          
+
+<div class="viewcode-block" id="ObsData._set_data_frame_and_scale"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData._set_data_frame_and_scale">[docs]</a>    <span class="k">def</span> <span class="nf">_set_data_frame_and_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        
+        <span class="c1">#-------------------------------------------------------------------------          </span>
+        <span class="c1"># handles data cosmological conversion</span>
+        <span class="c1"># and axis transformation</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">restframe</span><span class="o">==</span><span class="s1">&#39;obs&#39;</span><span class="p">:</span>
+            <span class="n">nu_conv_factor</span><span class="o">=</span><span class="mi">1</span>
+            <span class="n">Lum_conv_factor</span><span class="o">=</span><span class="mi">1</span>
+        
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">restframe</span><span class="o">==</span><span class="s1">&#39;src&#39;</span><span class="p">:</span>
+            <span class="n">DL</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo_eval</span><span class="o">.</span><span class="n">DL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt;DL=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">DL</span>
+            
+            <span class="c1">#!! usa le funzioni in frame_converter</span>
+            <span class="n">nu_conv_factor</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">Lum_conv_factor</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mf">4.0</span><span class="o">*</span><span class="n">DL</span><span class="o">*</span><span class="n">DL</span><span class="p">)</span>
+
+        
+        <span class="c1">#conv_fac=np.log(10)</span>
+        
+        
+  
+        <span class="c1">#msk=np.invert(self.data[&#39;UL&#39;])</span>
+        <span class="c1">#*np.invert(self.data[&#39;zero_error&#39;])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;lin-lin&#39;</span><span class="p">:</span>
+            
+            <span class="k">if</span> <span class="s1">&#39;dy&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_to_log</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">],</span> <span class="n">err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_to_log</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">])</span>
+                
+            <span class="k">if</span> <span class="s1">&#39;dx&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnu_data_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_to_log</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">],</span> <span class="n">err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnu_data&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_to_log</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">])</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">nu_conv_factor</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">]</span><span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">Lum_conv_factor</span><span class="p">)</span>
+            
+            
+            
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;log-log&#39;</span><span class="p">:</span>
+            <span class="c1">#print &quot;AAA&quot;</span>
+            <span class="c1">#print self.data[&#39;nuFnu_data_log&#39;],self.data[&#39;dnuFnu_data_log&#39;]</span>
+            <span class="k">if</span> <span class="s1">&#39;dy&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_to_lin</span><span class="p">(</span><span class="n">log_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">],</span> <span class="n">log_err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_to_lin</span><span class="p">(</span><span class="n">log_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">])</span>
+                
+            <span class="k">if</span> <span class="s1">&#39;dx&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnu_data&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_to_lin</span><span class="p">(</span><span class="n">log_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">],</span> <span class="n">log_err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnu_data_log&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_to_lin</span><span class="p">(</span><span class="n">log_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">])</span>
+            
+            
+            <span class="c1">#print self.data[&#39;nuFnu_data&#39;],self.data[&#39;dnuFnu_data&#39;]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">*=</span><span class="n">nu_conv_factor</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">]</span><span class="o">*=</span><span class="n">Lum_conv_factor</span>
+        
+        
+        <span class="c1">#sets fake error column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_facke_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_facke&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span>
+        
+        <span class="c1">#sets fake error for UL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;UL&#39;</span><span class="p">]]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_facke&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;UL&#39;</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;UL&#39;</span><span class="p">]]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_facke_log&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;UL&#39;</span><span class="p">]]</span></div>
+    
+        
+        
+<div class="viewcode-block" id="ObsData.set_md_from_file"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.set_md_from_file">[docs]</a>    <span class="k">def</span> <span class="nf">set_md_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">infile_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get all the meta-data from the header of the SED data file. </span>
+<span class="sd"> </span>
+<span class="sd">        :param: infile_name: (str) SED data file name (including the path) </span>
+<span class="sd"> </span>
+<span class="sd">        :Returns: meta-data (z,file_name,obj_name,restframe,data_scale,dataCols):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1">#looks for z</span>
+        <span class="n">infile</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="n">infile_name</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">inlines</span><span class="o">=</span><span class="n">infile</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>  
+        <span class="n">infile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>	
+    
+        <span class="n">obj_name</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">infile_name</span><span class="p">)</span>
+        <span class="n">md_dic</span><span class="o">=</span><span class="p">{}</span>
+        <span class="n">md_dic</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">md_dic</span><span class="p">[</span><span class="s1">&#39;file_name&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">md_dic</span><span class="p">[</span><span class="s1">&#39;obj_name&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">obj_name</span>
+        <span class="n">md_dic</span><span class="p">[</span><span class="s1">&#39;restframe&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">md_dic</span><span class="p">[</span><span class="s1">&#39;data_scale&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">md_dic</span><span class="p">[</span><span class="s1">&#39;col_types&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">md_dic</span><span class="p">[</span><span class="s1">&#39;col_nums&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">inlines</span><span class="p">:</span>
+            <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">tkn</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tkn</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="n">tkn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;#&quot;</span>   <span class="ow">and</span> <span class="n">tkn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;md&#39;</span><span class="p">:</span>
+                    
+                   
+                    
+                    <span class="k">if</span> <span class="n">tkn</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span>  <span class="n">md_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="nb">print</span> <span class="s2">&quot;set md </span><span class="si">%s</span><span class="s2">  to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">tkn</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">tkn</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tkn</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">tkn</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">print</span> <span class="s2">&quot;wrong keyword=</span><span class="si">%s</span><span class="s2">, not in</span><span class="si">%s</span><span class="s2"> &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">tkn</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">md_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                            
+       
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+           <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span></div>
+    
+    
+    
+    
+<div class="viewcode-block" id="ObsData.filter_data_set"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.filter_data_set">[docs]</a>    <span class="k">def</span> <span class="nf">filter_data_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filters</span><span class="p">,</span><span class="n">exclude</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        filter the data, returning all the data with</span>
+<span class="sd">        data_set=filter if exclude=False (default)</span>
+<span class="sd">        or returning all the data with</span>
+<span class="sd">        data_set!=filter if exclude=True </span>
+<span class="sd">        </span>
+<span class="sd">        :param filter: name of the data_set to filter</span>
+<span class="sd">        :type filter: str</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="c1">#if self.data_set_filter!=None and self.data_set_filter!=&#39;No&#39;:</span>
+        <span class="k">if</span> <span class="n">exclude</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; filtering for fit data_set==&quot;</span><span class="p">,</span><span class="n">filters</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; filtering for fit data_set!=&quot;</span><span class="p">,</span><span class="n">filters</span>
+        
+        <span class="c1">#if data_set_filter is scalar</span>
+        <span class="c1">#then is converted to list</span>
+        <span class="c1">#if len(np.shape(self.data_set_filter))==0:</span>
+            <span class="c1">#self.data_set_filter=[self.data_set_filter]</span>
+        <span class="c1">#print   self.data_set_filter </span>
+        
+        <span class="n">msk</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">for</span> <span class="nb">filter</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">:</span>
+        
+            <span class="n">msk1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data_set&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">filter</span>
+            <span class="n">msk</span><span class="o">=</span><span class="n">msk</span><span class="o">*</span><span class="n">msk1</span>
+        <span class="k">if</span> <span class="n">exclude</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="n">msk</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">msk</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        
+        
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; data len after filtering=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">])</span></div>
+        
+        
+        
+<div class="viewcode-block" id="ObsData.set_UL"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.set_UL">[docs]</a>    <span class="k">def</span> <span class="nf">set_UL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">UL_value</span><span class="o">=</span><span class="n">val</span>
+
+        <span class="k">if</span> <span class="s1">&#39;dy&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;lin-lin&#39;</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; Settin  UL for val&quot;</span><span class="p">,</span><span class="n">val</span>
+            <span class="n">error_array</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span>
+                       
+        
+        <span class="k">if</span> <span class="s1">&#39;dy&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;log-log&#39;</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; filtering for UL&quot;</span>
+            <span class="n">error_array</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;UL&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">error_array</span><span class="o">&lt;</span><span class="n">val</span></div>
+            
+        
+        
+<div class="viewcode-block" id="ObsData.set_zero_error"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.set_zero_error">[docs]</a>    <span class="k">def</span> <span class="nf">set_zero_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span><span class="n">replace_zero</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">zero_error_replacment</span><span class="o">=</span><span class="n">val</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;dy&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;lin-lin&#39;</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; Settin  UL for val&quot;</span><span class="p">,</span><span class="n">val</span>
+            <span class="n">error_array</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span>
+                       
+        
+        <span class="k">if</span> <span class="s1">&#39;dy&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;log-log&#39;</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; filtering for UL&quot;</span>
+            <span class="n">error_array</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">]</span>
+        
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;zero_error&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">error_array</span><span class="o">&lt;=</span><span class="mf">0.0</span>
+        <span class="k">if</span> <span class="n">replace_zero</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1">#self.set_error(self.zero_error_replacment, data_msk=self.data[&#39;zero_error&#39;])</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;lin-lin&#39;</span><span class="p">:</span>          
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;zero_error&#39;</span><span class="p">]]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">zero_error_replacment</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;zero_error&#39;</span><span class="p">]]</span>
+        
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;log-log&#39;</span><span class="p">:</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;zero_error&#39;</span><span class="p">]]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">zero_error_replacment</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span></div>
+
+        
+        
+<div class="viewcode-block" id="ObsData.filter_UL"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.filter_UL">[docs]</a>    <span class="k">def</span> <span class="nf">filter_UL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        remove the  upper limits points from  from data</span>
+<span class="sd">        </span>
+<span class="sd">        :param val: minimum value to set the upper limit. **As default, negative errors indicates upper limits, hence val=0.**</span>
+<span class="sd">        :Retruns msk: a boolean array to mask the upper limits, i.e. all the data points with negative errors.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+<span class="c1">#         </span>
+<span class="c1">#         if &#39;dy&#39; in self.col_types and self.data_scale==&#39;lin-lin&#39;:</span>
+<span class="c1">#             print &quot;---&gt; filtering for UL&quot;</span>
+<span class="c1">#             error_array=self.data[&#39;dnuFnu_data&#39;]</span>
+<span class="c1">#             </span>
+<span class="c1">#             msk= error_array&lt;val</span>
+<span class="c1">#             if len(msk)&gt;0:</span>
+<span class="c1">#                 self.ULnu_data=self.data[&#39;nu_data&#39;][msk]</span>
+<span class="c1">#                 self.UL_data=self.data[&#39;nuFnu_data&#39;][msk]</span>
+<span class="c1">#         </span>
+<span class="c1">#         if &#39;dy&#39; in self.col_types and self.data_scale==&#39;log-log&#39;:</span>
+<span class="c1">#             print &quot;---&gt; filtering for UL&quot;</span>
+<span class="c1">#             erro_array=self.data[&#39;dnuFnu_data_log&#39;]</span>
+<span class="c1">#             msk= error_array&lt;val</span>
+<span class="c1">#             if len(msk)&gt;0:</span>
+<span class="c1">#                 self.UL_nu_data_log=self.data[&#39;nu_data_log&#39;][msk]</span>
+<span class="c1">#                 self.UL_data_log=self.data[&#39;nuFnu_data_log&#39;][msk]</span>
+<span class="c1">#             </span>
+<span class="c1">#         </span>
+<span class="c1">#         </span>
+        <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">UL_value</span>
+            
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; filtering  UL for val&quot;</span><span class="p">,</span><span class="n">val</span>
+        <span class="k">if</span> <span class="s1">&#39;dy&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;lin-lin&#39;</span><span class="p">:</span>   
+            <span class="n">error_array</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span>
+        
+           
+        
+        <span class="k">if</span> <span class="s1">&#39;dy&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;log-log&#39;</span><span class="p">:</span>
+            <span class="n">error_array</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">]</span>
+        
+        
+        <span class="n">msk</span><span class="o">=</span> <span class="n">error_array</span><span class="o">&lt;</span><span class="n">val</span>
+        <span class="n">msk</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">msk</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; data len after filtering=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
+        
+     
+<div class="viewcode-block" id="ObsData.filter_time"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.filter_time">[docs]</a>    <span class="k">def</span> <span class="nf">filter_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">T_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">T_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">exclude</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        filter the data, keeping all the data with </span>
+<span class="sd">        T_min &lt;T&lt; T_max if exclude=False (defualt).</span>
+<span class="sd">        The opposite if exclude=True</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        :param T_min: lower limit of the range (MJD)</span>
+<span class="sd">        :type T_min: float</span>
+<span class="sd">        :param T_max: upper limit of the range (MJD)</span>
+<span class="sd">        :type T_max: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        
+        <span class="n">msk1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="n">msk2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">T_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msk1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;T_start&#39;</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">T_min</span>
+        
+        <span class="k">if</span> <span class="n">T_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msk2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;T_stop&#39;</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">T_max</span>
+            
+        <span class="n">msk</span><span class="o">=</span><span class="n">msk1</span><span class="o">*</span><span class="n">msk2</span>
+        <span class="k">if</span> <span class="n">exclude</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="n">msk</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">msk</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; data len after filtering=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> </div>
+        
+        
+<div class="viewcode-block" id="ObsData.filter_freq"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.filter_freq">[docs]</a>    <span class="k">def</span> <span class="nf">filter_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nu_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">exclude</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        filter the data, keeping all the data with </span>
+<span class="sd">        nu_min &lt;nu&lt; nu_max if exclude=False (defualt).</span>
+<span class="sd">        The opposite if exclude=True</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        **both nu_max and nu_min are in linear scale**</span>
+<span class="sd">        </span>
+<span class="sd">        :param nu_min: lower limit of the range (linear scale, in Hz)</span>
+<span class="sd">        :type nu_min: float</span>
+<span class="sd">        :param nu_max: upper limit of the range (linear scale, in Hz)</span>
+<span class="sd">        :type nu_max: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">msk1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="n">msk2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nu_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msk1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">nu_min</span>
+        
+        <span class="k">if</span> <span class="n">nu_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msk2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">nu_max</span>
+            
+        <span class="n">msk</span><span class="o">=</span><span class="n">msk1</span><span class="o">*</span><span class="n">msk2</span>
+        
+        <span class="k">if</span> <span class="n">exclude</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="n">msk</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">msk</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; data len after filtering=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ObsData.reset_data"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.reset_data">[docs]</a>    <span class="k">def</span> <span class="nf">reset_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_data</span><span class="p">()</span></div>
+       
+  
+  
+<div class="viewcode-block" id="ObsData.remove_dupl_entries"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.remove_dupl_entries">[docs]</a>    <span class="k">def</span> <span class="nf">remove_dupl_entries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         remove duplicate entries</span>
+<span class="sd">        </span>
+<span class="sd">        :param data: (array) 2-dim array storing the the table of the data.</span>
+<span class="sd">        :Returns msk:  a boolean array to mask the duplicated entries</span>
+<span class="sd">        </span>
+<span class="sd">        .. note::</span>
+<span class="sd">        </span>
+<span class="sd">            One entry is flagged as duplicated as each comlum in a row of the data table</span>
+<span class="sd">            is equal to the corresponding elements of another row</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; remove duplicate entries&quot;</span>
+        <span class="n">msk</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="n">i</span><span class="p">])):</span>
+                <span class="n">test</span><span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="n">data</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">test</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                    <span class="c1">#print i,test,data[i],data[j]</span>
+                    <span class="n">msk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span>
+               
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span></div>
+            
+            
+            
+<div class="viewcode-block" id="ObsData.group_data"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.group_data">[docs]</a>    <span class="k">def</span> <span class="nf">group_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N_bin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">bin_width</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        function to perform a spectral group of the data   </span>
+
+<span class="sd">        :param N_bin: (int)</span>
+<span class="sd">        :param bin_width: (float) logarthmic</span>
+<span class="sd">        </span>
+<span class="sd">        .. note::</span>
+<span class="sd">    </span>
+<span class="sd">            To perform  a rebinning of the data has to be provided either ``N_bin`` or ``bin_width``.    </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="nb">print</span> <span class="n">section_separator</span>
+        
+
+        <span class="k">if</span> <span class="n">N_bin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">bin_width</span> <span class="ow">is</span>  <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;you can provide either N_bin or bin_width&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span> 
+        <span class="k">elif</span> <span class="n">N_bin</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">bin_width</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;you must provide either N_bin or bin_width&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span>
+        
+        <span class="n">xmin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">*</span><span class="mf">0.99</span> 
+        <span class="n">xmax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">*</span><span class="mf">1.01</span>
+        
+      
+        <span class="k">if</span> <span class="n">N_bin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">N_bin</span><span class="o">=</span><span class="nb">int</span><span class="p">((</span><span class="n">xmax</span><span class="o">-</span><span class="n">xmin</span><span class="p">)</span><span class="o">/</span><span class="n">bin_width</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">bin_width</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bin_width</span><span class="o">=</span><span class="p">(</span><span class="n">xmax</span><span class="o">-</span><span class="n">xmin</span><span class="p">)</span><span class="o">/</span><span class="n">N_bin</span>
+
+
+        <span class="n">bin_grid</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">,</span><span class="n">N_bin</span><span class="p">)</span>
+        
+        
+        <span class="nb">print</span> <span class="s2">&quot;***  binning data  ***&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; N bins=&quot;</span><span class="p">,</span><span class="n">N_bin</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; bin_widht=&quot;</span><span class="p">,</span><span class="n">bin_width</span>
+  
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">bin_grid</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
+
+    
+        <span class="n">x_bin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">bin_grid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">y_bin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">bin_grid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">dx_bin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">bin_grid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">dy_bin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">bin_grid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>    
+
+        <span class="c1">#gives the id of element falling in each bin</span>
+        <span class="n">bin_elements_id</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">],</span><span class="n">bin_grid</span><span class="p">)</span>
+        
+        
+        <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">bin_grid</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+            <span class="n">msk1</span><span class="o">=</span><span class="p">[</span><span class="n">bin_elements_id</span><span class="o">==</span><span class="nb">id</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1">#Remove UL</span>
+            <span class="n">msk2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;UL&#39;</span><span class="p">])</span>
+            <span class="n">msk</span><span class="o">=</span><span class="n">msk1</span><span class="o">*</span><span class="n">msk2</span>
+            
+            <span class="k">if</span> <span class="n">msk</span><span class="o">.</span><span class="n">any</span><span class="p">()</span><span class="o">==</span><span class="kc">True</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">])</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">w</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+                    <span class="c1">#print &quot;w&quot;,self.data[&#39;dnuFnu_data&#39;][msk]</span>
+                    <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="o">*</span><span class="n">w</span>
+                    
+                    <span class="c1">#w=1/sig_i^2</span>
+                    <span class="n">y_bin</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span><span class="n">sum_w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span><span class="n">returned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">V1</span><span class="o">=</span><span class="n">sum_w</span>
+                    <span class="n">V2</span><span class="o">=</span><span class="n">w</span><span class="o">*</span><span class="n">w</span>
+                    <span class="n">V2</span><span class="o">=</span><span class="n">V2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                    <span class="n">V3</span><span class="o">=</span><span class="n">w</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span><span class="o">-</span><span class="n">y_bin</span><span class="p">[</span><span class="nb">id</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span><span class="o">-</span><span class="n">y_bin</span><span class="p">[</span><span class="nb">id</span><span class="p">])</span>
+                    <span class="n">V3</span><span class="o">=</span><span class="n">V3</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                    
+                    <span class="k">if</span> <span class="n">V3</span><span class="o">==</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">V1</span><span class="o">*</span><span class="n">V1</span><span class="o">-</span><span class="n">V2</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                    
+                        <span class="c1">#print&quot;weighted average not possible for bin=&quot;,id</span>
+                        <span class="c1">#print&quot;V3 V1*V1-V2&quot;, V1,V1*V1-V2</span>
+                        <span class="c1">#print&quot;using err=sqrt(1/sum(w))&quot;</span>
+                        <span class="n">dy_bin</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">V1</span><span class="p">)</span>
+                    
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">dy_bin</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">V1</span><span class="o">/</span><span class="p">(</span><span class="n">V1</span><span class="o">*</span><span class="n">V1</span><span class="o">-</span><span class="n">V2</span><span class="p">))</span><span class="o">*</span><span class="n">V3</span><span class="p">)</span>
+                    
+                    <span class="n">dx_bin</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">=</span><span class="n">bin_width</span><span class="o">/</span><span class="mi">2</span>
+                    <span class="n">x_bin</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">=</span><span class="n">bin_grid</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">-</span><span class="n">dx_bin</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+                    <span class="c1">#print&quot;x&quot;, x_bin[id],len(w)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1">#print &quot;xxx&quot;</span>
+                    <span class="n">x_bin</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+                    <span class="n">y_bin</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+                    <span class="n">dx_bin</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">=</span><span class="n">bin_width</span><span class="o">/</span><span class="mi">2</span>
+                    <span class="n">dy_bin</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+                    
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">x_bin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">y_bin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;dnu_data_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">dx_bin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">dy_bin</span>
+        
+        <span class="c1">#remove empty bins</span>
+        <span class="n">msk</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        
+        
+         
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_to_lin</span><span class="p">(</span><span class="n">log_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">],</span> <span class="n">log_err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">])</span>
+          
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;dnu_data&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_to_lin</span><span class="p">(</span><span class="n">log_val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">],</span> <span class="n">log_err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span><span class="p">[</span><span class="s1">&#39;dnu_data_log&#39;</span><span class="p">])</span>
+        
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_reb</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_facke_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span><span class="p">)</span>
+            
+        <span class="c1">#print  self.data[&#39;nu_data&#39;]</span>
+        <span class="c1">#print &quot;!!!!!!! Time and data_set must be handled somehow&quot;</span>
+
+        <span class="nb">print</span> <span class="n">section_separator</span></div>
+    
+<div class="viewcode-block" id="ObsData.add_systematics"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.add_systematics">[docs]</a>    <span class="k">def</span> <span class="nf">add_systematics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">syst</span><span class="p">,</span><span class="n">nu_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">data_set</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        add systematics to errors</span>
+<span class="sd">        </span>
+<span class="sd">        :param syst: (float) systematic value (fractional)</span>
+<span class="sd">        :param nu_range:  array_like of floats, [nu_min,nu_max], optional, range of frequencies to apply sistematics</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="n">nu_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data_set</span>  <span class="ow">is</span> <span class="ow">not</span>  <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;!!! error, either you provide a range of frequencies or a data_set&quot;</span>
+            <span class="k">return</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="n">msk</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">if</span> <span class="n">data_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nu_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1">#for log errors</span>
+                <span class="n">msk</span><span class="o">=</span><span class="kc">None</span>
+                <span class="k">return</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msk</span><span class="o">=</span><span class="n">get_freq_range_msk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">],</span><span class="n">nu_range</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+              <span class="n">msk</span><span class="o">=</span><span class="n">get_data_set_msk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">data_set</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">msk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span><span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span><span class="o">*</span><span class="n">syst</span><span class="o">*</span><span class="n">syst</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_to_log</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span> <span class="n">err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">])</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">syst</span><span class="o">*</span><span class="n">syst</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_to_log</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">],</span> <span class="n">err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">])</span></div>
+    
+    
+    
+<div class="viewcode-block" id="ObsData.set_error"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.set_error">[docs]</a>    <span class="k">def</span> <span class="nf">set_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">error_value</span><span class="p">,</span><span class="n">nu_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">data_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">data_msk</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         set all the paramters to same error</span>
+<span class="sd">            </span>
+<span class="sd">        :param error_value: float, value of the error (fractional error)</span>
+<span class="sd">        :param nu_range:  array_like of floats, [nu_min,nu_max], optional, range of frequencies to apply the error value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#print self.data[&#39;dnuFnu_data&#39;]           </span>
+        
+        <span class="k">if</span> <span class="n">nu_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;!!! error, either you provide a range of frequencies or a data_set&quot;</span>
+            <span class="k">return</span>
+        
+        <span class="n">msk</span><span class="o">=</span><span class="kc">None</span>     
+        <span class="k">if</span> <span class="n">data_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nu_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1">#for log errors</span>
+                <span class="n">msk</span><span class="o">=</span><span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msk</span><span class="o">=</span><span class="n">get_freq_range_msk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">],</span><span class="n">nu_range</span><span class="p">)</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msk</span><span class="o">=</span><span class="n">get_data_set_msk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">data_set</span><span class="p">)</span>
+                
+        <span class="k">if</span> <span class="n">data_msk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            
+            <span class="k">if</span> <span class="n">msk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">msk</span><span class="o">=</span><span class="n">msk</span><span class="o">*</span><span class="n">data_msk</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msk</span><span class="o">=</span><span class="n">data_msk</span>
+        
+        <span class="k">if</span> <span class="n">msk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span><span class="o">=</span><span class="n">error_value</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_to_log</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span> <span class="n">err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">])</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">error_value</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_to_log</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">],</span> <span class="n">err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">])</span></div>
+
+       
+
+<div class="viewcode-block" id="ObsData.set_facke_error"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.set_facke_error">[docs]</a>    <span class="k">def</span> <span class="nf">set_facke_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the value for the facke error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span><span class="o">=</span><span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_facke_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_facke&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span></div>
+        
+    
+<div class="viewcode-block" id="ObsData.get_data_points"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.get_data_points">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">skip_UL</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gives data point</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+        <span class="k">if</span>    <span class="n">skip_UL</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="n">msk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;UL&#39;</span><span class="p">]</span><span class="o">==</span><span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msk</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            
+        <span class="k">if</span>   <span class="n">log_log</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span> </div>
+        
+    
+<div class="viewcode-block" id="ObsData.show_data_sets"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.show_data_sets">[docs]</a>    <span class="k">def</span> <span class="nf">show_data_sets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">shown</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data_set&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">entry</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">shown</span><span class="p">:</span>
+                <span class="n">shown</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="n">entry</span></div>
+                
+    
+<div class="viewcode-block" id="ObsData.get_data_sets"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.get_data_sets">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_sets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">shown</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data_set&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">entry</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">shown</span><span class="p">:</span>
+                <span class="n">shown</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">shown</span></div>
+    
+    
+<div class="viewcode-block" id="ObsData.plot_time_spans"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.plot_time_spans">[docs]</a>    <span class="k">def</span> <span class="nf">plot_time_spans</span><span class="p">(</span><span class="n">SEDdata</span><span class="p">,</span><span class="n">save_as</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">plt</span>
+        
+        <span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
+        <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        <span class="n">ax1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;MJD&#39;</span><span class="p">)</span>
+        <span class="n">data_sets</span><span class="o">=</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">get_data_sets</span><span class="p">()</span>
+        <span class="n">y</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">line_style</span><span class="o">=</span><span class="s1">&#39;-&#39;</span>
+        <span class="k">for</span> <span class="n">data_set</span> <span class="ow">in</span> <span class="n">data_sets</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="n">data_set</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                
+                <span class="n">T1</span><span class="p">,</span><span class="n">T2</span><span class="p">,</span><span class="n">dT</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">get_time_span</span><span class="p">(</span><span class="n">data_set</span><span class="o">=</span><span class="n">data_set</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">T1</span><span class="o">!=-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">T1</span><span class="p">,</span><span class="n">T2</span><span class="p">],[</span><span class="n">y</span><span class="p">,</span><span class="n">y</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="n">data_set</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
+                    <span class="n">x</span><span class="o">=</span><span class="p">(</span><span class="n">T1</span><span class="o">+</span><span class="n">T2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+                    <span class="n">ax1</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">+</span><span class="mf">0.3</span><span class="p">,</span><span class="n">data_set</span><span class="o">+</span><span class="s1">&#39; (</span><span class="si">%d</span><span class="s1">)&#39;</span><span class="o">%</span><span class="n">n</span><span class="p">)</span>
+                    <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span>
+                    <span class="nb">print</span><span class="s2">&quot;----&gt;&quot;</span><span class="p">,</span> <span class="n">dT</span><span class="p">,</span><span class="n">T1</span><span class="p">,</span><span class="n">T2</span><span class="p">,</span><span class="n">y</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="s2">&quot;no Time span for data_set&quot;</span><span class="p">,</span><span class="n">data_set</span>
+            
+        <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="n">y</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_as</span><span class="p">)</span></div>
+       
+        
+       
+        
+    
+<div class="viewcode-block" id="ObsData.get_time_span"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.get_time_span">[docs]</a>    <span class="k">def</span> <span class="nf">get_time_span</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data_set</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_time_span</span><span class="p">(</span><span class="n">data_set</span><span class="o">=</span><span class="n">data_set</span><span class="p">,</span><span class="n">get_values</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ObsData.show_time_span"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.show_time_span">[docs]</a>    <span class="k">def</span> <span class="nf">show_time_span</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data_set</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_time_span</span><span class="p">(</span><span class="n">data_set</span><span class="o">=</span><span class="n">data_set</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ObsData.find_time_span"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.find_time_span">[docs]</a>    <span class="k">def</span> <span class="nf">find_time_span</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">get_values</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns Tstart, Tstop, and Delta T for the full data set (if no dat_set </span>
+<span class="sd">        is provided), or for a specific data_set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="n">data_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">m1</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;T_start&#39;</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span>
+            <span class="n">T1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;T_start&#39;</span><span class="p">][</span><span class="n">m1</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">T2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;T_stop&#39;</span><span class="p">][</span><span class="n">m1</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">DT</span><span class="o">=</span><span class="n">T2</span><span class="o">-</span><span class="n">T1</span>
+            <span class="n">nT</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;T_start&#39;</span><span class="p">][</span><span class="n">m1</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+            
+        <span class="k">elif</span>  <span class="n">data_set</span>  <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data_set&#39;</span><span class="p">]:</span>
+        
+            <span class="n">m1</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;T_start&#39;</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span>
+            <span class="n">m2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data_set&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">data_set</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data_set&#39;</span><span class="p">][</span><span class="n">m2</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">T1</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;T_start&#39;</span><span class="p">][</span><span class="n">m1</span><span class="o">*</span><span class="n">m2</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                    <span class="n">T2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;T_stop&#39;</span><span class="p">][</span><span class="n">m1</span><span class="o">*</span><span class="n">m2</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+                    <span class="n">DT</span><span class="o">=</span><span class="n">T2</span><span class="o">-</span><span class="n">T1</span>
+                    <span class="n">nT</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;T_start&#39;</span><span class="p">][</span><span class="n">m1</span><span class="o">*</span><span class="n">m2</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">T1</span><span class="o">=-</span><span class="mi">1</span>
+                    <span class="n">T2</span><span class="o">=-</span><span class="mi">1</span>
+                    <span class="n">DT</span><span class="o">=-</span><span class="mi">1</span>
+                    <span class="n">nT</span><span class="o">=</span><span class="mi">0</span>
+                    <span class="nb">print</span> <span class="s1">&#39;something wrong with T_start and T_stop columns, check the values please, for data_set=&#39;</span><span class="p">,</span><span class="n">data_set</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;no data found for this selection, data_set= &quot;</span><span class="p">,</span><span class="n">data_set</span>
+            <span class="k">if</span> <span class="n">data_set</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data_set&#39;</span><span class="p">]:</span>
+                <span class="nb">print</span> <span class="s2">&quot;the data_set </span><span class="si">%s</span><span class="s2"> is not present in the data&quot;</span><span class="o">%</span><span class="n">data_set</span>
+                <span class="nb">print</span> <span class="s2">&quot;possible data_set: &quot;</span>
+                <span class="nb">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_data_sets</span><span class="p">()</span>
+                    
+            <span class="n">T1</span><span class="o">=-</span><span class="mi">1</span>
+            <span class="n">T2</span><span class="o">=-</span><span class="mi">1</span>
+            <span class="n">DT</span><span class="o">=-</span><span class="mi">1</span>
+            <span class="n">nT</span><span class="o">=</span><span class="mi">0</span>
+        
+        <span class="k">if</span> <span class="n">silent</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;T_start=</span><span class="si">%f</span><span class="s2"> T_stop=</span><span class="si">%f</span><span class="s2"> DT=</span><span class="si">%f</span><span class="s2">, number of points=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">T1</span><span class="p">,</span><span class="n">T2</span><span class="p">,</span><span class="n">DT</span><span class="p">,</span><span class="n">nT</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">get_values</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span> 
+            <span class="k">return</span> <span class="n">T1</span><span class="p">,</span><span class="n">T2</span><span class="p">,</span><span class="n">DT</span><span class="p">,</span><span class="n">nT</span></div>
+            
+            
+<div class="viewcode-block" id="ObsData.lin_to_log"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.lin_to_log">[docs]</a>    <span class="k">def</span> <span class="nf">lin_to_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">err</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        
+       <span class="k">return</span> <span class="n">lin_to_log</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">val</span><span class="p">,</span><span class="n">err</span><span class="o">=</span><span class="n">err</span><span class="p">)</span></div>
+       
+    
+<div class="viewcode-block" id="ObsData.log_to_lin"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData.log_to_lin">[docs]</a>    <span class="k">def</span> <span class="nf">log_to_lin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">log_err</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        
+        <span class="k">return</span> <span class="n">log_to_lin</span><span class="p">(</span><span class="n">log_val</span><span class="o">=</span><span class="n">log_val</span><span class="p">,</span><span class="n">log_err</span><span class="o">=</span><span class="n">log_err</span><span class="p">)</span></div></div>
+        
+
+
+
+<div class="viewcode-block" id="lin_to_log"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.lin_to_log">[docs]</a><span class="k">def</span> <span class="nf">lin_to_log</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">err</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+       
+       <span class="n">conv_fac</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+       
+       <span class="n">ret_val</span><span class="o">=</span><span class="p">[]</span>
+       
+       <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+           <span class="n">log_val</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+           <span class="n">ret_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">log_val</span><span class="p">)</span>
+       <span class="k">if</span> <span class="n">err</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+           <span class="n">log_err</span><span class="o">=</span><span class="n">err</span><span class="o">/</span><span class="p">(</span><span class="n">val</span><span class="o">*</span><span class="n">conv_fac</span><span class="p">)</span>
+           <span class="n">ret_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">log_err</span><span class="p">)</span>
+
+       <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret_val</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+           <span class="n">ret_val</span><span class="o">=</span><span class="n">ret_val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+       
+       <span class="k">return</span> <span class="n">ret_val</span></div>
+   
+   
+<div class="viewcode-block" id="log_to_lin"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.log_to_lin">[docs]</a><span class="k">def</span> <span class="nf">log_to_lin</span><span class="p">(</span><span class="n">log_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">log_err</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+       
+       <span class="n">conv_fac</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+       
+       <span class="n">ret_val</span><span class="o">=</span><span class="p">[]</span>
+       
+       <span class="k">if</span> <span class="n">log_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+           <span class="n">val</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="n">log_val</span><span class="p">)</span>
+           
+           <span class="n">ret_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+       <span class="k">if</span> <span class="n">log_err</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+           <span class="n">err</span><span class="o">=</span><span class="n">log_err</span><span class="o">*</span><span class="n">val</span><span class="o">*</span><span class="n">conv_fac</span>
+           <span class="c1">#print err</span>
+           <span class="n">ret_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+       <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret_val</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+           <span class="n">ret_val</span><span class="o">=</span><span class="n">ret_val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+       
+       <span class="k">return</span> <span class="n">ret_val</span></div>
+
+
+<div class="viewcode-block" id="get_freq_range_msk"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.get_freq_range_msk">[docs]</a><span class="k">def</span> <span class="nf">get_freq_range_msk</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x_range</span><span class="p">):</span>
+    <span class="n">msk1</span><span class="o">=</span><span class="n">x</span><span class="o">&gt;=</span><span class="n">x_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">msk2</span><span class="o">=</span><span class="n">x</span><span class="o">&lt;=</span><span class="n">x_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">msk1</span><span class="o">*</span><span class="n">msk2</span></div>
+
+<div class="viewcode-block" id="get_data_set_msk"><a class="viewcode-back" href="../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.get_data_set_msk">[docs]</a><span class="k">def</span> <span class="nf">get_data_set_msk</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">data_set</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;data_set&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">data_set</span></div>
+</pre></div>
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

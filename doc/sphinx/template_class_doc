@@ -1,0 +1,35 @@
+This class expands the :class:`.jet_builder` class parameters with
+    further fields useful in the fitting.
+    Each :class:'par' instance is charge to update accordingly 
+    the values in the :class:`par`  instance and in the 
+    corresponding member of the :class:`jet_builder` instance
+    
+      
+    
+    Public Members
+    
+    :ivar name:  parameter name
+     
+    :ivar val_start: parameter starting value
+     
+    :ivar val: parameter current value
+     
+    :ivar val_last_call: parameter value in the last call
+     
+    :ivar val_min: parameter minimun value
+      
+    :ivar val_max: parameter maximum value
+     
+    :ivar frozen: (boolean) , if the parameter if frozen
+     
+    :ivar log: (boolean), if the parameter is in logarithmic scale
+     
+    :ivar best_fit_val: parameter best-fit value
+     
+    :ivar best_fit_err: parameter best-fit error
+    
+    
+    
+    
+    :func:`.minimizer.fit_SED`
+    :attr:`.mod.class.attr`

@@ -1,0 +1,229 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>basic concepts &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">BlazarSEDFit  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">basic concepts</a><ul>
+<li><a class="reference internal" href="#work-place">work place</a></li>
+<li><a class="reference internal" href="#data-format">data format</a></li>
+<li><a class="reference internal" href="#loading-data">loading data</a></li>
+<li><a class="reference internal" href="#plotting-data">plotting data</a></li>
+<li><a class="reference internal" href="#grouping-data">grouping data</a></li>
+<li><a class="reference internal" href="#handling-errors-and-systematics">handling errors and systematics</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sed-shaping">sed shaping</a><ul>
+<li><a class="reference internal" href="#spectral-indices">spectral indices</a></li>
+<li><a class="reference internal" href="#loglog-polyfit">loglog polyfit</a></li>
+<li><a class="reference internal" href="#sed-shaping-report">sed shaping report</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#constraining-the-model">constraining the model</a><ul>
+<li><a class="reference internal" href="#ssc-constraining">SSC constraining</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#least-squares-curve-fitting">Least-squares curve fitting</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/tutorial/basic/old/basic.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../../../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <div class="section" id="basic-concepts">
+<h1>basic concepts<a class="headerlink" href="#basic-concepts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="work-place">
+<h2>work place<a class="headerlink" href="#work-place" title="Permalink to this headline">¶</a></h2>
+<p>The first step is to import the package, and to set a work place:</p>
+<p>the latter command will set the output directory to <cite>./</cite> and will add a flag <cite>TEST</cite> to the
+output products</p>
+</div>
+<div class="section" id="data-format">
+<h2>data format<a class="headerlink" href="#data-format" title="Permalink to this headline">¶</a></h2>
+<p>The SED data can be stored in ASCII file in a  quite flexible way, but some requirements are needed:</p>
+<blockquote>
+<div><ul class="simple">
+<li>you must provide at least two columns for frequencies and fluxes</li>
+<li>frequencies are in <em>Hz</em></li>
+<li>fluxes are in  <em>cgs</em>, …..</li>
+</ul>
+</div></blockquote>
+<p>The header of the file can contain some meta-data that are sourced when the data are loaded.
+The meta-data available are :</p>
+<blockquote>
+<div><ul class="simple">
+<li>z : redhsift</li>
+<li>resframe: restframe of the data <cite>src</cite> or <cite>obs</cite></li>
+<li>data_scale: scale of the data <cite>lin-lin</cite> or <cite>log-log</cite></li>
+<li>dataType: structure of the comumns with the SED data</li>
+</ul>
+</div></blockquote>
+<p>the meaning of these meta-data is explained in detail in <a class="reference internal" href="../../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData" title="BlazarSEDFit.data_loader.ObsData"><code class="xref py py-class docutils literal"><span class="pre">BlazarSEDFit.data_loader.ObsData</span></code></a> class
+documentation. The meta-data can be included in the header with  line like:</p>
+<p>A typical structure of SED data file, including meta-data declaration  is the following:</p>
+</div>
+<div class="section" id="loading-data">
+<h2>loading data<a class="headerlink" href="#loading-data" title="Permalink to this headline">¶</a></h2>
+<p>The most effective way to import the SED data is to create an object
+instance of <a class="reference internal" href="../../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData" title="BlazarSEDFit.data_loader.ObsData"><code class="xref py py-class docutils literal"><span class="pre">BlazarSEDFit.data_loader.ObsData</span></code></a> class
+(see the documentation for the <span class="xref std std-doc">data_loader</span> module)
+The package provides some test SEDs, accessible as follows:</p>
+<p>producing the following output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;/Users/orion/.local/lib/python2.6/site-packages/BlazarSEDFit/test_data/SEDs_data/SED_MW_Mrk421.dat&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;/Users/orion/.local/lib/python2.6/site-packages/BlazarSEDFit/test_data/SEDs_data/SED_MW_Mrk501.dat&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>to load the SED of  Mrk 421, the first one in the list:</p>
+<p>As you can see the all the meta-data have been properly sourced from the SED file header. You also get information on
+the lenght of the data, before and after elimination of duplicated entries, and upper limits
+These meta-data are parameters needed by the
+<a class="reference internal" href="../../../modules_doc/data_loader.html#BlazarSEDFit.data_loader.ObsData" title="BlazarSEDFit.data_loader.ObsData"><code class="xref py py-class docutils literal"><span class="pre">BlazarSEDFit.data_loader.ObsData</span></code></a> constructor.</p>
+</div>
+<div class="section" id="plotting-data">
+<h2>plotting data<a class="headerlink" href="#plotting-data" title="Permalink to this headline">¶</a></h2>
+<p>We can now plot our SED using the <a class="reference internal" href="../../../modules_doc/plot_sedfit.html#BlazarSEDFit.plot_sedfit.Plot" title="BlazarSEDFit.plot_sedfit.Plot"><code class="xref py py-class docutils literal"><span class="pre">BlazarSEDFit.plot_sedfit.Plot</span></code></a> class
+(see the documentation for the <span class="xref std std-doc">plot_sedfit</span> module)</p>
+<p>That will produce</p>
+<a class="reference internal image-reference" href="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SED_data.png"><img alt="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SED_data.png" class="align-center" src="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SED_data.png" style="width: 85%;" /></a>
+</div>
+<div class="section" id="grouping-data">
+<h2>grouping data<a class="headerlink" href="#grouping-data" title="Permalink to this headline">¶</a></h2>
+<p>As you can see, due to the overlapping of different instruments and to different time snapshots,
+some points have multiple values. Although this is not a problem for the fit process, you might
+want to rebin your data.
+This can be obtained with the following command:</p>
+</div>
+<div class="section" id="handling-errors-and-systematics">
+<h2>handling errors and systematics<a class="headerlink" href="#handling-errors-and-systematics" title="Permalink to this headline">¶</a></h2>
+<p>Another important issues when dealing with fitting of data, is the proper handling of errors.
+Typically one might need to add systematics for different reasons:</p>
+<blockquote>
+<div><ul class="simple">
+<li>data are not really simultaneous, and you want to add systematics to take this into account</li>
+<li>data (typically IR up to UV), might have very small errors compared to those at higher energies.
+This might bias the minimizer to accomodate the parameters  in order to fit ‘better’ the low
+frequencies branch.</li>
+</ul>
+</div></blockquote>
+<p>For these reasons the package offer the possibility to add systematics</p>
+<p>with this command we add 10% systematics for data between <img class="math" src="../../../_images/math/649a44f8a54494015011252d0257774cdc0f93fc.png" alt="10^{6}&lt;\nu&lt;10^{19}"/> Hz</p>
+<a class="reference internal image-reference" href="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SED_data_rebinned.png"><img alt="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SED_data_rebinned.png" class="align-center" src="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SED_data_rebinned.png" style="width: 85%;" /></a>
+</div>
+</div>
+<div class="section" id="sed-shaping">
+<h1>sed shaping<a class="headerlink" href="#sed-shaping" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="spectral-indices">
+<h2>spectral indices<a class="headerlink" href="#spectral-indices" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SED_indices_rebinned.png"><img alt="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SED_indices_rebinned.png" class="align-center" src="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SED_indices_rebinned.png" style="width: 85%;" /></a>
+</div>
+<div class="section" id="loglog-polyfit">
+<h2>loglog polyfit<a class="headerlink" href="#loglog-polyfit" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SED_shaped_rebinned.png"><img alt="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SED_shaped_rebinned.png" class="align-center" src="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SED_shaped_rebinned.png" style="width: 85%;" /></a>
+</div>
+<div class="section" id="sed-shaping-report">
+<h2>sed shaping report<a class="headerlink" href="#sed-shaping-report" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="constraining-the-model">
+<h1>constraining the model<a class="headerlink" href="#constraining-the-model" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="ssc-constraining">
+<h2>SSC constraining<a class="headerlink" href="#ssc-constraining" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="tutorial/basic/old/../../../../examples/tutorial/first-Trial/obs_constr_lppl.png"><img alt="tutorial/basic/old/../../../../examples/tutorial/first-Trial/obs_constr_lppl.png" class="align-center" src="tutorial/basic/old/../../../../examples/tutorial/first-Trial/obs_constr_lppl.png" style="width: 85%;" /></a>
+<p>the report for the constrained model will reported in table:</p>
+<p>to get any time the report for the model:</p>
+</div>
+</div>
+<div class="section" id="least-squares-curve-fitting">
+<h1>Least-squares curve fitting<a class="headerlink" href="#least-squares-curve-fitting" title="Permalink to this headline">¶</a></h1>
+<a class="reference internal image-reference" href="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SSC_best_fit_lppl.png"><img alt="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SSC_best_fit_lppl.png" class="align-center" src="tutorial/basic/old/../../../../examples/tutorial/first-Trial/SSC_best_fit_lppl.png" style="width: 85%;" /></a>
+<p>the fit information will be reported:</p>
+<p>to get any time the  fir report:</p>
+</div>
+
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">BlazarSEDFit  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

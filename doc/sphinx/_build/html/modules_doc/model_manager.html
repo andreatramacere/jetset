@@ -1,0 +1,307 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Module: model &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Module: model_parameters" href="model_parameters.html" />
+    <link rel="prev" title="Module: minimizer" href="minimizer.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="model_parameters.html" title="Module: model_parameters"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="minimizer.html" title="Module: minimizer"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../code.html" accesskey="U">Modules</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Module: model</a><ul>
+<li><a class="reference internal" href="#classes-and-inheritance-structure">Classes and Inheritance Structure</a></li>
+<li><a class="reference internal" href="#classes-relations">Classes relations</a></li>
+<li><a class="reference internal" href="#module-api">Module API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="minimizer.html"
+                        title="previous chapter">Module: minimizer</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="model_parameters.html"
+                        title="next chapter">Module: model_parameters</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules_doc/model_manager.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <span class="target" id="module-BlazarSEDFit.model_manager"></span><div class="section" id="module-model">
+<h1>Module: model<a class="headerlink" href="#module-model" title="Permalink to this headline">¶</a></h1>
+<p>This module contains all the classes necessary to build a SED model.
+A SED model can be built by creating a  <code class="xref py py-class docutils literal"><span class="pre">SEDmodel</span></code> object.</p>
+<div class="section" id="classes-and-inheritance-structure">
+<h2>Classes and Inheritance Structure<a class="headerlink" href="#classes-and-inheritance-structure" title="Permalink to this headline">¶</a></h2>
+<img src="../_images/inheritance-633d13f9df3de045427e1e2a0dc266618e2a4595.png" alt="Inheritance diagram of BlazarSEDFit.model_manager" usemap="#inheritance43548ccf44" class="inheritance"/>
+<map id="inheritance43548ccf44" name="inheritance43548ccf44">
+<area shape="rect" id="node1" href="base_model.html#BlazarSEDFit.base_model.Model" target="_top" title="BlazarSEDFit.base_model.Model" alt="" coords="5,5,224,30"/>
+<area shape="rect" id="node2" href="#BlazarSEDFit.model_manager.FitModel" target="_top" title="This class creates an interface to handle &#160;a fit Model. The relevant class members are " alt="" coords="273,5,530,30"/>
+</map>
+</div>
+<div class="section" id="classes-relations">
+<h2>Classes relations<a class="headerlink" href="#classes-relations" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center">
+<img alt="../_images/classes_model_manager.png" src="../_images/classes_model_manager.png" />
+</div>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#BlazarSEDFit.model_manager.FitModel" title="BlazarSEDFit.model_manager.FitModel"><code class="xref py py-obj docutils literal"><span class="pre">FitModel</span></code></a>([elec_distr,&nbsp;jet,&nbsp;name,&nbsp;out_dir,&nbsp;…])</td>
+<td>This class creates an interface to handle  a fit Model.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="module-api">
+<h2>Module API<a class="headerlink" href="#module-api" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="BlazarSEDFit.model_manager.FitModel">
+<em class="property">class </em><code class="descclassname">BlazarSEDFit.model_manager.</code><code class="descname">FitModel</code><span class="sig-paren">(</span><em>elec_distr=None</em>, <em>jet=None</em>, <em>name='no-name'</em>, <em>out_dir=None</em>, <em>flag=None</em>, <em>template=None</em>, <em>loglog_poly=None</em>, <em>analytical=None</em>, <em>nu_size=100</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/model_manager.html#FitModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.model_manager.FitModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_model.html#BlazarSEDFit.base_model.Model" title="BlazarSEDFit.base_model.Model"><code class="xref py py-class docutils literal"><span class="pre">BlazarSEDFit.base_model.Model</span></code></a></p>
+<p>This class creates an interface to handle  a fit Model. The relevant class members are</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="spectral_shapes.html#BlazarSEDFit.spectral_shapes.SED" title="BlazarSEDFit.spectral_shapes.SED"><code class="xref py py-class docutils literal"><span class="pre">SED</span></code></a> object storing the SED data points</li>
+<li><cite>model_pars</cite>, a <code class="xref py py-class docutils literal"><span class="pre">par_array_builder</span></code> object returned by the <code class="xref py py-class docutils literal"><span class="pre">SSC_param</span></code> constructor</li>
+<li><code class="xref py py-class docutils literal"><span class="pre">jet_builder</span></code> object</li>
+</ul>
+</div></blockquote>
+<p>Parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>jet</strong> – (<code class="xref py py-class docutils literal"><span class="pre">par_array_builder</span></code> object)</li>
+<li><strong>elec_distr_type</strong> – (str)  name of the electron distribution model</li>
+<li><strong>template</strong> – (<code class="xref py py-class docutils literal"><span class="pre">spectral_shapes.template</span></code> object)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Members</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="spectral_shapes.html#BlazarSEDFit.spectral_shapes.SED" title="BlazarSEDFit.spectral_shapes.SED"><strong>SED</strong></a> – (<a class="reference internal" href="spectral_shapes.html#BlazarSEDFit.spectral_shapes.SED" title="BlazarSEDFit.spectral_shapes.SED"><code class="xref py py-class docutils literal"><span class="pre">spectral_shapes.SED</span></code></a>) object to store the SED data points</li>
+<li><strong>model_pars</strong> – (<code class="xref py py-class docutils literal"><span class="pre">par_array_builder</span></code> object)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="BlazarSEDFit.model_manager.FitModel.PlotModel">
+<code class="descname">PlotModel</code><span class="sig-paren">(</span><em>Plot</em>, <em>clean=False</em>, <em>autoscale=False</em>, <em>label=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/model_manager.html#FitModel.PlotModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.model_manager.FitModel.PlotModel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.model_manager.FitModel.add_component">
+<code class="descname">add_component</code><span class="sig-paren">(</span><em>moldel_comp</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/model_manager.html#FitModel.add_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.model_manager.FitModel.add_component" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.model_manager.FitModel.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>nu=None</em>, <em>fill_SED=True</em>, <em>get_model=False</em>, <em>loglog=False</em>, <em>plot=None</em>, <em>label=None</em>, <em>phys_output=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/model_manager.html#FitModel.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.model_manager.FitModel.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates the SED for the current parameters and fills the <a class="reference internal" href="spectral_shapes.html#BlazarSEDFit.spectral_shapes.SED" title="BlazarSEDFit.spectral_shapes.SED"><code class="xref py py-class docutils literal"><span class="pre">SED</span></code></a> member</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.model_manager.FitModel.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>SEDdata</em>, <em>nu_min</em>, <em>nu_max</em>, <em>fitname=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/model_manager.html#FitModel.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.model_manager.FitModel.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>shortcut to call <a class="reference internal" href="minimizer.html#BlazarSEDFit.minimizer.fit_SED" title="BlazarSEDFit.minimizer.fit_SED"><code class="xref py py-func docutils literal"><span class="pre">minimizer.fit_SED()</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>SEDdata</strong> – SEDdata object</li>
+<li><strong>nu_min</strong> – minimun frequency for the fit range interval</li>
+<li><strong>nu_max</strong> – maximum frequency for the fit range interval</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.model_manager.FitModel.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>par_name</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/model_manager.html#FitModel.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.model_manager.FitModel.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the value of a specific keyword for a specific parameter of the parameter array</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>par_name</strong> – </td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">see  the documentation of <code class="xref py py-class docutils literal"><span class="pre">par_array_builder</span></code> for arguments and keywords</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.model_manager.FitModel.get_conf_range">
+<code class="descname">get_conf_range</code><span class="sig-paren">(</span><em>par_name</em>, <em>frac_range=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/model_manager.html#FitModel.get_conf_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.model_manager.FitModel.get_conf_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.model_manager.FitModel.get_val">
+<code class="descname">get_val</code><span class="sig-paren">(</span><em>par_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/model_manager.html#FitModel.get_val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.model_manager.FitModel.get_val" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns  the value of a specific parameter of the parameter array</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>par_name</strong> – </td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">see  the documentation of <code class="xref py py-class docutils literal"><span class="pre">par_array_builder</span></code> for arguments and keywords</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.model_manager.FitModel.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>par_name</em>, <em>*args</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/model_manager.html#FitModel.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.model_manager.FitModel.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>sets the value of a specific parameter of the parameter array</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>par_name</strong> – </td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">see  the documentation of <code class="xref py py-class docutils literal"><span class="pre">par_array_builder</span></code> for arguments and keywords</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.model_manager.FitModel.set_nu_grid">
+<code class="descname">set_nu_grid</code><span class="sig-paren">(</span><em>nu_min=None</em>, <em>nu_max=None</em>, <em>nu_size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/model_manager.html#FitModel.set_nu_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.model_manager.FitModel.set_nu_grid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.model_manager.FitModel.show_pars">
+<code class="descname">show_pars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/model_manager.html#FitModel.show_pars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.model_manager.FitModel.show_pars" title="Permalink to this definition">¶</a></dt>
+<dd><p>shows all the parameters of the fit_array</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="model_parameters.html" title="Module: model_parameters"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="minimizer.html" title="Module: minimizer"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../code.html" >Modules</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

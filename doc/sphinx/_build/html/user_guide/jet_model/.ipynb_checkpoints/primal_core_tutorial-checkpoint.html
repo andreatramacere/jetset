@@ -1,0 +1,1328 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>PrimalCore quick start &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">BlazarSEDFit  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">PrimalCore quick start</a><ul>
+<li><a class="reference internal" href="#Building-a-Catalog">Building a Catalog</a><ul>
+<li><a class="reference internal" href="#Catalog-preprocessing">Catalog preprocessing</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Building-a-ML-DataSet">Building a ML DataSet</a></li>
+<li><a class="reference internal" href="#DataSet-preprocessing">DataSet preprocessing</a><ul>
+<li><a class="reference internal" href="#Features-preprocessing:-adding-flux-ratios">Features preprocessing: adding flux ratios</a></li>
+<li><a class="reference internal" href="#Features-preprocessing:-selecting-features-and-adding-weights">Features preprocessing: selecting features and adding weights</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Model-Training">Model Training</a><ul>
+<li><a class="reference internal" href="#Train/Test-splitting">Train/Test splitting</a></li>
+<li><a class="reference internal" href="#Running-an-AdaBost-regression">Running an AdaBost regression</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Model-Recursive-features-elimination">Model Recursive features elimination</a></li>
+<li><a class="reference internal" href="#Entries-selection-based-on-clean-cut">Entries selection based on clean cut</a><ul>
+<li><a class="reference internal" href="#dropping">dropping</a></li>
+<li><a class="reference internal" href="#masking">masking</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#PDF">PDF</a></li>
+<li><a class="reference internal" href="#Saving-predictions">Saving predictions</a></li>
+<li><a class="reference internal" href="#Post-trainig-analysis">Post trainig analysis</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../_sources/user_guide/jet_model/.ipynb_checkpoints/primal_core_tutorial-checkpoint.ipynb.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../../../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #303F9F;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #D84315;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 9ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #cfcfcf;
+    border-radius: 2px;
+    background: #f7f7f7;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.pngmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+</style>
+<div class="section" id="PrimalCore-quick-start">
+<h1>PrimalCore quick start<a class="headerlink" href="#PrimalCore-quick-start" title="Permalink to this headline">¶</a></h1>
+.. _PrimalCore_quick_start:
+
+
+
+.. currentmodule:: PrimalCore
+
+
+.. contents:: :local:
+
+
+
+.. toctree::<div class="section" id="Building-a-Catalog">
+<h2>Building a Catalog<a class="headerlink" href="#Building-a-Catalog" title="Permalink to this headline">¶</a></h2>
+<p>Download the catalog:</p>
+<ul class="simple">
+<li>wget
+<a class="reference external" href="http://isdc.unige.ch/~tramacer/stuff/euclid_cosmos_DC2_S2_v2.1_calib.fits.gz">http://isdc.unige.ch/~tramacer/stuff/euclid_cosmos_DC2_S2_v2.1_calib.fits.gz</a></li>
+</ul>
+we follow the approach in :ref:`Table_user_guide`  to build a catalog using the :class:`PrimalCore.heterogeneous_table.table.Table` class. This class is able to handle heterogeneous data, by using numpy recarray and implements also method to handle the data row-wise and column wise (see :class:`PrimalCore.heterogeneous_table.table.Table` and :mod:`_PrimalCore.heterogeneous_table.table` for more details)<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalCore.heterogeneous_table.table import Table
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>ph_catalog=&#39;./euclid_cosmos_DC2_S2_v2.1_calib.fits.gz&#39;
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>catalog=Table.from_fits_file(ph_catalog,fits_ext=1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+| input data built
+| data Rows,Cols 198435 124
+</pre></div></div>
+</div>
+<p>the catalog has been built.</p>
+<div class="section" id="Catalog-preprocessing">
+<h3>Catalog preprocessing<a class="headerlink" href="#Catalog-preprocessing" title="Permalink to this headline">¶</a></h3>
+<p>Since we have a large number of columns (124) and we are not interested
+in all of them, we can keep only the needed ones.</p>
+<p>We use the <code class="docutils literal"><span class="pre">keep_columns</span></code> method:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>catalog.keep_columns([&#39;FLUX*2&#39;,&#39;FLUX_VIS&#39;,&#39;reliable_S15&#39;,&#39;STAR&#39;,&#39;AGN&#39;,&#39;MASKED&#39;,&#39;FLAG_PHOT&#39;,&#39;z_spec_S15&#39;],regex=True)
+</pre></div>
+</div>
+</div>
+<p>As a further step of the catalog preprocessing we make a cut to select
+clean entries:
+<code class="docutils literal"><span class="pre">CLEAN=&quot;</span> <span class="pre">(FLAG_PHOT</span> <span class="pre">==</span> <span class="pre">0)</span> <span class="pre">&amp;</span> <span class="pre">(MASKED</span> <span class="pre">==</span> <span class="pre">0)</span> <span class="pre">&amp;</span> <span class="pre">(STAR</span> <span class="pre">==</span> <span class="pre">0)</span> <span class="pre">&amp;</span> <span class="pre">(AGN</span> <span class="pre">==</span> <span class="pre">0)&amp;</span> <span class="pre">(reliable_S15==1)&quot;</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>CLEAN= (catalog.data[&#39;FLAG_PHOT&#39;]==0)*(catalog.data[&#39;MASKED&#39;]==0)*(catalog.data[&#39;STAR&#39;]==0)
+CLEAN*=(catalog.data[&#39;AGN&#39;]==0)*(catalog.data[&#39;reliable_S15&#39;]==1)
+catalog.keep_rows(CLEAN)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+| filtering data rows
+| data initial Rows,Cols= (198435,)
+| data filtered Rows,Cols= (13252,)
+
+</pre></div></div>
+</div>
+<p>The number of rows has decreased.</p>
+</div>
+</div>
+<div class="section" id="Building-a-ML-DataSet">
+<h2>Building a ML DataSet<a class="headerlink" href="#Building-a-ML-DataSet" title="Permalink to this headline">¶</a></h2>
+The ``Table`` class stores the data in numpy recarray, but machine learning algorithms usually request homogeneous arrays. For this purpose we can use the :class:`PrimalCore.homogeneous_table.dataset.MLDataSet` class
+This class implements several functionalities that facilitate the use for ML
+We follow the approach in :ref:`MLDataSet_user_guide`<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalCore.homogeneous_table.dataset import MLDataSet
+from PrimalCore.homogeneous_table.dataset_handler import drop_features
+from PrimalCore.homogeneous_table.dataset_handler import keep_features
+from PrimalCore.homogeneous_table.dataset_handler import add_features
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>dataset=MLDataSet.new_from_table(catalog,target_col_name=&#39;z_spec_S15&#39;,target_bins=20,target_binning=&#39;log&#39;,catalog_file=ph_catalog)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+| building features
+| features built
+| Rows,Cols 13252 20
+</pre></div></div>
+</div>
+<p>since our target variableit is a contineous variable, the stratified
+sampling might fail. Setting target_bins, a binning is performed with a
+number of bins equal to target_bins. Each entry will have a label given
+by the bin ID. the target_binning parameter sets the binning strategy
+to logarithmic</p>
+</div>
+<div class="section" id="DataSet-preprocessing">
+<h2>DataSet preprocessing<a class="headerlink" href="#DataSet-preprocessing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Features-preprocessing:-adding-flux-ratios">
+<h3>Features preprocessing: adding flux ratios<a class="headerlink" href="#Features-preprocessing:-adding-flux-ratios" title="Permalink to this headline">¶</a></h3>
+We can add a new features with the :py:func:`PrimalCore.homogeneous_table.dataset_handler.add_features` function, and the :class:`PrimalCore.phz_tools.pohotmetry.FluxRatio` class<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalCore.phz_tools.photometry import FluxRatio
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>flux_bands_list_2=[&#39;FLUX_G_2&#39;,&#39;FLUX_R_2&#39;,&#39;FLUX_I_2&#39;,&#39;FLUX_Z_2&#39;,&#39;FLUX_Y_2&#39;,&#39;FLUX_J_2&#39;,&#39;FLUX_VIS&#39;,&#39;FLUX_VIS&#39;,&#39;FLUX_VIS&#39;]
+flux_bands_list_1=[&#39;FLUX_R_2&#39;,&#39;FLUX_I_2&#39;,&#39;FLUX_Z_2&#39;,&#39;FLUX_Y_2&#39;,&#39;FLUX_J_2&#39;,&#39;FLUX_H_2&#39;,&#39;FLUX_Y_2&#39;,&#39;FLUX_J_2&#39;,&#39;FLUX_H_2&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>for f1,f2 in zip(flux_bands_list_1,flux_bands_list_2):
+    f1_name=f1.split(&#39;_&#39;)[1]
+    f2_name=f2.split(&#39;_&#39;)[1]
+    if f1 in dataset.features_names and f2 in dataset.features_names:
+        f=FluxRatio(&#39;F_RATIO_%s&#39;%(f2_name+&#39;-&#39;+f1_name),f1,f2,features=dataset)
+        add_features(dataset,f.name,f.values)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Features-preprocessing:-selecting-features-and-adding-weights">
+<h3>Features preprocessing: selecting features and adding weights<a class="headerlink" href="#Features-preprocessing:-selecting-features-and-adding-weights" title="Permalink to this headline">¶</a></h3>
+<p>We can decide to keep only columns with <strong>Flux</strong> and <strong>FluxRatio</strong>
+information.</p>
+To do this we can use the :func:`PrimalCore.homogeneous_table.dataset_handler.keep_features` function and the regular expressions 'FLUX_*' and 'F_RATIO*'<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>keep_features(dataset,[&#39;FLUX*&#39;,&#39;F_RATIO*&#39;],regex=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+| features initial Rows,Cols= 13252 29
+| removing features [&#39;FLAG_PHOT&#39;, &#39;MASKED&#39;, &#39;reliable_S15&#39;, &#39;STAR&#39;, &#39;AGN&#39;]
+| features final Rows,Cols= 13252 24
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>dataset.features_names
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[12]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>[&#39;FLUX_G_2&#39;,
+ &#39;FLUX_R_2&#39;,
+ &#39;FLUX_I_2&#39;,
+ &#39;FLUX_VIS&#39;,
+ &#39;FLUX_Z_2&#39;,
+ &#39;FLUX_Y_2&#39;,
+ &#39;FLUX_J_2&#39;,
+ &#39;FLUX_H_2&#39;,
+ &#39;FLUXERR_G_2&#39;,
+ &#39;FLUXERR_R_2&#39;,
+ &#39;FLUXERR_I_2&#39;,
+ &#39;FLUXERR_Z_2&#39;,
+ &#39;FLUXERR_Y_2&#39;,
+ &#39;FLUXERR_J_2&#39;,
+ &#39;FLUXERR_H_2&#39;,
+ &#39;F_RATIO_G-R&#39;,
+ &#39;F_RATIO_R-I&#39;,
+ &#39;F_RATIO_I-Z&#39;,
+ &#39;F_RATIO_Z-Y&#39;,
+ &#39;F_RATIO_Y-J&#39;,
+ &#39;F_RATIO_J-H&#39;,
+ &#39;F_RATIO_VIS-Y&#39;,
+ &#39;F_RATIO_VIS-J&#39;,
+ &#39;F_RATIO_VIS-H&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalCore.heterogeneous_table.tools import build_names_list
+
+flux_name_list=build_names_list(&#39;FLUX_*_2&#39;,dataset.features_names,regex=True)
+flux_err_name_list=build_names_list(&#39;FLUXERR_*_2&#39;,dataset.features_names,regex=True)
+
+
+
+dataset.weight_array=1.0/dataset.get_feature_by_name(&#39;FLUXERR_J_2&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>dataset.weight_array
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[14]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>array([ 4.49985677,  3.67068885,  2.62369698, ...,  3.99935633,
+        3.16386988,  3.26524177])
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Model-Training">
+<h2>Model Training<a class="headerlink" href="#Model-Training" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Train/Test-splitting">
+<h3>Train/Test splitting<a class="headerlink" href="#Train/Test-splitting" title="Permalink to this headline">¶</a></h3>
+<p>We split the dataset into train and test, using a shuffling with
+stratified sampling.</p>
+To perform the stratified splitting we use the :func:`PrimalCore.model_selection.splitter.dataset_train_test_split`  function. Remind that when we built the dataset object  with set the binning of the target with 20 bins, and using logarithmic binning strategy.<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalCore.preprocessing.dataset_preprocessing import dataset_train_test_split
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>train,test=dataset_train_test_split(dataset,train_ratio=0.2,stratify=True)
+print train.features_N_rows, test.features_N_rows
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2650 10602
+</pre></div></div>
+</div>
+<p>The plot below shows that the redsfhit distributions for the full, the
+training, and the test set are similar thanks to the stratification.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>import matplotlib.pylab as plt
+%matplotlib inline
+plt.rcParams[&#39;figure.figsize&#39;]=8,8
+
+plt.hist(dataset.target_array,bins=20,histtype=&#39;step&#39;,normed=True,label=&#39;full&#39;)
+plt.hist(train.target_array,bins=20,histtype=&#39;step&#39;,normed=True,label=&#39;train&#39;)
+plt.hist(test.target_array,bins=20,histtype=&#39;step&#39;,normed=True,label=&#39;test&#39;)
+plt.xlabel(&#39;z&#39;)
+plt.legend()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_41_0.png" src="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_41_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Running-an-AdaBost-regression">
+<h3>Running an AdaBost regression<a class="headerlink" href="#Running-an-AdaBost-regression" title="Permalink to this headline">¶</a></h3>
+<p>We use the :class:<code class="docutils literal"><span class="pre">PrimalCore.models.regression.Regressor</span></code>, and the
+class method <code class="docutils literal"><span class="pre">AdaBoostRegressor</span></code></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalCore.models.regression import Regressor
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>ada_boost_model=Regressor.ABRegressor(n_estimators=50)
+</pre></div>
+</div>
+</div>
+<p>To train our model we call the fit method</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>ada_boost_model.clf.fit(train.features,train.target_array)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[20]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>AdaBoostRegressor(base_estimator=DecisionTreeRegressor(criterion=&#39;mse&#39;, max_depth=None, max_features=None,
+           max_leaf_nodes=None, min_impurity_split=1e-07,
+           min_samples_leaf=1, min_samples_split=2,
+           min_weight_fraction_leaf=0.0, presort=False, random_state=None,
+           splitter=&#39;best&#39;),
+         learning_rate=1.0, loss=&#39;linear&#39;, n_estimators=50,
+         random_state=None)
+</pre></div>
+</div>
+</div>
+We can plot the results using the :func:`PrimalInteractive.plotting.phz_plots.plot_z_spec_vs_z_phot`<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalInteractive.plotting.phz_plots import plot_z_spec_vs_z_phot
+
+plt.rcParams[&#39;figure.figsize&#39;]=10,10
+
+z_spec=test.target_array
+z_phot=ada_boost_model.clf.predict(test.features)
+
+prima_plot=plot_z_spec_vs_z_phot(z_spec,z_phot,plot=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_49_0.png" src="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_49_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalInteractive.plotting.phz_plots import plot_z_spec_vs_z_phot_kde
+
+prima_plot=plot_z_spec_vs_z_phot_kde(z_spec,z_phot,plot=False,gridsize=50,n_levels=20)
+prima_plot.ax.set_ylim(-0.1,1.5)
+prima_plot.ax.set_xlim(-0.1,1.5)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+/Users/orion/anaconda/lib/python2.7/site-packages/IPython/html.py:14: ShimWarning: The `IPython.html` package has been deprecated. You should import from `notebook` instead. `IPython.html.widgets` has moved to `ipywidgets`.
+  &#34;`IPython.html.widgets` has moved to `ipywidgets`.&#34;, ShimWarning)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_50_1.png" src="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_50_1.png" />
+</div>
+</div>
+We can plot the feature importances using the :func:`PrimalInteractive.plotting.phz_plots.plot_features_imp` function
+and we can get the feature importances using the  :meth:`PrimalCore.models.regression.feature_importances` method<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalInteractive.plotting.phz_plots import plot_features_imp
+plt.rcParams[&#39;figure.figsize&#39;]=8,8
+
+feat_imp=ada_boost_model.feature_importances(feature_names=train.features_names)
+prima_plot=plot_features_imp(feat_imp[&#39;score&#39;],feature_names=feat_imp[&#39;name&#39;],plot=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_52_0.png" src="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_52_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Model-Recursive-features-elimination">
+<h2>Model Recursive features elimination<a class="headerlink" href="#Model-Recursive-features-elimination" title="Permalink to this headline">¶</a></h2>
+<p>To understand if we need all the features, we can perform a recursive
+feature elimination.</p>
+We use the :func:`PrimalCore.preprocessing.features_selection.rec_feat_rem_cv`. We can pass to rec_feat_rem_cv a specific score function, in this case we pass the :func:`PrimalCore.phz_tools.stats.outliers_score`, so that feature removal will be optimized according to the outliers fraction (the lower the better, actually outliers_score returns the percentage of non outliers)<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalCore.preprocessing.features_selection import rec_feat_rem_cv
+from PrimalCore.phz_tools.stats import outliers_score
+initial_feat_num=train.features_N_cols
+support,n_features,scores,ranking=rec_feat_rem_cv(ada_boost_model,train,cv=5,scoring=outliers_score,filter=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Optimal number of features : 22
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>plt.plot(np.arange(initial_feat_num)+1,100.0-scores)
+plt.xlabel(&#39;n features&#39;)
+plt.ylabel(&#39;outlier %&#39;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_56_0.png" src="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_56_0.png" />
+</div>
+</div>
+<p>The highest score, i.e. the lowest fractio of outliers is obtained for
+17 features We can now rerun the training with the reduced fetures set.
+By passing the filter=True parameter, the features are automatically
+removed from the train dataset.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>plt.rcParams[&#39;figure.figsize&#39;]=8,8
+
+feat_imp=ada_boost_model.feature_importances(feature_names=train.features_names)
+ax=plot_features_imp(feat_imp[&#39;score&#39;],feature_names=feat_imp[&#39;name&#39;],plot=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_58_0.png" src="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_58_0.png" />
+</div>
+</div>
+<p>We train again our model with the reduced number of features</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>ada_boost_model.clf.fit(train.features,train.target_array)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[27]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>AdaBoostRegressor(base_estimator=DecisionTreeRegressor(criterion=&#39;mse&#39;, max_depth=None, max_features=None,
+           max_leaf_nodes=None, min_impurity_split=1e-07,
+           min_samples_leaf=1, min_samples_split=2,
+           min_weight_fraction_leaf=0.0, presort=False, random_state=None,
+           splitter=&#39;best&#39;),
+         learning_rate=1.0, loss=&#39;linear&#39;, n_estimators=50,
+         random_state=None)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+.. note::
+
+    We can plot the new results. Remind that now the model is trained with a **lower** number of fetures, but the test set has still the **old** number of features. With the instruction ``test.features[:,support]`` we select only the features selected by the rec_feat_rem_cv function. **This can be skipped passing the paramter** ``test_set=test`` to ``rec_feat_rem_cv``, or we can use the :func:`PrimalCore.homogeneous_table.dataset_handler.keep_features`.
+The latter choice will premanently change the fetuares array shape. A further possbility is to set the `columns_mask` attribute<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>test.columns_mask=support
+print test.columns_mask
+print train.columns_mask
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[ True  True  True  True  True  True  True  True False  True  True False
+  True  True  True  True  True  True  True  True  True  True  True  True]
+[ True  True  True  True  True  True  True  True False  True  True False
+  True  True  True  True  True  True  True  True  True  True  True  True]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>z_spec=test.target_array
+z_phot=ada_boost_model.clf.predict(test.features)
+
+prima_plot=plot_z_spec_vs_z_phot(z_spec,z_phot,plot=True)
+plt.rcParams[&#39;figure.figsize&#39;]=10,10
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_64_0.png" src="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_64_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Entries-selection-based-on-clean-cut">
+<h2>Entries selection based on clean cut<a class="headerlink" href="#Entries-selection-based-on-clean-cut" title="Permalink to this headline">¶</a></h2>
+<p>We can check if after the clean cut we still have objects with ‘wrong’
+values, i.e. negative fluxes</p>
+We can use the :func:`PrimalCore.homogeneous_table.dataset_handler.keep_rows` and to apply a boolean array, or
+to set the :attr:`PrimalCore.homogeneous_table.MLDataSet.rows_maks'.
+First we decide that we want to remove all the entries with a negative flux value
+We use the :func:`PrimalCore.heterogeneous_table.tools.build_names_list`
+to build a list with all the interested variable names<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalCore.heterogeneous_table.tools import build_names_list
+
+flux_name_list=build_names_list(&#39;FLUX_*_2&#39;,dataset.features_names,regex=True)
+msk=np.ones(dataset.features_N_rows,dtype=np.bool)
+</pre></div>
+</div>
+</div>
+Then we bild the boolean array according to<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>msk=np.ones(dataset.features_N_rows,dtype=np.bool)
+
+for f in flux_name_list:
+    msk*=dataset.get_feature_by_name(f)&gt;0
+</pre></div>
+</div>
+</div>
+<p>finally we filter the rows, using two methods: * dropping * masking</p>
+<p>since the dropping will modify the dataset features shape, we create a
+copy</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>import copy
+original_dataset=copy.deepcopy(dataset)
+</pre></div>
+</div>
+</div>
+<div class="section" id="dropping">
+<h3>dropping<a class="headerlink" href="#dropping" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalCore.homogeneous_table.dataset_handler import keep_rows
+print &#39;rows befor cut&#39;,dataset.features_N_rows
+keep_rows(dataset,msk)
+print &#39;rows after cut&#39;,dataset.features_N_rows
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+rows befor cut 13252
+rows after cut 12995
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="masking">
+<h3>masking<a class="headerlink" href="#masking" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>original_dataset.rows_mask=msk
+print original_dataset.features_N_rows
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+13252
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>print original_dataset.features.shape
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(12995, 24)
+</pre></div></div>
+</div>
+<p>We retrain our molde, and plot the results for the new predictions</p>
+<p>We apply the mask both to the train and test set</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>flux_name_list=build_names_list(&#39;FLUX_*_2&#39;,train.features_names,regex=True)
+
+msk=np.ones(train.features_N_rows,dtype=np.bool)
+
+for f in flux_name_list:
+    msk*=train.get_feature_by_name(f)&gt;0
+train.rows_mask=msk
+
+msk=np.ones(test.features_N_rows,dtype=np.bool)
+for f in flux_name_list:
+    msk*=test.get_feature_by_name(f)&gt;0
+test.rows_mask=msk
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>ada_boost_model.clf.fit(train.features,train.target_array)
+z_phot=ada_boost_model.clf.predict(test.features)
+z_spec=test.target_array
+
+prima_plot=plot_z_spec_vs_z_phot(z_spec,z_phot,plot=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_81_0.png" src="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_81_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="PDF">
+<h2>PDF<a class="headerlink" href="#PDF" title="Permalink to this headline">¶</a></h2>
+We can use the :func:`PrimalCore.pdf.tools.extract_pdf` to extract a matrix with rows storing z_pred per tree, and rows corresponding to each entry of the dataset. We estimate the pdf through a Gaussian Mixture model, testin for 2 components<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalCore.pdf.tools import extract_pdf
+pdf_matrix=extract_pdf(ada_boost_model, test,gmm_components=2,out_file_name=&#39;ada_boost_pdf.fits&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalInteractive.plotting.phz_plots import plot_pdf
+
+n_cols=2
+n_rows=5
+plt.rcParams[&#39;figure.figsize&#39;]=10*n_cols,8*n_rows
+fig1,axs=plt.subplots(n_rows,n_cols)
+for ID,ax in enumerate(axs.flatten()):
+    plot_pdf(pdf_matrix,ID,plot=True,ax=ax,bins=10)
+plt.tight_layout()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_85_0.png" src="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_85_0.png" />
+</div>
+</div>
+We can use the CRPS and the PIT index to evaluate the sample PDF bias.<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalCore.pdf.stats import eval_pit,eval_crps
+from PrimalInteractive.plotting.phz_plots import plot_PIT_histogram,plot_pdf,plot_CRPS_histogram
+
+preds = ada_boost_model.eval_estimators_predictions(test.features)
+
+pit = eval_pit(pdf_matrix[&#39;z_phot_values&#39;], pdf_matrix[&#39;z_spec&#39;])
+cprs = eval_crps(pdf_matrix[&#39;z_phot_values&#39;],pdf_matrix[&#39;z_spec&#39;])
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [62]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>plt.rcParams[&#39;figure.figsize&#39;]=12,6
+
+fig1,(ax1,ax2)=plt.subplots(1,2)
+
+plot_PIT_histogram(pit, ax=ax1)
+plot_CRPS_histogram(cprs, ax=ax2)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[62]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;PrimalInteractive.plotting.phz_plots.PrimalPlot at 0x135901e50&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_88_1.png" src="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_88_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Saving-predictions">
+<h2>Saving predictions<a class="headerlink" href="#Saving-predictions" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>data=ada_boost_model.save_mldataset_predictions(&#39;test_prediction.fits&#39;,test)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+/Users/orion/anaconda/lib/python2.7/site-packages/pyfits/file.py:339: UserWarning: Overwriting existing file &#39;test_prediction.fits&#39;.
+  warnings.warn(&#34;Overwriting existing file %r.&#34; % self.name)
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Post-trainig-analysis">
+<h2>Post trainig analysis<a class="headerlink" href="#Post-trainig-analysis" title="Permalink to this headline">¶</a></h2>
+<p>In this section we show a possible post-training analysis, where we work
+a the saved prediction file.</p>
+<p>We load the prediction file for the test set</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>data,h=pf.getdata(&#39;test_prediction.fits&#39;,header=True)
+</pre></div>
+</div>
+</div>
+<p>We get the information for the original spectroscopic catalog</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>catalog_file=h.get(&#39;cat_file&#39;)
+</pre></div>
+</div>
+</div>
+<p>We load the catalog</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalCore.heterogeneous_table.table import Table
+
+catalog=Table.from_fits_file(catalog_file,fits_ext=1)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+| input data built
+| data Rows,Cols 198435 124
+</pre></div></div>
+</div>
+<p>Thank to the stored <code class="docutils literal"><span class="pre">original_entry_ID</span></code> field we can match any entry
+in test set results file to the original spectroscopic dataset, and for
+example check of the magnitude value (not used in the training) impacts
+on the error on the predicted redshift</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>delta=np.fabs((data[&#39;actual&#39;]-data[&#39;pred&#39;]))/data[&#39;actual&#39;]
+from PrimalCore.heterogeneous_table.tools import build_names_list
+x_name_list=build_names_list(&#39;MAG_*&#39;,catalog.column_names,regex=True)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span>from PrimalInteractive.plotting.phz_plots import binned_trend_scatter_plot
+
+from matplotlib.pyplot import cm
+%matplotlib inline
+n_cols=2
+n_rows=len(x_name_list)/2+1
+plt.rcParams[&#39;figure.figsize&#39;]=10*n_cols,5*n_rows
+color=iter(cm.rainbow(np.linspace(0,1,len(x_name_list))))
+fig,ax=plt.subplots(n_rows,n_cols)
+
+for a,x_name in zip(ax.flatten(),x_name_list):
+    x=catalog.data[x_name][data[&#39;original_entry_ID&#39;]]
+
+    msk=x&gt;15
+    #msk*=x&lt;.2
+
+    p=binned_trend_scatter_plot(x[msk],delta[msk],x_label=&#39;mag.&#39;,y_label=&#39;rel. err.&#39;,ax=a,color=next(color),label=x_name)
+    a.set_xlim(15,35)
+    a.set_yscale(&quot;log&quot;)
+    a.set_ylim(0.001,100.)
+
+plt.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+/Users/orion/anaconda/lib/python2.7/site-packages/numpy/core/_methods.py:59: RuntimeWarning: Mean of empty slice.
+  warnings.warn(&#34;Mean of empty slice.&#34;, RuntimeWarning)
+/Users/orion/anaconda/lib/python2.7/site-packages/numpy/core/_methods.py:70: RuntimeWarning: invalid value encountered in double_scalars
+  ret = ret.dtype.type(ret / rcount)
+/Users/orion/anaconda/lib/python2.7/site-packages/numpy/core/_methods.py:82: RuntimeWarning: Degrees of freedom &lt;= 0 for slice
+  warnings.warn(&#34;Degrees of freedom &lt;= 0 for slice&#34;, RuntimeWarning)
+/Users/orion/anaconda/lib/python2.7/site-packages/numpy/core/_methods.py:94: RuntimeWarning: invalid value encountered in true_divide
+  arrmean, rcount, out=arrmean, casting=&#39;unsafe&#39;, subok=False)
+/Users/orion/anaconda/lib/python2.7/site-packages/numpy/core/_methods.py:116: RuntimeWarning: invalid value encountered in double_scalars
+  ret = ret.dtype.type(ret / rcount)
+/Users/orion/anaconda/lib/python2.7/site-packages/matplotlib/scale.py:101: RuntimeWarning: invalid value encountered in less_equal
+  a[a &lt;= 0.0] = 1e-300
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_100_1.png" src="../../../_images/user_guide_jet_model_.ipynb_checkpoints_primal_core_tutorial-checkpoint_100_1.png" />
+</div>
+</div>
+</div>
+</div>
+
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">BlazarSEDFit  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

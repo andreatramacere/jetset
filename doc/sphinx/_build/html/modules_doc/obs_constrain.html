@@ -1,0 +1,358 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Module: obs_constrain &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Moudule: output" href="output.html" />
+    <link rel="prev" title="Module: model_parameters" href="model_parameters.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="output.html" title="Moudule: output"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="model_parameters.html" title="Module: model_parameters"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../code.html" accesskey="U">Modules</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Module: obs_constrain</a><ul>
+<li><a class="reference internal" href="#classes-and-inheritance-structure">Classes and Inheritance Structure</a></li>
+<li><a class="reference internal" href="#classes-relations">Classes relations</a></li>
+<li><a class="reference internal" href="#module-api">Module API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="model_parameters.html"
+                        title="previous chapter">Module: model_parameters</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="output.html"
+                        title="next chapter">Moudule: output</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules_doc/obs_constrain.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <span class="target" id="module-BlazarSEDFit.obs_constrain"></span><div class="section" id="module-obs-constrain">
+<h1>Module: obs_constrain<a class="headerlink" href="#module-obs-constrain" title="Permalink to this headline">¶</a></h1>
+<p>This module contains all the classes necessary to constrain 
+the model parmateres starting from the SED shape</p>
+<div class="section" id="classes-and-inheritance-structure">
+<h2>Classes and Inheritance Structure<a class="headerlink" href="#classes-and-inheritance-structure" title="Permalink to this headline">¶</a></h2>
+<img src="../_images/inheritance-0e899756ba23451c8b88019d29366c08afee42a1.png" alt="Inheritance diagram of BlazarSEDFit.obs_constrain" usemap="#inheritanceb103cd6d38" class="inheritance"/>
+<map id="inheritanceb103cd6d38" name="inheritanceb103cd6d38">
+<area shape="rect" id="node1" href="#BlazarSEDFit.obs_constrain.ObsConstrain" target="_top" title="doc" alt="" coords="6,5,279,30"/>
+</map>
+</div>
+<div class="section" id="classes-relations">
+<h2>Classes relations<a class="headerlink" href="#classes-relations" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center">
+<img alt="../_images/classes_obs_constrain.png" src="../_images/classes_obs_constrain.png" />
+</div>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#BlazarSEDFit.obs_constrain.ObsConstrain" title="BlazarSEDFit.obs_constrain.ObsConstrain"><code class="xref py py-obj docutils literal"><span class="pre">ObsConstrain</span></code></a>([B_range,&nbsp;distr_e,&nbsp;t_var_sec,&nbsp;…])</td>
+<td>doc</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="module-api">
+<h2>Module API<a class="headerlink" href="#module-api" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="BlazarSEDFit.obs_constrain.ObsConstrain">
+<em class="property">class </em><code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">ObsConstrain</code><span class="sig-paren">(</span><em>B_range=None</em>, <em>distr_e=None</em>, <em>t_var_sec=None</em>, <em>nu_cut_IR=None</em>, <em>beaming=None</em>, <em>theta=None</em>, <em>bulk_factor=None</em>, <em>obj_class=None</em>, <em>restframe=None</em>, <em>z=None</em>, <em>obspar_workplace=None</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#ObsConstrain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.ObsConstrain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>doc</p>
+<dl class="method">
+<dt id="BlazarSEDFit.obs_constrain.ObsConstrain.constrain_SSC_EC_model">
+<code class="descname">constrain_SSC_EC_model</code><span class="sig-paren">(</span><em>name=None</em>, <em>jet_model=None</em>, <em>EC_componets_list='BLR'</em>, <em>params_grid_size=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#ObsConstrain.constrain_SSC_EC_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.ObsConstrain.constrain_SSC_EC_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>constarin SSC model paramters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.obs_constrain.ObsConstrain.constrain_SSC_model">
+<code class="descname">constrain_SSC_model</code><span class="sig-paren">(</span><em>name=None</em>, <em>jet_model=None</em>, <em>params_grid_size=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#ObsConstrain.constrain_SSC_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.ObsConstrain.constrain_SSC_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>constarin SSC model paramters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.obs_constrain.ObsConstrain.get_model_constraint">
+<code class="descname">get_model_constraint</code><span class="sig-paren">(</span><em>name=None</em>, <em>jet_model=None</em>, <em>EC_componets_list=None</em>, <em>params_grid_size=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#ObsConstrain.get_model_constraint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.ObsConstrain.get_model_constraint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.check_boundaries">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">check_boundaries</code><span class="sig-paren">(</span><em>val</em>, <em>val_min</em>, <em>val_max</em>, <em>val_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#check_boundaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.check_boundaries" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.check_gamma_tansp">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">check_gamma_tansp</code><span class="sig-paren">(</span><em>jet</em>, <em>beaming_val</em>, <em>nu_IC_data</em>, <em>rest_frame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#check_gamma_tansp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.check_gamma_tansp" title="Permalink to this definition">¶</a></dt>
+<dd><p>retrun tau_gamma_gamma for a given  IC frequency</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>blob:
+temap_ev:
+nu_IC_data: data freq of the IC component to check fro tau_gamma_gamma</dd>
+<dt>Returns:</dt>
+<dd>tau_gamma_gamma</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.check_t_var">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">check_t_var</code><span class="sig-paren">(</span><em>R</em>, <em>beaming</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#check_t_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.check_t_var" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.constr_B_from_nu_peaks">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">constr_B_from_nu_peaks</code><span class="sig-paren">(</span><em>jet</em>, <em>nu_p_S</em>, <em>nu_p_IC</em>, <em>rest_frame</em>, <em>B_min</em>, <em>B_max</em>, <em>beaming</em>, <em>params_grid_size</em>, <em>EC=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#constr_B_from_nu_peaks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.constr_B_from_nu_peaks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.constr_R_from_CD">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">constr_R_from_CD</code><span class="sig-paren">(</span><em>jet</em>, <em>nuFnu_p_S</em>, <em>nuFnu_p_IC</em>, <em>nu_p_IC</em>, <em>rest_frame</em>, <em>R_tvar</em>, <em>params_grid_size</em>, <em>EC=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#constr_R_from_CD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.constr_R_from_CD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.find_B_from_nu_p_S">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">find_B_from_nu_p_S</code><span class="sig-paren">(</span><em>nu_p_S</em>, <em>gamma_3p</em>, <em>rest_frame</em>, <em>beaming</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#find_B_from_nu_p_S"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.find_B_from_nu_p_S" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns B according to Ep_S and gamma_3p</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">nu_p_S:  Synchrotron peack frequency
+gamma_3p: peak value of n(gamma)gamma^3</p>
+<p class="last">re_eval: def==True, set the flag to re_evaluate find_gamma_3p_Synch, after updating B</p>
+</dd>
+<dt>Returns:</dt>
+<dd>B</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.find_HE_cut_off">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">find_HE_cut_off</code><span class="sig-paren">(</span><em>distr_e</em>, <em>nu_S_max</em>, <em>rest_frame</em>, <em>B</em>, <em>beaming</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#find_HE_cut_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.find_HE_cut_off" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.find_gamma0">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">find_gamma0</code><span class="sig-paren">(</span><em>r</em>, <em>s</em>, <em>gamma_3p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#find_gamma0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.find_gamma0" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the value of gamma_0  for
+a log_par+pl distribution</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>r: curvature
+s: spectral index in the PL branch
+gamma_3p: peak value requested for n(gamma)gamma^3</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.find_gamma_3p_SSC">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">find_gamma_3p_SSC</code><span class="sig-paren">(</span><em>nu_p_S</em>, <em>nu_p_IC</em>, <em>rest_frame</em>, <em>gamma_3p_Sync</em>, <em>beaming</em>, <em>z</em>, <em>nu_p_EC_seed_field=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#find_gamma_3p_SSC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.find_gamma_3p_SSC" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the value of gamma_3p from nu_p_S/nu_p_IC</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>nu_p_S :  Synchrotron peack frequency
+nu_p_IC:  IC peack frequency
+rest_frame: rest frame cooresponding to peak frequencies</dd>
+<dt>Returns:</dt>
+<dd>gamma_3p_SSC</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.find_gamma_Synch">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">find_gamma_Synch</code><span class="sig-paren">(</span><em>nu_S</em>, <em>rest_frame</em>, <em>B</em>, <em>beaming</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#find_gamma_Synch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.find_gamma_Synch" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the value of gamma corresponding to the  Synch freq</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>B: magnetic field
+nu_S:  Synchrotron  frequency
+rest_frame: rest frame cooresponding to nu_p_S
+z: redshift
+beamign: beaming factor</dd>
+<dt>Returns:</dt>
+<dd>gamma</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.find_s">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">find_s</code><span class="sig-paren">(</span><em>class_obj</em>, <em>nu_p_S_obs</em>, <em>S_LE_slope</em>, <em>indices</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#find_s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.find_s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the index of the low-energy PL branch of n(gamma), from PL fit over various instrument bands</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>class_obj: object  class
+indices_array</dd>
+<dt>Returns:</dt>
+<dd>s_Planck, s_X, s_Fermi, s</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.find_s1">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">find_s1</code><span class="sig-paren">(</span><em>class_obj</em>, <em>indices</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#find_s1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.find_s1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.find_turn_over">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">find_turn_over</code><span class="sig-paren">(</span><em>jet</em>, <em>distr_e</em>, <em>gamma_3p</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#find_turn_over"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.find_turn_over" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.get_Comp_factor">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">get_Comp_factor</code><span class="sig-paren">(</span><em>gamma</em>, <em>nu_p_S_blob</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#get_Comp_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.get_Comp_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the compton factor = nu_blob_seed_Synch*hplanck/(mec2)</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>gamma: gamma of the up-scattering electrons
+u_p_S_blob: Synchrotron peack frequency in the blob rest frame</dd>
+<dt>Returns:</dt>
+<dd>compton factor</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.get_R_tvar">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">get_R_tvar</code><span class="sig-paren">(</span><em>beaming</em>, <em>t_var_sec</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#get_R_tvar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.get_R_tvar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.get_U_Sync_from_Ph">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">get_U_Sync_from_Ph</code><span class="sig-paren">(</span><em>jet</em>, <em>re_eval_sync=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#get_U_Sync_from_Ph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.get_U_Sync_from_Ph" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns U_synch by integrating Synch photon spectrum</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first">blob: SED module class
+temp_ev: SED module class</p>
+<p class="last">re_eval_sync: def==False, re_eval Synch spectrum and then get U_synch</p>
+</dd>
+<dt>Returns:</dt>
+<dd>U_synch</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.rescale_Ne">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">rescale_Ne</code><span class="sig-paren">(</span><em>jet</em>, <em>Lp_S</em>, <em>rest_frame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#rescale_Ne"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.rescale_Ne" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rescales N.blob to get the wanted Lp_S_blob</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>blob: SED module class
+temp_ev: SED module class
+Lp_S_obs_blob: peak luminosity of the Synch component 
+rest_frame: rest_frame of the observed data</dd>
+<dt>Returns:</dt>
+<dd>Lp_S_blob/Lp_S_model_blob</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="BlazarSEDFit.obs_constrain.set_gmin_from_nu_cut_IR">
+<code class="descclassname">BlazarSEDFit.obs_constrain.</code><code class="descname">set_gmin_from_nu_cut_IR</code><span class="sig-paren">(</span><em>nu_cut_IR</em>, <em>rest_frame</em>, <em>B</em>, <em>beaming</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/obs_constrain.html#set_gmin_from_nu_cut_IR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.obs_constrain.set_gmin_from_nu_cut_IR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="output.html" title="Moudule: output"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="model_parameters.html" title="Module: model_parameters"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../code.html" >Modules</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

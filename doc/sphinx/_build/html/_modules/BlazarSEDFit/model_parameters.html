@@ -1,0 +1,604 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BlazarSEDFit.model_parameters &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <h1>Source code for BlazarSEDFit.model_parameters</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module: model_parameters</span>
+<span class="sd">===================================================================</span>
+
+<span class="sd">This module contains the base classes necessary to handle models paramters/</span>
+
+
+
+<span class="sd">Classes and Inheritance Structure</span>
+<span class="sd">----------------------------------------------</span>
+<span class="sd">.. inheritance-diagram:: BlazarSEDFit.model_parameters</span>
+<span class="sd">    </span>
+<span class="sd">Classes relations</span>
+<span class="sd">----------------------------------------------</span>
+
+<span class="sd">.. figure::  classes_model_parameters.png</span>
+<span class="sd">   :align:   center    </span>
+
+
+<span class="sd">      </span>
+<span class="sd">.. autosummary::</span>
+<span class="sd">   ModelParameter</span>
+<span class="sd">   ModelParameterArray</span>
+
+<span class="sd">Module API</span>
+<span class="sd">-------------------------------------------------------------------</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+
+<div class="viewcode-block" id="ModelParameter"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter">[docs]</a><span class="k">class</span> <span class="nc">ModelParameter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class is the base class for models parameters. The following keywords </span>
+<span class="sd">    arguments can be passed to the constructor</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------      </span>
+<span class="sd">    name          :  (str)    parameter name (default=&#39;unk&#39;)</span>
+<span class="sd">    val           :  (float)  parameter value </span>
+<span class="sd">    par_type      :  (str)    parameter type (default=&#39;unk&#39;)</span>
+<span class="sd">    units         :  (str)    units of the parameter, (default=&#39;No&#39;)</span>
+<span class="sd">    val_min       :  (float)  minimum physical value </span>
+<span class="sd">    val_max       :  (float)  maximum physical value</span>
+<span class="sd">    val_start     :  (float)  starting value</span>
+<span class="sd">    val_last_call :  (float)  last call value</span>
+<span class="sd">    fit_range_min :  (float)  minimum boundary value for the fit</span>
+<span class="sd">    fit_range_max :  (float)  maximum boundary value for the fit  </span>
+<span class="sd">    frozen        :  (bool)   boolean flag for frozen parameter (default=False)</span>
+<span class="sd">    log           :  (bool)   boolean flag for log-scale value (default=False)</span>
+<span class="sd">                    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name          :  (str)         parameter name (default=&#39;unk&#39;)                      </span>
+<span class="sd">    val           :  (float)       parameter value                                    </span>
+<span class="sd">    par_type      :  (str)         parameter type (default=&#39;unk&#39;)                     </span>
+<span class="sd">    units         :  (str)         units of the parameter, (default=&#39;No&#39;)             </span>
+<span class="sd">    val_min       :  (float)       minimum physical value                             </span>
+<span class="sd">    val_max       :  (float)       maximum physical value                             </span>
+<span class="sd">    val_start     :  (float)       starting value                                     </span>
+<span class="sd">    val_last_call :  (float)       last call value                                    </span>
+<span class="sd">    fit_range_min :  (float)       minimum boundary value for the fit                 </span>
+<span class="sd">    fit_range_max :  (float)       maximum boundary value for the fit                 </span>
+<span class="sd">    frozen        :  (bool)        boolean flag for frozen parameter (default=False)  </span>
+<span class="sd">    log           :  (bool)        boolean flag for log-scale value (default=False)    </span>
+<span class="sd"> </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;unk&#39;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;par_type&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;unk&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_min&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_max&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_start_fit&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_last_call&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;fit_range_min&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;fit_range_max&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;fit_range&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;best_fit_val&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;best_fit_err&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;frozen&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;log&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span>
+        
+      
+        
+        <span class="c1">#defualt</span>
+        <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">kw</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">])</span>
+        
+        
+        <span class="c1">#parsing user keywords</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        
+        
+<div class="viewcode-block" id="ModelParameter.set"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sets a parameter value checking for physical boundaries</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters: keywords of the constructor</span>
+<span class="sd">         </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#print &quot;ModelParamter in model parameters&quot;,args,keywords</span>
+        
+        <span class="n">keys</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            
+            <span class="k">if</span> <span class="n">kw</span> <span class="ow">in</span>  <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">kw</span><span class="p">,</span><span class="n">keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">])</span>
+                    
+            <span class="k">else</span><span class="p">:</span>
+                
+                <span class="nb">print</span> <span class="s2">&quot;wrong keyword=</span><span class="si">%s</span><span class="s2">, not in</span><span class="si">%s</span><span class="s2"> &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                
+                <span class="k">raise</span> <span class="ne">ValueError</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_min</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+    
+        
+        <span class="c1">#if self.frozen==True:</span>
+        <span class="c1">#    self.val=self.val_start</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_last_call</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span>    
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">val_min</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s2">&quot;par=</span><span class="si">%s</span><span class="s2">  = </span><span class="si">%e</span><span class="s2"> out of boundary=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">val_min</span><span class="p">)</span>
+         
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">val_max</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">,</span> <span class="s2">&quot;par=</span><span class="si">%s</span><span class="s2">  = </span><span class="si">%e</span><span class="s2"> out of boundary=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">val_max</span><span class="p">)</span>    
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_min</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">val_min</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">val_max</span></div>
+    
+    
+    
+<div class="viewcode-block" id="ModelParameter.get"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span> <span class="p">):</span>
+        
+       
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            
+            <span class="k">if</span> <span class="n">arg</span> <span class="ow">in</span>  <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                
+                <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arg</span><span class="p">)</span>
+                    
+            <span class="k">else</span><span class="p">:</span>
+                
+                <span class="nb">print</span> <span class="s2">&quot;wrong arg=</span><span class="si">%s</span><span class="s2">, not in</span><span class="si">%s</span><span class="s2"> &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                
+                <span class="k">raise</span> <span class="ne">ValueError</span></div>
+            
+    
+    
+    
+<div class="viewcode-block" id="ModelParameter.freeze"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter.freeze">[docs]</a>    <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        freezes a paramter </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span></div>
+
+    
+        
+<div class="viewcode-block" id="ModelParameter.free"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter.free">[docs]</a>    <span class="k">def</span> <span class="nf">free</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make a paramter free</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span><span class="o">=</span><span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="ModelParameter.get_fit_initial_value"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter.get_fit_initial_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_fit_initial_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gives the initial fit value of the parameter</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        val_start : value    </span>
+<span class="sd">            the parameter initial value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_start</span></div>
+    
+<div class="viewcode-block" id="ModelParameter.set_fit_initial_value"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter.set_fit_initial_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_fit_initial_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the initial fit value of the parameter</span>
+
+<span class="sd">       </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_start</span><span class="o">=</span><span class="n">val</span></div>
+    
+    
+<div class="viewcode-block" id="ModelParameter.show"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints the description of a parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="ModelParameter.show_best_fit"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter.show_best_fit">[docs]</a>    <span class="k">def</span> <span class="nf">show_best_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints the best-fit description of a parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bestfit_description</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="ModelParameter.get_description"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter.get_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nofields</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gives the value of each member of the  :class:`ModelParameter` objects, except the best-fit values</span>
+<span class="sd"> </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        descr : (str)</span>
+<span class="sd">            a string describing all the parameter values, except the best-fit values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">val_min</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val_min</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">val_min</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">val_max</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val_max</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">val_max</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">val</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">nofields</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="n">descr</span><span class="o">=</span> <span class="s2">&quot;name = </span><span class="si">%-16s</span><span class="s2">  type = </span><span class="si">%-24s</span><span class="s2">  units = </span><span class="si">%-16s</span><span class="s2">  val = </span><span class="si">%s</span><span class="s2">  phys-bounds = [</span><span class="si">%-13s</span><span class="s2">,</span><span class="si">%-13s</span><span class="s2">]  &quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_type</span> <span class="p">,</span>
+                                                                                   <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">val_min</span><span class="p">,</span> <span class="n">val_max</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">descr</span><span class="o">=</span> <span class="s2">&quot; </span><span class="si">%-16s</span><span class="s2"> | </span><span class="si">%-24s</span><span class="s2"> | </span><span class="si">%-16s</span><span class="s2"> | </span><span class="si">%s</span><span class="s2"> | [</span><span class="si">%-13s</span><span class="s2">,</span><span class="si">%-13s</span><span class="s2">]  &quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_type</span> <span class="p">,</span>
+                                                                                   <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">val_min</span><span class="p">,</span> <span class="n">val_max</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">descr</span></div>
+    
+    
+<div class="viewcode-block" id="ModelParameter.get_bestfit_description"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter.get_bestfit_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_bestfit_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nofields</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gives the value of each member of the  :class:`ModelParameter` objects, suited for  the best-fit values</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        descr : (str)</span>
+<span class="sd">            a string describing all the parameter values, suited for  the best-fit values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">val_start</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val_start</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">val_start</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fit_range_min</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fit_range_min</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_range_min</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fit_range_max</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fit_range_max</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_range_max</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_fit_val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">best_fit_val</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">best_fit_val</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">best_fit_val</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_fit_err</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">best_fit_err</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">best_fit_err</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">best_fit_err</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="n">best_fit_val</span><span class="o">=</span><span class="s1">&#39;Frozen&#39;</span>
+            <span class="n">best_fit_err</span><span class="o">=</span><span class="s1">&#39;Frozen&#39;</span>
+       
+        <span class="k">if</span> <span class="n">nofields</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="n">descr</span><span class="o">=</span> <span class="s2">&quot;name = </span><span class="si">%-16s</span><span class="s2"> best-fit val=</span><span class="si">%-13s</span><span class="s2">  best-fit err=</span><span class="si">%-13s</span><span class="s2"> start-val=</span><span class="si">%-13s</span><span class="s2">   fit-bounds=[</span><span class="si">%-13s</span><span class="s2">,</span><span class="si">%-13s</span><span class="s2">]&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">best_fit_val</span><span class="p">,</span><span class="n">best_fit_err</span><span class="p">,</span><span class="n">val_start</span><span class="p">,</span><span class="n">fit_range_min</span><span class="p">,</span><span class="n">fit_range_max</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">descr</span><span class="o">=</span> <span class="s2">&quot; </span><span class="si">%-16s</span><span class="s2"> | </span><span class="si">%-13s</span><span class="s2"> | </span><span class="si">%-13s</span><span class="s2"> | </span><span class="si">%-13s</span><span class="s2"> | [</span><span class="si">%-13s</span><span class="s2">,</span><span class="si">%-13s</span><span class="s2">]&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">best_fit_val</span><span class="p">,</span><span class="n">best_fit_err</span><span class="p">,</span><span class="n">val_start</span><span class="p">,</span><span class="n">fit_range_min</span><span class="p">,</span><span class="n">fit_range_max</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">descr</span></div></div>
+        
+
+<div class="viewcode-block" id="ModelParameterArray"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameterArray">[docs]</a><span class="k">class</span> <span class="nc">ModelParameterArray</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class provide and interface to handle an array of :class:`ModelParameter` objects.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    par_array :  list </span>
+<span class="sd">        list of :class:`ModelParameter` objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>   
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="o">=</span><span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_frozen</span><span class="o">=</span><span class="kc">False</span>
+        
+            
+<div class="viewcode-block" id="ModelParameterArray.add_par"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameterArray.add_par">[docs]</a>    <span class="k">def</span> <span class="nf">add_par</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        adds a new :class:`ModelParameter` object  to the `par_array`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">par</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ModelParameterArray.del_par"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameterArray.del_par">[docs]</a>    <span class="k">def</span> <span class="nf">del_par</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">par</span><span class="p">)</span></div>
+        
+    
+<div class="viewcode-block" id="ModelParameterArray.get_par_by_name"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameterArray.get_par_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_par_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        selects a parameter by name</span>
+<span class="sd">       </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : (str) parameter name</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        item : the :class:`ModelParameter` element of the `par_array` with the corresponding name</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="s2">&quot;no par with name </span><span class="si">%s</span><span class="s2"> found&quot;</span><span class="o">%</span><span class="n">name</span>
+                <span class="nb">print</span> <span class="s2">&quot;pars in array are:&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+            
+            <span class="k">return</span> <span class="kc">None</span></div>
+                
+        
+    
+    
+<div class="viewcode-block" id="ModelParameterArray.show_pars"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameterArray.show_pars">[docs]</a>    <span class="k">def</span> <span class="nf">show_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">getstring</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        shows the information for all the items in the :attr:`~ModelParameterArray.par_array`</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">text</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot;--------------------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot;model parameters:&quot;</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot; Name             | Type                     | Units            | value         | phys. boundaries&quot;</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot;--------------------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+       
+        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">:</span>
+            <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">par</span><span class="o">.</span><span class="n">get_description</span><span class="p">(</span><span class="n">nofields</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot;--------------------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+        
+        
+
+        <span class="k">if</span> <span class="n">getstring</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">text</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="n">line</span></div>
+        
+    
+    
+<div class="viewcode-block" id="ModelParameterArray.show_best_fit_pars"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameterArray.show_best_fit_pars">[docs]</a>    <span class="k">def</span> <span class="nf">show_best_fit_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">getstring</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        shows the best-fit information for all the items in the :py:attr:`par_array`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">text</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;---------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;best-fit parameters:&quot;</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;  Name            | best-fit value| best-fit err  | start value   | fit boundaries&quot;</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;---------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+
+       
+        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">:</span>
+            <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">par</span><span class="o">.</span><span class="n">get_bestfit_description</span><span class="p">(</span><span class="n">nofields</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;---------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+        
+    
+        <span class="k">if</span> <span class="n">getstring</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">text</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="n">line</span></div>
+        
+        
+    
+<div class="viewcode-block" id="ModelParameterArray.set"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameterArray.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par_name</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sets to a given value a given parameter</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        par_name     : (str) name of the parameter </span>
+<span class="sd">        keywords     :  keywords to set the value or the range of the parameter </span>
+<span class="sd">            </span>
+<span class="sd">         </span>
+<span class="sd">         </span>
+<span class="sd">           </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        if parameters is a :class:`ModelParameterArray` object:</span>
+<span class="sd">        </span>
+<span class="sd">        .. code::</span>
+<span class="sd">     </span>
+<span class="sd">            parameters.set(&#39;R&#39;,val=1E16) </span>
+<span class="sd">            parameters.set(&#39;R&#39;,fit_range=[1E16,1E17])</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1">#print &quot;ModelParamterArray in model parameters&quot;,args,keywords</span>
+        
+        <span class="n">par</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="n">par_name</span><span class="p">)</span>
+
+        <span class="n">args_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;free&#39;</span><span class="p">,</span><span class="s1">&#39;frozen&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span>  <span class="n">args</span><span class="o">!=</span><span class="p">():</span>
+            <span class="k">for</span>  <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            
+                <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">args_list</span><span class="p">:</span>
+                    <span class="nb">print</span> <span class="s2">&quot;argument: </span><span class="si">%s</span><span class="s2">,  not in allowed args&quot;</span><span class="o">%</span><span class="n">arg</span>
+                    <span class="nb">print</span> <span class="s2">&quot;allowed args= &quot;</span><span class="p">,</span><span class="n">args_list</span>
+                    <span class="k">return</span>
+                
+                 
+                <span class="k">if</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;frozen&#39;</span><span class="p">:</span>                
+                    <span class="n">par</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
+                
+                
+                <span class="k">if</span>  <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;free&#39;</span><span class="p">:</span>
+                    <span class="n">par</span><span class="o">.</span><span class="n">free</span><span class="p">()</span>
+
+                
+            
+        
+        <span class="k">if</span> <span class="n">keywords</span><span class="o">!=</span><span class="p">{}:</span>
+        
+            
+            <span class="n">par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span> <span class="o">**</span><span class="n">keywords</span><span class="p">)</span></div>
+        
+        
+        
+<div class="viewcode-block" id="ModelParameterArray.get"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameterArray.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par_name</span><span class="p">,</span><span class="n">arg</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gets the argument of a given parameter</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        par_name     : (str) name of the parameter </span>
+<span class="sd">        arg     :  keyword</span>
+<span class="sd">            </span>
+<span class="sd">         </span>
+<span class="sd">         </span>
+<span class="sd">           </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        if parameters is a :class:`ModelParameterArray` object:</span>
+<span class="sd">        </span>
+<span class="sd">        .. code::</span>
+<span class="sd">     </span>
+<span class="sd">            parameters.get(&#39;R&#39;) </span>
+<span class="sd">            parameters.get(&#39;frozen&#39;)</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1">#print &quot;ModelParamterArray in model parameters&quot;,args,keywords</span>
+        
+        <span class="n">par</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="n">par_name</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">par</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ModelParameterArray.freeze_all"><a class="viewcode-back" href="../../modules_doc/model_parameters.html#BlazarSEDFit.model_parameters.ModelParameterArray.freeze_all">[docs]</a>    <span class="k">def</span> <span class="nf">freeze_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_frozen</span><span class="o">=</span><span class="kc">True</span>
+        <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span></div></div>
+                
+        
+
+        
+        
+</pre></div>
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

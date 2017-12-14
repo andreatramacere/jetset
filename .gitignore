@@ -1,0 +1,16 @@
+*.so
+*.py[cod]
+/doc/out.txt
+/doc/err.txt
+/doc/build/*
+/doc/test
+/.idea
+/.DS_Store
+*.egg-info
+*.egg
+build
+develop-eggs
+dist
+eggs
+lib
+lib64

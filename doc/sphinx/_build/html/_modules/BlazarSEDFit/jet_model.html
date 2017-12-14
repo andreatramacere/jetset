@@ -1,0 +1,1221 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BlazarSEDFit.jet_model &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <h1>Source code for BlazarSEDFit.jet_model</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module: jet_model</span>
+<span class="sd">========================</span>
+
+
+
+<span class="sd">Overview</span>
+<span class="sd">--------</span>
+<span class="sd">   </span>
+<span class="sd">This module  provides an interface to call the BlazarSED code, setting the</span>
+<span class="sd">physical parameters and running the code. The BlazarSED code is a numerical </span>
+<span class="sd">accurate C code, to evaluate SSC/EC emission processes in a relativistic jet. </span>
+<span class="sd">The python wrappper is  built using SWIG. </span>
+
+<span class="sd">The :class:`.Jet` is used to create a *jet* object, providing the high </span>
+<span class="sd">level interface to set the jet physical  paramters, and evaluater the SSC/EC </span>
+<span class="sd">emission processes.</span>
+
+
+
+<span class="sd">Classes relations</span>
+<span class="sd">---------------------------------------</span>
+<span class="sd">.. figure::  classes_jet_model.png</span>
+<span class="sd">   :align:   center  </span>
+
+
+<span class="sd">Classes and Inheritance Structure</span>
+<span class="sd">----------------------------------------------</span>
+<span class="sd">.. inheritance-diagram:: BlazarSEDFit.jet_model</span>
+
+
+<span class="sd">  </span>
+
+
+<span class="sd">Module API</span>
+<span class="sd">-----------</span>
+
+<span class="sd">Summary</span>
+<span class="sd">---------</span>
+<span class="sd">.. autosummary::</span>
+<span class="sd">   JetParameter</span>
+<span class="sd">   Jet</span>
+<span class="sd">    </span>
+<span class="sd">Module API</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on 2013 1 27</span>
+
+<span class="sd">@author: orion</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="c1">#import jet_wrapper</span>
+<span class="kn">from</span> <span class="nn">BlazarSED</span> <span class="k">import</span>  <span class="n">BlazarSED</span> 
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span>  <span class="nn">spectral_shapes</span>  
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">log10</span><span class="p">,</span><span class="n">array</span><span class="p">,</span><span class="n">zeros</span><span class="p">,</span><span class="n">power</span><span class="p">,</span><span class="n">shape</span>
+
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
+
+<span class="kn">from</span> <span class="nn">model_parameters</span> <span class="k">import</span> <span class="n">ModelParameterArray</span><span class="p">,</span> <span class="n">ModelParameter</span>
+<span class="kn">from</span> <span class="nn">base_model</span> <span class="k">import</span>  <span class="n">Model</span>
+
+<span class="kn">from</span> <span class="nn">output</span> <span class="k">import</span> <span class="n">makedir</span><span class="p">,</span><span class="n">workplace</span><span class="p">,</span><span class="n">clean_dir</span>
+
+<span class="kn">from</span> <span class="nn">sed_models_dic</span> <span class="k">import</span> <span class="n">nuFnu_obs_dic</span>
+
+<div class="viewcode-block" id="JetParameter"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.JetParameter">[docs]</a><span class="k">class</span> <span class="nc">JetParameter</span><span class="p">(</span><span class="n">ModelParameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    This class is a subclass of the :class:`.ModelParameter` class,</span>
+<span class="sd">    extending the base class to  handles SSC/EC parameters, </span>
+<span class="sd">    overriding the :meth:`.ModelParameter.set` in order to propagate the</span>
+<span class="sd">    parameter value to the BlazarSED object instance</span>
+<span class="sd">           </span>
+<span class="sd"> </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">blob</span><span class="p">,</span><span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">=</span><span class="n">blob</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">par_type_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;electron_density&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;Disk&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;BLR&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;DT&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;region_size&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;electron_energy&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;LE_spectral_slope&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;HE_spectral_slope&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;high-energy-cut-off&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;low-energy-cut-off&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;spectral_curvature&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;turn-over-energy&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;magnetic_field&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;beaming&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;jet-viewing-angle&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;jet-bulk-factor&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;redshift&#39;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;par_type&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;par_type&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_type_list</span><span class="p">:</span>
+            <span class="n">msg</span><span class="o">=</span> <span class="s2">&quot;blob_parameter type </span><span class="si">%s</span><span class="s2"> not allowed&quot;</span><span class="o">%</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;par_type&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> please choose among </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">par_type_list</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">msg</span><span class="p">)</span>
+            
+        
+ 
+        <span class="nb">super</span><span class="p">(</span><span class="n">JetParameter</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>  <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        
+       
+        <span class="k">if</span> <span class="s1">&#39;val&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">val</span><span class="o">=</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assign_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+            
+        
+        
+    <span class="c1">#OVERRIDES Base Method</span>
+<div class="viewcode-block" id="JetParameter.set"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.JetParameter.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;        </span>
+<span class="sd">        overrides the  :meth:`.ModelParameter.set` method in order to propagate the</span>
+<span class="sd">        parameter value to the BlazarSED object instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">JetParameter</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">keywords</span> <span class="p">)</span>
+        
+        
+        <span class="k">if</span> <span class="s1">&#39;val&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">assign_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">])</span> </div>
+        
+    
+<div class="viewcode-block" id="JetParameter.assign_val"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.JetParameter.assign_val">[docs]</a>    <span class="k">def</span> <span class="nf">assign_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sets the :class:`.JetParameter` value in the BlazarSED object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+    
+        <span class="n">b</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
+        
+        
+           
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">==</span><span class="nb">int</span><span class="p">:</span>
+            <span class="n">val</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">==</span><span class="nb">float</span><span class="p">:</span>
+            <span class="n">val</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">==</span><span class="nb">str</span><span class="p">:</span>
+            <span class="n">val</span><span class="o">=</span><span class="n">val</span>
+        
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">)</span></div></div>
+        
+        
+    
+
+
+<div class="viewcode-block" id="build_emitting_region_dic"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.build_emitting_region_dic">[docs]</a><span class="k">def</span> <span class="nf">build_emitting_region_dic</span><span class="p">(</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;delta&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    Builds a dictionary to init the :class:`.JetParameter` </span>
+<span class="sd">    objects   for the emitting region:</span>
+<span class="sd">        </span>
+<span class="sd">        - **R**, the radius of the emitting region in cm</span>
+<span class="sd">        </span>
+<span class="sd">        - **B**, the magnetic field in G</span>
+<span class="sd">        </span>
+<span class="sd">        - **beaming**, the beaming factor</span>
+<span class="sd">        </span>
+<span class="sd">        - **z**, the redshift</span>
+
+<span class="sd">   </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">model_dic</span><span class="o">=</span><span class="p">{}</span>
+    <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;region_size&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;cm&#39;</span><span class="p">]</span>
+    <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;magnetic_field&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;G&#39;</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">beaming_expr</span><span class="o">==</span><span class="s1">&#39;bulk_theta&#39;</span><span class="p">:</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;theta&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;jet-viewing-angle&#39;</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;deg&#39;</span><span class="p">]</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;BulkFactor&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;jet-bulk-factor&#39;</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;Lorentz-factor&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">beaming_expr</span><span class="o">==</span><span class="s1">&#39;delta&#39;</span> <span class="ow">or</span> <span class="n">beaming_expr</span><span class="o">==</span><span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;beam_obj&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;beaming&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span>  <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;wrong beaming_expr=&quot;</span><span class="si">%s</span><span class="s1">&quot; value, allowed &#39;delta&#39; or &#39;bulk_theta&#39; &#39;&#39;&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">beaming_expr</span><span class="p">))</span>
+    
+    <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;z_cosm&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;redshift&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+    
+    
+    <span class="k">return</span> <span class="n">model_dic</span></div>
+    
+
+
+
+
+<div class="viewcode-block" id="build_ExtFields_dic"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.build_ExtFields_dic">[docs]</a><span class="k">def</span> <span class="nf">build_ExtFields_dic</span><span class="p">(</span><span class="n">EC_model_list</span><span class="p">,</span><span class="n">allowed_EC_components_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+
+        
+    
+    <span class="n">model_dic</span><span class="o">=</span><span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">EC_model</span> <span class="ow">in</span> <span class="n">EC_model_list</span><span class="p">:</span>
+            
+        <span class="k">if</span> <span class="n">EC_model</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_EC_components_list</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;EC model </span><span class="si">%s</span><span class="s2"> not allowed&quot;</span><span class="o">%</span><span class="n">EC_model</span><span class="p">,</span><span class="s2">&quot;please choose among &quot;</span><span class="p">,</span> <span class="n">allowed_EC_components_list</span><span class="p">)</span>
+     
+     
+        <span class="k">if</span> <span class="n">EC_model</span><span class="o">==</span><span class="s1">&#39;Disk&#39;</span><span class="p">:</span>
+            <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;L_disk&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Disk&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;erg/s&#39;</span><span class="p">]</span>
+            <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;R_inner_Sw&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Disk&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;Sw. radii&#39;</span><span class="p">]</span>
+            <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;R_ext_Sw&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Disk&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;Sw. radii&#39;</span><span class="p">]</span>
+            <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;T_disk_max&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Disk&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;K&#39;</span><span class="p">]</span>
+            <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;accr_eff&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Disk&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+            <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;R_H&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Disk&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;cm&#39;</span><span class="p">]</span>
+    
+                    
+        <span class="k">if</span> <span class="n">EC_model</span><span class="o">==</span><span class="s1">&#39;BLR&#39;</span><span class="p">:</span>
+            <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;tau_BLR&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;BLR&#39;</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+            <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;R_BLR_in&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;BLR&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;cm&#39;</span><span class="p">]</span>
+            <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;R_BLR_out&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;BLR&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;cm&#39;</span><span class="p">]</span>
+    
+    
+            
+        <span class="k">if</span> <span class="n">EC_model</span><span class="o">==</span><span class="s1">&#39;DT&#39;</span><span class="p">:</span>
+            <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;T_DT&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;DT&#39;</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;K&#39;</span><span class="p">]</span>
+            <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;R_DT&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;DT&#39;</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;cm&#39;</span><span class="p">]</span>
+            <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;tau_DT&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;DT&#39;</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+    
+    
+    <span class="k">return</span> <span class="n">model_dic</span></div>
+
+
+
+
+<div class="viewcode-block" id="build_electron_distribution_dic"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.build_electron_distribution_dic">[docs]</a><span class="k">def</span> <span class="nf">build_electron_distribution_dic</span><span class="p">(</span><span class="n">electron_distribution</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Builds the dictionary to init the :class:`.JetParameter` </span>
+<span class="sd">    objects   for the electron  distribution:</span>
+<span class="sd">        </span>
+<span class="sd">    The following :class:`.JetParameter`: objects the *do not* depend</span>
+<span class="sd">    on the type of electron distribution</span>
+<span class="sd">            </span>
+<span class="sd">            - N, particle density in cm^-3</span>
+<span class="sd">            </span>
+<span class="sd">            - gmin, the minimum value of the electron Lorentz factor</span>
+<span class="sd">            </span>
+<span class="sd">            - gmax, the maximum value of the electron Lorentz factor</span>
+<span class="sd">        </span>
+<span class="sd">    The following :class:`.JetParameter`: objects *depend* on the type of electron distribution:</span>
+<span class="sd">        </span>
+<span class="sd">        - **power law**, electron_distribution=&#39;pl&#39;</span>
+<span class="sd">           </span>
+<span class="sd">           - p</span>
+<span class="sd">        </span>
+<span class="sd">        - **broken power-law**, electron_distribution= **&#39;bkn&#39;**</span>
+
+<span class="sd">            - p</span>
+<span class="sd">            - p_1</span>
+<span class="sd">            - gamma_break</span>
+<span class="sd">        </span>
+<span class="sd">        - **log-parabola**, electron_distribution= **&#39;lp&#39;**</span>
+<span class="sd">            </span>
+<span class="sd">            - r </span>
+<span class="sd">            - s</span>
+<span class="sd">            - gamma0_log_parab (fixed)</span>
+<span class="sd">            </span>
+<span class="sd">        - **log-parabola** with a low energy power-law tail, electron_distribution= **&#39;lppl&#39;**</span>
+<span class="sd">            </span>
+<span class="sd">            - r </span>
+<span class="sd">            - s</span>
+<span class="sd">            - gamma0_log_parab</span>
+<span class="sd">        </span>
+<span class="sd">        - **log-parabola** defined by peak energy, electron_distribution= **&#39;lpep&#39;**</span>
+<span class="sd">            </span>
+<span class="sd">            - r </span>
+<span class="sd">            - s</span>
+<span class="sd">            - gammap_log_parab, </span>
+<span class="sd">        </span>
+<span class="sd">        - **power-law cut-off**, lectron_distribution= **&#39;plc&#39;**</span>
+<span class="sd">        </span>
+<span class="sd">            - p</span>
+<span class="sd">            - gamma_cut</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+     
+        
+    <span class="n">model_dic</span><span class="o">=</span><span class="p">{}</span>
+    <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;N&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;electron_density&#39;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;cm^-3&#39;</span><span class="p">]</span>
+    <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;gmin&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;low-energy-cut-off&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;Lorentz-factor&#39;</span><span class="p">]</span>
+    <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;gmax&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;high-energy-cut-off&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;Lorentz-factor&#39;</span><span class="p">]</span>
+    
+    
+ 
+        
+    <span class="k">if</span> <span class="n">electron_distribution</span><span class="o">==</span><span class="s1">&#39;pl&#39;</span><span class="p">:</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;HE_spectral_slope&#39;</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+            
+            
+    <span class="k">if</span> <span class="n">electron_distribution</span><span class="o">==</span><span class="s1">&#39;bkn&#39;</span><span class="p">:</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LE_spectral_slope&#39;</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;p_1&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;HE_spectral_slope&#39;</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;gamma_break&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;turn-over-energy&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;Lorentz-factor&#39;</span><span class="p">]</span>
+          
+          
+    <span class="k">if</span> <span class="n">electron_distribution</span><span class="o">==</span><span class="s1">&#39;lp&#39;</span><span class="p">:</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LE_spectral_slope&#39;</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;spectral_curvature&#39;</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;turn-over-energy&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;Lorentz-factor&#39;</span><span class="p">,</span><span class="kc">True</span><span class="p">]</span>
+        
+        
+    <span class="k">if</span> <span class="n">electron_distribution</span><span class="o">==</span><span class="s1">&#39;lppl&#39;</span><span class="p">:</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;s&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LE_spectral_slope&#39;</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;spectral_curvature&#39;</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;turn-over-energy&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;Lorentz-factor&#39;</span><span class="p">]</span>
+ 
+ 
+    <span class="k">if</span> <span class="n">electron_distribution</span><span class="o">==</span><span class="s1">&#39;lpep&#39;</span><span class="p">:</span>   
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;spectral_curvature&#39;</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;gammap_log_parab&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;turn-over-energy&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;Lorentz-factor&#39;</span><span class="p">]</span>   
+    
+        
+    <span class="k">if</span> <span class="n">electron_distribution</span><span class="o">==</span><span class="s1">&#39;plc&#39;</span><span class="p">:</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LE_spectral_slope&#39;</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+        <span class="n">model_dic</span><span class="p">[</span><span class="s1">&#39;gamma_cut&#39;</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;turn-over-energy&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="s1">&#39;Lorentz-factor&#39;</span><span class="p">]</span>
+
+    
+    <span class="k">return</span> <span class="n">model_dic</span></div>
+            
+
+
+
+
+
+
+
+<div class="viewcode-block" id="JetSpecComponent"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.JetSpecComponent">[docs]</a><span class="k">class</span> <span class="nc">JetSpecComponent</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">blob_object</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">name</span>
+        
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__nuFnu_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nu_name</span><span class="o">=</span><span class="n">nuFnu_obs_dic</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_ptr</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">blob_object</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">__nuFnu_name</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_ptr</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">blob_object</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">__nu_name</span><span class="p">)</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">SED</span><span class="o">=</span><span class="n">spectral_shapes</span><span class="o">.</span><span class="n">SED</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+    
+
+
+
+    
+<div class="viewcode-block" id="Jet"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet">[docs]</a><span class="k">class</span> <span class="nc">Jet</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     </span>
+<span class="sd">    This class allows to build a ``jet`` model providing the interface to the </span>
+<span class="sd">    BlazarSED code, giving  full access to the physical parameters and</span>
+<span class="sd">    providing the methods to run the code.</span>
+<span class="sd">    A :class:`Jet` object  will store the</span>
+<span class="sd">    the physical parameters in  the :class:`.ModelParameterArray` class,</span>
+<span class="sd">    that is a collection of :class:`JetParameter` objects.</span>
+
+<span class="sd">    :param name: (str), name id for the model</span>
+<span class="sd">    :param electron_distribution: (str), the type of electron distribution</span>
+<span class="sd">    </span>
+<span class="sd">    :ivar parameters: instance of the :class:`.ModelParameterArray` </span>
+<span class="sd">        storing and handling the array of  :class:`JetParameters` instances</span>
+<span class="sd">     </span>
+<span class="sd">    **Examples**</span>
+<span class="sd">    </span>
+<span class="sd">    .. literalinclude:: ../../../examples/modules/jet_model/Jet_example.py</span>
+<span class="sd">       </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lp&#39;</span><span class="p">,</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;delta&#39;</span><span class="p">,</span><span class="n">jet_workplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">clean_work_dir</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Constructor</span>
+<span class="sd">            :param name: (str), name id for the model</span>
+<span class="sd">            :param electron_distribution: (str), the type of electron distribution</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="nb">super</span><span class="p">(</span><span class="n">Jet</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>  <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="o">=</span><span class="s1">&#39;jet&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__scale</span><span class="o">=</span><span class="s1">&#39;lin-lin&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span> <span class="o">=</span> <span class="n">init_SED</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">jet_wrapper_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/jet_wrapper&#39;</span>
+        
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;BLAZARSED&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">jet_wrapper_dir</span>
+        
+        <span class="k">if</span> <span class="n">jet_workplace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out_dir</span><span class="o">=</span><span class="n">workplace</span><span class="o">.</span><span class="n">out_dir</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_BalzarSED_prod/&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out_dir</span><span class="o">=</span><span class="n">jet_workplace</span><span class="o">.</span><span class="n">out_dir</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_BalzarSED_prod/&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span><span class="n">clean_work_dir</span><span class="o">=</span><span class="n">clean_work_dir</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_BlazarSED</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_EC_components_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;BLR&#39;</span><span class="p">,</span><span class="s1">&#39;DT&#39;</span><span class="p">,</span><span class="s1">&#39;Star&#39;</span><span class="p">,</span><span class="s1">&#39;CMB&#39;</span><span class="p">,</span><span class="s1">&#39;Disk&#39;</span><span class="p">,</span><span class="s1">&#39;All&#39;</span><span class="p">,</span><span class="s1">&#39;CMB_stat&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">EC_components_list</span> <span class="o">=</span><span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="o">=</span><span class="p">[]</span>
+        
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_spectral_component</span><span class="p">(</span><span class="s1">&#39;Sum&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_spectral_component</span><span class="p">(</span><span class="s1">&#39;Sync&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_spectral_component</span><span class="p">(</span><span class="s1">&#39;SSC&#39;</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">SED</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;Sum&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">SED</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">ModelParameterArray</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__emitting_region_dic</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__electron_distribution_dic</span><span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__external_photon_fields_dic</span><span class="o">=</span> <span class="kc">None</span>
+        
+        
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_electron_distribution</span><span class="p">(</span><span class="n">electron_distribution</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_emitting_region</span><span class="p">(</span><span class="n">beaming_expr</span><span class="p">)</span>
+
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">flux_plot_lim</span><span class="o">=</span><span class="mf">1E-30</span>
+    
+<div class="viewcode-block" id="Jet.show_spectral_components"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.show_spectral_components">[docs]</a>    <span class="k">def</span> <span class="nf">show_spectral_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="nb">print</span> <span class="s2">&quot;Spectral components for Jet model:</span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+ 
+        <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">:</span>
+            
+            <span class="nb">print</span> <span class="s2">&quot;comp: </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">comp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            
+        <span class="nb">print</span></div>
+    
+    
+    
+    
+<div class="viewcode-block" id="Jet.get_spectral_component_by_name"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_spectral_component_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_spectral_component_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="s2">&quot;no spectral components with name </span><span class="si">%s</span><span class="s2"> found&quot;</span><span class="o">%</span><span class="n">name</span>
+                <span class="nb">print</span> <span class="s2">&quot;names in array are:&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">show_spectral_components</span><span class="p">()</span>
+            
+            <span class="k">return</span> <span class="kc">None</span></div>
+    
+    
+    
+<div class="viewcode-block" id="Jet.list_spectral_components"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.list_spectral_components">[docs]</a>    <span class="k">def</span> <span class="nf">list_spectral_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">)):</span>
+            <span class="nb">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span></div>
+               
+        
+        
+        
+    
+<div class="viewcode-block" id="Jet.del_spectral_component"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.del_spectral_component">[docs]</a>    <span class="k">def</span> <span class="nf">del_spectral_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+ 
+        <span class="n">comp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">comp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span></div>
+        
+    
+    
+    
+    
+    
+<div class="viewcode-block" id="Jet.add_spectral_component"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.add_spectral_component">[docs]</a>    <span class="k">def</span> <span class="nf">add_spectral_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">JetSpecComponent</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">))</span></div>
+
+        
+        
+        
+        
+        
+    
+<div class="viewcode-block" id="Jet.set_emitting_region"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.set_emitting_region">[docs]</a>    <span class="k">def</span> <span class="nf">set_emitting_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">beaming_expr</span><span class="p">):</span>
+        
+        <span class="k">if</span>  <span class="bp">self</span><span class="o">.</span><span class="n">__emitting_region_dic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">del_par_from_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__emitting_region_dic</span><span class="p">)</span>
+        
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">,</span><span class="s1">&#39;BEAMING_EXPR&#39;</span><span class="p">,</span><span class="n">beaming_expr</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__emitting_region_dic</span><span class="o">=</span><span class="n">build_emitting_region_dic</span><span class="p">(</span><span class="n">beaming_expr</span><span class="o">=</span><span class="n">beaming_expr</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_par_from_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__emitting_region_dic</span><span class="p">)</span></div>
+        
+        
+        
+        
+        
+        
+<div class="viewcode-block" id="Jet.set_electron_distribution"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.set_electron_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">set_electron_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">electron_distribution</span><span class="p">):</span> 
+        
+        <span class="n">elec_models_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;lp&#39;</span><span class="p">,</span><span class="s1">&#39;pl&#39;</span><span class="p">,</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="s1">&#39;lpep&#39;</span><span class="p">,</span><span class="s1">&#39;plc&#39;</span><span class="p">,</span><span class="s1">&#39;bkn&#39;</span><span class="p">]</span>
+     
+        
+        <span class="k">if</span> <span class="n">electron_distribution</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">elec_models_list</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;electron distribution model </span><span class="si">%s</span><span class="s2"> not allowed&quot;</span><span class="o">%</span><span class="n">electron_distribution</span>
+            <span class="nb">print</span> <span class="s2">&quot;please choose among: &quot;</span><span class="p">,</span> <span class="n">elec_models_list</span>
+            <span class="k">return</span> 
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__electron_distribution_dic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">del_par_from_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__electron_distribution_dic</span><span class="p">)</span>
+            
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__electron_distribution</span><span class="o">=</span><span class="n">electron_distribution</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">DISTR</span><span class="o">=</span><span class="n">electron_distribution</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">__electron_distribution_dic</span> <span class="o">=</span> <span class="n">build_electron_distribution_dic</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">__electron_distribution</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_par_from_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__electron_distribution_dic</span><span class="p">)</span></div>
+
+    
+    
+    
+    
+    
+    
+<div class="viewcode-block" id="Jet.del_EC_component"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.del_EC_component">[docs]</a>    <span class="k">def</span> <span class="nf">del_EC_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">EC_components</span><span class="p">):</span>
+        
+        <span class="n">_del_EC_components</span><span class="o">=</span><span class="n">EC_components</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">EC_components</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">_del_EC_components</span><span class="o">=</span><span class="p">[</span><span class="n">EC_components</span><span class="p">]</span>
+
+
+
+        <span class="k">if</span> <span class="s1">&#39;All&#39;</span> <span class="ow">in</span> <span class="n">EC_components</span><span class="p">:</span>
+            <span class="n">_del_EC_components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_allowed_EC_components_list</span><span class="p">[::]</span>
+                 
+
+        <span class="k">for</span> <span class="n">EC_component</span> <span class="ow">in</span> <span class="n">_del_EC_components</span><span class="p">:</span>
+
+
+            <span class="k">if</span> <span class="n">EC_component</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_EC_components_list</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;EC_component </span><span class="si">%s</span><span class="s2"> not allowed&quot;</span> <span class="o">%</span> <span class="n">EC_component</span><span class="p">,</span> <span class="s2">&quot;please choose among &quot;</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_EC_components_list</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">EC_component</span><span class="o">==</span><span class="s1">&#39;Disk&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;Disk&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_EC_Disk</span><span class="o">=</span><span class="mi">0</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">del_spectral_component</span><span class="p">(</span><span class="s1">&#39;EC_Disk&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">del_spectral_component</span><span class="p">(</span><span class="s1">&#39;Disk&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">EC_components_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">EC_component</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">EC_component</span><span class="o">==</span><span class="s1">&#39;BLR&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;BLR&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_EC_BLR</span><span class="o">=</span><span class="mi">0</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">del_spectral_component</span><span class="p">(</span><span class="s1">&#39;EC_BLR&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">EC_components_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">EC_component</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">EC_component</span><span class="o">==</span><span class="s1">&#39;DT&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;DT&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_EC_DT</span><span class="o">=</span><span class="mi">0</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">del_spectral_component</span><span class="p">(</span><span class="s1">&#39;EC_DT&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">del_spectral_component</span><span class="p">(</span><span class="s1">&#39;DT&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">EC_components_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">EC_component</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">EC_component</span><span class="o">==</span><span class="s1">&#39;CMB&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;CMB&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_EC_CMB</span><span class="o">=</span><span class="mi">0</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">del_spectral_component</span><span class="p">(</span><span class="s1">&#39;EC_CMB&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">EC_components_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">EC_component</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">EC_component</span><span class="o">==</span><span class="s1">&#39;CMB_stat&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;CMB_stat&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_EC_CMB_stat</span><span class="o">=</span><span class="mi">0</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">del_spectral_component</span><span class="p">(</span><span class="s1">&#39;EC_CMB_stat&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">EC_components_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">EC_component</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">del_par_from_dic</span><span class="p">(</span><span class="n">build_ExtFields_dic</span><span class="p">(</span><span class="n">_del_EC_components</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_allowed_EC_components_list</span><span class="p">))</span></div>
+
+            
+            
+            
+            
+            
+<div class="viewcode-block" id="Jet.add_EC_component"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.add_EC_component">[docs]</a>    <span class="k">def</span> <span class="nf">add_EC_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">EC_components</span><span class="p">):</span>
+
+        <span class="n">_add_EC_components</span> <span class="o">=</span> <span class="n">EC_components</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_add_EC_components</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">_add_EC_components</span> <span class="o">=</span> <span class="p">[</span><span class="n">EC_components</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;All&#39;</span> <span class="ow">in</span> <span class="n">EC_components</span><span class="p">:</span>
+            <span class="n">_add_EC_components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_allowed_EC_components_list</span><span class="p">[::]</span>
+
+        <span class="k">for</span> <span class="n">EC_component</span> <span class="ow">in</span> <span class="n">_add_EC_components</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">EC_component</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_EC_components_list</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;EC_component </span><span class="si">%s</span><span class="s2"> not allowed&quot;</span> <span class="o">%</span> <span class="n">EC_component</span><span class="p">,</span> <span class="s2">&quot;please choose among &quot;</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_EC_components_list</span><span class="p">)</span>
+        
+        
+            
+            
+            <span class="k">if</span> <span class="n">EC_component</span><span class="o">==</span><span class="s1">&#39;Disk&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_EC_Disk</span><span class="o">=</span><span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;EC_Disk&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_spectral_component</span><span class="p">(</span><span class="s1">&#39;EC_Disk&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">EC_components_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EC_component</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;Disk&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_spectral_component</span><span class="p">(</span><span class="s1">&#39;Disk&#39;</span><span class="p">)</span>
+
+                    
+            <span class="k">if</span> <span class="n">EC_component</span><span class="o">==</span><span class="s1">&#39;BLR&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_EC_BLR</span><span class="o">=</span><span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;EC_BLR&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_spectral_component</span><span class="p">(</span><span class="s1">&#39;EC_BLR&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">EC_components_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EC_component</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;Disk&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_spectral_component</span><span class="p">(</span><span class="s1">&#39;Disk&#39;</span><span class="p">)</span>
+
+                
+            <span class="k">if</span> <span class="n">EC_component</span><span class="o">==</span><span class="s1">&#39;DT&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_EC_DT</span><span class="o">=</span><span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;EC_DT&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_spectral_component</span><span class="p">(</span><span class="s1">&#39;EC_DT&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">EC_components_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EC_component</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;DT&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_spectral_component</span><span class="p">(</span><span class="s1">&#39;DT&#39;</span><span class="p">)</span>
+
+            
+            <span class="k">if</span> <span class="n">EC_component</span><span class="o">==</span><span class="s1">&#39;CMB&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_EC_CMB</span><span class="o">=</span><span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;EC_CMB&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_spectral_component</span><span class="p">(</span><span class="s1">&#39;EC_CMB&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">EC_components_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EC_component</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">EC_component</span> <span class="o">==</span> <span class="s1">&#39;CMB_stat&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_EC_CMB_stat</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;EC_CMB_stat&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span>  <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_spectral_component</span><span class="p">(</span><span class="s1">&#39;EC_CMB_stat&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">EC_components_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EC_component</span><span class="p">)</span>
+
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_par_from_dic</span><span class="p">(</span><span class="n">build_ExtFields_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EC_components_list</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_allowed_EC_components_list</span><span class="p">))</span></div>
+            
+    
+    
+    
+<div class="viewcode-block" id="Jet.del_par_from_dic"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.del_par_from_dic">[docs]</a>    <span class="k">def</span> <span class="nf">del_par_from_dic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">model_dic</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">model_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            
+            <span class="n">par</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">del_par</span><span class="p">(</span><span class="n">par</span><span class="p">)</span></div>
+            
+            
+    
+    
+<div class="viewcode-block" id="Jet.add_par_from_dic"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.add_par_from_dic">[docs]</a>    <span class="k">def</span> <span class="nf">add_par_from_dic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">model_dic</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        add the :class:`.JetParameter` object to the :class:`.ModelParameterArray` </span>
+<span class="sd">        usign the dictionaries built by the :func:`build_emitting_region_dic` </span>
+<span class="sd">        and :func:`build_electron_distribution_dic`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">model_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        
+            <span class="n">pname</span><span class="o">=</span><span class="n">key</span>
+            <span class="n">pname_test</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pname_test</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">pval</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">,</span><span class="n">pname</span><span class="p">)</span>
+                <span class="n">ptype</span><span class="o">=</span><span class="n">model_dic</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">vmin</span><span class="o">=</span><span class="n">model_dic</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">vmax</span><span class="o">=</span><span class="n">model_dic</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">punit</span><span class="o">=</span><span class="n">model_dic</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+                
+                <span class="n">froz</span><span class="o">=</span><span class="kc">False</span>
+    
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">model_dic</span><span class="p">[</span><span class="n">key</span><span class="p">])</span><span class="o">&gt;</span><span class="mi">4</span><span class="p">:</span>
+                    <span class="n">froz</span><span class="o">=</span><span class="n">model_dic</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span>
+                
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">JetParameter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="n">pname</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="n">ptype</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="n">pval</span><span class="p">,</span><span class="n">val_min</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="n">punit</span><span class="p">,</span><span class="n">frozen</span><span class="o">=</span><span class="n">froz</span><span class="p">))</span></div>
+    
+
+
+    <span class="c1">#PROTECTED MEMBER ACCESS</span>
+    <span class="c1">#!! controlla i paramteri ....</span>
+<div class="viewcode-block" id="Jet.get_electron_distribution"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_electron_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_electron_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__electron_distribution</span></div>
+    
+    
+    
+<div class="viewcode-block" id="Jet.get_DL_cm"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_DL_cm">[docs]</a>    <span class="k">def</span> <span class="nf">get_DL_cm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_BlazarSED</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">dist</span></div>
+    
+    
+    
+<div class="viewcode-block" id="Jet.get_beaming"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_beaming">[docs]</a>    <span class="k">def</span> <span class="nf">get_beaming</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">bulk_factor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">beaming</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">theta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">theta</span>
+        
+        <span class="k">if</span> <span class="n">bulk_factor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bulk_factor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">BulkFactor</span>
+        
+        <span class="k">if</span> <span class="n">beaming</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">beaming</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">beam_obj</span>
+        
+        <span class="n">BlazarSED</span><span class="o">.</span><span class="n">SetBeaming</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">beam_obj</span></div>
+    
+<div class="viewcode-block" id="Jet.set_flag"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.set_flag">[docs]</a>    <span class="k">def</span> <span class="nf">set_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">flag</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">STEM</span><span class="o">=</span><span class="n">flag</span></div>
+    
+<div class="viewcode-block" id="Jet.get_flag"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_flag">[docs]</a>    <span class="k">def</span> <span class="nf">get_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">STEM</span></div>
+
+<div class="viewcode-block" id="Jet.get_path"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">path</span></div>
+
+<div class="viewcode-block" id="Jet.set_path"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.set_path">[docs]</a>    <span class="k">def</span> <span class="nf">set_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">clean_work_dir</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">path</span><span class="o">=</span><span class="n">path</span>
+        <span class="n">makedir</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">clean_work_dir</span><span class="o">=</span><span class="n">clean_work_dir</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Jet.set_SSC_mode"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.set_SSC_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_SSC_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_SSC</span><span class="o">=</span><span class="n">val</span></div>
+    
+<div class="viewcode-block" id="Jet.get_SSC_mode"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_SSC_mode">[docs]</a>    <span class="k">def</span> <span class="nf">get_SSC_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_SSC</span></div>
+    
+<div class="viewcode-block" id="Jet.set_IC_mode"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.set_IC_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_IC_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_IC</span><span class="o">=</span><span class="n">val</span></div>
+    
+<div class="viewcode-block" id="Jet.get_IC_mode"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_IC_mode">[docs]</a>    <span class="k">def</span> <span class="nf">get_IC_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_IC</span></div>
+    
+<div class="viewcode-block" id="Jet.set_sync_mode"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.set_sync_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_sync_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_Sync</span><span class="o">=</span><span class="n">val</span></div>
+    
+<div class="viewcode-block" id="Jet.get_sync_mode"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_sync_mode">[docs]</a>    <span class="k">def</span> <span class="nf">get_sync_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">do_Sync</span></div>
+   
+<div class="viewcode-block" id="Jet.set_IC_nu_size"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.set_IC_nu_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_IC_nu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">nu_IC_size</span><span class="o">=</span><span class="n">val</span></div>
+        
+<div class="viewcode-block" id="Jet.get_IC_nu_size"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_IC_nu_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_IC_nu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">nu_IC_size</span></div>
+    
+<div class="viewcode-block" id="Jet.set_seed_nu_size"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.set_seed_nu_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_seed_nu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">nu_seed_size</span><span class="o">=</span><span class="n">val</span></div>
+        
+<div class="viewcode-block" id="Jet.get_seed_nu_size"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_seed_nu_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_seed_nu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">nu_seed_size</span></div>
+    
+<div class="viewcode-block" id="Jet.set_gamma_grid_size"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.set_gamma_grid_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_gamma_grid_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">gamma_grid_size</span><span class="o">=</span><span class="n">val</span></div>
+        
+<div class="viewcode-block" id="Jet.get_gamma_grid_size"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_gamma_grid_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_gamma_grid_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">gamma_grid_size</span></div>
+    
+    
+<div class="viewcode-block" id="Jet.set_verbosity"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.set_verbosity">[docs]</a>    <span class="k">def</span> <span class="nf">set_verbosity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">verbose</span><span class="o">=</span><span class="n">val</span></div>
+    
+<div class="viewcode-block" id="Jet.get_verbosity"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_verbosity">[docs]</a>    <span class="k">def</span> <span class="nf">get_verbosity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span>  <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">verbose</span></div>
+    
+<div class="viewcode-block" id="Jet.debug_synch"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.debug_synch">[docs]</a>    <span class="k">def</span> <span class="nf">debug_synch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="s2">&quot;nu stop synch&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">nu_stop_Sync</span>
+        <span class="nb">print</span> <span class="s2">&quot;nu stop synch ssc&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">nu_stop_Sync_ssc</span>
+        <span class="nb">print</span> <span class="s2">&quot;ID MAX SYNCH&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">NU_INT_STOP_Sync_SSC</span></div>
+        
+<div class="viewcode-block" id="Jet.debug_SSC"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.debug_SSC">[docs]</a>    <span class="k">def</span> <span class="nf">debug_SSC</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="s2">&quot;nu start SSC&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">nu_start_SSC</span>
+        <span class="nb">print</span> <span class="s2">&quot;nu stop SSC&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">nu_stop_SSC</span>
+        <span class="nb">print</span> <span class="s2">&quot;ID MAX SSC&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">NU_INT_STOP_COMPTON_SSC</span></div>
+    
+<div class="viewcode-block" id="Jet.set_par"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.set_par">[docs]</a>    <span class="k">def</span> <span class="nf">set_par</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par_name</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        shortcut to :class:`ModelParametersArray.set` method </span>
+<span class="sd">        set a parameter value</span>
+<span class="sd">        </span>
+<span class="sd">        :param par_name: (srt), name of the parameter</span>
+<span class="sd">        :param val: parameter value</span>
+<span class="sd">       </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">par_name</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">val</span><span class="p">)</span></div>
+
+    
+        
+<div class="viewcode-block" id="Jet.get_par_by_type"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_par_by_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_par_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        get parameter by type</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">par_array</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">par_type</span><span class="o">==</span><span class="n">par_type</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">param</span>
+        
+        <span class="k">return</span> <span class="kc">None</span></div>
+    
+<div class="viewcode-block" id="Jet.get_par_by_name"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_par_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_par_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        get parameter by type</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">par_array</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">par_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">param</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+    
+    
+<div class="viewcode-block" id="Jet.show_model"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.show_model">[docs]</a>    <span class="k">def</span> <span class="nf">show_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span></div>
+        
+        
+<div class="viewcode-block" id="Jet.show_pars"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.show_pars">[docs]</a>    <span class="k">def</span> <span class="nf">show_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        shortcut to :class:`ModelParametersArray.show_pars` method </span>
+<span class="sd">        shows all the paramters in the model</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+ 
+        <span class="nb">print</span> <span class="s2">&quot;-----------------------------------------------------------------------------------------&quot;</span>
+        <span class="nb">print</span> <span class="s2">&quot;model parameters for jet model:&quot;</span>
+        <span class="nb">print</span> 
+        
+        
+        <span class="nb">print</span> <span class="s2">&quot;electron distribution type = </span><span class="si">%s</span><span class="s2">  &quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__electron_distribution</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+
+        <span class="nb">print</span> <span class="s2">&quot;-----------------------------------------------------------------------------------------&quot;</span>          </div>
+
+        
+<div class="viewcode-block" id="Jet.PlotModel"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.PlotModel">[docs]</a>    <span class="k">def</span> <span class="nf">PlotModel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Plot</span><span class="p">,</span><span class="n">clean</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">comp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">Plot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">clean</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+                <span class="n">Plot</span><span class="o">.</span><span class="n">clean_model_lines</span><span class="p">()</span>
+            
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">comp</span> <span class="ow">is</span>  <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">((</span><span class="n">comp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>  <span class="ow">and</span> <span class="p">(</span><span class="n">comp</span><span class="o">==</span><span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)):</span>
+                    
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="s1">&#39;Sum&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">comp_label</span><span class="o">=</span> <span class="s1">&#39;Jet model&#39;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">comp_label</span><span class="o">=</span><span class="n">label</span>
+                        <span class="n">line_style</span><span class="o">=</span><span class="s1">&#39;-&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">comp_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+                        <span class="n">line_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span>
+                    <span class="n">Plot</span><span class="o">.</span><span class="n">add_model_plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">SED</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="n">autoscale</span><span class="p">,</span><span class="n">line_style</span><span class="o">=</span><span class="n">line_style</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">comp_label</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;the plot window is not defined&quot;</span></div>
+    
+<div class="viewcode-block" id="Jet.init_BlazarSED"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.init_BlazarSED">[docs]</a>    <span class="k">def</span> <span class="nf">init_BlazarSED</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">BlazarSED</span><span class="o">.</span><span class="n">Init</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">)</span></div>
+    
+    
+
+
+<div class="viewcode-block" id="Jet.eval"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">init</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">fill_SED</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">nu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">get_model</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">loglog</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">phys_output</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the BlazarSED  code for the current `JetModel` instance.</span>
+<span class="sd">        </span>
+<span class="sd">        :param init: (boolean), &quot;defualt=True&quot; initializes the BlazarSED code  </span>
+<span class="sd">            for the current `Jet` instance parameters values.</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+        
+        
+        <span class="k">if</span> <span class="n">init</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+
+            <span class="n">BlazarSED</span><span class="o">.</span><span class="n">Init</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">)</span>
+
+            
+        
+        <span class="n">BlazarSED</span><span class="o">.</span><span class="n">Run_SED</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">)</span>
+        
+        
+        <span class="k">if</span> <span class="n">phys_output</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="n">BlazarSED</span><span class="o">.</span><span class="n">EnergeticOutput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">)</span>
+        
+        <span class="n">nu_sed_sum</span><span class="p">,</span><span class="n">nuFnu_sed_sum</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_SED_points</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">fill_SED</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        
+            <span class="bp">self</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">nu</span><span class="o">=</span><span class="n">nu_sed_sum</span><span class="p">,</span><span class="n">nuFnu</span><span class="o">=</span><span class="n">nuFnu_sed_sum</span><span class="p">)</span>
+        
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">)):</span>
+
+                <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;fill name&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">nu_sed</span><span class="p">,</span><span class="n">nuFnu_sed</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_SED_points</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">spectral_components</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">nu</span><span class="o">=</span><span class="n">nu_sed</span><span class="p">,</span><span class="n">nuFnu</span><span class="o">=</span><span class="n">nuFnu_sed</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">nu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            
+        
+            
+            <span class="k">if</span> <span class="n">loglog</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+
+                <span class="n">model</span><span class="o">=</span><span class="n">log10</span><span class="p">(</span><span class="n">nuFnu_sed_sum</span><span class="p">)</span>  
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">nuFnu_sed_sum</span>
+        
+        <span class="k">else</span> <span class="p">:</span>
+           
+            <span class="k">if</span> <span class="n">shape</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span><span class="o">==</span><span class="p">():</span>
+ 
+                <span class="n">nu</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="n">nu</span><span class="p">])</span>
+            
+            <span class="k">if</span> <span class="n">loglog</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+                <span class="n">nu_log</span><span class="o">=</span><span class="n">log10</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nu_log</span><span class="o">=</span><span class="n">nu</span>
+
+            <span class="c1">#nu_sed_log,nuFnu_sed_log= self.get_SED_points(log_log=True)</span>
+            
+            <span class="n">nu_sed_log</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">nu_sed_sum</span><span class="p">)</span>
+            <span class="n">nuFnu_sed_log</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">nuFnu_sed_sum</span><span class="p">)</span>
+            
+            <span class="c1">#print &quot;here: &quot;,nu_log, nu_sed_log.min() </span>
+            <span class="n">msk</span><span class="o">=</span> <span class="n">nu_log</span> <span class="o">&gt;</span> <span class="n">nu_sed_log</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> 
+            
+
+            <span class="n">msk</span><span class="o">*=</span>  <span class="n">nu_log</span> <span class="o">&lt;</span> <span class="n">nu_sed_log</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            
+           
+            
+            <span class="k">if</span> <span class="n">loglog</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">zeros</span><span class="p">(</span><span class="n">nu_log</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> 
+                
+                <span class="n">nuFnu_log</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">nuFnu_sed_sum</span><span class="p">)</span>
+                
+                <span class="n">f_interp</span> <span class="o">=</span><span class="n">interp1d</span><span class="p">(</span><span class="n">nu_sed_log</span><span class="p">,</span><span class="n">nuFnu_sed_log</span><span class="p">,</span><span class="n">bounds_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                
+                
+                <span class="n">model</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span> <span class="o">=</span> <span class="n">power</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="n">f_interp</span><span class="p">(</span><span class="n">nu_log</span><span class="p">[</span><span class="n">msk</span><span class="p">]))</span>
+               
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">zeros</span><span class="p">(</span><span class="n">nu_log</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flux_plot_lim</span><span class="p">)</span>
+
+                <span class="n">f_interp</span> <span class="o">=</span><span class="n">interp1d</span><span class="p">(</span><span class="n">nu_sed_log</span><span class="p">,</span><span class="n">nuFnu_sed_log</span><span class="p">,</span><span class="n">bounds_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            
+                <span class="n">model</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_interp</span><span class="p">(</span><span class="n">nu_log</span><span class="p">[</span><span class="n">msk</span><span class="p">])</span>
+                
+                
+        <span class="k">if</span> <span class="n">plot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">label</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+                    
+            <span class="bp">self</span><span class="o">.</span><span class="n">PlotModel</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        
+        
+        <span class="k">if</span> <span class="n">get_model</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">model</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+    
+        
+        
+   
+    
+<div class="viewcode-block" id="Jet.get_SED_points"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_SED_points">[docs]</a>    <span class="k">def</span> <span class="nf">get_SED_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Sum&#39;</span><span class="p">):</span>
+    
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">spec_comp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            
+            
+            <span class="n">nuFnu_ptr</span><span class="o">=</span><span class="n">spec_comp</span><span class="o">.</span><span class="n">nuFnu_ptr</span>
+            <span class="n">nu_ptr</span><span class="o">=</span><span class="n">spec_comp</span><span class="o">.</span><span class="n">nu_ptr</span>
+        
+            <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="o">.</span><span class="n">spec_array_size</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+                <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">BlazarSED</span><span class="o">.</span><span class="n">get_freq_array</span><span class="p">(</span><span class="n">nu_ptr</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>          
+                <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">BlazarSED</span><span class="o">.</span><span class="n">get_freq_array</span><span class="p">(</span><span class="n">nuFnu_ptr</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+                
+                <span class="c1">#print&quot;%s %e %e&quot;%(name,x[i],y[i])</span>
+                
+            <span class="n">msk</span><span class="o">=</span><span class="n">y</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">flux_plot_lim</span>
+            
+            <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+            
+    
+            
+            <span class="k">if</span> <span class="n">log_log</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+                
+                
+                <span class="c1">#x=x[msk]</span>
+                <span class="c1">#    y=y[msk]</span>
+                
+                <span class="n">x</span><span class="o">=</span><span class="n">log10</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">log10</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    
+          
+            <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span>
+        
+        <span class="k">except</span><span class="p">:</span>
+
+            <span class="nb">print</span> <span class="s2">&quot;no spectral model found&quot;</span></div>
+
+    
+    
+    
+<div class="viewcode-block" id="Jet.get_SED_peak"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.Jet.get_SED_peak">[docs]</a>    <span class="k">def</span> <span class="nf">get_SED_peak</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">peak_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">freq_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">log_log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="n">peak_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">freq_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;either you provide peak_name or freq_range&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span>
+        <span class="k">elif</span>   <span class="n">peak_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>     
+                <span class="k">if</span> <span class="n">log_log</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">,</span><span class="n">peak_name</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__blob</span><span class="p">,</span><span class="n">peak_name</span><span class="p">)</span> <span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="s2">&quot;peak name </span><span class="si">%s</span><span class="s2">, not found, check name&quot;</span><span class="o">%</span><span class="n">peak_name</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span>
+        
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_SED_points</span><span class="p">(</span><span class="n">log_log</span><span class="o">=</span><span class="n">log_log</span><span class="p">)</span>
+            <span class="n">msk1</span><span class="o">=</span><span class="n">x</span><span class="o">&gt;</span><span class="n">freq_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">msk2</span><span class="o">=</span><span class="n">x</span><span class="o">&lt;</span><span class="n">freq_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="c1">#print x,freq_range,x[msk1*msk2]</span>
+            <span class="n">y_m</span><span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">msk1</span><span class="o">*</span><span class="n">msk2</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">x_id</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">msk1</span><span class="o">*</span><span class="n">msk2</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">msk1</span><span class="o">*</span><span class="n">msk2</span><span class="p">][</span><span class="n">x_id</span><span class="p">],</span><span class="n">y_m</span></div></div>
+        
+<div class="viewcode-block" id="init_SED"><a class="viewcode-back" href="../../modules_doc/jet_model.html#BlazarSEDFit.jet_model.init_SED">[docs]</a><span class="k">def</span> <span class="nf">init_SED</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    
+   
+    
+    <span class="n">blob</span><span class="o">=</span><span class="n">BlazarSED</span><span class="o">.</span><span class="n">MakeBlob</span><span class="p">()</span>
+    <span class="c1">#temp_ev=BlazarSED.MakeTempEv()</span>
+
+    <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">blob</span><span class="o">.</span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">blob</span><span class="o">.</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span>
+    
+
+    <span class="n">blob</span><span class="o">.</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;./&quot;</span>
+    
+    
+    <span class="n">blob</span><span class="o">.</span><span class="n">MODE</span><span class="o">=</span><span class="s1">&#39;custom&#39;</span>
+    <span class="n">blob</span><span class="o">.</span><span class="n">gamma_grid_size</span><span class="o">=</span><span class="mi">1000</span>
+    
+    <span class="n">blob</span><span class="o">.</span><span class="n">nu_IC_size</span> <span class="o">=</span><span class="mi">50</span>
+    <span class="n">blob</span><span class="o">.</span><span class="n">nu_seed_size</span> <span class="o">=</span><span class="mi">100</span>
+    
+    <span class="n">blob</span><span class="o">.</span><span class="n">do_Sync</span><span class="o">=</span><span class="mi">2</span>
+    
+    <span class="n">blob</span><span class="o">.</span><span class="n">do_SSC</span><span class="o">=</span><span class="mi">1</span>
+   
+    
+    <span class="n">blob</span><span class="o">.</span><span class="n">R</span><span class="o">=</span><span class="mf">3.0e15</span>
+    
+    <span class="n">blob</span><span class="o">.</span><span class="n">B</span><span class="o">=</span><span class="mf">0.1</span>
+    
+    <span class="n">blob</span><span class="o">.</span><span class="n">z_cosm</span><span class="o">=</span><span class="mf">0.1</span>
+
+    <span class="n">blob</span><span class="o">.</span><span class="n">BulkFactor</span><span class="o">=</span><span class="mi">10</span>
+    <span class="n">blob</span><span class="o">.</span><span class="n">theta</span><span class="o">=</span><span class="mf">0.1</span>
+    
+    
+    <span class="n">blob</span><span class="o">.</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span>
+    
+    <span class="n">blob</span><span class="o">.</span><span class="n">gmin</span><span class="o">=</span><span class="mi">2</span>
+
+    <span class="n">blob</span><span class="o">.</span><span class="n">gmax</span><span class="o">=</span><span class="mf">1e8</span>
+    
+    
+     
+    
+    <span class="n">blob</span><span class="o">.</span><span class="n">nu_start_Sync</span> <span class="o">=</span> <span class="mf">1e6</span>
+    <span class="n">blob</span><span class="o">.</span><span class="n">nu_stop_Sync</span> <span class="o">=</span> <span class="mf">1e20</span>
+    
+    <span class="n">blob</span><span class="o">.</span><span class="n">nu_start_SSC</span><span class="o">=</span><span class="mf">1e14</span>
+    <span class="n">blob</span><span class="o">.</span><span class="n">nu_stop_SSC</span><span class="o">=</span><span class="mf">1e30</span>
+    
+    <span class="n">blob</span><span class="o">.</span><span class="n">nu_start_grid</span><span class="o">=</span><span class="mf">1e6</span>
+    <span class="n">blob</span><span class="o">.</span><span class="n">nu_stop_grid</span><span class="o">=</span><span class="mf">1e30</span>
+    
+    
+    
+    
+    <span class="k">return</span> <span class="n">blob</span></div>
+
+
+
+
+        
+</pre></div>
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

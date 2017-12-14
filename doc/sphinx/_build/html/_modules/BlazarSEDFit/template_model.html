@@ -1,0 +1,426 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BlazarSEDFit.template_model &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <h1>Source code for BlazarSEDFit.template_model</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module: model_template</span>
+<span class="sd">========================</span>
+
+<span class="sd">Overview</span>
+<span class="sd">--------</span>
+<span class="sd">   </span>
+<span class="sd">This module  provides an interface handle the template model</span>
+
+
+
+
+<span class="sd">Classes relations</span>
+<span class="sd">---------------------------------------</span>
+<span class="sd">.. figure::  classes_template_model.png</span>
+<span class="sd">   :align:   center  </span>
+
+
+<span class="sd">Classes and Inheritance Structure</span>
+<span class="sd">----------------------------------------------</span>
+<span class="sd">.. inheritance-diagram:: BlazarSEDFit.template_model</span>
+
+
+<span class="sd">  </span>
+
+
+<span class="sd">Module API</span>
+<span class="sd">-----------</span>
+
+<span class="sd">Summary</span>
+<span class="sd">---------</span>
+<span class="sd">.. autosummary::</span>
+
+<span class="sd">   Template</span>
+<span class="sd">   TemplateParameter</span>
+<span class="sd">    </span>
+<span class="sd">Module API</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on 2013 1 27</span>
+
+<span class="sd">@author: orion</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">cosmo_tools</span> <span class="k">import</span> <span class="n">Cosmo</span>
+
+<span class="kn">from</span> <span class="nn">data_loader</span> <span class="k">import</span> <span class="n">log_to_lin</span><span class="p">,</span> <span class="n">lin_to_log</span>
+
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">interp1d</span>
+
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">loadtxt</span><span class="p">,</span><span class="n">log10</span><span class="p">,</span><span class="n">array</span><span class="p">,</span><span class="n">power</span><span class="p">,</span><span class="n">linspace</span><span class="p">,</span><span class="n">shape</span><span class="p">,</span><span class="n">zeros</span><span class="p">,</span><span class="n">ones</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">spectral_shapes</span> <span class="k">import</span> <span class="n">SED</span>
+
+<span class="kn">from</span> <span class="nn">model_parameters</span> <span class="k">import</span> <span class="n">ModelParameter</span><span class="p">,</span><span class="n">ModelParameterArray</span>
+
+
+
+
+<div class="viewcode-block" id="TemplateParameter"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.TemplateParameter">[docs]</a><span class="k">class</span> <span class="nc">TemplateParameter</span><span class="p">(</span><span class="n">ModelParameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class is a subclass of the :class:`.ModelParameter` class,</span>
+<span class="sd">    extending the base class to Template parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">template</span><span class="p">,</span><span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">=</span><span class="n">template</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">par_type_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;nu-scale&#39;</span><span class="p">,</span><span class="s1">&#39;nuFnu-scale&#39;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;par_type&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;par_type&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_type_list</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;blob_parameter type </span><span class="si">%s</span><span class="s2"> not allowed&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">par_type</span>
+            <span class="nb">print</span> <span class="s2">&quot;please choose among &quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">par_type_list</span>
+            <span class="k">return</span>
+
+
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">TemplateParameter</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>  <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        
+       
+        <span class="k">if</span> <span class="s1">&#39;val&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">val</span><span class="o">=</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assign_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+            
+        
+        
+    <span class="c1">#OVERRIDES Base Method</span>
+<div class="viewcode-block" id="TemplateParameter.set"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.TemplateParameter.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TemplateParameter</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">keywords</span> <span class="p">)</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sets a parameter value checking for physical boundaries </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;val&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assign_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">])</span> </div>
+        
+    
+<div class="viewcode-block" id="TemplateParameter.assign_val"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.TemplateParameter.assign_val">[docs]</a>    <span class="k">def</span> <span class="nf">assign_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        assigns the paramter valut to the :class:`Template` object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">)</span></div></div>
+        
+
+
+<div class="viewcode-block" id="Template"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.Template">[docs]</a><span class="k">class</span> <span class="nc">Template</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to handle spectral templates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">template_type</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nu_size</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">Templates_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/Spectral_Templates_Repo&#39;</span>
+        
+        <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">=</span><span class="n">z</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z_scale</span><span class="o">=</span><span class="n">log10</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">=</span><span class="mf">0.0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z_scale</span><span class="o">=</span><span class="mf">0.0</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_templates</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Disk&#39;</span><span class="p">,</span><span class="s1">&#39;host-galaxy&#39;</span><span class="p">,</span><span class="s1">&#39;user-defined&#39;</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_size</span><span class="o">=</span><span class="n">nu_size</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">template_type</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="o">=</span><span class="s1">&#39;template&#39;</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">SED</span> <span class="o">=</span> <span class="n">SED</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">ModelParameterArray</span><span class="p">()</span>
+      
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_eval</span><span class="o">=</span><span class="n">Cosmo</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;cm&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">DL</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo_eval</span><span class="o">.</span><span class="n">DL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+        
+        
+
+        
+        
+        <span class="c1">#BBB TEMPLATE</span>
+        <span class="k">if</span> <span class="n">template_type</span><span class="o">==</span><span class="s1">&#39;BBB&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__scale</span><span class="o">=</span><span class="s1">&#39;log-log&#39;</span>
+            
+            <span class="n">file_path</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/QSO_BBB_Template.dat&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">Templates_dir</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_teplate_from_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_template</span><span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_template</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_template</span><span class="o">.</span><span class="n">argmax</span><span class="p">()]</span>
+            <span class="c1">#set nu_template according to redshift</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_template</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">nu_template</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">z_scale</span>  
+            
+            <span class="c1">#add parameter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_BBB</span><span class="o">=</span><span class="mf">1.0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_scale</span><span class="o">=</span><span class="mf">0.0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">TemplateParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;nuFnu_p_BBB&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;nuFnu-scale&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">20.0</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;erg cm^-2 s^-1&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">TemplateParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;nu_scale&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;nu-scale&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">2.0</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;Hz&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_scale</span><span class="o">=</span><span class="s1">&#39;nuFnu_p_BBB&#39;</span>          
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_scale</span><span class="o">=</span><span class="s1">&#39;nu_scale&#39;</span>          
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_BBB</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_Lum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_BBB</span><span class="p">)</span>        
+            <span class="bp">self</span><span class="o">.</span><span class="n">T_BBB</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_T_BBB</span><span class="p">()</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">interp_func</span><span class="o">=</span><span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_template</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_template</span><span class="p">)</span>
+        
+       
+        <span class="k">elif</span> <span class="n">template_type</span><span class="o">==</span><span class="s1">&#39;host-galaxy&#39;</span><span class="p">:</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">__scale</span><span class="o">=</span><span class="s1">&#39;log-log&#39;</span>
+            
+            <span class="n">file_path</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/HostgalaxyTemplate.dat&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">Templates_dir</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_teplate_from_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_template</span><span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_template</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_template</span><span class="o">.</span><span class="n">argmax</span><span class="p">()]</span>
+            <span class="c1">#set nu_template according to redshift</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_template</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">nu_template</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">z_scale</span>  
+            
+            
+            <span class="c1">#add parameter</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_host</span><span class="o">=</span><span class="mf">1.0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_scale</span><span class="o">=</span><span class="mf">0.0</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">TemplateParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;nuFnu_p_host&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;nuFnu-scale&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">20.0</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;erg cm^-2 s^-1&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">TemplateParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;nu_scale&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;nu-scale&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">2.0</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;Hz&#39;</span><span class="p">))</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_scale</span><span class="o">=</span><span class="s1">&#39;nuFnu_p_host&#39;</span>  
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_scale</span><span class="o">=</span><span class="s1">&#39;nu_scale&#39;</span>          
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_Lum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_host</span><span class="p">)</span>        
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">interp_func</span><span class="o">=</span><span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_template</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_template</span><span class="p">)</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="s2">&quot;Wrong template type=</span><span class="si">%s</span><span class="s2">, allowed=&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">template_type</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_templates</span><span class="p">)</span>
+    
+    
+    
+<div class="viewcode-block" id="Template.PlotModel"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.Template.PlotModel">[docs]</a>    <span class="k">def</span> <span class="nf">PlotModel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Plot</span><span class="p">,</span><span class="n">clean</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">Plot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+            <span class="k">if</span> <span class="n">clean</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+                <span class="n">Plot</span><span class="o">.</span><span class="n">clean_model_lines</span><span class="p">()</span>
+           
+            <span class="n">Plot</span><span class="o">.</span><span class="n">add_model_plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SED</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="n">autoscale</span><span class="p">,</span><span class="n">line_style</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;the plot window is not defined&quot;</span></div>
+     
+
+<div class="viewcode-block" id="Template.get_T_BBB"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.Template.get_T_BBB">[docs]</a>    <span class="k">def</span> <span class="nf">get_T_BBB</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_template</span><span class="o">/</span><span class="p">(</span><span class="mf">1.39</span><span class="o">*</span><span class="mf">5.879e10</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="Template.set_BBB_pars"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.Template.set_BBB_pars">[docs]</a>    <span class="k">def</span> <span class="nf">set_BBB_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fit_model</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">DL</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo_eval</span><span class="o">.</span><span class="n">DL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+        
+        
+        <span class="n">nuFnu_p</span><span class="p">,</span><span class="n">nuFnu_p_err</span><span class="o">=</span><span class="n">log_to_lin</span><span class="p">(</span><span class="n">log_val</span><span class="o">=</span><span class="n">fit_model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nuFnu_p_BBB&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_val&#39;</span><span class="p">),</span><span class="n">log_err</span><span class="o">=</span><span class="n">fit_model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nuFnu_p_BBB&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_err&#39;</span><span class="p">))</span>
+        <span class="n">err_rel</span><span class="o">=</span><span class="n">nuFnu_p_err</span><span class="o">/</span><span class="n">nuFnu_p</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_BBB</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_Lum</span><span class="p">(</span><span class="n">nuFnu_p</span><span class="p">)</span>   
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_BBB_err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_BBB</span><span class="o">*</span><span class="n">err_rel</span>
+       
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_p</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_err</span><span class="o">=</span><span class="n">log_to_lin</span><span class="p">(</span><span class="n">log_val</span><span class="o">=</span><span class="n">fit_model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nu_scale&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_val&#39;</span><span class="p">),</span><span class="n">log_err</span><span class="o">=</span><span class="n">fit_model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nu_scale&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_err&#39;</span><span class="p">))</span>
+        <span class="n">err_rel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_err</span><span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu_p</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_template</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p</span><span class="o">*</span><span class="n">err_rel</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_Disk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_T_BBB</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_Disk_err</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_Disk</span><span class="o">*</span><span class="n">err_rel</span></div>
+        
+        
+<div class="viewcode-block" id="Template.set_host_pars"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.Template.set_host_pars">[docs]</a>    <span class="k">def</span> <span class="nf">set_host_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fit_model</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">DL</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo_eval</span><span class="o">.</span><span class="n">DL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+        
+        
+        <span class="n">nuFnu_p</span><span class="p">,</span><span class="n">nuFnu_p_err</span><span class="o">=</span><span class="n">log_to_lin</span><span class="p">(</span><span class="n">log_val</span><span class="o">=</span><span class="n">fit_model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nuFnu_p_host&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_val&#39;</span><span class="p">),</span><span class="n">log_err</span><span class="o">=</span><span class="n">fit_model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nuFnu_p_host&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_err&#39;</span><span class="p">))</span>
+        <span class="n">err_rel</span><span class="o">=</span><span class="n">nuFnu_p_err</span><span class="o">/</span><span class="n">nuFnu_p</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_Lum</span><span class="p">(</span><span class="n">nuFnu_p</span><span class="p">)</span>                
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_host_err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_host</span><span class="o">*</span><span class="n">err_rel</span>
+        
+        <span class="n">err_rel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_host_err</span><span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_host</span><span class="o">=</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">DL</span><span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">DL</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_host_err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_p_host</span><span class="o">*</span><span class="n">err_rel</span>
+      
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_p</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_err</span><span class="o">=</span><span class="n">log_to_lin</span><span class="p">(</span><span class="n">log_val</span><span class="o">=</span><span class="n">fit_model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nu_scale&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_val&#39;</span><span class="p">),</span><span class="n">log_err</span><span class="o">=</span><span class="n">fit_model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nu_scale&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_err&#39;</span><span class="p">))</span>
+        <span class="n">err_rel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_err</span><span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu_p</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p</span><span class="o">*</span><span class="n">err_rel</span></div>
+    
+    
+<div class="viewcode-block" id="Template.set_Lum"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.Template.set_Lum">[docs]</a>    <span class="k">def</span> <span class="nf">set_Lum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nuFnu_p</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L_D</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_L_D</span><span class="p">(</span><span class="n">nuFnu_p</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="Template.get_Lum"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.Template.get_Lum">[docs]</a>    <span class="k">def</span> <span class="nf">get_Lum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nuFnu_p</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">DL</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">DL</span><span class="o">*</span><span class="n">nuFnu_p</span></div>
+        
+
+<div class="viewcode-block" id="Template.load_teplate_from_file"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.Template.load_teplate_from_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_teplate_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">file_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads a template from a file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">usecols</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">unpack</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            
+        <span class="n">my_set</span><span class="o">=</span><span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">my_set</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">tup</span><span class="p">:</span> <span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_template</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_template</span><span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">my_set</span><span class="p">))</span></div>
+
+        
+   
+<div class="viewcode-block" id="Template.log_func"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.Template.log_func">[docs]</a>    <span class="k">def</span> <span class="nf">log_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu_log</span><span class="p">):</span>
+        
+        <span class="n">x_shift</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">x_scale</span><span class="p">)</span>
+        <span class="n">y_shift</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_scale</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shape</span><span class="p">(</span><span class="n">nu_log</span><span class="p">)</span><span class="o">==</span><span class="p">():</span>
+                <span class="n">nu</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="n">nu_log</span><span class="p">])</span>
+        
+        
+        <span class="n">x_log</span><span class="o">=</span><span class="n">nu_log</span><span class="o">-</span><span class="n">x_shift</span>
+
+        <span class="n">model</span><span class="o">=</span><span class="n">ones</span><span class="p">(</span><span class="n">x_log</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">*-</span><span class="mf">20.0</span> 
+            
+        <span class="n">msk</span> <span class="o">=</span> <span class="n">x_log</span> <span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_template</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> 
+        <span class="n">msk</span><span class="o">*=</span> <span class="n">x_log</span> <span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_template</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            
+        
+        <span class="n">model</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interp_func</span><span class="p">(</span><span class="n">x_log</span><span class="p">[</span><span class="n">msk</span><span class="p">])</span><span class="o">+</span><span class="n">y_shift</span>
+        
+        <span class="k">return</span> <span class="n">model</span></div>
+    
+    
+<div class="viewcode-block" id="Template.eval"><a class="viewcode-back" href="../../modules_doc/template_model.html#BlazarSEDFit.template_model.Template.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fill_SED</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">nu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">get_model</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">loglog</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluates the Template for the current parameters values</span>
+<span class="sd">        &quot;&quot;&quot;</span>    
+        <span class="k">if</span> <span class="n">loglog</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="n">log_nu</span><span class="o">=</span><span class="n">log10</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span>
+            
+            <span class="n">lin_nu</span><span class="o">=</span><span class="n">nu</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log_nu</span><span class="o">=</span><span class="n">nu</span>
+
+            <span class="n">lin_nu</span><span class="o">=</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="n">log_nu</span><span class="p">)</span>
+        
+        
+        <span class="n">log_model</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_func</span><span class="p">(</span><span class="n">log_nu</span><span class="p">)</span>
+        
+        <span class="n">model</span><span class="o">=</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="n">log_model</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fill_SED</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">nu</span><span class="o">=</span><span class="n">lin_nu</span><span class="p">,</span> <span class="n">nuFnu</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+            <span class="c1">#print nu.size,nu</span>
+        
+        <span class="k">if</span> <span class="n">get_model</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">loglog</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            
+                <span class="k">return</span> <span class="n">model</span>
+            <span class="k">else</span><span class="p">:</span>
+                
+                <span class="k">return</span> <span class="n">log_model</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div></div>
+            
+  
+
+<span class="c1">#-----------------------------------------------</span>
+</pre></div>
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

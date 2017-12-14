@@ -1,0 +1,7 @@
+<map id="inheritance1c2d92703e" name="inheritance1c2d92703e">
+<area shape="rect" id="node1" href="base_model.html#BlazarSEDFit.base_model.Model" target="_top" title="BlazarSEDFit.base_model.Model" alt="" coords="56,103,275,129"/>
+<area shape="rect" id="node2" href="#BlazarSEDFit.jet_model.Jet" target="_top" title="This class allows to build a ``jet`` model providing the interface to the " alt="" coords="405,103,590,129"/>
+<area shape="rect" id="node3" href="#BlazarSEDFit.jet_model.JetParameter" target="_top" title="This class is a subclass of the :class:`.ModelParameter` class," alt="" coords="374,54,621,79"/>
+<area shape="rect" id="node4" href="model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter" target="_top" title="This class is the base class for models parameters. The following keywords " alt="" coords="6,54,325,79"/>
+<area shape="rect" id="node5" href="#BlazarSEDFit.jet_model.JetSpecComponent" target="_top" title="BlazarSEDFit.jet_model.JetSpecComponent" alt="" coords="23,5,307,30"/>
+</map>

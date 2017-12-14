@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Module: cosmo_tools &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Moudule: data_loader" href="data_loader.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="convert_qdp.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="data_loader.html" title="Moudule: data_loader"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="convert_qdp.html" title="&lt;no title&gt;"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../code.html" accesskey="U">Modules</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Module: cosmo_tools</a><ul>
+<li><a class="reference internal" href="#classes-and-inheritance-structure">Classes and Inheritance Structure</a></li>
+<li><a class="reference internal" href="#classes-relations">Classes relations</a></li>
+<li><a class="reference internal" href="#module-api">Module API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="convert_qdp.html"
+                        title="previous chapter">&lt;no title&gt;</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="data_loader.html"
+                        title="next chapter">Moudule: data_loader</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/modules_doc/cosmo_tools.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <span class="target" id="module-BlazarSEDFit.cosmo_tools"></span><div class="section" id="module-cosmo-tools">
+<h1>Module: cosmo_tools<a class="headerlink" href="#module-cosmo-tools" title="Permalink to this headline">¶</a></h1>
+<p>This module contains the class Cosmo, implementing cosmological
+calculations following Hogg 1999 (<a class="reference external" href="http://arxiv.org/abs/astroph/9905116">http://arxiv.org/abs/astroph/9905116</a>)</p>
+<div class="section" id="classes-and-inheritance-structure">
+<h2>Classes and Inheritance Structure<a class="headerlink" href="#classes-and-inheritance-structure" title="Permalink to this headline">¶</a></h2>
+<img src="../_images/inheritance-84dd730698338f6f51a84651f90f28b7ece0c298.png" alt="Inheritance diagram of BlazarSEDFit.cosmo_tools" usemap="#inheritance7184618565" class="inheritance"/>
+<map id="inheritance7184618565" name="inheritance7184618565">
+<area shape="rect" id="node1" href="#BlazarSEDFit.cosmo_tools.Cosmo" target="_top" title="This class sets&#45;up a cosmological framework to evalute comosmological distances and volume." alt="" coords="5,5,232,30"/>
+</map>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#BlazarSEDFit.cosmo_tools.Cosmo" title="BlazarSEDFit.cosmo_tools.Cosmo"><code class="xref py py-obj docutils literal"><span class="pre">Cosmo</span></code></a>([units,&nbsp;Omega_m,&nbsp;Omega_l,&nbsp;Omega_k,&nbsp;…])</td>
+<td>This class sets-up a cosmological framework to evalute comosmological distances and volume.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="classes-relations">
+<h2>Classes relations<a class="headerlink" href="#classes-relations" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-center">
+<img alt="../_images/classes_cosmo_tools.png" src="../_images/classes_cosmo_tools.png" />
+</div>
+</div>
+<div class="section" id="module-api">
+<h2>Module API<a class="headerlink" href="#module-api" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="BlazarSEDFit.cosmo_tools.Cosmo">
+<em class="property">class </em><code class="descclassname">BlazarSEDFit.cosmo_tools.</code><code class="descname">Cosmo</code><span class="sig-paren">(</span><em>units=None</em>, <em>Omega_m=None</em>, <em>Omega_l=None</em>, <em>Omega_k=None</em>, <em>H_0=None</em>, <em>steps_DC=None</em>, <em>steps_dVC=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/cosmo_tools.html#Cosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.cosmo_tools.Cosmo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>This class sets-up a cosmological framework to evalute comosmological distances and volume.
+Calculations are done following Hogg 1999</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>units</strong> – (str), units for distances “cm”, or “Gpc”, or “Mpc”</li>
+<li><strong>Omega_m</strong> – (float), if not provided taken from BlazarSED code value</li>
+<li><strong>Omega_l</strong> – (float), if not provided taken from BlazarSED code value</li>
+<li><strong>Omega_k</strong> – (float), if not provided taken from BlazarSED code value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="BlazarSEDFit.cosmo_tools.Cosmo.DA">
+<code class="descname">DA</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/cosmo_tools.html#Cosmo.DA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.cosmo_tools.Cosmo.DA" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates the angular distance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>z</strong> – (float) redhsift</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">angular distance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.cosmo_tools.Cosmo.DC">
+<code class="descname">DC</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/cosmo_tools.html#Cosmo.DC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.cosmo_tools.Cosmo.DC" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates the comoving (line-of-sight) distance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>z</strong> – (float) redhsift</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">comoving (line-of-sight) distance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.cosmo_tools.Cosmo.DL">
+<code class="descname">DL</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/cosmo_tools.html#Cosmo.DL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.cosmo_tools.Cosmo.DL" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates the luminosity distance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>z</strong> – (float) redhsift</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">luminosity distance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.cosmo_tools.Cosmo.DM">
+<code class="descname">DM</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/cosmo_tools.html#Cosmo.DM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.cosmo_tools.Cosmo.DM" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates the comoving (transverse) distance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>z</strong> – (float) redhsift</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">comoving (transverse) distance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.cosmo_tools.Cosmo.EZ">
+<code class="descname">EZ</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/cosmo_tools.html#Cosmo.EZ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.cosmo_tools.Cosmo.EZ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.cosmo_tools.Cosmo.VC">
+<code class="descname">VC</code><span class="sig-paren">(</span><em>z2</em>, <em>z1=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/cosmo_tools.html#Cosmo.VC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.cosmo_tools.Cosmo.VC" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates the comoving volume  in a spehrical shell between z1 and  z2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>z2</strong> – (float) redhsift</li>
+<li><strong>z1</strong> – (float) redhsift, optional, if not provided
+the returned volume will be the sphere with a z=z2</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">comoving volume</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.cosmo_tools.Cosmo.four_pi_dVC">
+<code class="descname">four_pi_dVC</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/cosmo_tools.html#Cosmo.four_pi_dVC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.cosmo_tools.Cosmo.four_pi_dVC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="BlazarSEDFit.cosmo_tools.Cosmo.show">
+<code class="descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/BlazarSEDFit/cosmo_tools.html#Cosmo.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#BlazarSEDFit.cosmo_tools.Cosmo.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>shows the set-up of the comological framework</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="data_loader.html" title="Moudule: data_loader"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="convert_qdp.html" title="&lt;no title&gt;"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../code.html" >Modules</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

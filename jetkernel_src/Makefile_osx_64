@@ -1,0 +1,43 @@
+BINDIR=$(PWD)
+INSTALLDIR=$(PWD)/bin
+LIBPATH="/Users/orion/astro/lib"
+PYLIB="/Users/orion/anaconda2/include/python2.7/"
+OBJECT=*.o
+SOBJECT=*.so
+SRC=./src/*.c
+SWIG=./swig/
+SWIGEXE="/usr/local/bin/swig"
+SWIGLIB=/usr/local/share/swig/1.3.40
+SWIGLIBPY=/usr/local/share/swig/1.3.40/python
+TARGET=$(BINDIR)/Blazar_SED
+CC=gcc	
+
+$(TARGET):$(OBJECT)
+	$(CC) -fPIC -m64  -Wall -O3 -o  $(TARGET) $(OBJECT)    -lm 
+#	-march=pentium-m2 -lm /usr/lib/dylib1.o
+#	gcc32  -pg -O -o  $(TARGET) $(OBJECT) -lm -L$(LIBPATH) -lnrecipes 	
+
+$(OBJECT):$(SRC)
+	$(CC)  -fPIC   -c -m64 -I./include $(SRC)  
+#	gcc32 -pg -c -I ./include $(SRC) 
+
+python:$(OBJECT)
+	$(SWIGEXE) -I$(SWIGLIB) -I$(SWIGLIBPY) -python -v $(SWIG)/SED.i
+	#$(CC) -fPIC  -v  -c -m64 -I ./blazar_sed_src/include $(SWIG)/*.c  -I $(PYLIB)
+	#mv SED_wrap.o  $(SWIG)
+	#ld -bundle -flat_namespace -undefined suppress *.o    $(SWIG)/*.o -o $(SWIG)/_BlazarSED_osx.so  -lm  -lbundle1.o
+
+clean:
+	rm -rf  $(OBJECT)        
+	rm -rf  $(SWIG)/$(OBJECT)
+	rm -rf 	$(SWIG)/*.c
+	rm -rf 	$(SWIG)/*.o
+	rm -rf 	$(SWIG)/../build/*osx64.so
+
+install:
+	cp $(TARGET) $(INSTALLDIR)/
+#	cp ./bin/BLAZAR_GUI.tcl $(BINDIR)/	
+#	cp ./bin/start_BLAZAR $(BINDIR)/
+
+
+all:$(TARGET) python install clean

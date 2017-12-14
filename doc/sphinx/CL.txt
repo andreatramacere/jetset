@@ -1,0 +1,5 @@
+#
+sphinx-apidoc -o test/ ../../../BlazarSEDFit/
+python make_apidoc_and_uml_graphs.py
+# generate UML plots:
+make_modules_uml_graphs.py

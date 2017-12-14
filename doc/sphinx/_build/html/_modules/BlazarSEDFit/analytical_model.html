@@ -1,0 +1,226 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BlazarSEDFit.analytical_model &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <h1>Source code for BlazarSEDFit.analytical_model</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">model_parameters</span> <span class="k">import</span> <span class="n">ModelParameterArray</span><span class="p">,</span> <span class="n">ModelParameter</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">spectral_shapes</span> <span class="k">import</span> <span class="n">SED</span>
+<span class="kn">from</span> <span class="nn">base_model</span> <span class="k">import</span>  <span class="n">Model</span>
+
+<span class="kn">from</span> <span class="nn">cosmo_tools</span> <span class="k">import</span> <span class="n">Cosmo</span>
+
+
+<div class="viewcode-block" id="AnalyticalParameter"><a class="viewcode-back" href="../../modules_doc/analytical_model.html#BlazarSEDFit.analytical_model.AnalyticalParameter">[docs]</a><span class="k">class</span> <span class="nc">AnalyticalParameter</span><span class="p">(</span><span class="n">ModelParameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class is a subclass of the :class:`.ModelParameter` class,</span>
+<span class="sd">    extending the base class to analytical parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">polymodel</span><span class="p">,</span><span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">polymodel</span><span class="o">=</span><span class="n">polymodel</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">par_type_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Temperature&#39;</span><span class="p">,</span><span class="s1">&#39;peak freq&#39;</span><span class="p">,</span><span class="s1">&#39;peak flux&#39;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;par_type&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;par_type&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_type_list</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;blob_parameter type </span><span class="si">%s</span><span class="s2"> not allowed&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">par_type</span>
+            <span class="nb">print</span> <span class="s2">&quot;please choose among &quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">par_type_list</span>
+            <span class="k">return</span>
+
+
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">AnalyticalParameter</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>  <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        
+       
+        <span class="k">if</span> <span class="s1">&#39;val&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">val</span><span class="o">=</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assign_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+            
+        
+        
+    <span class="c1">#OVERRIDES Base Method</span>
+<div class="viewcode-block" id="AnalyticalParameter.set"><a class="viewcode-back" href="../../modules_doc/analytical_model.html#BlazarSEDFit.analytical_model.AnalyticalParameter.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AnalyticalParameter</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">keywords</span> <span class="p">)</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sets a parameter value checking for physical boundaries </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;val&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">assign_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">])</span> </div>
+        
+    
+<div class="viewcode-block" id="AnalyticalParameter.assign_val"><a class="viewcode-back" href="../../modules_doc/analytical_model.html#BlazarSEDFit.analytical_model.AnalyticalParameter.assign_val">[docs]</a>    <span class="k">def</span> <span class="nf">assign_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        assigns the paramter valut to the :class:`Template` object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">polymodel</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">)</span></div></div>
+
+
+
+
+
+
+<div class="viewcode-block" id="Disk"><a class="viewcode-back" href="../../modules_doc/analytical_model.html#BlazarSEDFit.analytical_model.Disk">[docs]</a><span class="k">class</span> <span class="nc">Disk</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">nu_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="nb">super</span><span class="p">(</span><span class="n">Disk</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>  <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">=</span><span class="n">z</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;disk&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="o">=</span><span class="s1">&#39;analytical&#39;</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">SED</span> <span class="o">=</span> <span class="n">SED</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">ModelParameterArray</span><span class="p">()</span>
+      
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_Disk</span><span class="o">=</span><span class="mi">10000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">AnalyticalParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;T_Disk&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;Temperature&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span><span class="n">val_min</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+        
+       
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_D</span><span class="o">=</span><span class="mf">1E-10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">AnalyticalParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;nuFnu_p&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;peak flux&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E-10</span><span class="p">,</span><span class="n">val_min</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">1E-3</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;erg cm^-2 s^-1&#39;</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">HPLANCK</span><span class="o">=</span><span class="mf">6.626075540e-27</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SIGSB</span><span class="o">=</span><span class="mf">5.670400e-5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vluce_cm</span><span class="o">=</span><span class="mf">2.99792458e+10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K_boltz</span><span class="o">=</span><span class="mf">1.3806503e-16</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_eval</span><span class="o">=</span><span class="n">Cosmo</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;cm&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">DL</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo_eval</span><span class="o">.</span><span class="n">DL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">L_D</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_L_D</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_Disk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_nu_p</span><span class="p">()</span>
+        
+        
+
+<div class="viewcode-block" id="Disk.set_disk_pars"><a class="viewcode-back" href="../../modules_doc/analytical_model.html#BlazarSEDFit.analytical_model.Disk.set_disk_pars">[docs]</a>    <span class="k">def</span> <span class="nf">set_disk_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fit_model</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">L_Disk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_L_D</span><span class="p">()</span>
+          
+        <span class="bp">self</span><span class="o">.</span><span class="n">L_Disk_err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">L_Disk</span><span class="o">*</span><span class="p">(</span><span class="n">fit_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nuFnu_p&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_err&#39;</span><span class="p">)</span><span class="o">/</span>
+                                     <span class="n">fit_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nuFnu_p&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_val&#39;</span><span class="p">))</span>
+
+                        
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_Disk</span><span class="o">=</span><span class="n">fit_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;T_Disk&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_val&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_Disk_err</span><span class="o">=</span><span class="n">fit_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;T_Disk&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_err&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_Disk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_nu_p</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_Disk_err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_Disk</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_Disk_err</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">T_Disk</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="Disk.get_nu_p"><a class="viewcode-back" href="../../modules_doc/analytical_model.html#BlazarSEDFit.analytical_model.Disk.get_nu_p">[docs]</a>    <span class="k">def</span> <span class="nf">get_nu_p</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_Disk</span><span class="o">*</span><span class="p">(</span><span class="mf">1.39</span><span class="o">*</span><span class="mf">5.879e10</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="Disk.get_L_D"><a class="viewcode-back" href="../../modules_doc/analytical_model.html#BlazarSEDFit.analytical_model.Disk.get_L_D">[docs]</a>    <span class="k">def</span> <span class="nf">get_L_D</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">DL</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">DL</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p</span></div>
+        
+        
+    <span class="c1">#def log_func(self,log_nu):</span>
+    <span class="c1">#    return np.log10(self.lin_func(np.power(10,log_nu)))</span>
+
+    
+<div class="viewcode-block" id="Disk.lin_func"><a class="viewcode-back" href="../../modules_doc/analytical_model.html#BlazarSEDFit.analytical_model.Disk.lin_func">[docs]</a>    <span class="k">def</span> <span class="nf">lin_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu</span><span class="p">):</span>
+        <span class="n">nu</span><span class="o">=</span><span class="n">nu</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">HPLANCK</span> <span class="o">*</span> <span class="n">nu</span><span class="o">*</span><span class="n">nu</span><span class="o">*</span><span class="n">nu</span><span class="o">*</span><span class="n">nu</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vluce_cm</span><span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">vluce_cm</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">*=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">HPLANCK</span> <span class="o">*</span> <span class="n">nu</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K_boltz</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_Disk</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SIGSB</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">T_Disk</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">T_Disk</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">T_Disk</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">T_Disk</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p</span></div>
+    
+    
+<div class="viewcode-block" id="Disk.log_func"><a class="viewcode-back" href="../../modules_doc/analytical_model.html#BlazarSEDFit.analytical_model.Disk.log_func">[docs]</a>    <span class="k">def</span> <span class="nf">log_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_nu</span><span class="p">):</span>
+        
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_func</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">log_nu</span><span class="p">)))</span></div></div>
+</pre></div>
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

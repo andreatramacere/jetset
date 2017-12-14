@@ -1,0 +1,1267 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BlazarSEDFit.obs_constrain &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <h1>Source code for BlazarSEDFit.obs_constrain</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module: obs_constrain</span>
+<span class="sd">===================================================================</span>
+
+<span class="sd">This module contains all the classes necessary to constrain </span>
+<span class="sd">the model parmateres starting from the SED shape</span>
+
+
+
+
+<span class="sd">Classes and Inheritance Structure</span>
+<span class="sd">-------------------------------------------------------------------</span>
+
+<span class="sd">.. inheritance-diagram:: BlazarSEDFit.obs_constrain</span>
+<span class="sd">   </span>
+
+
+<span class="sd">Classes relations</span>
+<span class="sd">----------------------------------------------</span>
+
+<span class="sd">.. figure::  classes_obs_constrain.png</span>
+<span class="sd">   :align:   center     </span>
+
+
+<span class="sd">  </span>
+<span class="sd">.. autosummary::</span>
+<span class="sd">   ObsConstrain</span>
+<span class="sd">   </span>
+<span class="sd">    </span>
+<span class="sd">Module API</span>
+<span class="sd">-------------------------------------------------------------------</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+
+<span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">m</span>
+
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
+
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">double</span><span class="p">,</span><span class="n">logspace</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">polyfit</span><span class="p">,</span><span class="n">polyval</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">n</span>
+
+<span class="kn">from</span> <span class="nn">frame_converter</span> <span class="k">import</span> <span class="n">convert_nu_to_blob</span>
+
+<span class="kn">import</span> <span class="nn">sed_models_dic</span> <span class="k">as</span> <span class="nn">Model_dic</span> 
+
+<span class="c1">#import jet_wrapper</span>
+<span class="c1">#BlazarSED = jet_wrapper.importer()</span>
+
+<span class="kn">from</span> <span class="nn">BlazarSED</span> <span class="k">import</span>  <span class="n">BlazarSED</span>
+
+<span class="kn">from</span> <span class="nn">model_manager</span> <span class="k">import</span> <span class="n">FitModel</span>
+
+<span class="kn">from</span> <span class="nn">jet_model</span> <span class="k">import</span> <span class="n">Jet</span>
+
+<span class="kn">from</span> <span class="nn">sed_shaper</span> <span class="k">import</span> <span class="n">index_array</span><span class="p">,</span><span class="n">peak_values</span>
+
+<span class="kn">from</span> <span class="nn">output</span> <span class="k">import</span> <span class="n">section_separator</span><span class="p">,</span><span class="n">workplace</span><span class="p">,</span><span class="n">makedir</span>
+
+<div class="viewcode-block" id="ObsConstrain"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.ObsConstrain">[docs]</a><span class="k">class</span> <span class="nc">ObsConstrain</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    doc</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+   
+    
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">B_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">distr_e</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">t_var_sec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nu_cut_IR</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">beaming</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">bulk_factor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">obj_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">restframe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">obspar_workplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+
+        <span class="k">if</span>  <span class="s1">&#39;SEDShape&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keywords</span> <span class="p">:</span>  
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="o">=</span><span class="n">index_array</span><span class="p">()</span>
+            
+            <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="s2">&quot;kw&quot;</span><span class="p">,</span><span class="n">kw</span>
+                <span class="k">if</span> <span class="n">kw</span><span class="o">==</span><span class="s1">&#39;indices&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="o">=</span><span class="n">keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span>
+                    
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">idx_array</span><span class="p">:</span>
+                <span class="n">index</span><span class="o">.</span><span class="n">show_val</span><span class="p">()</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">beta_S</span><span class="o">=</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;beta_S&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_S_obs</span><span class="o">=</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;nu_p_S_obs&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_IC_obs</span><span class="o">=</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;nu_p_IC_obs&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_S_obs</span><span class="o">=</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;nuFnu_p_S_obs&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_IC_obs</span><span class="o">=</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;nuFnu_p_IC_obs&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">S_nu_max</span><span class="o">=</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;S_nu_max&#39;</span><span class="p">]</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">=</span><span class="n">z</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">class_obj</span><span class="o">=</span><span class="n">obj_class</span>
+
+            
+        <span class="k">else</span><span class="p">:</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">=</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;SEDShape&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">indices</span>
+           
+            <span class="bp">self</span><span class="o">.</span><span class="n">beta_S</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">S_peak</span><span class="o">.</span><span class="n">curvature</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_S_obs</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">S_peak</span><span class="o">.</span><span class="n">nu_p_val</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_S_obs</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">S_peak</span><span class="o">.</span><span class="n">nuFnu_p_val</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">S_nu_max</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">S_nu_max</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">S_LE_slope</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">S_LE_slope</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_IC_obs</span>  <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">IC_peak</span><span class="o">.</span><span class="n">nu_p_val</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_IC_obs</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">IC_peak</span><span class="o">.</span><span class="n">nuFnu_p_val</span><span class="p">)</span>
+            
+           
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">class_obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">obj_class</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">SEDdata</span><span class="o">.</span><span class="n">z</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span>
+            
+           
+
+        
+        
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="o">=</span><span class="n">beaming</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="o">=</span><span class="n">theta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bulk_factor</span><span class="o">=</span><span class="n">bulk_factor</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_factor</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">beaming</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;delta&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">bulk_factor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">beaming</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;bulk_theta&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;either you provide the beaming value, or both theta and the bulk factor values &#39;&#39;&#39;</span><span class="p">)</span>
+                
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">B_min</span><span class="o">=</span><span class="n">B_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">B_max</span><span class="o">=</span><span class="n">B_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">B_start</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">B_min</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">B_max</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_var_sec</span><span class="o">=</span><span class="n">t_var_sec</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">distr_e</span><span class="o">=</span><span class="n">distr_e</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_cut_IR</span><span class="o">=</span><span class="n">nu_cut_IR</span>
+                        
+            
+        <span class="k">if</span> <span class="n">obspar_workplace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="o">=</span><span class="n">workplace</span><span class="o">.</span><span class="n">out_dir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="o">=</span><span class="n">workplace</span><span class="o">.</span><span class="n">flag</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="o">=</span><span class="n">obspar_workplace</span><span class="o">.</span><span class="n">out_dir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="o">=</span><span class="n">obspar_workplace</span><span class="o">.</span><span class="n">flag</span>
+    
+<div class="viewcode-block" id="ObsConstrain.constrain_SSC_model"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.ObsConstrain.constrain_SSC_model">[docs]</a>    <span class="k">def</span> <span class="nf">constrain_SSC_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">jet_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">params_grid_size</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        constarin SSC model paramters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+         
+        
+        <span class="nb">print</span>  <span class="n">section_separator</span>
+        <span class="nb">print</span> <span class="s2">&quot;***  constrains parameters from observable ***&quot;</span>
+        <span class="nb">print</span>
+        
+        
+        <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_model_constraint</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="n">jet_model</span><span class="o">=</span><span class="n">jet_model</span><span class="p">,</span><span class="n">params_grid_size</span><span class="o">=</span><span class="n">params_grid_size</span><span class="p">)</span>
+         
+        
+        <span class="nb">print</span>
+        <span class="nb">print</span>  <span class="n">section_separator</span>
+
+        <span class="k">return</span> <span class="n">model</span></div>
+    
+    
+    
+    
+<div class="viewcode-block" id="ObsConstrain.constrain_SSC_EC_model"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.ObsConstrain.constrain_SSC_EC_model">[docs]</a>    <span class="k">def</span> <span class="nf">constrain_SSC_EC_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">jet_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">EC_componets_list</span><span class="o">=</span><span class="s1">&#39;BLR&#39;</span><span class="p">,</span><span class="n">params_grid_size</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        constarin SSC model paramters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+         
+        
+        <span class="nb">print</span>  <span class="n">section_separator</span>
+        <span class="nb">print</span> <span class="s2">&quot;***  constrains parameters from observable ***&quot;</span>
+        <span class="nb">print</span>
+        
+        
+        <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_model_constraint</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="n">jet_model</span><span class="o">=</span><span class="n">jet_model</span><span class="p">,</span><span class="n">EC_componets_list</span><span class="o">=</span><span class="n">EC_componets_list</span><span class="p">,</span><span class="n">params_grid_size</span><span class="o">=</span><span class="n">params_grid_size</span><span class="p">)</span>
+        
+         
+
+        <span class="nb">print</span>
+        <span class="nb">print</span>  <span class="n">section_separator</span>
+
+        <span class="k">return</span> <span class="n">model</span></div>
+     
+     
+     
+    
+<div class="viewcode-block" id="ObsConstrain.get_model_constraint"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.ObsConstrain.get_model_constraint">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">jet_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">EC_componets_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">params_grid_size</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>    
+        
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">distr_e</span>
+            
+        <span class="n">out_dir</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/obs_constrain_</span><span class="si">%s</span><span class="s1">/&#39;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">makedir</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">jet_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">beaming_expr</span><span class="o">==</span><span class="s1">&#39;delta&#39;</span><span class="p">:</span>
+                <span class="n">jet_model</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">electron_distribution</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">distr_e</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">beaming_expr</span><span class="o">==</span><span class="s1">&#39;bulk_theta&#39;</span><span class="p">:</span> 
+                <span class="n">jet_model</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">electron_distribution</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">distr_e</span><span class="p">,</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;bulk_theta&#39;</span><span class="p">)</span>
+            
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;wrong beaming_expr value=</span><span class="si">%s</span><span class="s1">, allowed &#39;delta&#39; or &#39;bulk_theta&#39; &#39;&#39;&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming_expr</span><span class="p">)</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">distr_e</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_electron_distribution</span><span class="p">()</span>     
+    
+        <span class="n">nu_p_EC_seed_field</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">if</span> <span class="n">EC_componets_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">jet_model</span><span class="o">.</span><span class="n">add_EC_component</span><span class="p">(</span><span class="n">EC_componets_list</span><span class="p">)</span>
+            <span class="n">jet_model</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;L_disk&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">L_Disk</span><span class="p">)</span>
+            <span class="n">jet_model</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;T_disk_max&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">T_Disk</span><span class="p">)</span>
+            <span class="n">nu_p_EC_seed_field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SEDShape</span><span class="o">.</span><span class="n">nu_p_Disk</span>
+     
+        <span class="c1">#setting the Jet object </span>
+        <span class="n">path_initial</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_path</span><span class="p">()</span>
+        <span class="n">flag_initial</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_flag</span><span class="p">()</span>
+        
+        <span class="n">jet_model</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
+        <span class="n">jet_model</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        
+        
+        <span class="n">IC_nu_size_initial</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_IC_nu_size</span><span class="p">()</span>
+        <span class="n">nu_seed_size_initial</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_seed_nu_size</span><span class="p">()</span>
+        
+        <span class="n">jet_model</span><span class="o">.</span><span class="n">set_IC_nu_size</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="n">jet_model</span><span class="o">.</span><span class="n">set_seed_nu_size</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+
+        <span class="n">jet_model</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+        
+        <span class="c1">#beaming</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; ***  emitting region parameters  ***&quot;</span>
+       
+       
+        <span class="c1">#SEtting emetting_region parameters</span>
+        
+        <span class="c1">#!!Controlla beaming max</span>
+        <span class="c1">#beaming</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">beaming_expr</span><span class="o">==</span><span class="s1">&#39;delta&#39;</span><span class="p">:</span>
+            <span class="n">beaming_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;beaming&#39;</span><span class="p">)</span>
+            <span class="n">beaming_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt;&quot;</span><span class="p">,</span><span class="n">beaming_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            
+           
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">beaming_expr</span><span class="o">==</span><span class="s1">&#39;bulk_theta&#39;</span><span class="p">:</span> 
+            <span class="n">bulk_factor_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;jet-bulk-factor&#39;</span><span class="p">)</span>
+            <span class="n">theta_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;jet-viewing-angle&#39;</span><span class="p">)</span>
+            <span class="n">theta_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">)</span>
+            <span class="n">bulk_factor_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bulk_factor</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt;&quot;</span><span class="p">,</span><span class="n">theta_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt;&quot;</span><span class="p">,</span><span class="n">bulk_factor_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_beaming</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span><span class="n">bulk_factor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bulk_factor</span><span class="p">,</span><span class="n">beaming</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; beaming set to&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;wrong beaming_expr value=</span><span class="si">%s</span><span class="s1">, allowed &#39;delta&#39; or &#39;bulk_theta&#39; &#39;&#39;&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming_expr</span><span class="p">)</span>
+        
+            
+        <span class="c1">#z</span>
+        <span class="n">z_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;redshift&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">z_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type redshift, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">z_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">z_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">z_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span>
+        <span class="c1">#B</span>
+        <span class="n">B_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;magnetic_field&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">B_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type magnetic_field, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">B_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">B_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">B_start</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span>
+
+
+        <span class="c1">#R</span>
+        <span class="n">R_tvar</span><span class="o">=</span><span class="n">get_R_tvar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">t_var_sec</span><span class="p">,</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">R_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;region_size&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">R_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type region_size, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">R_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">R_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">R_tvar</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">R_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span>
+        
+        
+        
+        <span class="nb">print</span>
+        
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; *** electron distribution parameters ***&quot;</span>
+        
+        <span class="c1">#elec distr law</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; distribution type: &quot;</span><span class="p">,</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_electron_distribution</span><span class="p">()</span>
+        
+       
+        
+        <span class="c1">#r</span>
+        <span class="n">curvature_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;spectral_curvature&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">curvature_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta_S</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">curvature_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">beta_S</span><span class="o">*</span><span class="mf">5.0</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; r elec. spec. curvature =</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">curvature_par</span><span class="o">.</span><span class="n">val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">curvature_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="mf">0.4</span><span class="o">*</span><span class="mf">5.0</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; beta Sync not provided, using 0.4, corresponding to r=2.0&quot;</span>
+ 
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type curvature, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">curvature_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">curvature_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span>
+        
+        <span class="c1">#s</span>
+        <span class="n">LE_spectral_slope_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;LE_spectral_slope&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">LE_spectral_slope_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">s_Plank</span><span class="p">,</span><span class="n">s_X</span><span class="p">,</span><span class="n">s_Fermi</span><span class="p">,</span><span class="n">index_s</span><span class="o">=</span><span class="n">find_s</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_obj</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_S_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">S_LE_slope</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span> 
+            <span class="n">LE_spectral_slope_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">index_s</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type LE_spectral_slope, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">LE_spectral_slope_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">LE_spectral_slope_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span>
+
+
+        <span class="c1">#s1</span>
+        <span class="n">HE_spectral_slope_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;HE_spectral_slope&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">HE_spectral_slope_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">index_s1</span><span class="o">=</span><span class="n">find_s1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_obj</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span> 
+            <span class="n">HE_spectral_slope_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">index_s1</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type LE_spectral_slope, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">HE_spectral_slope_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">HE_spectral_slope_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span>
+
+        <span class="n">gamma_3p_Sync</span><span class="o">=</span><span class="n">find_gamma_Synch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_S_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">,</span><span class="n">z_par</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; gamma_3p_Sync= </span><span class="si">%e</span><span class="s2">, assuming B=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">gamma_3p_Sync</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+
+        
+        
+        <span class="c1">#gmax start</span>
+        <span class="n">gmax</span><span class="o">=</span><span class="n">find_HE_cut_off</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distr_e</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">S_nu_max</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">,</span><span class="n">z_par</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; gamma_max=</span><span class="si">%e</span><span class="s2"> from nu_max_Sync= </span><span class="si">%e</span><span class="s2">, using B=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">gmax</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">S_nu_max</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">HE_cut_off_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;high-energy-cut-off&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">HE_cut_off_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">HE_cut_off_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">gmax</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type high-energy-cut-off, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">HE_cut_off_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">HE_cut_off_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span>
+        
+        <span class="c1">#gmin start</span>
+        <span class="n">gmin</span><span class="o">=</span> <span class="n">set_gmin_from_nu_cut_IR</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_cut_IR</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">,</span><span class="n">z_par</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>  
+        <span class="n">par_LE_cut_off_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;low-energy-cut-off&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">par_LE_cut_off_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">par_LE_cut_off_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">gmin</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type low-energy-cut-off, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">par_LE_cut_off_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">par_LE_cut_off_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span> 
+        
+        
+        <span class="c1">#turn-over-energy from gamma_3p_Sync</span>
+        <span class="n">turn_over_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;turn-over-energy&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">turn_over_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">turn_over_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">find_turn_over</span><span class="p">(</span><span class="n">jet_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">distr_e</span><span class="p">,</span><span class="n">gamma_3p_Sync</span><span class="p">))</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type turn-over energy, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">turn_over_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; using gamma_3p_Sync=&quot;</span><span class="p">,</span><span class="n">gamma_3p_Sync</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">turn_over_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span>
+         
+   
+        
+        <span class="c1">#turn-over-energy from gamma_3p_SSC</span>
+        <span class="n">gamma_3p_SSC</span><span class="o">=</span> <span class="n">find_gamma_3p_SSC</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_S_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_IC_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">gamma_3p_Sync</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">,</span><span class="n">z_par</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="n">nu_p_EC_seed_field</span><span class="o">=</span><span class="n">nu_p_EC_seed_field</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; gamma_3p_SSCc= </span><span class="si">%e</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">gamma_3p_SSC</span>
+       
+        <span class="k">if</span> <span class="n">turn_over_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">turn_over_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">find_turn_over</span><span class="p">(</span><span class="n">jet_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">distr_e</span><span class="p">,</span><span class="n">gamma_3p_SSC</span><span class="p">))</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type turn-over energy, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">turn_over_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; using gamma_3p_SSC=&quot;</span><span class="p">,</span><span class="n">gamma_3p_SSC</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">turn_over_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span>
+        
+        <span class="nb">print</span> 
+       
+       
+       
+        <span class="c1">#N</span>
+        <span class="n">N_par</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;electron_density&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">N_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">N</span><span class="p">,</span><span class="n">ratio</span><span class="o">=</span><span class="n">rescale_Ne</span><span class="p">(</span><span class="n">jet_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_S_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type electron_density, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">N_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">N_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
+        
+        <span class="c1">#find B</span>
+        <span class="c1">#print &quot;estimate B from nu_p_S, and gamma_3p_SSC&quot;</span>
+        <span class="n">B</span><span class="o">=</span><span class="n">find_B_from_nu_p_S</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_S_obs</span><span class="p">,</span><span class="n">gamma_3p_SSC</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">,</span><span class="n">z_par</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; B from nu_p_S=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">B</span>
+       
+
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; get B from best matching of nu_p_IC&quot;</span>
+        <span class="k">if</span> <span class="n">B_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">EC_componets_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">B_from_nu_peaks</span><span class="p">,</span><span class="n">failed</span><span class="o">=</span><span class="n">constr_B_from_nu_peaks</span> <span class="p">(</span><span class="n">jet_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_S_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_IC_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">B_min</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">B_max</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">,</span><span class="n">params_grid_size</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">B_from_nu_peaks</span><span class="p">,</span><span class="n">failed</span><span class="o">=</span><span class="n">constr_B_from_nu_peaks</span> <span class="p">(</span><span class="n">jet_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_S_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_IC_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">B_min</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">B_max</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">,</span><span class="n">params_grid_size</span><span class="p">,</span><span class="n">EC</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">B_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">B_from_nu_peaks</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type magnetic_field, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">B_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span>
+
+            <span class="k">if</span> <span class="n">failed</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; best B found: &quot;</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; constrain failed, B set to: &quot;</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+                <span class="nb">print</span>
+                
+    
+                
+            <span class="nb">print</span> 
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; update pars for new B &quot;</span>
+            
+            <span class="c1">#update gmin from new B</span>
+            <span class="n">gmin</span><span class="o">=</span> <span class="n">set_gmin_from_nu_cut_IR</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_cut_IR</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">,</span><span class="n">z_par</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>  
+            <span class="k">if</span> <span class="n">par_LE_cut_off_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">par_LE_cut_off_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">gmin</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type low-energy-cut-off, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">par_LE_cut_off_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">par_LE_cut_off_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+                <span class="nb">print</span>
+         
+            <span class="c1">#update gamma_3p and gamma_cut from new B</span>
+            <span class="n">gamma_3p_Sync</span><span class="o">=</span><span class="n">find_gamma_Synch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_S_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">,</span><span class="n">z_par</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">turn_over_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">turn_over_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">find_turn_over</span><span class="p">(</span><span class="n">jet_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">distr_e</span><span class="p">,</span><span class="n">gamma_3p_Sync</span><span class="p">))</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type low-energy-cut-off, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">turn_over_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; using gamma_3p_Sync=&quot;</span><span class="p">,</span><span class="n">gamma_3p_Sync</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">turn_over_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+                <span class="nb">print</span>
+                
+            
+            <span class="c1">#update gmax for New B</span>
+            <span class="n">gmax</span><span class="o">=</span><span class="n">find_HE_cut_off</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distr_e</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">S_nu_max</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">,</span><span class="n">z_par</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; gamma_max=</span><span class="si">%e</span><span class="s2"> from nu_max_Sync= </span><span class="si">%e</span><span class="s2">, using B=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">gmax</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">S_nu_max</span><span class="p">,</span><span class="n">B_par</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">HE_cut_off_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">HE_cut_off_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">gmax</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type high-energy-cut-off, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">HE_cut_off_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">HE_cut_off_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+                <span class="nb">print</span>
+            
+            <span class="c1">#update N for New B</span>
+            <span class="k">if</span> <span class="n">N_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">N</span><span class="p">,</span><span class="n">ratio</span><span class="o">=</span><span class="n">rescale_Ne</span><span class="p">(</span><span class="n">jet_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_S_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type electron_density, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">N_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">N_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
+                
+            
+                
+        
+        
+        <span class="c1">#Improve R according to CD</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; get R from Compoton Dominance (CD)&quot;</span>
+        <span class="n">R_start</span><span class="o">=</span><span class="n">R_tvar</span>
+        <span class="k">if</span> <span class="n">EC_componets_list</span>  <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">R_from_CD</span><span class="p">,</span><span class="n">failed</span><span class="o">=</span><span class="n">constr_R_from_CD</span><span class="p">(</span><span class="n">jet_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_S_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_IC_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_IC_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">R_tvar</span><span class="p">,</span><span class="n">params_grid_size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">R_from_CD</span><span class="p">,</span><span class="n">failed</span><span class="o">=</span><span class="n">constr_R_from_CD</span><span class="p">(</span><span class="n">jet_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_S_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_IC_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_p_IC_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">R_tvar</span><span class="p">,</span><span class="n">params_grid_size</span><span class="p">,</span><span class="n">EC</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">failed</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            
+
+            <span class="k">if</span> <span class="n">R_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type region_size, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">R_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">R_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">R_from_CD</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">R_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+                <span class="nb">print</span>
+
+
+                <span class="k">if</span> <span class="n">N_par</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">N</span><span class="p">,</span><span class="n">ratio</span><span class="o">=</span><span class="n">rescale_Ne</span><span class="p">(</span><span class="n">jet_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu_p_S_obs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_frame</span><span class="p">)</span>
+                    <span class="nb">print</span> <span class="s2">&quot;---&gt; setting par type electron_density, corresponding to par </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">N_par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">N_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">R_par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">R_start</span><span class="p">)</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; constrain failed, R unchanged: &quot;</span>
+            <span class="nb">print</span> <span class="s2">&quot;---&gt; &quot;</span><span class="p">,</span><span class="n">R_par</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+            <span class="nb">print</span>
+            
+         
+        <span class="c1">#Check tau_gamma_gamma and t_var</span>
+        <span class="c1">#check_gamma_tansp(jet_model,self.beaming,sp.logspace(21,28,10),self.rest_frame)</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; t_var (days)&quot;</span><span class="p">,</span> <span class="n">check_t_var</span><span class="p">(</span><span class="n">R_par</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">beaming</span><span class="p">,</span><span class="n">z_par</span><span class="o">.</span><span class="n">val</span><span class="p">)</span><span class="o">/</span><span class="mi">86400</span>
+    
+                
+        <span class="n">jet_model</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="s1">&#39;obs_constrain_final&#39;</span><span class="p">)</span>
+       
+        <span class="nb">print</span>
+        
+        <span class="nb">print</span> <span class="s2">&quot;show pars&quot;</span>
+        <span class="n">jet_model</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+        
+        <span class="c1">#sets to initial values</span>
+        
+        
+        <span class="n">jet_model</span><span class="o">.</span><span class="n">set_IC_nu_size</span><span class="p">(</span><span class="n">IC_nu_size_initial</span><span class="p">)</span>
+        <span class="n">jet_model</span><span class="o">.</span><span class="n">set_seed_nu_size</span><span class="p">(</span><span class="n">nu_seed_size_initial</span><span class="p">)</span>
+        
+        
+        <span class="nb">print</span> <span class="s2">&quot;eval_model&quot;</span>
+        <span class="n">jet_model</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">fill_SED</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="n">jet_model</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="n">flag_initial</span><span class="p">)</span>
+        <span class="n">jet_model</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">path_initial</span><span class="p">)</span>
+        
+        
+<span class="c1">#        if self.SEDShape.L_host!=None:</span>
+<span class="c1">#           </span>
+<span class="c1">#            SED_model=FitModel(jet=jet_model,template=self.SEDShape.host)</span>
+<span class="c1">#       </span>
+<span class="c1">#        else:</span>
+<span class="c1">#        </span>
+<span class="c1">#            SED_model=FitModel(jet=jet_model,template=self.SEDShape.host)</span>
+
+            
+        <span class="k">return</span> <span class="n">jet_model</span></div></div>
+        
+    
+
+
+
+
+
+<div class="viewcode-block" id="check_t_var"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.check_t_var">[docs]</a><span class="k">def</span> <span class="nf">check_t_var</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">R</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">BlazarSED</span><span class="o">.</span><span class="n">vluce_cm</span><span class="o">*</span><span class="n">beaming</span><span class="p">)</span></div>
+
+
+
+
+<div class="viewcode-block" id="check_gamma_tansp"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.check_gamma_tansp">[docs]</a><span class="k">def</span> <span class="nf">check_gamma_tansp</span><span class="p">(</span><span class="n">jet</span><span class="p">,</span><span class="n">beaming_val</span><span class="p">,</span><span class="n">nu_IC_data</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;retrun tau_gamma_gamma for a given  IC frequency </span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        blob:</span>
+<span class="sd">        temap_ev:</span>
+<span class="sd">        nu_IC_data: data freq of the IC component to check fro tau_gamma_gamma</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        tau_gamma_gamma</span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#################################</span>
+    <span class="c1"># This function must not        #</span>
+    <span class="c1"># change jet.blob attributes    #</span>
+    <span class="c1"># all the changed values must   #</span>
+    <span class="c1"># be set back to their original #</span>
+    <span class="c1"># values                        #</span>
+    <span class="c1">#################################</span>
+    
+    <span class="n">flag_initial</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_flag</span><span class="p">()</span>
+    
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="s1">&#39;tau_gamma_gamma&#39;</span><span class="p">)</span>
+
+    <span class="n">IC_initial</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_IC_mode</span><span class="p">()</span>
+
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_IC_mode</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    
+    
+    <span class="c1">#nu_IC_blob=convert_nu_to_blob(nu_IC_data,rest_frame,blob.beam_obj,blob.z_cosm)</span>
+    <span class="c1">#target_nu_blob = SED.MEC2 * SED.MEC2 / (SED.HPLANCK * SED.HPLANCK * nu_IC_blob)</span>
+    <span class="n">target_nu_obs</span><span class="o">=</span><span class="n">BlazarSED</span><span class="o">.</span><span class="n">MEC2</span> <span class="o">*</span> <span class="n">BlazarSED</span><span class="o">.</span><span class="n">MEC2</span> <span class="o">/</span> <span class="p">(</span><span class="n">BlazarSED</span><span class="o">.</span><span class="n">HPLANCK</span> <span class="o">*</span> <span class="n">BlazarSED</span><span class="o">.</span><span class="n">HPLANCK</span> <span class="o">*</span> <span class="n">nu_IC_data</span><span class="p">)</span>
+    <span class="c1">#print nu_IC_blob,target_nu,target_nu*nu_IC_blob</span>
+
+   
+    <span class="n">jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    
+    
+    <span class="n">nu_obs</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+    <span class="n">nuFnu_obs</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+    <span class="n">nu_obs</span><span class="p">,</span><span class="n">nuFnu_obs</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_SED_points</span><span class="p">(</span><span class="n">log_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Sync&#39;</span><span class="p">)</span>
+   
+    <span class="c1">#for i in xrange(BlazarSED.GetNuIntMaxSynch()):</span>
+    <span class="c1">#    </span>
+    <span class="c1">#     if BlazarSED.GetSEDSynch(i)&gt;0:</span>
+    <span class="c1">#         nu_obs=sp.append(nu_obs,sp.log10(BlazarSED.GetNuObsSynch(i)))</span>
+    <span class="c1">#        nuFnu_obs = sp.append(nuFnu_obs, sp.log10(BlazarSED.GetSEDSynch(i)))</span>
+
+     
+    <span class="n">nuFnu_target</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="n">sp</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">target_nu_obs</span><span class="p">),</span><span class="n">nu_obs</span><span class="p">,</span><span class="n">nuFnu_obs</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">sp</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">target_nu_obs</span><span class="p">)</span><span class="o">==</span><span class="p">():</span>
+        <span class="n">target_nu_obs</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">target_nu_obs</span><span class="p">])</span>
+        
+        <span class="n">nuFnu_target</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">nuFnu_target</span><span class="p">])</span>
+        
+        <span class="n">nu_IC_data</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">nu_IC_data</span> <span class="p">])</span>
+        
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">target_nu_obs</span><span class="p">)):</span>
+        <span class="c1">#print nuFnu_target,blob.beam_obj,blob.z_cosm,blob.dist</span>
+        
+        
+        
+        <span class="n">z_val</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;redshift&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+        
+        <span class="n">DL_cm_val</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_DL_cm</span><span class="p">()</span>
+        
+        <span class="n">nuLnu_target_blob</span><span class="o">=</span> <span class="n">BlazarSED</span><span class="o">.</span><span class="n">nuFnu_obs_to_nuLnu_blob</span><span class="p">(</span><span class="n">nuFnu_target</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">beaming_val</span><span class="p">,</span><span class="n">z_val</span><span class="p">,</span><span class="n">DL_cm_val</span><span class="p">)</span>
+        
+        <span class="n">R_val</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;region_size&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+        
+        <span class="n">tau_gamma_gamma</span><span class="o">=</span><span class="n">BlazarSED</span><span class="o">.</span><span class="n">SIGTH</span><span class="o">/</span><span class="mi">5</span><span class="o">*</span><span class="n">nuLnu_target_blob</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">sp</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">BlazarSED</span><span class="o">.</span><span class="n">vluce_cm</span> <span class="o">*</span> <span class="n">R_val</span> <span class="o">*</span> <span class="n">BlazarSED</span><span class="o">.</span><span class="n">MEC2</span> <span class="p">)</span>
+        
+        <span class="nb">print</span> <span class="s2">&quot;     --&gt;target comoving freq=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">target_nu_obs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot;observed freq=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">nu_IC_data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot;tau_gamma=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">tau_gamma_gamma</span><span class="p">)</span>
+    
+    
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_IC_mode</span><span class="p">(</span><span class="n">IC_initial</span><span class="p">)</span>
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="n">flag_initial</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="set_gmin_from_nu_cut_IR"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.set_gmin_from_nu_cut_IR">[docs]</a><span class="k">def</span> <span class="nf">set_gmin_from_nu_cut_IR</span><span class="p">(</span><span class="n">nu_cut_IR</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">nu_cut_IR</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">find_gamma_Synch</span> <span class="p">(</span><span class="n">nu_cut_IR</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;--&gt; !! No nu_cut_IR provided set gmin to 1&quot;</span>
+            <span class="k">return</span> <span class="mi">1</span></div>
+           
+        
+        
+        
+
+<div class="viewcode-block" id="find_turn_over"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.find_turn_over">[docs]</a><span class="k">def</span> <span class="nf">find_turn_over</span><span class="p">(</span><span class="n">jet</span><span class="p">,</span><span class="n">distr_e</span><span class="p">,</span><span class="n">gamma_3p</span><span class="p">):</span>
+    
+    <span class="k">if</span> <span class="n">distr_e</span><span class="o">==</span><span class="s1">&#39;lppl&#39;</span> <span class="ow">or</span> <span class="n">distr_e</span><span class="o">==</span><span class="s1">&#39;lp&#39;</span><span class="p">:</span>
+        <span class="n">r</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;spectral_curvature&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+        <span class="n">s</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;LE_spectral_slope&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+        <span class="k">return</span> <span class="n">find_gamma0</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gamma_3p</span><span class="p">)</span>
+        
+
+    <span class="k">elif</span> <span class="n">distr_e</span><span class="o">==</span><span class="s1">&#39;lpep&#39;</span><span class="p">:</span>
+        <span class="n">r</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;spectral_curvature&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+        <span class="k">return</span> <span class="n">gamma_3p</span><span class="o">/</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="mf">1.5</span><span class="o">/</span><span class="n">r</span><span class="p">)</span>
+
+    <span class="c1">#!! TO FIX</span>
+    <span class="k">elif</span> <span class="n">distr_e</span><span class="o">==</span><span class="s1">&#39;plc&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">gamma_3p</span><span class="o">*</span><span class="mi">2</span>
+
+    
+    <span class="k">elif</span> <span class="n">distr_e</span><span class="o">==</span><span class="s1">&#39;bkn&#39;</span><span class="p">:</span>
+        <span class="s2">&quot;!!!!!!!!! MUST FIX ACCORDING P1 and P2!!!!!!&quot;</span>
+        <span class="k">return</span> <span class="n">gamma_3p</span></div>
+
+
+
+<div class="viewcode-block" id="find_HE_cut_off"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.find_HE_cut_off">[docs]</a><span class="k">def</span> <span class="nf">find_HE_cut_off</span><span class="p">(</span><span class="n">distr_e</span><span class="p">,</span><span class="n">nu_S_max</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="n">gamma_max_Sync</span><span class="o">=</span><span class="n">find_gamma_Synch</span><span class="p">(</span><span class="n">nu_S_max</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B</span> <span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">distr_e</span><span class="o">==</span><span class="s1">&#39;lppl&#39;</span> <span class="ow">or</span> <span class="n">distr_e</span><span class="o">==</span><span class="s1">&#39;lp&#39;</span> <span class="ow">or</span> <span class="n">distr_e</span><span class="o">==</span><span class="s1">&#39;lpep&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">gamma_max_Sync</span>
+    
+    <span class="k">elif</span>  <span class="n">distr_e</span><span class="o">==</span><span class="s1">&#39;bkn&#39;</span> <span class="ow">or</span> <span class="n">distr_e</span><span class="o">==</span><span class="s1">&#39;plc&#39;</span> <span class="ow">or</span> <span class="n">distr_e</span><span class="o">==</span><span class="s1">&#39;pl&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">gamma_max_Sync</span><span class="o">/</span><span class="mf">1.5</span></div>
+    
+
+<div class="viewcode-block" id="find_gamma0"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.find_gamma0">[docs]</a><span class="k">def</span> <span class="nf">find_gamma0</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">gamma_3p</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;returns the value of gamma_0  for</span>
+<span class="sd">    a log_par+pl distribution</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        r: curvature</span>
+<span class="sd">        s: spectral index in the PL branch</span>
+<span class="sd">        gamma_3p: peak value requested for n(gamma)gamma^3</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">r</span><span class="o">!=</span><span class="mf">0.0</span><span class="p">):</span>
+        <span class="n">c</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="o">-</span><span class="n">s</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">gamma_0</span><span class="o">=</span> <span class="n">gamma_3p</span><span class="o">/</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">c</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gamma_0</span><span class="o">=</span> <span class="n">gamma_3p</span>
+
+    <span class="k">if</span> <span class="n">gamma_0</span><span class="o">&lt;</span><span class="mf">1.0</span><span class="p">:</span>
+        <span class="n">gamma_0</span><span class="o">=</span><span class="mf">1.0</span>
+    
+    <span class="k">return</span> <span class="n">gamma_0</span></div>
+
+
+
+
+<div class="viewcode-block" id="find_B_from_nu_p_S"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.find_B_from_nu_p_S">[docs]</a><span class="k">def</span> <span class="nf">find_B_from_nu_p_S</span><span class="p">(</span><span class="n">nu_p_S</span><span class="p">,</span><span class="n">gamma_3p</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;returns B according to Ep_S and gamma_3p</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            nu_p_S:  Synchrotron peack frequency</span>
+<span class="sd">            gamma_3p: peak value of n(gamma)gamma^3</span>
+<span class="sd">            </span>
+
+<span class="sd">            re_eval: def==True, set the flag to re_evaluate find_gamma_3p_Synch, after updating B</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            B</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nu_p_blob</span><span class="o">=</span><span class="n">convert_nu_to_blob</span><span class="p">(</span><span class="n">nu_p_S</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="c1">#first tryal for B</span>
+    <span class="n">B</span><span class="o">=</span> <span class="p">(</span><span class="n">nu_p_blob</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">gamma_3p</span><span class="o">*</span><span class="n">gamma_3p</span><span class="o">*</span><span class="mf">3.7E6</span> <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">B</span>    </div>
+    
+
+<div class="viewcode-block" id="find_gamma_Synch"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.find_gamma_Synch">[docs]</a><span class="k">def</span>  <span class="nf">find_gamma_Synch</span> <span class="p">(</span><span class="n">nu_S</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;returns the value of gamma corresponding to the  Synch freq</span>
+<span class="sd">    </span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            B: magnetic field</span>
+<span class="sd">            nu_S:  Synchrotron  frequency</span>
+<span class="sd">            rest_frame: rest frame cooresponding to nu_p_S</span>
+<span class="sd">            z: redshift</span>
+<span class="sd">            beamign: beaming factor</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            gamma</span>
+<span class="sd">            </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nu_S_blob</span><span class="o">=</span><span class="n">convert_nu_to_blob</span><span class="p">(</span><span class="n">nu_S</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+     
+    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nu_S_blob</span><span class="o">/</span><span class="p">(</span><span class="mf">3.7E6</span><span class="o">*</span><span class="n">B</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="find_gamma_3p_SSC"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.find_gamma_3p_SSC">[docs]</a><span class="k">def</span> <span class="nf">find_gamma_3p_SSC</span><span class="p">(</span><span class="n">nu_p_S</span><span class="p">,</span><span class="n">nu_p_IC</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">gamma_3p_Sync</span><span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">nu_p_EC_seed_field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;returns the value of gamma_3p from nu_p_S/nu_p_IC</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            nu_p_S :  Synchrotron peack frequency</span>
+<span class="sd">            nu_p_IC:  IC peack frequency</span>
+<span class="sd">            rest_frame: rest frame cooresponding to peak frequencies</span>
+
+<span class="sd">                    </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            gamma_3p_SSC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#print &quot;*** find_gamma_3p_SSC ***&quot;</span>
+    <span class="c1">#print &quot;nu_p_S&quot;,nu_p_S</span>
+    <span class="c1">#print &quot;nu+p_IC&quot;,nu_p_IC</span>
+    <span class="c1">#print &quot;beaming&quot;,beaming</span>
+    <span class="c1">#print &quot;z&quot;,z</span>
+    
+    
+
+    
+    <span class="c1">#print &quot;--&gt; gamma_TH, gamma_KN_Ep_C&quot;,g_TH,gamma_KN</span>
+    <span class="k">if</span> <span class="n">nu_p_EC_seed_field</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">g_TH</span><span class="o">=</span><span class="p">(</span><span class="mf">4.</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nu_p_IC</span><span class="o">/</span><span class="n">nu_p_S</span><span class="p">)</span>
+        <span class="n">nu_p_seed_blob</span><span class="o">=</span><span class="n">convert_nu_to_blob</span><span class="p">(</span><span class="n">nu_p_S</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+       
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nu_p_seed_blob</span><span class="o">=</span><span class="n">nu_p_EC_seed_field</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="n">beaming</span>
+        <span class="n">g_TH</span><span class="o">=</span><span class="p">(</span><span class="mf">4.</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nu_p_IC</span><span class="o">/</span><span class="n">nu_p_seed_blob</span><span class="p">)</span>
+    <span class="c1">#print&quot;--&gt; comp_fac,gamma_TH&quot;, comp_factor,g_TH,</span>
+    <span class="n">comp_factor</span><span class="o">=</span><span class="n">get_Comp_factor</span><span class="p">(</span><span class="n">gamma_3p_Sync</span><span class="p">,</span><span class="n">nu_p_seed_blob</span><span class="p">)</span>
+    <span class="nb">print</span> <span class="s2">&quot;nu_p_seed_blob&quot;</span><span class="p">,</span><span class="n">nu_p_seed_blob</span>
+
+    <span class="n">gamma_3p_SSC_TH</span><span class="o">=</span><span class="n">g_TH</span>
+    <span class="c1">#print &quot;--&gt; gamma_3p_SSC_TH&quot;,gamma_3p_SSC_TH,g_TH</span>
+    <span class="nb">print</span> <span class="s2">&quot;COMP FACTOR&quot;</span><span class="p">,</span><span class="n">comp_factor</span><span class="p">,</span><span class="n">gamma_3p_SSC_TH</span>
+    
+    <span class="k">if</span> <span class="n">comp_factor</span><span class="o">&gt;</span><span class="mf">0.01</span><span class="p">:</span>
+        <span class="c1">#print &quot;--&gt; correction&quot;, 0.2*pow(comp_factor,-0.45)</span>
+        <span class="n">gamma_3p_SSC</span><span class="o">=</span><span class="n">g_TH</span><span class="o">/</span><span class="p">(</span><span class="mf">0.2</span><span class="o">*</span><span class="nb">pow</span><span class="p">(</span><span class="n">comp_factor</span><span class="p">,</span><span class="o">-</span><span class="mf">0.45</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">gamma_3p_SSC</span><span class="o">=</span><span class="n">gamma_3p_SSC_TH</span>
+    
+    <span class="c1">#   print &quot;--&gt; gamma_3p_SSC=&quot;,gamma_3p_SSC</span>
+    <span class="k">return</span> <span class="n">gamma_3p_SSC</span></div>
+
+
+
+<div class="viewcode-block" id="get_Comp_factor"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.get_Comp_factor">[docs]</a><span class="k">def</span> <span class="nf">get_Comp_factor</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span><span class="n">nu_p_S_blob</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;returns the compton factor = nu_blob_seed_Synch*hplanck/(mec2)</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            gamma: gamma of the up-scattering electrons</span>
+<span class="sd">            u_p_S_blob: Synchrotron peack frequency in the blob rest frame</span>
+<span class="sd">           </span>
+<span class="sd">        Returns:</span>
+<span class="sd">         compton factor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># print &quot;--&gt; Ep_S_blob &quot;,nu_p_S_blob</span>
+    <span class="k">return</span> <span class="n">gamma</span><span class="o">*</span><span class="n">nu_p_S_blob</span><span class="o">*</span><span class="n">BlazarSED</span><span class="o">.</span><span class="n">HPLANCK</span><span class="o">/</span><span class="p">(</span><span class="n">BlazarSED</span><span class="o">.</span><span class="n">MEC2</span><span class="p">)</span></div>
+
+
+
+
+
+<div class="viewcode-block" id="find_s"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.find_s">[docs]</a><span class="k">def</span> <span class="nf">find_s</span><span class="p">(</span><span class="n">class_obj</span><span class="p">,</span><span class="n">nu_p_S_obs</span><span class="p">,</span><span class="n">S_LE_slope</span><span class="p">,</span><span class="n">indices</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find the index of the low-energy PL branch of n(gamma), from PL fit over various instrument bands</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        class_obj: object  class</span>
+<span class="sd">        indices_array</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        s_Planck, s_X, s_Fermi, s</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#1 get S index from nu_p_S_obs</span>
+    <span class="c1">#2 get IC index from nu_p_IC_obs</span>
+
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">class_obj</span><span class="o">==</span><span class="s1">&#39;LSP&#39;</span> <span class="ow">or</span> <span class="n">class_obj</span><span class="o">==</span><span class="s1">&#39;ISP&#39;</span> <span class="ow">or</span> <span class="n">class_obj</span><span class="o">==</span><span class="s1">&#39;HSP&#39;</span><span class="p">):</span>
+        
+        <span class="n">s_radio_mm</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">if</span> <span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;radio_mm&#39;</span><span class="p">)</span><span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;radio_mm&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">radio_mm_index</span><span class="o">=</span><span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;radio_mm&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span><span class="o">.</span><span class="n">spectral</span>
+                <span class="n">s_radio_mm</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">radio_mm_index</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; s_radio_mm&quot;</span><span class="p">,</span><span class="n">radio_mm_index</span><span class="p">,</span><span class="n">s_radio_mm</span>
+
+                
+        
+        <span class="n">s_X</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">if</span> <span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span><span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">X_index</span><span class="o">=</span><span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span><span class="o">.</span><span class="n">spectral</span>
+                <span class="n">s_X</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">X_index</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; s_X&quot;</span><span class="p">,</span><span class="n">s_X</span>
+    
+
+
+      
+        <span class="n">s_Fermi</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">if</span> <span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;Fermi&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;Fermi&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">Fermi_index</span><span class="o">=</span><span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;Fermi&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span><span class="o">.</span><span class="n">spectral</span>
+                <span class="n">s_Fermi</span><span class="o">=</span><span class="p">(</span><span class="mf">0.4</span><span class="o">+</span> <span class="n">Fermi_index</span><span class="o">*-</span><span class="mi">1</span><span class="o">*</span><span class="mf">1.60</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; s_Fermi&quot;</span><span class="p">,</span><span class="n">s_Fermi</span>
+    
+        
+        <span class="n">s_UV_X</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">if</span> <span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;UV_X&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;UV_X&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">UV_X_index</span><span class="o">=</span><span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;UV_X&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span><span class="o">.</span><span class="n">spectral</span>
+                <span class="n">s_UV_X</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span> <span class="n">UV_X_index</span><span class="o">*-</span><span class="mi">1</span><span class="o">*</span><span class="mf">2.0</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; s_UV_X&quot;</span><span class="p">,</span><span class="n">s_UV_X</span>
+        
+        <span class="n">s_Opt_UV</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">if</span> <span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;Opt_UV&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;Opt_UV&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">Opt_UV_index</span><span class="o">=</span><span class="n">indices</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s1">&#39;Opt_UV&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span><span class="o">.</span><span class="n">spectral</span>
+                <span class="n">s_Opt_UV</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">*</span><span class="n">Opt_UV_index</span><span class="o">*</span><span class="mf">2.0</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; s_Opt_UV&quot;</span><span class="p">,</span><span class="n">Opt_UV_index</span><span class="p">,</span><span class="n">s_Opt_UV</span>
+        
+        <span class="k">if</span> <span class="n">class_obj</span><span class="o">==</span><span class="s1">&#39;LSP&#39;</span> <span class="p">:</span>
+            <span class="c1">#print s_X</span>
+            <span class="k">if</span> <span class="n">s_X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">s_X</span><span class="o">-</span><span class="mf">3.0</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="c1">#if X_index+1.0&gt;0.2:</span>
+                <span class="n">s</span><span class="o">=</span><span class="n">s_X</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; s from X_index&quot;</span><span class="p">,</span><span class="n">s</span>
+            <span class="k">elif</span> <span class="n">s_radio_mm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">s_radio_mm</span><span class="o">+</span><span class="mi">2</span><span class="o">&gt;</span><span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">s</span><span class="o">=</span><span class="n">s_radio_mm</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; s from radio_mm_index&quot;</span>
+            <span class="k">else</span><span class="p">:</span>   
+                <span class="n">s</span><span class="o">=</span><span class="mf">2.0</span>
+        
+        <span class="k">if</span> <span class="n">class_obj</span><span class="o">==</span><span class="s1">&#39;ISP&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">s_radio_mm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">s_radio_mm</span><span class="o">+</span><span class="mi">2</span><span class="o">&gt;</span><span class="mf">0.2</span><span class="p">:</span>
+                <span class="n">s</span><span class="o">=</span><span class="n">s_radio_mm</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; s from radio_mm_index&quot;</span>
+            <span class="k">else</span><span class="p">:</span>   
+                <span class="n">s</span><span class="o">=</span><span class="mf">2.0</span>
+        
+<span class="c1">#        if class_obj==&#39;ISP&#39;:</span>
+<span class="c1">#            if s_Planck!=None:</span>
+<span class="c1">#                s=s_Planck</span>
+<span class="c1">#            elif s_X!=None:</span>
+<span class="c1">#                s=s_X</span>
+<span class="c1">#            else:</span>
+<span class="c1">#                s=2.0   </span>
+        
+        <span class="n">s_SED_shape_photon</span><span class="o">=</span><span class="n">S_LE_slope</span><span class="o">-</span><span class="mf">2.0</span>
+        <span class="n">s_SED_shape</span><span class="o">=-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">s_SED_shape_photon</span><span class="o">-</span><span class="mf">1.0</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; s from synch log-log fit&quot;</span><span class="p">,</span><span class="n">s_SED_shape</span>
+
+        <span class="k">if</span> <span class="n">class_obj</span><span class="o">==</span><span class="s1">&#39;HSP&#39;</span><span class="p">:</span>
+           
+            <span class="n">s_UV</span><span class="o">=</span><span class="kc">None</span>
+            
+            <span class="k">if</span> <span class="n">s_Opt_UV</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">s_UV_X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">s_UV</span><span class="o">=</span><span class="n">s_UV_X</span>
+            <span class="k">elif</span> <span class="n">s_Opt_UV</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">s_UV_X</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">s_UV</span><span class="o">=</span><span class="n">s_Opt_UV</span>
+            <span class="k">elif</span> <span class="n">s_Opt_UV</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">s_UV_X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">s_UV</span><span class="o">=</span><span class="n">s_UV_X</span>
+                
+            <span class="k">if</span> <span class="n">s_Fermi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">s_UV</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">s</span><span class="o">=</span><span class="p">(</span><span class="n">s_Fermi</span> <span class="o">+</span><span class="n">s_UV</span> <span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; s from (s_Fermi + s_UV)/2&quot;</span>
+            <span class="k">elif</span> <span class="n">s_UV</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+                <span class="n">s</span><span class="o">=</span><span class="n">s_UV</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; s from  s_UV&quot;</span>
+
+            <span class="k">elif</span> <span class="n">s_Fermi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+                <span class="n">s</span><span class="o">=</span><span class="n">s_Fermi</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; s from Fermi&quot;</span>
+
+            
+            <span class="k">elif</span> <span class="n">s_radio_mm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+                <span class="n">s</span><span class="o">=</span><span class="n">s_radio_mm</span>
+                <span class="nb">print</span> <span class="s2">&quot;---&gt; s from radio_mm&quot;</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">s</span><span class="o">=</span><span class="mf">2.0</span> 
+   
+    <span class="nb">print</span> <span class="s2">&quot;---&gt; power-law index s, class obj=</span><span class="si">%s</span><span class="s2"> s chosen is </span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">class_obj</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
+    <span class="c1">#print s_mm, s_X, s_Fermi, s</span>
+    <span class="k">return</span> <span class="n">s_radio_mm</span><span class="p">,</span> <span class="n">s_X</span><span class="p">,</span> <span class="n">s_Fermi</span><span class="p">,</span> <span class="n">s</span></div>
+
+
+
+<div class="viewcode-block" id="find_s1"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.find_s1">[docs]</a><span class="k">def</span> <span class="nf">find_s1</span><span class="p">(</span><span class="n">class_obj</span><span class="p">,</span><span class="n">indices</span><span class="p">):</span>
+    <span class="c1">#print &quot;---&gt; !!! fake function, still to develop&quot;</span>
+    <span class="n">val</span><span class="o">=</span><span class="mf">3.5</span>
+    <span class="nb">print</span> <span class="s2">&quot;---&gt; set s1 to </span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">val</span>
+    <span class="k">return</span> <span class="n">val</span></div>
+
+<div class="viewcode-block" id="rescale_Ne"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.rescale_Ne">[docs]</a><span class="k">def</span> <span class="nf">rescale_Ne</span><span class="p">(</span><span class="n">jet</span><span class="p">,</span><span class="n">Lp_S</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Rescales N.blob to get the wanted Lp_S_blob</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            blob: SED module class</span>
+<span class="sd">            temp_ev: SED module class</span>
+<span class="sd">            Lp_S_obs_blob: peak luminosity of the Synch component </span>
+<span class="sd">            rest_frame: rest_frame of the observed data</span>
+<span class="sd">            </span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Lp_S_blob/Lp_S_model_blob</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#################################</span>
+    <span class="c1"># This function must not        #</span>
+    <span class="c1"># change jet.blob attributes    #</span>
+    <span class="c1"># all the changed values must   #</span>
+    <span class="c1"># be set back to their original #</span>
+    <span class="c1"># values                        #</span>
+    <span class="c1">#################################</span>
+
+    <span class="c1">#blob.STEM=&#39;constr_rescale_Ne-pre&#39;</span>
+    <span class="n">flag_initial</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_flag</span><span class="p">()</span>
+    
+    <span class="n">N_initial</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="s1">&#39;constr_R&#39;</span><span class="p">)</span>
+    
+    
+    <span class="n">IC_initial</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_IC_mode</span><span class="p">()</span>
+
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_IC_mode</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="s1">&#39;constr_rescale_Ne&#39;</span><span class="p">)</span>
+
+    <span class="n">jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    
+    <span class="n">Lp_S_model</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_SED_peak</span><span class="p">(</span> <span class="n">Model_dic</span><span class="o">.</span><span class="n">Sync_nuFnu_p_dic</span><span class="p">[</span><span class="n">rest_frame</span><span class="p">])</span>
+    
+    
+    <span class="n">N_new</span><span class="o">=</span><span class="n">N_initial</span><span class="o">*</span><span class="n">Lp_S</span><span class="o">/</span><span class="n">Lp_S_model</span>
+    
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="n">N_new</span><span class="p">)</span>
+
+    
+    
+    <span class="n">jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    
+    <span class="c1">#reset old values</span>
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_IC_mode</span><span class="p">(</span><span class="n">IC_initial</span><span class="p">)</span>
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="n">N_initial</span><span class="p">)</span>
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="n">flag_initial</span><span class="p">)</span>
+    
+    <span class="n">Lp_S_model</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_SED_peak</span><span class="p">(</span> <span class="n">Model_dic</span><span class="o">.</span><span class="n">Sync_nuFnu_p_dic</span><span class="p">[</span><span class="n">rest_frame</span><span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">N_new</span><span class="p">,</span> <span class="n">Lp_S</span><span class="o">/</span><span class="n">Lp_S_model</span></div>
+
+
+
+<div class="viewcode-block" id="get_U_Sync_from_Ph"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.get_U_Sync_from_Ph">[docs]</a><span class="k">def</span> <span class="nf">get_U_Sync_from_Ph</span><span class="p">(</span><span class="n">jet</span><span class="p">,</span><span class="n">re_eval_sync</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;returns U_synch by integrating Synch photon spectrum</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        blob: SED module class</span>
+<span class="sd">        temp_ev: SED module class</span>
+
+<span class="sd">        re_eval_sync: def==False, re_eval Synch spectrum and then get U_synch</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        U_synch</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">re_eval_sync</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+        <span class="n">comp_old</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">blob</span><span class="o">.</span><span class="n">do_SSC</span>
+        <span class="n">jet</span><span class="o">.</span><span class="n">blob</span><span class="o">.</span><span class="n">do_SSC</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+        <span class="n">jet</span><span class="o">.</span><span class="n">blob</span><span class="o">.</span><span class="n">do_SSC</span><span class="o">=</span><span class="n">comp_old</span>
+    
+    <span class="k">return</span> <span class="n">BlazarSED</span><span class="o">.</span><span class="n">Uph_Sync</span><span class="p">(</span><span class="n">jet</span><span class="o">.</span><span class="n">blob</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_boundaries"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.check_boundaries">[docs]</a><span class="k">def</span> <span class="nf">check_boundaries</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="n">val_min</span><span class="p">,</span><span class="n">val_max</span><span class="p">,</span><span class="n">val_name</span><span class="p">):</span>
+    <span class="n">failed</span><span class="o">=</span><span class="kc">False</span>
+    <span class="k">if</span> <span class="n">val</span><span class="o">&lt;</span><span class="n">val_min</span> <span class="ow">or</span> <span class="n">val</span><span class="o">&gt;</span><span class="n">val_max</span><span class="p">:</span>
+        <span class="n">failed</span><span class="o">=</span><span class="kc">True</span>
+        <span class="nb">print</span> <span class="s2">&quot;---&gt; </span><span class="si">%s</span><span class="s2">=</span><span class="si">%e</span><span class="s2">, out of boundaries </span><span class="si">%e</span><span class="s2"> </span><span class="si">%e</span><span class="s2">, rejected&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">val_name</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="n">val_min</span><span class="p">,</span><span class="n">val_max</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">val</span><span class="o">&lt;</span><span class="n">val_min</span><span class="p">:</span>
+            <span class="n">val</span><span class="o">=</span><span class="n">val_min</span>
+        <span class="k">elif</span> <span class="n">val</span><span class="o">&gt;</span><span class="n">val_max</span><span class="p">:</span>
+            <span class="n">val</span><span class="o">=</span><span class="n">val_max</span>
+        <span class="nb">print</span> <span class="s2">&quot;     Best </span><span class="si">%s</span><span class="s2"> not found, (temporary set to </span><span class="si">%e</span><span class="s2">)&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">val_name</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>        
+        <span class="nb">print</span> <span class="s2">&quot;     Best </span><span class="si">%s</span><span class="s2">=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">val_name</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">val</span><span class="p">,</span><span class="n">failed</span></div>
+
+<div class="viewcode-block" id="get_R_tvar"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.get_R_tvar">[docs]</a><span class="k">def</span> <span class="nf">get_R_tvar</span><span class="p">(</span><span class="n">beaming</span><span class="p">,</span><span class="n">t_var_sec</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">BlazarSED</span><span class="o">.</span><span class="n">vluce_cm</span><span class="o">*</span><span class="n">beaming</span><span class="o">*</span><span class="n">t_var_sec</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="constr_R_from_CD"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.constr_R_from_CD">[docs]</a><span class="k">def</span> <span class="nf">constr_R_from_CD</span><span class="p">(</span><span class="n">jet</span><span class="p">,</span><span class="n">nuFnu_p_S</span><span class="p">,</span><span class="n">nuFnu_p_IC</span><span class="p">,</span><span class="n">nu_p_IC</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">R_tvar</span><span class="p">,</span><span class="n">params_grid_size</span><span class="p">,</span><span class="n">EC</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="c1">#################################</span>
+    <span class="c1"># This function must not        #</span>
+    <span class="c1"># change jet.blob attributes    #</span>
+    <span class="c1"># all the changed values must   #</span>
+    <span class="c1"># be set back to their original #</span>
+    <span class="c1"># values                        #</span>
+    <span class="c1">#################################</span>
+    
+    <span class="n">flag_initial</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_flag</span><span class="p">()</span>
+
+    
+    <span class="n">R_initial</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+    <span class="n">N_initial</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="s1">&#39;constr_R&#39;</span><span class="p">)</span>
+    
+    <span class="n">CD_model_log</span><span class="o">=</span><span class="p">[]</span>
+    <span class="n">CD_obs</span><span class="o">=</span><span class="n">nuFnu_p_IC</span><span class="o">/</span><span class="n">nuFnu_p_S</span>
+    <span class="n">R_min</span><span class="o">=</span><span class="n">R_tvar</span><span class="o">/</span><span class="mi">1000</span>
+    <span class="n">R_min</span><span class="o">=</span><span class="mf">1E13</span>
+    <span class="n">R_max</span><span class="o">=</span><span class="n">R_tvar</span><span class="o">*</span><span class="mi">2</span>
+    <span class="n">R_grid</span><span class="o">=</span><span class="n">logspace</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">R_min</span><span class="p">),</span><span class="n">n</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">R_max</span><span class="p">),</span><span class="n">params_grid_size</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/R_vs_CD.dat&#39;</span><span class="o">%</span><span class="n">jet</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">R</span> <span class="ow">in</span> <span class="n">R_grid</span><span class="p">:</span>
+
+        <span class="n">jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="n">R</span><span class="p">)</span>
+        
+        <span class="n">N_res</span><span class="p">,</span><span class="n">ratio</span><span class="o">=</span><span class="n">rescale_Ne</span><span class="p">(</span><span class="n">jet</span><span class="p">,</span><span class="n">nuFnu_p_S</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">)</span>
+        
+        <span class="n">jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="n">N_res</span><span class="p">)</span>
+        
+        <span class="n">jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+        <span class="n">Lp_S</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_SED_peak</span><span class="p">(</span><span class="n">Model_dic</span><span class="o">.</span><span class="n">Sync_nuFnu_p_dic</span><span class="p">[</span><span class="n">rest_frame</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">EC</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="n">Lp_IC</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_SED_peak</span><span class="p">(</span><span class="n">Model_dic</span><span class="o">.</span><span class="n">SSC_nuFnu_p_dic</span><span class="p">[</span><span class="n">rest_frame</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nu_p_IC</span><span class="p">,</span><span class="n">Lp_IC</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_SED_peak</span><span class="p">(</span><span class="n">freq_range</span><span class="o">=</span><span class="p">[</span><span class="mf">0.01</span><span class="o">*</span><span class="n">nu_p_IC</span><span class="p">,</span><span class="mi">10</span><span class="o">*</span><span class="n">nu_p_IC</span><span class="p">])</span>
+            
+        <span class="n">CD</span><span class="o">=</span><span class="n">Lp_IC</span><span class="o">/</span><span class="n">Lp_S</span>
+        <span class="n">CD_model_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">CD</span><span class="p">))</span>
+        <span class="c1">#print &quot;     R=%e, CD_obs=%e, CD_model=%e&quot;%(R,CD_obs,CD)</span>
+        <span class="nb">print</span><span class="o">&gt;&gt;</span><span class="n">f</span><span class="p">,</span><span class="n">n</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">R</span><span class="p">),</span><span class="n">n</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">CD</span><span class="o">/</span><span class="n">CD_obs</span><span class="p">)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">R_grid_log</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">R_grid</span><span class="p">)</span>
+    <span class="n">p</span><span class="o">=</span><span class="n">polyfit</span><span class="p">(</span><span class="n">CD_model_log</span><span class="p">,</span><span class="n">R_grid_log</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>    
+    <span class="c1">#print &quot;--&gt; lll&quot;,CD_model_log,R_grid_log</span>
+    <span class="n">best_R</span><span class="o">=</span><span class="n">polyval</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">CD_obs</span><span class="p">))</span>
+    
+    <span class="n">Best_R</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="n">best_R</span><span class="p">)</span>
+    <span class="n">Best_R</span><span class="p">,</span><span class="n">failed</span><span class="o">=</span><span class="n">check_boundaries</span><span class="p">(</span><span class="n">Best_R</span><span class="p">,</span><span class="n">R_min</span><span class="p">,</span><span class="n">R_max</span><span class="p">,</span><span class="s1">&#39;R&#39;</span><span class="p">)</span>
+    
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="n">flag_initial</span><span class="p">)</span>
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="n">R_initial</span><span class="p">)</span>
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="n">N_initial</span><span class="p">)</span>
+    
+    <span class="k">return</span>  <span class="n">Best_R</span><span class="p">,</span><span class="n">failed</span></div>
+
+
+
+<div class="viewcode-block" id="constr_B_from_nu_peaks"><a class="viewcode-back" href="../../modules_doc/obs_constrain.html#BlazarSEDFit.obs_constrain.constr_B_from_nu_peaks">[docs]</a><span class="k">def</span> <span class="nf">constr_B_from_nu_peaks</span><span class="p">(</span><span class="n">jet</span><span class="p">,</span><span class="n">nu_p_S</span><span class="p">,</span><span class="n">nu_p_IC</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B_min</span><span class="p">,</span><span class="n">B_max</span><span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">params_grid_size</span><span class="p">,</span><span class="n">EC</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="c1">#################################</span>
+    <span class="c1"># This function must not        #</span>
+    <span class="c1"># change jet.blob attributes    #</span>
+    <span class="c1"># all the changed values must   #</span>
+    <span class="c1"># be set back to their original #</span>
+    <span class="c1"># values                        #</span>
+    <span class="c1">#################################</span>
+
+    <span class="n">flag_initial</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_flag</span><span class="p">()</span>
+    
+    <span class="n">B_initial</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+    
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="s1">&#39;constr_B&#39;</span><span class="p">)</span>
+ 
+    <span class="n">nu_p_IC_model_log</span><span class="o">=</span><span class="p">[]</span>
+    
+    <span class="n">B_grid</span><span class="o">=</span><span class="n">logspace</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">B_min</span><span class="p">),</span><span class="n">sp</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">B_max</span><span class="p">),</span><span class="n">params_grid_size</span><span class="p">)</span>
+    
+    <span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/B_vs_nu_p_IC.dat&#39;</span><span class="o">%</span><span class="n">jet</span><span class="o">.</span><span class="n">get_path</span><span class="p">(),</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    
+    <span class="c1">#fin the turn-over variable to update with B</span>
+    <span class="n">turn_over_energy</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;turn-over-energy&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">turn_over_energy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+        <span class="n">turn_over_energy_initial</span><span class="o">=</span><span class="n">turn_over_energy</span><span class="o">.</span><span class="n">val</span>
+    
+    
+    <span class="n">z</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_par_by_type</span><span class="p">(</span><span class="s1">&#39;redshift&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+    
+    <span class="k">for</span> <span class="n">B</span> <span class="ow">in</span> <span class="n">B_grid</span><span class="p">:</span>
+        
+        <span class="n">jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="n">B</span><span class="p">)</span>
+        
+        
+        <span class="n">gamma_3p</span><span class="o">=</span><span class="n">find_gamma_Synch</span><span class="p">(</span><span class="n">nu_p_S</span><span class="p">,</span><span class="n">rest_frame</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">beaming</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+
+        <span class="c1">#upda-turn-over variable</span>
+        <span class="k">if</span> <span class="n">turn_over_energy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="n">turn_over_energy</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">gamma_3p</span><span class="p">)</span>
+           
+        
+        <span class="n">jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>   
+        
+        <span class="k">if</span> <span class="n">EC</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="n">nu_p_model</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_SED_peak</span><span class="p">(</span><span class="n">Model_dic</span><span class="o">.</span><span class="n">SSC_nu_p_dic</span><span class="p">[</span><span class="n">rest_frame</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+             <span class="n">nu_p_model</span><span class="p">,</span><span class="n">nuFnu_p_model</span><span class="o">=</span><span class="n">jet</span><span class="o">.</span><span class="n">get_SED_peak</span><span class="p">(</span><span class="n">freq_range</span><span class="o">=</span><span class="p">[</span><span class="mf">0.01</span><span class="o">*</span><span class="n">nu_p_IC</span><span class="p">,</span><span class="mi">10</span><span class="o">*</span><span class="n">nu_p_IC</span><span class="p">])</span>
+        
+        <span class="n">nu_p_IC_model_log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">nu_p_model</span><span class="p">))</span>
+
+        <span class="nb">print</span><span class="o">&gt;&gt;</span><span class="n">f</span><span class="p">,</span><span class="n">n</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">B</span><span class="p">),</span><span class="n">n</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">nu_p_model</span><span class="p">)</span>
+        <span class="c1">#print n.log10(B),n.log10(nu_p_model)</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    
+    <span class="n">B_grid_log</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">B_grid</span><span class="p">)</span>
+    
+     
+    <span class="n">p</span><span class="o">=</span><span class="n">polyfit</span><span class="p">(</span><span class="n">nu_p_IC_model_log</span><span class="p">,</span><span class="n">B_grid_log</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>    
+    
+    <span class="n">Best_B</span><span class="o">=</span><span class="n">polyval</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">n</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">nu_p_IC</span><span class="p">))</span>
+    <span class="n">Best_B</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="n">Best_B</span><span class="p">)</span>
+    <span class="n">Best_B</span><span class="p">,</span><span class="n">failed</span> <span class="o">=</span> <span class="n">check_boundaries</span><span class="p">(</span><span class="n">Best_B</span><span class="p">,</span> <span class="n">B_min</span><span class="p">,</span> <span class="n">B_max</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">)</span>
+    
+    
+    <span class="c1">#REST CHANGED VALUES</span>
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_flag</span><span class="p">(</span><span class="n">flag_initial</span><span class="p">)</span>
+    <span class="n">jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="n">B_initial</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">turn_over_energy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+        <span class="n">turn_over_energy</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">turn_over_energy_initial</span><span class="p">)</span>
+        
+    <span class="k">return</span>  <span class="n">Best_B</span><span class="p">,</span><span class="n">failed</span></div>
+</pre></div>
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

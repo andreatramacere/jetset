@@ -1,0 +1,430 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>BlazarSEDFit.loglog_poly_model &#8212; BlazarSEDFit  documentation</title>
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+     <div class="documentwrapper">
+       <div class="bodywrapper">
+        <div class="body">
+         <div class="align-center figure align-center">
+           <br><img src="../../_static/logo.png" style=width:100%; " />  <br>
+            
+        </div>
+           
+  <h1>Source code for BlazarSEDFit.loglog_poly_model</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module: loglog_poly_model</span>
+<span class="sd">========================</span>
+
+
+<span class="sd">Overview</span>
+<span class="sd">--------</span>
+<span class="sd">   </span>
+<span class="sd">This module  provides an interface handle the loglog polynomial model</span>
+
+
+
+
+<span class="sd">Classes relations</span>
+<span class="sd">---------------------------------------</span>
+<span class="sd">.. figure::  classes_loglog_poly_model.png</span>
+<span class="sd">   :align:   center  </span>
+
+
+<span class="sd">Classes and Inheritance Structure</span>
+<span class="sd">----------------------------------------------</span>
+<span class="sd">.. inheritance-diagram:: BlazarSEDFit.loglog_poly_model</span>
+
+
+<span class="sd">  </span>
+
+
+<span class="sd">Module API</span>
+<span class="sd">-----------</span>
+
+<span class="sd">Summary</span>
+<span class="sd">---------</span>
+<span class="sd">.. autosummary::</span>
+
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">Module API</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on 2013 1 27</span>
+
+<span class="sd">@author: orion</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">model_parameters</span> <span class="k">import</span> <span class="n">ModelParameterArray</span><span class="p">,</span> <span class="n">ModelParameter</span>
+<span class="kn">from</span> <span class="nn">base_model</span> <span class="k">import</span> <span class="n">Model</span>
+
+<span class="kn">from</span> <span class="nn">spectral_shapes</span> <span class="k">import</span> <span class="n">SED</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">log10</span><span class="p">,</span><span class="n">power</span><span class="p">,</span><span class="n">sqrt</span><span class="p">,</span><span class="n">shape</span><span class="p">,</span><span class="n">zeros</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">polyfit</span><span class="p">,</span><span class="n">polyval</span><span class="p">,</span><span class="n">polyder</span>
+
+
+<div class="viewcode-block" id="PolyParameter"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.PolyParameter">[docs]</a><span class="k">class</span> <span class="nc">PolyParameter</span><span class="p">(</span><span class="n">ModelParameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class is a subclass of the :class:`.ModelParameter` class,</span>
+<span class="sd">    extending the base class to loglog polynomial parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">polymodel</span><span class="p">,</span><span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">polymodel</span><span class="o">=</span><span class="n">polymodel</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">par_type_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;curvature&#39;</span><span class="p">,</span><span class="s1">&#39;peak freq&#39;</span><span class="p">,</span><span class="s1">&#39;peak flux&#39;</span><span class="p">,</span><span class="s1">&#39;third-degree&#39;</span><span class="p">,</span><span class="s1">&#39;spectral-slope&#39;</span><span class="p">,</span><span class="s1">&#39;flux-const&#39;</span><span class="p">,</span><span class="s1">&#39;turn-over freq&#39;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;par_type&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;par_type&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_type_list</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;blob_parameter type </span><span class="si">%s</span><span class="s2"> not allowed&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">par_type</span>
+            <span class="nb">print</span> <span class="s2">&quot;please choose among &quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">par_type_list</span>
+            <span class="k">return</span>
+
+
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>  <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        
+       
+        <span class="k">if</span> <span class="s1">&#39;val&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">val</span><span class="o">=</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assign_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+            
+        
+        
+    <span class="c1">#OVERRIDES Base Method</span>
+<div class="viewcode-block" id="PolyParameter.set"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.PolyParameter.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">keywords</span> <span class="p">)</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sets a parameter value checking for physical boundaries </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="s1">&#39;val&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">assign_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">])</span> </div>
+        
+    
+<div class="viewcode-block" id="PolyParameter.assign_val"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.PolyParameter.assign_val">[docs]</a>    <span class="k">def</span> <span class="nf">assign_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        assigns the parameter value to the :class:`Template` object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">polymodel</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">val</span><span class="p">)</span></div></div>
+
+
+
+<div class="viewcode-block" id="LogLogModel"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.LogLogModel">[docs]</a><span class="k">class</span> <span class="nc">LogLogModel</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+       
+        <span class="nb">super</span><span class="p">(</span><span class="n">LogLogModel</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>  <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="o">=</span><span class="s1">&#39;LogLogModel&#39;</span>
+    
+    
+<div class="viewcode-block" id="LogLogModel.lin_func"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.LogLogModel.lin_func">[docs]</a>    <span class="k">def</span> <span class="nf">lin_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu</span><span class="p">):</span>
+        <span class="n">nu_log</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">log_func</span><span class="p">(</span><span class="n">nu_log</span><span class="p">))</span></div></div>
+         
+       
+       
+
+<div class="viewcode-block" id="LogLinear"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.LogLinear">[docs]</a><span class="k">class</span> <span class="nc">LogLinear</span><span class="p">(</span><span class="n">LogLogModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to handle log-linear model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+     
+        <span class="nb">super</span><span class="p">(</span><span class="n">LogLinear</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>  <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;LogLinear&#39;</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">SED</span> <span class="o">=</span> <span class="n">SED</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">ModelParameterArray</span><span class="p">()</span>
+      
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">=-</span><span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;spectral-slope&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">10.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+        
+       
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">=-</span><span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;flux-const&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=-</span><span class="mf">10.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">30.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;erg cm^-2 s^-1&#39;</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        
+         
+        
+<div class="viewcode-block" id="LogLinear.log_func"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.LogLinear.log_func">[docs]</a>    <span class="k">def</span> <span class="nf">log_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_nu</span><span class="p">):</span>
+    
+            <span class="n">x_log</span><span class="o">=</span><span class="n">log_nu</span>
+            
+            <span class="c1">#print self.Ep,self.Sp,self.b,self.c,x_log</span>
+            
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">*</span><span class="p">(</span><span class="n">x_log</span><span class="p">)</span></div></div>
+    
+    
+    
+    
+
+
+
+<div class="viewcode-block" id="LogParabolaEp"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.LogParabolaEp">[docs]</a><span class="k">class</span> <span class="nc">LogParabolaEp</span><span class="p">(</span><span class="n">LogLogModel</span><span class="p">):</span>
+    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to handle log-parabolic model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="nb">super</span><span class="p">(</span><span class="n">LogParabolaEp</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>  <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;LogParabolaEp&#39;</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">SED</span> <span class="o">=</span> <span class="n">SED</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">ModelParameterArray</span><span class="p">()</span>
+      
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">=-</span><span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;curvature&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">10.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ep</span><span class="o">=</span><span class="mf">14.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Ep&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;peak freq&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">14.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">30.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;Hz&#39;</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sp</span><span class="o">=-</span><span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Sp&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;peak flux&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=-</span><span class="mf">10.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">30.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;erg cm^-2 s^-1&#39;</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        
+<div class="viewcode-block" id="LogParabolaEp.log_func"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.LogParabolaEp.log_func">[docs]</a>    <span class="k">def</span> <span class="nf">log_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_nu</span><span class="p">):</span>
+    
+            <span class="n">x_log</span><span class="o">=</span><span class="n">log_nu</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">Ep</span>
+            
+            <span class="c1">#print self.Ep,self.Sp,self.b,self.c,x_log</span>
+            
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">x_log</span><span class="o">*</span><span class="n">x_log</span><span class="p">)</span></div></div>
+    
+    
+   
+
+
+
+
+<div class="viewcode-block" id="LogParabolaPL"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.LogParabolaPL">[docs]</a><span class="k">class</span> <span class="nc">LogParabolaPL</span><span class="p">(</span><span class="n">LogLogModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to handle a log-par + pl model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="nb">super</span><span class="p">(</span><span class="n">LogParabolaPL</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>  <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;LogParabolaPL&#39;</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">SED</span> <span class="o">=</span> <span class="n">SED</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">ModelParameterArray</span><span class="p">()</span>
+      
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">=-</span><span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;curvature&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">10.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">E0</span><span class="o">=</span><span class="mf">14.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;E0&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;turn-over freq&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">14.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">30.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;Hz&#39;</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;spectral-slope&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">10.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">=-</span><span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;K&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;flux-const&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=-</span><span class="mf">10.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">30.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;erg cm^-2 s^-1&#39;</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        
+    
+<div class="viewcode-block" id="LogParabolaPL.log_func"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.LogParabolaPL.log_func">[docs]</a>    <span class="k">def</span> <span class="nf">log_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_nu</span><span class="p">):</span>
+        
+        
+        
+        <span class="k">if</span> <span class="n">shape</span><span class="p">(</span><span class="n">log_nu</span><span class="p">)</span><span class="o">==</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">composite_func</span><span class="p">(</span><span class="n">log_nu</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y_log</span><span class="o">=</span><span class="n">zeros</span><span class="p">(</span><span class="n">log_nu</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">log_nu</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+                <span class="n">y_log</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">composite_func</span><span class="p">(</span><span class="n">log_nu</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+            <span class="k">return</span> <span class="n">y_log</span></div>
+   
+<div class="viewcode-block" id="LogParabolaPL.composite_func"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.LogParabolaPL.composite_func">[docs]</a>    <span class="k">def</span> <span class="nf">composite_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_nu</span><span class="p">):</span>     
+        
+        <span class="n">x_log</span><span class="o">=</span><span class="n">log_nu</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">E0</span>
+        
+        <span class="k">if</span> <span class="n">log_nu</span> <span class="o">&gt;=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">E0</span><span class="p">:</span>
+            
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">+</span> <span class="n">x_log</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="n">x_log</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>    
+
+            <span class="k">return</span>  <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">+</span> <span class="n">x_log</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> </div></div>
+
+
+
+    
+
+
+<div class="viewcode-block" id="LogCubic"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.LogCubic">[docs]</a><span class="k">class</span> <span class="nc">LogCubic</span><span class="p">(</span><span class="n">LogLogModel</span><span class="p">):</span>
+    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to handle log-cubic model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        
+        <span class="nb">super</span><span class="p">(</span><span class="n">LogCubic</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>  <span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        
+        
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;LogCubic&#39;</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">SED</span> <span class="o">=</span> <span class="n">SED</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">ModelParameterArray</span><span class="p">()</span>
+      
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">=-</span><span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;curvature&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">10.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">=</span><span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;third-degree&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">10.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ep</span><span class="o">=</span><span class="mf">14.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Ep&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;peak freq&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">14.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">30.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;Hz&#39;</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sp</span><span class="o">=-</span><span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">PolyParameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Sp&#39;</span><span class="p">,</span><span class="n">par_type</span><span class="o">=</span><span class="s1">&#39;peak flux&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=-</span><span class="mf">10.0</span><span class="p">,</span><span class="n">val_min</span><span class="o">=-</span><span class="mf">30.</span><span class="p">,</span><span class="n">val_max</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;erg cm^-2 s^-1&#39;</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        
+        
+
+<div class="viewcode-block" id="LogCubic.log_func"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.LogCubic.log_func">[docs]</a>    <span class="k">def</span> <span class="nf">log_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_nu</span><span class="p">):</span>
+    
+    
+            <span class="n">x_log</span><span class="o">=</span><span class="n">log_nu</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">Ep</span>
+            
+            <span class="c1">#print self.Ep,self.Sp,self.b,self.c,x_log</span>
+            
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">x_log</span><span class="o">*</span><span class="n">x_log</span><span class="p">)</span><span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">*</span><span class="p">(</span><span class="n">x_log</span><span class="o">*</span><span class="n">x_log</span><span class="o">*</span><span class="n">x_log</span><span class="p">)</span></div></div>
+            
+    
+    
+
+<div class="viewcode-block" id="find_max_cubic"><a class="viewcode-back" href="../../modules_doc/loglog_poly_model.html#BlazarSEDFit.loglog_poly_model.find_max_cubic">[docs]</a><span class="k">def</span> <span class="nf">find_max_cubic</span><span class="p">(</span><span class="n">x_log</span><span class="p">,</span><span class="n">y_log</span><span class="p">,</span><span class="n">x_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    
+    <span class="k">if</span> <span class="n">x_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">msk</span> <span class="o">=</span> <span class="n">x_log</span> <span class="o">&gt;</span><span class="n">x_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">msk</span><span class="o">*=</span> <span class="n">x_log</span> <span class="o">&lt;</span><span class="n">x_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="n">x_log</span><span class="o">=</span><span class="n">x_log</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        <span class="n">y_log</span><span class="o">=</span><span class="n">y_log</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+    
+    <span class="n">p</span><span class="o">=</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x_log</span><span class="p">,</span><span class="n">y_log</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    
+    <span class="n">der</span><span class="o">=</span><span class="n">polyder</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="n">delta</span><span class="o">=</span><span class="n">der</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">der</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">der</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">der</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">delta</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="c1">#print p,der</span>
+        <span class="n">root1</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">der</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">sqrt</span><span class="p">(</span><span class="n">delta</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">der</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">root2</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">der</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">sqrt</span><span class="p">(</span><span class="n">delta</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">der</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1">#print root1,root2</span>
+        <span class="k">if</span> <span class="n">der</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">xp</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">root1</span><span class="p">,</span><span class="n">root2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xp</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">root1</span><span class="p">,</span><span class="n">root2</span><span class="p">)</span>
+        
+
+        <span class="k">return</span>  <span class="n">xp</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="s2">&quot;!!! no maxima found for cubic fit&quot;</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+</pre></div>
+
+         </div>
+       </div>
+     </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">BlazarSEDFit  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, Andrea Tramacere.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>
