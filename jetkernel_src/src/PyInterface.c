@@ -299,7 +299,7 @@ void Init(struct spettro *pt_base) {
 
 
     //==========================================
-    //Numerical Integration preciosion Setup
+    //Numerical Integration precision Setup
     //==========================================
     if (strcmp(pt_base->MODE, "accurate") == 0) {
         pt_base->gamma_grid_size = 10000;

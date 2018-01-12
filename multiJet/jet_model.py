@@ -548,17 +548,20 @@ class Jet(Model):
         # print 'check->',L_out,nu_blob,L_0,L_out/L_0
 
         self._Jet__blob.gamma_grid_size = gamma_grid_size
-        print 'setting N to ', N / ratio
+        #print 'setting N to ', N / ratio
         self.set_par('N', val=N / ratio)
 
-    def set_B_eq(self, L_0, nu_0, B_min):
+    def set_B_eq(self, L_0, nu_0, B_min,B_max=1.0,N_pts=20,plot=False):
         """
         returns equipartiont B
         """
         # print B_min
 
-        N_pts = 20
-        b_grid = np.logspace(np.log10(B_min), 1, N_pts)
+
+        b_grid = np.logspace(np.log10(B_min), B_max, N_pts)
+        print 'B grid min ',B_min
+        print 'B grid max ',B_max
+        print 'grid points',N_pts
         U_e = np.zeros(N_pts)
         U_B = np.zeros(N_pts)
         N = np.zeros(N_pts)
@@ -577,32 +580,27 @@ class Jet(Model):
             U_B[ID] = self._Jet__blob.UB
             # delta=Jet.get_beaming()
             # print "check L_in=%4.4e L_out=%4.4e"%(L_0,(L_0/delta**4)/BlazarSED.Power_Sync_Electron(Jet._Jet__blob))
-        # fig, ax = plt.subplots()
-        # ax.plot(b_grid,U_e)
-        # ax.plot(b_grid,U_B)
-        # ax.plot(b_grid,U_B+U_e)
-        # ax.semilogy()
-        # ax.semilogx()
-        # plt.show()
-        # print b_grid[np.argmin(U_B+U_e)]
 
         ID_min = np.argmin(U_B + U_e)
 
-        # print'-> ID_min' ,ID_min
-        # if ID_min>5:
-        #    fig, ax = plt.subplots()
-        #    ax.plot(b_grid,U_e)
-        #    ax.plot(b_grid,U_B)
-        #    ax.plot(b_grid,U_B+U_e)
-        #    ax.semilogy()
-        #    ax.semilogx()
-        #    plt.show()
+        if plot==True:
+            import  pylab as plt
+            fig, ax = plt.subplots()
+            ax.plot(b_grid,U_e)
+            ax.plot(b_grid,U_B)
+            ax.plot(b_grid,U_B+U_e)
+            ax.scatter(b_grid[ID_min],U_e[ID_min]+U_B[ID_min])
+
+            ax.semilogy()
+            ax.semilogx()
+            plt.show()
+
 
         self.set_par('B', val=b_grid[ID_min])
         self.set_par('N', val=N[ID_min])
         print 'setting B to ',b_grid[ID_min]
         print 'setting N to ',N[ID_min]
-        return
+        return b_grid[ID_min],b_grid,U_B,U_e
 
 
     def set_electron_distribution(self,electron_distribution):
@@ -1127,7 +1125,7 @@ class Jet(Model):
 
         except:
 
-            print "no spectral model found"
+            print "no spectral model found with name",name
 
 
 
