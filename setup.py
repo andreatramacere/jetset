@@ -14,7 +14,7 @@ _module=Extension('_jetkernel',
                   swig_opts=['-v',],
                   include_dirs=['jetkernel_src/include'])
 
-setup(name='multiJet',
+setup(name='jetset',
       version=version,
       author='Andrea Tramacere',
       author_email='andrea.tramacere@gmail.com',
