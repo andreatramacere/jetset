@@ -14,3 +14,5 @@ dist
 eggs
 lib
 lib64
+jetset/jetkernel/*.c
+jetset/jetkernel/*.py
