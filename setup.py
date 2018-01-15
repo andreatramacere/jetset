@@ -5,7 +5,7 @@ from distutils.core import setup,Extension
 
 version='1.2.0'
 
-src_files=['multiJet/jetkernel/jetkernel.i']
+src_files=['jetset/jetkernel/jetkernel.i']
 src_files.extend(glob.glob ('jetkernel_src/src/*.c'))
 _module=Extension('_jetkernel',
                   sources=src_files,
@@ -18,8 +18,8 @@ setup(name='jetset',
       version=version,
       author='Andrea Tramacere',
       author_email='andrea.tramacere@gmail.com',
-      packages=['multiJet','leastsqbound','multiJet.jetkernel'],
-      package_data={'multiJet':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*dat']},
+      packages=['jetset','leastsqbound','jetset.jetkernel'],
+      package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*dat']},
       scripts=['bin/test_interactive.py'],
       requires=['scipy','numpy'],
       ext_modules = [_module],
