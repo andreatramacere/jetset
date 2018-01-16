@@ -53,10 +53,11 @@
 #define static_bess_table_size 1000 /* num elementi tabelle di Bessel */
 #define Bessel_MAX 500.0
 #define ELEMENTI_GAMMA_Contr_Comp 100
+#define static_file_name_max_legth 512
 #define LIM_LOSS_KN 1.0
 #define min(a,b) (a<b) ? a:b;
 #define max(a,b) (a>b) ? a:b;
-#define static_file_name_max_legth 512;
+
 /**
  * \file Blazar_SED.h
  * \author Andrea Tramacere
