@@ -28,10 +28,21 @@ Module API
 
 """
 
+NOPYLAB=True
+
+try:
     
-import  pylab as plt
+    import  pylab as plt
    
-#from matplotlib import pylab as pp
+    from matplotlib import pylab as pp
+except:
+
+    NOPYLAB=True
+
+    #print "pylab not found on this system"
+    #print "install package, and/or update pythonpath"
+
+
 
     
 from collections import namedtuple
