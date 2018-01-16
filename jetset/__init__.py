@@ -2,6 +2,7 @@
 BlazarSEDFit package
 """
 import os
+
 from utils import commands
 from test_data_helper import test_SEDs
 from data_loader import ObsData
@@ -15,6 +16,7 @@ from cosmo_tools import Cosmo
 from jet_model import Jet
 from template_model import Template
 from jetkernel import jetkernel
+
 ver=17
 
 package_dir=os.path.dirname(os.path.abspath(__file__))

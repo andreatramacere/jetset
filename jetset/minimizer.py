@@ -57,8 +57,8 @@ NOBOUND=False
 try:
     from leastsqbound.leastsqbound import leastsqbound
 except:
-    print "unable to import leastsqbound"
-    print "boundef fit disabled"
+    #print "unable to import leastsqbound"
+    #print "boundef fit disabled"
     NOBOUND=True
 
 from model_manager import FitModel
