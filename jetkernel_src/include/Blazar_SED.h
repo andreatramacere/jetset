@@ -617,7 +617,7 @@ int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],uns
 
 
 // File Interface
-void FileInput(int argc, char **argv, struct spettro *pt_spec,struct temp_ev *pt_temporal);
+// void FileInput(int argc, char **argv, struct spettro *pt_spec,struct temp_ev *pt_temporal);
 
 
 //=======================================================================================
@@ -670,7 +670,7 @@ double Find_gmax(struct spettro *pt, double *g, double *N);
 //===================================================================================
 /************************************ FUNZIONI VARIE *******************************/
 void messaggio_errore();
-void manpage();
+//void manpage();
 void flux_header(FILE *fp);
 void flux_DISK_header(FILE *fp);
 void distr_e_header(FILE *fp);
