@@ -262,11 +262,14 @@ void Init(struct spettro *pt_base) {
     double (*pf) (struct spettro *, double);
     double test, prova;
     unsigned long i;
-    const char* ENV = getenv("BLAZARSED");
+    //char * ENV;
+    pt_base->SYSPATH=getenv("BLAZARSED");
+    //sprintf(ENV,'%s',getenv("BLAZARSED"));
+    //return;
+    printf("CIAO =%s\n",pt_base->SYSPATH);
 
-    printf("CIAO\n");
-
-    snprintf(pt_base->SYSPATH,'%s', ENV);
+    //sprintf(pt_base->SYSPATH,'%s', ENV);
+    //return;
     if (pt_base->verbose) {
         printf("SYSPATH =%s\n", pt_base->SYSPATH);
         printf("STEM=%s\n", pt_base->STEM);

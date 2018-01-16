@@ -75,7 +75,7 @@ struct spettro {
 
     int CICCIO;
 
-    char SYSPATH[256];
+    char * SYSPATH;
     char STEM[256];
     char path[256];
     char DISTR[16];
