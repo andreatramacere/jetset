@@ -18,8 +18,8 @@
 
 void spettro_somma_Sync_ic(int Num_file, struct spettro * pt) {
 	double nu_obs,nu_src, nu, nu_min, nu_max;
-	char somma_obs_log_log[512];
-	char somma_obs[512],somma_obs_src[512];
+	char somma_obs_log_log[static_file_name_max_legth];
+	char somma_obs[static_file_name_max_legth],somma_obs_src[static_file_name_max_legth];
 	double log_nu, log_nu_start, nuF_nu_obs, k;
 	unsigned long I_MAX, i;
 	FILE *fp, *fpll, *fpll_src;

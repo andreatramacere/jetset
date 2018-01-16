@@ -263,11 +263,12 @@ void Init(struct spettro *pt_base) {
     double test, prova;
     unsigned long i;
 
-    SYSPATH = getenv("BLAZARSED");
+    pt->SYSPATH = getenv("BLAZARSED");
     
     if (pt_base->verbose) {
         printf("SYSPATH =%s\n", SYSPATH);
         printf("STEM=%s\n", pt_base->STEM);
+        printf("PATH =%s\n", pt_base->path);
         printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> Satic Case Initilization <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
     }
     //======================================

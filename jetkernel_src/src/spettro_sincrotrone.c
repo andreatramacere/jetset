@@ -38,7 +38,7 @@ void spettro_sincrotrone(int Num_file, struct spettro * pt) {
     double (*pf_norm) (struct spettro *, double x);
 
 
-    char f_Synch[512];
+    char f_Synch[static_file_name_max_legth];
 
 
     FILE *fp_Synch;

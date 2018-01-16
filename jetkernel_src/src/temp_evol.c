@@ -34,10 +34,10 @@ void temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
     //double t_cool_Sync, B2;
     //double t_acc_sist, t_acc_stoc;
     //double c2;
-    char stringa[512];
+    char stringa[static_file_name_max_legth];
     //double dato;
     //int dato_i;
-    char name[512], old[512], name1[512];
+    char name[static_file_name_max_legth], old[static_file_name_max_legth], name1[static_file_name_max_legth];
     FILE *fp;
 
 

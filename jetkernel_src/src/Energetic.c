@@ -361,7 +361,7 @@ double I_nu_to_Uph(double * nu, double * I_nu, unsigned long NU_INT_STOP) {
 void EnergeticOutput(struct spettro * pt) {
     double lum_factor, L_rad, L_Sync, L_SSC, L_EC_Disk,L_EC_BLR, L_EC_DT, L_PP;
     double L_kin, L_tot, L_e, L_B, L_p;
-    char f_Energetic[512];
+    char f_Energetic[static_file_name_max_legth];
     FILE *fp_Energetic;
 
 
@@ -562,7 +562,7 @@ void EnergeticOutput(struct spettro * pt) {
 void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev) {
     unsigned int i,a;
     double Uph,IC_cr,S_cr ;
-    char f_cooling[512];
+    char f_cooling[static_file_name_max_legth];
     FILE *fp_cooling;
 
 

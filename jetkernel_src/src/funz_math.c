@@ -60,7 +60,7 @@ void tabella_Bessel(struct spettro *pt_TB) {
     double (*pf) (struct spettro *, double x);
     unsigned long i;
     FILE *fp ;
-    char *f_bessel_file = malloc(512);
+    char f_bessel_file[static_file_name_max_legth];
 
     /*** kernel Sync per alfa fisso e kernel delta ***/
     if (pt_TB->verbose>0) {
@@ -87,14 +87,14 @@ void tabella_Bessel(struct spettro *pt_TB) {
     //if(pt_TB->x_Bessel_max>Bessel_MAX)pt_TB->x_Bessel_max=Bessel_MAX;
     pf = &bessel_K_53;
 
-    strcpy(f_bessel_file, SYSPATH);
+    //strcpy(f_bessel_file, SYSPATH);
     sprintf(f_bessel_file, "%s/F_Sync.dat", f_bessel_file);
 
     if (pt_TB->verbose>1) {
 	//printf("gmax_griglia=%e -> x/xc_min=%e    gmin_griglia=%e -> x/xc_max=%e\n",
     //        pt_TB->gmax_griglia, pt_TB->x_Bessel_min,
      //       pt_TB->gmin_griglia, pt_TB->x_Bessel_max);
-    	printf("Bessel Tables  in %s\n", f_bessel_file);
+    	printf("Bessel Tables  in  file: %s\n", f_bessel_file);
     }
     
     fp = fopen(f_bessel_file, "r");

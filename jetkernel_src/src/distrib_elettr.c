@@ -186,7 +186,7 @@ void Genera_Np_Ne_pp(struct spettro *pt) {
 
 void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
     double mass;
-    char f_distr[512];
+    char f_distr[static_file_name_max_legth];
     FILE *fp_distr;
     sprintf(f_distr, "%s%s-%s", pt->path, pt->STEM, name);
     unsigned long i;
@@ -265,7 +265,7 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
     double GI, NI, NNI;
     //integranda Disre e
     double (*pf_norm) (struct spettro *, double x);
-    char N_file[512];
+    char N_file[static_file_name_max_legth];
     FILE *fp;
 
 

@@ -22,7 +22,7 @@ void spettro_compton(int Num_file, struct spettro *pt){
     double L_nu_SSC, nuL_nu_SSC, F_nu_SSC_obs;
     double log_nu, log_nu_start,gmax,numax_KN,numax_TH;
     unsigned long l, NU_INT, i, I_MAX, stop,out;
-    char f_SSC[512];
+    char f_SSC[static_file_name_max_legth];
     FILE *fp_SSC;
     
     //=================================

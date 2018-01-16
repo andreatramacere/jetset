@@ -67,7 +67,7 @@ void spectra_External_Fields(int Num_file, struct spettro *pt) {
 
 //=========================================================================================
 void Build_I_nu_Star(struct spettro *pt){
-	char f_SED_star[512];
+	char f_SED_star[static_file_name_max_legth];
 	FILE *fp_SED_star;
 	double nu_peak_BB,nu_obs;
 	unsigned long NU_INT,NU_INT_MAX;
@@ -408,7 +408,7 @@ double integrand_I_nu_CMB_blob_RF(struct spettro *pt, double mu){
 //=========================================================================================
 void Build_I_nu_Disk(struct spettro *pt){
 
-	char f_SED_disk[512];
+	char f_SED_disk[static_file_name_max_legth];
 	FILE *fp_SED_disk;
 	double nu_peak_BB,nu_obs;
 	unsigned long NU_INT,NU_INT_MAX;
@@ -682,7 +682,7 @@ void set_Disk_geometry(struct spettro *pt){
 void Build_I_nu_BLR(struct spettro *pt){
 	double nu_start_BLR_blob_RF,nu_stop_BLR_blob_RF;
 	unsigned long NU_INT,NU_INT_MAX;
-	char f_BLR_disk[512];
+	char f_BLR_disk[static_file_name_max_legth];
 	FILE *fp_BLR_disk;
 
 	sprintf(f_BLR_disk, "%s%s-I_nu_BLR.dat",pt->path, pt->STEM);
@@ -905,7 +905,7 @@ void set_BLR_geometry(struct spettro *pt){
 
 void Build_I_nu_DT(struct spettro *pt){
 	FILE *fp_SED_DT;
-	char f_SED_DT[512];
+	char f_SED_DT[static_file_name_max_legth];
 	unsigned long NU_INT,NU_INT_MAX;
 	double nu_peak_DT_disk_RF,nu_torus_disk_RF;
 	double nu_start_DT_disk_RF,nu_stop_DT_disk_RF;

@@ -28,7 +28,7 @@ void spettro_EC(int Num_file, struct spettro *pt) {
     double * nu_start_EC, * nu_stop_EC, * nu_start_EC_obs, * nu_stop_EC_obs, nu_seed_max;
     unsigned long * NU_INT_STOP_EC;
     unsigned long l, NU_INT, I_MAX, stop,out;
-    char f_EC[100];
+    char f_EC[static_file_name_max_legth];
     FILE *fp_EC;
 
     //=================================

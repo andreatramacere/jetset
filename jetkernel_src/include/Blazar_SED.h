@@ -56,6 +56,7 @@
 #define LIM_LOSS_KN 1.0
 #define min(a,b) (a<b) ? a:b;
 #define max(a,b) (a>b) ? a:b;
+#define static_file_name_max_legth 512;
 /**
  * \file Blazar_SED.h
  * \author Andrea Tramacere
@@ -65,7 +66,6 @@
  */
 
 /************ ENV VARIBLE *************************/
-char *SYSPATH;
 
 /********************************     STRUTTURA BASE    ************************************/
 struct spettro {
@@ -73,6 +73,8 @@ struct spettro {
     int BESSEL_TABLE_DONE;
 
     int CICCIO;
+
+    char SYSPATH[256]
     char STEM[256];
     char path[256];
     char DISTR[16];
