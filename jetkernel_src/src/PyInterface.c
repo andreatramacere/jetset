@@ -263,7 +263,7 @@ void Init(struct spettro *pt_base) {
     double test, prova;
     unsigned long i;
 
-    pt->SYSPATH = getenv("BLAZARSED");
+    pt_base->SYSPATH = getenv("BLAZARSED");
     
     if (pt_base->verbose) {
         printf("SYSPATH =%s\n", SYSPATH);
