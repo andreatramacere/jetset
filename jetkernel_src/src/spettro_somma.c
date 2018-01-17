@@ -85,7 +85,7 @@ void spettro_somma_Sync_ic(int Num_file, struct spettro * pt) {
 
 		//if(nuF_nu_obs>1.e-60){
 		//printf("nuF_nu_obs=%e\n********************\n",nuF_nu_obs);
-		fprintf(fp, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\n",
+		fprintf(fp, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\n",
 				nu_obs,
 				pt->nuFnu_somma_grid,
 				pt->nuFnu_Sync_grid,
@@ -148,7 +148,7 @@ void spettro_somma_Sync_ic(int Num_file, struct spettro * pt) {
 			pt->nuFnu_EC_CMB_stat_grid = pt->emiss_lim;
 		}
 
-		fprintf(fpll, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\n",
+		fprintf(fpll, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\n",
 				log10(nu_obs),
 				log10(pt->nuFnu_somma_grid),
 				log10(pt->nuFnu_Sync_grid),
@@ -169,7 +169,7 @@ void spettro_somma_Sync_ic(int Num_file, struct spettro * pt) {
 
 		//}
 
-		fprintf(fpll_src, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\n",
+		fprintf(fpll_src, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\n",
 				log10(nu_obs_to_nu_src(nu_obs, pt->z_cosm)),
 				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_somma_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
 				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_Sync_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
