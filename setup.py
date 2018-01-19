@@ -1,7 +1,16 @@
 #!/usr/bin/env python
 
-import  glob
-from distutils.core import setup,Extension
+
+from __future__ import division, absolute_import, print_function
+
+__author__ = 'andrea tramacere'
+
+
+
+
+from setuptools import setup, find_packages,Extension
+from distutils.extension import Extension
+import glob
 
 version='1.2.0'
 

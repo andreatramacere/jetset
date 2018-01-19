@@ -1,2 +1,0 @@
-recursive-include examples *.txt *.py
-recursive-include doc/sphinx/_build *
