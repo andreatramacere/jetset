@@ -266,7 +266,7 @@ void Init(struct spettro *pt_base) {
     pt_base->SYSPATH=getenv("BLAZARSED");
     //sprintf(ENV,'%s',getenv("BLAZARSED"));
     //return;
-    printf("CIAO =%s\n",pt_base->SYSPATH);
+    //printf("CIAO =%s\n",pt_base->SYSPATH);
 
     //sprintf(pt_base->SYSPATH,'%s', ENV);
     //return;
@@ -282,15 +282,17 @@ void Init(struct spettro *pt_base) {
     //======================================
     if (pt_base->nu_seed_size>=pt_base->spec_array_size){
     	pt_base->nu_seed_size=pt_base->spec_array_size-1;
-        printf("nu_seed_size  was gt spec_array size \n ");
-        printf("now set  to spec_array size %d \n ",pt_base->spec_array_size-1);
-
+    	if (pt_base->verbose){
+            printf("nu_seed_size  was gt spec_array size \n");
+            printf("now set  to spec_array size %d \n ",pt_base->spec_array_size-1);
+        }
     }
     if (pt_base->nu_IC_size>=pt_base->spec_array_size){
     	pt_base->nu_IC_size=pt_base->spec_array_size-1;
-    	printf("nu_IC_size  was gt spec_array size \n ");
-    	printf("now set  to spec_array size %d\n ",pt_base->spec_array_size-1);
-
+    	if (pt_base->verbose){
+            printf("nu_IC_size  was gt spec_array size \n ");
+            printf("now set  to spec_array size %d\n ",pt_base->spec_array_size-1);
+        }
     }
     for (i = 0; i < pt_base->spec_array_size; i++) {
         pt_base->q_comp[i] = 0.0;

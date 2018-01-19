@@ -64,7 +64,7 @@ void tabella_Bessel(struct spettro *pt_TB) {
 
     /*** kernel Sync per alfa fisso e kernel delta ***/
     if (pt_TB->verbose>0) {
-    	printf("Evaluation of Bessel Tables a\n");
+    	printf("Evaluation of Bessel Tables\n");
     }
 	//printf("start=%e\n", pt_TB->x_Bessel_min = (pt_TB->nu_start_Sync) /
 	//	((3.0 * pt_TB->nu_B * (pt_TB->gmax_griglia * pt_TB->gmax_griglia) / 2.0) * pt_TB->sin_psi));
@@ -110,7 +110,8 @@ void tabella_Bessel(struct spettro *pt_TB) {
         //fclose(fp);
 
     	fp = fopen(f_bessel_file, "w");
-        printf("GENERATING F_Sync\n");
+    	printf("Bessel Tables  not found, was expected to be: %s\n", f_bessel_file);
+        printf("Now GENERATING F_Sync.dat file\n");
 
 
         
@@ -146,7 +147,9 @@ void tabella_Bessel(struct spettro *pt_TB) {
     } else {
         i = 0;
         if (pt_TB->verbose>0) {
+            printf("Bessel Tables file found: %s\n", f_bessel_file);
             printf("reading K5/3\n");
+
         }
         while (!feof(fp)) {
             fscanf(fp, "%s %s %s %s\n", in_x, in_y,in_ave_x,in_ave_y);
