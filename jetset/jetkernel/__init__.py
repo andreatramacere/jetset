@@ -1,5 +1,5 @@
 import os
-import jetkernel
+#import jetkernel
 
 #package_dir=os.path.dirname(BlazarSED.__file__)
 
