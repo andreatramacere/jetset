@@ -1,0 +1,8 @@
+
+.. automodule:: jetset.model_parameters
+   :members:
+   :private-members:
+   :undoc-members:
+   :show-inheritance:
+   
+   

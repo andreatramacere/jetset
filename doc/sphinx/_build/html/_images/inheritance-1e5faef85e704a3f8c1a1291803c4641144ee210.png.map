@@ -1,5 +1,0 @@
-<map id="inheritance38d86ee329" name="inheritance38d86ee329">
-<area shape="rect" id="node1" href="model_parameters.html#BlazarSEDFit.model_parameters.ModelParameter" target="_top" title="This class is the base class for models parameters. The following keywords " alt="" coords="6,54,325,79"/>
-<area shape="rect" id="node3" href="#BlazarSEDFit.template_model.TemplateParameter" target="_top" title="This class is a subclass of the :class:`.ModelParameter` class," alt="" coords="373,54,696,79"/>
-<area shape="rect" id="node2" href="#BlazarSEDFit.template_model.Template" target="_top" title="Class to handle spectral templates" alt="" coords="35,5,295,30"/>
-</map>

@@ -4,21 +4,21 @@ import sys,os
 sys.path.insert(0, os.path.abspath('../../'))
 
 
-import BlazarSEDFit
+import jetset
 import pkgutil
 
-package = BlazarSEDFit
+package = jetset
 
 print package.__path__
 
 def make_module_uml(modname):
-    cmd="pyreverse  -AS -mn -k BlazarSEDFit.%s -o png -p BlazarSEDFit"%modname
+    cmd="pyreverse  -AS -mn -k jetset.%s -o png -p jetset"%modname
     os.system(cmd)
-    cmd="mv classes_BlazarSEDFit.png  modules_doc/classes_%s.png"%modname
+    cmd="mv classes_jetset.png  source/api/classes_%s.png"%modname
     os.system(cmd)
 
 def make_apidoc(mod_list):
-    f=open('code.rst','w')
+    f=open('modules.rst','w')
     text="""
 
 Modules
@@ -35,12 +35,12 @@ Modules
     print>>f,text
     
     for modname in mod_list:
-        print>>f,"    %s    <modules_doc/%s.rst>"%(modname,modname)
+        print>>f,"    %s    <%s.rst>"%(modname,modname)
         
-        f1=open('modules_doc/%s.rst'%modname,'w')
+        f1=open('source/api/%s.rst'%modname,'w')
         
         text="""
-.. automodule:: BlazarSEDFit.%s
+.. automodule:: jetset.%s
    :members:
    :private-members:
    :undoc-members:
@@ -53,7 +53,10 @@ Modules
         f1.close()
     
     f.close()
-    
+
+    cmd="mv modules.rst  source/api/"
+    os.system(cmd)
+
 def main():
     mod_list=[]
     for importer, modname, ispkg in pkgutil.iter_modules(package.__path__):
@@ -69,7 +72,7 @@ def main():
     for modname in mod_list:
             
             
-            make_module_uml(modname)
+            #make_module_uml(modname)
             print
 
 
