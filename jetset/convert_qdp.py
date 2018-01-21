@@ -6,7 +6,7 @@ import glob
 from cosmo_tools import  Cosmo
 from string import *
 import math as m
-import pyfits
+from astropy.io import fits as pyfits
 import numpy as n
 
 

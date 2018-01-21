@@ -1,4 +1,5 @@
 from model_parameters import ModelParameterArray, ModelParameter
+
 import numpy as np
 from spectral_shapes import SED
 from base_model import  Model

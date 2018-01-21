@@ -7,7 +7,7 @@
        <div class="bodywrapper">
      {%- endif %}
          <div class="body">
-           <br><img src="{{ pathto("_static/logo.jpg", 1) }}" alt="Sphinx logo" /><br>
+           <br><img src="{{ pathto("_static/logo_large.jpg", 1) }}" alt="Sphinx logo" /><br>
            {% block body %} {% endblock %}
          </div>
      {%- if render_sidebar %}

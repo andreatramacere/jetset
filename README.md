@@ -6,8 +6,8 @@ JetSeT (Jet Sed Tool)
 Installation
 ------------
 requires:
- - SWIG (http://www.swig.org/)
-     - on linux Ubuntu:
+- SWIG (http://www.swig.org/)
+    - on linux Ubuntu:
         - sudo apt-get install python-dev
         - sudo apt-get install swig
      - on linux Debian:
@@ -30,3 +30,16 @@ requires:
         - numpy
 
 python setup.py install
+
+
+
+ Build documentation
+ -------------------
+ requires: 
+    
+ - sphinx
+ - pylint
+ - sphinx-pyreverse: "https://github.com/alendit/sphinx-pyreverse#egg=sphinx-pyreverse"
+ - nbsphinx: "conda install -c conda-forge nbsphinx"
+ - sphinx_bootstrap_theme
+ - sphinxjp.themes.basicstrap

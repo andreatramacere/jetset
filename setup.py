@@ -30,6 +30,6 @@ setup(name='jetset',
       packages=['jetset','leastsqbound','jetset.jetkernel'],
       package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*dat','jetkernel/mathkernel/*dat']},
       scripts=['bin/test_interactive.py'],
-      requires=['scipy','numpy'],
+      requires=['scipy','numpy','astropy'],
       ext_modules = [_module],
       py_modules=['jetkernel'], )

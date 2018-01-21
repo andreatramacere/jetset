@@ -13,11 +13,12 @@
 {%- block document %}
      <div class="documentwrapper">
      {%- if render_sidebar %}
+          <img src="{{ pathto("_static/logo_large.png",1) }}" width=500; " />
        <div class="bodywrapper">
      {%- endif %}
         <div class="body">
-         <div class="align-center figure align-center">
-           <br><img src="{{ pathto("_static/logo.png",1) }}" style=width:100%; " />  <br>
+         <div class="align-left figure align-left">
+
             
         </div>
            {% block body %} {% endblock %}

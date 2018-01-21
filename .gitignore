@@ -3,6 +3,7 @@
 /doc/out.txt
 /doc/err.txt
 /doc/build/*
+/doc/_bild/*
 /doc/test
 /.idea
 /.DS_Store
