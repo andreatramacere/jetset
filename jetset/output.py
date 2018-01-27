@@ -77,9 +77,9 @@ class WorkPlace(object):
     
     
     """
-    def __init__(self):
-        self.out_dir='./'
-        self.flag='sed-fit-test'
+    def __init__(self,out_dir='./',flag='sed-fit-test'):
+        self.out_dir=out_dir
+        self.flag=flag
     
     
     

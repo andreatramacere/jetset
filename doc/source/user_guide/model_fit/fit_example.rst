@@ -7,30 +7,8 @@
     import matplotlib.pylab as plt
     %matplotlib inline
 
-Basic Concepts
+Fit User guide
 ==============
-
-work place
-----------
-
-The first step is to import the package, and to set a work place:
-
-.. code:: ipython2
-
-    import BlazarSEDFit as SEDFit
-    
-    SEDFit.set_workplace(out_dir='test-Mrk421',flag='Mrk421')
-
-
-.. parsed-literal::
-
-    directory test-Mrk421 already existing
-    removing existing dir
-    the directory test-Mrk421 has been created
-
-
-the latter command will set the output directory to ``./test-Mrk421``
-and will add a flag ``Mrk421`` to the output products
 
 data format
 -----------
@@ -50,7 +28,7 @@ the data are loaded. The meta-data available are :
 -  data\_scale: scale of the data ``lin-lin`` or ``log-log``
 -  dataType: structure of the comumns with the SED data
 
-the meaning of these meta-data is explained in detail in :class:`BlazarSEDFit.data_loader.ObsData` class 
+the meaning of these meta-data is explained in detail in :class:`jetset.data_loader.ObsData` class 
 documentation. The meta-data can be included in the header with  line like:
 
 
@@ -97,22 +75,23 @@ Loading SEDs
 
 
 The most effective way to import the SED data is to create an object 
-instance of :class:`BlazarSEDFit.data_loader.ObsData` class 
+instance of :class:`jetset.data_loader.ObsData` class 
 (see the documentation for the :doc:`data_loader <../../modules_doc/data_loader>` module)
 The package provides some test SEDs, accessible as follows:
 
 .. code:: ipython2
 
-    SEDFit.test_SEDs
+    from jetset.test_data_helper import  test_SEDs
+    test_SEDs
 
 
 
 
 .. parsed-literal::
 
-    ['/Users/orion/anaconda2/lib/python2.7/site-packages/BlazarSEDFit/test_data/SEDs_data/SED_3C345.dat',
-     '/Users/orion/anaconda2/lib/python2.7/site-packages/BlazarSEDFit/test_data/SEDs_data/SED_MW_Mrk421.dat',
-     '/Users/orion/anaconda2/lib/python2.7/site-packages/BlazarSEDFit/test_data/SEDs_data/SED_MW_Mrk501.dat']
+    ['/Users/orion/anaconda2/lib/python2.7/site-packages/jetset-1.2.0-py2.7-macosx-10.6-x86_64.egg/jetset/test_data/SEDs_data/SED_3C345.dat',
+     '/Users/orion/anaconda2/lib/python2.7/site-packages/jetset-1.2.0-py2.7-macosx-10.6-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.dat',
+     '/Users/orion/anaconda2/lib/python2.7/site-packages/jetset-1.2.0-py2.7-macosx-10.6-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk501.dat']
 
 
 
@@ -120,9 +99,9 @@ to load the SED of Mrk 421, the first one in the list:
 
 .. code:: ipython2
 
-    mySED=SEDFit.test_SEDs[1]
-    
-    mySEDdata=SEDFit.ObsData(data_file=mySED)
+    mySED=test_SEDs[1]
+    from jetset.data_loader import ObsData
+    sed_data=ObsData(data_file=mySED)
 
 
 .. parsed-literal::
@@ -141,7 +120,7 @@ to load the SED of Mrk 421, the first one in the list:
     =============================================================================================
     
     *** loading data ***
-    ---> loading data for file=/Users/orion/anaconda2/lib/python2.7/site-packages/BlazarSEDFit/test_data/SEDs_data/SED_MW_Mrk421.dat
+    ---> loading data for file=/Users/orion/anaconda2/lib/python2.7/site-packages/jetset-1.2.0-py2.7-macosx-10.6-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.dat
     ---> found these col ID=[0, 1, 2, 3] and names=['x', 'y', 'dy', 'data_set']:
     ---> z=3.080000e-02
     ---> restframe=obs
@@ -186,7 +165,7 @@ SED file header. You also get information on the lenght of the data,
 before and after elimination of duplicated entries, and upper limits
 These meta-data are parameters needed by the
 
-:class:`BlazarSEDFit.data_loader.ObsData` constructor. 
+:class:`jetset.data_loader.ObsData` constructor. 
 
 Plotting data
 -------------
@@ -196,9 +175,10 @@ We can now plot our SED using the :class:`BlazarSEDFit.plot_sedfit.Plot` class
 
 .. code:: ipython2
 
-    myPlot=SEDFit.Plot(mySEDdata,interactive=True)
+    from jetset.plot_sedfit import Plot
+    myPlot=Plot(sed_data,interactive=True)
     
-    myPlot.add_data_plot(mySEDdata,autoscale=True)
+    myPlot.add_data_plot(sed_data,autoscale=True)
 
 
 .. parsed-literal::
@@ -207,7 +187,7 @@ We can now plot our SED using the :class:`BlazarSEDFit.plot_sedfit.Plot` class
 
 
 
-.. image:: basic_files/basic_18_1.png
+.. image:: fit_example_files/fit_example_17_1.png
 
 
 grouping data
@@ -220,7 +200,7 @@ data. This can be obtained with the following command:
 
 .. code:: ipython2
 
-    mySEDdata.group_data(bin_width=0.2)
+    sed_data.group_data(bin_width=0.2)
 
 
 .. parsed-literal::
@@ -252,9 +232,9 @@ For these reasons the package offer the possibility to add systematics
 
 .. code:: ipython2
 
-    mySEDdata.add_systematics(0.2,[10.**6,10.**29])
-    myPlot=SEDFit.Plot(interactive=True)
-    myPlot.add_data_plot(mySEDdata,label='grouped+syst',autoscale=True)
+    sed_data.add_systematics(0.2,[10.**6,10.**29])
+    myPlot=Plot(interactive=True)
+    myPlot.add_data_plot(sed_data,label='grouped+syst',autoscale=True)
 
 
 .. parsed-literal::
@@ -263,7 +243,7 @@ For these reasons the package offer the possibility to add systematics
 
 
 
-.. image:: basic_files/basic_22_1.png
+.. image:: fit_example_files/fit_example_21_1.png
 
 
 with this command we add 20% systematics for data between :math:`10^{6}<\nu<10^{29}` Hz
@@ -273,8 +253,9 @@ SEDShape: Spectral indices
 
 .. code:: ipython2
 
-    SEDShape=SEDFit.SEDShape(mySEDdata)
-    SEDShape.eval_indices()
+    from jetset.sed_shaper import  SEDShape
+    my_shape=SEDShape(sed_data)
+    my_shape.eval_indices()
 
 
 .. parsed-literal::
@@ -283,7 +264,7 @@ SEDShape: Spectral indices
     
     *** evaluating spectral indices for data ***
     ---> range for indexradio updated to [6.000000,10.000000]
-    the directory test-Mrk421/spectral-indices-best-fit/ has been created
+    the directory .//spectral-indices-best-fit/ has been created
     minim function calls=10, res=-0.016464, chisq=0.369494
     res check 0.0402652596909 0.36841820873
     ---> 1000000.0 10000000000.0 100
@@ -321,9 +302,9 @@ SEDShape: Spectral indices
     
     
     ---> range for indexradio_mm updated to [10.000000,11.000000]
-    directory test-Mrk421/spectral-indices-best-fit/ already existing
+    directory .//spectral-indices-best-fit/ already existing
     removing existing dir
-    the directory test-Mrk421/spectral-indices-best-fit/ has been created
+    the directory .//spectral-indices-best-fit/ has been created
     minim function calls=10, res=-0.074093, chisq=0.015776
     res check 3.47694095737e-13 0.0139462498263
     ---> 10000000000.0 1e+11 100
@@ -362,9 +343,9 @@ SEDShape: Spectral indices
     
     
     ---> range for indexmm_IR updated to [10.300000,13.700000]
-    directory test-Mrk421/spectral-indices-best-fit/ already existing
+    directory .//spectral-indices-best-fit/ already existing
     removing existing dir
-    the directory test-Mrk421/spectral-indices-best-fit/ has been created
+    the directory .//spectral-indices-best-fit/ has been created
     minim function calls=10, res=-0.052342, chisq=0.171012
     res check 0.00565037767325 0.169889454723
     ---> 19952623149.7 5.01187233627e+13 100
@@ -403,9 +384,9 @@ SEDShape: Spectral indices
     
     
     ---> range for indexIR_Opt updated to [12.500000,14.500000]
-    directory test-Mrk421/spectral-indices-best-fit/ already existing
+    directory .//spectral-indices-best-fit/ already existing
     removing existing dir
-    the directory test-Mrk421/spectral-indices-best-fit/ has been created
+    the directory .//spectral-indices-best-fit/ has been created
     minim function calls=10, res=-0.064843, chisq=0.032499
     res check -0.0659593422521 0.0324982619
     ---> 3.16227766017e+12 3.16227766017e+14 100
@@ -442,9 +423,9 @@ SEDShape: Spectral indices
     
     
     ---> range for indexOpt_UV updated to [14.000000,16.000000]
-    directory test-Mrk421/spectral-indices-best-fit/ already existing
+    directory .//spectral-indices-best-fit/ already existing
     removing existing dir
-    the directory test-Mrk421/spectral-indices-best-fit/ has been created
+    the directory .//spectral-indices-best-fit/ has been created
     minim function calls=10, res=-0.051644, chisq=1.170535
     res check -0.044459533445 1.17052755017
     ---> 1e+14 1e+16 100
@@ -483,9 +464,9 @@ SEDShape: Spectral indices
     
     
     ---> range for indexBBB updated to [14.800000,16.200000]
-    directory test-Mrk421/spectral-indices-best-fit/ already existing
+    directory .//spectral-indices-best-fit/ already existing
     removing existing dir
-    the directory test-Mrk421/spectral-indices-best-fit/ has been created
+    the directory .//spectral-indices-best-fit/ has been created
     minim function calls=10, res=-0.044621, chisq=0.162573
     res check 0.0277778923605 0.160822681203
     ---> 6.3095734448e+14 1.58489319246e+16 100
@@ -523,9 +504,9 @@ SEDShape: Spectral indices
     
     
     ---> range for indexUV_X updated to [15.000000,17.500000]
-    directory test-Mrk421/spectral-indices-best-fit/ already existing
+    directory .//spectral-indices-best-fit/ already existing
     removing existing dir
-    the directory test-Mrk421/spectral-indices-best-fit/ has been created
+    the directory .//spectral-indices-best-fit/ has been created
     minim function calls=10, res=-0.017536, chisq=1.130575
     res check -0.0186684356928 1.13057464794
     ---> 1e+15 3.16227766017e+17 100
@@ -563,9 +544,9 @@ SEDShape: Spectral indices
     
     
     ---> range for indexX updated to [16.000000,19.000000]
-    directory test-Mrk421/spectral-indices-best-fit/ already existing
+    directory .//spectral-indices-best-fit/ already existing
     removing existing dir
-    the directory test-Mrk421/spectral-indices-best-fit/ has been created
+    the directory .//spectral-indices-best-fit/ has been created
     minim function calls=10, res=14.789254, chisq=45.375460
     res check -1.11424683221 21.9306413132
     ---> 1e+16 1e+19 100
@@ -603,9 +584,9 @@ SEDShape: Spectral indices
     
     
     ---> range for indexFermi updated to [22.380000,25.380000]
-    directory test-Mrk421/spectral-indices-best-fit/ already existing
+    directory .//spectral-indices-best-fit/ already existing
     removing existing dir
-    the directory test-Mrk421/spectral-indices-best-fit/ has been created
+    the directory .//spectral-indices-best-fit/ has been created
     minim function calls=10, res=-0.155500, chisq=1.214222
     res check -0.152092242882 1.21422039067
     ---> 2.39883291902e+22 2.39883291902e+25 100
@@ -648,23 +629,13 @@ SEDShape: Spectral indices
 
 .. code:: ipython2
 
-    myPlot=SEDFit.Plot(mySEDdata,interactive=True)
+    myPlot=Plot(sed_data,interactive=True)
     
-    for model in SEDShape.index_models:
+    for model in my_shape.index_models:
         myPlot.add_model_plot(model,label=model.name,line_style='--',autoscale=True)
     
-    myPlot.add_data_plot(mySEDdata,autoscale=True,label='data',color='red')
+    myPlot.add_data_plot(sed_data,autoscale=True,label='data',color='red')
     myPlot.rescale(y_min=-14,y_max=-8,x_min=8)
-
-
-.. parsed-literal::
-
-    running PyLab in interactive mode
-
-
-
-.. image:: basic_files/basic_26_1.png
-
 
 SEDShape: Log-Log Polynomila fit
 --------------------------------
@@ -674,7 +645,7 @@ SEDShape: Log-Log Polynomila fit
     myPlot.save('SED_indices_rebinned.png')
     
     
-    SEDShape.sync_fit(check_host_gal_template=True)
+    my_shape.sync_fit(check_host_gal_template=True)
 
 
 .. parsed-literal::
@@ -692,15 +663,15 @@ SEDShape: Log-Log Polynomila fit
      Ep               | peak freq                | Hz               | +1.400000e+01 | [+0.000000e+00,+3.000000e+01]  
      Sp               | peak flux                | erg cm^-2 s^-1   | -1.000000e+01 | [-3.000000e+01,+0.000000e+00]  
     --------------------------------------------------------------------------------------------------------------
-    the directory test-Mrk421/sync-shape-fit/ has been created
+    the directory .//sync-shape-fit/ has been created
     minim function calls=10, res=2716.505338, chisq=421616.964355
     minim function calls=20, res=122.820362, chisq=2160.064156
     minim function calls=30, res=0.988245, chisq=14.005639
     res check -0.653068653967 13.7330978665
     ---> 1000000000.0 1e+19 100
-    directory test-Mrk421/sync-shape-fit/ already existing
+    directory .//sync-shape-fit/ already existing
     removing existing dir
-    the directory test-Mrk421/sync-shape-fit/ has been created
+    the directory .//sync-shape-fit/ has been created
     minim function calls=10, res=1640.081276, chisq=150207.291050
     minim function calls=20, res=345.553362, chisq=31425.628454
     minim function calls=30, res=-86.732146, chisq=10013.760450
@@ -777,7 +748,7 @@ SEDShape: Log-Log Polynomila fit
 
 .. code:: ipython2
 
-    SEDShape.IC_fit()
+    my_shape.IC_fit()
 
 
 .. parsed-literal::
@@ -795,7 +766,7 @@ SEDShape: Log-Log Polynomila fit
      Ep               | peak freq                | Hz               | +2.525747e+01 | [+0.000000e+00,+3.000000e+01]  
      Sp               | peak flux                | erg cm^-2 s^-1   | -1.000000e+01 | [-3.000000e+01,+0.000000e+00]  
     --------------------------------------------------------------------------------------------------------------
-    the directory test-Mrk421/IC-shape-fit/ has been created
+    the directory .//IC-shape-fit/ has been created
     minim function calls=10, res=41.217378, chisq=263.542180
     minim function calls=20, res=-0.672484, chisq=3.440593
     res check -0.742062424495 3.43991311663
@@ -842,32 +813,32 @@ SEDShape: Log-Log Polynomila fit
 
 .. code:: ipython2
 
-    myPlot=SEDFit.Plot(mySEDdata,interactive=True)
+    myPlot=Plot(sed_data,interactive=True)
     
     
-    myPlot.add_model_plot(SEDShape.sync_fit,label='sync, poly-fit')
+    myPlot.add_model_plot(my_shape.sync_fit,label='sync, poly-fit')
     
-    myPlot.add_model_plot(SEDShape.host_gal,label='host-gal')
+    myPlot.add_model_plot(my_shape.host_gal,label='host-gal')
     
-    myPlot.add_model_plot(SEDShape.sync_fit_model,label='sync+host, poly-fit')
-    myPlot.add_model_plot(SEDShape.IC_fit_model,label='IC, poly-fit')
-    myPlot.add_data_plot(mySEDdata,autoscale=True)
+    myPlot.add_model_plot(my_shape.sync_fit_model,label='sync+host, poly-fit')
+    myPlot.add_model_plot(my_shape.IC_fit_model,label='IC, poly-fit')
+    myPlot.add_data_plot(sed_data,autoscale=True)
     myPlot.rescale(y_min=-14,y_max=-8,x_min=8)
 
 
 .. parsed-literal::
 
     running PyLab in interactive mode
-    <bound method SEDShape.sync_fit of <BlazarSEDFit.sed_shaper.SEDShape object at 0x1a1b5e0610>> !!! Error has no SED instance or something wrong in get_model_points()
+    <bound method SEDShape.sync_fit of <jetset.sed_shaper.SEDShape object at 0x1a17a83850>> !!! Error has no SED instance or something wrong in get_model_points()
 
 
 
-.. image:: basic_files/basic_30_1.png
+.. image:: fit_example_files/fit_example_29_1.png
 
 
 .. code:: ipython2
 
-    SEDShape.show_values()
+    my_shape.show_values()
 
 
 .. parsed-literal::
@@ -902,11 +873,13 @@ Constraining SSC/EC model
 
 .. code:: ipython2
 
-    SED_obspar=SEDFit.ObsConstrain(beaming=25,B_range=[0.01,0.1],distr_e='lppl',t_var_sec=3*86400,nu_cut_IR=9.0E12,SEDShape=SEDShape)
+    from jetset.obs_constrain import ObsConstrain
+    
+    sed_obspar=ObsConstrain(beaming=25,B_range=[0.01,0.1],distr_e='lppl',t_var_sec=3*86400,nu_cut_IR=9.0E12,SEDShape=my_shape)
 
 .. code:: ipython2
 
-    jet_model=SED_obspar.constrain_SSC_model()
+    jet_model=sed_obspar.constrain_SSC_model()
 
 
 .. parsed-literal::
@@ -915,11 +888,11 @@ Constraining SSC/EC model
     
     ***  constrains parameters from observable ***
     
-    the directory test-Mrk421/obs_constrain_lppl/ has been created
-    the directory test-Mrk421/lppl_BalzarSED_prod/ has been created
-    directory test-Mrk421/obs_constrain_lppl/ already existing
+    the directory .//obs_constrain_lppl/ has been created
+    the directory .//lppl_jet_prod/ has been created
+    directory .//obs_constrain_lppl/ already existing
     removing existing dir
-    the directory test-Mrk421/obs_constrain_lppl/ has been created
+    the directory .//obs_constrain_lppl/ has been created
     -----------------------------------------------------------------------------------------
     model parameters for jet model:
     
@@ -1184,9 +1157,9 @@ Constraining SSC/EC model
     ('fill name', 'Sum')
     ('fill name', 'Sync')
     ('fill name', 'SSC')
-    directory test-Mrk421/lppl_BalzarSED_prod/ already existing
+    directory .//lppl_jet_prod/ already existing
     removing existing dir
-    the directory test-Mrk421/lppl_BalzarSED_prod/ has been created
+    the directory .//lppl_jet_prod/ has been created
     
     =============================================================================================
     
@@ -1194,22 +1167,21 @@ Constraining SSC/EC model
 
 .. code:: ipython2
 
-    constr_Plot=SEDFit.Plot(mySEDdata,interactive=False)
-    constr_Plot.add_model_plot(jet_model,label='obs-constr-lppl',autoscale=False,update=False)
-    for c in jet_model.spectral_components:
-        constr_Plot.add_model_plot(c.SED,line_style='--')
-    constr_Plot.add_data_plot(mySEDdata,autoscale=True)
+    constr_Plot=Plot(sed_data,interactive=False)
+    jet_model.plot_model(plot_obj=constr_Plot)
+    
+    constr_Plot.add_data_plot(sed_data,autoscale=True)
     constr_Plot.rescale(y_min=-14,y_max=-8,x_min=8)
     constr_Plot.add_residual_plot(jet_model,autoscale=True)
 
 
 .. parsed-literal::
 
-    <BlazarSEDFit.jet_model.Jet object at 0x1a1bef9050> has no residuals
+    <jetset.jet_model.Jet object at 0x1a17a8cc10> has no residuals
 
 
 
-.. image:: basic_files/basic_35_1.png
+.. image:: fit_example_files/fit_example_34_1.png
 
 
 SSC/EC fitting
@@ -1217,19 +1189,22 @@ SSC/EC fitting
 
 .. code:: ipython2
 
-    SEDModel=SEDFit.FitModel( jet=jet_model, name='SSC-best-fit',  template=SEDShape.host_gal)
+    from jetset.model_manager import FitModel
+    from jetset.minimizer import  fit_SED
     
-    SEDModel.set('z_cosm','frozen')
+    fit_model=FitModel( jet=jet_model, name='SSC-best-fit',  template=my_shape.host_gal)
     
-    SEDModel.set('beam_obj','frozen')
+    fit_model.set('z_cosm','frozen')
     
-    SEDModel.set('nuFnu_p_host','frozen')
+    fit_model.set('beam_obj','frozen')
+    
+    fit_model.set('nuFnu_p_host','frozen')
     
     #SEDModel.set('L_host',fit_range=[-10.5,-9.5])
     
-    SEDModel.show_pars()
+    fit_model.show_pars()
         
-    best_fit=SEDFit.fit_SED(SEDModel,mySEDdata,10.0**11 ,10**28.0,fitname='SSC-best-fit-lppl')
+    best_fit=fit_SED(fit_model,sed_data,10.0**11 ,10**28.0,fitname='SSC-best-fit-lppl')
 
 
 .. parsed-literal::
@@ -1251,10 +1226,10 @@ SSC/EC fitting
      nuFnu_p_host     | nuFnu-scale              | erg cm^-2 s^-1   | -1.092246e+01 | [-2.000000e+01,+2.000000e+01]  
      nu_scale         | nu-scale                 | Hz               | -2.424798e-01 | [-2.000000e+00,+2.000000e+00]  
     --------------------------------------------------------------------------------------------------------------
-    the directory test-Mrk421/SSC-best-fit-lppl/ has been created
-    directory test-Mrk421/SSC-best-fit-lppl/ already existing
+    the directory .//SSC-best-fit-lppl/ has been created
+    directory .//SSC-best-fit-lppl/ already existing
     removing existing dir
-    the directory test-Mrk421/SSC-best-fit-lppl/ has been created
+    the directory .//SSC-best-fit-lppl/ has been created
     filtering data in fit range = [1.000000e+11,1.000000e+28]
     data length 37
     =============================================================================================
@@ -1346,22 +1321,22 @@ SSC/EC fitting
 
 .. code:: ipython2
 
-    fit_Plot=SEDFit.Plot(mySEDdata,interactive=True)
-    fit_Plot.add_model_plot(SEDModel,label='SSC-best-fit')
+    fit_Plot=Plot(sed_data,interactive=True)
+    fit_Plot.add_model_plot(fit_model,label='SSC-best-fit')
     fit_Plot.autoscale()
     fit_Plot.rescale(y_min=-14,y_max=-8,x_min=9.0,x_max=30)
     fit_Plot.x_min_res=5.5
     fit_Plot.x_max_res=30
-    for c in SEDModel.components[0].spectral_components:
+    for c in fit_model.components[0].spectral_components:
         fit_Plot.add_model_plot(c.SED,autoscale=False,line_style='--')
     
-    for c in SEDModel.components:
+    for c in fit_model.components:
         fit_Plot.add_model_plot(c.SED,autoscale=False,line_style='--')
         
-    fit_Plot.add_data_plot(mySEDdata,autoscale=False,color='b')
+    fit_Plot.add_data_plot(sed_data,autoscale=False,color='b')
     
     
-    fit_Plot.add_residual_plot(SEDModel)
+    fit_Plot.add_residual_plot(fit_model)
 
 
 .. parsed-literal::
@@ -1370,6 +1345,5 @@ SSC/EC fitting
 
 
 
-.. image:: basic_files/basic_38_1.png
-
+.. image:: fit_example_files/fit_example_37_1.png
 

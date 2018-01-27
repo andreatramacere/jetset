@@ -28,7 +28,7 @@ User Documentation
 ******************
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    user guide <user_guide/user_guide.rst>
 ..   code documentation (API) <api/modules.rst>
