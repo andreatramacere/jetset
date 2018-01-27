@@ -1,12 +1,4 @@
 """
-Module: jet_model
-========================
-
-
-
-Overview
---------
-   
 This module  provides an interface to call the BlazarSED code, setting the
 physical parameters and running the code. The BlazarSED code is a numerical 
 accurate C code, to evaluate SSC/EC emission processes in a relativistic jet. 
@@ -16,38 +8,12 @@ The :class:`.Jet` is used to create a *jet* object, providing the high
 level interface to set the jet physical  paramters, and evaluater the SSC/EC 
 emission processes.
 
-
-
-Classes relations
----------------------------------------
-.. figure::  classes_jet_model.png
-   :align:   center  
-
-
-Classes and Inheritance Structure
-----------------------------------------------
-.. inheritance-diagram:: BlazarSEDFit.jet_model
-
-
-  
-
-
-Module API
------------
-
-Summary
----------
-.. autosummary::
-   JetParameter
-   Jet
-    
-Module API
-
 """
+
 '''
 Created on 2013 1 27
 
-@author: orion
+@author: andrea tramacere
 '''
 
 
@@ -66,9 +32,14 @@ from scipy.interpolate import interp1d
 from model_parameters import ModelParameterArray, ModelParameter
 from base_model import  Model
 
-from output import makedir,workplace,clean_dir
+from output import makedir,WorkPlace,clean_dir
 
 from sed_models_dic import nuFnu_obs_dic
+
+from  plot_sedfit import Plot
+
+__all__=['Jet','JetParameter','JetSpecComponent','build_electron_distribution_dic','build_emitting_region_dic',
+         'build_ExtFields_dic','init_SED']
 
 class JetParameter(ModelParameter):
     """
@@ -365,25 +336,16 @@ class Jet(Model):
     the physical parameters in  the :class:`.ModelParameterArray` class,
     that is a collection of :class:`JetParameter` objects.
 
-    :param name: (str), name id for the model
-    :param electron_distribution: (str), the type of electron distribution
-
-    :ivar parameters: instance of the :class:`.ModelParameterArray`
-        storing and handling the array of  :class:`JetParameters` instances
 
     **Examples**
 
-    .. literalinclude:: ../../../examples/modules/jet_model/Jet_example.py
+
 
 
     """
 
     def __init__(self,name='test',electron_distribution='lp',beaming_expr='delta',jet_workplace=None,verbose=None,clean_work_dir=True, **keywords):
-        """ Constructor
-            :param name: (str), name id for the model
-            :param electron_distribution: (str), the type of electron distribution
 
-        """
 
         super(Jet,self).__init__(  **keywords)
 
@@ -401,9 +363,10 @@ class Jet(Model):
         #print ("BLAZARSED DIR",self.jet_wrapper_dir)
 
         if jet_workplace is None:
-            out_dir=workplace.out_dir+'/'+self.name+'_BalzarSED_prod/'
+            jet_workplace=WorkPlace()
+            out_dir= jet_workplace.out_dir + '/' + self.name + '_jet_prod/'
         else:
-            out_dir=jet_workplace.out_dir+'/'+self.name+'_BalzarSED_prod/'
+            out_dir=jet_workplace.out_dir+'/'+self.name+'_jet_prod/'
 
         self.set_path(out_dir,clean_work_dir=clean_work_dir)
 
@@ -507,49 +470,51 @@ class Jet(Model):
 
         self.add_par_from_dic(self.__emitting_region_dic)
 
-    def set_N_from_L(self,L_0, nu_0):
+    def set_N_from_nuLnu(self,L_0, nu_0):
         """
-        returns the normalization to math luminosity L_0, given the
+        sets the normalization of N to match the rest frame luminosity L_0, at a given frequency nu_0
         """
         N = 1.0
-        self.set_par('N', N)
+        setattr(self._Jet__blob, 'N', N)
         gamma_grid_size = self._Jet__blob.gamma_grid_size
+
         self._Jet__blob.gamma_grid_size = 100
 
         z = self._Jet__blob.z_cosm
-        delta = self.get_beaming()
-        nu_blob = nu_0 * (1 + z) / delta
+
         self.init_BlazarSED()
 
-        L_out = BlazarSED.Lum_Sync_at_nu(self._Jet__blob, nu_blob) * delta ** 4
-        if L_out <= 0.0:
-            # N*=10
-            # myJet.set_par('N', N)
-            # myJet.init_BlazarSED()
-            # L_out=BlazarSED.Lum_Sync_at_nu(myJet._Jet__blob,nu_blob)*delta**4
-            # myJet.set_par('B',1.0)
-            # myJet.init_BlazarSED()
-            # myJet._Jet__blob.nu=nu_blob*1000000
-            self.parameters.show_pars()
-            print '-> j', BlazarSED.j_nu_Sync(self._Jet__blob)
-            L_out = BlazarSED.Lum_Sync_at_nu(self._Jet__blob, nu_blob) * delta ** 4
-            print '-> L', L_out
-            # sys.exit()
+        delta = self._Jet__blob.beam_obj
+        nu_blob = nu_0 / delta
+        # print 'delta for set N form L' ,delta
 
-        # print '-> N',BlazarSED.j_nu_Sync(myJet._Jet__blob)
-        # if int(L_out)==0:
-        #    print 'set N->',L_out,nu_0,L_0,nu_blob,delta,myJet.get_par_by_name('B').val,myJet.get_par_by_name('N').val,myJet._Jet__blob.nu_B
+        L_out = BlazarSED.Lum_Sync_at_nu(self._Jet__blob, nu_blob) * delta ** 4
+        # if L_out <= 0.0:
+        #    L_out = BlazarSED.Lum_Sync_at_nu(blob, nu_blob) * delta ** 4
 
         ratio = (L_out / L_0)
 
-        # myJet.set_par('N', 1.0/ratio)
-        # myJet.init_BlazarSED()
-        # L_out=BlazarSED.Lum_Sync_at_nu(myJet._Jet__blob,nu_blob)*delta**4
-        # print 'check->',L_out,nu_blob,L_0,L_out/L_0
-
         self._Jet__blob.gamma_grid_size = gamma_grid_size
-        #print 'setting N to ', N / ratio
-        self.set_par('N', val=N / ratio)
+
+        #print 'N',N/ratio
+        self.set_par('N', val=N/ratio)
+
+
+    def set_N_from_nuFnu(self, nuFnu_obs, nu_obs):
+        """
+        sets the normalization of N to match the observed flux nu0F_nu0 at a given frequency nu_0
+        """
+
+        self.init_BlazarSED()
+        DL = self._Jet__blob.dist
+
+        L = nuFnu_obs * DL * DL * 4.0 * np.pi
+
+        nu_rest = nu_obs * (1 + self._Jet__blob.z_cosm)
+
+        self.set_N_from_nuLnu( L, nu_rest)
+
+
 
     def set_B_eq(self, L_0, nu_0, B_min,B_max=1.0,N_pts=20,plot=False):
         """
@@ -725,7 +690,7 @@ class Jet(Model):
 
                 if self.get_spectral_component_by_name('Disk',verbose=False) is None:
                     self.add_spectral_component('Disk')
-
+                    self.EC_components_list.append('Disk')
 
             if EC_component=='DT':
                 self.__blob.do_EC_DT=1
@@ -734,7 +699,7 @@ class Jet(Model):
                     self.EC_components_list.append(EC_component)
                 if self.get_spectral_component_by_name('DT',verbose=False) is None:
                     self.add_spectral_component('DT')
-
+                    self.EC_components_list.append('DT')
 
             if EC_component=='CMB':
                 self.__blob.do_EC_CMB=1
@@ -951,28 +916,34 @@ class Jet(Model):
         print "-----------------------------------------------------------------------------------------"
 
 
-    def PlotModel(self,Plot,clean=False,autoscale=False,label=None,comp=None):
-        if Plot is not None:
-            if clean==True:
-                Plot.clean_model_lines()
+    def plot_model(self,plot_obj=None,clean=False,autoscale=True,label=None,comp=None):
+        if plot_obj is None:
+            plot_obj=Plot()
 
-            for i in xrange(len(self.spectral_components)):
-                if (comp is  None) or ((comp is not None)  and (comp==self.spectral_components[i].name)):
 
-                    if self.spectral_components[i].name=='Sum':
-                        if label is None:
-                            comp_label= 'Jet model'
-                        else:
-                            comp_label=label
-                        line_style='-'
-                    else:
-                        comp_label=self.spectral_components[i].name
-                        line_style='--'
-                    Plot.add_model_plot(self.spectral_components[i].SED,autoscale=autoscale,line_style=line_style,label=comp_label)
-                else:
-                    pass
+        if clean==True:
+            plot_obj.clean_model_lines()
+
+        line_style='-'
+
+        if comp is not None:
+            c = self.get_spectral_component_by_name(comp)
+            if label is not None:
+                comp_label = label
+            else:
+                comp_label = c.name
+            plot_obj.add_model_plot(c.SED, autoscale=autoscale, line_style=line_style, label=comp_label)
+
         else:
-            print "the plot window is not defined"
+            for c in self.spectral_components:
+                comp_label = c.name
+                if c.name=='Sum':
+                    if label is not None:
+                        comp_label=label
+
+                plot_obj.add_model_plot(c.SED, autoscale=autoscale, line_style=line_style, label=comp_label)
+
+        return plot_obj
 
     def init_BlazarSED(self):
         BlazarSED.Init(self.__blob)

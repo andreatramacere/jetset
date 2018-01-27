@@ -28,6 +28,10 @@ requires:
         - python 2.7
         - scipy
         - numpy
+        - astropy
+ 
+ - C compiler:
+    - gcc compiler
 
 python setup.py install
 
@@ -41,5 +45,6 @@ python setup.py install
  - pylint
  - sphinx-pyreverse: "https://github.com/alendit/sphinx-pyreverse#egg=sphinx-pyreverse"
  - nbsphinx: "conda install -c conda-forge nbsphinx"
- - sphinx_bootstrap_theme
- - sphinxjp.themes.basicstrap
+ - sphinx_rtd_theme: conda install -c anaconda sphinx_rtd_theme 
+ - sphinx-better-theme: 
+ - https://github.com/astropy/sphinx-automodapi 

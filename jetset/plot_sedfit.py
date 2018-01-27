@@ -47,12 +47,12 @@ except:
     
 from collections import namedtuple
 
-from output import section_separator,workplace
+from output import section_separator,WorkPlace
 
 import numpy as np
 
 
-
+__all__=['Plot']
 
 
 class  Plot (object):
@@ -86,8 +86,9 @@ class  Plot (object):
         
         #set workplace
         if plot_workplace is None:
-            self.out_dir=workplace.out_dir
-            self.flag=workplace.flag
+            plot_workplace=WorkPlace()
+            self.out_dir=plot_workplace.out_dir
+            self.flag=plot_workplace.flag
      
         else:
             self.out_dir=plot_workplace.out_dir

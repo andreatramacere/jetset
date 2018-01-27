@@ -34,18 +34,10 @@ Module API
 import os
 import shutil
 
-def set_workplace(out_dir,flag):
-    """
-    sets a working place 
-    
-    Parameters
-    
-    :param dir: (str) directory mane
-    :param flag: (str) flag name
-    """
-    workplace.out_dir=out_dir
-    workplace.flag=flag
-    makedir(out_dir)
+
+__all__=['clean_dir','makedir','section_separator', 'WorkPlace']
+
+
 
 
 def clean_dir(dir_name):
@@ -72,7 +64,8 @@ def makedir(out_dir,clean_work_dir=True):
             os.mkdir(out_dir)
             print 'the directory %s has been created'%(out_dir)
 
-class workplace(object):
+
+class WorkPlace(object):
     """
     Class to set the working place
     using static members (class members)
@@ -84,8 +77,9 @@ class workplace(object):
     
     
     """
-    out_dir='./'
-    flag='sed-fit-test'
+    def __init__(self):
+        self.out_dir='./'
+        self.flag='sed-fit-test'
     
     
     

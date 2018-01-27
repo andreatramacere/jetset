@@ -45,9 +45,9 @@ import scipy as s
 
 import numpy as np
 
-import os
+#import os
 
-import sys
+#import sys
 
 from scipy.stats import chi2
 
@@ -61,16 +61,16 @@ except:
     #print "boundef fit disabled"
     NOBOUND=True
 
-from model_manager import FitModel
+#from model_manager import FitModel
 
 #import model
 
 
 
-from output import section_separator,workplace,makedir
+from output import section_separator,WorkPlace,makedir
 
 
-
+__all__=['fit_results','fit_SED','residuals_Fit']
 
 class fit_results(object):
     """
@@ -190,14 +190,15 @@ def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplac
     """
     
     if fitname is None:
-        fitname=fit_Model.name+'_'+workplace.flag
+        fitname= fit_Model.name +'_' + WorkPlace.flag
         
     
     cnt=[0] 
     res_check=[0]
     
     if fit_workplace is None:
-        out_dir=workplace.out_dir+'/'+fitname+'/'
+        fit_workplace=WorkPlace()
+        out_dir= fit_workplace.out_dir + '/' + fitname + '/'
     else:
         out_dir=fit_workplace.out_dir+'/'+fitname+'/'
 

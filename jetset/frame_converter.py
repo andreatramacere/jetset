@@ -35,8 +35,10 @@ Module API
 """
 
 import math as m
+import numpy as np
 
-#OK
+__all__=['convert_nu_to_blob','convert_nu_to_src']
+
 def convert_nu_to_blob(nu,in_frame,delta,z):
     """converts Energies/frequencies from in_frame  to blob rest frame
 
@@ -90,6 +92,16 @@ def convert_nu_to_src(nu,z,in_frame):
 
     return nu*(1+z_c)
 
+
+def convert_nuFnu_to_nuLnu_src(nuFnu,z,in_frame,dl):
+    if in_frame == "obs":
+        z_c = z
+    elif in_frame == "src":
+        z_c = 0
+    else:
+        raise RuntimeError, "reference frame keyword not valid %s" % in_frame
+
+    return 4.0*np.pi*dl**2
 
 
 

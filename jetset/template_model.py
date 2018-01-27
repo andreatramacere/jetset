@@ -60,7 +60,7 @@ from spectral_shapes import SED
 from model_parameters import ModelParameter,ModelParameterArray
 
 
-
+__all__=['Template','TemplateParameter']
 
 class TemplateParameter(ModelParameter):
     """

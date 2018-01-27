@@ -4,7 +4,9 @@ import scipy as s
 from numpy import polyfit,polyval,polyder
 
 
-
+__all__=['check_maxima','cubic_peaks','do_cubic_fit','do_cubic_fit_peaks','do_linear_fit',
+         'do_log_Parab_FIT','filter_interval','find_max_cubic','lin','parab','residuals_cubic_peaks',
+         'residuals_linfit','residuals_parab']
 
 
 def filter_interval(x,x_range):

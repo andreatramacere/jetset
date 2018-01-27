@@ -62,7 +62,14 @@ from jet_model import Jet
 
 from sed_shaper import index_array,peak_values
 
-from output import section_separator,workplace,makedir
+from output import section_separator,WorkPlace,makedir
+
+
+__all__=['ObsConstrain','check_boundaries','check_gamma_tansp','check_t_var',
+         'constr_B_from_nu_peaks','constr_R_from_CD','find_B_from_nu_p_S','find_gamma0',
+         'find_gamma_3p_SSC','find_gamma_Synch','find_HE_cut_off','find_s','find_s1',
+         'find_turn_over','get_Comp_factor','get_R_tvar','get_U_Sync_from_Ph',
+         'rescale_Ne','set_gmin_from_nu_cut_IR']
 
 class ObsConstrain(object):
     """
@@ -145,8 +152,9 @@ class ObsConstrain(object):
                         
             
         if obspar_workplace is None:
-            self.out_dir=workplace.out_dir
-            self.flag=workplace.flag
+            obspar_workplace=WorkPlace()
+            self.out_dir=obspar_workplace.out_dir
+            self.flag=obspar_workplace.flag
         else:
             self.out_dir=obspar_workplace.out_dir
             self.flag=obspar_workplace.flag

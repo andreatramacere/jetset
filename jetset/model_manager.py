@@ -43,7 +43,7 @@ from jet_model  import Jet
 
 from template_model import Template
 
-from output import workplace
+from output import WorkPlace
 
 from model_parameters import ModelParameterArray
 
@@ -53,7 +53,7 @@ from base_model import  Model
 
 
 
-
+__all__=['FitModel']
 
 
 
@@ -132,7 +132,7 @@ class FitModel(Model):
         self.parameters=ModelParameterArray()
 
         if elec_distr is not None:
-            jet=Jet(name=flag, electron_distribution=elec_distr, jet_workplace=workplace)
+            jet=Jet(name=flag, electron_distribution=elec_distr, jet_workplace=None)
             
             self.add_component(jet)
         

@@ -2,6 +2,7 @@ from model_parameters import ModelParameterArray, ModelParameter
 from spectral_shapes import SED
 import numpy as np
 
+__all__=['Model']
 class Model(object):
     
     

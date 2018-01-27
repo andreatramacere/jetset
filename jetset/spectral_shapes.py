@@ -38,6 +38,9 @@ from __future__ import absolute_import
 
 from numpy import  array,zeros,log10
 
+
+__all__=['SED','poly_shape']
+
 class SED(object):
     """
     Class handling the SED 
@@ -50,7 +53,9 @@ class SED(object):
         
         self.nu_residuals=nu_residuals
         self.residuals=residuals
-        
+
+
+
     def get_model_points(self,log_log=False):
     
  

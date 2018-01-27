@@ -42,6 +42,10 @@ from jetkernel import jetkernel as BlazarSED
 
 from output import section_separator
 
+
+__all__=['Cosmo']
+
+
 class Cosmo(object):
     """
     

@@ -6,6 +6,7 @@ from base_model import  Model
 
 from cosmo_tools import Cosmo
 
+__all__=['AnalyticalParameter','Disk']
 
 class AnalyticalParameter(ModelParameter):
     """

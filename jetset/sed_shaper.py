@@ -15,21 +15,21 @@ Classes and Inheritance Structure
 -------------------------------------------------------------------
 
 .. inheritance-diagram:: BlazarSEDFit.sed_shaper
-   
+
 
 
 Classes relations
 ----------------------------------------------
 
 .. figure::  classes_sed_shaper.png
-   :align:   center     
+   :align:   center
 
 
-  
+
 .. autosummary::
-   
-   
-    
+
+
+
 Module API
 -------------------------------------------------------------------
 
@@ -48,6 +48,10 @@ import numpy as np
 import copy
 import  traceback
 import  sys
+
+
+__all__=['filter_interval','find_E0','IC_fit_range','index','index_array','index_typecasting','peak_values',
+         'SEDShape','spectral_index_range','sync_fit_range']
 
 def filter_interval(x,x_range):
     msk1=x>=x_range[0]
@@ -202,13 +206,18 @@ def sync_fit_range(name,indices):
         return spectral_range_dic[name]
         
 def IC_fit_range(name):
-        spectral_range_dic={}
-        spectral_range_dic['blind']=[16,28]        
-        spectral_range_dic['ISP']=[17,28]
-        spectral_range_dic['LSP']=[17,28]
-        spectral_range_dic['HSP']=[22,28]
-        
-        return spectral_range_dic[name]
+    """
+
+    :param name:
+    :return:
+    """
+    spectral_range_dic={}
+    spectral_range_dic['blind']=[16,28]
+    spectral_range_dic['ISP']=[17,28]
+    spectral_range_dic['LSP']=[17,28]
+    spectral_range_dic['HSP']=[22,28]
+
+    return spectral_range_dic[name]
 
 
 

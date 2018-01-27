@@ -2,6 +2,8 @@ import numpy as np
 import scipy as sp
 from scipy import stats
 
+
+__all__=['MCMC']
 class MCMC (object):
 
     def __init__(self,fit_par,range_rel,range_sigma,jump_step_rel,jump_step_sigma,proposal='uniform'):

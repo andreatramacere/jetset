@@ -1,3 +1,4 @@
+__all__=['commands']
 
 def commands(obj):
     cmd_list= dir(obj)

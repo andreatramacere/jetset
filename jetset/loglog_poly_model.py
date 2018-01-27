@@ -55,6 +55,8 @@ import numpy as np
 from numpy import polyfit,polyval,polyder
 
 
+__all__=['find_max_cubic','LogCubic','LogLinear','LogLogModel','LogParabolaEp','LogParabolaPL','PolyParameter']
+
 class PolyParameter(ModelParameter):
     """
     This class is a subclass of the :class:`.ModelParameter` class,

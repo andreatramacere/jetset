@@ -29,6 +29,7 @@ Module API
 """
 
 
+__all__=['ModelParameter','ModelParameterArray']
 
 class ModelParameter(object):
     """

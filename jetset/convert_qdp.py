@@ -9,7 +9,7 @@ import math as m
 from astropy.io import fits as pyfits
 import numpy as n
 
-
+__all__=['check_is_number','do_convert']
 
 def check_is_number(t):
     try: 
