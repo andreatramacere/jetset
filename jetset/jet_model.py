@@ -516,7 +516,7 @@ class Jet(Model):
 
 
 
-    def set_B_eq(self, L_0, nu_0, B_min,B_max=1.0,N_pts=20,plot=False):
+    def set_B_eq(self, nuFnu_obs, nu_obs, B_min,B_max=1.0,N_pts=20,plot=False):
         """
         returns equipartiont B
         """
@@ -537,7 +537,7 @@ class Jet(Model):
             self.set_par('B', b)
             self.set_par('N', 1.0)
             # print 'B_eq',ID
-            self.set_N_from_L(L_0, nu_0)
+            self.set_N_from_nuFnu(nuFnu_obs, nu_obs)
             N[ID]=self.get_par_by_name('N').val
             self.init_BlazarSED()
             #

@@ -10,11 +10,11 @@
 
 This page provides the documentation for the  ``JetSeT`` package, a framework providing tools for:
 
-* reproducing radiative and accelerative process acting in the jet of realtivistc jets
-* modeling and fitting multiwvelength SEDs
-* handlign of observed data
+* reproducing radiative and accelerative process acting in relativistic jets
+* modeling and fitting multiwavelength SEDs
+* handling  observed data
 
-If you use this code in any kind of scientific publication you shall cite the following papers:
+If you use this code in any kind of scientific publication please cite the following papers:
 
 * `Tramacere A. et al. 2011 <http://adsabs.harvard.edu/abs/2011ApJ...739...66T>`_
 * `Tramacere A. et al. 2009 <http://adsabs.harvard.edu/abs/2009A%26A...501..879T>`_
@@ -28,7 +28,7 @@ User Documentation
 ******************
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    user guide <user_guide/user_guide.rst>
 ..   code documentation (API) <api/modules.rst>

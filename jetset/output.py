@@ -77,11 +77,13 @@ class WorkPlace(object):
     
     
     """
-    def __init__(self,out_dir='./',flag='sed-fit-test'):
+    def __init__(self,out_dir='./',flag='sed-fit-test',clean=False):
         self.out_dir=out_dir
         self.flag=flag
-    
-    
+
+
+        makedir(out_dir,clean_work_dir=clean)
+
     
     
             
