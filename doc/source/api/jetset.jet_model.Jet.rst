@@ -26,7 +26,7 @@ Jet
       ~Jet.get_SED_points
       ~Jet.get_SSC_mode
       ~Jet.get_beaming
-      ~Jet.get_electron_distribution
+      ~Jet.get_electron_distribution_name
       ~Jet.get_flag
       ~Jet.get_gamma_grid_size
       ~Jet.get_par_by_name
@@ -34,11 +34,14 @@ Jet
       ~Jet.get_path
       ~Jet.get_seed_nu_size
       ~Jet.get_spectral_component_by_name
+      ~Jet.get_spectral_component_names_list
       ~Jet.get_sync_mode
       ~Jet.get_verbosity
       ~Jet.init_BlazarSED
       ~Jet.list_spectral_components
+      ~Jet.load_model
       ~Jet.plot_model
+      ~Jet.save_model
       ~Jet.set_B_eq
       ~Jet.set_IC_mode
       ~Jet.set_IC_nu_size
@@ -76,7 +79,7 @@ Jet
    .. automethod:: get_SED_points
    .. automethod:: get_SSC_mode
    .. automethod:: get_beaming
-   .. automethod:: get_electron_distribution
+   .. automethod:: get_electron_distribution_name
    .. automethod:: get_flag
    .. automethod:: get_gamma_grid_size
    .. automethod:: get_par_by_name
@@ -84,11 +87,14 @@ Jet
    .. automethod:: get_path
    .. automethod:: get_seed_nu_size
    .. automethod:: get_spectral_component_by_name
+   .. automethod:: get_spectral_component_names_list
    .. automethod:: get_sync_mode
    .. automethod:: get_verbosity
    .. automethod:: init_BlazarSED
    .. automethod:: list_spectral_components
+   .. automethod:: load_model
    .. automethod:: plot_model
+   .. automethod:: save_model
    .. automethod:: set_B_eq
    .. automethod:: set_IC_mode
    .. automethod:: set_IC_nu_size

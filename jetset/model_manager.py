@@ -288,7 +288,7 @@ class FitModel(Model):
         
         init_val=self.parameters.get(par_name,'best_fit_val')
         
-        if range is None:
+        if frac_range is None:
             init_err=self.parameters.get(par_name,'best_fit_err')
         else:
             init_err=init_val*frac_range

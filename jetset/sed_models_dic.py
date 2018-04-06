@@ -50,6 +50,9 @@ nuFnu_obs_dic['EC_CMB_stat']=['nuF_nu_EC_CMB_stat_obs','nu_EC_CMB_stat_obs']
 
 
 #Electron distributions
+
+gamma_dic={'electron_distr':['Ne','griglia_gamma_Ne_log']}
+
 s_dic={'pl':'p'}
 s_dic['lppl']='s'
 s_dic['lp']='s'

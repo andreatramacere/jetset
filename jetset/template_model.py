@@ -148,7 +148,7 @@ class Template(object):
         
         #BBB TEMPLATE
         if template_type=='BBB':
-            self.__scale='log-log'
+            self._scale='log-log'
             
             file_path='%s/QSO_BBB_Template.dat'%self.Templates_dir
             
@@ -171,7 +171,7 @@ class Template(object):
        
         elif template_type=='host-galaxy':
             
-            self.__scale='log-log'
+            self._scale='log-log'
             
             file_path='%s/HostgalaxyTemplate.dat'%self.Templates_dir
             

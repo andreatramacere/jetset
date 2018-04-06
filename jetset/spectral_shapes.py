@@ -72,13 +72,16 @@ class SED(object):
             x=log10(self.nu[msk])
         
         return x,y
-            
-        
-    def get_residuals(self,log_log=False): 
-        if log_log==False:
-            return self.nu_residuals, self.residuals
+
+    def get_residuals(self, log_log=False):
+
+        residuals = self.residuals
+        nu_residuals = self.nu_residuals
+
+        if log_log == False:
+            return nu_residuals, residuals
         else:
-            return log10(self.nu_residuals), self.residuals
+            return nu_residuals, log10(residuals)
 
     def fill(self,nu=None,nuFnu=None,nu_residuals=None,residuals=None):
         

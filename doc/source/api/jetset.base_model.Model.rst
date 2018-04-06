@@ -12,6 +12,7 @@ Model
 
       ~Model.PlotModel
       ~Model.eval
+      ~Model.get_residuals
       ~Model.lin_func
       ~Model.log_func
       ~Model.set_nu_grid
@@ -20,6 +21,7 @@ Model
 
    .. automethod:: PlotModel
    .. automethod:: eval
+   .. automethod:: get_residuals
    .. automethod:: lin_func
    .. automethod:: log_func
    .. automethod:: set_nu_grid

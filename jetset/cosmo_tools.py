@@ -60,47 +60,47 @@ class Cosmo(object):
     """
     def __init__(self, units=None, Omega_m=None, Omega_l=None, Omega_k=None, H_0=None,steps_DC=None,steps_dVC=None):
         if Omega_m is None:
-            self.__Omega_m = BlazarSED.Omega_matter
+            self._Omega_m = BlazarSED.Omega_matter
         else:
-            self.__Omega_m = Omega_m
+            self._Omega_m = Omega_m
         
         if  Omega_l is None:
-            self.__Omega_l = BlazarSED.Omega_lambda
+            self._Omega_l = BlazarSED.Omega_lambda
         else:
-            self.__Omega_l = Omega_l 
+            self._Omega_l = Omega_l
         
         if Omega_k is None:
-            self.__Omega_k = BlazarSED.Omega_k
+            self._Omega_k = BlazarSED.Omega_k
         else:
-            self.__Omega_k = Omega_k
+            self._Omega_k = Omega_k
         
         if H_0 is None:
-            self.__H_0 = BlazarSED.H_0
+            self._H_0 = BlazarSED.H_0
         else:
-            self.__H_0=H_0 
+            self._H_0=H_0
         
-        self.__units=units
+        self._units=units
 
         if steps_DC is None:
-            self.__steps_DC=10000
+            self._steps_DC=10000
         else:
-            self.__steps_DC=steps_DC
+            self._steps_DC=steps_DC
         
         if steps_dVC is None:
-            self.__steps_dVC=10000
+            self._steps_dVC=10000
         else:
-            self.__steps_dVC=steps_dVC
+            self._steps_dVC=steps_dVC
 
-        if self.__units is None or self.__units=='cm':
-            self.__D_H= BlazarSED.vluce_km/self.__H_0* BlazarSED.parsec*1E6*1E2
+        if self._units is None or self._units=='cm':
+            self._D_H= BlazarSED.vluce_km/self._H_0* BlazarSED.parsec*1E6*1E2
         
         elif self.units=='Mpc':
             print 'Mpc'
-            self.__D_H= BlazarSED.vluce_km/self.__H_0   
+            self._D_H= BlazarSED.vluce_km/self._H_0
         
         elif self.units=='Gpc':
             print "Gpc"
-            self.__D_H= BlazarSED.vluce_km/self.__H_0/1E3
+            self._D_H= BlazarSED.vluce_km/self._H_0/1E3
     
     
     
@@ -112,11 +112,11 @@ class Cosmo(object):
         
         print section_separator
         print "Cosmological set-up"        
-        print "units= ",self.__units
-        print "H0 = ",self.__H0
-        print "Omega matter =",self.__Omega_m
-        print "Omega lambda = ",self.__Omega_l
-        print "Omega k = ",self.__Omega_k
+        print "units= ",self._units
+        print "H0 = ",self._H0
+        print "Omega matter =",self._Omega_m
+        print "Omega lambda = ",self._Omega_l
+        print "Omega k = ",self._Omega_k
         print section_separator
 
 
@@ -124,7 +124,7 @@ class Cosmo(object):
     def EZ(self,z):
         z2=(1+z)*(1+z)
         z3=z2*(1+z)
-        return np.sqrt(self.__Omega_m*z3 + self.__Omega_k*z2 + self.__Omega_l)    
+        return np.sqrt(self._Omega_m*z3 + self._Omega_k*z2 + self._Omega_l)
         
 
 
@@ -136,10 +136,10 @@ class Cosmo(object):
         
         :returns: comoving (line-of-sight) distance
         """
-        z_grid=np.linspace(0,z,self.__steps_DC)
+        z_grid=np.linspace(0,z,self._steps_DC)
         f=1.0/self.EZ(z_grid)
         integral = integrate.simps(f,z_grid)
-        return self.__D_H*integral
+        return self._D_H*integral
 
 
 
@@ -178,7 +178,7 @@ class Cosmo(object):
     
     def four_pi_dVC(self,z):
         a=self.DA(z)
-        return np.pi*4.0*self.__D_H*a*a*(1+z)*(1+z)/self.EZ(z)
+        return np.pi*4.0*self._D_H*a*a*(1+z)*(1+z)/self.EZ(z)
 
     
     

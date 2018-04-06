@@ -214,7 +214,7 @@ double rate_compton_GR(struct spettro *pt_GR) {
 
 
 //=========================================================================================
-// Fuction to evaluate the kernel of IC emission
+// Function to evaluate the kernel of IC emission
 // Band & Grindlay pg 138, 1985 ApJ 298
 // nu'=nu_compton_0
 // nu=nu_1
@@ -228,23 +228,63 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
      *
      * g = Gamma degli e-
      */
-    double cost, a, b, c, CHI, nu_1_min, nu_1_max, Gamma, g2;
-    double k_epsilon_0, k_epsilon_1;
+    double cost, rate,a, b, c, k, nu_1_min, nu_1_max, Gamma, g2;
+    double epsilon_0, epsilon_1,Gamma_e;
     pt_K1->Gamma = g;
     g2 = g*g;
-    k_epsilon_0 = 4.0 * g * HPLANCK * pt_K1->nu_compton_0*one_by_MEC2;
-    k_epsilon_1 = 4.0 * g * HPLANCK * pt_K1->nu_1*one_by_MEC2;
-    nu_1_min = pt_K1->nu_compton_0;
-    nu_1_max = 4.0 * pt_K1->nu_compton_0 * (g2) / (1.0 + k_epsilon_0);
-    //printf("nu_1=%e nu_min=%e nu_max=%e gamma=%e\n",pt_K1->nu_1,nu_1_min,nu_1_max,g);
+    epsilon_0 = HPLANCK * pt_K1->nu_compton_0*one_by_MEC2;
+    epsilon_1 = HPLANCK * pt_K1->nu_1*one_by_MEC2;
+    nu_1_min = pt_K1->nu_compton_0/(4.0*g2);
+    nu_1_max = 4.0 * pt_K1->nu_compton_0 * (g2) / (1.0 + 4.0*g*epsilon_0);
+
 
     //=================================================
     //Se la frequenza del fotone prodotto per IC
     //fuori dal range derivato dalla cinamatica
     //allora il contributo 0 ed esco
-    if (pt_K1->nu_1 < nu_1_min || pt_K1->nu_1 > nu_1_max) {
-        return 0.0;
+
+    rate=0.0;
+
+    if (pt_K1->nu_1 > nu_1_max || pt_K1->nu_1 < nu_1_min ) {
+       rate=0.0;
     }
+    if (pt_K1->nu_1 >=  nu_1_min &&  pt_K1->nu_1 < pt_K1->nu_compton_0) {
+        cost = pt_K1->COST_IC_K1 / (4.0*(g2*g2) * pt_K1->nu_compton_0);
+        k=4.0*g2*pt_K1->nu_1/pt_K1->nu_compton_0 ;
+        //rate=k-1;
+        rate = (k-1)*(1.0+2.0/q)-2.0*log(k);
+        rate *= cost;
+        //rate=0;
+        //printf("nu_1=%e nu_min=%e nu_max=%e gamma=%e, k1=%e\n",pt_K1->nu_1,nu_1_min,nu_1_max,g,k);
+    }
+
+    if (pt_K1->nu_1 >= pt_K1->nu_compton_0 && pt_K1->nu_1 <= nu_1_max) {
+
+
+        k = pt_K1->nu_1 / (pt_K1->nu_compton_0 * 4.0 * ( g2 - g*epsilon_1));
+        if (k>1.0/(4*g2) && k<=1){
+            //printf("nu_1=%e nu_min=%e nu_max=%e gamma=%e, k2=%e 1/(4g^2)=%e\n",pt_K1->nu_1,nu_1_min,nu_1_max,g,k,(1.0/(4*g2)));
+
+            Gamma_e=4.0*g*epsilon_0;
+
+            cost = pt_K1->COST_IC_K1 / ((g2) * pt_K1->nu_compton_0);
+
+            a = 2.0 * k * log(k) ;
+
+            b = (1+2*k)*(1-k);
+
+
+            c = 0.5*(1-k)*(Gamma_e*k)*(Gamma_e*k)/(1+4.0*k*Gamma_e);
+
+
+            rate = a+ b +c;
+            rate *= cost;
+        }
+        else{
+         rate=0;
+        }
+    }
+
 
     //==========================================
     //CHI is q in Eq 4.1
@@ -252,8 +292,8 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
     //CHI=nu_1/((nu_compton_0)*(4*g*g - 4*g*h*nu_1/(h*mec^2))
     //CHI=nu_1/(nu_compton_0*(4*g*g-k_epsilon_1))
     //==========================================
-    CHI = pt_K1->nu_1 / (pt_K1->nu_compton_0 * (4.0 * g2 - k_epsilon_1));
-    cost = pt_K1->COST_IC_K1 / ((g2) * pt_K1->nu_compton_0);
+    //CHI = pt_K1->nu_1 / (pt_K1->nu_compton_0 * (4.0 * g2 - k_epsilon_1));
+    //cost = pt_K1->COST_IC_K1 / ((g2) * pt_K1->nu_compton_0);
 
     //=========================================
     //bracket term in Eq. 4.1
@@ -271,13 +311,13 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
     //a= 0.81847 - 2.5358 * CHI + 5.1355 * CHI*CHI - 5.0344 * CHI*CHI*CHI + 1.62 * CHI*CHI*CHI*CHI;
     
     //==========================================
-    a = 2.0 * CHI * log(CHI)+(1.0 + CHI - 2.0 * CHI * CHI);
-    c = (CHI * k_epsilon_0);
-    b = (c * c) / (1.0 + c);
-    a += b * 0.5 * (1.0 - CHI);
-    a *= cost;
+    //a = 2.0 * CHI * log(CHI)+(1.0 + CHI - 2.0 * CHI * CHI);
+    //c = (CHI * k_epsilon_0);
+    //b = (c * c) / (1.0 + c);
+    //a += b * 0.5 * (1.0 - CHI);
+    //a *= cost;
 
-    return a;
+    return rate;
 }
 //=========================================================================================
 
@@ -356,10 +396,12 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
 
     //============================================================
     //0.75 fattore di correzione di GOULD
+        //has been moved to spetto_sincrotrone.c
+
     //0.5/3.0 viene dall'int simpson in gamma
     //lo 0.5 viene dalla regola del trapezio dell'integrale in nu
     //============================================================
-    return (integr_nu * 0.5)*(0.75)*(0.5 / 3.0);
+    return (integr_nu * 0.5)*(0.5 / 3.0);
 }
 //=========================================================================================
 
@@ -398,7 +440,8 @@ double compton_cooling(struct spettro *pt_spec, struct temp_ev *pt_ev, double ga
         pt_spec->nu_seed = pt_spec->nu_Sync;
         pt_spec->n_seed = pt_spec->n_Sync;
         //0.75 is the Gould correction factor
-        comp_cooling += 0.75*integrale_IC_cooling(pt_spec,
+        //has been moved to spetto_sincrotrone.c
+        comp_cooling += integrale_IC_cooling(pt_spec,
                 pt_spec->nu_start_Sync,
                 pt_spec->nu_stop_Sync_ssc,
                 gamma);

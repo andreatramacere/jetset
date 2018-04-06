@@ -309,7 +309,7 @@ class ObsConstrain(object):
         print "---> *** electron distribution parameters ***"
         
         #elec distr law
-        print "---> distribution type: ",jet_model.get_electron_distribution()
+        print "---> distribution type: ",jet_model.get_electron_distribution_name()
         
        
         

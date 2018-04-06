@@ -55,7 +55,7 @@ from scipy.optimize import leastsq
 
 NOBOUND=False
 try:
-    from leastsqbound.leastsqbound import leastsqbound
+        from leastsqbound.leastsqbound import leastsqbound
 except:
     #print "unable to import leastsqbound"
     #print "boundef fit disabled"
@@ -70,7 +70,7 @@ except:
 from output import section_separator,WorkPlace,makedir
 
 
-__all__=['fit_results','fit_SED','residuals_Fit']
+__all__=['fit_results','fit_SED','residuals_Fit','Minimizer']
 
 class fit_results(object):
     """
@@ -165,8 +165,18 @@ class fit_results(object):
             
         outfile.close()
         
-        
-        
+class Minimizer(object):
+    def __init__(self):
+        pass
+
+
+    def set_minimizer(self):
+        pass
+
+    def fit(self):
+        return
+
+
 def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,max_ev=0,use_facke_err=False):
     """
     function to run the minimization

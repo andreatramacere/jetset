@@ -16,7 +16,7 @@ class Model(object):
     
         self.parameters = ModelParameterArray()    
         
-        self.__scale='lin-lin'
+        self._scale='lin-lin'
         
         self.nu_size=nu_size
         
@@ -126,3 +126,24 @@ class Model(object):
     def log_func(self,log_nu):
         pass
 
+
+
+    def get_residuals(self, data, log_log=False,filter_UL=True):
+
+        model = self.eval(nu=data['nu_data'], fill_SED=False, get_model=True, loglog=False)
+
+        # print "loglog",loglog
+        if filter_UL ==True:
+            msk=data['UL']==False
+        else:
+            msk=np.ones(data.size,dt=True)
+
+        residuals = (data['nuFnu_data'] - model) /  data['dnuFnu_data']
+
+        nu_residuals=data['nu_data']
+
+
+        if log_log == False:
+            return nu_residuals[msk], residuals[msk]
+        else:
+            return  np.log10(nu_residuals[msk]),  residuals[msk]

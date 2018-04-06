@@ -5,3 +5,13 @@ JetSpecComponent
 
 .. autoclass:: JetSpecComponent
    :show-inheritance:
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~JetSpecComponent.plot
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: plot

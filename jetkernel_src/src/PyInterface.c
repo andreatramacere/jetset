@@ -422,7 +422,7 @@ void Init(struct spettro *pt_base) {
     // Compton Parameter Initialization
     //========================================================
     pt_base->COST_IC_K1 = 3.0 * SIGTH * vluce_cm / 4.0;
-        pt_base->COST_IC_COOLING = (4.0/3.0) * SIGTH * vluce_cm*HPLANCK/MEC2;
+    pt_base->COST_IC_COOLING = (4.0/3.0) * SIGTH * vluce_cm*HPLANCK/MEC2;
 
 
     //========================================================
@@ -613,7 +613,7 @@ void Run_SED(struct spettro *pt_base){
                 if (pt_base->verbose) {
                     printf("************* CMB stat ****************\n");
                 }
-                printf("************* CMB stat ****************\n");
+                //printf("************* CMB stat ****************\n");
                 pt_base->EC = 6;
                 spettro_EC(1, pt_base);
             }

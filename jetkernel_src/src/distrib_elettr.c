@@ -81,6 +81,7 @@ void Genera_Ne(struct spettro *pt) {
     
     //stationary frame
     pt->griglia_gamma_Ne_log_stat = (double*) malloc(pt->gamma_grid_size * sizeof (double));
+    //gamma=gamma'*delta
     for (i = 0; i < pt->gamma_grid_size; i++) {
 		pt->griglia_gamma_Ne_log_stat[i]=pt->griglia_gamma_Ne_log[i]*pt->beam_obj;
 	}
@@ -89,6 +90,7 @@ void Genera_Ne(struct spettro *pt) {
 
     //stationary frame
     pt->Ne_stat = (double*) malloc(pt->gamma_grid_size * sizeof (double));
+     //N(gamma)=N'(gamma/delta)*delta^2
     for (i = 0; i < pt->gamma_grid_size; i ++) {
 		pt->Ne_stat[i]=pt->Ne[i]*pt->beam_obj*pt->beam_obj;
 	}

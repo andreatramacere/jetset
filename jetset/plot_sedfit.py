@@ -141,10 +141,10 @@ class  Plot (object):
             
         if SEDdata is not None :
             if GRIDSPEC==True:
-                self.resplot= self.fig.add_subplot(gs[1])
+                self.resplot= self.fig.add_subplot(gs[1],sharex=self.sedplot)
             else:
                  gs.append(plt.subplot(2,1,2))
-                 self.resplot= self.fig.add_subplot(gs[1])
+                 self.resplot= self.fig.add_subplot(gs[1],sharex=self.sedplot)
 
             
             self.lx_res='log($ \\nu $)  (Hz)'    
@@ -236,9 +236,8 @@ class  Plot (object):
     
         
     def update_plot(self):
-     
-
-       self.fig.canvas.draw()
+        pass
+        #self.fig.canvas.draw()
        #self.fig.canvas.draw()
        #self.fig.show()     
        #plt.ioff()
@@ -443,12 +442,12 @@ class  Plot (object):
             
     def update_legend(self,label=None):
         
-        if label is not None  :
+        #if label is not None  :
             
-            self.legend.append(label)
+        #    self.legend.append(label)
 
 
-        self.sedplot.legend(self.legend,loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=3, prop={'size':12})
+        self.sedplot.legend(loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=3, prop={'size':12})
     
         #self.fig.show()
 
@@ -456,7 +455,7 @@ class  Plot (object):
     
         
         
-    def add_data_plot(self,SEDdata,label=None,color=None,autoscale=False):
+    def add_data_plot(self,SEDdata,label=None,color=None,autoscale=False,fmt='o',ms=None,mew=None):
         try:
             x,y,dx,dy,=SEDdata.get_data_points(log_log=True)
         except:
@@ -483,7 +482,7 @@ class  Plot (object):
         
         self.sedplot.set_autoscale_on(False)
         
-        line=self.sedplot.errorbar(x, y,xerr=dx, yerr=dy, fmt='o',lolims=SEDdata.data['UL'])
+
         
 
        
@@ -494,11 +493,14 @@ class  Plot (object):
                 label=SEDdata.obj_name
             else:
                 label='line %d'%self.counter
-        
-        self.update_legend(label)
+
+        line = self.sedplot.errorbar(x, y, xerr=dx, yerr=dy, fmt=fmt
+                                     , uplims=SEDdata.data['UL'],label=label,ms=ms,mew=mew)
+
+        self.update_legend()
         
         newline=self.line_tuple(label,line)
-        
+
         self.lines_data_list.append(newline)
         
         if autoscale==True:
@@ -521,15 +523,16 @@ class  Plot (object):
         if line_style is None:
             line_style='-'
            
-        line=self.sedplot.plot(x,y,line_style)
+
        
-        line[0].set_ydata(y)
-        line[0].set_xdata(x)
+        #line[0].set_ydata(y)
+        #line[0].set_xdata(x)
          
         if label is None:
             label='line %d'%self.counter
 
-        self.update_legend(label)
+        line = self.sedplot.plot(x, y, line_style,label=label)
+        self.update_legend()
         
         newline=self.line_tuple(label,line)
         
@@ -572,10 +575,10 @@ class  Plot (object):
         
         self.sedplot.set_autoscale_on(False)
          
-        line=self.sedplot.plot(x,y,line_style)
+
         #print line
-        line[0].set_ydata(y)
-        line[0].set_xdata(x)
+        #line[0].set_ydata(y)
+        #line[0].set_xdata(x)
         
             
         if label is None:
@@ -583,14 +586,14 @@ class  Plot (object):
                 label=model.name
             else:
                 label='line %d'%self.counter
-        
-        
+        print('label',label)
+        line = self.sedplot.plot(x, y, line_style, label=label)
         
         newline=self.line_tuple(label,line)
         
         self.lines_model_list.append(newline)
         
-        self.update_legend(label)
+        self.update_legend()
           
         if autoscale==True:
             self.autoscale()
@@ -605,18 +608,16 @@ class  Plot (object):
                 
         
 
-    def add_residual_plot(self,model,label=None,color=None,autoscale=False):
-        
-        try:
-            x,y=model.get_residuals(log_log=True)
-        except:
-            try:
-                x,y=model.SED.get_residuals(log_log=True)
-            except:
-                print model, "has no residuals"
-                return
+    def add_residual_plot(self,model,data,label=None,color=None,autoscale=False,filter_UL=True):
 
-      
+
+
+        if data is not None:
+            x,y=model.get_residuals(log_log=True,data=data,filter_UL=filter_UL)
+        else:
+            pass
+
+        print 'res',x,y
         if self.counter_res==0:
             self.add_res_zeroline()
         
@@ -628,7 +629,10 @@ class  Plot (object):
         
         if autoscale==True:
             self.resplot.autoscale()
-    
+
+
+
+
         self.counter_res+=1
 
         self.update_plot()
