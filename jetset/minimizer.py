@@ -41,6 +41,14 @@ Module API
 
 """
 
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
+
 import scipy as s
 
 import numpy as np
@@ -51,23 +59,18 @@ import numpy as np
 
 from scipy.stats import chi2
 
+import iminuit
+
 from scipy.optimize import leastsq
 
-NOBOUND=False
-try:
-        from leastsqbound.leastsqbound import leastsqbound
-except:
-    #print "unable to import leastsqbound"
-    #print "boundef fit disabled"
-    NOBOUND=True
+from scipy.optimize import least_squares,curve_fit
 
-#from model_manager import FitModel
-
-#import model
+from leastsqbound.leastsqbound import  leastsqbound
 
 
+from .output import section_separator,WorkPlace,makedir
 
-from output import section_separator,WorkPlace,makedir
+
 
 
 __all__=['fit_results','fit_SED','residuals_Fit','Minimizer']
@@ -93,11 +96,11 @@ class fit_results(object):
     
     """
     
-    def __init__(self,name,parameters,info,mesg,success,chisq,dof,chisq_red,null_hyp_sig,wd):
+    def __init__(self,name,parameters,calls,mesg,success,chisq,dof,chisq_red,null_hyp_sig,wd):
 
         self.name=name
         self.parameters=parameters
-        self.info=info
+        self.calls=calls
         self.mesg=mesg
         self.success=success
         self.chisq=chisq
@@ -121,7 +124,7 @@ class fit_results(object):
         
         out.append("")
         out.append("converged=%s"%self.success)
-        out.append("calls=%d"%self.info['nfev'])
+        out.append("calls=%d"%self.calls)
         out.append("mesg=%s"%self.mesg)
         out.append("dof=%d"%self.dof)
         out.append("chisq=%f, chisq/red=%f null hypothesis sig=%f"%(self.chisq,self.chisq_red,self.null_hyp_sig))
@@ -132,7 +135,7 @@ class fit_results(object):
         for string in pars_rep:
             out.append(string)
             
-        #for pi in xrange(len(self.fit_par)): 
+        #for pi in range(len(self.fit_par)):
             #print pi,covar
         #    out.append("par %2.2d, %16s"%(pi,self.fit_par[pi].get_bestfit_description()))  
         #out.append("-----------------------------------------------------------------------------------------")
@@ -144,7 +147,7 @@ class fit_results(object):
     def show_report(self):
         for text in self.fit_report:
         
-            print text
+            print (text)
     
     def save_report(self,wd=None,name=None):
         if wd is None:
@@ -177,7 +180,7 @@ class Minimizer(object):
         return
 
 
-def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,max_ev=0,use_facke_err=False):
+def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,max_ev=0,use_facke_err=False,minimizer='minuit'):
     """
     function to run the minimization
     
@@ -251,8 +254,8 @@ def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplac
             err_nuFnu_fit=SEDdata.data['dnuFnu_facke_log'][msk]
     
     if silent==False:
-        print "filtering data in fit range = [%e,%e]"%(nu_fit_start,nu_fit_stop)
-        print "data length",nu_fit.size
+        print ("filtering data in fit range = [%e,%e]"%(nu_fit_start,nu_fit_stop))
+        print ("data length",nu_fit.size)
 
     #print nu_fit,len(nu_fit)
 
@@ -271,54 +274,132 @@ def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplac
 
     pinit=[par.get_fit_initial_value() for par in fit_par_free]
     
-    bounds=[(par.fit_range_min,par.fit_range_max) for par in fit_par_free]
-    
+
+
+
+
     # bounds
     free_pars=0
      
-    for pi in xrange(len(fit_Model.parameters.par_array)): 
-        
+    for pi in range(len(fit_Model.parameters.par_array)):
+
         if fit_Model.parameters.par_array[pi].frozen==False:
             free_pars+=1
    
    
         
     if silent==False:
-        print  section_separator
-        print "*** start fit process ***"
-        print "initial pars: "
+        print  (section_separator)
+        print ("*** start fit process ***")
+        print ("initial pars: ")
         
         fit_Model.parameters.show_pars()
     
         
-    if NOBOUND==False:
-        pout,covar,info,mesg,success = leastsqbound(residuals_Fit, pinit,args=(fit_par_free,nu_fit,nuFnu_fit,err_nuFnu_fit,fit_Model,loglog,cnt,res_check),xtol=5.0E-8,ftol=5.0E-8,full_output=1,bounds=bounds,maxfev=max_ev)
-    else:
-        pout,covar,info,mesg,success = leastsq(residuals_Fit, pinit,args=(fit_par_free,nu_fit,nuFnu_fit,err_nuFnu_fit,fit_Model,loglog,cnt,res_check),xtol=5.0E-8,ftol=5.0E-8,full_output=1,maxfev=max_ev)
-    
-    print "res check",res_check[0].sum(),(res_check[0]*res_check[0]).sum()  
+    if minimizer=='leastsqbound':
+        bounds = [(par.fit_range_min, par.fit_range_max) for par in fit_par_free]
 
-    chisq=sum(info["fvec"]*info["fvec"]) 
-    dof=len(nu_fit)-free_pars
-    chisq_red=chisq/float(dof)
-    null_hyp_sig=1.0-chi2.cdf(chisq,dof)
+        #for par in fit_par_free:
+        #    print(par.name, par.fit_range_min, par.fit_range_max)
+
+        pout,covar,info,mesg,success = leastsqbound(residuals_Fit,
+                                                   pinit,
+                                                   args=(fit_par_free,nu_fit,nuFnu_fit,err_nuFnu_fit,fit_Model,loglog,cnt,res_check),
+                                                   xtol=5.0E-8,
+                                                   ftol=5.0E-8,
+                                                   full_output=1,
+                                                   bounds=bounds,
+                                                   maxfev=1000)
+
+        chisq = sum(info["fvec"] * info["fvec"])
+        dof = len(nu_fit) - free_pars
+        chisq_red = chisq / float(dof)
+        null_hyp_sig = 1.0 - chi2.cdf(chisq, dof)
+        calls=info['nfev']
+    elif minimizer=='least_squares':
+
+
+
+        bounds= ([-np.inf if par.fit_range_min is None else par.fit_range_min for par in fit_par_free],
+                      [np.inf if par.fit_range_max is None else par.fit_range_max for par in fit_par_free])
+
+        #for par in fit_par_free:
+        #    print(par.name, par.fit_range_min, par.fit_range_max)
+
+        fit=least_squares(residuals_Fit,
+                      pinit,
+                      args=(fit_par_free, nu_fit, nuFnu_fit, err_nuFnu_fit, fit_Model, loglog,
+                            cnt,
+                            res_check),
+                      xtol=1.0E-8,
+                      ftol=1.0E-8,
+                      jac='3-point',
+                      loss='cauchy',
+                      f_scale=0.01,
+                      bounds=bounds,
+                      max_nfev=None,
+                      verbose=2)
+        #else:
+
+        pout=fit.x
+        calls=fit.nfev
+        mesg=fit.message
+        success=fit.success
+        status=fit.status
+        J=fit.jac
+        covar = np.linalg.inv(2 * np.dot(J.T, J))
+
+        chisq = sum(fit.fun * fit.fun)
+        dof = len(nu_fit) - free_pars
+        chisq_red = chisq / float(dof)
+        null_hyp_sig = 1.0 - chi2.cdf(chisq, dof)
+        print('c->',status,calls,mesg)
+        #chol_cov = np.linalg.cholesky(covar).T
+
+    elif minimizer=='minuit':
+        bounds = [(par.fit_range_min, par.fit_range_max) for par in fit_par_free]
+        mm=MinutiMinimizer(pinit,bounds,fit_par_free,nu_fit,nuFnu_fit,err_nuFnu_fit,fit_Model,loglog,cnt,res_check)
+        mm.minuit_fun.migrad()
+
+        dof = len(nu_fit) - free_pars
+        chisq=mm.get_chisq()
+        chisq_red = chisq / float(dof)
+        null_hyp_sig = 1.0 - chi2.cdf(chisq, dof)
+        errors=mm.minuit_fun.errors
+        mesg=''
+        calls=cnt
+        success=True
+        status=1
+        values=mm.minuit_fun.values
+        pout = [values[k] for k in values.keys()]
+
+        #print('c->', status, calls, mesg)
+
+        #curve_fit()
+    #    pout,covar,info,mesg,success = leastsq(residuals_Fit, pinit,args=(fit_par_free,nu_fit,nuFnu_fit,err_nuFnu_fit,fit_Model,loglog,cnt,res_check),xtol=5.0E-8,ftol=5.0E-8,full_output=1,maxfev=max_ev)
+    
+    print ("res check",res_check[0].sum(),(res_check[0]*res_check[0]).sum()  )
+
+
     
     if get_conf_int==True:
         return chisq
     
 
-
-    if covar is None:
-        print "!Warning, no covariance matrix produced"
-        par_err=s.zeros(len(pout))
+    if minimizer!='minuit':
+        if covar is None:
+            print ("!Warning, no covariance matrix produced")
+            par_err=s.zeros(len(pout))
+        else:
+            par_err=[s.sqrt(s.fabs(covar[pi,pi])*chisq_red)  for pi in range(len(fit_par_free))]
     else:
-        #print "cov matrix",covar
-        par_err=[s.sqrt(s.fabs(covar[pi,pi])*chisq_red)  for pi in xrange(len(fit_par_free))]     
-        #print "cov matrix"    
-        #for i in  xrange(len(covar)):
-        #    print covar[i]  
+        par_err=[errors[k] for k in errors.keys()]
+
+
+
+
     
-    for pi in xrange(len(fit_par_free)):
+    for pi in range(len(fit_par_free)):
         fit_par_free[pi].set(val=pout[pi])
         fit_par_free[pi].best_fit_val=pout[pi]
         fit_par_free[pi].best_fit_err=par_err[pi]    
@@ -327,62 +408,99 @@ def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplac
     
             
             
-    best_fit=fit_results(fitname,fit_Model.parameters,info,mesg,success,chisq,dof,chisq_red,null_hyp_sig,out_dir)
+    best_fit=fit_results(fitname,fit_Model.parameters,calls,mesg,success,chisq,dof,chisq_red,null_hyp_sig,out_dir)
    
     if silent==False:
         best_fit.show_report()
    
-    #print"a"
+
     fit_Model.set_nu_grid(nu_min=nu_fit_start,nu_max=nu_fit_stop)
-    #print "c"
-    fit_Model.eval(fill_SED=True,loglog=loglog,phys_output=True)  
+    fit_Model.eval(fill_SED=True,loglog=loglog,phys_output=True)
     
-    #print"b" 
+
    
     res_bestfit=residuals_Fit(pout,fit_par_free,nu_fit,nuFnu_fit,err_nuFnu_fit,fit_Model,loglog)
-    #print "res=",res_bestfit.sum(),res_bestfit  
-    #print "fvec=",info["fvec"]
+
     if loglog==True:
         fit_Model.SED.fill(nu_residuals=np.power(10,nu_fit),residuals=res_bestfit)
     else:
         fit_Model.SED.fill(nu_residuals=nu_fit,residuals=res_bestfit)     
     
     if silent==False:
-        print  section_separator
+        print  (section_separator)
      
     return best_fit
 
-    
 
+class MinutiMinimizer(object):
+
+    def __init__(self,pinit,bounds, fit_par, nu_data, nuFnu_data, err_nuFnu_data, best_fit_SEDModel, loglog,cnt,res_check):
+
+        self.fit_par = fit_par
+        self.nu_data = nu_data
+        self.nuFnu_data = nuFnu_data
+        self.err_nuFnu_data = err_nuFnu_data
+        self.best_fit_SEDModel = best_fit_SEDModel
+        self.loglog=loglog
+        self.cnt=cnt
+        self.res_check=res_check
+
+        self._set_minuit_func(pinit, bounds)
+
+    def _set_minuit_func(self, p_init, bounds):
+        p_names = ['par_{}'.format(_) for _ in range(len(p_init))]
+        p_bound_names = ['limit_par_{}'.format(_) for _ in range(len(p_init))]
+        kwdarg = {}
+        for n, p, bn, b in zip(p_names, p_init, p_bound_names, bounds):
+            kwdarg[n] = p
+            kwdarg[bn] = b
+
+        print('dict', kwdarg)
+
+        self.minuit_fun = iminuit.Minuit(
+            fcn=self.minimize_me,
+            forced_parameters=p_names,
+            **kwdarg)
+
+    def minimize_me(self, *p):
+        self.p = p
+        res=residuals_Fit(p,
+                          self.fit_par,
+                          self.nu_data,
+                          self.nuFnu_data,
+                          self.err_nuFnu_data,
+                          self.best_fit_SEDModel,
+                          self.loglog,
+                          cnt=self.cnt,
+                          res_check=self.res_check)
+
+        return np.sum(res*res)
+
+    def get_chisq(self):
+        print ('p',self.p)
+        return self.minimize_me(*self.p)
 
 def residuals_Fit(p,fit_par,nu_data,nuFnu_data,err_nuFnu_data,best_fit_SEDModel,loglog,cnt=None,res_check=None):
     
 
-    for pi in xrange(len(fit_par)): 
+    for pi in range(len(fit_par)):
         fit_par[pi].set(val=p[pi])
-        #print "-------------"
-        #print p[pi]
-        #fit_par[pi].show()
-        #print "-------------"
+
 
     model=best_fit_SEDModel.eval(nu=nu_data,fill_SED=False,get_model=True,loglog=loglog)
     
-    #print "loglog",loglog
+
    
     res = (nuFnu_data-model)/(err_nuFnu_data)
     
     if res_check is not None:
         res_check[0]=res
     
-    #print model
-    #print nuFnu_data
-    #print err_nuFnu_data,res
-    
-    #print (res*res).sum()
+
     if cnt is not None:
         cnt[0]=cnt[0]+1
         if np.mod(cnt[0],10)==0 and cnt[0]!=0:
-            print "minim function calls=%d, res=%f, chisq=%f"%(cnt[0],res.sum(),(res_check[0]*res_check[0]).sum())
+            print ("minim function calls=%d, res=%f, chisq=%f"%(cnt[0],res.sum(),(res_check[0]*res_check[0]).sum()))
         
     return res
 

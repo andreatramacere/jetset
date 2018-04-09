@@ -1,5 +1,13 @@
 """Constrained multivariate least-squares optimization"""
 
+
+from __future__ import absolute_import, division, print_function,unicode_literals
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
 import warnings
 
 from numpy import array, take, eye, triu, transpose, dot
@@ -250,7 +258,9 @@ def leastsqbound(func, x0, args=(), bounds=None, Dfun=None, full_output=0,
         raise ValueError('length of x0 != length of bounds')
     if type(args) != type(()):
         args = (args,)
-    m = _check_func('leastsq', 'func', func, x0, args, n)[0]
+
+    m = _check_func('leastsq', 'func', func, x0, args, n)[0][0]
+    #print ('m',m)
     if n > m:
         raise TypeError('Improper input: N=%s must not exceed M=%s' % (n, m))
 

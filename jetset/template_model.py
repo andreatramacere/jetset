@@ -38,14 +38,23 @@ Module API
 
 """
 
+
+
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
 '''
 Created on 2013 1 27
 
 @author: orion
 '''
-from cosmo_tools import Cosmo
+from .cosmo_tools import Cosmo
 
-from data_loader import log_to_lin, lin_to_log
+from .data_loader import log_to_lin, lin_to_log
 
 from scipy.interpolate import interp1d
 
@@ -55,9 +64,9 @@ import numpy as np
 
 import os
 
-from spectral_shapes import SED
+from .spectral_shapes import SED
 
-from model_parameters import ModelParameter,ModelParameterArray
+from .model_parameters import ModelParameter,ModelParameterArray
 
 
 __all__=['Template','TemplateParameter']
@@ -74,8 +83,8 @@ class TemplateParameter(ModelParameter):
         self.par_type_list=['nu-scale','nuFnu-scale']
         
         if 'par_type' in keywords.keys() and keywords['par_type'] not in self.par_type_list:
-            print "blob_parameter type %s not allowed"%self.par_type
-            print "please choose among ",self.par_type_list
+            print ("blob_parameter type %s not allowed"%self.par_type)
+            print ("please choose among ",self.par_type_list)
             return
 
 
@@ -195,7 +204,7 @@ class Template(object):
             self.interp_func=interp1d(self.nu_template,self.nuFnu_template)
             
         else:
-            print"Wrong template type=%s, allowed="%(template_type,self.allowed_templates)
+            print("Wrong template type=%s, allowed="%(template_type,self.allowed_templates))
     
     
     
@@ -206,7 +215,7 @@ class Template(object):
            
             Plot.add_model_plot(self.SED,autoscale=autoscale,line_style='-')
         else:
-            print "the plot window is not defined"
+            print ("the plot window is not defined")
      
 
     def get_T_BBB(self):

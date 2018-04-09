@@ -35,15 +35,23 @@ Module API
 
 """
 
-from cosmo_tools import Cosmo
 
-from template_model import Template
-from output import section_separator
-from model_manager import FitModel
-from loglog_poly_model import LogParabolaEp,LogCubic,find_max_cubic,LogLinear,LogParabolaPL
-from analytical_model import Disk
-from minimizer import fit_SED
-from data_loader import log_to_lin, lin_to_log
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
+from .cosmo_tools import Cosmo
+
+from .template_model import Template
+from .output import section_separator
+from .model_manager import FitModel
+from .loglog_poly_model import LogParabolaEp,LogCubic,find_max_cubic,LogLinear,LogParabolaPL
+from .analytical_model import Disk
+from .minimizer import fit_SED
+from .data_loader import log_to_lin, lin_to_log
 import numpy as np
 import copy
 import  traceback
@@ -105,12 +113,12 @@ class index(object):
         if name in index_names:
             self.name=name
         else:
-            raise RuntimeError, "index name=%s not allowed, allowed names=%"%(name,index_names)
+            raise RuntimeError("index name=%s not allowed, allowed names=%"%(name,index_names))
 
         if data_type in data_type_allowed:
             self.data_type=data_type
         else:
-            raise RuntimeError, "idx_type =%s not allowed, possible values are=%s"%(data_type,data_type_allowed)
+            raise RuntimeError("idx_type =%s not allowed, possible values are=%s"%(data_type,data_type_allowed))
 
         if val is not None  :
             self.val=index_typecasting(self.data_type,val=val)
@@ -147,7 +155,7 @@ class index(object):
         
         range2=str("%.3f"%self.idx_range[1])
         
-        print "---> name = %-16s range=[%-6s,%-6s] log(Hz)  photon.val=%-13s, err=%-13s"%(self.name,range1,range2,val,err)
+        print ("---> name = %-16s range=[%-6s,%-6s] log(Hz)  photon.val=%-13s, err=%-13s"%(self.name,range1,range2,val,err))
 
 class index_array(object):
     """
@@ -160,11 +168,11 @@ class index_array(object):
         self.idx_array.append(index(name=name,data_type=data_type,val=val,err=err,idx_range=idx_range))
     
     def get_by_name(self,name):
-        for pi in xrange(len(self.idx_array)):
+        for pi in range(len(self.idx_array)):
             if self.idx_array[pi].name==name:
                 return self.idx_array[pi]
         else:
-            print "no index with name %s found"%name
+            print ("no index with name %s found"%name)
             return None
             
     def show_pars(self):
@@ -305,8 +313,7 @@ class peak_values(object):
             
             """ the update() method returns update the class members"""
             
-            print "---> %-10s nu_p=%-13s (err=%-13s)  nuFnu_p=%-13s (err=%-13s) curv.=%-13s (err=%-13s)"%(self.name,nu_p_val,nu_p_err,nuFnu_p_val,nuFnu_p_err,curvature,curvature_err)
-            
+            print ("---> %-10s nu_p=%-13s (err=%-13s)  nuFnu_p=%-13s (err=%-13s) curv.=%-13s (err=%-13s)"%(self.name,nu_p_val,nu_p_err,nuFnu_p_val,nuFnu_p_err,curvature,curvature_err))
         #def update(nu_p_val=None,nu_p_err=None,nuFnu_p_val=None,nuFnu_p_err=None,curv=None,curv_err=None):
             
     
@@ -385,27 +392,27 @@ class SEDShape(object):
         if E_S>6 and E_S<14:
      
             self.obj_class='LSP'
-            print "--> class: ", self.obj_class
+            print ("--> class: ", self.obj_class)
         elif E_S>=14 and  E_S<=15:
              
             self.obj_class='ISP'
-            print "---> class: ", self.obj_class
+            print ("---> class: ", self.obj_class)
         elif E_S>15:
              
             self.obj_class='HSP'
-            print "---> class: ", self.obj_class
+            print ("---> class: ", self.obj_class)
         else:
             self.obj_class=None
-            print "---> undefined class for src",self.obj_class
+            print ("---> undefined class for src",self.obj_class)
     
     
     def show_values(self):
         
-        print section_separator
+        print (section_separator)
         
-        print '*** SEDShape values ***'
+        print ('*** SEDShape values ***')
 
-        print '---> spectral inidces values'
+        print ('---> spectral inidces values')
         
         for index in self.indices.idx_array:
         
@@ -413,27 +420,27 @@ class SEDShape(object):
         
         print 
         print    
-        print "---> S/IC peak values"
+        print ("---> S/IC peak values")
         
         self.S_peak.show()
         
-        print
+        print ()
         
         self.IC_peak.show()
 
-        print
-        print
-        
+        print ()
+        print ()
+
         if self.L_Disk is not None  :
             
-            print "---> Disk peak values"
-            print "---> %-10s nu_p_Diks=%-13s (err=%-13s)  L_Disk=%-13s (err=%-13s) T_Disk=%-13s "%('Disk',self.nu_p_Disk,
+            print ("---> Disk peak values")
+            print ("---> %-10s nu_p_Diks=%-13s (err=%-13s)  L_Disk=%-13s (err=%-13s) T_Disk=%-13s "%('Disk',self.nu_p_Disk,
                                                                                                            self.nu_p_Disk_err,
                                                                                                            self.L_Disk,
                                                                                                            self.L_Disk_err,
-                                                                                                           self.T_Disk)
+                                                                                                           self.T_Disk))
         
-        print section_separator
+        print (section_separator)
     
     
     
@@ -447,9 +454,9 @@ class SEDShape(object):
         """
         
         
-        print section_separator
+        print (section_separator)
         
-        print "*** evaluating spectral indices for data ***"
+        print ("*** evaluating spectral indices for data ***")
         
         self.index_models=[]
         
@@ -477,8 +484,8 @@ class SEDShape(object):
             self.index_models.append(loglog_pl)
 
             best_fit.show_report()
-            print
-            print
+            print ()
+            print ()
                 
             #except Exception as e:
             #    print "--->fit failed for %s"%index.name
@@ -492,7 +499,7 @@ class SEDShape(object):
          
         
             
-        print section_separator
+        print (section_separator)
             
 
     def plot_indices(self,plot):
@@ -533,9 +540,9 @@ class SEDShape(object):
 
         """
         
-        print  section_separator
+        print  (section_separator)
                   
-        print "*** Log-Polynomial fitting of the synchrotron component ***"
+        print ("*** Log-Polynomial fitting of the synchrotron component ***")
         
     
        
@@ -594,7 +601,7 @@ class SEDShape(object):
         else:
             s_fit_range=fit_range
             
-        print "---> first blind fit run, log-cubic fit range:",s_fit_range
+        print ("---> first blind fit run, log-cubic fit range:",s_fit_range)
         
         fit_model1.show_pars()
         
@@ -619,7 +626,7 @@ class SEDShape(object):
         
         if Ep is not None   and Ep_start is not None   :
         
-            print "--->  peak from blind fit found at :",Ep
+            print ("--->  peak from blind fit found at :",Ep)
         
            
             self.find_class(Ep)
@@ -769,14 +776,14 @@ class SEDShape(object):
     
     def IC_fit(self,fit_range=None):
     
-        print  section_separator
+        print  (section_separator)
               
-        print "*** Log-Polynomial fitting of the IC component ***"
+        print ("*** Log-Polynomial fitting of the IC component ***")
         
         if fit_range is None:
             fit_range=IC_fit_range(self.obj_class)
         
-        print "---> log-cubic fit range:",fit_range
+        print ("---> log-cubic fit range:",fit_range)
         
         cubic_model=LogCubic()
         self.IC_fit_model=FitModel(loglog_poly=cubic_model,name='IC_cubic_model')
@@ -806,8 +813,8 @@ class SEDShape(object):
             best_fit_model=self.IC_fit_model
 
         except:
-            print "---> LogCubic fit failed"
-            print "---> try LogParabola "
+            print ("---> LogCubic fit failed")
+            print ("---> try LogParabola ")
             logpar_model=LogParabolaEp()
             self.IC_fit_model=FitModel(loglog_poly=logpar_model,name='IC_log-par_model')
             if Ep is not None  :
@@ -835,7 +842,7 @@ class SEDShape(object):
       
         self.IC_nu_max= self.get_nu_max(self.SEDdata.data['nu_data_log'],fit_range)    
         
-        print  section_separator
+        print  (section_separator)
         
     
     
@@ -861,7 +868,7 @@ class SEDShape(object):
 
         if len(x1)>=min_size:
             index.idx_range=x_range
-            print "---> range for index%s updated to [%f,%f]"%(index.name,index.idx_range[0],index.idx_range[1] )
+            print ("---> range for index%s updated to [%f,%f]"%(index.name,index.idx_range[0],index.idx_range[1] ))
 
 
     
@@ -880,7 +887,7 @@ def find_E0(b,a,Ep):
     """
     if (b!=0.0):
         c=(3-a)/(-2*b)
-        print "Ep=",Ep
+        print ("Ep=",Ep)
         return Ep/(pow(10,c))
     else:
         return Ep

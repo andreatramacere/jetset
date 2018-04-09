@@ -31,25 +31,31 @@ Module API
 """
 
 
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
 
 
 import numpy as np
 
-import minimizer 
+from  . import minimizer
 
-import sed_models_dic as Model_dic 
+#import sed_models_dic as Model_dic
 
-from jet_model  import Jet
+from .jet_model  import Jet
 
-from template_model import Template
+#from template_model import Template
 
-from output import WorkPlace
+#from output import WorkPlace
 
-from model_parameters import ModelParameterArray
+from .model_parameters import ModelParameterArray
 
-from spectral_shapes import  SED   
+from .spectral_shapes import  SED
    
-from base_model import  Model
+from .base_model import  Model
 
 
 
@@ -103,7 +109,7 @@ class FitModel(Model):
         if  jet is not None and elec_distr is not None:
             #!! warning or error?
             
-            print "you can't provide both elec_distr and jet, only one"
+            print ("you can't provide both elec_distr and jet, only one")
             
             raise RuntimeError
         
@@ -171,7 +177,7 @@ class FitModel(Model):
             Plot.add_model_plot(self.SED,autoscale=autoscale,label=label)
             
         else:
-            print "the plot window is not defined"
+            print ("the plot window is not defined")
 
        
             
@@ -309,7 +315,7 @@ class FitModel(Model):
             
             self.parameters.show_best_fit_pars()
 
-            print "par=%f, chi_red=%f",par_val[-1],chi_red[-1]
+            print ("par=%f, chi_red=%f",par_val[-1],chi_red[-1])()
  
         if init_frozen==False:
             self.parameters.set(par_name,'free')
@@ -325,7 +331,7 @@ class FitModel(Model):
         
         
         if nu is None:
-            print"--->", self.nu_min,self.nu_max,self.nu_size
+            print ("--->", self.nu_min,self.nu_max,self.nu_size)
             
             x1=np.log10(self.nu_min)
 

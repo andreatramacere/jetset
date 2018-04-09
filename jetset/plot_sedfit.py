@@ -28,6 +28,14 @@ Module API
 
 """
 
+
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
 NOPYLAB=True
 
 try:
@@ -42,12 +50,19 @@ except:
     #print "pylab not found on this system"
     #print "install package, and/or update pythonpath"
 
+try:
+    import matplotlib.gridspec as gridspec
+
+    GRIDSPEC = True
 
 
-    
+except:
+    GRIDSPEC = False
+    gs = []
+
 from collections import namedtuple
 
-from output import section_separator,WorkPlace
+from .output import section_separator,WorkPlace
 
 import numpy as np
 
@@ -78,7 +93,7 @@ class  Plot (object):
        
             
             plt.ion()
-            print 'running PyLab in interactive mode'
+            print ('running PyLab in interactive mode')
         
 
         #--------------------------------------------------------------
@@ -139,64 +154,68 @@ class  Plot (object):
         self.y_max_res=1
         
             
-        if SEDdata is not None :
-            if GRIDSPEC==True:
-                self.resplot= self.fig.add_subplot(gs[1],sharex=self.sedplot)
-            else:
-                 gs.append(plt.subplot(2,1,2))
-                 self.resplot= self.fig.add_subplot(gs[1],sharex=self.sedplot)
-
-            
-            self.lx_res='log($ \\nu $)  (Hz)'    
-            self.ly_res='res'
-        
-            
-            self.resplot.set_ylabel(self.ly_res)
-            self.resplot.set_xlabel(self.lx_res)
-            
-            self.resplot.set_xlim(self.x_min_res,self.x_max_res)
-            self.resplot.set_ylim(self.y_min_res,self.y_max_res)
-            
-            self.add_res_zeroline()
+        #if SEDdata is not None :
+        self._add_res_plot()
             
             
-        else:
-            self.resplot=None
+        #else:
+        #    self.resplot=None
             
         self.counter_res=0
         #self.fig.show()
     
-    
+    def _add_res_plot(self):
+
+        if GRIDSPEC == True:
+            gs = gridspec.GridSpec(2, 1, height_ratios=[4, 1])
+            self.resplot = self.fig.add_subplot(gs[1], sharex=self.sedplot)
+
+        else:
+            gs = []
+            gs.append(plt.subplot(2, 1, 1))
+            self.resplot = self.fig.add_subplot(gs[1], sharex=self.sedplot)
+
+        self.lx_res = 'log($ \\nu $)  (Hz)'
+        self.ly_res = 'res'
+
+        self.resplot.set_ylabel(self.ly_res)
+        self.resplot.set_xlabel(self.lx_res)
+
+        self.resplot.set_xlim(self.x_min_res, self.x_max_res)
+        self.resplot.set_ylim(self.y_min_res, self.y_max_res)
+
+        self.add_res_zeroline()
+
     def clean_data_lines(self):
         
-        for i in xrange(len(self.lines_data_list)):
+        for i in range(len(self.lines_data_list)):
             self.del_data_line(0)
     
     def clean_model_lines(self):
-        for i in xrange(len(self.lines_model_list)):
+        for i in range(len(self.lines_model_list)):
             self.del_model_line(0)
             
             
     def list_lines(self):
         
         if self.lines_data_list==[] and self.lines_model_list==[]:
-            print  "no lines to show "
-        
+            #print  "no lines to show "
+            pass
         else:
             ID=0
-            print "data"
+            #print "data"
             for plot_line in self.lines_data_list:
                 
-                print ID, plot_line.label, plot_line.ref
+                #print ID, plot_line.label, plot_line.ref
                 
                 
                 ID+=1
             
             ID=0    
-            print "models"
+            print ("models")
             for plot_line in self.lines_model_list:
                 
-                print ID, plot_line.label, plot_line.ref
+                print (ID, plot_line.label, plot_line.ref)
                 
                 
                 ID+=1
@@ -204,11 +223,11 @@ class  Plot (object):
     def del_data_line(self,line_ID):
         
         if self.lines_data_list==[]:
-            print  "no lines to delete "
+            print  ("no lines to delete ")
         
         else:
             
-            print "removing line: ",self.lines_data_list[line_ID]
+            print ("removing line: ",self.lines_data_list[line_ID])
             
         line=self.lines_data_list[line_ID][1]
         
@@ -247,12 +266,13 @@ class  Plot (object):
     def del_model_line(self,line_ID):
         
         if self.lines_model_list==[]:
-            print  "no lines to delete "
-        
+            #print  "no lines to delete "
+            pass
         else:
             
-            print "removing line: ",self.lines_model_list[line_ID]
-            
+            #print "removing line: ",self.lines_model_list[line_ID]
+            pass
+
         line=self.lines_model_list[line_ID][1]
         
         for item in line:
@@ -345,9 +365,9 @@ class  Plot (object):
             if k in self.axis_kw:
                 setattr(self,k,kw[k])
             else:
-                print "the keyword %s is not in allowed=%s"%(k,self.axis_kw)
-                print "please correct"  
-                print 
+                #print "the keyword %s is not in allowed=%s"%(k,self.axis_kw)
+                #print "please correct"
+                #print
 
                 return 
             
@@ -426,9 +446,9 @@ class  Plot (object):
             if k in self.axis_kw:
                 setattr(self,k,kw[k])
             else:
-                print "the keyword %s is not in allowed=%s"%(k,self.axis_kw)
-                print "please correct"  
-                print 
+                #print "the keyword %s is not in allowed=%s"%(k,self.axis_kw)
+                #print "please correct"
+                #print
 
                 return 
             
@@ -459,8 +479,8 @@ class  Plot (object):
         try:
             x,y,dx,dy,=SEDdata.get_data_points(log_log=True)
         except:
-            print "!!! ERROR failed to get data points from", SEDdata
-            print 
+            print ("!!! ERROR failed to get data points from", SEDdata)
+            print
             raise RuntimeError
             
          
@@ -559,7 +579,7 @@ class  Plot (object):
                 #print "b"
                 x,y=model.SED.get_model_points(log_log=True)
             except:
-                print model, "!!! Error has no SED instance or something wrong in get_model_points()"
+                print (model, "!!! Error has no SED instance or something wrong in get_model_points()")
                 return
         
         #print "x,y",model,x,y
@@ -617,18 +637,23 @@ class  Plot (object):
         else:
             pass
 
-        print 'res',x,y
+        print ('res',self.counter_res)
+
+        #self._add_res_plot()
+
         if self.counter_res==0:
             self.add_res_zeroline()
         
         self.resplot.set_autoscaley_on(True)
 
-        self.resplot.plot(x,y,'+')
+        line = self.resplot.errorbar(x, y, yerr=np.ones(x.size), fmt='+')
+
+        #self.resplot.plot(x,y,'+')
            
         
         
-        if autoscale==True:
-            self.resplot.autoscale()
+        #if autoscale==True:
+        #    self.resplot.autoscale()
 
 
 
@@ -637,7 +662,7 @@ class  Plot (object):
 
         self.update_plot()
           
-        
+        #print ('done')
     
     
     

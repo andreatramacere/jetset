@@ -1,4 +1,9 @@
-#!/usr/bin/env python
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+
 """
 Module: model_parameters
 ===================================================================
@@ -119,10 +124,10 @@ class ModelParameter(object):
                     
             else:
                 
-                print "wrong keyword=%s, not in%s "%(kw, self.allowed_keywords.keys())
+                print ("wrong keyword=%s, not in%s "%(kw, self.allowed_keywords.keys()))
                 
                 raise ValueError
-        
+
         if self.fit_range is not None:
             self.fit_range_max=self.fit_range[1]
             self.fit_range_min=self.fit_range[0]
@@ -136,11 +141,11 @@ class ModelParameter(object):
         
         if self.val_min is not None:
             if self.val<self.val_min:
-                raise RuntimeError, "par=%s  = %e out of boundary=%e"%(self.name,self.val,self.val_min)
+                raise RuntimeError("par=%s  = %e out of boundary=%e"%(self.name,self.val,self.val_min))
          
         if self.val_max is not None:
             if self.val>self.val_max:
-                raise RuntimeError, "par=%s  = %e out of boundary=%e"%(self.name,self.val,self.val_max)    
+                raise RuntimeError("par=%s  = %e out of boundary=%e"%(self.name,self.val,self.val_max))
 
         if self.val_min is not None and self.fit_range_min is None:
             self.fit_range_min=self.val_min
@@ -161,7 +166,7 @@ class ModelParameter(object):
                     
             else:
                 
-                print "wrong arg=%s, not in%s "%(arg, self.allowed_keywords.keys())
+                print ("wrong arg=%s, not in%s "%(arg, self.allowed_keywords.keys()))
                 
                 raise ValueError
             
@@ -208,13 +213,13 @@ class ModelParameter(object):
         """
         Prints the description of a parameter
         """
-        print self.get_description()
+        print (self.get_description())
     
     def show_best_fit(self):
         """
         Prints the best-fit description of a parameter
         """
-        print self.get_bestfit_description()
+        print (self.get_bestfit_description())
     
     def get_description(self,nofields=False):
         """
@@ -343,13 +348,13 @@ class ModelParameterArray(object):
         item : the :class:`ModelParameter` element of the `par_array` with the corresponding name
         
         """
-        for pi in xrange(len(self.par_array)):
+        for pi in range(len(self.par_array)):
             if self.par_array[pi].name==name:
                 return self.par_array[pi]
         else:
             if verbose:
-                print "no par with name %s found"%name
-                print "pars in array are:"
+                print ("no par with name %s found"%name)
+                print ("pars in array are:")
                 self.show_pars()
             
             return None
@@ -380,7 +385,7 @@ class ModelParameterArray(object):
             return text
         else:
             for line in text:
-                print line
+                print (line)
         
     
     
@@ -406,7 +411,7 @@ class ModelParameterArray(object):
             return text
         else:
             for line in text:
-                print line
+                print (line)
         
         
     
@@ -447,8 +452,8 @@ class ModelParameterArray(object):
             for  arg in args:
             
                 if arg not in args_list:
-                    print "argument: %s,  not in allowed args"%arg
-                    print "allowed args= ",args_list
+                    print ("argument: %s,  not in allowed args"%arg)
+                    print ("allowed args= ",args_list)
                     return
                 
                  

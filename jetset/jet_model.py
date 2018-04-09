@@ -1,3 +1,9 @@
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+
 """
 This module  provides an interface to call the BlazarSED code, setting the
 physical parameters and running the code. The BlazarSED code is a numerical 
@@ -10,6 +16,8 @@ emission processes.
 
 """
 
+
+
 '''
 Created on 2013 1 27
 
@@ -17,29 +25,50 @@ Created on 2013 1 27
 '''
 
 
-#import jet_wrapper
-from jetkernel import jetkernel as BlazarSED
+
+__author__ = "Andrea Tramacere"
+
+
+
+
 
 import os
-import  json
-import  spectral_shapes  
+import json
+import  sys
+import pickle
 
 import numpy as np
 from numpy import log10,array,zeros,power,shape
 
 from scipy.interpolate import interp1d
 
-from model_parameters import ModelParameterArray, ModelParameter
-from base_model import  Model
+#import jet_wrapper
+from .jetkernel import jetkernel as BlazarSED
 
-from output import makedir,WorkPlace,clean_dir
+from . import spectral_shapes
 
-from sed_models_dic import nuFnu_obs_dic,gamma_dic
+from .model_parameters import ModelParameterArray, ModelParameter
+from .base_model import  Model
 
-from  plot_sedfit import Plot
+from .output import makedir,WorkPlace,clean_dir
+
+from .sed_models_dic import nuFnu_obs_dic,gamma_dic
+
+from  .plot_sedfit import Plot
 
 __all__=['Jet','JetParameter','JetSpecComponent','ElectronDistribution','build_emitting_region_dic',
          'build_ExtFields_dic','init_SED']
+
+
+def str_hook(pairs):
+    new_pairs = []
+    for key, value in pairs:
+        if isinstance(value, unicode):
+            value = value.encode('utf-8')
+        if isinstance(key, unicode):
+            key = key.encode('utf-8')
+        new_pairs.append((key, value))
+    return dict(new_pairs)
 
 class JetParameter(ModelParameter):
     """
@@ -222,7 +251,8 @@ class ElectronDistribution(object):
 
 
         self._jet=jet
-        jet._blob.DISTR = name
+        set_str_attr(jet._blob,'DISTR',name)
+        #set_str(jet._blob.DISTR,name)
 
         if gamma_grid_size is not None:
             self.set_grid_size(gamma_grid_size)
@@ -250,7 +280,7 @@ class ElectronDistribution(object):
         self.gamma = zeros(size)
         self.n_gamma = zeros(size)
 
-        for ID in xrange(size):
+        for ID in range(size):
             self.gamma[ID] = BlazarSED.get_elec_array(self.gamma_ptr, self._jet._blob, ID)
             self.n_gamma[ID] = BlazarSED.get_elec_array(self.Ne_ptr, self._jet._blob, ID)
 
@@ -459,7 +489,6 @@ class Jet(Model):
 
 
     def save_model(self,file_name):
-        f=open(file_name,'w')
         _model={}
         _model['electron_distribution']=self._electron_distribution_name
         _model['beaming_expr']=self._beaming_expr
@@ -470,29 +499,37 @@ class Jet(Model):
         for p in self.parameters.par_array:
             _model['pars'][p.name]=p.val
 
-        json.dump(_model,f)
-        f.close()
+        with open(file_name, 'w', encoding="utf-8") as outfile:
+            outfile.write(str(json.dumps(_model, ensure_ascii=False)))
+
+
+
+
+
 
 
     def load_model(self,file_name):
-        f = open(file_name, 'r')
-        _model=json.load(f)
-        f.close()
+
+        with open(file_name, 'r') as infile:
+            _model = json.load(infile)
+
+        print ('_model',_model)
 
         self.model_type = 'jet'
 
         self.init_BlazarSED()
         self.parameters = ModelParameterArray()
+
         self.set_electron_distribution(str(_model['electron_distribution']))
         _l=self.get_spectral_component_names_list()
-        print _model['EC_components_list'],_model['model_spectral_components'],_l,self._allowed_EC_components_list
+        #print ('->',_model['EC_components_list'],_model['model_spectral_components'],_l,self._allowed_EC_components_list)
         for c in _model['model_spectral_components']:
-            print c
+            print (c)
             if str(c) not  in _l:
 
-                print 'test',c.replace('EC_',''), _model['EC_components_list'],c.replace('EC_','') in _model['EC_components_list']
+                #print ('test',c.replace('EC_',''), _model['EC_components_list'],c.replace('EC_','') in _model['EC_components_list'])
                 if c.replace('EC_','') in _model['EC_components_list']:
-                    print 'add EC',c.replace('EC_','')
+                    print ('add EC',c.replace('EC_',''))
                     self.add_EC_component(str(c.replace('EC_','')))
                 else:
                     self.add_spectral_component(str(c))
@@ -504,10 +541,8 @@ class Jet(Model):
         _par_dict=_model['pars']
         self.show_pars()
         for k in _par_dict.keys():
-            print 'set', k,_par_dict[k]
+            print ('set', k,_par_dict[k])
             self.set_par(par_name=str(k),val=_par_dict[str(k)])
-
-
 
 
     def set_electron_distribution(self,name):
@@ -518,8 +553,8 @@ class Jet(Model):
         elec_models_list = ['lp', 'pl', 'lppl', 'lpep', 'plc', 'bkn']
 
         if name not in elec_models_list:
-            print "electron distribution model %s not allowed" % name
-            print "please choose among: ", elec_models_list
+            print ("electron distribution model %s not allowed" % name)
+            print ("please choose among: ", elec_models_list)
             return
 
         if self._electron_distribution_dic is not None:
@@ -533,11 +568,11 @@ class Jet(Model):
 
     def show_spectral_components(self):
 
-        print "Spectral components for Jet model:%s"%(self.name)
+        print ("Spectral components for Jet model:%s"%(self.name))
 
         for comp in self.spectral_components:
 
-            print "comp: %s "%(comp.name)
+            print ("comp: %s "%(comp.name))
 
         print
 
@@ -545,13 +580,13 @@ class Jet(Model):
 
 
     def get_spectral_component_by_name(self,name,verbose=True):
-        for i in xrange(len(self.spectral_components)):
+        for i in range(len(self.spectral_components)):
             if self.spectral_components[i].name==name:
                 return self.spectral_components[i]
         else:
             if verbose==True:
-                print "no spectral components with name %s found"%name
-                print "names in array are:"
+                print ("no spectral components with name %s found"%name)
+                print ("names in array are:")
                 self.show_spectral_components()
 
             return None
@@ -559,12 +594,12 @@ class Jet(Model):
 
 
     def list_spectral_components(self):
-        for i in xrange(len(self.spectral_components)):
-            print self.spectral_components[i].name
+        for i in range(len(self.spectral_components)):
+            print (self.spectral_components[i].name)
 
     def get_spectral_component_names_list(self):
         _l=[]
-        for i in xrange(len(self.spectral_components)):
+        for i in range(len(self.spectral_components)):
             _l.append(self.spectral_components[i].name)
         return _l
 
@@ -600,7 +635,9 @@ class Jet(Model):
 
         self._beaming_expr=beaming_expr
 
-        setattr(self._blob,'BEAMING_EXPR',beaming_expr)
+        set_str_attr(self._blob,'BEAMING_EXPR',beaming_expr)
+
+        #setattr(self._blob,'BEAMING_EXPR',beaming_expr)
 
         self._emitting_region_dic=build_emitting_region_dic(beaming_expr=beaming_expr)
 
@@ -663,9 +700,9 @@ class Jet(Model):
 
 
         b_grid = np.logspace(np.log10(B_min), B_max, N_pts)
-        print 'B grid min ',B_min
-        print 'B grid max ',B_max
-        print 'grid points',N_pts
+        print ('B grid min ',B_min)
+        print ('B grid max ',B_max)
+        print ('grid points',N_pts)
         U_e = np.zeros(N_pts)
         U_B = np.zeros(N_pts)
         N = np.zeros(N_pts)
@@ -702,8 +739,8 @@ class Jet(Model):
 
         self.set_par('B', val=b_grid[ID_min])
         self.set_par('N', val=N[ID_min])
-        print 'setting B to ',b_grid[ID_min]
-        print 'setting N to ',N[ID_min]
+        print ('setting B to ',b_grid[ID_min])
+        print ('setting N to ',N[ID_min])
         return b_grid[ID_min],b_grid,U_B,U_e
 
 
@@ -914,7 +951,11 @@ class Jet(Model):
         return self._blob.path
 
     def set_path(self,path,clean_work_dir=True):
-        self._blob.path=path
+        set_str_attr(self._blob,'path',path)
+        #set_str(self._blob.path,path)
+
+
+
         makedir(path,clean_work_dir=clean_work_dir)
 
     def set_SSC_mode(self,val):
@@ -961,14 +1002,14 @@ class Jet(Model):
         return  self._blob.verbose
 
     def debug_synch(self):
-        print "nu stop synch", self._blob.nu_stop_Sync
-        print "nu stop synch ssc", self._blob.nu_stop_Sync_ssc
-        print "ID MAX SYNCH", self._blob.NU_INT_STOP_Sync_SSC
+        print ("nu stop synch", self._blob.nu_stop_Sync)
+        print ("nu stop synch ssc", self._blob.nu_stop_Sync_ssc)
+        print ("ID MAX SYNCH", self._blob.NU_INT_STOP_Sync_SSC)
 
     def debug_SSC(self):
-        print "nu start SSC", self._blob.nu_start_SSC
-        print "nu stop SSC", self._blob.nu_stop_SSC
-        print "ID MAX SSC", self._blob.NU_INT_STOP_COMPTON_SSC
+        print ("nu start SSC", self._blob.nu_start_SSC)
+        print ("nu stop SSC", self._blob.nu_stop_SSC)
+        print ("ID MAX SSC", self._blob.NU_INT_STOP_COMPTON_SSC)
 
     def set_par(self,par_name,val):
         """
@@ -1020,16 +1061,16 @@ class Jet(Model):
 
         """
 
-        print "-----------------------------------------------------------------------------------------"
-        print "model parameters for jet model:"
+        print ("-----------------------------------------------------------------------------------------")
+        print ("model parameters for jet model:")
         print
 
 
-        print "electron distribution type = %s  "%(self._electron_distribution_name)
+        print ("electron distribution type = %s  "%(self._electron_distribution_name))
 
         self.parameters.show_pars()
 
-        print "-----------------------------------------------------------------------------------------"
+        print ("-----------------------------------------------------------------------------------------")
 
 
     def plot_model(self,plot_obj=None,clean=False,autoscale=True,label=None,comp=None):
@@ -1099,7 +1140,7 @@ class Jet(Model):
 
             self.SED.fill(nu=nu_sed_sum,nuFnu=nuFnu_sed_sum)
 
-            for i in xrange(len(self.spectral_components)):
+            for i in range(len(self.spectral_components)):
 
                 print ('fill name',self.spectral_components[i].name)
                 nu_sed,nuFnu_sed= self.get_SED_points(name=self.spectral_components[i].name)
@@ -1187,7 +1228,7 @@ class Jet(Model):
             x=zeros(size)
             y=zeros(size)
 
-            for i in xrange(size):
+            for i in range(size):
                 x[i]=BlazarSED.get_freq_array(nu_ptr,self._blob,i)
                 y[i]=BlazarSED.get_freq_array(nuFnu_ptr,self._blob,i)
 
@@ -1214,7 +1255,7 @@ class Jet(Model):
 
         except:
 
-            print "no spectral model found with name",name
+            print ("no spectral model found with name",name)
 
 
 
@@ -1222,7 +1263,7 @@ class Jet(Model):
     def get_SED_peak(self,peak_name=None,freq_range=None,log_log=False):
 
         if peak_name is not None and freq_range is not None:
-            print "either you provide peak_name or freq_range"
+            print ("either you provide peak_name or freq_range")
             raise ValueError
         elif   peak_name is not None:
             try:
@@ -1231,7 +1272,7 @@ class Jet(Model):
                 else:
                      return np.log10(getattr(self._blob,peak_name) )
             except:
-                print "peak name %s, not found, check name"%peak_name
+                print ("peak name %s, not found, check name"%peak_name)
                 raise ValueError
 
         else:
@@ -1242,6 +1283,31 @@ class Jet(Model):
             y_m= y[msk1*msk2].max()
             x_id= np.argmax(y[msk1*msk2])
             return x[msk1*msk2][x_id],y_m
+
+
+
+def set_str(blob_attr,val):
+    print ('set',blob_attr,'to',val)
+    try:
+        try:
+            blob_attr = val
+        except:
+            blob_attr = val.encode('ascii')
+
+    except Exception as e:
+        raise RuntimeError(e)
+
+def set_str_attr(obj,name,val):
+    #print('set obj', obj,'name',name ,'to', val)
+    try:
+
+        try:
+            setattr(obj, name,val)
+        except:
+            setattr(obj, name, val.encode('ascii'))
+    except Exception as e:
+        raise RuntimeError('error setting attr',name,'execption:',e)
+
 
 def init_SED(verbose=None):
     
@@ -1254,12 +1320,12 @@ def init_SED(verbose=None):
         blob.verbose=0
     else:
         blob.verbose=verbose
-    
 
-    blob.path="./"
-    
-    
-    blob.MODE='custom'
+    set_str_attr(blob,'path','./')
+    #set_str(blob.path,'./')
+
+    set_str_attr(blob,'MODE','custom')
+    #blob.MODE='custom'
     blob.gamma_grid_size=1000
     
     blob.nu_IC_size =50

@@ -29,10 +29,20 @@ Summary
 Module API
 -------------------------------------------------------------------
 """
+
+
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
+
 import numpy as np
-from cosmo_tools import Cosmo
+from .cosmo_tools import Cosmo
 #from poly_fit import filter_interval
-from output import section_separator
+from .output import section_separator
 import os
 
 __all__=['get_data_set_msk','get_freq_range_msk','lin_to_log','log_to_lin','ObsData']
@@ -153,7 +163,7 @@ class ObsData(object):
        
         if self.data_file is None:
             
-            print "you must provide a valid path for the SED  file"
+            print ("you must provide a valid path for the SED  file")
             
             return 
        
@@ -161,15 +171,18 @@ class ObsData(object):
       
         
         
-        print  section_separator
+        print  (section_separator)
         
-        print "*** getting meta-data from file header"
-        
+        print ("*** getting meta-data from file header")
+
+        print('col_types', self.col_types)
         self.set_md_from_file(self.data_file)
+        print('col_types', self.col_types)
+
                 
       
         
-        print  section_separator
+        print  (section_separator)
         
         
         #------------------------------
@@ -189,15 +202,15 @@ class ObsData(object):
         #and set values
         #values overwrite values from file metadata
         keys = sorted(keywords.keys())
-        print keys
+        #print keys
         for kw in keys:
-            print "kw ",kw,keywords[kw]
+            #print "kw ",kw,keywords[kw]
             if kw in  allowed_keywords.keys():
               
                 if allowed_keywords[kw] is not None:
                     #check that the kyword value is correct
                     if keywords[kw] not in allowed_keywords[kw]:                         
-                        print "keyword=%s, has wrong value=%s, allowed are %s"%(kw,keywords[kw], allowed_keywords[kw])
+                        print ("keyword=%s, has wrong value=%s, allowed are %s"%(kw,keywords[kw], allowed_keywords[kw]))
                         raise ValueError
                         
                     
@@ -205,7 +218,7 @@ class ObsData(object):
                     
             else:
                 
-                print "wrong keyword=%s, not in%s "%(kw, allowed_keywords.keys())
+                print ("wrong keyword=%s, not in%s "%(kw, allowed_keywords.keys()))
                 
                 raise ValueError
         
@@ -213,12 +226,13 @@ class ObsData(object):
        
         #checks that all the class members
         #have been initilized correctly
+        print('col_types a', self.col_types)
         self.set_data_cols(self.col_types,self.col_nums)
         for  var in vars(self):
             if getattr(self,var) is None:
-                print "var ",var , " is None, please set it"
+                print ("var ",var , " is None, please set it")
                 raise ValueError
-       
+        print('col_types b', self.col_types)
        
         
         
@@ -250,24 +264,30 @@ class ObsData(object):
        
        
         """
-        sed_dt =[('nu_data','f8')]
+        sed_dt = [('nu_data', 'f8')]
         sed_dt.append(('dnu_data', 'f8'))
         sed_dt.append(('nuFnu_data', 'f8'))
         sed_dt.append(('dnuFnu_data', 'f8'))
-        
+
         sed_dt.append(('nu_data_log', 'f8'))
         sed_dt.append(('dnu_data_log', 'f8'))
         sed_dt.append(('nuFnu_data_log', 'f8'))
         sed_dt.append(('dnuFnu_data_log', 'f8'))
-        
+
         sed_dt.append(('dnuFnu_facke', 'f8'))
         sed_dt.append(('dnuFnu_facke_log', 'f8'))
-        
-        sed_dt.append(('UL','bool'))
-        sed_dt.append(('zero_error','bool'))
+
+        sed_dt.append(('UL', 'bool'))
+        sed_dt.append(('zero_error', 'bool'))
         sed_dt.append(('T_start', 'f8'))
         sed_dt.append(('T_stop', 'f8'))
         sed_dt.append(('data_set', 'S16'))
+        print ('ciccio',sed_dt)
+        #_sed_dt=[]
+        #for a in sed_dt:
+        #    s=(str(a[0]),str(a[1]) )
+        #    _sed_dt.append(s)
+        #print('ciccio', _sed_dt)
 
         self.dt = np.dtype(sed_dt)
         
@@ -301,20 +321,21 @@ class ObsData(object):
              self._file_col_dict= self._log_col_dict
         
         
-        print  section_separator
+        print  (section_separator)
         
         
        
 
-        print "*** loading data ***"
-        print "---> loading data for file=%s"%self.data_file
-        print "---> found these col ID=%s and names=%s:"%(self.col_nums,self.col_types)
-        print "---> z=%e"%self.z
-        print "---> restframe=%s"%self.restframe
-        print "---> obj_name=%s "%self.obj_name
-        print "---> data_scale=%s "%self.data_scale
+        print ("*** loading data ***")
+        print ("---> loading data for file=%s"%self.data_file)
+        print ("---> found these col ID=%s and names=%s:"%(self.col_nums,self.col_types))
+        print ("---> z=%e"%self.z)
+        print ("---> restframe=%s"%self.restframe)
+        print ("---> obj_name=%s "%self.obj_name)
+        print ("---> data_scale=%s "%self.data_scale)
         
-            
+
+        print('col_types',self.col_types)
        
         
         self._load_data()
@@ -322,7 +343,7 @@ class ObsData(object):
         #-------------------------------------------------------------------------
         # duplicate entries 
         if dupl_filter==True:
-            print "---> filtering for dupl entries"
+            print ("---> filtering for dupl entries")
             self.remove_dupl_entries(self.data)
        
         #-------------------------------------------------------------------------          
@@ -348,7 +369,7 @@ class ObsData(object):
         #self.set_error(self.zero_error_replacment, data_msk=self.data['zero_error'])
         #print "4,",self.data['nu_data_log']
         self._set_data_frame_and_scale()
-        print "5,",self.data['nu_data_log']
+        #print ("5,",self.data['nu_data_log'])
         
        
         
@@ -356,9 +377,9 @@ class ObsData(object):
         
             self.data['dnuFnu_data']=self.data['Fnu_data']*self.facke_error
             
-            print "Warning: error were not provided "
-            print "         assigning %f            "
-            print "         set error with .set_error"%self.facke_error
+            print ("Warning: error were not provided ")
+            print ("         assigning %f            ")
+            print ("         set error with .set_error"%self.facke_error)
             #print self.data['dnuFnu_data']
         
         
@@ -366,15 +387,15 @@ class ObsData(object):
         
             self.data['dnuFnu_data_log']=np.ones(self.data['nu_data_log'].size)*self.facke_error
             
-            print "Warning: error were not provided "
-            print "         assigning %f           "
-            print "         set error with .set_error"%self.facke_error
+            print ("Warning: error were not provided ")
+            print ("         assigning %f           ")
+            print ("         set error with .set_error"%self.facke_error)
             #print self.data['dnuFnu_data_log']
 
     
         
         #print self.data_set_filter
-        print  section_separator
+        print  (section_separator)
     
     
     def _load_data(self):
@@ -383,17 +404,17 @@ class ObsData(object):
         """
         #data are loaded with the order of columns eg x,y,z=(1,0,3)
         #hence just have to loop over columns_name and get the index
-        
-        self.data_from_file=np.genfromtxt(self.data_file, usecols = self.col_nums, unpack=False, dtype=None,names=self.col_types,)
+        print (self.col_types,self.col_nums)
+        self.data_from_file=np.genfromtxt(self.data_file, usecols = self.col_nums, unpack=False, dtype=None,names=self.col_types)
         self.data=np.zeros(self.data_from_file.size,dtype=self.dt)
         
         #print self._file_col_dict
         #print self.columns_name
-        for  col_id in xrange(len(self.col_types)):
-            print self._file_col_dict[self.col_types[col_id]],self.col_types[col_id]
+        for  col_id in range(len(self.col_types)):
+            print (self._file_col_dict[self.col_types[col_id]],self.col_types[col_id])
             self.data[self._file_col_dict[self.col_types[col_id]]]=self.data_from_file[self.col_types[col_id]]
         
-        print "---> data len=%d"%len(self.data)
+        print ("---> data len=%d"%len(self.data))
 
 
 
@@ -498,22 +519,23 @@ class ObsData(object):
           
         
               
-          
+          print('col_types c',col_types)
         
           allowed=['x','y','dx','dy','T_start','Tstart','T_stop','Tstop','data_set','DataSet']
           name_list=col_types.split(',')
-          
+
+
           if col_nums is not None:
               col_list=np.array(col_nums.split(','),dtype=int)
               if len(col_list)!=len(name_list):
-                  print "lenght of colum name%d different from lenght of columns number "%(len(name_list),len(col_list))
+                  print ("lenght of colum name%d different from lenght of columns number "%(len(name_list),len(col_list)))
                   
                   raise ValueError
           else:
              col_list=range(len(name_list))
               
           
-          for i  in xrange(len(name_list)):
+          for i  in range(len(name_list)):
               if name_list[i] =='Tstart':
                   name_list[i]='T_start'
               
@@ -524,10 +546,15 @@ class ObsData(object):
                   name_list[i]='data_set'
               
               if name_list[i] not in allowed:
-                  print 'wrong column name field=',name_list[i], ' allowed values are',allowed
+                  print ('wrong column name field=',name_list[i], ' allowed values are',allowed)
                   raise ValueError
-        
-          self.col_types=name_list
+
+          #print('col_types d', col_types,name_list,col_list)
+          if len(name_list)>0:
+              if type(name_list[0])==str:
+                  self.col_types= name_list
+              else:
+                  self.col_types = [n.encode('ascii') for n in name_list]
           self.col_nums=col_list
                   
           
@@ -545,7 +572,7 @@ class ObsData(object):
         
         elif self.restframe=='src':
             DL=self.cosmo_eval.DL(self.z)
-            print "--->DL=%e"%DL
+            print ("--->DL=%e"%DL)
             
             #!! usa le funzioni in frame_converter
             nu_conv_factor=1.0/(1+self.z)
@@ -636,14 +663,14 @@ class ObsData(object):
                 if len(tkn)>3 and tkn[0]=="#"   and tkn[1]=='md':
                     
                    
-                    
+
                     if tkn[2] in  md_dic.keys():
-                        print "set md %s  to %s"%(tkn[2],tkn[3])
+                        print ("set md %s  to %s"%(tkn[2],tkn[3]))
                         setattr(self,tkn[2],tkn[3])
                     else:
-                        print "wrong keyword=%s, not in%s "%(tkn[2], md_dic.keys())
+                        print ("wrong keyword=%s, not in%s "%(tkn[2], md_dic.keys()))
                             
-       
+        print ('ciccio',self.col_types)
         if self.z is not None:
            self.z=float(self.z)
     
@@ -664,9 +691,9 @@ class ObsData(object):
         filters=filters.split(',')
         #if self.data_set_filter!=None and self.data_set_filter!='No':
         if exclude==False:
-            print "---> filtering for fit data_set==",filters
+            print ("---> filtering for fit data_set==",filters)
         else:
-            print "---> filtering for fit data_set!=",filters
+            print ("---> filtering for fit data_set!=",filters)
         
         #if data_set_filter is scalar
         #then is converted to list
@@ -685,7 +712,7 @@ class ObsData(object):
         self.data=self.data[msk]
         
         
-        print "---> data len after filtering=%d"%len(self.data['nu_data'])
+        print ("---> data len after filtering=%d"%len(self.data['nu_data']))
         
 
     def set_facke_error(self,):
@@ -700,12 +727,12 @@ class ObsData(object):
 
 
         if 'dy' in self.col_types and self.data_scale=='lin-lin':
-            print "---> Settin  UL for val",val
+            print ("---> Settin  UL for val",val)
             error_array=self.data['dnuFnu_data']
                        
         
         elif 'dy' in self.col_types and self.data_scale=='log-log':
-            print "---> filtering for UL"
+            print ("---> filtering for UL")
             error_array=self.data['dnuFnu_data_log']
 
         else:
@@ -721,12 +748,12 @@ class ObsData(object):
         self.zero_error_replacment=val
         
         if 'dy' in self.col_types and self.data_scale=='lin-lin':
-            print "---> Settin  UL for val",val
+            print ("---> Settin  UL for val",val)
             error_array=self.data['dnuFnu_data']
                        
         
         elif 'dy' in self.col_types and self.data_scale=='log-log':
-            print "---> filtering for UL"
+            print ("---> filtering for UL")
             error_array=self.data['dnuFnu_data_log']
         
         else:
@@ -776,7 +803,7 @@ class ObsData(object):
         if val is None:
             val=self.UL_value
             
-        print "---> filtering  UL for val",val
+        print ("---> filtering  UL for val",val)
         if 'dy' in self.col_types and self.data_scale=='lin-lin':   
             error_array=self.data['dnuFnu_data']
         
@@ -790,7 +817,7 @@ class ObsData(object):
         msk=np.invert(msk)
         
         self.data=self.data[msk]
-        print "---> data len after filtering=%d"%len(self.data)
+        print ("---> data len after filtering=%d"%len(self.data))
         
      
     def filter_time(self,T_min=None,T_max=None,exclude=False):
@@ -820,7 +847,7 @@ class ObsData(object):
             msk=np.invert(msk)
         
         self.data=self.data[msk]
-        print "---> data len after filtering=%d"%len(self.data) 
+        print ("---> data len after filtering=%d"%len(self.data) )
         
         
     def filter_freq(self,nu_min=None,nu_max=None,exclude=False):
@@ -852,7 +879,7 @@ class ObsData(object):
             msk=np.invert(msk)
         self.data=self.data[msk]
 
-        print "---> data len after filtering=%d"%len(self.data)
+        print ("---> data len after filtering=%d"%len(self.data))
     
     def reset_data(self):
         self._build_data()
@@ -871,10 +898,10 @@ class ObsData(object):
             One entry is flagged as duplicated as each comlum in a row of the data table
             is equal to the corresponding elements of another row
         """
-        print "---> remove duplicate entries"
+        print ("---> remove duplicate entries")
         msk=np.array(np.ones(len(data)),dtype=bool)
 
-        for i in xrange(1,len(data)):
+        for i in range(1,len(data)):
             for j in xrange(1,len(data[:i])):
                 test= data[i]==data[j]
                 if test.all():
@@ -898,14 +925,14 @@ class ObsData(object):
             To perform  a rebinning of the data has to be provided either ``N_bin`` or ``bin_width``.    
         """
         
-        print section_separator
+        print (section_separator)
         
 
         if N_bin is not None and bin_width is  not None:
-            print "you can provide either N_bin or bin_width"
+            print ("you can provide either N_bin or bin_width")
             raise ValueError 
         elif N_bin is None and bin_width is None:
-            print "you must provide either N_bin or bin_width"
+            print ("you must provide either N_bin or bin_width")
             raise ValueError
         
         xmin=self.data['nu_data_log'].min()*0.99 
@@ -922,9 +949,9 @@ class ObsData(object):
         bin_grid=np.linspace(xmin,xmax,N_bin)
         
         
-        print "***  binning data  ***"
-        print "---> N bins=",N_bin
-        print "---> bin_widht=",bin_width
+        print ("***  binning data  ***")
+        print ("---> N bins=",N_bin)
+        print ("---> bin_widht=",bin_width)
   
         self.data_reb=np.zeros(bin_grid.size,dtype=self.dt)
 
@@ -1002,7 +1029,7 @@ class ObsData(object):
         #print  self.data['nu_data']
         #print "!!!!!!! Time and data_set must be handled somehow"
 
-        print section_separator
+        print (section_separator)
     
     def add_systematics(self,syst,nu_range=None,data_set=None):
         """
@@ -1013,7 +1040,7 @@ class ObsData(object):
         """
         
         if nu_range is not None and data_set  is not  None:
-            print "!!! error, either you provide a range of frequencies or a data_set"
+            print ("!!! error, either you provide a range of frequencies or a data_set")
             return
         
         if self.data['dnuFnu_data'] is None:
@@ -1050,7 +1077,7 @@ class ObsData(object):
         #print self.data['dnuFnu_data']           
         
         if nu_range is not None and data_set is not None:
-            print "!!! error, either you provide a range of frequencies or a data_set"
+            print ("!!! error, either you provide a range of frequencies or a data_set")
             return
         
         msk=None     
@@ -1110,7 +1137,7 @@ class ObsData(object):
         for entry in self.data['data_set']:
             if entry not in shown:
                 shown.append(entry)
-                print entry
+                print (entry)
                 
     
     def get_data_sets(self):
@@ -1132,7 +1159,7 @@ class ObsData(object):
         y=0
         line_style='-'
         for data_set in data_sets:
-            print data_set
+            print (data_set)
             
             try:
                 
@@ -1142,9 +1169,9 @@ class ObsData(object):
                     x=(T1+T2)/2
                     ax1.text(x,y+0.3,data_set+' (%d)'%n)
                     y=y+1
-                    print"---->", dT,T1,T2,y
+                    print("---->", dT,T1,T2,y)
             except:
-                print "no Time span for data_set",data_set
+                print ("no Time span for data_set",data_set)
             
         ax1.set_ylim(-0.5,y+0.5)
         fig.show()
@@ -1189,13 +1216,13 @@ class ObsData(object):
                     T2=-1
                     DT=-1
                     nT=0
-                    print 'something wrong with T_start and T_stop columns, check the values please, for data_set=',data_set
+                    print ('something wrong with T_start and T_stop columns, check the values please, for data_set=',data_set)
         else:
-            print "no data found for this selection, data_set= ",data_set
+            print ("no data found for this selection, data_set= ",data_set)
             if data_set not in self.data['data_set']:
-                print "the data_set %s is not present in the data"%data_set
-                print "possible data_set: "
-                print self.show_data_sets()
+                print ("the data_set %s is not present in the data"%data_set)
+                print ("possible data_set: ")
+                print (self.show_data_sets())
                     
             T1=-1
             T2=-1
@@ -1203,7 +1230,7 @@ class ObsData(object):
             nT=0
         
         if silent==False:
-            print "T_start=%f T_stop=%f DT=%f, number of points=%d"%(T1,T2,DT,nT)
+            print ("T_start=%f T_stop=%f DT=%f, number of points=%d"%(T1,T2,DT,nT))
         if get_values==True: 
             return T1,T2,DT,nT
             

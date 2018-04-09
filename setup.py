@@ -14,6 +14,11 @@ import glob
 
 version='1.2.0'
 
+
+f = open("./requirements.txt",'r')
+install_req=f.readlines()
+f.close()
+
 src_files=['jetset/jetkernel/jetkernel.i']
 src_files.extend(glob.glob ('jetkernel_src/src/*.c'))
 _module=Extension('_jetkernel',
@@ -27,9 +32,9 @@ setup(name='jetset',
       version=version,
       author='Andrea Tramacere',
       author_email='andrea.tramacere@gmail.com',
-      packages=['jetset','leastsqbound','jetset.jetkernel'],
+      packages=['jetset', 'leastsqbound', 'jetset.jetkernel'],
       package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*dat','jetkernel/mathkernel/*dat']},
       scripts=['bin/test_interactive.py'],
-      requires=['scipy','numpy','astropy'],
+      requires=install_req,
       ext_modules = [_module],
       py_modules=['jetkernel'], )

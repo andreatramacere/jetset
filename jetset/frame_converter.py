@@ -1,4 +1,9 @@
-#!/usr/bin/env python
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
 
 """
 ===================================================================
@@ -62,7 +67,7 @@ def convert_nu_to_blob(nu,in_frame,delta,z):
         delta_c=1
         z_c=0
     else:
-        raise RuntimeError, "reference frame keyword not valid %s"%in_frame
+        raise RuntimeError("reference frame keyword not valid %s"%in_frame)
 
     return nu*(1+z_c)/delta_c
 
@@ -88,7 +93,7 @@ def convert_nu_to_src(nu,z,in_frame):
     elif in_frame=="src":
         z_c=0
     else:
-        raise RuntimeError, "reference frame keyword not valid %s"%in_frame
+        raise RuntimeError("reference frame keyword not valid %s"%in_frame)
 
     return nu*(1+z_c)
 
@@ -99,7 +104,7 @@ def convert_nuFnu_to_nuLnu_src(nuFnu,z,in_frame,dl):
     elif in_frame == "src":
         z_c = 0
     else:
-        raise RuntimeError, "reference frame keyword not valid %s" % in_frame
+        raise RuntimeError("reference frame keyword not valid %s" % in_frame)
 
     return 4.0*np.pi*dl**2
 

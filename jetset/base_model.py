@@ -1,5 +1,13 @@
-from model_parameters import ModelParameterArray, ModelParameter
-from spectral_shapes import SED
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
+
+from .model_parameters import ModelParameterArray, ModelParameter
+from .spectral_shapes import SED
 import numpy as np
 
 __all__=['Model']
@@ -29,7 +37,7 @@ class Model(object):
     def eval(self,fill_SED=True,nu=None,get_model=False,loglog=False,plot=None,label=None):
         
         if nu is None:
-            print"--->", self.nu_min,self.nu_max,self.nu_size
+            print("--->", self.nu_min,self.nu_max,self.nu_size)
             
             x1=np.log10(self.nu_min)
 
@@ -108,7 +116,7 @@ class Model(object):
             
             
         else:
-            print "the plot window is not defined"
+            print ("the plot window is not defined")
             
     def set_nu_grid(self,nu_min=None,nu_max=None,nu_size=None):
         if nu_size is not None:

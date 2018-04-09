@@ -35,12 +35,20 @@ Module API
 
 """
 
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
+
 import numpy as np
 from scipy import integrate
 #import jet_wrapper
-from jetkernel import jetkernel as BlazarSED
+from .jetkernel import jetkernel as BlazarSED
 
-from output import section_separator
+from .output import section_separator
 
 
 __all__=['Cosmo']
@@ -95,11 +103,11 @@ class Cosmo(object):
             self._D_H= BlazarSED.vluce_km/self._H_0* BlazarSED.parsec*1E6*1E2
         
         elif self.units=='Mpc':
-            print 'Mpc'
+            print ('Mpc')
             self._D_H= BlazarSED.vluce_km/self._H_0
         
         elif self.units=='Gpc':
-            print "Gpc"
+            print ("Gpc")
             self._D_H= BlazarSED.vluce_km/self._H_0/1E3
     
     
@@ -110,14 +118,14 @@ class Cosmo(object):
 
         """
         
-        print section_separator
-        print "Cosmological set-up"        
-        print "units= ",self._units
-        print "H0 = ",self._H0
-        print "Omega matter =",self._Omega_m
-        print "Omega lambda = ",self._Omega_l
-        print "Omega k = ",self._Omega_k
-        print section_separator
+        print (section_separator)
+        print ("Cosmological set-up")
+        print ("units= ",self._units)
+        print ("H0 = ",self._H0)
+        print ("Omega matter =",self._Omega_m)
+        print ("Omega lambda = ",self._Omega_l)
+        print ("Omega k = ",self._Omega_k)
+        print (section_separator)
 
 
 

@@ -1,4 +1,12 @@
-#!/usr/bin/env python
+
+
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
 from scipy.optimize import leastsq
 import scipy as s
 from numpy import polyfit,polyval,polyder
@@ -37,7 +45,7 @@ def do_linear_fit(x,y,dy=None,x_range=None):
 
 
     if len(x_fit)<2:
-        raise RuntimeError,  "fit failed number of points less then 2"
+        raise RuntimeError("fit failed number of points less then 2")
      
     #print nu_fit,nuFnu_fit,err_nuFnu_fit
     pinit = [1.0,10.0]
@@ -164,7 +172,7 @@ def find_max_cubic(p,x,y,dy=None,x_range=None):
         p_peaks,err,dof=do_cubic_fit_peaks(x,y,xp,yp,dy=dy,x_range=x_range)
         return  p_peaks,err,dof
     else:
-        print "!!! no maxima found for cubic fit"
+        print ("!!! no maxima found for cubic fit")
         xp=None
         yp=None
         b=None

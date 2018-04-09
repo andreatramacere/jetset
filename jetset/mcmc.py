@@ -1,3 +1,10 @@
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
 import numpy as np
 import scipy as sp
 from scipy import stats
@@ -25,7 +32,7 @@ class MCMC (object):
             self.proposal_prob=stats.norm.pdf
             self.proposal_val=stats.norm.rvs
         else:
-            print "proposal distribution not in allowed"
+            print ("proposal distribution not in allowed")
             
             return     
         
@@ -65,12 +72,12 @@ class MCMC (object):
                 #Decide trial acceptance
                 if  u < aprob:
                     LEN+=1
-                    print"TRIAL=%d accetto ratio=%e u=%e par[1]=%s -LogLike=%e "%(TRIAL,ratio,u,self.par[1],-newLike)
+                    print("TRIAL=%d accetto ratio=%e u=%e par[1]=%s -LogLike=%e "%(TRIAL,ratio,u,self.par[1],-newLike))
                     oldLike=newLike
           
     
     def init_MCMC_pars(self):
-        for pi in xrange(len(self.fit_par)): 
+        for pi in range(len(self.fit_par)):
             if self.fit_par[pi].err is not None:
                 delta_par=self.fit_par[pi].err*self.range_sigma
                 step_par=self.fit_par[pi].err*self.jump_step_sigma
@@ -87,7 +94,7 @@ class MCMC (object):
     
     
     def random_walk(self,size):
-        for pi in xrange(len(self.fit_par)): 
+        for pi in range(len(self.fit_par)):
             self.fit_par[pi].MCMC_trial=self.draw_proposal(self.parfit_par[pi])
            
 
@@ -103,7 +110,7 @@ class MCMC (object):
         self.prior12=1
         self.prior21=1
         
-        for pi in xrange(len(self.fit_par)): 
+        for pi in range(len(self.fit_par)):
     
             self.prior12 =self.prior12 * self.prior_fact(self.fit_par[pi],self.fit_par[pi].MCMC_val,self.fit_par[pi].MCMC_trial)
 
