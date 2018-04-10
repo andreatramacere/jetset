@@ -10,7 +10,7 @@ __author__ = "Andrea Tramacere"
 from scipy.optimize import leastsq
 import scipy as s
 from numpy import polyfit,polyval,polyder
-
+import  numpy as np
 
 __all__=['check_maxima','cubic_peaks','do_cubic_fit','do_cubic_fit_peaks','do_linear_fit',
          'do_log_Parab_FIT','filter_interval','find_max_cubic','lin','parab','residuals_cubic_peaks',
@@ -180,12 +180,14 @@ def find_max_cubic(p,x,y,dy=None,x_range=None):
 
 
 def check_maxima(xm,ym,b,x,y):
-    c=zip(x,y)
-    c.sort(key=lambda tup: tup[1])
+    c = np.array([x, y]).T
+    c = c[np.argsort(c[:, 1])]
     max=c[-1]
     #print "check max", c
     #print max[0],max[1]
     #min=c[0]
+
+
     if b<0:
        return max[0],max[1]
     if b>=0:

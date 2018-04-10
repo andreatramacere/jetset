@@ -29,7 +29,11 @@ requires:
         - scipy
         - numpy
         - astropy
- 
+       
+      - iminuit
+        
+        https://github.com/iminuit/iminuit
+        
  - C compiler:
     - gcc compiler
 
@@ -43,8 +47,9 @@ python setup.py install
     
  - sphinx
  - pylint
- - sphinx-pyreverse: "https://github.com/alendit/sphinx-pyreverse#egg=sphinx-pyreverse"
+ - sphinx-pyreverse: "https://github.com/alendit/sphinx-pyreverse"
  - nbsphinx: "conda install -c conda-forge nbsphinx"
  - sphinx_rtd_theme: conda install -c anaconda sphinx_rtd_theme 
- - sphinx-better-theme: 
- - https://github.com/astropy/sphinx-automodapi 
+ - sphinx-better-theme: 'https://github.com/irskep/sphinx-better-theme' 
+ - sphinx-bootstrap-theme: 'https://github.com/ryan-roemer/sphinx-bootstrap-theme'
+ - sphinx automod: 'https://github.com/astropy/sphinx-automodapi' 

@@ -916,7 +916,7 @@ class Jet(Model):
     #PROTECTED MEMBER ACCESS
     #!! controlla i paramteri ....
     def get_electron_distribution_name(self):
-        return self.electron_distribution._e
+        return self.electron_distribution._name
 
 
 
@@ -1142,7 +1142,7 @@ class Jet(Model):
 
             for i in range(len(self.spectral_components)):
 
-                print ('fill name',self.spectral_components[i].name)
+                #print ('fill name',self.spectral_components[i].name)
                 nu_sed,nuFnu_sed= self.get_SED_points(name=self.spectral_components[i].name)
 
                 self.spectral_components[i].SED.fill(nu=nu_sed,nuFnu=nuFnu_sed)

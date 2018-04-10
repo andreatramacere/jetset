@@ -55,11 +55,12 @@ import numpy as np
 
 #import os
 
-#import sys
+import sys
 
 from scipy.stats import chi2
 
 import iminuit
+from iminuit.frontends import ConsoleFrontend
 
 from scipy.optimize import leastsq
 
@@ -180,7 +181,7 @@ class Minimizer(object):
         return
 
 
-def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,max_ev=0,use_facke_err=False,minimizer='minuit'):
+def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,max_ev=0,use_facke_err=False,minimizer='leastsqbound'):
     """
     function to run the minimization
     
@@ -361,23 +362,24 @@ def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplac
         mm=MinutiMinimizer(pinit,bounds,fit_par_free,nu_fit,nuFnu_fit,err_nuFnu_fit,fit_Model,loglog,cnt,res_check)
         mm.minuit_fun.migrad()
 
+
         dof = len(nu_fit) - free_pars
         chisq=mm.get_chisq()
         chisq_red = chisq / float(dof)
         null_hyp_sig = 1.0 - chi2.cdf(chisq, dof)
         errors=mm.minuit_fun.errors
         mesg=''
-        calls=cnt
+        calls=cnt[0]
         success=True
         status=1
         values=mm.minuit_fun.values
         pout = [values[k] for k in values.keys()]
-
         #print('c->', status, calls, mesg)
 
         #curve_fit()
     #    pout,covar,info,mesg,success = leastsq(residuals_Fit, pinit,args=(fit_par_free,nu_fit,nuFnu_fit,err_nuFnu_fit,fit_Model,loglog,cnt,res_check),xtol=5.0E-8,ftol=5.0E-8,full_output=1,maxfev=max_ev)
-    
+    #sys.stdout.flush()
+    #
     print ("res check",res_check[0].sum(),(res_check[0]*res_check[0]).sum()  )
 
 
@@ -460,7 +462,8 @@ class MinutiMinimizer(object):
         self.minuit_fun = iminuit.Minuit(
             fcn=self.minimize_me,
             forced_parameters=p_names,
-            **kwdarg)
+            **kwdarg,
+            frontend=ConsoleFrontend())
 
     def minimize_me(self, *p):
         self.p = p
@@ -500,8 +503,12 @@ def residuals_Fit(p,fit_par,nu_data,nuFnu_data,err_nuFnu_data,best_fit_SEDModel,
     if cnt is not None:
         cnt[0]=cnt[0]+1
         if np.mod(cnt[0],10)==0 and cnt[0]!=0:
-            print ("minim function calls=%d, res=%f, chisq=%f"%(cnt[0],res.sum(),(res_check[0]*res_check[0]).sum()))
-        
+            print("\rminim function calls=%d, res=%f, chisq=%f "%(cnt[0],res.sum(),(res_check[0]*res_check[0]).sum()), end="")
+            #sys.stdout.write("minim function calls=%d, res=%f, chisq=%f "%(cnt[0],res.sum(),(res_check[0]*res_check[0]).sum()))
+            sys.stdout.flush()
+            for x in range(120):
+                sys.stdout.write('\b')
+
     return res
 
 

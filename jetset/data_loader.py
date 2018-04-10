@@ -902,7 +902,7 @@ class ObsData(object):
         msk=np.array(np.ones(len(data)),dtype=bool)
 
         for i in range(1,len(data)):
-            for j in xrange(1,len(data[:i])):
+            for j in range(1,len(data[:i])):
                 test= data[i]==data[j]
                 if test.all():
                     #print i,test,data[i],data[j]
@@ -965,7 +965,7 @@ class ObsData(object):
         bin_elements_id=np.digitize(self.data['nu_data_log'],bin_grid)
         
         
-        for id in xrange(bin_grid.size):
+        for id in range(bin_grid.size):
             msk1=[bin_elements_id==id][0]
             #Remove UL
             msk2=np.invert(self.data['UL'])

@@ -509,7 +509,7 @@ class ModelParameterArray(object):
     
     def freeze_all(self):
         self.all_frozen=True
-        for pi in xrange(len(self.par_array)):
+        for pi in range(len(self.par_array)):
             self.par_array[pi].freeze()
                 
         

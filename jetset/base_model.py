@@ -8,6 +8,7 @@ __author__ = "Andrea Tramacere"
 
 from .model_parameters import ModelParameterArray, ModelParameter
 from .spectral_shapes import SED
+from .data_loader import  ObsData
 import numpy as np
 
 __all__=['Model']
@@ -137,6 +138,8 @@ class Model(object):
 
 
     def get_residuals(self, data, log_log=False,filter_UL=True):
+        if isinstance(data,ObsData):
+            data=data.data
 
         model = self.eval(nu=data['nu_data'], fill_SED=False, get_model=True, loglog=False)
 

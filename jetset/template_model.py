@@ -274,12 +274,10 @@ class Template(object):
         """
         Loads a template from a file
         """
-        x,y=loadtxt(file_path, usecols = (0,1), unpack=True, dtype=float)
-            
-        my_set=zip(x,y)
-        my_set.sort(key=lambda tup: tup[0])
-    
-        self.nu_template,self.nuFnu_template= array(zip(*my_set))
+        xy=loadtxt(file_path, usecols = (0,1), unpack=False, dtype=float)
+        xy=xy[np.argsort(xy[:,0])]
+        self.nu_template=xy[:,0]
+        self.nuFnu_template= xy[:,1]
 
         
    
