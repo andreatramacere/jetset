@@ -182,6 +182,11 @@ class Minimizer(object):
 
 
 def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,max_ev=0,use_facke_err=False,minimizer='leastsqbound'):
+    __accepted__=['leastsqbound','minuit','least_squares']
+
+    if minimizer not in __accepted__:
+        raise RuntimeError ('minimizer ',minimizer, 'not accepted, please choose among',__accepted__)
+
     """
     function to run the minimization
     
@@ -360,6 +365,8 @@ def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplac
     elif minimizer=='minuit':
         bounds = [(par.fit_range_min, par.fit_range_max) for par in fit_par_free]
         mm=MinutiMinimizer(pinit,bounds,fit_par_free,nu_fit,nuFnu_fit,err_nuFnu_fit,fit_Model,loglog,cnt,res_check)
+        mm.minuit_fun.tol=1.0
+        mm.minuit_fun.set_strategy(0)
         mm.minuit_fun.migrad()
 
 

@@ -52,4 +52,4 @@ python setup.py install
  - sphinx_rtd_theme: conda install -c anaconda sphinx_rtd_theme 
  - sphinx-better-theme: 'https://github.com/irskep/sphinx-better-theme' 
  - sphinx-bootstrap-theme: 'https://github.com/ryan-roemer/sphinx-bootstrap-theme'
- - sphinx automod: 'https://github.com/astropy/sphinx-automodapi' 
+ - sphinx automod: 'https://github.com/astropy/sphinx-automodapi'    

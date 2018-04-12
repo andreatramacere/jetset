@@ -508,20 +508,21 @@ class Jet(Model):
 
 
 
-    def load_model(self,file_name):
-
+    @classmethod
+    def load_model(cls,file_name):
+        jet = cls()
         with open(file_name, 'r') as infile:
             _model = json.load(infile)
 
         print ('_model',_model)
 
-        self.model_type = 'jet'
+        jet.model_type = 'jet'
 
-        self.init_BlazarSED()
-        self.parameters = ModelParameterArray()
+        jet.init_BlazarSED()
+        jet.parameters = ModelParameterArray()
 
-        self.set_electron_distribution(str(_model['electron_distribution']))
-        _l=self.get_spectral_component_names_list()
+        jet.set_electron_distribution(str(_model['electron_distribution']))
+        _l=jet.get_spectral_component_names_list()
         #print ('->',_model['EC_components_list'],_model['model_spectral_components'],_l,self._allowed_EC_components_list)
         for c in _model['model_spectral_components']:
             print (c)
@@ -530,20 +531,21 @@ class Jet(Model):
                 #print ('test',c.replace('EC_',''), _model['EC_components_list'],c.replace('EC_','') in _model['EC_components_list'])
                 if c.replace('EC_','') in _model['EC_components_list']:
                     print ('add EC',c.replace('EC_',''))
-                    self.add_EC_component(str(c.replace('EC_','')))
+                    jet.add_EC_component(str(c.replace('EC_','')))
                 else:
-                    self.add_spectral_component(str(c))
+                    jet.add_spectral_component(str(c))
 
-        self.SED = self.get_spectral_component_by_name('Sum').SED
+        jet.SED = jet.get_spectral_component_by_name('Sum').SED
 
-        self.set_emitting_region(str(_model['beaming_expr']))
-        self.set_electron_distribution(str(_model['electron_distribution']))
+        jet.set_emitting_region(str(_model['beaming_expr']))
+        jet.set_electron_distribution(str(_model['electron_distribution']))
         _par_dict=_model['pars']
-        self.show_pars()
+        jet.show_pars()
         for k in _par_dict.keys():
             print ('set', k,_par_dict[k])
-            self.set_par(par_name=str(k),val=_par_dict[str(k)])
+            jet.set_par(par_name=str(k),val=_par_dict[str(k)])
 
+        return jet
 
     def set_electron_distribution(self,name):
         self.electron_distribution = ElectronDistribution(name, self)
@@ -699,7 +701,7 @@ class Jet(Model):
         # print B_min
 
 
-        b_grid = np.logspace(np.log10(B_min), B_max, N_pts)
+        b_grid = np.logspace(np.log10(B_min), np.log10(B_max), N_pts)
         print ('B grid min ',B_min)
         print ('B grid max ',B_max)
         print ('grid points',N_pts)
