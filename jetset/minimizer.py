@@ -315,7 +315,7 @@ def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplac
                                                    ftol=5.0E-8,
                                                    full_output=1,
                                                    bounds=bounds,
-                                                   maxfev=1000)
+                                                   maxfev=max_ev)
 
         chisq = sum(info["fvec"] * info["fvec"])
         dof = len(nu_fit) - free_pars
@@ -343,7 +343,7 @@ def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplac
                       loss='cauchy',
                       f_scale=0.01,
                       bounds=bounds,
-                      max_nfev=None,
+                      max_nfev=None if max_ev == 0 else max_ev,
                       verbose=2)
         #else:
 
@@ -365,8 +365,6 @@ def fit_SED(fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplac
     elif minimizer=='minuit':
         bounds = [(par.fit_range_min, par.fit_range_max) for par in fit_par_free]
         mm=MinutiMinimizer(pinit,bounds,fit_par_free,nu_fit,nuFnu_fit,err_nuFnu_fit,fit_Model,loglog,cnt,res_check)
-        mm.minuit_fun.tol=1.0
-        mm.minuit_fun.set_strategy(0)
         mm.minuit_fun.migrad()
 
 
