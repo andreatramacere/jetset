@@ -1385,6 +1385,12 @@ class Jet(Model):
 
                 #print"%s %e %e"%(name,x[i],y[i])
 
+            msk_nan=np.isnan(x)
+            msk_nan*=np.isnan(y)
+
+            x[msk_nan]=0.0
+            y[msk_nan]=self.flux_plot_lim
+
             msk=y<self.flux_plot_lim
 
 
