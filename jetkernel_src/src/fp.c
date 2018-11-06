@@ -4,9 +4,19 @@
 #include <string.h>
 #include "Blazar_SED.h"
 
-
 double Inj_temp_prof(double t,struct temp_ev *pt){
-	if (t>pt->TStart_Inj && t<pt->TStop_Inj) return 1.0;
+
+	if (t>pt->TStart_Inj && t<pt->TStop_Inj) {
+            //return 1.0+pt->Inj_temp_slope*((t-pt->TStart_Inj)/(pt->TStop_Inj-pt->TStart_Inj));
+            //if (fabs(t-pt->TStart_Inj)<100 || fabs(t-pt->TStop_Inj)<100)
+            //    {
+                //printf('%e %e\n',fabs(t-pt->TStart_Inj),fabs(t-pt->TStop_Inj));
+            //    return 1.0;
+           // }
+
+            //else return 0.0;
+        return 1.0;
+	}
 	else return 0.0;
 }
 
@@ -63,10 +73,15 @@ double Cooling(double x,struct temp_ev *pt, struct spettro *pt_spec){
 	// printf("Sync cooling =%e\n",Sync_cool(pt_spec->B,x+1));
 	cooling=0;
 	if (pt->do_Sync_cooling>0){
+	    //printf('ciccio s \n');
 		cooling=Sync_cool(pt_spec,x+1);
 
 	}
-	cooling+=compton_cooling(pt_spec,pt,x+1);
+
+	if (pt->do_Compton_cooling>0){
+	    //printf('ciccio c  \n');
+    	cooling+=compton_cooling(pt_spec,pt,x+1);
+    }
 	return cooling;
 }
 //---------------------------------------------------------------------
@@ -153,7 +168,7 @@ int solve_sys1(double A[],double B[],double C[],double R[],double u[],unsigned l
 	for(j=1;j<SIZE-1;j++){
 		//printf("A[%d]=%e B[%d]=%e C[%d]=%e  \n",j,A[j],j,B[j],j,C[j]);
 	}
-
+	
 
 	if(B[0]==0){
 		printf("2\n");

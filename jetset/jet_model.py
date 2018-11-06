@@ -261,7 +261,9 @@ class ElectronDistribution(object):
             self._set_blob()
             self._fill()
 
-
+    def update(self):
+        self._set_blob()
+        self._fill()
 
     def set_grid_size(self,gamma_grid_size):
         setattr(self._jet._blob,'gamma_grid_size' ,gamma_grid_size)
@@ -285,7 +287,8 @@ class ElectronDistribution(object):
             self.n_gamma[ID] = BlazarSED.get_elec_array(self.Ne_ptr, self._jet._blob, ID)
 
 
-    def plot(self, ax=None, ):
+    def plot(self, ax=None, y_min=None,y_max=None):
+        self.update()
         import  pylab as plt
         if ax is None:
             fig,ax= plt.subplots()
@@ -293,7 +296,22 @@ class ElectronDistribution(object):
         ax.plot(np.log10(self.gamma),np.log10(self.n_gamma))
         ax.set_xlabel(r'log($\gamma$)')
         ax.set_ylabel(r'log(n($\gamma$))')
+        ax.set_ylim(y_min,y_max)
+        plt.show()
 
+        return ax,fig
+
+
+    def plot3p(self, ax=None,y_min=None,y_max=None):
+        self.update()
+        import  pylab as plt
+        if ax is None:
+            fig,ax= plt.subplots()
+
+        ax.plot(np.log10(self.gamma),np.log10(self.n_gamma*self.gamma*self.gamma*self.gamma))
+        ax.set_xlabel(r'log($\gamma$)')
+        ax.set_ylabel(r'log(n($\gamma$))')
+        ax.set_ylim(y_min, y_max)
         plt.show()
 
         return ax,fig
@@ -365,21 +383,49 @@ class ElectronDistribution(object):
 
         if electron_distribution_name == 'lp':
             model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['r'] = ['spectral_curvature', -10, 10, '']
+            model_dic['r'] = ['spectral_curvature', -15, 15, '']
             model_dic['gamma0_log_parab'] = ['turn-over-energy', 1, None, 'Lorentz-factor', True]
 
         if electron_distribution_name == 'lppl':
             model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['r'] = ['spectral_curvature', -10, 10, '']
+            model_dic['r'] = ['spectral_curvature', -15, 15, '']
             model_dic['gamma0_log_parab'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
 
         if electron_distribution_name == 'lpep':
-            model_dic['r'] = ['spectral_curvature', -10, 10, '']
+            model_dic['r'] = ['spectral_curvature', -15, 15, '']
             model_dic['gammap_log_parab'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
 
         if electron_distribution_name == 'plc':
             model_dic['p'] = ['LE_spectral_slope', -10, 10, '']
             model_dic['gamma_cut'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+
+        if electron_distribution_name == 'spitkov':
+            model_dic['spit_index'] = ['LE_spectral_slope', -10, 10, '']
+            model_dic['spit_temp'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['spit_gamma_th'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+
+        if electron_distribution_name == 'lppl_pile_up':
+            model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
+            model_dic['r'] = ['spectral_curvature', -15, 15, '']
+            model_dic['gamma0_log_parab'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gamma_inj'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+
+            model_dic['gamma_pile_up'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['ratio_pile_up'] = ['turn-over-energy', 0, None, '']
+
+            model_dic['alpha_pile_up'] = ['turn-over-energy', 0.0, 10, '']
+           # model_dic['ratio_pile_up'] = ['turn-over-energy',0, None, '']
+
+        if electron_distribution_name == 'bkn_pile_up':
+            model_dic['p'] = ['LE_spectral_slope', -10, 10, '']
+            model_dic['p_1'] = ['HE_spectral_slope', -10, 10, '']
+            model_dic['gamma_break'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+
+            model_dic['gamma_pile_up'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gamma_pile_up_cut'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+
+            model_dic['alpha_pile_up'] = ['turn-over-energy', 0.0, 10, '']
+
 
         return model_dic
 
@@ -408,7 +454,62 @@ class JetSpecComponent(object):
         pass
 
 
-    
+
+class TempEvol(Model):
+
+    def __init__(self,verbose=None,out_dir='temp_ev',flag='test',clean_work_dir=True):
+
+        self._temp_ev = self.build(verbose=verbose)
+
+        self.set_path(out_dir, clean_work_dir=clean_work_dir)
+
+        self.set_flag(flag)
+
+    def build_TempEv(self,duration=1E5,
+                     TStart_Acc=0.,
+                     TStop_Acc=0.,
+                     TStart_Inj=0.,
+                     TStop_Inj=0.,
+                     T_esc_Coeff=1E60,
+                     Esc_Index=0.,
+                     Acc_Index=1.,
+                     Diff_Index=2.,
+                     T_SIZE=5000,
+                     NUM_SET=50,
+                     Lambda_max_Turb=1E30):
+
+
+        self._temp_ev = BlazarSED.MakeTempEv()
+
+        self._temp_ev.duration = duration
+        self._temp_ev.TStart_Acc = TStart_Acc
+        self._temp_ev.TStop_Acc = TStop_Acc
+        self._temp_ev.TStart_Inj = TStart_Inj
+        self._temp_ev.TStop_Inj = TStop_Inj
+        self._temp_ev.T_esc_Coeff = T_esc_Coeff
+        self._temp_ev.Esc_Index = Esc_Index
+        self._temp_ev.Acc_Index = Acc_Index
+        self._temp_ev.Diff_Index = Diff_Index
+        self._temp_ev.T_SIZE = T_SIZE
+        self._temp_ev.NUM_SET = NUM_SET
+        self._temp_ev.Lambda_max_Turb=Lambda_max_Turb
+
+
+    def set_path(self,path,clean_work_dir=True):
+        set_str_attr(self._temp_ev,'path',path)
+        #set_str(self._blob.path,path)
+        makedir(path,clean_work_dir=clean_work_dir)
+
+    def set_flag(self,flag):
+        self._temp_ev.STEM=flag
+
+
+    def run(self,jet):
+        BlazarSED.temp_evolution(jet._blob, self._temp_ev)
+
+
+
+
 class Jet(Model):
     """
 
@@ -438,7 +539,7 @@ class Jet(Model):
 
         self._scale='lin-lin'
 
-        self._blob = init_SED(verbose=verbose)
+        self._blob = self.build_blob(verbose=verbose)
 
         #self.jet_wrapper_dir=os.path.dirname(__file__)+'/jet_wrapper'
 
@@ -487,6 +588,55 @@ class Jet(Model):
 
         self.flux_plot_lim=1E-30
 
+    def build_blob(self,verbose=None):
+
+        blob = BlazarSED.MakeBlob()
+        # temp_ev=BlazarSED.MakeTempEv()
+
+        if verbose is None:
+            blob.verbose = 0
+        else:
+            blob.verbose = verbose
+
+        set_str_attr(blob, 'path', './')
+        # set_str(blob.path,'./')
+
+        set_str_attr(blob, 'MODE', 'custom')
+        # blob.MODE='custom'
+        blob.gamma_grid_size = 1000
+
+        blob.nu_IC_size = 50
+        blob.nu_seed_size = 100
+
+        blob.do_Sync = 2
+
+        blob.do_SSC = 1
+
+        blob.R = 3.0e15
+
+        blob.B = 0.1
+
+        blob.z_cosm = 0.1
+
+        blob.BulkFactor = 10
+        blob.theta = 0.1
+
+        blob.N = 100
+
+        blob.gmin = 2
+
+        blob.gmax = 1e8
+
+        blob.nu_start_Sync = 1e6
+        blob.nu_stop_Sync = 1e20
+
+        blob.nu_start_SSC = 1e14
+        blob.nu_stop_SSC = 1e30
+
+        blob.nu_start_grid = 1e6
+        blob.nu_stop_grid = 1e30
+
+        return blob
 
     def save_model(self,file_name):
         _model={}
@@ -552,7 +702,7 @@ class Jet(Model):
 
         self._electron_distribution_name=name
 
-        elec_models_list = ['lp', 'pl', 'lppl', 'lpep', 'plc', 'bkn']
+        elec_models_list = ['lp', 'pl', 'lppl', 'lpep', 'plc', 'bkn','spitkov','lppl_pile_up','bkn_pile_up']
 
         if name not in elec_models_list:
             print ("electron distribution model %s not allowed" % name)
@@ -955,9 +1105,6 @@ class Jet(Model):
     def set_path(self,path,clean_work_dir=True):
         set_str_attr(self._blob,'path',path)
         #set_str(self._blob.path,path)
-
-
-
         makedir(path,clean_work_dir=clean_work_dir)
 
     def set_SSC_mode(self,val):
@@ -1075,9 +1222,9 @@ class Jet(Model):
         print ("-----------------------------------------------------------------------------------------")
 
 
-    def plot_model(self,plot_obj=None,clean=False,autoscale=True,label=None,comp=None):
+    def plot_model(self,plot_obj=None,clean=False,autoscale=True,label=None,comp=None,sed_data=None):
         if plot_obj is None:
-            plot_obj=Plot()
+            plot_obj=Plot(sed_data=sed_data)
 
 
         if clean==True:
@@ -1137,6 +1284,8 @@ class Jet(Model):
             BlazarSED.EnergeticOutput(self._blob)
 
         nu_sed_sum,nuFnu_sed_sum= self.get_SED_points()
+        #print('nu_sed_sum,nuFnu_sed_sum',nu_sed_sum,nuFnu_sed_sum)
+
 
         if fill_SED==True:
 
@@ -1236,15 +1385,16 @@ class Jet(Model):
 
                 #print"%s %e %e"%(name,x[i],y[i])
 
-            msk=y>self.flux_plot_lim
+            msk=y<self.flux_plot_lim
 
-            x=x[msk]
-            y=y[msk]
+
+            y[msk]=self.flux_plot_lim
 
 
 
             if log_log==True:
-
+                msk = y < 0
+                y[msk] = self.flux_plot_lim
 
                 #x=x[msk]
                 #    y=y[msk]
@@ -1253,12 +1403,53 @@ class Jet(Model):
                 y=log10(y)
 
 
+
             return x,y
 
         except:
+            raise RuntimeError ('model evaluation failed in get_SED_points')
 
-            print ("no spectral model found with name",name)
 
+    def energetic_report(self,write_file=False,getstring=True,wd=None,name=None):
+
+        _energetic = BlazarSED.EnergeticOutput(self._blob,0)
+        _par_array=ModelParameterArray()
+
+        _name = [i for i in _energetic.__class__.__dict__.keys() if i[:1] != '_']
+        for _n in _name:
+            if _n[0]=='L':
+                par_type='Lum. rest. frme.'
+                units='erg/s'
+            if _n[0] == 'U':
+                par_type = 'Energy dens.'
+                units = 'erg/cm^3'
+            if _n[0] == 'j':
+                par_type = 'jet Lum.'
+                units = 'erg/s'
+            _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
+
+        print("-----------------------------------------------------------------------------------------")
+        print("jet eneregetic report:")
+        self._energetic_report = _par_array.show_pars(getstring=False)
+        self._energetic_report=_par_array.show_pars(getstring=getstring)
+        print("-----------------------------------------------------------------------------------------")
+
+        if write_file==True:
+
+            if wd is None:
+                wd = self.wd
+
+            if name is None:
+                name = 'energetic_report_%s' % self.name + '.txt'
+
+            outname = '%s/%s' % (wd, name)
+
+            outfile = open(outname, 'w')
+
+            for text in self._energetic_report:
+                print(text, file=outfile)
+
+            outfile.close()
 
 
 
@@ -1311,65 +1502,7 @@ def set_str_attr(obj,name,val):
         raise RuntimeError('error setting attr',name,'execption:',e)
 
 
-def init_SED(verbose=None):
-    
-   
-    
-    blob=BlazarSED.MakeBlob()
-    #temp_ev=BlazarSED.MakeTempEv()
 
-    if verbose is None:
-        blob.verbose=0
-    else:
-        blob.verbose=verbose
-
-    set_str_attr(blob,'path','./')
-    #set_str(blob.path,'./')
-
-    set_str_attr(blob,'MODE','custom')
-    #blob.MODE='custom'
-    blob.gamma_grid_size=1000
-    
-    blob.nu_IC_size =50
-    blob.nu_seed_size =100
-    
-    blob.do_Sync=2
-    
-    blob.do_SSC=1
-   
-    
-    blob.R=3.0e15
-    
-    blob.B=0.1
-    
-    blob.z_cosm=0.1
-
-    blob.BulkFactor=10
-    blob.theta=0.1
-    
-    
-    blob.N=100
-    
-    blob.gmin=2
-
-    blob.gmax=1e8
-    
-    
-     
-    
-    blob.nu_start_Sync = 1e6
-    blob.nu_stop_Sync = 1e20
-    
-    blob.nu_start_SSC=1e14
-    blob.nu_stop_SSC=1e30
-    
-    blob.nu_start_grid=1e6
-    blob.nu_stop_grid=1e30
-    
-    
-    
-    
-    return blob
 
 
 

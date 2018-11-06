@@ -153,14 +153,14 @@ class LogLinear(LogLogModel):
         
        
         self.K=-10
-        self.parameters.add_par(PolyParameter(self,name='K',par_type='flux-const',val=-10.0,val_min=-30.,val_max=0.,units='erg cm^-2 s^-1',log=True))
+        self.parameters.add_par(PolyParameter(self,name='K',par_type='flux-const',val=-10.0,val_min=None,val_max=None,units='erg cm^-2 s^-1',log=True))
         
          
         
     def log_func(self,log_nu):
     
             x_log=log_nu
-            
+            #print(x_log)
             #print self.Ep,self.Sp,self.b,self.c,x_log
             
             return self.K + self.alpha*(x_log)

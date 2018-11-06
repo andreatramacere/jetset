@@ -88,7 +88,7 @@ struct spettro {
     int SSC, EC, TOT;
 
     int do_Sync, do_SSC,do_IC,Sync_kernel;
-    int attesa_Sync_cooling, attesa_compton_cooling;
+    //int attesa_Sync_cooling, attesa_compton_cooling;
 
     unsigned long spec_array_size;
 
@@ -537,21 +537,33 @@ struct spettro {
     double gamma0_log_parab;
     //LPEP
     double gammap_log_parab;
-
+    //LPEP PILEUP
+    double gamma_inj;
     //Spit
-    double spit_index,spit_ratio,spit_cut,spit_cut1,spit_cut2;
+    double spit_index,spit_temp,spit_gamma_th;
+
+    //LPPL Pile-Up
+    double gamma_pile_up,gamma_pile_up_cut,alpha_pile_up;
+    double ratio_pile_up;
 
 };
 
 //===================================================================================
 
-
+struct jet_energetic{
+    double U_e,U_p,U_B;
+    double L_Sync_rf, L_SSC_rf, L_EC_Disk_rf,L_EC_BLR_rf, L_EC_DT_rf,L_EC_CMB_rf, L_PP_rf;
+    double jet_L_Sync,jet_L_SSC, jet_L_EC_Disk, jet_L_EC_BLR, jet_L_EC_DT,jet_L_EC_CMB,jet_L_PP;
+    double jet_L_rad,jet_L_kin, jet_L_tot, jet_L_e, jet_L_B, jet_L_p;
+};
 
 
 
 //=========================TEMPORAL EVOLUTION ================================
 
 struct temp_ev{
+    char STEM[256];
+    char path[256];
 
 	int do_EC_cooling_Disk;
 	int do_EC_cooling_BLR;
@@ -562,7 +574,7 @@ struct temp_ev{
 
 	int do_Sync_cooling;
 	int do_SSC_cooling;
-
+    int do_Compton_cooling;
 
 
 
@@ -588,6 +600,7 @@ struct temp_ev{
 	double TStop_Inj;
 	double TStart_Acc;
 	double TStop_Acc;
+	double Inj_temp_slope;
 	unsigned long NUM_SET;
 	unsigned long T_SIZE;
 	double duration,t_D0,t_DA0,t_A0;
@@ -627,6 +640,7 @@ struct spettro MakeBlob();
 struct temp_ev MakeTempEv();
 void Init(struct spettro *pt);
 void Run_SED(struct spettro *pt_base);
+void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev);
 double get_freq_array(double * arr, struct spettro *pt, unsigned long id);
 double get_elec_array(double * arr, struct spettro *pt, unsigned long id);
 //===================================================================================
@@ -661,6 +675,17 @@ void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N);
 void FindNe_NpGp(struct spettro *pt);
 double N_distr_interp(struct spettro *pt, double Gamma, double *griglia_gamma, double *N);
 double Find_gmax(struct spettro *pt, double *g, double *N);
+double pl_func(double Gamma,double p);
+double plc_func(double Gamma,double gamma_cut,double p);
+double bkn_func(double Gamma,double gamma_break,double p, double p_1);
+//double pile_up_ratio(double Gamma,double sigma,double gamma_inj,double gamma_eq);
+double bkn_pile_up_func(double Gamma,double gamma_inj, double p, double p_1,double gamma_eq, double gamma_cut ,double alpha);
+double lp_func(double Gamma,double gamma0,double r, double s);
+double lp_ep_func(double Gamma,double gamma_p,double r);
+double lppl_func(double Gamma,double gamma0, double r, double s);
+double pile_up_func(double Gamma, double gamma_pile_up_cut, double alpha_pile_up );
+double lppl_pile_up_func(double Gamma,double gamma0, double gamma_inj, double r, double s,double gamma_eq,double gamma_cut, double alpha);
+double spit_func(double Gamma,double gamma_th,double temp, double index);
 //===================================================================================
 
 
@@ -706,7 +731,7 @@ void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned long NU_INT_MAX, st
         double * nuLnu_peak_blob);
 
 
-void EnergeticOutput(struct spettro *pt);
+struct jet_energetic EnergeticOutput(struct spettro *pt, int write_file);
 
 double I_nu_to_Uph(double * nu, double * I_nu, unsigned long NU_INT_STOP);
 double Power_Photons(struct spettro *pt, double * nu, double * nu_Fnu, unsigned long NU_INT_STOP);
@@ -919,6 +944,7 @@ double eval_circle_secant_ratio(double z,double R,double mu);
 
 //===========================================================================================
 /*********************        FUNZIONI MATEMATICHE             *****************************/
+double st_gamma(double x);
 void beschb(double x, double *gam1, double *gam2, double *gampl,
         double *gammi);
 double chebev(float a, float b, float c[], int m, float x);

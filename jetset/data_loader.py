@@ -137,7 +137,7 @@ class ObsData(object):
     
     """
     
-    def __init__(self, data_file=None,dupl_filter=False, data_set_filter=None,UL_filtering=False,UL_value=0,**keywords):
+    def __init__(self, data_file=None,dupl_filter=False, data_set_filter=None,UL_filtering=False,UL_value=None,**keywords):
         
         """
             
@@ -151,7 +151,7 @@ class ObsData(object):
         self.data_file=data_file
         self.data_scale=None
         if data_set_filter is not None:
-            self.data_set_filter=data_set_filter.spliet(',')
+            self.data_set_filter=data_set_filter.split(',')
         else:
             self.data_set_filter=['No']
             
@@ -228,10 +228,11 @@ class ObsData(object):
         #have been initilized correctly
         print('col_types a', self.col_types)
         self.set_data_cols(self.col_types,self.col_nums)
-        for  var in vars(self):
-            if getattr(self,var) is None:
-                print ("var ",var , " is None, please set it")
-                raise ValueError
+        #for  var in vars(self):
+        #    print("var ", var, " is ", getattr(self,var))
+        #    if getattr(self,var) is None:
+        #       print ("var ",var , " is None, please set it")
+        #       raise ValueError
         print('col_types b', self.col_types)
        
         
@@ -282,7 +283,7 @@ class ObsData(object):
         sed_dt.append(('T_start', 'f8'))
         sed_dt.append(('T_stop', 'f8'))
         sed_dt.append(('data_set', 'S16'))
-        print ('ciccio',sed_dt)
+        #print ('ciccio',sed_dt)
         #_sed_dt=[]
         #for a in sed_dt:
         #    s=(str(a[0]),str(a[1]) )
@@ -302,7 +303,7 @@ class ObsData(object):
         self._col_dict['T_start']='T_start'
         self._col_dict['T_stop']='T_stop'
         self._col_dict['data_set']='data_set'
-        
+        self._col_dict['UL'] = 'UL'
         
         self._log_col_dict={'x':'nu_data_log'}
         self._log_col_dict['y']='nuFnu_data_log'
@@ -310,17 +311,19 @@ class ObsData(object):
         self._log_col_dict['dy']='dnuFnu_data_log'
         self._log_col_dict['T_start']='T_start'
         self._log_col_dict['T_stop']='T_stop'
-        self._log_col_dict['data_set']='data_set'
+        self._log_col_dict['UL']='UL'
         
         
         if self.data_scale=='lin-lin':
             self._file_col_dict= self._col_dict
             
         
-        if self.data_scale=='log-log':
+        elif self.data_scale=='log-log':
              self._file_col_dict= self._log_col_dict
         
-        
+        else:
+            raise RuntimeError('data_scale not specified')
+
         print  (section_separator)
         
         
@@ -395,6 +398,7 @@ class ObsData(object):
     
         
         #print self.data_set_filter
+        print("---> final data len",self.data.size)
         print  (section_separator)
     
     
@@ -521,7 +525,7 @@ class ObsData(object):
               
           print('col_types c',col_types)
         
-          allowed=['x','y','dx','dy','T_start','Tstart','T_stop','Tstop','data_set','DataSet']
+          allowed=['x','y','dx','dy','T_start','Tstart','T_stop','Tstop','data_set','DataSet','UL']
           name_list=col_types.split(',')
 
 
@@ -622,12 +626,12 @@ class ObsData(object):
         
         
         #sets fake error column
-        self.data['dnuFnu_facke_log']=np.ones(self.data['nu_data_log'].size)*self.facke_error
-        self.data['dnuFnu_facke']=self.data['nuFnu_data']*self.facke_error
+        #self.data['dnuFnu_facke_log']=np.ones(self.data['nu_data_log'].size)*self.facke_error
+        #self.data['dnuFnu_facke']=self.data['nuFnu_data']*self.facke_error
         
         #sets fake error for UL
-        self.data['dnuFnu_data'][self.data['UL']]=self.data['dnuFnu_facke'][self.data['UL']]
-        self.data['dnuFnu_data_log'][self.data['UL']]=self.data['dnuFnu_facke_log'][self.data['UL']]
+        #self.data['dnuFnu_data'][self.data['UL']]=self.data['dnuFnu_facke'][self.data['UL']]
+        #self.data['dnuFnu_data_log'][self.data['UL']]=self.data['dnuFnu_facke_log'][self.data['UL']]
     
         
         
@@ -704,7 +708,7 @@ class ObsData(object):
         msk=np.ones( self.data['nu_data'].size, dtype=bool)
         for filter in filters:
         
-            msk1=self.data['data_set'] == filter
+            msk1=np.char.decode(self.data['data_set']) == filter
             msk=msk*msk1
         if exclude==True:
             msk=np.invert(msk)
@@ -721,26 +725,28 @@ class ObsData(object):
             self.set_error(self.facke_error)
 
         
-    def set_UL(self,val=0.0):
+    def set_UL(self,val=None):
         
         self.UL_value=val
 
+        if self.UL_value is not None:
+            print("---> setting  UL")
+            if 'dy' in self.col_types and self.data_scale=='lin-lin':
+                print ("---> Settin  UL for val",val)
+                error_array=self.data['dnuFnu_data']
 
-        if 'dy' in self.col_types and self.data_scale=='lin-lin':
-            print ("---> Settin  UL for val",val)
-            error_array=self.data['dnuFnu_data']
-                       
-        
-        elif 'dy' in self.col_types and self.data_scale=='log-log':
-            print ("---> filtering for UL")
-            error_array=self.data['dnuFnu_data_log']
 
-        else:
-            error_array=None
+            elif 'dy' in self.col_types and self.data_scale=='log-log':
 
-        if error_array is not None:
-            self.data['UL']=error_array<val
-            
+                error_array=self.data['dnuFnu_data_log']
+
+            else:
+                error_array=None
+
+            if error_array is not None:
+                self.data['UL']=error_array<val
+
+
         
         
     def set_zero_error(self,val=0.2,replace_zero=True):
@@ -753,7 +759,7 @@ class ObsData(object):
                        
         
         elif 'dy' in self.col_types and self.data_scale=='log-log':
-            print ("---> filtering for UL")
+
             error_array=self.data['dnuFnu_data_log']
         
         else:
@@ -1142,36 +1148,38 @@ class ObsData(object):
     
     def get_data_sets(self):
         shown=[]
-        for entry in self.data['data_set']:
+        for entry in np.unique(self.data['data_set']):
             if entry not in shown:
-                shown.append(entry)
+                shown.append(entry.decode('UTF-8'))
         
         return shown
     
     
-    def plot_time_spans(SEDdata,save_as=None):
+    def plot_time_spans(self,save_as=None):
         import pylab as plt
         
         fig=plt.figure(figsize=(12,9))
         ax1 = fig.add_subplot(111)
         ax1.set_xlabel('MJD')
-        data_sets=SEDdata.get_data_sets()
+        data_sets=self.get_data_sets()
         y=0
         line_style='-'
         for data_set in data_sets:
             print (data_set)
             
-            try:
+            #try:
                 
-                T1,T2,dT,n=SEDdata.get_time_span(data_set=data_set)
-                if T1!=-1:
-                    ax1.plot([T1,T2],[y,y],label=data_set,lw=3,marker='o')
-                    x=(T1+T2)/2
-                    ax1.text(x,y+0.3,data_set+' (%d)'%n)
-                    y=y+1
-                    print("---->", dT,T1,T2,y)
-            except:
-                print ("no Time span for data_set",data_set)
+            T1,T2,dT,n=self.get_time_span(data_set=data_set)
+            print(T1,T2,dT,n)
+            if T1!=-1:
+                ax1.plot([T1,T2],[y,y],label=data_set,lw=3,marker='o')
+                x=(T1+T2)/2
+                ax1.text(x,y+0.3,data_set+' (%d)'%n)
+                y=y+1
+                print("---->", dT,T1,T2,y)
+            #except Exception as e:
+            #    print ('Exception',e)
+            #    print ("no Time span for data_set",data_set)
             
         ax1.set_ylim(-0.5,y+0.5)
         fig.show()
@@ -1201,10 +1209,10 @@ class ObsData(object):
             DT=T2-T1
             nT=self.data['T_start'][m1].size
             
-        elif  data_set  in self.data['data_set']:
+        elif  data_set  in self.data['data_set'].astype(str):
         
             m1= self.data['T_start']!=0
-            m2=self.data['data_set']==data_set
+            m2=self.data['data_set'].astype(str)==data_set
             if self.data['data_set'][m2].size>0:
                 try:
                     T1=self.data['T_start'][m1*m2].min()

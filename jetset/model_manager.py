@@ -157,23 +157,26 @@ class FitModel(Model):
         if analytical is not None:
             self.add_component(analytical)
         
-    def PlotModel(self,Plot,clean=False,autoscale=False,label=None):
+    def PlotModel(self,Plot,clean=False,autoscale=False,label=None,plot_components=False):
         if Plot is not None:
             if clean==True:
                 Plot.clean_model_lines()
-            for model_comp in self.components:
-               
-                try:
-                    #print"model name", model_comp.name
-                    model_comp.PlotModel(Plot,autoscale=autoscale)
-                except:
-                    Plot.add_model_plot(model_comp,autoscale=autoscale)
-                
-                if label is None:
-                    label=self.name    
-            
+            if plot_components ==True:
+                for model_comp in self.components:
+
+                    try:
+                        #print"model name", model_comp.name
+                        model_comp.PlotModel(Plot,autoscale=autoscale)
+                    except:
+                        Plot.add_model_plot(model_comp,autoscale=autoscale)
+
+                    if label is None:
+                        label=self.name
+
             #composite model
-            
+            if label is None:
+                label=self.name
+
             Plot.add_model_plot(self.SED,autoscale=autoscale,label=label)
             
         else:
@@ -348,7 +351,7 @@ class FitModel(Model):
             
             if np.shape(nu)==():
  
-                nu=array([nu])
+                nu=np.array([nu])
             
             if loglog==True:
                 lin_nu=np.power(10.,nu)
@@ -397,7 +400,10 @@ class FitModel(Model):
         else:
             
             return None
-    
+
+
+
+
 # #!! aggiornare con i buoundaries di jet_paramter   
 # def set_param_rage(par_name,par_val):
 #     

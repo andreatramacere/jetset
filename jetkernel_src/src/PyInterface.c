@@ -47,10 +47,8 @@ void show_blob(struct spettro pt ) {
     printf("gamma_break=%e\n", pt.gamma_break);
     printf("gamma_cut=%e\n", pt.gamma_cut);
     printf("spit_index=%e\n", pt.spit_index);
-    printf("spit_ratio=%e\n", pt.spit_ratio);
-    printf("spit_cut=%e\n", pt.spit_cut);
-    printf("spit_cut1=%e\n", pt.spit_cut1);
-    printf("spit_cut2=%e\n", pt.spit_cut2);
+    printf("spit_temp=%e\n", pt.spit_temp);
+    printf("spit_gamma_th=%e\n", pt.spit_gamma_th);
     printf("r=%e\n", pt.r);
     printf("s=%e\n", pt.s);
     printf("gamma0_log_parab(lp,lppl)=%e\n", pt.gamma0_log_parab);
@@ -137,6 +135,7 @@ struct temp_ev MakeTempEv() {
     ev_root.TStop_Inj=3e4;
     ev_root.TStart_Acc=0.0;
     ev_root.TStop_Acc=3e4;
+    ev_root.Inj_temp_slope=0.0;
     ev_root.NUM_SET=50;
     ev_root.T_SIZE=1000;
     ev_root.duration=3e4;
@@ -198,19 +197,22 @@ struct spettro MakeBlob() {
     spettro_root.gamma_break = 1.0e4;
     spettro_root.gamma_cut = 1.e4;
     spettro_root.spit_index = 2.4;
-    spettro_root.spit_ratio = 1.0e12;
-    spettro_root.spit_cut = 1.0e4;
-    spettro_root.spit_cut1 = 1.0e6;
-    spettro_root.spit_cut2 = 3.0e6;
+    spettro_root.spit_temp = 1.0e3;
+    spettro_root.spit_gamma_th = 1.0e4;
     spettro_root.r = 0.4;
     spettro_root.s = 2.0;
     spettro_root.gamma0_log_parab = 1.0e4;
     spettro_root.gammap_log_parab = 1.0e4;
+    spettro_root.gamma_inj = 1.0e3;
     spettro_root.gmin = 1.0e1;
     spettro_root.gmax = 1.0e5;
     spettro_root.gmin_griglia = -1.0;
     spettro_root.gmax_griglia = -1.0;
-    
+    spettro_root.gamma_pile_up=1E5;
+    spettro_root.gamma_pile_up_cut=5E5;
+    spettro_root.alpha_pile_up=1;
+    //spettro_root.ratio_pile_up=1E-3;
+
     
     spettro_root.do_EC_Disk = 0;
     spettro_root.do_EC_BLR = 0;
@@ -728,7 +730,21 @@ void SetDistr(struct spettro *pt) {
     if (strcmp(pt->DISTR, "spitkov") == 0) {
         pt->TIPO_DISTR = 7;
     }
-        
+
+    if (strcmp(pt->DISTR, "lppl_pile_up") == 0) {
+        pt->TIPO_DISTR = 9;
+    }
+
+    if (strcmp(pt->DISTR, "bkn_pile_up") == 0) {
+        pt->TIPO_DISTR = 10;
+    }
+
+    if (strcmp(pt->DISTR, "custom") == 0) {
+        pt->TIPO_DISTR = 1;
+    }
+
+
+
     if (pt->verbose) {
      printf("tipo di distribuzione %d\n",pt->TIPO_DISTR);
     }

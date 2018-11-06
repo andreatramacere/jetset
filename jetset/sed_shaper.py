@@ -106,7 +106,7 @@ class index(object):
     """
     
     def __init__(self,name=None,data_type=None,val=None,err=None,idx_range=[]):
-        index_names=['radio','radio_mm','mm_IR','IR_Opt','Opt_UV','BBB','X','UV_X','Fermi']
+        index_names=['radio','radio_mm','mm_IR','IR_Opt','Opt_UV','BBB','X','UV_X','Fermi','TeV']
 
         data_type_allowed=['spectral','photon','sed']
         
@@ -192,7 +192,7 @@ def spectral_index_range(name):
         spectral_range_dic['BBB']=[15,16]
         spectral_range_dic['X']=[16,19]
         spectral_range_dic['Fermi']=[22.38,25.38]
-        
+        spectral_range_dic['TeV'] = [25.00, 28.38]
         return spectral_range_dic[name]
         
         
@@ -340,6 +340,7 @@ class SEDShape(object):
         self.indices.add_index(name='UV_X',data_type='sed')
         self.indices.add_index(name='X',data_type='sed')
         self.indices.add_index(name='Fermi',data_type='sed')
+        self.indices.add_index(name='TeV', data_type='sed')
         
         self.SEDdata=SEDdata
         
@@ -444,7 +445,8 @@ class SEDShape(object):
     
     
     
-    
+
+
     def eval_indices(self):
         """
         
@@ -461,41 +463,41 @@ class SEDShape(object):
         self.index_models=[]
         
         for index in self.indices.idx_array:
-            self.check_adapt_range_size(self.SEDdata.data['nu_data_log'],index,3)
-            #try:
+            do_fit=self.check_adapt_range_size(self.SEDdata.data['nu_data_log'],index,3)
+            if do_fit==True:
 
-            loglog_pl=FitModel(name='%s'%index.name,loglog_poly=LogLinear())
+                loglog_pl=FitModel(name='%s'%index.name,loglog_poly=LogLinear())
+                print(10.**index.idx_range[0],10.**index.idx_range[1])
+                best_fit=fit_SED(loglog_pl,self.SEDdata,10.**index.idx_range[0],10.**index.idx_range[1],loglog=True,silent=True,fitname='spectral-indices-best-fit')
 
-            best_fit=fit_SED(loglog_pl,self.SEDdata,10.**index.idx_range[0],10.**index.idx_range[1],loglog=True,silent=True,fitname='spectral-indices-best-fit')
-
-            #val,err=do_linear_fit(self.SEDdata.nu_data_log,self.SEDdata.nuFnu_data_log,dy=self.SEDdata.dnuFnu_data_log,x_range=index.idx_range)
-
-
+                #val,err=do_linear_fit(self.SEDdata.nu_data_log,self.SEDdata.nuFnu_data_log,dy=self.SEDdata.dnuFnu_data_log,x_range=index.idx_range)
 
 
-            par=loglog_pl.parameters.get_par_by_name('alpha')
 
 
-            index.assign_val(par.best_fit_val,par.best_fit_err)
+                par=loglog_pl.parameters.get_par_by_name('alpha')
 
 
-            index.show_val()
+                index.assign_val(par.best_fit_val,par.best_fit_err)
 
-            self.index_models.append(loglog_pl)
 
-            best_fit.show_report()
-            print ()
-            print ()
-                
-            #except Exception as e:
-            #    print "--->fit failed for %s"%index.name
-            #    print 'message',e.message
-             #   ex_type, ex, tb = sys.exc_info()
-             #   print('tb =====>')
-             #   traceback.print_tb(tb)
-             #   print('   <=====')
+                index.show_val()
 
-               # pass
+                self.index_models.append(loglog_pl)
+
+                best_fit.show_report()
+                print ()
+                print ()
+
+                #except Exception as e:
+                #    print "--->fit failed for %s"%index.name
+                #    print 'message',e.message
+                 #   ex_type, ex, tb = sys.exc_info()
+                 #   print('tb =====>')
+                 #   traceback.print_tb(tb)
+                 #   print('   <=====')
+
+                   # pass
          
         
             
@@ -853,6 +855,7 @@ class SEDShape(object):
         
         
     def check_adapt_range_size(self,x,index,min_size):
+        do_fit=True
         x_range=[index.idx_range[0],index.idx_range[1]]
         msk = filter_interval(x,x_range)
         x1=x[msk]
@@ -867,10 +870,14 @@ class SEDShape(object):
             x1=x[msk]
 
         if len(x1)>=min_size:
+            do_fit=True
             index.idx_range=x_range
             print ("---> range for index%s updated to [%f,%f]"%(index.name,index.idx_range[0],index.idx_range[1] ))
+        else:
+            do_fit=False
+            print("---> not enough data in range for index%s " % (index.name))
 
-
+        return  do_fit
     
 def find_E0(b,a,Ep):
     """returns the value of E0  for

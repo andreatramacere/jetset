@@ -18,7 +18,7 @@
  *
  */
 
-void temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
+    void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
     unsigned long i, E_SIZE, E_N_SIZE, Gamma, T, TMP;
     double Q_scalig_factor;
 
@@ -50,7 +50,7 @@ void temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
     //    E_kin=E-mec2=mec2(gamma-1)
     //    x=E_kin/mec2=(g-1)=beta*gamma
     //------------------------------------------------------------------
-
+    
 
     /*
       fscanf(fp,"%s %d",stringa,&dato_i);
@@ -87,30 +87,31 @@ void temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
     	pt_ev->do_Sync_cooling=1;
     }
 
-    if (pt_spec->do_SSC>0){
-    	pt_ev->do_SSC_cooling=1;
-    }
+    if (pt_ev->do_Compton_cooling>0);{
+        if (pt_spec->do_SSC>0){
+            pt_ev->do_SSC_cooling=1;
+        }
 
-    if (pt_spec->do_EC_Disk>0){
-    	pt_ev->do_EC_cooling_Disk=1;
-    }
+        if (pt_spec->do_EC_Disk>0){
+            pt_ev->do_EC_cooling_Disk=1;
+        }
 
-    if (pt_spec->do_EC_BLR>0){
-    	pt_ev->do_EC_cooling_BLR=1;
-    }
+        if (pt_spec->do_EC_BLR>0){
+            pt_ev->do_EC_cooling_BLR=1;
+        }
 
-    if (pt_spec->do_EC_DT>0){
-    	pt_ev->do_EC_cooling_DT=1;
-    }
+        if (pt_spec->do_EC_DT>0){
+            pt_ev->do_EC_cooling_DT=1;
+        }
 
-    if (pt_spec->do_EC_Star>0){
-    	pt_ev->do_EC_cooling_Star=1;
-    }
+        if (pt_spec->do_EC_Star>0){
+            pt_ev->do_EC_cooling_Star=1;
+        }
 
-    if (pt_spec->do_EC_CMB>0){
-    	pt_ev->do_EC_cooling_CMB=1;
+        if (pt_spec->do_EC_CMB>0){
+            pt_ev->do_EC_cooling_CMB=1;
+        }
     }
-
     //--------------ALLOCATION OF DYNAMICAL ARRAYS-----------------------
     //--------------SIZE DEFINITION------------------
     //T_SIZE=10000;
@@ -249,28 +250,32 @@ void temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
     printf("Tstop_Acc=%e(s) %e(R/c)\n", pt_ev->TStop_Acc, pt_ev->TStop_Acc / pt_ev->t_unit);
     //----------------------------------
 
-    printf("Tesc=%e\n", pt_ev->T_esc_Coeff);
-    printf("T_Cooling=  T_cooling(g=1)   =%e(s) %e(R/c)\n", Sync_tcool(pt_spec, 1.0), Sync_tcool(pt_spec, 1.0) / pt_ev->t_unit);
-    printf("T_A0  =1/ACC_COEFF      =%e(s) %e(R/c)\n", pt_ev->t_A0, pt_ev->t_A0 / pt_ev->t_unit);
-    printf("T_D0  =1/DIFF_COEFF     =%e(s) %e(R/c)\n", pt_ev->t_D0, pt_ev->t_D0/ pt_ev->t_unit);
-    printf("T_DA0=1/(2DIFF_COEFF)  =%e(s) %e(R/c)\n", pt_ev->t_DA0, (pt_ev->t_DA0 / pt_ev->t_unit));
-    printf("\n");
+
 
 
 
     printf("\n");
+
+    sprintf(stringa, "%s%s-inj-profile.dat", pt_ev->path, pt_ev->STEM);
+    fp = fopen(stringa, "w");
+    if (fp == NULL) {
+    	printf("warning non riesco ad aprire %s\n", fp);
+        exit(1);
+    }
+    fprintf(fp, "#t inj_prof\n");
 
     t = 0;
     for (T = 0; T < pt_ev->T_SIZE; T++) {
         t = t + deltat;
         //printf("T=%d\n",T);
         T_inj[T] = Inj_temp_prof(t, pt_ev);
+        fprintf(fp, "%e %e \n",t,T_inj[T]);
     }
-
-    sprintf(stringa, "%s%s-t_cool_t_acc.dat", pt_spec->path, pt_spec->STEM);
-
+    fclose(fp);
 
 
+    sprintf(stringa, "%s%s-t_cool_t_acc.dat", pt_ev->
+    path, pt_ev->STEM);
     fp = fopen(stringa, "w");
     if (fp == NULL) {
     	printf("warning non riesco ad aprire %s\n", fp);
@@ -337,6 +342,21 @@ void temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
     printf("gamma_eq_Diff= %e\n",pt_ev->gamma_eq_t_D);
 
 
+
+
+    printf("T_Cooling=  T_cooling(gamma=%e)   =%e(s) %e(R/c)\n", x[0]+1, Sync_tcool(pt_spec, x[0]+1), Sync_tcool(pt_spec, x[0]+1) / pt_ev->t_unit);
+    printf("T_Cooling=  T_cooling(gamma=%e)   =%e(s) %e(R/c)\n",x[E_SIZE-1]+1, Sync_tcool(pt_spec,  x[E_SIZE-1]+1), Sync_tcool(pt_spec,  x[E_SIZE-1]+1) / pt_ev->t_unit);
+    printf("T_Cooling=  T_cooling(gamma_eq=gamma_eq_Diff)   =%e(s) %e(R/c)\n", Sync_tcool(pt_spec,  pt_ev->gamma_eq_t_D), Sync_tcool(pt_spec, pt_ev->gamma_eq_t_D) / pt_ev->t_unit);
+    printf("T_A0  =1/ACC_COEFF      =%e(s) %e(R/c)\n", pt_ev->t_A0, pt_ev->t_A0 / pt_ev->t_unit);
+    printf("T_D0  =1/DIFF_COEFF     =%e(s) %e(R/c)\n", pt_ev->t_D0, pt_ev->t_D0/ pt_ev->t_unit);
+    printf("T_DA0=1/(2DIFF_COEFF)  =%e(s) %e(R/c)\n", pt_ev->t_DA0, (pt_ev->t_DA0 / pt_ev->t_unit));
+    printf("Tesc=%e\n", pt_ev->T_esc_Coeff);
+    printf("T_A0/T_esc=%e\n",  pt_ev->t_A0/pt_ev->T_esc_Coeff);
+    printf("T_D0/T_esc=%e\n",  pt_ev->t_D0/pt_ev->T_esc_Coeff);
+    printf("T_DA0/T_esc=%e\n", pt_ev->t_DA0/pt_ev->T_esc_Coeff);
+    printf("\n");
+
+
     //-----Injection and Escape Terms-------
     Init(pt_spec);
     EvalU_e(pt_spec);
@@ -369,13 +389,13 @@ void temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
 
 
 
-    strcpy(old, pt_spec->STEM);
+    strcpy(old, pt_ev->STEM);
     T=0;
-    sprintf(name, "%s-TSTEP=%6.6d", pt_spec->STEM, T);
-    strcpy(pt_spec->STEM, name);
+    sprintf(name, "%s-TSTEP=%6.6d", pt_ev->STEM, T);
+    strcpy(pt_ev->STEM, name);
     sprintf(name1, "distr-e-inj.dat");
     Scrivi_N_file(pt_spec, name1, pt_spec->griglia_gamma_Ne_log, pt_spec->Ne);
-    strcpy(pt_spec->STEM, old);
+    strcpy(pt_ev->STEM, old);
 
     //---------------------------------------------------------------------
 
@@ -389,7 +409,7 @@ void temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
 
 
     //--------FILES IN USCITA-----------
-    sprintf(stringa, "%s%s-distr-e-evol.dat", pt_spec->path, pt_spec->STEM);
+    sprintf(stringa, "%s%s-distr-e-evol.dat", pt_ev->path, pt_ev->STEM);
 
 
 
@@ -408,8 +428,8 @@ void temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
     //--------------Loop over Gamma------------------------------------------
     t = 0;
     for (T = 0; T < pt_ev->T_SIZE; T++) {
-        printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>  temporal evolution step=%d,%e,%e <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n", T, OUT_FILE,COUNT_FILE);
-        if (pt_spec->attesa_compton_cooling == 1) {
+        //printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>  temporal evolution step=%d,%e,%e <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n", T, OUT_FILE,COUNT_FILE);
+            if (pt_ev->do_Compton_cooling == 1) {
             printf(">>>>>>>>>>>>>>>> Eval Sync \n");
             //Run_SED(pt_spec, pt_ev);
             spettro_sincrotrone(1, pt_spec);
@@ -569,14 +589,18 @@ void temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
 
 
         if ((OUT_FILE >= 0) || (T==pt_ev->T_SIZE-1)) {
-            strcpy(old, pt_spec->STEM);
-            sprintf(name, "%s-TSTEP=%6.6d", pt_spec->STEM, T);
+            printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>  temporal evolution step=%d, t_sim frac=%e, t_sim=%e <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n", T, t/duration,t);
+            strcpy(old, pt_ev->STEM);
+            sprintf(name, "%s-TSTEP=%6.6d", pt_ev->STEM, T);
+            strcpy(pt_ev->STEM, name);
             strcpy(pt_spec->STEM, name);
             sprintf(name1, "distr-e-evol.dat");
+
             EvalU_e(pt_spec);
             Run_SED(pt_spec);
+
             Scrivi_N_file(pt_spec, name1, pt_spec->griglia_gamma_Ne_log, pt_spec->Ne);
-            strcpy(pt_spec->STEM, old);
+            strcpy(pt_ev->STEM, old);
 
             for (Gamma = 0; Gamma < E_SIZE; Gamma++) {
                 if (pt_spec->Ne[Gamma] != 0) {
@@ -597,7 +621,7 @@ void temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
 
         }
         //---------------------------------------
-        printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>> ------------------------  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n");
+        //printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>> ------------------------  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n");
     }
     //--------------END Loop over Time-----------------------------------------------
 

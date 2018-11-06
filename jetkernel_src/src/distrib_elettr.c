@@ -65,14 +65,14 @@ void Genera_Ne(struct spettro *pt) {
         printf("Set array per Ne \n");
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
     }
-    
+    //printf("Set array per Ne %s \n",pt->DISTR);
     //Generate the gamma-grid for Ne(gamma)
     pt->griglia_gamma_Ne_log = (double*) malloc(pt->gamma_grid_size * sizeof (double));
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log);
 
     // Associa TIPO_DISTR  all stringa DISTR
     SetDistr(pt);
-
+    //printf("Set array per Ne %d \n",pt->TIPO_DISTR);
     //Fill Ne
     pt->Ne = (double*) malloc(pt->gamma_grid_size * sizeof (double));
     Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Ne);
@@ -213,7 +213,9 @@ void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
 
 
         for (i = 0; i < pt->gamma_grid_size; i++) {
-            if (N[i] > 0) {
+            if (N[i] <= 0/0) {
+                N[i]=1E-200;
+            }
                 fprintf(fp_distr, "%e\t%e\t%e\t%e\t%e\t%e\n",
                         log10(g[i]),
                         log10(N[i]),
@@ -221,7 +223,7 @@ void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
                         N[i],
                         g[i] * mass,
                         N[i] / mass);
-            }
+            //}
         }
     }
     fclose(fp_distr);
@@ -450,6 +452,140 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
 }
 
 
+double pl_func(double Gamma,double p){
+    return   pow(Gamma, -p) ;
+}
+
+double plc_func(double Gamma,double gamma_cut,double p){
+  return   pow(Gamma, -p) * exp(-Gamma / gamma_cut);
+}
+
+double bkn_func(double Gamma,double gamma_break,double p, double p_1){
+     double a=0.;
+     if (Gamma< gamma_break){
+        a= pow(Gamma, -p);
+      } else {
+        a=  pow(gamma_break, -(p -p_1)) * pow(Gamma, -p_1);
+      }
+
+     return a;
+}
+
+double lp_func(double Gamma,double gamma0,double r, double s){
+    return  pow((Gamma / (gamma0)),(-s -r*log10(Gamma /gamma0 )));
+}
+
+
+double lp_ep_func(double Gamma,double gamma_p,double r){
+    return  pow(10, (-r * pow(log10(Gamma /gamma_p), 2)));
+}
+
+double lppl_func(double Gamma,double gamma0, double r, double s){
+    double a=0.;
+
+
+    if (Gamma < gamma0) {
+        a= pow((Gamma / gamma0), (- s));
+    }
+    if (Gamma >= gamma0 ) {
+        a= pow((Gamma / (gamma0)),
+                (-s -r*log10(Gamma /gamma0 )));
+    }
+
+    //printf("Gamma=%e %e %e\n", Gamma,gamma0,a);
+    return a;
+    }
+
+
+//double pile_up_ratio(double Gamma,double sigma,double gamma_eq){
+//     return pow(gamma_eq*,-sigma-2.)*st_gamma(sigma-1.)/st_gamma(2.*sigma+2.);
+//}
+
+double pile_up_func(double Gamma, double gamma_eq, double alpha){
+    return Gamma*Gamma*exp(-pow((Gamma/gamma_eq),alpha)/alpha);
+}
+
+double lppl_pile_up_func(double Gamma,double gamma0, double gamma_inj,double r, double s,double gamma_eq, double ratio_pile_up ,double alpha){
+    double a,b,s1;
+    //ratio_pile_up;
+    b=0;
+    a=0;
+    
+    //ratio_pile_up=lppl_func(gamma_cut,gamma0, r, s);
+    //ratio_pile_up*=1.0/pile_up_func(gamma_cut,gamma_eq,alpha);
+    //ratio_pile_up=pow(gamma_eq,-s-2.0)*st_gamma(s-1.0)/st_gamma(2*s+2.0);
+    //printf("gamma_inj %e \n",gamma_inj);
+    s1=s+0.5;
+    if (Gamma< gamma_inj){
+        b= pow(Gamma/gamma0,s1);
+    } else {
+        b= pow(gamma_inj/gamma0,s1+s)*lppl_func(Gamma,gamma0, r, s);
+    }
+    
+    
+    
+    //a=  pow(gamma_inj,2.0*p_1+1)*(2.*p_1+1.);
+    a= ratio_pile_up*pile_up_func(Gamma,gamma_eq,alpha);
+
+
+
+    return (a+b);
+}
+
+double bkn_pile_up_func(double Gamma,double gamma_inj, double p, double p_1,double gamma_eq, double gamma_cut ,double alpha){
+    double a,b,ratio_pile_up;
+    b=0;
+    a=0;
+    //ratio_pile_up=bkn_func(gamma_cut,gamma_break, p, p_1);
+    //ratio_pile_up*=1.0/pile_up_func(gamma_cut,gamma_eq,alpha);
+
+    //ratio_pile_up=st_gamma(p_1-1.0)/st_gamma(2*p_1+2.0)*pow(gamma_eq,-p_1-2.0);
+    //if (Gamma < gamma_cut*0.01) {
+
+//        b=bkn_func(Gamma,gamma_break, p, p_1);
+  //  }
+
+
+
+    //if (Gamma >=gamma_cut*0.01 && Gamma<gamma_eq*10){
+
+    if (Gamma<gamma_inj){
+
+         b= 1.0/(2.0*p_1+1.0)*pow(gamma_inj,-p_1-2.0)*pow(Gamma,p_1+1);
+    }
+    else {
+         b= 1.0/(2.0*p_1+1.0)*pow(gamma_inj,p_1-1.0)*pow(Gamma,-p_1)*exp(-(Gamma/gamma_cut));
+
+
+         ratio_pile_up=st_gamma(p_1-1.)/st_gamma(2.*p_1+2.);
+         ratio_pile_up*= pow(gamma_inj,p_1-1.0)*pow(gamma_eq,-p_1-2.0);
+         a= ratio_pile_up*pile_up_func(Gamma,gamma_eq,alpha);
+   }
+
+
+    return (a+b);
+}
+
+
+double spit_func(double Gamma,double gamma_th,double temp, double index){
+    double a,b,c,f=0.;
+    if (Gamma < gamma_th) {
+            a=(Gamma*Gamma)/(2.0*temp*temp*temp);
+            b=exp(-(Gamma,temp));
+
+            f= a*b;
+        } else {
+            a=( gamma_th* gamma_th)/(2.0* temp* temp* temp);
+            b=exp(-( gamma_th/ temp));
+            c= pow((Gamma/ gamma_th), -index);
+            f= a*b*c;
+
+        }
+
+    return f;
+}
+
+
 
 //==============================================================
 // N_distr
@@ -464,87 +600,29 @@ double N_distr(struct spettro *pt_N, double Gamma) {
      * il calcolo degli spettri di sincrotrone ed di IC/EC                              \n
      *
      */
-    double a, a1;
-    double log_a;
+
+    double a ;
 
 
-    //Distribuzioni energetiche degli elettroni nel caso statico
+    a=0.;
 
-
-    //PL
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 0) {
-        return pt_N->N * pow(Gamma, -(pt_N->p)) / pt_N->N_0;
-    }
-
-
-    //PL CON EXP CUTOFF
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 1) {
-        return pt_N->N * pow(Gamma, -(pt_N->p)) * exp(-Gamma / pt_N->gamma_cut) / pt_N->N_0;
-    }
-
-    //PL BROCKEN
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 2) {
-        if (Gamma >= pt_N->gmin && Gamma <= pt_N->gamma_break)return pt_N->N * pow(Gamma, -pt_N->p) / pt_N->N_0;
-        if (Gamma > pt_N->gamma_break && Gamma <= pt_N->gmax) {
-            return pt_N->N * pow(pt_N->gamma_break, -(pt_N->p - pt_N->p_1)) * pow(Gamma, -pt_N->p_1) / pt_N->N_0;
-        }
-    }
-
-    //LOG PARABOLA
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 3) {
-        return pt_N->N * pow((Gamma / (pt_N->gamma0_log_parab)),
-                (-pt_N->s - pt_N->r * log10(Gamma / pt_N->gamma0_log_parab))) / pt_N->N_0;
-    }
-
-    //LOG PARABOLA CON PICCO
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 4) {
-        return pt_N->N * pow(10, (-pt_N->r * pow(log10(Gamma / pt_N->gammap_log_parab), 2))) / pt_N->N_0;
-    }
-
-    //LOG PARABOLA CON PL
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 5) {
-
-        //Gamma<Gamma_c PL
-        if (Gamma < pt_N->gamma0_log_parab) {
-            return pt_N->N * pow((Gamma / pt_N->gamma0_log_parab),
-                    (-pt_N->s)) / pt_N->N_0;
-        }
-
-        //Gamma>Gamma_c LOGPAR
-        if (Gamma >= pt_N->gamma0_log_parab && Gamma <= pt_N->gmax) {
-            return pt_N->N * pow((Gamma / (pt_N->gamma0_log_parab)),
-                    (-pt_N->s - pt_N->r * log10(Gamma / pt_N->gamma0_log_parab))) / pt_N->N_0;
-        }
-    }
-
-    //Spit
-    double emin, norm, x, x_min;
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 7) {
-        emin = 7.0 * pt_N->spit_cut;
-        a = 0.;
-        x = Gamma / pt_N->spit_cut;
-        x_min = emin / pt_N->spit_cut;
-        if (Gamma < emin) {
-            a = (x) * exp(-x);
-        } else {
-            norm = (x_min) * exp(-x_min) / (pow(x_min, -pt_N->spit_index));
-            //a1=1;
-            a = (x) * exp(-x) + norm * pow(x, -pt_N->spit_index) * exp(-Gamma / pt_N->spit_cut1);
-            //a*=min(1, exp((Gamma-emin*5)/emin*0.1));
-            a *= pt_N->spit_ratio;
-        }
-
-        //printf('%e\n', pt_N->N*(a+a1)/pt_N->N_0);
-        return pt_N->N * (a) / pt_N->N_0;
-    }
     if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 8) {
         pt_N->Gamma = Gamma;
-        //printf("gamma=%e rate=%e\n", pt_N->Gamma,rate_electrons_pp(pt_N, Gamma));
+        a= vluce_cm * pt_N->NH_pp * MEC2_TeV * bn_to_cm2 * rate_electrons_pp(pt_N, Gamma);
+    }else{
 
-        return vluce_cm * pt_N->NH_pp * MEC2_TeV * bn_to_cm2 * rate_electrons_pp(pt_N, Gamma);
+        a= N_distr_integranda(pt_N,Gamma)*pt_N->N/pt_N->N_0;
+
     }
-    return 0.0;
+
+
+    return a;
+
+
 }
+
+
+
 
 
 
@@ -562,87 +640,70 @@ double N_distr_integranda(struct spettro *pt_N, double Gamma) {
      * elettroniche statiche                                   \n
      */
 
-    double log_a, a, a1;
-    //PL
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 0) {
-        return pow(Gamma, -(pt_N->p));
-    }
+    double a;
+    a=0.;
 
-    //PL CON EXP CUTOFF
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 1) {
-        return pow(Gamma, -(pt_N->p)) * exp(-Gamma / pt_N->gamma_cut);
-    }
+    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax){
 
-    //PL BROCKEN
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 2) {
-        if (Gamma >= pt_N->gmin && Gamma <= pt_N->gamma_break)return pow(Gamma, -pt_N->p);
-        if (Gamma > pt_N->gamma_break && Gamma <= pt_N->gmax) {
-            return pow(pt_N->gamma_break, -(pt_N->p - pt_N->p_1)) * pow(Gamma, -pt_N->p_1);
+        //PL
+
+        if (  pt_N->TIPO_DISTR == 0) {
+            a= pl_func(Gamma, pt_N->p) ;
         }
-    }
 
-    //LOG PARABOLA
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 3) {
-        return pow((Gamma / (pt_N->gamma0_log_parab)),
-                (-pt_N->s - pt_N->r * log10(Gamma / pt_N->gamma0_log_parab)));
-
-    }
-
-
-    //LOG PARABOLA CON PICCO
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 4) {
-        return pow(10, (-pt_N->r * pow(log10(Gamma / pt_N->gammap_log_parab), 2)));
-    }
-
-    //LOG PARABOLA CON PL
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 5) {
-        if (Gamma < pt_N->gamma0_log_parab) {
-            return pow((Gamma / pt_N->gamma0_log_parab), (-pt_N->s));
+        //PL CON EXP CUTOFF
+        if (  pt_N->TIPO_DISTR == 1) {
+            a=  plc_func(Gamma, pt_N->gamma_cut, pt_N->p);
         }
-        if (Gamma >= pt_N->gamma0_log_parab && Gamma <= pt_N->gmax) {
-            return pow((Gamma / (pt_N->gamma0_log_parab)),
-                    (-pt_N->s - pt_N->r * log10(Gamma / pt_N->gamma0_log_parab)));
+
+        //PL BROCKEN
+        if (  pt_N->TIPO_DISTR == 2) {
+           a= bkn_func(Gamma, pt_N->gamma_break,pt_N->p,pt_N->p_1);
         }
-        //return log_a;
-    }
+        //PL BROCKEN-PILEUP
+        if (  pt_N->TIPO_DISTR == 10) {
+            a= bkn_pile_up_func(Gamma,pt_N->gamma_break,pt_N->p,pt_N->p_1,pt_N->gamma_pile_up, pt_N->gamma_pile_up_cut ,pt_N->alpha_pile_up);
+        }
 
-    //Spit
-    double emin, norm, x, x_min;
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 7) {
-        emin = 7.0 * pt_N->spit_cut;
-        a = 0.;
-        x = Gamma / pt_N->spit_cut;
-        x_min = emin / pt_N->spit_cut;
-        if (Gamma < emin) {
-            a = (x) * exp(-x);
+        //LOG PARABOLA
+        if (  pt_N->TIPO_DISTR == 3) {
+            a= lp_func(Gamma,pt_N->gamma0_log_parab,pt_N->r,pt_N->s);
 
-        } else {
-            norm = (x_min) * exp(-x_min) / (pow(x_min, -pt_N->spit_index));
-            a = (x) * exp(-x) + norm * pow(x, -pt_N->spit_index) * exp(-Gamma / pt_N->spit_cut1);
-            a *= pt_N->spit_ratio;
         }
 
 
+        //LOG PARABOLA CON PICCO
+        if (  pt_N->TIPO_DISTR == 4) {
+            a= lp_ep_func(Gamma,pt_N->gammap_log_parab,pt_N->r);
+        }
 
-        //a=Gamma*exp(-Gamma/pt_N->spit_cut);
-        //a1=pt_N->spit_ratio*pow(Gamma,-pt_N->spit_index);
-        //a1*=min(1, exp(-(Gamma-pt_N->spit_cut1)/pt_N->spit_cut2) );
-        //a1*=min(1, exp(Gamma-pt_N->spit_cut*2) );
-        //exit(0);
-        //printf("gamma=%e a+a1=%e\n",Gamma,a+a1);
-        //a1=0;
-        return a;
+        //LOG PARABOLA CON PL
+        if (  pt_N->TIPO_DISTR == 5) {
+            a= lppl_func(Gamma,pt_N->gamma0_log_parab,pt_N->r,pt_N->s);
+
+        }
+
+        //Spit
+        //double emin, norm, x, x_min;
+        if (  pt_N->TIPO_DISTR == 7) {
+            a= spit_func(Gamma,pt_N->spit_gamma_th,pt_N->spit_temp,pt_N->spit_index);
+        }
+
+        //Secondaris e Distribution has not analytical expression
+        //it is taken from the N array, throug log-lin interpolation
+        if (  pt_N->TIPO_DISTR == 8) {
+
+            a= N_distr_interp(pt_N, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne);
+        }
+
+        //LOG PARABOLA CON PL e PILE-UP
+        if (  pt_N->TIPO_DISTR == 9) {
+            a= lppl_pile_up_func( Gamma,pt_N->gamma0_log_parab,pt_N->gamma_inj,pt_N->r,pt_N->s,pt_N->gamma_pile_up, pt_N->ratio_pile_up ,pt_N->alpha_pile_up);
+        }
     }
 
 
-    //Secondaris e Distribution has not analytical expression
-    //it is taken from the N array, throug log-lin interpolation
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 8) {
-
-        return N_distr_interp(pt_N, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne);
-    }
-
-    return 0.0;
+    return a;
 }
 
 double N_distr_interp(struct spettro *pt, double Gamma, double *griglia_gamma, double *N) {
