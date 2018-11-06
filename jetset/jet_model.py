@@ -1222,9 +1222,9 @@ class Jet(Model):
         print ("-----------------------------------------------------------------------------------------")
 
 
-    def plot_model(self,plot_obj=None,clean=False,autoscale=True,label=None,comp=None,sed_data=None):
+    def plot_model(self,plot_obj=None,clean=False,autoscale=True,label=None,comp=None,SEDdata=None):
         if plot_obj is None:
-            plot_obj=Plot(sed_data=sed_data)
+            plot_obj=Plot(SEDdata=SEDdata)
 
 
         if clean==True:
