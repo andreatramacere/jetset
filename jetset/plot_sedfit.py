@@ -133,7 +133,7 @@ class  Plot (object):
         #if autoscale==True:
         self.sedplot.set_autoscalex_on(True)
         self.sedplot.set_autoscaley_on(True)
-
+        self.sedplot.set_autoscale_on(True)
         self.counter=0
         
 
@@ -322,13 +322,14 @@ class  Plot (object):
 
     
     def autoscale(self):
-        #self.sedplot.set_autoscale_on(True)
+
         
         #self.sedplot.autoscale_view(tight=True)
-        
-        x_min,x_max=self.sedplot.get_xlim()
-        
-        y_min,y_max=self.sedplot.get_ylim()
+        for l in self.sedplot.lines:
+
+            x_min,x_max=self.sedplot.get_xlim()
+
+            y_min,y_max=self.sedplot.get_ylim()
         
         self.sedplot.set_xticks(np.arange(int(x_min)-2,int(x_max)+2,1.0))
         

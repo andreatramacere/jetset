@@ -1371,7 +1371,7 @@ class Jet(Model):
         try:
             spec_comp=self.get_spectral_component_by_name(name)
 
-
+            #print ('spec_comp',spec_comp.name,spec_comp._nu_name)
             nuFnu_ptr=spec_comp.nuFnu_ptr
             nu_ptr=spec_comp.nu_ptr
 
@@ -1383,12 +1383,12 @@ class Jet(Model):
                 x[i]=BlazarSED.get_freq_array(nu_ptr,self._blob,i)
                 y[i]=BlazarSED.get_freq_array(nuFnu_ptr,self._blob,i)
 
-                #print"%s %e %e"%(name,x[i],y[i])
+                #print("%s %e %e"%(name,x[i],y[i]))
 
             msk_nan=np.isnan(x)
-            msk_nan*=np.isnan(y)
+            msk_nan+=np.isnan(y)
 
-            x[msk_nan]=0.0
+            x[msk_nan]=0.
             y[msk_nan]=self.flux_plot_lim
 
             msk=y<self.flux_plot_lim
@@ -1399,7 +1399,7 @@ class Jet(Model):
 
 
             if log_log==True:
-                msk = y < 0
+                msk = y <= 0.
                 y[msk] = self.flux_plot_lim
 
                 #x=x[msk]

@@ -107,23 +107,27 @@ struct spettro {
     double Vol_sphere;
     double Surf_sphere;
 
+    //----- Summed Spectra-----//
+    //double nuF_nu_Sum_obs[static_spec_arr_size];
+    
 
     //---- somma observer frame
-    unsigned long nu_sum_size;
+    unsigned long nu_sum_size ;
     double nu_start_grid;
     double nu_stop_grid;
-    double nuFnu_Sync_grid;
-    double nuFnu_comp_grid;
-    double nuFnu_somma_grid;
-    double nuFnu_Disk_grid;
-    double nuFnu_DT_grid;
-    double nuFnu_Star_grid;
-    double nuFnu_EC_CMB_grid;
-    double nuFnu_EC_CMB_stat_grid;
-    double nuFnu_EC_BLR_grid;
-    double nuFnu_EC_DT_grid;
-    double nuFnu_EC_Disk_grid;
-    double nuFnu_EC_Star_grid;
+    double nu_grid[static_spec_arr_size];
+    double nuFnu_sum_grid[static_spec_arr_size];
+    double nuFnu_Sync_grid[static_spec_arr_size];
+    double nuFnu_SSC_grid[static_spec_arr_size];    
+    double nuFnu_Disk_grid[static_spec_arr_size];
+    double nuFnu_DT_grid[static_spec_arr_size];
+    double nuFnu_Star_grid[static_spec_arr_size];
+    double nuFnu_EC_CMB_grid[static_spec_arr_size];
+    double nuFnu_EC_CMB_stat_grid[static_spec_arr_size];
+    double nuFnu_EC_BLR_grid[static_spec_arr_size];
+    double nuFnu_EC_DT_grid[static_spec_arr_size];
+    double nuFnu_EC_Disk_grid[static_spec_arr_size];
+    double nuFnu_EC_Star_grid[static_spec_arr_size];
 
     //-----------Sync --------------//
     //--- CONST
@@ -477,9 +481,7 @@ struct spettro {
 
     double beaming_EC;
 
-    //----- Summed Spectra-----//
-    double nuF_nu_Sum_obs[static_spec_arr_size];
-    double nu_Sum_obs[static_spec_arr_size];
+    
 
 
     //----------- INTEGRATION MESH--------------//
@@ -706,7 +708,7 @@ void somma_header(FILE *fp);
 
 //===================================================================================
 /************************************ SUMMED SPECTRA *******************************/
-void interpola_somma(struct spettro *pt_j, double nu);
+void interpola_somma(struct spettro *pt_j, double nu, unsigned long i);
 void spettro_somma_Sync_ic(int num_file, struct spettro *);
 //===================================================================================
 

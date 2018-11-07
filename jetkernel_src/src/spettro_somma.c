@@ -79,90 +79,99 @@ void spettro_somma_Sync_ic(int Num_file, struct spettro * pt) {
 
 		//nu_obs=pt->beam_obj*nu/(1+pt->z_cosm);
 		//printf("nu=%e nu_obs=%e now call\n",nu,nu_obs);
-		interpola_somma(pt, nu_obs);
-		pt->nuF_nu_Sum_obs[i]= pt->nuFnu_somma_grid;
-		pt->nu_Sum_obs[i]= nu_obs;
+		interpola_somma(pt, nu_obs,i);
+		//pt->nuF_nu_Sum_obs[i]= pt->nuFnu_somma_grid;
+		pt->nu_grid[i] = nu_obs;
 
 		//if(nuF_nu_obs>1.e-60){
 		//printf("nuF_nu_obs=%e\n********************\n",nuF_nu_obs);
 		fprintf(fp, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\n",
 				nu_obs,
-				pt->nuFnu_somma_grid,
-				pt->nuFnu_Sync_grid,
-				pt->nuFnu_comp_grid,
-				pt->nuFnu_Disk_grid,
-				pt->nuFnu_DT_grid,
-				pt->nuFnu_Star_grid,
-				pt->nuFnu_EC_Disk_grid,
-				pt->nuFnu_EC_BLR_grid,
-				pt->nuFnu_EC_DT_grid,
-				pt->nuFnu_EC_Star_grid,
-				pt->nuFnu_EC_CMB_grid,
-				pt->nuFnu_EC_CMB_stat_grid);
+				pt->nuFnu_sum_grid[i],
+				pt->nuFnu_Sync_grid[i],
+				pt->nuFnu_SSC_grid[i],
+				pt->nuFnu_Disk_grid[i],
+				pt->nuFnu_DT_grid[i],
+				pt->nuFnu_Star_grid[i],
+				pt->nuFnu_EC_Disk_grid[i],
+				pt->nuFnu_EC_BLR_grid[i],
+				pt->nuFnu_EC_DT_grid[i],
+				pt->nuFnu_EC_Star_grid[i],
+				pt->nuFnu_EC_CMB_grid[i],
+				pt->nuFnu_EC_CMB_stat_grid[i]);
 
-
-
-		if (pt->nuFnu_somma_grid == 0) {
-			pt->nuFnu_somma_grid = pt->emiss_lim;
+		if (pt->nuFnu_sum_grid[i] == 0)
+		{
+			pt->nuFnu_sum_grid[i] = pt->emiss_lim;
 		}
 
-		if (pt->nuFnu_Sync_grid == 0) {
-			pt->nuFnu_Sync_grid = pt->emiss_lim;
+		if (pt->nuFnu_Sync_grid[i] == 0)
+		{
+			pt->nuFnu_Sync_grid[i] = pt->emiss_lim;
 		}
 
-		if (pt->nuFnu_comp_grid == 0) {
-			pt->nuFnu_comp_grid = pt->emiss_lim;
+		if (pt->nuFnu_SSC_grid[i] == 0)
+		{
+			pt->nuFnu_SSC_grid[i] = pt->emiss_lim;
 		}
 
-		if (pt->nuFnu_Disk_grid == 0) {
-			pt->nuFnu_Disk_grid = pt->emiss_lim;
+		if (pt->nuFnu_Disk_grid[i] == 0)
+		{
+			pt->nuFnu_Disk_grid[i] = pt->emiss_lim;
 		}
 
-		if (pt->nuFnu_DT_grid == 0) {
-			pt->nuFnu_DT_grid = pt->emiss_lim;
+		if (pt->nuFnu_DT_grid[i] == 0)
+		{
+			pt->nuFnu_DT_grid[i] = pt->emiss_lim;
 		}
 
-		if (pt->nuFnu_Star_grid == 0) {
-			pt->nuFnu_Star_grid = pt->emiss_lim;
+		if (pt->nuFnu_Star_grid[i] == 0)
+		{
+			pt->nuFnu_Star_grid[i] = pt->emiss_lim;
 		}
 
-		if (pt->nuFnu_EC_Disk_grid == 0) {
-			pt->nuFnu_EC_Disk_grid = pt->emiss_lim;
+		if (pt->nuFnu_EC_Disk_grid[i] == 0)
+		{
+			pt->nuFnu_EC_Disk_grid[i] = pt->emiss_lim;
 		}
 
-		if (pt->nuFnu_EC_BLR_grid == 0) {
-			pt->nuFnu_EC_BLR_grid = pt->emiss_lim;
+		if (pt->nuFnu_EC_BLR_grid[i] == 0)
+		{
+			pt->nuFnu_EC_BLR_grid[i] = pt->emiss_lim;
 		}
 
-		if (pt->nuFnu_EC_DT_grid == 0) {
-			pt->nuFnu_EC_DT_grid = pt->emiss_lim;
+		if (pt->nuFnu_EC_DT_grid[i] == 0)
+		{
+			pt->nuFnu_EC_DT_grid[i] = pt->emiss_lim;
 		}
 
-		if (pt->nuFnu_EC_Star_grid == 0) {
-			pt->nuFnu_EC_Star_grid = pt->emiss_lim;
+		if (pt->nuFnu_EC_Star_grid[i] == 0)
+		{
+			pt->nuFnu_EC_Star_grid[i] = pt->emiss_lim;
 		}
-		if (pt->nuFnu_EC_CMB_grid == 0) {
-			pt->nuFnu_EC_CMB_grid = pt->emiss_lim;
+		if (pt->nuFnu_EC_CMB_grid[i] == 0)
+		{
+			pt->nuFnu_EC_CMB_grid[i] = pt->emiss_lim;
 		}
-		if (pt->nuFnu_EC_CMB_stat_grid == 0) {
-			pt->nuFnu_EC_CMB_stat_grid = pt->emiss_lim;
+		if (pt->nuFnu_EC_CMB_stat_grid[i] == 0)
+		{
+			pt->nuFnu_EC_CMB_stat_grid[i] = pt->emiss_lim;
 		}
 
 		fprintf(fpll, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\n",
 				log10(nu_obs),
-				log10(pt->nuFnu_somma_grid),
-				log10(pt->nuFnu_Sync_grid),
-				log10(pt->nuFnu_comp_grid),
-				log10(pt->nuFnu_Disk_grid),
-				log10(pt->nuFnu_DT_grid),
-				log10(pt->nuFnu_Star_grid),
-				log10(pt->nuFnu_EC_Disk_grid),
-				log10(pt->nuFnu_EC_BLR_grid),
-				log10(pt->nuFnu_EC_DT_grid),
-				log10(pt->nuFnu_EC_Star_grid),
-				log10(pt->nuFnu_EC_CMB_grid),
-				log10(pt->nuFnu_EC_CMB_stat_grid)
-		);
+				log10(pt->nuFnu_sum_grid[i]),
+				log10(pt->nuFnu_Sync_grid[i]),
+				log10(pt->nuFnu_SSC_grid[i]),
+				log10(pt->nuFnu_Disk_grid[i]),
+				log10(pt->nuFnu_DT_grid[i]),
+				log10(pt->nuFnu_Star_grid[i]),
+				log10(pt->nuFnu_EC_Disk_grid[i]),
+				log10(pt->nuFnu_EC_BLR_grid[i]),
+				log10(pt->nuFnu_EC_DT_grid[i]),
+				log10(pt->nuFnu_EC_Star_grid[i]),
+				log10(pt->nuFnu_EC_CMB_grid[i]),
+				log10(pt->nuFnu_EC_CMB_stat_grid[i]));
 		//fprintf(fp1, "%e %e \n",
 		//        log10(nu_obs),
 		//        log10(nuF_nu_obs));
@@ -171,20 +180,18 @@ void spettro_somma_Sync_ic(int Num_file, struct spettro * pt) {
 
 		fprintf(fpll_src, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\t %4.4e\n",
 				log10(nu_obs_to_nu_src(nu_obs, pt->z_cosm)),
-				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_somma_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
-				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_Sync_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
-				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_comp_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
-				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_Disk_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
-				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_DT_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
-				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_Star_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
-				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_EC_Disk_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
-				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_EC_BLR_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
-				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_EC_DT_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
-				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_EC_Star_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
-				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_EC_CMB_grid,pt->beam_obj, pt->z_cosm, pt->dist)),
-				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_EC_CMB_stat_grid,pt->beam_obj, pt->z_cosm, pt->dist))
-		);
-
+				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_sum_grid[i], pt->beam_obj, pt->z_cosm, pt->dist)),
+				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_Sync_grid[i], pt->beam_obj, pt->z_cosm, pt->dist)),
+				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_SSC_grid[i], pt->beam_obj, pt->z_cosm, pt->dist)),
+				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_Disk_grid[i], pt->beam_obj, pt->z_cosm, pt->dist)),
+				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_DT_grid[i], pt->beam_obj, pt->z_cosm, pt->dist)),
+				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_Star_grid[i], pt->beam_obj, pt->z_cosm, pt->dist)),
+				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_EC_Disk_grid[i], pt->beam_obj, pt->z_cosm, pt->dist)),
+				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_EC_BLR_grid[i], pt->beam_obj, pt->z_cosm, pt->dist)),
+				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_EC_DT_grid[i], pt->beam_obj, pt->z_cosm, pt->dist)),
+				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_EC_Star_grid[i], pt->beam_obj, pt->z_cosm, pt->dist)),
+				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_EC_CMB_grid[i], pt->beam_obj, pt->z_cosm, pt->dist)),
+				log10(nuFnu_obs_to_nuLnu_src(pt->nuFnu_EC_CMB_stat_grid[i], pt->beam_obj, pt->z_cosm, pt->dist)));
 	}
 	fclose(fp);
 	fclose(fpll_src);
@@ -192,13 +199,11 @@ void spettro_somma_Sync_ic(int Num_file, struct spettro * pt) {
 	return;
 }
 
-void interpola_somma(struct spettro *pt_j, double nu_obs) {
+void interpola_somma(struct spettro *pt_j, double nu_obs, unsigned long i)
+{
 	double interp_flux;
 
-
-
-	pt_j->nuFnu_somma_grid = 0;
-
+	pt_j->nuFnu_sum_grid[i] = 0;
 
 	//Sync
 	if (pt_j->do_Sync >= 1) {
@@ -206,13 +211,12 @@ void interpola_somma(struct spettro *pt_j, double nu_obs) {
 		//printf("Sync interp_flux=%e\n",interp_flux);
 		//printf("Sync interp_flux=%e %e %e %e  %lu \n",interp_flux,nu_obs,  pt_j->nu_start_Sync_obs,pt_j->nu_stop_Sync_obs, pt_j->nu_seed_size);
 		if (interp_flux > pt_j->emiss_lim) {
-			pt_j->nuFnu_Sync_grid =  interp_flux;
+			pt_j->nuFnu_Sync_grid[i] =  interp_flux;
 		}
 		else {
-			pt_j->nuFnu_Sync_grid = 0;
-
+			pt_j->nuFnu_Sync_grid[i] = 0;
 		}
-		pt_j->nuFnu_somma_grid += pt_j->nuFnu_Sync_grid;
+		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_Sync_grid[i];
 	}
 
 	//SSC
@@ -221,13 +225,12 @@ void interpola_somma(struct spettro *pt_j, double nu_obs) {
 		//printf("SSC interp_flux=%e %e %e  %lu \n",interp_flux,  pt_j->nu_start_SSC_obs,pt_j->nu_stop_SSC_obs, pt_j->nu_IC_size);
 
 		if (interp_flux > pt_j->emiss_lim) {
-			pt_j->nuFnu_comp_grid =   interp_flux;
+			pt_j->nuFnu_SSC_grid[i] = interp_flux;
 		}
 		else {
-			pt_j->nuFnu_comp_grid = 0;
-
+			pt_j->nuFnu_SSC_grid[i] = 0;
 		}
-		pt_j->nuFnu_somma_grid += pt_j->nuFnu_comp_grid;
+		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_SSC_grid[i];
 	}
 
 	//EC Disk
@@ -235,13 +238,12 @@ void interpola_somma(struct spettro *pt_j, double nu_obs) {
 		interp_flux=log_lin_interp( nu_obs,  pt_j->nu_EC_Disk_obs,  pt_j->nu_start_EC_Disk_obs,pt_j->nu_stop_EC_Disk_obs, pt_j->nuF_nu_EC_Disk_obs , pt_j->nu_IC_size, pt_j->emiss_lim);
 
 		if (interp_flux > pt_j->emiss_lim) {
-			pt_j->nuFnu_EC_Disk_grid =  interp_flux;
+			pt_j->nuFnu_EC_Disk_grid[i] = interp_flux;
 		}
 		else {
-			pt_j->nuFnu_EC_Disk_grid = 0;
-
+			pt_j->nuFnu_EC_Disk_grid[i] = 0;
 		}
-		pt_j->nuFnu_somma_grid += pt_j->nuFnu_EC_Disk_grid;
+		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_EC_Disk_grid[i];
 	}
 
 	//EC BLR
@@ -249,13 +251,12 @@ void interpola_somma(struct spettro *pt_j, double nu_obs) {
 		interp_flux=log_lin_interp( nu_obs,  pt_j->nu_EC_BLR_obs,  pt_j->nu_start_EC_BLR_obs,pt_j->nu_stop_EC_BLR_obs, pt_j->nuF_nu_EC_BLR_obs , pt_j->nu_IC_size, pt_j->emiss_lim);
 
 		if (interp_flux > pt_j->emiss_lim) {
-			pt_j->nuFnu_EC_BLR_grid =  interp_flux;
+			pt_j->nuFnu_EC_BLR_grid[i] = interp_flux;
 		}
 		else {
-			pt_j->nuFnu_EC_BLR_grid = 0;
-
+			pt_j->nuFnu_EC_BLR_grid[i] = 0;
 		}
-		pt_j->nuFnu_somma_grid += pt_j->nuFnu_EC_BLR_grid;
+		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_EC_BLR_grid[i];
 	}
 
 
@@ -264,13 +265,12 @@ void interpola_somma(struct spettro *pt_j, double nu_obs) {
 		interp_flux=log_lin_interp( nu_obs,  pt_j->nu_EC_DT_obs,  pt_j->nu_start_EC_DT_obs,pt_j->nu_stop_EC_DT_obs, pt_j->nuF_nu_EC_DT_obs , pt_j->nu_IC_size, pt_j->emiss_lim);
 
 		if (interp_flux > pt_j->emiss_lim) {
-			pt_j->nuFnu_EC_DT_grid =   interp_flux;
+			pt_j->nuFnu_EC_DT_grid[i] = interp_flux;
 		}
 		else {
-			pt_j->nuFnu_EC_DT_grid = 0;
-
+			pt_j->nuFnu_EC_DT_grid[i] = 0;
 		}
-		pt_j->nuFnu_somma_grid += pt_j->nuFnu_EC_DT_grid;
+		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_EC_DT_grid[i];
 	}
 
 
@@ -279,13 +279,12 @@ void interpola_somma(struct spettro *pt_j, double nu_obs) {
 		interp_flux=log_lin_interp( nu_obs,  pt_j->nu_EC_Star_obs,  pt_j->nu_start_EC_Star_obs,pt_j->nu_stop_EC_Star_obs, pt_j->nuF_nu_EC_Star_obs , pt_j->nu_IC_size, pt_j->emiss_lim);
 
 		if (interp_flux > pt_j->emiss_lim) {
-			pt_j->nuFnu_EC_Star_grid =   interp_flux;
+			pt_j->nuFnu_EC_Star_grid[i] = interp_flux;
 		}
 		else {
-			pt_j->nuFnu_EC_Star_grid = 0;
-
+			pt_j->nuFnu_EC_Star_grid[i] = 0;
 		}
-		pt_j->nuFnu_somma_grid += pt_j->nuFnu_EC_Star_grid;
+		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_EC_Star_grid[i];
 	}
 
 	//EC CMB
@@ -293,13 +292,12 @@ void interpola_somma(struct spettro *pt_j, double nu_obs) {
 		interp_flux=log_lin_interp( nu_obs,  pt_j->nu_EC_CMB_obs,  pt_j->nu_start_EC_CMB_obs,pt_j->nu_stop_EC_CMB_obs, pt_j->nuF_nu_EC_CMB_obs , pt_j->nu_IC_size, pt_j->emiss_lim);
 
 		if (interp_flux > pt_j->emiss_lim) {
-			pt_j->nuFnu_EC_CMB_grid =   interp_flux;
+			pt_j->nuFnu_EC_CMB_grid[i] = interp_flux;
 		}
 		else {
-			pt_j->nuFnu_EC_CMB_grid = 0;
-
+			pt_j->nuFnu_EC_CMB_grid[i] = 0;
 		}
-		pt_j->nuFnu_somma_grid += pt_j->nuFnu_EC_CMB_grid;
+		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_EC_CMB_grid[i];
 	}
 
 	//EC CMB 
@@ -307,13 +305,12 @@ void interpola_somma(struct spettro *pt_j, double nu_obs) {
 		interp_flux=log_lin_interp( nu_obs,  pt_j->nu_EC_CMB_stat_obs,  pt_j->nu_start_EC_CMB_stat_obs,pt_j->nu_stop_EC_CMB_stat_obs, pt_j->nuF_nu_EC_CMB_stat_obs, pt_j->nu_IC_size, pt_j->emiss_lim);
 
 		if (interp_flux > pt_j->emiss_lim) {
-			pt_j->nuFnu_EC_CMB_stat_grid =   interp_flux;
+			pt_j->nuFnu_EC_CMB_stat_grid[i] = interp_flux;
 		}
 		else {
-			pt_j->nuFnu_EC_CMB_stat_grid = 0;
-
+			pt_j->nuFnu_EC_CMB_stat_grid[i] = 0;
 		}
-		pt_j->nuFnu_somma_grid += pt_j->nuFnu_EC_CMB_stat_grid;
+		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_EC_CMB_stat_grid[i];
 	}
 
 	//Disk
@@ -321,13 +318,12 @@ void interpola_somma(struct spettro *pt_j, double nu_obs) {
 
 		interp_flux=log_lin_interp( nu_obs,  pt_j->nu_Disk_obs,  pt_j->nu_start_Disk_obs,pt_j->nu_stop_Disk_obs, pt_j->nuF_nu_Disk_obs , pt_j->nu_seed_size, pt_j->emiss_lim);
 		if (interp_flux > pt_j->emiss_lim) {
-			pt_j->nuFnu_Disk_grid =   interp_flux;
+			pt_j->nuFnu_Disk_grid[i] = interp_flux;
 		}
 		else {
-			pt_j->nuFnu_Disk_grid = 0;
-
+			pt_j->nuFnu_Disk_grid[i] = 0;
 		}
-		pt_j->nuFnu_somma_grid += pt_j->nuFnu_Disk_grid;
+		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_Disk_grid[i];
 	}
 
 
@@ -336,13 +332,12 @@ void interpola_somma(struct spettro *pt_j, double nu_obs) {
 		interp_flux=log_lin_interp( nu_obs,  pt_j->nu_DT_obs,  pt_j->nu_start_DT_obs,pt_j->nu_stop_DT_obs, pt_j->nuF_nu_DT_obs , pt_j->nu_seed_size, pt_j->emiss_lim);
 
 		if (interp_flux > pt_j->emiss_lim) {
-			pt_j->nuFnu_DT_grid =  interp_flux;
+			pt_j->nuFnu_DT_grid[i] = interp_flux;
 		}
 		else {
-			pt_j->nuFnu_DT_grid = 0;
-
+			pt_j->nuFnu_DT_grid[i] = 0;
 		}
-		pt_j->nuFnu_somma_grid += pt_j->nuFnu_DT_grid;
+		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_DT_grid[i];
 	}
 
 	//Star
@@ -350,13 +345,12 @@ void interpola_somma(struct spettro *pt_j, double nu_obs) {
 		interp_flux=log_lin_interp( nu_obs,  pt_j->nu_Star_obs,  pt_j->nu_start_Star_obs,pt_j->nu_stop_Star_obs, pt_j->nuF_nu_Star_obs , pt_j->nu_seed_size, pt_j->emiss_lim);
 
 		if (interp_flux > pt_j->emiss_lim) {
-			pt_j->nuFnu_Star_grid =  interp_flux;
+			pt_j->nuFnu_Star_grid[i] = interp_flux;
 		}
 		else {
-			pt_j->nuFnu_Star_grid = 0;
-
+			pt_j->nuFnu_Star_grid[i] = 0;
 		}
-		pt_j->nuFnu_somma_grid += pt_j->nuFnu_Star_grid;
+		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_Star_grid[i];
 	}
 
 	return;

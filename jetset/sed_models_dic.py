@@ -26,17 +26,18 @@ SSC_nu_p_dic['blob']='nu_peak_SSC_blob'
 
 
 #Spectral components
-nuFnu_obs_dic={'Sum':['nuF_nu_Sum_obs','nu_Sum_obs']}
-nuFnu_obs_dic['Sync']=['nuF_nu_Sync_obs','nu_Sync_obs']
-nuFnu_obs_dic['SSC']=['nuF_nu_SSC_obs','nu_SSC_obs']
-nuFnu_obs_dic['EC_BLR']=['nuF_nu_EC_BLR_obs','nu_EC_BLR_obs']
-nuFnu_obs_dic['EC_DT']=['nuF_nu_EC_DT_obs','nu_EC_DT_obs']
-nuFnu_obs_dic['DT']=['nuF_nu_DT_obs','nu_DT_obs']
-nuFnu_obs_dic['EC_Disk']=['nuF_nu_EC_Disk_obs','nu_EC_Disk_obs']
-nuFnu_obs_dic['Disk']=['nuF_nu_Disk_obs','nu_Disk_obs']
-nuFnu_obs_dic['EC_CMB']=['nuF_nu_EC_CMB_obs','nu_EC_CMB_obs']
-nuFnu_obs_dic['CMB']=['nuF_nu_EC_CMB_obs','nu_EC_CMB_obs']
-nuFnu_obs_dic['EC_CMB_stat']=['nuF_nu_EC_CMB_stat_obs','nu_EC_CMB_stat_obs']
+nuFnu_obs_dic={'Sum':['nuFnu_sum_grid','nu_grid']}
+nuFnu_obs_dic['Sync']=['nuFnu_Sync_grid','nu_grid']
+nuFnu_obs_dic['SSC']=['nuFnu_SSC_grid','nu_grid']
+nuFnu_obs_dic['EC_BLR']=['nuFnu_EC_BLR_grid','nu_grid']
+nuFnu_obs_dic['EC_DT']=['nuFnu_EC_DT_grid','nu_grid']
+nuFnu_obs_dic['DT']=['nuFnu_DT_grid','nu_grid']
+nuFnu_obs_dic['EC_Disk']=['nuF_nu_EC_Disk_obs','nu_grid']
+nuFnu_obs_dic['Disk']=['nuFnu_EC_Disk_grid','nu_grid']
+nuFnu_obs_dic['EC_CMB']=['nuFnu_EC_CMB_grid','nu_grid']
+nuFnu_obs_dic['EC_CMB_stat']=['nuFnu_EC_CMB_stat_grid','nu_grid']
+#nuFnu_obs_dic['CMB']=['nuF_nu_EC_CMB_obs','nu_grid']
+
 
 #nuLnu_dic={'SUM':['','nu_']}
 #nuLnu_dic['Sync']=['nuFnu_Sync','nu_']

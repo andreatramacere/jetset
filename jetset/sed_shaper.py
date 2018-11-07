@@ -51,6 +51,7 @@ from .model_manager import FitModel
 from .loglog_poly_model import LogParabolaEp,LogCubic,find_max_cubic,LogLinear,LogParabolaPL
 from .analytical_model import Disk
 from .minimizer import fit_SED
+from .plot_sedfit import  Plot
 from .data_loader import log_to_lin, lin_to_log
 import numpy as np
 import copy
@@ -373,9 +374,11 @@ class SEDShape(object):
         
         self.IC_peak=peak_values(name='IC')
         self.IC_LE_slope=None
-    
 
-      
+        self.host_gal=None
+        self.sync_fit_model=None
+        self.IC_fit_model=None
+
     def find_class(self,E_S):
         """
 
@@ -445,9 +448,24 @@ class SEDShape(object):
     
     
     
+    def save_values(self,name):
 
+        _l=[]
+        for index in self.indices.idx_array:
+            _l.append((index.name,index.val.photon,index.err.photon))
 
-    def eval_indices(self):
+        _l.append(('nu_p_S',self.S_peak.nu_p_val,self.S_peak.nu_p_err))
+
+        _l.append(('nuFnu_p_S', self.S_peak.nuFnu_p_val, self.S_peak.nuFnu_p_err))
+
+        _l.append(('nu_p_IC', self.IC_peak.nu_p_val, self.IC_peak.nu_p_err))
+
+        _l.append(('nuFnu_p_IC', self.IC_peak.nuFnu_p_val, self.IC_peak.nuFnu_p_err))
+
+        _out=np.array(_l,dtype=[('par_name','S32'),('value','f8'),('error','f8')])
+        np.save(name,_out)
+
+    def eval_indices(self,):
         """
         
         This methods evaluates the indices for the SED
@@ -467,8 +485,13 @@ class SEDShape(object):
             if do_fit==True:
 
                 loglog_pl=FitModel(name='%s'%index.name,loglog_poly=LogLinear())
-                print(10.**index.idx_range[0],10.**index.idx_range[1])
-                best_fit=fit_SED(loglog_pl,self.SEDdata,10.**index.idx_range[0],10.**index.idx_range[1],loglog=True,silent=True,fitname='spectral-indices-best-fit')
+                #print(10.**index.idx_range[0],10.**index.idx_range[1])
+                best_fit=fit_SED(loglog_pl,
+                                 self.SEDdata,10.**index.idx_range[0],
+                                 10.**index.idx_range[1],
+                                 loglog=True,silent=True,
+                                 fitname='spectral-indices-best-fit',
+                                 minimizer='leastsqbound')
 
                 #val,err=do_linear_fit(self.SEDdata.nu_data_log,self.SEDdata.nuFnu_data_log,dy=self.SEDdata.dnuFnu_data_log,x_range=index.idx_range)
 
@@ -504,11 +527,30 @@ class SEDShape(object):
         print (section_separator)
             
 
-    def plot_indices(self,plot):
+    def plot_indices(self,plot_obj=None):
+        if plot_obj is None:
+            plot_obj=Plot(SEDdata=self.SEDdata)
+
         for model in self.index_models:
-            plot.add_model_plot(model,label=model.name,line_style='--',update=False)
+            plot_obj.add_model_plot(model,label=model.name,line_style='--',update=False)
         
-        
+        return plot_obj
+
+    def plot_sahpe_fit(self, plot_obj=None):
+        if plot_obj is None:
+            plot_obj = Plot(SEDdata=self.SEDdata)
+
+            if self.sync_fit_model is not None:
+                plot_obj.add_model_plot(self.sync_fit_model, label='sync, poly-fit')
+
+            if self.host_gal is not None:
+                plot_obj.add_model_plot(self.host_gal, label='host-gal')
+
+            #plot_obj.add_model_plot(self.sync_fit_model, label='sync+host, poly-fit')
+            if self.IC_fit_model is not None:
+                plot_obj.add_model_plot(self.IC_fit_model, label='IC, poly-fit')
+
+        return plot_obj
 
     def sync_fit(self,check_host_gal_template=False,check_BBB_template=False,check_disk=False,fit_range=None,nu_min=None,nu_max=None,Ep_start=None):
         
@@ -589,7 +631,7 @@ class SEDShape(object):
     
     def save_sync_fit_report(self,name=None):
         self.sync_best_fit.save_report(name=name)
-    
+
     
     def do_sync_fit(self,fit_model,fit_range=None,check_disk=False,check_BBB=False,check_host=False,use_log_par=False,Ep_start=None,no_check=False):
         
@@ -607,7 +649,7 @@ class SEDShape(object):
         
         fit_model1.show_pars()
         
-        best_fit=fit_SED(fit_model1,self.SEDdata,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit')
+        best_fit=fit_SED(fit_model1,self.SEDdata,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit',minimizer='leastsqbound')
         
         self.S_peak.update(fit_model1)
         
@@ -646,7 +688,7 @@ class SEDShape(object):
             
             
 
-        best_fit=fit_SED(fit_model,self.SEDdata,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit')
+        best_fit=fit_SED(fit_model,self.SEDdata,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit',minimizer='leastsqbound')
         
         best_fit.show_report()
         
@@ -654,31 +696,7 @@ class SEDShape(object):
             self.S_peak.update(fit_model)
             
             self.find_class(self.S_peak.nu_p_val)
-        #if no_check==True:
-        #    return
-        
-        #refit=False
-        #if check_disk==True : 
-        #    self.add_disk(fit_model)
-        #    refit=True
-        #if check_BBB==True:
-        #    self.add_BBB_template(fit_model)
-        #    refit=True
-        #if check_host==True:
-        #    self.add_host_template(fit_model)
-        #    refit=True
-        
-        #if refit==True:
-            
-        #    best_fit=fit_SED(fit_model,self.SEDdata,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit')
-            
-        #    best_fit.show_report()
-            
-        #    if use_log_par==False:
-        #        self.S_peak.update(fit_model)
-        
-        #        self.find_class(self.S_peak.nu_p_val)
-            
+
         
         self.S_peak.show()
 
@@ -808,7 +826,7 @@ class SEDShape(object):
         
         
         try:
-            best_fit=fit_SED(self.IC_fit_model,self.SEDdata,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit')
+            best_fit=fit_SED(self.IC_fit_model,self.SEDdata,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit',minimizer='leastsqbound')
         
             best_fit.show_report()
             
@@ -827,7 +845,7 @@ class SEDShape(object):
             
             self.IC_fit_model.show_pars()
             
-            best_fit=fit_SED(self.IC_fit_model,self.SEDdata,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit')
+            best_fit=fit_SED(self.IC_fit_model,self.SEDdata,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit',minimizer='leastsqbound')
         
             best_fit.show_report()
             
