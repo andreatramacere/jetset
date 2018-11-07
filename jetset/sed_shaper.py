@@ -452,7 +452,8 @@ class SEDShape(object):
 
         _l=[]
         for index in self.indices.idx_array:
-            _l.append((index.name,index.val.photon,index.err.photon))
+            if index.val is not None:
+                _l.append((index.name,index.val.photon,index.err.photon))
 
         _l.append(('nu_p_S',self.S_peak.nu_p_val,self.S_peak.nu_p_err))
 
