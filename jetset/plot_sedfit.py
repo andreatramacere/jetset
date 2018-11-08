@@ -73,7 +73,7 @@ class  Plot (object):
                  x_max=3.0,
                  y_min=-20.0,
                  y_max=-9.0,
-                 interactive=True,
+                 interactive=False,
                  plot_workplace=None,
                  title='Plot'):
                  #autoscale=True):

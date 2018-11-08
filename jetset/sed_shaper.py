@@ -450,23 +450,40 @@ class SEDShape(object):
     
     def save_values(self,name):
 
-        _l=[]
+        _v=[]
+
+        _dt=[('src_name','S32')]
+        _v = [name]
         for index in self.indices.idx_array:
             if index.val is not None:
-                _l.append((index.name,index.val.photon,index.err.photon))
+                _dt.append((index.name,'f8'))
+                _dt.append((index.name+'_err','f8'))
+                _v.extend([index.val.photon,index.err.photon])
 
-        _l.append(('nu_p_S',self.S_peak.nu_p_val,self.S_peak.nu_p_err))
+        _dt.append(('nu_p_S', 'f8'))
+        _dt.append(('nu_p_S_err', 'f8'))
+        _v.extend([self.S_peak.nu_p_val,self.S_peak.nu_p_err])
 
-        _l.append(('nuFnu_p_S', self.S_peak.nuFnu_p_val, self.S_peak.nuFnu_p_err))
+        _dt.append(('nuFnu_p_S', 'f8'))
+        _dt.append(('nuFnu_p_S_err', 'f8'))
+        _v.extend([self.S_peak.nuFnu_p_val, self.S_peak.nuFnu_p_err])
 
-        _l.append(('nu_p_IC', self.IC_peak.nu_p_val, self.IC_peak.nu_p_err))
+        _dt.append(('nu_p_IC', 'f8'))
+        _dt.append(('nu_p_IC_err', 'f8'))
+        _v.extend([self.IC_peak.nu_p_val, self.IC_peak.nu_p_err])
 
-        _l.append(('nuFnu_p_IC', self.IC_peak.nuFnu_p_val, self.IC_peak.nuFnu_p_err))
+        _dt.append(('nuFnu_p_IC', 'f8'))
+        _dt.append(('nuFnu_p_IC_err', 'f8'))
+        _v.extend([self.IC_peak.nuFnu_p_val, self.IC_peak.nuFnu_p_err])
 
-        _out=np.array(_l,dtype=[('par_name','S32'),('value','f8'),('error','f8')])
+        print(_v,_dt)
+
+        _out=np.zeros(1,dtype=_dt)
+        print(_out)
+        _out[0]=tuple(_v)
         np.save(name,_out)
 
-    def eval_indices(self,):
+    def eval_indices(self,minimizer='minuit'):
         """
         
         This methods evaluates the indices for the SED
@@ -492,7 +509,7 @@ class SEDShape(object):
                                  10.**index.idx_range[1],
                                  loglog=True,silent=True,
                                  fitname='spectral-indices-best-fit',
-                                 minimizer='leastsqbound')
+                                 minimizer=minimizer)
 
                 #val,err=do_linear_fit(self.SEDdata.nu_data_log,self.SEDdata.nuFnu_data_log,dy=self.SEDdata.dnuFnu_data_log,x_range=index.idx_range)
 
@@ -553,7 +570,15 @@ class SEDShape(object):
 
         return plot_obj
 
-    def sync_fit(self,check_host_gal_template=False,check_BBB_template=False,check_disk=False,fit_range=None,nu_min=None,nu_max=None,Ep_start=None):
+    def sync_fit(self,check_host_gal_template=False,
+                 check_BBB_template=False,
+                 check_disk=False,
+                 fit_range=None,
+                 nu_min=None,
+                 nu_max=None,
+                 Ep_start=None,
+                 use_log_par=False,
+                 minimizer='minuit'):
         
         """
         This method analyses the synchrotron shape by means
@@ -591,30 +616,36 @@ class SEDShape(object):
         
     
        
-            
-        cubic_sync=LogCubic()
-        self.sync_fit_model=FitModel(loglog_poly=cubic_sync,name='sync_cubic_model')
+        if use_log_par==True:
+            fit_law = LogParabolaEp()
+        else:
+            fit_law=LogCubic()
+
+        self.sync_fit_model=FitModel(loglog_poly=fit_law,name='sync_model')
         self.sync_fit_model.set('b',fit_range_max=0)
         self.sync_fit_model.set('b',val_max=0)
         self.sync_fit_model.set('b',fit_range_min=-10)
         self.sync_fit_model.set('b',val_min=-10)
+
         if Ep_start is not None  :
             self.sync_fit_model.set('Ep',val=Ep_start)
 
-       
-                
+
+
         self.sync_best_fit=self.do_sync_fit(self.sync_fit_model,fit_range=fit_range,
                          check_disk=check_disk,
                          check_BBB=check_BBB_template,
                          check_host=check_host_gal_template,
-                         use_log_par=False,Ep_start=Ep_start)
-        
+                         #use_log_par=False,
+                         Ep_start=Ep_start,
+                         minimizer=minimizer)
+
         #print "bbb", self.sync_fit_model.SED.nu
-        
-        Ep=self.S_peak.nu_p_val
-            
-        logparpl=LogParabolaPL()
-        fit_model=FitModel(loglog_poly=logparpl,name='sync_logpar_pl_model')
+
+        #Ep=self.S_peak.nu_p_val
+
+        #logparpl=LogParabolaPL()
+        #fit_model=FitModel(loglog_poly=logparpl,name='sync_logpar_pl_model')
         #self.do_sync_fit(fit_model,fit_range=fit_range,
         #                 check_disk=check_disk,
         #                 check_BBB=check_BBB_template,
@@ -622,38 +653,63 @@ class SEDShape(object):
         #                 use_log_par=True,
         #                 Ep=Ep)
 
-        
-        
+
+
         #print "bbb", self.sync_fit_model.SED.nu
-       
-    
-        
+
+
+
        
     
     def save_sync_fit_report(self,name=None):
         self.sync_best_fit.save_report(name=name)
 
     
-    def do_sync_fit(self,fit_model,fit_range=None,check_disk=False,check_BBB=False,check_host=False,use_log_par=False,Ep_start=None,no_check=False):
+    def do_sync_fit(self,fit_model,
+                    fit_range=None,
+                    check_disk=False,
+                    check_BBB=False,
+                    check_host=False,
+                    #use_log_par=False,
+                    Ep_start=None,
+                    no_check=False,
+                    minimizer='minuit'):
         
        
         
       
-        fit_model1=copy.deepcopy(fit_model)
+        #fit_model1=copy.deepcopy(fit_model)
         
         if fit_range is None:
             s_fit_range=sync_fit_range('blind',self.indices)
         else:
             s_fit_range=fit_range
             
-        print ("---> first blind fit run, log-cubic fit range:",s_fit_range)
+        print ("---> first blind fit run,  fit range:",s_fit_range)
         
-        fit_model1.show_pars()
-        
-        best_fit=fit_SED(fit_model1,self.SEDdata,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit',minimizer='leastsqbound')
-        
-        self.S_peak.update(fit_model1)
-        
+        #fit_model1.show_pars()
+
+        if Ep_start is None:
+            Ep=find_max_cubic(self.SEDdata.data['nu_data_log'],self.SEDdata.data['nuFnu_data_log'] ,x_range=s_fit_range)
+
+        else:
+            Ep=Ep_start
+
+
+        #if use_log_par == False:
+        fit_model.set('Ep', val=Ep)
+
+        #else:
+        #    fit_model1.set('E0', val=Ep - 1)
+
+
+
+        best_fit=fit_SED(fit_model,self.SEDdata,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit',minimizer=minimizer)
+
+        self.S_peak.update(fit_model)
+        self.find_class(self.S_peak.nu_p_val)
+
+        refit=False
         if check_disk==True : 
             self.add_disk(fit_model)
             refit=True
@@ -663,39 +719,26 @@ class SEDShape(object):
         if check_host==True:
             self.add_host_template(fit_model)
             refit=True
-        
-        Ep=None
-        if Ep_start is None:
-            Ep=find_max_cubic(self.SEDdata.data['nu_data_log'],self.SEDdata.data['nuFnu_data_log'] ,x_range=s_fit_range)
-
-        
-        if Ep is not None   and Ep_start is not None   :
-        
-            print ("--->  peak from blind fit found at :",Ep)
-        
-           
-            self.find_class(Ep)
-            
-            if use_log_par==False:
-                 fit_model.set('Ep',val=Ep)
-                 
-            else: 
-                fit_model.set('E0',val=Ep-1)
-                 
-            if fit_range is None:
-                s_fit_range=sync_fit_range(self.obj_class, self.indices )
-        
-        
-            
-            
-
-        best_fit=fit_SED(fit_model,self.SEDdata,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit',minimizer='leastsqbound')
-        
         best_fit.show_report()
+        #Ep=None
+
+
         
-        if use_log_par==False:
-            self.S_peak.update(fit_model)
+
+        
             
+            
+        if refit==True:
+            if fit_range is None:
+                s_fit_range = sync_fit_range(self.obj_class, self.indices)
+            best_fit=fit_SED(fit_model,self.SEDdata,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit',minimizer=minimizer)
+
+
+            best_fit.show_report()
+
+            #if use_log_par==False:
+            self.S_peak.update(fit_model)
+
             self.find_class(self.S_peak.nu_p_val)
 
         
@@ -704,7 +747,7 @@ class SEDShape(object):
         self.S_nu_max= self.get_nu_max(self.SEDdata.data['nu_data_log'] ,s_fit_range) 
         
         
-        self.set_S_LE_slope(fit_model,use_log_par)
+        self.set_S_LE_slope(fit_model,use_log_par=False)
 
 
         if check_disk==True :
@@ -795,7 +838,7 @@ class SEDShape(object):
       
    
     
-    def IC_fit(self,fit_range=None):
+    def IC_fit(self,fit_range=None,use_log_par=False,Ep_start=None,minimizer='minuit'):
     
         print  (section_separator)
               
@@ -804,53 +847,82 @@ class SEDShape(object):
         if fit_range is None:
             fit_range=IC_fit_range(self.obj_class)
         
-        print ("---> log-cubic fit range:",fit_range)
+        print ("---> fit range:",fit_range)
         
-        cubic_model=LogCubic()
-        self.IC_fit_model=FitModel(loglog_poly=cubic_model,name='IC_cubic_model')
 
-        self.IC_fit_model.set('b',fit_range_max=0)
-        self.IC_fit_model.set('b',val_max=0)
-        self.IC_fit_model.set('b',fit_range_min=-10)
-        self.IC_fit_model.set('b',val_min=-10)
         
-        Ep=find_max_cubic(self.SEDdata.data['nu_data_log'],self.SEDdata.data['nuFnu_data_log'] ,x_range=fit_range)
+        #Ep=find_max_cubic(self.SEDdata.data['nu_data_log'],self.SEDdata.data['nuFnu_data_log'] ,x_range=fit_range)
         
-        if Ep is not None  :
-            self.IC_fit_model.set('Ep',val=Ep)
+        #if Ep is not None  :
+        #    self.IC_fit_model.set('Ep',val=Ep)
+        #else:
+            #raise Warning('Ep not found')
+        #    self.IC_fit_model.set('Ep', val=0)
+        #
+        #self.IC_fit_model.show_pars()
+
+        if Ep_start is None:
+            Ep=find_max_cubic(self.SEDdata.data['nu_data_log'],self.SEDdata.data['nuFnu_data_log'] ,x_range=fit_range)
         else:
-            #!!!CORREGGERE
-            self.IC_fit_model.set('Ep',val=23.0)
-        
-        self.IC_fit_model.show_pars()
-        
-        
-        
-        try:
-            best_fit=fit_SED(self.IC_fit_model,self.SEDdata,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit',minimizer='leastsqbound')
-        
-            best_fit.show_report()
-            
-            best_fit_model=self.IC_fit_model
+            Ep=Ep_start
 
-        except:
-            print ("---> LogCubic fit failed")
-            print ("---> try LogParabola ")
-            logpar_model=LogParabolaEp()
-            self.IC_fit_model=FitModel(loglog_poly=logpar_model,name='IC_log-par_model')
-            if Ep is not None  :
-                self.IC_fit_model.set('Ep',val=Ep)
-            else:
-                #!!!CORREGGERE
-                self.IC_fit_model.set('Ep',val=23.0)
-            
+
+        if use_log_par==True:
+            print("---> LogParabola fit")
+            logpar_model = LogParabolaEp()
+            self.IC_fit_model = FitModel(loglog_poly=logpar_model, name='IC_log-par_model')
+
+
+
+            if Ep is not None:
+                self.IC_fit_model.set('Ep', val=Ep)
+
+
             self.IC_fit_model.show_pars()
-            
-            best_fit=fit_SED(self.IC_fit_model,self.SEDdata,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit',minimizer='leastsqbound')
-        
+
+            best_fit = fit_SED(self.IC_fit_model, self.SEDdata, 10. ** fit_range[0], 10. ** fit_range[1], loglog=True,
+                               silent=True, fitname='IC-shape-fit', minimizer=minimizer)
+
             best_fit.show_report()
-            
-            best_fit_model=self.IC_fit_model
+
+            best_fit_model = self.IC_fit_model
+        else:
+            print("---> LogCubic fit")
+            cubic_model = LogCubic()
+            self.IC_fit_model = FitModel(loglog_poly=cubic_model, name='IC_cubic_model')
+
+            self.IC_fit_model.set('b', fit_range_max=0)
+            self.IC_fit_model.set('b', val_max=0)
+            self.IC_fit_model.set('b', fit_range_min=-10)
+            self.IC_fit_model.set('b', val_min=-10)
+            if Ep is not None:
+                self.IC_fit_model.set('Ep', val=Ep)
+
+            try:
+                best_fit=fit_SED(self.IC_fit_model,self.SEDdata,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit',minimizer=minimizer)
+
+                best_fit.show_report()
+
+                best_fit_model=self.IC_fit_model
+
+
+            except Exception as e:
+
+                print ("---> LogCubic fit failed",e)
+                print ("---> try LogParabola ")
+                logpar_model=LogParabolaEp()
+                self.IC_fit_model=FitModel(loglog_poly=logpar_model,name='IC_log-par_model')
+                if Ep is not None:
+                    self.IC_fit_model.set('Ep', val=Ep)
+
+
+                self.IC_fit_model.show_pars()
+
+                best_fit=fit_SED(self.IC_fit_model,self.SEDdata,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit',minimizer=minimizer)
+
+                best_fit.show_report()
+
+                best_fit_model=self.IC_fit_model
             
             
             
