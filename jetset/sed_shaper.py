@@ -455,10 +455,15 @@ class SEDShape(object):
         _dt=[('src_name','S32')]
         _v = [name]
         for index in self.indices.idx_array:
+            _dt.append((index.name, 'f8'))
+            _dt.append((index.name + '_err', 'f8'))
             if index.val is not None:
-                _dt.append((index.name,'f8'))
-                _dt.append((index.name+'_err','f8'))
-                _v.extend([index.val.photon,index.err.photon])
+
+                _v.extend([index.val.photon, index.err.photon])
+            else:
+                _v.extend([None,None])
+
+
 
         _dt.append(('nu_p_S', 'f8'))
         _dt.append(('nu_p_S_err', 'f8'))
