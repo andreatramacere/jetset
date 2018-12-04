@@ -352,7 +352,7 @@ class ModelMinimizer(object):
 
 
         if skip_minimizer == False:
-            self.minimizer.fit(self,max_ev=max_ev,use_UL=use_UL)
+            self.minimizer.fit(self,max_ev=max_ev)
         else:
             pass
 
@@ -418,7 +418,7 @@ class Minimizer(object):
         self.calls=0
         self.res_check=None
         self.molde=model
-        self._fit(max_ev,use_UL=use_UL)
+        self._fit(max_ev)
         self._fit_stats()
         self._set_fit_errors()
 
@@ -455,7 +455,6 @@ class Minimizer(object):
 
     def _UL_likelihood(self,y_UL,y_model,y_err):
         y = (y_UL - y_model) / (np.sqrt(2) *y_err)
-        #print('->,log arg',y,sp.special.erf(y))
         x=0.5*(1.0+sp.special.erf(y))
         x[x==0]=1E-200
         return  np.log(x)
@@ -528,7 +527,7 @@ class LSBMinimizer(Minimizer):
     def __init__(self, model):
         super(LSBMinimizer, self).__init__(model)
 
-    def _fit(self, max_ev,use_UL=False):
+    def _fit(self, max_ev):
         bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model.fit_par_free]
 
         pout, covar, info, mesg, success = leastsqbound(self.residuals_Fit,
@@ -562,7 +561,7 @@ class LSMinimizer(Minimizer):
         super(LSMinimizer, self).__init__(model)
 
 
-    def _fit(self,max_ev,use_UL=False):
+    def _fit(self,max_ev):
         bounds = ([-np.inf if par.fit_range_min is None else par.fit_range_min for par in self.model.fit_par_free],
                   [np.inf if par.fit_range_max is None else par.fit_range_max for par in self.model.fit_par_free])
 
@@ -606,12 +605,12 @@ class MinutiMinimizer(Minimizer):
 
 
 
-    def _fit(self,max_ev=None,use_UL=False):
+    def _fit(self,max_ev=None):
         bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model.fit_par_free]
         self._set_minuit_func(self.model.pinit, bounds)
         max_nfev = 10000 if (max_ev == 0 or max_ev == None) else max_ev
-        self.minuit_fun.migrad(ncall=max_nfev)
-        self.pout = [self.minuit_fun.values[k] for k in self.minuit_fun.values.keys()]
+        fmin, param=self.minuit_fun.migrad(ncall=max_nfev)
+        self.pout=[self.minuit_fun.values[k] for k in self.minuit_fun.values.keys()]
         self.mesg = ''
 
     def _set_fit_errors(self):
@@ -621,22 +620,31 @@ class MinutiMinimizer(Minimizer):
 
 
 
-    def _set_minuit_func(self, p_init, bounds):
+    def _set_minuit_func(self, p_init, bounds,p_error=None):
+
+        if p_error==None:
+            p_error=[0.1]*len(p_init)
+
         p_names = ['par_{}'.format(_) for _ in range(len(p_init))]
+        error_names = ['error_par_{}'.format(_) for _ in range(len(p_init))]
         p_bound_names = ['limit_par_{}'.format(_) for _ in range(len(p_init))]
+
+        #This dict contains all the kw for
+        #par
         kwdarg = {}
-        for n, p, bn, b in zip(p_names, p_init, p_bound_names, bounds):
+        for n, p, bn, b,en,e in zip(p_names, p_init, p_bound_names, bounds,error_names,p_error):
             kwdarg[n] = p
             kwdarg[bn] = b
+            kwdarg[en] = e
 
-        #print('dict', kwdarg)
-
+        print(kwdarg)
         self.minuit_fun = iminuit.Minuit(
             fcn=self.chisq_func,
             forced_parameters=p_names,
             pedantic=False,
             **kwdarg,
-            frontend=None)
+            frontend=None,
+            errordef=1)
 
     def chisq_func(self, *p):
         self.p = p

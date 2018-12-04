@@ -191,7 +191,7 @@ class ObsData(object):
         #and to set allowed values
         #------------------------------
         allowed_keywords={'z':None}
-        allowed_keywords['obj_name']='None'
+        allowed_keywords['obj_name']=None
         allowed_keywords['restframe']=['obs','src']
         allowed_keywords['data_scale']=['lin-lin','log-log']
         allowed_keywords['data_file']=None
@@ -222,18 +222,11 @@ class ObsData(object):
                 
                 raise ValueError
         
-        #reads metadata from file
-       
-        #checks that all the class members
-        #have been initilized correctly
-        print('col_types a', self.col_types)
+
+        #print('col_types a', self.col_types)
         self.set_data_cols(self.col_types,self.col_nums)
-        #for  var in vars(self):
-        #    print("var ", var, " is ", getattr(self,var))
-        #    if getattr(self,var) is None:
-        #       print ("var ",var , " is None, please set it")
-        #       raise ValueError
-        print('col_types b', self.col_types)
+
+        #print('col_types b', self.col_types)
        
         
         
@@ -351,11 +344,13 @@ class ObsData(object):
        
         #-------------------------------------------------------------------------          
 
+        # sets UL entries
+        self.set_UL(self.UL_value)
+
         # set error if not present:
         self.set_facke_error(self.facke_error)
 
-        # remove UL entries
-        self.set_UL(self.UL_value)
+
 
 
 
@@ -422,7 +417,20 @@ class ObsData(object):
 
 
 
-   
+    @classmethod
+    def from_ascii(cls,data_file,data_scale,col_types,col_nums=None,restframe='obs',z=None,obj_name=None,UL_value=None):
+
+        return cls(data_file=data_file,
+                   data_scale=data_scale,
+                   col_types=col_types,
+                   col_nums=col_nums,
+                   restframe=restframe,
+                   obj_name=obj_name,
+                   UL_value=UL_value,
+                   z=z)
+
+
+
         
     def  set_data_cols(self,col_types,col_nums):
           """
@@ -625,14 +633,7 @@ class ObsData(object):
             self.data['nuFnu_data']*=Lum_conv_factor
         
         
-        #sets fake error column
-        #self.data['dnuFnu_facke_log']=np.ones(self.data['nu_data_log'].size)*self.facke_error
-        #self.data['dnuFnu_facke']=self.data['nuFnu_data']*self.facke_error
-        
-        #sets fake error for UL
-        #self.data['dnuFnu_data'][self.data['UL']]=self.data['dnuFnu_facke'][self.data['UL']]
-        #self.data['dnuFnu_data_log'][self.data['UL']]=self.data['dnuFnu_facke_log'][self.data['UL']]
-    
+
         
         
     def set_md_from_file(self,infile_name):
@@ -752,9 +753,9 @@ class ObsData(object):
     def set_zero_error(self,val=0.2,replace_zero=True):
         
         self.zero_error_replacment=val
-        
+        print("---> replacing zero error with relative error ", val)
         if 'dy' in self.col_types and self.data_scale=='lin-lin':
-            print ("---> Settin  UL for val",val)
+
             error_array=self.data['dnuFnu_data']
                        
         
@@ -766,7 +767,10 @@ class ObsData(object):
             error_array=None
 
         if error_array is not None:
+            #works only on data that are not UL
             self.data['zero_error']=error_array<=0.0
+            #self.data['zero_error']*=~self.data['UL']
+
             if replace_zero == True:
                 #self.set_error(self.zero_error_replacment, data_msk=self.data['zero_error'])
                 if self.data_scale=='lin-lin':

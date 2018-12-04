@@ -606,6 +606,12 @@ double integrale_IC_cooling(struct spettro * pt, double a, double b, double gamm
 
 //=========================================================================================
 // Kernel per il  Compton coolig, Moderski et al. 2005 MNRAS 363
+// Eq. 3
+// in my code b=4*gamma*pt->nu_seed[i+1]*HPLANCK*one_by_MEC2
+// in the paper b=4*gamma*h*nu/mec^2
+// I use the approximation in Eq. 3
+// I use b<1000 that gives a better connection compared to the value of b<10000
+// used in the paper
 // f_KN=1/(1+b)^1.5 if b<1000
 // else 9/(b^2)*(log(b)-11/6)
 // I_nu_Sync=>I_nu_seed
