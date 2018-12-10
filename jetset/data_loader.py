@@ -1180,7 +1180,7 @@ class ObsData(object):
                 x=(T1+T2)/2
                 ax1.text(x,y+0.3,data_set+' (%d)'%n)
                 y=y+1
-                print("---->", dT,T1,T2,y)
+                #print("---->", dT,T1,T2,y)
             #except Exception as e:
             #    print ('Exception',e)
             #    print ("no Time span for data_set",data_set)

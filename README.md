@@ -39,10 +39,13 @@ requires:
 
 python setup.py install
 
+Jupyter lab
+--------------------
+if you ecounter problem with jupyter not running interactive plot
+"jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-matplotlib"
 
-
- Build documentation
- -------------------
+Build documentation
+-------------------
  requires: 
     
  - sphinx

@@ -488,7 +488,7 @@ class SEDShape(object):
         _out[0]=tuple(_v)
         np.save(name,_out)
 
-    def eval_indices(self,minimizer='minuit'):
+    def eval_indices(self,minimizer='minuit',silent=True,show_fit_report=False):
         """
         
         This methods evaluates the indices for the SED
@@ -512,10 +512,10 @@ class SEDShape(object):
                 best_fit=fit_SED(loglog_pl,
                                  self.SEDdata,10.**index.idx_range[0],
                                  10.**index.idx_range[1],
-                                 loglog=True,silent=True,
+                                 loglog=True,
+                                 silent=silent,
                                  fitname='spectral-indices-best-fit',
                                  minimizer=minimizer)
-
                 #val,err=do_linear_fit(self.SEDdata.nu_data_log,self.SEDdata.nuFnu_data_log,dy=self.SEDdata.dnuFnu_data_log,x_range=index.idx_range)
 
 
@@ -531,22 +531,14 @@ class SEDShape(object):
 
                 self.index_models.append(loglog_pl)
 
-                best_fit.show_report()
-                print ()
-                print ()
+                if show_fit_report==True:
+                    best_fit.show_report()
+                    print()
 
-                #except Exception as e:
-                #    print "--->fit failed for %s"%index.name
-                #    print 'message',e.message
-                 #   ex_type, ex, tb = sys.exc_info()
-                 #   print('tb =====>')
-                 #   traceback.print_tb(tb)
-                 #   print('   <=====')
 
-                   # pass
-         
-        
-            
+
+            print()
+
         print (section_separator)
             
 
@@ -583,7 +575,9 @@ class SEDShape(object):
                  nu_max=None,
                  Ep_start=None,
                  use_log_par=False,
-                 minimizer='minuit'):
+                 minimizer='minuit',
+                 silent=True,
+                 show_fit_report=False):
         
         """
         This method analyses the synchrotron shape by means
@@ -643,7 +637,9 @@ class SEDShape(object):
                          check_host=check_host_gal_template,
                          #use_log_par=False,
                          Ep_start=Ep_start,
-                         minimizer=minimizer)
+                         minimizer=minimizer,
+                         silent=silent,
+                         show_fit_report=show_fit_report)
 
         #print "bbb", self.sync_fit_model.SED.nu
 
@@ -663,7 +659,6 @@ class SEDShape(object):
         #print "bbb", self.sync_fit_model.SED.nu
 
 
-
        
     
     def save_sync_fit_report(self,name=None):
@@ -678,7 +673,9 @@ class SEDShape(object):
                     #use_log_par=False,
                     Ep_start=None,
                     no_check=False,
-                    minimizer='minuit'):
+                    minimizer='minuit',
+                    silent=True,
+                    show_fit_report=True):
         
        
         
@@ -709,7 +706,7 @@ class SEDShape(object):
 
 
 
-        best_fit=fit_SED(fit_model,self.SEDdata,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit',minimizer=minimizer)
+        best_fit=fit_SED(fit_model,self.SEDdata,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=silent,fitname='sync-shape-fit',minimizer=minimizer)
 
         self.S_peak.update(fit_model)
         self.find_class(self.S_peak.nu_p_val)
@@ -724,7 +721,10 @@ class SEDShape(object):
         if check_host==True:
             self.add_host_template(fit_model)
             refit=True
-        best_fit.show_report()
+
+        if show_fit_report == True:
+            best_fit.show_report()
+        print()
         #Ep=None
 
 
@@ -957,7 +957,7 @@ class SEDShape(object):
         x1=x[msk]
         delta=0.1
         delta_tot=0
-
+        print("---> initial range for index %s  set to [%f,%f]" % (index.name, index.idx_range[0], index.idx_range[1]))
         while len(x1)<min_size and delta_tot<1.0:
             delta_tot+=delta
             x_range[0]-=delta
@@ -968,7 +968,7 @@ class SEDShape(object):
         if len(x1)>=min_size:
             do_fit=True
             index.idx_range=x_range
-            print ("---> range for index%s updated to [%f,%f]"%(index.name,index.idx_range[0],index.idx_range[1] ))
+            print ("---> range for index %s updated  to [%f,%f]"%(index.name,index.idx_range[0],index.idx_range[1] ))
         else:
             do_fit=False
             print("---> not enough data in range for index%s " % (index.name))

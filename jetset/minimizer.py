@@ -216,13 +216,13 @@ class ModelMinimizer(object):
 
 
     def __init__(self,minimizer_type):
-        __accepted__ = ['leastsqbound', 'minuit', 'least_squares']
+        __accepted__ = ['lsb', 'minuit', 'ls']
 
 
-        if minimizer_type == 'leastsqbound':
+        if minimizer_type == 'lsb':
             self.minimizer=LSBMinimizer(self)
 
-        elif minimizer_type=='least_squares':
+        elif minimizer_type=='ls':
             self.minimizer=LSMinimizer(self)
 
         elif minimizer_type=='minuit':
@@ -234,7 +234,7 @@ class ModelMinimizer(object):
         else:
             raise RuntimeError('minimizer factory failed')
 
-        print('minimizer',minimizer_type)
+        #print('minimizer',minimizer_type)
 
 
     def _prepare_fit(self,fit_Model,SEDdata,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,use_facke_err=False,use_UL=False):
@@ -347,12 +347,14 @@ class ModelMinimizer(object):
             use_UL=False,
             skip_minimizer=False):
 
+        self.silent=silent
+
         self._prepare_fit( fit_Model, SEDdata, nu_fit_start, nu_fit_stop, fitname=fitname, fit_workplace=fit_workplace,
                      loglog=loglog, silent=silent, get_conf_int=get_conf_int, use_facke_err=use_facke_err,use_UL=use_UL)
 
 
         if skip_minimizer == False:
-            self.minimizer.fit(self,max_ev=max_ev)
+            self.minimizer.fit(self,max_ev=max_ev,silent=silent)
         else:
             pass
 
@@ -413,11 +415,12 @@ class Minimizer(object):
         self.model=model
         self._progress_iter = cycle(['|', '/', '-', '\\'])
 
-    def fit(self,model,max_ev=None,use_UL=False):
+    def fit(self,model,max_ev=None,use_UL=False,silent=False):
         self.use_UL = use_UL
         self.calls=0
         self.res_check=None
         self.molde=model
+        self.silent=silent
         self._fit(max_ev)
         self._fit_stats()
         self._set_fit_errors()
@@ -465,9 +468,8 @@ class Minimizer(object):
 
 
 
-    def residuals_Fit(self,p, fit_par, nu_data, nuFnu_data, err_nuFnu_data, best_fit_SEDModel, loglog,UL,chisq=False,use_UL=False):
+    def residuals_Fit(self,p, fit_par, nu_data, nuFnu_data, err_nuFnu_data, best_fit_SEDModel, loglog,UL,chisq=False,use_UL=False,silent=False):
         #hide_cursor()
-
         _warn=False
         for pi in range(len(fit_par)):
             fit_par[pi].set(val=p[pi])
@@ -504,9 +506,9 @@ class Minimizer(object):
 
         self.calls +=1
 
-
-        self._progess_bar(_res_sum, res_UL)
-        print("\r", end="")
+        if silent==False:
+            self._progess_bar(_res_sum, res_UL)
+            print("\r", end="")
 
         if chisq==True:
             res=_res_sum
@@ -527,9 +529,9 @@ class LSBMinimizer(Minimizer):
     def __init__(self, model):
         super(LSBMinimizer, self).__init__(model)
 
-    def _fit(self, max_ev):
+    def _fit(self, max_ev,):
         bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model.fit_par_free]
-
+        max_nfev = 0 if (max_ev == 0 or max_ev == None) else max_ev
         pout, covar, info, mesg, success = leastsqbound(self.residuals_Fit,
                                                         self.model.pinit,
                                                         args=(self.model.fit_par_free,
@@ -538,12 +540,15 @@ class LSBMinimizer(Minimizer):
                                                               self.model.err_nuFnu_fit,
                                                               self.model.fit_Model,
                                                               self.model.loglog,
-                                                              self.model.UL),
+                                                              self.model.UL,
+                                                              False,
+                                                              False,
+                                                              self.silent),
                                                         xtol=5.0E-8,
                                                         ftol=5.0E-8,
                                                         full_output=1,
                                                         bounds=bounds,
-                                                        maxfev=max_ev)
+                                                        maxfev=max_nfev)
 
         self.mesg = mesg
         self.covar = covar
@@ -565,8 +570,7 @@ class LSMinimizer(Minimizer):
         bounds = ([-np.inf if par.fit_range_min is None else par.fit_range_min for par in self.model.fit_par_free],
                   [np.inf if par.fit_range_max is None else par.fit_range_max for par in self.model.fit_par_free])
 
-
-
+        max_nfev = None if (max_ev == 0 or max_ev is None) else max_ev
         fit = least_squares(self.residuals_Fit,
                             self.model.pinit,
                             args=(self.model.fit_par_free,
@@ -575,18 +579,21 @@ class LSMinimizer(Minimizer):
                                   self.model.err_nuFnu_fit,
                                   self.model.fit_Model,
                                   self.model.loglog,
-                                  self.model.UL),
+                                  self.model.UL,
+                                  False,
+                                  False,
+                                  self.silent),
 
                             xtol=1.0E-8,
                             ftol=1.0E-8,
                             jac='3-point',
-                            loss='cauchy',
+                            loss='linear',
                             f_scale=0.01,
                             bounds=bounds,
-                            max_nfev=None if max_ev == 0 else max_ev,
-                            verbose=2)
-
-        self.covar=np.linalg.inv(2 * np.dot(fit.J.T, fit.J))
+                            max_nfev=max_nfev,
+                            verbose=0)
+        #print(vars(fit))
+        self.covar=np.linalg.inv(2 * np.dot(fit.jac.T, fit.jac))
         self.chisq=sum(fit.fun * fit.fun)
         self.mesg = fit.message
         self.pout = fit.x
@@ -608,8 +615,10 @@ class MinutiMinimizer(Minimizer):
     def _fit(self,max_ev=None):
         bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model.fit_par_free]
         self._set_minuit_func(self.model.pinit, bounds)
-        max_nfev = 10000 if (max_ev == 0 or max_ev == None) else max_ev
-        fmin, param=self.minuit_fun.migrad(ncall=max_nfev)
+        if max_ev is None or max_ev==0:
+            max_ev =10000
+
+        fmin, param=self.minuit_fun.migrad(ncall=max_ev)
         self.pout=[self.minuit_fun.values[k] for k in self.minuit_fun.values.keys()]
         self.mesg = ''
 
@@ -636,8 +645,8 @@ class MinutiMinimizer(Minimizer):
             kwdarg[n] = p
             kwdarg[bn] = b
             kwdarg[en] = e
-
-        print(kwdarg)
+            print( kwdarg[n] ,p, kwdarg[bn] ,b, kwdarg[en] ,e)
+        #print(kwdarg)
         self.minuit_fun = iminuit.Minuit(
             fcn=self.chisq_func,
             forced_parameters=p_names,
@@ -657,7 +666,8 @@ class MinutiMinimizer(Minimizer):
                           self.model.loglog,
                           self.model.UL,
                           chisq=True,
-                          use_UL=self.use_UL)
+                          use_UL=self.use_UL,
+                          silent=self.silent)
 
 
 

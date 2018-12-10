@@ -118,7 +118,7 @@ class  Plot (object):
         #Build sedplot    
       
             
-        self.fig=plt.figure(figsize=(12,9))
+        self.fig=plt.figure(figsize=(12,8))
         
 
 

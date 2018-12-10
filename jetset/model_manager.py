@@ -334,7 +334,7 @@ class FitModel(Model):
         
         
         if nu is None:
-            print ("--->", self.nu_min,self.nu_max,self.nu_size)
+            #print ("--->", self.nu_min,self.nu_max,self.nu_size)
             
             x1=np.log10(self.nu_min)
 

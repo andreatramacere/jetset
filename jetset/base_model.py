@@ -38,7 +38,7 @@ class Model(object):
     def eval(self,fill_SED=True,nu=None,get_model=False,loglog=False,plot=None,label=None):
         
         if nu is None:
-            print("--->", self.nu_min,self.nu_max,self.nu_size)
+            #print("--->", self.nu_min,self.nu_max,self.nu_size)
             
             x1=np.log10(self.nu_min)
 
