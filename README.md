@@ -14,8 +14,8 @@ A multiwavelenght modeler and fitting tool for the SED of relativistic  astrophy
  - https://www.anaconda.com/download/
 
 ## download the jetset code
-- https://gitlab.com/andrea.tramacere/jetset/-/archive/stable/jetset-stable.tar.bz2
-- untar the  archive  `jetset-stable.tar.bz2`
+- https://gitlab.com/andrea.tramacere/jetset/-/archive/stable/jetset-stable.tar.gz
+- untar the  archive  `jetset-stable.tar.gz`
 - cd to  the dir `jetset-stable`
 
 ## install requirements
