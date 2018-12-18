@@ -1,4 +1,4 @@
-![Alt text](logo/logo_large.tiff)
+![img](./logo/logo_large.pgn)
 
 JetSeT (Jet Sed Tool)
 =====================
