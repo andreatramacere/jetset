@@ -9,12 +9,13 @@ __author__ = 'andrea tramacere'
 
 
 from setuptools import setup, find_packages,Extension
-from distutils.extension import Extension
-import glob
-
-
+#from distutils.extension import Extension
 from distutils.command.build import build
 from setuptools.command.install import install
+import glob
+import shutil
+
+
 
 class CustomBuild(build):
     def run(self):
@@ -28,7 +29,6 @@ class CustomInstall(install):
 
 class CustomClean(install):
     def run(self):
-        import shutil, glob
         try:
             shutil.rmtree('dist')
         except:
@@ -63,8 +63,8 @@ src_files=['jetset/jetkernel/jetkernel.i']
 src_files.extend(glob.glob ('jetkernel_src/src/*.c'))
 _module=Extension('_jetkernel',
                   sources=src_files,
-                  extra_compile_options='-fPIC  -v  -c -m64 -I',
-                  extra_link_options='-suppress',
+                  #extra_compile_options='-fPIC  -v  -c -m64 -I',
+                  #extra_link_options='-suppress',
                   swig_opts=['-v',],
                   include_dirs=['jetkernel_src/include'])
 
@@ -74,7 +74,7 @@ setup(name='jetset',
       author_email='andrea.tramacere@gmail.com',
       packages=['jetset', 'leastsqbound', 'jetset.jetkernel'],
       package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*dat','jetkernel/mathkernel/*dat']},
-      scripts=['bin/test_interactive.py'],
+      #scripts=['bin/test_interactive.py'],
       cmdclass=custom_cmdclass,
       requires=install_req,
       ext_modules = [_module],

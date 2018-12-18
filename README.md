@@ -9,7 +9,7 @@ A multiwavelenght modeler and fitting tool for the SED of relativistic  astrophy
 
 
 
-#Installation
+# Installation
  I strongly encourage to use anaconda and python3
  - https://www.anaconda.com/download/
 

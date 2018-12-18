@@ -1,3 +1,6 @@
+distutils
+setuptools
+shutil
 scipy
 numpy
 astropy
