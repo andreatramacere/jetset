@@ -21,7 +21,11 @@ A multiwavelenght modeler and fitting tool for the SED of relativistic  astrophy
 ## install requirements
     
    - If you use Anaconda: 
-     * `while read requirement; do conda install --yes $requirement; done < requirements.txt`
+     * Linux/MAC :
+       - `while read requirement; do conda install --yes $requirement; done < requirements.txt`
+     
+     * Windows   :
+       - ` FOR /F "delims=~" %f in (requirements.txt) DO conda install --yes "%f"`
    
    - If you use pip:
      * `pip install -r requirements.txt `
