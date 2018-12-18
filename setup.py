@@ -29,9 +29,18 @@ class CustomInstall(install):
 class CustomClean(install):
     def run(self):
         import shutil, glob
-        shutil.rmtree('dist')
-        shutil.rmtree('build')
-        shutil.rmtree(glob.glob('*.egg-info')[0])
+        try:
+            shutil.rmtree('dist')
+        except:
+            pass
+        try:
+            shutil.rmtree('build')
+        except:
+            pass
+        try:
+            shutil.rmtree(glob.glob('*.egg-info')[0])
+        except:
+            pass
 
 
 custom_cmdclass = {'build': CustomBuild, 'install': CustomInstall,'clean':CustomClean}
