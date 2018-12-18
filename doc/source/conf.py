@@ -23,10 +23,10 @@ import os
 sys.path.insert(0,os.path.abspath('../../'))
 
 import jetset
-#import sphinx_bootstrap_theme
+import sphinx_bootstrap_theme
 import sphinx_rtd_theme
 
-print jetset.__file__
+#print( jetset.__file__)
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -147,20 +147,39 @@ html_logo = "logo_small_transp_black.png"
 import sphinx_bootstrap_theme
 
 theme='bootstrap'
+#theme='sphinx_rtd_theme'
 
-if theme=='rtd':
+if theme=='sphinx_rtd_theme':
     html_theme = "sphinx_rtd_theme"
 
 html_theme=theme
 #html_logo = "logo_small_transp.png"
 #html_s
+if theme=='sphinx_rtd_theme':
+    html_theme_options = {
+        #'canonical_url': '',
+        #'analytics_id': 'UA-XXXXXXX-1',  # Provided by Google in your dashboard
+        'logo_only': False,
+        'display_version': True,
+        'prev_next_buttons_location': 'bottom',
+        #'style_external_links': False,
+        #'vcs_pageview_mode': '',
+        # Toc options
+        'collapse_navigation': True,
+        'sticky_navigation': True,
+        'navigation_depth': 4,
+        #'includehidden': True,
+        #'titles_only': False
+    }
 
 if theme=='bootstrap':
     html_logo = "logo_small_transp.png"
 
-    #html_sidebars = {
-    #    '**':  ['localtoc.html', 'sourcelink.html', 'searchbox.html'],
-    #}
+    html_sidebars = {
+        '**':  ['localtoc.html', 'searchbox.html'],
+    }
+    #html_sidebars = {'**': ['my_side_bar.html', 'searchbox.html']}
+
     html_logo = "logo_small_transp.png"
     html_theme = 'bootstrap'
     html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
@@ -186,7 +205,7 @@ if theme=='bootstrap':
         #],
 
         # Render the next and previous page links in navbar. (Default: true)
-        'navbar_sidebarrel': 'false',
+        'navbar_sidebarrel': 'True',
 
         # Render the current pages TOC in the navbar. (Default: true)
         'navbar_pagenav': 'true',

@@ -57,7 +57,7 @@ from .sed_models_dic import nuFnu_obs_dic,gamma_dic
 from  .plot_sedfit import Plot
 
 __all__=['Jet','JetParameter','JetSpecComponent','ElectronDistribution','build_emitting_region_dic',
-         'build_ExtFields_dic','init_SED']
+         'build_ExtFields_dic']
 
 
 def str_hook(pairs):

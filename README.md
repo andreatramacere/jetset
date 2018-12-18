@@ -3,7 +3,7 @@ JetSeT (Jet Sed Tool)
 
 ### A multiwavelenght modeler and fitting tool for the SED of relativistic  astrophysical jets
 
-Installation
+requirements
 ------------
 requires:
 - SWIG (http://www.swig.org/)
@@ -29,15 +29,25 @@ requires:
         - scipy
         - numpy
         - astropy
-       
-      - iminuit
+        - iminuit
         
         https://github.com/iminuit/iminuit
         
  - C compiler:
     - gcc compiler
 
-python setup.py install
+
+requirements
+------------
+- Anaconda 
+  - `while read requirement; do conda install --yes $requirement; done < requirements.txt`
+- pip 
+  - `pip install -r requirements.txt `
+
+Installation
+------------
+- `python setup.py clean`
+- `python setup.py install`
 
 Jupyter lab
 --------------------

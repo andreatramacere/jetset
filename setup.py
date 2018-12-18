@@ -12,7 +12,38 @@ from setuptools import setup, find_packages,Extension
 from distutils.extension import Extension
 import glob
 
+
+from distutils.command.build import build
+from setuptools.command.install import install
+
+class CustomBuild(build):
+    def run(self):
+        self.run_command('build_ext')
+        build.run(self)
+
+class CustomInstall(install):
+    def run(self):
+        self.run_command('build_ext')
+        self.do_egg_install()
+
+class CustomClean(install):
+    def run(self):
+        import shutil, glob
+        shutil.rmtree('dist')
+        shutil.rmtree('build')
+        shutil.rmtree(glob.glob('*.egg-info')[0])
+
+
+custom_cmdclass = {'build': CustomBuild, 'install': CustomInstall,'clean':CustomClean}
+
+
+
+
+
 version='1.2.0'
+
+
+
 
 
 f = open("./requirements.txt",'r')
@@ -35,6 +66,7 @@ setup(name='jetset',
       packages=['jetset', 'leastsqbound', 'jetset.jetkernel'],
       package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*dat','jetkernel/mathkernel/*dat']},
       scripts=['bin/test_interactive.py'],
+      cmdclass=custom_cmdclass,
       requires=install_req,
       ext_modules = [_module],
       py_modules=['jetkernel'], )
