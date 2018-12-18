@@ -1,11 +1,37 @@
 JetSeT (Jet Sed Tool)
 =====================
 
-### A multiwavelenght modeler and fitting tool for the SED of relativistic  astrophysical jets
+A multiwavelenght modeler and fitting tool for the SED of relativistic  astrophysical jets
 
-requirements
-------------
-requires:
+
+
+
+
+
+
+#Installation
+ I strongly encourage to use anaconda and python3
+ - https://www.anaconda.com/download/
+
+## download the jetset code
+- https://gitlab.com/andrea.tramacere/jetset/tree/stable
+   
+## install requirements
+    
+   - If you use Anaconda: 
+     * `while read requirement; do conda install --yes $requirement; done < requirements.txt`
+   
+   - If you use pip:
+     * `pip install -r requirements.txt `
+
+
+## install jetset
+- `python setup.py clean`
+- `python setup.py install`
+
+
+requirements installation without pip or conda
+---------------------------------
 - SWIG (http://www.swig.org/)
     - on linux Ubuntu:
         - sudo apt-get install python-dev
@@ -35,19 +61,6 @@ requires:
         
  - C compiler:
     - gcc compiler
-
-
-requirements
-------------
-- Anaconda 
-  - `while read requirement; do conda install --yes $requirement; done < requirements.txt`
-- pip 
-  - `pip install -r requirements.txt `
-
-Installation
-------------
-- `python setup.py clean`
-- `python setup.py install`
 
 Jupyter lab
 --------------------
