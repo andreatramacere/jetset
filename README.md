@@ -6,70 +6,107 @@ A multiwavelenght modeler and fitting tool for the SED of relativistic  astrophy
 
 
 
+# Acknowledgements
+
+If you use this code in any kind of scientific publication please cite the following papers:
+
+* `Tramacere A. et al. 2011` http://adsabs.harvard.edu/abs/2011ApJ...739...66T
+* `Tramacere A. et al. 2009` http://adsabs.harvard.edu/abs/2009A%26A...501..879T
+* `Massaro E. et. al 2006`   http://adsabs.harvard.edu/abs/2006A%26A...448..861M
+
+# Documentation
+visit: https://andreatramacere.github.io/jetsetdoc/
+
+#  Requirements
+The following python packages are required:
+
+          python 2.7 or >=3.6 (python 3 is suggested, python 2 should work still fine)
+          scipy
+          numpy
+          astropy
+          iminuit (https://github.com/iminuit/iminuit)
+         
+
+
+A C compiler is also necessary, plus the SWIG wrapper generator.
+
+All the dependencies can be installed following the Anaconda method 
+(suggested) **OR** the pip method, as described in the following sections.
 
 
 
-# Installation
- I strongly encourage to use anaconda and python3
- - https://www.anaconda.com/download/
+# Download the JeTseT code
+   - Get the source code from: 
+     - https://gitlab.com/andrea.tramacere/jetset/-/archive/stable/jetset-stable.tar.gz
+   - Uncompress the  archive  `jetset-stable.tar.gz`
+   - cd to  the dir `jetset-stable`
 
-## download the JeTseT code
-- https://gitlab.com/andrea.tramacere/jetset/-/archive/stable/jetset-stable.tar.gz
-- untar the  archive  `jetset-stable.tar.gz`
-- cd to  the dir `jetset-stable`
+# Installation using Anaconda (suggested method)
+ - I strongly encourage to use anaconda and python3
+   - https://www.anaconda.com/download/
 
-## install requirements
-    
-   - If you use Anaconda: 
-     * Linux/MAC :
-       - `while read requirement; do conda install --yes $requirement; done < requirements.txt`
+ - #### Download the JeTseT code
+   - Get the source code from: 
+     - https://gitlab.com/andrea.tramacere/jetset/-/archive/stable/jetset-stable.tar.gz
+   - Uncompress the  archive  `jetset-stable.tar.gz`
+   - cd to  the dir `jetset-stable`
+
+
+ - #### Install requirements 
+  
+    * Linux/MAC : run on the command line
+        - `while read requirement; do conda install --yes $requirement; done < requirements.txt`
      
-     * Windows   :
-       - ` FOR /F "delims=~" %f in (requirements.txt) DO conda install --yes "%f"`
-   
-   - If you use pip:
-     * `pip install -r requirements.txt `
+    * Windows   : run on the command line
+        - ` FOR /F "delims=~" %f in (requirements.txt) DO conda install --yes "%f"`
+
+ - #### Install JetSeT: 
+   run on the command line: 
+     * `python setup.py clean`
+     * `python setup.py install`
+
+**run all the examples outside of the installation dir**
+
+---------
+# Installation using PIP 
+
+ - #### Install requirements 
+    - run on the command line: `pip install -r requirements.txt `
+    - install SWIG following one of the following methods:
+        - SWIG (http://www.swig.org/)
+        - on linux Ubuntu:
+            - `sudo apt-get install python-dev`
+            - `sudo apt-get install swig`
+         - on linux Debian:
+            - `sudo aptitude install python-dev`
+            - `sudo aptitude install swig`
+         - on linux Fedora:
+            - `sudo yum install python-dev`
+            - `sudo yum install swig`
+         - on mac:
+            - `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null`
+            - `brew install swig`
+         - if you use anaconda:
+            - `conda install -c anaconda swig`
+
+    - ### Install jetset
+    run on the command line: 
+    - `python setup.py clean`
+    - `python setup.py install`
+
+**run all the examples outside of the installation dir**
 
 
-## install jetset
-- `python setup.py clean`
-- `python setup.py install`
 
-**run all the examples outsied of the installation dir**
 
-requirements installation without pip or conda
----------------------------------
-- SWIG (http://www.swig.org/)
-    - on linux Ubuntu:
-        - sudo apt-get install python-dev
-        - sudo apt-get install swig
-     - on linux Debian:
-        - sudo aptitude install python-dev
-        - sudo aptitude install swig
-     - on linux Fedora:
-        - sudo yum install python-dev
-        - sudo yum install swig
-     - on mac:
-        - ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null
-        - brew install swig
-     - if you use anaconda:
-        - conda install -c anaconda swig
-        
- - Python:
-     - Anaconda (I strongly encourage to use anaconda)
-     - otherwise:
-        - python 2.7
-        - scipy
-        - numpy
-        - astropy
-        - iminuit
-        
-        https://github.com/iminuit/iminuit
-        
- - C compiler:
-    - gcc compiler
+--------------------------------------------------------------
 
-Jupyter lab
+You can skip the following if your installation was successful
+
+
+--------------------------------------------------------------
+
+ Jupyter lab
 --------------------
 if you ecounter problem with jupyter not running interactive plot
 "jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-matplotlib"
