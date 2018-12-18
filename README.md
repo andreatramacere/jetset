@@ -1,3 +1,5 @@
+![Alt text](log/logo_large.tiff)
+
 JetSeT (Jet Sed Tool)
 =====================
 
@@ -13,7 +15,7 @@ A multiwavelenght modeler and fitting tool for the SED of relativistic  astrophy
  I strongly encourage to use anaconda and python3
  - https://www.anaconda.com/download/
 
-## download the jetset code
+## download the JeTseT code
 - https://gitlab.com/andrea.tramacere/jetset/-/archive/stable/jetset-stable.tar.gz
 - untar the  archive  `jetset-stable.tar.gz`
 - cd to  the dir `jetset-stable`
