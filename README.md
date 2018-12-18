@@ -1,7 +1,5 @@
-![img](./logo/logo_large.pgn)
+![img](./logo/logo_large.png)
 
-JetSeT (Jet Sed Tool)
-=====================
 
 A multiwavelenght modeler and fitting tool for the SED of relativistic  astrophysical jets
 
