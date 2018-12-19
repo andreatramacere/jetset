@@ -2,10 +2,6 @@
 JetSeT User Guide
 =================
 
- 
-
-Content
--------------------------
 
 .. toctree::
    :maxdepth: 1

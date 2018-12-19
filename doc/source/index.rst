@@ -14,6 +14,34 @@ This page provides the documentation for the  ``JetSeT`` package, a framework pr
 * modeling and fitting multiwavelength SEDs
 * handling  observed data
 
+
+.. _user-docs:
+
+
+
+Documentation
+---------------------
+
+.. toctree::
+   :maxdepth: 2
+
+     installation <install.rst>
+     user guide <user_guide/user_guide.rst>
+
+
+
+..   jet model <user_guide/jet_model/Jet_example.rst>
+..   model fitting  <user_guide/model_fit/fit_example.rst>
+..   code documentation (API) <api/modules.rst>
+
+..   introduction <intro/intro.rst>
+..   tutorial <tutorial/tutorial.rst>
+
+
+Acknowledgements
+---------------------
+
+
 If you use this code in any kind of scientific publication please cite the following papers:
 
 * `Tramacere A. et al. 2011 <http://adsabs.harvard.edu/abs/2011ApJ...739...66T>`_
@@ -21,28 +49,12 @@ If you use this code in any kind of scientific publication please cite the follo
 * `Massaro E. et. al 2006 <http://adsabs.harvard.edu/abs/2006A%26A...448..861M>`_
 
 
-.. _user-docs:
-
-******************
-User Documentation
-******************
-
-.. toctree::
-   :maxdepth: 1
-
-   user guide <user_guide/user_guide.rst>
-..   code documentation (API) <api/modules.rst>
-
-..   introduction <intro/intro.rst>
-..   tutorial <tutorial/tutorial.rst>
 
 
 
 
-
-*****
 Index
-*****
+---------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
