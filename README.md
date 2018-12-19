@@ -86,13 +86,13 @@ All the dependencies can be installed following the Anaconda method
          - on mac:
             - `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null`
             - `brew install swig`
-         - if you use anaconda:
-            - `conda install -c anaconda swig`
+     
 
-    - ### Install jetset
-    run on the command line: 
-    - `python setup.py clean`
-    - `python setup.py install`
+- #### Install JetSeT: 
+   run on the command line: 
+     * `python setup.py clean`
+     * `python setup.py install`
+
 
 **run all the examples outside of the installation dir**
 
@@ -123,3 +123,6 @@ Build documentation
  - sphinx-better-theme: 'https://github.com/irskep/sphinx-better-theme' 
  - sphinx-bootstrap-theme: 'https://github.com/ryan-roemer/sphinx-bootstrap-theme'
  - sphinx automod: 'https://github.com/astropy/sphinx-automodapi'    
+ 
+ 
+ 
