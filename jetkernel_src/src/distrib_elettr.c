@@ -57,61 +57,133 @@ void Genera_griglia_gamma_N_log(struct spettro *pt, double * griglia_gamma_N_log
 // Genera la  N[i] per e-
 //========================================
 
-void Genera_Ne(struct spettro *pt) {
-    char *name;
-    unsigned long i;
+void build_Ne(struct spettro *pt) {
+    //==========================================
+    //Numerical Integration precision Setup
+    //==========================================
+    if (strcmp(pt->MODE, "accurate") == 0) {
+        pt->gamma_grid_size = 10000;
+        if (pt->verbose) {
+            printf("gamma mesh set to value=%d for accurate integration \n",pt->gamma_grid_size);
+        }
+    }
+    else if (strcmp(pt->MODE, "fast") == 0) {
+        pt->gamma_grid_size = 1000;
+        if (pt->verbose) {
+            printf("gamma mesh set to value=%d for fast integration, \n",pt->gamma_grid_size);
+        }
+    }
+    else  if (strcmp(pt->MODE, "custom") == 0) {
+    	if (pt->verbose) {
+    		printf("gamma mesh set to custom value=%d  \n",pt->gamma_grid_size);
+    	}
+    }
+    else {
+    	if (pt->verbose) {
+			printf("MODE set to wrong value: %s, allowed= accurate,fast,custom",pt->MODE);
+			exit(1);
+      	}
+    }
+
+	if (fmod((double) pt->gamma_grid_size, 2.0) == 0) {
+		pt->gamma_grid_size++;
+		if (pt->verbose) {
+			printf("!! gamma_grid_size has to be odd\n");
+			printf("!! pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
+		}
+	}
+
+    //=========================================
+    // check on gamma grid
+    //=========================================
+    // gamma min griglia
+    if (pt->gmin_griglia<0.0 || pt->gmin < pt->gmin_griglia ){
+		if(pt->gmin>2.0){
+			pt->gmin_griglia=pt->gmin/2.0;
+		}
+		else{
+		   pt->gmin_griglia=1.0;
+		}
+    }
+
+
+
+    if (pt->gmax_griglia<0.0 || pt->gmax > pt->gmax_griglia ){
+    	pt->gmax_griglia=pt->gmax;
+    }
+
+    if (pt->gmin < pt->gmin_griglia ) {
+        printf("gmin < gmin_griglia, it must be the oppsosite");
+        exit(1);
+    }
+    if (pt->gmax > pt->gmax_griglia ) {
+        printf("gmax > gmax_griglia, it must be the oppsosite");
+        exit(1);
+    }
+
+
 
     if (pt->verbose>1) {
         printf("Set array per Ne \n");
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
     }
+
     //printf("Set array per Ne %s \n",pt->DISTR);
-    //Generate the gamma-grid for Ne(gamma)
-    pt->griglia_gamma_Ne_log = (double*) malloc(pt->gamma_grid_size * sizeof (double));
+    alloc_N_distr(&(pt->griglia_gamma_Ne_log),pt->gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log);
-
-    // Associa TIPO_DISTR  all stringa DISTR
-    SetDistr(pt);
-    //printf("Set array per Ne %d \n",pt->TIPO_DISTR);
-    //Fill Ne
-    pt->Ne = (double*) malloc(pt->gamma_grid_size * sizeof (double));
-    Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Ne);
-    
-    
-    
-    //stationary frame
-    pt->griglia_gamma_Ne_log_stat = (double*) malloc(pt->gamma_grid_size * sizeof (double));
-    //gamma=gamma'*delta
-    for (i = 0; i < pt->gamma_grid_size; i++) {
-		pt->griglia_gamma_Ne_log_stat[i]=pt->griglia_gamma_Ne_log[i]*pt->beam_obj;
-	}
-    // Associa TIPO_DISTR  all stringa DISTR
-   
+    alloc_N_distr(&(pt->Ne),pt->gamma_grid_size);
 
     //stationary frame
-    pt->Ne_stat = (double*) malloc(pt->gamma_grid_size * sizeof (double));
-     //N(gamma)=N'(gamma/delta)*delta^2
-    for (i = 0; i < pt->gamma_grid_size; i ++) {
-		pt->Ne_stat[i]=pt->Ne[i]*pt->beam_obj*pt->beam_obj;
-	}
-    
-    
-    //This flag is set to 1 to know that
-    //N(gamma) has been properly initialized and filled
-    pt->Distr_e_done = 1;
-    pt->N_0e = pt->N_0;
-	
-	
-	
+    alloc_N_distr(&(pt->griglia_gamma_Ne_log_stat),pt->gamma_grid_size);
+    alloc_N_distr(&(pt->Ne_stat),pt->gamma_grid_size);
+    if (pt->verbose>1) {
+        printf("DONE \n");
+    }
+}
 
 
-    name = "distr-e.dat";
-    Scrivi_N_file(pt, name, pt->griglia_gamma_Ne_log, pt->Ne);
+
+void build_Ne_custom(struct spettro *pt,  unsigned int size) {
+    pt->gamma_custom_grid_size=size;
+    if (pt->verbose>1) {
+        printf("Set array per Ne custom\n");
+        printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
+    }
+    //printf("Set array per Ne %s \n",pt->DISTR);
+    alloc_N_distr(&(pt->gamma_e_custom),size);
+    alloc_N_distr(&(pt->Ne_custom),size);
+
 
 
 }
 
 
+void InitNe(struct spettro *pt){
+    char *name;
+    unsigned long i;
+
+
+    SetDistr(pt);
+    //printf("filling\n");
+    Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Ne);
+    //printf("done\n");
+
+    for (i = 0; i < pt->gamma_grid_size; i++) {
+		pt->griglia_gamma_Ne_log_stat[i]=pt->griglia_gamma_Ne_log[i]*pt->beam_obj;
+	}
+
+	for (i = 0; i < pt->gamma_grid_size; i ++) {
+		pt->Ne_stat[i]=pt->Ne[i]*pt->beam_obj*pt->beam_obj;
+	}
+	//This flag is set to 1 to know that
+	pt->Distr_e_done = 1;
+
+    pt->N_0e = pt->N_0;
+
+    name = "distr-e.dat";
+    Scrivi_N_file(pt, name, pt->griglia_gamma_Ne_log, pt->Ne);
+
+}
 
 
 //========================================
@@ -126,14 +198,16 @@ void Genera_Np_Ne_pp(struct spettro *pt) {
     printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
 
     //Generate the gamma-grid for Np(gamma)
-    pt->griglia_gamma_Np_log = (double*) malloc(pt->gamma_grid_size * sizeof (double));
+
+    //pt->griglia_gamma_Np_log = (double*) malloc(pt->gamma_grid_size * sizeof (double));
+    alloc_N_distr(&(pt->griglia_gamma_Np_log),pt->gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Np_log);
 
-    // Associa TIPO_DISTR  all stringa DISTR
-    SetDistr(pt);
+
 
     // Fill Np
-    pt->Np = (double*) malloc(pt->gamma_grid_size * sizeof (double));
+    //pt->Np = (double*) malloc(pt->gamma_grid_size * sizeof (double));
+    alloc_N_distr(&(pt->Np),pt->gamma_grid_size);
     Fill_N(pt, pt->griglia_gamma_Np_log, pt->Np);
     //This flag si set to 1 to know that
     //N(gamma) has been properly initialized and filled
@@ -150,16 +224,18 @@ void Genera_Np_Ne_pp(struct spettro *pt) {
     printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
 
     //Generate the gamma-grid for Ne(gamma)
-    pt->griglia_gamma_Ne_log = (double*) malloc(pt->gamma_grid_size * sizeof (double));
+    //pt->griglia_gamma_Ne_log = (double*) malloc(pt->gamma_grid_size * sizeof (double));
+    alloc_N_distr(&(pt->griglia_gamma_Ne_log),pt->gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log);
 
     //Set N to e- from pp
     double tmp_distr;
     tmp_distr = pt->TIPO_DISTR;
-    pt->TIPO_DISTR = 8;
+    pt->TIPO_DISTR = -1;
 
     //Fill Ne
-    pt->Ne = (double*) malloc(pt->gamma_grid_size * sizeof (double));
+    //pt->Ne = (double*) malloc(pt->gamma_grid_size * sizeof (double));
+    alloc_N_distr(&(pt->Ne),pt->gamma_grid_size);
     Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Ne);
     //This flag si set to 1 to know that
     //N(gamma) has been properly initialized and filled
@@ -200,11 +276,11 @@ void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
     }
     distr_e_header(fp_distr);
 
-    if (pt->TIPO_DISTR != 6) {
-        if (pt->TIPO_DISTR == 8 && strcmp(pt->PARTICLE, "hadrons") == 0) {
+    if (pt->TIPO_DISTR != 0) {
+        if (pt->TIPO_DISTR == -1 && strcmp(pt->PARTICLE, "hadrons") == 0) {
             mass = MEC2_TeV;
         }
-        if (pt->TIPO_DISTR != 8 && strcmp(pt->PARTICLE, "hadrons") == 0) {
+        if (pt->TIPO_DISTR != -1 && strcmp(pt->PARTICLE, "hadrons") == 0) {
             mass = MPC2_TeV;
         }
         if (strcmp(pt->PARTICLE, "leptons") == 0) {
@@ -255,200 +331,77 @@ double Find_gmax(struct spettro *pt, double *N, double *g) {
 
 
 
+
+
+
 //========================================
 // RIEMPIE IL VETTORE  N[i]
 //========================================
 
 void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
 	unsigned long i, K;
-    double a, gamma_piu, gamma_meno;
-    double Npiu, Nmeno;
-    double *N_File;
-    double *G_File;
-    int count, count_max;
-    double GI, NI, NNI;
     //integranda Disre e
     double (*pf_norm) (struct spettro *, double x);
-    char N_file[static_file_name_max_legth];
-    FILE *fp;
 
-
-    //Fille N(gamma) array
-    if (pt->TIPO_DISTR != 6) {
-        //printf("***** Fill array of Particle distribution *****\n");
-
-
-
-        //Normalization
-        pt->N_0 = 1.0;
-        //if distr is e- from pp no normalization to compute
-        if (pt->Norm_distr == 1 && pt->TIPO_DISTR != 8 &&   pt->Norm_distr_L_e_Sync<=0.0) {
-            pf_norm = &N_distr_integranda;
-            //printf("Evaluate Normalization constant N_0\n");
-            pt->N_0 = integrale_trap_log_struct(pf_norm, pt, pt->gmin, pt->gmax, 10000);
-            //printf("N_0=%e\n", pt->N_0);
-
-            for (i = 0; i < pt->gamma_grid_size; i++) {
-
-            	N[i] = N_distr(pt, griglia_gamma_N_log[i]);
-            	//    printf("i=%d griglia_gamma_Ne_log=%e Ne=%e\n",i,pt->griglia_gamma_Ne_log[i],N_distr(pt,pt->griglia_gamma_Ne_log[i]));
-            }
-        }
-
-
-
-
-
-        if ( pt->Norm_distr_L_e_Sync>0.0) {
-			pt->N=1.0;
-			pt->N_0 = 1.0;
-
-			for (i = 0; i < pt->gamma_grid_size; i++) {
-
-				N[i] = N_distr(pt, griglia_gamma_N_log[i]);
-				//    printf("i=%d griglia_gamma_Ne_log=%e Ne=%e\n",i,pt->griglia_gamma_Ne_log[i],N_distr(pt,pt->griglia_gamma_Ne_log[i]));
-			}
-			pt->Distr_e_done = 1;
-
-			//printf ("PS=%e\n",Power_Sync_Electron(pt));
-			pt->N=pt->Norm_distr_L_e_Sync/Power_Sync_Electron(pt);
-
-			for (i = 0; i < pt->gamma_grid_size; i++) {
-
-				N[i] = N_distr(pt, griglia_gamma_N_log[i]);
-				//    printf("i=%d griglia_gamma_Ne_log=%e Ne=%e\n",i,pt->griglia_gamma_Ne_log[i],N_distr(pt,pt->griglia_gamma_Ne_log[i]));
-			}
-
-			//printf ("PS=%e\n",Power_Sync_Electron(pt));
-			pt->Distr_e_done = 0;
-
-
-       }
-
-    }
 
 
     //=========================================
-    // Leggo N(E) da file !!!EXPERIMENTAL
+    // interpolate custom Ne
     //=========================================
+    if (pt->TIPO_DISTR == 0)
+    {
+        for (i = 0; i < pt->gamma_grid_size; i++) {
+           N[i]=N_distr_interp(pt->gamma_custom_grid_size,
+                                griglia_gamma_N_log[i],
+                                pt->gamma_e_custom,
+                                pt->Ne_custom);
 
-    if (pt->TIPO_DISTR == 6) {
-        printf("Leggo N(gamma) da file con formato gamma N(gamma) \n");
-        sprintf(N_file, "%sN.dat", pt->path);
-        fp = fopen(N_file, "r");
-        count = 0;
-        if (fp == NULL) {
-            printf("Unable to open file %s \n ", N_file);
-            exit(0);
+
+//                N[i] =log_lin_interp( griglia_gamma_N_log[i],
+//                pt->gamma_e_custom,
+//                pt->gmin,
+//                pt->gmax,
+//                pt->Ne_custom ,
+//                pt->gamma_custom_grid_size,
+//                0.0);
+
         }
-        while (!feof(fp)) {
-            fscanf(fp, "%lf %lf \n", &GI, &NI);
-            //printf("%e %e \n",GI,NI);
-            //printf("count=%d\n",count);
-            count++;
-        }
-        count_max = count - 1;
-        printf("Elementi Vettore=%d  N_file[0:N-1=%d]\n", count_max + 1, count_max);
-        fclose(fp);
-
-        N_File = (double*) malloc((count_max + 1) * sizeof (double));
-        G_File = (double*) malloc((count_max + 1) * sizeof (double));
-
-
-        fp = fopen(N_file, "r");
-
-        count = 0;
-        while (!feof(fp) && count <= count_max) {
-            fscanf(fp, "%lf %lf ", &GI, &NI);
-            G_File[count] = GI;
-            N_File[count] = NI;
-            //printf("count=%d %e %e\n",count,GI,NI);
-            count++;
-        }
-        count = 0;
-        fclose(fp);
-
-        printf("count_max=%d\n", count_max);
-        //pt->gmin_griglia=G_File[0]/2;
-        //if (pt->gmin_griglia<1.0){
-        //    pt->gmin_griglia=1.0;
-        //}
-        //pt->gmax_griglia=G_File[count_max]*1.1;
-        //pt->gmin=G_File[0];
-        pt->gmax = G_File[count_max];
-
-        printf("Aggirnamento parametri\n");
-        printf("gmin=%e\n", pt->gmin);
-        printf("gmax=%e\n", pt->gmax);
-        printf("gmin_griglia=%e\n", pt->gmin_griglia);
-        printf("gmax_griglia=%e\n", pt->gmax_griglia);
-
-
-
-
-        //NORMALIZZO
-        pt->N_0 = 1.0;
-        if (pt->Norm_distr == 1) {
-            pf_norm = &N_distr_integranda;
-            printf("Evaluate Normalization constant N_0\n");
-            //trapezoidal rule
-            pt->N_0 = 0.0;
-            for (i = 0; i < count_max; i++) {
-                pt->N_0 += (G_File[i + 1] + G_File[i]) * N_File[i];
-            }
-            pt->N_0 *= 0.5;
-            printf("Cost Norm=%e\n", pt->N_0);
-        }
-
-        //for(i=0;i<pt->gamma_grid_size;i++){
-        //  printf("i=%d Gamma=%e\n",i,pt->griglia_gamma_Ne_log[i]);
-        // }
-
-        i = 0;
-        N[0] = N_File[0];
-        printf("i=%d Gamma=%e N_gamma=%e\n", i, griglia_gamma_N_log[i], N[i]);
-        count = 0;
-
-        //Interpolate The file distribution over the griglia_gamma grid
-        for (i = 1; i < pt->gamma_grid_size; i++) {
-            //printf("G=%e G_file=%e\n",pt->griglia_gamma_Ne_log[i],G_File[count]);
-            if (griglia_gamma_N_log[i] < G_File[0] || griglia_gamma_N_log[i] > G_File[count_max]) {
-                N[i] = 0;
-            } else {
-                //printf("<<i=%d G=%e G_file=%e\n",i,pt->griglia_gamma_Ne_log[i],G_File[count]);
-                while (griglia_gamma_N_log[i] > G_File[count] && count < count_max - 1) {
-                    //pt->griglia_gamma_Ne_log[i]=0;
-                    //printf("   count=%d -G=%e G_file=%e\n",count,pt->griglia_gamma_Ne_log[i],G_File[count]);
-
-                    count++;
-                    //printf("   count=%d +G=%e G_file=%e\n",count,pt->griglia_gamma_Ne_log[i],G_File[count]);
-                }
-                //count--;
-                //printf(">>i=%d count=%d  G=%e G_file=%e \n",i,count,pt->griglia_gamma_Ne_log[i],G_File[count]);
-
-                //
-                gamma_piu = G_File[count];
-                gamma_meno = G_File[count - 1];
-                //printf(">>interpolo fra %e %e \n",gamma_piu,gamma_meno);
-                //
-                Npiu = N_File[count];
-                Nmeno = N_File[count - 1];
-
-                a = ((griglia_gamma_N_log[i] - gamma_meno) / (gamma_piu - gamma_meno))*(Npiu - Nmeno);
-                a += Nmeno;
-                N[i] = a * pt->N / pt->N_0;
-            }
-            //printf("i=%d Gamma=%e N_gamma=%e\n\n",i,pt->griglia_gamma_Ne_log[i],pt->Ne[i]);
-        }
-
-        //LEGGI FILE FORMATO "GAMMA, N(GAMMA)differenzile"
-        //CONVERI IN DOUBLE E NORMALIZZA
-        //DETERMINA N_PUNTI G_MIN G_MAX
-        //FAI IL CECK CON G_MIN G_MAX ANCHE PER GRIGLIA
-        //EVENTUALMENTE CORREGGI E MANDA MESSAGGIO A VIEDO
-        //QUESTO E' UN PUNTO CRITICO
-        //ORA FAI COME PER IL CASO ET (VEDI SOPRA)
     }
+
+
+
+
+    //Normalization
+    pt->N_0 = 1.0;
+    //if distr is e- from pp no normalization to compute
+    if (pt->Norm_distr == 1 && pt->TIPO_DISTR != -1 &&   pt->Norm_distr_L_e_Sync<=0.0) {
+        pf_norm = &N_distr_integranda;
+        pt->N_0 = integrale_trap_log_struct(pf_norm, pt, pt->gmin, pt->gmax, 10000);
+        for (i = 0; i < pt->gamma_grid_size; i++) {
+            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
+
+        }
+    }
+
+
+    if (pt->Norm_distr_L_e_Sync>0.0 && pt->TIPO_DISTR != -1) {
+        pt->N=1.0;
+        pt->N_0 = 1.0;
+        for (i = 0; i < pt->gamma_grid_size; i++) {
+
+            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
+        }
+
+        pt->N=pt->Norm_distr_L_e_Sync/Power_Sync_Electron(pt);
+        for (i = 0; i < pt->gamma_grid_size; i++) {
+
+            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
+        }
+    }
+
+
+    pt->Distr_e_done = 1;
+
 }
 
 
@@ -606,7 +559,7 @@ double N_distr(struct spettro *pt_N, double Gamma) {
 
     a=0.;
 
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == 8) {
+    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == -1) {
         pt_N->Gamma = Gamma;
         a= vluce_cm * pt_N->NH_pp * MEC2_TeV * bn_to_cm2 * rate_electrons_pp(pt_N, Gamma);
     }else{
@@ -645,40 +598,52 @@ double N_distr_integranda(struct spettro *pt_N, double Gamma) {
 
     if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax){
 
-        //PL
+        //Secondaris e Distribution has not analytical expression
+        //it is taken from the N array, throug log-lin interpolation
+        if (  pt_N->TIPO_DISTR == -1) {
+            a= N_distr_interp(pt_N->gamma_grid_size,
+                              Gamma,
+                              pt_N->griglia_gamma_Ne_log,
+                              pt_N->Ne);
+        }
 
         if (  pt_N->TIPO_DISTR == 0) {
+            a= N_distr_interp(pt_N->gamma_custom_grid_size,
+                                Gamma,
+                                pt_N->gamma_e_custom,
+                                pt_N->Ne_custom);
+        }
+
+        //PL
+
+        if (  pt_N->TIPO_DISTR == 1) {
             a= pl_func(Gamma, pt_N->p) ;
         }
 
         //PL CON EXP CUTOFF
-        if (  pt_N->TIPO_DISTR == 1) {
+        if (  pt_N->TIPO_DISTR == 2) {
             a=  plc_func(Gamma, pt_N->gamma_cut, pt_N->p);
         }
 
         //PL BROCKEN
-        if (  pt_N->TIPO_DISTR == 2) {
+        if (  pt_N->TIPO_DISTR == 3) {
            a= bkn_func(Gamma, pt_N->gamma_break,pt_N->p,pt_N->p_1);
         }
-        //PL BROCKEN-PILEUP
-        if (  pt_N->TIPO_DISTR == 10) {
-            a= bkn_pile_up_func(Gamma,pt_N->gamma_break,pt_N->p,pt_N->p_1,pt_N->gamma_pile_up, pt_N->gamma_pile_up_cut ,pt_N->alpha_pile_up);
-        }
 
-        //LOG PARABOLA
-        if (  pt_N->TIPO_DISTR == 3) {
+         //LOG PARABOLA
+        if (  pt_N->TIPO_DISTR == 4) {
             a= lp_func(Gamma,pt_N->gamma0_log_parab,pt_N->r,pt_N->s);
 
         }
 
 
         //LOG PARABOLA CON PICCO
-        if (  pt_N->TIPO_DISTR == 4) {
+        if (  pt_N->TIPO_DISTR == 5) {
             a= lp_ep_func(Gamma,pt_N->gammap_log_parab,pt_N->r);
         }
 
         //LOG PARABOLA CON PL
-        if (  pt_N->TIPO_DISTR == 5) {
+        if (  pt_N->TIPO_DISTR == 6) {
             a= lppl_func(Gamma,pt_N->gamma0_log_parab,pt_N->r,pt_N->s);
 
         }
@@ -689,33 +654,37 @@ double N_distr_integranda(struct spettro *pt_N, double Gamma) {
             a= spit_func(Gamma,pt_N->spit_gamma_th,pt_N->spit_temp,pt_N->spit_index);
         }
 
-        //Secondaris e Distribution has not analytical expression
-        //it is taken from the N array, throug log-lin interpolation
-        if (  pt_N->TIPO_DISTR == 8) {
 
-            a= N_distr_interp(pt_N, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne);
-        }
 
         //LOG PARABOLA CON PL e PILE-UP
-        if (  pt_N->TIPO_DISTR == 9) {
+        if (  pt_N->TIPO_DISTR == 8) {
             a= lppl_pile_up_func( Gamma,pt_N->gamma0_log_parab,pt_N->gamma_inj,pt_N->r,pt_N->s,pt_N->gamma_pile_up, pt_N->ratio_pile_up ,pt_N->alpha_pile_up);
         }
+
+         //PL BROCKEN-PILEUP
+        if (  pt_N->TIPO_DISTR == 9) {
+            a= bkn_pile_up_func(Gamma,pt_N->gamma_break,pt_N->p,pt_N->p_1,pt_N->gamma_pile_up, pt_N->gamma_pile_up_cut ,pt_N->alpha_pile_up);
+        }
+
+
+
+
     }
 
 
     return a;
 }
 
-double N_distr_interp(struct spettro *pt, double Gamma, double *griglia_gamma, double *N) {
+double N_distr_interp(unsigned long size, double Gamma, double *griglia_gamma, double *N) {
 	unsigned long i;
     double gamma_piu, gamma_meno, Npiu, Nmeno, g, a;
     i = 0;
-    while (griglia_gamma[i] < Gamma && i < pt->gamma_grid_size) {
+    while (griglia_gamma[i] < Gamma && i < size) {
         i++;
     }
 
     //printf("G=%e G_file=%e\n",pt->griglia_gamma_Ne_log[i],G_File[count]);
-    if (i > 0 && i < pt->gamma_grid_size && N[i] > 0 && N[i - 1] > 0) {
+    if (i > 0 && i < size && N[i] > 0 && N[i - 1] > 0) {
         gamma_piu = log10(griglia_gamma[i]);
         gamma_meno = log10(griglia_gamma[i - 1]);
         Npiu = log10(N[i]);
@@ -729,3 +698,76 @@ double N_distr_interp(struct spettro *pt, double Gamma, double *griglia_gamma, d
         return 0;
     }
 }
+
+
+void alloc_N_distr(double ** pt,int size){
+        //printf("pre %p\n",*pt);
+        //printf("alloc n\n");
+        if (*pt){
+            free(*pt);
+            //printf("freeing\n");
+        }
+
+        *pt= malloc(size * sizeof (double));
+        //printf("post %p\n",*pt);
+
+    }
+
+//=========================================================================================
+
+void SetDistr(struct spettro *pt) {
+    //8 is for secondary e- coming from pp
+
+    /*** Associo ad ogni distribuzione di elettroni ***/
+    if (strcmp(pt->DISTR, "custom") == 0) {
+        pt->TIPO_DISTR = 0;
+    }
+
+
+    if (strcmp(pt->DISTR, "pl") == 0) {
+        pt->TIPO_DISTR = 1;
+
+    }
+
+    if (strcmp(pt->DISTR, "plc") == 0) {
+        pt->TIPO_DISTR = 2;
+    }
+
+    if (strcmp(pt->DISTR, "bkn") == 0) {
+        pt->TIPO_DISTR = 3;
+    }
+
+    if (strcmp(pt->DISTR, "lp") == 0) {
+        pt->TIPO_DISTR = 4;
+    }
+
+    if (strcmp(pt->DISTR, "lpep") == 0) {
+        pt->TIPO_DISTR = 5;
+    }
+
+    if (strcmp(pt->DISTR, "lppl") == 0) {
+        pt->TIPO_DISTR = 6;
+    }
+
+
+    if (strcmp(pt->DISTR, "spitkov") == 0) {
+        pt->TIPO_DISTR = 7;
+    }
+
+    if (strcmp(pt->DISTR, "lppl_pile_up") == 0) {
+        pt->TIPO_DISTR = 8;
+    }
+
+    if (strcmp(pt->DISTR, "bkn_pile_up") == 0) {
+        pt->TIPO_DISTR = 9;
+    }
+
+
+
+
+
+    if (pt->verbose) {
+     printf("tipo di distribuzione %d\n",pt->TIPO_DISTR);
+    }
+}
+//=========================================================================================

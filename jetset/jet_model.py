@@ -54,7 +54,7 @@ from .output import makedir,WorkPlace,clean_dir
 
 from .sed_models_dic import nuFnu_obs_dic,gamma_dic
 
-from  .plot_sedfit import Plot
+from  .plot_sedfit import PlotSED
 
 __all__=['Jet','JetParameter','JetSpecComponent','ElectronDistribution','build_emitting_region_dic',
          'build_ExtFields_dic']
@@ -238,7 +238,18 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list):
             
 
 
+class CustomElectronDistribution(object):
 
+    def __init__(self,e_array,n_array,gamma_grid_size=None):
+        self.e_array=e_array
+        self.n_array=n_array
+        _size = e_array.size
+
+        if n_array.size != _size:
+            raise RuntimeError('e_array and n_array must have same size')
+        self.size=_size
+        if gamma_grid_size is None:
+            self.gamma_grid_size = _size * 2 + 1
 
 
 
@@ -252,7 +263,6 @@ class ElectronDistribution(object):
 
         self._jet=jet
         set_str_attr(jet._blob,'DISTR',name)
-        #set_str(jet._blob.DISTR,name)
 
         if gamma_grid_size is not None:
             self.set_grid_size(gamma_grid_size)
@@ -260,6 +270,24 @@ class ElectronDistribution(object):
         else:
             self._set_blob()
             self._fill()
+
+    @classmethod
+    def from_custom(cls,jet,custom_Ne):
+        name='custom'
+
+
+        BlazarSED.build_Ne_custom(jet._blob,custom_Ne.size)
+        Ne_custom_ptr = getattr(jet._blob, 'Ne_custom')
+        gamma_custom_ptr = getattr(jet._blob,'gamma_e_custom')
+        for ID in range(custom_Ne.size):
+            BlazarSED.set_elec_custom_array(gamma_custom_ptr,jet._blob,custom_Ne.e_array[ID], ID)
+            BlazarSED.set_elec_custom_array(Ne_custom_ptr, jet._blob, custom_Ne.n_array[ID],ID)
+
+        setattr(jet._blob,'gmin',custom_Ne.e_array[0] )
+        setattr(jet._blob,'gmax',custom_Ne.e_array[-1] )
+
+        return cls(name,jet,custom_Ne.gamma_grid_size)
+
 
     def update(self):
         self._set_blob()
@@ -271,7 +299,8 @@ class ElectronDistribution(object):
         self._fill()
 
     def _set_blob(self):
-        BlazarSED.Init(self._jet._blob)
+        BlazarSED.MakeNe(self._jet._blob)
+        BlazarSED.InitNe(self._jet._blob)
         self._N_name, self._gamma_name = gamma_dic['electron_distr']
         self.Ne_ptr = getattr(self._jet._blob, self._N_name)
         self.gamma_ptr = getattr(self._jet._blob, self._gamma_name)
@@ -426,6 +455,9 @@ class ElectronDistribution(object):
 
             model_dic['alpha_pile_up'] = ['turn-over-energy', 0.0, 10, '']
 
+        if electron_distribution_name == 'custom':
+            model_dic.pop('gmin')
+            model_dic.pop('gmax')
 
         return model_dic
 
@@ -528,7 +560,7 @@ class Jet(Model):
 
     """
 
-    def __init__(self,name='test',electron_distribution='lp',beaming_expr='delta',jet_workplace=None,verbose=None,clean_work_dir=True, **keywords):
+    def __init__(self,name='test',electron_distribution=None,beaming_expr='delta',jet_workplace=None,verbose=None,clean_work_dir=True, **keywords):
 
 
         super(Jet,self).__init__(  **keywords)
@@ -540,7 +572,7 @@ class Jet(Model):
         self._scale='lin-lin'
 
         self._blob = self.build_blob(verbose=verbose)
-
+        #print('_blob',self._blob)
         #self.jet_wrapper_dir=os.path.dirname(__file__)+'/jet_wrapper'
 
         #os.environ['BLAZARSED']=self.jet_wrapper_dir
@@ -556,7 +588,7 @@ class Jet(Model):
 
         self.set_flag(self.name)
 
-        self.init_BlazarSED()
+        #self.init_BlazarSED()
 
         self._allowed_EC_components_list=['BLR','DT','Star','CMB','Disk','All','CMB_stat']
 
@@ -592,7 +624,7 @@ class Jet(Model):
 
         blob = BlazarSED.MakeBlob()
         # temp_ev=BlazarSED.MakeTempEv()
-
+        #print('blob',blob.griglia_gamma_Ne_log)
         if verbose is None:
             blob.verbose = 0
         else:
@@ -664,7 +696,7 @@ class Jet(Model):
         with open(file_name, 'r') as infile:
             _model = json.load(infile)
 
-        print ('_model',_model)
+        #print ('_model',_model)
 
         jet.model_type = 'jet'
 
@@ -680,7 +712,7 @@ class Jet(Model):
 
                 #print ('test',c.replace('EC_',''), _model['EC_components_list'],c.replace('EC_','') in _model['EC_components_list'])
                 if c.replace('EC_','') in _model['EC_components_list']:
-                    print ('add EC',c.replace('EC_',''))
+                    #print ('add EC',c.replace('EC_',''))
                     jet.add_EC_component(str(c.replace('EC_','')))
                 else:
                     jet.add_spectral_component(str(c))
@@ -692,19 +724,29 @@ class Jet(Model):
         _par_dict=_model['pars']
         jet.show_pars()
         for k in _par_dict.keys():
-            print ('set', k,_par_dict[k])
+            #print ('set', k,_par_dict[k])
             jet.set_par(par_name=str(k),val=_par_dict[str(k)])
 
         return jet
 
-    def set_electron_distribution(self,name):
-        self.electron_distribution = ElectronDistribution(name, self)
+    def set_electron_distribution(self,name=None):
+        if isinstance(name,CustomElectronDistribution):
+            self._electron_distribution_name='custom'
+            self.electron_distribution=ElectronDistribution.from_custom(self,name)
+        else:
+            if name is not None:
+                self._electron_distribution_name=name
+            else:
+                self._electron_distribution_name=None
 
-        self._electron_distribution_name=name
+            if  self._electron_distribution_name is not None:
+                self.electron_distribution = ElectronDistribution(name, self)
 
-        elec_models_list = ['lp', 'pl', 'lppl', 'lpep', 'plc', 'bkn','spitkov','lppl_pile_up','bkn_pile_up']
 
-        if name not in elec_models_list:
+
+        elec_models_list = ['lp', 'pl', 'lppl', 'lpep', 'plc', 'bkn','spitkov','lppl_pile_up','bkn_pile_up','custom']
+
+        if self._electron_distribution_name not in elec_models_list:
             print ("electron distribution model %s not allowed" % name)
             print ("please choose among: ", elec_models_list)
             return
@@ -774,7 +816,10 @@ class Jet(Model):
 
         self.spectral_components.append(JetSpecComponent(name,self._blob))
 
-
+    def _update_spectral_components(self):
+        _l=[]
+        for ID,s in enumerate(self.spectral_components):
+            self.spectral_components[ID]=JetSpecComponent(s.name,self._blob)
 
 
 
@@ -796,7 +841,17 @@ class Jet(Model):
         self.add_par_from_dic(self._emitting_region_dic)
 
 
+    def set_N_from_L_sync(self,L_sync):
+        _L=self._blob.L_sync
+        setattr(self._blob,'Norm_distr_L_e_Sync',L_sync)
+        self.init_BlazarSED()
+        setattr(self._blob,'Norm_distr_L_e_Sync',_L)
 
+    def set_N_from_F_sync(self, F_sync):
+        self.init_BlazarSED()
+        DL = self._blob.dist
+        L = F_sync * DL * DL * 4.0 * np.pi
+        self.set_N_from_L_sync(L)
 
     def set_N_from_nuLnu(self,L_0, nu_0):
         """
@@ -805,8 +860,7 @@ class Jet(Model):
         N = 1.0
         setattr(self._blob, 'N', N)
         gamma_grid_size = self._blob.gamma_grid_size
-
-        self._blob.gamma_grid_size = 100
+        self.electron_distribution.set_grid_size(100)
 
         z = self._blob.z_cosm
 
@@ -814,15 +868,12 @@ class Jet(Model):
 
         delta = self._blob.beam_obj
         nu_blob = nu_0 / delta
-        # print 'delta for set N form L' ,delta
 
         L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
-        # if L_out <= 0.0:
-        #    L_out = BlazarSED.Lum_Sync_at_nu(blob, nu_blob) * delta ** 4
+
 
         ratio = (L_out / L_0)
-
-        self._blob.gamma_grid_size = gamma_grid_size
+        self.electron_distribution.set_grid_size(gamma_grid_size)
 
         #print 'N',N/ratio
         self.set_par('N', val=N/ratio)
@@ -1127,18 +1178,27 @@ class Jet(Model):
 
     def set_IC_nu_size(self,val):
         self._blob.nu_IC_size=val
+        #BlazarSED.build_photons(self._blob)
 
     def get_IC_nu_size(self):
         return self._blob.nu_IC_size
 
     def set_seed_nu_size(self,val):
         self._blob.nu_seed_size=val
+        #BlazarSED.build_photons(self._blob)
 
     def get_seed_nu_size(self):
         return self._blob.nu_seed_size
 
     def set_gamma_grid_size(self,val):
-        self._blob.gamma_grid_size=val
+        self.electron_distribution.set_grid_size(gamma_grid_size=val)
+
+    def set_nu_grid_size(self,val):
+        self._blob.nu_grid_size=val
+        #BlazarSED.build_photons(self._blob)
+
+    def get_nu_grid_size(self):
+        return  self._blob.nu_grid_size
 
     def get_gamma_grid_size(self):
         return self._blob.gamma_grid_size
@@ -1222,9 +1282,9 @@ class Jet(Model):
         print ("-----------------------------------------------------------------------------------------")
 
 
-    def plot_model(self,plot_obj=None,clean=False,autoscale=True,label=None,comp=None,SEDdata=None):
+    def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None):
         if plot_obj is None:
-            plot_obj=Plot(SEDdata=SEDdata)
+            plot_obj=PlotSED(sed_data=sed_data)
 
 
         if clean==True:
@@ -1238,7 +1298,7 @@ class Jet(Model):
                 comp_label = label
             else:
                 comp_label = c.name
-            plot_obj.add_model_plot(c.SED, autoscale=autoscale, line_style=line_style, label=comp_label)
+            plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label)
 
         else:
             for c in self.spectral_components:
@@ -1247,13 +1307,14 @@ class Jet(Model):
                     if label is not None:
                         comp_label=label
 
-                plot_obj.add_model_plot(c.SED, autoscale=autoscale, line_style=line_style, label=comp_label)
+                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label)
 
         return plot_obj
 
 
 
     def init_BlazarSED(self):
+
         BlazarSED.Init(self._blob)
 
 
@@ -1274,8 +1335,8 @@ class Jet(Model):
         if init==True:
 
             BlazarSED.Init(self._blob)
-
-
+            #self.set_electron_distribution()
+            self._update_spectral_components()
 
         BlazarSED.Run_SED(self._blob)
 
@@ -1319,12 +1380,10 @@ class Jet(Model):
             else:
                 nu_log=nu
 
-            #nu_sed_log,nuFnu_sed_log= self.get_SED_points(log_log=True)
 
             nu_sed_log=np.log10(nu_sed_sum)
             nuFnu_sed_log=np.log10(nuFnu_sed_sum)
 
-            #print "here: ",nu_log, nu_sed_log.min()
             msk= nu_log > nu_sed_log.min()
 
 
@@ -1375,13 +1434,13 @@ class Jet(Model):
             nuFnu_ptr=spec_comp.nuFnu_ptr
             nu_ptr=spec_comp.nu_ptr
 
-            size=self._blob.spec_array_size
+            size=self._blob.nu_grid_size
             x=zeros(size)
             y=zeros(size)
 
             for i in range(size):
-                x[i]=BlazarSED.get_freq_array(nu_ptr,self._blob,i)
-                y[i]=BlazarSED.get_freq_array(nuFnu_ptr,self._blob,i)
+                x[i]=BlazarSED.get_spectral_array(nu_ptr,self._blob,i)
+                y[i]=BlazarSED.get_spectral_array(nuFnu_ptr,self._blob,i)
 
                 #print("%s %e %e"%(name,x[i],y[i]))
 

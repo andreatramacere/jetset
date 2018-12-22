@@ -49,7 +49,7 @@
 #define three_by_four 0.75 /* 4/3 */
 #define fake_nu_err 1.0
 #define fake_flux_err 1.0
-#define static_spec_arr_size 200 /* num elementi dei vettori */
+#define static_spec_arr_size 1000 /* num elementi dei vettori */
 #define static_bess_table_size 1000 /* num elementi tabelle di Bessel */
 #define Bessel_MAX 500.0
 #define ELEMENTI_GAMMA_Contr_Comp 100
@@ -109,16 +109,18 @@ struct spettro {
 
     //----- Summed Spectra-----//
     //double nuF_nu_Sum_obs[static_spec_arr_size];
-    
+
 
     //---- somma observer frame
-    unsigned long nu_sum_size ;
+    unsigned long nu_grid_size ;
     double nu_start_grid;
     double nu_stop_grid;
+
     double nu_grid[static_spec_arr_size];
     double nuFnu_sum_grid[static_spec_arr_size];
+
     double nuFnu_Sync_grid[static_spec_arr_size];
-    double nuFnu_SSC_grid[static_spec_arr_size];    
+    double nuFnu_SSC_grid[static_spec_arr_size];
     double nuFnu_Disk_grid[static_spec_arr_size];
     double nuFnu_DT_grid[static_spec_arr_size];
     double nuFnu_Star_grid[static_spec_arr_size];
@@ -184,7 +186,7 @@ struct spettro {
     //-----------pp-gamma-emission---//
     //--- CONST
     double NH_pp;
- 
+
     //--- FREQ BOUNDARIES
     double nu_stop_pp_pred,nu_stop_pp;
     double nu_start_pp;
@@ -487,7 +489,7 @@ struct spettro {
     //----------- INTEGRATION MESH--------------//
     unsigned long nu_seed_size;
     unsigned long nu_IC_size;
-    unsigned long gamma_grid_size;
+
     //unsigned long mesh_intComp;
     //unsigned long mesh_intComp1;
 
@@ -500,14 +502,17 @@ struct spettro {
     int Distr_e_pp_done;
 
     int TIPO_DISTR;
-    double distre[static_spec_arr_size];
+    double *Ne_custom;
+    double *gamma_e_custom;
+    unsigned long gamma_custom_grid_size;
     double *gam;
     double *Ne;
     double *Ne_stat;
     double *Np;
-    double *griglia_gamma_Ne_log;
-    double *griglia_gamma_Ne_log_stat;
-    double *griglia_gamma_Np_log;
+    unsigned long gamma_grid_size;
+    double * griglia_gamma_Ne_log;
+    double * griglia_gamma_Ne_log_stat;
+    double * griglia_gamma_Np_log;
    
     double *griglia_gamma_log_IC;
     double *N_IC;
@@ -639,12 +644,18 @@ int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],uns
 /********************************     PyInterface    ************************************/
 // PyInterface
 struct spettro MakeBlob();
+void MakeNe(struct spettro *pt_base);
 struct temp_ev MakeTempEv();
 void Init(struct spettro *pt);
+void InitNe(struct spettro *pt);
+void build_photons(struct spettro *pt_base);
+void alloc_photons(double ** pt,int size);
+void set_seed_freq_start(struct spettro *pt_base);
 void Run_SED(struct spettro *pt_base);
 void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev);
-double get_freq_array(double * arr, struct spettro *pt, unsigned long id);
+double get_spectral_array(double * arr, struct spettro *pt, unsigned long id);
 double get_elec_array(double * arr, struct spettro *pt, unsigned long id);
+double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned long id);
 //===================================================================================
 
 
@@ -666,8 +677,11 @@ void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev);
 //===================================================================================
 /************************************ FUNZIONI Distr N *****************************/
 //void Genera_griglia_gamma_e_log(struct spettro *pt, double *griglia);
+void alloc_N_distr(double ** pt,int size);
+
 void Fill_N(struct spettro *pt, double *griglia_gamma_N_log, double *N);
-void Genera_Ne(struct spettro *pt);
+void build_Ne_custom(struct spettro *pt,  unsigned int size);
+void build_Ne(struct spettro *pt);
 void Genera_Np_Ne_pp(struct spettro *pt);
 double N_distr(struct spettro *, double Gamma);
 double N_distr_U_e(struct spettro *, double Gamma);
@@ -675,7 +689,7 @@ double N_distr_U_p(struct spettro *, double Gamma);
 double N_distr_integranda(struct spettro *, double Gamma);
 void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N);
 void FindNe_NpGp(struct spettro *pt);
-double N_distr_interp(struct spettro *pt, double Gamma, double *griglia_gamma, double *N);
+double N_distr_interp(unsigned long size, double Gamma, double *griglia_gamma, double *N);
 double Find_gmax(struct spettro *pt, double *g, double *N);
 double pl_func(double Gamma,double p);
 double plc_func(double Gamma,double gamma_cut,double p);
@@ -751,6 +765,7 @@ double S_sphere(double R);
 double get_beaming(double BulkFactor, double theta);
 void   SetBeaming(struct spettro *pt);
 void SetDistr(struct spettro *pt);
+
 double eval_beta_gamma(double  gamma);
 double Larmor_radius(double gamma,double B, double sin_alpha);
 double Larmor_radius_to_gamma(double Larmor_radius,double B, double sin_alpha);

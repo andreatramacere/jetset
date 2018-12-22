@@ -63,7 +63,7 @@ void spettro_somma_Sync_ic(int Num_file, struct spettro * pt) {
 	nu_min = pt->nu_start_grid;
 	nu_max = pt->nu_stop_grid;
 
-	I_MAX = pt->nu_sum_size;
+	I_MAX = pt->nu_grid_size;
 
 	k = (log10(nu_max) - log10(nu_min));
 	log_nu_start = log10(nu_min);
@@ -78,7 +78,7 @@ void spettro_somma_Sync_ic(int Num_file, struct spettro * pt) {
 
 
 		//nu_obs=pt->beam_obj*nu/(1+pt->z_cosm);
-		//printf("nu=%e nu_obs=%e now call\n",nu,nu_obs);
+		//printf("nu=%e nu_obs=%e, i=%d, i_max=%d\n",nu,nu_obs,i,I_MAX);
 		interpola_somma(pt, nu_obs,i);
 		//pt->nuF_nu_Sum_obs[i]= pt->nuFnu_somma_grid;
 		pt->nu_grid[i] = nu_obs;

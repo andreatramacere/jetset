@@ -30,7 +30,7 @@ void show_blob(struct spettro pt ) {
     printf("nu_stop_Sync=%e\n", pt.nu_stop_Sync);
     printf("nu_start_SSC=%e\n", pt.nu_start_SSC);
     printf("nu_stop_SSC=%e\n", pt.nu_stop_SSC);
-    printf("nu_sum_size=%d\n", pt.nu_sum_size);
+    printf("nu_grid_size=%d\n", pt.nu_grid_size);
     printf("nu_start_grid=%e\n", pt.nu_start_grid);
     printf("nu_stop_grid=%e\n", pt.nu_stop_grid);
     printf("B=%e\n", pt.B);
@@ -153,6 +153,7 @@ struct spettro MakeBlob() {
 
     struct spettro spettro_root;
     spettro_root.spec_array_size=static_spec_arr_size;
+
     spettro_root.BESSEL_TABLE_DONE=0;
     spettro_root.verbose = 0;
     sprintf(spettro_root.path, "./");
@@ -165,15 +166,18 @@ struct spettro MakeBlob() {
     spettro_root.do_IC=1;
 
     sprintf(spettro_root.MODE, "fast");
-
+    //GRID SIZE FOR SEED
     spettro_root.nu_seed_size = 200;
+    //GRID SIZE FOR IC
     spettro_root.nu_IC_size = 100;
     spettro_root.gamma_grid_size = 1000;
+    spettro_root.gamma_custom_grid_size=1000;
     spettro_root.nu_start_Sync = 1e8;
     spettro_root.nu_stop_Sync = 1e20;
     spettro_root.nu_start_SSC = 1e16;
     spettro_root.nu_stop_SSC = 1e27;
-    spettro_root.nu_sum_size = 200;
+    //GRID SIZE FOR INTERP
+    spettro_root.nu_grid_size = 200;
     spettro_root.nu_start_grid = 1e8;
     spettro_root.nu_stop_grid = 1e27;
     spettro_root.emiss_lim=1.0E-120;
@@ -249,12 +253,50 @@ struct spettro MakeBlob() {
     spettro_root.T_DT = 100;
     spettro_root.R_DT = 5.0e18;
     spettro_root.tau_DT = 1e-1;
-    double test[1000];
+    //double test[1000];
+
+    spettro_root.gam=NULL;
+    spettro_root.Ne=NULL;
+    spettro_root.Ne_stat=NULL;
+    spettro_root.griglia_gamma_Ne_log=NULL;
+    spettro_root.griglia_gamma_Ne_log_stat=NULL;
+    spettro_root.griglia_gamma_Np_log=NULL;
+    spettro_root.Np=NULL;
+
+    spettro_root.Ne_custom=NULL;
+    spettro_root.gamma_e_custom=NULL;
+
+//    build_photons(&spettro_root);
     return spettro_root;
 }
+
+
+void MakeNe(struct spettro *pt_base){
+    build_Ne(pt_base);
+}
+
 //=========================================================================================
+void set_seed_freq_start(struct spettro *pt_base){
+    pt_base->nu_start_Sync = 1e6;
+    pt_base->nu_stop_Sync = 1e20;
+    pt_base->nu_start_SSC = 1e14;
+    pt_base->nu_stop_SSC = 1e30;
+    pt_base->nu_start_grid = 1e6;
+    pt_base->nu_stop_grid = 1e30;
 
 
+
+
+    pt_base->nu_start_EC_Disk = 1e13;
+    pt_base->nu_stop_EC_Disk = 1e30;
+    pt_base->nu_start_EC_BLR = 1e13;
+    pt_base->nu_stop_EC_BLR = 1e30;
+    pt_base->nu_start_EC_DT = 1e13;
+    pt_base->nu_stop_EC_BLR = 1e26;
+    pt_base->nu_start_EC_CMB = 1e13;
+    pt_base->nu_stop_EC_CMB = 1e30;
+
+}
 
 
 //=========================================================================================
@@ -266,6 +308,10 @@ void Init(struct spettro *pt_base) {
     unsigned long i;
     //char * ENV;
     pt_base->SYSPATH=getenv("BLAZARSED");
+    set_seed_freq_start(pt_base);
+
+    pt_base->emiss_lim=1.0E-120;
+
     //sprintf(ENV,'%s',getenv("BLAZARSED"));
     //return;
     //printf("CIAO =%s\n",pt_base->SYSPATH);
@@ -285,18 +331,18 @@ void Init(struct spettro *pt_base) {
     if (pt_base->nu_seed_size>=pt_base->spec_array_size){
     	pt_base->nu_seed_size=pt_base->spec_array_size-1;
     	if (pt_base->verbose){
-            printf("nu_seed_size  was gt spec_array size \n");
+            printf("!!! Warning nu_seed_size  was gt spec_array size \n");
             printf("now set  to spec_array size %d \n ",pt_base->spec_array_size-1);
         }
     }
     if (pt_base->nu_IC_size>=pt_base->spec_array_size){
     	pt_base->nu_IC_size=pt_base->spec_array_size-1;
     	if (pt_base->verbose){
-            printf("nu_IC_size  was gt spec_array size \n ");
+            printf("!!! Warning  nu_IC_size  was gt spec_array size \n ");
             printf("now set  to spec_array size %d\n ",pt_base->spec_array_size-1);
         }
     }
-    for (i = 0; i < pt_base->spec_array_size; i++) {
+    for (i = 0; i < pt_base->nu_seed_size; i++) {
         pt_base->q_comp[i] = 0.0;
         pt_base->j_Sync[i] = 0.0;
         pt_base->alfa_Sync[i] = 0.0;
@@ -309,72 +355,7 @@ void Init(struct spettro *pt_base) {
 
 
 
-    //==========================================
-    //Numerical Integration precision Setup
-    //==========================================
-    if (strcmp(pt_base->MODE, "accurate") == 0) {
-        pt_base->gamma_grid_size = 10000;
-        if (pt_base->verbose) {
-            printf("gamma mesh set to value=%d for accurate integration \n",pt_base->gamma_grid_size);
-        }
-    }
-    else if (strcmp(pt_base->MODE, "fast") == 0) {
-        pt_base->gamma_grid_size = 1000;
-        if (pt_base->verbose) {
-            printf("gamma mesh set to value=%d for fast integration, \n",pt_base->gamma_grid_size);
-        }
-    }
-    else  if (strcmp(pt_base->MODE, "custom") == 0) {
-    	if (pt_base->verbose) {
-    		printf("gamma mesh set to custom value=%d  \n",pt_base->gamma_grid_size);
-    	}
-    }
-    else {
-    	if (pt_base->verbose) {
-			printf("MODE set to wrong value: %s, allowed= accurate,fast,custom",pt_base->MODE);
-			exit(1);
-      	}
-    }
 
-	if (fmod((double) pt_base->gamma_grid_size, 2.0) == 0) {
-		pt_base->gamma_grid_size++;
-		if (pt_base->verbose) {
-			printf("!!!!!! gamma_grid_size has to be odd\n");
-			printf("!!!!!!! pt->gamma_grid_size=%d\n", pt_base->gamma_grid_size);
-		}
-	}
-
-    
-
-
-
-
-    //=========================================
-    // check on gamma grid
-    //=========================================
-    // gamma min griglia
-    if (pt_base->gmin_griglia<0.0 || pt_base->gmin < pt_base->gmin_griglia ){
-		if(pt_base->gmin>2.0){
-			pt_base->gmin_griglia=pt_base->gmin/2.0;
-		}
-		else{
-		   pt_base->gmin_griglia=1.0;
-		}
-    }
-
-
-    if (pt_base->gmax_griglia<0.0 || pt_base->gmax > pt_base->gmax_griglia ){
-    	pt_base->gmax_griglia=pt_base->gmax;
-    }
-
-    if (pt_base->gmin < pt_base->gmin_griglia ) {
-        printf("gmin < gmin_griglia, it must be the oppsosite");
-        exit(1);
-    } 
-    if (pt_base->gmax > pt_base->gmax_griglia ) {
-        printf("gmax > gmax_griglia, it must be the oppsosite");
-        exit(1);
-    }
 
     //========================================================
     // Geometry Setup
@@ -437,15 +418,7 @@ void Init(struct spettro *pt_base) {
 
 
     //========================================================
-    // Cosmological Setup
-    //========================================================
-    // Calcolo approssimato della distanza
-    //pt_base->dist = Distanza_Lum_analyt(pt_base->z_cosm);
-    //printf("Distanza Approssimativa=%e \n", pt_base->dist);
-    // Calcolo rigoroso della distanza
-    //pf = &distanza_z;
-    //pt_base->dist = (vluce_cm * 1.0e-5 / H_0)*(1.0 + pt_base->z_cosm) * integrale_simp_struct(pf, pt_base, 0, pt_base->z_cosm, 10000);
-    //pt_base->dist *= parsec * 1.0e6 * 1.0e2;
+
     pt_base->dist=dist_lum_cm(pt_base->z_cosm);
     
     if (pt_base->verbose) {
@@ -453,24 +426,7 @@ void Init(struct spettro *pt_base) {
         printf("Distanza rigorosa=%e in cm \n", pt_base->dist);
     }
 
-    //============================================
-    // Numerical Tets
-    //=============================================
-    //pf = &test_int;
-    //printf("************* test numerici **************** \n");
-    //test=integrale_simp_log_struct(pf, pt_base, 10, 1e20, 10000);
-    //printf("test log=%e\n", test);
-    //test=integrale_simp_struct(pf, pt_base, 10, 1e20, 10000);
-    //printf("test lin=%e\n", test);
-    //printf("ris atteso=%e\n", (pow(1e20, 3)/3)-pow(10, 3)/3);
 
-
-
-    //============================================
-    //      Distre & Norm
-    //============================================
-    //Set Distre_e_done=0 significa che la distre nn e' stata
-    //ancora calcolata
 
 
     pt_base->Distr_e_done = 0;
@@ -482,8 +438,9 @@ void Init(struct spettro *pt_base) {
     }
     
     if (strcmp(pt_base->PARTICLE, "leptons") == 0) {
-        
-        Genera_Ne(pt_base);
+
+        InitNe(pt_base);
+
         pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N;
         FindNe_NpGp(pt_base);
         EvalU_e(pt_base);
@@ -501,6 +458,7 @@ void Init(struct spettro *pt_base) {
             printf("U_e   blob rest frame =%e erg/cm^3\n", pt_base->U_e);
             printf("U_e/U_b =%e\n", pt_base->U_e / pt_base->UB);
             printf("E_tot (electron)  blob rest frame =%e erg     \n", pt_base->E_tot_e);
+            printf("************************************************************************\n");
         }
 
     } else if (strcmp(pt_base->PARTICLE, "hadrons") == 0) {
@@ -636,7 +594,6 @@ void Run_SED(struct spettro *pt_base){
     //CoolingRates(pt_base);
 
 
-
 }
 
 //=========================================================================================
@@ -644,10 +601,8 @@ void Run_SED(struct spettro *pt_base){
 //==================================================
 //Funtions To access Ne and Spectral components form Python
 //==================================================
-
-
-double get_freq_array(double * arr, struct spettro * pt, unsigned long id){
-	if ((id >=0) && (id <= pt->spec_array_size)){
+double get_spectral_array(double * arr, struct spettro * pt, unsigned long id){
+	if ((id >=0) && (id <= pt->nu_grid_size)){
 		return arr[id];
 	}
 	else{
@@ -667,11 +622,27 @@ double get_elec_array(double * arr, struct spettro *pt, unsigned long id){
 	}
 }
 
+double set_elec_array(double * arr,struct spettro *pt, double val, unsigned long id){
+    if ((id>=0) && (id<=pt->gamma_grid_size)){
+           arr[id]=val;
+        }
+        else{
+            printf("exceeded array size\n");
+            exit(0);
+        }
+}
+
+double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned long id){
+    if ((id>=0) && (id<=pt->gamma_custom_grid_size)){
+           arr[id]=val;
+        }
+        else{
+            printf("exceeded array size\n");
+            exit(0);
+        }
+}
 
 //=========================================================================================
-
-
-
 void SetBeaming(struct spettro *pt){
 
 	if (strcmp(pt->BEAMING_EXPR, "delta") == 0) {
@@ -692,61 +663,3 @@ void SetBeaming(struct spettro *pt){
 	}
 }
 
-//=========================================================================================
-
-void SetDistr(struct spettro *pt) {
-    //8 is for secondary e- coming from pp
-
-    /*** Associo ad ogni distribuzione di elettroni ***/
-    if (strcmp(pt->DISTR, "pl") == 0) {
-        pt->TIPO_DISTR = 0;
-       
-    }
-    
-    if (strcmp(pt->DISTR, "plc") == 0) {
-        pt->TIPO_DISTR = 1;
-    }
-    
-    if (strcmp(pt->DISTR, "bkn") == 0) {
-        pt->TIPO_DISTR = 2;
-    }
-    
-    if (strcmp(pt->DISTR, "lp") == 0) {
-        pt->TIPO_DISTR = 3;
-    }
-
-    if (strcmp(pt->DISTR, "lpep") == 0) {
-        pt->TIPO_DISTR = 4;
-    }
-    
-    if (strcmp(pt->DISTR, "lppl") == 0) {
-        pt->TIPO_DISTR = 5;
-    }
-    
-    if (strcmp(pt->DISTR, "file") == 0) {
-        pt->TIPO_DISTR = 6;
-    }
-    
-    if (strcmp(pt->DISTR, "spitkov") == 0) {
-        pt->TIPO_DISTR = 7;
-    }
-
-    if (strcmp(pt->DISTR, "lppl_pile_up") == 0) {
-        pt->TIPO_DISTR = 9;
-    }
-
-    if (strcmp(pt->DISTR, "bkn_pile_up") == 0) {
-        pt->TIPO_DISTR = 10;
-    }
-
-    if (strcmp(pt->DISTR, "custom") == 0) {
-        pt->TIPO_DISTR = 1;
-    }
-
-
-
-    if (pt->verbose) {
-     printf("tipo di distribuzione %d\n",pt->TIPO_DISTR);
-    }
-}
-//=========================================================================================

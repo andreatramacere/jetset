@@ -12,6 +12,8 @@ from setuptools import setup, find_packages,Extension
 #from distutils.extension import Extension
 from distutils.command.build import build
 from setuptools.command.install import install
+from distutils.sysconfig import get_python_lib
+import os
 import glob
 import shutil
 
@@ -42,6 +44,22 @@ class CustomClean(install):
         except:
             pass
 
+
+        site_p=get_python_lib()
+
+        for f in glob.glob(site_p+'/*_jetkernel*'):
+            print ('found .so object:', f)
+            print ('removing i')
+            print(site_p, glob.glob(site_p + '/*_jetkernel*'))
+            try:
+                shutil.rmtree(f)
+            except:
+                pass
+
+            try:
+                os.remove(f)
+            except:
+                pass
 
 custom_cmdclass = {'build': CustomBuild, 'install': CustomInstall,'clean':CustomClean}
 

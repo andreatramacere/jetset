@@ -61,13 +61,13 @@ from .output import section_separator,WorkPlace
 import numpy as np
 
 
-__all__=['Plot']
+__all__=['PlotSED']
 
 
-class  Plot (object):
+class  PlotSED (object):
     
     
-    def __init__(self,SEDdata=None,
+    def __init__(self,sed_data=None,
                  model=None,
                  x_min=6.0,
                  x_max=3.0,
@@ -122,51 +122,47 @@ class  Plot (object):
         
 
 
-        gs = gridspec.GridSpec(2, 1, height_ratios=[4, 1])
+        self.gs = gridspec.GridSpec(2, 1, height_ratios=[4, 1])
             
         
-        self.sedplot= self.fig.add_subplot(gs[0])
+        self.sedplot= self.fig.add_subplot(self.gs[0])
+        self._add_res_plot()
         
-        
-        self.set_plot_axis_labels(SEDdata)
+        self.set_plot_axis_labels(sed_data)
         
         #if autoscale==True:
         self.sedplot.set_autoscalex_on(True)
         self.sedplot.set_autoscaley_on(True)
         self.sedplot.set_autoscale_on(True)
         self.counter=0
-        
+
+
 
         self.sedplot.grid(True)   
        
-        #Build residuals plot
 
-        
-            
-        if SEDdata is not None :
-            self.add_data_plot(SEDdata)
+
+        self.sedplot.set_xlim(5, 30)
+
+
+
+        if sed_data is not None :
+            self.add_data_plot(sed_data)
 
         if model is not  None:
             self.add_model_plot(model)
 
-        self._add_res_plot()
-        self.resplot.set_autoscaley_on(True)
-            
-        #else:
-        #    self.resplot=None
+
             
         self.counter_res=0
-        #self.fig.show()
-        #if autoscale==True:
-        #    self.autoscale()
 
 
     def _add_res_plot(self):
 
 
 
-        gs = gridspec.GridSpec(2, 1, height_ratios=[4, 1])
-        self.resplot = self.fig.add_subplot(gs[1], sharex=self.sedplot)
+
+        self.resplot = self.fig.add_subplot(self.gs[1], sharex=self.sedplot)
 
         self.lx_res = 'log($ \\nu $)  (Hz)'
         self.ly_res = 'res'
@@ -273,15 +269,15 @@ class  Plot (object):
             self.update_plot()
             self.update_legend()
 
-    def set_plot_axis_labels(self,SEDdata=None):
+    def set_plot_axis_labels(self,sed_data=None):
         
-        if SEDdata is not None :
+        if sed_data is not None :
             self.lx='log($ \\nu $)  (Hz)'
                 
-            if SEDdata.restframe=='src':
+            if sed_data.restframe=='src':
                 self.ly='log($ \\nu L_{\\nu} $ )  (erg  s$^{-1}$)' 
             
-            elif SEDdata.restframe=='obs':
+            elif sed_data.restframe=='obs':
                 self.ly='log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)' 
         
         else:
@@ -296,13 +292,11 @@ class  Plot (object):
         
     
     def add_res_zeroline(self):
-        x_min_res, x_max_res = self.resplot.get_xlim()
 
 
         y0=np.zeros(2)
-        x0=[x_min_res,x_max_res]
-       
-        print(x0,y0)
+        x0=[0,30]
+
         self.resplot.plot(x0,y0,'--',color='black')
         self.update_plot()
 
@@ -321,39 +315,39 @@ class  Plot (object):
 
 
     
-    def autoscale(self):
+    #def autoscale(self):
 
         
         #self.sedplot.autoscale_view(tight=True)
-        for l in self.sedplot.lines:
+    #    for l in self.sedplot.lines:
 
-            x_min,x_max=self.sedplot.get_xlim()
+    #        x_min,x_max=self.sedplot.get_xlim()
 
-            y_min,y_max=self.sedplot.get_ylim()
+    #        y_min,y_max=self.sedplot.get_ylim()
         
-        self.sedplot.set_xticks(np.arange(int(x_min)-2,int(x_max)+2,1.0))
+    #    self.sedplot.set_xticks(np.arange(int(x_min)-2,int(x_max)+2,1.0))
         
-        self.sedplot.set_xlim(x_min-1,x_max+1)
+    #    self.sedplot.set_xlim(x_min-1,x_max+1)
         
-        self.sedplot.set_ylim(y_min-1,y_max+1)
+    #    self.sedplot.set_ylim(y_min-1,y_max+1)
         
         
         
-        if self.resplot is not None  :
+      #  if self.resplot is not None  :
             
             #self.resplot.autoscale_view(tight=True)
             
             #self.x_min_res=self.x_min-1
             #self.x_max_res=self.x_max+1
 
-            y_min_res,y_max_res=self.resplot.get_ylim()
-            x_min_res,x_max_res=self.resplot.get_xlim()
+        #    y_min_res,y_max_res=self.resplot.get_ylim()
+        #    x_min_res,x_max_res=self.resplot.get_xlim()
 
             
-            self.resplot.set_xticks(np.arange(int(x_min_res)-2,int(x_max_res)+2,1.0))
+        #    self.resplot.set_xticks(np.arange(int(x_min_res)-2,int(x_max_res)+2,1.0))
             
-            self.resplot.set_xlim(x_min_res,x_max_res)
-            self.resplot.set_ylim(y_min_res,y_max_res)
+        #    self.resplot.set_xlim(x_min_res,x_max_res)
+        #    self.resplot.set_ylim(y_min_res,y_max_res)
             
             
             
@@ -401,7 +395,6 @@ class  Plot (object):
 
 
     def add_model_plot(self, model, label=None, color=None, line_style=None, autoscale=False, update=True):
-
         try:
             # print "a"
             x, y = model.get_model_points(log_log=True)
@@ -412,6 +405,7 @@ class  Plot (object):
             except:
                 print(model, "!!! Error has no SED instance or something wrong in get_model_points()")
                 return
+
 
         if color is None:
             color = self.counter
@@ -435,14 +429,14 @@ class  Plot (object):
 
         self.counter += 1
 
-    def add_data_plot(self,SEDdata,label=None,color=None,autoscale=True,fmt='o',ms=None,mew=None):
+    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=None,mew=None):
 
 
 
         try:
-            x,y,dx,dy,=SEDdata.get_data_points(log_log=True)
+            x,y,dx,dy,=sed_data.get_data_points(log_log=True)
         except:
-            print ("!!! ERROR failed to get data points from", SEDdata)
+            print ("!!! ERROR failed to get data points from", sed_data)
             print
             raise RuntimeError
             
@@ -450,11 +444,11 @@ class  Plot (object):
        
         # get x,y,dx,dy from SEDdata
         if dx is None:
-            dx=np.zeros(len(SEDdata.data['nu_data']))
+            dx=np.zeros(len(sed_data.data['nu_data']))
         
 
         if dy is None:
-            dy=np.zeros(len(SEDdata.data['nu_data']))
+            dy=np.zeros(len(sed_data.data['nu_data']))
         
         
           
@@ -464,13 +458,13 @@ class  Plot (object):
 
                 
         if label is None:
-            if SEDdata.obj_name is not None  :
-                label=SEDdata.obj_name
+            if sed_data.obj_name is not None  :
+                label=sed_data.obj_name
             else:
                 label='line %d'%self.counter
 
         line = self.sedplot.errorbar(x, y, xerr=dx, yerr=dy, fmt=fmt
-                                     , uplims=SEDdata.data['UL'],label=label,ms=ms,mew=mew)
+                                     , uplims=sed_data.data['UL'],label=label,ms=ms,mew=mew)
 
 
         
@@ -520,24 +514,28 @@ class  Plot (object):
 
     def add_residual_plot(self,model,data,label=None,color=None,filter_UL=True):
 
-
+        if self.counter_res == 0:
+            self.add_res_zeroline()
 
         if data is not None:
             x,y=model.get_residuals(log_log=True,data=data,filter_UL=filter_UL)
+
+            line = self.resplot.errorbar(x, y, yerr=np.ones(x.size), fmt='+')
+            self.lines_res_list.append(line)
+            self.counter_res += 1
         else:
             pass
 
 
-        if self.counter_res==0:
-            self.add_res_zeroline()
+
 
         
 
-        line = self.resplot.errorbar(x, y, yerr=np.ones(x.size), fmt='+')
 
-        self.lines_res_list.append(line)
+
+
         self.update_plot()
-        self.counter_res+=1
+
 
 
 

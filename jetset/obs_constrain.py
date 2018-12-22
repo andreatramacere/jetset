@@ -126,7 +126,7 @@ class ObsConstrain(object):
            
             
             self.class_obj=self.SEDShape.obj_class
-            self.z=self.SEDShape.SEDdata.z
+            self.z=self.SEDShape.sed_data.z
             self.rest_frame='obs'
             
            

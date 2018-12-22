@@ -1,13 +1,8 @@
 
 
-.. contents:: :local:
 
-
-
-.. toctree::
-
-jet\_model user guide
-=====================
+jet\_model physical setup
+=========================
 
 In this section we describe how to use the module  :mod:`.jet_model`
 to buil a model of jet able to reproduce SSC/EC emission processes.

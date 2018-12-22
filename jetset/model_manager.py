@@ -116,7 +116,7 @@ class FitModel(Model):
           
        
         
-        self.SEDdata=None
+        self.sed_data=None
         
         self.nu_min_fit=1E6
         
@@ -274,7 +274,7 @@ class FitModel(Model):
         return self.parameters.get(par_name,'val')
   
   
-    def fit(self,SEDdata,nu_min,nu_max,fitname=None):
+    def fit(self,sed_data,nu_min,nu_max,fitname=None):
         """
         shortcut to call :func:`.minimizer.fit_SED` 
         
@@ -282,7 +282,7 @@ class FitModel(Model):
         :param nu_min: minimun frequency for the fit range interval
         :param nu_max: maximum frequency for the fit range interval
         """
-        self.SEDdata=SEDdata
+        self.sed_data=sed_data
         
         self.nu_min_fit=nu_min
         
@@ -290,7 +290,7 @@ class FitModel(Model):
         
         self.fitname=fitname
         
-        return minimizer.fit_SED(self,self.SEDdata, self.nu_min_fit, self.nu_max_fit,self.fitname)
+        return minimizer.fit_SED(self,self.sed_data, self.nu_min_fit, self.nu_max_fit,self.fitname)
   
 
     def get_conf_range(self,par_name,frac_range=None):
@@ -313,7 +313,7 @@ class FitModel(Model):
         
         for  val_test in val_grid:
             self.parameters.set(par_name,val=val_test)
-            chi_red.append(minimizer.fit_SED(self,self.SEDdata,self.nu_min_fit,self.nu_max_fit,get_conf_int=True,fitname='err_estimate'))
+            chi_red.append(minimizer.fit_SED(self,self.sed_data,self.nu_min_fit,self.nu_max_fit,get_conf_int=True,fitname='err_estimate'))
             par_val.append(val_test)
             
             self.parameters.show_best_fit_pars()
