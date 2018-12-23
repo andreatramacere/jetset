@@ -228,7 +228,7 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
      *
      * g = Gamma degli e-
      */
-    double cost, rate,a, b, c, k, nu_1_min, nu_1_max, Gamma, g2;
+    double cost, rate,a, c, k, nu_1_min, nu_1_max, Gamma, g2;
     double epsilon_0, epsilon_1,Gamma_e;
     pt_K1->Gamma = g;
     g2 = g*g;
@@ -254,7 +254,7 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
         //rate=k-1;
         rate = (k-1)*(1.0+2.0/q)-2.0*log(k);
         rate *= cost;
-        //rate=0;
+        //rate=0.;
         //printf("nu_1=%e nu_min=%e nu_max=%e gamma=%e, k1=%e\n",pt_K1->nu_1,nu_1_min,nu_1_max,g,k);
     }
 
@@ -271,13 +271,15 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
 
             a = 2.0 * k * log(k) ;
 
-            b = (1+2*k)*(1-k);
+            a = a + (1+2*k)*(1-k);
 
 
             c = 0.5*(1-k)*(Gamma_e*k)*(Gamma_e*k)/(1+4.0*k*Gamma_e);
 
 
-            rate = a+ b +c;
+
+
+            rate = a+c;
             rate *= cost;
         }
         else{
@@ -345,7 +347,7 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
     integr_nu = 0.0;
     i = 0;
 
-    while (pt->nu_seed[i] < a) {
+    while (pt->nu_seed[i] < a && i<pt->nu_seed_size) {
         //  printf("i=%d\n",i);
         i++;
     }
@@ -353,13 +355,17 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
     if (pt->verbose>1) {
         printf("***** Integrale  IC ******\n");
         printf("i=%d\n", i);
-        printf("nu=%e a=%e i=%d\n", pt->nu_seed[i], a, i);
+        printf("nu=%e a=%e b=%e\n", pt->nu_seed[i], a, b);
     }
 
-    nu1 = pt->nu_seed[i];
-    y_nu1 = pt->n_seed[i];
+    nu1=0;
+    y_nu1=0;
+    if (i<pt->nu_seed_size){
+        nu1 = pt->nu_seed[i];
+        y_nu1 = pt->n_seed[i];
+    }
 
-    while (pt->nu_seed[i + 1] <= b && pt->nu_seed[i + 1] >= a) {
+    while (pt->nu_seed[i + 1] <= b && pt->nu_seed[i + 1] >= a && i<pt->nu_seed_size-1) {
         //printf("in\n");
         integr_gamma = 0.0;
 
@@ -386,6 +392,9 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
             //integr_gamma += (delta_g)*(y_g1+ y_g3);
 
         }
+        if (integr_gamma<0){
+            printf("integr_gamma<0 %e \n",integr_gamma);
+        }
 
         nu2 = pt->nu_seed[i + 1];
         y_nu2 = pt->n_seed[i + 1];
@@ -395,6 +404,15 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
         nu1 = nu2;
         y_nu1 = y_nu2;
         i++;
+
+        if (delta_nu<0){
+            printf("delta_nu<0 delta_nu =%e nu1=%e nu2=%e i=%d\n",delta_nu,nu1,nu2,i);
+        }
+
+
+        if ((y_nu2 + y_nu1)<0){
+            printf("(y_nu2 + y_nu1)<0 %e\n",(y_nu2 + y_nu1));
+        }
     }
 
     //============================================================

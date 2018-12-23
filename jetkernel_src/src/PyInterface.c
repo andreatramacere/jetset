@@ -292,7 +292,6 @@ void set_seed_freq_start(struct spettro *pt_base){
     pt_base->nu_start_EC_BLR = 1e13;
     pt_base->nu_stop_EC_BLR = 1e30;
     pt_base->nu_start_EC_DT = 1e13;
-    pt_base->nu_stop_EC_BLR = 1e26;
     pt_base->nu_start_EC_CMB = 1e13;
     pt_base->nu_stop_EC_CMB = 1e30;
 
