@@ -98,12 +98,13 @@ void build_Ne(struct spettro *pt) {
     //=========================================
     // gamma min griglia
     if (pt->gmin_griglia<0.0 || pt->gmin < pt->gmin_griglia ){
-		if(pt->gmin>2.0){
-			pt->gmin_griglia=pt->gmin/2.0;
-		}
-		else{
-		   pt->gmin_griglia=1.0;
-		}
+//		if(pt->gmin>2.0){
+//			pt->gmin_griglia=pt->gmin/2.0;
+//		}
+//		else{
+//		   pt->gmin_griglia=1.0;
+//		}
+		pt->gmin_griglia=pt->gmin;
     }
 
 

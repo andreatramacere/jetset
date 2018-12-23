@@ -567,3 +567,32 @@ class  PlotSED (object):
 
     def show(self):
         self.fig.show()
+
+
+
+
+class  PlotPdistr (object):
+
+    def __init__(self):
+        self.fig, self.ax = plt.subplots()
+
+
+    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None):
+
+
+
+        self.ax.plot(np.log10(gamma), np.log10(n_gamma))
+        self.ax.set_xlabel(r'log($\gamma$)')
+        self.ax.set_ylabel(r'log(n($\gamma$))')
+        self.ax.set_ylim(y_min, y_max)
+        self.update_plot()
+
+    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None):
+        self.ax.plot(np.log10(gamma), np.log10(n_gamma *  gamma * gamma *  gamma))
+        self.ax.set_xlabel(r'log($\gamma$)')
+        self.ax.set_ylabel(r'log(n($\gamma$) \gamma^3)')
+        self.ax.set_ylim(y_min, y_max)
+        self.update_plot()
+
+    def update_plot(self):
+        self.fig.canvas.draw()

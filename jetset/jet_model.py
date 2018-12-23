@@ -54,7 +54,7 @@ from .output import makedir,WorkPlace,clean_dir
 
 from .sed_models_dic import nuFnu_obs_dic,gamma_dic
 
-from  .plot_sedfit import PlotSED
+from  .plot_sedfit import PlotSED,PlotPdistr
 
 __all__=['Jet','JetParameter','JetSpecComponent','ElectronDistribution','build_emitting_region_dic',
          'build_ExtFields_dic']
@@ -317,32 +317,18 @@ class ElectronDistribution(object):
 
     def plot(self, ax=None, y_min=None,y_max=None):
         self.update()
-        import  pylab as plt
-        if ax is None:
-            fig,ax= plt.subplots()
+        p=PlotPdistr()
+        p.plot_distr(self.gamma,self.n_gamma,y_min=y_min,y_max=y_max)
 
-        ax.plot(np.log10(self.gamma),np.log10(self.n_gamma))
-        ax.set_xlabel(r'log($\gamma$)')
-        ax.set_ylabel(r'log(n($\gamma$))')
-        ax.set_ylim(y_min,y_max)
-        plt.show()
-
-        return ax,fig
+        return p
 
 
     def plot3p(self, ax=None,y_min=None,y_max=None):
         self.update()
-        import  pylab as plt
-        if ax is None:
-            fig,ax= plt.subplots()
+        p = PlotPdistr()
+        p.plot_distr3(self.gamma,self.n_gamma,y_min=y_min,y_max=y_max)
 
-        ax.plot(np.log10(self.gamma),np.log10(self.n_gamma*self.gamma*self.gamma*self.gamma))
-        ax.set_xlabel(r'log($\gamma$)')
-        ax.set_ylabel(r'log(n($\gamma$))')
-        ax.set_ylim(y_min, y_max)
-        plt.show()
-
-        return ax,fig
+        return p
 
 
     def _build_electron_distribution_dic(self,electron_distribution_name):
@@ -951,19 +937,16 @@ class Jet(Model):
 
 
 
-    def del_EC_component(self,EC_components):
-
-        _del_EC_components=EC_components.split(',')
-        if len(EC_components)==1:
-            _del_EC_components=[EC_components]
+    def del_EC_component(self,EC_components_list):
 
 
 
-        if 'All' in EC_components:
-            _del_EC_components=self._allowed_EC_components_list[::]
+
+        if 'All' in EC_components_list:
+            EC_components_list=self._allowed_EC_components_list[::]
 
 
-        for EC_component in _del_EC_components:
+        for EC_component in EC_components_list:
 
 
             if EC_component not in self._allowed_EC_components_list:
@@ -1003,7 +986,7 @@ class Jet(Model):
                     self.del_spectral_component('EC_CMB_stat',verbose=False)
                     self.EC_components_list.remove(EC_component)
 
-        self.del_par_from_dic(build_ExtFields_dic(_del_EC_components,self._allowed_EC_components_list))
+        self.del_par_from_dic(build_ExtFields_dic(EC_components_list,self._allowed_EC_components_list))
 
 
 
@@ -1266,16 +1249,18 @@ class Jet(Model):
 
         """
 
-        print ("-----------------------------------------------------------------------------------------")
+        print ("--------------------------------------------------------------------------------------------------------------")
         print ("model parameters for jet model:")
         print
-
-
+        print ("electron grid size: ",self.get_gamma_grid_size())
+        print ("seed photons grid size: ", self.get_seed_nu_size())
+        print ("seed IC grid size: ", self.get_IC_nu_size())
+        print
         print ("electron distribution type = %s  "%(self._electron_distribution_name))
 
         self.parameters.show_pars()
 
-        print ("-----------------------------------------------------------------------------------------")
+        print ("--------------------------------------------------------------------------------------------------------------")
 
 
     def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None):
