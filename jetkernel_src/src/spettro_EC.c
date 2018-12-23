@@ -304,7 +304,7 @@ void spettro_EC(int Num_file, struct spettro *pt) {
                 
 				nuFnu_obs_array[NU_INT] = F_nu_EC_obs * freq_array_obs[NU_INT];
                 
-               
+
 				if (pt->j_EC[NU_INT] < pt->emiss_lim) {
 					out=0;
 					if (freq_array[NU_INT] > numax_TH) {

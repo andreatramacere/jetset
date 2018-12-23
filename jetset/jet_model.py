@@ -1294,7 +1294,7 @@ class Jet(Model):
                 comp_label = label
             else:
                 comp_label = c.name
-            plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label)
+            plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim)
 
         else:
             for c in self.spectral_components:
@@ -1303,7 +1303,7 @@ class Jet(Model):
                     if label is not None:
                         comp_label=label
 
-                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label)
+                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim)
 
         return plot_obj
 

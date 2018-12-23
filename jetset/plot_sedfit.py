@@ -394,7 +394,7 @@ class  PlotSED (object):
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, autoscale=False, update=True):
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None):
         try:
             # print "a"
             x, y = model.get_model_points(log_log=True)
@@ -418,6 +418,13 @@ class  PlotSED (object):
                 label = model.name
             else:
                 label = 'line %d' % self.counter
+        if flim is not None:
+
+            msk=y>np.log10(flim)
+            x=x[msk]
+            y=y[msk]
+        else:
+            pass
 
         line, = self.sedplot.plot(x, y, line_style, label=label)
 
