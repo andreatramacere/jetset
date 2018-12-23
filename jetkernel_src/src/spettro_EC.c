@@ -304,11 +304,10 @@ void spettro_EC(int Num_file, struct spettro *pt) {
                 
 				nuFnu_obs_array[NU_INT] = F_nu_EC_obs * freq_array_obs[NU_INT];
                 
-
-
+               
 				if (pt->j_EC[NU_INT] < pt->emiss_lim) {
 					out=0;
-					if (freq_array[NU_INT] > nu_peak) {
+					if (freq_array[NU_INT] > numax_TH) {
 						stop = 1;
 					}
 					nuFnu_obs_array[NU_INT] = pt->emiss_lim;
@@ -319,7 +318,7 @@ void spettro_EC(int Num_file, struct spettro *pt) {
 					out=1;
 				}
 
-				if (stop == 1 && freq_array[NU_INT] > nu_peak) {
+				if (stop == 1 && freq_array[NU_INT] > numax_TH) {
 
 					*nu_stop_EC_obs = freq_array_obs[NU_INT];
 					*nu_stop_EC = freq_array[NU_INT];
@@ -355,12 +354,14 @@ void spettro_EC(int Num_file, struct spettro *pt) {
         }
     }
 
-
     //Se ancora non ha trovato nu_stop
     if (!stop) {
-    	*nu_stop_EC_obs= freq_array_obs[NU_INT];
-    	*nu_stop_EC = freq_array[NU_INT];
-    	*NU_INT_STOP_EC = NU_INT;
+    	*nu_stop_EC_obs = freq_array_obs[NU_INT-1];
+        *nu_stop_EC = freq_array[NU_INT-1];
+        *NU_INT_STOP_EC = NU_INT-1;
+        if (pt->verbose > 1) {
+            printf("%e %d\n ", freq_array[NU_INT-1], NU_INT-1);
+        }
     	if (pt->verbose>0) {
 			if (pt->EC == 1) {
 

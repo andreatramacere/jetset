@@ -143,8 +143,8 @@ class  PlotSED (object):
 
 
         self.sedplot.set_xlim(5, 30)
-
-
+        self.sedplot.set_ylim(-20, -8)
+        self.fig.canvas.manager.toolbar.update()
 
         if sed_data is not None :
             self.add_data_plot(sed_data)

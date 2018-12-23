@@ -139,7 +139,7 @@ void spettro_compton(int Num_file, struct spettro *pt){
 				if (pt->j_comp[NU_INT] < pt->emiss_lim) {
 					out = 0;
 
-					if (pt->nu_SSC[NU_INT] > nu_peak) {
+					if (pt->nu_SSC[NU_INT] > numax_TH) {
 						stop = 1;
 					}
 					pt->j_comp[NU_INT] = pt->emiss_lim;
@@ -150,7 +150,7 @@ void spettro_compton(int Num_file, struct spettro *pt){
 					out = 1;
 				}
 
-				if (stop == 1 && pt->nu_SSC[NU_INT] > nu_peak) {
+				if (stop == 1 && pt->nu_SSC[NU_INT] > numax_TH) {
 					F_nu_SSC_obs = pt->emiss_lim;
 					pt->nu_stop_SSC = pt->nu_SSC[NU_INT];
 					pt->nu_stop_SSC_obs = pt->nu_SSC_obs[NU_INT];
@@ -195,7 +195,12 @@ void spettro_compton(int Num_file, struct spettro *pt){
     
     //Se ancora non ha trovato nu_stop
     if (!stop){
-        pt->NU_INT_STOP_COMPTON_SSC=NU_INT-1;   
+        pt->nu_stop_SSC = pt->nu_SSC[NU_INT-1];
+        pt->nu_stop_SSC_obs = pt->nu_SSC_obs[NU_INT-1];
+        pt->NU_INT_STOP_COMPTON_SSC = NU_INT-1;
+        if (pt->verbose > 1) {
+            printf("%e %d\n ", pt->nu_SSC[NU_INT-1], NU_INT-1);
+        }
     }
     fclose(fp_SSC);
     

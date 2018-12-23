@@ -235,22 +235,21 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list):
 
 
 
-            
 
 
-class CustomElectronDistribution(object):
 
-    def __init__(self,e_array,n_array,gamma_grid_size=None):
-        self.e_array=e_array
-        self.n_array=n_array
+class ArrayElectronDistribution(object):
+
+    def __init__(self, e_array, n_array, gamma_grid_size=None):
+        self.e_array = e_array
+        self.n_array = n_array
         _size = e_array.size
 
         if n_array.size != _size:
             raise RuntimeError('e_array and n_array must have same size')
-        self.size=_size
+        self.size = _size
         if gamma_grid_size is None:
             self.gamma_grid_size = _size * 2 + 1
-
 
 
 class ElectronDistribution(object):
@@ -730,7 +729,7 @@ class Jet(Model):
         return jet
 
     def set_electron_distribution(self,name=None):
-        if isinstance(name,CustomElectronDistribution):
+        if isinstance(name, ArrayElectronDistribution):
             self._electron_distribution_name='custom'
             self.electron_distribution=ElectronDistribution.from_custom(self,name)
         else:
@@ -1011,16 +1010,13 @@ class Jet(Model):
 
 
 
-    def add_EC_component(self,EC_components):
+    def add_EC_component(self,EC_components_list):
 
-        _add_EC_components = EC_components.split(',')
-        if len(_add_EC_components) == 1:
-            _add_EC_components = [EC_components]
 
-        if 'All' in EC_components:
-            _add_EC_components=self._allowed_EC_components_list[::]
+        if 'All' in EC_components_list:
+            EC_components_list=self._allowed_EC_components_list[::]
 
-        for EC_component in _add_EC_components:
+        for EC_component in EC_components_list:
             if EC_component not in self._allowed_EC_components_list:
                 raise RuntimeError("EC_component %s not allowed" % EC_component, "please choose among ",
                                    self._allowed_EC_components_list)

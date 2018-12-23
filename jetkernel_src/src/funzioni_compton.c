@@ -382,6 +382,9 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
 
             y_g1 = y_g3;
             g1 = g3;
+
+            //integr_gamma += (delta_g)*(y_g1+ y_g3);
+
         }
 
         nu2 = pt->nu_seed[i + 1];
