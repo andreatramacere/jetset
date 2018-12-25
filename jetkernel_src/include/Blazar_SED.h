@@ -507,10 +507,12 @@ struct spettro {
     unsigned long gamma_custom_grid_size;
     double *gam;
     double *Ne;
+    double *Ne_IC;
     double *Ne_stat;
     double *Np;
     unsigned long gamma_grid_size;
     double * griglia_gamma_Ne_log;
+    double * griglia_gamma_Ne_log_IC;
     double * griglia_gamma_Ne_log_stat;
     double * griglia_gamma_Np_log;
    
@@ -682,6 +684,7 @@ void alloc_N_distr(double ** pt,int size);
 void Fill_N(struct spettro *pt, double *griglia_gamma_N_log, double *N);
 void build_Ne_custom(struct spettro *pt,  unsigned int size);
 void build_Ne(struct spettro *pt);
+void Fill_Ne_IC(struct spettro *pt, double gmin);
 void Genera_Np_Ne_pp(struct spettro *pt);
 double N_distr(struct spettro *, double Gamma);
 double N_distr_U_e(struct spettro *, double Gamma);

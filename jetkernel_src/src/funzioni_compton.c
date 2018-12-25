@@ -338,14 +338,25 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
     double nu1, nu2, integr_gamma, integr_nu;
     double g3, g1, y_g1, y_g2, y_g3, y_nu1, y_nu2;
     double delta_g, delta_nu;
-    unsigned long i, start_BG;
-    double g_min_BG;
+    unsigned long i, start_BG,g;
+    double g_min_BG,epsilon_0,epsilon_1;
     double (*pf_K1) (struct spettro *, double x);
 
     pf_K1 = &f_compton_K1;
     integr_gamma = 0.0;
     integr_nu = 0.0;
     i = 0;
+
+    epsilon_0 = HPLANCK * pt->nu_compton_0*one_by_MEC2;
+    epsilon_1 = HPLANCK * pt->nu_1*one_by_MEC2;
+    g_min_BG=0.5*epsilon_1*(1+sqrt(1.0+(1.0/(epsilon_1*epsilon_0))));
+    //g_min_BG=1e5;
+    //printf("gmin=%e %e %e \n",g_min_BG,pt->nu_compton_0,pt->nu_1);
+
+
+    g=pt->gmin_griglia;
+    pt->gmin_griglia=g_min_BG;
+    Fill_Ne_IC(pt,g_min_BG);
 
     while (pt->nu_seed[i] < a && i<pt->nu_seed_size) {
         //  printf("i=%d\n",i);
@@ -367,21 +378,27 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
 
     while (pt->nu_seed[i + 1] <= b && pt->nu_seed[i + 1] >= a && i<pt->nu_seed_size-1) {
         //printf("in\n");
+
+
+
+
+
+
         integr_gamma = 0.0;
 
-        g1 = pt->griglia_gamma_log_IC[0];
+        g1 = pt->griglia_gamma_Ne_log_IC[0];
         pt->nu_compton_0 = pt->nu_seed[i];
-        y_g1 = f_compton_K1(pt, g1) * pt->N_IC[0];
+        y_g1 = f_compton_K1(pt, g1) * pt->Ne_IC[0];
 
 
 
         for (pt->i_griglia_gamma = 1; pt->i_griglia_gamma < pt->gamma_grid_size - 1; pt->i_griglia_gamma++) {
 
-            y_g2 = f_compton_K1(pt, pt->griglia_gamma_log_IC[pt->i_griglia_gamma]) * pt->N_IC[pt->i_griglia_gamma];
+            y_g2 = f_compton_K1(pt, pt->griglia_gamma_Ne_log_IC[pt->i_griglia_gamma]) * pt->Ne_IC[pt->i_griglia_gamma];
 
             pt->i_griglia_gamma++;
-            g3 = pt->griglia_gamma_log_IC[pt->i_griglia_gamma];
-            y_g3 = f_compton_K1(pt, g3) * pt->N_IC[pt->i_griglia_gamma];
+            g3 = pt->griglia_gamma_Ne_log_IC[pt->i_griglia_gamma];
+            y_g3 = f_compton_K1(pt, g3) * pt->Ne_IC[pt->i_griglia_gamma];
 
             delta_g = (g3 - g1);
             integr_gamma += (delta_g)*(y_g1 + 4.0 * y_g2 + y_g3);
@@ -414,6 +431,11 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
             printf("(y_nu2 + y_nu1)<0 %e\n",(y_nu2 + y_nu1));
         }
     }
+
+
+    pt->gmin_griglia=g;
+
+
 
     //============================================================
     //0.75 fattore di correzione di GOULD

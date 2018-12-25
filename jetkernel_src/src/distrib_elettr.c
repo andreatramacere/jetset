@@ -53,6 +53,8 @@ void Genera_griglia_gamma_N_log(struct spettro *pt, double * griglia_gamma_N_log
 }
 
 
+
+
 //========================================
 // Genera la  N[i] per e-
 //========================================
@@ -140,6 +142,33 @@ void build_Ne(struct spettro *pt) {
     if (pt->verbose>1) {
         printf("DONE \n");
     }
+
+    //N for IC
+    alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->gamma_grid_size);
+    alloc_N_distr(&(pt->Ne_IC),pt->gamma_grid_size);
+
+
+
+}
+
+
+void Fill_Ne_IC(struct spettro *pt, double gmin) {
+    unsigned long i;
+    if (pt->verbose>1) {
+        printf("Set array per Ne custom\n");
+        printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
+    }
+    //printf("Set array per Ne %s \n",pt->DISTR);
+    Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC);
+    SetDistr(pt);
+    for (i = 0; i < pt->gamma_grid_size; i++) {
+        if (pt->griglia_gamma_Ne_log_IC[i]>=gmin){
+            pt->Ne_IC[i] = N_distr(pt, pt->griglia_gamma_Ne_log_IC[i]);
+        }else{
+            pt->Ne_IC[i]=0;
+        }
+
+    }
 }
 
 
@@ -153,8 +182,6 @@ void build_Ne_custom(struct spettro *pt,  unsigned int size) {
     //printf("Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->gamma_e_custom),size);
     alloc_N_distr(&(pt->Ne_custom),size);
-
-
 
 }
 

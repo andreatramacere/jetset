@@ -261,6 +261,8 @@ struct spettro MakeBlob() {
     spettro_root.griglia_gamma_Ne_log=NULL;
     spettro_root.griglia_gamma_Ne_log_stat=NULL;
     spettro_root.griglia_gamma_Np_log=NULL;
+    spettro_root.griglia_gamma_Ne_log_IC=NULL;
+    spettro_root.Ne_IC=NULL;
     spettro_root.Np=NULL;
 
     spettro_root.Ne_custom=NULL;
