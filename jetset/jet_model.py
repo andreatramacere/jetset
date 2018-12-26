@@ -256,6 +256,17 @@ class ElectronDistribution(object):
 
     def __init__(self,name,jet,gamma_grid_size=None):
 
+        self.elec_models_list = ['lp', 'pl', 'lppl', 'lpep', 'plc', 'bkn', 'spitkov', 'lppl_pile_up', 'bkn_pile_up']
+
+        if name == 'from_array':
+            pass
+        elif name not in self.elec_models_list:
+            raise Warning("electron distribution model %s not allowed" % name)
+            print("please choose among: ", self.elec_models_list)
+            return None
+        else:
+            pass
+
         self._name=name
 
 
@@ -269,6 +280,7 @@ class ElectronDistribution(object):
         else:
             self._set_blob()
             self._fill()
+
 
     @classmethod
     def from_custom(cls,jet,custom_Ne):
@@ -545,7 +557,7 @@ class Jet(Model):
 
     """
 
-    def __init__(self,name='test',electron_distribution=None,beaming_expr='delta',jet_workplace=None,verbose=None,clean_work_dir=True, **keywords):
+    def __init__(self,name='test',electron_distribution='pl',beaming_expr='delta',jet_workplace=None,verbose=None,clean_work_dir=True, **keywords):
 
 
         super(Jet,self).__init__(  **keywords)
@@ -715,34 +727,31 @@ class Jet(Model):
         return jet
 
     def set_electron_distribution(self,name=None):
-        if isinstance(name, ArrayElectronDistribution):
-            self._electron_distribution_name='custom'
-            self.electron_distribution=ElectronDistribution.from_custom(self,name)
-        else:
-            if name is not None:
-                self._electron_distribution_name=name
-            else:
-                self._electron_distribution_name=None
-
-            if  self._electron_distribution_name is not None:
-                self.electron_distribution = ElectronDistribution(name, self)
-
-
-
-        elec_models_list = ['lp', 'pl', 'lppl', 'lpep', 'plc', 'bkn','spitkov','lppl_pile_up','bkn_pile_up','custom']
-
-        if self._electron_distribution_name not in elec_models_list:
-            print ("electron distribution model %s not allowed" % name)
-            print ("please choose among: ", elec_models_list)
-            return
 
         if self._electron_distribution_dic is not None:
             self.del_par_from_dic(self._electron_distribution_dic)
 
+        if isinstance(name, ArrayElectronDistribution):
+            self._electron_distribution_name='from_array'
+            self.electron_distribution=ElectronDistribution.from_custom(self,name)
 
-        self._electron_distribution_dic = self.electron_distribution._build_electron_distribution_dic(self._electron_distribution_name)
+        else:
 
-        self.add_par_from_dic(self._electron_distribution_dic)
+
+
+            self.electron_distribution = ElectronDistribution(name, self)
+
+            if self.electron_distribution is not None:
+                self._electron_distribution_name = name
+                self._electron_distribution_dic = self.electron_distribution._build_electron_distribution_dic(
+                    self._electron_distribution_name)
+
+                self.add_par_from_dic(self._electron_distribution_dic)
+
+            else:
+                raise RuntimeError('name for electron distribution was not valid')
+
+
 
 
     def show_spectral_components(self):
@@ -1310,7 +1319,8 @@ class Jet(Model):
 
         """
 
-
+        if self.electron_distribution is None:
+            raise  RuntimeError('electron distribution not defined')
 
 
         if init==True:
