@@ -348,6 +348,7 @@ void Init(struct spettro *pt_base) {
         pt_base->j_Sync[i] = 0.0;
         pt_base->alfa_Sync[i] = 0.0;
         pt_base->I_nu_Sync[i] = 0.0;
+
     }
     //printf("path=%s", spettro_root.path);
 
