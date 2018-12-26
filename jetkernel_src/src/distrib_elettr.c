@@ -152,10 +152,10 @@ void build_Ne(struct spettro *pt) {
 }
 
 
-void Fill_Ne_IC(struct spettro *pt, double gmin) {
+void Fill_Ne_IC(struct spettro *pt, double gmin, int stat_frame) {
     unsigned long i;
     if (pt->verbose>1) {
-        printf("Set array per Ne custom\n");
+        printf("Set array per Ne IC\n");
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
     }
     //printf("Set array per Ne %s \n",pt->DISTR);
@@ -168,6 +168,18 @@ void Fill_Ne_IC(struct spettro *pt, double gmin) {
             pt->Ne_IC[i]=0;
         }
 
+        if (stat_frame==1){
+            //the delta^2 in Ne_stat is also correct because we use electron density
+            //so the relativistic invariant is
+            //N/(V*gamma^2)=N'/(V'gamma'2^)
+            pt->Ne_IC[i]*=pt->beam_obj*pt->beam_obj;
+
+            //This transformation is correct
+            //the grid is shifted by a factor of delta, hence the integration
+            //boundaries are properly updated but the value of N[i] is still the
+            //value of N(gamma') as in the formula 6.133 in Dermer&Menon
+            pt->griglia_gamma_Ne_log_IC[i]*=pt->beam_obj;
+        }
     }
 }
 
@@ -192,17 +204,24 @@ void InitNe(struct spettro *pt){
 
 
     SetDistr(pt);
-    //printf("filling\n");
     Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Ne);
-    //printf("done\n");
 
-    for (i = 0; i < pt->gamma_grid_size; i++) {
-		pt->griglia_gamma_Ne_log_stat[i]=pt->griglia_gamma_Ne_log[i]*pt->beam_obj;
-	}
 
-	for (i = 0; i < pt->gamma_grid_size; i ++) {
-		pt->Ne_stat[i]=pt->Ne[i]*pt->beam_obj*pt->beam_obj;
-	}
+    //This transformation is correct
+    //the grid is shifted by a factor of delta, hence the integration
+    //boundaries are properly updated but the value of N[i] is still the
+    //value of N(gamma') as in the formula 6.133 in Dermer&Menon
+//    for (i = 0; i < pt->gamma_grid_size; i++) {
+//		pt->griglia_gamma_Ne_log_stat[i]=pt->griglia_gamma_Ne_log[i]*pt->beam_obj;
+//	}
+
+    //the delta^2 in Ne_stat is also correct because we use electron density
+    //so the relativistic invariant is
+    //N/(V*gamma^2)=N'/(V'gamma'2^)
+//	for (i = 0; i < pt->gamma_grid_size; i ++) {
+//		pt->Ne_stat[i]=pt->Ne[i]*pt->beam_obj*pt->beam_obj;
+//	}
+
 	//This flag is set to 1 to know that
 	pt->Distr_e_done = 1;
 

@@ -516,8 +516,8 @@ struct spettro {
     double * griglia_gamma_Ne_log_stat;
     double * griglia_gamma_Np_log;
    
-    double *griglia_gamma_log_IC;
-    double *N_IC;
+    //double *griglia_gamma_log_IC;
+    //double *N_IC;
 
     unsigned long i_griglia_gamma;
     double N_tot_e_Sferic;
@@ -684,7 +684,7 @@ void alloc_N_distr(double ** pt,int size);
 void Fill_N(struct spettro *pt, double *griglia_gamma_N_log, double *N);
 void build_Ne_custom(struct spettro *pt,  unsigned int size);
 void build_Ne(struct spettro *pt);
-void Fill_Ne_IC(struct spettro *pt, double gmin);
+void Fill_Ne_IC(struct spettro *pt, double gmin, int stat_frame);
 void Genera_Np_Ne_pp(struct spettro *pt);
 double N_distr(struct spettro *, double Gamma);
 double N_distr_U_e(struct spettro *, double Gamma);
@@ -861,7 +861,7 @@ unsigned long x_to_grid_index(double * nu_grid, double nu, unsigned long SIZE);
 /************************************ FUNCTIONS  IC  *****************************/
 double f_compton_K1(struct spettro *, double Gamma);
 double rate_compton_GR(struct spettro *);
-double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b);
+double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b,int stat_frame);
 double integrale_IC_cooling(struct spettro * pt, double a, double b, double gamma);
 double compton_cooling(struct spettro *pt_spec, struct temp_ev *pt_ev, double gamma);
 double f_compton_cooling(double b);
