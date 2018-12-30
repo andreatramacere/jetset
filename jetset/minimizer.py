@@ -533,13 +533,16 @@ class McmcSampler(object):
 
         self.model_minimizer=model_minimizer
         self.ndim = self.model_minimizer.free_pars
+        self._progress_iter = cycle(['|', '/', '-', '\\'])
 
 
-
-    def run_sampler(self,nwalkers=500,pos=None,burnin=50,use_UL=False):
-        self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, self.log_prob)
-
+    def run_sampler(self,nwalkers=500,steps=100,pos=None,burnin=50,use_UL=False, threads=8):
+        self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, self.log_prob,threads=threads)
+        self.calls=0
+        self.calls_OK=0
         self.use_UL=use_UL
+        bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model_minimizer.fit_par_free]
+        print (bounds)
         if pos is None:
             pos = emcee.utils.sample_ball(np.array([p.best_fit_val for p in self.model_minimizer.fit_par_free]),
                                      np.array([p.best_fit_err for p in self.model_minimizer.fit_par_free]),
@@ -547,7 +550,7 @@ class McmcSampler(object):
 
         self.pos=pos
         self.labels=[par.name for par in self.model_minimizer.fit_par_free]
-        self.sampler.run_mcmc(pos,nwalkers)
+        self.sampler.run_mcmc(pos,steps)
         self.samples = self.sampler.chain[:, burnin:, :].reshape((-1, self.ndim))
 
     def log_like(self,theta,_warn=False):
@@ -569,13 +572,15 @@ class McmcSampler(object):
                         self.model_minimizer.UL,
                         use_UL=self.use_UL)
 
+        self._progess_bar()
         return  _res_sum
 
     def log_prob(self,theta):
         lp = self.log_prior(theta)
+        self.calls+=1
         if not np.isfinite(lp):
             return -np.inf
-
+        self.calls_OK += 1
         return lp + self.log_like(theta)
 
     def log_prior(self,theta):
@@ -594,6 +599,10 @@ class McmcSampler(object):
                     _r=-np.inf
 
         return _r
+
+    def _progess_bar(self,):
+        if np.mod(self.calls, 10) == 0 and self.calls != 0:
+            print("\r%s minim function calls=%d %d" % (next(self._progress_iter),self.calls,self.calls_OK), end="")
 
 
 
