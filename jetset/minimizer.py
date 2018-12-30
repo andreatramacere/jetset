@@ -541,14 +541,17 @@ class McmcSampler(object):
         self.calls=0
         self.calls_OK=0
         self.use_UL=use_UL
-        bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model_minimizer.fit_par_free]
-        print (bounds)
+        #bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model_minimizer.fit_par_free]
+        #print (bounds)
         if pos is None:
             pos = emcee.utils.sample_ball(np.array([p.best_fit_val for p in self.model_minimizer.fit_par_free]),
-                                     np.array([p.best_fit_err for p in self.model_minimizer.fit_par_free]),
+                                     np.array([p.best_fit_val*0.005 for p in self.model_minimizer.fit_par_free]),
                                      nwalkers)
 
         self.pos=pos
+        self.nwalkers=nwalkers
+        self.steps=steps
+        self.calls_tot=nwalkers*steps
         self.labels=[par.name for par in self.model_minimizer.fit_par_free]
         self.sampler.run_mcmc(pos,steps)
         self.samples = self.sampler.chain[:, burnin:, :].reshape((-1, self.ndim))
@@ -602,7 +605,7 @@ class McmcSampler(object):
 
     def _progess_bar(self,):
         if np.mod(self.calls, 10) == 0 and self.calls != 0:
-            print("\r%s minim function calls=%d %d" % (next(self._progress_iter),self.calls,self.calls_OK), end="")
+            print("\r%s progress=%3.3f%% calls=%d accepted=%d" % (next(self._progress_iter),float(100*self.calls)/(self.calls_tot),self.calls,self.calls_OK), end="")
 
 
 
