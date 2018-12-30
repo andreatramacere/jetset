@@ -343,14 +343,31 @@ void Init(struct spettro *pt_base) {
             printf("now set  to spec_array size %d\n ",pt_base->spec_array_size-1);
         }
     }
-    for (i = 0; i < pt_base->nu_seed_size; i++) {
+    for (i = 0; i < static_spec_arr_size; i++) {
         pt_base->q_comp[i] = 0.0;
         pt_base->j_Sync[i] = 0.0;
         pt_base->alfa_Sync[i] = 0.0;
         pt_base->I_nu_Sync[i] = 0.0;
+        pt_base->nuF_nu_Sync_obs[i]=0.0;
+
 
     }
-    //printf("path=%s", spettro_root.path);
+
+    for (i = 0; i < static_spec_arr_size; i++){
+
+        pt_base->nuF_nu_SSC_obs[i]=0.0;
+        pt_base->nuF_nu_EC_Disk_obs[i]=0;
+        pt_base->nuF_nu_EC_BLR_obs[i]=0;
+        pt_base->nuF_nu_EC_DT_obs[i]=0;
+        pt_base->nuF_nu_EC_Star_obs[i]=0;
+        pt_base->nuF_nu_EC_CMB_obs[i]=0;
+        pt_base->nuF_nu_EC_CMB_stat_obs[i]=0;
+        pt_base->nuF_nu_Disk_obs[i]=0;
+        pt_base->nuF_nu_DT_obs[i]=0;
+        pt_base->nuF_nu_Star_obs[i]=0;
+
+    }
+
 
     //set file number counter
     pt_base->OUT_FILE = 1;

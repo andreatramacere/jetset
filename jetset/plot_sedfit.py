@@ -118,7 +118,7 @@ class  PlotSED (object):
         #Build sedplot    
       
             
-        self.fig=plt.figure(figsize=(12,8))
+        self.fig=plt.figure(figsize=(10,6))
         
 
 
@@ -144,7 +144,9 @@ class  PlotSED (object):
 
         self.sedplot.set_xlim(5, 30)
         self.sedplot.set_ylim(-20, -8)
-        self.fig.canvas.manager.toolbar.update()
+        self.resplot.set_ybound(-2,2)
+        if hasattr(self.fig.canvas.manager,'toolbar'):
+            self.fig.canvas.manager.toolbar.update()
 
         if sed_data is not None :
             self.add_data_plot(sed_data)
@@ -402,8 +404,10 @@ class  PlotSED (object):
             try:
                 # print "b"
                 x, y = model.SED.get_model_points(log_log=True)
-            except:
+            except Exception as e:
+
                 print(model, "!!! Error has no SED instance or something wrong in get_model_points()")
+                print(e)
                 return
 
 

@@ -61,7 +61,12 @@ import sys
 
 from scipy.stats import chi2
 
-import iminuit
+try:
+    import iminuit
+    minuit_installed=True
+
+except:
+    minuit_installed=False
 #from iminuit.frontends import ConsoleFrontend
 #from iminuit.frontends import console
 
@@ -70,7 +75,7 @@ from scipy.optimize import leastsq
 from scipy.optimize import least_squares,curve_fit
 
 from leastsqbound.leastsqbound import  leastsqbound
-
+import emcee
 
 from .output import section_separator,WorkPlace,makedir
 
@@ -454,17 +459,11 @@ class Minimizer(object):
         else:
             self.errors = [np.sqrt(np.fabs(self.covar[pi, pi]) * self.chisq_red) for pi in range(len(self.model.fit_par_free))]
 
-
-
-    def _UL_likelihood(self,y_UL,y_model,y_err):
-        y = (y_UL - y_model) / (np.sqrt(2) *y_err)
-        x=0.5*(1.0+sp.special.erf(y))
-        x[x==0]=1E-200
-        return  np.log(x)
-
     def _progess_bar(self, _res_sum, res_UL):
         if np.mod(self.calls, 10) == 0 and self.calls != 0:
             print("\r%s minim function calls=%d, chisq=%f UL part=%f" % (next(self._progress_iter),self.calls, _res_sum, -2.0*np.sum(res_UL)), end="")
+
+
 
 
 
@@ -486,28 +485,18 @@ class Minimizer(object):
 
         model = best_fit_SEDModel.eval(nu=nu_data, fill_SED=False, get_model=True, loglog=loglog)
 
-        res_no_UL = (nuFnu_data[~UL] - model[~UL]) / (err_nuFnu_data[~UL])
 
-        res_UL=[0]
-        if UL.sum()>0 and use_UL == True:
-            res_UL=self._UL_likelihood(nuFnu_data[UL],model[UL],err_nuFnu_data[UL])
-
-
-
-        _res=(nuFnu_data  - model ) / (err_nuFnu_data )
-
-
-        _res_sum = np.sum(res_no_UL * res_no_UL) - 2.0*np.sum(res_UL)
+        _res_sum, _res, _res_UL=log_like(nuFnu_data,model,err_nuFnu_data,UL,use_UL=use_UL)
 
         self._res_sum_chekc=_res_sum
         self._res_chekc = _res
-        self._res_UL_chekc = res_UL
+        self._res_UL_chekc = _res_UL
         self._par_check=p
 
         self.calls +=1
 
         if silent==False:
-            self._progess_bar(_res_sum, res_UL)
+            self._progess_bar(_res_sum, _res_UL)
             print("\r", end="")
 
         if chisq==True:
@@ -521,6 +510,90 @@ class Minimizer(object):
         return res
 
 
+def log_like(data,model,data_error,UL,use_UL=False):
+    res_no_UL = (data[~UL] - model[~UL]) / (data_error[~UL])
+    res = (data - model) / (data_error)
+    res_UL = [0]
+    if UL.sum() > 0 and use_UL == True:
+        res_UL = UL_log_like(data[UL], model[UL], data_error[UL])
+
+    res_sum=np.sum(res_no_UL * res_no_UL) - 2.0*np.sum(res_UL)
+    return res_sum,res,res_UL
+
+def UL_log_like(y_UL,y_model,y_err):
+    y = (y_UL - y_model) / (np.sqrt(2) *y_err)
+    x=0.5*(1.0+sp.special.erf(y))
+    x[x==0]=1E-200
+    return  np.log(x)
+
+
+class McmcSampler(object):
+
+    def __init__(self,model_minimizer):
+
+        self.model_minimizer=model_minimizer
+        self.ndim = self.model_minimizer.free_pars
+
+
+
+    def run_sampler(self,nwalkers=500,pos=None,burnin=50,use_UL=False):
+        self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, self.log_prob)
+
+        self.use_UL=use_UL
+        if pos is None:
+            pos = emcee.utils.sample_ball(np.array([p.best_fit_val for p in self.model_minimizer.fit_par_free]),
+                                     np.array([p.best_fit_err for p in self.model_minimizer.fit_par_free]),
+                                     nwalkers)
+
+        self.pos=pos
+        self.labels=[par.name for par in self.model_minimizer.fit_par_free]
+        self.sampler.run_mcmc(pos,nwalkers)
+        self.samples = self.sampler.chain[:, burnin:, :].reshape((-1, self.ndim))
+
+    def log_like(self,theta,_warn=False):
+
+        for pi in range(len(theta)):
+            self.model_minimizer.fit_par_free[pi].set(val=theta[pi])
+            if np.isnan(theta[pi]):
+                _warn=True
+
+
+
+
+
+        _m = self.model_minimizer.fit_Model.eval(nu=self.model_minimizer.nu_fit, fill_SED=False, get_model=True, loglog=self.model_minimizer.loglog)
+
+        _res_sum, _res, _res_UL= log_like(self.model_minimizer.nuFnu_fit,
+                        _m,
+                        self.model_minimizer.err_nuFnu_fit,
+                        self.model_minimizer.UL,
+                        use_UL=self.use_UL)
+
+        return  _res_sum
+
+    def log_prob(self,theta):
+        lp = self.log_prior(theta)
+        if not np.isfinite(lp):
+            return -np.inf
+
+        return lp + self.log_like(theta)
+
+    def log_prior(self,theta):
+        _r=0.
+        bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model_minimizer.fit_par_free]
+        for pi in range(len(theta)):
+            if bounds[pi][1] is not None:
+                if theta[pi]<bounds[pi][1]:
+                    pass
+                else:
+                    _r = -np.inf
+            if bounds[pi][0] is not None:
+                if theta[pi]>bounds[pi][0]:
+                    pass
+                else:
+                    _r=-np.inf
+
+        return _r
 
 
 
@@ -607,6 +680,10 @@ class LSMinimizer(Minimizer):
 class MinutiMinimizer(Minimizer):
 
     def __init__(self,model):
+        if minuit_installed==True:
+            pass
+        else:
+            raise RuntimeError('iminuit non istalled')
 
         super(MinutiMinimizer, self).__init__(model)
 
@@ -676,10 +753,12 @@ class MinutiMinimizer(Minimizer):
         return self.chisq_func(*self.p)
 
 
+
+
 def fit_SED(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_workplace=None, loglog=False, silent=False,
-            get_conf_int=False, max_ev=0, use_facke_err=False, minimizer='minuit', use_UL=False):
+            get_conf_int=False, max_ev=0, use_facke_err=False, minimizer='lsb', use_UL=False):
     mm = ModelMinimizer(minimizer)
-    return mm.fit(fit_Model,
+    return mm,mm.fit(fit_Model,
                   sed_data,
                   nu_fit_start,
                   nu_fit_stop,

@@ -230,7 +230,13 @@ class FitModel(Model):
         
         self.parameters.show_pars()
     
-    
+
+
+    def freeze(self,par_name):
+        self.set(par_name,'frozen')
+
+    def free(self,par_name):
+        self.set(par_name,'free')
     
     def set(self,par_name,*args,**kw):
         """
@@ -244,7 +250,18 @@ class FitModel(Model):
         #print "Model in model manager",args,kw
         
         self.parameters.set(par_name,*args,**kw)
-  
+
+    def set_par(self,par_name,val):
+        """
+        shortcut to :class:`ModelParametersArray.set` method
+        set a parameter value
+
+        :param par_name: (srt), name of the parameter
+        :param val: parameter value
+
+        """
+
+        self.parameters.set(par_name, val=val)
   
     def get(self,par_name,*args):
         """
@@ -293,37 +310,7 @@ class FitModel(Model):
         return minimizer.fit_SED(self,self.sed_data, self.nu_min_fit, self.nu_max_fit,self.fitname)
   
 
-    def get_conf_range(self,par_name,frac_range=None):
-        
-        init_val=self.parameters.get(par_name,'best_fit_val')
-        
-        if frac_range is None:
-            init_err=self.parameters.get(par_name,'best_fit_err')
-        else:
-            init_err=init_val*frac_range
-            
-        init_frozen=self.parameters.get(par_name,'frozen')
-        
-        val_grid=np.linspace(init_val-init_err, init_val+init_err, 10)
-        
-        self.parameters.set(par_name,'frozen')
-        
-        chi_red=[]
-        par_val=[]
-        
-        for  val_test in val_grid:
-            self.parameters.set(par_name,val=val_test)
-            chi_red.append(minimizer.fit_SED(self,self.sed_data,self.nu_min_fit,self.nu_max_fit,get_conf_int=True,fitname='err_estimate'))
-            par_val.append(val_test)
-            
-            self.parameters.show_best_fit_pars()
 
-            print ("par=%f, chi_red=%f",par_val[-1],chi_red[-1])()
- 
-        if init_frozen==False:
-            self.parameters.set(par_name,'free')
-    
-        return chi_red,par_val
     
     
     
