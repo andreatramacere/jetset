@@ -304,7 +304,7 @@ class ObsConstrain(object):
         R_par=jet_model.get_par_by_type('region_size')
         if R_par is not None:
             print ("---> setting par type region_size, corresponding to par %s"%(R_par.name))
-            R_par.set(val=R_tvar)
+            R_par.set(val=m.log10(R_tvar))
             print ("---> ",R_par.get_description())
             print
         
@@ -363,7 +363,7 @@ class ObsConstrain(object):
         print ("---> gamma_max=%e from nu_max_Sync= %e, using B=%e"%(gmax,self.S_nu_max,B_par.val))
         HE_cut_off_par=jet_model.get_par_by_type('high-energy-cut-off')
         if HE_cut_off_par is not None:
-            HE_cut_off_par.set(val=gmax)
+            HE_cut_off_par.set(val=m.log10(gmax))
             print ("---> setting par type high-energy-cut-off, corresponding to par %s"%(HE_cut_off_par.name))
             print ("---> ",HE_cut_off_par.get_description())
             print ()
@@ -372,7 +372,7 @@ class ObsConstrain(object):
         gmin= set_gmin_from_nu_cut_IR(self.nu_cut_IR,self.rest_frame,B_par.val,self.beaming,z_par.val)  
         par_LE_cut_off_par=jet_model.get_par_by_type('low-energy-cut-off')
         if par_LE_cut_off_par is not None:
-            par_LE_cut_off_par.set(val=gmin)
+            par_LE_cut_off_par.set(val=m.log10(gmin))
             print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(par_LE_cut_off_par.name))
             print ("---> ",par_LE_cut_off_par.get_description())
             print ()
@@ -381,7 +381,7 @@ class ObsConstrain(object):
         #turn-over-energy from gamma_3p_Sync
         turn_over_par=jet_model.get_par_by_type('turn-over-energy')
         if turn_over_par is not None:
-            turn_over_par.set(val=find_turn_over(jet_model,self.distr_e,gamma_3p_Sync))
+            turn_over_par.set(val=m.log10(find_turn_over(jet_model,self.distr_e,gamma_3p_Sync)))
             print ("---> setting par type turn-over energy, corresponding to par %s"%(turn_over_par.name))
             print ("---> using gamma_3p_Sync=",gamma_3p_Sync)
             print ("---> ",turn_over_par.get_description())
@@ -394,7 +394,7 @@ class ObsConstrain(object):
         print ("---> gamma_3p_SSCc= %e",gamma_3p_SSC)
        
         if turn_over_par is not None:
-            turn_over_par.set(val=find_turn_over(jet_model,self.distr_e,gamma_3p_SSC))
+            turn_over_par.set(val=m.log10(find_turn_over(jet_model,self.distr_e,gamma_3p_SSC)))
             print ("---> setting par type turn-over energy, corresponding to par %s"%(turn_over_par.name))
             print ("---> using gamma_3p_SSC=",gamma_3p_SSC)
             print ("---> ",turn_over_par.get_description())
@@ -443,7 +443,7 @@ class ObsConstrain(object):
             #update gmin from new B
             gmin= set_gmin_from_nu_cut_IR(self.nu_cut_IR,self.rest_frame,B_par.val,self.beaming,z_par.val)  
             if par_LE_cut_off_par is not None:
-                par_LE_cut_off_par.set(val=gmin)
+                par_LE_cut_off_par.set(val=m.log10(gmin))
                 print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(par_LE_cut_off_par.name))
                 print ("---> ",par_LE_cut_off_par.get_description())
                 print ()
@@ -451,7 +451,7 @@ class ObsConstrain(object):
             #update gamma_3p and gamma_cut from new B
             gamma_3p_Sync=find_gamma_Synch(self.nu_p_S_obs,self.rest_frame,B_par.val,self.beaming,z_par.val)
             if turn_over_par is not None:
-                turn_over_par.set(val=find_turn_over(jet_model,self.distr_e,gamma_3p_Sync))
+                turn_over_par.set(val=m.log10(find_turn_over(jet_model,self.distr_e,gamma_3p_Sync)))
                 print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(turn_over_par.name))
                 print ("---> using gamma_3p_Sync=",gamma_3p_Sync)
                 print ("---> ",turn_over_par.get_description())
@@ -462,7 +462,7 @@ class ObsConstrain(object):
             gmax=find_HE_cut_off(self.distr_e,self.S_nu_max,self.rest_frame,B_par.val,self.beaming,z_par.val)
             print ("---> gamma_max=%e from nu_max_Sync= %e, using B=%e"%(gmax,self.S_nu_max,B_par.val))
             if HE_cut_off_par is not None:
-                HE_cut_off_par.set(val=gmax)
+                HE_cut_off_par.set(val=m.log10(gmax))
                 print ("---> setting par type high-energy-cut-off, corresponding to par %s"%(HE_cut_off_par.name))
                 print ("---> ",HE_cut_off_par.get_description())
                 print ()
@@ -500,7 +500,7 @@ class ObsConstrain(object):
                     print ("---> setting par type electron_density, corresponding to par %s"%(N_par.name))
                     N_par.set(val=N)
         else:
-            R_par.set(val=R_start)
+            R_par.set(val=m.log10(R_start))
             print ("---> constrain failed, R unchanged: ")
             print ("---> ",R_par.get_description())
             print ()
@@ -508,7 +508,7 @@ class ObsConstrain(object):
          
         #Check tau_gamma_gamma and t_var
         #check_gamma_tansp(jet_model,self.beaming,sp.logspace(21,28,10),self.rest_frame)
-        print ("---> t_var (days)", check_t_var(R_par.val,self.beaming,z_par.val)/86400.)
+        print ("---> t_var (days)", check_t_var(R_par.val_lin,self.beaming,z_par.val)/86400.)
     
                 
         jet_model.set_flag('obs_constrain_final')
@@ -624,7 +624,7 @@ def check_gamma_tansp(jet,beaming_val,nu_IC_data,rest_frame):
         
         nuLnu_target_blob= BlazarSED.nuFnu_obs_to_nuLnu_blob(nuFnu_target[i],beaming_val,z_val,DL_cm_val)
         
-        R_val=jet.get_par_by_type('region_size').val
+        R_val=jet.get_par_by_type('region_size').val_lin
         
         tau_gamma_gamma=BlazarSED.SIGTH/5*nuLnu_target_blob/(4*sp.pi * BlazarSED.vluce_cm * R_val * BlazarSED.MEC2 )
         
@@ -1063,7 +1063,7 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
     flag_initial=jet.get_flag()
 
     
-    R_initial=jet.get_par_by_name('R').val
+    R_initial=jet.get_par_by_name('R').val_lin
     N_initial=jet.get_par_by_name('N').val
 
     jet.set_flag('constr_R')
@@ -1077,7 +1077,7 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
     f=open('%s/R_vs_CD.dat'%jet.get_path(),'w')
     for R in R_grid:
 
-        jet.set_par('R',val=R)
+        jet.set_par('R',val=m.log10(R))
         
         N_res,ratio=rescale_Ne(jet,nuFnu_p_S,rest_frame)
         
@@ -1106,7 +1106,7 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
     Best_R,failed=check_boundaries(Best_R,R_min,R_max,'R')
     
     jet.set_flag(flag_initial)
-    jet.set_par('R',val=R_initial)
+    jet.set_par('R',val=m.log10(R_initial))
     jet.set_par('N',val=N_initial)
     
     return  Best_R,failed
@@ -1138,7 +1138,7 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
     turn_over_energy=jet.get_par_by_type('turn-over-energy')
     
     if turn_over_energy is not None :
-        turn_over_energy_initial=turn_over_energy.val
+        turn_over_energy_initial=turn_over_energy.val_lin
     
     
     z=jet.get_par_by_type('redshift').val
@@ -1152,7 +1152,7 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
 
         #upda-turn-over variable
         if turn_over_energy is not None :
-            turn_over_energy.set(val=gamma_3p)
+            turn_over_energy.set(val=m.log10(gamma_3p))
            
         
         jet.eval()   
@@ -1184,6 +1184,6 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
     jet.set_par('B',val=B_initial)
 
     if turn_over_energy is not None :
-        turn_over_energy.set(val=turn_over_energy_initial)
+        turn_over_energy.set(val=m.log10(turn_over_energy_initial))
         
     return  Best_B,failed

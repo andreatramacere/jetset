@@ -688,8 +688,8 @@ class SEDShape(object):
             s_fit_range=fit_range
             
         print ("---> first blind fit run,  fit range:",s_fit_range)
-        
-        #fit_model1.show_pars()
+
+        fit_model.show_pars()
 
         if Ep_start is None:
             Ep=find_max_cubic(self.sed_data.data['nu_data_log'],self.sed_data.data['nuFnu_data_log'] ,x_range=s_fit_range)
@@ -820,7 +820,8 @@ class SEDShape(object):
         host_gal=Template('host-galaxy',z=self.sed_data.z)
                  
         fit_model.add_component(host_gal)
-   
+
+
         fit_model.set('nuFnu_p_host',val=(self.S_peak.nuFnu_p_val),fit_range=[self.S_peak.nuFnu_p_val-2,self.S_peak.nuFnu_p_val+2 ])
         
         fit_model.set('nu_scale',val=0,fit_range=[-0.5,0.5])

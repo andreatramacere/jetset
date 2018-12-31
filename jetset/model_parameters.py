@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 from builtins import (bytes, str, open, super, range,
                       zip, round, input, int, pow, object, map, zip)
 
-
+import  numpy as np
 """
 Module: model_parameters
 ===================================================================
@@ -34,7 +34,48 @@ Module API
 """
 
 
-__all__=['ModelParameter','ModelParameterArray']
+__all__=['ModelParameter','ModelParameterArray','Value']
+
+class Value(object):
+
+    def __init__(self,val,islog=False):
+        self._val=val
+        self._islog=islog
+
+    def __repr__(self):
+        return '%s'%self._val
+
+    @property
+    def islog(self):
+        return  self._islog
+
+    @property
+    def val(self):
+        return self._val
+
+    @val.setter
+    def val(self, val):
+        self._val = val
+
+    @property
+    def lin(self):
+        if self._val is None:
+            return None
+        if self._islog is True:
+            return 10**self._val
+        else:
+            return self._val
+
+    @property
+    def log(self):
+        if self._val is None:
+            return None
+        if self._islog is True:
+            return self._val
+        else:
+            return np.log10(self._val)
+
+
 
 class ModelParameter(object):
     """
@@ -76,6 +117,7 @@ class ModelParameter(object):
     
     
     def __init__(self, **keywords):
+
         """
         Constructor
         """
@@ -96,16 +138,44 @@ class ModelParameter(object):
         self.allowed_keywords['log']=False
         
       
-        
+        self._skip_kw=['val']
         #defualt
         for kw in self.allowed_keywords.keys():
-            setattr(self,kw,self.allowed_keywords[kw])
-        
-        
+            if kw not in self._skip_kw:
+                setattr(self,kw,self.allowed_keywords[kw])
+
+
+        _v=None
+        _l=False
+
+        if 'val' in keywords.keys():
+            _v=keywords['val']
+
+        if 'log' in keywords.keys():
+            _l=keywords['log']
+
+
+        self._val=Value(val=_v,islog=_l)
+
         #parsing user keywords
         self.set(**keywords)
         
-        
+    @property
+    def val(self ):
+        return self._val.val
+
+    @property
+    def val_lin(self):
+        return self._val.lin
+
+    @property
+    def val_log(self):
+        return self._val.log
+
+    @val.setter
+    def val(self,val):
+        self._val.val=val
+
     def set(self, *args, **keywords):
         """
         sets a parameter value checking for physical boundaries
@@ -116,11 +186,12 @@ class ModelParameter(object):
         #print "ModelParamter in model parameters",args,keywords
         
         keys = keywords.keys()
+
         for kw in keys:
             
-            if kw in  self.allowed_keywords.keys():
-                
-                setattr(self,kw,keywords[kw])
+            if kw in  self.allowed_keywords.keys() :
+                if  kw not in self._skip_kw:
+                    setattr(self,kw,keywords[kw])
                     
             else:
                 

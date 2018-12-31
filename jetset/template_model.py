@@ -114,6 +114,7 @@ class TemplateParameter(ModelParameter):
         """
         assigns the paramter valut to the :class:`Template` object
         """
+        print(self.template,name,val)
         setattr(self.template,name,val)
         
 

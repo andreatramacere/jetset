@@ -129,22 +129,29 @@ class JetParameter(ModelParameter):
         if 'val' in keywords.keys():
             
             self.assign_val(self.name,keywords['val']) 
-        
+
+
     
     def assign_val(self,name,val):
         """
         sets the :class:`.JetParameter` value in the BlazarSED object
         """
-    
+
     
         b=getattr(self._blob,name)
         
         
            
         if type(b)==int:
+            if self._val.islog is True:
+                val=10**val
             val=int(val)
+
         elif type(b)==float:
+            if self._val._islog is True:
+                val=10**val
             val=float(val)
+
         elif type(b)==str:
             val=val
         
@@ -172,7 +179,7 @@ def build_emitting_region_dic(beaming_expr='delta'):
     """
     
     model_dic={}
-    model_dic['R']=['region_size',0,None,'cm']
+    model_dic['R']=['region_size',None,None,'cm',False,True]
     model_dic['B']=['magnetic_field',0,None,'G']
     
     if beaming_expr=='bulk_theta':
@@ -396,8 +403,8 @@ class ElectronDistribution(object):
 
         model_dic = {}
         model_dic['N'] = ['electron_density', 0, None, 'cm^-3']
-        model_dic['gmin'] = ['low-energy-cut-off', 1, None, 'Lorentz-factor']
-        model_dic['gmax'] = ['high-energy-cut-off', 1, None, 'Lorentz-factor']
+        model_dic['gmin'] = ['low-energy-cut-off', 0, None, 'Lorentz-factor',False,True]
+        model_dic['gmax'] = ['high-energy-cut-off', 0, None, 'Lorentz-factor',False,True]
 
         if electron_distribution_name == 'pl':
             model_dic['p'] = ['HE_spectral_slope', -10, 10, '']
@@ -405,25 +412,25 @@ class ElectronDistribution(object):
         if electron_distribution_name == 'bkn':
             model_dic['p'] = ['LE_spectral_slope', -10, 10, '']
             model_dic['p_1'] = ['HE_spectral_slope', -10, 10, '']
-            model_dic['gamma_break'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gamma_break'] = ['turn-over-energy', 0, None, 'Lorentz-factor',False,True]
 
         if electron_distribution_name == 'lp':
             model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
             model_dic['r'] = ['spectral_curvature', -15, 15, '']
-            model_dic['gamma0_log_parab'] = ['turn-over-energy', 1, None, 'Lorentz-factor', True]
+            model_dic['gamma0_log_parab'] = ['turn-over-energy', 0, None, 'Lorentz-factor', True,True]
 
         if electron_distribution_name == 'lppl':
             model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
             model_dic['r'] = ['spectral_curvature', -15, 15, '']
-            model_dic['gamma0_log_parab'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gamma0_log_parab'] = ['turn-over-energy', 0, None, 'Lorentz-factor',False,True]
 
         if electron_distribution_name == 'lpep':
             model_dic['r'] = ['spectral_curvature', -15, 15, '']
-            model_dic['gammap_log_parab'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gammap_log_parab'] = ['turn-over-energy', 0, None, 'Lorentz-factor',False,True]
 
         if electron_distribution_name == 'plc':
             model_dic['p'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['gamma_cut'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gamma_cut'] = ['turn-over-energy', 0, None, 'Lorentz-factor',False,True]
 
         if electron_distribution_name == 'spitkov':
             model_dic['spit_index'] = ['LE_spectral_slope', -10, 10, '']
@@ -1086,9 +1093,18 @@ class Jet(Model):
         for key in model_dic.keys():
 
             pname=key
-            pname_test=self.parameters.get_par_by_name(pname)
-            if pname_test is None:
+            log=False
+            p_test=self.parameters.get_par_by_name(pname)
+            if p_test is None:
+
                 pval=getattr(self._blob,pname)
+
+                if len(model_dic[key])>5:
+                    log=model_dic[key][5]
+
+                if log is True:
+                    pval = np.log10(pval)
+
                 ptype=model_dic[key][0]
                 vmin=model_dic[key][1]
                 vmax=model_dic[key][2]
@@ -1100,7 +1116,7 @@ class Jet(Model):
                     froz=model_dic[key][4]
 
 
-                self.parameters.add_par(JetParameter(self._blob,name=pname,par_type=ptype,val=pval,val_min=vmin,val_max=vmax,units=punit,frozen=froz))
+                self.parameters.add_par(JetParameter(self._blob,name=pname,par_type=ptype,val=pval,val_min=vmin,val_max=vmax,units=punit,frozen=froz,log=log))
 
 
 
