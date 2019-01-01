@@ -697,35 +697,76 @@ class MinutiMinimizer(Minimizer):
 
 
 
-    def profile(self,par,bound=2):
+    def profile(self,par,bound=2,subtract_min=True):
         bound=self._set_bounds(par,bound=bound)
 
-        a, fa =  self.minuit_fun.profile(self.par_dic[par],
+        x, y =  self.minuit_fun.profile(self.par_dic[par],
                                          bound=bound,
-                                         subtract_min=True)
-        return a,fa
+                                         subtract_min=subtract_min)
+        return x,y
 
 
-    def mnprofile(self,par,bound=2):
+    def mnprofile(self,par,bound=2,subtract_min=True):
         bound = self._set_bounds(par, bound=bound)
-        a, fa =  self.minuit_fun.mnprofile(self.par_dic[par],
+        x, y =  self.minuit_fun.mnprofile(self.par_dic[par],
                                          bound=bound,
-                                         subtract_min=True)
-        return a,fa
-
-    def draw_profile(self,par,bound=2):
-        bound = self._set_bounds(par, bound=bound)
-        a,fa=self.minuit_fun.draw_profile(self.par_dic[par],subtract_min=True,bound=bound)
-        return a,fa
-
+                                         subtract_min=subtract_min)
+        return x,y
 
     def draw_mnprofile(self,par,bound=2):
         bound = self._set_bounds(par, bound=bound)
-        a,fa=self.minuit_fun.draw_mnprofile(self.par_dic[par],subtract_min=True,bound=bound)
-        return a,fa
+        x,y=self.mnprofile(par,bound,subtract_min=True)
+        fig,ax = self._draw_profile(x, y, par)
+        return x, y, fig,ax
+
+    def draw_profile(self,par,bound=2):
+        bound = self._set_bounds(par, bound=bound)
+        x, y = self.profile(par, subtract_min=True, bound=bound)
+        fig,ax=self._draw_profile(x,y,par)
+        return x,y,fig,ax
+
+    def _draw_profile(self,x,y,par):
+
+        x = np.array(x)
+        y = np.array(y)
+
+        fig, ax = plt.subplots()
+
+        ax.plot(x, y)
+        ax.grid(True)
+        ax.set_xlabel(par)
+        ax.set_ylabel('FCN')
 
 
-    def contour(self,par_1,par_2,bound=2,bins=20):
+        minpos = np.argmin(y)
+        ymin = y[minpos]
+        tmpy = y - ymin
+        # now scan for minpos to the right until greater than one
+        up = self.minuit_fun.errordef
+        righty = np.power(tmpy[minpos:] - up, 2)
+        right_min = np.argmin(righty)
+        rightpos = right_min + minpos
+        lefty = np.power((tmpy[:minpos] - up), 2)
+        left_min = np.argmin(lefty)
+        leftpos = left_min
+        le = x[minpos] - x[leftpos]
+        re = x[rightpos] - x[minpos]
+
+        ax.axvspan(x[leftpos], x[rightpos], facecolor='g', alpha=0.5)
+
+        plt.figtext(0.5, 0.5,
+                        '%s = %7.3e ( -%7.3e , +%7.3e)' % (par, x[minpos], le, re),
+                        ha='center')
+
+
+
+        return fig,ax
+
+
+
+
+
+    def contour(self,par_1,par_2,bound=2,bins=20,subtract_min=True):
         if np.shape(bound)==0:
 
             bound_1 = self._set_bounds(par_1)
@@ -735,20 +776,21 @@ class MinutiMinimizer(Minimizer):
 
         x, y, z= self.minuit_fun.contour(self.par_dic[par_1],
                                         self.par_dic[par_2],
-                                        subtract_min=True,
+                                        subtract_min=subtract_min,
                                         bound=bound,
                                         bins=bins)
 
         return x,y,z
 
 
-    def draw_contour(self,par_1,par_2,bound=None,levels=5):
-        x,y,z=self.conotour(par_1,par_2,bound=bound)
+    def draw_contour(self,par_1,par_2,bound=2,levels=np.arange(5)):
+        levels*=self.minuit_fun.errordef
+        x,y,z=self.contour(par_1,par_2,bound=bound)
         fig, ax = plt.subplots()
         CS = ax.contour(x, y, z, levels,)
         ax.clabel(CS, fontsize=9, inline=1)
-        ax.set_xlabel(self.par_dic[par_1])
-        ax.set_ylabel(self.par_dic[par_2])
+        ax.set_xlabel(par_1)
+        ax.set_ylabel(par_2)
 
 
     def _set_bounds(self,par,bound):
