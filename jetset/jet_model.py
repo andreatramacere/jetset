@@ -141,7 +141,7 @@ class JetParameter(ModelParameter):
         b=getattr(self._blob,name)
         
         
-           
+        #print('1 name',name,val,self._val.islog)
         if type(b)==int:
             if self._val.islog is True:
                 val=10**val
@@ -154,7 +154,7 @@ class JetParameter(ModelParameter):
 
         elif type(b)==str:
             val=val
-        
+        #print('2 name',name, val, self._val.islog)
         setattr(self._blob,name,val)
         
         
@@ -179,7 +179,7 @@ def build_emitting_region_dic(beaming_expr='delta'):
     """
     
     model_dic={}
-    model_dic['R']=['region_size',None,None,'cm',False,True]
+    model_dic['R']=['region_size',0,30,'cm',False,True]
     model_dic['B']=['magnetic_field',0,None,'G']
     
     if beaming_expr=='bulk_theta':
@@ -261,7 +261,7 @@ class ArrayElectronDistribution(object):
 
 class ElectronDistribution(object):
 
-    def __init__(self,name,jet,gamma_grid_size=None):
+    def __init__(self,name,jet,gamma_grid_size=None,log_values=False):
 
         self.elec_models_list = ['lp', 'pl', 'lppl', 'lpep', 'plc', 'bkn', 'spitkov', 'lppl_pile_up', 'bkn_pile_up']
 
@@ -275,7 +275,7 @@ class ElectronDistribution(object):
             pass
 
         self._name=name
-
+        self._log_values=log_values
 
 
         self._jet=jet
@@ -349,6 +349,12 @@ class ElectronDistribution(object):
 
         return p
 
+    def set_bounds(self,a,b,log_val=False):
+        if log_val == False:
+            return [a,b]
+
+        else:
+            return np.log10([a,b])
 
     def _build_electron_distribution_dic(self,electron_distribution_name):
         """
@@ -403,8 +409,12 @@ class ElectronDistribution(object):
 
         model_dic = {}
         model_dic['N'] = ['electron_density', 0, None, 'cm^-3']
-        model_dic['gmin'] = ['low-energy-cut-off', 0, None, 'Lorentz-factor',False,True]
-        model_dic['gmax'] = ['high-energy-cut-off', 0, None, 'Lorentz-factor',False,True]
+
+        a_h,b_h=self.set_bounds(1,1E15,log_val=self._log_values)
+        a_l, b_l = self.set_bounds(1, 1E5, log_val=self._log_values)
+        a_t, b_t = self.set_bounds(1, 1E8, log_val=self._log_values)
+        model_dic['gmin'] = ['low-energy-cut-off', a_l, b_l, 'Lorentz-factor',False,self._log_values]
+        model_dic['gmax'] = ['high-energy-cut-off', a_h, b_h, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'pl':
             model_dic['p'] = ['HE_spectral_slope', -10, 10, '']
@@ -412,25 +422,25 @@ class ElectronDistribution(object):
         if electron_distribution_name == 'bkn':
             model_dic['p'] = ['LE_spectral_slope', -10, 10, '']
             model_dic['p_1'] = ['HE_spectral_slope', -10, 10, '']
-            model_dic['gamma_break'] = ['turn-over-energy', 0, None, 'Lorentz-factor',False,True]
+            model_dic['gamma_break'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'lp':
             model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
             model_dic['r'] = ['spectral_curvature', -15, 15, '']
-            model_dic['gamma0_log_parab'] = ['turn-over-energy', 0, None, 'Lorentz-factor', True,True]
+            model_dic['gamma0_log_parab'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor', True,self._log_values]
 
         if electron_distribution_name == 'lppl':
             model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
             model_dic['r'] = ['spectral_curvature', -15, 15, '']
-            model_dic['gamma0_log_parab'] = ['turn-over-energy', 0, None, 'Lorentz-factor',False,True]
+            model_dic['gamma0_log_parab'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'lpep':
             model_dic['r'] = ['spectral_curvature', -15, 15, '']
-            model_dic['gammap_log_parab'] = ['turn-over-energy', 0, None, 'Lorentz-factor',False,True]
+            model_dic['gammap_log_parab'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'plc':
             model_dic['p'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['gamma_cut'] = ['turn-over-energy', 0, None, 'Lorentz-factor',False,True]
+            model_dic['gamma_cut'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'spitkov':
             model_dic['spit_index'] = ['LE_spectral_slope', -10, 10, '']
@@ -564,7 +574,14 @@ class Jet(Model):
 
     """
 
-    def __init__(self,name='test',electron_distribution='pl',beaming_expr='delta',jet_workplace=None,verbose=None,clean_work_dir=True, **keywords):
+    def __init__(self,name='test',
+                 electron_distribution='pl',
+                 electron_distribution_log_values=False,
+                 beaming_expr='delta',
+                 jet_workplace=None,
+                 verbose=None,
+                 clean_work_dir=True,
+                 **keywords):
 
 
         super(Jet,self).__init__(  **keywords)
@@ -617,7 +634,7 @@ class Jet(Model):
 
 
 
-        self.set_electron_distribution(electron_distribution)
+        self.set_electron_distribution(electron_distribution,electron_distribution_log_values)
 
         self.set_emitting_region(beaming_expr)
 
@@ -677,6 +694,7 @@ class Jet(Model):
     def save_model(self,file_name):
         _model={}
         _model['electron_distribution']=self._electron_distribution_name
+        _model['electron_distribution_log_values']=self._electron_distribution_log_values
         _model['beaming_expr']=self._beaming_expr
         _model['model_spectral_components']=self.get_spectral_component_names_list()
         _model['EC_components_list'] = self.EC_components_list
@@ -733,7 +751,9 @@ class Jet(Model):
 
         return jet
 
-    def set_electron_distribution(self,name=None):
+    def set_electron_distribution(self,name=None,log_values=False):
+
+        self._electron_distribution_log_values=log_values
 
         if self._electron_distribution_dic is not None:
             self.del_par_from_dic(self._electron_distribution_dic)
@@ -742,21 +762,24 @@ class Jet(Model):
             self._electron_distribution_name='from_array'
             self.electron_distribution=ElectronDistribution.from_custom(self,name)
 
+        if isinstance(name, ElectronDistribution):
+            self.electron_distribution = name
+
         else:
 
 
 
-            self.electron_distribution = ElectronDistribution(name, self)
+            self.electron_distribution = ElectronDistribution(name, self,log_values=log_values)
 
-            if self.electron_distribution is not None:
-                self._electron_distribution_name = name
-                self._electron_distribution_dic = self.electron_distribution._build_electron_distribution_dic(
-                    self._electron_distribution_name)
+        if self.electron_distribution is not None:
+            self._electron_distribution_name = name
+            self._electron_distribution_dic = self.electron_distribution._build_electron_distribution_dic(
+                self._electron_distribution_name)
 
-                self.add_par_from_dic(self._electron_distribution_dic)
+            self.add_par_from_dic(self._electron_distribution_dic)
 
-            else:
-                raise RuntimeError('name for electron distribution was not valid')
+        else:
+            raise RuntimeError('name for electron distribution was not valid')
 
 
 

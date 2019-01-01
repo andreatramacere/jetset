@@ -90,8 +90,8 @@ class TemplateParameter(ModelParameter):
 
 
         super(TemplateParameter,self).__init__(  **keywords)
-        
-       
+
+        #print('setting in __init__', self.name, self.template,  keywords)
         if 'val' in keywords.keys():
             val=keywords['val']
             self.assign_val(self.name,val)
@@ -105,7 +105,8 @@ class TemplateParameter(ModelParameter):
         """
         sets a parameter value checking for physical boundaries 
         """
-        
+
+        #print('setting in set', self.name,self.template, keywords)
         if 'val' in keywords.keys():
             self.assign_val(self.name,keywords['val']) 
         
@@ -114,7 +115,7 @@ class TemplateParameter(ModelParameter):
         """
         assigns the paramter valut to the :class:`Template` object
         """
-        print(self.template,name,val)
+        #print('setting in assign val',self.template,name,val)
         setattr(self.template,name,val)
         
 

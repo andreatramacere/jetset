@@ -57,6 +57,7 @@ from .spectral_shapes import  SED
    
 from .base_model import  Model
 
+from .plot_sedfit import  PlotSED
 
 
 __all__=['FitModel']
@@ -131,8 +132,9 @@ class FitModel(Model):
         self.nu_min=1E6
         self.nu_max=1E30
         self.nu_size=nu_size
-    
-    
+
+        self.flux_plot_lim=1E-30
+
         self.components=[]    
         
         self.parameters=ModelParameterArray()
@@ -156,35 +158,42 @@ class FitModel(Model):
         
         if analytical is not None:
             self.add_component(analytical)
-        
-    def PlotModel(self,Plot,clean=False,autoscale=False,label=None,plot_components=False):
-        if Plot is not None:
-            if clean==True:
-                Plot.clean_model_lines()
-            if plot_components ==True:
-                for model_comp in self.components:
 
-                    try:
-                        #print"model name", model_comp.name
-                        model_comp.PlotModel(Plot,autoscale=autoscale)
-                    except:
-                        Plot.add_model_plot(model_comp,autoscale=autoscale)
 
-                    if label is None:
-                        label=self.name
 
-            #composite model
-            if label is None:
-                label=self.name
 
-            Plot.add_model_plot(self.SED,autoscale=autoscale,label=label)
-            
-        else:
-            print ("the plot window is not defined")
+    def plot_model(self,plot_obj=None,clean=False,sed_data=None):
+        if plot_obj is None:
+            plot_obj=PlotSED(sed_data=sed_data)
 
-       
-            
-    
+
+        if clean==True:
+            plot_obj.clean_model_lines()
+
+        line_style='-'
+
+
+        for mc in self.components:
+            comp_label = mc.name
+            #print('c name',comp_label)
+            plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim)
+
+            if hasattr(mc,'spectral_components'):
+                for c in mc.spectral_components:
+
+                    comp_label = c.name
+                    if comp_label!='Sum':
+
+                        #print('c name', comp_label)
+                        plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label, flim=self.flux_plot_lim)
+
+        plot_obj.add_model_plot(self.SED, line_style=line_style, label=self.name, flim=self.flux_plot_lim)
+
+        return plot_obj
+
+
+
+
     def set_nu_grid(self,nu_min=None,nu_max=None,nu_size=None):
         if nu_size is not None:
             self.nu_size=nu_size

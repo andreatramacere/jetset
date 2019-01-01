@@ -138,28 +138,38 @@ class ModelParameter(object):
         self.allowed_keywords['log']=False
         
       
-        self._skip_kw=['val']
+        #self._skip_kw=['val']
         #defualt
+
+        _v = None
+        _l = False
+
+        if 'val' in keywords.keys():
+            _v = keywords['val']
+
+        if 'log' in keywords.keys():
+            _l = keywords['log']
+
+        self._val = Value(val=_v, islog=_l)
+
         for kw in self.allowed_keywords.keys():
-            if kw not in self._skip_kw:
+            if kw == 'val':
+                self.val = keywords[kw]
+            if kw == 'log':
+                pass
+            else:
                 setattr(self,kw,self.allowed_keywords[kw])
 
 
-        _v=None
-        _l=False
 
-        if 'val' in keywords.keys():
-            _v=keywords['val']
-
-        if 'log' in keywords.keys():
-            _l=keywords['log']
-
-
-        self._val=Value(val=_v,islog=_l)
 
         #parsing user keywords
         self.set(**keywords)
-        
+        #self._skip_kw = []
+    @property
+    def islog(self):
+        return self._val.islog
+
     @property
     def val(self ):
         return self._val.val
@@ -190,8 +200,13 @@ class ModelParameter(object):
         for kw in keys:
             
             if kw in  self.allowed_keywords.keys() :
-                if  kw not in self._skip_kw:
+                if kw == 'val':
+                    self.val = keywords[kw]
+                if kw == 'log':
+                    pass
+                else:
                     setattr(self,kw,keywords[kw])
+
                     
             else:
                 

@@ -88,8 +88,8 @@ class PolyParameter(ModelParameter):
 
 
         super(PolyParameter,self).__init__(  **keywords)
-        
-       
+
+        #print('set logp in  init',self.name, keywords)
         if 'val' in keywords.keys():
             val=keywords['val']
             self.assign_val(self.name,val)
@@ -103,7 +103,7 @@ class PolyParameter(ModelParameter):
         """
         sets a parameter value checking for physical boundaries 
         """
-        
+        #print('set logp in  set',self.name, keywords)
         if 'val' in keywords.keys():    
             self.assign_val(self.name,keywords['val']) 
         
@@ -112,6 +112,7 @@ class PolyParameter(ModelParameter):
         """
         assigns the parameter value to the :class:`Template` object
         """
+        #print('set logp in assign_val',name,val)
         setattr(self.polymodel,name,val)
 
 

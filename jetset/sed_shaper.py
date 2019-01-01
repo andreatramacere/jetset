@@ -732,10 +732,12 @@ class SEDShape(object):
 
         
             
-            
+        #print('Refit')
+        fit_model.show_pars()
         if refit==True:
             if fit_range is None:
                 s_fit_range = sync_fit_range(self.obj_class, self.indices)
+
             mm,best_fit=fit_SED(fit_model,self.sed_data,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit',minimizer=minimizer)
 
 
@@ -815,13 +817,13 @@ class SEDShape(object):
     
         
 
-    def   add_host_template(self,fit_model):
+    def add_host_template(self,fit_model):
         
         host_gal=Template('host-galaxy',z=self.sed_data.z)
                  
         fit_model.add_component(host_gal)
 
-
+        #print('nuFnu_p_host',self.S_peak.nuFnu_p_val)
         fit_model.set('nuFnu_p_host',val=(self.S_peak.nuFnu_p_val),fit_range=[self.S_peak.nuFnu_p_val-2,self.S_peak.nuFnu_p_val+2 ])
         
         fit_model.set('nu_scale',val=0,fit_range=[-0.5,0.5])
