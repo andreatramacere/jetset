@@ -35,7 +35,7 @@ class Model(object):
         
         
    
-    def eval(self,fill_SED=True,nu=None,get_model=False,loglog=False,plot=None,label=None):
+    def eval(self,fill_SED=True,nu=None,get_model=False,loglog=False,label=None):
         
         if nu is None:
             #print("--->", self.nu_min,self.nu_max,self.nu_size)
@@ -86,11 +86,7 @@ class Model(object):
         
         #print model[0]
         
-        if plot is not None:
-                if label is None:
-                    label= self.name
-                    
-                self.PlotModel(plot, clean=True, label=self.name)
+
         
         if get_model==True:
             if loglog==False:
@@ -102,22 +98,7 @@ class Model(object):
         else:
             return None
         
-    def PlotModel(self,Plot,clean=False,autoscale=False,label=None):
-        #print "PlotModel base model"
-        if Plot is not None:
-            if clean==True:
-                Plot.clean_model_lines()
-           
-            if label is None:
-                    label= self.name
-           
-            Plot.add_model_plot(self.SED,autoscale=autoscale,line_style='-',label=label)
-        
-            #print self.SED.nu
-            
-            
-        else:
-            print ("the plot window is not defined")
+
             
     def set_nu_grid(self,nu_min=None,nu_max=None,nu_size=None):
         if nu_size is not None:

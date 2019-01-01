@@ -170,12 +170,12 @@ class FitModel(Model):
         if clean==True:
             plot_obj.clean_model_lines()
 
-        line_style='-'
+        line_style='--'
 
 
         for mc in self.components:
             comp_label = mc.name
-            #print('c name',comp_label)
+            #print ('comp_label',comp_label)
             plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim)
 
             if hasattr(mc,'spectral_components'):
@@ -183,12 +183,13 @@ class FitModel(Model):
 
                     comp_label = c.name
                     if comp_label!='Sum':
-
-                        #print('c name', comp_label)
+                        #print('comp_label', comp_label)
                         plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label, flim=self.flux_plot_lim)
 
+        line_style = '-'
+        #print('comp_label', self.name)
         plot_obj.add_model_plot(self.SED, line_style=line_style, label=self.name, flim=self.flux_plot_lim)
-
+        plot_obj.add_residual_plot(data=sed_data, model=self)
         return plot_obj
 
 
@@ -323,7 +324,7 @@ class FitModel(Model):
     
     
     
-    def eval(self,nu=None,fill_SED=True,get_model=False,loglog=False,plot=None,label=None,phys_output=False):
+    def eval(self,nu=None,fill_SED=True,get_model=False,loglog=False,label=None,phys_output=False):
         """
         evaluates the SED for the current parameters and fills the :class:`.SED` member
         """
@@ -378,12 +379,7 @@ class FitModel(Model):
  
             self.SED.fill(nu=lin_nu,nuFnu=model)
             
-        if plot is not None:
-            if label is None:
-                label= self.name
-                
-            self.PlotModel(plot, clean=True, label=self.name)
-           
+
             
         if get_model==True:
             

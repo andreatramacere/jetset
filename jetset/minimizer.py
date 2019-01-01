@@ -410,6 +410,7 @@ class ModelMinimizer(object):
         if silent == False:
             print(section_separator)
 
+        fit_Model.eval()
         return best_fit
 
 
@@ -420,6 +421,7 @@ class Minimizer(object):
         self.model=model
         self._progress_iter = cycle(['|', '/', '-', '\\'])
 
+
     def fit(self,model,max_ev=None,use_UL=False,silent=False):
         self.use_UL = use_UL
         self.calls=0
@@ -429,7 +431,6 @@ class Minimizer(object):
         self._fit(max_ev)
         self._fit_stats()
         self._set_fit_errors()
-
 
 
     def _fit_stats(self):
@@ -452,6 +453,7 @@ class Minimizer(object):
         self.success = True
         self.status = 1
 
+
     def _set_fit_errors(self):
         if self.covar is None:
             print("!Warning, no covariance matrix produced")
@@ -459,12 +461,12 @@ class Minimizer(object):
         else:
             self.errors = [np.sqrt(np.fabs(self.covar[pi, pi]) * self.chisq_red) for pi in range(len(self.model.fit_par_free))]
 
+
     def _progess_bar(self, _res_sum, res_UL):
         if np.mod(self.calls, 10) == 0 and self.calls != 0:
+            _c= ' ' * 256
+            print("\r%s"%_c,end="")
             print("\r%s minim function calls=%d, chisq=%f UL part=%f" % (next(self._progress_iter),self.calls, _res_sum, -2.0*np.sum(res_UL)), end="")
-
-
-
 
 
     def residuals_Fit(self,p, fit_par, nu_data, nuFnu_data, err_nuFnu_data, best_fit_SEDModel, loglog,UL,chisq=False,use_UL=False,silent=False):
@@ -734,7 +736,8 @@ class MinutiMinimizer(Minimizer):
             kwdarg[n] = p
             kwdarg[bn] = b
             kwdarg[en] = e
-            print( kwdarg[n] ,p, kwdarg[bn] ,b, kwdarg[en] ,e)
+            #print( kwdarg[n] ,p, kwdarg[bn] ,b, kwdarg[en] ,e)
+
         #print(kwdarg)
         self.minuit_fun = iminuit.Minuit(
             fcn=self.chisq_func,
