@@ -5,120 +5,188 @@ from builtins import (bytes, str, open, super, range,
 
 __author__ = "Andrea Tramacere"
 
+from .minimizer import  log_like
+
+import emcee
+from itertools import cycle
+
 import numpy as np
 import scipy as sp
 from scipy import stats
+from pylab import  plt
+import corner
+import pickle
+
+__all__=['McmcSampler']
+
+class McmcSampler(object):
+
+    def __init__(self,model_minimizer):
+
+        self.model_minimizer=model_minimizer
+        self.ndim = self.model_minimizer.free_pars
+        self._progress_iter = cycle(['|', '/', '-', '\\'])
 
 
-__all__=['MCMC']
-class MCMC (object):
+    def run_sampler(self,nwalkers=500,steps=100,pos=None,burnin=50,use_UL=False, threads=8):
+        self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, self.log_prob,threads=threads)
+        self.calls=0
+        self.calls_OK=0
+        self.use_UL=use_UL
 
-    def __init__(self,fit_par,range_rel,range_sigma,jump_step_rel,jump_step_sigma,proposal='uniform'):
-        
-        self.burn_in_size
-        
-        self.trials_size
-        
-        self.fit_par=fit_par
+        if pos is None:
+            pos = emcee.utils.sample_ball(np.array([p.best_fit_val for p in self.model_minimizer.fit_par_free]),
+                                     np.array([p.best_fit_val*0.005 for p in self.model_minimizer.fit_par_free]),
+                                     nwalkers)
 
-        self.par_range
-        
-        self.jump_step
-        
-        if proposal=='uniform':
-            self.proposal_prob=stats.uniform.pdf
-            self.proposal_val=stats.uniform.rvs
-        elif proposal=='normal':
-            self.proposal_prob=stats.norm.pdf
-            self.proposal_val=stats.norm.rvs
+        self.pos=pos
+        self.nwalkers=nwalkers
+        self.steps=steps
+        self.calls_tot=nwalkers*steps
+        self.labels=[par.name for par in self.model_minimizer.fit_par_free]
+        self.labels_units =[par.units for par in self.model_minimizer.fit_par_free]
+        self.sampler.run_mcmc(pos,steps)
+        self.samples = self.sampler.chain[:, burnin:, :].reshape((-1, self.ndim))
+
+        self.sampler_out=SamplerOutput(self.samples,
+                                       self.sampler.chain,
+                                       nwalkers,
+                                       steps,
+                                       burnin,
+                                       labels=self.labels,
+                                       labels_units=self.labels_units)
+
+    def plot_par(self,p=None,nbins=20,log_plot=False):
+        return self.sampler_out.plot_par(p=p,nbins=nbins,log_plot=log_plot)
+
+    def corner_plot(self, ):
+        return self.sampler_out.corner_plot()
+
+    def seve_run(self,name):
+        self.sampler_out.save(name)
+
+    def log_like(self,theta,_warn=False):
+
+        for pi in range(len(theta)):
+            self.model_minimizer.fit_par_free[pi].set(val=theta[pi])
+            if np.isnan(theta[pi]):
+                _warn=True
+
+
+
+
+
+        _m = self.model_minimizer.fit_Model.eval(nu=self.model_minimizer.nu_fit, fill_SED=False, get_model=True, loglog=self.model_minimizer.loglog)
+
+        _res_sum, _res, _res_UL= log_like(self.model_minimizer.nuFnu_fit,
+                        _m,
+                        self.model_minimizer.err_nuFnu_fit,
+                        self.model_minimizer.UL,
+                        use_UL=self.use_UL)
+
+        self._progess_bar()
+        return  _res_sum
+
+
+
+    def log_prob(self,theta):
+        lp = self.log_prior(theta)
+        self.calls+=1
+        if not np.isfinite(lp):
+            return -np.inf
+        self.calls_OK += 1
+        return lp + self.log_like(theta)
+
+    def log_prior(self,theta):
+        _r=0.
+        bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model_minimizer.fit_par_free]
+        for pi in range(len(theta)):
+            if bounds[pi][1] is not None:
+                if theta[pi]<bounds[pi][1]:
+                    pass
+                else:
+                    _r = -np.inf
+            if bounds[pi][0] is not None:
+                if theta[pi]>bounds[pi][0]:
+                    pass
+                else:
+                    _r=-np.inf
+
+        return _r
+
+    def _progess_bar(self,):
+        if np.mod(self.calls, 10) == 0 and self.calls != 0:
+            print("\r%s progress=%3.3f%% calls=%d accepted=%d" % (next(self._progress_iter),float(100*self.calls)/(self.calls_tot),self.calls,self.calls_OK), end="")
+
+
+
+class SamplerOutput(object):
+
+    def __init__(self,
+                 samples,
+                 chain,
+                 nwalkers,
+                 steps,
+                 burnin,
+                 labels=None,
+                 labels_units=None):
+
+        self.samples=samples
+        self.chain=chain
+        self.labels=labels
+        self.nwalkers=nwalkers
+        self.steps=steps
+        self.burnin=burnin
+        self.labels_units=labels_units
+
+    def save(self, name):
+        with open(name, 'wb') as output:
+            pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
+
+    @classmethod
+    def from_file(self,name):
+        with open(name, 'rb') as input:
+
+            return pickle.load(input)
+
+    def corner_plot(self,):
+        f = corner.corner(self.samples, labels=self.labels)
+        return f
+
+    def plot_par(self,p=None,nbins=20,log_plot=False):
+        if type(p)==int:
+            pass
+
         else:
-            print ("proposal distribution not in allowed")
-            
-            return     
-        
-    
-    
-    def run(self):
-        
-        LEN=0
-        
-        TRIAL=0
+            try:
+                p=self.labels.index(p)
+            except:
+                raise RuntimeError('paramter p', p, 'not found')
 
-        oldLike=self.func_stat()
-        
-        self.init_par()
-        
-        while TRIAL <=self.MCMC_TRIALS and LEN<self.Lenght:
-            
-            TRIAL+=1
-                       
-            #Draw parameters 
-            self.random_walk()
-          
-            self.update_prior()
-        
-            if self.prior21>0:
-                
-                self.UpdatePrefac()
-        
-                newLike=self.func_stat()
-        
-                ratio=np.exp(newLike-oldLike)*(self.Prefac)
-                
-                aprob=min([1.0,ratio])
-        
-                u = stats.uniform.rvs(loc=0.0,scale=1.0)
-      
-                #Decide trial acceptance
-                if  u < aprob:
-                    LEN+=1
-                    print("TRIAL=%d accetto ratio=%e u=%e par[1]=%s -LogLike=%e "%(TRIAL,ratio,u,self.par[1],-newLike))
-                    oldLike=newLike
-          
-    
-    def init_MCMC_pars(self):
-        for pi in range(len(self.fit_par)):
-            if self.fit_par[pi].err is not None:
-                delta_par=self.fit_par[pi].err*self.range_sigma
-                step_par=self.fit_par[pi].err*self.jump_step_sigma
+        if p>len(self.labels):
+            raise RuntimeError('label id larger then labels size')
+
+
+        _d = self.chain[:, :, p].flatten()
+        n = self.labels[p]
+
+        if self.labels_units is not None:
+            if self.labels_units[p] is not None:
+                n += ' (%s)' % self.labels_units[p]
+
+        f = plt.figure()
+        ax=f.add_subplot(111)
+
+        if log_plot==True:
+            if  np.any(_d<=0):
+                raise RuntimeWarning('negative values in p')
             else:
-                delta_par=self.fit_par[pi].val*self.range_rel
-                step_par=self.fit_par[pi].val*self.jump_step_rel
-                
-            self.fit_par[pi].MCMC_range_min=self.fit_par[pi].val - delta_par
-            self.fit_par[pi].MCMC_range_max=self.fit_par[pi].val + delta_par
-            self.fit_par[pi].MCMC_jump_step=step_par
-            self.fit_par[pi].MCMC_val=self.fit_par[pi].val
-            self.fit_par[pi].MCMC_trial=None
-            self.fit_par[pi].MCMC_sample=sp.zeros(self.trials_size)
-    
-    
-    def random_walk(self,size):
-        for pi in range(len(self.fit_par)):
-            self.fit_par[pi].MCMC_trial=self.draw_proposal(self.parfit_par[pi])
-           
+                _d=np.log10(_d)
 
-            
-    def draw_proposal(self,par):
-        loc=par.MCMC_range_min
-        scale=par.MCMC_range_max-par.MCMC_range_min
-        return self.proposal_val(loc=loc,scale=scale)
-    
-    
-    def update_prior(self):
-       
-        self.prior12=1
-        self.prior21=1
-        
-        for pi in range(len(self.fit_par)):
-    
-            self.prior12 =self.prior12 * self.prior_fact(self.fit_par[pi],self.fit_par[pi].MCMC_val,self.fit_par[pi].MCMC_trial)
+        ax.hist(_d,
+                bins=nbins,
+                density=True)
 
-            self.prior21 =self.prior21 * self.prior_fact(self.fit_par[pi],self.fit_par[pi].MCMC_trial,self.fit_par[pi].MCMC_val)    
-    
-    
-    def prior_fact(self,_prime,x,scale):
-        
-        loc=par.MCMC_range_min
-        scale=par.MCMC_range_max-par.MCMC_range_min
-        return self.proposal_prob(x,loc=loc,scale=scale) 
+        ax.set_xlabel(n)
+
+        return f

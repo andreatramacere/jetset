@@ -457,7 +457,7 @@ class ModelParameterArray(object):
         text=[]
         text.append( "-------------------------------------------------------------------------------------------------------------------")
         text.append( "model parameters:")
-        text.append( " Name             | Type                 | Units            | value         | phys. boundaries              |log ")
+        text.append( " Name             | Type                 | Units            | value         | phys. boundaries              | log")
         text.append( "-------------------------------------------------------------------------------------------------------------------")
        
         for par in self.par_array:

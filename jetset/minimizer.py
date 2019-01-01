@@ -75,7 +75,6 @@ from scipy.optimize import leastsq
 from scipy.optimize import least_squares,curve_fit
 
 from leastsqbound.leastsqbound import  leastsqbound
-import emcee
 
 from .output import section_separator,WorkPlace,makedir
 
@@ -527,87 +526,6 @@ def UL_log_like(y_UL,y_model,y_err):
     x=0.5*(1.0+sp.special.erf(y))
     x[x==0]=1E-200
     return  np.log(x)
-
-
-class McmcSampler(object):
-
-    def __init__(self,model_minimizer):
-
-        self.model_minimizer=model_minimizer
-        self.ndim = self.model_minimizer.free_pars
-        self._progress_iter = cycle(['|', '/', '-', '\\'])
-
-
-    def run_sampler(self,nwalkers=500,steps=100,pos=None,burnin=50,use_UL=False, threads=8):
-        self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, self.log_prob,threads=threads)
-        self.calls=0
-        self.calls_OK=0
-        self.use_UL=use_UL
-        #bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model_minimizer.fit_par_free]
-        #print (bounds)
-        if pos is None:
-            pos = emcee.utils.sample_ball(np.array([p.best_fit_val for p in self.model_minimizer.fit_par_free]),
-                                     np.array([p.best_fit_val*0.005 for p in self.model_minimizer.fit_par_free]),
-                                     nwalkers)
-
-        self.pos=pos
-        self.nwalkers=nwalkers
-        self.steps=steps
-        self.calls_tot=nwalkers*steps
-        self.labels=[par.name for par in self.model_minimizer.fit_par_free]
-        self.sampler.run_mcmc(pos,steps)
-        self.samples = self.sampler.chain[:, burnin:, :].reshape((-1, self.ndim))
-
-    def log_like(self,theta,_warn=False):
-
-        for pi in range(len(theta)):
-            self.model_minimizer.fit_par_free[pi].set(val=theta[pi])
-            if np.isnan(theta[pi]):
-                _warn=True
-
-
-
-
-
-        _m = self.model_minimizer.fit_Model.eval(nu=self.model_minimizer.nu_fit, fill_SED=False, get_model=True, loglog=self.model_minimizer.loglog)
-
-        _res_sum, _res, _res_UL= log_like(self.model_minimizer.nuFnu_fit,
-                        _m,
-                        self.model_minimizer.err_nuFnu_fit,
-                        self.model_minimizer.UL,
-                        use_UL=self.use_UL)
-
-        self._progess_bar()
-        return  _res_sum
-
-    def log_prob(self,theta):
-        lp = self.log_prior(theta)
-        self.calls+=1
-        if not np.isfinite(lp):
-            return -np.inf
-        self.calls_OK += 1
-        return lp + self.log_like(theta)
-
-    def log_prior(self,theta):
-        _r=0.
-        bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model_minimizer.fit_par_free]
-        for pi in range(len(theta)):
-            if bounds[pi][1] is not None:
-                if theta[pi]<bounds[pi][1]:
-                    pass
-                else:
-                    _r = -np.inf
-            if bounds[pi][0] is not None:
-                if theta[pi]>bounds[pi][0]:
-                    pass
-                else:
-                    _r=-np.inf
-
-        return _r
-
-    def _progess_bar(self,):
-        if np.mod(self.calls, 10) == 0 and self.calls != 0:
-            print("\r%s progress=%3.3f%% calls=%d accepted=%d" % (next(self._progress_iter),float(100*self.calls)/(self.calls_tot),self.calls,self.calls_OK), end="")
 
 
 

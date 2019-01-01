@@ -8,3 +8,4 @@ matplotlib
 swig
 future
 iminuit
+corner
