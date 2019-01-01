@@ -69,7 +69,7 @@ except:
     minuit_installed=False
 #from iminuit.frontends import ConsoleFrontend
 #from iminuit.frontends import console
-
+import  pylab as plt
 from scipy.optimize import leastsq
 
 from scipy.optimize import least_squares,curve_fit
@@ -656,7 +656,12 @@ class MinutiMinimizer(Minimizer):
             kwdarg[en] = e
             #print( kwdarg[n] ,p, kwdarg[bn] ,b, kwdarg[en] ,e)
 
-        #print(kwdarg)
+        self.par_dic={}
+        self.bounds_dic={}
+        for ID,par in enumerate(self.model.fit_par_free):
+            self.par_dic[par.name]=p_names[ID]
+            self.bounds_dic[par.name]=bounds[ID]
+
         self.minuit_fun = iminuit.Minuit(
             fcn=self.chisq_func,
             forced_parameters=p_names,
@@ -685,8 +690,83 @@ class MinutiMinimizer(Minimizer):
         #print ('p',self.p)
         return self.chisq_func(*self.p)
 
+    def minos_errors(self):
+        self.minuit_fun.minos()
+        self.print_param()
+        self.errors = [self.minuit_fun.merrors[k] for k in self.minuit_fun.errors.keys()]
 
 
+
+    def profile(self,par,bound=2):
+        bound=self._set_bounds(par,bound=bound)
+
+        a, fa =  self.minuit_fun.profile(self.par_dic[par],
+                                         bound=bound,
+                                         subtract_min=True)
+        return a,fa
+
+
+    def mnprofile(self,par,bound=2):
+        bound = self._set_bounds(par, bound=bound)
+        a, fa =  self.minuit_fun.mnprofile(self.par_dic[par],
+                                         bound=bound,
+                                         subtract_min=True)
+        return a,fa
+
+    def draw_profile(self,par,bound=2):
+        bound = self._set_bounds(par, bound=bound)
+        a,fa=self.minuit_fun.draw_profile(self.par_dic[par],subtract_min=True,bound=bound)
+        return a,fa
+
+
+    def draw_mnprofile(self,par,bound=2):
+        bound = self._set_bounds(par, bound=bound)
+        a,fa=self.minuit_fun.draw_mnprofile(self.par_dic[par],subtract_min=True,bound=bound)
+        return a,fa
+
+
+    def contour(self,par_1,par_2,bound=2,bins=20):
+        if np.shape(bound)==0:
+
+            bound_1 = self._set_bounds(par_1)
+            bound_2 = self._set_bounds(par_2)
+
+            bound=[bound_1,bound_2]
+
+        x, y, z= self.minuit_fun.contour(self.par_dic[par_1],
+                                        self.par_dic[par_2],
+                                        subtract_min=True,
+                                        bound=bound,
+                                        bins=bins)
+
+        return x,y,z
+
+
+    def draw_contour(self,par_1,par_2,bound=None,levels=5):
+        x,y,z=self.conotour(par_1,par_2,bound=bound)
+        fig, ax = plt.subplots()
+        CS = ax.contour(x, y, z, levels,)
+        ax.clabel(CS, fontsize=9, inline=1)
+        ax.set_xlabel(self.par_dic[par_1])
+        ax.set_ylabel(self.par_dic[par_2])
+
+
+    def _set_bounds(self,par,bound):
+        if np.size(bound)==0:
+            p = self.par_dic[par]
+            bound = [p.best_fit_val - p.best_fit_err * bound, p.best_fit_val + p.best_fit_err * bound]
+            bound = self._check_bounds(par, bound)
+        else:
+            pass
+
+        return bound
+
+    def _check_bounds(self,par,bound):
+        if bound[0]<self.bounds_dic[par][0]:
+            bound[0]=self.bounds_dic[par][0]
+        if bound[1]>self.bounds_dic[par][1]:
+            bound[1]=self.bounds_dic[par][1]
+        return bound
 
 def fit_SED(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_workplace=None, loglog=False, silent=False,
             get_conf_int=False, max_ev=0, use_facke_err=False, minimizer='lsb', use_UL=False):
