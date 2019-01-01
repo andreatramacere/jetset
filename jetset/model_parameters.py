@@ -333,11 +333,11 @@ class ModelParameter(object):
             val=str("%+e"%self.val)
         
         if nofields==False:
-            descr= "name = %-16s  type = %-24s  units = %-16s  val = %s  phys-bounds = [%-13s,%-13s]  "%(self.name, self.par_type ,
-                                                                                   self.units, val, val_min, val_max)
+            descr= "name = %-16s  type = %-20s  units = %-16s  val = %s  phys-bounds = [%-13s,%-13s] islog = %s   "%(self.name, self.par_type ,
+                                                                                   self.units, val, val_min, val_max,self.islog)
         else:
-            descr= " %-16s | %-24s | %-16s | %s | [%-13s,%-13s]  "%(self.name, self.par_type ,
-                                                                                   self.units, val, val_min, val_max)
+            descr= " %-16s | %-20s | %-16s | %s | [%-13s,%-13s] | %s "%(self.name, self.par_type ,
+                                                                                   self.units, val, val_min, val_max,self.islog)
             
         return descr
     
@@ -455,15 +455,15 @@ class ModelParameterArray(object):
         """
         
         text=[]
-        text.append( "--------------------------------------------------------------------------------------------------------------")
+        text.append( "-------------------------------------------------------------------------------------------------------------------")
         text.append( "model parameters:")
-        text.append( " Name             | Type                     | Units            | value         | phys. boundaries")
-        text.append( "--------------------------------------------------------------------------------------------------------------")
+        text.append( " Name             | Type                 | Units            | value         | phys. boundaries              |log ")
+        text.append( "-------------------------------------------------------------------------------------------------------------------")
        
         for par in self.par_array:
             text.append( par.get_description(nofields=True))
         
-        text.append( "--------------------------------------------------------------------------------------------------------------")
+        text.append( "-------------------------------------------------------------------------------------------------------------------")
         
         
 

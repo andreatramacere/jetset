@@ -1296,8 +1296,8 @@ class Jet(Model):
         shows all the paramters in the model
 
         """
+        print("-------------------------------------------------------------------------------------------------------------------")
 
-        print ("--------------------------------------------------------------------------------------------------------------")
         print ("model parameters for jet model:")
         print
         print ("electron grid size: ",self.get_gamma_grid_size())
@@ -1308,8 +1308,7 @@ class Jet(Model):
 
         self.parameters.show_pars()
 
-        print ("--------------------------------------------------------------------------------------------------------------")
-
+        print("-------------------------------------------------------------------------------------------------------------------")
 
     def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None):
         if plot_obj is None:
