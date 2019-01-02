@@ -656,11 +656,13 @@ class MinutiMinimizer(Minimizer):
             kwdarg[en] = e
             #print( kwdarg[n] ,p, kwdarg[bn] ,b, kwdarg[en] ,e)
 
-        self.par_dic={}
-        self.bounds_dic={}
+        self.minuit_par_name_dict={}
+        self.minuit_bounds_dict={}
+        self.par_dict = {}
         for ID,par in enumerate(self.model.fit_par_free):
-            self.par_dic[par.name]=p_names[ID]
-            self.bounds_dic[par.name]=bounds[ID]
+            self.minuit_par_name_dict[par.name]=p_names[ID]
+            self.minuit_bounds_dict[par.name]=bounds[ID]
+            self.par_dict[par.name]=par
 
         self.minuit_fun = iminuit.Minuit(
             fcn=self.chisq_func,
@@ -700,17 +702,17 @@ class MinutiMinimizer(Minimizer):
     def profile(self,par,bound=2,subtract_min=True):
         bound=self._set_bounds(par,bound=bound)
 
-        x, y =  self.minuit_fun.profile(self.par_dic[par],
-                                         bound=bound,
-                                         subtract_min=subtract_min)
+        x, y =  self.minuit_fun.profile(self.minuit_par_name_dict[par],
+                                        bound=bound,
+                                        subtract_min=subtract_min)
         return x,y
 
 
     def mnprofile(self,par,bound=2,subtract_min=True):
         bound = self._set_bounds(par, bound=bound)
-        x, y =  self.minuit_fun.mnprofile(self.par_dic[par],
-                                         bound=bound,
-                                         subtract_min=subtract_min)
+        x, y =  self.minuit_fun.mnprofile(self.minuit_par_name_dict[par],
+                                          bound=bound,
+                                          subtract_min=subtract_min)
         return x,y
 
     def draw_mnprofile(self,par,bound=2):
@@ -767,24 +769,30 @@ class MinutiMinimizer(Minimizer):
 
 
     def contour(self,par_1,par_2,bound=2,bins=20,subtract_min=True):
-        if np.shape(bound)==0:
+        if np.shape(bound)==():
 
-            bound_1 = self._set_bounds(par_1)
-            bound_2 = self._set_bounds(par_2)
+            bound_1 = self._set_bounds(par_1,bound)
+            bound_2 = self._set_bounds(par_2,bound)
 
-            bound=[bound_1,bound_2]
+        elif np.shape(bound)==(2,) or np.shape(bound)==(2,2):
 
-        x, y, z= self.minuit_fun.contour(self.par_dic[par_1],
-                                        self.par_dic[par_2],
-                                        subtract_min=subtract_min,
-                                        bound=bound,
-                                        bins=bins)
+            bound_1 = self._set_bounds(par_1, bound[0])
+            bound_2 = self._set_bounds(par_2, bound[1])
+        else:
+            raise  RuntimeError('bound must be scalar or (2,) or (2,2)')
+
+        bound = [bound_1, bound_2]
+        x, y, z= self.minuit_fun.contour(self.minuit_par_name_dict[par_1],
+                                         self.minuit_par_name_dict[par_2],
+                                         subtract_min=subtract_min,
+                                         bound=bound,
+                                         bins=bins)
 
         return x,y,z
 
 
     def draw_contour(self,par_1,par_2,bound=2,levels=np.arange(5)):
-        levels*=self.minuit_fun.errordef
+        l=self.minuit_fun.errordef*levels
         x,y,z=self.contour(par_1,par_2,bound=bound)
         fig, ax = plt.subplots()
         CS = ax.contour(x, y, z, levels,)
@@ -794,20 +802,29 @@ class MinutiMinimizer(Minimizer):
 
 
     def _set_bounds(self,par,bound):
-        if np.size(bound)==0:
-            p = self.par_dic[par]
+        p = self.par_dict[par]
+        if np.shape(bound)==():
             bound = [p.best_fit_val - p.best_fit_err * bound, p.best_fit_val + p.best_fit_err * bound]
-            bound = self._check_bounds(par, bound)
-        else:
-            pass
 
+        elif np.shape(bound)==(2,):
+            pass
+        else:
+            raise  RuntimeError('bound shape',np.shape(bound),'for par',p.name,'is wrong, has to be scalare or (2,)')
+        print('bound for par', par, ' set to', bound)
+        bound = self._check_bounds(par, bound)
+        print('bound for par',par,' updated to',bound)
         return bound
 
     def _check_bounds(self,par,bound):
-        if bound[0]<self.bounds_dic[par][0]:
-            bound[0]=self.bounds_dic[par][0]
-        if bound[1]>self.bounds_dic[par][1]:
-            bound[1]=self.bounds_dic[par][1]
+
+        if  self.minuit_bounds_dict[par][0] is not None:
+            if bound[0]<self.minuit_bounds_dict[par][0]:
+                bound[0]=self.minuit_bounds_dict[par][0]
+
+        if self.minuit_bounds_dict[par][1] is not None:
+            if bound[1]>self.minuit_bounds_dict[par][1]:
+                bound[1]=self.minuit_bounds_dict[par][1]
+
         return bound
 
 def fit_SED(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_workplace=None, loglog=False, silent=False,
