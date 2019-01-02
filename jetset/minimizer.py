@@ -412,6 +412,14 @@ class ModelMinimizer(object):
         fit_Model.eval()
         return best_fit
 
+    def reset_to_best_fit(self):
+        for pi in range(len(self.fit_par_free)):
+            self.fit_par_free[pi].set(val=self.minimizer.pout[pi])
+            self.fit_par_free[pi].best_fit_val = self.minimizer.pout[pi]
+            self.fit_par_free[pi].best_fit_err = self.minimizer.errors[pi]
+
+
+        self.fit_Model.eval()
 
 
 class Minimizer(object):
@@ -696,7 +704,7 @@ class MinutiMinimizer(Minimizer):
         self.minuit_fun.minos()
         self.print_param()
         self.errors = [self.minuit_fun.merrors[k] for k in self.minuit_fun.errors.keys()]
-
+        self.model.reset_to_best_fit()
 
 
     def profile(self,par,bound=2,subtract_min=True):
@@ -705,6 +713,8 @@ class MinutiMinimizer(Minimizer):
         x, y =  self.minuit_fun.profile(self.minuit_par_name_dict[par],
                                         bound=bound,
                                         subtract_min=subtract_min)
+        self.model.res
+        self.model.reset_to_best_fit()
         return x,y
 
 
@@ -713,18 +723,21 @@ class MinutiMinimizer(Minimizer):
         x, y =  self.minuit_fun.mnprofile(self.minuit_par_name_dict[par],
                                           bound=bound,
                                           subtract_min=subtract_min)
+        self.model.reset_to_best_fit()
         return x,y
 
     def draw_mnprofile(self,par,bound=2):
         bound = self._set_bounds(par, bound=bound)
         x,y=self.mnprofile(par,bound,subtract_min=True)
         fig,ax = self._draw_profile(x, y, par)
+        self.model.reset_to_best_fit()
         return x, y, fig,ax
 
     def draw_profile(self,par,bound=2):
         bound = self._set_bounds(par, bound=bound)
         x, y = self.profile(par, subtract_min=True, bound=bound)
         fig,ax=self._draw_profile(x,y,par)
+        self.model.reset_to_best_fit()
         return x,y,fig,ax
 
     def _draw_profile(self,x,y,par):
@@ -787,7 +800,7 @@ class MinutiMinimizer(Minimizer):
                                          subtract_min=subtract_min,
                                          bound=bound,
                                          bins=bins)
-
+        self.model.reset_to_best_fit()
         return x,y,z
 
 
@@ -799,7 +812,7 @@ class MinutiMinimizer(Minimizer):
         ax.clabel(CS, fontsize=9, inline=1)
         ax.set_xlabel(par_1)
         ax.set_ylabel(par_2)
-
+        self.model.reset_to_best_fit()
 
     def _set_bounds(self,par,bound):
         p = self.par_dict[par]
@@ -810,9 +823,9 @@ class MinutiMinimizer(Minimizer):
             pass
         else:
             raise  RuntimeError('bound shape',np.shape(bound),'for par',p.name,'is wrong, has to be scalare or (2,)')
-        print('bound for par', par, ' set to', bound)
+        #print('bound for par', par, ' set to', bound)
         bound = self._check_bounds(par, bound)
-        print('bound for par',par,' updated to',bound)
+        #print('bound for par',par,' updated to',bound)
         return bound
 
     def _check_bounds(self,par,bound):
