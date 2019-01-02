@@ -56,6 +56,8 @@ class McmcSampler(object):
                                        labels=self.labels,
                                        labels_units=self.labels_units)
 
+        self.model_minimizer.reset_to_best_fit()
+
     def plot_par(self,p=None,nbins=20,log_plot=False):
         return self.sampler_out.plot_par(p=p,nbins=nbins,log_plot=log_plot)
 
