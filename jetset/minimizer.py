@@ -713,7 +713,7 @@ class MinutiMinimizer(Minimizer):
         x, y =  self.minuit_fun.profile(self.minuit_par_name_dict[par],
                                         bound=bound,
                                         subtract_min=subtract_min)
-        self.model.res
+       
         self.model.reset_to_best_fit()
         return x,y
 
