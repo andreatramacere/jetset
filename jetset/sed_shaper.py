@@ -547,7 +547,7 @@ class SEDShape(object):
             plot_obj=PlotSED(sed_data=self.sed_data)
 
         for model in self.index_models:
-            plot_obj.add_model_plot(model,label=model.name,line_style='--',update=False)
+            plot_obj.add_model_plot(model,label=model.name,line_style='--')
         
         return plot_obj
 

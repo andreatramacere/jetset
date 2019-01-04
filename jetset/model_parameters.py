@@ -371,20 +371,26 @@ class ModelParameter(object):
             best_fit_val='No'
         else:
             best_fit_val=str("%+e"%self.best_fit_val)
-        
-        if self.best_fit_err is None:
-            best_fit_err='No'
+
+        if hasattr(self,'err_p') and  hasattr(self,'err_m'):
+            best_fit_err_m=str("%+e"%self.err_m)
+            best_fit_err_p=str("%+e"%self.err_p)
         else:
-            best_fit_err=str("%+e"%self.best_fit_err)
+            best_fit_err_m='#'
+            if self.best_fit_err is None:
+                best_fit_err_p='No'
+            else:
+                best_fit_err_p=str("%+e"%self.best_fit_err)
         
         if self.frozen==True:
             best_fit_val='Frozen'
-            best_fit_err='Frozen'
-       
+            best_fit_err_p='Frozen'
+            best_fit_err_m='Frozen'
         if nofields==False:
-            descr= "name = %-16s best-fit val=%-13s  best-fit err=%-13s start-val=%-13s   fit-bounds=[%-13s,%-13s]"%(self.name,best_fit_val,best_fit_err,val_start,fit_range_min,fit_range_max)
+            descr= "name = %-16s best-fit val=%-13s  best-fit err p=%-13s best-fit err m=%-13s start-val=%-13s   fit-bounds=[%-13s,%-13s]"%(self.name,best_fit_val,best_fit_err_p,best_fit_err_m,val_start,fit_range_min,fit_range_max)
         else:
-            descr= " %-16s | %-13s | %-13s | %-13s | [%-13s,%-13s]"%(self.name,best_fit_val,best_fit_err,val_start,fit_range_min,fit_range_max)
+            descr= " %-16s | %-13s | %-13s | %-13s | %-13s | [%-13s,%-13s]"%(self.name,best_fit_val,best_fit_err_p,best_fit_err_m,val_start,fit_range_min,fit_range_max)
+
 
         return descr
         
@@ -481,18 +487,18 @@ class ModelParameterArray(object):
         """
         
         text=[]
-        text.append("---------------------------------------------------------------------------------------------------")
+        text.append("-------------------------------------------------------------------------------------------------------------------")
         text.append("best-fit parameters:")
-        text.append("  Name            | best-fit value| best-fit err  | start value   | fit boundaries")
-        text.append("---------------------------------------------------------------------------------------------------")
+        text.append("  Name            | best-fit value| best-fit err +| best-fit err -|start value   | fit boundaries")
+        text.append("-------------------------------------------------------------------------------------------------------------------")
 
        
         for par in self.par_array:
             text.append( par.get_bestfit_description(nofields=True))
 
-        text.append("---------------------------------------------------------------------------------------------------")
+        text.append("-------------------------------------------------------------------------------------------------------------------")
         
-    
+
         if getstring==True:
             return text
         else:

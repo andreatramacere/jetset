@@ -42,6 +42,8 @@ __author__ = "Andrea Tramacere"
 import numpy as np
 from .cosmo_tools import Cosmo
 #from poly_fit import filter_interval
+from astropy.table  import  Table
+
 from .output import section_separator
 import os
 
@@ -125,31 +127,33 @@ class ObsData(object):
     .. code::
     
         from BlazarSEDFit.data_loader import ObsData
-        mySEDdata=ObsData(data_file=SED_file)
+        mySEDdata=ObsData(data_table=SED_file)
     
     that is completely equivalent to:
     
     .. code::
     
-        mySEDdata=ObsData(data_file=SED_file,col_types='x,y,dy,data_set',z=0.0308,data_scale='lin-lin')
+        mySEDdata=ObsData(data_table=SED_file,col_types='x,y,dy,data_set',z=0.0308,data_scale='lin-lin')
         
     
     
     """
     
-    def __init__(self, data_file=None,dupl_filter=False, data_set_filter=None,UL_filtering=False,UL_value=None,**keywords):
+    def __init__(self, data_table=None,dupl_filter=False, data_set_filter=None,UL_filtering=False,UL_value=None,**keywords):
         
         """
             
         """
         
         self.z=None
+        self.data=None
         self.obj_name=None
         self.restframe=None
         self.col_types=None
         self.col_nums=None
-        self.data_file=data_file
+        self.data_table=data_table
         self.data_scale=None
+
         if data_set_filter is not None:
             self.data_set_filter=data_set_filter.split(',')
         else:
@@ -160,29 +164,8 @@ class ObsData(object):
         self.UL_filtering=UL_filtering
         self.zero_error_replacment=0.2
         self.facke_error=0.2
-       
-        if self.data_file is None:
-            
-            print ("you must provide a valid path for the SED  file")
-            
-            return 
-       
-        
-      
-        
-        
-        print  (section_separator)
-        
-        print ("*** getting meta-data from file header")
 
-        print('col_types', self.col_types)
-        self.set_md_from_file(self.data_file)
-        print('col_types', self.col_types)
 
-                
-      
-        
-        print  (section_separator)
         
         
         #------------------------------
@@ -194,7 +177,7 @@ class ObsData(object):
         allowed_keywords['obj_name']=None
         allowed_keywords['restframe']=['obs','src']
         allowed_keywords['data_scale']=['lin-lin','log-log']
-        allowed_keywords['data_file']=None
+        allowed_keywords['data_table']=None
         allowed_keywords['col_types']=None
         allowed_keywords['col_nums']=None
 
@@ -221,10 +204,21 @@ class ObsData(object):
                 print ("wrong keyword=%s, not in%s "%(kw, allowed_keywords.keys()))
                 
                 raise ValueError
-        
 
         #print('col_types a', self.col_types)
-        self.set_data_cols(self.col_types,self.col_nums)
+        if self.data_table is None:
+
+            print("you must provide a valid path for the astropy Table or  an astropy Table object")
+
+            return
+        else:
+            self._load_data(self.data_table)
+
+        self.set_md()
+
+        print(section_separator)
+
+        #self.set_data_cols(self.col_types,self.col_nums)
 
         #print('col_types b', self.col_types)
        
@@ -234,7 +228,8 @@ class ObsData(object):
         self._build_data(dupl_filter=dupl_filter)
 
 
-        
+
+
     def _build_data(self,dupl_filter=False):
         """
         private method to load and build the SED data     
@@ -258,6 +253,7 @@ class ObsData(object):
        
        
         """
+
         sed_dt = [('nu_data', 'f8')]
         sed_dt.append(('dnu_data', 'f8'))
         sed_dt.append(('nuFnu_data', 'f8'))
@@ -276,36 +272,34 @@ class ObsData(object):
         sed_dt.append(('T_start', 'f8'))
         sed_dt.append(('T_stop', 'f8'))
         sed_dt.append(('data_set', 'S16'))
-        #print ('ciccio',sed_dt)
-        #_sed_dt=[]
-        #for a in sed_dt:
+        # print ('ciccio',sed_dt)
+        # _sed_dt=[]
+        # for a in sed_dt:
         #    s=(str(a[0]),str(a[1]) )
         #    _sed_dt.append(s)
-        #print('ciccio', _sed_dt)
+        # print('ciccio', _sed_dt)
 
         self.dt = np.dtype(sed_dt)
-        
-        self.data=None
-        self.data_from_file=None
 
-        
-        self._col_dict={'x':'nu_data'}
-        self._col_dict['y']='nuFnu_data'
-        self._col_dict['dx']='dnu_data'
-        self._col_dict['dy']='dnuFnu_data'
-        self._col_dict['T_start']='T_start'
-        self._col_dict['T_stop']='T_stop'
-        self._col_dict['data_set']='data_set'
+        #self.data = None
+        self.data = np.zeros(len(self.data_table), dtype=self.dt)
+
+        self._col_dict = {'x': 'nu_data'}
+        self._col_dict['y'] = 'nuFnu_data'
+        self._col_dict['dx'] = 'dnu_data'
+        self._col_dict['dy'] = 'dnuFnu_data'
+        self._col_dict['T_start'] = 'T_start'
+        self._col_dict['T_stop'] = 'T_stop'
+        self._col_dict['data_set'] = 'data_set'
         self._col_dict['UL'] = 'UL'
-        
-        self._log_col_dict={'x':'nu_data_log'}
-        self._log_col_dict['y']='nuFnu_data_log'
-        self._log_col_dict['dx']='dnu_data_log'
-        self._log_col_dict['dy']='dnuFnu_data_log'
-        self._log_col_dict['T_start']='T_start'
-        self._log_col_dict['T_stop']='T_stop'
-        self._log_col_dict['UL']='UL'
-        
+
+        self._log_col_dict = {'x': 'nu_data_log'}
+        self._log_col_dict['y'] = 'nuFnu_data_log'
+        self._log_col_dict['dx'] = 'dnu_data_log'
+        self._log_col_dict['dy'] = 'dnuFnu_data_log'
+        self._log_col_dict['T_start'] = 'T_start'
+        self._log_col_dict['T_stop'] = 'T_stop'
+        self._log_col_dict['UL'] = 'UL'
         
         if self.data_scale=='lin-lin':
             self._file_col_dict= self._col_dict
@@ -317,13 +311,21 @@ class ObsData(object):
         else:
             raise RuntimeError('data_scale not specified')
 
+        self.col_types = []
+        for n in self.data_table.colnames:
+            self.col_types.append(n)
+            #print ('-->n',self._file_col_dict,n,self._file_col_dict[n])
+            self.data[self._file_col_dict[n]]=self.data_table[n]
+
+        self.col_nums=len(self.col_types)
+
         print  (section_separator)
         
         
        
 
         print ("*** loading data ***")
-        print ("---> loading data for file=%s"%self.data_file)
+        print ("---> loading data for file=%s" % self.data_table)
         print ("---> found these col ID=%s and names=%s:"%(self.col_nums,self.col_types))
         print ("---> z=%e"%self.z)
         print ("---> restframe=%s"%self.restframe)
@@ -334,7 +336,8 @@ class ObsData(object):
         print('col_types',self.col_types)
        
         
-        self._load_data()
+
+        print("---> data len=%d" % len(self.data))
 
         #-------------------------------------------------------------------------
         # duplicate entries 
@@ -397,179 +400,22 @@ class ObsData(object):
         print  (section_separator)
     
     
-    def _load_data(self):
+    def _load_data(self,data_table):
+        if isinstance(data_table, Table):
+            self.data_table = data_table
+        else:
+            pass
+
         """
         method to load the data from the file 
         """
-        #data are loaded with the order of columns eg x,y,z=(1,0,3)
-        #hence just have to loop over columns_name and get the index
-        print (self.col_types,self.col_nums)
-        self.data_from_file=np.genfromtxt(self.data_file, usecols = self.col_nums, unpack=False, dtype=None,names=self.col_types)
-        self.data=np.zeros(self.data_from_file.size,dtype=self.dt)
-        
-        #print self._file_col_dict
-        #print self.columns_name
-        for  col_id in range(len(self.col_types)):
-            print (self._file_col_dict[self.col_types[col_id]],self.col_types[col_id])
-            self.data[self._file_col_dict[self.col_types[col_id]]]=self.data_from_file[self.col_types[col_id]]
-        
-        print ("---> data len=%d"%len(self.data))
 
+        self.data_table=Table.read(self.data_table,format='ascii.ecsv')
 
-
-    @classmethod
-    def from_ascii(cls,data_file,data_scale,col_types,col_nums=None,restframe='obs',z=None,obj_name=None,UL_value=None):
-
-        return cls(data_file=data_file,
-                   data_scale=data_scale,
-                   col_types=col_types,
-                   col_nums=col_nums,
-                   restframe=restframe,
-                   obj_name=obj_name,
-                   UL_value=UL_value,
-                   z=z)
 
 
 
         
-    def  set_data_cols(self,col_types,col_nums):
-          """
-          This method build the data columns from the columns in the data file, 
-          according to the  user supplied specifications. 
-          
-          :param col_types: (str) string describing the column data names
-          :param col_nums: (str) string describing the corresponding column data number
-          
-          
-          as parameter a  strings listing the fields separated by a comma.
-          
-          .. note::
-              **if col_nums is not provide the order of the fields in the string 
-              must have the same order of the
-              columns position in the input file, but is completely flexible**, meaning
-              that the order of the columns in the data file can be arbitrary. If you have an SED data file
-              ready, for example with the flux on the first column, and the freq on the
-              second, you have just to set 
-              
-            
-          .. code:: 
-              
-              set_data_cols('y,x')
-          
-          means that the y column is the first (i.e. number 0) and the x column is the second (i.e. number 1). 
-          This is equivalent to 
-          
-          .. code:: 
-              
-             
-              set_data_cols('x,y',col_nums=[1,0])
-          
-          and equivalent to 
-              
-          .. code:: 
-              
-            
-              set_data_cols('y,x',col_nums='0,1')
-          
-              
-          The columns allowed for the SED ascii data file  are:
-          
-          - x, freq value
-          
-          - y, flux value
-          
-          - dx, error 
-          
-          - dy, error
-          
-          - Tstart
-          
-          - Tstop
-          
-          - data_set, is a flag for a given data set. The user can flag different data_set
-            in the same ascii file, and it is possible to select which to use to fit and/or plot
-        
-          
-          **Examples**
-          
-          If your file has a structure like:
-          
-          .. code::
-             
-              # nu         flux         err           foo data_set   
-              2.299540e+09 1.340900e-14 3.910000e-16  xxx  mw-1
-              2.639697e+09 1.793088e-14 3.231099e-26  xxx  mw-1
-              4.799040e+09 2.313600e-14 2.400000e-16  xxx  mw-1
-              4.805039e+09 1.773414e-14 1.773414e-15  xxx  mw-1
-              ......
-          
-          
-            
-          .. code::
-             
-             set_data_cols('x,y,dy,data_set',col_nums='0,1,2,4') 
-             
-         
-          
-          Alternatively the  dataCols specification can be stored as a metadata
-          in the header of the SED ascii file:
-          
-          .. code::
-              
-              #col_names x,y,dy,data_set
-              #col_nums 0,1,2,4
-              # nu         flux         err           foo data_set   
-              2.299540e+09 1.340900e-14 3.910000e-16  xxx  mw-1
-              2.639697e+09 1.793088e-14 3.231099e-26  xxx  mw-1
-              4.799040e+09 2.313600e-14 2.400000e-16  xxx  mw-1
-              4.805039e+09 1.773414e-14 1.773414e-15  xxx  mw-1
-              ......
-          
-          
-          """
-          
-          
-        
-              
-          print('col_types c',col_types)
-        
-          allowed=['x','y','dx','dy','T_start','Tstart','T_stop','Tstop','data_set','DataSet','UL']
-          name_list=col_types.split(',')
-
-
-          if col_nums is not None:
-              col_list=np.array(col_nums.split(','),dtype=int)
-              if len(col_list)!=len(name_list):
-                  print ("lenght of colum name%d different from lenght of columns number "%(len(name_list),len(col_list)))
-                  
-                  raise ValueError
-          else:
-             col_list=range(len(name_list))
-              
-          
-          for i  in range(len(name_list)):
-              if name_list[i] =='Tstart':
-                  name_list[i]='T_start'
-              
-              if name_list[i] =='Tstop':
-                  name_list[i]='T_stop'
-              
-              if name_list[i] =='DataSet':
-                  name_list[i]='data_set'
-              
-              if name_list[i] not in allowed:
-                  print ('wrong column name field=',name_list[i], ' allowed values are',allowed)
-                  raise ValueError
-
-          #print('col_types d', col_types,name_list,col_list)
-          if len(name_list)>0:
-              if type(name_list[0])==str:
-                  self.col_types= name_list
-              else:
-                  self.col_types = [n.encode('ascii') for n in name_list]
-          self.col_nums=col_list
-                  
-          
 
     def _set_data_frame_and_scale(self):
         
@@ -636,46 +482,23 @@ class ObsData(object):
 
         
         
-    def set_md_from_file(self,infile_name):
-        """
-        get all the meta-data from the header of the SED data file. 
- 
-        :param: infile_name: (str) SED data file name (including the path) 
- 
-        :Returns: meta-data (z,file_name,obj_name,restframe,data_scale,dataCols):
-        """
-        
-        #looks for z
-        infile=open(infile_name,'r')
-        inlines=infile.readlines()  
-        infile.close()	
-    
-        obj_name=os.path.basename(infile_name)
+    def set_md(self):
+
+
         md_dic={}
         md_dic['z']=None
         md_dic['file_name']=None
-        md_dic['obj_name']=obj_name
+        md_dic['obj_name']=None
         md_dic['restframe']=None
         md_dic['data_scale']=None
         md_dic['col_types']=None
         md_dic['col_nums']=None
-        
-        for line in inlines:
-            line=line.strip()
-            
-            if len(line)>1:
-                tkn=line.split()
-                if len(tkn)>3 and tkn[0]=="#"   and tkn[1]=='md':
-                    
-                   
 
-                    if tkn[2] in  md_dic.keys():
-                        print ("set md %s  to %s"%(tkn[2],tkn[3]))
-                        setattr(self,tkn[2],tkn[3])
-                    else:
-                        print ("wrong keyword=%s, not in%s "%(tkn[2], md_dic.keys()))
-                            
-        print ('ciccio',self.col_types)
+        for k in md_dic.keys():
+            if k in self.data_table.meta.keys():
+                md_dic[k]=self.data_table.meta[k]
+                setattr(self, k, md_dic[k])
+
         if self.z is not None:
            self.z=float(self.z)
     
@@ -683,28 +506,14 @@ class ObsData(object):
     
     
     def filter_data_set(self,filters,exclude=False):
-        """
-        filter the data, returning all the data with
-        data_set=filter if exclude=False (default)
-        or returning all the data with
-        data_set!=filter if exclude=True 
-        
-        :param filter: name of the data_set to filter
-        :type filter: str
-        
-        """
+
         filters=filters.split(',')
-        #if self.data_set_filter!=None and self.data_set_filter!='No':
+
         if exclude==False:
             print ("---> filtering for fit data_set==",filters)
         else:
             print ("---> filtering for fit data_set!=",filters)
-        
-        #if data_set_filter is scalar
-        #then is converted to list
-        #if len(np.shape(self.data_set_filter))==0:
-            #self.data_set_filter=[self.data_set_filter]
-        #print   self.data_set_filter 
+
         
         msk=np.ones( self.data['nu_data'].size, dtype=bool)
         for filter in filters:

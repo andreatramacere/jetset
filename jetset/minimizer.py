@@ -109,7 +109,9 @@ class FitResults(object):
     
     """
     
-    def __init__(self,name,
+    def __init__(self,
+                 name,
+                 mm,
                  parameters,
                  calls,
                  mesg,
@@ -126,6 +128,7 @@ class FitResults(object):
 
         self.name=name
         self.parameters=parameters
+        self.mm=mm
         self.calls=calls
         self.mesg=mesg
         self.success=success
@@ -174,16 +177,19 @@ class FitResults(object):
         for string in pars_rep:
             out.append(string)
             
-        #for pi in range(len(self.fit_par)):
-            #print pi,covar
-        #    out.append("par %2.2d, %16s"%(pi,self.fit_par[pi].get_bestfit_description()))  
-        #out.append("-----------------------------------------------------------------------------------------")
+
         out.append("**************************************************************************************************")    
         out.append("")
         return out
         
-    
+    def _update_asymm_errors(self):
+        for pi in range(len(self.mm.fit_par_free)):
+            if  hasattr(self.mm.minimizer,'asymm_errors'):
+                self.mm.fit_par_free[pi].err_p=self.mm.minimizer.asymm_errors[pi][0]
+                self.mm.fit_par_free[pi].err_m=self.mm.minimizer.asymm_errors[pi][1]
+
     def show_report(self):
+        self.fit_report=self.get_report()
         for text in self.fit_report:
         
             print (text)
@@ -366,11 +372,9 @@ class ModelMinimizer(object):
         return self.get_fit_results(fit_Model,nu_fit_start,nu_fit_stop,fitname,loglog=loglog,silent=silent)
 
     def get_fit_results(self, fit_Model, nu_fit_start, nu_fit_stop, fitname, silent=False, loglog=False):
-        for pi in range(len(self.fit_par_free)):
-            self.fit_par_free[pi].set(val=self.minimizer.pout[pi])
-            self.fit_par_free[pi].best_fit_val = self.minimizer.pout[pi]
-            self.fit_par_free[pi].best_fit_err = self.minimizer.errors[pi]
+        self.reset_to_best_fit()
         best_fit = FitResults(fitname,
+                              self,
                               fit_Model.parameters,
                               self.minimizer.calls,
                               self.minimizer.mesg,
@@ -417,7 +421,9 @@ class ModelMinimizer(object):
             self.fit_par_free[pi].set(val=self.minimizer.pout[pi])
             self.fit_par_free[pi].best_fit_val = self.minimizer.pout[pi]
             self.fit_par_free[pi].best_fit_err = self.minimizer.errors[pi]
-
+            if  hasattr(self.minimizer,'asymm_errors'):
+                self.fit_par_free[pi].err_p=self.minimizer.asymm_errors[pi][0]
+                self.fit_par_free[pi].err_m=self.minimizer.asymm_errors[pi][1]
 
         self.fit_Model.eval()
 
@@ -438,6 +444,7 @@ class Minimizer(object):
         self._fit(max_ev)
         self._fit_stats()
         self._set_fit_errors()
+
 
 
     def _fit_stats(self):
@@ -476,7 +483,18 @@ class Minimizer(object):
             print("\r%s minim function calls=%d, chisq=%f UL part=%f" % (next(self._progress_iter),self.calls, _res_sum, -2.0*np.sum(res_UL)), end="")
 
 
-    def residuals_Fit(self,p, fit_par, nu_data, nuFnu_data, err_nuFnu_data, best_fit_SEDModel, loglog,UL,chisq=False,use_UL=False,silent=False):
+    def residuals_Fit(self,p,
+                      fit_par,
+                      nu_data,
+                      nuFnu_data,
+                      err_nuFnu_data,
+                      best_fit_SEDModel,
+                      loglog,
+                      UL,
+                      chisq=False,
+                      use_UL=False,
+                      silent=False):
+
         #hide_cursor()
         _warn=False
         for pi in range(len(fit_par)):
@@ -700,40 +718,48 @@ class MinutiMinimizer(Minimizer):
         #print ('p',self.p)
         return self.chisq_func(*self.p)
 
-    def minos_errors(self):
-        self.minuit_fun.minos()
-        self.print_param()
-        self.errors = [self.minuit_fun.merrors[k] for k in self.minuit_fun.errors.keys()]
+    def minos_errors(self,par=None):
+        if par is not None:
+            par=self.minuit_par_name_dict[par]
+        self.calls = 0
+        self.minuit_fun.minos(var=par)
+        self.minuit_fun.print_param()
+        self.asymm_errors = [(self.minuit_fun.merrors[(k,1.0)],self.minuit_fun.merrors[(k,-1.0)]) for k in self.minuit_fun.errors.keys()]
         self.model.reset_to_best_fit()
 
 
     def profile(self,par,bound=2,subtract_min=True):
+        self.calls = 0
         bound=self._set_bounds(par,bound=bound)
 
         x, y =  self.minuit_fun.profile(self.minuit_par_name_dict[par],
                                         bound=bound,
                                         subtract_min=subtract_min)
-       
+
         self.model.reset_to_best_fit()
         return x,y
 
 
     def mnprofile(self,par,bound=2,subtract_min=True):
+        self.calls = 0
         bound = self._set_bounds(par, bound=bound)
-        x, y =  self.minuit_fun.mnprofile(self.minuit_par_name_dict[par],
+        x, y,r =  self.minuit_fun.mnprofile(self.minuit_par_name_dict[par],
                                           bound=bound,
                                           subtract_min=subtract_min)
+        #print('-->r',r)
         self.model.reset_to_best_fit()
-        return x,y
+        return x,y,r
 
     def draw_mnprofile(self,par,bound=2):
+        self.calls = 0
         bound = self._set_bounds(par, bound=bound)
-        x,y=self.mnprofile(par,bound,subtract_min=True)
+        x,y,r=self.mnprofile(par,bound,subtract_min=True)
         fig,ax = self._draw_profile(x, y, par)
         self.model.reset_to_best_fit()
         return x, y, fig,ax
 
     def draw_profile(self,par,bound=2):
+        self.calls = 0
         bound = self._set_bounds(par, bound=bound)
         x, y = self.profile(par, subtract_min=True, bound=bound)
         fig,ax=self._draw_profile(x,y,par)
@@ -741,7 +767,7 @@ class MinutiMinimizer(Minimizer):
         return x,y,fig,ax
 
     def _draw_profile(self,x,y,par):
-
+        self.calls = 0
         x = np.array(x)
         y = np.array(y)
 
@@ -782,6 +808,7 @@ class MinutiMinimizer(Minimizer):
 
 
     def contour(self,par_1,par_2,bound=2,bins=20,subtract_min=True):
+        self.calls = 0
         if np.shape(bound)==():
 
             bound_1 = self._set_bounds(par_1,bound)
@@ -804,7 +831,9 @@ class MinutiMinimizer(Minimizer):
         return x,y,z
 
 
+
     def draw_contour(self,par_1,par_2,bound=2,levels=np.arange(5)):
+        self.calls = 0
         l=self.minuit_fun.errordef*levels
         x,y,z=self.contour(par_1,par_2,bound=bound)
         fig, ax = plt.subplots()
@@ -813,6 +842,7 @@ class MinutiMinimizer(Minimizer):
         ax.set_xlabel(par_1)
         ax.set_ylabel(par_2)
         self.model.reset_to_best_fit()
+        return x,y,z,fig,ax
 
     def _set_bounds(self,par,bound):
         p = self.par_dict[par]
