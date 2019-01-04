@@ -43,6 +43,8 @@ import numpy as np
 from .cosmo_tools import Cosmo
 #from poly_fit import filter_interval
 from astropy.table  import  Table
+from astropy import  units as u
+from astropy.units import cds
 
 from .output import section_separator
 import os
@@ -324,16 +326,13 @@ class ObsData(object):
         
        
 
-        print ("*** loading data ***")
-        print ("---> loading data for file=%s" % self.data_table)
-        print ("---> found these col ID=%s and names=%s:"%(self.col_nums,self.col_types))
         print ("---> z=%e"%self.z)
         print ("---> restframe=%s"%self.restframe)
         print ("---> obj_name=%s "%self.obj_name)
         print ("---> data_scale=%s "%self.data_scale)
         
 
-        print('col_types',self.col_types)
+        #print('col_types',self.col_types)
        
         
 
@@ -404,18 +403,51 @@ class ObsData(object):
         if isinstance(data_table, Table):
             self.data_table = data_table
         else:
-            pass
 
-        """
-        method to load the data from the file 
-        """
-
-        self.data_table=Table.read(self.data_table,format='ascii.ecsv')
+            self.data_table = Table.read(self.data_table, format='ascii.ecsv')
 
 
 
 
-        
+
+    @classmethod
+    def from_asdc(cls,asdc_sed_file,obj_name,z,restframe,data_scale):
+        with open(asdc_sed_file, 'r') as f:
+            lines = f.readlines()
+       # print(len(lines),type(lines),lines)
+        for l in lines[:]:
+            if l.startswith('#'):
+                lines.remove(l)
+
+        UL = np.zeros(len(lines), dtype=np.bool)
+
+        for ID, l in enumerate(lines):
+            t = l.strip().split(';')
+
+            if len(t) > 1:
+                #print(t[1])
+
+                if 'UPPER LIMIT' in t[1]:
+                    UL[ID] = True
+                    lines[ID] = t[0]
+
+        d=np.genfromtxt(lines)
+        d=np.column_stack((d,UL))
+        data_table=Table(d,names=['x','dx','y','dy','T_start','T_stop','UL'])
+        data_table['x']=data_table['x']*u.Hz
+        data_table['dx'] = data_table['dx'] * u.Hz
+        data_table['y']=data_table['y'] * (u.erg/(u.cm**2 *u.s))
+        data_table['dy'] = data_table['dy'] * (u.erg / (u.cm ** 2 * u.s))
+        data_table['T_start'] = data_table['T_start']*cds.MJD
+        data_table['T_stop'] = data_table['T_stop']*cds.MJD
+        data_table.meta['z']=z
+        data_table.meta['restframe']=restframe
+        data_table.meta['data_scale']=data_scale
+        data_table.meta['obj_name'] = obj_name
+        return data_table
+
+
+
 
     def _set_data_frame_and_scale(self):
         
