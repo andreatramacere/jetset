@@ -444,7 +444,7 @@ class ObsData(object):
         data_table.meta['restframe']=restframe
         data_table.meta['data_scale']=data_scale
         data_table.meta['obj_name'] = obj_name
-        return data_table
+        return cls(data_table=data_table)
 
 
 
