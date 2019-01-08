@@ -202,7 +202,7 @@ class ObsConstrain(object):
     
     
     
-    def constrain_SSC_EC_model(self,name=None,jet_model=None,EC_componets_list='BLR',params_grid_size=10):
+    def constrain_SSC_EC_model(self,name=None,jet_model=None,EC_componets_list=['BLR'],params_grid_size=10):
         """
         constarin SSC model paramters
         """
