@@ -348,7 +348,8 @@ class SEDShape(object):
         self.cosmo_eval=Cosmo(units='cm')
 
        
-        
+        self.BBB=None
+        self.disk=None
         self.L_host=None
         self.L_host_err=None
         
@@ -438,7 +439,7 @@ class SEDShape(object):
         if self.L_Disk is not None  :
             
             print ("---> Disk peak values")
-            print ("---> %-10s nu_p_Diks=%-13s (err=%-13s)  L_Disk=%-13s (err=%-13s) T_Disk=%-13s "%('Disk',self.nu_p_Disk,
+            print ("---> %-10s nu_p_Diks=%+13e (err=%+13e)  L_Disk=%+13e (err=%+13e) T_Disk=%+13e "%('Disk',self.nu_p_Disk,
                                                                                                            self.nu_p_Disk_err,
                                                                                                            self.L_Disk,
                                                                                                            self.L_Disk_err,
@@ -560,6 +561,12 @@ class SEDShape(object):
 
             if self.host_gal is not None:
                 plot_obj.add_model_plot(self.host_gal, label='host-gal')
+
+            if self.BBB is not None:
+                plot_obj.add_model_plot(self.BBB, label='BBB')
+
+            if self.disk is not None:
+                plot_obj.add_model_plot(self.disk, label='disk')
 
             #plot_obj.add_model_plot(self.sync_fit_model, label='sync+host, poly-fit')
             if self.IC_fit_model is not None:
@@ -765,10 +772,11 @@ class SEDShape(object):
             self.T_Disk_err=self.disk.T_Disk_err
             self.nu_p_Disk=self.disk.nu_p_Disk
             self.nu_p_Disk_err=self.disk.nu_p_Disk_err
-        
+
+
         if check_host==True :
             self.host_gal.set_host_pars(fit_model)
-            
+
         if check_BBB==True :
             self.BBB.set_BBB_pars(fit_model)
             self.L_Disk=self.BBB.nuLnu_p_BBB
@@ -777,7 +785,7 @@ class SEDShape(object):
             self.T_Disk_err=self.BBB.T_Disk_err
             self.nu_p_Disk=self.BBB.nu_p
             self.nu_p_Disk_err=self.BBB.nu_p_err
-            
+
         
         return mm,best_fit
         
