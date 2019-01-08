@@ -550,7 +550,7 @@ class ObsConstrain(object):
         
         #sets to initial values
         
-        
+        #if self.nu_p_IC_obs is not None:
         jet_model.set_IC_nu_size(IC_nu_size_initial)
         jet_model.set_seed_nu_size(nu_seed_size_initial)
         
