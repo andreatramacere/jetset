@@ -429,7 +429,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
     fprintf(fp_Energetic, "Uph_Sync =%e erg/cm^3\n", Uph_Sync(pt));
     fprintf(fp_Energetic, "Uph_Sync(Gould Corrected) =%e erg/cm^3\n", 0.75*I_nu_to_Uph(pt->nu_Sync, pt->I_nu_Sync, pt->NU_INT_STOP_Sync_SSC));
     fprintf(fp_Energetic, "Uph_BLR =%e erg/cm^3 (I_nu integral)\n", I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR));
-    fprintf(fp_Energetic, "Uph_BLR =%e erg/cm^3 (Ldisk*BulkFactor^2*tau_BLR/(c*4pi*R_B)\n", pt->L_disk * pt-> beaming_EC*pt-> beaming_EC *pt->tau_BLR /
+    fprintf(fp_Energetic, "Uph_BLR =%e erg/cm^3 (Ldisk*BulkFactor^2*tau_BLR/(c*4pi*R_B)\n", pt->L_Disk * pt-> beaming_EC*pt-> beaming_EC *pt->tau_BLR /
             ( vluce_cm*four_pi * pow(pt->R_BLR_in, 2)));
     fprintf(fp_Energetic, "Uph_DT =%e erg/cm^3\n", I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT));
     fprintf(fp_Energetic, "U_ph_Sync/U_B  %e\n",Uph_Sync(pt) / pt->UB);

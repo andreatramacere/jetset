@@ -931,11 +931,11 @@
 //        // Lum Disk
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->L_disk = pow(10.0, dato);
-//            printf("Lum Diks %e\n", pt_spec->L_disk);
+//            pt_spec->L_Disk = pow(10.0, dato);
+//            printf("Lum Diks %e\n", pt_spec->L_Disk);
 //        }
 //        if (out_log == 1) {
-//            fprintf(fp_log, "48 \t\t\t log10(L_disk)\n");
+//            fprintf(fp_log, "48 \t\t\t log10(L_Disk)\n");
 //        }
 //
 //        // accr eff
@@ -963,11 +963,11 @@
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
 //            //pt_spec->T_disk=dato;
-//            pt_spec->T_disk_max = dato;
-//            printf("T disk max%e (K)\n", pt_spec->T_disk_max);
+//            pt_spec->T_Disk = dato;
+//            printf("T disk max%e (K)\n", pt_spec->T_Disk);
 //        }
 //        if (out_log == 1) {
-//            fprintf(fp_log, "1e5 \t\t\t T_disk_max(K)(T_max_for_MultiBB)\n");
+//            fprintf(fp_log, "1e5 \t\t\t T_Disk(K)(T_max_for_MultiBB)\n");
 //        }
 //
 //        // Dist disk BLR

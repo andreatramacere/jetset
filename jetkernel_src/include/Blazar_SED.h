@@ -259,6 +259,7 @@ struct spettro {
 
     //Const
     int do_EC_Disk,do_EC_BLR,do_EC_DT,do_EC_Star,do_EC_CMB,do_EC_CMB_stat;
+    int do_Disk,do_DT;
     double nu_planck_min_factor;
     double nu_planck_max_factor;
     double mono_planck_min_factor;
@@ -350,8 +351,8 @@ struct spettro {
 
     //--- DISK
     //-PARAMTERS
-    double L_disk;
-    double T_disk_max;
+    double L_Disk;
+    double T_Disk;
     double accr_eff;
     double R_inner_Sw, R_ext_Sw;
     //

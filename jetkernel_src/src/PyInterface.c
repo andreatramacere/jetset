@@ -61,12 +61,12 @@ void show_blob(struct spettro pt ) {
     printf("disk type =%s\n", pt.disk_type);
     printf("nu_start_EC_BLR\n", pt.nu_start_EC_BLR);
     printf("nu_stop_EC_BLR\n", pt.nu_stop_EC_BLR);
-    printf("Lum Diks %e\n", pt.L_disk);
+    printf("Lum Diks %e\n", pt.L_Disk);
     printf("tau BLR %e\n", pt.tau_BLR);
     printf("R_inner_Sw %e (Rs)\n", pt.R_inner_Sw);
     printf("R_ext_Sw %e (Rs)\n", pt.R_ext_Sw);
     printf("accr eff %e \n", pt.accr_eff);
-    printf("T disk max (T max for MultiBB) %e\n", pt.T_disk_max);
+    printf("T disk max (T max for MultiBB) %e\n", pt.T_Disk);
     printf("dist disk BLR (cm))%e\n", pt.R_BLR_in);
     printf("test array=%e\n", pt.nuF_nu_SSC_obs[0]);
     printf("nu_start_EC_DT\n", pt.nu_start_EC_DT);
@@ -224,6 +224,8 @@ struct spettro MakeBlob() {
     spettro_root.do_EC_CMB=0;
     spettro_root.do_EC_CMB_stat=0;
     spettro_root.do_EC_Star=0;
+    spettro_root.do_Disk=0;
+    spettro_root.do_DT=0;
 
     spettro_root.nu_planck_min_factor=1E-4;
     spettro_root.nu_planck_max_factor=1E2;
@@ -241,11 +243,11 @@ struct spettro MakeBlob() {
     spettro_root.nu_stop_EC_CMB = 1e30;
 
 
-    spettro_root.L_disk = 1e47;
+    spettro_root.L_Disk = 1e47;
     spettro_root.tau_BLR = 1e-1;
     spettro_root.R_inner_Sw = 3.0;
     spettro_root.R_ext_Sw = 500;
-    spettro_root.T_disk_max = 1e5;
+    spettro_root.T_Disk = 1e5;
     spettro_root.T_CMB_0=2.725;
     spettro_root.accr_eff = 0.1;
     spettro_root.R_BLR_in = 1e18;
@@ -546,7 +548,8 @@ void Run_SED(struct spettro *pt_base){
 	if (pt_base->do_IC) {
 		if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1
 				|| pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1
-				|| pt_base->do_EC_CMB == 1 || pt_base->do_EC_CMB_stat) {
+				|| pt_base->do_EC_CMB == 1 || pt_base->do_EC_CMB_stat ==1
+				|| pt_base->do_Disk==1 || pt_base->do_DT==1) {
 			spectra_External_Fields(1, pt_base);
 			if (pt_base->do_EC_Star == 1) {
 				if (pt_base->verbose) {

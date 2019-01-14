@@ -24,9 +24,9 @@
 void spectra_External_Fields(int Num_file, struct spettro *pt) {
 
     //==================================================================
-	if (pt->verbose){
-		printf("-----------  Eval. seed photon fields for  EC  ----------- \n");
-	}
+	//if (pt->verbose){
+	//printf("-----------  Eval. seed photon fields for  EC  ----------- \n");
+	//}
 
 
     // ====================================================
@@ -44,13 +44,13 @@ void spectra_External_Fields(int Num_file, struct spettro *pt) {
     if (pt->do_EC_Star==1){
     	Build_I_nu_Star(pt);
     }
-    if (pt->do_EC_Disk==1 || pt->do_EC_BLR==1){
+    if (pt->do_EC_Disk==1 || pt->do_EC_BLR==1 || pt->do_Disk==1){
     	Build_I_nu_Disk(pt);
     }
     if (pt->do_EC_BLR==1){
 		Build_I_nu_BLR(pt);
 	}
-    if (pt->do_EC_DT==1){
+    if (pt->do_EC_DT==1 || pt->do_DT==1){
     	Build_I_nu_DT(pt);
     }
     if (pt->do_EC_CMB==1){
@@ -435,13 +435,13 @@ void Build_I_nu_Disk(struct spettro *pt){
 
 	if (strcmp(pt->disk_type, "BB") == 0) {
 		pt->disk = 1;
-		nu_peak_BB=eval_nu_peak_Disk(pt->T_disk_max);
+		nu_peak_BB=eval_nu_peak_Disk(pt->T_Disk);
 		nu_start_disk_RF = nu_peak_BB*pt->nu_planck_min_factor;
 		nu_stop_disk_RF  = nu_peak_BB*pt->nu_planck_max_factor;
 	}
 	else if (strcmp(pt->disk_type, "MultiBB") == 0) {
 		pt->disk = 2;
-		nu_peak_BB=eval_nu_peak_Disk(pt->T_disk_max);
+		nu_peak_BB=eval_nu_peak_Disk(pt->T_Disk);
 		nu_start_disk_RF = nu_peak_BB*pt->nu_planck_min_factor;
 		nu_stop_disk_RF  = nu_peak_BB*pt->nu_planck_max_factor;
 		double (*pf) (struct spettro *, double x);
@@ -453,7 +453,7 @@ void Build_I_nu_Disk(struct spettro *pt){
 	 }
 	else if (strcmp(pt->disk_type, "Mono") == 0) {
 			pt->disk = 3;
-			nu_peak_BB=eval_nu_peak_Disk(pt->T_disk_max);
+			nu_peak_BB=eval_nu_peak_Disk(pt->T_Disk);
 			nu_start_disk_RF = nu_peak_BB*pt->mono_planck_min_factor;
 			nu_stop_disk_RF  = nu_peak_BB*pt->mono_planck_max_factor;
 	}
@@ -544,36 +544,36 @@ void set_Disk(struct spettro *pt){
 
 	double M_BH,accr_rate,L_Edd,accr_Edd;
 
-	pt->T_disk_max_4 = pt->T_disk_max * pt->T_disk_max * pt->T_disk_max * pt->T_disk_max;
+	pt->T_disk_max_4 = pt->T_Disk * pt->T_Disk * pt->T_Disk * pt->T_Disk;
 
-	pt->R_Sw = eval_R_Sw(pt->L_disk,pt->accr_eff, pt->T_disk_max_4);
+	pt->R_Sw = eval_R_Sw(pt->L_Disk,pt->accr_eff, pt->T_disk_max_4);
 
 	//R_inner
 	pt->R_inner = pt->R_inner_Sw * pt->R_Sw;
 	//R_ext
 	pt->R_ext = pt->R_ext_Sw * pt->R_Sw;
-	pt->Cost_disk_Mulit_BB = 3*pt->R_Sw * pt->L_disk / (16 * pi * sigma_steph_boltz * pt->accr_eff);
+	pt->Cost_disk_Mulit_BB = 3*pt->R_Sw * pt->L_Disk / (16 * pi * sigma_steph_boltz * pt->accr_eff);
 	if (pt->verbose){
-		printf("T_max = %e (K)\n",pt->T_disk_max);
+		printf("T_max = %e (K)\n",pt->T_Disk);
 		// energy corresponding to Tmax
-		printf("E_max = %e (eV)\n",pt->T_disk_max*K_boltz*erg_to_eV);
+		printf("E_max = %e (eV)\n",pt->T_Disk*K_boltz*erg_to_eV);
 		// frequency corresponding to Tmax
-		printf("nu_max = %e (Hz)\n",pt->T_disk_max*K_boltz/HPLANCK);
+		printf("nu_max = %e (Hz)\n",pt->T_Disk*K_boltz/HPLANCK);
 		//Peak of the BB spectrum
-		nu_peak_BB=eval_nu_peak_Disk(pt->T_disk_max);
+		nu_peak_BB=eval_nu_peak_Disk(pt->T_Disk);
 		printf("nu_peak for a single BB = %e (Hz)\n",nu_peak_BB);
 		printf("schwarzschild radius=%e\n", pt->R_Sw);
 		printf("R_ext =%e (cm)\n", pt->R_ext);
 		printf("R_inner =%e (cm)\n", pt->R_inner);
 		M_BH=eval_M_BH(pt->R_Sw);
 		printf("Black hole mass = %e (m_sun)\n",M_BH/m_sun );
-		accr_rate=eval_accr_rate(pt->L_disk,pt->accr_eff);
+		accr_rate=eval_accr_rate(pt->L_Disk,pt->accr_eff);
 		printf("Accr. rate = %e (g/s)\n",accr_rate);
 		printf("Accr. rate = %e (M_sun/year)\n",accr_rate*86400.*365./m_sun);
 		L_Edd=eval_L_Edd(M_BH);
 		printf("L_Edd = %e (erg/s)\n",L_Edd);
-		printf("L_disk = %e (erg/s)\n", pt->L_disk);
-		printf("L_diks/L_edd = %e\n",pt->L_disk/L_Edd);
+		printf("L_Disk = %e (erg/s)\n", pt->L_Disk);
+		printf("L_diks/L_edd = %e\n",pt->L_Disk/L_Edd);
 		accr_Edd=eval_accr_Edd(L_Edd,pt->accr_eff);
 
 
@@ -590,7 +590,7 @@ void set_Disk(struct spettro *pt){
 double Disk_Spectrum(struct spettro *pt, double nu_Disk_disk_RF){
 
 	if (pt->disk == 1) {
-		return f_planck_norm(pt->T_disk_max, nu_Disk_disk_RF);
+		return f_planck_norm(pt->T_Disk, nu_Disk_disk_RF);
 	}
 	else if (pt->disk == 2) {
 		double (*pf) (struct spettro *, double x);
@@ -599,7 +599,7 @@ double Disk_Spectrum(struct spettro *pt, double nu_Disk_disk_RF){
 		return integrale_trap_log_struct(pf, pt, pt->R_inner * 1.01, pt->R_ext, 100.0);
 	}
 	else if (pt->disk==3){
-		return eval_nu_peak_Disk(pt->T_disk_max)*(pt->mono_planck_max_factor-pt->mono_planck_min_factor);
+		return eval_nu_peak_Disk(pt->T_Disk)*(pt->mono_planck_max_factor-pt->mono_planck_min_factor);
 	}
 }
 
@@ -607,10 +607,10 @@ double eval_I_nu_Disk_disk_RF(struct spettro *pt,double nu_Disk_disk_RF){
 	double I;
 
 	if (pt->disk == 2) {
-		I = pt->L_disk *Disk_Spectrum(pt, nu_Disk_disk_RF)*pt->Disk_geom_factor*pt->Cost_Norm_disk_Mulit_BB;
+		I = pt->L_Disk *Disk_Spectrum(pt, nu_Disk_disk_RF)*pt->Disk_geom_factor*pt->Cost_Norm_disk_Mulit_BB;
 	}
 	else{
-		I = pt->L_disk *Disk_Spectrum(pt, nu_Disk_disk_RF)*pt->Disk_geom_factor;
+		I = pt->L_Disk *Disk_Spectrum(pt, nu_Disk_disk_RF)*pt->Disk_geom_factor;
 	}
 	return I;
 }
@@ -645,10 +645,10 @@ double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_blob_RF){
 
 double eval_Disk_L_nu(struct spettro *pt, double nu_Disk_disk_RF){
 	if (pt->disk == 2) {
-		return  pt->L_disk *Disk_Spectrum(pt, nu_Disk_disk_RF)*pt->Cost_Norm_disk_Mulit_BB;
+		return  pt->L_Disk *Disk_Spectrum(pt, nu_Disk_disk_RF)*pt->Cost_Norm_disk_Mulit_BB;
 	}
 	else{
-		return  pt->L_disk *Disk_Spectrum(pt, nu_Disk_disk_RF);
+		return  pt->L_Disk *Disk_Spectrum(pt, nu_Disk_disk_RF);
 	}
 }
 
@@ -700,7 +700,7 @@ void Build_I_nu_BLR(struct spettro *pt){
 	set_BLR_geometry(pt);
 
 	if (pt->tau_BLR>0.9){
-		printf ("!!! Waring, the fraction of L_disk reaching DT is (1-tau_BLR)\n");
+		printf ("!!! Waring, the fraction of L_Disk reaching DT is (1-tau_BLR)\n");
 		printf ("!!! if tau_BLR=1.0 no DT photons will be generated\n");
 
 	}
@@ -930,7 +930,7 @@ void Build_I_nu_DT(struct spettro *pt){
 	set_DT_geometry(pt);
 
 	if (pt->tau_BLR>0.9){
-			printf ("!!! Waring, the fraction of L_disk reaching DT is (1-tau_BLR)\n");
+			printf ("!!! Waring, the fraction of L_Disk reaching DT is (1-tau_BLR)\n");
 			printf ("!!! if tau_BLR=1.0 no DT photons will be generated\n");
 
 	}
@@ -1025,7 +1025,7 @@ void Build_I_nu_DT(struct spettro *pt){
 // Torus Spectral Functions
 //========================
 double eval_DT_L_nu(struct spettro *pt, double nu_torus){
-	return  pt->L_disk*pt->tau_DT*f_planck_norm(pt->T_DT, nu_torus);
+	return  pt->L_Disk*pt->tau_DT*f_planck_norm(pt->T_DT, nu_torus);
 }
 
 double eval_J_nu_DT_disk_RF(struct spettro *pt,double nu_torus_disk_RF){
@@ -1040,12 +1040,12 @@ double eval_J_nu_DT_disk_RF(struct spettro *pt,double nu_torus_disk_RF){
 
 double integrand_J_nu_DT_disk_RF(struct spettro *pt,double mu){
 	if (pt->R_H<pt->R_DT){
-		return one_by_four_pi*pt->L_disk * pt->tau_DT*(1-pt->tau_BLR)*
+		return one_by_four_pi*pt->L_Disk * pt->tau_DT*(1-pt->tau_BLR)*
 				f_planck_norm(pt->T_DT, pt->nu_disk_RF)/
 				pt->DT_Volume* l_TORUS(pt,  mu);
 	}
 	else {
-		return one_by_four_pi*pt->L_disk * pt->tau_DT*
+		return one_by_four_pi*pt->L_Disk * pt->tau_DT*
 				f_planck_norm(pt->T_DT, pt->nu_disk_RF)/
 						pt->DT_Volume* l_TORUS(pt,  mu);
 	}
@@ -1130,9 +1130,9 @@ void set_DT_geometry(struct spettro * pt){
 //========================
 // Accretion Power Physical Functions
 //========================
-double eval_R_Sw(double L_disk, double accr_eff, double T_disk_max_4){
+double eval_R_Sw(double L_Disk, double accr_eff, double T_disk_max_4){
 	double a;
-	a= pow(0.140836,4) * L_disk / (pi * sigma_steph_boltz * accr_eff * T_disk_max_4);
+	a= pow(0.140836,4) * L_Disk / (pi * sigma_steph_boltz * accr_eff * T_disk_max_4);
 	return pow(a, 0.5);
 }
 
@@ -1141,8 +1141,8 @@ double eval_M_BH(double R_Sw){
 }
 
 
-double eval_accr_rate(double L_disk,double accr_eff){
- return L_disk/(vluce_cm * vluce_cm*accr_eff);
+double eval_accr_rate(double L_Disk,double accr_eff){
+ return L_Disk/(vluce_cm * vluce_cm*accr_eff);
 }
 
 
