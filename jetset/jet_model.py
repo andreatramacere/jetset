@@ -710,7 +710,7 @@ class Jet(Model):
 
 
         self.flux_plot_lim=1E-30
-        self.set_emiss_lim(1E-30)
+        self.set_emiss_lim(1E-120)
 
 
     def build_blob(self,verbose=None):
@@ -1648,18 +1648,18 @@ class Jet(Model):
             msk_nan+=np.isnan(y)
 
             x[msk_nan]=0.
-            y[msk_nan]=self.flux_plot_lim
+            y[msk_nan]=self.get_emiss_lim()
 
             msk=y<self.get_emiss_lim()
 
 
-            y[msk]=self.flux_plot_lim
+            y[msk]=self.get_emiss_lim()
 
 
 
             if log_log==True:
                 msk = y <= 0.
-                y[msk] = self.flux_plot_lim
+                y[msk] = self.get_emiss_lim()
 
                 #x=x[msk]
                 #    y=y[msk]
