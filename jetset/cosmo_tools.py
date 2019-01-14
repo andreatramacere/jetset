@@ -121,7 +121,7 @@ class Cosmo(object):
         print (section_separator)
         print ("Cosmological set-up")
         print ("units= ",self._units)
-        print ("H0 = ",self._H0)
+        print ("H0 = ",self._H_0)
         print ("Omega matter =",self._Omega_m)
         print ("Omega lambda = ",self._Omega_l)
         print ("Omega k = ",self._Omega_k)

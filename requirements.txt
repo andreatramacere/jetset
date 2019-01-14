@@ -1,6 +1,4 @@
-distutils
 setuptools
-shutil
 scipy
 numpy
 astropy
@@ -9,3 +7,4 @@ swig
 future
 iminuit
 corner
+six

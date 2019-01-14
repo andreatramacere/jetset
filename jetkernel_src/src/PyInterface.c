@@ -283,11 +283,7 @@ void set_seed_freq_start(struct spettro *pt_base){
     pt_base->nu_stop_Sync = 1e20;
     pt_base->nu_start_SSC = 1e14;
     pt_base->nu_stop_SSC = 1e30;
-    pt_base->nu_start_grid = 1e6;
-    pt_base->nu_stop_grid = 1e30;
-
-
-
+    
 
     pt_base->nu_start_EC_Disk = 1e13;
     pt_base->nu_stop_EC_Disk = 1e30;
@@ -296,7 +292,6 @@ void set_seed_freq_start(struct spettro *pt_base){
     pt_base->nu_start_EC_DT = 1e13;
     pt_base->nu_start_EC_CMB = 1e13;
     pt_base->nu_stop_EC_CMB = 1e30;
-
 }
 
 

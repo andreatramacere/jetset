@@ -178,8 +178,8 @@ class FitModel(Model):
             #print ('comp_label',comp_label)
             plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim)
 
-            if hasattr(mc,'spectral_components'):
-                for c in mc.spectral_components:
+            if hasattr(mc,'spectral_components_list'):
+                for c in mc.spectral_components_list:
 
                     comp_label = c.name
                     if comp_label!='Sum':

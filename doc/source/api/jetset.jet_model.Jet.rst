@@ -12,12 +12,12 @@ Jet
 
       ~Jet.add_EC_component
       ~Jet.add_par_from_dic
-      ~Jet.add_spectral_component
+      ~Jet._add_spectral_component
       ~Jet.debug_SSC
       ~Jet.debug_synch
       ~Jet.del_EC_component
       ~Jet.del_par_from_dic
-      ~Jet.del_spectral_component
+      ~Jet._del_spectral_component
       ~Jet.eval
       ~Jet.get_DL_cm
       ~Jet.get_IC_mode
@@ -65,12 +65,12 @@ Jet
 
    .. automethod:: add_EC_component
    .. automethod:: add_par_from_dic
-   .. automethod:: add_spectral_component
+   .. automethod:: _add_spectral_component
    .. automethod:: debug_SSC
    .. automethod:: debug_synch
    .. automethod:: del_EC_component
    .. automethod:: del_par_from_dic
-   .. automethod:: del_spectral_component
+   .. automethod:: _del_spectral_component
    .. automethod:: eval
    .. automethod:: get_DL_cm
    .. automethod:: get_IC_mode
