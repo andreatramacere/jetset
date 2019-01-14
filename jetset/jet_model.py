@@ -710,7 +710,7 @@ class Jet(Model):
 
 
         self.flux_plot_lim=1E-30
-
+        self.set_emiss_lim(1E-30)
 
 
     def build_blob(self,verbose=None):
@@ -1326,11 +1326,11 @@ class Jet(Model):
     def get_IC_mode(self):
         return self._blob.do_IC
 
-    #def set_sync_mode(self,val):
-    #    self._blob.do_Sync=val
+    def set_emiss_lim(self,val):
+        self._blob.emiss_lim=val
 
-    #def get_sync_mode(self):
-    #    return self._blob.do_Sync
+    def get_emiss_lim(self):
+        return self._blob.emiss_lim
 
     def set_IC_nu_size(self,val):
         self._blob.nu_IC_size=val
@@ -1442,23 +1442,33 @@ class Jet(Model):
         shows all the paramters in the model
 
         """
+        print("")
         print("-------------------------------------------------------------------------------------------------------------------")
 
-        print ("jet model:")
-        print ('')
-        print("electron distribution type = %s  " % (self._electron_distribution_name))
-        print ('')
-        print ("electron grid size: ",self.get_gamma_grid_size())
-        print ("seed photons grid size: ", self.get_seed_nu_size())
-        print ("seed IC grid size: ", self.get_IC_nu_size())
-        print ('')
-        print('spectral components:')
+        print ("jet model description")
+        print(
+            "-------------------------------------------------------------------------------------------------------------------")
+        print("name: %s  " % (self.name))
+        print('')
+        print('electron distribution:')
+        print(" type: %s  " % (self._electron_distribution_name))
+        print (" electron energy grid size: ",self.get_gamma_grid_size())
+        print('')
+        print('radiative fields:')
+        print (" seed photons grid size: ", self.get_seed_nu_size())
+        print (" IC emission grid size: ", self.get_IC_nu_size())
+        print (' source emissivity lower bound :  %e' % self._blob.emiss_lim)
+        print(' spectral components:')
         for _s in self.spectral_components_list:
-            print("  name:", _s.name, ', state:', _s.state)
+            print("   name:%s,"%_s.name, 'state:', _s.state)
         print ('')
-        print ('SED nu grid size :%d'%self.get_nu_grid_size())
-        print ('SED nu mix (Hz): %e'%self.get_nu_min_grid())
-        print ('SED nu max (Hz): %e'%self.get_nu_max_grid())
+        print ('SED info:')
+        print (' nu grid size :%d'%self.get_nu_grid_size())
+        print (' nu mix (Hz): %e'%self.get_nu_min_grid())
+        print (' nu max (Hz): %e'%self.get_nu_max_grid())
+        print('')
+        print('flux plot lower bound   :  %e' % self.flux_plot_lim)
+        print('')
 
         self.show_pars()
 
@@ -1640,7 +1650,7 @@ class Jet(Model):
             x[msk_nan]=0.
             y[msk_nan]=self.flux_plot_lim
 
-            msk=y<self.flux_plot_lim
+            msk=y<self.get_emiss_lim()
 
 
             y[msk]=self.flux_plot_lim

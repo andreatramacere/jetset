@@ -283,7 +283,7 @@ void set_seed_freq_start(struct spettro *pt_base){
     pt_base->nu_stop_Sync = 1e20;
     pt_base->nu_start_SSC = 1e14;
     pt_base->nu_stop_SSC = 1e30;
-    
+
 
     pt_base->nu_start_EC_Disk = 1e13;
     pt_base->nu_stop_EC_Disk = 1e30;
@@ -306,7 +306,7 @@ void Init(struct spettro *pt_base) {
     pt_base->SYSPATH=getenv("BLAZARSED");
     set_seed_freq_start(pt_base);
 
-    pt_base->emiss_lim=1.0E-120;
+    //pt_base->emiss_lim=1.0E-120;
 
     //sprintf(ENV,'%s',getenv("BLAZARSED"));
     //return;
