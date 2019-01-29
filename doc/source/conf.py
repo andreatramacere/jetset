@@ -143,18 +143,60 @@ pygments_style = 'sphinx'
 
 html_static_path = ['_static']
 html_logo = "logo_small_transp_black.png"
-import sphinx_bootstrap_theme
 
 #theme = 'basicstrap'
 theme='bootstrap'
 #theme='sphinx_rtd_theme'
-
-if theme=='sphinx_rtd_theme':
-    html_theme = "sphinx_rtd_theme"
+#theme='sphinx_bootstrap_theme'
+#theme='guzzle_sphinx_theme'
+#if theme=='sphinx_rtd_theme':
+#    html_theme = "sphinx_rtd_theme"
 
 html_theme=theme
 #html_logo = "logo_small_transp.png"
 #html_s
+
+if theme=='guzzle_sphinx_theme':
+    import guzzle_sphinx_theme
+
+    html_theme_path = guzzle_sphinx_theme.html_theme_path()
+    html_theme = 'guzzle_sphinx_theme'
+
+    # Register the theme as an extension to generate a sitemap.xml
+    extensions.append("guzzle_sphinx_theme")
+
+    # Guzzle theme options (see theme.conf for more information)
+    html_theme_options = {
+
+        # Set the path to a special layout to include for the homepage
+        "index_template": "special_index.html",
+
+        # Set the name of the project to appear in the left sidebar.
+        "project_nav_name": "Project Name",
+
+        # Set your Disqus short name to enable comments
+        "disqus_comments_shortname": "my_disqus_comments_short_name",
+
+        # Set you GA account ID to enable tracking
+        "google_analytics_account": "my_ga_account",
+
+        # Path to a touch icon
+        "touch_icon": "",
+
+        # Specify a base_url used to generate sitemap.xml links. If not
+        # specified, then no sitemap will be built.
+        "base_url": "",
+
+        # Allow a separate homepage from the master_doc
+        "homepage": "index",
+
+        # Allow the project link to be overriden to a custom URL.
+        "projectlink": "http://myproject.url",
+    }
+
+
+
+
 if theme=='sphinx_rtd_theme':
     html_theme_options = {
         #'canonical_url': '',
@@ -175,10 +217,12 @@ if theme=='sphinx_rtd_theme':
 if theme=='bootstrap':
     html_logo = "logo_small_transp.png"
 
-    html_sidebars = {
-        '**': ['localtoc.html'],
-    }
-    #html_sidebars = {'**': ['my_side_bar.html', 'searchbox.html']}
+    #html_sidebars = {'**': ['localtoc.html', 'sourcelink.html', 'searchbox.html']}
+
+    #html_sidebars = {
+    #    '**': ['localtoc.html'],
+    #}
+    html_sidebars = {'**': ['my_side_bar.html']}
 
     html_logo = "logo_small_transp.png"
     html_theme = 'bootstrap'
@@ -263,7 +307,7 @@ if theme=='better':
 
 if theme=='basicstrap':
     html_theme_options = {
-        'nosidebar': True,
+        'nosidebar': False,
     }
 
 if theme=='astropy':

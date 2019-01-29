@@ -741,6 +741,18 @@ class MinutiMinimizer(Minimizer):
 
 
     def mnprofile(self,par,bound=2,subtract_min=True):
+        """
+
+        Parameters
+        ----------
+        par
+        bound
+        subtract_min
+
+        Returns
+        -------
+
+        """
         self.calls = 0
         bound = self._set_bounds(par, bound=bound)
         x, y,r =  self.minuit_fun.mnprofile(self.minuit_par_name_dict[par],
@@ -750,7 +762,20 @@ class MinutiMinimizer(Minimizer):
         self.model.reset_to_best_fit()
         return x,y,r
 
+
+
     def draw_mnprofile(self,par,bound=2):
+        """
+
+        Parameters
+        ----------
+        par
+        bound
+
+        Returns
+        -------
+
+        """
         self.calls = 0
         bound = self._set_bounds(par, bound=bound)
         x,y,r=self.mnprofile(par,bound,subtract_min=True)

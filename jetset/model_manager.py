@@ -71,7 +71,7 @@ class FitModel(Model):
  
     This class creates an interface to handle  a fit Model. The relevant class members are 
     
-        - :class:`.SED` object storing the SED data points  
+        - :class:`.SED` object storing the SED data points
         - `model_pars`, a :class:`.par_array_builder` object returned by the :class:`.SSC_param` constructor 
         - :class:`.jet_builder` object 
     
@@ -239,11 +239,14 @@ class FitModel(Model):
         """
         
         self.parameters.show_pars()
-    
 
+    def show_model(self):
+        for c in self.components:
+            c.show_model()
 
     def freeze(self,par_name):
         self.set(par_name,'frozen')
+
 
     def free(self,par_name):
         self.set(par_name,'free')
@@ -394,61 +397,5 @@ class FitModel(Model):
             return None
 
 
-
-
-# #!! aggiornare con i buoundaries di jet_paramter   
-# def set_param_rage(par_name,par_val):
-#     
-#     print "setting range for", par_name
-#     
-#     if par_name=='z_cosm':
-#         val_min=par_val*0.8
-#         val_max=par_val*1.2
-#     
-#     if par_name=='R':
-#         val_min=par_val/10
-#         val_max=par_val*2
-# 
-#     if par_name=='N':
-#         val_min=par_val/100
-#         val_max=par_val*100
-#     
-#     if par_name=='beam_obj':
-#         val_min=par_val-5
-#         if val_min<1.0:
-#             val_min=1.0
-#             
-#         val_max=par_val+5
-#         
-#     if par_name=='B':
-#         val_min=par_val/2
-#         val_max=par_val*2
-# 
-#     if par_name=='gmin':
-#         val_min=par_val/10
-#         if val_min<1.0:
-#             val_min=1.0
-#             
-#         val_max=par_val*10
-#     
-#     if par_name=='gmax':
-#         val_min=par_val/10
-#         val_max=par_val*10
-#     
-#     if par_name in  par_name in Model_dic.s_dic.values() or par_name in Model_dic.s1_dic.values():
-#         val_min=par_val*0.8
-#         val_max=par_val*1.2
-#     
-#     if par_name in Model_dic.r_dic.values():
-#         val_min=par_val*0.5
-#         val_max=par_val*1.5
-#     
-#     if par_name in Model_dic.gamma_cut_dic.values() or par_name in Model_dic.gamma_3p_dic.values() :
-#         val_min=par_val*0.1
-#         val_max=par_val*10
-#     
-#     return val_min,val_max
-#     
-# 
 
 

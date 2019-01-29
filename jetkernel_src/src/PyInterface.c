@@ -196,6 +196,7 @@ struct spettro MakeBlob() {
     spettro_root.Norm_distr_L_e_Sync=-1.0;
     spettro_root.Distr_e_done = 0;
     sprintf(spettro_root.DISTR, "lp");
+    spettro_root.grid_bounded_to_gamma=1;
     spettro_root.p = 2.0;
     spettro_root.p_1 = 3.0;
     spettro_root.gamma_break = 1.0e4;
@@ -269,6 +270,7 @@ struct spettro MakeBlob() {
 
     spettro_root.Ne_custom=NULL;
     spettro_root.gamma_e_custom=NULL;
+
 
 //    build_photons(&spettro_root);
     return spettro_root;

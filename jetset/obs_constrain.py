@@ -611,7 +611,7 @@ def check_gamma_tansp(jet,beaming_val,nu_IC_data,rest_frame):
 
     IC_initial=jet.get_IC_mode()
 
-    jet.set_IC_mode(0)
+    jet.set_IC_mode('off')
     
     
     #nu_IC_blob=convert_nu_to_blob(nu_IC_data,rest_frame,blob.beam_obj,blob.z_cosm)
@@ -1012,7 +1012,7 @@ def rescale_Ne(jet,Lp_S,rest_frame):
     
     IC_initial=jet.get_IC_mode()
 
-    jet.set_IC_mode(0)
+    jet.set_IC_mode('off')
     
     jet.set_flag('constr_rescale_Ne')
 

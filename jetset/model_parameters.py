@@ -154,8 +154,8 @@ class ModelParameter(object):
 
         for kw in self.allowed_keywords.keys():
             if kw == 'val':
-                self.val = keywords[kw]
-            if kw == 'log':
+                pass
+            elif kw == 'log':
                 pass
             else:
                 setattr(self,kw,self.allowed_keywords[kw])
@@ -184,7 +184,31 @@ class ModelParameter(object):
 
     @val.setter
     def val(self,val):
-        self._val.val=val
+        self.set(val=val)
+
+    @property
+    def fit_range(self):
+
+        return [self.fit_range_min,self.fit_range_max]
+
+    @fit_range.setter
+    def fit_range(self, fit_range=None):
+        if fit_range is None:
+            fit_range=[None,None]
+        if isinstance(fit_range,tuple):
+            pass
+        elif isinstance(fit_range,list):
+            pass
+        else:
+            raise RuntimeError('fit_range bust me list or tuple with length=2')
+        if len(fit_range)!=2:
+            raise RuntimeError('fit_range bust me list or tuple with length=2')
+
+        #self._fit_range = fit_range
+        self.fit_range_min=fit_range[0]
+        self.fit_range_max=fit_range[1]
+
+
 
     def set(self, *args, **keywords):
         """
@@ -201,11 +225,12 @@ class ModelParameter(object):
             
             if kw in  self.allowed_keywords.keys() :
                 if kw == 'val':
-                    self.val = keywords[kw]
-                if kw == 'log':
-                    pass
+                    self._val.val = keywords[kw]
                 else:
-                    setattr(self,kw,keywords[kw])
+                    if kw == 'log':
+                        pass
+                    else:
+                        setattr(self,kw,keywords[kw])
 
                     
             else:
@@ -414,19 +439,41 @@ class ModelParameterArray(object):
         
         self.par_array=[]
         self.all_frozen=False
-        
-            
+
+        self.properties={}
+
     def add_par(self,par):
         """
         adds a new :class:`ModelParameter` object  to the `par_array`
         """
+        try:
+            assert (isinstance(par,ModelParameter))
+        except:
+            raise RuntimeError('parameter is not an istance of',type(ModelParameter))
+
+        try:
+            assert (par.name not in [p.name for p in self.par_array])
+        except:
+            raise RuntimeError('parameter name:',par.name,'already assigned')
+
         self.par_array.append(par)
-    
+
+        setattr(self,par.name, par)
+        self.properties[par.name]=par
+
+    def __setattr__(self, name, value):
+        if "properties" in self.__dict__ and name in self.properties:
+            raise AttributeError('this member is protected, use del_par,add_par, to add/remove, and set() to set values or .val attribute')
+        else:
+            self.__dict__[name] = value
+
+
     def del_par(self,par):
         
         self.par_array.remove(par)
-        
-    
+        delattr(self,par.name)
+        self.properties.pop(par.name)
+
     def get_par_by_name(self,name, verbose=False):
         """
         selects a parameter by name
@@ -605,6 +652,9 @@ class ModelParameterArray(object):
             self.par_array[pi].freeze()
                 
         
-
+    def free_all(self):
+        self.all_frozen = False
+        for pi in range(len(self.par_array)):
+            self.par_array[pi].free()
         
         

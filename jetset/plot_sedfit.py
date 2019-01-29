@@ -531,7 +531,7 @@ class  PlotSED (object):
         if data is not None:
             x,y=model.get_residuals(log_log=True,data=data,filter_UL=filter_UL)
 
-            line = self.resplot.errorbar(x, y, yerr=np.ones(x.size), fmt='+')
+            line = self.resplot.errorbar(x, y, yerr=np.ones(x.size), fmt='+',color=color)
             self.lines_res_list.append(line)
             self.counter_res += 1
         else:
@@ -580,37 +580,35 @@ class  PlotPdistr (object):
     def __init__(self):
         self.fig, self.ax = plt.subplots()
 
-
-    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None):
-
-
+    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None):
 
         self.ax.plot(np.log10(gamma), np.log10(n_gamma))
         self.ax.set_xlabel(r'log($\gamma$)')
         self.ax.set_ylabel(r'log(n($\gamma$))')
         self.ax.set_ylim(y_min, y_max)
+        self.ax.set_xlim(x_min, x_max)
         self.update_plot()
 
-    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None):
+    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None):
+
         self.ax.plot(np.log10(gamma), np.log10(n_gamma *  gamma * gamma *  gamma))
         self.ax.set_xlabel(r'log($\gamma$)')
         self.ax.set_ylabel(r'log(n($\gamma$) \gamma^3)')
         self.ax.set_ylim(y_min, y_max)
+        self.ax.set_xlim(x_min, x_max)
         self.update_plot()
 
     def update_plot(self):
         self.fig.canvas.draw()
 
 
-class  PlotSepcComp (object):
+class  PlotSpecComp (object):
 
     def __init__(self):
         self.fig, self.ax = plt.subplots()
 
 
     def plot(self,nu,nuFnu,y_min=None,y_max=None):
-
-
 
         self.ax.plot(np.log10(nu), np.log10(nuFnu))
         self.ax.set_xlabel(r'log($ \nu $)  (Hz)')

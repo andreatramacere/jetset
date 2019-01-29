@@ -31,6 +31,7 @@
     double K, Cp, Cm, wm_p, wm_m;
     double WP_pm, WM_mm, WP_mm, WM_pm;
     double *A, *B, *C, *R, *Q, *T_inj;
+    int grid_bounded_to_gamma;
     //double t_cool_Sync, B2;
     //double t_acc_sist, t_acc_stoc;
     //double c2;
@@ -41,8 +42,11 @@
     FILE *fp;
 
 
-
-
+    //For temp_ev we need to have boundaris of gamma grid
+    //unbound from gmin and gmax
+    grid_bounded_to_gamma=pt_spec->grid_bounded_to_gamma;
+    pt_spec->grid_bounded_to_gamma=0;
+    build_Ne(pt_spec);
 
     //----SCELTA DELLA VARIABILE ADIMENSIONALE-------------------------
     //    E=mec2*gamma, mec2 rest electron energy
@@ -627,6 +631,7 @@
 
 
     fclose(fp);
+    pt_spec->grid_bounded_to_gamma=grid_bounded_to_gamma;
 
     return;
 }

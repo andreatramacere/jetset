@@ -527,6 +527,7 @@ struct spettro {
     double N_0,N_0p,N_0e; /* costante di normalizzazione per distrib elettr staz */
     double gmin;
     double gmax;
+    int grid_bounded_to_gamma;
     //unsigned long pt_griglia_max;
     double gmin_griglia;
     double gmax_griglia;

@@ -55,7 +55,7 @@ from .output import makedir,WorkPlace,clean_dir
 
 from .sed_models_dic import nuFnu_obs_dic,gamma_dic
 
-from  .plot_sedfit import PlotSED,PlotPdistr,PlotSepcComp
+from  .plot_sedfit import PlotSED,PlotPdistr,PlotSpecComp
 
 __all__=['Jet','JetParameter','JetSpecComponent','ElectronDistribution','build_emitting_region_dic',
          'build_ExtFields_dic']
@@ -335,18 +335,24 @@ class ElectronDistribution(object):
             self.n_gamma[ID] = BlazarSED.get_elec_array(self.Ne_ptr, self._jet._blob, ID)
 
 
-    def plot(self, ax=None, y_min=None,y_max=None):
+    def plot(self, p=None, y_min=None,y_max=None,x_min=None,x_max=None):
+
         self.update()
-        p=PlotPdistr()
-        p.plot_distr(self.gamma,self.n_gamma,y_min=y_min,y_max=y_max)
+        if p is None:
+            p=PlotPdistr()
+
+        p.plot_distr(self.gamma,self.n_gamma,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max)
 
         return p
 
 
-    def plot3p(self, ax=None,y_min=None,y_max=None):
+    def plot3p(self, p=None,y_min=None,y_max=None,x_min=None,x_max=None):
         self.update()
-        p = PlotPdistr()
-        p.plot_distr3(self.gamma,self.n_gamma,y_min=y_min,y_max=y_max)
+
+        if p is None:
+            p = PlotPdistr()
+
+        p.plot_distr3p(self.gamma,self.n_gamma,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max)
 
         return p
 
@@ -547,7 +553,7 @@ class JetSpecComponent(object):
 
 
     def plot(self, y_min=None,y_max=None):
-        p=PlotSepcComp()
+        p=PlotSpecComp()
         p.plot(nu=self.SED.nu,nuFnu=self.SED.nuFnu,y_min=y_min,y_max=y_max)
 
         return p
@@ -603,7 +609,7 @@ class TempEvol(object):
         else:
             path += '/'
 
-        set_str_attr(self._blob, 'path', path)
+        set_str_attr(self._temp_ev, 'path', path)
         # set_str(self._blob.path,path)
         makedir(path, clean_work_dir=clean_work_dir)
 
@@ -717,6 +723,11 @@ class Jet(Model):
 
         self.flux_plot_lim=1E-30
         self.set_emiss_lim(1E-120)
+
+        self._IC_states = {}
+        self._IC_states['on'] = 1
+        self._IC_states['off'] = 0
+
 
 
     def build_blob(self,verbose=None):
@@ -1351,17 +1362,14 @@ class Jet(Model):
 
 
     def set_IC_mode(self,val):
-        _states={}
-        _states['on']  = 1
-        _states['off'] = 0
 
-        if val not in _states.keys():
-            raise RuntimeError('allowed values',_states.keys())
+        if val not in self._IC_states.keys():
+            raise RuntimeError('val',val,'not in allowed values',self._IC_states.keys())
 
-        self._blob.do_IC=_states[val]
+        self._blob.do_IC=self._IC_states[val]
 
     def get_IC_mode(self):
-        return self._blob.do_IC
+        return dict(map(reversed, self._IC_states.items()))[self._blob.do_IC]
 
     def set_emiss_lim(self,val):
         self._blob.emiss_lim=val
@@ -1386,31 +1394,57 @@ class Jet(Model):
     def set_gamma_grid_size(self,val):
         self.electron_distribution.set_grid_size(gamma_grid_size=val)
 
-    def set_nu_grid_size(self,val):
-        self._blob.nu_grid_size=val
-        #BlazarSED.build_photons(self._blob)
-
-
-    def get_nu_max_grid(self):
-        return  self._blob.nu_stop_grid
-
-    def get_nu_min_grid(self):
-        return  self._blob.nu_start_grid
-
-    def set_nu_max_grid(self,val):
-        self._blob.nu_stop_grid=val
-
-    def set_nu_min_grid(self,val):
-        self._blob.nu_start_grid=val
-
-    def set_nu_grid_size(self,val):
-        self._blob.nu_grid_size=val
-
-    def get_nu_grid_size(self):
-        return  self._blob.nu_grid_size
 
     def get_gamma_grid_size(self):
         return self._blob.gamma_grid_size
+
+    @property
+    def nu_min(self):
+        return self._get_nu_min_grid()
+
+    @nu_min.setter
+    def nu_min(self, val):
+        if hasattr(self, '_blob'):
+            self._set_nu_min_grid(val)
+
+    def _get_nu_min_grid(self):
+        return  self._blob.nu_start_grid
+
+
+    def _set_nu_min_grid(self, val):
+        self._blob.nu_start_grid=val
+
+    @property
+    def nu_max(self):
+        return self._get_nu_max_grid()
+
+    @nu_max.setter
+    def nu_max(self, val):
+        if hasattr(self, '_blob'):
+            self._set_nu_max_grid(val)
+
+    def _set_nu_max_grid(self, val):
+        self._blob.nu_stop_grid=val
+
+    def _get_nu_max_grid(self):
+        return  self._blob.nu_stop_grid
+
+    @property
+    def nu_size(self):
+        return self._get_nu_grid_size()
+
+    @nu_size.setter
+    def nu_size(self, val):
+        if hasattr(self, '_blob'):
+            self._set_nu_grid_size(val)
+
+    def _set_nu_grid_size(self, val):
+        self._blob.nu_grid_size=val
+        #BlazarSED.build_photons(self._blob)
+
+    def _get_nu_grid_size(self):
+        return  self._blob.nu_grid_size
+
 
 
     def set_verbosity(self,val):
@@ -1490,6 +1524,8 @@ class Jet(Model):
         print('electron distribution:')
         print(" type: %s  " % (self._electron_distribution_name))
         print (" electron energy grid size: ",self.get_gamma_grid_size())
+        print (" gmin grid : %e"%self._blob.gmin_griglia)
+        print (" gmax grid : %e"%self._blob.gmax_griglia)
         print('')
         print('radiative fields:')
         print (" seed photons grid size: ", self.get_seed_nu_size())
@@ -1500,9 +1536,9 @@ class Jet(Model):
             print("   name:%s,"%_s.name, 'state:', _s.state)
         print ('')
         print ('SED info:')
-        print (' nu grid size :%d'%self.get_nu_grid_size())
-        print (' nu mix (Hz): %e'%self.get_nu_min_grid())
-        print (' nu max (Hz): %e'%self.get_nu_max_grid())
+        print (' nu grid size :%d' % self._get_nu_grid_size())
+        print (' nu mix (Hz): %e' % self._get_nu_min_grid())
+        print (' nu max (Hz): %e' % self._get_nu_max_grid())
         print('')
         print('flux plot lower bound   :  %e' % self.flux_plot_lim)
         print('')
@@ -1511,7 +1547,7 @@ class Jet(Model):
 
         print("-------------------------------------------------------------------------------------------------------------------")
 
-    def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None):
+    def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None):
         if plot_obj is None:
             plot_obj=PlotSED(sed_data=sed_data)
 
@@ -1528,13 +1564,13 @@ class Jet(Model):
             else:
                 comp_label = c.name
             if c.state!='off':
-                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim)
+                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color)
 
         else:
             for c in self.spectral_components_list:
                 comp_label = c.name
 
-                if c.state != 'off':
+                if c.state != 'off' and c.name!='Sum':
                     plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim)
 
 
@@ -1652,7 +1688,7 @@ class Jet(Model):
             if label is None:
                 label= self.name
 
-            self.PlotModel(plot, clean=True, label=self.name)
+            self.plot_model(plot, clean=True, label=label)
 
 
         if get_model==True:
@@ -1783,16 +1819,7 @@ class Jet(Model):
 
 
 
-def set_str(blob_attr,val):
-    print ('set',blob_attr,'to',val)
-    try:
-        try:
-            blob_attr = val
-        except:
-            blob_attr = val.encode('ascii')
 
-    except Exception as e:
-        raise RuntimeError(e)
 
 def set_str_attr(obj,name,val):
     #print('set obj', obj,'name',name ,'to', val)

@@ -15,6 +15,9 @@ This page provides the documentation for the  ``JetSeT`` package, a framework pr
 * handling  observed data
 
 
+
+
+
 .. _user-docs:
 
 
@@ -25,8 +28,8 @@ Documentation
 .. toctree::
    :maxdepth: 2
 
-     installation <install.rst>
-     user guide <user_guide/user_guide.rst>
+   installation <install.rst>
+   user guide <user_guide/user_guide.rst>
 
 
 

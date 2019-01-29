@@ -258,7 +258,7 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
     if (pt_K1->nu_1 > nu_1_max || pt_K1->nu_1 < nu_1_min ) {
        rate=0.0;
     }
-    if (pt_K1->nu_1 >=  nu_1_min &&  pt_K1->nu_1 < pt_K1->nu_compton_0) {
+        if (pt_K1->nu_1 >=  nu_1_min &&  pt_K1->nu_1 < pt_K1->nu_compton_0) {
         cost = pt_K1->COST_IC_K1 / (4.0*(g2*g2) * pt_K1->nu_compton_0);
         k=4.0*g2*pt_K1->nu_1/pt_K1->nu_compton_0 ;
         //rate=k-1;

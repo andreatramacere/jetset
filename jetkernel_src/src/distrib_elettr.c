@@ -131,6 +131,12 @@ void build_Ne(struct spettro *pt) {
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
     }
 
+
+    if (pt->grid_bounded_to_gamma==1){
+        pt->gmax_griglia=pt->gmax;
+        pt->gmin_griglia=pt->gmin;
+    }
+
     //printf("Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Ne_log),pt->gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log);

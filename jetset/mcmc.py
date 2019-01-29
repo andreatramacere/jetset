@@ -151,8 +151,19 @@ class SamplerOutput(object):
 
             return pickle.load(input)
 
-    def corner_plot(self,):
-        f = corner.corner(self.samples, labels=self.labels)
+    def corner_plot(self,labels=None):
+        if labels is not None:
+            _id=[]
+            if type(labels)==list:
+                pass
+            else:
+                labels=[labels]
+
+            for l in labels:
+                _id.append(self.labels.index(l))
+            f = corner.corner(self.samples[:,_id], labels=self.labels[_id])
+        else:
+            f = corner.corner(self.samples, labels=self.labels)
         return f
 
     def plot_par(self,p=None,nbins=20,log_plot=False):
@@ -169,7 +180,7 @@ class SamplerOutput(object):
             raise RuntimeError('label id larger then labels size')
 
 
-        _d = self.chain[:, :, p].flatten()
+        _d = self.samples[:,p].flatten()
         n = self.labels[p]
 
         if self.labels_units is not None:
