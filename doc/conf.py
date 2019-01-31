@@ -33,7 +33,7 @@ if on_rtd==False:  # only import and set the theme if we're building docs locall
 
 else:
 
-    autodoc_mock_imports = ['jetkernel']
+    autodoc_mock_imports = ['jetset.jetkernel']
 
     theme = 'bootstrap'
 
