@@ -60,7 +60,10 @@ from . import sed_models_dic as Model_dic
 #import jet_wrapper
 #BlazarSED = jet_wrapper.importer()
 
-from .jetkernel import jetkernel as BlazarSED
+try:
+    from .jetkernel import jetkernel as BlazarSED
+except ImportError:
+    from .mock import jetkernel as BlazarSED
 
 #from model_manager import FitModel
 

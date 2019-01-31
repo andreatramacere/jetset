@@ -46,7 +46,10 @@ __author__ = "Andrea Tramacere"
 import numpy as np
 from scipy import integrate
 #import jet_wrapper
-from .jetkernel import jetkernel as BlazarSED
+try:
+    from .jetkernel import jetkernel as BlazarSED
+except ImportError:
+    from .mock import jetkernel as BlazarSED
 
 from .output import section_separator
 

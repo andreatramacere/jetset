@@ -44,7 +44,10 @@ from numpy import log10,array,zeros,power,shape
 from scipy.interpolate import interp1d
 
 #import jet_wrapper
-from .jetkernel import jetkernel as BlazarSED
+try:
+    from .jetkernel import jetkernel as BlazarSED
+except ImportError:
+    from .mock import jetkernel as BlazarSED
 
 from . import spectral_shapes
 
