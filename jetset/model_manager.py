@@ -31,26 +31,33 @@ Module API
 """
 
 
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
 
 
 import numpy as np
 
-import minimizer 
+from  . import minimizer
 
-import sed_models_dic as Model_dic 
+#import sed_models_dic as Model_dic
 
-from jet_model  import Jet
+from .jet_model  import Jet
 
-from template_model import Template
+#from template_model import Template
 
-from output import WorkPlace
+#from output import WorkPlace
 
-from model_parameters import ModelParameterArray
+from .model_parameters import ModelParameterArray
 
-from spectral_shapes import  SED   
+from .spectral_shapes import  SED
    
-from base_model import  Model
+from .base_model import  Model
 
+from .plot_sedfit import  PlotSED
 
 
 __all__=['FitModel']
@@ -64,7 +71,7 @@ class FitModel(Model):
  
     This class creates an interface to handle  a fit Model. The relevant class members are 
     
-        - :class:`.SED` object storing the SED data points  
+        - :class:`.SED` object storing the SED data points
         - `model_pars`, a :class:`.par_array_builder` object returned by the :class:`.SSC_param` constructor 
         - :class:`.jet_builder` object 
     
@@ -103,14 +110,14 @@ class FitModel(Model):
         if  jet is not None and elec_distr is not None:
             #!! warning or error?
             
-            print "you can't provide both elec_distr and jet, only one"
+            print ("you can't provide both elec_distr and jet, only one")
             
             raise RuntimeError
         
           
        
         
-        self.SEDdata=None
+        self.sed_data=None
         
         self.nu_min_fit=1E6
         
@@ -125,8 +132,9 @@ class FitModel(Model):
         self.nu_min=1E6
         self.nu_max=1E30
         self.nu_size=nu_size
-    
-    
+
+        self.flux_plot_lim=1E-30
+
         self.components=[]    
         
         self.parameters=ModelParameterArray()
@@ -150,32 +158,43 @@ class FitModel(Model):
         
         if analytical is not None:
             self.add_component(analytical)
-        
-    def PlotModel(self,Plot,clean=False,autoscale=False,label=None):
-        if Plot is not None:
-            if clean==True:
-                Plot.clean_model_lines()
-            for model_comp in self.components:
-               
-                try:
-                    #print"model name", model_comp.name
-                    model_comp.PlotModel(Plot,autoscale=autoscale)
-                except:
-                    Plot.add_model_plot(model_comp,autoscale=autoscale)
-                
-                if label is None:
-                    label=self.name    
-            
-            #composite model
-            
-            Plot.add_model_plot(self.SED,autoscale=autoscale,label=label)
-            
-        else:
-            print "the plot window is not defined"
 
-       
-            
-    
+
+
+
+    def plot_model(self,plot_obj=None,clean=False,sed_data=None):
+        if plot_obj is None:
+            plot_obj=PlotSED(sed_data=sed_data)
+
+
+        if clean==True:
+            plot_obj.clean_model_lines()
+
+        line_style='--'
+
+
+        for mc in self.components:
+            comp_label = mc.name
+            #print ('comp_label',comp_label)
+            plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim)
+
+            if hasattr(mc,'spectral_components_list'):
+                for c in mc.spectral_components_list:
+
+                    comp_label = c.name
+                    if comp_label!='Sum':
+                        #print('comp_label', comp_label)
+                        plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label, flim=self.flux_plot_lim)
+
+        line_style = '-'
+        #print('comp_label', self.name)
+        plot_obj.add_model_plot(self.SED, line_style=line_style, label=self.name, flim=self.flux_plot_lim)
+        plot_obj.add_residual_plot(data=sed_data, model=self)
+        return plot_obj
+
+
+
+
     def set_nu_grid(self,nu_min=None,nu_max=None,nu_size=None):
         if nu_size is not None:
             self.nu_size=nu_size
@@ -220,8 +239,17 @@ class FitModel(Model):
         """
         
         self.parameters.show_pars()
-    
-    
+
+    def show_model(self):
+        for c in self.components:
+            c.show_model()
+
+    def freeze(self,par_name):
+        self.set(par_name,'frozen')
+
+
+    def free(self,par_name):
+        self.set(par_name,'free')
     
     def set(self,par_name,*args,**kw):
         """
@@ -235,7 +263,18 @@ class FitModel(Model):
         #print "Model in model manager",args,kw
         
         self.parameters.set(par_name,*args,**kw)
-  
+
+    def set_par(self,par_name,val):
+        """
+        shortcut to :class:`ModelParametersArray.set` method
+        set a parameter value
+
+        :param par_name: (srt), name of the parameter
+        :param val: parameter value
+
+        """
+
+        self.parameters.set(par_name, val=val)
   
     def get(self,par_name,*args):
         """
@@ -265,7 +304,7 @@ class FitModel(Model):
         return self.parameters.get(par_name,'val')
   
   
-    def fit(self,SEDdata,nu_min,nu_max,fitname=None):
+    def fit(self,sed_data,nu_min,nu_max,fitname=None):
         """
         shortcut to call :func:`.minimizer.fit_SED` 
         
@@ -273,7 +312,7 @@ class FitModel(Model):
         :param nu_min: minimun frequency for the fit range interval
         :param nu_max: maximum frequency for the fit range interval
         """
-        self.SEDdata=SEDdata
+        self.sed_data=sed_data
         
         self.nu_min_fit=nu_min
         
@@ -281,51 +320,21 @@ class FitModel(Model):
         
         self.fitname=fitname
         
-        return minimizer.fit_SED(self,self.SEDdata, self.nu_min_fit, self.nu_max_fit,self.fitname)
+        return minimizer.fit_SED(self,self.sed_data, self.nu_min_fit, self.nu_max_fit,self.fitname)
   
 
-    def get_conf_range(self,par_name,frac_range=None):
-        
-        init_val=self.parameters.get(par_name,'best_fit_val')
-        
-        if frac_range is None:
-            init_err=self.parameters.get(par_name,'best_fit_err')
-        else:
-            init_err=init_val*frac_range
-            
-        init_frozen=self.parameters.get(par_name,'frozen')
-        
-        val_grid=np.linspace(init_val-init_err, init_val+init_err, 10)
-        
-        self.parameters.set(par_name,'frozen')
-        
-        chi_red=[]
-        par_val=[]
-        
-        for  val_test in val_grid:
-            self.parameters.set(par_name,val=val_test)
-            chi_red.append(minimizer.fit_SED(self,self.SEDdata,self.nu_min_fit,self.nu_max_fit,get_conf_int=True,fitname='err_estimate'))
-            par_val.append(val_test)
-            
-            self.parameters.show_best_fit_pars()
 
-            print "par=%f, chi_red=%f",par_val[-1],chi_red[-1]
- 
-        if init_frozen==False:
-            self.parameters.set(par_name,'free')
-    
-        return chi_red,par_val
     
     
     
-    def eval(self,nu=None,fill_SED=True,get_model=False,loglog=False,plot=None,label=None,phys_output=False):
+    def eval(self,nu=None,fill_SED=True,get_model=False,loglog=False,label=None,phys_output=False):
         """
         evaluates the SED for the current parameters and fills the :class:`.SED` member
         """
         
         
         if nu is None:
-            print"--->", self.nu_min,self.nu_max,self.nu_size
+            #print ("--->", self.nu_min,self.nu_max,self.nu_size)
             
             x1=np.log10(self.nu_min)
 
@@ -342,7 +351,7 @@ class FitModel(Model):
             
             if np.shape(nu)==():
  
-                nu=array([nu])
+                nu=np.array([nu])
             
             if loglog==True:
                 lin_nu=np.power(10.,nu)
@@ -373,12 +382,7 @@ class FitModel(Model):
  
             self.SED.fill(nu=lin_nu,nuFnu=model)
             
-        if plot is not None:
-            if label is None:
-                label= self.name
-                
-            self.PlotModel(plot, clean=True, label=self.name)
-           
+
             
         if get_model==True:
             
@@ -391,60 +395,7 @@ class FitModel(Model):
         else:
             
             return None
-    
-# #!! aggiornare con i buoundaries di jet_paramter   
-# def set_param_rage(par_name,par_val):
-#     
-#     print "setting range for", par_name
-#     
-#     if par_name=='z_cosm':
-#         val_min=par_val*0.8
-#         val_max=par_val*1.2
-#     
-#     if par_name=='R':
-#         val_min=par_val/10
-#         val_max=par_val*2
-# 
-#     if par_name=='N':
-#         val_min=par_val/100
-#         val_max=par_val*100
-#     
-#     if par_name=='beam_obj':
-#         val_min=par_val-5
-#         if val_min<1.0:
-#             val_min=1.0
-#             
-#         val_max=par_val+5
-#         
-#     if par_name=='B':
-#         val_min=par_val/2
-#         val_max=par_val*2
-# 
-#     if par_name=='gmin':
-#         val_min=par_val/10
-#         if val_min<1.0:
-#             val_min=1.0
-#             
-#         val_max=par_val*10
-#     
-#     if par_name=='gmax':
-#         val_min=par_val/10
-#         val_max=par_val*10
-#     
-#     if par_name in  par_name in Model_dic.s_dic.values() or par_name in Model_dic.s1_dic.values():
-#         val_min=par_val*0.8
-#         val_max=par_val*1.2
-#     
-#     if par_name in Model_dic.r_dic.values():
-#         val_min=par_val*0.5
-#         val_max=par_val*1.5
-#     
-#     if par_name in Model_dic.gamma_cut_dic.values() or par_name in Model_dic.gamma_3p_dic.values() :
-#         val_min=par_val*0.1
-#         val_max=par_val*10
-#     
-#     return val_min,val_max
-#     
-# 
+
+
 
 

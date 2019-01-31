@@ -309,8 +309,8 @@ double Power_Sync_Electron(struct spettro *pt) {
             10000);
     //printf("%e %e %e \n",a,,pt->Vol_sphere);
 
-    return a * pt->UB * SIGTH * (four_by_three) * vluce_cm * pt->Vol_sphere *
-            pt->sin_psi * pt->sin_psi;
+        return a * pt->UB * SIGTH * (four_by_three) * vluce_cm * pt->Vol_sphere *
+                pt->sin_psi * pt->sin_psi;
 }
 
 //==============================
@@ -358,205 +358,274 @@ double I_nu_to_Uph(double * nu, double * I_nu, unsigned long NU_INT_STOP) {
 // Energetic output
 //=========================================================================================
 
-void EnergeticOutput(struct spettro * pt) {
-    double lum_factor, L_rad, L_Sync, L_SSC, L_EC_Disk,L_EC_BLR, L_EC_DT, L_PP;
-    double L_kin, L_tot, L_e, L_B, L_p;
+struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
+    double lum_factor;
+    //double L_rad, L_Sync, L_SSC, L_EC_Disk,L_EC_BLR, L_EC_DT, L_PP;
+    //double L_kin, L_tot, L_e, L_B, L_p;
+    struct jet_energetic energetic;
     char f_Energetic[static_file_name_max_legth];
     FILE *fp_Energetic;
 
 
-    sprintf(f_Energetic, "%s%s-Energetic.dat", pt->path, pt->STEM);
-    //printf("%s\n", f_Energetic);
-    fp_Energetic = fopen(f_Energetic, "w");
-    if (fp_Energetic == NULL) {
-        printf("warning non riesco ad aprire %s\n", f_Energetic);
-        exit(1);
-    }
-    fprintf(fp_Energetic, "#######################################################################\n");
-    fprintf(fp_Energetic, "#_obs is as observed from the earth: beaming+cosmo   \n");
-    fprintf(fp_Energetic, "#_src is in the AGN rest frame     :cosmo         \n");
-    fprintf(fp_Energetic, "#_blob is in the blob rest frame                   \n");
-    fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
-    fprintf(fp_Energetic, "beaming factor =%e\n", pt->beam_obj);
-    fprintf(fp_Energetic, "Distanza rigorosa=%e in Mpc \n", pt->dist/(parsec*1.0e6*1.0e2));
-    fprintf(fp_Energetic, "Distanza rigorosa=%e in cm \n", pt->dist);
-    fprintf(fp_Energetic, "type of distr %s\n", pt->DISTR);
+    energetic.U_B= pt->UB;
+    energetic.U_e= pt->U_e;
+    energetic.U_p=  pt->N * 0.1 * MPC2;
+    if (write_file>0){
 
-    fprintf(fp_Energetic, "N=%e N/N_0 %e\n", pt->N, pt->N / pt->N_0);
-    fprintf(fp_Energetic, "Volume for Spherical Geom.  %e  (cm^3)\n", pt->Vol_sphere);
-    if (strcmp(pt->PARTICLE, "leptons") == 0) {
-        fprintf(fp_Energetic, "********************       Leptonic Scenario       ********************\n");
-        fprintf(fp_Energetic, "Total number of electrons     %e\n", pt->N_tot_e_Sferic);
-        fprintf(fp_Energetic, "Gamma_p of N(gamma)*gamma^2   %e\n", pt->Gamma_p2);
-        fprintf(fp_Energetic, "Gamma_p of N(gamma)*gamma^3   %e\n", pt->Gamma_p3);
-        fprintf(fp_Energetic, "Peak of  N(gamma)*gamma^2   %e\n", pt->Np2);
-        fprintf(fp_Energetic, "Peak of  N(gamma)*gamma^3   %e\n", pt-> Np3);
+
+
+        sprintf(f_Energetic, "%s%s-Energetic.dat", pt->path, pt->STEM);
+        //printf("%s\n", f_Energetic);
+        fp_Energetic = fopen(f_Energetic, "w");
+        if (fp_Energetic == NULL) {
+            printf("warning non riesco ad aprire %s\n", f_Energetic);
+            exit(1);
+        }
+        fprintf(fp_Energetic, "#######################################################################\n");
+        fprintf(fp_Energetic, "#_obs is as observed from the earth: beaming+cosmo   \n");
+        fprintf(fp_Energetic, "#_src is in the AGN rest frame     :cosmo         \n");
+        fprintf(fp_Energetic, "#_blob is in the blob rest frame                   \n");
         fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
-        fprintf(fp_Energetic, "U_B   blob rest frame  %e erg/cm^3\n", pt->UB);
-        fprintf(fp_Energetic, "U_e   blob rest frame  %e erg/cm^3\n", pt->U_e);
-        fprintf(fp_Energetic, "U_p   blob rest frame (1p+ each 10e-) %e erg/cm^3\n", pt->N * 0.1 * MPC2);
-        fprintf(fp_Energetic, "U_e/U_B  %e\n", pt->U_e / pt->UB);
-    } else if (strcmp(pt->PARTICLE, "hadrons") == 0) {
-        fprintf(fp_Energetic, "********************       Hadronic Scenario       ********************\n");
-        //fprintf(fp_Energetic, "Total number of electrons     %e\n", pt->N_tot_e_Sferic);
-        //fprintf(fp_Energetic, "Gamma_p of N(gamma)*gamma^2   %e\n", pt->Gamma_p2);
-        //fprintf(fp_Energetic, "Gamma_p of N(gamma)*gamma^3   %e\n", pt->Gamma_p3);
-        //fprintf(fp_Energetic, "Peak of  N(gamma)*gamma^2   %e\n", pt->Np2);
-        //fprintf(fp_Energetic, "Peak of  N(gamma)*gamma^3   %e\n", pt-> Np3);
-        fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
-        fprintf(fp_Energetic, "**** Primary Hadrons ****\n");
-        fprintf(fp_Energetic, "Total number of protons     %e\n", pt->N_tot_p_Sferic);
-        fprintf(fp_Energetic, "U_B   blob rest frame  %e erg/cm^3\n", pt->UB);
-        fprintf(fp_Energetic, "U_p   blob rest frame  %e erg/cm^3\n", pt->U_p);
-        fprintf(fp_Energetic, "U_p/U_B  %e\n", pt->U_p / pt->UB);
-        fprintf(fp_Energetic, "**** Secondary Leptons ****\n");
-        fprintf(fp_Energetic, "Total number of electrons    %e\n", pt->N_tot_e_Sferic);
-        fprintf(fp_Energetic, "U_B   blob rest frame  %e erg/cm^3\n", pt->UB);
-        fprintf(fp_Energetic, "U_e   blob rest frame  %e erg/cm^3\n", pt->U_e);
-        fprintf(fp_Energetic, "U_e/U_B  %e\n", pt->U_e / pt->UB);
+        fprintf(fp_Energetic, "beaming factor =%e\n", pt->beam_obj);
+        fprintf(fp_Energetic, "Distanza rigorosa=%e in Mpc \n", pt->dist/(parsec*1.0e6*1.0e2));
+        fprintf(fp_Energetic, "Distanza rigorosa=%e in cm \n", pt->dist);
+        fprintf(fp_Energetic, "type of distr %s\n", pt->DISTR);
+
+        fprintf(fp_Energetic, "N=%e N/N_0 %e\n", pt->N, pt->N / pt->N_0);
+        fprintf(fp_Energetic, "Volume for Spherical Geom.  %e  (cm^3)\n", pt->Vol_sphere);
+        if (strcmp(pt->PARTICLE, "leptons") == 0) {
+            fprintf(fp_Energetic, "********************       Leptonic Scenario       ********************\n");
+            fprintf(fp_Energetic, "Total number of electrons     %e\n", pt->N_tot_e_Sferic);
+            fprintf(fp_Energetic, "Gamma_p of N(gamma)*gamma^2   %e\n", pt->Gamma_p2);
+            fprintf(fp_Energetic, "Gamma_p of N(gamma)*gamma^3   %e\n", pt->Gamma_p3);
+            fprintf(fp_Energetic, "Peak of  N(gamma)*gamma^2   %e\n", pt->Np2);
+            fprintf(fp_Energetic, "Peak of  N(gamma)*gamma^3   %e\n", pt-> Np3);
+            fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
+            fprintf(fp_Energetic, "U_B   blob rest frame  %e erg/cm^3\n", pt->UB);
+            fprintf(fp_Energetic, "U_e   blob rest frame  %e erg/cm^3\n", pt->U_e);
+            fprintf(fp_Energetic, "U_p   blob rest frame (1p+ each 10e-) %e erg/cm^3\n", pt->N * 0.1 * MPC2);
+            fprintf(fp_Energetic, "U_e/U_B  %e\n", pt->U_e / pt->UB);
+        } else if (strcmp(pt->PARTICLE, "hadrons") == 0) {
+            fprintf(fp_Energetic, "********************       Hadronic Scenario       ********************\n");
+            //fprintf(fp_Energetic, "Total number of electrons     %e\n", pt->N_tot_e_Sferic);
+            //fprintf(fp_Energetic, "Gamma_p of N(gamma)*gamma^2   %e\n", pt->Gamma_p2);
+            //fprintf(fp_Energetic, "Gamma_p of N(gamma)*gamma^3   %e\n", pt->Gamma_p3);
+            //fprintf(fp_Energetic, "Peak of  N(gamma)*gamma^2   %e\n", pt->Np2);
+            //fprintf(fp_Energetic, "Peak of  N(gamma)*gamma^3   %e\n", pt-> Np3);
+            fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
+            fprintf(fp_Energetic, "**** Primary Hadrons ****\n");
+            fprintf(fp_Energetic, "Total number of protons     %e\n", pt->N_tot_p_Sferic);
+            fprintf(fp_Energetic, "U_B   blob rest frame  %e erg/cm^3\n", pt->UB);
+            fprintf(fp_Energetic, "U_p   blob rest frame  %e erg/cm^3\n", pt->U_p);
+            fprintf(fp_Energetic, "U_p/U_B  %e\n", pt->U_p / pt->UB);
+            fprintf(fp_Energetic, "**** Secondary Leptons ****\n");
+            fprintf(fp_Energetic, "Total number of electrons    %e\n", pt->N_tot_e_Sferic);
+            fprintf(fp_Energetic, "U_B   blob rest frame  %e erg/cm^3\n", pt->UB);
+            fprintf(fp_Energetic, "U_e   blob rest frame  %e erg/cm^3\n", pt->U_e);
+            fprintf(fp_Energetic, "U_e/U_B  %e\n", pt->U_e / pt->UB);
 
     }
 
     fprintf(fp_Energetic, "Uph_Sync =%e erg/cm^3\n", Uph_Sync(pt));
     fprintf(fp_Energetic, "Uph_Sync(Gould Corrected) =%e erg/cm^3\n", 0.75*I_nu_to_Uph(pt->nu_Sync, pt->I_nu_Sync, pt->NU_INT_STOP_Sync_SSC));
     fprintf(fp_Energetic, "Uph_BLR =%e erg/cm^3 (I_nu integral)\n", I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR));
-    fprintf(fp_Energetic, "Uph_BLR =%e erg/cm^3 (Ldisk*BulkFactor^2*tau_BLR/(c*4pi*R_B)\n", pt->L_disk * pt-> beaming_EC*pt-> beaming_EC *pt->tau_BLR /
+    fprintf(fp_Energetic, "Uph_BLR =%e erg/cm^3 (Ldisk*BulkFactor^2*tau_BLR/(c*4pi*R_B)\n", pt->L_Disk * pt-> beaming_EC*pt-> beaming_EC *pt->tau_BLR /
             ( vluce_cm*four_pi * pow(pt->R_BLR_in, 2)));
     fprintf(fp_Energetic, "Uph_DT =%e erg/cm^3\n", I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT));
     fprintf(fp_Energetic, "U_ph_Sync/U_B  %e\n",Uph_Sync(pt) / pt->UB);
     fprintf(fp_Energetic, "E_tot (electron)  blob rest frame  %e erg     \n", pt->E_tot_e);
     fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
+    }
 
-    L_rad = 0;
-    L_Sync = Power_Photons(pt, pt->nu_Sync, pt->nuF_nu_Sync_obs, pt->NU_INT_STOP_Sync_SSC);
+
+    energetic.jet_L_rad = 0;
+    energetic.L_Sync_rf = Power_Photons(pt, pt->nu_Sync, pt->nuF_nu_Sync_obs, pt->NU_INT_STOP_Sync_SSC);
     //!!!!!!
     //0.25*Gamma*Gamma*Lum is the jet Power carried for the radiative component
     //Lum is the integral in the L_nu in the comoving rest frame
+    if (write_file>0){
+        fprintf(fp_Energetic, "Power_Sync Electron=%e\n", Power_Sync_Electron(pt));
+        fprintf(fp_Energetic, "Lum_Sync Photons  rest frame  =%e,  Uph=L_Sync/(4pi*R^2*c)=%e\n", energetic.L_Sync_rf, energetic.L_Sync_rf / (pt->Surf_sphere * vluce_cm));
+        fprintf(fp_Energetic, "nu_Synch_blob_peak %e\n", pt->nu_peak_Sync_blob);
+        fprintf(fp_Energetic, "nu_Synch_src_peak %e\n", pt->nu_peak_Sync_src);
+        fprintf(fp_Energetic, "nu_Synch_obs_peak %e\n", pt->nu_peak_Sync_obs);
 
-    fprintf(fp_Energetic, "Power_Sync Electron=%e\n", Power_Sync_Electron(pt));
-    fprintf(fp_Energetic, "Lum_Sync Photons  rest frame  =%e,  Uph=L_Sync/(4pi*R^2*c)=%e\n", L_Sync, L_Sync / (pt->Surf_sphere * vluce_cm));
-    fprintf(fp_Energetic, "nu_Synch_blob_peak %e\n", pt->nu_peak_Sync_blob);
-    fprintf(fp_Energetic, "nu_Synch_src_peak %e\n", pt->nu_peak_Sync_src);
-    fprintf(fp_Energetic, "nu_Synch_obs_peak %e\n", pt->nu_peak_Sync_obs);
-
-    fprintf(fp_Energetic, "nuFnu Synch_blob_peak %e\n", pt->nuFnu_peak_Sync_obs);
-    fprintf(fp_Energetic, "nuLnu Synch_src_peak =%e density=%e\n", pt->nuLnu_peak_Sync_src, pt->nuLnu_peak_Sync_src / (pt->Surf_sphere * vluce_cm));
-    fprintf(fp_Energetic, "nuLnu Synch_blob_peak %e\n", pt->nuLnu_peak_Sync_blob);
-    fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
-    L_Sync *= 0.25 * pt->BulkFactor * pt->BulkFactor;
-    L_rad = +L_Sync;
-    if (pt->do_SSC) {
-        L_SSC = Power_Photons(pt, pt->nu_SSC, pt->nuF_nu_SSC_obs, pt->NU_INT_STOP_COMPTON_SSC);
-
-        fprintf(fp_Energetic, "Lum_SSC Photons rest frame =%e U_ph=%e\n", L_SSC, L_SSC / (pt->Surf_sphere * vluce_cm));
-        fprintf(fp_Energetic, "nu_SSC_blob_peak %e\n", pt->nu_peak_SSC_blob);
-        fprintf(fp_Energetic, "nu_SSC_src_peak %e\n", pt->nu_peak_SSC_src);
-        fprintf(fp_Energetic, "nu_SSC_obs_peak %e\n", pt->nu_peak_SSC_obs);
-
-        fprintf(fp_Energetic, "nuFnu SSC_blob_peak %e\n", pt->nuFnu_peak_SSC_obs);
-        fprintf(fp_Energetic, "nuLnu SSC_src_peak=%e density=%e\n", pt->nuLnu_peak_SSC_src, pt->nuLnu_peak_SSC_src / (pt->Surf_sphere * vluce_cm));
-        fprintf(fp_Energetic, "nuLnu SSC_blob_peak %e\n", pt->nuLnu_peak_SSC_blob);
-
-        fprintf(fp_Energetic, "nuFnu_SSC_obs/nuFnu_Synch_obs %e\n", pt->nuFnu_peak_SSC_obs / pt->nuFnu_peak_Sync_obs);
+        fprintf(fp_Energetic, "nuFnu Synch_blob_peak %e\n", pt->nuFnu_peak_Sync_obs);
+        fprintf(fp_Energetic, "nuLnu Synch_src_peak =%e density=%e\n", pt->nuLnu_peak_Sync_src, pt->nuLnu_peak_Sync_src / (pt->Surf_sphere * vluce_cm));
+        fprintf(fp_Energetic, "nuLnu Synch_blob_peak %e\n", pt->nuLnu_peak_Sync_blob);
         fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
+    }
+    energetic.jet_L_Sync =energetic.L_Sync_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
+    energetic.jet_L_rad = +energetic.jet_L_Sync;
 
-        L_SSC *= 0.25 * pt->BulkFactor * pt->BulkFactor;
-        L_rad += L_SSC;
+
+    if (pt->do_SSC) {
+        energetic.L_SSC_rf = Power_Photons(pt, pt->nu_SSC, pt->nuF_nu_SSC_obs, pt->NU_INT_STOP_COMPTON_SSC);
+
+
+        if (write_file>0){
+            fprintf(fp_Energetic, "Lum_SSC Photons rest frame =%e U_ph=%e\n", energetic.L_SSC_rf, energetic.L_SSC_rf / (pt->Surf_sphere * vluce_cm));
+            fprintf(fp_Energetic, "nu_SSC_blob_peak %e\n", pt->nu_peak_SSC_blob);
+            fprintf(fp_Energetic, "nu_SSC_src_peak %e\n", pt->nu_peak_SSC_src);
+            fprintf(fp_Energetic, "nu_SSC_obs_peak %e\n", pt->nu_peak_SSC_obs);
+
+            fprintf(fp_Energetic, "nuFnu SSC_blob_peak %e\n", pt->nuFnu_peak_SSC_obs);
+            fprintf(fp_Energetic, "nuLnu SSC_src_peak=%e density=%e\n", pt->nuLnu_peak_SSC_src, pt->nuLnu_peak_SSC_src / (pt->Surf_sphere * vluce_cm));
+            fprintf(fp_Energetic, "nuLnu SSC_blob_peak %e\n", pt->nuLnu_peak_SSC_blob);
+
+            fprintf(fp_Energetic, "nuFnu_SSC_obs/nuFnu_Synch_obs %e\n", pt->nuFnu_peak_SSC_obs / pt->nuFnu_peak_Sync_obs);
+            fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
+        }
+        energetic.jet_L_SSC = energetic.L_SSC_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
+        energetic.jet_L_rad += energetic.jet_L_SSC;
+    }
+     else{
+     energetic.L_SSC_rf=0;
+     energetic.jet_L_SSC=0;
     }
 
 
     if (strcmp(pt->PARTICLE, "hadrons") == 0) {
-        L_PP = Power_Photons(pt, pt->nu_SSC, pt->nuF_nu_pp_obs, pt->NU_INT_STOP_PP);
+        energetic.L_PP_rf = Power_Photons(pt, pt->nu_SSC, pt->nuF_nu_pp_obs, pt->NU_INT_STOP_PP);
 
-        fprintf(fp_Energetic, "Lum_PP Photons rest frame =%e U_ph=%e\n", L_PP, L_PP / (pt->Surf_sphere * vluce_cm));
-        fprintf(fp_Energetic, "nu_PP_blob_peak %e\n", pt->nu_peak_PP_blob);
-        fprintf(fp_Energetic, "nu_PP_src_peak %e\n", pt->nu_peak_PP_src);
-        fprintf(fp_Energetic, "nu_PP_obs_peak %e\n", pt->nu_peak_PP_obs);
+        if (write_file>0){
+            fprintf(fp_Energetic, "Lum_PP Photons rest frame =%e U_ph=%e\n", energetic.L_PP_rf, energetic.L_PP_rf / (pt->Surf_sphere * vluce_cm));
+            fprintf(fp_Energetic, "nu_PP_blob_peak %e\n", pt->nu_peak_PP_blob);
+            fprintf(fp_Energetic, "nu_PP_src_peak %e\n", pt->nu_peak_PP_src);
+            fprintf(fp_Energetic, "nu_PP_obs_peak %e\n", pt->nu_peak_PP_obs);
 
-        fprintf(fp_Energetic, "nuFnu PP_blob_peak %e\n", pt->nuFnu_peak_PP_obs);
-        fprintf(fp_Energetic, "nuLnu PP_src_peak=%e density=%e\n", pt->nuLnu_peak_PP_src, pt->nuLnu_peak_PP_src / (pt->Surf_sphere * vluce_cm));
-        fprintf(fp_Energetic, "nuLnu PP_blob_peak %e\n", pt->nuLnu_peak_PP_blob);
+            fprintf(fp_Energetic, "nuFnu PP_blob_peak %e\n", pt->nuFnu_peak_PP_obs);
+            fprintf(fp_Energetic, "nuLnu PP_src_peak=%e density=%e\n", pt->nuLnu_peak_PP_src, pt->nuLnu_peak_PP_src / (pt->Surf_sphere * vluce_cm));
+            fprintf(fp_Energetic, "nuLnu PP_blob_peak %e\n", pt->nuLnu_peak_PP_blob);
 
-        fprintf(fp_Energetic, "nuFnu_PP_obs/nuFnu_Synch_obs %e\n", pt->nuFnu_peak_PP_obs / pt->nuFnu_peak_Sync_obs);
-        fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
-
-        L_PP *= 0.25 * pt->BulkFactor * pt->BulkFactor;
-        L_rad += L_SSC;
+            fprintf(fp_Energetic, "nuFnu_PP_obs/nuFnu_Synch_obs %e\n", pt->nuFnu_peak_PP_obs / pt->nuFnu_peak_Sync_obs);
+            fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
+        }
+        energetic.jet_L_PP = energetic.L_PP_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
+        energetic.jet_L_rad += energetic.jet_L_PP;
+    }
+    else{
+     energetic.L_PP_rf=0;
+     energetic.jet_L_PP=0;
     }
 
     if (pt->do_EC_Disk == 1 ) {
-	   L_EC_Disk = Power_Photons(pt, pt->nu_EC_Disk, pt->nuF_nu_EC_Disk_obs, pt->NU_INT_STOP_EC_Disk);
+	   energetic.L_EC_Disk_rf = Power_Photons(pt, pt->nu_EC_Disk, pt->nuF_nu_EC_Disk_obs, pt->NU_INT_STOP_EC_Disk);
 
+       if (write_file>0){
+           fprintf(fp_Energetic, "Lum_EC_Disk Photons rest frame=%e U_ph=%e\n", energetic.L_EC_Disk_rf, energetic.L_EC_Disk_rf / (pt->Surf_sphere * vluce_cm));
+           fprintf(fp_Energetic, "nu_EC_Disk_blob_peak=%e\n", pt->nu_peak_EC_Disk_blob);
+           fprintf(fp_Energetic, "nu_EC_Disk_src_peak=%e\n", pt->nu_peak_EC_Disk_src);
+           fprintf(fp_Energetic, "nu_EC_Disk_obs_peak=%e\n", pt->nu_peak_EC_Disk_obs);
 
-	   fprintf(fp_Energetic, "Lum_EC_Disk Photons rest frame=%e U_ph=%e\n", L_EC_Disk, L_EC_Disk / (pt->Surf_sphere * vluce_cm));
-	   fprintf(fp_Energetic, "nu_EC_Disk_blob_peak=%e\n", pt->nu_peak_EC_Disk_blob);
-	   fprintf(fp_Energetic, "nu_EC_Disk_src_peak=%e\n", pt->nu_peak_EC_Disk_src);
-	   fprintf(fp_Energetic, "nu_EC_Disk_obs_peak=%e\n", pt->nu_peak_EC_Disk_obs);
-
-	   fprintf(fp_Energetic, "nuFnu EC_Disk_blob_peak=%e\n", pt->nuFnu_peak_EC_Disk_obs);
-	   fprintf(fp_Energetic, "nuLnu EC_Disk_src_peak=%e  density=%e\n", pt->nuLnu_peak_EC_Disk_src, pt->nuLnu_peak_EC_Disk_src / (pt->Surf_sphere * vluce_cm));
-	   fprintf(fp_Energetic, "nuLnu EC_Disk_obs_peak=%e\n", pt->nuLnu_peak_EC_Disk_blob);
-	   fprintf(fp_Energetic, "nuLnu_EC_Disk/nuLnu_Synch %e\n", pt->nuFnu_peak_EC_Disk_obs / pt->nuFnu_peak_Sync_obs);
-	   fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
-
-	   L_EC_Disk *= 0.25 * pt->BulkFactor * pt->BulkFactor;
-	   L_rad += L_EC_Disk;
-    		}
+           fprintf(fp_Energetic, "nuFnu EC_Disk_blob_peak=%e\n", pt->nuFnu_peak_EC_Disk_obs);
+           fprintf(fp_Energetic, "nuLnu EC_Disk_src_peak=%e  density=%e\n", pt->nuLnu_peak_EC_Disk_src, pt->nuLnu_peak_EC_Disk_src / (pt->Surf_sphere * vluce_cm));
+           fprintf(fp_Energetic, "nuLnu EC_Disk_obs_peak=%e\n", pt->nuLnu_peak_EC_Disk_blob);
+           fprintf(fp_Energetic, "nuLnu_EC_Disk/nuLnu_Synch %e\n", pt->nuFnu_peak_EC_Disk_obs / pt->nuFnu_peak_Sync_obs);
+           fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
+       }
+	   energetic.jet_L_EC_Disk =energetic.L_EC_Disk_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
+	   energetic.jet_L_rad += energetic.jet_L_EC_Disk;
+    }
+    else{
+     energetic.L_EC_Disk_rf=0;
+     energetic.jet_L_EC_Disk=0;
+    }
 
     if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 3) {
-        L_EC_BLR = Power_Photons(pt, pt->nu_EC_BLR, pt->nuF_nu_EC_BLR_obs, pt->NU_INT_STOP_EC_BLR);
+        energetic.L_EC_BLR_rf = Power_Photons(pt, pt->nu_EC_BLR, pt->nuF_nu_EC_BLR_obs, pt->NU_INT_STOP_EC_BLR);
 
+        if (write_file>0){
+            fprintf(fp_Energetic, "Lum_EC_BLR Photons rest frame=%e U_ph=%e\n", energetic.L_EC_BLR_rf, energetic.L_EC_BLR_rf / (pt->Surf_sphere * vluce_cm));
+            fprintf(fp_Energetic, "nu_EC_BLR_blob_peak=%e\n", pt->nu_peak_EC_BLR_blob);
+            fprintf(fp_Energetic, "nu_EC_BLR_src_peak=%e\n", pt->nu_peak_EC_BLR_src);
+            fprintf(fp_Energetic, "nu_EC_BLR_obs_peak=%e\n", pt->nu_peak_EC_BLR_obs);
 
-        fprintf(fp_Energetic, "Lum_EC_BLR Photons rest frame=%e U_ph=%e\n", L_EC_BLR, L_EC_BLR / (pt->Surf_sphere * vluce_cm));
-        fprintf(fp_Energetic, "nu_EC_BLR_blob_peak=%e\n", pt->nu_peak_EC_BLR_blob);
-        fprintf(fp_Energetic, "nu_EC_BLR_src_peak=%e\n", pt->nu_peak_EC_BLR_src);
-        fprintf(fp_Energetic, "nu_EC_BLR_obs_peak=%e\n", pt->nu_peak_EC_BLR_obs);
-
-        fprintf(fp_Energetic, "nuFnu EC_BLR_blob_peak=%e\n", pt->nuFnu_peak_EC_BLR_obs);
-        fprintf(fp_Energetic, "nuLnu EC_BLR_src_peak=%e  density=%e\n", pt->nuLnu_peak_EC_BLR_src, pt->nuLnu_peak_EC_BLR_src / (pt->Surf_sphere * vluce_cm));
-        fprintf(fp_Energetic, "nuLnu EC_BLR_obs_peak=%e\n", pt->nuLnu_peak_EC_BLR_blob);
-        fprintf(fp_Energetic, "nuLnu_EC_BLR/nuLnu_Synch %e\n", pt->nuFnu_peak_EC_BLR_obs / pt->nuFnu_peak_Sync_obs);
-        fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
-
-        L_EC_BLR *= 0.25 * pt->BulkFactor * pt->BulkFactor;
-        L_rad += L_EC_BLR;
+            fprintf(fp_Energetic, "nuFnu EC_BLR_blob_peak=%e\n", pt->nuFnu_peak_EC_BLR_obs);
+            fprintf(fp_Energetic, "nuLnu EC_BLR_src_peak=%e  density=%e\n", pt->nuLnu_peak_EC_BLR_src, pt->nuLnu_peak_EC_BLR_src / (pt->Surf_sphere * vluce_cm));
+            fprintf(fp_Energetic, "nuLnu EC_BLR_obs_peak=%e\n", pt->nuLnu_peak_EC_BLR_blob);
+            fprintf(fp_Energetic, "nuLnu_EC_BLR/nuLnu_Synch %e\n", pt->nuFnu_peak_EC_BLR_obs / pt->nuFnu_peak_Sync_obs);
+            fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
+        }
+        energetic.jet_L_EC_BLR = energetic.L_EC_BLR_rf*0.25 * pt->BulkFactor * pt->BulkFactor;
+        energetic.jet_L_rad += energetic.jet_L_EC_BLR;
     }
+    else{
+        energetic.L_EC_BLR_rf=0;
+        energetic.jet_L_EC_BLR=0;
+    }
+
     if (pt->do_EC_DT == 1) {
-        L_EC_DT = Power_Photons(pt, pt->nu_EC_DT, pt->nuF_nu_EC_DT_obs, pt->NU_INT_STOP_EC_DT);
+        energetic.L_EC_DT_rf = Power_Photons(pt, pt->nu_EC_DT, pt->nuF_nu_EC_DT_obs, pt->NU_INT_STOP_EC_DT);
 
-        fprintf(fp_Energetic, "Lum_EC_DT Photons rest frame =%e  U_ph density=%e\n", L_EC_DT, L_EC_DT / (pt->Surf_sphere * vluce_cm));
-        fprintf(fp_Energetic, "nu_EC_DT_blob_peak=%e\n", pt->nu_peak_EC_DT_blob);
-        fprintf(fp_Energetic, "nu_EC_DT_src_peak=%e\n", pt->nu_peak_EC_DT_src);
-        fprintf(fp_Energetic, "nu_EC_DT_obs_peak=%e\n", pt->nu_peak_EC_DT_obs);
+        if (write_file>0){
+            fprintf(fp_Energetic, "Lum_EC_DT Photons rest frame =%e  U_ph density=%e\n", energetic.L_EC_DT_rf, energetic.L_EC_DT_rf / (pt->Surf_sphere * vluce_cm));
+            fprintf(fp_Energetic, "nu_EC_DT_blob_peak=%e\n", pt->nu_peak_EC_DT_blob);
+            fprintf(fp_Energetic, "nu_EC_DT_src_peak=%e\n", pt->nu_peak_EC_DT_src);
+            fprintf(fp_Energetic, "nu_EC_DT_obs_peak=%e\n", pt->nu_peak_EC_DT_obs);
 
-        fprintf(fp_Energetic, "nuFnu EC_DT_blob_peak=%e\n", pt->nuFnu_peak_EC_DT_obs);
-        fprintf(fp_Energetic, "nuLnu EC_DT_src_peak=%e  density=%e\n", pt->nuLnu_peak_EC_DT_src, pt->nuLnu_peak_EC_DT_src / (pt->Surf_sphere * vluce_cm));
-        fprintf(fp_Energetic, "nuLnu EC_DT_obs_peak=%e\n", pt->nuLnu_peak_EC_DT_blob);
-        fprintf(fp_Energetic, "nuLnu_EC_DT/nuLnu_Synch %e\n", pt->nuFnu_peak_EC_DT_obs / pt->nuFnu_peak_Sync_obs);
-        fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
-
-        L_EC_DT *= 0.25 * pt->BulkFactor * pt->BulkFactor;
-        L_rad += L_EC_DT;
+            fprintf(fp_Energetic, "nuFnu EC_DT_blob_peak=%e\n", pt->nuFnu_peak_EC_DT_obs);
+            fprintf(fp_Energetic, "nuLnu EC_DT_src_peak=%e  density=%e\n", pt->nuLnu_peak_EC_DT_src, pt->nuLnu_peak_EC_DT_src / (pt->Surf_sphere * vluce_cm));
+            fprintf(fp_Energetic, "nuLnu EC_DT_obs_peak=%e\n", pt->nuLnu_peak_EC_DT_blob);
+            fprintf(fp_Energetic, "nuLnu_EC_DT/nuLnu_Synch %e\n", pt->nuFnu_peak_EC_DT_obs / pt->nuFnu_peak_Sync_obs);
+            fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
+        }
+        energetic.jet_L_EC_DT =energetic.L_EC_DT_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
+        energetic.jet_L_rad += energetic.jet_L_EC_DT;
+    }
+    else{
+     energetic.jet_L_EC_DT=0;
+     energetic.L_EC_DT_rf=0;
     }
 
+
+    if (pt->do_EC_CMB_stat == 1) {
+        energetic.L_EC_CMB_rf = Power_Photons(pt, pt->nu_EC_CMB_stat, pt->nuF_nu_EC_CMB_stat_obs, pt->NU_INT_STOP_EC_CMB_stat);
+
+        if (write_file>0){
+            fprintf(fp_Energetic, "Lum_IC_CMB Photons rest frame =%e  U_ph density=%e\n", energetic.L_EC_CMB_rf, energetic.L_EC_CMB_rf / (pt->Surf_sphere * vluce_cm));
+            //fprintf(fp_Energetic, "nu_EC_DT_blob_peak=%e\n", pt->nu_peak_EC_DT_blob);
+            //fprintf(fp_Energetic, "nu_EC_DT_src_peak=%e\n", pt->nu_peak_EC_DT_src);
+            //fprintf(fp_Energetic, "nu_EC_DT_obs_peak=%e\n", pt->nu_peak_EC_DT_obs);
+
+            //fprintf(fp_Energetic, "nuFnu EC_DT_blob_peak=%e\n", pt->nuFnu_peak_EC_DT_obs);
+            //fprintf(fp_Energetic, "nuLnu EC_DT_src_peak=%e  density=%e\n", pt->nuLnu_peak_EC_DT_src, pt->nuLnu_peak_EC_DT_src / (pt->Surf_sphere * vluce_cm));
+            //fprintf(fp_Energetic, "nuLnu EC_DT_obs_peak=%e\n", pt->nuLnu_peak_EC_DT_blob);
+            //fprintf(fp_Energetic, "nuLnu_EC_DT/nuLnu_Synch %e\n", pt->nuFnu_peak_EC_DT_obs / pt->nuFnu_peak_Sync_obs);
+            fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
+        }
+        energetic.jet_L_EC_CMB =energetic.L_EC_CMB_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
+        energetic.jet_L_rad += energetic.jet_L_EC_CMB;
+    }
+    else{
+     energetic.jet_L_EC_CMB=0;
+     energetic.L_EC_CMB_rf=0;
+    }
 
 
     lum_factor = pi * pt->R * pt->R * vluce_cm * pt->BulkFactor * pt->BulkFactor;
-    L_e = pt->U_e*lum_factor;
-    L_p = lum_factor * pt->N * 0.1 * MPC2;
-    L_B = pt->UB*lum_factor;
-    L_kin = L_B + L_e + L_p;
-    fprintf(fp_Energetic, "L_e  %e  L_e/L_kin %e\n", L_e, L_e / L_kin);
+    energetic.jet_L_e = pt->U_e*lum_factor;
+    energetic.jet_L_p = lum_factor * pt->N * 0.1 * MPC2;
+    energetic.jet_L_B = pt->UB*lum_factor;
+    energetic.jet_L_kin = energetic.jet_L_B + energetic.jet_L_e + energetic.jet_L_p;
+    energetic.jet_L_tot=energetic.jet_L_kin + energetic.jet_L_rad;
 
-    fprintf(fp_Energetic, "L_p  %e  L_p/L_kin %e\n", L_p, L_p / L_kin);
+    if (write_file>0){
+        fprintf(fp_Energetic, "L_e  %e  L_e/L_kin %e\n", energetic.jet_L_e, energetic.jet_L_e / energetic.jet_L_kin);
 
-    fprintf(fp_Energetic, "L_B  %e  L_B/L_kin %e\n", L_B, L_B / L_kin);
+        fprintf(fp_Energetic, "L_p  %e  L_p/L_kin %e\n", energetic.jet_L_p, energetic.jet_L_p / energetic.jet_L_kin);
 
-    fprintf(fp_Energetic, "L_kin  %e \n", L_kin);
-    fprintf(fp_Energetic, "L_rad  %e L_rad/L_kin %e \n", L_rad, L_rad / L_kin);
-    fprintf(fp_Energetic, "L_tot  %e \n", L_kin + L_rad);
-    fprintf(fp_Energetic, "#######################################################################\n");
-    fclose(fp_Energetic);
+        fprintf(fp_Energetic, "L_B  %e  L_B/L_kin %e\n", energetic.jet_L_B, energetic.jet_L_B / energetic.jet_L_kin);
+
+        fprintf(fp_Energetic, "L_kin  %e \n", energetic.jet_L_kin);
+        fprintf(fp_Energetic, "L_rad  %e L_rad/L_kin %e \n", energetic.jet_L_rad, energetic.jet_L_rad / energetic.jet_L_kin);
+        fprintf(fp_Energetic, "L_tot  %e \n",  energetic.jet_L_tot);
+        fprintf(fp_Energetic, "#######################################################################\n");
+
+        fclose(fp_Energetic);
+        }
+
+    return energetic;
 }
 
 void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev) {
@@ -579,8 +648,8 @@ void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev) {
 
     fprintf(fp_cooling, "# log10(gamma) log10(IC/S|cooling) log10(Uph/UB) log10(t_cool)\n");
 
-    a = pt->attesa_compton_cooling;
-    pt->attesa_compton_cooling = 1;
+    a = pt_ev->do_Compton_cooling;
+    pt_ev->do_Compton_cooling = 1;
     Uph=I_nu_to_Uph(pt->nu_Sync, pt->I_nu_Sync, pt->NU_INT_STOP_Sync_SSC);
 
     for (i = 0; i < pt->gamma_grid_size; i += 10) {
@@ -593,7 +662,7 @@ void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev) {
         		log10(pt->griglia_gamma_Ne_log[i]/(S_cr+IC_cr)));
 
     }
-    pt->attesa_compton_cooling = a;
+    pt_ev->do_Compton_cooling  = a;
     fclose(fp_cooling);
 }
 

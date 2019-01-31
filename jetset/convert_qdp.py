@@ -1,9 +1,15 @@
-#!/usr/bin/env python
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
 import os
 import sys
 import glob
 
-from cosmo_tools import  Cosmo
+from .cosmo_tools import  Cosmo
 from string import *
 import math as m
 from astropy.io import fits as pyfits
@@ -33,17 +39,17 @@ def main(argv=None,cmd_par=None):
         if '*' in arg_list[1]:
             in_seds=glob.glob(arg_list[1])
 
-        print in_seds
+        print (in_seds)
  
-    print arg_list
+    print (arg_list)
     if argc==1:
-        print"./concvert_qdp.py infiles.qdq"
-        print"exmaple: ./concvert_qdp.py SED_Ciprini_v1/sed-*.qdp"
-        print"input data are in obs rest frame, out data in src rest frame (z-corrected)"
+        print("./concvert_qdp.py infiles.qdq")
+        print("exmaple: ./concvert_qdp.py SED_Ciprini_v1/sed-*.qdp")
+        print("input data are in obs rest frame, out data in src rest frame (z-corrected)")
         sys.exit(0)
 
    
-    print arg_list
+    print (arg_list)
 
     comos_eval=Cosmo(units='cm')
     for sed in in_seds:
@@ -64,8 +70,8 @@ def do_convert(infile_name,cosmo_eval):
     
     infile.close()
     
-    print>>outfile,'# set_number: -1 hyst, 0 sym, 1 green, 2 blue '
-    print>>outfile,'# file_name ',obj_name  
+    print('# set_number: -1 hyst, 0 sym, 1 green, 2 blue ',file=outfile)
+    print('# file_name ',obj_name,file=outfile)
     set_code={}
     UL_sets=[]
 
@@ -77,10 +83,10 @@ def do_convert(infile_name,cosmo_eval):
             if tkn[0]=="!" and tkn[1]=='Redshift':
                 z=float(tkn[3])
                 DL=cosmo_eval.DL(z)
-                print>>outfile,'# z ',z
-                print>>outfile,'# DL(cm) ',DL
-                print>>outfile,'# restframe  src'
-                print>>outfile,'# dataScale  log-log'
+                print('# z ',z,file=outfile)
+                print('# DL(cm) ',DL,file=outfile)
+                print('# restframe  src',file=outfile)
+                print('# dataScale  log-log',file=outfile)
             
             for t in tkn:
                 #print t
@@ -89,7 +95,7 @@ def do_convert(infile_name,cosmo_eval):
                     #print 'J' and '+' in t
                     #print 'J' and '-' in t 
                     #print t
-                    print>>outfile,'# obj_name    ',name
+                    print('# obj_name    ',name,file=outfile)
     
             if tkn[0]=='col' and tkn[2]=='on':
                 #print tkn,tkn[3:]
@@ -112,7 +118,7 @@ def do_convert(infile_name,cosmo_eval):
             #UL
             if tkn[0]=='ma' and tkn[1]=='31':
                 UL_sets=tkn[3:]
-                print "UL sets",UL_sets
+                print ("UL sets",UL_sets)
 
 
     print>>outfile,'#nu nuLnu dnu dnuLnu set_number '     
@@ -120,7 +126,7 @@ def do_convert(infile_name,cosmo_eval):
     #print set_code
     if z!=0.0:
         for line in inlines:
-            print tkn
+            print (tkn)
             tkn=line.split()           
             if  len(tkn)==2 and tkn[0]=='NO' and tkn[1]=='NO':
                 #print tkn
@@ -151,7 +157,7 @@ def do_convert(infile_name,cosmo_eval):
                     #errore relativo 
                     #dnuLnu_rest=nuLnu_rest*(float(tkn[3]))
                         
-                    print>>outfile,m.log10(nu_rest),m.log10(nuLnu_rest),0,log_dnuLnu_rest,set_code['%s'%set]
+                    print(m.log10(nu_rest),m.log10(nuLnu_rest),0,log_dnuLnu_rest,set_code['%s'%set],file=outfile)
                     #print outfile,nu_rest,dnu_rest,nuLnu_rest,dnuLnu_rest
             
                 

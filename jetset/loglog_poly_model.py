@@ -1,3 +1,8 @@
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
 """
 Module: loglog_poly_model
 ========================
@@ -38,15 +43,22 @@ Module API
 
 """
 
+
+
 '''
 Created on 2013 1 27
 
 @author: orion
 '''
-from model_parameters import ModelParameterArray, ModelParameter
-from base_model import Model
 
-from spectral_shapes import SED
+
+
+__author__ = "Andrea Tramacere"
+
+from .model_parameters import ModelParameterArray, ModelParameter
+from .base_model import Model
+
+from .spectral_shapes import SED
 
 from numpy import log10,power,sqrt,shape,zeros
 
@@ -69,15 +81,15 @@ class PolyParameter(ModelParameter):
         self.par_type_list=['curvature','peak freq','peak flux','third-degree','spectral-slope','flux-const','turn-over freq']
         
         if 'par_type' in keywords.keys() and keywords['par_type'] not in self.par_type_list:
-            print "blob_parameter type %s not allowed"%self.par_type
-            print "please choose among ",self.par_type_list
+            print ("blob_parameter type %s not allowed"%self.par_type)
+            print ("please choose among ",self.par_type_list)
             return
 
 
 
         super(PolyParameter,self).__init__(  **keywords)
-        
-       
+
+        #print('set logp in  init',self.name, keywords)
         if 'val' in keywords.keys():
             val=keywords['val']
             self.assign_val(self.name,val)
@@ -91,7 +103,7 @@ class PolyParameter(ModelParameter):
         """
         sets a parameter value checking for physical boundaries 
         """
-        
+        #print('set logp in  set',self.name, keywords)
         if 'val' in keywords.keys():    
             self.assign_val(self.name,keywords['val']) 
         
@@ -100,6 +112,7 @@ class PolyParameter(ModelParameter):
         """
         assigns the parameter value to the :class:`Template` object
         """
+        #print('set logp in assign_val',name,val)
         setattr(self.polymodel,name,val)
 
 
@@ -141,14 +154,14 @@ class LogLinear(LogLogModel):
         
        
         self.K=-10
-        self.parameters.add_par(PolyParameter(self,name='K',par_type='flux-const',val=-10.0,val_min=-30.,val_max=0.,units='erg cm^-2 s^-1',log=True))
+        self.parameters.add_par(PolyParameter(self,name='K',par_type='flux-const',val=-10.0,val_min=None,val_max=None,units='erg cm^-2 s^-1',log=True))
         
          
         
     def log_func(self,log_nu):
     
             x_log=log_nu
-            
+            #print(x_log)
             #print self.Ep,self.Sp,self.b,self.c,x_log
             
             return self.K + self.alpha*(x_log)
@@ -239,7 +252,7 @@ class LogParabolaPL(LogLogModel):
 
         else:
             y_log=zeros(log_nu.size)
-            for i in xrange(log_nu.size):
+            for i in range(log_nu.size):
                 y_log[i]=self.composite_func(log_nu[i])
 
             return y_log
@@ -335,6 +348,6 @@ def find_max_cubic(x_log,y_log,x_range=None):
 
         return  xp
     else:
-        print "!!! no maxima found for cubic fit"
+        print("!!! no maxima found for cubic fit")
 
         return None

@@ -1,3 +1,9 @@
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+
 """
 This module  provides an interface to call the BlazarSED code, setting the
 physical parameters and running the code. The BlazarSED code is a numerical 
@@ -10,6 +16,8 @@ emission processes.
 
 """
 
+
+
 '''
 Created on 2013 1 27
 
@@ -17,29 +25,51 @@ Created on 2013 1 27
 '''
 
 
-#import jet_wrapper
-from jetkernel import jetkernel as BlazarSED
+
+__author__ = "Andrea Tramacere"
+
+
+
+
 
 import os
-import  json
-import  spectral_shapes  
+import json
+import  sys
+import pickle
+import six
 
 import numpy as np
 from numpy import log10,array,zeros,power,shape
 
 from scipy.interpolate import interp1d
 
-from model_parameters import ModelParameterArray, ModelParameter
-from base_model import  Model
+#import jet_wrapper
+from .jetkernel import jetkernel as BlazarSED
 
-from output import makedir,WorkPlace,clean_dir
+from . import spectral_shapes
 
-from sed_models_dic import nuFnu_obs_dic,gamma_dic
+from .model_parameters import ModelParameterArray, ModelParameter
+from .base_model import  Model
 
-from  plot_sedfit import Plot
+from .output import makedir,WorkPlace,clean_dir
+
+from .sed_models_dic import nuFnu_obs_dic,gamma_dic
+
+from  .plot_sedfit import PlotSED,PlotPdistr,PlotSpecComp
 
 __all__=['Jet','JetParameter','JetSpecComponent','ElectronDistribution','build_emitting_region_dic',
-         'build_ExtFields_dic','init_SED']
+         'build_ExtFields_dic']
+
+
+def str_hook(pairs):
+    new_pairs = []
+    for key, value in pairs:
+        if isinstance(value, unicode):
+            value = value.encode('utf-8')
+        if isinstance(key, unicode):
+            key = key.encode('utf-8')
+        new_pairs.append((key, value))
+    return dict(new_pairs)
 
 class JetParameter(ModelParameter):
     """
@@ -100,25 +130,32 @@ class JetParameter(ModelParameter):
         if 'val' in keywords.keys():
             
             self.assign_val(self.name,keywords['val']) 
-        
+
+
     
     def assign_val(self,name,val):
         """
         sets the :class:`.JetParameter` value in the BlazarSED object
         """
-    
+
     
         b=getattr(self._blob,name)
         
         
-           
+        #print('1 name',name,val,self._val.islog)
         if type(b)==int:
+            if self._val.islog is True:
+                val=10**val
             val=int(val)
+
         elif type(b)==float:
+            if self._val._islog is True:
+                val=10**val
             val=float(val)
+
         elif type(b)==str:
             val=val
-        
+        #print('2 name',name, val, self._val.islog)
         setattr(self._blob,name,val)
         
         
@@ -143,7 +180,7 @@ def build_emitting_region_dic(beaming_expr='delta'):
     """
     
     model_dic={}
-    model_dic['R']=['region_size',0,None,'cm']
+    model_dic['R']=['region_size',0,30,'cm',False,True]
     model_dic['B']=['magnetic_field',0,None,'G']
     
     if beaming_expr=='bulk_theta':
@@ -174,27 +211,27 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list):
 
     for EC_model in EC_model_list:
             
-        if EC_model not in allowed_EC_components_list:
-            raise RuntimeError("EC model %s not allowed"%EC_model,"please choose among ", allowed_EC_components_list)
+        #if EC_model not in allowed_EC_components_list:
+        #   raise RuntimeError("EC model %s not allowed"%EC_model,"please choose among ", allowed_EC_components_list)
      
      
-        if EC_model=='Disk':
-            model_dic['L_disk']=['Disk',0,None,'erg/s']
+        if 'Disk' in EC_model:
+            model_dic['L_Disk']=['Disk',0,None,'erg/s']
             model_dic['R_inner_Sw']=['Disk',0,None,'Sw. radii']
             model_dic['R_ext_Sw']=['Disk',0,None,'Sw. radii']
-            model_dic['T_disk_max']=['Disk',0,None,'K']
+            model_dic['T_Disk']=['Disk',0,None,'K']
             model_dic['accr_eff']=['Disk',0,None,'']
             model_dic['R_H']=['Disk',0,None,'cm']
     
                     
-        if EC_model=='BLR':
+        if 'BLR' in EC_model:
             model_dic['tau_BLR']=['BLR',0.0,1.0,'']
             model_dic['R_BLR_in']=['BLR',0,None,'cm']
             model_dic['R_BLR_out']=['BLR',0,None,'cm']
     
     
             
-        if EC_model=='DT':
+        if 'DT' in EC_model:
             model_dic['T_DT']=['DT',0.0,None,'K']
             model_dic['R_DT']=['DT',0.0,None,'cm']
             model_dic['tau_DT']=['DT',0.0,1.0,'']
@@ -206,23 +243,44 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list):
 
 
 
-            
 
 
 
+class ArrayElectronDistribution(object):
 
+    def __init__(self, e_array, n_array, gamma_grid_size=None):
+        self.e_array = e_array
+        self.n_array = n_array
+        _size = e_array.size
+
+        if n_array.size != _size:
+            raise RuntimeError('e_array and n_array must have same size')
+        self.size = _size
+        if gamma_grid_size is None:
+            self.gamma_grid_size = _size * 2 + 1
 
 
 class ElectronDistribution(object):
 
-    def __init__(self,name,jet,gamma_grid_size=None):
+    def __init__(self,name,jet,gamma_grid_size=None,log_values=False):
+
+        self.elec_models_list = ['lp', 'pl', 'lppl', 'lpep', 'plc', 'bkn', 'spitkov', 'lppl_pile_up', 'bkn_pile_up']
+
+        if name == 'from_array':
+            pass
+        elif name not in self.elec_models_list:
+            raise Warning("electron distribution model %s not allowed" % name)
+            print("please choose among: ", self.elec_models_list)
+            return None
+        else:
+            pass
 
         self._name=name
-
+        self._log_values=log_values
 
 
         self._jet=jet
-        jet._blob.DISTR = name
+        set_str_attr(jet._blob,'DISTR',name)
 
         if gamma_grid_size is not None:
             self.set_grid_size(gamma_grid_size)
@@ -232,6 +290,27 @@ class ElectronDistribution(object):
             self._fill()
 
 
+    @classmethod
+    def from_custom(cls,jet,custom_Ne):
+        name='custom'
+
+
+        BlazarSED.build_Ne_custom(jet._blob,custom_Ne.size)
+        Ne_custom_ptr = getattr(jet._blob, 'Ne_custom')
+        gamma_custom_ptr = getattr(jet._blob,'gamma_e_custom')
+        for ID in range(custom_Ne.size):
+            BlazarSED.set_elec_custom_array(gamma_custom_ptr,jet._blob,custom_Ne.e_array[ID], ID)
+            BlazarSED.set_elec_custom_array(Ne_custom_ptr, jet._blob, custom_Ne.n_array[ID],ID)
+
+        setattr(jet._blob,'gmin',custom_Ne.e_array[0] )
+        setattr(jet._blob,'gmax',custom_Ne.e_array[-1] )
+
+        return cls(name,jet,custom_Ne.gamma_grid_size)
+
+
+    def update(self):
+        self._set_blob()
+        self._fill()
 
     def set_grid_size(self,gamma_grid_size):
         setattr(self._jet._blob,'gamma_grid_size' ,gamma_grid_size)
@@ -239,7 +318,8 @@ class ElectronDistribution(object):
         self._fill()
 
     def _set_blob(self):
-        BlazarSED.Init(self._jet._blob)
+        BlazarSED.MakeNe(self._jet._blob)
+        BlazarSED.InitNe(self._jet._blob)
         self._N_name, self._gamma_name = gamma_dic['electron_distr']
         self.Ne_ptr = getattr(self._jet._blob, self._N_name)
         self.gamma_ptr = getattr(self._jet._blob, self._gamma_name)
@@ -250,24 +330,38 @@ class ElectronDistribution(object):
         self.gamma = zeros(size)
         self.n_gamma = zeros(size)
 
-        for ID in xrange(size):
+        for ID in range(size):
             self.gamma[ID] = BlazarSED.get_elec_array(self.gamma_ptr, self._jet._blob, ID)
             self.n_gamma[ID] = BlazarSED.get_elec_array(self.Ne_ptr, self._jet._blob, ID)
 
 
-    def plot(self, ax=None, ):
-        import  pylab as plt
-        if ax is None:
-            fig,ax= plt.subplots()
+    def plot(self, p=None, y_min=None,y_max=None,x_min=None,x_max=None):
 
-        ax.plot(np.log10(self.gamma),np.log10(self.n_gamma))
-        ax.set_xlabel(r'log($\gamma$)')
-        ax.set_ylabel(r'log(n($\gamma$))')
+        self.update()
+        if p is None:
+            p=PlotPdistr()
 
-        plt.show()
+        p.plot_distr(self.gamma,self.n_gamma,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max)
 
-        return ax,fig
+        return p
 
+
+    def plot3p(self, p=None,y_min=None,y_max=None,x_min=None,x_max=None):
+        self.update()
+
+        if p is None:
+            p = PlotPdistr()
+
+        p.plot_distr3p(self.gamma,self.n_gamma,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max)
+
+        return p
+
+    def set_bounds(self,a,b,log_val=False):
+        if log_val == False:
+            return [a,b]
+
+        else:
+            return np.log10([a,b])
 
     def _build_electron_distribution_dic(self,electron_distribution_name):
         """
@@ -322,8 +416,12 @@ class ElectronDistribution(object):
 
         model_dic = {}
         model_dic['N'] = ['electron_density', 0, None, 'cm^-3']
-        model_dic['gmin'] = ['low-energy-cut-off', 1, None, 'Lorentz-factor']
-        model_dic['gmax'] = ['high-energy-cut-off', 1, None, 'Lorentz-factor']
+
+        a_h,b_h=self.set_bounds(1,1E15,log_val=self._log_values)
+        a_l, b_l = self.set_bounds(1, 1E5, log_val=self._log_values)
+        a_t, b_t = self.set_bounds(1, 1E8, log_val=self._log_values)
+        model_dic['gmin'] = ['low-energy-cut-off', a_l, b_l, 'Lorentz-factor',False,self._log_values]
+        model_dic['gmax'] = ['high-energy-cut-off', a_h, b_h, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'pl':
             model_dic['p'] = ['HE_spectral_slope', -10, 10, '']
@@ -331,25 +429,56 @@ class ElectronDistribution(object):
         if electron_distribution_name == 'bkn':
             model_dic['p'] = ['LE_spectral_slope', -10, 10, '']
             model_dic['p_1'] = ['HE_spectral_slope', -10, 10, '']
-            model_dic['gamma_break'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gamma_break'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'lp':
             model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['r'] = ['spectral_curvature', -10, 10, '']
-            model_dic['gamma0_log_parab'] = ['turn-over-energy', 1, None, 'Lorentz-factor', True]
+            model_dic['r'] = ['spectral_curvature', -15, 15, '']
+            model_dic['gamma0_log_parab'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor', True,self._log_values]
 
         if electron_distribution_name == 'lppl':
             model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['r'] = ['spectral_curvature', -10, 10, '']
-            model_dic['gamma0_log_parab'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['r'] = ['spectral_curvature', -15, 15, '']
+            model_dic['gamma0_log_parab'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'lpep':
-            model_dic['r'] = ['spectral_curvature', -10, 10, '']
-            model_dic['gammap_log_parab'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['r'] = ['spectral_curvature', -15, 15, '']
+            model_dic['gammap_log_parab'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'plc':
             model_dic['p'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['gamma_cut'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gamma_cut'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
+
+        if electron_distribution_name == 'spitkov':
+            model_dic['spit_index'] = ['LE_spectral_slope', -10, 10, '']
+            model_dic['spit_temp'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['spit_gamma_th'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+
+        if electron_distribution_name == 'lppl_pile_up':
+            model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
+            model_dic['r'] = ['spectral_curvature', -15, 15, '']
+            model_dic['gamma0_log_parab'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gamma_inj'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+
+            model_dic['gamma_pile_up'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['ratio_pile_up'] = ['turn-over-energy', 0, None, '']
+
+            model_dic['alpha_pile_up'] = ['turn-over-energy', 0.0, 10, '']
+           # model_dic['ratio_pile_up'] = ['turn-over-energy',0, None, '']
+
+        if electron_distribution_name == 'bkn_pile_up':
+            model_dic['p'] = ['LE_spectral_slope', -10, 10, '']
+            model_dic['p_1'] = ['HE_spectral_slope', -10, 10, '']
+            model_dic['gamma_break'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+
+            model_dic['gamma_pile_up'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gamma_pile_up_cut'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+
+            model_dic['alpha_pile_up'] = ['turn-over-energy', 0.0, 10, '']
+
+        if electron_distribution_name == 'custom':
+            model_dic.pop('gmin')
+            model_dic.pop('gmax')
 
         return model_dic
 
@@ -361,11 +490,11 @@ class ElectronDistribution(object):
 class JetSpecComponent(object):
     """
     """
-    def __init__(self,name,blob_object):
+    def __init__(self,name,blob_object,var_name=None,state_dict=None,state=None):
         
         self.name=name
         
-        
+        self._blob_object=blob_object
         self._nuFnu_name, self._nu_name=nuFnu_obs_dic[self.name]
         
         self.nuFnu_ptr=getattr(blob_object,self._nuFnu_name)
@@ -373,12 +502,133 @@ class JetSpecComponent(object):
         self.nu_ptr=getattr(blob_object,self._nu_name)
     
         self.SED=spectral_shapes.SED(name=self.name)
-    
-    def plot(self):
+
+        if var_name is not None:
+            self._var_name=var_name
+
+            if state_dict is None:
+                self._state_dict = {}
+                self._state_dict['on'] = 1
+                self._state_dict['off'] = 0
+            else:
+                self._state_dict=state_dict
+            self.state='on'
+        else:
+            self._state_dict={}
+            self._var_name=None
+            self._state='on'
+
+        if state is not None and self._state_dict!={}:
+            self.state=state
+
+    def show(self):
+        print('name     :',self.name)
+        print('var name :',self._var_name)
+        print('state    :',self._state)
+        if self._state_dict is not None:
+            print('allowed states :',[k for k in self._state_dict.keys()])
+        #print('var value',self.get_var_state())
+
+    @property
+    def state(self,):
+        return self._state
+
+    @state.setter
+    def state(self, val):
+        if self._state_dict!={}:
+            if val not in self._state_dict.keys():
+                raise RuntimeError('val', val, 'not in allowed', self._state.keys())
+            self._state = val
+            if self._var_name is not None:
+                setattr(self._blob_object, self._var_name, self._state_dict[val])
+        else:
+            raise Warning('the state of the spectral component',self.name,' can not be changed')
+
+    def get_var_state(self,):
+        if self._var_name is not None:
+            return  getattr(self._blob_object,self._var_name)
+        else:
+            return None
+
+
+
+    def plot(self, y_min=None,y_max=None):
+        p=PlotSpecComp()
+        p.plot(nu=self.SED.nu,nuFnu=self.SED.nuFnu,y_min=y_min,y_max=y_max)
+
+        return p
+
+
+
+class TempEvol(object):
+
+    def __init__(self,out_dir='temp_ev',flag='test',clean_work_dir=True):
+
+        self.build_TempEv()
+
+        self.set_path(out_dir, clean_work_dir=clean_work_dir)
+
+        self.set_flag(flag)
+
+    def build_TempEv(self,duration=1E5,
+                     TStart_Acc=0.,
+                     TStop_Acc=0.,
+                     TStart_Inj=0.,
+                     TStop_Inj=0.,
+                     T_esc_Coeff=1E60,
+                     Esc_Index=0.,
+                     Acc_Index=1.,
+                     Diff_Index=2.,
+                     T_SIZE=5000,
+                     NUM_SET=50,
+                     Lambda_max_Turb=1E30):
+
+
+
+
+        self._temp_ev = BlazarSED.MakeTempEv()
+
+        self._temp_ev.duration = duration
+        self._temp_ev.TStart_Acc = TStart_Acc
+        self._temp_ev.TStop_Acc = TStop_Acc
+        self._temp_ev.TStart_Inj = TStart_Inj
+        self._temp_ev.TStop_Inj = TStop_Inj
+        self._temp_ev.T_esc_Coeff = T_esc_Coeff
+        self._temp_ev.Esc_Index = Esc_Index
+        self._temp_ev.Acc_Index = Acc_Index
+        self._temp_ev.Diff_Index = Diff_Index
+        self._temp_ev.T_SIZE = T_SIZE
+        self._temp_ev.NUM_SET = NUM_SET
+        self._temp_ev.Lambda_max_Turb=Lambda_max_Turb
+
+
+
+    def set_path(self, path, clean_work_dir=True):
+        if path.endswith('/'):
+            pass
+        else:
+            path += '/'
+
+        set_str_attr(self._temp_ev, 'path', path)
+        # set_str(self._blob.path,path)
+        makedir(path, clean_work_dir=clean_work_dir)
+
+
+
+    def set_flag(self,flag):
+        self._temp_ev.STEM=flag
+
+
+    def run(self,jet):
+        BlazarSED.Run_temp_evolution(jet._blob, self._temp_ev)
+
+
+class SpecCompList(object):
+
+    def __init__(self):
         pass
 
 
-    
 class Jet(Model):
     """
 
@@ -397,7 +647,14 @@ class Jet(Model):
 
     """
 
-    def __init__(self,name='test',electron_distribution='lp',beaming_expr='delta',jet_workplace=None,verbose=None,clean_work_dir=True, **keywords):
+    def __init__(self,name='test',
+                 electron_distribution='pl',
+                 electron_distribution_log_values=False,
+                 beaming_expr='delta',
+                 jet_workplace=None,
+                 verbose=None,
+                 clean_work_dir=True,
+                 **keywords):
 
 
         super(Jet,self).__init__(  **keywords)
@@ -408,8 +665,8 @@ class Jet(Model):
 
         self._scale='lin-lin'
 
-        self._blob = init_SED(verbose=verbose)
-
+        self._blob = self.build_blob(verbose=verbose)
+        #print('_blob',self._blob)
         #self.jet_wrapper_dir=os.path.dirname(__file__)+'/jet_wrapper'
 
         #os.environ['BLAZARSED']=self.jet_wrapper_dir
@@ -425,18 +682,27 @@ class Jet(Model):
 
         self.set_flag(self.name)
 
-        self.init_BlazarSED()
+        #self.init_BlazarSED()
 
-        self._allowed_EC_components_list=['BLR','DT','Star','CMB','Disk','All','CMB_stat']
+        self._allowed_EC_components_list=['EC_BLR',
+                                          'DT',
+                                          'EC_DT',
+                                          'Star',
+                                          'EC_Start',
+                                          'CMB',
+                                          'EC_CMB',
+                                          'Disk',
+                                          'EC_Disk',
+                                          'All',
+                                          'CMB_stat',
+                                          'EC_CMB_stat']
 
         self.EC_components_list =[]
-        self.spectral_components=[]
+        self.spectral_components_list=[]
 
 
-
-        self.add_spectral_component('Sum')
-        self.add_spectral_component('Sync')
-        self.add_spectral_component('SSC')
+        self.spectral_components=SpecCompList()
+        self.add_basic_components()
 
 
         self.SED=self.get_spectral_component_by_name('Sum').SED
@@ -450,94 +716,182 @@ class Jet(Model):
 
 
 
-        self.set_electron_distribution(electron_distribution)
+        self.set_electron_distribution(electron_distribution,electron_distribution_log_values)
 
         self.set_emitting_region(beaming_expr)
 
 
         self.flux_plot_lim=1E-30
+        self.set_emiss_lim(1E-120)
 
+        self._IC_states = {}
+        self._IC_states['on'] = 1
+        self._IC_states['off'] = 0
+
+
+
+    def build_blob(self,verbose=None):
+
+        blob = BlazarSED.MakeBlob()
+        # temp_ev=BlazarSED.MakeTempEv()
+        #print('blob',blob.griglia_gamma_Ne_log)
+        if verbose is None:
+            blob.verbose = 0
+        else:
+            blob.verbose = verbose
+
+        set_str_attr(blob, 'path', './')
+        # set_str(blob.path,'./')
+
+        set_str_attr(blob, 'MODE', 'custom')
+        # blob.MODE='custom'
+        blob.gamma_grid_size = 1000
+
+        blob.nu_IC_size = 50
+        blob.nu_seed_size = 100
+
+        blob.do_Sync = 2
+
+        blob.do_SSC = 1
+
+        blob.R = 5.0e15
+
+        blob.B = 0.1
+
+        blob.z_cosm = 0.1
+
+        blob.BulkFactor = 10
+        blob.theta = 0.1
+
+        blob.N = 100
+
+        blob.L_Disk=1E45
+
+        blob.L_DT=1E45
+
+        blob.gmin = 2
+
+        blob.gmax = 1e6
+
+        blob.nu_start_Sync = 1e6
+        blob.nu_stop_Sync = 1e20
+
+        blob.nu_start_SSC = 1e14
+        blob.nu_stop_SSC = 1e30
+
+        blob.nu_start_grid = 1e6
+        blob.nu_stop_grid = 1e30
+
+        return blob
 
     def save_model(self,file_name):
-        f=open(file_name,'w')
+        # TODO update to  changes in spectral components
         _model={}
         _model['electron_distribution']=self._electron_distribution_name
+        _model['electron_distribution_log_values']=self._electron_distribution_log_values
         _model['beaming_expr']=self._beaming_expr
-        _model['model_spectral_components']=self.get_spectral_component_names_list()
-        _model['EC_components_list'] = self.EC_components_list
+        _model['spectral_components_name']=self.get_spectral_component_names_list()
+        _model['spectral_components_state'] = [c.state for c in self.spectral_components_list]
+        _model['EC_components_name'] = self.EC_components_list
+        _model['basic_components_name'] = self.basic_components_list
+        #_model['EC_components_state'] = [c.state for c in self.spectral_components_list]
         _model['pars']={}
 
         for p in self.parameters.par_array:
             _model['pars'][p.name]=p.val
 
-        json.dump(_model,f)
-        f.close()
+        with open(file_name, 'w', encoding="utf-8") as outfile:
+            outfile.write(str(json.dumps(_model, ensure_ascii=False)))
 
 
-    def load_model(self,file_name):
-        f = open(file_name, 'r')
-        _model=json.load(f)
-        f.close()
 
-        self.model_type = 'jet'
 
-        self.init_BlazarSED()
-        self.parameters = ModelParameterArray()
-        self.set_electron_distribution(str(_model['electron_distribution']))
-        _l=self.get_spectral_component_names_list()
-        print _model['EC_components_list'],_model['model_spectral_components'],_l,self._allowed_EC_components_list
-        for c in _model['model_spectral_components']:
-            print c
-            if str(c) not  in _l:
 
-                print 'test',c.replace('EC_',''), _model['EC_components_list'],c.replace('EC_','') in _model['EC_components_list']
-                if c.replace('EC_','') in _model['EC_components_list']:
-                    print 'add EC',c.replace('EC_','')
-                    self.add_EC_component(str(c.replace('EC_','')))
-                else:
-                    self.add_spectral_component(str(c))
 
-        self.SED = self.get_spectral_component_by_name('Sum').SED
 
-        self.set_emitting_region(str(_model['beaming_expr']))
-        self.set_electron_distribution(str(_model['electron_distribution']))
+    @classmethod
+    def load_model(cls,file_name):
+        #TODO update to  changes in spectral components
+        jet = cls()
+        with open(file_name, 'r') as infile:
+            _model = json.load(infile)
+
+        #print ('_model',_model)
+
+        jet.model_type = 'jet'
+
+        jet.init_BlazarSED()
+        jet.parameters = ModelParameterArray()
+
+        jet.set_electron_distribution(str(_model['electron_distribution']))
+
+
+        for c in jet.basic_components_list:
+            if c not in _model['basic_components_name']:
+                jet.del_spectral_component(c)
+
+        jet.add_EC_component(_model['EC_components_name'])
+
+
+        for ID,c in enumerate(_model['spectral_components_name']):
+            comp=getattr(jet.spectral_components,c)
+            if comp._state_dict!={}:
+                comp.state=_model['spectral_components_state'][ID]
+
+
+
+        jet.SED = jet.get_spectral_component_by_name('Sum').SED
+
+        jet.set_emitting_region(str(_model['beaming_expr']))
+        jet.set_electron_distribution(str(_model['electron_distribution']))
         _par_dict=_model['pars']
-        self.show_pars()
+        jet.show_pars()
         for k in _par_dict.keys():
-            print 'set', k,_par_dict[k]
-            self.set_par(par_name=str(k),val=_par_dict[str(k)])
+            #print ('set', k,_par_dict[k])
+            jet.set_par(par_name=str(k),val=_par_dict[str(k)])
 
+        return jet
 
+    def set_electron_distribution(self,name=None,log_values=False):
 
-
-    def set_electron_distribution(self,name):
-        self.electron_distribution = ElectronDistribution(name, self)
-
-        self._electron_distribution_name=name
-
-        elec_models_list = ['lp', 'pl', 'lppl', 'lpep', 'plc', 'bkn']
-
-        if name not in elec_models_list:
-            print "electron distribution model %s not allowed" % name
-            print "please choose among: ", elec_models_list
-            return
+        self._electron_distribution_log_values=log_values
 
         if self._electron_distribution_dic is not None:
             self.del_par_from_dic(self._electron_distribution_dic)
 
+        if isinstance(name, ArrayElectronDistribution):
+            self._electron_distribution_name='from_array'
+            self.electron_distribution=ElectronDistribution.from_custom(self,name)
 
-        self._electron_distribution_dic = self.electron_distribution._build_electron_distribution_dic(self._electron_distribution_name)
+        if isinstance(name, ElectronDistribution):
+            self.electron_distribution = name
 
-        self.add_par_from_dic(self._electron_distribution_dic)
+        else:
+
+
+
+            self.electron_distribution = ElectronDistribution(name, self,log_values=log_values)
+
+        if self.electron_distribution is not None:
+            self._electron_distribution_name = name
+            self._electron_distribution_dic = self.electron_distribution._build_electron_distribution_dic(
+                self._electron_distribution_name)
+
+            self.add_par_from_dic(self._electron_distribution_dic)
+
+        else:
+            raise RuntimeError('name for electron distribution was not valid')
+
+
 
 
     def show_spectral_components(self):
 
-        print "Spectral components for Jet model:%s"%(self.name)
+        print ("Spectral components for Jet model:%s"%(self.name))
 
-        for comp in self.spectral_components:
+        for comp in self.spectral_components_list:
 
-            print "comp: %s "%(comp.name)
+            print ("comp: %s "%(comp.name))
 
         print
 
@@ -545,13 +899,13 @@ class Jet(Model):
 
 
     def get_spectral_component_by_name(self,name,verbose=True):
-        for i in xrange(len(self.spectral_components)):
-            if self.spectral_components[i].name==name:
-                return self.spectral_components[i]
+        for i in range(len(self.spectral_components_list)):
+            if self.spectral_components_list[i].name==name:
+                return self.spectral_components_list[i]
         else:
             if verbose==True:
-                print "no spectral components with name %s found"%name
-                print "names in array are:"
+                print ("no spectral components with name %s found"%name)
+                print ("names in array are:")
                 self.show_spectral_components()
 
             return None
@@ -559,36 +913,54 @@ class Jet(Model):
 
 
     def list_spectral_components(self):
-        for i in xrange(len(self.spectral_components)):
-            print self.spectral_components[i].name
+        for i in range(len(self.spectral_components_list)):
+            print (self.spectral_components_list[i].name)
 
     def get_spectral_component_names_list(self):
         _l=[]
-        for i in xrange(len(self.spectral_components)):
-            _l.append(self.spectral_components[i].name)
+        for i in range(len(self.spectral_components_list)):
+            _l.append(self.spectral_components_list[i].name)
         return _l
 
 
 
+    def del_spectral_component(self,name):
+        print('deleting spectral component', name)
+        if name in self.EC_components_list:
+            self.del_EC_component(name)
+        else:
+            self._del_spectral_component(name)
+        if name in self.basic_components_list:
+            self.basic_components_list.remove(name)
 
-    def del_spectral_component(self,name,verbose=True):
+    def _del_spectral_component(self, name, verbose=True):
+
+
 
         comp=self.get_spectral_component_by_name(name,verbose=verbose)
 
+        if comp._state_dict!={}:
+
+            comp.state='off'
+
         if comp is not None:
-            self.spectral_components.remove(comp)
+
+            self.spectral_components_list.remove(comp)
+
+            self.spectral_components.__delattr__(name)
 
 
 
+    def _add_spectral_component(self, name, var_name=None, state_dict=None,state=None):
 
+        self.spectral_components_list.append(JetSpecComponent(name, self._blob, var_name=var_name, state_dict=state_dict,state=state))
+        setattr(self.spectral_components,name,self.spectral_components_list[-1])
 
-
-    def add_spectral_component(self,name):
-
-        self.spectral_components.append(JetSpecComponent(name,self._blob))
-
-
-
+    def _update_spectral_components(self):
+        _l=[]
+        for ID,s in enumerate(self.spectral_components_list):
+            self.spectral_components_list[ID]=JetSpecComponent(s.name, self._blob, var_name=s._var_name, state_dict=s._state_dict,state=s.state)
+            setattr(self.spectral_components, self.spectral_components_list[ID].name, self.spectral_components_list[ID])
 
 
 
@@ -600,14 +972,26 @@ class Jet(Model):
 
         self._beaming_expr=beaming_expr
 
-        setattr(self._blob,'BEAMING_EXPR',beaming_expr)
+        set_str_attr(self._blob,'BEAMING_EXPR',beaming_expr)
+
+        #setattr(self._blob,'BEAMING_EXPR',beaming_expr)
 
         self._emitting_region_dic=build_emitting_region_dic(beaming_expr=beaming_expr)
 
         self.add_par_from_dic(self._emitting_region_dic)
 
 
+    def set_N_from_L_sync(self,L_sync):
+        _L=self._blob.L_sync
+        setattr(self._blob,'Norm_distr_L_e_Sync',L_sync)
+        self.init_BlazarSED()
+        setattr(self._blob,'Norm_distr_L_e_Sync',_L)
 
+    def set_N_from_F_sync(self, F_sync):
+        self.init_BlazarSED()
+        DL = self._blob.dist
+        L = F_sync * DL * DL * 4.0 * np.pi
+        self.set_N_from_L_sync(L)
 
     def set_N_from_nuLnu(self,L_0, nu_0):
         """
@@ -616,8 +1000,7 @@ class Jet(Model):
         N = 1.0
         setattr(self._blob, 'N', N)
         gamma_grid_size = self._blob.gamma_grid_size
-
-        self._blob.gamma_grid_size = 100
+        self.electron_distribution.set_grid_size(100)
 
         z = self._blob.z_cosm
 
@@ -625,15 +1008,12 @@ class Jet(Model):
 
         delta = self._blob.beam_obj
         nu_blob = nu_0 / delta
-        # print 'delta for set N form L' ,delta
 
         L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
-        # if L_out <= 0.0:
-        #    L_out = BlazarSED.Lum_Sync_at_nu(blob, nu_blob) * delta ** 4
+
 
         ratio = (L_out / L_0)
-
-        self._blob.gamma_grid_size = gamma_grid_size
+        self.electron_distribution.set_grid_size(gamma_grid_size)
 
         #print 'N',N/ratio
         self.set_par('N', val=N/ratio)
@@ -662,10 +1042,10 @@ class Jet(Model):
         # print B_min
 
 
-        b_grid = np.logspace(np.log10(B_min), B_max, N_pts)
-        print 'B grid min ',B_min
-        print 'B grid max ',B_max
-        print 'grid points',N_pts
+        b_grid = np.logspace(np.log10(B_min), np.log10(B_max), N_pts)
+        print ('B grid min ',B_min)
+        print ('B grid max ',B_max)
+        print ('grid points',N_pts)
         U_e = np.zeros(N_pts)
         U_B = np.zeros(N_pts)
         N = np.zeros(N_pts)
@@ -702,29 +1082,38 @@ class Jet(Model):
 
         self.set_par('B', val=b_grid[ID_min])
         self.set_par('N', val=N[ID_min])
-        print 'setting B to ',b_grid[ID_min]
-        print 'setting N to ',N[ID_min]
+        print ('setting B to ',b_grid[ID_min])
+        print ('setting N to ',N[ID_min])
         return b_grid[ID_min],b_grid,U_B,U_e
 
 
 
+    def add_basic_components(self):
+        self.basic_components_list=['Sum','Sync','SSC']
+
+        self._add_spectral_component('Sum')
+        self._add_spectral_component('Sync', var_name='do_Sync', state_dict=dict((('on', 1), ('off', 0), ('self-abs', 2))),state='self-abs')
+
+        self._add_spectral_component('SSC', var_name='do_SSC', state_dict=dict((('on', 1), ('off', 0))))
+
+    def add_sync_component(self,state='self-abs'):
+        self._add_spectral_component('Sync', var_name='do_Sync',
+                                     state_dict=dict((('on', 1), ('off', 0), ('self-abs', 2))), state=state)
+
+    def add_SSC_component(self,state='on'):
+        self._add_spectral_component('SSC', var_name='do_SSC', state_dict=dict((('on', 1), ('off', 0))),state=state)
+
+    def del_EC_component(self,EC_components_list):
+        if isinstance(EC_components_list, six.string_types):
+            EC_components_list = [EC_components_list]
 
 
 
-
-    def del_EC_component(self,EC_components):
-
-        _del_EC_components=EC_components.split(',')
-        if len(EC_components)==1:
-            _del_EC_components=[EC_components]
+        if 'All' in EC_components_list:
+            EC_components_list=self._allowed_EC_components_list[::]
 
 
-
-        if 'All' in EC_components:
-            _del_EC_components=self._allowed_EC_components_list[::]
-
-
-        for EC_component in _del_EC_components:
+        for EC_component in EC_components_list:
 
 
             if EC_component not in self._allowed_EC_components_list:
@@ -733,101 +1122,133 @@ class Jet(Model):
 
             if EC_component=='Disk':
                 if self.get_spectral_component_by_name('Disk', verbose=False) is None:
-                    self._blob.do_EC_Disk=0
-                    self.del_spectral_component('EC_Disk',verbose=False)
-                    self.del_spectral_component('Disk',verbose=False)
-                    self.EC_components_list.remove(EC_component)
+                    self._del_spectral_component('Disk', verbose=False)
+                    self.EC_components_list.remove('Disk')
 
-            if EC_component=='BLR':
-                if self.get_spectral_component_by_name('BLR', verbose=False) is None:
+                if self.get_spectral_component_by_name('EC_Disk',verbose=False) is None:
+                    self._del_spectral_component('EC_Disk')
+                    self._blob.do_EC_Disk = 0
+                    self.EC_components_list.remove('EC_Disk')
+
+                if self.get_spectral_component_by_name('EC_BLR', verbose=False) is None:
                     self._blob.do_EC_BLR=0
+                    self._del_spectral_component('EC_BLR', verbose=False)
+                    self.EC_components_list.remove('EC_BLR')
 
-                    self.del_spectral_component('EC_BLR',verbose=False)
-                    self.EC_components_list.remove(EC_component)
+
+            if EC_component=='EC_Disk':
+                if self.get_spectral_component_by_name('EC_Disk', verbose=False) is None:
+                    self._blob.do_EC_Disk=0
+                    self._del_spectral_component('EC_Disk', verbose=False)
+                    self.EC_components_list.remove('EC_Disk')
+
+
+            if EC_component=='EC_BLR':
+                if self.get_spectral_component_by_name('EC_BLR', verbose=False) is None:
+                    self._blob.do_EC_BLR=0
+                    self._del_spectral_component('EC_BLR', verbose=False)
+                    self.EC_components_list.remove('EC_BLR')
 
             if EC_component=='DT':
                 if self.get_spectral_component_by_name('DT', verbose=False) is None:
+                    self._del_spectral_component('DT', verbose=False)
+                    self.EC_components_list.remove('DT')
+                if self.get_spectral_component_by_name('EC_DT', verbose=False) is None:
+                    self._blob.do_EC_DT = 0
+                    self._del_spectral_component('EC_DT', verbose=False)
+                    self.EC_components_list.remove('EC_DT')
+
+            if EC_component=='EC_DT':
+                if self.get_spectral_component_by_name('EC_DT', verbose=False) is None:
                     self._blob.do_EC_DT=0
-                    self.del_spectral_component('EC_DT',verbose=False)
-                    self.del_spectral_component('DT',verbose=False)
-                    self.EC_components_list.remove(EC_component)
+                    self._del_spectral_component('EC_DT', verbose=False)
+                    self.EC_components_list.remove('EC_DT')
 
             if EC_component=='CMB':
                 if self.get_spectral_component_by_name('CMB', verbose=False) is None:
                     self._blob.do_EC_CMB=0
-                    self.del_spectral_component('EC_CMB',verbose=False)
-                    self.EC_components_list.remove(EC_component)
+                    self._del_spectral_component('EC_CMB', verbose=False)
+                    self.EC_components_list.remove('EC_CMB')
 
             if EC_component=='CMB_stat':
                 if self.get_spectral_component_by_name('CMB_stat', verbose=False) is None:
                     self._blob.do_EC_CMB_stat=0
-                    self.del_spectral_component('EC_CMB_stat',verbose=False)
-                    self.EC_components_list.remove(EC_component)
+                    self._del_spectral_component('EC_CMB_stat', verbose=False)
+                    self.EC_components_list.remove('EC_CMB_stat')
 
-        self.del_par_from_dic(build_ExtFields_dic(_del_EC_components,self._allowed_EC_components_list))
-
-
+        self.del_par_from_dic(build_ExtFields_dic(EC_components_list,self._allowed_EC_components_list))
 
 
 
 
-    def add_EC_component(self,EC_components):
 
-        _add_EC_components = EC_components.split(',')
-        if len(_add_EC_components) == 1:
-            _add_EC_components = [EC_components]
 
-        if 'All' in EC_components:
-            _add_EC_components=self._allowed_EC_components_list[::]
+    def add_EC_component(self,EC_components_list):
 
-        for EC_component in _add_EC_components:
+        if isinstance(EC_components_list, six.string_types):
+            EC_components_list=[EC_components_list]
+
+        if 'All' in EC_components_list:
+            EC_components_list=self._allowed_EC_components_list[::]
+
+        for EC_component in EC_components_list:
             if EC_component not in self._allowed_EC_components_list:
                 raise RuntimeError("EC_component %s not allowed" % EC_component, "please choose among ",
                                    self._allowed_EC_components_list)
 
-
-
-
-            if EC_component=='Disk':
-                self._blob.do_EC_Disk=1
-                if self.get_spectral_component_by_name('EC_Disk',verbose=False) is None:
-                    self.add_spectral_component('EC_Disk')
-                    self.EC_components_list.append(EC_component)
-
+            if EC_component == 'Disk':
                 if self.get_spectral_component_by_name('Disk',verbose=False) is None:
-                    self.add_spectral_component('Disk')
-
-
-            if EC_component=='BLR':
-                self._blob.do_EC_BLR=1
-                if self.get_spectral_component_by_name('EC_BLR',verbose=False) is None:
-                    self.add_spectral_component('EC_BLR')
-                    self.EC_components_list.append(EC_component)
-
-                if self.get_spectral_component_by_name('Disk',verbose=False) is None:
-                    self.add_spectral_component('Disk')
+                    self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('Disk')
 
-            if EC_component=='DT':
-                self._blob.do_EC_DT=1
-                if self.get_spectral_component_by_name('EC_DT',verbose=False) is None:
-                    self.add_spectral_component('EC_DT')
-                    self.EC_components_list.append(EC_component)
+            if EC_component=='EC_Disk':
+                #self._blob.do_EC_Disk=1
+                if self.get_spectral_component_by_name('EC_Disk',verbose=False) is None:
+                    self._add_spectral_component('EC_Disk', var_name='do_EC_Disk', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('EC_Disk')
+
+                if self.get_spectral_component_by_name('Disk',verbose=False) is None:
+                    self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('Disk')
+
+            if EC_component=='EC_BLR':
+                #self._blob.do_EC_BLR=1
+                if self.get_spectral_component_by_name('EC_BLR',verbose=False) is None:
+                    self._add_spectral_component('EC_BLR', var_name='do_EC_BLR', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('EC_BLR')
+
+                if self.get_spectral_component_by_name('Disk',verbose=False) is None:
+                    # TODO add state
+                    self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('Disk')
+
+
+            if EC_component == 'DT':
                 if self.get_spectral_component_by_name('DT',verbose=False) is None:
-                    self.add_spectral_component('DT')
+                    self._add_spectral_component('DT',var_name='do_DT', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('DT')
 
-            if EC_component=='CMB':
-                self._blob.do_EC_CMB=1
-                if self.get_spectral_component_by_name('EC_CMB',verbose=False) is None:
-                    self.add_spectral_component('EC_CMB')
-                    self.EC_components_list.append(EC_component)
+            if EC_component=='EC_DT':
+                #self._blob.do_EC_DT=1
+                if self.get_spectral_component_by_name('EC_DT',verbose=False) is None:
+                    self._add_spectral_component('EC_DT', var_name='do_EC_DT', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('EC_DT')
+                #TODO add state
+                if self.get_spectral_component_by_name('DT',verbose=False) is None:
+                    self._add_spectral_component('DT',var_name='do_DT', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('DT')
 
-            if EC_component == 'CMB_stat':
-                self._blob.do_EC_CMB_stat = 1
+            if EC_component=='EC_CMB':
+                #self._blob.do_EC_CMB=1
+                if self.get_spectral_component_by_name('EC_CMB',verbose=False) is None:
+                    self._add_spectral_component('EC_CMB', var_name='do_EC_CMB', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('EC_CMB')
+
+            if EC_component == 'EC_CMB_stat':
+                #self._blob.do_EC_CMB_stat = 1
                 if self.get_spectral_component_by_name('EC_CMB_stat', verbose=False) is  None:
-                    self.add_spectral_component('EC_CMB_stat')
-                    self.EC_components_list.append(EC_component)
+                    self._add_spectral_component('EC_CMB_stat', var_name='do_EC_CMB_stat', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('EC_CMB_stat')
 
 
 
@@ -858,9 +1279,18 @@ class Jet(Model):
         for key in model_dic.keys():
 
             pname=key
-            pname_test=self.parameters.get_par_by_name(pname)
-            if pname_test is None:
+            log=False
+            p_test=self.parameters.get_par_by_name(pname)
+            if p_test is None:
+
                 pval=getattr(self._blob,pname)
+
+                if len(model_dic[key])>5:
+                    log=model_dic[key][5]
+
+                if log is True:
+                    pval = np.log10(pval)
+
                 ptype=model_dic[key][0]
                 vmin=model_dic[key][1]
                 vmax=model_dic[key][2]
@@ -872,14 +1302,14 @@ class Jet(Model):
                     froz=model_dic[key][4]
 
 
-                self.parameters.add_par(JetParameter(self._blob,name=pname,par_type=ptype,val=pval,val_min=vmin,val_max=vmax,units=punit,frozen=froz))
+                self.parameters.add_par(JetParameter(self._blob,name=pname,par_type=ptype,val=pval,val_min=vmin,val_max=vmax,units=punit,frozen=froz,log=log))
 
 
 
     #PROTECTED MEMBER ACCESS
     #!! controlla i paramteri ....
     def get_electron_distribution_name(self):
-        return self.electron_distribution._e
+        return self.electron_distribution._name
 
 
 
@@ -914,44 +1344,107 @@ class Jet(Model):
         return self._blob.path
 
     def set_path(self,path,clean_work_dir=True):
-        self._blob.path=path
+        if path.endswith('/'):
+            pass
+        else:
+            path+='/'
+
+        set_str_attr(self._blob,'path',path)
+        #set_str(self._blob.path,path)
         makedir(path,clean_work_dir=clean_work_dir)
 
-    def set_SSC_mode(self,val):
-        self._blob.do_SSC=val
+    #def set_SSC_mode(self,val):
+    #    self._blob.do_SSC=val
 
-    def get_SSC_mode(self):
-        return self._blob.do_SSC
+    #def get_SSC_mode(self):
+    #    return self._blob.do_SSC
+
+
 
     def set_IC_mode(self,val):
-        self._blob.do_IC=val
+
+        if val not in self._IC_states.keys():
+            raise RuntimeError('val',val,'not in allowed values',self._IC_states.keys())
+
+        self._blob.do_IC=self._IC_states[val]
 
     def get_IC_mode(self):
-        return self._blob.do_IC
+        return dict(map(reversed, self._IC_states.items()))[self._blob.do_IC]
 
-    def set_sync_mode(self,val):
-        self._blob.do_Sync=val
+    def set_emiss_lim(self,val):
+        self._blob.emiss_lim=val
 
-    def get_sync_mode(self):
-        return self._blob.do_Sync
+    def get_emiss_lim(self):
+        return self._blob.emiss_lim
 
     def set_IC_nu_size(self,val):
         self._blob.nu_IC_size=val
+        #BlazarSED.build_photons(self._blob)
 
     def get_IC_nu_size(self):
         return self._blob.nu_IC_size
 
     def set_seed_nu_size(self,val):
         self._blob.nu_seed_size=val
+        #BlazarSED.build_photons(self._blob)
 
     def get_seed_nu_size(self):
         return self._blob.nu_seed_size
 
     def set_gamma_grid_size(self,val):
-        self._blob.gamma_grid_size=val
+        self.electron_distribution.set_grid_size(gamma_grid_size=val)
+
 
     def get_gamma_grid_size(self):
         return self._blob.gamma_grid_size
+
+    @property
+    def nu_min(self):
+        return self._get_nu_min_grid()
+
+    @nu_min.setter
+    def nu_min(self, val):
+        if hasattr(self, '_blob'):
+            self._set_nu_min_grid(val)
+
+    def _get_nu_min_grid(self):
+        return  self._blob.nu_start_grid
+
+
+    def _set_nu_min_grid(self, val):
+        self._blob.nu_start_grid=val
+
+    @property
+    def nu_max(self):
+        return self._get_nu_max_grid()
+
+    @nu_max.setter
+    def nu_max(self, val):
+        if hasattr(self, '_blob'):
+            self._set_nu_max_grid(val)
+
+    def _set_nu_max_grid(self, val):
+        self._blob.nu_stop_grid=val
+
+    def _get_nu_max_grid(self):
+        return  self._blob.nu_stop_grid
+
+    @property
+    def nu_size(self):
+        return self._get_nu_grid_size()
+
+    @nu_size.setter
+    def nu_size(self, val):
+        if hasattr(self, '_blob'):
+            self._set_nu_grid_size(val)
+
+    def _set_nu_grid_size(self, val):
+        self._blob.nu_grid_size=val
+        #BlazarSED.build_photons(self._blob)
+
+    def _get_nu_grid_size(self):
+        return  self._blob.nu_grid_size
+
 
 
     def set_verbosity(self,val):
@@ -961,14 +1454,14 @@ class Jet(Model):
         return  self._blob.verbose
 
     def debug_synch(self):
-        print "nu stop synch", self._blob.nu_stop_Sync
-        print "nu stop synch ssc", self._blob.nu_stop_Sync_ssc
-        print "ID MAX SYNCH", self._blob.NU_INT_STOP_Sync_SSC
+        print ("nu stop synch", self._blob.nu_stop_Sync)
+        print ("nu stop synch ssc", self._blob.nu_stop_Sync_ssc)
+        print ("ID MAX SYNCH", self._blob.NU_INT_STOP_Sync_SSC)
 
     def debug_SSC(self):
-        print "nu start SSC", self._blob.nu_start_SSC
-        print "nu stop SSC", self._blob.nu_stop_SSC
-        print "ID MAX SSC", self._blob.NU_INT_STOP_COMPTON_SSC
+        print ("nu start SSC", self._blob.nu_start_SSC)
+        print ("nu stop SSC", self._blob.nu_stop_SSC)
+        print ("ID MAX SSC", self._blob.NU_INT_STOP_COMPTON_SSC)
 
     def set_par(self,par_name,val):
         """
@@ -1009,32 +1502,54 @@ class Jet(Model):
         return None
 
 
-    def show_model(self):
-        self.show_pars()
-
-
     def show_pars(self):
+        self.parameters.par_array.sort(key=lambda x: x.name, reverse=False)
+        self.parameters.show_pars()
+
+
+    def show_model(self):
         """
         shortcut to :class:`ModelParametersArray.show_pars` method
         shows all the paramters in the model
 
         """
+        print("")
+        print("-------------------------------------------------------------------------------------------------------------------")
 
-        print "-----------------------------------------------------------------------------------------"
-        print "model parameters for jet model:"
-        print
+        print ("jet model description")
+        print(
+            "-------------------------------------------------------------------------------------------------------------------")
+        print("name: %s  " % (self.name))
+        print('')
+        print('electron distribution:')
+        print(" type: %s  " % (self._electron_distribution_name))
+        print (" electron energy grid size: ",self.get_gamma_grid_size())
+        print (" gmin grid : %e"%self._blob.gmin_griglia)
+        print (" gmax grid : %e"%self._blob.gmax_griglia)
+        print('')
+        print('radiative fields:')
+        print (" seed photons grid size: ", self.get_seed_nu_size())
+        print (" IC emission grid size: ", self.get_IC_nu_size())
+        print (' source emissivity lower bound :  %e' % self._blob.emiss_lim)
+        print(' spectral components:')
+        for _s in self.spectral_components_list:
+            print("   name:%s,"%_s.name, 'state:', _s.state)
+        print ('')
+        print ('SED info:')
+        print (' nu grid size :%d' % self._get_nu_grid_size())
+        print (' nu mix (Hz): %e' % self._get_nu_min_grid())
+        print (' nu max (Hz): %e' % self._get_nu_max_grid())
+        print('')
+        print('flux plot lower bound   :  %e' % self.flux_plot_lim)
+        print('')
 
+        self.show_pars()
 
-        print "electron distribution type = %s  "%(self._electron_distribution_name)
+        print("-------------------------------------------------------------------------------------------------------------------")
 
-        self.parameters.show_pars()
-
-        print "-----------------------------------------------------------------------------------------"
-
-
-    def plot_model(self,plot_obj=None,clean=False,autoscale=True,label=None,comp=None):
+    def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None):
         if plot_obj is None:
-            plot_obj=Plot()
+            plot_obj=PlotSED(sed_data=sed_data)
 
 
         if clean==True:
@@ -1048,22 +1563,31 @@ class Jet(Model):
                 comp_label = label
             else:
                 comp_label = c.name
-            plot_obj.add_model_plot(c.SED, autoscale=autoscale, line_style=line_style, label=comp_label)
+            if c.state!='off':
+                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color)
 
         else:
-            for c in self.spectral_components:
+            for c in self.spectral_components_list:
                 comp_label = c.name
-                if c.name=='Sum':
-                    if label is not None:
-                        comp_label=label
 
-                plot_obj.add_model_plot(c.SED, autoscale=autoscale, line_style=line_style, label=comp_label)
+                if c.state != 'off' and c.name!='Sum':
+                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim)
+
+
+            c=self.get_spectral_component_by_name('Sum')
+            if label is not None:
+                comp_label = label
+            else:
+                comp_label='Sum'
+
+            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim)
 
         return plot_obj
 
 
 
     def init_BlazarSED(self):
+
         BlazarSED.Init(self._blob)
 
 
@@ -1078,14 +1602,16 @@ class Jet(Model):
 
         """
 
-
+        if self.electron_distribution is None:
+            raise  RuntimeError('electron distribution not defined')
 
 
         if init==True:
 
             BlazarSED.Init(self._blob)
-
-
+            #self.set_electron_distribution()
+            #TODO investigate if this is necessary!!!
+            self._update_spectral_components()
 
         BlazarSED.Run_SED(self._blob)
 
@@ -1094,17 +1620,19 @@ class Jet(Model):
             BlazarSED.EnergeticOutput(self._blob)
 
         nu_sed_sum,nuFnu_sed_sum= self.get_SED_points()
+        #print('nu_sed_sum,nuFnu_sed_sum',nu_sed_sum,nuFnu_sed_sum)
+
 
         if fill_SED==True:
 
             self.SED.fill(nu=nu_sed_sum,nuFnu=nuFnu_sed_sum)
 
-            for i in xrange(len(self.spectral_components)):
+            for i in range(len(self.spectral_components_list)):
 
-                print ('fill name',self.spectral_components[i].name)
-                nu_sed,nuFnu_sed= self.get_SED_points(name=self.spectral_components[i].name)
+                #print ('fill name',self.spectral_components_list[i].name)
+                nu_sed,nuFnu_sed= self.get_SED_points(name=self.spectral_components_list[i].name)
 
-                self.spectral_components[i].SED.fill(nu=nu_sed,nuFnu=nuFnu_sed)
+                self.spectral_components_list[i].SED.fill(nu=nu_sed, nuFnu=nuFnu_sed)
 
         if nu is None:
 
@@ -1127,12 +1655,10 @@ class Jet(Model):
             else:
                 nu_log=nu
 
-            #nu_sed_log,nuFnu_sed_log= self.get_SED_points(log_log=True)
 
             nu_sed_log=np.log10(nu_sed_sum)
             nuFnu_sed_log=np.log10(nuFnu_sed_sum)
 
-            #print "here: ",nu_log, nu_sed_log.min()
             msk= nu_log > nu_sed_log.min()
 
 
@@ -1162,7 +1688,7 @@ class Jet(Model):
             if label is None:
                 label= self.name
 
-            self.PlotModel(plot, clean=True, label=self.name)
+            self.plot_model(plot, clean=True, label=label)
 
 
         if get_model==True:
@@ -1179,29 +1705,36 @@ class Jet(Model):
         try:
             spec_comp=self.get_spectral_component_by_name(name)
 
-
+            #print ('spec_comp',spec_comp.name,spec_comp._nu_name)
             nuFnu_ptr=spec_comp.nuFnu_ptr
             nu_ptr=spec_comp.nu_ptr
 
-            size=self._blob.spec_array_size
+            size=self._blob.nu_grid_size
             x=zeros(size)
             y=zeros(size)
 
-            for i in xrange(size):
-                x[i]=BlazarSED.get_freq_array(nu_ptr,self._blob,i)
-                y[i]=BlazarSED.get_freq_array(nuFnu_ptr,self._blob,i)
+            for i in range(size):
+                x[i]=BlazarSED.get_spectral_array(nu_ptr,self._blob,i)
+                y[i]=BlazarSED.get_spectral_array(nuFnu_ptr,self._blob,i)
 
-                #print"%s %e %e"%(name,x[i],y[i])
+                #print("%s %e %e"%(name,x[i],y[i]))
 
-            msk=y>self.flux_plot_lim
+            msk_nan=np.isnan(x)
+            msk_nan+=np.isnan(y)
+            #print('emiss lim',self.get_emiss_lim())
+            x[msk_nan]=0.
+            y[msk_nan]=self.get_emiss_lim()
 
-            x=x[msk]
-            y=y[msk]
+            msk=y<self.get_emiss_lim()
+
+
+            y[msk]=self.get_emiss_lim()
 
 
 
             if log_log==True:
-
+                msk = y <= 0.
+                y[msk] = self.get_emiss_lim()
 
                 #x=x[msk]
                 #    y=y[msk]
@@ -1210,19 +1743,60 @@ class Jet(Model):
                 y=log10(y)
 
 
+
             return x,y
 
         except:
+            raise RuntimeError ('model evaluation failed in get_SED_points')
 
-            print "no spectral model found with name",name
 
+    def energetic_report(self,write_file=False,getstring=True,wd=None,name=None):
+
+        _energetic = BlazarSED.EnergeticOutput(self._blob,0)
+        _par_array=ModelParameterArray()
+
+        _name = [i for i in _energetic.__class__.__dict__.keys() if i[:1] != '_']
+        for _n in _name:
+            if _n[0]=='L':
+                par_type='Lum. rest. frme.'
+                units='erg/s'
+            if _n[0] == 'U':
+                par_type = 'Energy dens.'
+                units = 'erg/cm^3'
+            if _n[0] == 'j':
+                par_type = 'jet Lum.'
+                units = 'erg/s'
+            _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
+
+        print("-----------------------------------------------------------------------------------------")
+        print("jet eneregetic report:")
+        self._energetic_report = _par_array.show_pars(getstring=False)
+        self._energetic_report=_par_array.show_pars(getstring=getstring)
+        print("-----------------------------------------------------------------------------------------")
+
+        if write_file==True:
+
+            if wd is None:
+                wd = self.wd
+
+            if name is None:
+                name = 'energetic_report_%s' % self.name + '.txt'
+
+            outname = '%s/%s' % (wd, name)
+
+            outfile = open(outname, 'w')
+
+            for text in self._energetic_report:
+                print(text, file=outfile)
+
+            outfile.close()
 
 
 
     def get_SED_peak(self,peak_name=None,freq_range=None,log_log=False):
 
         if peak_name is not None and freq_range is not None:
-            print "either you provide peak_name or freq_range"
+            print ("either you provide peak_name or freq_range")
             raise ValueError
         elif   peak_name is not None:
             try:
@@ -1231,7 +1805,7 @@ class Jet(Model):
                 else:
                      return np.log10(getattr(self._blob,peak_name) )
             except:
-                print "peak name %s, not found, check name"%peak_name
+                print ("peak name %s, not found, check name"%peak_name)
                 raise ValueError
 
         else:
@@ -1243,65 +1817,23 @@ class Jet(Model):
             x_id= np.argmax(y[msk1*msk2])
             return x[msk1*msk2][x_id],y_m
 
-def init_SED(verbose=None):
-    
-   
-    
-    blob=BlazarSED.MakeBlob()
-    #temp_ev=BlazarSED.MakeTempEv()
 
-    if verbose is None:
-        blob.verbose=0
-    else:
-        blob.verbose=verbose
-    
 
-    blob.path="./"
-    
-    
-    blob.MODE='custom'
-    blob.gamma_grid_size=1000
-    
-    blob.nu_IC_size =50
-    blob.nu_seed_size =100
-    
-    blob.do_Sync=2
-    
-    blob.do_SSC=1
-   
-    
-    blob.R=3.0e15
-    
-    blob.B=0.1
-    
-    blob.z_cosm=0.1
 
-    blob.BulkFactor=10
-    blob.theta=0.1
-    
-    
-    blob.N=100
-    
-    blob.gmin=2
 
-    blob.gmax=1e8
-    
-    
-     
-    
-    blob.nu_start_Sync = 1e6
-    blob.nu_stop_Sync = 1e20
-    
-    blob.nu_start_SSC=1e14
-    blob.nu_stop_SSC=1e30
-    
-    blob.nu_start_grid=1e6
-    blob.nu_stop_grid=1e30
-    
-    
-    
-    
-    return blob
+def set_str_attr(obj,name,val):
+    #print('set obj', obj,'name',name ,'to', val)
+    try:
+
+        try:
+            setattr(obj, name,val)
+        except:
+            setattr(obj, name, val.encode('ascii'))
+    except Exception as e:
+        raise RuntimeError('error setting attr',name,'execption:',e)
+
+
+
 
 
 

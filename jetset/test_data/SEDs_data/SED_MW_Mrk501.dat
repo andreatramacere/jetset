@@ -1,12 +1,16 @@
-# meta-data
-# md z  0.0336
-# md restframe  obs
-# md data_scale  lin-lin
-# md col_types    x,y,dy
-# md obj_name    Mrk-501
-# Frequency [Hz]  EnergyFlux [erg/cm2/s]
-#  Xval	    	  Yval	     YvalError
-# X[Hz] Y[erg sec^-1 cm^-2] Ye[erg sec^-1 cm^-2]
+# %ECSV 0.9
+# ---
+# datatype:
+# - {name: x, unit: Hz, datatype: float64}
+# - {name: y, unit: erg/(cm2 s) , datatype: float64}
+# - {name: dy, unit: erg/(cm2 s) ,datatype: float64}
+# meta: !!omap
+# - {z: 0.0336 }
+# - {restframe: obs}
+# - {data_scale: lin-lin}
+# - {obj_name: 'Mrk-501'}
+# schema: astropy-2.0
+x y dy
 2.299540e+09 3.689200e-14 2.668000e-15
 2.639697e+09 4.124560e-14 9.712535e-26
 4.799040e+09 7.036800e-14 4.800000e-16

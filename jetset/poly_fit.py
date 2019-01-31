@@ -1,8 +1,16 @@
-#!/usr/bin/env python
+
+
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
 from scipy.optimize import leastsq
 import scipy as s
 from numpy import polyfit,polyval,polyder
-
+import  numpy as np
 
 __all__=['check_maxima','cubic_peaks','do_cubic_fit','do_cubic_fit_peaks','do_linear_fit',
          'do_log_Parab_FIT','filter_interval','find_max_cubic','lin','parab','residuals_cubic_peaks',
@@ -37,7 +45,7 @@ def do_linear_fit(x,y,dy=None,x_range=None):
 
 
     if len(x_fit)<2:
-        raise RuntimeError,  "fit failed number of points less then 2"
+        raise RuntimeError("fit failed number of points less then 2")
      
     #print nu_fit,nuFnu_fit,err_nuFnu_fit
     pinit = [1.0,10.0]
@@ -164,7 +172,7 @@ def find_max_cubic(p,x,y,dy=None,x_range=None):
         p_peaks,err,dof=do_cubic_fit_peaks(x,y,xp,yp,dy=dy,x_range=x_range)
         return  p_peaks,err,dof
     else:
-        print "!!! no maxima found for cubic fit"
+        print ("!!! no maxima found for cubic fit")
         xp=None
         yp=None
         b=None
@@ -172,12 +180,14 @@ def find_max_cubic(p,x,y,dy=None,x_range=None):
 
 
 def check_maxima(xm,ym,b,x,y):
-    c=zip(x,y)
-    c.sort(key=lambda tup: tup[1])
+    c = np.array([x, y]).T
+    c = c[np.argsort(c[:, 1])]
     max=c[-1]
     #print "check max", c
     #print max[0],max[1]
     #min=c[0]
+
+
     if b<0:
        return max[0],max[1]
     if b>=0:

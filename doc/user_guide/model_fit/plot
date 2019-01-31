@@ -1,0 +1,649 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import warnings\n",
+    "warnings.filterwarnings('ignore')\n",
+    "\n",
+    "import matplotlib.pylab as plt\n",
+    "%matplotlib inline"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# metadata\n",
+    "# md z  0.0308\n",
+    "# md restframe  obs\n",
+    "# md data_scale  lin-lin\n",
+    "# md col_types x,y,dy,data_set\n",
+    "# md obj_name     J1104+3812,Mrk421\n",
+    "#"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# metadata\n",
+    "# md z  0.0308\n",
+    "# md restframe  obs\n",
+    "# md data_scale  lin-lin\n",
+    "# md col_types x,y,dy,data_set\n",
+    "# md obj_name     J1104+3812,Mrk421\n",
+    "#"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.test_data_helper import  test_SEDs\n",
+    "test_SEDs"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "mySED=test_SEDs[1]\n",
+    "from jetset.data_loader import ObsData\n",
+    "sed_data=ObsData(data_file=mySED)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.plot_sedfit import Plot\n",
+    "myPlot=Plot(sed_data)\n",
+    "myPlot.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sed_data.group_data(bin_width=0.2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sed_data.add_systematics(0.2,[10.**6,10.**29])\n",
+    "myPlot=Plot(sed_data)\n",
+    "myPlot.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.sed_shaper import  SEDShape\n",
+    "my_shape=SEDShape(sed_data)\n",
+    "my_shape.eval_indices(minimizer='lsb',silent=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.sed_shaper import  SEDShape\n",
+    "my_shape=SEDShape(sed_data)\n",
+    "my_shape.eval_indices(minimizer='lsb',silent=False)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=my_shape.plot_indices()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.sed_shaper import  SEDShape\n",
+    "my_shape=SEDShape(sed_data)\n",
+    "my_shape.eval_indices(minimizer='lsb',silent=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "myPlot.save('SED_indices_rebinned.png')\n",
+    "\n",
+    "\n",
+    "my_shape.sync_fit(check_host_gal_template=True,minimizer='minuit',fit_range=[10,19])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "my_shape.IC_fit()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=my_shape.plot_sahpe_fit()\n",
+    "p.rescale(y_min=sed_data.data['nuFnu_data_log'].min()-1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.obs_constrain import ObsConstrain\n",
+    "\n",
+    "sed_obspar=ObsConstrain(beaming=25,B_range=[0.01,0.1],distr_e='lppl',t_var_sec=3*86400,nu_cut_IR=9.0E12,SEDShape=my_shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "jet_model=sed_obspar.constrain_SSC_model()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=jet_model.plot_model(SEDdata=sed_data,autoscale=True)\n",
+    "p.rescale(y_min=sed_data.data['nuFnu_data_log'].min()-1)\n",
+    "p.add_residual_plot(jet_model,sed_data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.model_manager import FitModel\n",
+    "from jetset.minimizer import  fit_SED\n",
+    "\n",
+    "fit_model=FitModel( jet=jet_model, name='SSC-best-fit',  template=my_shape.host_gal)\n",
+    "\n",
+    "fit_model.set('z_cosm','frozen')\n",
+    "\n",
+    "fit_model.set('beam_obj','frozen')\n",
+    "\n",
+    "fit_model.set('nuFnu_p_host','frozen')\n",
+    "\n",
+    "fit_model.set('r',fit_range=[0.5,10.5])\n",
+    "\n",
+    "fit_model.show_pars()\n",
+    "    \n",
+    "best_fit=fit_SED(fit_model,sed_data,10.0**11 ,10**28.0,fitname='SSC-best-fit-lppl',minimizer='lsb')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=jet_model.plot_model(SEDdata=sed_data)\n",
+    "p.add_residual_plot(data=sed_data,model=jet_model)\n",
+    "p.rescale(y_min=-14,y_max=-8,x_min=9.0,x_max=30)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.model_manager import FitModel\n",
+    "from jetset.minimizer import  fit_SED\n",
+    "\n",
+    "fit_model=FitModel( jet=jet_model, name='SSC-best-fit',  template=my_shape.host_gal)\n",
+    "\n",
+    "fit_model.set('z_cosm','frozen')\n",
+    "\n",
+    "fit_model.set('beam_obj','frozen')\n",
+    "\n",
+    "fit_model.set('nuFnu_p_host','frozen')\n",
+    "\n",
+    "fit_model.set('r',fit_range=[0.5,10.5])\n",
+    "\n",
+    "fit_model.show_pars()\n",
+    "    \n",
+    "best_fit=fit_SED(fit_model,sed_data,10.0**11 ,10**28.0,fitname='SSC-best-fit-lppl',minimizer='minuit')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=jet_model.plot_model(SEDdata=sed_data)\n",
+    "p.add_residual_plot(data=sed_data,model=jet_model)\n",
+    "p.rescale(y_min=-14,y_max=-8,x_min=9.0,x_max=30)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.obs_constrain import ObsConstrain\n",
+    "\n",
+    "sed_obspar=ObsConstrain(beaming=25,B_range=[0.01,0.1],distr_e='plc',t_var_sec=3*86400,nu_cut_IR=9.0E12,SEDShape=my_shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "jet_model=sed_obspar.constrain_SSC_model()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=jet_model.plot_model(SEDdata=sed_data,autoscale=True)\n",
+    "p.rescale(y_min=sed_data.data['nuFnu_data_log'].min()-1)\n",
+    "p.add_residual_plot(jet_model,sed_data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.model_manager import FitModel\n",
+    "from jetset.minimizer import  fit_SED\n",
+    "\n",
+    "fit_model=FitModel( jet=jet_model, name='SSC-best-fit',  template=my_shape.host_gal)\n",
+    "\n",
+    "fit_model.set('z_cosm','frozen')\n",
+    "\n",
+    "fit_model.set('beam_obj','frozen')\n",
+    "\n",
+    "fit_model.set('nuFnu_p_host','frozen')\n",
+    "\n",
+    "fit_model.set('r',fit_range=[0.5,10.5])\n",
+    "\n",
+    "fit_model.show_pars()\n",
+    "    \n",
+    "best_fit=fit_SED(fit_model,sed_data,10.0**11 ,10**28.0,fitname='SSC-best-fit-lppl',minimizer='lsb')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "jet_model.show_model()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.model_manager import FitModel\n",
+    "from jetset.minimizer import  fit_SED\n",
+    "\n",
+    "fit_model=FitModel( jet=jet_model, name='SSC-best-fit',  template=my_shape.host_gal)\n",
+    "\n",
+    "fit_model.set('z_cosm','frozen')\n",
+    "\n",
+    "fit_model.set('beam_obj','frozen')\n",
+    "\n",
+    "fit_model.set('nuFnu_p_host','frozen')\n",
+    "\n",
+    "#fit_model.set('r',fit_range=[0.5,10.5])\n",
+    "\n",
+    "fit_model.show_pars()\n",
+    "    \n",
+    "best_fit=fit_SED(fit_model,sed_data,10.0**11 ,10**28.0,fitname='SSC-best-fit-lppl',minimizer='lsb')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=jet_model.plot_model(SEDdata=sed_data)\n",
+    "p.add_residual_plot(data=sed_data,model=jet_model)\n",
+    "p.rescale(y_min=-14,y_max=-8,x_min=9.0,x_max=30)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.model_manager import FitModel\n",
+    "from jetset.minimizer import  fit_SED\n",
+    "\n",
+    "fit_model=FitModel( jet=jet_model, name='SSC-best-fit',  template=my_shape.host_gal)\n",
+    "\n",
+    "fit_model.set('z_cosm','frozen')\n",
+    "\n",
+    "fit_model.set('beam_obj','frozen')\n",
+    "\n",
+    "fit_model.set('nuFnu_p_host','frozen')\n",
+    "\n",
+    "fit_model.set('r',fit_range=[0.5,10.5])\n",
+    "\n",
+    "fit_model.show_pars()\n",
+    "    \n",
+    "best_fit=fit_SED(fit_model,sed_data,10.0**11 ,10**28.0,fitname='SSC-best-fit-lppl',minimizer='minuit')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.model_manager import FitModel\n",
+    "from jetset.minimizer import  fit_SED\n",
+    "\n",
+    "fit_model=FitModel( jet=jet_model, name='SSC-best-fit',  template=my_shape.host_gal)\n",
+    "\n",
+    "fit_model.set('z_cosm','frozen')\n",
+    "\n",
+    "fit_model.set('beam_obj','frozen')\n",
+    "\n",
+    "fit_model.set('nuFnu_p_host','frozen')\n",
+    "\n",
+    "#fit_model.set('r',fit_range=[0.5,10.5])\n",
+    "\n",
+    "fit_model.show_pars()\n",
+    "    \n",
+    "best_fit=fit_SED(fit_model,sed_data,10.0**11 ,10**28.0,fitname='SSC-best-fit-lppl',minimizer='minuit')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=jet_model.plot_model(SEDdata=sed_data)\n",
+    "p.add_residual_plot(data=sed_data,model=jet_model)\n",
+    "p.rescale(y_min=-14,y_max=-8,x_min=9.0,x_max=30)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.obs_constrain import ObsConstrain\n",
+    "\n",
+    "sed_obspar=ObsConstrain(beaming=25,B_range=[0.01,0.1],distr_e='bkn',t_var_sec=3*86400,nu_cut_IR=9.0E12,SEDShape=my_shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "jet_model=sed_obspar.constrain_SSC_model()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "jet_model.show_model()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=jet_model.plot_model(SEDdata=sed_data,autoscale=True)\n",
+    "p.rescale(y_min=sed_data.data['nuFnu_data_log'].min()-1)\n",
+    "p.add_residual_plot(jet_model,sed_data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.model_manager import FitModel\n",
+    "from jetset.minimizer import  fit_SED\n",
+    "\n",
+    "fit_model=FitModel( jet=jet_model, name='SSC-best-fit',  template=my_shape.host_gal)\n",
+    "\n",
+    "fit_model.set('z_cosm','frozen')\n",
+    "\n",
+    "fit_model.set('beam_obj','frozen')\n",
+    "\n",
+    "fit_model.set('nuFnu_p_host','frozen')\n",
+    "\n",
+    "#fit_model.set('r',fit_range=[0.5,10.5])\n",
+    "\n",
+    "fit_model.show_pars()\n",
+    "    \n",
+    "best_fit=fit_SED(fit_model,sed_data,10.0**11 ,10**28.0,fitname='SSC-best-fit-lppl',minimizer='lsb')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=jet_model.plot_model(SEDdata=sed_data)\n",
+    "p.add_residual_plot(data=sed_data,model=jet_model)\n",
+    "p.rescale(y_min=-14,y_max=-8,x_min=9.0,x_max=30)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.obs_constrain import ObsConstrain\n",
+    "\n",
+    "sed_obspar=ObsConstrain(beaming=25,B_range=[0.01,0.1],distr_e='pl',t_var_sec=3*86400,nu_cut_IR=9.0E12,SEDShape=my_shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 40,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "jet_model=sed_obspar.constrain_SSC_model()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 41,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "jet_model.show_model()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=jet_model.plot_model(SEDdata=sed_data,autoscale=True)\n",
+    "p.rescale(y_min=sed_data.data['nuFnu_data_log'].min()-1)\n",
+    "p.add_residual_plot(jet_model,sed_data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from jetset.model_manager import FitModel\n",
+    "from jetset.minimizer import  fit_SED\n",
+    "\n",
+    "fit_model=FitModel( jet=jet_model, name='SSC-best-fit',  template=my_shape.host_gal)\n",
+    "\n",
+    "fit_model.set('z_cosm','frozen')\n",
+    "\n",
+    "fit_model.set('beam_obj','frozen')\n",
+    "\n",
+    "fit_model.set('nuFnu_p_host','frozen')\n",
+    "\n",
+    "#fit_model.set('r',fit_range=[0.5,10.5])\n",
+    "\n",
+    "fit_model.show_pars()\n",
+    "    \n",
+    "best_fit=fit_SED(fit_model,sed_data,10.0**11 ,10**28.0,fitname='SSC-best-fit-lppl',minimizer='lsb')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 44,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=jet_model.plot_model(SEDdata=sed_data)\n",
+    "p.add_residual_plot(data=sed_data,model=jet_model)\n",
+    "p.rescale(y_min=-14,y_max=-8,x_min=9.0,x_max=30)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 45,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "jet_model._blob"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 46,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dir(jet_model._blob)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "jet_model._blob.griglia_gamma_Ne_log"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 48,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "jet_model._blob.gamma_grid_size"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 49,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%matplotlib inline\n",
+    "from jetset import jet_model\n",
+    "myJet=jet_model.Jet(name='test',electron_distribution='lppl',)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 50,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "myJet.eval()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 51,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p=myJet.plot_model()"
+   ]
+  }
+ ],
+ "metadata": {},
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

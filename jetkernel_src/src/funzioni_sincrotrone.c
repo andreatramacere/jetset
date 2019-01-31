@@ -220,7 +220,7 @@ double integrale_Sync(double (*pf) (struct spettro *, unsigned long  ID), struct
     for(ID=1;ID<pt->gamma_grid_size-1;ID++){
 
         y2=pf(pt,ID);
-        
+        ID++;
         x3=pt->griglia_gamma_Ne_log[ID];
         y3=pf(pt,ID);
                

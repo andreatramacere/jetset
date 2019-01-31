@@ -49,7 +49,7 @@
 #define three_by_four 0.75 /* 4/3 */
 #define fake_nu_err 1.0
 #define fake_flux_err 1.0
-#define static_spec_arr_size 200 /* num elementi dei vettori */
+#define static_spec_arr_size 1000 /* num elementi dei vettori */
 #define static_bess_table_size 1000 /* num elementi tabelle di Bessel */
 #define Bessel_MAX 500.0
 #define ELEMENTI_GAMMA_Contr_Comp 100
@@ -88,7 +88,7 @@ struct spettro {
     int SSC, EC, TOT;
 
     int do_Sync, do_SSC,do_IC,Sync_kernel;
-    int attesa_Sync_cooling, attesa_compton_cooling;
+    //int attesa_Sync_cooling, attesa_compton_cooling;
 
     unsigned long spec_array_size;
 
@@ -107,23 +107,29 @@ struct spettro {
     double Vol_sphere;
     double Surf_sphere;
 
+    //----- Summed Spectra-----//
+    //double nuF_nu_Sum_obs[static_spec_arr_size];
+
 
     //---- somma observer frame
-    unsigned long nu_sum_size;
+    unsigned long nu_grid_size ;
     double nu_start_grid;
     double nu_stop_grid;
-    double nuFnu_Sync_grid;
-    double nuFnu_comp_grid;
-    double nuFnu_somma_grid;
-    double nuFnu_Disk_grid;
-    double nuFnu_DT_grid;
-    double nuFnu_Star_grid;
-    double nuFnu_EC_CMB_grid;
-    double nuFnu_EC_CMB_stat_grid;
-    double nuFnu_EC_BLR_grid;
-    double nuFnu_EC_DT_grid;
-    double nuFnu_EC_Disk_grid;
-    double nuFnu_EC_Star_grid;
+
+    double nu_grid[static_spec_arr_size];
+    double nuFnu_sum_grid[static_spec_arr_size];
+
+    double nuFnu_Sync_grid[static_spec_arr_size];
+    double nuFnu_SSC_grid[static_spec_arr_size];
+    double nuFnu_Disk_grid[static_spec_arr_size];
+    double nuFnu_DT_grid[static_spec_arr_size];
+    double nuFnu_Star_grid[static_spec_arr_size];
+    double nuFnu_EC_CMB_grid[static_spec_arr_size];
+    double nuFnu_EC_CMB_stat_grid[static_spec_arr_size];
+    double nuFnu_EC_BLR_grid[static_spec_arr_size];
+    double nuFnu_EC_DT_grid[static_spec_arr_size];
+    double nuFnu_EC_Disk_grid[static_spec_arr_size];
+    double nuFnu_EC_Star_grid[static_spec_arr_size];
 
     //-----------Sync --------------//
     //--- CONST
@@ -180,7 +186,7 @@ struct spettro {
     //-----------pp-gamma-emission---//
     //--- CONST
     double NH_pp;
- 
+
     //--- FREQ BOUNDARIES
     double nu_stop_pp_pred,nu_stop_pp;
     double nu_start_pp;
@@ -253,6 +259,7 @@ struct spettro {
 
     //Const
     int do_EC_Disk,do_EC_BLR,do_EC_DT,do_EC_Star,do_EC_CMB,do_EC_CMB_stat;
+    int do_Disk,do_DT;
     double nu_planck_min_factor;
     double nu_planck_max_factor;
     double mono_planck_min_factor;
@@ -344,8 +351,8 @@ struct spettro {
 
     //--- DISK
     //-PARAMTERS
-    double L_disk;
-    double T_disk_max;
+    double L_Disk;
+    double T_Disk;
     double accr_eff;
     double R_inner_Sw, R_ext_Sw;
     //
@@ -477,15 +484,13 @@ struct spettro {
 
     double beaming_EC;
 
-    //----- Summed Spectra-----//
-    double nuF_nu_Sum_obs[static_spec_arr_size];
-    double nu_Sum_obs[static_spec_arr_size];
+    
 
 
     //----------- INTEGRATION MESH--------------//
     unsigned long nu_seed_size;
     unsigned long nu_IC_size;
-    unsigned long gamma_grid_size;
+
     //unsigned long mesh_intComp;
     //unsigned long mesh_intComp1;
 
@@ -498,17 +503,22 @@ struct spettro {
     int Distr_e_pp_done;
 
     int TIPO_DISTR;
-    double distre[static_spec_arr_size];
+    double *Ne_custom;
+    double *gamma_e_custom;
+    unsigned long gamma_custom_grid_size;
     double *gam;
     double *Ne;
+    double *Ne_IC;
     double *Ne_stat;
     double *Np;
-    double *griglia_gamma_Ne_log;
-    double *griglia_gamma_Ne_log_stat;
-    double *griglia_gamma_Np_log;
+    unsigned long gamma_grid_size;
+    double * griglia_gamma_Ne_log;
+    double * griglia_gamma_Ne_log_IC;
+    double * griglia_gamma_Ne_log_stat;
+    double * griglia_gamma_Np_log;
    
-    double *griglia_gamma_log_IC;
-    double *N_IC;
+    //double *griglia_gamma_log_IC;
+    //double *N_IC;
 
     unsigned long i_griglia_gamma;
     double N_tot_e_Sferic;
@@ -517,6 +527,7 @@ struct spettro {
     double N_0,N_0p,N_0e; /* costante di normalizzazione per distrib elettr staz */
     double gmin;
     double gmax;
+    int grid_bounded_to_gamma;
     //unsigned long pt_griglia_max;
     double gmin_griglia;
     double gmax_griglia;
@@ -537,21 +548,33 @@ struct spettro {
     double gamma0_log_parab;
     //LPEP
     double gammap_log_parab;
-
+    //LPEP PILEUP
+    double gamma_inj;
     //Spit
-    double spit_index,spit_ratio,spit_cut,spit_cut1,spit_cut2;
+    double spit_index,spit_temp,spit_gamma_th;
+
+    //LPPL Pile-Up
+    double gamma_pile_up,gamma_pile_up_cut,alpha_pile_up;
+    double ratio_pile_up;
 
 };
 
 //===================================================================================
 
-
+struct jet_energetic{
+    double U_e,U_p,U_B;
+    double L_Sync_rf, L_SSC_rf, L_EC_Disk_rf,L_EC_BLR_rf, L_EC_DT_rf,L_EC_CMB_rf, L_PP_rf;
+    double jet_L_Sync,jet_L_SSC, jet_L_EC_Disk, jet_L_EC_BLR, jet_L_EC_DT,jet_L_EC_CMB,jet_L_PP;
+    double jet_L_rad,jet_L_kin, jet_L_tot, jet_L_e, jet_L_B, jet_L_p;
+};
 
 
 
 //=========================TEMPORAL EVOLUTION ================================
 
 struct temp_ev{
+    char STEM[256];
+    char path[256];
 
 	int do_EC_cooling_Disk;
 	int do_EC_cooling_BLR;
@@ -562,7 +585,7 @@ struct temp_ev{
 
 	int do_Sync_cooling;
 	int do_SSC_cooling;
-
+    int do_Compton_cooling;
 
 
 
@@ -588,6 +611,7 @@ struct temp_ev{
 	double TStop_Inj;
 	double TStart_Acc;
 	double TStop_Acc;
+	double Inj_temp_slope;
 	unsigned long NUM_SET;
 	unsigned long T_SIZE;
 	double duration,t_D0,t_DA0,t_A0;
@@ -624,11 +648,18 @@ int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],uns
 /********************************     PyInterface    ************************************/
 // PyInterface
 struct spettro MakeBlob();
+void MakeNe(struct spettro *pt_base);
 struct temp_ev MakeTempEv();
 void Init(struct spettro *pt);
+void InitNe(struct spettro *pt);
+void build_photons(struct spettro *pt_base);
+void alloc_photons(double ** pt,int size);
+void set_seed_freq_start(struct spettro *pt_base);
 void Run_SED(struct spettro *pt_base);
-double get_freq_array(double * arr, struct spettro *pt, unsigned long id);
+void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev);
+double get_spectral_array(double * arr, struct spettro *pt, unsigned long id);
 double get_elec_array(double * arr, struct spettro *pt, unsigned long id);
+double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned long id);
 //===================================================================================
 
 
@@ -650,8 +681,12 @@ void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev);
 //===================================================================================
 /************************************ FUNZIONI Distr N *****************************/
 //void Genera_griglia_gamma_e_log(struct spettro *pt, double *griglia);
+void alloc_N_distr(double ** pt,int size);
+
 void Fill_N(struct spettro *pt, double *griglia_gamma_N_log, double *N);
-void Genera_Ne(struct spettro *pt);
+void build_Ne_custom(struct spettro *pt,  unsigned int size);
+void build_Ne(struct spettro *pt);
+void Fill_Ne_IC(struct spettro *pt, double gmin, int stat_frame);
 void Genera_Np_Ne_pp(struct spettro *pt);
 double N_distr(struct spettro *, double Gamma);
 double N_distr_U_e(struct spettro *, double Gamma);
@@ -659,8 +694,19 @@ double N_distr_U_p(struct spettro *, double Gamma);
 double N_distr_integranda(struct spettro *, double Gamma);
 void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N);
 void FindNe_NpGp(struct spettro *pt);
-double N_distr_interp(struct spettro *pt, double Gamma, double *griglia_gamma, double *N);
+double N_distr_interp(unsigned long size, double Gamma, double *griglia_gamma, double *N);
 double Find_gmax(struct spettro *pt, double *g, double *N);
+double pl_func(double Gamma,double p);
+double plc_func(double Gamma,double gamma_cut,double p);
+double bkn_func(double Gamma,double gamma_break,double p, double p_1);
+//double pile_up_ratio(double Gamma,double sigma,double gamma_inj,double gamma_eq);
+double bkn_pile_up_func(double Gamma,double gamma_inj, double p, double p_1,double gamma_eq, double gamma_cut ,double alpha);
+double lp_func(double Gamma,double gamma0,double r, double s);
+double lp_ep_func(double Gamma,double gamma_p,double r);
+double lppl_func(double Gamma,double gamma0, double r, double s);
+double pile_up_func(double Gamma, double gamma_pile_up_cut, double alpha_pile_up );
+double lppl_pile_up_func(double Gamma,double gamma0, double gamma_inj, double r, double s,double gamma_eq,double gamma_cut, double alpha);
+double spit_func(double Gamma,double gamma_th,double temp, double index);
 //===================================================================================
 
 
@@ -681,7 +727,7 @@ void somma_header(FILE *fp);
 
 //===================================================================================
 /************************************ SUMMED SPECTRA *******************************/
-void interpola_somma(struct spettro *pt_j, double nu);
+void interpola_somma(struct spettro *pt_j, double nu, unsigned long i);
 void spettro_somma_Sync_ic(int num_file, struct spettro *);
 //===================================================================================
 
@@ -706,7 +752,7 @@ void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned long NU_INT_MAX, st
         double * nuLnu_peak_blob);
 
 
-void EnergeticOutput(struct spettro *pt);
+struct jet_energetic EnergeticOutput(struct spettro *pt, int write_file);
 
 double I_nu_to_Uph(double * nu, double * I_nu, unsigned long NU_INT_STOP);
 double Power_Photons(struct spettro *pt, double * nu, double * nu_Fnu, unsigned long NU_INT_STOP);
@@ -724,6 +770,7 @@ double S_sphere(double R);
 double get_beaming(double BulkFactor, double theta);
 void   SetBeaming(struct spettro *pt);
 void SetDistr(struct spettro *pt);
+
 double eval_beta_gamma(double  gamma);
 double Larmor_radius(double gamma,double B, double sin_alpha);
 double Larmor_radius_to_gamma(double Larmor_radius,double B, double sin_alpha);
@@ -816,7 +863,7 @@ unsigned long x_to_grid_index(double * nu_grid, double nu, unsigned long SIZE);
 /************************************ FUNCTIONS  IC  *****************************/
 double f_compton_K1(struct spettro *, double Gamma);
 double rate_compton_GR(struct spettro *);
-double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b);
+double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b,int stat_frame);
 double integrale_IC_cooling(struct spettro * pt, double a, double b, double gamma);
 double compton_cooling(struct spettro *pt_spec, struct temp_ev *pt_ev, double gamma);
 double f_compton_cooling(double b);
@@ -919,6 +966,7 @@ double eval_circle_secant_ratio(double z,double R,double mu);
 
 //===========================================================================================
 /*********************        FUNZIONI MATEMATICHE             *****************************/
+double st_gamma(double x);
 void beschb(double x, double *gam1, double *gam2, double *gampl,
         double *gammi);
 double chebev(float a, float b, float c[], int m, float x);

@@ -38,14 +38,23 @@ Module API
 
 """
 
+
+
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+__author__ = "Andrea Tramacere"
+
 '''
 Created on 2013 1 27
 
 @author: orion
 '''
-from cosmo_tools import Cosmo
+from .cosmo_tools import Cosmo
 
-from data_loader import log_to_lin, lin_to_log
+from .data_loader import log_to_lin, lin_to_log
 
 from scipy.interpolate import interp1d
 
@@ -55,10 +64,11 @@ import numpy as np
 
 import os
 
-from spectral_shapes import SED
+from .spectral_shapes import SED
+from  .plot_sedfit import PlotSED,PlotSpecComp
 
-from model_parameters import ModelParameter,ModelParameterArray
-
+from .model_parameters import ModelParameter,ModelParameterArray
+from .base_model import  Model
 
 __all__=['Template','TemplateParameter']
 
@@ -74,15 +84,15 @@ class TemplateParameter(ModelParameter):
         self.par_type_list=['nu-scale','nuFnu-scale']
         
         if 'par_type' in keywords.keys() and keywords['par_type'] not in self.par_type_list:
-            print "blob_parameter type %s not allowed"%self.par_type
-            print "please choose among ",self.par_type_list
+            print ("blob_parameter type %s not allowed"%self.par_type)
+            print ("please choose among ",self.par_type_list)
             return
 
 
 
         super(TemplateParameter,self).__init__(  **keywords)
-        
-       
+
+        #print('setting in __init__', self.name, self.template,  keywords)
         if 'val' in keywords.keys():
             val=keywords['val']
             self.assign_val(self.name,val)
@@ -96,7 +106,8 @@ class TemplateParameter(ModelParameter):
         """
         sets a parameter value checking for physical boundaries 
         """
-        
+
+        #print('setting in set', self.name,self.template, keywords)
         if 'val' in keywords.keys():
             self.assign_val(self.name,keywords['val']) 
         
@@ -105,18 +116,20 @@ class TemplateParameter(ModelParameter):
         """
         assigns the paramter valut to the :class:`Template` object
         """
+        #print('setting in assign val',self.template,name,val)
         setattr(self.template,name,val)
         
 
 
-class Template(object):
+class Template(Model):
     """
     Class to handle spectral templates
     """
     def __init__(self,template_type,z=None,nu_size=100):
         """
         """
-        
+        super(Template, self).__init__()
+
         self.Templates_dir=os.path.dirname(__file__)+'/Spectral_Templates_Repo'
         
         if z is not None  :
@@ -141,8 +154,9 @@ class Template(object):
         self.cosmo_eval=Cosmo(units='cm')
 
         self.DL=self.cosmo_eval.DL(self.z)
-        
-        
+
+        self.flux_plot_lim=1E-30
+
 
         
         
@@ -195,19 +209,33 @@ class Template(object):
             self.interp_func=interp1d(self.nu_template,self.nuFnu_template)
             
         else:
-            print"Wrong template type=%s, allowed="%(template_type,self.allowed_templates)
+            print("Wrong template type=%s, allowed="%(template_type,self.allowed_templates))
     
-    
-    
-    def PlotModel(self,Plot,clean=False,autoscale=False):
-        if Plot is not None  :
-            if clean==True:
-                Plot.clean_model_lines()
-           
-            Plot.add_model_plot(self.SED,autoscale=autoscale,line_style='-')
-        else:
-            print "the plot window is not defined"
-     
+
+
+    def show_model(self):
+        self.parameters.show_pars()
+
+    def show_model(self):
+        self.parameters.show_pars()
+
+
+
+    def plot_model(self,plot_obj=None,clean=False,label=None,sed_data=None,color=None):
+        if plot_obj is None:
+            plot_obj=PlotSED(sed_data=sed_data)
+
+
+        if clean==True:
+            plot_obj.clean_model_lines()
+
+
+        if label is None:
+            label=self.name
+
+        plot_obj.add_model_plot(self.SED, line_style='-', label=label, flim=self.flux_plot_lim,color=color)
+
+        return plot_obj
 
     def get_T_BBB(self):
         return self.nu_p_template/(1.39*5.879e10)
@@ -265,12 +293,10 @@ class Template(object):
         """
         Loads a template from a file
         """
-        x,y=loadtxt(file_path, usecols = (0,1), unpack=True, dtype=float)
-            
-        my_set=zip(x,y)
-        my_set.sort(key=lambda tup: tup[0])
-    
-        self.nu_template,self.nuFnu_template= array(zip(*my_set))
+        xy=loadtxt(file_path, usecols = (0,1), unpack=False, dtype=float)
+        xy=xy[np.argsort(xy[:,0])]
+        self.nu_template=xy[:,0]
+        self.nuFnu_template= xy[:,1]
 
         
    
@@ -299,9 +325,17 @@ class Template(object):
         """
         Evaluates the Template for the current parameters values
         """    
+
+        if nu is None:
+
+            nu = np.copy(self.nu_template)
+            if loglog == False:
+                nu = np.power(10,nu)
+
+        print(nu)
         if loglog==False:
             log_nu=log10(nu)
-            
+
             lin_nu=nu
         else:
             log_nu=nu
@@ -317,7 +351,7 @@ class Template(object):
             
             self.SED.fill(nu=lin_nu, nuFnu=model)
             #print nu.size,nu
-        
+        print(model[model>1E-20])
         if get_model==True:
             if loglog==False:
             

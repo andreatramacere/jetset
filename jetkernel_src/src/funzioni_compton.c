@@ -33,6 +33,7 @@ double rate_compton_GR(struct spettro *pt_GR) {
      */
     double rate_comp=0;
     double (*pf_K) (struct spettro *, double x);
+    double nu_1_original;
     int i;
     pf_K = &f_compton_K1;
 
@@ -53,12 +54,13 @@ double rate_compton_GR(struct spettro *pt_GR) {
             }
             pt_GR->nu_seed = pt_GR->nu_Sync;
             pt_GR->n_seed = pt_GR->n_Sync;
-            pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
-            pt_GR->N_IC=pt_GR->Ne;
+            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
+            //pt_GR->N_IC=pt_GR->Ne;
             rate_comp = integrale_IC(pf_K,
                     pt_GR,
                     pt_GR->nu_start_Sync,
-                    pt_GR->nu_stop_Sync_ssc);
+                    pt_GR->nu_stop_Sync_ssc,
+                    0);
         }
     }
     //EC Diks
@@ -72,12 +74,13 @@ double rate_compton_GR(struct spettro *pt_GR) {
 			}
 			pt_GR->nu_seed = pt_GR->nu_Disk;
 			pt_GR->n_seed = pt_GR->n_Disk;
-            pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
-            pt_GR->N_IC=pt_GR->Ne;
+            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
+            //pt_GR->N_IC=pt_GR->Ne;
 			rate_comp = integrale_IC(pf_K,
 					pt_GR,
 					pt_GR->nu_start_Disk,
-					pt_GR->nu_stop_Disk);
+					pt_GR->nu_stop_Disk,
+					0);
 			//printf("%e\n",rate_comp);
 		}
     }
@@ -92,12 +95,13 @@ double rate_compton_GR(struct spettro *pt_GR) {
             }
             pt_GR->nu_seed = pt_GR->nu_BLR;
             pt_GR->n_seed = pt_GR->n_BLR;
-            pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
-            pt_GR->N_IC=pt_GR->Ne;
+            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
+            //pt_GR->N_IC=pt_GR->Ne;
             rate_comp = integrale_IC(pf_K,
                     pt_GR,
                     pt_GR->nu_start_BLR,
-                    pt_GR->nu_stop_BLR);
+                    pt_GR->nu_stop_BLR,
+                    0);
             //printf("%e\n",rate_comp);
         }
     }
@@ -112,12 +116,13 @@ double rate_compton_GR(struct spettro *pt_GR) {
             }
             pt_GR->nu_seed = pt_GR->nu_DT;
             pt_GR->n_seed = pt_GR->n_DT;
-            pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
-            pt_GR->N_IC=pt_GR->Ne;
+            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
+            //pt_GR->N_IC=pt_GR->Ne;
             rate_comp = integrale_IC(pf_K,
                     pt_GR,
                     pt_GR->nu_start_DT,
-                    pt_GR->nu_stop_DT);
+                    pt_GR->nu_stop_DT,
+                    0);
             //printf("%e\n",rate_comp);
        }
     }
@@ -133,12 +138,13 @@ double rate_compton_GR(struct spettro *pt_GR) {
 		   }
 		   pt_GR->nu_seed = pt_GR->nu_Star;
 		   pt_GR->n_seed = pt_GR->n_Star;
-           pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
-           pt_GR->N_IC=pt_GR->Ne;
+           //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
+           //pt_GR->N_IC=pt_GR->Ne;
 		   rate_comp = integrale_IC(pf_K,
 				   pt_GR,
 				   pt_GR->nu_start_Star,
-				   pt_GR->nu_stop_Star);
+				   pt_GR->nu_stop_Star,
+				   0);
 		   //printf("%e\n",rate_comp);
 	   }
 
@@ -155,12 +161,13 @@ double rate_compton_GR(struct spettro *pt_GR) {
     		}
     		pt_GR->nu_seed = pt_GR->nu_CMB;
     		pt_GR->n_seed = pt_GR->n_CMB;
-            pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
-            pt_GR->N_IC=pt_GR->Ne;
+            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
+            //pt_GR->N_IC=pt_GR->Ne;
     		rate_comp = integrale_IC(pf_K,
     				pt_GR,
     				pt_GR->nu_start_CMB,
-    				pt_GR->nu_stop_CMB);
+    				pt_GR->nu_stop_CMB,
+    				0);
     		//printf("%e\n",rate_comp);
     	}
 
@@ -182,27 +189,30 @@ double rate_compton_GR(struct spettro *pt_GR) {
 
             // nu out comp in disk rest frame
             // nu seed is alread in disk rest frame 
-            double nu_1_original;
+
             nu_1_original=pt_GR->nu_1;
             pt_GR->nu_1=pt_GR->nu_1*pt_GR->beam_obj;
 
 
-            pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log_stat;
-            pt_GR->N_IC=pt_GR->Ne_stat;
+            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log_stat;
+            //pt_GR->N_IC=pt_GR->Ne_stat;
             rate_comp = integrale_IC(pf_K,
                     pt_GR,
                     pt_GR->nu_start_CMB_stat,
-                    pt_GR->nu_stop_CMB_stat);
+                    pt_GR->nu_stop_CMB_stat,
+                    1);
             
            
-            //scales back to blob
-            //rate_comp=rate_comp/(pt_GR->beam_obj*pt_GR->beam_obj);
-            
+
             pt_GR->nu_1=nu_1_original;
+
+
+
             //printf("rate comp%e\n",rate_comp);
         }
 
     }
+
 
     return rate_comp;
 }
@@ -228,7 +238,7 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
      *
      * g = Gamma degli e-
      */
-    double cost, rate,a, b, c, k, nu_1_min, nu_1_max, Gamma, g2;
+    double cost, rate,a, c, k, nu_1_min, nu_1_max, Gamma, g2;
     double epsilon_0, epsilon_1,Gamma_e;
     pt_K1->Gamma = g;
     g2 = g*g;
@@ -248,13 +258,14 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
     if (pt_K1->nu_1 > nu_1_max || pt_K1->nu_1 < nu_1_min ) {
        rate=0.0;
     }
-    if (pt_K1->nu_1 >=  nu_1_min &&  pt_K1->nu_1 < pt_K1->nu_compton_0) {
+        if (pt_K1->nu_1 >=  nu_1_min &&  pt_K1->nu_1 < pt_K1->nu_compton_0) {
         cost = pt_K1->COST_IC_K1 / (4.0*(g2*g2) * pt_K1->nu_compton_0);
         k=4.0*g2*pt_K1->nu_1/pt_K1->nu_compton_0 ;
         //rate=k-1;
         rate = (k-1)*(1.0+2.0/q)-2.0*log(k);
         rate *= cost;
-        //rate=0;
+        //rate=0.;
+        //printf("1\n");
         //printf("nu_1=%e nu_min=%e nu_max=%e gamma=%e, k1=%e\n",pt_K1->nu_1,nu_1_min,nu_1_max,g,k);
     }
 
@@ -271,17 +282,21 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
 
             a = 2.0 * k * log(k) ;
 
-            b = (1+2*k)*(1-k);
+            a = a + (1+2*k)*(1-k);
 
 
             c = 0.5*(1-k)*(Gamma_e*k)*(Gamma_e*k)/(1+4.0*k*Gamma_e);
 
 
-            rate = a+ b +c;
+
+
+            rate = a+c;
             rate *= cost;
+            //printf("2\n");
         }
         else{
          rate=0;
+         //printf("3\n");
         }
     }
 
@@ -332,12 +347,12 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
 // I_nu_Sync=>I_nu_seed
 // a,b: boundaries for photon integration
 //=========================================================================================
-double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b) {
+double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, int stat_frame) {
     double nu1, nu2, integr_gamma, integr_nu;
     double g3, g1, y_g1, y_g2, y_g3, y_nu1, y_nu2;
     double delta_g, delta_nu;
-    unsigned long i, start_BG;
-    double g_min_BG;
+    unsigned long i, start_BG,g;
+    double g_min_BG,epsilon_0,epsilon_1;
     double (*pf_K1) (struct spettro *, double x);
 
     pf_K1 = &f_compton_K1;
@@ -345,44 +360,64 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
     integr_nu = 0.0;
     i = 0;
 
-    while (pt->nu_seed[i] < a) {
-        //  printf("i=%d\n",i);
+    epsilon_0 = HPLANCK * pt->nu_compton_0*one_by_MEC2;
+    epsilon_1 = HPLANCK * pt->nu_1*one_by_MEC2;
+    g_min_BG=0.5*epsilon_1*(1+sqrt(1.0+(1.0/(epsilon_1*epsilon_0))));
+
+
+    g=pt->gmin_griglia;
+    pt->gmin_griglia=g_min_BG;
+    Fill_Ne_IC(pt,g_min_BG,stat_frame);
+
+    while (pt->nu_seed[i] < a && i<pt->nu_seed_size) {
         i++;
     }
 
     if (pt->verbose>1) {
         printf("***** Integrale  IC ******\n");
         printf("i=%d\n", i);
-        printf("nu=%e a=%e i=%d\n", pt->nu_seed[i], a, i);
+        printf("nu=%e a=%e b=%e\n", pt->nu_seed[i], a, b);
     }
 
-    nu1 = pt->nu_seed[i];
-    y_nu1 = pt->n_seed[i];
+    nu1=0.;
+    y_nu1=0.;
 
-    while (pt->nu_seed[i + 1] <= b && pt->nu_seed[i + 1] >= a) {
-        //printf("in\n");
+    if (i<pt->nu_seed_size){
+        nu1 = pt->nu_seed[i];
+        y_nu1 = pt->n_seed[i];
+    }
+
+
+    while (pt->nu_seed[i + 1] <= b && pt->nu_seed[i + 1] >= a && i<pt->nu_seed_size-1) {
+
+
         integr_gamma = 0.0;
 
-        g1 = pt->griglia_gamma_log_IC[0];
+        g1 = pt->griglia_gamma_Ne_log_IC[0];
         pt->nu_compton_0 = pt->nu_seed[i];
-        y_g1 = f_compton_K1(pt, g1) * pt->N_IC[0];
+        y_g1 = f_compton_K1(pt, g1) * pt->Ne_IC[0];
 
 
 
         for (pt->i_griglia_gamma = 1; pt->i_griglia_gamma < pt->gamma_grid_size - 1; pt->i_griglia_gamma++) {
 
-            y_g2 = f_compton_K1(pt, pt->griglia_gamma_log_IC[pt->i_griglia_gamma]) * pt->N_IC[pt->i_griglia_gamma];
+
+
+            y_g2 = f_compton_K1(pt, pt->griglia_gamma_Ne_log_IC[pt->i_griglia_gamma]) * pt->Ne_IC[pt->i_griglia_gamma];
 
             pt->i_griglia_gamma++;
-            g3 = pt->griglia_gamma_log_IC[pt->i_griglia_gamma];
-            y_g3 = f_compton_K1(pt, g3) * pt->N_IC[pt->i_griglia_gamma];
+            g3 = pt->griglia_gamma_Ne_log_IC[pt->i_griglia_gamma];
+            y_g3 = f_compton_K1(pt, g3) * pt->Ne_IC[pt->i_griglia_gamma];
 
             delta_g = (g3 - g1);
             integr_gamma += (delta_g)*(y_g1 + 4.0 * y_g2 + y_g3);
 
             y_g1 = y_g3;
             g1 = g3;
+
+
         }
+
 
         nu2 = pt->nu_seed[i + 1];
         y_nu2 = pt->n_seed[i + 1];
@@ -392,7 +427,14 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
         nu1 = nu2;
         y_nu1 = y_nu2;
         i++;
+
+
     }
+
+
+    pt->gmin_griglia=g;
+
+
 
     //============================================================
     //0.75 fattore di correzione di GOULD
@@ -606,6 +648,12 @@ double integrale_IC_cooling(struct spettro * pt, double a, double b, double gamm
 
 //=========================================================================================
 // Kernel per il  Compton coolig, Moderski et al. 2005 MNRAS 363
+// Eq. 3
+// in my code b=4*gamma*pt->nu_seed[i+1]*HPLANCK*one_by_MEC2
+// in the paper b=4*gamma*h*nu/mec^2
+// I use the approximation in Eq. 3
+// I use b<1000 that gives a better connection compared to the value of b<10000
+// used in the paper
 // f_KN=1/(1+b)^1.5 if b<1000
 // else 9/(b^2)*(log(b)-11/6)
 // I_nu_Sync=>I_nu_seed

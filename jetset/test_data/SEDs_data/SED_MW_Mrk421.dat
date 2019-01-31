@@ -1,12 +1,17 @@
-# metadata
-# md z  0.0308
-# md restframe  obs
-# md data_scale  lin-lin
-# md col_types x,y,dy,data_set
-# md obj_name     J1104+3812,Mrk421
-#
-# Frequency [Hz]  EnergyFlux [erg/cm2/s]
-#  Xval	    	  Yval	     YvalError    data_set-flag
+# %ECSV 0.9
+# ---
+# datatype:
+# - {name: x, unit: Hz, datatype: float64}
+# - {name: y, unit: erg/(cm2 s) , datatype: float64}
+# - {name: dy, unit: erg/(cm2 s) ,datatype: float64}
+# - {name: data_set, datatype: string}
+# meta: !!omap
+# - {z: 0.0308 }
+# - {restframe: obs}
+# - {data_scale: lin-lin}
+# - {obj_name: 'J1104+3812,Mrk421'}
+# schema: astropy-2.0
+x y dy data_set
 2.299540e+09 1.340900e-14 3.910000e-16    campaing-2009
 2.639697e+09 1.793088e-14 3.231099e-26	  campaing-2009
 4.799040e+09 2.313600e-14 2.400000e-16    campaing-2009

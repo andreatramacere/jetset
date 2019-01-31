@@ -2,13 +2,12 @@
 *.py[cod]
 /doc/out.txt
 /doc/err.txt
-/doc/build/*
-/doc/_bild/*
-/doc/test
+/doc_tools/build/*
 /.idea
 /.DS_Store
 *.egg-info
 *.egg
+*.xcodeproj
 build
 develop-eggs
 dist
@@ -17,3 +16,4 @@ lib
 lib64
 jetset/jetkernel/*.c
 jetset/jetkernel/jetkernel.py
+jetset/old

@@ -1,0 +1,3 @@
+
+python make_apidoc_and_uml_graphs.py
+sphinx-build -b html ../doc build

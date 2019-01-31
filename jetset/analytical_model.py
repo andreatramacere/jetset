@@ -1,10 +1,16 @@
-from model_parameters import ModelParameterArray, ModelParameter
+from __future__ import absolute_import, division, print_function
+
+from builtins import (bytes, str, open, super, range,
+                      zip, round, input, int, pow, object, map, zip)
+
+
+from .model_parameters import ModelParameterArray, ModelParameter
 
 import numpy as np
-from spectral_shapes import SED
-from base_model import  Model
+from .spectral_shapes import SED
+from .base_model import  Model
 
-from cosmo_tools import Cosmo
+from .cosmo_tools import Cosmo
 
 __all__=['AnalyticalParameter','Disk']
 
@@ -20,8 +26,8 @@ class AnalyticalParameter(ModelParameter):
         self.par_type_list=['Temperature','peak freq','peak flux']
         
         if 'par_type' in keywords.keys() and keywords['par_type'] not in self.par_type_list:
-            print "blob_parameter type %s not allowed"%self.par_type
-            print "please choose among ",self.par_type_list
+            print ("blob_parameter type %s not allowed"%self.par_type)
+            print ("please choose among ",self.par_type_list)
             return
 
 
