@@ -33,22 +33,7 @@ if on_rtd==False:  # only import and set the theme if we're building docs locall
 
 else:
 
-
-    try:
-        from unittest.mock import MagicMock
-    except ImportError:
-
-        from mock import MagicMock
-
-
-    class Mock(MagicMock):
-        @classmethod
-        def __getattr__(cls, name):
-            return MagicMock()
-
-
-    MOCK_MODULES = ['jetkernel',]
-    sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+    autodoc_mock_imports = ['jetkernel']
 
     theme = 'bootstrap'
 
