@@ -9,4 +9,4 @@ pages:
     - public
   only:
   - master
-
+  - py23
