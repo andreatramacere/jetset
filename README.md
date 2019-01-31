@@ -35,7 +35,7 @@ All the dependencies can be installed following the Anaconda method
 
 
 
-# Download the JeTseT code
+# Download the JetSeT code
    - Get the source code from: 
      - https://gitlab.com/andrea.tramacere/jetset/-/archive/stable/jetset-stable.tar.gz
    - Uncompress the  archive  `jetset-stable.tar.gz`
@@ -45,7 +45,7 @@ All the dependencies can be installed following the Anaconda method
  - I strongly encourage to use anaconda and python3
    - https://www.anaconda.com/download/
 
- - #### Download the JeTseT code
+ - #### Download the JetSeT code
    - Get the source code from: 
      - https://gitlab.com/andrea.tramacere/jetset/-/archive/stable/jetset-stable.tar.gz
    - Uncompress the  archive  `jetset-stable.tar.gz`
