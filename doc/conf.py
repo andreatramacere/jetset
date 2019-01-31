@@ -33,7 +33,12 @@ if on_rtd==False:  # only import and set the theme if we're building docs locall
 
 else:
 
-    from unittest.mock import MagicMock
+
+    try:
+        from unittest.mock import MagicMock
+    except ImportError:
+
+        from mock import MagicMock
 
 
     class Mock(MagicMock):
