@@ -1,0 +1,415 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>jetset.obs_constrain Module &mdash; jetset 1.0.a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="jetset 1.0.a documentation" href="../index.html"/>
+        <link rel="up" title="Modules" href="modules.html"/>
+        <link rel="next" title="check_boundaries" href="jetset.obs_constrain.check_boundaries.html"/>
+        <link rel="prev" title="Value" href="jetset.model_parameters.Value.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> jetset
+          
+
+          
+            
+            <img src="../_static/logo_small_transp.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">obs_constrain</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-obs-constrain">Module: obs_constrain</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#classes-and-inheritance-structure">Classes and Inheritance Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes-relations">Classes relations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-api">Module API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.check_boundaries.html">check_boundaries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.check_gamma_tansp.html">check_gamma_tansp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.check_t_var.html">check_t_var</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.constr_B_from_nu_peaks.html">constr_B_from_nu_peaks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.constr_R_from_CD.html">constr_R_from_CD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.find_B_from_nu_p_S.html">find_B_from_nu_p_S</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.find_gamma0.html">find_gamma0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.find_gamma_3p_SSC.html">find_gamma_3p_SSC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.find_gamma_Synch.html">find_gamma_Synch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.find_HE_cut_off.html">find_HE_cut_off</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.find_s.html">find_s</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.find_s1.html">find_s1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.find_turn_over.html">find_turn_over</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.get_Comp_factor.html">get_Comp_factor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.get_R_tvar.html">get_R_tvar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.get_U_Sync_from_Ph.html">get_U_Sync_from_Ph</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.rescale_Ne.html">rescale_Ne</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.set_gmin_from_nu_cut_IR.html">set_gmin_from_nu_cut_IR</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">Classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jetset.obs_constrain.ObsConstrain.html">ObsConstrain</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sed_models_dic.html">sed_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">jetset</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+        
+      <li>jetset.obs_constrain Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/obs_constrain.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-jetset.obs_constrain">
+<span id="jetset-obs-constrain-module"></span><h1>jetset.obs_constrain Module<a class="headerlink" href="#module-jetset.obs_constrain" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-obs-constrain">
+<h2>Module: obs_constrain<a class="headerlink" href="#module-obs-constrain" title="Permalink to this headline">¶</a></h2>
+<p>This module contains all the classes necessary to constrain
+the model parmateres starting from the SED shape</p>
+<div class="section" id="classes-and-inheritance-structure">
+<h3>Classes and Inheritance Structure<a class="headerlink" href="#classes-and-inheritance-structure" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="classes-relations">
+<h3>Classes relations<a class="headerlink" href="#classes-relations" title="Permalink to this headline">¶</a></h3>
+<div class="figure align-center">
+<img alt="api/classes_obs_constrain.png" src="api/classes_obs_constrain.png" />
+</div>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.ObsConstrain.html#jetset.obs_constrain.ObsConstrain" title="jetset.obs_constrain.ObsConstrain"><code class="xref py py-obj docutils literal"><span class="pre">ObsConstrain</span></code></a>([B_range,&nbsp;distr_e,&nbsp;t_var_sec,&nbsp;…])</td>
+<td>doc</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="module-api">
+<h3>Module API<a class="headerlink" href="#module-api" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.check_boundaries.html#jetset.obs_constrain.check_boundaries" title="jetset.obs_constrain.check_boundaries"><code class="xref py py-obj docutils literal"><span class="pre">check_boundaries</span></code></a>(val,&nbsp;val_min,&nbsp;val_max,&nbsp;val_name)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.check_gamma_tansp.html#jetset.obs_constrain.check_gamma_tansp" title="jetset.obs_constrain.check_gamma_tansp"><code class="xref py py-obj docutils literal"><span class="pre">check_gamma_tansp</span></code></a>(jet,&nbsp;beaming_val,&nbsp;…)</td>
+<td>retrun tau_gamma_gamma for a given  IC frequency</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.check_t_var.html#jetset.obs_constrain.check_t_var" title="jetset.obs_constrain.check_t_var"><code class="xref py py-obj docutils literal"><span class="pre">check_t_var</span></code></a>(R,&nbsp;beaming,&nbsp;z)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.constr_B_from_nu_peaks.html#jetset.obs_constrain.constr_B_from_nu_peaks" title="jetset.obs_constrain.constr_B_from_nu_peaks"><code class="xref py py-obj docutils literal"><span class="pre">constr_B_from_nu_peaks</span></code></a>(jet,&nbsp;nu_p_S,&nbsp;nu_p_IC,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.constr_R_from_CD.html#jetset.obs_constrain.constr_R_from_CD" title="jetset.obs_constrain.constr_R_from_CD"><code class="xref py py-obj docutils literal"><span class="pre">constr_R_from_CD</span></code></a>(jet,&nbsp;nuFnu_p_S,&nbsp;nuFnu_p_IC,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.find_B_from_nu_p_S.html#jetset.obs_constrain.find_B_from_nu_p_S" title="jetset.obs_constrain.find_B_from_nu_p_S"><code class="xref py py-obj docutils literal"><span class="pre">find_B_from_nu_p_S</span></code></a>(nu_p_S,&nbsp;gamma_3p,&nbsp;…)</td>
+<td>returns B according to Ep_S and gamma_3p</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.find_gamma0.html#jetset.obs_constrain.find_gamma0" title="jetset.obs_constrain.find_gamma0"><code class="xref py py-obj docutils literal"><span class="pre">find_gamma0</span></code></a>(r,&nbsp;s,&nbsp;gamma_3p)</td>
+<td>returns the value of gamma_0  for</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.find_gamma_3p_SSC.html#jetset.obs_constrain.find_gamma_3p_SSC" title="jetset.obs_constrain.find_gamma_3p_SSC"><code class="xref py py-obj docutils literal"><span class="pre">find_gamma_3p_SSC</span></code></a>(nu_p_S,&nbsp;nu_p_IC,&nbsp;…[,&nbsp;…])</td>
+<td>returns the value of gamma_3p from nu_p_S/nu_p_IC</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.find_gamma_Synch.html#jetset.obs_constrain.find_gamma_Synch" title="jetset.obs_constrain.find_gamma_Synch"><code class="xref py py-obj docutils literal"><span class="pre">find_gamma_Synch</span></code></a>(nu_S,&nbsp;rest_frame,&nbsp;B,&nbsp;beaming,&nbsp;z)</td>
+<td>returns the value of gamma corresponding to the  Synch freq</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.find_HE_cut_off.html#jetset.obs_constrain.find_HE_cut_off" title="jetset.obs_constrain.find_HE_cut_off"><code class="xref py py-obj docutils literal"><span class="pre">find_HE_cut_off</span></code></a>(distr_e,&nbsp;nu_S_max,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.find_s.html#jetset.obs_constrain.find_s" title="jetset.obs_constrain.find_s"><code class="xref py py-obj docutils literal"><span class="pre">find_s</span></code></a>(class_obj,&nbsp;nu_p_S_obs,&nbsp;S_LE_slope,&nbsp;…)</td>
+<td>Find the index of the low-energy PL branch of n(gamma), from PL fit over various instrument bands</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.find_s1.html#jetset.obs_constrain.find_s1" title="jetset.obs_constrain.find_s1"><code class="xref py py-obj docutils literal"><span class="pre">find_s1</span></code></a>(class_obj,&nbsp;indices)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.find_turn_over.html#jetset.obs_constrain.find_turn_over" title="jetset.obs_constrain.find_turn_over"><code class="xref py py-obj docutils literal"><span class="pre">find_turn_over</span></code></a>(jet,&nbsp;distr_e,&nbsp;gamma_3p)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.get_Comp_factor.html#jetset.obs_constrain.get_Comp_factor" title="jetset.obs_constrain.get_Comp_factor"><code class="xref py py-obj docutils literal"><span class="pre">get_Comp_factor</span></code></a>(gamma,&nbsp;nu_p_S_blob)</td>
+<td>returns the compton factor = nu_blob_seed_Synch*hplanck/(mec2)</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.get_R_tvar.html#jetset.obs_constrain.get_R_tvar" title="jetset.obs_constrain.get_R_tvar"><code class="xref py py-obj docutils literal"><span class="pre">get_R_tvar</span></code></a>(beaming,&nbsp;t_var_sec,&nbsp;z)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.get_U_Sync_from_Ph.html#jetset.obs_constrain.get_U_Sync_from_Ph" title="jetset.obs_constrain.get_U_Sync_from_Ph"><code class="xref py py-obj docutils literal"><span class="pre">get_U_Sync_from_Ph</span></code></a>(jet[,&nbsp;re_eval_sync])</td>
+<td>returns U_synch by integrating Synch photon spectrum</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.rescale_Ne.html#jetset.obs_constrain.rescale_Ne" title="jetset.obs_constrain.rescale_Ne"><code class="xref py py-obj docutils literal"><span class="pre">rescale_Ne</span></code></a>(jet,&nbsp;Lp_S,&nbsp;rest_frame)</td>
+<td>Rescales N.blob to get the wanted Lp_S_blob</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.set_gmin_from_nu_cut_IR.html#jetset.obs_constrain.set_gmin_from_nu_cut_IR" title="jetset.obs_constrain.set_gmin_from_nu_cut_IR"><code class="xref py py-obj docutils literal"><span class="pre">set_gmin_from_nu_cut_IR</span></code></a>(nu_cut_IR,&nbsp;…)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.ObsConstrain.html#jetset.obs_constrain.ObsConstrain" title="jetset.obs_constrain.ObsConstrain"><code class="xref py py-obj docutils literal"><span class="pre">ObsConstrain</span></code></a>([B_range,&nbsp;distr_e,&nbsp;t_var_sec,&nbsp;…])</td>
+<td>doc</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="class-inheritance-diagram">
+<h2>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this headline">¶</a></h2>
+<img src="../_images/inheritance-f90cf1c7f248d4378382f8a22dc0720f1829cac6.png" alt="Inheritance diagram of jetset.obs_constrain.ObsConstrain" usemap="#inheritance10775bdcb2" class="inheritance"/>
+<map id="inheritance10775bdcb2" name="inheritance10775bdcb2">
+<area shape="rect" id="node1" href="jetset.obs_constrain.ObsConstrain.html#jetset.obs_constrain.ObsConstrain" target="_top" title="doc" alt="" coords="5,5,109,30"/>
+</map>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="jetset.obs_constrain.check_boundaries.html" class="btn btn-neutral float-right" title="check_boundaries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="jetset.model_parameters.Value.html" class="btn btn-neutral" title="Value" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, andrea tramacere.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0.a',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

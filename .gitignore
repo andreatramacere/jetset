@@ -7,7 +7,7 @@
 *.egg-info
 *.egg
 *.xcodeproj
-build
+/build
 develop-eggs
 dist
 eggs

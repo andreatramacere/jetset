@@ -1,0 +1,660 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ObsData &mdash; jetset 1.0.a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="jetset 1.0.a documentation" href="../index.html"/>
+        <link rel="up" title="jetset.data_loader Module" href="data_loader.html"/>
+        <link rel="next" title="jetset.frame_converter Module" href="frame_converter.html"/>
+        <link rel="prev" title="log_to_lin" href="jetset.data_loader.log_to_lin.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> jetset
+          
+
+          
+            
+            <img src="../_static/logo_small_transp.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="data_loader.html">data_loader</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="data_loader.html#moudule-data-loader">Moudule: data_loader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_loader.html#functions">Functions</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="data_loader.html#classes">Classes</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ObsData</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="data_loader.html#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sed_models_dic.html">sed_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">jetset</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+        
+          <li><a href="data_loader.html">jetset.data_loader Module</a> &raquo;</li>
+        
+      <li>ObsData</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/jetset.data_loader.ObsData.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="obsdata">
+<h1>ObsData<a class="headerlink" href="#obsdata" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jetset.data_loader.ObsData">
+<em class="property">class </em><code class="descname">ObsData</code><span class="sig-paren">(</span><em>data_table=None</em>, <em>dupl_filter=False</em>, <em>data_set_filter=None</em>, <em>UL_filtering=False</em>, <em>UL_value=None</em>, <em>UL_CL=0.95</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>This class provides a  powerful interface  to load observational data stored in a file.
+The following parameters set the corresponding class members:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data_file</strong> – (str), path to the data file</li>
+<li><strong>z</strong> – (float), redisfhit, if not provided it is looked up in the  file meta-data</li>
+<li><strong>obj_name</strong> – (str), if not provided  it is looked up in the  file meta-data</li>
+<li><strong>restframe</strong> – (str) restframe of the data, possible values are <code class="docutils literal"><span class="pre">'src'</span></code> or  <code class="docutils literal"><span class="pre">'obs'</span></code>,
+if not provided it is looked up in the  file meta-data</li>
+<li><strong>col_types</strong> – (str), string specifying the way data are organized in columns in the input file.
+This string is passed to the method  <code class="xref py py-func docutils literal"><span class="pre">set_data_cols()</span></code>. If not provided
+it is looked up in the  file meta-data. See the corresponding <code class="xref py py-func docutils literal"><span class="pre">set_data_cols()</span></code>
+documentation for details.</li>
+<li><strong>col_nums</strong> – (str), string describing the corresponding column data number</li>
+<li><strong>data_scale</strong> – (str) <code class="docutils literal"><span class="pre">'lin-lin'</span></code> or <code class="docutils literal"><span class="pre">'log-log'</span></code>,it is looked up in the  file meta-data.
+This parameter allows to specify      if the data in the file are stored as in log-log or lin-lin scale</li>
+<li><strong>data_set_filter</strong> – <p>a filter to filter the SED data according to the data_set value,  eg:
+<code class="docutils literal"><span class="pre">'data_set_filter='mw-1'</span></code>, will filter data with <code class="docutils literal"><span class="pre">data_set=='mw-1'</span></code>,
+<code class="docutils literal"><span class="pre">'data_set_filter=['mw-1','mw-2']'</span></code> will filter data with <code class="docutils literal"><span class="pre">data_set=='mw-1'</span></code> or <code class="docutils literal"><span class="pre">data_set=='mw-2'</span></code></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Historical data will be only plotted but will not be used in the fit.</p>
+</div>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Class Members storing the SED data:</strong></p>
+<blockquote>
+<div><p>data used to fit</p>
+<ul class="simple">
+<li>nu_data</li>
+<li>nuFnu_data</li>
+<li>dnu_data</li>
+<li>dnuFnu_data</li>
+<li>T_data</li>
+<li>data_set</li>
+</ul>
+<p>upper limits</p>
+<ul class="simple">
+<li>nu_data_UL</li>
+<li>UL_data</li>
+</ul>
+</div></blockquote>
+<p>The private method   <code class="xref py py-func docutils literal"><span class="pre">_load_data()</span></code>  populates the data members starting from the data in the file. Data are properly transformed according
+to the <code class="docutils literal"><span class="pre">restframe</span></code> and <code class="docutils literal"><span class="pre">data_scale</span></code> values.</p>
+<p><strong>Examples</strong></p>
+<p>The following lines shows and example of how to embed <strong>meta-data</strong> in the header of the SED data file,
+just adding in the header of the file a line starting with <code class="docutils literal"><span class="pre">#</span></code> and followed by the
+indetifier <code class="docutils literal"><span class="pre">md</span></code>, the meta-data name and value :</p>
+<p>Assuming that the data file path has been stored in <code class="docutils literal"><span class="pre">SED_file=/path/to/file/file.txt</span></code>,
+the data can be imported as follows:</p>
+<div class="code highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">BlazarSEDFit.data_loader</span> <span class="k">import</span> <span class="n">ObsData</span>
+<span class="n">mySEDdata</span><span class="o">=</span><span class="n">ObsData</span><span class="p">(</span><span class="n">_input_data_table</span><span class="o">=</span><span class="n">SED_file</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>that is completely equivalent to:</p>
+<div class="code highlight-default"><div class="highlight"><pre><span></span><span class="n">mySEDdata</span><span class="o">=</span><span class="n">ObsData</span><span class="p">(</span><span class="n">_input_data_table</span><span class="o">=</span><span class="n">SED_file</span><span class="p">,</span><span class="n">col_types</span><span class="o">=</span><span class="s1">&#39;x,y,dy,data_set&#39;</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="mf">0.0308</span><span class="p">,</span><span class="n">data_scale</span><span class="o">=</span><span class="s1">&#39;lin-lin&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Attributes Summary</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.table" title="jetset.data_loader.ObsData.table"><code class="xref py py-obj docutils literal"><span class="pre">table</span></code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.add_systematics" title="jetset.data_loader.ObsData.add_systematics"><code class="xref py py-obj docutils literal"><span class="pre">add_systematics</span></code></a>(syst[,&nbsp;nu_range,&nbsp;data_set])</td>
+<td>add systematics to errors</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.filter_UL" title="jetset.data_loader.ObsData.filter_UL"><code class="xref py py-obj docutils literal"><span class="pre">filter_UL</span></code></a>([val])</td>
+<td>remove the  upper limits points from  from data</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.filter_data_set" title="jetset.data_loader.ObsData.filter_data_set"><code class="xref py py-obj docutils literal"><span class="pre">filter_data_set</span></code></a>(filters[,&nbsp;exclude])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.filter_freq" title="jetset.data_loader.ObsData.filter_freq"><code class="xref py py-obj docutils literal"><span class="pre">filter_freq</span></code></a>([nu_min,&nbsp;nu_max,&nbsp;exclude])</td>
+<td>filter the data, keeping all the data with</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.filter_time" title="jetset.data_loader.ObsData.filter_time"><code class="xref py py-obj docutils literal"><span class="pre">filter_time</span></code></a>([T_min,&nbsp;T_max,&nbsp;exclude])</td>
+<td>filter the data, keeping all the data with</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.find_time_span" title="jetset.data_loader.ObsData.find_time_span"><code class="xref py py-obj docutils literal"><span class="pre">find_time_span</span></code></a>([data_set,&nbsp;silent,&nbsp;get_values])</td>
+<td>returns Tstart, Tstop, and Delta T for the full data set (if no dat_set</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.get_data_points" title="jetset.data_loader.ObsData.get_data_points"><code class="xref py py-obj docutils literal"><span class="pre">get_data_points</span></code></a>([log_log,&nbsp;skip_UL])</td>
+<td>Gives data point</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.get_data_sets" title="jetset.data_loader.ObsData.get_data_sets"><code class="xref py py-obj docutils literal"><span class="pre">get_data_sets</span></code></a>()</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.get_time_span" title="jetset.data_loader.ObsData.get_time_span"><code class="xref py py-obj docutils literal"><span class="pre">get_time_span</span></code></a>([data_set])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.group_data" title="jetset.data_loader.ObsData.group_data"><code class="xref py py-obj docutils literal"><span class="pre">group_data</span></code></a>([N_bin,&nbsp;bin_width])</td>
+<td>function to perform a spectral group of the data</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.lin_to_log" title="jetset.data_loader.ObsData.lin_to_log"><code class="xref py py-obj docutils literal"><span class="pre">lin_to_log</span></code></a>([val,&nbsp;err])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.log_to_lin" title="jetset.data_loader.ObsData.log_to_lin"><code class="xref py py-obj docutils literal"><span class="pre">log_to_lin</span></code></a>([log_val,&nbsp;log_err])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.plot_time_spans" title="jetset.data_loader.ObsData.plot_time_spans"><code class="xref py py-obj docutils literal"><span class="pre">plot_time_spans</span></code></a>([save_as])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.remove_dupl_entries" title="jetset.data_loader.ObsData.remove_dupl_entries"><code class="xref py py-obj docutils literal"><span class="pre">remove_dupl_entries</span></code></a>(data)</td>
+<td>remove duplicate entries</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.reset_data" title="jetset.data_loader.ObsData.reset_data"><code class="xref py py-obj docutils literal"><span class="pre">reset_data</span></code></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_UL" title="jetset.data_loader.ObsData.set_UL"><code class="xref py py-obj docutils literal"><span class="pre">set_UL</span></code></a>([val])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_error" title="jetset.data_loader.ObsData.set_error"><code class="xref py py-obj docutils literal"><span class="pre">set_error</span></code></a>(error_value[,&nbsp;nu_range,&nbsp;data_set,&nbsp;…])</td>
+<td>set all the paramters to same error</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_facke_error" title="jetset.data_loader.ObsData.set_facke_error"><code class="xref py py-obj docutils literal"><span class="pre">set_facke_error</span></code></a>(val)</td>
+<td>Sets the value for the facke error</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_md_from_data_table" title="jetset.data_loader.ObsData.set_md_from_data_table"><code class="xref py py-obj docutils literal"><span class="pre">set_md_from_data_table</span></code></a>([name,&nbsp;val])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_zero_error" title="jetset.data_loader.ObsData.set_zero_error"><code class="xref py py-obj docutils literal"><span class="pre">set_zero_error</span></code></a>([val,&nbsp;replace_zero])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.show_data_sets" title="jetset.data_loader.ObsData.show_data_sets"><code class="xref py py-obj docutils literal"><span class="pre">show_data_sets</span></code></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.show_time_span" title="jetset.data_loader.ObsData.show_time_span"><code class="xref py py-obj docutils literal"><span class="pre">show_time_span</span></code></a>([data_set])</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="attribute">
+<dt id="jetset.data_loader.ObsData.table">
+<code class="descname">table</code><a class="headerlink" href="#jetset.data_loader.ObsData.table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.add_systematics">
+<code class="descname">add_systematics</code><span class="sig-paren">(</span><em>syst</em>, <em>nu_range=None</em>, <em>data_set=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.add_systematics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.add_systematics" title="Permalink to this definition">¶</a></dt>
+<dd><p>add systematics to errors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>syst</strong> – (float) systematic value (fractional)</li>
+<li><strong>nu_range</strong> – array_like of floats, [nu_min,nu_max], optional, range of frequencies to apply sistematics</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.filter_UL">
+<code class="descname">filter_UL</code><span class="sig-paren">(</span><em>val=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.filter_UL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.filter_UL" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove the  upper limits points from  from data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> – minimum value to set the upper limit. <strong>As default, negative errors indicates upper limits, hence val=0.</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Retruns msk:</th><td class="field-body">a boolean array to mask the upper limits, i.e. all the data points with negative errors.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.filter_data_set">
+<code class="descname">filter_data_set</code><span class="sig-paren">(</span><em>filters</em>, <em>exclude=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.filter_data_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.filter_data_set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.filter_freq">
+<code class="descname">filter_freq</code><span class="sig-paren">(</span><em>nu_min=None</em>, <em>nu_max=None</em>, <em>exclude=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.filter_freq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.filter_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>filter the data, keeping all the data with
+nu_min &lt;nu&lt; nu_max if exclude=False (defualt).
+The opposite if exclude=True</p>
+<p><strong>both nu_max and nu_min are in linear scale</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>nu_min</strong> (<em>float</em>) – lower limit of the range (linear scale, in Hz)</li>
+<li><strong>nu_max</strong> (<em>float</em>) – upper limit of the range (linear scale, in Hz)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.filter_time">
+<code class="descname">filter_time</code><span class="sig-paren">(</span><em>T_min=None</em>, <em>T_max=None</em>, <em>exclude=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.filter_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.filter_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>filter the data, keeping all the data with
+T_min &lt;T&lt; T_max if exclude=False (defualt).
+The opposite if exclude=True</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>T_min</strong> (<em>float</em>) – lower limit of the range (MJD)</li>
+<li><strong>T_max</strong> (<em>float</em>) – upper limit of the range (MJD)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.find_time_span">
+<code class="descname">find_time_span</code><span class="sig-paren">(</span><em>data_set=None</em>, <em>silent=True</em>, <em>get_values=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.find_time_span"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.find_time_span" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns Tstart, Tstop, and Delta T for the full data set (if no dat_set
+is provided), or for a specific data_set</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.get_data_points">
+<code class="descname">get_data_points</code><span class="sig-paren">(</span><em>log_log=False</em>, <em>skip_UL=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.get_data_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.get_data_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives data point</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.get_data_sets">
+<code class="descname">get_data_sets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.get_data_sets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.get_data_sets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.get_time_span">
+<code class="descname">get_time_span</code><span class="sig-paren">(</span><em>data_set=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.get_time_span"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.get_time_span" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.group_data">
+<code class="descname">group_data</code><span class="sig-paren">(</span><em>N_bin=None</em>, <em>bin_width=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.group_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.group_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>function to perform a spectral group of the data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>N_bin</strong> – (int)</li>
+<li><strong>bin_width</strong> – (float) logarthmic</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To perform  a rebinning of the data has to be provided either <code class="docutils literal"><span class="pre">N_bin</span></code> or <code class="docutils literal"><span class="pre">bin_width</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.lin_to_log">
+<code class="descname">lin_to_log</code><span class="sig-paren">(</span><em>val=None</em>, <em>err=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.lin_to_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.lin_to_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.log_to_lin">
+<code class="descname">log_to_lin</code><span class="sig-paren">(</span><em>log_val=None</em>, <em>log_err=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.log_to_lin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.log_to_lin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.plot_time_spans">
+<code class="descname">plot_time_spans</code><span class="sig-paren">(</span><em>save_as=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.plot_time_spans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.plot_time_spans" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.remove_dupl_entries">
+<code class="descname">remove_dupl_entries</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.remove_dupl_entries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.remove_dupl_entries" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>remove duplicate entries</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – (array) 2-dim array storing the the table of the data.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns msk:</th><td class="field-body">a boolean array to mask the duplicated entries</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">One entry is flagged as duplicated as each comlum in a row of the data table
+is equal to the corresponding elements of another row</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.reset_data">
+<code class="descname">reset_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.reset_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.reset_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.set_UL">
+<code class="descname">set_UL</code><span class="sig-paren">(</span><em>val=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.set_UL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.set_UL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.set_error">
+<code class="descname">set_error</code><span class="sig-paren">(</span><em>error_value</em>, <em>nu_range=None</em>, <em>data_set=None</em>, <em>data_msk=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.set_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.set_error" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>set all the paramters to same error</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>error_value</strong> – float, value of the error (fractional error)</li>
+<li><strong>nu_range</strong> – array_like of floats, [nu_min,nu_max], optional, range of frequencies to apply the error value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.set_facke_error">
+<code class="descname">set_facke_error</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.set_facke_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.set_facke_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the value for the facke error</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.set_md_from_data_table">
+<code class="descname">set_md_from_data_table</code><span class="sig-paren">(</span><em>name=None</em>, <em>val=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.set_md_from_data_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.set_md_from_data_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.set_zero_error">
+<code class="descname">set_zero_error</code><span class="sig-paren">(</span><em>val=0.2</em>, <em>replace_zero=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.set_zero_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.set_zero_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.show_data_sets">
+<code class="descname">show_data_sets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.show_data_sets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.show_data_sets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.show_time_span">
+<code class="descname">show_time_span</code><span class="sig-paren">(</span><em>data_set=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.show_time_span"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.show_time_span" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="frame_converter.html" class="btn btn-neutral float-right" title="jetset.frame_converter Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="jetset.data_loader.log_to_lin.html" class="btn btn-neutral" title="log_to_lin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, andrea tramacere.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0.a',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

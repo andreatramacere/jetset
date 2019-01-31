@@ -1,0 +1,10 @@
+<map id="inheritance49263625de" name="inheritance49263625de">
+<area shape="rect" id="node1" href="jetset.loglog_poly_model.LogCubic.html#jetset.loglog_poly_model.LogCubic" target="_top" title="Class to handle log&#45;cubic model" alt="" coords="351,5,430,30"/>
+<area shape="rect" id="node2" href="jetset.loglog_poly_model.LogLogModel.html#jetset.loglog_poly_model.LogLogModel" target="_top" title="LogLogModel" alt="" coords="178,79,281,105"/>
+<area shape="rect" id="node3" href="jetset.loglog_poly_model.LogLinear.html#jetset.loglog_poly_model.LogLinear" target="_top" title="Class to handle log&#45;linear model" alt="" coords="350,54,431,79"/>
+<area shape="rect" id="node5" href="jetset.loglog_poly_model.LogParabolaEp.html#jetset.loglog_poly_model.LogParabolaEp" target="_top" title="Class to handle log&#45;parabolic model" alt="" coords="334,103,447,129"/>
+<area shape="rect" id="node6" href="jetset.loglog_poly_model.LogParabolaPL.html#jetset.loglog_poly_model.LogParabolaPL" target="_top" title="Class to handle a log&#45;par + pl model" alt="" coords="334,153,447,178"/>
+<area shape="rect" id="node4" href="jetset.base_model.Model.html#jetset.base_model.Model" target="_top" title="Model" alt="" coords="29,79,101,105"/>
+<area shape="rect" id="node7" href="jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter" target="_top" title="This class is the base class for models parameters. The following keywords " alt="" coords="5,30,125,55"/>
+<area shape="rect" id="node8" href="jetset.loglog_poly_model.PolyParameter.html#jetset.loglog_poly_model.PolyParameter" target="_top" title="This class is a subclass of the :class:`.ModelParameter` class," alt="" coords="174,30,285,55"/>
+</map>
