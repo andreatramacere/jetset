@@ -694,9 +694,9 @@ class MinutiMinimizer(Minimizer):
             fcn=self.chisq_func,
             forced_parameters=p_names,
             pedantic=False,
-            **kwdarg,
             frontend=None,
-            errordef=1)
+            errordef=1,
+            **kwdarg,)
 
     def chisq_func(self, *p):
         self.p = p

@@ -45,7 +45,7 @@ __author__ = "Andrea Tramacere"
 
 import numpy as np
 from scipy import integrate
-#import jet_wrapper
+
 try:
     from .jetkernel import jetkernel as BlazarSED
 except ImportError:
