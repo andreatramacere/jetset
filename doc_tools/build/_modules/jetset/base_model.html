@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>jetset.base_model &mdash; jetset 1.0.a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="jetset 1.0.a documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> jetset
+          
+
+          
+            
+            <img src="../../_static/logo_small_transp.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">jetset</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>jetset.base_model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for jetset.base_model</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="nb">super</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span>
+                      <span class="nb">zip</span><span class="p">,</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="nb">zip</span><span class="p">)</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Andrea Tramacere&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">.model_parameters</span> <span class="k">import</span> <span class="n">ModelParameterArray</span><span class="p">,</span> <span class="n">ModelParameter</span>
+<span class="kn">from</span> <span class="nn">.spectral_shapes</span> <span class="k">import</span> <span class="n">SED</span>
+<span class="kn">from</span> <span class="nn">.data_loader</span> <span class="k">import</span>  <span class="n">ObsData</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Model&#39;</span><span class="p">]</span>
+<div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../api/jetset.base_model.Model.html#jetset.base_model.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;no-name&#39;</span><span class="p">,</span><span class="n">nu_size</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span><span class="o">=</span><span class="kc">None</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">SED</span> <span class="o">=</span> <span class="n">SED</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">ModelParameterArray</span><span class="p">()</span>    
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span><span class="o">=</span><span class="s1">&#39;lin-lin&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_size</span><span class="o">=</span><span class="n">nu_size</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_min</span><span class="o">=</span><span class="kc">None</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_max</span><span class="o">=</span><span class="kc">None</span>
+        
+        
+   
+<div class="viewcode-block" id="Model.eval"><a class="viewcode-back" href="../../api/jetset.base_model.Model.html#jetset.base_model.Model.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fill_SED</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">nu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">get_model</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">loglog</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="n">nu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#print(&quot;---&gt;&quot;, self.nu_min,self.nu_max,self.nu_size)</span>
+            
+            <span class="n">x1</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_min</span><span class="p">)</span>
+
+            <span class="n">x2</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_max</span><span class="p">)</span>
+            
+            <span class="n">lin_nu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_size</span><span class="p">)</span>
+            
+            <span class="n">model</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">lin_nu</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+            <span class="c1">#print &quot;x1&quot;,x1     </span>
+            
+            
+        <span class="k">else</span><span class="p">:</span>
+            
+
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span><span class="o">==</span><span class="p">():</span>
+ 
+                <span class="n">nu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">nu</span><span class="p">])</span>
+            
+            
+            
+           
+            
+        <span class="k">if</span> <span class="n">loglog</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="n">log_nu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span>
+            
+            <span class="n">lin_nu</span><span class="o">=</span><span class="n">nu</span>
+            
+            <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_func</span><span class="p">(</span><span class="n">lin_nu</span><span class="p">)</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log_nu</span><span class="o">=</span><span class="n">nu</span>
+
+            <span class="n">lin_nu</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="n">log_nu</span><span class="p">)</span>
+    
+            <span class="n">log_model</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_func</span><span class="p">(</span><span class="n">log_nu</span><span class="p">)</span>
+            
+            <span class="n">model</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="n">log_model</span><span class="p">)</span>
+        
+        
+        <span class="k">if</span> <span class="n">fill_SED</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="c1">#print &quot;base model&quot;, self.model_type,self.nu_min,self.nu_max</span>
+            <span class="c1">#print lin_nu[0]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">nu</span><span class="o">=</span><span class="n">lin_nu</span><span class="p">,</span><span class="n">nuFnu</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+        
+        
+        <span class="c1">#print model[0]</span>
+        
+
+        
+        <span class="k">if</span> <span class="n">get_model</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">loglog</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            
+                <span class="k">return</span> <span class="n">model</span>
+            <span class="k">else</span><span class="p">:</span>
+                
+                <span class="k">return</span> <span class="n">log_model</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+        
+
+            
+<div class="viewcode-block" id="Model.set_nu_grid"><a class="viewcode-back" href="../../api/jetset.base_model.Model.html#jetset.base_model.Model.set_nu_grid">[docs]</a>    <span class="k">def</span> <span class="nf">set_nu_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nu_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nu_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">nu_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_size</span><span class="o">=</span><span class="n">nu_size</span>
+        
+        <span class="k">if</span> <span class="n">nu_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_min</span><span class="o">=</span><span class="n">nu_min</span>
+        
+        <span class="k">if</span> <span class="n">nu_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_max</span><span class="o">=</span><span class="n">nu_max</span></div>
+    
+<div class="viewcode-block" id="Model.lin_func"><a class="viewcode-back" href="../../api/jetset.base_model.Model.html#jetset.base_model.Model.lin_func">[docs]</a>    <span class="k">def</span> <span class="nf">lin_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu</span><span class="p">):</span>
+        <span class="k">pass</span>   </div>
+    
+<div class="viewcode-block" id="Model.log_func"><a class="viewcode-back" href="../../api/jetset.base_model.Model.html#jetset.base_model.Model.log_func">[docs]</a>    <span class="k">def</span> <span class="nf">log_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_nu</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="Model.get_residuals"><a class="viewcode-back" href="../../api/jetset.base_model.Model.html#jetset.base_model.Model.get_residuals">[docs]</a>    <span class="k">def</span> <span class="nf">get_residuals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">log_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">filter_UL</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">ObsData</span><span class="p">):</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">nu</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">],</span> <span class="n">fill_SED</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">get_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">loglog</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># print &quot;loglog&quot;,loglog</span>
+        <span class="k">if</span> <span class="n">filter_UL</span> <span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="n">msk</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;UL&#39;</span><span class="p">]</span><span class="o">==</span><span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msk</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="n">dt</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">residuals</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">model</span><span class="p">)</span> <span class="o">/</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">]</span>
+
+        <span class="n">nu_residuals</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span>
+
+
+        <span class="k">if</span> <span class="n">log_log</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">nu_residuals</span><span class="p">[</span><span class="n">msk</span><span class="p">],</span> <span class="n">residuals</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">nu_residuals</span><span class="p">[</span><span class="n">msk</span><span class="p">]),</span>  <span class="n">residuals</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, andrea tramacere.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0.a',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

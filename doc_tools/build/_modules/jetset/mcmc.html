@@ -1,0 +1,433 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>jetset.mcmc &mdash; jetset 1.0.a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="jetset 1.0.a documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> jetset
+          
+
+          
+            
+            <img src="../../_static/logo_small_transp.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">jetset</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>jetset.mcmc</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for jetset.mcmc</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="nb">super</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span>
+                      <span class="nb">zip</span><span class="p">,</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="nb">zip</span><span class="p">)</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Andrea Tramacere&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.minimizer</span> <span class="k">import</span>  <span class="n">log_like</span>
+
+<span class="kn">import</span> <span class="nn">emcee</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">cycle</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="nn">pylab</span> <span class="k">import</span>  <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">corner</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+<span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;McmcSampler&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="McmcSampler"><a class="viewcode-back" href="../../api/jetset.mcmc.McmcSampler.html#jetset.mcmc.McmcSampler">[docs]</a><span class="k">class</span> <span class="nc">McmcSampler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">model_minimizer</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">=</span><span class="n">model_minimizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">free_pars</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progress_iter</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">([</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="McmcSampler.run_sampler"><a class="viewcode-back" href="../../api/jetset.mcmc.McmcSampler.html#jetset.mcmc.McmcSampler.run_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">run_sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nwalkers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">steps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">burnin</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">use_UL</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">nwalkers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_prob</span><span class="p">,</span><span class="n">threads</span><span class="o">=</span><span class="n">threads</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calls</span><span class="o">=</span><span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calls_OK</span><span class="o">=</span><span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_UL</span><span class="o">=</span><span class="n">use_UL</span>
+
+        <span class="k">if</span> <span class="n">pos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sample_ball</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">best_fit_val</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">fit_par_free</span><span class="p">]),</span>
+                                     <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">best_fit_val</span><span class="o">*</span><span class="mf">0.005</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">fit_par_free</span><span class="p">]),</span>
+                                     <span class="n">nwalkers</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="o">=</span><span class="n">pos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nwalkers</span><span class="o">=</span><span class="n">nwalkers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="o">=</span><span class="n">steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calls_tot</span><span class="o">=</span><span class="n">nwalkers</span><span class="o">*</span><span class="n">steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="n">par</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">fit_par_free</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_units</span> <span class="o">=</span><span class="p">[</span><span class="n">par</span><span class="o">.</span><span class="n">units</span> <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">fit_par_free</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">run_mcmc</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="n">steps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">chain</span><span class="p">[:,</span> <span class="n">burnin</span><span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndim</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampler_out</span><span class="o">=</span><span class="n">SamplerOutput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">,</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">chain</span><span class="p">,</span>
+                                       <span class="n">nwalkers</span><span class="p">,</span>
+                                       <span class="n">steps</span><span class="p">,</span>
+                                       <span class="n">burnin</span><span class="p">,</span>
+                                       <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
+                                       <span class="n">labels_units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels_units</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">reset_to_best_fit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="McmcSampler.plot_par"><a class="viewcode-back" href="../../api/jetset.mcmc.McmcSampler.html#jetset.mcmc.McmcSampler.plot_par">[docs]</a>    <span class="k">def</span> <span class="nf">plot_par</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">log_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler_out</span><span class="o">.</span><span class="n">plot_par</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span><span class="n">nbins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span><span class="n">log_plot</span><span class="o">=</span><span class="n">log_plot</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="McmcSampler.corner_plot"><a class="viewcode-back" href="../../api/jetset.mcmc.McmcSampler.html#jetset.mcmc.McmcSampler.corner_plot">[docs]</a>    <span class="k">def</span> <span class="nf">corner_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler_out</span><span class="o">.</span><span class="n">corner_plot</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="McmcSampler.seve_run"><a class="viewcode-back" href="../../api/jetset.mcmc.McmcSampler.html#jetset.mcmc.McmcSampler.seve_run">[docs]</a>    <span class="k">def</span> <span class="nf">seve_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampler_out</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="McmcSampler.log_like"><a class="viewcode-back" href="../../api/jetset.mcmc.McmcSampler.html#jetset.mcmc.McmcSampler.log_like">[docs]</a>    <span class="k">def</span> <span class="nf">log_like</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="n">_warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">fit_par_free</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">theta</span><span class="p">[</span><span class="n">pi</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="n">pi</span><span class="p">]):</span>
+                <span class="n">_warn</span><span class="o">=</span><span class="kc">True</span>
+
+
+
+
+
+        <span class="n">_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">fit_Model</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">nu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">nu_fit</span><span class="p">,</span> <span class="n">fill_SED</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">get_model</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">loglog</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">loglog</span><span class="p">)</span>
+
+        <span class="n">_res_sum</span><span class="p">,</span> <span class="n">_res</span><span class="p">,</span> <span class="n">_res_UL</span><span class="o">=</span> <span class="n">log_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">nuFnu_fit</span><span class="p">,</span>
+                        <span class="n">_m</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">err_nuFnu_fit</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">UL</span><span class="p">,</span>
+                        <span class="n">use_UL</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_UL</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_progess_bar</span><span class="p">()</span>
+        <span class="k">return</span>  <span class="n">_res_sum</span></div>
+
+
+
+<div class="viewcode-block" id="McmcSampler.log_prob"><a class="viewcode-back" href="../../api/jetset.mcmc.McmcSampler.html#jetset.mcmc.McmcSampler.log_prob">[docs]</a>    <span class="k">def</span> <span class="nf">log_prob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">theta</span><span class="p">):</span>
+        <span class="n">lp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_prior</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calls</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">lp</span><span class="p">):</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calls_OK</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">lp</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_like</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="McmcSampler.log_prior"><a class="viewcode-back" href="../../api/jetset.mcmc.McmcSampler.html#jetset.mcmc.McmcSampler.log_prior">[docs]</a>    <span class="k">def</span> <span class="nf">log_prior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">theta</span><span class="p">):</span>
+        <span class="n">_r</span><span class="o">=</span><span class="mf">0.</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="p">[(</span><span class="n">par</span><span class="o">.</span><span class="n">fit_range_min</span><span class="p">,</span> <span class="n">par</span><span class="o">.</span><span class="n">fit_range_max</span><span class="p">)</span> <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">fit_par_free</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">theta</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">bounds</span><span class="p">[</span><span class="n">pi</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">theta</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">&lt;</span><span class="n">bounds</span><span class="p">[</span><span class="n">pi</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">_r</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+            <span class="k">if</span> <span class="n">bounds</span><span class="p">[</span><span class="n">pi</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">theta</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">&gt;</span><span class="n">bounds</span><span class="p">[</span><span class="n">pi</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">_r</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="k">return</span> <span class="n">_r</span></div>
+
+    <span class="k">def</span> <span class="nf">_progess_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calls</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">calls</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="si">%s</span><span class="s2"> progress=</span><span class="si">%3.3f%%</span><span class="s2"> calls=</span><span class="si">%d</span><span class="s2"> accepted=</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_progress_iter</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">calls</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calls_tot</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">calls</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">calls_OK</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span> <span class="nc">SamplerOutput</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">samples</span><span class="p">,</span>
+                 <span class="n">chain</span><span class="p">,</span>
+                 <span class="n">nwalkers</span><span class="p">,</span>
+                 <span class="n">steps</span><span class="p">,</span>
+                 <span class="n">burnin</span><span class="p">,</span>
+                 <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">labels_units</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="o">=</span><span class="n">samples</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">=</span><span class="n">chain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nwalkers</span><span class="o">=</span><span class="n">nwalkers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="o">=</span><span class="n">steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">burnin</span><span class="o">=</span><span class="n">burnin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_units</span><span class="o">=</span><span class="n">labels_units</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="nb">input</span><span class="p">:</span>
+
+            <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">corner_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_id</span><span class="o">=</span><span class="p">[]</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span><span class="o">==</span><span class="nb">list</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="n">labels</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+                <span class="n">_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">corner</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">[:,</span><span class="n">_id</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">_id</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">corner</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span>
+
+    <span class="k">def</span> <span class="nf">plot_par</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">log_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">==</span><span class="nb">int</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;paramter p&#39;</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="s1">&#39;not found&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="o">&gt;</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;label id larger then labels size&#39;</span><span class="p">)</span>
+
+
+        <span class="n">_d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">[:,</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels_units</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">n</span> <span class="o">+=</span> <span class="s1">&#39; (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels_units</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">log_plot</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span>  <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">_d</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeWarning</span><span class="p">(</span><span class="s1">&#39;negative values in p&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_d</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">_d</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">_d</span><span class="p">,</span>
+                <span class="n">bins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span>
+                <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">f</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, andrea tramacere.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0.a',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

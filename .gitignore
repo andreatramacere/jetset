@@ -2,13 +2,12 @@
 *.py[cod]
 /doc/out.txt
 /doc/err.txt
-/doc_tools/build/*
 /.idea
 /.DS_Store
 *.egg-info
 *.egg
 *.xcodeproj
-build
+/build
 develop-eggs
 dist
 eggs

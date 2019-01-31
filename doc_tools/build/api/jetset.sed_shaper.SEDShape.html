@@ -1,0 +1,458 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>SEDShape &mdash; jetset 1.0.a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="jetset 1.0.a documentation" href="../index.html"/>
+        <link rel="up" title="jetset.sed_shaper Module" href="sed_shaper.html"/>
+        <link rel="next" title="jetset.spectral_shapes Module" href="spectral_shapes.html"/>
+        <link rel="prev" title="peak_values" href="jetset.sed_shaper.peak_values.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> jetset
+          
+
+          
+            
+            <img src="../_static/logo_small_transp.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sed_models_dic.html">sed_models_dic</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="sed_shaper.html">sed_shaper</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sed_shaper.html#moudule-sed-shaper">Moudule: sed_shaper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sed_shaper.html#functions">Functions</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="sed_shaper.html#classes">Classes</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="jetset.sed_shaper.index.html">index</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.sed_shaper.index_array.html">index_array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.sed_shaper.index_typecasting.html">index_typecasting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.sed_shaper.peak_values.html">peak_values</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">SEDShape</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sed_shaper.html#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">jetset</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">Modules</a> &raquo;</li>
+        
+          <li><a href="sed_shaper.html">jetset.sed_shaper Module</a> &raquo;</li>
+        
+      <li>SEDShape</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/jetset.sed_shaper.SEDShape.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sedshape">
+<h1>SEDShape<a class="headerlink" href="#sedshape" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jetset.sed_shaper.SEDShape">
+<em class="property">class </em><code class="descname">SEDShape</code><span class="sig-paren">(</span><em>sed_data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>This handle the SED shaping process</p>
+<p class="rubric">Methods Summary</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.IC_fit" title="jetset.sed_shaper.SEDShape.IC_fit"><code class="xref py py-obj docutils literal"><span class="pre">IC_fit</span></code></a>([fit_range,&nbsp;use_log_par,&nbsp;Ep_start,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.add_BBB_template" title="jetset.sed_shaper.SEDShape.add_BBB_template"><code class="xref py py-obj docutils literal"><span class="pre">add_BBB_template</span></code></a>(fit_model)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.add_disk" title="jetset.sed_shaper.SEDShape.add_disk"><code class="xref py py-obj docutils literal"><span class="pre">add_disk</span></code></a>(fit_model)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.add_host_template" title="jetset.sed_shaper.SEDShape.add_host_template"><code class="xref py py-obj docutils literal"><span class="pre">add_host_template</span></code></a>(fit_model)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.check_adapt_range_size" title="jetset.sed_shaper.SEDShape.check_adapt_range_size"><code class="xref py py-obj docutils literal"><span class="pre">check_adapt_range_size</span></code></a>(x,&nbsp;index,&nbsp;min_size)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.do_sync_fit" title="jetset.sed_shaper.SEDShape.do_sync_fit"><code class="xref py py-obj docutils literal"><span class="pre">do_sync_fit</span></code></a>(fit_model[,&nbsp;fit_range,&nbsp;…])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.eval_indices" title="jetset.sed_shaper.SEDShape.eval_indices"><code class="xref py py-obj docutils literal"><span class="pre">eval_indices</span></code></a>([minimizer,&nbsp;silent,&nbsp;…])</td>
+<td>This methods evaluates the indices for the SED</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.find_class" title="jetset.sed_shaper.SEDShape.find_class"><code class="xref py py-obj docutils literal"><span class="pre">find_class</span></code></a>(E_S)</td>
+<td>method to evaluate obj class ‘L/I/HPS’ according</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.get_nu_max" title="jetset.sed_shaper.SEDShape.get_nu_max"><code class="xref py py-obj docutils literal"><span class="pre">get_nu_max</span></code></a>(nu,&nbsp;fit_range)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.plot_indices" title="jetset.sed_shaper.SEDShape.plot_indices"><code class="xref py py-obj docutils literal"><span class="pre">plot_indices</span></code></a>([plot_obj])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.plot_sahpe_fit" title="jetset.sed_shaper.SEDShape.plot_sahpe_fit"><code class="xref py py-obj docutils literal"><span class="pre">plot_sahpe_fit</span></code></a>([plot_obj])</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.save_sync_fit_report" title="jetset.sed_shaper.SEDShape.save_sync_fit_report"><code class="xref py py-obj docutils literal"><span class="pre">save_sync_fit_report</span></code></a>([name])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.save_values" title="jetset.sed_shaper.SEDShape.save_values"><code class="xref py py-obj docutils literal"><span class="pre">save_values</span></code></a>(name)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.set_S_LE_slope" title="jetset.sed_shaper.SEDShape.set_S_LE_slope"><code class="xref py py-obj docutils literal"><span class="pre">set_S_LE_slope</span></code></a>(fit_func,&nbsp;use_log_par)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.show_values" title="jetset.sed_shaper.SEDShape.show_values"><code class="xref py py-obj docutils literal"><span class="pre">show_values</span></code></a>()</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.sed_shaper.SEDShape.sync_fit" title="jetset.sed_shaper.SEDShape.sync_fit"><code class="xref py py-obj docutils literal"><span class="pre">sync_fit</span></code></a>([check_host_gal_template,&nbsp;…])</td>
+<td>This method analyses the synchrotron shape by means</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Documentation</p>
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.IC_fit">
+<code class="descname">IC_fit</code><span class="sig-paren">(</span><em>fit_range=None</em>, <em>use_log_par=False</em>, <em>Ep_start=None</em>, <em>minimizer='minuit'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.IC_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.IC_fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.add_BBB_template">
+<code class="descname">add_BBB_template</code><span class="sig-paren">(</span><em>fit_model</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.add_BBB_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.add_BBB_template" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.add_disk">
+<code class="descname">add_disk</code><span class="sig-paren">(</span><em>fit_model</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.add_disk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.add_disk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.add_host_template">
+<code class="descname">add_host_template</code><span class="sig-paren">(</span><em>fit_model</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.add_host_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.add_host_template" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.check_adapt_range_size">
+<code class="descname">check_adapt_range_size</code><span class="sig-paren">(</span><em>x</em>, <em>index</em>, <em>min_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.check_adapt_range_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.check_adapt_range_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.do_sync_fit">
+<code class="descname">do_sync_fit</code><span class="sig-paren">(</span><em>fit_model</em>, <em>fit_range=None</em>, <em>check_disk=False</em>, <em>check_BBB=False</em>, <em>check_host=False</em>, <em>Ep_start=None</em>, <em>no_check=False</em>, <em>minimizer='lsb'</em>, <em>silent=True</em>, <em>show_fit_report=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.do_sync_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.do_sync_fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.eval_indices">
+<code class="descname">eval_indices</code><span class="sig-paren">(</span><em>minimizer='lsb'</em>, <em>silent=True</em>, <em>show_fit_report=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.eval_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.eval_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>This methods evaluates the indices for the SED
+indices are istances of the index_array () class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.find_class">
+<code class="descname">find_class</code><span class="sig-paren">(</span><em>E_S</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.find_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.find_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>method to evaluate obj class ‘L/I/HPS’ according
+to Ep</p>
+<p>args: E_S</p>
+<p>the obj_class member is updated</p>
+<p>obj_class==None means undefined class</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.get_nu_max">
+<code class="descname">get_nu_max</code><span class="sig-paren">(</span><em>nu</em>, <em>fit_range</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.get_nu_max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.get_nu_max" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.plot_indices">
+<code class="descname">plot_indices</code><span class="sig-paren">(</span><em>plot_obj=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.plot_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.plot_indices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.plot_sahpe_fit">
+<code class="descname">plot_sahpe_fit</code><span class="sig-paren">(</span><em>plot_obj=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.plot_sahpe_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.plot_sahpe_fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.save_sync_fit_report">
+<code class="descname">save_sync_fit_report</code><span class="sig-paren">(</span><em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.save_sync_fit_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.save_sync_fit_report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.save_values">
+<code class="descname">save_values</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.save_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.save_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.set_S_LE_slope">
+<code class="descname">set_S_LE_slope</code><span class="sig-paren">(</span><em>fit_func</em>, <em>use_log_par</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.set_S_LE_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.set_S_LE_slope" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.show_values">
+<code class="descname">show_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.show_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.show_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.sed_shaper.SEDShape.sync_fit">
+<code class="descname">sync_fit</code><span class="sig-paren">(</span><em>check_host_gal_template=False</em>, <em>check_BBB_template=False</em>, <em>check_disk=False</em>, <em>fit_range=None</em>, <em>nu_min=None</em>, <em>nu_max=None</em>, <em>Ep_start=None</em>, <em>use_log_par=False</em>, <em>minimizer='lsb'</em>, <em>silent=True</em>, <em>show_fit_report=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/sed_shaper.html#SEDShape.sync_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.sed_shaper.SEDShape.sync_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method analyses the synchrotron shape by means
+of log-log polynomial fits</p>
+<p>The following paremeters are estimated:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>the SED peak frequency Ep</li>
+<li>the SED peak flux Sp</li>
+<li>the curvature at the peak</li>
+<li>checks for the host galaxy</li>
+</ol>
+<p>-) first a log-log cubic fit is performed, with the ‘blind’ interval</p>
+<p>-) the SED class ‘I/L/HPS’ is set according to Ep, by find_class</p>
+<dl class="docutils">
+<dt>-) the fit range is changed from ‘blind’, according to the</dt>
+<dd>value returned by find_class, using the function sync_fit_range</dd>
+</dl>
+<p>-) the SED nu, and nuFnu are generated for the ‘blind’ fit</p>
+<dl class="docutils">
+<dt>-) if the option is selected in the call of the method</dt>
+<dd>the estimate of the host galaxy is performed</dd>
+</dl>
+<p>-) a second run improve the obj class is performed</p>
+</div></blockquote>
+<p>values are stored in the class :class: ‘peak_values’</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="spectral_shapes.html" class="btn btn-neutral float-right" title="jetset.spectral_shapes Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="jetset.sed_shaper.peak_values.html" class="btn btn-neutral" title="peak_values" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, andrea tramacere.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0.a',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

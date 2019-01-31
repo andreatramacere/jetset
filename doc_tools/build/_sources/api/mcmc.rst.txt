@@ -1,0 +1,1 @@
+.. automodapi:: jetset.mcmc
