@@ -696,7 +696,7 @@ class MinutiMinimizer(Minimizer):
             pedantic=False,
             frontend=None,
             errordef=1,
-            **kwdarg,)
+            **kwdarg)
 
     def chisq_func(self, *p):
         self.p = p
