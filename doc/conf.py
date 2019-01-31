@@ -22,8 +22,8 @@ import os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0,os.path.abspath('../../'))
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+import jetset
 
-#import jetset
 if on_rtd==False:  # only import and set the theme if we're building docs locally
 
     import sphinx_bootstrap_theme
