@@ -1,0 +1,26 @@
+digraph "SEDmodel" {
+charset="utf-8"
+rankdir=BT
+"2" [shape="record", label="{SEDmodel|name : NoneType\lmodel_pars\lelec_distr\lfit_pars\lSED\lblob : NoneType\ltemp_ev : NoneType\l|update_fitpar()\leval_model()\lshow_fit_pars()\lupdate_to_fitpar()\lfit()\lset_fit_par()\lupdate_to_bestfit()\lset_model_par()\lget_fit_par_array()\lshow_model_pars()\l}"];
+"3" [shape="record", label="{SSC_param|B\lbeaming\lgamma_3p\lgmax\ltemp_ev\lgmin\lelec_distr\lN\ls\lr\lblob\lgamma_cut\lR\lz\ls1\l|show_all()\lset()\lshow()\l}"];
+"4" [shape="record", label="{param|blob_name\lval : NoneType\l|show()\l}"];
+"5" [shape="record", label="{fit_par_array|par_array : list\ltemp_ev\lblob\l|add_par()\lset()\lpar_by_name()\lget_par()\lshow_pars()\l}"];
+"6" [shape="record", label="{SED|nu : NoneType\lnu_residuals : NoneType\lnuFnu : NoneType\lname : NoneType\lresiduals : NoneType\l|get_model_points()\lget_residuals()\lfill()\l}"];
+"3" -> "2" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="model_pars"];
+"5" -> "2" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="fit_pars"];
+"5" -> "2" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="fit_pars"];
+"6" -> "2" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="SED"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="B"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="beaming"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="gamma_3p"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="gmax"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="gmin"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="elec_distr"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="N"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="s"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="r"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="gamma_cut"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="R"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="z"];
+"4" -> "3" [arrowhead="diamond", style="solid", arrowtail="none", fontcolor="green", label="s1"];
+}

@@ -1,5 +1,0 @@
-
-
-pyreverse -AS BlazarSEDFit 
-
-pyreverse -c SEDmodel -AS -mn  BlazarSEDFit.model

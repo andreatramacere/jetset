@@ -1,1 +1,0 @@
-{"electron_distribution": "lppl", "beaming_expr": "delta", "model_spectral_components": ["Sum", "Sync", "SSC"], "EC_components_list": [], "pars": {"N": 1000.0, "gmin": 100.0, "gmax": 100000000.0, "s": 2.0, "r": 0.4, "gamma0_log_parab": 100000.0, "R": 500000000000000.0, "B": 0.2, "beam_obj": 10.0, "z_cosm": 0.1}}
