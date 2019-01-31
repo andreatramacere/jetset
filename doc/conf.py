@@ -29,10 +29,10 @@ if on_rtd==False:  # only import and set the theme if we're building docs locall
     import sphinx_bootstrap_theme
     import sphinx_rtd_theme
 
-    theme='sphinx_rtd_theme'
+    theme='bootstrap'
 
 else:
-    theme = 'sphinx_rtd_theme'
+    theme = 'bootstrap'
 
 #print( jetset.__file__)
 # -- General configuration ------------------------------------------------
