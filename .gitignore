@@ -2,7 +2,6 @@
 *.py[cod]
 /doc/out.txt
 /doc/err.txt
-/doc_tools/build/*
 /.idea
 /.DS_Store
 *.egg-info
