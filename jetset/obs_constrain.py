@@ -55,7 +55,7 @@ import numpy as n
 
 from .frame_converter import convert_nu_to_blob
 
-from . import sed_models_dic as Model_dic
+from . import jetkernel_models_dic as Model_dic
 
 #import jet_wrapper
 #BlazarSED = jet_wrapper.importer()

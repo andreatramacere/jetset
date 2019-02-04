@@ -23,7 +23,6 @@ import os
 sys.path.insert(0,os.path.abspath('../'))
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 import jetset
-
 if on_rtd==False:  # only import and set the theme if we're building docs locally
 
     import sphinx_bootstrap_theme
@@ -33,17 +32,18 @@ if on_rtd==False:  # only import and set the theme if we're building docs locall
 
 else:
 
-    autodoc_mock_imports = []
-    try:
-        import jetset.jetkernel
-    except ImportError:
-        autodoc_mock_imports.append('jetset.jetkernel')
 
-    
+    #autodoc_mock_imports = []
+    #try:
+    #    import jetset.jetkernel
+    #except ImportError:
+    #    autodoc_mock_imports.append('jetset.jetkernel')
+
+
 
     theme = 'bootstrap'
 
-#print( jetset.__file__)
+print( jetset.__file__)
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -56,6 +56,7 @@ else:
 extensions = [
 
     'sphinx.ext.autodoc',
+    #'numpydoc',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
@@ -65,14 +66,14 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.graphviz',
     'sphinx_automodapi.automodapi',
-    #'sphinx_automodapi.smart_resolver',
+    'sphinx_automodapi.smart_resolver',
     #'sphinxcontrib.plantuml',
     #'sphinxcontrib.bibtex',
     'sphinx.ext.napoleon',
     #'matplotlib.sphinxext.plot_directive',
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.autosummary',
-    #'nbsphinx',
+    'nbsphinx',
     'sphinx.ext.mathjax',
 ]
 
@@ -233,7 +234,6 @@ if theme=='sphinx_rtd_theme':
     }
 
 if theme=='bootstrap':
-    html_logo = "logo_small_transp.png"
 
     #html_sidebars = {'**': ['localtoc.html', 'sourcelink.html', 'searchbox.html']}
 
@@ -247,7 +247,7 @@ if theme=='bootstrap':
     if not on_rtd:
         html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
     html_static_path = ['_static']
-    html_logo = "logo_small_transp.png"
+
     html_theme_options = {
         # Navigation bar title. (Default: ``project`` value)
         'navbar_title': "JetSeT",

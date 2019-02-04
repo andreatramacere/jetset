@@ -1,8 +1,0 @@
-<map id="inheritance290781dd19" name="inheritance290781dd19">
-<area shape="rect" id="node1" href="jetset.jet_model.ElectronDistribution.html#jetset.jet_model.ElectronDistribution" target="_top" title="ElectronDistribution" alt="" coords="6,153,143,178"/>
-<area shape="rect" id="node2" href="jetset.jet_model.Jet.html#jetset.jet_model.Jet" target="_top" title="This class allows to build a ``jet`` model providing the interface to the" alt="" coords="208,103,280,129"/>
-<area shape="rect" id="node3" href="jetset.base_model.Model.html#jetset.base_model.Model" target="_top" title="Model" alt="" coords="39,103,111,129"/>
-<area shape="rect" id="node4" href="jetset.jet_model.JetParameter.html#jetset.jet_model.JetParameter" target="_top" title="This class is a subclass of the :class:`.ModelParameter` class," alt="" coords="193,54,295,79"/>
-<area shape="rect" id="node5" href="jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter" target="_top" title="This class is the base class for models parameters. The following keywords " alt="" coords="15,54,135,79"/>
-<area shape="rect" id="node6" href="jetset.jet_model.JetSpecComponent.html#jetset.jet_model.JetSpecComponent" target="_top" title="JetSpecComponent" alt="" coords="5,5,144,30"/>
-</map>

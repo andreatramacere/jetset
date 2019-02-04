@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>jetset.poly_fit &#8212; jetset 1.0.a documentation</title>
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html"><span><img src="../../_static/logo_small_transp.png"></span>
+          JetSeT</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">JetSeT <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><!--
+<ul class="globaltoc"
+><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+//-->
+
+
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2></h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a></li>
+</ul>
+
+    
+  </div>
+</div>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for jetset.poly_fit</h1><div class="highlight"><pre>
+<span></span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="nb">super</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span>
+                      <span class="nb">zip</span><span class="p">,</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="nb">zip</span><span class="p">)</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Andrea Tramacere&quot;</span>
+
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">leastsq</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">s</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">polyfit</span><span class="p">,</span><span class="n">polyval</span><span class="p">,</span><span class="n">polyder</span>
+<span class="kn">import</span>  <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;check_maxima&#39;</span><span class="p">,</span><span class="s1">&#39;cubic_peaks&#39;</span><span class="p">,</span><span class="s1">&#39;do_cubic_fit&#39;</span><span class="p">,</span><span class="s1">&#39;do_cubic_fit_peaks&#39;</span><span class="p">,</span><span class="s1">&#39;do_linear_fit&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;do_log_Parab_FIT&#39;</span><span class="p">,</span><span class="s1">&#39;filter_interval&#39;</span><span class="p">,</span><span class="s1">&#39;find_max_cubic&#39;</span><span class="p">,</span><span class="s1">&#39;lin&#39;</span><span class="p">,</span><span class="s1">&#39;parab&#39;</span><span class="p">,</span><span class="s1">&#39;residuals_cubic_peaks&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;residuals_linfit&#39;</span><span class="p">,</span><span class="s1">&#39;residuals_parab&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="filter_interval"><a class="viewcode-back" href="../../api/jetset.poly_fit.filter_interval.html#jetset.poly_fit.filter_interval">[docs]</a><span class="k">def</span> <span class="nf">filter_interval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x_range</span><span class="p">):</span>
+    <span class="n">msk1</span><span class="o">=</span><span class="n">x</span><span class="o">&gt;=</span><span class="n">x_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">msk2</span><span class="o">=</span><span class="n">x</span><span class="o">&lt;=</span><span class="n">x_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">msk1</span><span class="o">*</span><span class="n">msk2</span></div>
+
+
+
+
+<span class="c1">#-------- LINEAR FIT----------------------------</span>
+<div class="viewcode-block" id="do_linear_fit"><a class="viewcode-back" href="../../api/jetset.poly_fit.do_linear_fit.html#jetset.poly_fit.do_linear_fit">[docs]</a><span class="k">def</span> <span class="nf">do_linear_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">dy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">x_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    
+    <span class="k">if</span> <span class="n">x_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+        <span class="n">msk</span> <span class="o">=</span> <span class="n">filter_interval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x_range</span><span class="p">)</span>
+        <span class="n">x_fit</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        <span class="n">y_fit</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        <span class="n">dy_fit</span><span class="o">=</span><span class="n">dy</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_fit</span><span class="o">=</span><span class="n">x</span>
+        <span class="n">y_fit</span><span class="o">=</span><span class="n">y</span> 
+        <span class="n">dy_fit</span><span class="o">=</span><span class="n">dy</span>
+    
+    <span class="k">if</span> <span class="n">dy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dy_fit</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_fit</span><span class="p">))</span>
+   
+        
+
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_fit</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;fit failed number of points less then 2&quot;</span><span class="p">)</span>
+     
+    <span class="c1">#print nu_fit,nuFnu_fit,err_nuFnu_fit</span>
+    <span class="n">pinit</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">]</span>
+    <span class="c1">#print &quot;input&quot;, log_nu,log_nuLnu    </span>
+    <span class="n">p</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">infodict</span><span class="p">,</span><span class="n">mesg</span><span class="p">,</span><span class="n">ier</span> <span class="o">=</span> <span class="n">leastsq</span><span class="p">(</span><span class="n">residuals_linfit</span><span class="p">,</span> <span class="n">pinit</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">x_fit</span><span class="p">,</span><span class="n">y_fit</span><span class="p">,</span><span class="n">dy_fit</span><span class="p">),</span> <span class="n">full_output</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="n">chisq</span><span class="o">=</span><span class="p">(</span><span class="n">infodict</span><span class="p">[</span><span class="s1">&#39;fvec&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">dof</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">x_fit</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dof</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">rmse</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">chisq</span><span class="o">/</span><span class="n">dof</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">rmse</span><span class="o">=</span><span class="mi">0</span>
+        
+    <span class="k">if</span> <span class="n">cov</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+        <span class="n">err</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">cov</span><span class="o">.</span><span class="n">diagonal</span><span class="p">())</span><span class="o">*</span><span class="n">rmse</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">err</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="c1">#print p</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">,</span><span class="n">err</span></div>
+
+<div class="viewcode-block" id="lin"><a class="viewcode-back" href="../../api/jetset.poly_fit.lin.html#jetset.poly_fit.lin">[docs]</a><span class="k">def</span> <span class="nf">lin</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+
+    <span class="k">return</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="residuals_linfit"><a class="viewcode-back" href="../../api/jetset.poly_fit.residuals_linfit.html#jetset.poly_fit.residuals_linfit">[docs]</a><span class="k">def</span> <span class="nf">residuals_linfit</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">dy</span><span class="p">):</span>
+    <span class="c1">#print len(dy),len(x),len(y),len(p)</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">lin</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">))</span><span class="o">/</span><span class="n">dy</span>
+    <span class="k">return</span> <span class="n">err</span></div>
+<span class="c1">#-----------------------------------------------</span>
+
+
+<span class="c1">#----CUBIC-PEAKS------------------------------------</span>
+<div class="viewcode-block" id="cubic_peaks"><a class="viewcode-back" href="../../api/jetset.poly_fit.cubic_peaks.html#jetset.poly_fit.cubic_peaks">[docs]</a><span class="k">def</span> <span class="nf">cubic_peaks</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+    <span class="c1">#p0=yp</span>
+    <span class="c1">#p1=b</span>
+    <span class="c1">#p2=xp</span>
+    <span class="c1">#</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="residuals_cubic_peaks"><a class="viewcode-back" href="../../api/jetset.poly_fit.residuals_cubic_peaks.html#jetset.poly_fit.residuals_cubic_peaks">[docs]</a><span class="k">def</span> <span class="nf">residuals_cubic_peaks</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">dy</span><span class="p">,</span><span class="n">template</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">template</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+        <span class="n">model1</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">cubic_peaks</span><span class="p">(</span><span class="n">p</span><span class="p">[:</span><span class="mi">4</span><span class="p">],</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">model2</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">template</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nuFnu_scale</span><span class="o">=</span><span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">model1</span><span class="o">+</span><span class="n">model2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">cubic_peaks</span><span class="p">(</span><span class="n">p</span><span class="p">[:</span><span class="mi">4</span><span class="p">],</span><span class="n">x</span><span class="p">)</span>
+    
+    
+    
+    <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">model</span><span class="p">)</span><span class="o">/</span><span class="n">dy</span>
+    <span class="k">return</span> <span class="n">err</span></div>
+
+<div class="viewcode-block" id="do_cubic_fit_peaks"><a class="viewcode-back" href="../../api/jetset.poly_fit.do_cubic_fit_peaks.html#jetset.poly_fit.do_cubic_fit_peaks">[docs]</a><span class="k">def</span> <span class="nf">do_cubic_fit_peaks</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">xp</span><span class="p">,</span><span class="n">yp</span><span class="p">,</span><span class="n">dy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">x_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    
+    <span class="k">if</span> <span class="n">x_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+        <span class="n">msk</span> <span class="o">=</span> <span class="n">filter_interval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x_range</span><span class="p">)</span>
+        <span class="n">x_fit</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        <span class="n">y_fit</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        <span class="n">dy_fit</span><span class="o">=</span><span class="n">dy</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_fit</span><span class="o">=</span><span class="n">x</span>
+        <span class="n">y_fit</span><span class="o">=</span><span class="n">y</span> 
+        <span class="n">dy_fit</span><span class="o">=</span><span class="n">dy</span>
+    
+    <span class="k">if</span> <span class="n">dy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dy_fit</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_fit</span><span class="p">))</span>
+    
+    
+    <span class="k">if</span> <span class="n">template</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+        <span class="n">pinit</span> <span class="o">=</span> <span class="p">[</span><span class="n">yp</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">xp</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">yp</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pinit</span> <span class="o">=</span> <span class="p">[</span><span class="n">yp</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">xp</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+    
+    
+    <span class="n">p</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">infodict</span><span class="p">,</span><span class="n">mesg</span><span class="p">,</span><span class="n">ier</span> <span class="o">=</span> <span class="n">leastsq</span><span class="p">(</span><span class="n">residuals_cubic_peaks</span><span class="p">,</span> <span class="n">pinit</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">x_fit</span><span class="p">,</span><span class="n">y_fit</span><span class="p">,</span><span class="n">dy_fit</span><span class="p">,</span><span class="n">template</span><span class="p">),</span> <span class="n">full_output</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="c1">#print&quot;cubic fit&quot;, out[0]</span>
+    <span class="n">chisq</span><span class="o">=</span><span class="p">(</span><span class="n">infodict</span><span class="p">[</span><span class="s1">&#39;fvec&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="c1"># dof is degrees of freedom</span>
+    <span class="n">dof</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">x_fit</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dof</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">rmse</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">chisq</span><span class="o">/</span><span class="n">dof</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">rmse</span><span class="o">=</span><span class="mi">0</span>
+        
+    <span class="c1">#print &quot;--&gt; chi_red&quot;, rmse</span>
+    <span class="k">if</span> <span class="n">cov</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+        <span class="n">err</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">cov</span><span class="o">.</span><span class="n">diagonal</span><span class="p">())</span><span class="o">*</span><span class="n">rmse</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">err</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="c1">#print p[3]</span>
+    <span class="c1">#print &quot;--&gt; fit log: &quot;,mesg,ier</span>
+    <span class="c1">#print infodict[&#39;fvec&#39;]</span>
+    <span class="n">par_parab</span><span class="o">=</span><span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">err_parab</span><span class="o">=</span><span class="p">[</span><span class="n">err</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">err</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">err</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">==</span><span class="mi">5</span><span class="p">:</span>
+        <span class="n">par_parab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">err_parab</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        
+    <span class="k">return</span> <span class="n">par_parab</span><span class="p">,</span><span class="n">err_parab</span><span class="p">,</span><span class="n">dof</span></div>
+<span class="c1">#------------------------------------------------------</span>
+
+
+<span class="c1">#-----CUBIC   -----------------------------------------</span>
+<div class="viewcode-block" id="find_max_cubic"><a class="viewcode-back" href="../../api/jetset.poly_fit.find_max_cubic.html#jetset.poly_fit.find_max_cubic">[docs]</a><span class="k">def</span> <span class="nf">find_max_cubic</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">dy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">x_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">der</span><span class="o">=</span><span class="n">polyder</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">delta</span><span class="o">=</span><span class="n">der</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">der</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">der</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">der</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">delta</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="c1">#print p,der</span>
+        <span class="n">root1</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">der</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">s</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">delta</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">der</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">root2</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">der</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">delta</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">der</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1">#print root1,root2</span>
+        <span class="k">if</span> <span class="n">der</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">xp</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">root1</span><span class="p">,</span><span class="n">root2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xp</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">root1</span><span class="p">,</span><span class="n">root2</span><span class="p">)</span>
+        
+        <span class="n">yp</span><span class="o">=</span><span class="n">polyval</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">xp</span><span class="p">)</span>
+        <span class="c1">#p0=yp</span>
+        <span class="c1">#p1=xp</span>
+        <span class="c1">#p2=b</span>
+        <span class="c1">#print &quot;xp,yp=&quot;,xp,yp</span>
+        <span class="n">p_peaks</span><span class="p">,</span><span class="n">err</span><span class="p">,</span><span class="n">dof</span><span class="o">=</span><span class="n">do_cubic_fit_peaks</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">xp</span><span class="p">,</span><span class="n">yp</span><span class="p">,</span><span class="n">dy</span><span class="o">=</span><span class="n">dy</span><span class="p">,</span><span class="n">x_range</span><span class="o">=</span><span class="n">x_range</span><span class="p">)</span>
+        <span class="k">return</span>  <span class="n">p_peaks</span><span class="p">,</span><span class="n">err</span><span class="p">,</span><span class="n">dof</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;!!! no maxima found for cubic fit&quot;</span><span class="p">)</span>
+        <span class="n">xp</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">yp</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">b</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">yp</span><span class="p">,</span><span class="n">xp</span><span class="p">,</span><span class="n">b</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;No&#39;</span></div>
+
+
+<div class="viewcode-block" id="check_maxima"><a class="viewcode-back" href="../../api/jetset.poly_fit.check_maxima.html#jetset.poly_fit.check_maxima">[docs]</a><span class="k">def</span> <span class="nf">check_maxima</span><span class="p">(</span><span class="n">xm</span><span class="p">,</span><span class="n">ym</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">c</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])]</span>
+    <span class="nb">max</span><span class="o">=</span><span class="n">c</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1">#print &quot;check max&quot;, c</span>
+    <span class="c1">#print max[0],max[1]</span>
+    <span class="c1">#min=c[0]</span>
+
+
+    <span class="k">if</span> <span class="n">b</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+       <span class="k">return</span> <span class="nb">max</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">max</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">b</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ym</span><span class="o">&lt;</span><span class="nb">max</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">max</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">xm</span><span class="p">,</span><span class="n">ym</span></div>
+
+
+<div class="viewcode-block" id="do_cubic_fit"><a class="viewcode-back" href="../../api/jetset.poly_fit.do_cubic_fit.html#jetset.poly_fit.do_cubic_fit">[docs]</a><span class="k">def</span> <span class="nf">do_cubic_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">dy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">x_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    
+    <span class="k">if</span> <span class="n">x_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+        <span class="n">msk</span> <span class="o">=</span> <span class="n">filter_interval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x_range</span><span class="p">)</span>
+        <span class="n">x_fit</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        <span class="n">y_fit</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        <span class="n">dy_fit</span><span class="o">=</span><span class="n">dy</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_fit</span><span class="o">=</span><span class="n">x</span>
+        <span class="n">y_fit</span><span class="o">=</span><span class="n">y</span> 
+        <span class="n">dy_fit</span><span class="o">=</span><span class="n">dy</span>
+    
+    <span class="k">if</span> <span class="n">dy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dy_fit</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_fit</span><span class="p">))</span>
+    
+    
+    
+    
+    <span class="n">p</span><span class="o">=</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x_fit</span><span class="p">,</span><span class="n">y_fit</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        
+    <span class="n">val</span><span class="p">,</span><span class="n">err</span><span class="p">,</span><span class="n">dof</span><span class="o">=</span><span class="n">find_max_cubic</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x_fit</span><span class="p">,</span><span class="n">y_fit</span><span class="p">,</span><span class="n">dy</span><span class="o">=</span><span class="n">dy_fit</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="n">err</span></div>
+<span class="c1">#-----------------------------------------------</span>
+
+<span class="c1">#---LOG PAR-----------------------------------------</span>
+
+<div class="viewcode-block" id="do_log_Parab_FIT"><a class="viewcode-back" href="../../api/jetset.poly_fit.do_log_Parab_FIT.html#jetset.poly_fit.do_log_Parab_FIT">[docs]</a><span class="k">def</span> <span class="nf">do_log_Parab_FIT</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">xp</span><span class="p">,</span><span class="n">yp</span><span class="p">,</span><span class="n">beta</span><span class="p">,</span><span class="n">dy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">x_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">x_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+        <span class="n">msk</span> <span class="o">=</span> <span class="n">filter_interval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x_range</span><span class="p">)</span>
+        <span class="n">x_fit</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        <span class="n">y_fit</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
+        <span class="n">dy_fit</span><span class="o">=</span><span class="n">dy</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span> 
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_fit</span><span class="o">=</span><span class="n">x</span>
+        <span class="n">y_fit</span><span class="o">=</span><span class="n">y</span> 
+        <span class="n">dy_fit</span><span class="o">=</span><span class="n">dy</span>
+    
+    <span class="k">if</span> <span class="n">dy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dy_fit</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_fit</span><span class="p">))</span>
+    
+    
+  
+    
+    <span class="k">if</span> <span class="n">template</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+        <span class="n">pinit</span> <span class="o">=</span> <span class="p">[</span><span class="n">xp</span><span class="p">,</span><span class="n">yp</span><span class="p">,</span><span class="n">beta</span><span class="p">,</span><span class="n">yp</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pinit</span> <span class="o">=</span> <span class="p">[</span><span class="n">xp</span><span class="p">,</span><span class="n">yp</span><span class="p">,</span><span class="n">beta</span><span class="p">]</span>
+ 
+    <span class="n">p</span><span class="p">,</span><span class="n">cov</span><span class="p">,</span><span class="n">infodict</span><span class="p">,</span><span class="n">mesg</span><span class="p">,</span><span class="n">ier</span> <span class="o">=</span> <span class="n">leastsq</span><span class="p">(</span><span class="n">residuals_parab</span><span class="p">,</span> <span class="n">pinit</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">x_fit</span><span class="p">,</span> <span class="n">y_fit</span><span class="p">,</span><span class="n">dy_fit</span><span class="p">,</span><span class="n">template</span><span class="p">),</span> <span class="n">full_output</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+     
+    <span class="n">chisq</span><span class="o">=</span><span class="p">(</span><span class="n">infodict</span><span class="p">[</span><span class="s1">&#39;fvec&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="n">dof</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">x_fit</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">dof</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">rmse</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">chisq</span><span class="o">/</span><span class="n">dof</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">rmse</span><span class="o">=</span><span class="mi">0</span>
+        
+    
+    <span class="k">if</span> <span class="n">cov</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+        <span class="n">err</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">cov</span><span class="o">.</span><span class="n">diagonal</span><span class="p">())</span><span class="o">*</span><span class="n">rmse</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">err</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    
+    
+    <span class="c1">#print p,err</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">,</span><span class="n">err</span></div>
+
+<div class="viewcode-block" id="parab"><a class="viewcode-back" href="../../api/jetset.poly_fit.parab.html#jetset.poly_fit.parab">[docs]</a><span class="k">def</span> <span class="nf">parab</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+    
+    <span class="k">return</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="residuals_parab"><a class="viewcode-back" href="../../api/jetset.poly_fit.residuals_parab.html#jetset.poly_fit.residuals_parab">[docs]</a><span class="k">def</span> <span class="nf">residuals_parab</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">dy</span><span class="p">,</span><span class="n">template</span><span class="p">):</span>
+    <span class="c1">#print p</span>
+    <span class="k">if</span> <span class="n">template</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>  <span class="p">:</span>
+        <span class="n">model1</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">parab</span><span class="p">(</span><span class="n">p</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">model2</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">template</span><span class="o">.</span><span class="n">interp_template</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">func</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">model1</span><span class="o">+</span><span class="n">model2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">parab</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">model</span><span class="p">)</span><span class="o">/</span><span class="n">dy</span>
+    <span class="k">return</span> <span class="n">err</span></div>
+
+<span class="c1">#---------------------------------------------------</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

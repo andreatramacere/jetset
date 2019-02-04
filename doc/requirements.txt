@@ -1,6 +1,7 @@
 sphinx-bootstrap-theme
 sphinx-automodapi
 nbsphinx
+numpydoc
 setuptools
 scipy
 numpy

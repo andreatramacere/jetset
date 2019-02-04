@@ -56,7 +56,7 @@ from .base_model import  Model
 
 from .output import makedir,WorkPlace,clean_dir
 
-from .sed_models_dic import nuFnu_obs_dic,gamma_dic
+from .jetkernel_models_dic import nuFnu_obs_dic,gamma_dic,available_N_distr,N_distr_descr
 
 from  .plot_sedfit import PlotSED,PlotPdistr,PlotSpecComp
 
@@ -267,7 +267,7 @@ class ElectronDistribution(object):
 
     def __init__(self,name,jet,gamma_grid_size=None,log_values=False):
 
-        self.elec_models_list = ['lp', 'pl', 'lppl', 'lpep', 'plc', 'bkn', 'spitkov', 'lppl_pile_up', 'bkn_pile_up']
+        self.elec_models_list = available_N_distr
 
         if name == 'from_array':
             pass
@@ -291,6 +291,12 @@ class ElectronDistribution(object):
         else:
             self._set_blob()
             self._fill()
+
+
+    @staticmethod
+    def available_distributions():
+        for k in N_distr_descr.keys():
+            print('%s: %s'%(k,N_distr_descr[k]))
 
 
     @classmethod
@@ -321,7 +327,7 @@ class ElectronDistribution(object):
         self._fill()
 
     def _set_blob(self):
-        BlazarSED.MakeNe(self._jet._blob)
+        #BlazarSED.MakeNe(self._jet._blob)
         BlazarSED.InitNe(self._jet._blob)
         self._N_name, self._gamma_name = gamma_dic['electron_distr']
         self.Ne_ptr = getattr(self._jet._blob, self._N_name)
@@ -635,13 +641,14 @@ class SpecCompList(object):
 class Jet(Model):
     """
 
-    This class allows to build a ``jet`` model providing the interface to the
-    BlazarSED code, giving  full access to the physical parameters and
+    This class allows to build a ``Jet`` model providing the interface to the
+    C code, giving  full access to the physical parameters and
     providing the methods to run the code.
     A :class:`Jet` object  will store the
-    the physical parameters in  the :class:`.ModelParameterArray` class,
-    that is a collection of :class:`JetParameter` objects.
-
+    the physical parameters in  the ::py:attr:`Jet.parameters`  that is :class:`.ModelParameterArray` class,
+    i.e. a collection of :class:`JetParameter` objects.
+    All the physical parameters are  also accessible as attributes of
+    the  ::py:attr:`Jet.parameters`
 
     **Examples**
 
@@ -659,7 +666,19 @@ class Jet(Model):
                  clean_work_dir=True,
                  **keywords):
 
+        """
 
+        Parameters
+        ----------
+        name
+        electron_distribution
+        electron_distribution_log_values
+        beaming_expr
+        jet_workplace
+        verbose
+        clean_work_dir
+        keywords
+        """
         super(Jet,self).__init__(  **keywords)
 
         self.name = name
@@ -669,11 +688,6 @@ class Jet(Model):
         self._scale='lin-lin'
 
         self._blob = self.build_blob(verbose=verbose)
-        #print('_blob',self._blob)
-        #self.jet_wrapper_dir=os.path.dirname(__file__)+'/jet_wrapper'
-
-        #os.environ['BLAZARSED']=self.jet_wrapper_dir
-        #print ("BLAZARSED DIR",self.jet_wrapper_dir)
 
         if jet_workplace is None:
             jet_workplace=WorkPlace()
@@ -685,7 +699,6 @@ class Jet(Model):
 
         self.set_flag(self.name)
 
-        #self.init_BlazarSED()
 
         self._allowed_EC_components_list=['EC_BLR',
                                           'DT',
@@ -732,6 +745,9 @@ class Jet(Model):
         self._IC_states['off'] = 0
 
 
+    @staticmethod
+    def available_electron_distributions():
+        ElectronDistribution.available_distributions()
 
     def build_blob(self,verbose=None):
 
@@ -853,6 +869,7 @@ class Jet(Model):
             #print ('set', k,_par_dict[k])
             jet.set_par(par_name=str(k),val=_par_dict[str(k)])
 
+        jet.eval()
         return jet
 
     def set_electron_distribution(self,name=None,log_values=False):
@@ -983,13 +1000,14 @@ class Jet(Model):
 
         self.add_par_from_dic(self._emitting_region_dic)
 
-
+    #TODO fix is L_sync is missing
     def set_N_from_L_sync(self,L_sync):
         _L=self._blob.L_sync
         setattr(self._blob,'Norm_distr_L_e_Sync',L_sync)
         self.init_BlazarSED()
         setattr(self._blob,'Norm_distr_L_e_Sync',_L)
 
+    # TODO fix is L_sync is missing
     def set_N_from_F_sync(self, F_sync):
         self.init_BlazarSED()
         DL = self._blob.dist
@@ -1416,6 +1434,17 @@ class Jet(Model):
 
     def _set_nu_min_grid(self, val):
         self._blob.nu_start_grid=val
+
+    @property
+    def Norm_distr(self):
+        return self._blob.Norm_distr
+
+
+    def switch_Norm_distr_ON(self):
+        self._blob.Norm_distr=1
+
+    def switch_Norm_distr_OFF(self):
+        self._blob.Norm_distr=0
 
     @property
     def nu_max(self):

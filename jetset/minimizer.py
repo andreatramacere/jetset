@@ -413,7 +413,7 @@ class ModelMinimizer(object):
         if silent == False:
             print(section_separator)
 
-        fit_Model.eval()
+        fit_Model.eval(fill_SED=True)
         return best_fit
 
     def reset_to_best_fit(self):
