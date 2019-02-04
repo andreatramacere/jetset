@@ -3,8 +3,8 @@
 
 
 
-jet\_model user guide
-=====================
+jet\_model user guide : physical setup
+======================================
 
 
 In this section we describe how  to buil a model of jet able to reproduce SSC/EC emission processes, using the :class:`.Jet` class from the :mod:`.jet_model` module. to This class thorough a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compoton processes.  
@@ -295,8 +295,8 @@ saving and lodaing a model
     -------------------------------------------------------------------------------------------------------------------
 
 
-set N, the density of electrons from observed Flux
---------------------------------------------------
+switching on/off the particle distribution normalization
+--------------------------------------------------------
 
 As default the electron distributions are normalized, i.e. are mutliplied by a constant ``N_0``, in such a way that :
 
@@ -330,8 +330,8 @@ or set back the normalization on with
 
     my_jet.switch_Norm_distr_ON()
 
-set N, the density of electrons from observed Flux
---------------------------------------------------
+setting the particle density from observed Fluxes or Luminosityes
+-----------------------------------------------------------------
 
 It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     :meth:`.Jet.set_N_from_nuFnu`,th:`.Jet.set_N_from_nuLnu`)
 
@@ -424,8 +424,8 @@ where ``L_0`` is the rest-frame luminosity in erg/s at the rest-frame frequency 
 
 
 
-setting beaming factor
-----------------------
+setting the beaming factor
+--------------------------
 
 It is possible to set the bemaing factor according to the realativistic
 BulkFactor and viewing angle, this can be done by setting the
@@ -528,8 +528,8 @@ of course setting `beaming_expr=delta` we get the same beaming expression as in 
     -------------------------------------------------------------------------------------------------------------------
 
 
-accessing individual components
--------------------------------
+accessing individual spectral components
+----------------------------------------
 
 It is possible to access specific spectral components of oura model
 
@@ -561,6 +561,12 @@ and we cann access a specific component using the :meth:`.Jet.get_spectral_compo
 .. code:: ipython3
 
     Sync=my_jet.get_spectral_component_by_name('Sync')
+
+OR
+
+.. code:: ipython3
+
+    Sync=my_jet.spectral_components.Sync
 
 and from the ``SED`` object we can extract both the nu and nuFnu array
 
