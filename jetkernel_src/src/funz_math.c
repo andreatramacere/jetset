@@ -29,7 +29,7 @@
 double st_gamma(double z)
 {
   const int a = 12;
-  static double c_space[a];
+  static double c_space[12];
   static double *c = NULL;
   int k;
   double accm;

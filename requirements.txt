@@ -9,4 +9,3 @@ iminuit
 corner
 six
 emcee
-json
