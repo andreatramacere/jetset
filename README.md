@@ -15,7 +15,7 @@ If you use this code in any kind of scientific publication please cite the follo
 * `Massaro E. et. al 2006`   http://adsabs.harvard.edu/abs/2006A%26A...448..861M
 
 # Documentation
-visit: https://andreatramacere.github.io/jetsetdoc/
+visit: https://jetset.readthedocs.io/en/latest/
 
 #  Requirements
 The following python packages are required:
