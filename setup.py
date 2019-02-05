@@ -16,7 +16,7 @@ from distutils.sysconfig import get_python_lib
 import os
 import glob
 import shutil
-
+import json
 
 
 class CustomBuild(build):
@@ -65,9 +65,10 @@ custom_cmdclass = {'build': CustomBuild, 'install': CustomInstall,'clean':Custom
 
 
 
+with open('jetset/pkg_info.json') as fp:
+    _info = json.load(fp)
 
-
-version='1.2.0'
+__version__ = _info['version']
 
 
 
@@ -87,7 +88,7 @@ _module=Extension('_jetkernel',
                   include_dirs=['jetkernel_src/include'])
 
 setup(name='jetset',
-      version=version,
+      version=__version__,
       author='Andrea Tramacere',
       author_email='andrea.tramacere@gmail.com',
       packages=['jetset', 'leastsqbound', 'jetset.jetkernel'],
