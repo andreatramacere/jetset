@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>jet_model user guide &#8212; jetset 1.0.a documentation</title>
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html"><span><img src="../../../_static/logo_small_transp.png"></span>
+          JetSeT</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">JetSeT <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">code documentation (API)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sed_models_dic.html">sed_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">jet_model user guide</a><ul>
+<li><a class="reference internal" href="#basic-setup">basic setup</a><ul>
+<li><a class="reference internal" href="#setting-the-parameters">setting the parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#evaluate-and-plot-the-model">evaluate and plot the model</a><ul>
+<li><a class="reference internal" href="#rescale-the-plot">rescale the plot</a></li>
+<li><a class="reference internal" href="#comparing-models-on-the-same-plot">comparing models on the same plot</a></li>
+<li><a class="reference internal" href="#saving-a-plot">saving a plot</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#set-N-from-observed-Flux">set N from observed Flux</a></li>
+<li><a class="reference internal" href="#setting-beaming-factor">setting beaming factor</a></li>
+<li><a class="reference internal" href="#accessing-individual-components">accessing individual components</a></li>
+<li><a class="reference internal" href="#Numerical-computation-fine-tuning">Numerical computation fine-tuning</a><ul>
+<li><a class="reference internal" href="#Changing-the-grid-size-for-the-electron-distribution">Changing the grid size for the electron distribution</a></li>
+<li><a class="reference internal" href="#Changing-the-grid-size-for-the-seed-photons">Changing the grid size for the seed photons</a></li>
+<li><a class="reference internal" href="#Changing-the-grid-size-for-the-IC-process-spectra">Changing the grid size for the IC process spectra</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#External-Compotn">External Compotn</a><ul>
+<li><a class="reference internal" href="#Broad-Line-Region">Broad Line Region</a></li>
+<li><a class="reference internal" href="#Dusty-Torus">Dusty Torus</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../../../_sources/user_guide/jet_model_phys/.ipynb_checkpoints/Jet_example-checkpoint.ipynb.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><!--
+<ul class="globaltoc"
+><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">code documentation (API)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sed_models_dic.html">sed_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+//-->
+
+
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2></h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">code documentation (API)</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div id="sourcelink">
+  <a href="../../../_sources/user_guide/jet_model_phys/.ipynb_checkpoints/Jet_example-checkpoint.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #303F9F;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #D84315;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 9ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #cfcfcf;
+    border-radius: 2px;
+    background: #f7f7f7;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.pngmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+</style>
+.. contents:: :local:
+
+
+
+.. toctree::<div class="section" id="jet_model-user-guide">
+<h1>jet_model user guide<a class="headerlink" href="#jet_model-user-guide" title="Permalink to this headline">¶</a></h1>
+In this section we describe how to use the module  :mod:`.jet_model`
+to buil a model of jet able to reproduce SSC/EC emission processes.
+The :mod:`.jet_model`  allows to build a jet  model  providing an interface
+to call the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compoton processes.  The python wrappper is  built using SWIG framework.<div class="section" id="basic-setup">
+<h2>basic setup<a class="headerlink" href="#basic-setup" title="Permalink to this headline">¶</a></h2>
+A jet can be built using the  the :class:`.Jet` class, istanciating a jet object.<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [82]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">from</span> <span class="nn">jetset</span> <span class="kn">import</span> <span class="n">jet_model</span>
+<span class="n">myJet</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+directory .//test_jet_prod/ already existing
+removing existing dir
+the directory .//test_jet_prod/ has been created
+</pre></div></div>
+</div>
+This instruction will create:
+    * a ``Jet`` object with ``name`` **test**,
+    * using as electron distribution the **lppl** model, that is a log-parabola witha low-energy power-law branch.
+    * using as wokring directory **test_jet_prod**
+
+For a list of possible distribution refer to :func:`.jet_model.build_electron_distribution_dic`
+
+The parameters of the model are accessible throug the instruction<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [83]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+--------------------------------------------------------------------------------------------------------------
+model parameters:
+ Name             | Type                     | Units            | value         | phys. boundaries
+--------------------------------------------------------------------------------------------------------------
+ gmax             | high-energy-cut-off      | Lorentz-factor   | +1.000000e+08 | [+1.000000e+00,No           ]
+ gmin             | low-energy-cut-off       | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,No           ]
+ N                | electron_density         | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ]
+ s                | LE_spectral_slope        |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01]
+ r                | spectral_curvature       |                  | +4.000000e-01 | [-1.000000e+01,+1.000000e+01]
+ gamma0_log_parab | turn-over-energy         | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,No           ]
+ z_cosm           | redshift                 |                  | +1.000000e-01 | [+0.000000e+00,No           ]
+ B                | magnetic_field           | G                | +1.000000e-01 | [+0.000000e+00,No           ]
+ R                | region_size              | cm               | +3.000000e+15 | [+0.000000e+00,No           ]
+ beam_obj         | beaming                  |                  | +1.000000e+01 | [+1.000000e+00,No           ]
+--------------------------------------------------------------------------------------------------------------
+</pre></div></div>
+</div>
+Each parameter has default values. All the parameters listed are handled by :class:`.ModelParameterArray`, and each parameter is an instance of the the :class:`.JetParameter`.<div class="section" id="setting-the-parameters">
+<h3>setting the parameters<a class="headerlink" href="#setting-the-parameters" title="Permalink to this headline">¶</a></h3>
+<p>assume you want to change some of the parameters in your model:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [84]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">5E3</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gmin&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E2</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">5E14</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="evaluate-and-plot-the-model">
+<h2>evaluate and plot the model<a class="headerlink" href="#evaluate-and-plot-the-model" title="Permalink to this headline">¶</a></h2>
+<p>At this point we can evaluate the emission for this jet model using the
+instruction</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [85]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+</pre></div></div>
+</div>
+<p>and plot the corresponding SED:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [86]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">jetset.plot_sedfit</span> <span class="kn">import</span> <span class="n">Plot</span>
+
+<span class="n">my_plot</span><span class="o">=</span><span class="n">Plot</span><span class="p">()</span>
+
+<span class="n">my_plot</span><span class="o">=</span><span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">plot_obj</span><span class="o">=</span><span class="n">my_plot</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_16_1.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_16_1.png" />
+</div>
+</div>
+<p>alternatively, you can call the <code class="docutils literal"><span class="pre">plot_model</span></code> method without passing a
+<code class="docutils literal"><span class="pre">Plot</span></code> object</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [87]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">my_plot</span><span class="o">=</span><span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">autoscale</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_18_1.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_18_1.png" />
+</div>
+</div>
+<p>the <code class="docutils literal"><span class="pre">my_plot</span></code> objet returned will be built on the fly by the
+<code class="docutils literal"><span class="pre">plot_model</span></code> method</p>
+<div class="section" id="rescale-the-plot">
+<h3>rescale the plot<a class="headerlink" href="#rescale-the-plot" title="Permalink to this headline">¶</a></h3>
+<p>it is possible to rescale the your plot in the following way</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [88]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">my_plot</span><span class="o">=</span><span class="n">Plot</span><span class="p">()</span>
+<span class="n">my_plot</span><span class="o">=</span><span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">plot_obj</span><span class="o">=</span><span class="n">my_plot</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">my_plot</span><span class="o">.</span><span class="n">y_min</span><span class="o">=-</span><span class="mi">20</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">12</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">x_max</span><span class="o">=</span><span class="mi">30</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span>
+
+<span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_22_1.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_22_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="comparing-models-on-the-same-plot">
+<h3>comparing models on the same plot<a class="headerlink" href="#comparing-models-on-the-same-plot" title="Permalink to this headline">¶</a></h3>
+<p>to compare the same model after changing a parameter</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [89]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myPlot</span><span class="o">=</span><span class="n">Plot</span><span class="p">()</span>
+
+<span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">myPlot</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;gamma0_log_parab=1E4&#39;</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">comp</span><span class="o">=</span><span class="s1">&#39;Sum&#39;</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1.0E5</span><span class="p">)</span>
+
+<span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">myPlot</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;gamma0_log_parab=1E5&#39;</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">comp</span><span class="o">=</span><span class="s1">&#39;Sum&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+running PyLab in interactive mode
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[89]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;jetset.plot_sedfit.Plot at 0x181e2d2250&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_25_2.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_25_2.png" />
+</div>
+</div>
+</div>
+<div class="section" id="saving-a-plot">
+<h3>saving a plot<a class="headerlink" href="#saving-a-plot" title="Permalink to this headline">¶</a></h3>
+<p>to save the plot</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [90]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myPlot</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;jet1.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="set-N-from-observed-Flux">
+<h2>set N from observed Flux<a class="headerlink" href="#set-N-from-observed-Flux" title="Permalink to this headline">¶</a></h2>
+It is possible to set the density of emitting particle starting from some observed Luminosity (see the method     :meth:`.Jet.set_N_from_nuFnu`)<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [91]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+directory .//test_jet_prod/ already existing
+removing existing dir
+the directory .//test_jet_prod/ has been created
+</pre></div></div>
+</div>
+<p>this is the initial value of N</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [92]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[92]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>100.0
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [93]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">set_N_from_nuFnu</span><span class="p">(</span><span class="n">nuFnu_obs</span><span class="o">=</span><span class="mf">1E-14</span><span class="p">,</span><span class="n">nu_obs</span><span class="o">=</span><span class="mf">1E12</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>This is the updated value of N, obtained in order to match the given
+flux at the given frequencies</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [94]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[94]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>30781.15088279897
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [95]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+--------------------------------------------------------------------------------------------------------------
+model parameters:
+ Name             | Type                     | Units            | value         | phys. boundaries
+--------------------------------------------------------------------------------------------------------------
+ gmax             | high-energy-cut-off      | Lorentz-factor   | +1.000000e+08 | [+1.000000e+00,No           ]
+ gmin             | low-energy-cut-off       | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,No           ]
+ N                | electron_density         | cm^-3            | +3.078115e+04 | [+0.000000e+00,No           ]
+ s                | LE_spectral_slope        |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01]
+ r                | spectral_curvature       |                  | +4.000000e-01 | [-1.000000e+01,+1.000000e+01]
+ gamma0_log_parab | turn-over-energy         | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,No           ]
+ z_cosm           | redshift                 |                  | +1.000000e-01 | [+0.000000e+00,No           ]
+ B                | magnetic_field           | G                | +1.000000e-01 | [+0.000000e+00,No           ]
+ R                | region_size              | cm               | +3.000000e+15 | [+0.000000e+00,No           ]
+ beam_obj         | beaming                  |                  | +1.000000e+01 | [+1.000000e+00,No           ]
+--------------------------------------------------------------------------------------------------------------
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [96]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">myPlot</span><span class="o">=</span><span class="n">Plot</span><span class="p">()</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">myPlot</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;set N from F=1E-14&#39;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[96]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;jetset.plot_sedfit.Plot at 0x181c69f9d0&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_38_2.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_38_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [97]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+
+<span></span><span class="n">myPlot</span><span class="o">=</span><span class="n">Plot</span><span class="p">()</span>
+
+<span class="n">myPlot</span><span class="o">.</span><span class="n">y_min</span><span class="o">=-</span><span class="mi">18</span>
+<span class="n">myPlot</span><span class="o">.</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">9</span>
+<span class="n">myPlot</span><span class="o">.</span><span class="n">x_max</span><span class="o">=</span><span class="mi">30</span>
+<span class="n">myPlot</span><span class="o">.</span><span class="n">x_min</span><span class="o">=</span><span class="mi">10</span>
+
+
+<span class="n">myPlot</span><span class="o">=</span><span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">myPlot</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;set N from F=1E-14&#39;</span><span class="p">)</span>
+<span class="n">myPlot</span><span class="o">.</span><span class="n">rescale</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_39_1.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_39_1.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [98]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myPlot</span><span class="o">.</span><span class="n">rescale</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="setting-beaming-factor">
+<h2>setting beaming factor<a class="headerlink" href="#setting-beaming-factor" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to set the bemaing factor according to the realativistic
+BulkFactor and viewing angle, this can be done by setting the
+<code class="docutils literal"><span class="pre">beaming_expr</span></code> kw in the Jet constructor, possbile choiches are</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">delta</span></code> to provide directly the beaming factor (default)</li>
+<li><code class="docutils literal"><span class="pre">bulk_theta</span></code> to provide the BulkFactor and the jet viewing angle</li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [99]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;bulk_theta&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+directory .//test_jet_prod/ already existing
+removing existing dir
+the directory .//test_jet_prod/ has been created
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [100]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+--------------------------------------------------------------------------------------------------------------
+model parameters:
+ Name             | Type                     | Units            | value         | phys. boundaries
+--------------------------------------------------------------------------------------------------------------
+ gmax             | high-energy-cut-off      | Lorentz-factor   | +1.000000e+08 | [+1.000000e+00,No           ]
+ gmin             | low-energy-cut-off       | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,No           ]
+ N                | electron_density         | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ]
+ s                | LE_spectral_slope        |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01]
+ r                | spectral_curvature       |                  | +4.000000e-01 | [-1.000000e+01,+1.000000e+01]
+ gamma0_log_parab | turn-over-energy         | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,No           ]
+ z_cosm           | redshift                 |                  | +1.000000e-01 | [+0.000000e+00,No           ]
+ theta            | jet-viewing-angle        | deg              | +1.000000e-01 | [+0.000000e+00,No           ]
+ B                | magnetic_field           | G                | +1.000000e-01 | [+0.000000e+00,No           ]
+ R                | region_size              | cm               | +3.000000e+15 | [+0.000000e+00,No           ]
+ BulkFactor       | jet-bulk-factor          | Lorentz-factor   | +1.000000e+01 | [+1.000000e+00,No           ]
+--------------------------------------------------------------------------------------------------------------
+</pre></div></div>
+</div>
+the actual value of the beaming factor che be obatained using the :meth:`.Jet.get_beaming`<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [101]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="k">print</span> <span class="s1">&#39;beaming factor=&#39;</span><span class="p">,</span><span class="n">myJet</span><span class="o">.</span><span class="n">get_beaming</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+beaming factor= 19.9438447326
+</pre></div></div>
+</div>
+We can change the value of ``theta`` and get the updated value of the beaming factor<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [102]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">10.</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [103]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="k">print</span> <span class="s1">&#39;beaming factor=&#39;</span><span class="p">,</span><span class="n">myJet</span><span class="o">.</span><span class="n">get_beaming</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+beaming factor= 4.96804114089
+</pre></div></div>
+</div>
+of course setting `beaming_expr=delta` we get the same beaming expression as in the default case<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [104]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;delta&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+directory .//test_jet_prod/ already existing
+removing existing dir
+the directory .//test_jet_prod/ has been created
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [105]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+--------------------------------------------------------------------------------------------------------------
+model parameters:
+ Name             | Type                     | Units            | value         | phys. boundaries
+--------------------------------------------------------------------------------------------------------------
+ gmax             | high-energy-cut-off      | Lorentz-factor   | +1.000000e+08 | [+1.000000e+00,No           ]
+ gmin             | low-energy-cut-off       | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,No           ]
+ N                | electron_density         | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ]
+ s                | LE_spectral_slope        |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01]
+ r                | spectral_curvature       |                  | +4.000000e-01 | [-1.000000e+01,+1.000000e+01]
+ gamma0_log_parab | turn-over-energy         | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,No           ]
+ z_cosm           | redshift                 |                  | +1.000000e-01 | [+0.000000e+00,No           ]
+ B                | magnetic_field           | G                | +1.000000e-01 | [+0.000000e+00,No           ]
+ R                | region_size              | cm               | +3.000000e+15 | [+0.000000e+00,No           ]
+ beam_obj         | beaming                  |                  | +1.000000e+01 | [+1.000000e+00,No           ]
+--------------------------------------------------------------------------------------------------------------
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="accessing-individual-components">
+<h2>accessing individual components<a class="headerlink" href="#accessing-individual-components" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to access specific spectral components of oura model</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [106]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+</pre></div></div>
+</div>
+<p>the on-screen message is telling us which components have been
+evaluated.</p>
+We can obtain this information anytime using the :meth:`.Jet.list_spectral_components` method<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [107]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">list_spectral_components</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Sum
+Sync
+SSC
+</pre></div></div>
+</div>
+and we cann access a specific component using the :meth:`.Jet.get_spectral_component_by_name` method<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [108]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">Sync</span><span class="o">=</span><span class="n">myJet</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;Sync&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>and from the <code class="docutils literal"><span class="pre">SED</span></code> object we can extract both the nu and nuFnu array</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [109]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">nu_sync</span><span class="o">=</span><span class="n">Sync</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">nu</span>
+<span class="n">nuFnu_sync</span><span class="o">=</span><span class="n">Sync</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">nuFnu</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [110]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="k">print</span> <span class="n">nuFnu_sync</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[  8.46279238e-28   2.63777772e-27   8.28684281e-27   2.68144376e-26
+   9.19336698e-26   3.41103684e-25   1.35710410e-24   5.57914715e-24
+   2.30797994e-23   9.55091537e-23   3.95238541e-22   1.63558289e-21
+   6.76822974e-21   2.79998997e-20   1.15465943e-19   4.58936127e-19
+   1.39707126e-18   2.62852367e-18   3.73095658e-18   4.78316149e-18
+   5.93958206e-18   7.30508485e-18   8.95882299e-18   1.09775314e-17
+   1.34479553e-17   1.64715691e-17   2.01746246e-17   2.47088865e-17
+   3.02602181e-17   3.70553927e-17   4.53707521e-17   5.55423063e-17
+   6.79774557e-17   8.31681334e-17   1.01704847e-16   1.24290694e-16
+   1.51753052e-16   1.85049332e-16   2.25260870e-16   2.73565425e-16
+   3.31176324e-16   3.99234531e-16   4.78643710e-16   5.69857565e-16
+   6.72661410e-16   7.86030653e-16   9.08151879e-16   1.03659564e-15
+   1.16849794e-15   1.30062847e-15   1.42941186e-15   1.55102317e-15
+   1.66155845e-15   1.75723466e-15   1.83460305e-15   1.89075454e-15
+   1.92349898e-15   1.93150843e-15   1.91440507e-15   1.87278950e-15
+   1.80820743e-15   1.72305195e-15   1.62041569e-15   1.50390548e-15
+   1.37742816e-15   1.24497446e-15   1.11041276e-15   9.77306137e-16
+   8.48768387e-16   7.27362175e-16   6.15043686e-16   5.13152395e-16
+   4.22438503e-16   3.43122309e-16   2.74976193e-16   2.17417312e-16
+   1.69604758e-16   1.30532482e-16   9.91119266e-17   7.42414127e-17
+   5.48600792e-17   3.99862911e-17   2.87417713e-17   2.03632926e-17
+   1.42046413e-17   9.73173425e-18   6.51375123e-18   4.21350512e-18
+   2.57945643e-18   1.43901226e-18   6.86457287e-19   2.53115496e-19
+   6.18665052e-20   7.96917563e-21   3.85187712e-22   4.21337257e-24
+   4.91052563e-27]
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Numerical-computation-fine-tuning">
+<h2>Numerical computation fine-tuning<a class="headerlink" href="#Numerical-computation-fine-tuning" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Changing-the-grid-size-for-the-electron-distribution">
+<h3>Changing the grid size for the electron distribution<a class="headerlink" href="#Changing-the-grid-size-for-the-electron-distribution" title="Permalink to this headline">¶</a></h3>
+It is possible to change the size of the grid for the electron distribution. It is worth noting that at lower values of the grid size the speed will increase, but it is not recommended to go below 100.
+The acutual value of the grid size is returned by the :meth:`.Jet.get_gamma_grid_size`<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [111]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">get_gamma_grid_size</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[111]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>1001L
+</pre></div>
+</div>
+</div>
+and this value can be changed using the method :meth:`.Jet.set_gamma_grid_size`. In the following we show the result for a grid of size=10, as anticiapted the final integration will be not satisfactory<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [112]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">set_gamma_grid_size</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[112]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;jetset.plot_sedfit.Plot at 0x181c97dd50&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_66_2.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_66_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [113]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">set_gamma_grid_size</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[113]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;jetset.plot_sedfit.Plot at 0x181ea99710&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_67_2.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_67_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [114]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">set_gamma_grid_size</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[114]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;jetset.plot_sedfit.Plot at 0x10f312150&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_68_2.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_68_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [115]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">set_gamma_grid_size</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[115]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;jetset.plot_sedfit.Plot at 0x181ebd0690&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_69_2.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_69_2.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Changing-the-grid-size-for-the-seed-photons">
+<h3>Changing the grid size for the seed photons<a class="headerlink" href="#Changing-the-grid-size-for-the-seed-photons" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [116]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+directory .//test_jet_prod/ already existing
+removing existing dir
+the directory .//test_jet_prod/ has been created
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [117]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">get_seed_nu_size</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[117]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>100L
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [118]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">set_seed_nu_size</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[118]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;jetset.plot_sedfit.Plot at 0x181c97d8d0&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_73_2.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_73_2.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Changing-the-grid-size-for-the-IC-process-spectra">
+<h3>Changing the grid size for the IC process spectra<a class="headerlink" href="#Changing-the-grid-size-for-the-IC-process-spectra" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [119]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+directory .//test_jet_prod/ already existing
+removing existing dir
+the directory .//test_jet_prod/ has been created
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [120]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">get_IC_nu_size</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[120]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>50L
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [121]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">set_IC_nu_size</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[121]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;jetset.plot_sedfit.Plot at 0x181fca8cd0&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_77_2.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_77_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [122]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">set_IC_nu_size</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[122]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>&lt;jetset.plot_sedfit.Plot at 0x18201be310&gt;
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_78_2.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_78_2.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="External-Compotn">
+<h2>External Compotn<a class="headerlink" href="#External-Compotn" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Broad-Line-Region">
+<h3>Broad Line Region<a class="headerlink" href="#Broad-Line-Region" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [124]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;BLR example&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;bkn&#39;</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">add_EC_component</span><span class="p">(</span><span class="s1">&#39;BLR&#39;</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_gamma_grid_size</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">show_model</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+directory .//BLR example_jet_prod/ already existing
+removing existing dir
+the directory .//BLR example_jet_prod/ has been created
+-----------------------------------------------------------------------------------------
+model parameters for jet model:
+
+electron distribution type = bkn
+--------------------------------------------------------------------------------------------------------------
+model parameters:
+ Name             | Type                     | Units            | value         | phys. boundaries
+--------------------------------------------------------------------------------------------------------------
+ gmax             | high-energy-cut-off      | Lorentz-factor   | +1.000000e+08 | [+1.000000e+00,No           ]
+ gmin             | low-energy-cut-off       | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,No           ]
+ N                | electron_density         | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ]
+ gamma_break      | turn-over-energy         | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,No           ]
+ p                | LE_spectral_slope        |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01]
+ p_1              | HE_spectral_slope        |                  | +3.000000e+00 | [-1.000000e+01,+1.000000e+01]
+ z_cosm           | redshift                 |                  | +1.000000e-01 | [+0.000000e+00,No           ]
+ B                | magnetic_field           | G                | +1.000000e-01 | [+0.000000e+00,No           ]
+ R                | region_size              | cm               | +3.000000e+15 | [+0.000000e+00,No           ]
+ beam_obj         | beaming                  |                  | +1.000000e+01 | [+1.000000e+00,No           ]
+ T_disk_max       | Disk                     | K                | +1.000000e+05 | [+0.000000e+00,No           ]
+ R_BLR_in         | BLR                      | cm               | +1.000000e+18 | [+0.000000e+00,No           ]
+ R_ext_Sw         | Disk                     | Sw. radii        | +5.000000e+02 | [+0.000000e+00,No           ]
+ R_inner_Sw       | Disk                     | Sw. radii        | +3.000000e+00 | [+0.000000e+00,No           ]
+ R_BLR_out        | BLR                      | cm               | +2.000000e+18 | [+0.000000e+00,No           ]
+ tau_BLR          | BLR                      |                  | +1.000000e-01 | [+0.000000e+00,+1.000000e+00]
+ accr_eff         | Disk                     |                  | +1.000000e-01 | [+0.000000e+00,No           ]
+ R_H              | Disk                     | cm               | +1.000000e+17 | [+0.000000e+00,No           ]
+ L_disk           | Disk                     | erg/s            | +1.000000e+47 | [+0.000000e+00,No           ]
+--------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [125]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;L_disk&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E46</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gmax&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E5</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gmin&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">2.</span><span class="p">)</span>
+
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;p_1&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">3.5</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">5E15</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;z_cosm&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;beam_obj&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gamma_break&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">5E2</span><span class="p">)</span>
+
+<span class="n">myJet</span><span class="o">.</span><span class="n">set_N_from_nuFnu</span><span class="p">(</span><span class="n">nuFnu_obs</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">,</span><span class="n">nu_obs</span><span class="o">=</span><span class="mf">1E12</span><span class="p">)</span>
+
+<span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+
+<span class="n">my_plot</span><span class="o">=</span><span class="n">Plot</span><span class="p">()</span>
+<span class="n">my_plot</span><span class="o">=</span><span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">plot_obj</span><span class="o">=</span><span class="n">my_plot</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">my_plot</span><span class="o">.</span><span class="n">y_min</span><span class="o">=-</span><span class="mi">15</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">10</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">x_max</span><span class="o">=</span><span class="mi">26</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">x_min</span><span class="o">=</span><span class="mi">10</span>
+
+<span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+(&#39;fill name&#39;, &#39;EC_BLR&#39;)
+(&#39;fill name&#39;, &#39;Disk&#39;)
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_82_1.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_82_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Dusty-Torus">
+<h3>Dusty Torus<a class="headerlink" href="#Dusty-Torus" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [126]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">add_EC_component</span><span class="p">(</span><span class="s1">&#39;DT&#39;</span><span class="p">)</span>
+<span class="n">myJet</span><span class="o">.</span><span class="n">show_model</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-----------------------------------------------------------------------------------------
+model parameters for jet model:
+
+electron distribution type = bkn
+--------------------------------------------------------------------------------------------------------------
+model parameters:
+ Name             | Type                     | Units            | value         | phys. boundaries
+--------------------------------------------------------------------------------------------------------------
+ gmax             | high-energy-cut-off      | Lorentz-factor   | +1.000000e+05 | [+1.000000e+00,No           ]
+ gmin             | low-energy-cut-off       | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,No           ]
+ N                | electron_density         | cm^-3            | +8.514734e+03 | [+0.000000e+00,No           ]
+ gamma_break      | turn-over-energy         | Lorentz-factor   | +5.000000e+02 | [+1.000000e+00,No           ]
+ p                | LE_spectral_slope        |                  | +1.500000e+00 | [-1.000000e+01,+1.000000e+01]
+ p_1              | HE_spectral_slope        |                  | +3.500000e+00 | [-1.000000e+01,+1.000000e+01]
+ z_cosm           | redshift                 |                  | +6.000000e-01 | [+0.000000e+00,No           ]
+ B                | magnetic_field           | G                | +1.000000e+00 | [+0.000000e+00,No           ]
+ R                | region_size              | cm               | +5.000000e+15 | [+0.000000e+00,No           ]
+ beam_obj         | beaming                  |                  | +2.500000e+01 | [+1.000000e+00,No           ]
+ T_disk_max       | Disk                     | K                | +1.000000e+05 | [+0.000000e+00,No           ]
+ R_BLR_in         | BLR                      | cm               | +1.000000e+18 | [+0.000000e+00,No           ]
+ R_ext_Sw         | Disk                     | Sw. radii        | +5.000000e+02 | [+0.000000e+00,No           ]
+ R_inner_Sw       | Disk                     | Sw. radii        | +3.000000e+00 | [+0.000000e+00,No           ]
+ R_BLR_out        | BLR                      | cm               | +2.000000e+18 | [+0.000000e+00,No           ]
+ tau_BLR          | BLR                      |                  | +1.000000e-01 | [+0.000000e+00,+1.000000e+00]
+ accr_eff         | Disk                     |                  | +1.000000e-01 | [+0.000000e+00,No           ]
+ R_H              | Disk                     | cm               | +1.000000e+17 | [+0.000000e+00,No           ]
+ L_disk           | Disk                     | erg/s            | +1.000000e+46 | [+0.000000e+00,No           ]
+ R_DT             | DT                       | cm               | +5.000000e+18 | [+0.000000e+00,No           ]
+ T_DT             | DT                       | K                | +1.000000e+02 | [+0.000000e+00,No           ]
+ tau_DT           | DT                       |                  | +1.000000e-01 | [+0.000000e+00,+1.000000e+00]
+--------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [127]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+
+<span></span><span class="n">myJet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+
+<span class="n">my_plot</span><span class="o">=</span><span class="n">Plot</span><span class="p">()</span>
+<span class="n">my_plot</span><span class="o">=</span><span class="n">myJet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">plot_obj</span><span class="o">=</span><span class="n">my_plot</span><span class="p">,</span><span class="n">autoscale</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">my_plot</span><span class="o">.</span><span class="n">y_min</span><span class="o">=-</span><span class="mi">15</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">10</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">x_max</span><span class="o">=</span><span class="mi">26</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">x_min</span><span class="o">=</span><span class="mi">10</span>
+
+<span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;fill name&#39;, &#39;Sum&#39;)
+(&#39;fill name&#39;, &#39;Sync&#39;)
+(&#39;fill name&#39;, &#39;SSC&#39;)
+(&#39;fill name&#39;, &#39;EC_BLR&#39;)
+(&#39;fill name&#39;, &#39;Disk&#39;)
+(&#39;fill name&#39;, &#39;EC_DT&#39;)
+(&#39;fill name&#39;, &#39;DT&#39;)
+running PyLab in interactive mode
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_85_1.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example-checkpoint_85_1.png" />
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>jetset.frame_converter &#8212; jetset 1.0.a documentation</title>
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html"><span><img src="../../_static/logo_small_transp.png"></span>
+          JetSeT</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">JetSeT <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><!--
+<ul class="globaltoc"
+><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+//-->
+
+
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2></h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a></li>
+</ul>
+
+    
+  </div>
+</div>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for jetset.frame_converter</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="nb">super</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span>
+                      <span class="nb">zip</span><span class="p">,</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="nb">zip</span><span class="p">)</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Andrea Tramacere&quot;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">===================================================================</span>
+<span class="sd">Moudule: frame_converter</span>
+<span class="sd">===================================================================</span>
+
+<span class="sd">This module contains helper fucntions necessary to perform restframes</span>
+<span class="sd">conversions</span>
+
+
+
+
+<span class="sd">Classes and Inheritance Structure</span>
+<span class="sd">-------------------------------------------------------------------</span>
+
+<span class="sd">.. inheritance-diagram:: BlazarSEDFit.frame_converter</span>
+<span class="sd">   </span>
+
+
+<span class="sd">Classes relations</span>
+<span class="sd">----------------------------------------------</span>
+
+<span class="sd">.. figure::  classes_frame_converter.png    </span>
+<span class="sd">   :align:   center     </span>
+
+
+<span class="sd">  </span>
+<span class="sd">.. autosummary::</span>
+<span class="sd">   </span>
+<span class="sd">   </span>
+<span class="sd">    </span>
+<span class="sd">Module API</span>
+<span class="sd">-------------------------------------------------------------------</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">m</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;convert_nu_to_blob&#39;</span><span class="p">,</span><span class="s1">&#39;convert_nu_to_src&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="convert_nu_to_blob"><a class="viewcode-back" href="../../api/jetset.frame_converter.convert_nu_to_blob.html#jetset.frame_converter.convert_nu_to_blob">[docs]</a><span class="k">def</span> <span class="nf">convert_nu_to_blob</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span><span class="n">in_frame</span><span class="p">,</span><span class="n">delta</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;converts Energies/frequencies from in_frame  to blob rest frame</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            delta: beaming factor</span>
+<span class="sd">            z: redshift</span>
+<span class="sd">            in_frame: startign reference frame, obs=observer (earth), src=corrected for redshift, blob=corrected for redshift and beaming</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            E/nu in blob rest frame</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">in_frame</span><span class="o">==</span><span class="s2">&quot;obs&quot;</span><span class="p">:</span>
+        <span class="n">z_c</span><span class="o">=</span><span class="n">z</span>
+        <span class="n">delta_c</span><span class="o">=</span><span class="n">delta</span>
+    <span class="k">elif</span> <span class="n">in_frame</span><span class="o">==</span><span class="s2">&quot;src&quot;</span><span class="p">:</span>
+        <span class="n">z_c</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">delta_c</span><span class="o">=</span><span class="n">delta</span>
+    <span class="k">elif</span> <span class="n">in_frame</span><span class="o">==</span><span class="s2">&quot;blob&quot;</span><span class="p">:</span>
+        <span class="n">delta_c</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">z_c</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;reference frame keyword not valid </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">in_frame</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">nu</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z_c</span><span class="p">)</span><span class="o">/</span><span class="n">delta_c</span></div>
+
+
+
+
+<div class="viewcode-block" id="convert_nu_to_src"><a class="viewcode-back" href="../../api/jetset.frame_converter.convert_nu_to_src.html#jetset.frame_converter.convert_nu_to_src">[docs]</a><span class="k">def</span> <span class="nf">convert_nu_to_src</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">in_frame</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;converts Energies/frequencies from in_frame  to blob rest frame</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            delta: beaming factor</span>
+<span class="sd">            z: redshift</span>
+<span class="sd">            in_frame: startign reference frame, obs=observer (earth), src=corrected for redshift, blob=corrected for redshift and beaming</span>
+<span class="sd">    </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            E/nu in blob rest frame</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">in_frame</span><span class="o">==</span><span class="s2">&quot;obs&quot;</span><span class="p">:</span>
+        <span class="n">z_c</span><span class="o">=</span><span class="n">z</span>
+    <span class="k">elif</span> <span class="n">in_frame</span><span class="o">==</span><span class="s2">&quot;src&quot;</span><span class="p">:</span>
+        <span class="n">z_c</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;reference frame keyword not valid </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">in_frame</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">nu</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z_c</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">convert_nuFnu_to_nuLnu_src</span><span class="p">(</span><span class="n">nuFnu</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">in_frame</span><span class="p">,</span><span class="n">dl</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">in_frame</span> <span class="o">==</span> <span class="s2">&quot;obs&quot;</span><span class="p">:</span>
+        <span class="n">z_c</span> <span class="o">=</span> <span class="n">z</span>
+    <span class="k">elif</span> <span class="n">in_frame</span> <span class="o">==</span> <span class="s2">&quot;src&quot;</span><span class="p">:</span>
+        <span class="n">z_c</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;reference frame keyword not valid </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">in_frame</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="mf">4.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">dl</span><span class="o">**</span><span class="mi">2</span>
+
+
+
+    
+    
+    
+    
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

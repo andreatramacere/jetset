@@ -8,3 +8,4 @@ future
 iminuit
 corner
 six
+emcee

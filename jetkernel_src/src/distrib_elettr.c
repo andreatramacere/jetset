@@ -208,7 +208,7 @@ void InitNe(struct spettro *pt){
     char *name;
     unsigned long i;
 
-
+    build_Ne(pt);
     SetDistr(pt);
     Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Ne);
 

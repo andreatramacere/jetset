@@ -413,7 +413,7 @@ class ModelMinimizer(object):
         if silent == False:
             print(section_separator)
 
-        fit_Model.eval()
+        fit_Model.eval(fill_SED=True)
         return best_fit
 
     def reset_to_best_fit(self):
@@ -694,9 +694,9 @@ class MinutiMinimizer(Minimizer):
             fcn=self.chisq_func,
             forced_parameters=p_names,
             pedantic=False,
-            **kwdarg,
             frontend=None,
-            errordef=1)
+            errordef=1,
+            **kwdarg)
 
     def chisq_func(self, *p):
         self.p = p

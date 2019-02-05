@@ -1,3 +1,14 @@
 sphinx-bootstrap-theme
 sphinx-automodapi
 nbsphinx
+numpydoc
+setuptools
+scipy
+numpy
+astropy
+matplotlib
+future
+iminuit
+corner
+six
+emcee
