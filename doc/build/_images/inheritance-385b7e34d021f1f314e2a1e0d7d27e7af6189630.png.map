@@ -1,0 +1,7 @@
+<map id="inheritanceb621ca288e" name="inheritanceb621ca288e">
+<area shape="rect" id="node1" href="jetset.sed_shaper.SEDShape.html#jetset.sed_shaper.SEDShape" target="_top" title="This handle the SED shaping process" alt="" coords="27,202,115,227"/>
+<area shape="rect" id="node2" href="jetset.sed_shaper.index.html#jetset.sed_shaper.index" target="_top" title="Class for the spectral indices" alt="" coords="35,153,107,178"/>
+<area shape="rect" id="node3" href="jetset.sed_shaper.index_array.html#jetset.sed_shaper.index_array" target="_top" title="Class to handle an array of :class:`index` objects" alt="" coords="25,103,117,129"/>
+<area shape="rect" id="node4" href="jetset.sed_shaper.index_typecasting.html#jetset.sed_shaper.index_typecasting" target="_top" title="Class to handle different types of spectral indices" alt="" coords="6,54,135,79"/>
+<area shape="rect" id="node5" href="jetset.sed_shaper.peak_values.html#jetset.sed_shaper.peak_values" target="_top" title="This Class is designed to store the &#160;SED peak values" alt="" coords="22,5,119,30"/>
+</map>

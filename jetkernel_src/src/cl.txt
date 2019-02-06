@@ -1,0 +1,7 @@
+rm -f *.o *.py *.pyc *.so
+swig -python SED.i
+gcc -c *.c -I ../include/ -I /usr/include/python2.4/
+ld -shared *.o  -o _SED.so -lm -L/home/orion/astro/lib -lnrecipes_DOUBLE
+python
+import SED
+blob=SED.MakeBlob()

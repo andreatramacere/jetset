@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>jetset.minimizer Module &#8212; jetset 1.0.a documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="fit_SED" href="jetset.minimizer.fit_SED.html" />
+    <link rel="prev" title="McmcSampler" href="jetset.mcmc.McmcSampler.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html"><span><img src="../_static/logo_small_transp.png"></span>
+          JetSeT</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">JetSeT <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mcmc.html">mcmc</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">jetset.minimizer Module</a><ul>
+<li><a class="reference internal" href="#module-minimizer">Module: minimizer</a><ul>
+<li><a class="reference internal" href="#classes-and-inheritance-structure">Classes and Inheritance Structure</a></li>
+<li><a class="reference internal" href="#classes-relations">Classes relations</a></li>
+<li><a class="reference internal" href="#module-api">Module API</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="jetset.mcmc.McmcSampler.html" title="Previous Chapter: McmcSampler"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; McmcSampler</span>
+    </a>
+  </li>
+  <li>
+    <a href="jetset.minimizer.fit_SED.html" title="Next Chapter: fit_SED"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">fit_SED &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/api/minimizer.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><!--
+<ul class="globaltoc"
+><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mcmc.html">mcmc</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+//-->
+
+
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2></h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mcmc.html">mcmc</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">minimizer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-minimizer">Module: minimizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#classes-and-inheritance-structure">Classes and Inheritance Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes-relations">Classes relations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-api">Module API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jetset.minimizer.fit_SED.html">fit_SED</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">Classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jetset.minimizer.FitResults.html">FitResults</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.minimizer.Minimizer.html">Minimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.minimizer.LSMinimizer.html">LSMinimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.minimizer.LSBMinimizer.html">LSBMinimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.minimizer.MinutiMinimizer.html">MinutiMinimizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.minimizer.ModelMinimizer.html">ModelMinimizer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+
+    
+  </div>
+</div>
+<div id="sourcelink">
+  <a href="../_sources/api/minimizer.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="module-jetset.minimizer">
+<span id="jetset-minimizer-module"></span><h1>jetset.minimizer Module<a class="headerlink" href="#module-jetset.minimizer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-minimizer">
+<h2>Module: minimizer<a class="headerlink" href="#module-minimizer" title="Permalink to this headline">¶</a></h2>
+<p>This module contains all the classes necessary to estimate the phenomenlogical
+characterization of the SED, such as spectral indices, peack frequenicies
+and fluxes</p>
+<div class="section" id="classes-and-inheritance-structure">
+<h3>Classes and Inheritance Structure<a class="headerlink" href="#classes-and-inheritance-structure" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="classes-relations">
+<h3>Classes relations<a class="headerlink" href="#classes-relations" title="Permalink to this headline">¶</a></h3>
+<div class="figure align-center">
+<img alt="api/classes_minimizer.png" src="api/classes_minimizer.png" />
+</div>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.fit_SED.html#jetset.minimizer.fit_SED" title="jetset.minimizer.fit_SED"><code class="xref py py-obj docutils literal"><span class="pre">fit_SED</span></code></a>(fit_Model,&nbsp;sed_data,&nbsp;nu_fit_start,&nbsp;…)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">eval_SED</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">residuals_SED</span></code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="module-api">
+<h3>Module API<a class="headerlink" href="#module-api" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.fit_SED.html#jetset.minimizer.fit_SED" title="jetset.minimizer.fit_SED"><code class="xref py py-obj docutils literal"><span class="pre">fit_SED</span></code></a>(fit_Model,&nbsp;sed_data,&nbsp;nu_fit_start,&nbsp;…)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.FitResults.html#jetset.minimizer.FitResults" title="jetset.minimizer.FitResults"><code class="xref py py-obj docutils literal"><span class="pre">FitResults</span></code></a>(name,&nbsp;mm,&nbsp;parameters,&nbsp;calls,&nbsp;…)</td>
+<td>Class to store the fit results</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.minimizer.Minimizer.html#jetset.minimizer.Minimizer" title="jetset.minimizer.Minimizer"><code class="xref py py-obj docutils literal"><span class="pre">Minimizer</span></code></a>(model)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.LSMinimizer.html#jetset.minimizer.LSMinimizer" title="jetset.minimizer.LSMinimizer"><code class="xref py py-obj docutils literal"><span class="pre">LSMinimizer</span></code></a>(model)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.minimizer.LSBMinimizer.html#jetset.minimizer.LSBMinimizer" title="jetset.minimizer.LSBMinimizer"><code class="xref py py-obj docutils literal"><span class="pre">LSBMinimizer</span></code></a>(model)</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.MinutiMinimizer.html#jetset.minimizer.MinutiMinimizer" title="jetset.minimizer.MinutiMinimizer"><code class="xref py py-obj docutils literal"><span class="pre">MinutiMinimizer</span></code></a>(model)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.minimizer.ModelMinimizer.html#jetset.minimizer.ModelMinimizer" title="jetset.minimizer.ModelMinimizer"><code class="xref py py-obj docutils literal"><span class="pre">ModelMinimizer</span></code></a>(minimizer_type)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="class-inheritance-diagram">
+<h2>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this headline">¶</a></h2>
+<img src="../_images/inheritance-63841c2df10c297c68ad9643dda3afaf7e07353a.png" alt="Inheritance diagram of jetset.minimizer.FitResults, jetset.minimizer.Minimizer, jetset.minimizer.LSMinimizer, jetset.minimizer.LSBMinimizer, jetset.minimizer.MinutiMinimizer, jetset.minimizer.ModelMinimizer" usemap="#inheritancee616589577" class="inheritance"/>
+<map id="inheritancee616589577" name="inheritancee616589577">
+<area shape="rect" id="node1" href="jetset.minimizer.FitResults.html#jetset.minimizer.FitResults" target="_top" title="Class to store the fit results " alt="" coords="23,103,105,129"/>
+<area shape="rect" id="node2" href="jetset.minimizer.LSBMinimizer.html#jetset.minimizer.LSBMinimizer" target="_top" title="LSBMinimizer" alt="" coords="176,5,280,30"/>
+<area shape="rect" id="node3" href="jetset.minimizer.Minimizer.html#jetset.minimizer.Minimizer" target="_top" title="Minimizer" alt="" coords="25,54,103,79"/>
+<area shape="rect" id="node4" href="jetset.minimizer.LSMinimizer.html#jetset.minimizer.LSMinimizer" target="_top" title="LSMinimizer" alt="" coords="180,54,276,79"/>
+<area shape="rect" id="node5" href="jetset.minimizer.MinutiMinimizer.html#jetset.minimizer.MinutiMinimizer" target="_top" title="MinutiMinimizer" alt="" coords="171,103,285,129"/>
+<area shape="rect" id="node6" href="jetset.minimizer.ModelMinimizer.html#jetset.minimizer.ModelMinimizer" target="_top" title="ModelMinimizer" alt="" coords="6,5,122,30"/>
+</map>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

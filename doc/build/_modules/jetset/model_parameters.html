@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>jetset.model_parameters &#8212; jetset 1.0.a documentation</title>
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html"><span><img src="../../_static/logo_small_transp.png"></span>
+          JetSeT</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">JetSeT <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><!--
+<ul class="globaltoc"
+><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+//-->
+
+
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2></h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a></li>
+</ul>
+
+    
+  </div>
+</div>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <h1>Source code for jetset.model_parameters</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="nb">super</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span>
+                      <span class="nb">zip</span><span class="p">,</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="nb">zip</span><span class="p">)</span>
+
+<span class="kn">import</span>  <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module: model_parameters</span>
+<span class="sd">===================================================================</span>
+
+<span class="sd">This module contains the base classes necessary to handle models paramters/</span>
+
+
+
+<span class="sd">Classes and Inheritance Structure</span>
+<span class="sd">----------------------------------------------</span>
+<span class="sd">.. inheritance-diagram:: BlazarSEDFit.model_parameters</span>
+<span class="sd">    </span>
+<span class="sd">Classes relations</span>
+<span class="sd">----------------------------------------------</span>
+
+<span class="sd">.. figure::  classes_model_parameters.png</span>
+<span class="sd">   :align:   center    </span>
+
+
+<span class="sd">      </span>
+<span class="sd">.. autosummary::</span>
+<span class="sd">   ModelParameter</span>
+<span class="sd">   ModelParameterArray</span>
+
+<span class="sd">Module API</span>
+<span class="sd">-------------------------------------------------------------------</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ModelParameter&#39;</span><span class="p">,</span><span class="s1">&#39;ModelParameterArray&#39;</span><span class="p">,</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Value"><a class="viewcode-back" href="../../api/jetset.model_parameters.Value.html#jetset.model_parameters.Value">[docs]</a><span class="k">class</span> <span class="nc">Value</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="n">islog</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val</span><span class="o">=</span><span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_islog</span><span class="o">=</span><span class="n">islog</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">islog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_islog</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">val</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val</span>
+
+    <span class="nd">@val</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_islog</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">10</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_val</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_islog</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_val</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ModelParameter"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter">[docs]</a><span class="k">class</span> <span class="nc">ModelParameter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class is the base class for models parameters. The following keywords </span>
+<span class="sd">    arguments can be passed to the constructor</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------      </span>
+<span class="sd">    name          :  (str)    parameter name (default=&#39;unk&#39;)</span>
+<span class="sd">    val           :  (float)  parameter value </span>
+<span class="sd">    par_type      :  (str)    parameter type (default=&#39;unk&#39;)</span>
+<span class="sd">    units         :  (str)    units of the parameter, (default=&#39;No&#39;)</span>
+<span class="sd">    val_min       :  (float)  minimum physical value </span>
+<span class="sd">    val_max       :  (float)  maximum physical value</span>
+<span class="sd">    val_start     :  (float)  starting value</span>
+<span class="sd">    val_last_call :  (float)  last call value</span>
+<span class="sd">    fit_range_min :  (float)  minimum boundary value for the fit</span>
+<span class="sd">    fit_range_max :  (float)  maximum boundary value for the fit  </span>
+<span class="sd">    frozen        :  (bool)   boolean flag for frozen parameter (default=False)</span>
+<span class="sd">    log           :  (bool)   boolean flag for log-scale value (default=False)</span>
+<span class="sd">                    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name          :  (str)         parameter name (default=&#39;unk&#39;)                      </span>
+<span class="sd">    val           :  (float)       parameter value                                    </span>
+<span class="sd">    par_type      :  (str)         parameter type (default=&#39;unk&#39;)                     </span>
+<span class="sd">    units         :  (str)         units of the parameter, (default=&#39;No&#39;)             </span>
+<span class="sd">    val_min       :  (float)       minimum physical value                             </span>
+<span class="sd">    val_max       :  (float)       maximum physical value                             </span>
+<span class="sd">    val_start     :  (float)       starting value                                     </span>
+<span class="sd">    val_last_call :  (float)       last call value                                    </span>
+<span class="sd">    fit_range_min :  (float)       minimum boundary value for the fit                 </span>
+<span class="sd">    fit_range_max :  (float)       maximum boundary value for the fit                 </span>
+<span class="sd">    frozen        :  (bool)        boolean flag for frozen parameter (default=False)  </span>
+<span class="sd">    log           :  (bool)        boolean flag for log-scale value (default=False)    </span>
+<span class="sd"> </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;unk&#39;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;par_type&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;unk&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_min&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_max&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_start_fit&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_last_call&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;fit_range_min&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;fit_range_max&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;fit_range&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;best_fit_val&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;best_fit_err&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;frozen&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;log&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">False</span>
+        
+      
+        <span class="c1">#self._skip_kw=[&#39;val&#39;]</span>
+        <span class="c1">#defualt</span>
+
+        <span class="n">_v</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">_l</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="s1">&#39;val&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">_v</span> <span class="o">=</span> <span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;log&#39;</span> <span class="ow">in</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">_l</span> <span class="o">=</span> <span class="n">keywords</span><span class="p">[</span><span class="s1">&#39;log&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">_v</span><span class="p">,</span> <span class="n">islog</span><span class="o">=</span><span class="n">_l</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">kw</span> <span class="o">==</span> <span class="s1">&#39;val&#39;</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">kw</span> <span class="o">==</span> <span class="s1">&#39;log&#39;</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">kw</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">])</span>
+
+
+
+
+        <span class="c1">#parsing user keywords</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">**</span><span class="n">keywords</span><span class="p">)</span>
+        <span class="c1">#self._skip_kw = []</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">islog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val</span><span class="o">.</span><span class="n">islog</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">val</span><span class="p">(</span><span class="bp">self</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val</span><span class="o">.</span><span class="n">val</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">val_lin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val</span><span class="o">.</span><span class="n">lin</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">val_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val</span><span class="o">.</span><span class="n">log</span>
+
+    <span class="nd">@val</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fit_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_range_min</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_range_max</span><span class="p">]</span>
+
+    <span class="nd">@fit_range</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">fit_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fit_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fit_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fit_range</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fit_range</span><span class="p">,</span><span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fit_range</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;fit_range bust me list or tuple with length=2&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fit_range</span><span class="p">)</span><span class="o">!=</span><span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;fit_range bust me list or tuple with length=2&#39;</span><span class="p">)</span>
+
+        <span class="c1">#self._fit_range = fit_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_min</span><span class="o">=</span><span class="n">fit_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_max</span><span class="o">=</span><span class="n">fit_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+
+
+<div class="viewcode-block" id="ModelParameter.set"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sets a parameter value checking for physical boundaries</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters: keywords of the constructor</span>
+<span class="sd">         </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#print &quot;ModelParamter in model parameters&quot;,args,keywords</span>
+        
+        <span class="n">keys</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            
+            <span class="k">if</span> <span class="n">kw</span> <span class="ow">in</span>  <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
+                <span class="k">if</span> <span class="n">kw</span> <span class="o">==</span> <span class="s1">&#39;val&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_val</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">kw</span> <span class="o">==</span> <span class="s1">&#39;log&#39;</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">kw</span><span class="p">,</span><span class="n">keywords</span><span class="p">[</span><span class="n">kw</span><span class="p">])</span>
+
+                    
+            <span class="k">else</span><span class="p">:</span>
+                
+                <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;wrong keyword=</span><span class="si">%s</span><span class="s2">, not in</span><span class="si">%s</span><span class="s2"> &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                
+                <span class="k">raise</span> <span class="ne">ValueError</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_min</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+    
+        
+        <span class="c1">#if self.frozen==True:</span>
+        <span class="c1">#    self.val=self.val_start</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_last_call</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span>    
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">val_min</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;par=</span><span class="si">%s</span><span class="s2">  = </span><span class="si">%e</span><span class="s2"> out of boundary=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">val_min</span><span class="p">))</span>
+         
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">val_max</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;par=</span><span class="si">%s</span><span class="s2">  = </span><span class="si">%e</span><span class="s2"> out of boundary=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">val_max</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_min</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">val_min</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">val_max</span></div>
+    
+    
+    
+<div class="viewcode-block" id="ModelParameter.get"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span> <span class="p">):</span>
+        
+       
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            
+            <span class="k">if</span> <span class="n">arg</span> <span class="ow">in</span>  <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                
+                <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arg</span><span class="p">)</span>
+                    
+            <span class="k">else</span><span class="p">:</span>
+                
+                <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;wrong arg=</span><span class="si">%s</span><span class="s2">, not in</span><span class="si">%s</span><span class="s2"> &quot;</span><span class="o">%</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                
+                <span class="k">raise</span> <span class="ne">ValueError</span></div>
+            
+    
+    
+    
+<div class="viewcode-block" id="ModelParameter.freeze"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter.freeze">[docs]</a>    <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        freezes a paramter </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span></div>
+
+    
+        
+<div class="viewcode-block" id="ModelParameter.free"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter.free">[docs]</a>    <span class="k">def</span> <span class="nf">free</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make a paramter free</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span><span class="o">=</span><span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="ModelParameter.get_fit_initial_value"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter.get_fit_initial_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_fit_initial_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gives the initial fit value of the parameter</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        val_start : value    </span>
+<span class="sd">            the parameter initial value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_start</span></div>
+    
+<div class="viewcode-block" id="ModelParameter.set_fit_initial_value"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter.set_fit_initial_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_fit_initial_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the initial fit value of the parameter</span>
+
+<span class="sd">       </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_start</span><span class="o">=</span><span class="n">val</span></div>
+    
+    
+<div class="viewcode-block" id="ModelParameter.show"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints the description of a parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_description</span><span class="p">())</span></div>
+    
+<div class="viewcode-block" id="ModelParameter.show_best_fit"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter.show_best_fit">[docs]</a>    <span class="k">def</span> <span class="nf">show_best_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints the best-fit description of a parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_bestfit_description</span><span class="p">())</span></div>
+    
+<div class="viewcode-block" id="ModelParameter.get_description"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter.get_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nofields</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gives the value of each member of the  :class:`ModelParameter` objects, except the best-fit values</span>
+<span class="sd"> </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        descr : (str)</span>
+<span class="sd">            a string describing all the parameter values, except the best-fit values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">val_min</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val_min</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">val_min</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">val_max</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val_max</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">val_max</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">val</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">nofields</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="n">descr</span><span class="o">=</span> <span class="s2">&quot;name = </span><span class="si">%-16s</span><span class="s2">  type = </span><span class="si">%-20s</span><span class="s2">  units = </span><span class="si">%-16s</span><span class="s2">  val = </span><span class="si">%s</span><span class="s2">  phys-bounds = [</span><span class="si">%-13s</span><span class="s2">,</span><span class="si">%-13s</span><span class="s2">] islog = </span><span class="si">%s</span><span class="s2">   &quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_type</span> <span class="p">,</span>
+                                                                                   <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">val_min</span><span class="p">,</span> <span class="n">val_max</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">islog</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">descr</span><span class="o">=</span> <span class="s2">&quot; </span><span class="si">%-16s</span><span class="s2"> | </span><span class="si">%-20s</span><span class="s2"> | </span><span class="si">%-16s</span><span class="s2"> | </span><span class="si">%s</span><span class="s2"> | [</span><span class="si">%-13s</span><span class="s2">,</span><span class="si">%-13s</span><span class="s2">] | </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_type</span> <span class="p">,</span>
+                                                                                   <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">val_min</span><span class="p">,</span> <span class="n">val_max</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">islog</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">descr</span></div>
+    
+    
+<div class="viewcode-block" id="ModelParameter.get_bestfit_description"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter.get_bestfit_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_bestfit_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nofields</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gives the value of each member of the  :class:`ModelParameter` objects, suited for  the best-fit values</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        descr : (str)</span>
+<span class="sd">            a string describing all the parameter values, suited for  the best-fit values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">val_start</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val_start</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">val_start</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fit_range_min</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fit_range_min</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_range_min</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_range_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fit_range_max</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fit_range_max</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_range_max</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_fit_val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">best_fit_val</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">best_fit_val</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">best_fit_val</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s1">&#39;err_p&#39;</span><span class="p">)</span> <span class="ow">and</span>  <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s1">&#39;err_m&#39;</span><span class="p">):</span>
+            <span class="n">best_fit_err_m</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">err_m</span><span class="p">)</span>
+            <span class="n">best_fit_err_p</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">err_p</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">best_fit_err_m</span><span class="o">=</span><span class="s1">&#39;#&#39;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_fit_err</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">best_fit_err_p</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">best_fit_err_p</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%+e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">best_fit_err</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frozen</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="n">best_fit_val</span><span class="o">=</span><span class="s1">&#39;Frozen&#39;</span>
+            <span class="n">best_fit_err_p</span><span class="o">=</span><span class="s1">&#39;Frozen&#39;</span>
+            <span class="n">best_fit_err_m</span><span class="o">=</span><span class="s1">&#39;Frozen&#39;</span>
+        <span class="k">if</span> <span class="n">nofields</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+            <span class="n">descr</span><span class="o">=</span> <span class="s2">&quot;name = </span><span class="si">%-16s</span><span class="s2"> best-fit val=</span><span class="si">%-13s</span><span class="s2">  best-fit err p=</span><span class="si">%-13s</span><span class="s2"> best-fit err m=</span><span class="si">%-13s</span><span class="s2"> start-val=</span><span class="si">%-13s</span><span class="s2">   fit-bounds=[</span><span class="si">%-13s</span><span class="s2">,</span><span class="si">%-13s</span><span class="s2">]&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">best_fit_val</span><span class="p">,</span><span class="n">best_fit_err_p</span><span class="p">,</span><span class="n">best_fit_err_m</span><span class="p">,</span><span class="n">val_start</span><span class="p">,</span><span class="n">fit_range_min</span><span class="p">,</span><span class="n">fit_range_max</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">descr</span><span class="o">=</span> <span class="s2">&quot; </span><span class="si">%-16s</span><span class="s2"> | </span><span class="si">%-13s</span><span class="s2"> | </span><span class="si">%-13s</span><span class="s2"> | </span><span class="si">%-13s</span><span class="s2"> | </span><span class="si">%-13s</span><span class="s2"> | [</span><span class="si">%-13s</span><span class="s2">,</span><span class="si">%-13s</span><span class="s2">]&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">best_fit_val</span><span class="p">,</span><span class="n">best_fit_err_p</span><span class="p">,</span><span class="n">best_fit_err_m</span><span class="p">,</span><span class="n">val_start</span><span class="p">,</span><span class="n">fit_range_min</span><span class="p">,</span><span class="n">fit_range_max</span><span class="p">)</span>
+
+
+        <span class="k">return</span> <span class="n">descr</span></div></div>
+        
+
+<div class="viewcode-block" id="ModelParameterArray"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray">[docs]</a><span class="k">class</span> <span class="nc">ModelParameterArray</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class provide and interface to handle an array of :class:`ModelParameter` objects.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    par_array :  list </span>
+<span class="sd">        list of :class:`ModelParameter` objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>   
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructor </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="o">=</span><span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_frozen</span><span class="o">=</span><span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">=</span><span class="p">{}</span>
+
+<div class="viewcode-block" id="ModelParameterArray.add_par"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.add_par">[docs]</a>    <span class="k">def</span> <span class="nf">add_par</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        adds a new :class:`ModelParameter` object  to the `par_array`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">par</span><span class="p">,</span><span class="n">ModelParameter</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;parameter is not an istance of&#39;</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="n">ModelParameter</span><span class="p">))</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;parameter name:&#39;</span><span class="p">,</span><span class="n">par</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="s1">&#39;already assigned&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">par</span><span class="p">)</span>
+
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">par</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">par</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">=</span><span class="n">par</span></div>
+
+    <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;properties&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;this member is protected, use del_par,add_par, to add/remove, and set() to set values or .val attribute&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+
+<div class="viewcode-block" id="ModelParameterArray.del_par"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.del_par">[docs]</a>    <span class="k">def</span> <span class="nf">del_par</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">par</span><span class="p">)</span>
+        <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ModelParameterArray.get_par_by_name"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.get_par_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_par_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        selects a parameter by name</span>
+<span class="sd">       </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : (str) parameter name</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        item : the :class:`ModelParameter` element of the `par_array` with the corresponding name</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="o">==</span><span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;no par with name </span><span class="si">%s</span><span class="s2"> found&quot;</span><span class="o">%</span><span class="n">name</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;pars in array are:&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+            
+            <span class="k">return</span> <span class="kc">None</span></div>
+                
+        
+    
+    
+<div class="viewcode-block" id="ModelParameterArray.show_pars"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.show_pars">[docs]</a>    <span class="k">def</span> <span class="nf">show_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">getstring</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        shows the information for all the items in the :attr:`~ModelParameterArray.par_array`</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">text</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot;-------------------------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot;model parameters:&quot;</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot; Name             | Type                 | Units            | value         | phys. boundaries              | log&quot;</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot;-------------------------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+       
+        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">:</span>
+            <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">par</span><span class="o">.</span><span class="n">get_description</span><span class="p">(</span><span class="n">nofields</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot;-------------------------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+        
+        
+
+        <span class="k">if</span> <span class="n">getstring</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">text</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="p">(</span><span class="n">line</span><span class="p">)</span></div>
+        
+    
+    
+<div class="viewcode-block" id="ModelParameterArray.show_best_fit_pars"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.show_best_fit_pars">[docs]</a>    <span class="k">def</span> <span class="nf">show_best_fit_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">getstring</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        shows the best-fit information for all the items in the :py:attr:`par_array`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">text</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-------------------------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;best-fit parameters:&quot;</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;  Name            | best-fit value| best-fit err +| best-fit err -|start value   | fit boundaries&quot;</span><span class="p">)</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-------------------------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+
+       
+        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">:</span>
+            <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">par</span><span class="o">.</span><span class="n">get_bestfit_description</span><span class="p">(</span><span class="n">nofields</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+        <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-------------------------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
+        
+
+        <span class="k">if</span> <span class="n">getstring</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">text</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="p">(</span><span class="n">line</span><span class="p">)</span></div>
+        
+        
+    
+<div class="viewcode-block" id="ModelParameterArray.set"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par_name</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        sets to a given value a given parameter</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        par_name     : (str) name of the parameter </span>
+<span class="sd">        keywords     :  keywords to set the value or the range of the parameter </span>
+<span class="sd">            </span>
+<span class="sd">         </span>
+<span class="sd">         </span>
+<span class="sd">           </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        if parameters is a :class:`ModelParameterArray` object:</span>
+<span class="sd">        </span>
+<span class="sd">        .. code::</span>
+<span class="sd">     </span>
+<span class="sd">            parameters.set(&#39;R&#39;,val=1E16) </span>
+<span class="sd">            parameters.set(&#39;R&#39;,fit_range=[1E16,1E17])</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1">#print &quot;ModelParamterArray in model parameters&quot;,args,keywords</span>
+        
+        <span class="n">par</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="n">par_name</span><span class="p">)</span>
+
+        <span class="n">args_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;free&#39;</span><span class="p">,</span><span class="s1">&#39;frozen&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span>  <span class="n">args</span><span class="o">!=</span><span class="p">():</span>
+            <span class="k">for</span>  <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            
+                <span class="k">if</span> <span class="n">arg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">args_list</span><span class="p">:</span>
+                    <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;argument: </span><span class="si">%s</span><span class="s2">,  not in allowed args&quot;</span><span class="o">%</span><span class="n">arg</span><span class="p">)</span>
+                    <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;allowed args= &quot;</span><span class="p">,</span><span class="n">args_list</span><span class="p">)</span>
+                    <span class="k">return</span>
+                
+                 
+                <span class="k">if</span> <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;frozen&#39;</span><span class="p">:</span>                
+                    <span class="n">par</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span>
+                
+                
+                <span class="k">if</span>  <span class="n">arg</span><span class="o">==</span><span class="s1">&#39;free&#39;</span><span class="p">:</span>
+                    <span class="n">par</span><span class="o">.</span><span class="n">free</span><span class="p">()</span>
+
+                
+            
+        
+        <span class="k">if</span> <span class="n">keywords</span><span class="o">!=</span><span class="p">{}:</span>
+        
+            
+            <span class="n">par</span><span class="o">.</span><span class="n">set</span><span class="p">(</span> <span class="o">**</span><span class="n">keywords</span><span class="p">)</span></div>
+        
+        
+        
+<div class="viewcode-block" id="ModelParameterArray.get"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par_name</span><span class="p">,</span><span class="n">arg</span><span class="p">):</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gets the argument of a given parameter</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        </span>
+<span class="sd">        par_name     : (str) name of the parameter </span>
+<span class="sd">        arg     :  keyword</span>
+<span class="sd">            </span>
+<span class="sd">         </span>
+<span class="sd">         </span>
+<span class="sd">           </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        if parameters is a :class:`ModelParameterArray` object:</span>
+<span class="sd">        </span>
+<span class="sd">        .. code::</span>
+<span class="sd">     </span>
+<span class="sd">            parameters.get(&#39;R&#39;) </span>
+<span class="sd">            parameters.get(&#39;frozen&#39;)</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1">#print &quot;ModelParamterArray in model parameters&quot;,args,keywords</span>
+        
+        <span class="n">par</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="n">par_name</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">par</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ModelParameterArray.freeze_all"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.freeze_all">[docs]</a>    <span class="k">def</span> <span class="nf">freeze_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_frozen</span><span class="o">=</span><span class="kc">True</span>
+        <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">freeze</span><span class="p">()</span></div>
+                
+        
+<div class="viewcode-block" id="ModelParameterArray.free_all"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.free_all">[docs]</a>    <span class="k">def</span> <span class="nf">free_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_frozen</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">free</span><span class="p">()</span></div></div>
+        
+        
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

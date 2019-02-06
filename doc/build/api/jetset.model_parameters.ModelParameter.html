@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ModelParameter &#8212; jetset 1.0.a documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ModelParameterArray" href="jetset.model_parameters.ModelParameterArray.html" />
+    <link rel="prev" title="jetset.model_parameters Module" href="model_parameters.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html"><span><img src="../_static/logo_small_transp.png"></span>
+          JetSeT</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">JetSeT <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">basic setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#setting-the-parameters">setting the parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#evaluate-and-plot-the-model">evaluate and plot the model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#comparing-models-on-the-same-plot">comparing models on the same plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#saving-a-plot">saving a plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#saving-and-lodaing-a-model">saving and lodaing a model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#set-n-from-observed-flux">set N from observed Flux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#setting-beaming-factor">setting beaming factor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#accessing-individual-components">accessing individual components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_manager.html">model_manager</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">ModelParameter</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="model_parameters.html" title="Previous Chapter: jetset.model_parameters Module"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; jetset.model_...</span>
+    </a>
+  </li>
+  <li>
+    <a href="jetset.model_parameters.ModelParameterArray.html" title="Next Chapter: ModelParameterArray"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">ModelParameterArray &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/api/jetset.model_parameters.ModelParameter.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><!--
+<ul class="globaltoc"
+><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">basic setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#setting-the-parameters">setting the parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#evaluate-and-plot-the-model">evaluate and plot the model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#comparing-models-on-the-same-plot">comparing models on the same plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#saving-a-plot">saving a plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#saving-and-lodaing-a-model">saving and lodaing a model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#set-n-from-observed-flux">set N from observed Flux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#setting-beaming-factor">setting beaming factor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html#accessing-individual-components">accessing individual components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_manager.html">model_manager</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+//-->
+
+
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2></h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_manager.html">model_manager</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="model_parameters.html">model_parameters</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="model_parameters.html#classes">Classes</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ModelParameter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.model_parameters.ModelParameterArray.html">ModelParameterArray</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.model_parameters.Value.html">Value</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="model_parameters.html#class-inheritance-diagram">Class Inheritance Diagram</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+
+    
+  </div>
+</div>
+<div id="sourcelink">
+  <a href="../_sources/api/jetset.model_parameters.ModelParameter.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  <div class="section" id="modelparameter">
+<h1>ModelParameter<a class="headerlink" href="#modelparameter" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jetset.model_parameters.ModelParameter">
+<em class="property">class </em><code class="descname">ModelParameter</code><span class="sig-paren">(</span><em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/model_parameters.html#ModelParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.model_parameters.ModelParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>This class is the base class for models parameters. The following keywords
+arguments can be passed to the constructor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>(</em><em>str</em><em>)    </em><em>parameter name</em><em> (</em><em>default='unk'</em><em>)</em>) – </li>
+<li><strong>val</strong> (<em>(</em><em>float</em><em>)  </em><em>parameter value</em>) – </li>
+<li><strong>par_type</strong> (<em>(</em><em>str</em><em>)    </em><em>parameter type</em><em> (</em><em>default='unk'</em><em>)</em>) – </li>
+<li><strong>units</strong> (<em>(</em><em>str</em><em>)    </em><em>units of the parameter</em><em>, </em><em>(</em><em>default='No'</em><em>)</em>) – </li>
+<li><strong>val_min</strong> (<em>(</em><em>float</em><em>)  </em><em>minimum physical value</em>) – </li>
+<li><strong>val_max</strong> (<em>(</em><em>float</em><em>)  </em><em>maximum physical value</em>) – </li>
+<li><strong>val_start</strong> (<em>(</em><em>float</em><em>)  </em><em>starting value</em>) – </li>
+<li><strong>val_last_call</strong> (<em>(</em><em>float</em><em>)  </em><em>last call value</em>) – </li>
+<li><strong>fit_range_min</strong> (<em>(</em><em>float</em><em>)  </em><em>minimum boundary value for the fit</em>) – </li>
+<li><strong>fit_range_max</strong> (<em>(</em><em>float</em><em>)  </em><em>maximum boundary value for the fit</em>) – </li>
+<li><strong>frozen</strong> (<em>(</em><em>bool</em><em>)   </em><em>boolean flag for frozen parameter</em><em> (</em><em>default=False</em><em>)</em>) – </li>
+<li><strong>log</strong> (<em>(</em><em>bool</em><em>)   </em><em>boolean flag for log-scale value</em><em> (</em><em>default=False</em><em>)</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.name">
+<code class="descname">name</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>(str)         parameter name (default=’unk’)</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.val">
+<code class="descname">val</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.val" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>(float)       parameter value</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.par_type">
+<code class="descname">par_type</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.par_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>(str)         parameter type (default=’unk’)</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.units">
+<code class="descname">units</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.units" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>(str)         units of the parameter, (default=’No’)</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.val_min">
+<code class="descname">val_min</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.val_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>(float)       minimum physical value</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.val_max">
+<code class="descname">val_max</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.val_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>(float)       maximum physical value</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.val_start">
+<code class="descname">val_start</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.val_start" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>(float)       starting value</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.val_last_call">
+<code class="descname">val_last_call</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.val_last_call" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>(float)       last call value</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.fit_range_min">
+<code class="descname">fit_range_min</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.fit_range_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>(float)       minimum boundary value for the fit</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.fit_range_max">
+<code class="descname">fit_range_max</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.fit_range_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>(float)       maximum boundary value for the fit</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.frozen">
+<code class="descname">frozen</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.frozen" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>(bool)        boolean flag for frozen parameter (default=False)</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.log">
+<code class="descname">log</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.log" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>(bool)        boolean flag for log-scale value (default=False)</em></p>
+</dd></dl>
+
+<p class="rubric">Attributes Summary</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.fit_range" title="jetset.model_parameters.ModelParameter.fit_range"><code class="xref py py-obj docutils literal"><span class="pre">fit_range</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.islog" title="jetset.model_parameters.ModelParameter.islog"><code class="xref py py-obj docutils literal"><span class="pre">islog</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.val" title="jetset.model_parameters.ModelParameter.val"><code class="xref py py-obj docutils literal"><span class="pre">val</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.val_lin" title="jetset.model_parameters.ModelParameter.val_lin"><code class="xref py py-obj docutils literal"><span class="pre">val_lin</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.val_log" title="jetset.model_parameters.ModelParameter.val_log"><code class="xref py py-obj docutils literal"><span class="pre">val_log</span></code></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Summary</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.free" title="jetset.model_parameters.ModelParameter.free"><code class="xref py py-obj docutils literal"><span class="pre">free</span></code></a>()</td>
+<td>make a paramter free</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.freeze" title="jetset.model_parameters.ModelParameter.freeze"><code class="xref py py-obj docutils literal"><span class="pre">freeze</span></code></a>()</td>
+<td>freezes a paramter</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.get" title="jetset.model_parameters.ModelParameter.get"><code class="xref py py-obj docutils literal"><span class="pre">get</span></code></a>(*args)</td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.get_bestfit_description" title="jetset.model_parameters.ModelParameter.get_bestfit_description"><code class="xref py py-obj docutils literal"><span class="pre">get_bestfit_description</span></code></a>([nofields])</td>
+<td>gives the value of each member of the  <a class="reference internal" href="#jetset.model_parameters.ModelParameter" title="jetset.model_parameters.ModelParameter"><code class="xref py py-class docutils literal"><span class="pre">ModelParameter</span></code></a> objects, suited for  the best-fit values</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.get_description" title="jetset.model_parameters.ModelParameter.get_description"><code class="xref py py-obj docutils literal"><span class="pre">get_description</span></code></a>([nofields])</td>
+<td>gives the value of each member of the  <a class="reference internal" href="#jetset.model_parameters.ModelParameter" title="jetset.model_parameters.ModelParameter"><code class="xref py py-class docutils literal"><span class="pre">ModelParameter</span></code></a> objects, except the best-fit values</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.get_fit_initial_value" title="jetset.model_parameters.ModelParameter.get_fit_initial_value"><code class="xref py py-obj docutils literal"><span class="pre">get_fit_initial_value</span></code></a>()</td>
+<td>Gives the initial fit value of the parameter</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.set" title="jetset.model_parameters.ModelParameter.set"><code class="xref py py-obj docutils literal"><span class="pre">set</span></code></a>(*args,&nbsp;**keywords)</td>
+<td>sets a parameter value checking for physical boundaries</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.set_fit_initial_value" title="jetset.model_parameters.ModelParameter.set_fit_initial_value"><code class="xref py py-obj docutils literal"><span class="pre">set_fit_initial_value</span></code></a>(val)</td>
+<td>Sets the initial fit value of the parameter</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.show" title="jetset.model_parameters.ModelParameter.show"><code class="xref py py-obj docutils literal"><span class="pre">show</span></code></a>()</td>
+<td>Prints the description of a parameter</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.model_parameters.ModelParameter.show_best_fit" title="jetset.model_parameters.ModelParameter.show_best_fit"><code class="xref py py-obj docutils literal"><span class="pre">show_best_fit</span></code></a>()</td>
+<td>Prints the best-fit description of a parameter</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes Documentation</p>
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.fit_range">
+<code class="descname">fit_range</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.fit_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.islog">
+<code class="descname">islog</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.islog" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">val</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.val_lin">
+<code class="descname">val_lin</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.val_lin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="jetset.model_parameters.ModelParameter.val_log">
+<code class="descname">val_log</code><a class="headerlink" href="#jetset.model_parameters.ModelParameter.val_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods Documentation</p>
+<dl class="method">
+<dt id="jetset.model_parameters.ModelParameter.free">
+<code class="descname">free</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/model_parameters.html#ModelParameter.free"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.model_parameters.ModelParameter.free" title="Permalink to this definition">¶</a></dt>
+<dd><p>make a paramter free</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.model_parameters.ModelParameter.freeze">
+<code class="descname">freeze</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/model_parameters.html#ModelParameter.freeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.model_parameters.ModelParameter.freeze" title="Permalink to this definition">¶</a></dt>
+<dd><p>freezes a paramter</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.model_parameters.ModelParameter.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/model_parameters.html#ModelParameter.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.model_parameters.ModelParameter.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.model_parameters.ModelParameter.get_bestfit_description">
+<code class="descname">get_bestfit_description</code><span class="sig-paren">(</span><em>nofields=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/model_parameters.html#ModelParameter.get_bestfit_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.model_parameters.ModelParameter.get_bestfit_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>gives the value of each member of the  <a class="reference internal" href="#jetset.model_parameters.ModelParameter" title="jetset.model_parameters.ModelParameter"><code class="xref py py-class docutils literal"><span class="pre">ModelParameter</span></code></a> objects, suited for  the best-fit values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>descr</strong> – a string describing all the parameter values, suited for  the best-fit values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(str)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.model_parameters.ModelParameter.get_description">
+<code class="descname">get_description</code><span class="sig-paren">(</span><em>nofields=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/model_parameters.html#ModelParameter.get_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.model_parameters.ModelParameter.get_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>gives the value of each member of the  <a class="reference internal" href="#jetset.model_parameters.ModelParameter" title="jetset.model_parameters.ModelParameter"><code class="xref py py-class docutils literal"><span class="pre">ModelParameter</span></code></a> objects, except the best-fit values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>descr</strong> – a string describing all the parameter values, except the best-fit values</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(str)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.model_parameters.ModelParameter.get_fit_initial_value">
+<code class="descname">get_fit_initial_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/model_parameters.html#ModelParameter.get_fit_initial_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.model_parameters.ModelParameter.get_fit_initial_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the initial fit value of the parameter</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>val_start</strong> – the parameter initial value</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.model_parameters.ModelParameter.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>*args</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/model_parameters.html#ModelParameter.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.model_parameters.ModelParameter.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>sets a parameter value checking for physical boundaries</p>
+<p>Parameters: keywords of the constructor</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.model_parameters.ModelParameter.set_fit_initial_value">
+<code class="descname">set_fit_initial_value</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/model_parameters.html#ModelParameter.set_fit_initial_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.model_parameters.ModelParameter.set_fit_initial_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the initial fit value of the parameter</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.model_parameters.ModelParameter.show">
+<code class="descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/model_parameters.html#ModelParameter.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.model_parameters.ModelParameter.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the description of a parameter</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jetset.model_parameters.ModelParameter.show_best_fit">
+<code class="descname">show_best_fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/model_parameters.html#ModelParameter.show_best_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.model_parameters.ModelParameter.show_best_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the best-fit description of a parameter</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

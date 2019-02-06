@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>jet_model user guide &#8212; jetset 1.0.a documentation</title>
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html"><span><img src="../../../_static/logo_small_transp.png"></span>
+          JetSeT</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">JetSeT <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">code documentation (API)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sed_models_dic.html">sed_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">jet_model user guide</a><ul>
+<li><a class="reference internal" href="#basic-setup">basic setup</a></li>
+<li><a class="reference internal" href="#setting-the-parameters">setting the parameters</a></li>
+<li><a class="reference internal" href="#evaluate-and-plot-the-model">evaluate and plot the model</a></li>
+<li><a class="reference internal" href="#comparing-models-on-the-same-plot">comparing models on the same plot</a></li>
+<li><a class="reference internal" href="#saving-a-plot">saving a plot</a></li>
+<li><a class="reference internal" href="#saving-and-loadaing-model">saving and loadaing model</a></li>
+<li><a class="reference internal" href="#set-N-from-observed-Flux">set N from observed Flux</a></li>
+<li><a class="reference internal" href="#setting-beaming-factor">setting beaming factor</a></li>
+<li><a class="reference internal" href="#accessing-individual-components">accessing individual components</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../../../_sources/user_guide/jet_model_phys/.ipynb_checkpoints/Jet_example_phys-checkpoint.ipynb.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><!--
+<ul class="globaltoc"
+><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../install.html#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model_fit/fit_example.html">Fit User guide</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">code documentation (API)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/analytical_model.html">analytical_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/base_model.html">base_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/convert_qdp.html">convert_qdp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cosmo_tools.html">cosmo_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/data_loader.html">data_loader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/frame_converter.html">frame_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/jet_model.html">jet_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/loglog_poly_model.html">loglog_poly_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/mcmc.html">mcmc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/minimizer.html">minimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/mock.html">mock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_manager.html">model_manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_parameters.html">model_parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/obs_constrain.html">obs_constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/output.html">output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/plot_sedfit.html">plot_sedfit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/poly_fit.html">poly_fit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sed_models_dic.html">sed_models_dic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sed_shaper.html">sed_shaper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/spectral_shapes.html">spectral_shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/template_model.html">template_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+//-->
+
+
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2></h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">code documentation (API)</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div id="sourcelink">
+  <a href="../../../_sources/user_guide/jet_model_phys/.ipynb_checkpoints/Jet_example_phys-checkpoint.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+        </div>
+      </div>
+    <div class="col-md-9 content">
+      
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #303F9F;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #D84315;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 9ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #cfcfcf;
+    border-radius: 2px;
+    background: #f7f7f7;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.pngmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+</style>
+<div class="section" id="jet_model-user-guide">
+<h1>jet_model user guide<a class="headerlink" href="#jet_model-user-guide" title="Permalink to this headline">¶</a></h1>
+In this section we describe how to use the module  :mod:`.jet_model`
+to buil a model of jet able to reproduce SSC/EC emission processes.
+The :mod:`.jet_model`  allows to build a jet  model  providing an interface
+to call the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compoton processes.  The python wrappper is  built using SWIG framework.<div class="section" id="basic-setup">
+<h2>basic setup<a class="headerlink" href="#basic-setup" title="Permalink to this headline">¶</a></h2>
+A jet can be built using the  the :class:`.Jet` class, istanciating a jet object.<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">from</span> <span class="nn">jetset</span> <span class="k">import</span> <span class="n">jet_model</span>
+<span class="n">my_jet</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,)</span>
+</pre></div>
+</div>
+</div>
+This instruction will create:
+    * a ``Jet`` object with ``name`` **test**,
+    * using as electron distribution the **lppl** model, that is a log-parabola witha low-energy power-law branch.
+    * using as wokring directory **test_jet_prod**
+
+For a list of possible distribution refer to :func:`.jet_model.build_electron_distribution_dic`
+
+The parameters of the model are accessible throug the instruction<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+--------------------------------------------------------------------------------------------------------------
+model parameters:
+ Name             | Type                     | Units            | value         | phys. boundaries
+--------------------------------------------------------------------------------------------------------------
+ N                | electron_density         | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ]
+ gmin             | low-energy-cut-off       | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,No           ]
+ gmax             | high-energy-cut-off      | Lorentz-factor   | +1.000000e+08 | [+1.000000e+00,No           ]
+ s                | LE_spectral_slope        |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01]
+ r                | spectral_curvature       |                  | +4.000000e-01 | [-1.500000e+01,+1.500000e+01]
+ gamma0_log_parab | turn-over-energy         | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,No           ]
+ R                | region_size              | cm               | +3.000000e+15 | [+0.000000e+00,No           ]
+ B                | magnetic_field           | G                | +1.000000e-01 | [+0.000000e+00,No           ]
+ beam_obj         | beaming                  |                  | +1.000000e+01 | [+1.000000e+00,No           ]
+ z_cosm           | redshift                 |                  | +1.000000e-01 | [+0.000000e+00,No           ]
+--------------------------------------------------------------------------------------------------------------
+</pre></div></div>
+</div>
+Each parameter has default values. All the parameters listed are handled by :class:`.ModelParameterArray`, and each parameter is an instance of the the :class:`.JetParameter`.</div>
+<div class="section" id="setting-the-parameters">
+<h2>setting the parameters<a class="headerlink" href="#setting-the-parameters" title="Permalink to this headline">¶</a></h2>
+<p>assume you want to change some of the parameters in your model:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">5E3</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gmin&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E2</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">5E14</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="evaluate-and-plot-the-model">
+<h2>evaluate and plot the model<a class="headerlink" href="#evaluate-and-plot-the-model" title="Permalink to this headline">¶</a></h2>
+<p>At this point we can evaluate the emission for this jet model using the
+instruction</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>and plot the corresponding SED:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">jetset.plot_sedfit</span> <span class="k">import</span> <span class="n">PlotSED</span>
+<span class="n">my_plot</span><span class="o">=</span><span class="n">PlotSED</span><span class="p">()</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">plot_obj</span><span class="o">=</span><span class="n">my_plot</span><span class="p">)</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example_phys-checkpoint_15_0.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example_phys-checkpoint_15_0.png" />
+</div>
+</div>
+<p>alternatively, you can call the <code class="docutils literal"><span class="pre">plot_model</span></code> method without passing a
+<code class="docutils literal"><span class="pre">Plot</span></code> object</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_plot</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example_phys-checkpoint_17_0.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example_phys-checkpoint_17_0.png" />
+</div>
+</div>
+<p>the <code class="docutils literal"><span class="pre">my_plot</span></code> objet returned will be built on the fly by the
+<code class="docutils literal"><span class="pre">plot_model</span></code> method</p>
+</div>
+<div class="section" id="comparing-models-on-the-same-plot">
+<h2>comparing models on the same plot<a class="headerlink" href="#comparing-models-on-the-same-plot" title="Permalink to this headline">¶</a></h2>
+<p>to compare the same model after changing a parameter</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_plot</span><span class="o">=</span><span class="n">PlotSED</span><span class="p">()</span>
+
+<span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">my_plot</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;gamma0_log_parab=1E4&#39;</span><span class="p">,</span><span class="n">comp</span><span class="o">=</span><span class="s1">&#39;Sum&#39;</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1.0E5</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">my_plot</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;gamma0_log_parab=1E5&#39;</span><span class="p">,</span><span class="n">comp</span><span class="o">=</span><span class="s1">&#39;Sum&#39;</span><span class="p">)</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mi">17</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example_phys-checkpoint_21_0.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example_phys-checkpoint_21_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="saving-a-plot">
+<h2>saving a plot<a class="headerlink" href="#saving-a-plot" title="Permalink to this headline">¶</a></h2>
+<p>to save the plot</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_plot</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;jet1.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="saving-and-loadaing-model">
+<h2>saving and loadaing model<a class="headerlink" href="#saving-and-loadaing-model" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="s1">&#39;test_model.dat&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet_new</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;test_model.dat&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Sum
+Sync
+SSC
+-----------------------------------------------------------------------------------------
+model parameters for jet model:
+electron distribution type = lppl
+--------------------------------------------------------------------------------------------------------------
+model parameters:
+ Name             | Type                     | Units            | value         | phys. boundaries
+--------------------------------------------------------------------------------------------------------------
+ R                | region_size              | cm               | +3.000000e+15 | [+0.000000e+00,No           ]
+ B                | magnetic_field           | G                | +1.000000e-01 | [+0.000000e+00,No           ]
+ beam_obj         | beaming                  |                  | +1.000000e+01 | [+1.000000e+00,No           ]
+ z_cosm           | redshift                 |                  | +1.000000e-01 | [+0.000000e+00,No           ]
+ N                | electron_density         | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ]
+ gmin             | low-energy-cut-off       | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,No           ]
+ gmax             | high-energy-cut-off      | Lorentz-factor   | +1.000000e+08 | [+1.000000e+00,No           ]
+ s                | LE_spectral_slope        |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01]
+ r                | spectral_curvature       |                  | +4.000000e-01 | [-1.500000e+01,+1.500000e+01]
+ gamma0_log_parab | turn-over-energy         | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,No           ]
+--------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="set-N-from-observed-Flux">
+<h2>set N from observed Flux<a class="headerlink" href="#set-N-from-observed-Flux" title="Permalink to this headline">¶</a></h2>
+It is possible to set the density of emitting particle starting from some observed Luminosity (see the method     :meth:`.Jet.set_N_from_nuFnu`)<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>this is the initial value of N</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[12]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>100.0
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">set_N_from_nuFnu</span><span class="p">(</span><span class="n">nuFnu_obs</span><span class="o">=</span><span class="mf">1E-14</span><span class="p">,</span><span class="n">nu_obs</span><span class="o">=</span><span class="mf">1E12</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>This is the updated value of N, obtained in order to match the given
+flux at the given frequencies</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>Out[14]:
+</pre></div>
+</div>
+<div class="output_area highlight-none"><div class="highlight"><pre>
+<span></span>30781.15088279897
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+--------------------------------------------------------------------------------------------------------------
+model parameters:
+ Name             | Type                     | Units            | value         | phys. boundaries
+--------------------------------------------------------------------------------------------------------------
+ N                | electron_density         | cm^-3            | +3.078115e+04 | [+0.000000e+00,No           ]
+ gmin             | low-energy-cut-off       | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,No           ]
+ gmax             | high-energy-cut-off      | Lorentz-factor   | +1.000000e+08 | [+1.000000e+00,No           ]
+ s                | LE_spectral_slope        |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01]
+ r                | spectral_curvature       |                  | +4.000000e-01 | [-1.500000e+01,+1.500000e+01]
+ gamma0_log_parab | turn-over-energy         | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,No           ]
+ R                | region_size              | cm               | +3.000000e+15 | [+0.000000e+00,No           ]
+ B                | magnetic_field           | G                | +1.000000e-01 | [+0.000000e+00,No           ]
+ beam_obj         | beaming                  |                  | +1.000000e+01 | [+1.000000e+00,No           ]
+ z_cosm           | redshift                 |                  | +1.000000e-01 | [+0.000000e+00,No           ]
+--------------------------------------------------------------------------------------------------------------
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">my_plot</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;set N from F=1E-14&#39;</span><span class="p">)</span>
+<span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mi">17</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example_phys-checkpoint_37_0.png" src="../../../_images/user_guide_jet_model_phys_.ipynb_checkpoints_Jet_example_phys-checkpoint_37_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="setting-beaming-factor">
+<h2>setting beaming factor<a class="headerlink" href="#setting-beaming-factor" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to set the bemaing factor according to the realativistic
+BulkFactor and viewing angle, this can be done by setting the
+<code class="docutils literal"><span class="pre">beaming_expr</span></code> kw in the Jet constructor, possbile choiches are</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">delta</span></code> to provide directly the beaming factor (default)</li>
+<li><code class="docutils literal"><span class="pre">bulk_theta</span></code> to provide the BulkFactor and the jet viewing angle</li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;bulk_theta&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+--------------------------------------------------------------------------------------------------------------
+model parameters:
+ Name             | Type                     | Units            | value         | phys. boundaries
+--------------------------------------------------------------------------------------------------------------
+ N                | electron_density         | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ]
+ gmin             | low-energy-cut-off       | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,No           ]
+ gmax             | high-energy-cut-off      | Lorentz-factor   | +1.000000e+08 | [+1.000000e+00,No           ]
+ s                | LE_spectral_slope        |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01]
+ r                | spectral_curvature       |                  | +4.000000e-01 | [-1.500000e+01,+1.500000e+01]
+ gamma0_log_parab | turn-over-energy         | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,No           ]
+ R                | region_size              | cm               | +3.000000e+15 | [+0.000000e+00,No           ]
+ B                | magnetic_field           | G                | +1.000000e-01 | [+0.000000e+00,No           ]
+ theta            | jet-viewing-angle        | deg              | +1.000000e-01 | [+0.000000e+00,No           ]
+ BulkFactor       | jet-bulk-factor          | Lorentz-factor   | +1.000000e+01 | [+1.000000e+00,No           ]
+ z_cosm           | redshift                 |                  | +1.000000e-01 | [+0.000000e+00,No           ]
+--------------------------------------------------------------------------------------------------------------
+</pre></div></div>
+</div>
+the actual value of the beaming factor che be obatained using the :meth:`.Jet.get_beaming`<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;beaming factor=&#39;</span><span class="p">,</span><span class="n">my_jet</span><span class="o">.</span><span class="n">get_beaming</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+beaming factor= 19.943844732554165
+</pre></div></div>
+</div>
+We can change the value of ``theta`` and get the updated value of the beaming factor<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">10.</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;beaming factor=&#39;</span><span class="p">,</span><span class="n">my_jet</span><span class="o">.</span><span class="n">get_beaming</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+beaming factor= 4.968041140891955
+</pre></div></div>
+</div>
+of course setting `beaming_expr=delta` we get the same beaming expression as in the default case<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;delta&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+--------------------------------------------------------------------------------------------------------------
+model parameters:
+ Name             | Type                     | Units            | value         | phys. boundaries
+--------------------------------------------------------------------------------------------------------------
+ N                | electron_density         | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ]
+ gmin             | low-energy-cut-off       | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,No           ]
+ gmax             | high-energy-cut-off      | Lorentz-factor   | +1.000000e+08 | [+1.000000e+00,No           ]
+ s                | LE_spectral_slope        |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01]
+ r                | spectral_curvature       |                  | +4.000000e-01 | [-1.500000e+01,+1.500000e+01]
+ gamma0_log_parab | turn-over-energy         | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,No           ]
+ R                | region_size              | cm               | +3.000000e+15 | [+0.000000e+00,No           ]
+ B                | magnetic_field           | G                | +1.000000e-01 | [+0.000000e+00,No           ]
+ beam_obj         | beaming                  |                  | +1.000000e+01 | [+1.000000e+00,No           ]
+ z_cosm           | redshift                 |                  | +1.000000e-01 | [+0.000000e+00,No           ]
+--------------------------------------------------------------------------------------------------------------
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="accessing-individual-components">
+<h2>accessing individual components<a class="headerlink" href="#accessing-individual-components" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to access specific spectral components of oura model</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">jet_model</span><span class="o">.</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;bulk_theta&#39;</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+We can obtain this information anytime using the :meth:`.Jet.list_spectral_components` method<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+
+<span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">list_spectral_components</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Sum
+Sync
+SSC
+</pre></div></div>
+</div>
+<p>the on-screen message is telling us which components have been
+evaluated.</p>
+and we cann access a specific component using the :meth:`.Jet.get_spectral_component_by_name` method<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">Sync</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;Sync&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>and from the <code class="docutils literal"><span class="pre">SED</span></code> object we can extract both the nu and nuFnu array</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="n">nu_sync</span><span class="o">=</span><span class="n">Sync</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">nu</span>
+<span class="n">nuFnu_sync</span><span class="o">=</span><span class="n">Sync</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">nuFnu</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3"><div class="highlight"><pre>
+<span></span><span class="nb">print</span> <span class="p">(</span><span class="n">nuFnu_sync</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.99195355e-26
+ 4.32084831e-26 9.42080231e-26 2.07796467e-25 4.64226006e-25
+ 1.07421835e-24 2.57262866e-24 6.33304102e-24 1.62172378e-23
+ 4.21830732e-23 1.10565753e-22 2.90749001e-22 7.64703810e-22
+ 2.01137205e-21 5.29044499e-21 1.39152631e-20 3.66005742e-20
+ 9.62674977e-20 2.53161731e-19 6.65135791e-19 1.74532879e-18
+ 4.47162406e-18 1.04798662e-17 2.22510780e-17 3.42183006e-17
+ 4.73795507e-17 5.98146121e-17 7.08393890e-17 8.27924884e-17
+ 9.58571035e-17 1.10361592e-16 1.26894305e-16 1.45793212e-16
+ 1.67429058e-16 1.92253041e-16 2.20741484e-16 2.53430172e-16
+ 2.90956596e-16 3.34034909e-16 3.83482107e-16 4.40231844e-16
+ 5.05364252e-16 5.80111171e-16 6.65860835e-16 7.64238867e-16
+ 8.77094393e-16 1.00644889e-15 1.15473841e-15 1.32470643e-15
+ 1.51922268e-15 1.74184487e-15 1.99657203e-15 2.28728218e-15
+ 2.61887108e-15 2.99699329e-15 3.42637539e-15 3.91284208e-15
+ 4.46398022e-15 5.08436971e-15 5.77822165e-15 6.55504712e-15
+ 7.41688282e-15 8.35893256e-15 9.39317225e-15 1.05162021e-14
+ 1.17012783e-14 1.29677483e-14 1.43077405e-14 1.56618661e-14
+ 1.70669190e-14 1.85140020e-14 1.99149955e-14 2.13199797e-14
+ 2.27192694e-14 2.40181924e-14 2.52556860e-14 2.64340055e-14
+ 2.74611617e-14 2.83590869e-14 2.91498397e-14 2.97544176e-14
+ 3.01736120e-14 3.04551553e-14 3.05414488e-14 3.04103209e-14
+ 3.01368848e-14 2.96892404e-14 2.90230677e-14 2.82372882e-14
+ 2.73248535e-14 2.62226222e-14 2.50449532e-14 2.38042485e-14
+ 2.24239213e-14 2.10225626e-14 1.96144574e-14 1.81447517e-14
+ 1.66964251e-14 1.52898970e-14 1.38900619e-14 1.25442884e-14
+ 1.12742894e-14 1.00574503e-14 8.91399490e-15 7.86233347e-15
+ 6.88692857e-15 5.99001626e-15 5.18464148e-15 4.45908613e-15
+ 3.80577564e-15 3.23238294e-15 2.72949108e-15 2.28586629e-15
+ 1.90500228e-15 1.57929305e-15 1.29769920e-15 1.06107838e-15
+ 8.63339561e-16 6.96082614e-16 5.58275014e-16 4.45484724e-16
+ 3.52308323e-16 2.76800930e-16 2.16201897e-16 1.67118893e-16
+ 1.27789365e-16 9.67429184e-17 7.19114364e-17 5.19813320e-17
+ 3.65724953e-17 2.45791387e-17 1.51568234e-17 8.62852876e-18
+ 4.37420009e-18 1.73809120e-18 5.58993124e-19 1.38471677e-19
+ 1.84044040e-20 1.46229352e-21 6.75656391e-23 6.84161407e-25
+ 2.05558538e-27 1.70711836e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30
+ 1.00000000e-30 1.00000000e-30 1.00000000e-30 1.00000000e-30]
+</pre></div></div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
