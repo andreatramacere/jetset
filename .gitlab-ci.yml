@@ -21,6 +21,7 @@ conda:
 
   script:
     - conda install conda-build
+    - echo $PWD
     - mkdir dist
     - mkdir dist/3.7
     - mkdir dist/3.6
@@ -30,7 +31,7 @@ conda:
     - cd conda-pipeline
     - conda build --python=3.7 .
     - echo $PWD
-    #- cp /opt/conda/conda-bld/linux-64/jetset* ../dist/3.7/
+    - cp /opt/conda/conda-bld/linux-64/jetset* /builds/andreatramacere/jetset/conda-pipeline/dist/3.7/
 #    - conda build --python=3.6 .
 #    - mkdir dist/3.6
 #    - cp /opt/conda/conda-bld/linux-64/jetset* dist/3.6/
