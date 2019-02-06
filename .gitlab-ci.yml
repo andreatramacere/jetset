@@ -22,11 +22,11 @@ conda:
   script:
     - conda install conda-build
     - mkdir dist
+    - mkdir dist/3.7
     - conda config --set anaconda_upload no
     - cd conda-pipeline
     - conda build --python=3.7 .
-    - mkdir dist/3.7
-    - cp /opt/conda/conda-bld/linux-64/jetset * dist/3.7/
+    - cp /opt/conda/conda-bld/linux-64/jetset* dist/3.7/
 #    - conda build --python=3.6 .
 #    - mkdir dist/3.6
 #    - cp /opt/conda/conda-bld/linux-64/jetset* dist/3.6/
