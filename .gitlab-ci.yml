@@ -8,7 +8,7 @@ conda:
 
   before_script:
     - conda env create -f environment.yaml
-    - conda activate my_env
+    - source activate myenv
     - conda install conda-build
     - conda config --set anaconda_upload no
 
