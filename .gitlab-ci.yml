@@ -7,7 +7,7 @@ conda:
   image: continuumio/miniconda3:latest
 
   before_script:
-    - apt-get install gcc
+    # - apt-get install gcc
     - apt-get install swig
     #- conda env create -f environment.yaml
     #- source activate myenv
