@@ -7,9 +7,9 @@ conda:
   image: python:3.6
 
   before_script:
-    - apt-get update
-    - apt-get install gcc
-    - apt-get install swig
+    - apt-get update -q -y
+    - apt-get install -y  gcc
+    - apt-get install -y swig
     - chmod +x conda-pipeline/miniconda.sh
     - ./conda-pipeline/miniconda.sh
 
@@ -42,9 +42,8 @@ pip:
   image: python:3.6
 
   before_script:
-  - apt-get update
-  - apt-get install gcc
   - apt-get update -q -y
+  - apt-get install -y  gcc
   - apt-get install -y swig
   - pip install -r pip-pipeline/requirements.txt
 
