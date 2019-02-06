@@ -50,7 +50,7 @@ conda:
 
 
   only:
-  - py23
+  - never
 
 pip:
   image: python:3.6
