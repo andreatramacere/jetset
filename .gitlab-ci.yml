@@ -7,31 +7,31 @@ conda:
   image: python:3.6
 
   before_script:
-
-    - chmod +x conda-pipeline/miniconda.sh
-    - exec     conda-pipeline/miniconda.sh
-    # - apt-get install gcc
+    - apt-get update
+    - apt-get install gcc
     - apt-get install swig
+    - chmod +x conda-pipeline/miniconda.sh
+    - ./conda-pipeline/miniconda.sh
+
     #- conda env create -f environment.yaml
     #- source activate myenv
-    - conda install conda-build
-    - conda config --set anaconda_upload no
-    - cd conda
-    - conda build . --output
+
 
   stage:  build
 
   script:
-    - cd conda
+    - conda install conda-build
+    - conda config --set anaconda_upload no
+    - cd conda-pipeline
     - conda build --python=3.7 .
     - conda build --python=3.6 .
     - conda build --python=3.4 .
     - conda build --python=2.7 .
+    - conda build . --output
 
-
-  #artifacts:
-  #  paths:
-  #  - conda/dist
+  artifacts:
+    paths:
+    - /opt/conda/conda-bld/linux-64/
 
 
 
@@ -42,6 +42,7 @@ pip:
   image: python:3.6
 
   before_script:
+  - apt-get update
   - apt-get install gcc
   - apt-get update -q -y
   - apt-get install -y swig
