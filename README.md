@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # jetset
 
 The code is hosted here: https://gitlab.com/andreatramacere/jetset
@@ -133,4 +132,3 @@ Build documentation
  
  
  
->>>>>>> d604a0307f7fb4570356af79e51cebe03a4cd387
