@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ![img](./logo/logo_large.png)
 
 
@@ -126,3 +127,10 @@ Build documentation
  
  
  
+=======
+# jetset
+
+The code is hosted here: https://gitlab.com/andreatramacere/jetset
+
+The documentation here: https://jetset.readthedocs.io/en/latest/
+>>>>>>> 4e79289a1a5884f09a5bc726f765badbf140d02a
