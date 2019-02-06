@@ -14,8 +14,9 @@ conda:
     - apt-get install swig
     #- conda env create -f environment.yaml
     #- source activate myenv
-    #- conda install conda-build
+    - conda install conda-build
     - conda config --set anaconda_upload no
+    - cd conda
     - conda build . --output
 
   stage:  build
@@ -26,11 +27,11 @@ conda:
     - conda build --python=3.6 .
     - conda build --python=3.4 .
     - conda build --python=2.7 .
-    - mv dist
 
-  artifacts:
-    paths:
-    - conda/dist
+
+  #artifacts:
+  #  paths:
+  #  - conda/dist
 
 
 
