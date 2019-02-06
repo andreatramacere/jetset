@@ -4,33 +4,6 @@ stages:
   - deploy
 
 
-condaosx:
-  image: osxcc/osxcc
-
-  before_script:
-    - chmod +x conda-pipeline/miniconda.sh
-    - ./conda-pipeline/miniconda.sh
-
-  stage:  build
-
-    script:
-    - echo $PWD
-    - conda install conda-build
-    - echo $PWD
-    - mkdir dist
-    - mkdir dist/3.7
-    - mkdir dist/3.6
-    - mkdir dist/3.4
-    - mkdir dist/2.7
-    - conda config --set anaconda_upload no
-    #- cd conda-pipeline
-    - echo $PWD
-    - conda build --python=3.7 conda-pipeline
-
-
-  only:
-  - py23
-
 
 conda:
   image: continuumio/miniconda3:latest
