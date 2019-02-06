@@ -28,21 +28,19 @@ conda:
     - mkdir dist/3.4
     - mkdir dist/2.7
     - conda config --set anaconda_upload no
-    - cd conda-pipeline
+    #- cd conda-pipeline
     - echo $PWD
-    - conda build --python=3.7 .
-    - echo $PWD
+    - conda build --python=3.7 conda-pipeline
     - cp /opt/conda/conda-bld/linux-64/jetset* /builds/andreatramacere/jetset/dist/3.7/
-#    - conda build --python=3.6 .
-#    - mkdir dist/3.6
-#    - cp /opt/conda/conda-bld/linux-64/jetset* dist/3.6/
-#    - conda build --python=3.4 .
-#    - mkdir dist/3.4
-#    - cp /opt/conda/conda-bld/linux-64/jetset* dist/3.4/
-#    - conda build --python=2.7 .
-#    - mkdir dist/2.7
-#    - cp /opt/conda/conda-bld/linux-64/jetset* dist/2.7/
-#    - conda build . --output
+    - echo $PWD
+    - conda build --python=3.6 conda-pipeline
+    - cp /opt/conda/conda-bld/linux-64/jetset* /builds/andreatramacere/jetset/dist/3.6/
+    - echo $PWD
+    - conda build --python=3.4 conda-pipeline
+    - cp /opt/conda/conda-bld/linux-64/jetset* /builds/andreatramacere/jetset/dist/3.4/
+    - echo $PWD
+    - conda build --python=2.7 conda-pipeline
+    - cp /opt/conda/conda-bld/linux-64/jetset* /builds/andreatramacere/jetset/dist/2.7/
 
   artifacts:
     paths:
