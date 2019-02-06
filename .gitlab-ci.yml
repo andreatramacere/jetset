@@ -4,14 +4,14 @@ stages:
   - deploy
 
 conda:
-  image: python:3.6
+  image: continuumio/miniconda3:latest
 
   before_script:
     - apt-get update -q -y
     - apt-get install -y  gcc
     - apt-get install -y swig
-    - chmod +x conda-pipeline/miniconda.sh
-    - ./conda-pipeline/miniconda.sh
+    #- chmod +x conda-pipeline/miniconda.sh
+    #- ./conda-pipeline/miniconda.sh
 
     #- conda env create -f environment.yaml
     #- source activate myenv
