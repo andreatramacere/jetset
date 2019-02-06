@@ -1,7 +1,7 @@
 name: myenv
 
 channels:
- - astropu
+ - astropy
  - conda-forge
  - defaults
 

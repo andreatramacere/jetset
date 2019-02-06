@@ -5,14 +5,18 @@ stages:
 
 conda:
   image: continuumio/miniconda3:latest
+
   before_script:
     - conda env create -f environment.yaml
     - conda install conda-build
     - conda config --set anaconda_upload no
+
   stage:  build
+
   script:
     - cd conda
     - conda build --python=3.6 .
+
   only:
   - py23
 
@@ -20,10 +24,14 @@ pip:
   image: python:3.6
 
   before_script:
+  - apt-get update -q -y
+  - apt-get install -y swig
   - pip install -r requirements.txt
 
   stage:  build
+
   script:
   - python setup.py install
+
   only:
   - never
