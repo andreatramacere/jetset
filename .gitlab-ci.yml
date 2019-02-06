@@ -22,8 +22,6 @@ pip:
   before_script:
   - pip install -r requirements.txt
 
-
-
   stage:  build
   script:
   - python setup.py install
