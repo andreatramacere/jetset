@@ -7,7 +7,9 @@ conda:
   image: continuumio/miniconda3:latest
   before_script:
     - conda install conda-build
-    - while read requirement; do conda install --yes $requirement; done < requirements.txt
+    - conda install -c astropy corner
+    - conda install -c astropy emcee
+    #- while read requirement; do conda install --yes $requirement; done < requirements.txt
     - conda config --set anaconda_upload no
   stage:  build
   script:
