@@ -20,14 +20,22 @@ conda:
   stage:  build
 
   script:
+    - mkdir dist
     - cd conda
     - conda build --python=3.7 .
     - conda build --python=3.6 .
     - conda build --python=3.4 .
     - conda build --python=2.7 .
 
+
+  artifacts:
+    paths:
+    - dist
+
+
+
   only:
-  - py23
+  - never
 
 pip:
   image: python:3.6
@@ -39,6 +47,10 @@ pip:
   - pip install -r pip-pipeline/requirements.txt
 
   stage:  build
+
+  artifacts:
+    paths:
+    - dist
 
   script:
   - python setup.py install
