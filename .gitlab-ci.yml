@@ -4,12 +4,12 @@ stages:
   - deploy
 
 conda:
-  image: python:3.6-alpine
+  image: python:3.6
 
   before_script:
 
     - chmod +x conda-pipeline/miniconda.sh
-    - exec conda-pipeline/miniconda.sh
+    - exec     conda-pipeline/miniconda.sh
     # - apt-get install gcc
     - apt-get install swig
     #- conda env create -f environment.yaml
