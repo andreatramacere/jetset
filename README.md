@@ -1,7 +1,7 @@
 ![img](./logo/logo_large.png)
 
 
-A multiwavelenght modeler and fitting tool for the SED of relativistic  astrophysical jets
+A multiwavelenght modeler and fitting framework for the SED of relativistic  astrophysical jets
 
 
 

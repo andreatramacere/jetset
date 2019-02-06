@@ -1,12 +1,17 @@
-pages:
-  stage: deploy
+stages:
+  - build
+  - test
+  - deploy
+
+conda:
+  image: continuumio/miniconda3:latest
+  before_script:
+    - conda install conda-build
+    - conda config --set anaconda_upload no
+  stage:  build
   script:
-  - mkdir .public
-  - cp -r doc_tools/build/* .public/
-  - mv .public public
-  artifacts:
-    paths:
-    - public
+    - cd conda
+    - conda build --python=3.6 .
   only:
-  - master
   - py23
+
