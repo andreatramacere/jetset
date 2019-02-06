@@ -1,0 +1,19 @@
+name: myenv
+
+channels:
+ - astropy
+ - conda-forge
+ - defaults
+
+dependencies:
+ - setuptools
+ - scipy
+ - numpy
+ - astropy
+ - matplotlib
+ - swig
+ - future
+ - iminuit
+ - corner
+ - six
+ - emcee
