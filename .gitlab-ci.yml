@@ -16,18 +16,15 @@ conda:
     - cd conda
     - conda build --python=3.6 .
   only:
-
+  - never
 
 pip:
-  image: python:3.4
+  image: python:3.6
 
   before_script:
-  - export PIP_CACHE_DIR="pip-cache"
   - pip install -r requirements.txt
 
-  cache:
-    paths:
-    - pip-cache
+
 
   stage:  build
   script:
