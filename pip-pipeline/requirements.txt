@@ -3,7 +3,6 @@ scipy
 numpy
 astropy
 matplotlib
-swig
 future
 iminuit
 corner
