@@ -7,16 +7,21 @@ conda:
   image: continuumio/miniconda3:latest
 
   before_script:
-    - conda env create -f environment.yaml
-    - source activate myenv
-    - conda install conda-build
+    - apt-get install gcc
+    - apt-get install swig
+    #- conda env create -f environment.yaml
+    #- source activate myenv
+    #- conda install conda-build
     - conda config --set anaconda_upload no
 
   stage:  build
 
   script:
     - cd conda
+    - conda build --python=3.7 .
     - conda build --python=3.6 .
+    - conda build --python=3.4 .
+    - conda build --python=2.7 .
 
   only:
   - py23
@@ -25,9 +30,10 @@ pip:
   image: python:3.6
 
   before_script:
+  - apt-get install gcc
   - apt-get update -q -y
   - apt-get install -y swig
-  - pip install -r requirements.txt
+  - pip install -r pip-pipeline/requirements.txt
 
   stage:  build
 
@@ -35,4 +41,4 @@ pip:
   - python setup.py install
 
   only:
-  - never
+  - py23

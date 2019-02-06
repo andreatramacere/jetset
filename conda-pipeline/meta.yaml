@@ -3,8 +3,8 @@ package:
   version: "1.0.0"
 
 source:
-  git_url: git@gitlab.com:andreatramacere/jetset.git
-  git_rev: d604a0307f7fb4570356af79e51cebe03a4cd387
+  git_url: https://gitlab.com/andreatramacere/jetset.git
+  git_rev: py23
 
 
 build:
@@ -12,25 +12,26 @@ build:
   preserve_egg_dir: True
 
 requirements:
+
   build:
     - swig
     - python {{PY_VER}}*
      
-
-  run:
-    - python
-    - setuptools
-    - scipy
-    - numpy
-    - astropy
-    - matplotlib
-    - future
-    - iminuit
-    - corner
-    - six
-    - emcee
-         
-    
+#
+#  run:
+#    - python
+#    - setuptools
+#    - scipy
+#    - numpy
+#    - astropy
+#    - matplotlib
+#    - future
+#    - iminuit
+#    - corner
+#    - six
+#    - emcee
+#
+#
 #test:
 #  # Python imports
 #  imports:
