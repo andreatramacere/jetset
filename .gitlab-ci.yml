@@ -29,6 +29,7 @@ conda:
     - mkdir dist/2.7
     - conda config --set anaconda_upload no
     - cd conda-pipeline
+    - echo $PWD
     - conda build --python=3.7 .
     - echo $PWD
     - cp /opt/conda/conda-bld/linux-64/jetset* /builds/andreatramacere/jetset/dist/3.7/
@@ -45,7 +46,7 @@ conda:
 
   artifacts:
     paths:
-    - conda-pipeline/dist
+    - dist
 
 
   only:
