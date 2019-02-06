@@ -7,8 +7,8 @@ conda:
   image: continuumio/miniconda3:latest
   before_script:
     - conda install conda-build
-    - conda install -c astropy corner
-    - conda install -c astropy emcee
+    #- conda install -c astropy corner
+    #- conda install -c astropy emcee
     #- while read requirement; do conda install --yes $requirement; done < requirements.txt
     - conda config --set anaconda_upload no
   stage:  build
@@ -16,5 +16,21 @@ conda:
     - cd conda
     - conda build --python=3.6 .
   only:
-  - py23
 
+
+pip:
+  image: python:3.4
+
+  before_script:
+  - export PIP_CACHE_DIR="pip-cache"
+  - pip install -r requirements.txt
+
+  cache:
+    paths:
+    - pip-cache
+
+  stage:  build
+  script:
+  - python setup.py install
+  only:
+  - py23
