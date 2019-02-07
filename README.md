@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/andreatramacere/jetset.svg?branch=master)](https://travis-ci.com/andreatramacere/jetset)
+
 ![img](./logo/logo_large.png)
 
 
