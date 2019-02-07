@@ -1,3 +1,8 @@
+addons:
+  artifacts:
+    # ...
+    debug: true
+
 branches:
     only:
         - py23
@@ -9,7 +14,7 @@ services:
   - docker
 
 os:
-  - linux
+  #- linux
   - osx
 
 
@@ -49,6 +54,6 @@ deploy:
     - "conda-build/*"
   on:
     tags: False
-    all_branches: True
-
+    #all_branches: True
+    branch: py23
 
