@@ -3,3 +3,4 @@ include LICENSE.rst
 include requirements.txt
 
 include jetkernel_src/include/*
+include jetset/pkg_info.json

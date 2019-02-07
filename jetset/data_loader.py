@@ -56,6 +56,14 @@ class Data(object):
 
     def __init__(self,n_rows=None,data_table=None):
 
+        self._allowed_meta={}
+        self._allowed_meta['z']= None
+        self._allowed_meta['UL_CL'] = None
+        self._allowed_meta['restframe'] = ['obs','src']
+        self._allowed_meta['data_scale'] = ['lin-lin','log-log']
+        self._allowed_meta['obj_name'] = None
+
+
         if data_table is None:
             self._build_empty_table(n_rows)
 
@@ -76,6 +84,20 @@ class Data(object):
 
     def _check_table(self):
         pass
+
+    def set_meta_data(self,m,v):
+        if m not in self._allowed_meta:
+            raise RuntimeError('meta data ',m,'not in allowed',self._allowed_meta.keys())
+
+        if  self._allowed_meta[m] is not None:
+            #print (self._allowed_meta[m])
+            if v not in self._allowed_meta[m]:
+                raise RuntimeError('meta data ', m, 'not in allowed', self._allowed_meta.keys())
+
+
+        self._table.meta[m]=v
+
+
 
     def set_field(self,field,value,unit=None):
 
@@ -398,6 +420,7 @@ class ObsData(object):
         self._log_col_dict['dy'] = 'dnuFnu_data_log'
         self._log_col_dict['T_start'] = 'T_start'
         self._log_col_dict['T_stop'] = 'T_stop'
+        self._log_col_dict['data_set'] = 'data_set'
         self._log_col_dict['UL'] = 'UL'
         
         if self.data_scale=='lin-lin':
@@ -553,7 +576,7 @@ class ObsData(object):
                 if k in self._input_data_table.meta.keys():
                     md_dic[k]=self._input_data_table.meta[k]
                     setattr(self, k, md_dic[k])
-
+                    #print(k,md_dic[k])
         else:
             if name in md_dic.keys():
                 setattr(self, name, val)
