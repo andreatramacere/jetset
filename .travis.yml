@@ -27,9 +27,11 @@ install:
   - bash miniconda.sh -b -p "$HOME"/miniconda
   - source "$HOME"/miniconda/etc/profile.d/conda.sh
   - conda config --set always_yes yes
-  
+  - conda install conda-build
+
 
 script:
+  - conda config --set anaconda_upload no
   - conda build conda-pipeline --python=$BUILD_TARGET
   #- conda activate
   #- python scripts/run_tests.py --format-only
