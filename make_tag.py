@@ -21,10 +21,10 @@ def update_version(version):
 
     with open('jetset/pkg_info.json') as fp:
         _info = json.load(fp)
-        _info[version]
+        _info['version']=version
 
     with open('jetset/pkg_info.json', 'w') as json_file:
-        json.dumps(_info, json_file, default_flow_style=False)
+        json.dump(_info, json_file)
 
 
     with open('jetset/pkg_info.json') as fp:
@@ -41,20 +41,20 @@ def update_version(version):
 
 def do_remote_tag(version):
     l=[]
-    l.append(["git", "tag", "-d %s"%version])
-    l.append(['git', 'push', '--delete origin %s'%version])
-    l.append(['git', 'push', '--delete origin-github %s'%version])
-    l.append(['git', 'tag' '-a %s'%version ,'''-m '%s' '''%version])
-    l.append(['git', 'push', 'origin %s'%version])
-    l.append(['git', 'push', 'origin-github %s' % version])
+    l.append(["git tag  -d %s"%version])
+    l.append(['git push --delete origin %s'%version])
+    l.append(['git push --delete origin-github %s'%version])
+    l.append(['''git tag -a %s  -m '%s' '''%(version,version)])
+    l.append(['git push origin %s'%version])
+    l.append(['git push origin-github %s' % version])
 
+    res = subprocess.call(l[0], shell=True)
+    for  i in l[1::]:
+        try:
+            res = subprocess.call(i, shell=True)
+        except:
+            pass
 
-
-    for c in l:
-        #print (l)
-        res = subprocess.check_output(c)
-        for line in res.splitlines():
-            print (c)
 
 
 def main(argv=None):
@@ -66,7 +66,7 @@ def main(argv=None):
     args = parser.parse_args()
 
 
-    update_version(args.verions)
+    update_version(args.version)
     if args.do_remote_tag==True:
         do_remote_tag(args.version)
 
