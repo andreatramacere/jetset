@@ -16,6 +16,12 @@ import yaml,json
 import sys
 import argparse
 import subprocess
+from collections import OrderedDict
+
+def ordered_dict_representer(self, value):  # can be a lambda if that's what you prefer
+    return self.represent_mapping('tag:yaml.org,2002:map', value.items())
+
+yaml.add_representer(OrderedDict, ordered_dict_representer)
 
 def update_version(version):
 
@@ -31,13 +37,14 @@ def update_version(version):
         _info = json.load(fp)
 
 
-    #with open("conda-pipeline/meta.yaml", 'r') as stream:
-    #    data_loaded = yaml.load(stream)
 
-     #   data_loaded['package']['version']=version
+    with open("conda-pipeline/_template_meta.yaml", 'r') as stream:
+        data_loaded = yaml.load(stream)
 
-    #with open('conda-pipeline/meta.yaml', 'w') as yaml_file:
-    #    yaml.dump(data_loaded, yaml_file, default_flow_style=False)
+        data_loaded['package']['version']=version
+
+    with open('conda-pipeline/meta.yaml', 'w') as yaml_file:
+        yaml.dump(data_loaded, yaml_file, default_flow_style=False)
 
 def do_remote_tag(version):
     l=[]

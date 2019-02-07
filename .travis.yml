@@ -67,7 +67,7 @@ deploy:
   api_key: ${api_key}
   file_glob: true
   file:
-    - "dist.tar.gz"
+    - "dist*.tar.gz"
   on:
     tags: False
     all_branches: True
