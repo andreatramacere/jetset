@@ -47,8 +47,8 @@ deploy:
     file_glob: true
     file:
     - "conda-build/*"
-#    on:
-#      tags: False
-
+    on:
+      tags: False
+      all_branches: true
 
 
