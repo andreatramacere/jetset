@@ -51,7 +51,7 @@ script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then OS_FLAG=Linux; else OS_FLAG=osx-64; fi
   - cp /Users/travis/miniconda/conda-bld/$OS_FLAG/* dist/$BUILD_TARGET
   - ls dist/$BUILD_TARGET
-  - tar -zcvf dist.tar.gz dist/$BUILD_TARGET
+  - tar -zcvf dist_$BUILD_TARGET.tar.gz dist/$BUILD_TARGET
   - ls
 
 
