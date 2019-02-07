@@ -11,5 +11,5 @@ for uploading:
    the project and add the api_key env variable, putting as value the github generated tocken
 OR
 
-6) add the secure to the .travis.yml
+6) add the secure to the .travis.yml (this method did not work see here :https://github.com/travis-ci/travis-ci/issues/9610)
 
