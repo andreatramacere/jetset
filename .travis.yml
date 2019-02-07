@@ -39,14 +39,14 @@ script:
 #after_success:
 #  - codecov
 
-#deploy:
-#  provider: releases
-#  skip_cleanup: true
-#    api_key:
-#      secure: "L9XC6r4Qr02WvBU+Xk795S9X7WyZUD3p6Sr7Mvq7+Sgg1TslxzXcHElTxBdkdg6SR1peru6sKHdT1gUp+Nwwebiv5t2b9WLGpIbxnG92ni5bM1G4EDl/pTSh2RTTv7+Xf7FW06brT1f2XrkQhkxo7qUu4oZ0nMcOaXfhhUZVY0xaKQ2GFsdZKWgx8JAbVBS3g+Ki+VNQZ+QphFA4ZhleVq+0eCrvCQxntclc//0UFVrS5qTvY/L55ZrYEUdQ8YSt6yhGey3APQWMfDmXUIJayxPMdaWXvyj8ypcaA6z9fQcdjPvdKaX6mYm3FB/Kbn09IorB+RcednDnFTnwnOH/UzUzGH02L2jItfiinHiwEc9k5cfpcWnDFW9NZVNq2qYl5UCPOruU2FsAzFJGZJ33pN7iuwFFO/vALJVA4pZzRRENauT9yfKQVdPVZU+XsT28uBIfouLKuyYaTNVA1CiuNnleuS6SCxZnRC3w/mdTil1X4mZXi7iGmG10RxzAwrUhVpuIkAH5P5VB+jErLgK2In2CYdZo7BotihxQn0aiKviv6j+JvyjsmMm1ZLKYiag227WQnOODnOydtIMlvQiSg3rto/pxrSwoOWM7Wkep8r8AALHLkdHIQNiBafToyoymBgPEy1NuSn3wpawUTGC6fh5Hl5W+rz1WXQ9md7gTFqs="
-#    file_glob: true
-#    file:
-#    - "conda-build/*"
+deploy:
+  provider: releases
+  skip_cleanup: true
+    api_key:
+      secure: "L9XC6r4Qr02WvBU+Xk795S9X7WyZUD3p6Sr7Mvq7+Sgg1TslxzXcHElTxBdkdg6SR1peru6sKHdT1gUp+Nwwebiv5t2b9WLGpIbxnG92ni5bM1G4EDl/pTSh2RTTv7+Xf7FW06brT1f2XrkQhkxo7qUu4oZ0nMcOaXfhhUZVY0xaKQ2GFsdZKWgx8JAbVBS3g+Ki+VNQZ+QphFA4ZhleVq+0eCrvCQxntclc//0UFVrS5qTvY/L55ZrYEUdQ8YSt6yhGey3APQWMfDmXUIJayxPMdaWXvyj8ypcaA6z9fQcdjPvdKaX6mYm3FB/Kbn09IorB+RcednDnFTnwnOH/UzUzGH02L2jItfiinHiwEc9k5cfpcWnDFW9NZVNq2qYl5UCPOruU2FsAzFJGZJ33pN7iuwFFO/vALJVA4pZzRRENauT9yfKQVdPVZU+XsT28uBIfouLKuyYaTNVA1CiuNnleuS6SCxZnRC3w/mdTil1X4mZXi7iGmG10RxzAwrUhVpuIkAH5P5VB+jErLgK2In2CYdZo7BotihxQn0aiKviv6j+JvyjsmMm1ZLKYiag227WQnOODnOydtIMlvQiSg3rto/pxrSwoOWM7Wkep8r8AALHLkdHIQNiBafToyoymBgPEy1NuSn3wpawUTGC6fh5Hl5W+rz1WXQ9md7gTFqs="
+    file_glob: true
+    file:
+    - "conda-build/*"
 #    on:
 #      tags: False
 
