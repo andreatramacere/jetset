@@ -1,0 +1,5 @@
+for uploading:
+1) get a token: https://github.com/settings/tokens
+
+
+
