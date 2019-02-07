@@ -1,3 +1,3 @@
 #!/bin/bash
-
-$PYTHON setup.py install 
+echo '>>>>>>>>>>>>>>>>>>>',$PWD
+#$PYTHON setup.py install

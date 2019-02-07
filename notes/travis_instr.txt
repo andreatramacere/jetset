@@ -1,0 +1,16 @@
+Info from here:
+https://stackoverflow.com/questions/12343452/how-to-publish-artifacts-in-travis-ci
+
+for uploading:
+1) get a token: https://github.com/settings/tokens
+2) save tocken to a file
+3) travis encrypt tockenfile
+4) rm tockenfile
+
+
+5) add the tocken to the travis website, going to the setting of
+   the project and add the api_key env variable, putting as value the github generated tocken
+OR
+
+6) add the secure to the .travis.yml (this method did not work see here :https://github.com/travis-ci/travis-ci/issues/9610)
+
