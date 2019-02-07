@@ -3,18 +3,23 @@ about:
   license: BSD-3
   license_family: BSD
   summary: ''
+
 build:
   preserve_egg_dir: true
+
 extra:
   recipe-maintainers:
   - andreatramacere
+
 package:
   name: jetset
   version: 1.0.2b0
+
 requirements:
   build:
   - swig
   - python {{PY_VER}}*
+
 source:
   git_rev: py23
   git_url: https://github.com/andreatramacere/jetset.git
