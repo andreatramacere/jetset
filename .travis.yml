@@ -49,6 +49,6 @@ deploy:
     - "conda-build/*"
   on:
     tags: False
-    all_branches: False
+    all_branches: True
 
 

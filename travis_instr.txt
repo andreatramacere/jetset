@@ -5,7 +5,11 @@ for uploading:
 2) save tocken to a file
 3) travis encrypt tockenfile
 4) rm tockenfile
+
+
 5) add the tocken to the travis website, going to the setting of
    the project and add the api_key env variable, putting as value the github generated tocken
-6) add the sucure to the .travis.yml
+OR
+
+6) add the secure to the .travis.yml
 
