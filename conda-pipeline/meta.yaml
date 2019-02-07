@@ -1,6 +1,6 @@
 package:
   name: jetset
-  version: "1.0.2b0"
+  version: "1.0.0"
 
 source:
   git_url: https://github.com/andreatramacere/jetset.git
