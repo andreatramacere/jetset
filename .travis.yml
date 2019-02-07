@@ -69,7 +69,7 @@ deploy:
   file:
     - "dist.tar.gz"
   on:
-    tags: True
+    tags: False
     all_branches: True
     #branch: py23
 
