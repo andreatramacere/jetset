@@ -1,20 +1,77 @@
-about:
-  home: https://gitlab.com/andreatramacere/jetset,ttps://github.com/andreatramacere/jetset
-  license: BSD-3
-  license_family: BSD
-  summary: ''
-build:
-  preserve_egg_dir: true
-extra:
-  recipe-maintainers:
-  - andreatramacere
 package:
   name: jetset
-  version: 1.0.2a9
-requirements:
-  build:
-  - swig
-  - python {{PY_VER}}*
+  version: "1.0.2b0"
+
 source:
+  git_url: https://github.com/andreatramacere/jetset.git
   git_rev: py23
-  git_url: https://gitlab.com/andreatramacere/jetset.git
+
+
+build:
+  # noarch_python: True
+  preserve_egg_dir: True
+
+requirements:
+
+  build:
+    - swig
+    - python {{PY_VER}}*
+     
+#
+#  run:
+#    - python
+#    - setuptools
+#    - scipy
+#    - numpy
+#    - astropy
+#    - matplotlib
+#    - future
+#    - iminuit
+#    - corner
+#    - six
+#    - emcee
+#
+#
+#test:
+#  # Python imports
+#  imports:
+#    - MDAnalysis
+#    - MDAnalysis.analysis
+#    - MDAnalysis.analysis.hbonds
+#    - MDAnalysis.coordinates
+#    - MDAnalysis.coordinates.pdb
+#    - MDAnalysis.core
+#    - MDAnalysis.lib
+#    - MDAnalysis.lib.formats
+#    - MDAnalysis.migration
+#    - MDAnalysis.migration.fixes
+#    - MDAnalysis.selections
+#    - MDAnalysis.tests
+#    - MDAnalysis.topology
+#    - MDAnalysis.topology.tpr
+#    - MDAnalysis.visualization
+#
+#  # commands:
+#    # You can put test commands to be run here.  Use this to test that the
+#    # entry points work.
+#
+#
+#  # You can also put a file called run_test.py in the recipe that will be run
+#  # at test time.
+#
+#  requires:
+#    - nose >=1.3.7
+#    # Put any additional test requirements here.  For example
+#    # - nose
+
+
+
+about:
+  home: https://github.com/andreatramacere/jetset
+  license: BSD-3
+  summary: ''
+  license_family: BSD
+
+extra:
+  recipe-maintainers:
+    - andreatramacere

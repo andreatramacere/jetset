@@ -31,13 +31,13 @@ def update_version(version):
         _info = json.load(fp)
 
 
-    with open("conda-pipeline/meta.yaml", 'r') as stream:
-        data_loaded = yaml.load(stream)
+    #with open("conda-pipeline/meta.yaml", 'r') as stream:
+    #    data_loaded = yaml.load(stream)
 
-        data_loaded['package']['version']=version
+     #   data_loaded['package']['version']=version
 
-    with open('conda-pipeline/meta.yaml', 'w') as yaml_file:
-        yaml.dump(data_loaded, yaml_file, default_flow_style=False)
+    #with open('conda-pipeline/meta.yaml', 'w') as yaml_file:
+    #    yaml.dump(data_loaded, yaml_file, default_flow_style=False)
 
 def do_remote_tag(version):
     l=[]
