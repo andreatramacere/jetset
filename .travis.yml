@@ -42,13 +42,13 @@ script:
 deploy:
   provider: releases
   skip_cleanup: true
-  api_key:  ${api_key}
-  secure: "Gcw1TPL2E5gVKJTGbKkIob+zP6sRIEDniVO1Xdekt1V2wUHW9Kh1UDOAJ8c+mPEjiesqVS/NhRmbVVEREF0HQKLQueNWsyrXi+t9//ezbSDAkUH8NldNf2eYkBX6U2rUJuUpKJt+qylJOw/IHODMDCP+Md/9r64STOi04I77D/v+/iqEkve0PwrBquR9TYbm8i3h3MAdBIKcsNznwKbnbyxmku2J6tvBT5HZEsfot/uMZQhjhrKDaULKrVKV6XF0J7VD/AKkdEfI7htAveYJ/FA2P8t5B6B3Wc4BbgnlxxADtaVXHKFiJwkFU8QmV/dF/aTRANiydJyDWCYlbqZnl9fT+hV74DnxXw+o3SPckMbuQZjfxTa+0XeVOLI9RgoLN0WRLiYWyo5W02OHdOkI48/Yv6Z0MOlsQpTQYspbTSACtImW1l0198uAV0vjg00DxQYRuvgCKZ3rnV21BOLPGW2HETtN8bAegZzU1CWaN5YuPe/QvmheBXNJbAdRZ8dpOL/ohFt7NQjxbPIp41C2KjAut5T3q2PjXNl2YQnB9EKV5tyRX5eIpZjcq0i9vFSQDSQZu7E7q2NZZTaw0wZjSdTLyhj5SSFExyS7mMmt4TX1lgS52lWy7/piEkY0Jm4eEeN3XKkKwqTGofbpjeg8RxKBvZrHyW4b+clPpYYn7OE="
+  api_key:
+    secure: "Gcw1TPL2E5gVKJTGbKkIob+zP6sRIEDniVO1Xdekt1V2wUHW9Kh1UDOAJ8c+mPEjiesqVS/NhRmbVVEREF0HQKLQueNWsyrXi+t9//ezbSDAkUH8NldNf2eYkBX6U2rUJuUpKJt+qylJOw/IHODMDCP+Md/9r64STOi04I77D/v+/iqEkve0PwrBquR9TYbm8i3h3MAdBIKcsNznwKbnbyxmku2J6tvBT5HZEsfot/uMZQhjhrKDaULKrVKV6XF0J7VD/AKkdEfI7htAveYJ/FA2P8t5B6B3Wc4BbgnlxxADtaVXHKFiJwkFU8QmV/dF/aTRANiydJyDWCYlbqZnl9fT+hV74DnxXw+o3SPckMbuQZjfxTa+0XeVOLI9RgoLN0WRLiYWyo5W02OHdOkI48/Yv6Z0MOlsQpTQYspbTSACtImW1l0198uAV0vjg00DxQYRuvgCKZ3rnV21BOLPGW2HETtN8bAegZzU1CWaN5YuPe/QvmheBXNJbAdRZ8dpOL/ohFt7NQjxbPIp41C2KjAut5T3q2PjXNl2YQnB9EKV5tyRX5eIpZjcq0i9vFSQDSQZu7E7q2NZZTaw0wZjSdTLyhj5SSFExyS7mMmt4TX1lgS52lWy7/piEkY0Jm4eEeN3XKkKwqTGofbpjeg8RxKBvZrHyW4b+clPpYYn7OE="
   file_glob: true
   file:
     - "conda-build/*"
   on:
     tags: False
-    all_branches: true
+    all_branches: False
 
 
