@@ -1,5 +1,6 @@
+Info from here:
 https://stackoverflow.com/questions/12343452/how-to-publish-artifacts-in-travis-ci
-https://github.com/settings/tokens
+
 for uploading:
 1) get a token: https://github.com/settings/tokens
 2) save tocken to a file

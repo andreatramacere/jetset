@@ -70,7 +70,7 @@ deploy:
   file:
     - "dist.tar.gz"
   on:
-    tags: True
-    #all_branches: True
-    branch: py23
+    tags: False
+    all_branches: True
+    #branch: py23
 
