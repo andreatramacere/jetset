@@ -2,6 +2,7 @@
 *.py[cod]
 /doc/out.txt
 /doc/err.txt
+/doc/build
 /.idea
 /.DS_Store
 *.egg-info
