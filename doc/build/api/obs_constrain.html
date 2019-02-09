@@ -2,24 +2,18 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>jetset.obs_constrain Module &#8212; jetset 1.0.a documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.0.a',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -33,8 +27,7 @@
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
     <div class="container">
@@ -71,9 +64,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 </ul>
@@ -186,9 +179,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 </ul>
@@ -327,7 +320,7 @@ the model parmateres starting from the SED shape</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.ObsConstrain.html#jetset.obs_constrain.ObsConstrain" title="jetset.obs_constrain.ObsConstrain"><code class="xref py py-obj docutils literal"><span class="pre">ObsConstrain</span></code></a>([B_range,&nbsp;distr_e,&nbsp;t_var_sec,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.ObsConstrain.html#jetset.obs_constrain.ObsConstrain" title="jetset.obs_constrain.ObsConstrain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObsConstrain</span></code></a>([B_range,&nbsp;distr_e,&nbsp;t_var_sec,&nbsp;…])</td>
 <td>doc</td>
 </tr>
 </tbody>
@@ -345,58 +338,58 @@ the model parmateres starting from the SED shape</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.check_boundaries.html#jetset.obs_constrain.check_boundaries" title="jetset.obs_constrain.check_boundaries"><code class="xref py py-obj docutils literal"><span class="pre">check_boundaries</span></code></a>(val,&nbsp;val_min,&nbsp;val_max,&nbsp;val_name)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.check_boundaries.html#jetset.obs_constrain.check_boundaries" title="jetset.obs_constrain.check_boundaries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_boundaries</span></code></a>(val,&nbsp;val_min,&nbsp;val_max,&nbsp;val_name)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.check_gamma_tansp.html#jetset.obs_constrain.check_gamma_tansp" title="jetset.obs_constrain.check_gamma_tansp"><code class="xref py py-obj docutils literal"><span class="pre">check_gamma_tansp</span></code></a>(jet,&nbsp;beaming_val,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.check_gamma_tansp.html#jetset.obs_constrain.check_gamma_tansp" title="jetset.obs_constrain.check_gamma_tansp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_gamma_tansp</span></code></a>(jet,&nbsp;beaming_val,&nbsp;…)</td>
 <td>retrun tau_gamma_gamma for a given  IC frequency</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.check_t_var.html#jetset.obs_constrain.check_t_var" title="jetset.obs_constrain.check_t_var"><code class="xref py py-obj docutils literal"><span class="pre">check_t_var</span></code></a>(R,&nbsp;beaming,&nbsp;z)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.check_t_var.html#jetset.obs_constrain.check_t_var" title="jetset.obs_constrain.check_t_var"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_t_var</span></code></a>(R,&nbsp;beaming,&nbsp;z)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.constr_B_from_nu_peaks.html#jetset.obs_constrain.constr_B_from_nu_peaks" title="jetset.obs_constrain.constr_B_from_nu_peaks"><code class="xref py py-obj docutils literal"><span class="pre">constr_B_from_nu_peaks</span></code></a>(jet,&nbsp;nu_p_S,&nbsp;nu_p_IC,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.constr_B_from_nu_peaks.html#jetset.obs_constrain.constr_B_from_nu_peaks" title="jetset.obs_constrain.constr_B_from_nu_peaks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constr_B_from_nu_peaks</span></code></a>(jet,&nbsp;nu_p_S,&nbsp;nu_p_IC,&nbsp;…)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.constr_R_from_CD.html#jetset.obs_constrain.constr_R_from_CD" title="jetset.obs_constrain.constr_R_from_CD"><code class="xref py py-obj docutils literal"><span class="pre">constr_R_from_CD</span></code></a>(jet,&nbsp;nuFnu_p_S,&nbsp;nuFnu_p_IC,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.constr_R_from_CD.html#jetset.obs_constrain.constr_R_from_CD" title="jetset.obs_constrain.constr_R_from_CD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">constr_R_from_CD</span></code></a>(jet,&nbsp;nuFnu_p_S,&nbsp;nuFnu_p_IC,&nbsp;…)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.find_B_from_nu_p_S.html#jetset.obs_constrain.find_B_from_nu_p_S" title="jetset.obs_constrain.find_B_from_nu_p_S"><code class="xref py py-obj docutils literal"><span class="pre">find_B_from_nu_p_S</span></code></a>(nu_p_S,&nbsp;gamma_3p,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.find_B_from_nu_p_S.html#jetset.obs_constrain.find_B_from_nu_p_S" title="jetset.obs_constrain.find_B_from_nu_p_S"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_B_from_nu_p_S</span></code></a>(nu_p_S,&nbsp;gamma_3p,&nbsp;…)</td>
 <td>returns B according to Ep_S and gamma_3p</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.find_gamma0.html#jetset.obs_constrain.find_gamma0" title="jetset.obs_constrain.find_gamma0"><code class="xref py py-obj docutils literal"><span class="pre">find_gamma0</span></code></a>(r,&nbsp;s,&nbsp;gamma_3p)</td>
-<td>returns the value of gamma_0  for</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.find_gamma0.html#jetset.obs_constrain.find_gamma0" title="jetset.obs_constrain.find_gamma0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_gamma0</span></code></a>(r,&nbsp;s,&nbsp;gamma_3p)</td>
+<td>returns the value of gamma_0  for a log_par+pl distribution</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.find_gamma_3p_SSC.html#jetset.obs_constrain.find_gamma_3p_SSC" title="jetset.obs_constrain.find_gamma_3p_SSC"><code class="xref py py-obj docutils literal"><span class="pre">find_gamma_3p_SSC</span></code></a>(nu_p_S,&nbsp;nu_p_IC,&nbsp;…[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.find_gamma_3p_SSC.html#jetset.obs_constrain.find_gamma_3p_SSC" title="jetset.obs_constrain.find_gamma_3p_SSC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_gamma_3p_SSC</span></code></a>(nu_p_S,&nbsp;nu_p_IC,&nbsp;…[,&nbsp;…])</td>
 <td>returns the value of gamma_3p from nu_p_S/nu_p_IC</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.find_gamma_Synch.html#jetset.obs_constrain.find_gamma_Synch" title="jetset.obs_constrain.find_gamma_Synch"><code class="xref py py-obj docutils literal"><span class="pre">find_gamma_Synch</span></code></a>(nu_S,&nbsp;rest_frame,&nbsp;B,&nbsp;beaming,&nbsp;z)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.find_gamma_Synch.html#jetset.obs_constrain.find_gamma_Synch" title="jetset.obs_constrain.find_gamma_Synch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_gamma_Synch</span></code></a>(nu_S,&nbsp;rest_frame,&nbsp;B,&nbsp;beaming,&nbsp;z)</td>
 <td>returns the value of gamma corresponding to the  Synch freq</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.find_HE_cut_off.html#jetset.obs_constrain.find_HE_cut_off" title="jetset.obs_constrain.find_HE_cut_off"><code class="xref py py-obj docutils literal"><span class="pre">find_HE_cut_off</span></code></a>(distr_e,&nbsp;nu_S_max,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.find_HE_cut_off.html#jetset.obs_constrain.find_HE_cut_off" title="jetset.obs_constrain.find_HE_cut_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_HE_cut_off</span></code></a>(distr_e,&nbsp;nu_S_max,&nbsp;…)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.find_s.html#jetset.obs_constrain.find_s" title="jetset.obs_constrain.find_s"><code class="xref py py-obj docutils literal"><span class="pre">find_s</span></code></a>(class_obj,&nbsp;nu_p_S_obs,&nbsp;S_LE_slope,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.find_s.html#jetset.obs_constrain.find_s" title="jetset.obs_constrain.find_s"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_s</span></code></a>(class_obj,&nbsp;nu_p_S_obs,&nbsp;S_LE_slope,&nbsp;…)</td>
 <td>Find the index of the low-energy PL branch of n(gamma), from PL fit over various instrument bands</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.find_s1.html#jetset.obs_constrain.find_s1" title="jetset.obs_constrain.find_s1"><code class="xref py py-obj docutils literal"><span class="pre">find_s1</span></code></a>(class_obj,&nbsp;indices)</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.find_s1.html#jetset.obs_constrain.find_s1" title="jetset.obs_constrain.find_s1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_s1</span></code></a>(class_obj,&nbsp;indices)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.find_turn_over.html#jetset.obs_constrain.find_turn_over" title="jetset.obs_constrain.find_turn_over"><code class="xref py py-obj docutils literal"><span class="pre">find_turn_over</span></code></a>(jet,&nbsp;distr_e,&nbsp;gamma_3p)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.find_turn_over.html#jetset.obs_constrain.find_turn_over" title="jetset.obs_constrain.find_turn_over"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_turn_over</span></code></a>(jet,&nbsp;distr_e,&nbsp;gamma_3p)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.get_Comp_factor.html#jetset.obs_constrain.get_Comp_factor" title="jetset.obs_constrain.get_Comp_factor"><code class="xref py py-obj docutils literal"><span class="pre">get_Comp_factor</span></code></a>(gamma,&nbsp;nu_p_S_blob)</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.get_Comp_factor.html#jetset.obs_constrain.get_Comp_factor" title="jetset.obs_constrain.get_Comp_factor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_Comp_factor</span></code></a>(gamma,&nbsp;nu_p_S_blob)</td>
 <td>returns the compton factor = nu_blob_seed_Synch*hplanck/(mec2)</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.get_R_tvar.html#jetset.obs_constrain.get_R_tvar" title="jetset.obs_constrain.get_R_tvar"><code class="xref py py-obj docutils literal"><span class="pre">get_R_tvar</span></code></a>(beaming,&nbsp;t_var_sec,&nbsp;z)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.get_R_tvar.html#jetset.obs_constrain.get_R_tvar" title="jetset.obs_constrain.get_R_tvar"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_R_tvar</span></code></a>(beaming,&nbsp;t_var_sec,&nbsp;z)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.get_U_Sync_from_Ph.html#jetset.obs_constrain.get_U_Sync_from_Ph" title="jetset.obs_constrain.get_U_Sync_from_Ph"><code class="xref py py-obj docutils literal"><span class="pre">get_U_Sync_from_Ph</span></code></a>(jet[,&nbsp;re_eval_sync])</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.get_U_Sync_from_Ph.html#jetset.obs_constrain.get_U_Sync_from_Ph" title="jetset.obs_constrain.get_U_Sync_from_Ph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_U_Sync_from_Ph</span></code></a>(jet[,&nbsp;re_eval_sync])</td>
 <td>returns U_synch by integrating Synch photon spectrum</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.rescale_Ne.html#jetset.obs_constrain.rescale_Ne" title="jetset.obs_constrain.rescale_Ne"><code class="xref py py-obj docutils literal"><span class="pre">rescale_Ne</span></code></a>(jet,&nbsp;Lp_S,&nbsp;rest_frame)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.rescale_Ne.html#jetset.obs_constrain.rescale_Ne" title="jetset.obs_constrain.rescale_Ne"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rescale_Ne</span></code></a>(jet,&nbsp;Lp_S,&nbsp;rest_frame)</td>
 <td>Rescales N.blob to get the wanted Lp_S_blob</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.set_gmin_from_nu_cut_IR.html#jetset.obs_constrain.set_gmin_from_nu_cut_IR" title="jetset.obs_constrain.set_gmin_from_nu_cut_IR"><code class="xref py py-obj docutils literal"><span class="pre">set_gmin_from_nu_cut_IR</span></code></a>(nu_cut_IR,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.obs_constrain.set_gmin_from_nu_cut_IR.html#jetset.obs_constrain.set_gmin_from_nu_cut_IR" title="jetset.obs_constrain.set_gmin_from_nu_cut_IR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_gmin_from_nu_cut_IR</span></code></a>(nu_cut_IR,&nbsp;…)</td>
 <td></td>
 </tr>
 </tbody>
@@ -410,7 +403,7 @@ the model parmateres starting from the SED shape</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.ObsConstrain.html#jetset.obs_constrain.ObsConstrain" title="jetset.obs_constrain.ObsConstrain"><code class="xref py py-obj docutils literal"><span class="pre">ObsConstrain</span></code></a>([B_range,&nbsp;distr_e,&nbsp;t_var_sec,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.obs_constrain.ObsConstrain.html#jetset.obs_constrain.ObsConstrain" title="jetset.obs_constrain.ObsConstrain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObsConstrain</span></code></a>([B_range,&nbsp;distr_e,&nbsp;t_var_sec,&nbsp;…])</td>
 <td>doc</td>
 </tr>
 </tbody>
@@ -418,11 +411,10 @@ the model parmateres starting from the SED shape</p>
 </div>
 <div class="section" id="class-inheritance-diagram">
 <h2>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this headline">¶</a></h2>
-<img src="../_images/inheritance-f90cf1c7f248d4378382f8a22dc0720f1829cac6.png" alt="Inheritance diagram of jetset.obs_constrain.ObsConstrain" usemap="#inheritance10775bdcb2" class="inheritance"/>
+<div class="graphviz"><img src="../_images/inheritance-f90cf1c7f248d4378382f8a22dc0720f1829cac6.png" alt="Inheritance diagram of jetset.obs_constrain.ObsConstrain" usemap="#inheritance10775bdcb2" class="inheritance graphviz" /></div>
 <map id="inheritance10775bdcb2" name="inheritance10775bdcb2">
 <area shape="rect" id="node1" href="jetset.obs_constrain.ObsConstrain.html#jetset.obs_constrain.ObsConstrain" target="_top" title="doc" alt="" coords="5,5,109,30"/>
-</map>
-</div>
+</map></div>
 </div>
 
 
@@ -438,7 +430,7 @@ the model parmateres starting from the SED shape</p>
     </p>
     <p>
         &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>

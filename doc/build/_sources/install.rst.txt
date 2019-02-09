@@ -29,7 +29,11 @@ Download the JeTseT code
 
 Get the source code from:
 
-https://gitlab.com/andrea.tramacere/jetset/-/archive/stable/jetset-stable.tar.gz
+    https://gitlab.com/andreatramacere/jetset/-/archive/stable/jetset-stable.tar.gz
+
+or
+
+    https://github.com/andreatramacere/jetset/archive/stable.tar.gz
 
 Uncompress the  archive
 

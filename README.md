@@ -39,22 +39,22 @@ All the dependencies can be installed following the Anaconda method
 
 # Download the JetSeT code
    - Get the source code from: 
-     - https://gitlab.com/andrea.tramacere/jetset/-/archive/stable/jetset-stable.tar.gz
-   - Uncompress the  archive  `jetset-stable.tar.gz`
-   - cd to  the dir `jetset-stable`
+     - https://gitlab.com/andreatramacere/jetset/-/archive/stable/jetset-stable.tar.gz
 
-# Installation using Anaconda (suggested method)
- - I strongly encourage to use anaconda and python3
-   - https://www.anaconda.com/download/
+     OR
 
- - #### Download the JetSeT code
-   - Get the source code from: 
-     - https://gitlab.com/andrea.tramacere/jetset/-/archive/stable/jetset-stable.tar.gz
-   - Uncompress the  archive  `jetset-stable.tar.gz`
-   - cd to  the dir `jetset-stable`
+     - https://github.com/andreatramacere/jetset/archive/stable.tar.gz
+     
+ 
+### Installation using Anaconda (suggested method)
+ - I suggest to use anaconda and python3
+ - https://www.anaconda.com/download/
+ 
+ - Uncompress the  archive  `jetset-stable.tar.gz`
+ - cd to  the dir `jetset-stable`
 
 
- - #### Install requirements 
+ - ##### Install requirements 
   
     * Linux/MAC : run on the command line
         - `while read requirement; do conda install --yes $requirement; done < requirements.txt`
@@ -62,7 +62,7 @@ All the dependencies can be installed following the Anaconda method
     * Windows   : run on the command line
         - ` FOR /F "delims=~" %f in (requirements.txt) DO conda install --yes "%f"`
 
- - #### Install JetSeT: 
+ - ##### Install JetSeT: 
    run on the command line: 
      * `python setup.py clean`
      * `python setup.py install`
@@ -70,9 +70,9 @@ All the dependencies can be installed following the Anaconda method
 **run all the examples outside of the installation dir**
 
 ---------
-# Installation using PIP 
-
- - #### Install requirements 
+### Installation using PIP 
+ - cd to  the dir `jetset-stable`
+ - ##### Install requirements 
     - run on the command line: `pip install -r requirements.txt `
     - install SWIG following one of the following methods:
         - SWIG (http://www.swig.org/)
@@ -90,7 +90,7 @@ All the dependencies can be installed following the Anaconda method
             - `brew install swig`
      
 
-- #### Install JetSeT: 
+- ##### Install JetSeT: 
    run on the command line: 
      * `python setup.py clean`
      * `python setup.py install`
@@ -101,20 +101,21 @@ All the dependencies can be installed following the Anaconda method
 
 
 
---------------------------------------------------------------
+# jetset code repoistory
 
-You can skip the following if your installation was successful
+The code is hosted here: 
+ - https://gitlab.com/andreatramacere/jetset
+ 
+ OR
+ 
+ -  https://github.com/andreatramacere/jetset
+ 
 
 
---------------------------------------------------------------
 
- Jupyter lab
---------------------
-if you ecounter problem with jupyter not running interactive plot
-"jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-matplotlib"
 
-Build documentation
--------------------
+# Build documentation
+
  requires: 
     
  - sphinx
@@ -122,15 +123,9 @@ Build documentation
  - sphinx-pyreverse: "https://github.com/alendit/sphinx-pyreverse"
  - nbsphinx: "conda install -c conda-forge nbsphinx"
  - sphinx_rtd_theme: conda install -c anaconda sphinx_rtd_theme 
- - sphinx-better-theme: 'https://github.com/irskep/sphinx-better-theme' 
  - sphinx-bootstrap-theme: 'https://github.com/ryan-roemer/sphinx-bootstrap-theme'
  - sphinx automod: 'https://github.com/astropy/sphinx-automodapi'    
  
  
  
-=======
-# jetset
 
-The code is hosted here: https://gitlab.com/andreatramacere/jetset
-
-The documentation here: https://jetset.readthedocs.io/en/latest/

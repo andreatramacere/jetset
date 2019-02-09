@@ -332,7 +332,7 @@ class Template(Model):
             if loglog == False:
                 nu = np.power(10,nu)
 
-        print(nu)
+        #print(nu)
         if loglog==False:
             log_nu=log10(nu)
 
@@ -351,7 +351,7 @@ class Template(Model):
             
             self.SED.fill(nu=lin_nu, nuFnu=model)
             #print nu.size,nu
-        print(model[model>1E-20])
+        #print(model[model>1E-20])
         if get_model==True:
             if loglog==False:
             

@@ -42,9 +42,10 @@ __author__ = "Andrea Tramacere"
 import numpy as np
 from .cosmo_tools import Cosmo
 #from poly_fit import filter_interval
-from astropy.table  import  Table
+from astropy.table  import  Table,Column
 from astropy import  units as u
 from astropy.units import cds
+from .plot_sedfit import PlotSED
 
 from .output import section_separator
 import os
@@ -63,6 +64,10 @@ class Data(object):
         self._allowed_meta['data_scale'] = ['lin-lin','log-log']
         self._allowed_meta['obj_name'] = None
 
+        self._names = ['x', 'dx', 'y', 'dy', 'T_start', 'T_stop', 'UL', 'data_set']
+        self._dt = ('f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'bool', 'S16')
+        self._units = [u.Hz, (u.erg / (u.cm ** 2 * u.s)), u.Hz, (u.erg / (u.cm ** 2 * u.s)), cds.MJD, cds.MJD, None, None]
+
 
         if data_table is None:
             self._build_empty_table(n_rows)
@@ -70,20 +75,40 @@ class Data(object):
         else:
             self._load_data(data_table)
 
+
+
+
     @property
     def table(self):
         return self._table
 
-    def _load_data(self,data_table):
+    @property
+    def metadata(self):
+        return self._table.meta
+
+    @classmethod
+    def from_file(cls,data_table,format='ascii.ecsv'):
+        cls(data_table=data_table,format=format)
+        return cls
+
+    @classmethod
+    def save_file(cls, name, format='ascii.ecsv'):
+        Table.write(name=name,format=format)
+
+    def _load_data(self,data_table,format='ascii.ecsv'):
         if isinstance(data_table, Table):
             self._table = data_table
         else:
-            self._table = Table.read(data_table, format='ascii.ecsv')
+            self._table = Table.read(data_table, format=format)
 
         self._check_table()
 
     def _check_table(self):
-        pass
+        for ID,_cn in enumerate(self._names):
+            if _cn not in self._table.colnames:
+                self._table.add_column(index=ID,col=Column(name=_cn,dtype=self._dt[ID],unit=self._units[ID],data=np.zeros(len(self._table))))
+
+
 
     def set_meta_data(self,m,v):
         if m not in self._allowed_meta:
@@ -111,14 +136,12 @@ class Data(object):
 
     def _build_empty_table(self,n_rows):
 
-        names=['x', 'dx', 'y', 'dy', 'T_start', 'T_stop', 'UL','data_set']
-        dt=('f8','f8','f8','f8','f8','f8','bool','S16')
-        units=[u.Hz,(u.erg / (u.cm ** 2 * u.s)),u.Hz,(u.erg / (u.cm ** 2 * u.s)),cds.MJD,cds.MJD,None,None]
-        self._table = Table(np.zeros((n_rows, len(names))), names=names, dtype=dt)
+
+        self._table = Table(np.zeros((n_rows, len(self._names))), names=self._names, dtype=self._dt)
         for ID,c in enumerate(self._table.columns):
-            if units[ID] is not None:
+            if self._units[ID] is not None:
                 #print(ID,c, units[ID])
-                self._table[c]*=units[ID]
+                self._table[c]*=self._units[ID]
 
         self._table.meta['z'] = 0
         self._table.meta['UL_CL'] = 0.95
@@ -223,33 +246,10 @@ class ObsData(object):
     to the ``restframe`` and ``data_scale`` values.
     
       
-    
-    **Examples**
+
     
 
-    The following lines shows and example of how to embed **meta-data** in the header of the SED data file,
-    just adding in the header of the file a line starting with ``#`` and followed by the 
-    indetifier ``md``, the meta-data name and value :
-    
-    .. literalinclude:: ../../../BlazarSEDFit/test_data/SEDs_data/SED_MW_Mrk421.dat 
-       :lines: 1-20
-        
-    
-    Assuming that the data file path has been stored in ``SED_file=/path/to/file/file.txt``,
-    the data can be imported as follows:
-    
-    .. code::
-    
-        from BlazarSEDFit.data_loader import ObsData
-        mySEDdata=ObsData(_input_data_table=SED_file)
-    
-    that is completely equivalent to:
-    
-    .. code::
-    
-        mySEDdata=ObsData(_input_data_table=SED_file,col_types='x,y,dy,data_set',z=0.0308,data_scale='lin-lin')
-        
-    
+
     
     """
     
@@ -291,59 +291,65 @@ class ObsData(object):
         else:
             _t=data_table
 
+        self._input_data_table=None
         if isinstance(_t,Table):
             self._input_data_table = _t
         else:
             raise RuntimeError('table is not an astropy Table')
 
-        self.set_md_from_data_table()
-        
-        #------------------------------
-        #builds a dictionary to bounds
-        #keyword to class members
-        #and to set allowed values
-        #------------------------------
-        allowed_keywords={'z':None}
-        allowed_keywords['obj_name']=None
-        allowed_keywords['restframe']=['obs','src']
-        allowed_keywords['data_scale']=['lin-lin','log-log']
-        allowed_keywords['UL_CL']=None
-        allowed_keywords['col_types']=None
-        allowed_keywords['col_nums']=None
-        _skip=['data_table','n_rows']
-        #loops over keywords
-        #and set values
-        #values overwrite values from file metadata
-        keys = sorted(keywords.keys())
-        #print keys
-
-        for kw in keys:
-            if kw not in _skip:
-                if kw in  allowed_keywords.keys():
-
-                    if allowed_keywords[kw] is not None:
-                        #check that the kyword value is correct
-                        if keywords[kw] not in allowed_keywords[kw]:
-                            print ("keyword=%s, has wrong value=%s, allowed are %s"%(kw,keywords[kw], allowed_keywords[kw]))
-                            raise ValueError
+        self.allowed_keywords = {'z': None}
+        self.allowed_keywords['obj_name'] = None
+        self.allowed_keywords['restframe'] = ['obs', 'src']
+        self.allowed_keywords['data_scale'] = ['lin-lin', 'log-log']
+        self.allowed_keywords['file_name'] = None
+        self.allowed_keywords['UL_CL'] = None
+        self.allowed_keywords['col_types'] = None
+        self.allowed_keywords['col_nums'] = None
 
 
-                    setattr(self,kw,keywords[kw])
+        _skip = ['data_table', 'n_rows']
 
-                else:
+        if self._input_data_table is not None:
+            self._set_kw(self._input_data_table.meta)
 
-                    print ("wrong keyword=%s, not in%s "%(kw, allowed_keywords.keys()))
-
-                    raise ValueError
-
-
-
-
-        #print(section_separator)
+        self._set_kw(keywords,_skip)
 
         self._build_data(dupl_filter=dupl_filter)
 
+    def _set_kw(self,keywords,skip=[]):
+        keys = sorted(keywords.keys())
+        # print keys
 
+        for kw in keys:
+            if kw not in skip:
+                if kw in self.allowed_keywords.keys():
+
+                    if self.allowed_keywords[kw] is not None:
+                        # check that the kyword value is correct
+                        if keywords[kw] not in self.allowed_keywords[kw]:
+                            print("keyword=%s, has wrong value=%s, allowed are %s" % (
+                            kw, keywords[kw], self.allowed_keywords[kw]))
+                            raise ValueError
+
+                    setattr(self, kw, keywords[kw])
+
+                else:
+
+                    print("wrong keyword=%s, not in%s " % (kw, self.allowed_keywords.keys()))
+
+                    raise ValueError
+
+        if self.z is not None:
+            self.z = float(self.z)
+
+        if self.UL_CL is not None:
+            self.UL_CL = float(self.UL_CL)
+
+    @property
+    def metadata(self,skip=['col_types','col_nums']):
+        for k in self.allowed_keywords.keys():
+            if hasattr(self,k) and k not in skip:
+                print(k,': ',getattr(self,k))
 
     def _build_empty_table(self,n_rows=None):
         sed_dt = [('nu_data', 'f8')]
@@ -558,24 +564,26 @@ class ObsData(object):
         
         
 
-        
-        
-    def set_md_from_data_table(self,name=None,val=None):
+    def _set_md_from_data_table(self,name=None,val=None):
+
+
+
+
         md_dic = {}
-        md_dic['z'] = None
-        md_dic['file_name'] = None
-        md_dic['obj_name'] = None
-        md_dic['restframe'] = None
-        md_dic['data_scale'] = None
-        md_dic['col_types'] = None
-        md_dic['col_nums'] = None
+        #md_dic['z'] = None
+        #md_dic['file_name'] = None
+        #md_dic['obj_name'] = None
+        #md_dic['restframe'] = None
+        #md_dic['data_scale'] = None
+        #md_dic['col_types'] = None
+        #md_dic['col_nums'] = None
 
         if name is None:
 
-            for k in md_dic.keys():
+            for k in self.allowed_keywords.keys():
                 if k in self._input_data_table.meta.keys():
-                    md_dic[k]=self._input_data_table.meta[k]
-                    setattr(self, k, md_dic[k])
+                    #md_dic[k]=self._input_data_table.meta[k]
+                    setattr(self, k, self._input_data_table.meta[k])
                     #print(k,md_dic[k])
         else:
             if name in md_dic.keys():
@@ -1049,7 +1057,15 @@ class ObsData(object):
                 shown.append(entry.decode('UTF-8'))
         
         return shown
-    
+
+
+
+    def plot_sed(self,plot_obj=None,):
+        if plot_obj is None:
+            plot_obj=PlotSED(sed_data=self)
+
+        return plot_obj
+
     
     def plot_time_spans(self,save_as=None):
         import pylab as plt

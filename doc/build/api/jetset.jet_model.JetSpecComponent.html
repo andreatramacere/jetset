@@ -2,24 +2,18 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>JetSpecComponent &#8212; jetset 1.0.a documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.0.a',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -33,8 +27,7 @@
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
     <div class="container">
@@ -71,9 +64,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html#building-the-sed">Building the SED</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 </ul>
@@ -175,9 +169,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html#building-the-sed">Building the SED</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 </ul>
@@ -278,7 +273,7 @@
 <dl class="class">
 <dt id="jetset.jet_model.JetSpecComponent">
 <em class="property">class </em><code class="descname">JetSpecComponent</code><span class="sig-paren">(</span><em>name</em>, <em>blob_object</em>, <em>var_name=None</em>, <em>state_dict=None</em>, <em>state=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p class="rubric">Attributes Summary</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -286,7 +281,7 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.state" title="jetset.jet_model.JetSpecComponent.state"><code class="xref py py-obj docutils literal"><span class="pre">state</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.state" title="jetset.jet_model.JetSpecComponent.state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state</span></code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -298,13 +293,13 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.get_var_state" title="jetset.jet_model.JetSpecComponent.get_var_state"><code class="xref py py-obj docutils literal"><span class="pre">get_var_state</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.get_var_state" title="jetset.jet_model.JetSpecComponent.get_var_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_var_state</span></code></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.plot" title="jetset.jet_model.JetSpecComponent.plot"><code class="xref py py-obj docutils literal"><span class="pre">plot</span></code></a>([y_min,&nbsp;y_max])</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.plot" title="jetset.jet_model.JetSpecComponent.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([y_min,&nbsp;y_max])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.show" title="jetset.jet_model.JetSpecComponent.show"><code class="xref py py-obj docutils literal"><span class="pre">show</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.show" title="jetset.jet_model.JetSpecComponent.show"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show</span></code></a>()</td>
 <td></td>
 </tr>
 </tbody>
@@ -348,7 +343,7 @@
     </p>
     <p>
         &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>
