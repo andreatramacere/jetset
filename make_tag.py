@@ -60,6 +60,7 @@ def do_remote_tag(version):
             res = subprocess.call(i, shell=True)
         except:
             pass
+    print()
 
 def do_remote_push():
     l=[]
@@ -72,6 +73,7 @@ def do_remote_push():
             res = subprocess.call(i, shell=True)
         except:
             pass
+    print()
 
 def do_commit(message):
     l=[]
@@ -86,7 +88,7 @@ def do_commit(message):
         except:
             pass
 
-
+    print()
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
@@ -111,5 +113,7 @@ def main(argv=None):
     if args.do_remote_tag==True:
         do_remote_tag(args.version)
 
+
+    
 if __name__ == "__main__":
     main(sys.argv)
