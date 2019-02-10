@@ -65,8 +65,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a><ul>
@@ -154,8 +155,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a><ul>
@@ -738,14 +740,22 @@
                 
         
 
-<div class="viewcode-block" id="PlotSED.add_residual_plot"><a class="viewcode-back" href="../../api/jetset.plot_sedfit.PlotSED.html#jetset.plot_sedfit.PlotSED.add_residual_plot">[docs]</a>    <span class="k">def</span> <span class="nf">add_residual_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">filter_UL</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="PlotSED.add_residual_plot"><a class="viewcode-back" href="../../api/jetset.plot_sedfit.PlotSED.html#jetset.plot_sedfit.PlotSED.add_residual_plot">[docs]</a>    <span class="k">def</span> <span class="nf">add_residual_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">filter_UL</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">fit_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">counter_res</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_res_zeroline</span><span class="p">()</span>
-
+        <span class="c1">#print(&#39;bbbbb&#39;)</span>
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
             <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">get_residuals</span><span class="p">(</span><span class="n">log_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span><span class="n">filter_UL</span><span class="o">=</span><span class="n">filter_UL</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">fit_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">msk1</span> <span class="o">=</span> <span class="n">x</span><span class="o">&lt;</span><span class="n">fit_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">msk2</span> <span class="o">=</span><span class="n">x</span><span class="o">&gt;</span><span class="n">fit_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="n">msk1</span><span class="o">*</span><span class="n">msk2</span><span class="p">]</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">msk1</span><span class="o">*</span><span class="n">msk2</span><span class="p">]</span>
+            <span class="c1">#print(&#39;aaaaaaa&#39;,fit_range,x)</span>
             <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resplot</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lines_res_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">counter_res</span> <span class="o">+=</span> <span class="mi">1</span>

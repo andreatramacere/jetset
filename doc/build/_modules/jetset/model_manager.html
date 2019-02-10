@@ -65,8 +65,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a><ul>
@@ -154,8 +155,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a><ul>
@@ -401,7 +403,8 @@
         <span class="n">line_style</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
         <span class="c1">#print(&#39;comp_label&#39;, self.name)</span>
         <span class="n">plot_obj</span><span class="o">.</span><span class="n">add_model_plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SED</span><span class="p">,</span> <span class="n">line_style</span><span class="o">=</span><span class="n">line_style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">flim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">flux_plot_lim</span><span class="p">)</span>
-        <span class="n">plot_obj</span><span class="o">.</span><span class="n">add_residual_plot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">sed_data</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">plot_obj</span><span class="o">.</span><span class="n">add_residual_plot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">sed_data</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">fit_range</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_min</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_max</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">plot_obj</span></div>
 
 

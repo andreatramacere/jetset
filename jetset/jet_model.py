@@ -1398,25 +1398,50 @@ class Jet(Model):
     def get_emiss_lim(self):
         return self._blob.emiss_lim
 
-    def set_IC_nu_size(self,val):
-        self._blob.nu_IC_size=val
+
         #BlazarSED.build_photons(self._blob)
+
+    @property
+    def IC_nu_size(self):
+        return self._blob.nu_IC_size
+
+    @IC_nu_size.setter
+    def IC_nu_size(self, val):
+        self.set_IC_nu_size(val)
 
     def get_IC_nu_size(self):
         return self._blob.nu_IC_size
 
-    def set_seed_nu_size(self,val):
-        self._blob.nu_seed_size=val
-        #BlazarSED.build_photons(self._blob)
+    def set_IC_nu_size(self, val):
+        if val > 1000:
+            raise RuntimeError('value can not exceed 1000')
+        self._blob.nu_IC_size = val
+
+    @property
+    def nu_seed_size(self):
+        return self._blob.nu_seed_size
 
     def get_seed_nu_size(self):
         return self._blob.nu_seed_size
 
+    @nu_seed_size.setter
+    def nu_seed_size(self,val):
+        self.set_seed_nu_size(val)
+
+    def set_seed_nu_size(self,val):
+        if val>1000:
+            raise RuntimeError('value can not exceed 1000')
+        self._blob.nu_seed_size=val
+
+
+
+
+
     def set_gamma_grid_size(self,val):
         self.electron_distribution.set_grid_size(gamma_grid_size=val)
 
-
-    def get_gamma_grid_size(self):
+    @property
+    def gamma_grid_size(self):
         return self._blob.gamma_grid_size
 
     @property
@@ -1555,12 +1580,12 @@ class Jet(Model):
         print('')
         print('electron distribution:')
         print(" type: %s  " % (self._electron_distribution_name))
-        print (" electron energy grid size: ",self.get_gamma_grid_size())
+        print (" electron energy grid size: ",self.gamma_grid_size)
         print (" gmin grid : %e"%self._blob.gmin_griglia)
         print (" gmax grid : %e"%self._blob.gmax_griglia)
         print('')
         print('radiative fields:')
-        print (" seed photons grid size: ", self.get_seed_nu_size())
+        print (" seed photons grid size: ", self.nu_seed_size)
         print (" IC emission grid size: ", self.get_IC_nu_size())
         print (' source emissivity lower bound :  %e' % self._blob.emiss_lim)
         print(' spectral components:')

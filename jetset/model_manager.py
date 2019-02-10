@@ -189,7 +189,8 @@ class FitModel(Model):
         line_style = '-'
         #print('comp_label', self.name)
         plot_obj.add_model_plot(self.SED, line_style=line_style, label=self.name, flim=self.flux_plot_lim)
-        plot_obj.add_residual_plot(data=sed_data, model=self)
+
+        plot_obj.add_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min,self.nu_max]))
         return plot_obj
 
 

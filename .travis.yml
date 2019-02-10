@@ -5,7 +5,7 @@ addons:
 
 branches:
     only:
-        - py23
+        - never
 
 
 sudo: required
@@ -70,6 +70,6 @@ deploy:
     - "dist*.tar.gz"
   on:
     tags: False
-    all_branches: True
+    all_branches: False
     #branch: py23
 

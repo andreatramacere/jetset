@@ -89,7 +89,9 @@ All the dependencies can be installed following the Anaconda method
  - cd to  the dir `jetset-stable`
  - ##### Install requirements 
     - run on the command line: `pip install -r requirements.txt `
-    - install SWIG following one of the following methods:
+    
+    - if pip fails to install swig you can try one of the following methods
+       
         - SWIG (http://www.swig.org/)
         - on linux Ubuntu:
             - `sudo apt-get install python-dev`
