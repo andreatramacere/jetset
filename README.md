@@ -50,7 +50,9 @@ All the dependencies can be installed following the Anaconda method
 
 
 
-# Download the JetSeT code
+# Install the JetSeT code
+
+### Download the code
    - Get the source code from: 
      - https://gitlab.com/andreatramacere/jetset/-/archive/stable/jetset-stable.tar.gz
 
