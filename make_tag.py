@@ -26,7 +26,8 @@ def update_version(version):
 
     with open('jetset/pkg_info.json') as fp:
         _info = json.load(fp)
-        #_info['version']=version
+        if version is not None:
+            _info['version']=version
         label=subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii').strip()
         _info['label']= '%s'%label
     print(_info)
@@ -45,14 +46,14 @@ def update_version(version):
     #with open('conda-pipeline/meta.yaml', 'w') as yaml_file:
     #    yaml.dump(data_loaded, yaml_file, default_flow_style=False)
 
-def do_remote_tag(version):
+def do_remote_tag(tag):
     l=[]
-    l.append(["git tag  -d %s"%version])
-    l.append(['git push --delete origin %s'%version])
-    l.append(['git push --delete origin-github %s'%version])
-    l.append(['''git tag -a %s  -m '%s' '''%(version,version)])
-    l.append(['git push origin %s'%version])
-    l.append(['git push origin-github %s' % version])
+    l.append(["git tag  -d %s"%tag])
+    l.append(['git push --delete origin %s'%tag])
+    l.append(['git push --delete origin-github %s'%tag])
+    l.append(['''git tag -a %s  -m '%s' '''%(tag,tag)])
+    l.append(['git push origin %s'%tag])
+    l.append(['git push origin-github %s' % tag])
 
     res = subprocess.call(l[0], shell=True)
     for  i in l[1::]:
@@ -93,7 +94,8 @@ def do_commit(message):
 def main(argv=None):
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('version', type=str, )
+    parser.add_argument('tag', type=str, )
+    parser.add_argument('-version', type=str, default=None )
     parser.add_argument('-do_remote_tag', action='store_true')
     parser.add_argument('-push_message', type=str, default=None)
 
@@ -111,9 +113,9 @@ def main(argv=None):
         do_remote_push()
 
     if args.do_remote_tag==True:
-        do_remote_tag(args.version)
+        do_remote_tag(args.tag)
 
 
-    
+
 if __name__ == "__main__":
     main(sys.argv)
