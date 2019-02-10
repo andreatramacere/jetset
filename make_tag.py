@@ -103,6 +103,9 @@ def main(argv=None):
     update_version(args.version)
 
     if args.push_message is not None:
+        do_commit('fixed label in pkg')
+
+    if args.push_message is not None:
         do_remote_push()
 
     if args.do_remote_tag==True:
