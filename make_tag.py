@@ -65,8 +65,8 @@ def do_remote_push(message):
     l=[]
     l.append(["git add . "])
     l.append(['''git commit -m '%s' ''' % (message)])
-    l.append(['git push origin '])
-    l.append(['git push origin-github %s'])
+    l.append(['git push origin py23'])
+    l.append(['git push origin-github py23 %s'])
 
     res = subprocess.call(l[0], shell=True)
     for  i in l[1::]:
