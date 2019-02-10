@@ -122,7 +122,7 @@
 <li><a class="reference internal" href="#setting-the-particle-density-from-observed-fluxes-or-luminosityes">setting the particle density from observed Fluxes or Luminosityes</a></li>
 <li><a class="reference internal" href="#setting-the-beaming-factor">setting the beaming factor</a></li>
 <li><a class="reference internal" href="#accessing-individual-spectral-components">accessing individual spectral components</a></li>
-<li><a class="reference internal" href="#external-compotn">External Compotn</a><ul>
+<li><a class="reference internal" href="#external-compton">External Compton</a><ul>
 <li><a class="reference internal" href="#broad-line-region">Broad Line Region</a></li>
 <li><a class="reference internal" href="#dusty-torus">Dusty Torus</a></li>
 </ul>
@@ -246,7 +246,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#setting-the-particle-density-from-observed-fluxes-or-luminosityes">setting the particle density from observed Fluxes or Luminosityes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setting-the-beaming-factor">setting the beaming factor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#accessing-individual-spectral-components">accessing individual spectral components</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#external-compotn">External Compotn</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#external-compton">External Compton</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#broad-line-region">Broad Line Region</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dusty-torus">Dusty Torus</a></li>
 </ul>
@@ -698,64 +698,19 @@ evaluated.</p>
 <span class="n">nuFnu_sync</span><span class="o">=</span><span class="n">Sync</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">nuFnu</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="p">(</span><span class="n">nuFnu_sync</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="p">(</span><span class="n">nuFnu_sync</span><span class="p">[::</span><span class="mi">10</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">3.09064764e-026</span>
- <span class="mf">7.32454038e-026</span> <span class="mf">1.75270679e-025</span> <span class="mf">4.24520963e-025</span> <span class="mf">1.04379743e-024</span>
- <span class="mf">2.61693555e-024</span> <span class="mf">6.67461898e-024</span> <span class="mf">1.72668460e-023</span> <span class="mf">4.50933880e-023</span>
- <span class="mf">1.18346083e-022</span> <span class="mf">3.11153382e-022</span> <span class="mf">8.18386409e-022</span> <span class="mf">2.15257260e-021</span>
- <span class="mf">5.66184114e-021</span> <span class="mf">1.48921531e-020</span> <span class="mf">3.91703222e-020</span> <span class="mf">1.03028181e-019</span>
- <span class="mf">2.70988579e-019</span> <span class="mf">7.12730622e-019</span> <span class="mf">1.87412089e-018</span> <span class="mf">4.92274314e-018</span>
- <span class="mf">1.28806868e-017</span> <span class="mf">3.27741235e-017</span> <span class="mf">7.39199471e-017</span> <span class="mf">1.34878914e-016</span>
- <span class="mf">2.02382945e-016</span> <span class="mf">2.65770333e-016</span> <span class="mf">3.24635424e-016</span> <span class="mf">3.83058445e-016</span>
- <span class="mf">4.45026043e-016</span> <span class="mf">5.13453305e-016</span> <span class="mf">5.90727157e-016</span> <span class="mf">6.78881277e-016</span>
- <span class="mf">7.79778401e-016</span> <span class="mf">8.95461935e-016</span> <span class="mf">1.02817311e-015</span> <span class="mf">1.18045307e-015</span>
- <span class="mf">1.35526785e-015</span> <span class="mf">1.55592980e-015</span> <span class="mf">1.78624983e-015</span> <span class="mf">2.05059908e-015</span>
- <span class="mf">2.35398201e-015</span> <span class="mf">2.70212561e-015</span> <span class="mf">3.10158088e-015</span> <span class="mf">3.55983479e-015</span>
- <span class="mf">4.08543468e-015</span> <span class="mf">4.68812553e-015</span> <span class="mf">5.37897006e-015</span> <span class="mf">6.17039952e-015</span>
- <span class="mf">7.07667943e-015</span> <span class="mf">8.11379434e-015</span> <span class="mf">9.29966755e-015</span> <span class="mf">1.06542782e-014</span>
- <span class="mf">1.21997326e-014</span> <span class="mf">1.39602637e-014</span> <span class="mf">1.59621220e-014</span> <span class="mf">1.82311459e-014</span>
- <span class="mf">2.07950465e-014</span> <span class="mf">2.36828829e-014</span> <span class="mf">2.69215529e-014</span> <span class="mf">3.05350806e-014</span>
- <span class="mf">3.45426268e-014</span> <span class="mf">3.89562204e-014</span> <span class="mf">4.37783895e-014</span> <span class="mf">4.89985917e-014</span>
- <span class="mf">5.45552994e-014</span> <span class="mf">6.04378782e-014</span> <span class="mf">6.65997069e-014</span> <span class="mf">7.29854916e-014</span>
- <span class="mf">7.95326288e-014</span> <span class="mf">8.61721121e-014</span> <span class="mf">9.28290210e-014</span> <span class="mf">9.94228713e-014</span>
- <span class="mf">1.05825200e-013</span> <span class="mf">1.11931166e-013</span> <span class="mf">1.17698296e-013</span> <span class="mf">1.23037271e-013</span>
- <span class="mf">1.27861333e-013</span> <span class="mf">1.32088275e-013</span> <span class="mf">1.35642311e-013</span> <span class="mf">1.38455735e-013</span>
- <span class="mf">1.40470268e-013</span> <span class="mf">1.41518202e-013</span> <span class="mf">1.41656497e-013</span> <span class="mf">1.40871168e-013</span>
- <span class="mf">1.39139242e-013</span> <span class="mf">1.36442526e-013</span> <span class="mf">1.32764951e-013</span> <span class="mf">1.28089975e-013</span>
- <span class="mf">1.22398936e-013</span> <span class="mf">1.15598996e-013</span> <span class="mf">1.07511605e-013</span> <span class="mf">9.82379437e-014</span>
- <span class="mf">8.77659460e-014</span> <span class="mf">7.61614883e-014</span> <span class="mf">6.36299238e-014</span> <span class="mf">5.05820160e-014</span>
- <span class="mf">3.76731978e-014</span> <span class="mf">2.57663289e-014</span> <span class="mf">1.54978292e-014</span> <span class="mf">7.89097588e-015</span>
- <span class="mf">3.24677083e-015</span> <span class="mf">1.00963704e-015</span> <span class="mf">2.17559638e-016</span> <span class="mf">2.90400262e-017</span>
- <span class="mf">2.07800228e-018</span> <span class="mf">6.61749416e-020</span> <span class="mf">7.16587523e-022</span> <span class="mf">1.51735569e-024</span>
- <span class="mf">4.52069023e-028</span> <span class="mf">1.02825567e-032</span> <span class="mf">8.16218499e-039</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
- <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.18346083e-022</span> <span class="mf">1.87412089e-018</span>
+ <span class="mf">4.45026043e-016</span> <span class="mf">1.78624983e-015</span> <span class="mf">7.07667943e-015</span> <span class="mf">2.69215529e-014</span>
+ <span class="mf">7.95326288e-014</span> <span class="mf">1.35642311e-013</span> <span class="mf">1.22398936e-013</span> <span class="mf">1.54978292e-014</span>
+ <span class="mf">4.52069023e-028</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span>
  <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="external-compotn">
-<h2>External Compotn<a class="headerlink" href="#external-compotn" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="external-compton">
+<h2>External Compton<a class="headerlink" href="#external-compton" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="broad-line-region">
 <h3>Broad Line Region<a class="headerlink" href="#broad-line-region" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;BLR example&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;bkn&#39;</span><span class="p">)</span>
