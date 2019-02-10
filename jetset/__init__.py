@@ -19,6 +19,10 @@ with open(os.path.dirname(__file__) + '/pkg_info.json') as fp:
 
 __version__ = _info['version']
 
+if 'label'  in _info.keys():
+    __label__= _info['label']
+else:
+    __label__= None
 
 for importer, modname, ispkg in pkgutil.walk_packages(path=[pkg_dir],
                                                       prefix=pkg_name+'.',

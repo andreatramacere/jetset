@@ -26,14 +26,13 @@ def update_version(version):
 
     with open('jetset/pkg_info.json') as fp:
         _info = json.load(fp)
-        _info['version']=version
-
+        #_info['version']=version
+        label=subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii').strip()
+        _info['label']= '%s'%label
+    print(_info)
     with open('jetset/pkg_info.json', 'w') as json_file:
         json.dump(_info, json_file)
 
-
-    with open('jetset/pkg_info.json') as fp:
-        _info = json.load(fp)
 
 
 
