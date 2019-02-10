@@ -645,7 +645,6 @@ class SEDShape(object):
                          minimizer=minimizer,
                          silent=silent,
                          show_fit_report=show_fit_report)
-
         #print "bbb", self.sync_fit_model.SED.nu
 
         #Ep=self.S_peak.nu_p_val

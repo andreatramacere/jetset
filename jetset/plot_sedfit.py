@@ -145,8 +145,11 @@ class  PlotSED (object):
         self.sedplot.set_xlim(5, 30)
         self.sedplot.set_ylim(-20, -8)
         self.resplot.set_ybound(-2,2)
-        if hasattr(self.fig.canvas.manager,'toolbar'):
-            self.fig.canvas.manager.toolbar.update()
+        try:
+            if hasattr(self.fig.canvas.manager,'toolbar'):
+                self.fig.canvas.manager.toolbar.update()
+        except:
+            pass
 
         if sed_data is not None :
             self.add_data_plot(sed_data)

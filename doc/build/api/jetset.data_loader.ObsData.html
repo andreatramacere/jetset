@@ -2,24 +2,18 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>ObsData &#8212; jetset 1.0.a documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.0.a',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -33,8 +27,7 @@
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
     <div class="container">
@@ -71,9 +64,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 </ul>
@@ -175,9 +168,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 </ul>
@@ -276,7 +269,7 @@
 <dl class="class">
 <dt id="jetset.data_loader.ObsData">
 <em class="property">class </em><code class="descname">ObsData</code><span class="sig-paren">(</span><em>data_table=None</em>, <em>dupl_filter=False</em>, <em>data_set_filter=None</em>, <em>UL_filtering=False</em>, <em>UL_value=None</em>, <em>UL_CL=0.95</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class provides a  powerful interface  to load observational data stored in a file.
 The following parameters set the corresponding class members:</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -287,18 +280,18 @@ The following parameters set the corresponding class members:</p>
 <li><strong>data_file</strong> – (str), path to the data file</li>
 <li><strong>z</strong> – (float), redisfhit, if not provided it is looked up in the  file meta-data</li>
 <li><strong>obj_name</strong> – (str), if not provided  it is looked up in the  file meta-data</li>
-<li><strong>restframe</strong> – (str) restframe of the data, possible values are <code class="docutils literal"><span class="pre">'src'</span></code> or  <code class="docutils literal"><span class="pre">'obs'</span></code>,
+<li><strong>restframe</strong> – (str) restframe of the data, possible values are <code class="docutils literal notranslate"><span class="pre">'src'</span></code> or  <code class="docutils literal notranslate"><span class="pre">'obs'</span></code>,
 if not provided it is looked up in the  file meta-data</li>
 <li><strong>col_types</strong> – (str), string specifying the way data are organized in columns in the input file.
-This string is passed to the method  <code class="xref py py-func docutils literal"><span class="pre">set_data_cols()</span></code>. If not provided
-it is looked up in the  file meta-data. See the corresponding <code class="xref py py-func docutils literal"><span class="pre">set_data_cols()</span></code>
+This string is passed to the method  <code class="xref py py-func docutils literal notranslate"><span class="pre">set_data_cols()</span></code>. If not provided
+it is looked up in the  file meta-data. See the corresponding <code class="xref py py-func docutils literal notranslate"><span class="pre">set_data_cols()</span></code>
 documentation for details.</li>
 <li><strong>col_nums</strong> – (str), string describing the corresponding column data number</li>
-<li><strong>data_scale</strong> – (str) <code class="docutils literal"><span class="pre">'lin-lin'</span></code> or <code class="docutils literal"><span class="pre">'log-log'</span></code>,it is looked up in the  file meta-data.
+<li><strong>data_scale</strong> – (str) <code class="docutils literal notranslate"><span class="pre">'lin-lin'</span></code> or <code class="docutils literal notranslate"><span class="pre">'log-log'</span></code>,it is looked up in the  file meta-data.
 This parameter allows to specify      if the data in the file are stored as in log-log or lin-lin scale</li>
 <li><strong>data_set_filter</strong> – <p>a filter to filter the SED data according to the data_set value,  eg:
-<code class="docutils literal"><span class="pre">'data_set_filter='mw-1'</span></code>, will filter data with <code class="docutils literal"><span class="pre">data_set=='mw-1'</span></code>,
-<code class="docutils literal"><span class="pre">'data_set_filter=['mw-1','mw-2']'</span></code> will filter data with <code class="docutils literal"><span class="pre">data_set=='mw-1'</span></code> or <code class="docutils literal"><span class="pre">data_set=='mw-2'</span></code></p>
+<code class="docutils literal notranslate"><span class="pre">'data_set_filter='mw-1'</span></code>, will filter data with <code class="docutils literal notranslate"><span class="pre">data_set=='mw-1'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'data_set_filter=['mw-1','mw-2']'</span></code> will filter data with <code class="docutils literal notranslate"><span class="pre">data_set=='mw-1'</span></code> or <code class="docutils literal notranslate"><span class="pre">data_set=='mw-2'</span></code></p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Historical data will be only plotted but will not be used in the fit.</p>
@@ -326,15 +319,8 @@ This parameter allows to specify      if the data in the file are stored as in l
 <li>UL_data</li>
 </ul>
 </div></blockquote>
-<p>The private method   <code class="xref py py-func docutils literal"><span class="pre">_load_data()</span></code>  populates the data members starting from the data in the file. Data are properly transformed according
-to the <code class="docutils literal"><span class="pre">restframe</span></code> and <code class="docutils literal"><span class="pre">data_scale</span></code> values.</p>
-<p><strong>Examples</strong></p>
-<p>The following lines shows and example of how to embed <strong>meta-data</strong> in the header of the SED data file,
-just adding in the header of the file a line starting with <code class="docutils literal"><span class="pre">#</span></code> and followed by the
-indetifier <code class="docutils literal"><span class="pre">md</span></code>, the meta-data name and value :</p>
-<p>Assuming that the data file path has been stored in <code class="docutils literal"><span class="pre">SED_file=/path/to/file/file.txt</span></code>,
-the data can be imported as follows:</p>
-<p>that is completely equivalent to:</p>
+<p>The private method   <code class="xref py py-func docutils literal notranslate"><span class="pre">_load_data()</span></code>  populates the data members starting from the data in the file. Data are properly transformed according
+to the <code class="docutils literal notranslate"><span class="pre">restframe</span></code> and <code class="docutils literal notranslate"><span class="pre">data_scale</span></code> values.</p>
 <p class="rubric">Attributes Summary</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -342,7 +328,7 @@ the data can be imported as follows:</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.table" title="jetset.data_loader.ObsData.table"><code class="xref py py-obj docutils literal"><span class="pre">table</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.table" title="jetset.data_loader.ObsData.table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table</span></code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -354,70 +340,70 @@ the data can be imported as follows:</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.add_systematics" title="jetset.data_loader.ObsData.add_systematics"><code class="xref py py-obj docutils literal"><span class="pre">add_systematics</span></code></a>(syst[,&nbsp;nu_range,&nbsp;data_set])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.add_systematics" title="jetset.data_loader.ObsData.add_systematics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_systematics</span></code></a>(syst[,&nbsp;nu_range,&nbsp;data_set])</td>
 <td>add systematics to errors</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.filter_UL" title="jetset.data_loader.ObsData.filter_UL"><code class="xref py py-obj docutils literal"><span class="pre">filter_UL</span></code></a>([val])</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.filter_UL" title="jetset.data_loader.ObsData.filter_UL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_UL</span></code></a>([val])</td>
 <td>remove the  upper limits points from  from data</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.filter_data_set" title="jetset.data_loader.ObsData.filter_data_set"><code class="xref py py-obj docutils literal"><span class="pre">filter_data_set</span></code></a>(filters[,&nbsp;exclude])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.filter_data_set" title="jetset.data_loader.ObsData.filter_data_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_data_set</span></code></a>(filters[,&nbsp;exclude])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.filter_freq" title="jetset.data_loader.ObsData.filter_freq"><code class="xref py py-obj docutils literal"><span class="pre">filter_freq</span></code></a>([nu_min,&nbsp;nu_max,&nbsp;exclude])</td>
-<td>filter the data, keeping all the data with</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.filter_freq" title="jetset.data_loader.ObsData.filter_freq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_freq</span></code></a>([nu_min,&nbsp;nu_max,&nbsp;exclude])</td>
+<td>filter the data, keeping all the data with nu_min &lt;nu&lt; nu_max if exclude=False (defualt).</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.filter_time" title="jetset.data_loader.ObsData.filter_time"><code class="xref py py-obj docutils literal"><span class="pre">filter_time</span></code></a>([T_min,&nbsp;T_max,&nbsp;exclude])</td>
-<td>filter the data, keeping all the data with</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.filter_time" title="jetset.data_loader.ObsData.filter_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_time</span></code></a>([T_min,&nbsp;T_max,&nbsp;exclude])</td>
+<td>filter the data, keeping all the data with T_min &lt;T&lt; T_max if exclude=False (defualt).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.find_time_span" title="jetset.data_loader.ObsData.find_time_span"><code class="xref py py-obj docutils literal"><span class="pre">find_time_span</span></code></a>([data_set,&nbsp;silent,&nbsp;get_values])</td>
-<td>returns Tstart, Tstop, and Delta T for the full data set (if no dat_set</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.find_time_span" title="jetset.data_loader.ObsData.find_time_span"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_time_span</span></code></a>([data_set,&nbsp;silent,&nbsp;get_values])</td>
+<td>returns Tstart, Tstop, and Delta T for the full data set (if no dat_set is provided), or for a specific data_set</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.get_data_points" title="jetset.data_loader.ObsData.get_data_points"><code class="xref py py-obj docutils literal"><span class="pre">get_data_points</span></code></a>([log_log,&nbsp;skip_UL])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.get_data_points" title="jetset.data_loader.ObsData.get_data_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_points</span></code></a>([log_log,&nbsp;skip_UL])</td>
 <td>Gives data point</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.get_data_sets" title="jetset.data_loader.ObsData.get_data_sets"><code class="xref py py-obj docutils literal"><span class="pre">get_data_sets</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.get_data_sets" title="jetset.data_loader.ObsData.get_data_sets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_sets</span></code></a>()</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.get_time_span" title="jetset.data_loader.ObsData.get_time_span"><code class="xref py py-obj docutils literal"><span class="pre">get_time_span</span></code></a>([data_set])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.get_time_span" title="jetset.data_loader.ObsData.get_time_span"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_time_span</span></code></a>([data_set])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.group_data" title="jetset.data_loader.ObsData.group_data"><code class="xref py py-obj docutils literal"><span class="pre">group_data</span></code></a>([N_bin,&nbsp;bin_width])</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.group_data" title="jetset.data_loader.ObsData.group_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">group_data</span></code></a>([N_bin,&nbsp;bin_width])</td>
 <td>function to perform a spectral group of the data</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.lin_to_log" title="jetset.data_loader.ObsData.lin_to_log"><code class="xref py py-obj docutils literal"><span class="pre">lin_to_log</span></code></a>([val,&nbsp;err])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.lin_to_log" title="jetset.data_loader.ObsData.lin_to_log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lin_to_log</span></code></a>([val,&nbsp;err])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.log_to_lin" title="jetset.data_loader.ObsData.log_to_lin"><code class="xref py py-obj docutils literal"><span class="pre">log_to_lin</span></code></a>([log_val,&nbsp;log_err])</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.log_to_lin" title="jetset.data_loader.ObsData.log_to_lin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_to_lin</span></code></a>([log_val,&nbsp;log_err])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.plot_time_spans" title="jetset.data_loader.ObsData.plot_time_spans"><code class="xref py py-obj docutils literal"><span class="pre">plot_time_spans</span></code></a>([save_as])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.plot_time_spans" title="jetset.data_loader.ObsData.plot_time_spans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_time_spans</span></code></a>([save_as])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.remove_dupl_entries" title="jetset.data_loader.ObsData.remove_dupl_entries"><code class="xref py py-obj docutils literal"><span class="pre">remove_dupl_entries</span></code></a>(data)</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.remove_dupl_entries" title="jetset.data_loader.ObsData.remove_dupl_entries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_dupl_entries</span></code></a>(data)</td>
 <td>remove duplicate entries</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.reset_data" title="jetset.data_loader.ObsData.reset_data"><code class="xref py py-obj docutils literal"><span class="pre">reset_data</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.reset_data" title="jetset.data_loader.ObsData.reset_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_data</span></code></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_UL" title="jetset.data_loader.ObsData.set_UL"><code class="xref py py-obj docutils literal"><span class="pre">set_UL</span></code></a>([val])</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_UL" title="jetset.data_loader.ObsData.set_UL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_UL</span></code></a>([val])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_error" title="jetset.data_loader.ObsData.set_error"><code class="xref py py-obj docutils literal"><span class="pre">set_error</span></code></a>(error_value[,&nbsp;nu_range,&nbsp;data_set,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_error" title="jetset.data_loader.ObsData.set_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_error</span></code></a>(error_value[,&nbsp;nu_range,&nbsp;data_set,&nbsp;…])</td>
 <td>set all the paramters to same error</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_facke_error" title="jetset.data_loader.ObsData.set_facke_error"><code class="xref py py-obj docutils literal"><span class="pre">set_facke_error</span></code></a>(val)</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_facke_error" title="jetset.data_loader.ObsData.set_facke_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_facke_error</span></code></a>(val)</td>
 <td>Sets the value for the facke error</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_md_from_data_table" title="jetset.data_loader.ObsData.set_md_from_data_table"><code class="xref py py-obj docutils literal"><span class="pre">set_md_from_data_table</span></code></a>([name,&nbsp;val])</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObsData.set_md_from_data_table</span></code></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_zero_error" title="jetset.data_loader.ObsData.set_zero_error"><code class="xref py py-obj docutils literal"><span class="pre">set_zero_error</span></code></a>([val,&nbsp;replace_zero])</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_zero_error" title="jetset.data_loader.ObsData.set_zero_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_zero_error</span></code></a>([val,&nbsp;replace_zero])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.show_data_sets" title="jetset.data_loader.ObsData.show_data_sets"><code class="xref py py-obj docutils literal"><span class="pre">show_data_sets</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.show_data_sets" title="jetset.data_loader.ObsData.show_data_sets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_data_sets</span></code></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.show_time_span" title="jetset.data_loader.ObsData.show_time_span"><code class="xref py py-obj docutils literal"><span class="pre">show_time_span</span></code></a>([data_set])</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.show_time_span" title="jetset.data_loader.ObsData.show_time_span"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_time_span</span></code></a>([data_set])</td>
 <td></td>
 </tr>
 </tbody>
@@ -550,7 +536,7 @@ is provided), or for a specific data_set</p>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">To perform  a rebinning of the data has to be provided either <code class="docutils literal"><span class="pre">N_bin</span></code> or <code class="docutils literal"><span class="pre">bin_width</span></code>.</p>
+<p class="last">To perform  a rebinning of the data has to be provided either <code class="docutils literal notranslate"><span class="pre">N_bin</span></code> or <code class="docutils literal notranslate"><span class="pre">bin_width</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -627,11 +613,6 @@ is equal to the corresponding elements of another row</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="jetset.data_loader.ObsData.set_md_from_data_table">
-<code class="descname">set_md_from_data_table</code><span class="sig-paren">(</span><em>name=None</em>, <em>val=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.set_md_from_data_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.set_md_from_data_table" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="jetset.data_loader.ObsData.set_zero_error">
 <code class="descname">set_zero_error</code><span class="sig-paren">(</span><em>val=0.2</em>, <em>replace_zero=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.set_zero_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.set_zero_error" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -663,7 +644,7 @@ is equal to the corresponding elements of another row</p>
     </p>
     <p>
         &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>

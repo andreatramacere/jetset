@@ -2,24 +2,18 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>jetset.model_manager Module &#8212; jetset 1.0.a documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.0.a',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -33,8 +27,7 @@
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
     <div class="container">
@@ -71,9 +64,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 </ul>
@@ -185,9 +178,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 </ul>
@@ -290,7 +283,7 @@
 <div class="section" id="module-model">
 <h2>Module: model<a class="headerlink" href="#module-model" title="Permalink to this headline">¶</a></h2>
 <p>This module contains all the classes necessary to build a SED model.
-A SED model can be built by creating a  <code class="xref py py-class docutils literal"><span class="pre">SEDmodel</span></code> object.</p>
+A SED model can be built by creating a  <code class="xref py py-class docutils literal notranslate"><span class="pre">SEDmodel</span></code> object.</p>
 <div class="section" id="classes-and-inheritance-structure">
 <h3>Classes and Inheritance Structure<a class="headerlink" href="#classes-and-inheritance-structure" title="Permalink to this headline">¶</a></h3>
 </div>
@@ -305,7 +298,7 @@ A SED model can be built by creating a  <code class="xref py py-class docutils l
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="jetset.model_manager.FitModel.html#jetset.model_manager.FitModel" title="jetset.model_manager.FitModel"><code class="xref py py-obj docutils literal"><span class="pre">FitModel</span></code></a>([elec_distr,&nbsp;jet,&nbsp;name,&nbsp;out_dir,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.model_manager.FitModel.html#jetset.model_manager.FitModel" title="jetset.model_manager.FitModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FitModel</span></code></a>([elec_distr,&nbsp;jet,&nbsp;name,&nbsp;out_dir,&nbsp;…])</td>
 <td>This class creates an interface to handle  a fit Model.</td>
 </tr>
 </tbody>
@@ -323,7 +316,7 @@ A SED model can be built by creating a  <code class="xref py py-class docutils l
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="jetset.model_manager.FitModel.html#jetset.model_manager.FitModel" title="jetset.model_manager.FitModel"><code class="xref py py-obj docutils literal"><span class="pre">FitModel</span></code></a>([elec_distr,&nbsp;jet,&nbsp;name,&nbsp;out_dir,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.model_manager.FitModel.html#jetset.model_manager.FitModel" title="jetset.model_manager.FitModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FitModel</span></code></a>([elec_distr,&nbsp;jet,&nbsp;name,&nbsp;out_dir,&nbsp;…])</td>
 <td>This class creates an interface to handle  a fit Model.</td>
 </tr>
 </tbody>
@@ -331,12 +324,11 @@ A SED model can be built by creating a  <code class="xref py py-class docutils l
 </div>
 <div class="section" id="class-inheritance-diagram">
 <h2>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this headline">¶</a></h2>
-<img src="../_images/inheritance-2f919bdf4071b64505169b3c374f32bd01f4efa3.png" alt="Inheritance diagram of jetset.model_manager.FitModel" usemap="#inheritance8f9254517e" class="inheritance"/>
+<div class="graphviz"><img src="../_images/inheritance-2f919bdf4071b64505169b3c374f32bd01f4efa3.png" alt="Inheritance diagram of jetset.model_manager.FitModel" usemap="#inheritance8f9254517e" class="inheritance graphviz" /></div>
 <map id="inheritance8f9254517e" name="inheritance8f9254517e">
 <area shape="rect" id="node1" href="jetset.model_manager.FitModel.html#jetset.model_manager.FitModel" target="_top" title="This class creates an interface to handle &#160;a fit Model. The relevant class members are " alt="" coords="126,5,199,30"/>
 <area shape="rect" id="node2" href="jetset.base_model.Model.html#jetset.base_model.Model" target="_top" title="Model" alt="" coords="5,5,77,30"/>
-</map>
-</div>
+</map></div>
 </div>
 
 
@@ -352,7 +344,7 @@ A SED model can be built by creating a  <code class="xref py py-class docutils l
     </p>
     <p>
         &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>

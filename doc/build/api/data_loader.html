@@ -2,24 +2,18 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>jetset.data_loader Module &#8212; jetset 1.0.a documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.0.a',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -33,8 +27,7 @@
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
     <div class="container">
@@ -71,9 +64,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 </ul>
@@ -187,9 +180,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 </ul>
@@ -301,7 +294,7 @@
 <h2>Moudule: data_loader<a class="headerlink" href="#moudule-data-loader" title="Permalink to this headline">¶</a></h2>
 <p>This module contains all the classes necessary to load SED data
 from a file.  The most effective way to import the SED data is to create an object
-instance of <a class="reference internal" href="jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-class docutils literal"><span class="pre">ObsData</span></code></a> class.</p>
+instance of <a class="reference internal" href="jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ObsData</span></code></a> class.</p>
 <div class="section" id="classes-and-inheritance-structure">
 <h3>Classes and Inheritance Structure<a class="headerlink" href="#classes-and-inheritance-structure" title="Permalink to this headline">¶</a></h3>
 </div>
@@ -319,7 +312,7 @@ instance of <a class="reference internal" href="jetset.data_loader.ObsData.html#
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-obj docutils literal"><span class="pre">ObsData</span></code></a>([data_table,&nbsp;dupl_filter,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObsData</span></code></a>([data_table,&nbsp;dupl_filter,&nbsp;…])</td>
 <td>This class provides a  powerful interface  to load observational data stored in a file.</td>
 </tr>
 </tbody>
@@ -337,16 +330,16 @@ instance of <a class="reference internal" href="jetset.data_loader.ObsData.html#
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="jetset.data_loader.get_data_set_msk.html#jetset.data_loader.get_data_set_msk" title="jetset.data_loader.get_data_set_msk"><code class="xref py py-obj docutils literal"><span class="pre">get_data_set_msk</span></code></a>(x,&nbsp;data_set)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.data_loader.get_data_set_msk.html#jetset.data_loader.get_data_set_msk" title="jetset.data_loader.get_data_set_msk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_set_msk</span></code></a>(x,&nbsp;data_set)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.data_loader.get_freq_range_msk.html#jetset.data_loader.get_freq_range_msk" title="jetset.data_loader.get_freq_range_msk"><code class="xref py py-obj docutils literal"><span class="pre">get_freq_range_msk</span></code></a>(x,&nbsp;x_range)</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.data_loader.get_freq_range_msk.html#jetset.data_loader.get_freq_range_msk" title="jetset.data_loader.get_freq_range_msk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_freq_range_msk</span></code></a>(x,&nbsp;x_range)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="jetset.data_loader.lin_to_log.html#jetset.data_loader.lin_to_log" title="jetset.data_loader.lin_to_log"><code class="xref py py-obj docutils literal"><span class="pre">lin_to_log</span></code></a>([val,&nbsp;err])</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.data_loader.lin_to_log.html#jetset.data_loader.lin_to_log" title="jetset.data_loader.lin_to_log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lin_to_log</span></code></a>([val,&nbsp;err])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.data_loader.log_to_lin.html#jetset.data_loader.log_to_lin" title="jetset.data_loader.log_to_lin"><code class="xref py py-obj docutils literal"><span class="pre">log_to_lin</span></code></a>([log_val,&nbsp;log_err])</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.data_loader.log_to_lin.html#jetset.data_loader.log_to_lin" title="jetset.data_loader.log_to_lin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_to_lin</span></code></a>([log_val,&nbsp;log_err])</td>
 <td></td>
 </tr>
 </tbody>
@@ -360,7 +353,7 @@ instance of <a class="reference internal" href="jetset.data_loader.ObsData.html#
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-obj docutils literal"><span class="pre">ObsData</span></code></a>([data_table,&nbsp;dupl_filter,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObsData</span></code></a>([data_table,&nbsp;dupl_filter,&nbsp;…])</td>
 <td>This class provides a  powerful interface  to load observational data stored in a file.</td>
 </tr>
 </tbody>
@@ -368,11 +361,10 @@ instance of <a class="reference internal" href="jetset.data_loader.ObsData.html#
 </div>
 <div class="section" id="class-inheritance-diagram">
 <h2>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this headline">¶</a></h2>
-<img src="../_images/inheritance-6f5edd4b0b92294afcbe90aa773c7724d64585eb.png" alt="Inheritance diagram of jetset.data_loader.ObsData" usemap="#inheritancef183ce12bd" class="inheritance"/>
+<div class="graphviz"><img src="../_images/inheritance-6f5edd4b0b92294afcbe90aa773c7724d64585eb.png" alt="Inheritance diagram of jetset.data_loader.ObsData" usemap="#inheritancef183ce12bd" class="inheritance graphviz" /></div>
 <map id="inheritancef183ce12bd" name="inheritancef183ce12bd">
 <area shape="rect" id="node1" href="jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" target="_top" title="This class provides a &#160;powerful interface &#160;to load observational data stored in a file." alt="" coords="5,5,80,30"/>
-</map>
-</div>
+</map></div>
 </div>
 
 
@@ -388,7 +380,7 @@ instance of <a class="reference internal" href="jetset.data_loader.ObsData.html#
     </p>
     <p>
         &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>

@@ -2,24 +2,18 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>jetset.minimizer Module &#8212; jetset 1.0.a documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.0.a',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -33,8 +27,7 @@
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
     <div class="container">
@@ -71,9 +64,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 </ul>
@@ -186,9 +179,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physcal setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
 </ul>
@@ -316,13 +309,13 @@ and fluxes</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.fit_SED.html#jetset.minimizer.fit_SED" title="jetset.minimizer.fit_SED"><code class="xref py py-obj docutils literal"><span class="pre">fit_SED</span></code></a>(fit_Model,&nbsp;sed_data,&nbsp;nu_fit_start,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.fit_SED.html#jetset.minimizer.fit_SED" title="jetset.minimizer.fit_SED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_SED</span></code></a>(fit_Model,&nbsp;sed_data,&nbsp;nu_fit_start,&nbsp;…)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">eval_SED</span></code></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_SED</span></code></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">residuals_SED</span></code></td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">residuals_SED</span></code></td>
 <td></td>
 </tr>
 </tbody>
@@ -340,7 +333,7 @@ and fluxes</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.fit_SED.html#jetset.minimizer.fit_SED" title="jetset.minimizer.fit_SED"><code class="xref py py-obj docutils literal"><span class="pre">fit_SED</span></code></a>(fit_Model,&nbsp;sed_data,&nbsp;nu_fit_start,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.fit_SED.html#jetset.minimizer.fit_SED" title="jetset.minimizer.fit_SED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_SED</span></code></a>(fit_Model,&nbsp;sed_data,&nbsp;nu_fit_start,&nbsp;…)</td>
 <td></td>
 </tr>
 </tbody>
@@ -354,22 +347,22 @@ and fluxes</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.FitResults.html#jetset.minimizer.FitResults" title="jetset.minimizer.FitResults"><code class="xref py py-obj docutils literal"><span class="pre">FitResults</span></code></a>(name,&nbsp;mm,&nbsp;parameters,&nbsp;calls,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.FitResults.html#jetset.minimizer.FitResults" title="jetset.minimizer.FitResults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FitResults</span></code></a>(name,&nbsp;mm,&nbsp;parameters,&nbsp;calls,&nbsp;…)</td>
 <td>Class to store the fit results</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.minimizer.Minimizer.html#jetset.minimizer.Minimizer" title="jetset.minimizer.Minimizer"><code class="xref py py-obj docutils literal"><span class="pre">Minimizer</span></code></a>(model)</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.minimizer.Minimizer.html#jetset.minimizer.Minimizer" title="jetset.minimizer.Minimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Minimizer</span></code></a>(model)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.LSMinimizer.html#jetset.minimizer.LSMinimizer" title="jetset.minimizer.LSMinimizer"><code class="xref py py-obj docutils literal"><span class="pre">LSMinimizer</span></code></a>(model)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.LSMinimizer.html#jetset.minimizer.LSMinimizer" title="jetset.minimizer.LSMinimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LSMinimizer</span></code></a>(model)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.minimizer.LSBMinimizer.html#jetset.minimizer.LSBMinimizer" title="jetset.minimizer.LSBMinimizer"><code class="xref py py-obj docutils literal"><span class="pre">LSBMinimizer</span></code></a>(model)</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.minimizer.LSBMinimizer.html#jetset.minimizer.LSBMinimizer" title="jetset.minimizer.LSBMinimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LSBMinimizer</span></code></a>(model)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.MinutiMinimizer.html#jetset.minimizer.MinutiMinimizer" title="jetset.minimizer.MinutiMinimizer"><code class="xref py py-obj docutils literal"><span class="pre">MinutiMinimizer</span></code></a>(model)</td>
+<tr class="row-odd"><td><a class="reference internal" href="jetset.minimizer.MinutiMinimizer.html#jetset.minimizer.MinutiMinimizer" title="jetset.minimizer.MinutiMinimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MinutiMinimizer</span></code></a>(model)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="jetset.minimizer.ModelMinimizer.html#jetset.minimizer.ModelMinimizer" title="jetset.minimizer.ModelMinimizer"><code class="xref py py-obj docutils literal"><span class="pre">ModelMinimizer</span></code></a>(minimizer_type)</td>
+<tr class="row-even"><td><a class="reference internal" href="jetset.minimizer.ModelMinimizer.html#jetset.minimizer.ModelMinimizer" title="jetset.minimizer.ModelMinimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ModelMinimizer</span></code></a>(minimizer_type)</td>
 <td></td>
 </tr>
 </tbody>
@@ -377,7 +370,7 @@ and fluxes</p>
 </div>
 <div class="section" id="class-inheritance-diagram">
 <h2>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this headline">¶</a></h2>
-<img src="../_images/inheritance-63841c2df10c297c68ad9643dda3afaf7e07353a.png" alt="Inheritance diagram of jetset.minimizer.FitResults, jetset.minimizer.Minimizer, jetset.minimizer.LSMinimizer, jetset.minimizer.LSBMinimizer, jetset.minimizer.MinutiMinimizer, jetset.minimizer.ModelMinimizer" usemap="#inheritancee616589577" class="inheritance"/>
+<div class="graphviz"><img src="../_images/inheritance-63841c2df10c297c68ad9643dda3afaf7e07353a.png" alt="Inheritance diagram of jetset.minimizer.FitResults, jetset.minimizer.Minimizer, jetset.minimizer.LSMinimizer, jetset.minimizer.LSBMinimizer, jetset.minimizer.MinutiMinimizer, jetset.minimizer.ModelMinimizer" usemap="#inheritancee616589577" class="inheritance graphviz" /></div>
 <map id="inheritancee616589577" name="inheritancee616589577">
 <area shape="rect" id="node1" href="jetset.minimizer.FitResults.html#jetset.minimizer.FitResults" target="_top" title="Class to store the fit results " alt="" coords="23,103,105,129"/>
 <area shape="rect" id="node2" href="jetset.minimizer.LSBMinimizer.html#jetset.minimizer.LSBMinimizer" target="_top" title="LSBMinimizer" alt="" coords="176,5,280,30"/>
@@ -385,8 +378,7 @@ and fluxes</p>
 <area shape="rect" id="node4" href="jetset.minimizer.LSMinimizer.html#jetset.minimizer.LSMinimizer" target="_top" title="LSMinimizer" alt="" coords="180,54,276,79"/>
 <area shape="rect" id="node5" href="jetset.minimizer.MinutiMinimizer.html#jetset.minimizer.MinutiMinimizer" target="_top" title="MinutiMinimizer" alt="" coords="171,103,285,129"/>
 <area shape="rect" id="node6" href="jetset.minimizer.ModelMinimizer.html#jetset.minimizer.ModelMinimizer" target="_top" title="ModelMinimizer" alt="" coords="6,5,122,30"/>
-</map>
-</div>
+</map></div>
 </div>
 
 
@@ -402,7 +394,7 @@ and fluxes</p>
     </p>
     <p>
         &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>
