@@ -89,7 +89,7 @@ Install requirements running on the command line:
 
     pip install -r requirements.txt ``
 
-Install SWIG (http://www.swig.org/) following one of the following methods:
+**if pip fails to install swig you can try one of the following methods:**
 
     - on linux Ubuntu:
 

@@ -65,8 +65,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a><ul>
@@ -154,8 +155,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/fit_example.html">Fit User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a><ul>
@@ -1610,26 +1612,51 @@
 <div class="viewcode-block" id="Jet.get_emiss_lim"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.get_emiss_lim">[docs]</a>    <span class="k">def</span> <span class="nf">get_emiss_lim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">emiss_lim</span></div>
 
-<div class="viewcode-block" id="Jet.set_IC_nu_size"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.set_IC_nu_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_IC_nu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">nu_IC_size</span><span class="o">=</span><span class="n">val</span></div>
+
         <span class="c1">#BlazarSED.build_photons(self._blob)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">IC_nu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">nu_IC_size</span>
+
+    <span class="nd">@IC_nu_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">IC_nu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_IC_nu_size</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Jet.get_IC_nu_size"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.get_IC_nu_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_IC_nu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">nu_IC_size</span></div>
 
-<div class="viewcode-block" id="Jet.set_seed_nu_size"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.set_seed_nu_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_seed_nu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">nu_seed_size</span><span class="o">=</span><span class="n">val</span></div>
-        <span class="c1">#BlazarSED.build_photons(self._blob)</span>
+<div class="viewcode-block" id="Jet.set_IC_nu_size"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.set_IC_nu_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_IC_nu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;value can not exceed 1000&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">nu_IC_size</span> <span class="o">=</span> <span class="n">val</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nu_seed_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">nu_seed_size</span>
 
 <div class="viewcode-block" id="Jet.get_seed_nu_size"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.get_seed_nu_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_seed_nu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">nu_seed_size</span></div>
 
+    <span class="nd">@nu_seed_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">nu_seed_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_seed_nu_size</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Jet.set_seed_nu_size"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.set_seed_nu_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_seed_nu_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">val</span><span class="o">&gt;</span><span class="mi">1000</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;value can not exceed 1000&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">nu_seed_size</span><span class="o">=</span><span class="n">val</span></div>
+
+
+
+
+
 <div class="viewcode-block" id="Jet.set_gamma_grid_size"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.set_gamma_grid_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_gamma_grid_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">electron_distribution</span><span class="o">.</span><span class="n">set_grid_size</span><span class="p">(</span><span class="n">gamma_grid_size</span><span class="o">=</span><span class="n">val</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="Jet.get_gamma_grid_size"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.get_gamma_grid_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_gamma_grid_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">gamma_grid_size</span></div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">gamma_grid_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">gamma_grid_size</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nu_min</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1767,12 +1794,12 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;electron distribution:&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; type: </span><span class="si">%s</span><span class="s2">  &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_electron_distribution_name</span><span class="p">))</span>
-        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot; electron energy grid size: &quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">get_gamma_grid_size</span><span class="p">())</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot; electron energy grid size: &quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma_grid_size</span><span class="p">)</span>
         <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot; gmin grid : </span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">gmin_griglia</span><span class="p">)</span>
         <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot; gmax grid : </span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">gmax_griglia</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;radiative fields:&#39;</span><span class="p">)</span>
-        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot; seed photons grid size: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_seed_nu_size</span><span class="p">())</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot; seed photons grid size: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu_seed_size</span><span class="p">)</span>
         <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot; IC emission grid size: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_IC_nu_size</span><span class="p">())</span>
         <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39; source emissivity lower bound :  </span><span class="si">%e</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">emiss_lim</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; spectral components:&#39;</span><span class="p">)</span>

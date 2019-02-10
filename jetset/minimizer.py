@@ -404,6 +404,11 @@ class ModelMinimizer(object):
                                                  self.loglog,
                                                  self.UL)
 
+        #msk1 = self.nu_fit > nu_fit_start
+        #msk2 = self.nu_fit < nu_fit_stop
+
+        #res_bestfit=res_bestfit[msk1*msk2]
+
         if loglog == True:
             fit_Model.SED.fill(nu_residuals=np.power(10, self.nu_fit), residuals=res_bestfit)
         else:
@@ -696,6 +701,7 @@ class MinutiMinimizer(Minimizer):
             pedantic=False,
             frontend=None,
             errordef=1,
+
             **kwdarg)
 
     def chisq_func(self, *p):

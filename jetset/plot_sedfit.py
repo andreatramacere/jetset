@@ -526,14 +526,22 @@ class  PlotSED (object):
                 
         
 
-    def add_residual_plot(self,model,data,label=None,color=None,filter_UL=True):
+    def add_residual_plot(self,model,data,label=None,color=None,filter_UL=True,fit_range=None):
 
         if self.counter_res == 0:
             self.add_res_zeroline()
-
+        #print('bbbbb')
         if data is not None:
+
             x,y=model.get_residuals(log_log=True,data=data,filter_UL=filter_UL)
 
+            if fit_range is not None:
+                msk1 = x<fit_range[1]
+                msk2 =x>fit_range[0]
+
+                x=x[msk1*msk2]
+                y=y[msk1*msk2]
+            #print('aaaaaaa',fit_range,x)
             line = self.resplot.errorbar(x, y, yerr=np.ones(x.size), fmt='+',color=color)
             self.lines_res_list.append(line)
             self.counter_res += 1
