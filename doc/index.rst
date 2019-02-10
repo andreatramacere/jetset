@@ -1,8 +1,8 @@
 .. JetSeT documentation master file
 
-#####################
+
 JetSeT Documentation
-####################
+====================
 
 .. image:: _static/logo_large.png
    :width: 600px
@@ -12,11 +12,21 @@ JetSeT Documentation
 :Author: `Andrea Tramacere <andrea.tramacere@gmail.com>`_
 
 
-This page provides the documentation for the  ``JetSeT`` package, a framework providing tools for:
+``JetSeT is``  an open source  C/Python   framework  to reproduce radiative and accelerative processes acting in relativistic jets,
+allowing to fit the numerical models to observed data. The main features of this framework are:
 
-* reproducing radiative and accelerative process acting in relativistic jets
-* modeling and fitting multiwavelength SEDs
-* handling  observed data
+ * handling observed data: re-binning, definition of data sets, bindings to astropy tables and quantities
+   definition of complex numerical radiative scenarios: Synchrotron Self-Compton (SSC), external Compton (EC) and EC
+   against the CMB
+
+ * Constraining of the model in the pre-fitting stage, based on accurate  and already published phenomenological trends.
+   In particular, starting from phenomenological parameters, such as spectral indices, peak fluxes and frequencies, and
+   spectral  curvatures, that the code evaluates automatically, the pre-fitting algorithm is able to provide a good
+   starting model,following the phenomenological trends that I have implemented. fitting of multiwavelength SEDs using
+   both frequentist approach (iminuit) and bayesian MCMC sampling (emcee)
+
+ * Self-consistent temporal evolution of the plasma under the effect of radiative and accelerative processes, both first
+   order and second order (stochastic acceleration) processes.
 
 
 
@@ -27,7 +37,7 @@ This page provides the documentation for the  ``JetSeT`` package, a framework pr
 
 
 Documentation
----------------------
+-------------
 
 .. toctree::
    :maxdepth: 1
