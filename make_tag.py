@@ -86,9 +86,10 @@ def main(argv=None):
     args = parser.parse_args()
 
 
-    update_version(args.version)
+
     if args.push_message is not None:
         do_remote_push(args.push_message)
+    update_version(args.version)
     if args.do_remote_tag==True:
         do_remote_tag(args.version)
 
