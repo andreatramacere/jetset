@@ -61,12 +61,23 @@ def do_remote_tag(version):
         except:
             pass
 
-def do_remote_push(message):
+def do_remote_push():
+    l=[]
+
+    l.append(['git push origin py23'])
+    l.append(['git push origin-github py23'])
+    res = subprocess.call(l[0], shell=True)
+    for  i in l[1::]:
+        try:
+            res = subprocess.call(i, shell=True)
+        except:
+            pass
+
+def do_commit(message):
     l=[]
     l.append(["git add . "])
     l.append(['''git commit -m '%s' ''' % (message)])
-    l.append(['git push origin py23'])
-    l.append(['git push origin-github py23'])
+
 
     res = subprocess.call(l[0], shell=True)
     for  i in l[1::]:
@@ -74,6 +85,7 @@ def do_remote_push(message):
             res = subprocess.call(i, shell=True)
         except:
             pass
+
 
 
 def main(argv=None):
@@ -85,11 +97,14 @@ def main(argv=None):
 
     args = parser.parse_args()
 
+    if args.push_message is not None:
+        do_commit(args.push_message)
 
+    update_version(args.version)
 
     if args.push_message is not None:
-        do_remote_push(args.push_message)
-    update_version(args.version)
+        do_remote_push()
+
     if args.do_remote_tag==True:
         do_remote_tag(args.version)
 
