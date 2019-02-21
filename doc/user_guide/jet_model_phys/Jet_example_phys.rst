@@ -34,7 +34,7 @@ For a list of possible distribution you can run the command
 
 .. parsed-literal::
 
-    lp: log-parabola
+    lp: log-parabola: $K*\gamma^p$
     pl: powerlaw
     lppl: log-parabola with low-energy powerlaw branch
     lpep: log-parabola defined by peak energy
@@ -43,6 +43,8 @@ For a list of possible distribution you can run the command
     spitkov: 
     lppl_pile_up: 
     bkn_pile_up: 
+
+
 
 
 The parameters of the model are accessible throug the instruction
@@ -155,6 +157,128 @@ assume you want to change some of the parameters in your model, you can use two 
     my_jet.parameters.B.val=0.2
     my_jet.parameters.r.val=0.4
 
+invetigating the electron distribution
+--------------------------------------
+
+.. code:: ipython3
+
+    my_jet.show_electron_distribution()
+
+
+.. parsed-literal::
+
+    -------------------------------------------------------------------------------------------------------------------
+    electron distribution:
+     type: lppl  
+     electron energy grid size:  1001
+     gmin grid : 2.000000e+00
+     gmax grid : 1.000000e+06
+    
+    -------------------------------------------------------------------------------------------------------------------
+    model parameters:
+     Name             | Type                 | Units            | value         | phys. boundaries              | log
+    -------------------------------------------------------------------------------------------------------------------
+     N                | electron_density     | cm^-3            | +1.000000e+03 | [+0.000000e+00,No           ] | False 
+     gamma0_log_parab | turn-over-energy     | Lorentz-factor   | +5.000000e+03 | [+1.000000e+00,+1.000000e+08] | False 
+     gmax             | high-energy-cut-off  | Lorentz-factor   | +1.000000e+08 | [+1.000000e+00,+1.000000e+15] | False 
+     gmin             | low-energy-cut-off   | Lorentz-factor   | +1.000000e+02 | [+1.000000e+00,+1.000000e+05] | False 
+     r                | spectral_curvature   |                  | +4.000000e-01 | [-1.500000e+01,+1.500000e+01] | False 
+     s                | LE_spectral_slope    |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01] | False 
+    -------------------------------------------------------------------------------------------------------------------
+
+
+.. code:: ipython3
+
+    p=my_jet.electron_distribution.plot()
+
+
+
+.. image:: Jet_example_phys_files/Jet_example_phys_21_0.png
+
+
+.. code:: ipython3
+
+    p=my_jet.electron_distribution.plot3p()
+
+
+
+.. image:: Jet_example_phys_files/Jet_example_phys_22_0.png
+
+
+.. code:: ipython3
+
+    import numpy as np
+    p=None
+    for r in np.linspace(0.3,1,10):
+        my_jet.parameters.r.val=r
+        if p is None:
+            p=my_jet.electron_distribution.plot3p()
+        else:
+            p=my_jet.electron_distribution.plot3p(p)
+
+
+
+.. image:: Jet_example_phys_files/Jet_example_phys_23_0.png
+
+
+using log values for electron distribution parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: ipython3
+
+    my_jet=Jet(name='test',electron_distribution='lppl',electron_distribution_log_values=True)
+    my_jet.show_model()
+
+
+.. parsed-literal::
+
+    
+    -------------------------------------------------------------------------------------------------------------------
+    jet model description
+    -------------------------------------------------------------------------------------------------------------------
+    name: test  
+    
+    electron distribution:
+     type: lppl  
+     electron energy grid size:  1001
+     gmin grid : 2.000000e+00
+     gmax grid : 1.000000e+06
+    
+    radiative fields:
+     seed photons grid size:  100
+     IC emission grid size:  50
+     source emissivity lower bound :  1.000000e-120
+     spectral components:
+       name:Sum, state: on
+       name:Sync, state: self-abs
+       name:SSC, state: on
+    
+    SED info:
+     nu grid size :200
+     nu mix (Hz): 1.000000e+06
+     nu max (Hz): 1.000000e+30
+    
+    flux plot lower bound   :  1.000000e-30
+    
+    -------------------------------------------------------------------------------------------------------------------
+    model parameters:
+     Name             | Type                 | Units            | value         | phys. boundaries              | log
+    -------------------------------------------------------------------------------------------------------------------
+     B                | magnetic_field       | G                | +1.000000e-01 | [+0.000000e+00,No           ] | False 
+     N                | electron_density     | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ] | False 
+     R                | region_size          | cm               | +1.569897e+01 | [+0.000000e+00,+3.000000e+01] | True 
+     beam_obj         | beaming              |                  | +1.000000e+01 | [+1.000000e+00,No           ] | False 
+     gamma0_log_parab | turn-over-energy     | Lorentz-factor   | +4.000000e+00 | [+0.000000e+00,+8.000000e+00] | True 
+     gmax             | high-energy-cut-off  | Lorentz-factor   | +6.000000e+00 | [+0.000000e+00,+1.500000e+01] | True 
+     gmin             | low-energy-cut-off   | Lorentz-factor   | +3.010300e-01 | [+0.000000e+00,+5.000000e+00] | True 
+     r                | spectral_curvature   |                  | +4.000000e-01 | [-1.500000e+01,+1.500000e+01] | False 
+     s                | LE_spectral_slope    |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01] | False 
+     z_cosm           | redshift             |                  | +1.000000e-01 | [+0.000000e+00,No           ] | False 
+    -------------------------------------------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------------------------------------------
+
+
+
 evaluate and plot the model
 ---------------------------
 
@@ -176,13 +300,13 @@ instruction
     model parameters:
      Name             | Type                 | Units            | value         | phys. boundaries              | log
     -------------------------------------------------------------------------------------------------------------------
-     B                | magnetic_field       | G                | +2.000000e-01 | [+0.000000e+00,No           ] | False 
-     N                | electron_density     | cm^-3            | +1.000000e+03 | [+0.000000e+00,No           ] | False 
-     R                | region_size          | cm               | +1.450000e+01 | [+0.000000e+00,+3.000000e+01] | True 
+     B                | magnetic_field       | G                | +1.000000e-01 | [+0.000000e+00,No           ] | False 
+     N                | electron_density     | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ] | False 
+     R                | region_size          | cm               | +1.569897e+01 | [+0.000000e+00,+3.000000e+01] | True 
      beam_obj         | beaming              |                  | +1.000000e+01 | [+1.000000e+00,No           ] | False 
-     gamma0_log_parab | turn-over-energy     | Lorentz-factor   | +5.000000e+03 | [+1.000000e+00,+1.000000e+08] | False 
-     gmax             | high-energy-cut-off  | Lorentz-factor   | +1.000000e+08 | [+1.000000e+00,+1.000000e+15] | False 
-     gmin             | low-energy-cut-off   | Lorentz-factor   | +1.000000e+02 | [+1.000000e+00,+1.000000e+05] | False 
+     gamma0_log_parab | turn-over-energy     | Lorentz-factor   | +4.000000e+00 | [+0.000000e+00,+8.000000e+00] | True 
+     gmax             | high-energy-cut-off  | Lorentz-factor   | +6.000000e+00 | [+0.000000e+00,+1.500000e+01] | True 
+     gmin             | low-energy-cut-off   | Lorentz-factor   | +3.010300e-01 | [+0.000000e+00,+5.000000e+00] | True 
      r                | spectral_curvature   |                  | +4.000000e-01 | [-1.500000e+01,+1.500000e+01] | False 
      s                | LE_spectral_slope    |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01] | False 
      z_cosm           | redshift             |                  | +1.000000e-01 | [+0.000000e+00,No           ] | False 
@@ -200,7 +324,7 @@ and plot the corresponding SED:
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_23_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_32_0.png
 
 
 alternatively, you can call the ``plot_model`` method without passing a
@@ -213,7 +337,7 @@ alternatively, you can call the ``plot_model`` method without passing a
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_25_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_34_0.png
 
 
 the ``my_plot`` objet returned will be built on the fly by the
@@ -242,6 +366,14 @@ to compare the same model after changing a parameter
 
 .. code:: ipython3
 
+    my_jet=Jet(name='test',electron_distribution='lppl',)
+    my_jet.set_par('B',val=0.2)
+    my_jet.set_par('gamma0_log_parab',val=5E3)
+    my_jet.set_par('gmin',val=1E2)
+    my_jet.set_par('gmax',val=1E8)
+    my_jet.set_par('R',val=14.5)
+    my_jet.set_par('N',val=1E3)
+    
     my_jet.parameters.gamma0_log_parab.val=1E4
     my_jet.eval()
     my_plot=my_jet.plot_model(label='gamma0_log_parab=1E4',comp='Sum')
@@ -252,7 +384,7 @@ to compare the same model after changing a parameter
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_30_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_39_0.png
 
 
 saving a plot
@@ -410,7 +542,7 @@ flux at the given frequency
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_54_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_63_0.png
 
 
 as you can see, the sychrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1.
@@ -683,7 +815,7 @@ Broad Line Region
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_85_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_94_0.png
 
 
 Dusty Torus
@@ -766,7 +898,7 @@ Dusty Torus
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_88_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_97_0.png
 
 
 .. code:: ipython3
@@ -778,6 +910,6 @@ Dusty Torus
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_89_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_98_0.png
 
 

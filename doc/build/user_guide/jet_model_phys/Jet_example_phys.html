@@ -114,6 +114,10 @@
 <li><a class="reference internal" href="#">physical setup</a><ul>
 <li><a class="reference internal" href="#basic-setup">basic setup</a></li>
 <li><a class="reference internal" href="#setting-the-parameters">setting the parameters</a></li>
+<li><a class="reference internal" href="#invetigating-the-electron-distribution">invetigating the electron distribution</a><ul>
+<li><a class="reference internal" href="#using-log-values-for-electron-distribution-parameters">using log values for electron distribution parameters</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#evaluate-and-plot-the-model">evaluate and plot the model</a></li>
 <li><a class="reference internal" href="#comparing-models-on-the-same-plot">comparing models on the same plot</a></li>
 <li><a class="reference internal" href="#saving-a-plot">saving a plot</a></li>
@@ -238,6 +242,10 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">jet model: physical setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#basic-setup">basic setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setting-the-parameters">setting the parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#invetigating-the-electron-distribution">invetigating the electron distribution</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#using-log-values-for-electron-distribution-parameters">using log values for electron distribution parameters</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#evaluate-and-plot-the-model">evaluate and plot the model</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#comparing-models-on-the-same-plot">comparing models on the same plot</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#saving-a-plot">saving a plot</a></li>
@@ -298,17 +306,17 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Jet</span><span class="o">.</span><span class="n">available_electron_distributions</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lp</span><span class="p">:</span> <span class="n">log</span><span class="o">-</span><span class="n">parabola</span>
-<span class="n">pl</span><span class="p">:</span> <span class="n">powerlaw</span>
-<span class="n">lppl</span><span class="p">:</span> <span class="n">log</span><span class="o">-</span><span class="n">parabola</span> <span class="k">with</span> <span class="n">low</span><span class="o">-</span><span class="n">energy</span> <span class="n">powerlaw</span> <span class="n">branch</span>
-<span class="n">lpep</span><span class="p">:</span> <span class="n">log</span><span class="o">-</span><span class="n">parabola</span> <span class="n">defined</span> <span class="n">by</span> <span class="n">peak</span> <span class="n">energy</span>
-<span class="n">plc</span><span class="p">:</span> <span class="n">powerlaw</span> <span class="k">with</span> <span class="n">cut</span><span class="o">-</span><span class="n">off</span>
-<span class="n">bkn</span><span class="p">:</span> <span class="n">broken</span> <span class="n">powerlaw</span>
-<span class="n">spitkov</span><span class="p">:</span>
-<span class="n">lppl_pile_up</span><span class="p">:</span>
-<span class="n">bkn_pile_up</span><span class="p">:</span>
-</pre></div>
-</div>
+<pre class="literal-block">
+lp: log-parabola: $K*gamma^p$
+pl: powerlaw
+lppl: log-parabola with low-energy powerlaw branch
+lpep: log-parabola defined by peak energy
+plc: powerlaw with cut-off
+bkn: broken powerlaw
+spitkov:
+lppl_pile_up:
+bkn_pile_up:
+</pre>
 <p>The parameters of the model are accessible throug the instruction</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
 </pre></div>
@@ -406,6 +414,103 @@ will be discussed in the :ref:`jet_numerical_guide’ section</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="invetigating-the-electron-distribution">
+<h2>invetigating the electron distribution<a class="headerlink" href="#invetigating-the-electron-distribution" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">show_electron_distribution</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-------------------------------------------------------------------------------------------------------------------</span>
+<span class="n">electron</span> <span class="n">distribution</span><span class="p">:</span>
+ <span class="nb">type</span><span class="p">:</span> <span class="n">lppl</span>
+ <span class="n">electron</span> <span class="n">energy</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">1001</span>
+ <span class="n">gmin</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">2.000000e+00</span>
+ <span class="n">gmax</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">1.000000e+06</span>
+
+<span class="o">-------------------------------------------------------------------------------------------------------------------</span>
+<span class="n">model</span> <span class="n">parameters</span><span class="p">:</span>
+ <span class="n">Name</span>             <span class="o">|</span> <span class="n">Type</span>                 <span class="o">|</span> <span class="n">Units</span>            <span class="o">|</span> <span class="n">value</span>         <span class="o">|</span> <span class="n">phys</span><span class="o">.</span> <span class="n">boundaries</span>              <span class="o">|</span> <span class="n">log</span>
+<span class="o">-------------------------------------------------------------------------------------------------------------------</span>
+ <span class="n">N</span>                <span class="o">|</span> <span class="n">electron_density</span>     <span class="o">|</span> <span class="n">cm</span><span class="o">^-</span><span class="mi">3</span>            <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e+03</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="n">No</span>           <span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">gamma0_log_parab</span> <span class="o">|</span> <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span>     <span class="o">|</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span>   <span class="o">|</span> <span class="o">+</span><span class="mf">5.000000e+03</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">1.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">1.000000e+08</span><span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">gmax</span>             <span class="o">|</span> <span class="n">high</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span>  <span class="o">|</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span>   <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e+08</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">1.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">1.000000e+15</span><span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">gmin</span>             <span class="o">|</span> <span class="n">low</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span>   <span class="o">|</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span>   <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e+02</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">1.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">1.000000e+05</span><span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">r</span>                <span class="o">|</span> <span class="n">spectral_curvature</span>   <span class="o">|</span>                  <span class="o">|</span> <span class="o">+</span><span class="mf">4.000000e-01</span> <span class="o">|</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.500000e+01</span><span class="p">,</span><span class="o">+</span><span class="mf">1.500000e+01</span><span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">s</span>                <span class="o">|</span> <span class="n">LE_spectral_slope</span>    <span class="o">|</span>                  <span class="o">|</span> <span class="o">+</span><span class="mf">2.000000e+00</span> <span class="o">|</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.000000e+01</span><span class="p">,</span><span class="o">+</span><span class="mf">1.000000e+01</span><span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+<span class="o">-------------------------------------------------------------------------------------------------------------------</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">electron_distribution</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../../_images/Jet_example_phys_21_0.png" src="../../_images/Jet_example_phys_21_0.png" />
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">electron_distribution</span><span class="o">.</span><span class="n">plot3p</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../../_images/Jet_example_phys_22_0.png" src="../../_images/Jet_example_phys_22_0.png" />
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">p</span><span class="o">=</span><span class="kc">None</span>
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">my_jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">r</span>
+    <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">electron_distribution</span><span class="o">.</span><span class="n">plot3p</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">electron_distribution</span><span class="o">.</span><span class="n">plot3p</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/Jet_example_phys_23_0.png" src="../../_images/Jet_example_phys_23_0.png" />
+<div class="section" id="using-log-values-for-electron-distribution-parameters">
+<h3>using log values for electron distribution parameters<a class="headerlink" href="#using-log-values-for-electron-distribution-parameters" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="n">electron_distribution_log_values</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">show_model</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-------------------------------------------------------------------------------------------------------------------</span>
+<span class="n">jet</span> <span class="n">model</span> <span class="n">description</span>
+<span class="o">-------------------------------------------------------------------------------------------------------------------</span>
+<span class="n">name</span><span class="p">:</span> <span class="n">test</span>
+
+<span class="n">electron</span> <span class="n">distribution</span><span class="p">:</span>
+ <span class="nb">type</span><span class="p">:</span> <span class="n">lppl</span>
+ <span class="n">electron</span> <span class="n">energy</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">1001</span>
+ <span class="n">gmin</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">2.000000e+00</span>
+ <span class="n">gmax</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">1.000000e+06</span>
+
+<span class="n">radiative</span> <span class="n">fields</span><span class="p">:</span>
+ <span class="n">seed</span> <span class="n">photons</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">100</span>
+ <span class="n">IC</span> <span class="n">emission</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">50</span>
+ <span class="n">source</span> <span class="n">emissivity</span> <span class="n">lower</span> <span class="n">bound</span> <span class="p">:</span>  <span class="mf">1.000000e-120</span>
+ <span class="n">spectral</span> <span class="n">components</span><span class="p">:</span>
+   <span class="n">name</span><span class="p">:</span><span class="n">Sum</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">on</span>
+   <span class="n">name</span><span class="p">:</span><span class="n">Sync</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="bp">self</span><span class="o">-</span><span class="nb">abs</span>
+   <span class="n">name</span><span class="p">:</span><span class="n">SSC</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">on</span>
+
+<span class="n">SED</span> <span class="n">info</span><span class="p">:</span>
+ <span class="n">nu</span> <span class="n">grid</span> <span class="n">size</span> <span class="p">:</span><span class="mi">200</span>
+ <span class="n">nu</span> <span class="n">mix</span> <span class="p">(</span><span class="n">Hz</span><span class="p">):</span> <span class="mf">1.000000e+06</span>
+ <span class="n">nu</span> <span class="nb">max</span> <span class="p">(</span><span class="n">Hz</span><span class="p">):</span> <span class="mf">1.000000e+30</span>
+
+<span class="n">flux</span> <span class="n">plot</span> <span class="n">lower</span> <span class="n">bound</span>   <span class="p">:</span>  <span class="mf">1.000000e-30</span>
+
+<span class="o">-------------------------------------------------------------------------------------------------------------------</span>
+<span class="n">model</span> <span class="n">parameters</span><span class="p">:</span>
+ <span class="n">Name</span>             <span class="o">|</span> <span class="n">Type</span>                 <span class="o">|</span> <span class="n">Units</span>            <span class="o">|</span> <span class="n">value</span>         <span class="o">|</span> <span class="n">phys</span><span class="o">.</span> <span class="n">boundaries</span>              <span class="o">|</span> <span class="n">log</span>
+<span class="o">-------------------------------------------------------------------------------------------------------------------</span>
+ <span class="n">B</span>                <span class="o">|</span> <span class="n">magnetic_field</span>       <span class="o">|</span> <span class="n">G</span>                <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e-01</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="n">No</span>           <span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">N</span>                <span class="o">|</span> <span class="n">electron_density</span>     <span class="o">|</span> <span class="n">cm</span><span class="o">^-</span><span class="mi">3</span>            <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e+02</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="n">No</span>           <span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">R</span>                <span class="o">|</span> <span class="n">region_size</span>          <span class="o">|</span> <span class="n">cm</span>               <span class="o">|</span> <span class="o">+</span><span class="mf">1.569897e+01</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">3.000000e+01</span><span class="p">]</span> <span class="o">|</span> <span class="kc">True</span>
+ <span class="n">beam_obj</span>         <span class="o">|</span> <span class="n">beaming</span>              <span class="o">|</span>                  <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e+01</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">1.000000e+00</span><span class="p">,</span><span class="n">No</span>           <span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">gamma0_log_parab</span> <span class="o">|</span> <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span>     <span class="o">|</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span>   <span class="o">|</span> <span class="o">+</span><span class="mf">4.000000e+00</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">8.000000e+00</span><span class="p">]</span> <span class="o">|</span> <span class="kc">True</span>
+ <span class="n">gmax</span>             <span class="o">|</span> <span class="n">high</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span>  <span class="o">|</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span>   <span class="o">|</span> <span class="o">+</span><span class="mf">6.000000e+00</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">1.500000e+01</span><span class="p">]</span> <span class="o">|</span> <span class="kc">True</span>
+ <span class="n">gmin</span>             <span class="o">|</span> <span class="n">low</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span>   <span class="o">|</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span>   <span class="o">|</span> <span class="o">+</span><span class="mf">3.010300e-01</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">5.000000e+00</span><span class="p">]</span> <span class="o">|</span> <span class="kc">True</span>
+ <span class="n">r</span>                <span class="o">|</span> <span class="n">spectral_curvature</span>   <span class="o">|</span>                  <span class="o">|</span> <span class="o">+</span><span class="mf">4.000000e-01</span> <span class="o">|</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.500000e+01</span><span class="p">,</span><span class="o">+</span><span class="mf">1.500000e+01</span><span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">s</span>                <span class="o">|</span> <span class="n">LE_spectral_slope</span>    <span class="o">|</span>                  <span class="o">|</span> <span class="o">+</span><span class="mf">2.000000e+00</span> <span class="o">|</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.000000e+01</span><span class="p">,</span><span class="o">+</span><span class="mf">1.000000e+01</span><span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">z_cosm</span>           <span class="o">|</span> <span class="n">redshift</span>             <span class="o">|</span>                  <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e-01</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="n">No</span>           <span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+<span class="o">-------------------------------------------------------------------------------------------------------------------</span>
+<span class="o">-------------------------------------------------------------------------------------------------------------------</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="section" id="evaluate-and-plot-the-model">
 <h2>evaluate and plot the model<a class="headerlink" href="#evaluate-and-plot-the-model" title="Permalink to this headline">¶</a></h2>
 <p>At this point we can evaluate the emission for this jet model using the
@@ -420,13 +525,13 @@ instruction</p>
 <span class="n">model</span> <span class="n">parameters</span><span class="p">:</span>
  <span class="n">Name</span>             <span class="o">|</span> <span class="n">Type</span>                 <span class="o">|</span> <span class="n">Units</span>            <span class="o">|</span> <span class="n">value</span>         <span class="o">|</span> <span class="n">phys</span><span class="o">.</span> <span class="n">boundaries</span>              <span class="o">|</span> <span class="n">log</span>
 <span class="o">-------------------------------------------------------------------------------------------------------------------</span>
- <span class="n">B</span>                <span class="o">|</span> <span class="n">magnetic_field</span>       <span class="o">|</span> <span class="n">G</span>                <span class="o">|</span> <span class="o">+</span><span class="mf">2.000000e-01</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="n">No</span>           <span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
- <span class="n">N</span>                <span class="o">|</span> <span class="n">electron_density</span>     <span class="o">|</span> <span class="n">cm</span><span class="o">^-</span><span class="mi">3</span>            <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e+03</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="n">No</span>           <span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
- <span class="n">R</span>                <span class="o">|</span> <span class="n">region_size</span>          <span class="o">|</span> <span class="n">cm</span>               <span class="o">|</span> <span class="o">+</span><span class="mf">1.450000e+01</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">3.000000e+01</span><span class="p">]</span> <span class="o">|</span> <span class="kc">True</span>
+ <span class="n">B</span>                <span class="o">|</span> <span class="n">magnetic_field</span>       <span class="o">|</span> <span class="n">G</span>                <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e-01</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="n">No</span>           <span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">N</span>                <span class="o">|</span> <span class="n">electron_density</span>     <span class="o">|</span> <span class="n">cm</span><span class="o">^-</span><span class="mi">3</span>            <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e+02</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="n">No</span>           <span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">R</span>                <span class="o">|</span> <span class="n">region_size</span>          <span class="o">|</span> <span class="n">cm</span>               <span class="o">|</span> <span class="o">+</span><span class="mf">1.569897e+01</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">3.000000e+01</span><span class="p">]</span> <span class="o">|</span> <span class="kc">True</span>
  <span class="n">beam_obj</span>         <span class="o">|</span> <span class="n">beaming</span>              <span class="o">|</span>                  <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e+01</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">1.000000e+00</span><span class="p">,</span><span class="n">No</span>           <span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
- <span class="n">gamma0_log_parab</span> <span class="o">|</span> <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span>     <span class="o">|</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span>   <span class="o">|</span> <span class="o">+</span><span class="mf">5.000000e+03</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">1.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">1.000000e+08</span><span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
- <span class="n">gmax</span>             <span class="o">|</span> <span class="n">high</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span>  <span class="o">|</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span>   <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e+08</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">1.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">1.000000e+15</span><span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
- <span class="n">gmin</span>             <span class="o">|</span> <span class="n">low</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span>   <span class="o">|</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span>   <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e+02</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">1.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">1.000000e+05</span><span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
+ <span class="n">gamma0_log_parab</span> <span class="o">|</span> <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span>     <span class="o">|</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span>   <span class="o">|</span> <span class="o">+</span><span class="mf">4.000000e+00</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">8.000000e+00</span><span class="p">]</span> <span class="o">|</span> <span class="kc">True</span>
+ <span class="n">gmax</span>             <span class="o">|</span> <span class="n">high</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span>  <span class="o">|</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span>   <span class="o">|</span> <span class="o">+</span><span class="mf">6.000000e+00</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">1.500000e+01</span><span class="p">]</span> <span class="o">|</span> <span class="kc">True</span>
+ <span class="n">gmin</span>             <span class="o">|</span> <span class="n">low</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span>   <span class="o">|</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span>   <span class="o">|</span> <span class="o">+</span><span class="mf">3.010300e-01</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="o">+</span><span class="mf">5.000000e+00</span><span class="p">]</span> <span class="o">|</span> <span class="kc">True</span>
  <span class="n">r</span>                <span class="o">|</span> <span class="n">spectral_curvature</span>   <span class="o">|</span>                  <span class="o">|</span> <span class="o">+</span><span class="mf">4.000000e-01</span> <span class="o">|</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.500000e+01</span><span class="p">,</span><span class="o">+</span><span class="mf">1.500000e+01</span><span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
  <span class="n">s</span>                <span class="o">|</span> <span class="n">LE_spectral_slope</span>    <span class="o">|</span>                  <span class="o">|</span> <span class="o">+</span><span class="mf">2.000000e+00</span> <span class="o">|</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.000000e+01</span><span class="p">,</span><span class="o">+</span><span class="mf">1.000000e+01</span><span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
  <span class="n">z_cosm</span>           <span class="o">|</span> <span class="n">redshift</span>             <span class="o">|</span>                  <span class="o">|</span> <span class="o">+</span><span class="mf">1.000000e-01</span> <span class="o">|</span> <span class="p">[</span><span class="o">+</span><span class="mf">0.000000e+00</span><span class="p">,</span><span class="n">No</span>           <span class="p">]</span> <span class="o">|</span> <span class="kc">False</span>
@@ -440,14 +545,14 @@ instruction</p>
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_23_0.png" src="../../_images/Jet_example_phys_23_0.png" />
+<img alt="../../_images/Jet_example_phys_32_0.png" src="../../_images/Jet_example_phys_32_0.png" />
 <p>alternatively, you can call the <code class="docutils literal notranslate"><span class="pre">plot_model</span></code> method without passing a
 <code class="docutils literal notranslate"><span class="pre">Plot</span></code> object</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_plot</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_25_0.png" src="../../_images/Jet_example_phys_25_0.png" />
+<img alt="../../_images/Jet_example_phys_34_0.png" src="../../_images/Jet_example_phys_34_0.png" />
 <p>the <code class="docutils literal notranslate"><span class="pre">my_plot</span></code> objet returned will be built on the fly by the
 <code class="docutils literal notranslate"><span class="pre">plot_model</span></code> method</p>
 <p>if you wanto to have interacitve plot:</p>
@@ -468,7 +573,15 @@ instruction</p>
 <div class="section" id="comparing-models-on-the-same-plot">
 <h2>comparing models on the same plot<a class="headerlink" href="#comparing-models-on-the-same-plot" title="Permalink to this headline">¶</a></h2>
 <p>to compare the same model after changing a parameter</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">gamma0_log_parab</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mf">1E4</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">5E3</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gmin&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E2</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gmax&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E8</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">14.5</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E3</span><span class="p">)</span>
+
+<span class="n">my_jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">gamma0_log_parab</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mf">1E4</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 <span class="n">my_plot</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;gamma0_log_parab=1E4&#39;</span><span class="p">,</span><span class="n">comp</span><span class="o">=</span><span class="s1">&#39;Sum&#39;</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1.0E5</span><span class="p">)</span>
@@ -477,7 +590,7 @@ instruction</p>
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_30_0.png" src="../../_images/Jet_example_phys_30_0.png" />
+<img alt="../../_images/Jet_example_phys_39_0.png" src="../../_images/Jet_example_phys_39_0.png" />
 </div>
 <div class="section" id="saving-a-plot">
 <h2>saving a plot<a class="headerlink" href="#saving-a-plot" title="Permalink to this headline">¶</a></h2>
@@ -584,7 +697,7 @@ flux at the given frequency</p>
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_54_0.png" src="../../_images/Jet_example_phys_54_0.png" />
+<img alt="../../_images/Jet_example_phys_63_0.png" src="../../_images/Jet_example_phys_63_0.png" />
 <p>as you can see, the sychrotron flux at <span class="math notranslate nohighlight">\(10^{15}\)</span> Hz is exactly matching the desired value of <span class="math notranslate nohighlight">\(10^{-14}\)</span> ergs cm-2 s-1.
 Alternatively, the value of N  can be obtained using the rest-frame luminosity and  freqency, using the :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>.Jet.set_N_from_nuLnu()</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">set_N_from_nuLnu</span><span class="p">(</span><span class="n">L_0</span><span class="o">=</span><span class="mf">1E43</span><span class="p">,</span><span class="n">nu_0</span><span class="o">=</span><span class="mf">1E15</span><span class="p">)</span>
@@ -793,7 +906,7 @@ evaluated.</p>
 <span class="n">p</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mi">15</span><span class="p">,</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">x_max</span><span class="o">=</span><span class="mi">27</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_85_0.png" src="../../_images/Jet_example_phys_85_0.png" />
+<img alt="../../_images/Jet_example_phys_94_0.png" src="../../_images/Jet_example_phys_94_0.png" />
 </div>
 <div class="section" id="dusty-torus">
 <h3>Dusty Torus<a class="headerlink" href="#dusty-torus" title="Permalink to this headline">¶</a></h3>
@@ -866,14 +979,14 @@ evaluated.</p>
 <span class="n">p</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mi">15</span><span class="p">,</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">x_max</span><span class="o">=</span><span class="mi">27</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_88_0.png" src="../../_images/Jet_example_phys_88_0.png" />
+<img alt="../../_images/Jet_example_phys_97_0.png" src="../../_images/Jet_example_phys_97_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">add_EC_component</span><span class="p">(</span><span class="s1">&#39;EC_DT&#39;</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 <span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
 <span class="n">p</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mi">15</span><span class="p">,</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">x_max</span><span class="o">=</span><span class="mi">27</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_89_0.png" src="../../_images/Jet_example_phys_89_0.png" />
+<img alt="../../_images/Jet_example_phys_98_0.png" src="../../_images/Jet_example_phys_98_0.png" />
 </div>
 </div>
 </div>
