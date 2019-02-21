@@ -501,7 +501,7 @@ class ModelParameterArray(object):
         
     
     
-    def show_pars(self,getstring=False):
+    def show_pars(self,getstring=False,names_list=None):
         """
         shows the information for all the items in the :attr:`~ModelParameterArray.par_array`
         
@@ -514,7 +514,11 @@ class ModelParameterArray(object):
         text.append( "-------------------------------------------------------------------------------------------------------------------")
        
         for par in self.par_array:
-            text.append( par.get_description(nofields=True))
+            if names_list is not None:
+                if par.name in names_list:
+                    text.append( par.get_description(nofields=True))
+            else:
+                text.append(par.get_description(nofields=True))
         
         text.append( "-------------------------------------------------------------------------------------------------------------------")
         

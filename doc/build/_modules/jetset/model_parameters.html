@@ -715,7 +715,7 @@
         
     
     
-<div class="viewcode-block" id="ModelParameterArray.show_pars"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.show_pars">[docs]</a>    <span class="k">def</span> <span class="nf">show_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">getstring</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ModelParameterArray.show_pars"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.show_pars">[docs]</a>    <span class="k">def</span> <span class="nf">show_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">getstring</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">names_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        shows the information for all the items in the :attr:`~ModelParameterArray.par_array`</span>
 <span class="sd">        </span>
@@ -728,7 +728,11 @@
         <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot;-------------------------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
        
         <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">:</span>
-            <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">par</span><span class="o">.</span><span class="n">get_description</span><span class="p">(</span><span class="n">nofields</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">names_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">par</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">names_list</span><span class="p">:</span>
+                    <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">par</span><span class="o">.</span><span class="n">get_description</span><span class="p">(</span><span class="n">nofields</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">get_description</span><span class="p">(</span><span class="n">nofields</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
         
         <span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot;-------------------------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
         

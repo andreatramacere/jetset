@@ -8,6 +8,7 @@
 *.egg-info
 *.egg
 *.xcodeproj
+*.ipynb_checkpoints
 /build
 develop-eggs
 dist

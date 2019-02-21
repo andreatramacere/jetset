@@ -1564,6 +1564,19 @@ class Jet(Model):
         self.parameters.show_pars()
 
 
+    def show_electron_distribution(self):
+        print(
+            "-------------------------------------------------------------------------------------------------------------------")
+        print('electron distribution:')
+        print(" type: %s  " % (self._electron_distribution_name))
+        print(" electron energy grid size: ", self.gamma_grid_size)
+        print(" gmin grid : %e" % self._blob.gmin_griglia)
+        print(" gmax grid : %e" % self._blob.gmax_griglia)
+        print('')
+        self.parameters.par_array.sort(key=lambda x: x.name, reverse=False)
+
+        self.parameters.show_pars(names_list=self._electron_distribution_dic.keys())
+
     def show_model(self):
         """
         shortcut to :class:`ModelParametersArray.show_pars` method
