@@ -22,7 +22,7 @@ def ordered_dict_representer(self, value):  # can be a lambda if that's what you
     return self.represent_mapping('tag:yaml.org,2002:map', value.items())
 
 
-def update_version(version):
+def update_version_and_label(version):
 
     with open('jetset/pkg_info.json') as fp:
         _info = json.load(fp)
@@ -104,7 +104,8 @@ def main(argv=None):
     if args.push_message is not None:
         do_commit(args.push_message)
 
-    update_version(args.version)
+
+    update_version_and_label(args.version)
 
     if args.push_message is not None:
         do_commit('fixed label in pkg')
