@@ -40,7 +40,7 @@ easy to import from
 2. numpy array in general
 
 once that is clear the data format. The easiest way to undertand the
-data format is to build an empyt table to have a look at the structure
+data format is to build an empty table to have a look at the structure
 of the table:
 
 .. code:: ipython3

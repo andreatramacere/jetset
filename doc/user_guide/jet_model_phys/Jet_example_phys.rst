@@ -7,12 +7,12 @@ physical setup
 ==============
 
 
-In this section we describe how  to buil a model of jet able to reproduce SSC/EC emission processes, using the :class:`.Jet` class from the :mod:`.jet_model` module. to This class thorough a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compoton processes.  
+In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the :class:`.Jet` class from the :mod:`.jet_model` module. to This class thorough a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compoton processes.  
 
 basic setup
 -----------
 
-A jet can be built using the  the :class:`.Jet` class, istanciating a jet object, in the following way:
+A jet can be built using the  the :class:`.Jet` class, istantiating a jet object, in the following way:
 
 .. code:: ipython3
 
