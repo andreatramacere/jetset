@@ -552,7 +552,7 @@ class SEDShape(object):
         
         return plot_obj
 
-    def plot_sahpe_fit(self, plot_obj=None):
+    def plot_shape_fit(self, plot_obj=None):
         if plot_obj is None:
             plot_obj = PlotSED(sed_data=self.sed_data)
 

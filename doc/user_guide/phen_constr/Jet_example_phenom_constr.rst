@@ -535,7 +535,7 @@ Phenomenological model constraining
 .. code:: ipython3
 
     my_shape.IC_fit(fit_range=[21,29],minimizer='minuit')
-    p=my_shape.plot_sahpe_fit()
+    p=my_shape.plot_shape_fit()
 
 
 
