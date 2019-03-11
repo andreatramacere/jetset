@@ -307,19 +307,11 @@
 <p>It is possible to change the size of the grid for the electron
 distribution. It is worth noting that at lower values of the grid size
 the speed will increase, <strong>but it is not recommended to go below 100</strong>.</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>The acutual value of the grid size is returned by the :meth:`.Jet.gamma_grid_size`
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  File &quot;&lt;ipython-input-2-7a59ea1b6b35&gt;&quot;, line 1
-    The acutual value of the grid size is returned by the :meth:`.Jet.gamma_grid_size`
-              ^
-SyntaxError: invalid syntax
-</pre></div>
-</div>
+<p>The actual value of the grid size is returned by the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.gamma_grid_size()</span></code></p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="p">(</span><span class="n">my_jet</span><span class="o">.</span><span class="n">gamma_grid_size</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>and this value can be changed using the method <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.set_gamma_grid_size" title="jetset.jet_model.Jet.set_gamma_grid_size"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.set_gamma_grid_size()</span></code></a>. In the following we show the result for a grid of size=10, as anticiapted the final integration will be not satisfactory</p>
+<p>and this value can be changed using the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.set_gamma_grid_size()</span></code>. In the following we show the result for a grid of size=10, as anticipated the final integration will be not satisfactory</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">set_gamma_grid_size</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 <span class="n">sed_plot</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
@@ -356,7 +348,7 @@ SyntaxError: invalid syntax
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="p">(</span><span class="n">my_jet</span><span class="o">.</span><span class="n">nu_seed_size</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>and this value can be changed using the method <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.set_seed_nu_size" title="jetset.jet_model.Jet.set_seed_nu_size"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.set_seed_nu_size()</span></code></a>. In the following we show the result for a grid of nu_size=10</p>
+<p>and this value can be changed using the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.set_seed_nu_size()</span></code>. In the following we show the result for a grid of nu_size=10</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">nu_seed_size</span><span class="o">=</span><span class="mi">10</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 <span class="n">sed_plot</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>

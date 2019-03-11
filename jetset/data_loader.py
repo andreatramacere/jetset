@@ -1,36 +1,3 @@
-"""
-Moudule: data_loader
-===================================================================
-
-This module contains all the classes necessary to load SED data
-from a file.  The most effective way to import the SED data is to create an object
-instance of :class:`ObsData` class.  
-
-Classes and Inheritance Structure
--------------------------------------------------------------------
-
-.. inheritance-diagram:: BlazarSEDFit.data_loader
-   
-
-
-Classes relations
-----------------------------------------------
-
-.. figure::  classes_data_loader.png    
-   :align:   center     
-
-
-Summary
----------
-.. autosummary::
-    ObsData
-    
-
-Module API
--------------------------------------------------------------------
-"""
-
-
 from __future__ import absolute_import, division, print_function
 
 from builtins import (bytes, str, open, super, range,

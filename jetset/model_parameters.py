@@ -4,34 +4,7 @@ from builtins import (bytes, str, open, super, range,
                       zip, round, input, int, pow, object, map, zip)
 
 import  numpy as np
-"""
-Module: model_parameters
-===================================================================
 
-This module contains the base classes necessary to handle models paramters/
-
-
-
-Classes and Inheritance Structure
-----------------------------------------------
-.. inheritance-diagram:: BlazarSEDFit.model_parameters
-    
-Classes relations
-----------------------------------------------
-
-.. figure::  classes_model_parameters.png
-   :align:   center    
-
-
-      
-.. autosummary::
-   ModelParameter
-   ModelParameterArray
-
-Module API
--------------------------------------------------------------------
-
-"""
 
 
 __all__=['ModelParameter','ModelParameterArray','Value']

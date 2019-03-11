@@ -224,7 +224,6 @@
 <li class="toctree-l2"><a class="reference internal" href="convert_qdp.html">convert_qdp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cosmo_tools.html">cosmo_tools</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="data_loader.html">data_loader</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="data_loader.html#moudule-data-loader">Moudule: data_loader</a></li>
 <li class="toctree-l3"><a class="reference internal" href="data_loader.html#functions">Functions</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="data_loader.html#classes">Classes</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">ObsData</a></li>
@@ -330,7 +329,10 @@ to the <code class="docutils literal notranslate"><span class="pre">restframe</s
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.table" title="jetset.data_loader.ObsData.table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.metadata" title="jetset.data_loader.ObsData.metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">metadata</span></code></a></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.table" title="jetset.data_loader.ObsData.table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">table</span></code></a></td>
 <td></td>
 </tr>
 </tbody>
@@ -378,26 +380,26 @@ to the <code class="docutils literal notranslate"><span class="pre">restframe</s
 <tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.log_to_lin" title="jetset.data_loader.ObsData.log_to_lin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_to_lin</span></code></a>([log_val,&nbsp;log_err])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.plot_time_spans" title="jetset.data_loader.ObsData.plot_time_spans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_time_spans</span></code></a>([save_as])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.plot_sed" title="jetset.data_loader.ObsData.plot_sed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_sed</span></code></a>([plot_obj])</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.remove_dupl_entries" title="jetset.data_loader.ObsData.remove_dupl_entries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_dupl_entries</span></code></a>(data)</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.plot_time_spans" title="jetset.data_loader.ObsData.plot_time_spans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_time_spans</span></code></a>([save_as])</td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.remove_dupl_entries" title="jetset.data_loader.ObsData.remove_dupl_entries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_dupl_entries</span></code></a>(data)</td>
 <td>remove duplicate entries</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.reset_data" title="jetset.data_loader.ObsData.reset_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_data</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.reset_data" title="jetset.data_loader.ObsData.reset_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_data</span></code></a>()</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_UL" title="jetset.data_loader.ObsData.set_UL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_UL</span></code></a>([val])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_UL" title="jetset.data_loader.ObsData.set_UL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_UL</span></code></a>([val])</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_error" title="jetset.data_loader.ObsData.set_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_error</span></code></a>(error_value[,&nbsp;nu_range,&nbsp;data_set,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_error" title="jetset.data_loader.ObsData.set_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_error</span></code></a>(error_value[,&nbsp;nu_range,&nbsp;data_set,&nbsp;…])</td>
 <td>set all the paramters to same error</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_facke_error" title="jetset.data_loader.ObsData.set_facke_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_facke_error</span></code></a>(val)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_facke_error" title="jetset.data_loader.ObsData.set_facke_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_facke_error</span></code></a>(val)</td>
 <td>Sets the value for the facke error</td>
-</tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObsData.set_md_from_data_table</span></code></td>
-<td></td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#jetset.data_loader.ObsData.set_zero_error" title="jetset.data_loader.ObsData.set_zero_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_zero_error</span></code></a>([val,&nbsp;replace_zero])</td>
 <td></td>
@@ -411,6 +413,11 @@ to the <code class="docutils literal notranslate"><span class="pre">restframe</s
 </tbody>
 </table>
 <p class="rubric">Attributes Documentation</p>
+<dl class="attribute">
+<dt id="jetset.data_loader.ObsData.metadata">
+<code class="descname">metadata</code><a class="headerlink" href="#jetset.data_loader.ObsData.metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="jetset.data_loader.ObsData.table">
 <code class="descname">table</code><a class="headerlink" href="#jetset.data_loader.ObsData.table" title="Permalink to this definition">¶</a></dt>
@@ -550,6 +557,11 @@ is provided), or for a specific data_set</p>
 <dl class="method">
 <dt id="jetset.data_loader.ObsData.log_to_lin">
 <code class="descname">log_to_lin</code><span class="sig-paren">(</span><em>log_val=None</em>, <em>log_err=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.log_to_lin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.log_to_lin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.data_loader.ObsData.plot_sed">
+<code class="descname">plot_sed</code><span class="sig-paren">(</span><em>plot_obj=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/data_loader.html#ObsData.plot_sed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.data_loader.ObsData.plot_sed" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

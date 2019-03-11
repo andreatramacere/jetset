@@ -114,7 +114,7 @@
 <li><a class="reference internal" href="#">physical setup</a><ul>
 <li><a class="reference internal" href="#basic-setup">basic setup</a></li>
 <li><a class="reference internal" href="#setting-the-parameters">setting the parameters</a></li>
-<li><a class="reference internal" href="#invetigating-the-electron-distribution">invetigating the electron distribution</a><ul>
+<li><a class="reference internal" href="#investigating-the-electron-distribution">investigating the electron distribution</a><ul>
 <li><a class="reference internal" href="#using-log-values-for-electron-distribution-parameters">using log values for electron distribution parameters</a></li>
 </ul>
 </li>
@@ -123,8 +123,7 @@
 <li><a class="reference internal" href="#saving-a-plot">saving a plot</a></li>
 <li><a class="reference internal" href="#saving-and-lodaing-a-model">saving and lodaing a model</a></li>
 <li><a class="reference internal" href="#switching-on-off-the-particle-distribution-normalization">switching on/off the particle distribution normalization</a></li>
-<li><a class="reference internal" href="#setting-the-particle-density-from-observed-fluxes-or-luminosityes">setting the particle density from observed Fluxes or Luminosityes</a></li>
-<li><a class="reference internal" href="#setting-the-beaming-factor">setting the beaming factor</a></li>
+<li><a class="reference internal" href="#setting-the-particle-density-from-observed-fluxes-or-luminosities">setting the particle density from observed Fluxes or Luminosities</a></li>
 <li><a class="reference internal" href="#accessing-individual-spectral-components">accessing individual spectral components</a></li>
 <li><a class="reference internal" href="#external-compton">External Compton</a><ul>
 <li><a class="reference internal" href="#broad-line-region">Broad Line Region</a></li>
@@ -242,7 +241,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">jet model: physical setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#basic-setup">basic setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setting-the-parameters">setting the parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#invetigating-the-electron-distribution">invetigating the electron distribution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#investigating-the-electron-distribution">investigating the electron distribution</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#using-log-values-for-electron-distribution-parameters">using log values for electron distribution parameters</a></li>
 </ul>
 </li>
@@ -251,8 +250,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#saving-a-plot">saving a plot</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#saving-and-lodaing-a-model">saving and lodaing a model</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#switching-on-off-the-particle-distribution-normalization">switching on/off the particle distribution normalization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#setting-the-particle-density-from-observed-fluxes-or-luminosityes">setting the particle density from observed Fluxes or Luminosityes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#setting-the-beaming-factor">setting the beaming factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-the-particle-density-from-observed-fluxes-or-luminosities">setting the particle density from observed Fluxes or Luminosities</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#accessing-individual-spectral-components">accessing individual spectral components</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#external-compton">External Compton</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#broad-line-region">Broad Line Region</a></li>
@@ -284,10 +282,10 @@
       
   <div class="section" id="physical-setup">
 <span id="jet-physical-guide"></span><h1>physical setup<a class="headerlink" href="#physical-setup" title="Permalink to this headline">¶</a></h1>
-<p>In this section we describe how  to buil a model of jet able to reproduce SSC/EC emission processes, using the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet" title="jetset.jet_model.Jet"><code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code></a> class from the <a class="reference internal" href="../../api/jet_model.html#module-jetset.jet_model" title="jetset.jet_model"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jet_model</span></code></a> module. to This class thorough a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compoton processes.</p>
+<p>In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the <code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code> class from the <a class="reference internal" href="../../api/jet_model.html#module-jetset.jet_model" title="jetset.jet_model"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jet_model</span></code></a> module. to This class thorough a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compton processes.</p>
 <div class="section" id="basic-setup">
 <h2>basic setup<a class="headerlink" href="#basic-setup" title="Permalink to this headline">¶</a></h2>
-<p>A jet can be built using the  the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet" title="jetset.jet_model.Jet"><code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code></a> class, istanciating a jet object, in the following way:</p>
+<p>A jet can be built using the  the <code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code> class, istanciating a jet object, in the following way:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="kn">from</span> <span class="nn">jetset.jet_model</span> <span class="k">import</span> <span class="n">Jet</span>
 <span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,)</span>
@@ -297,8 +295,8 @@
 <dt>This instruction will create:</dt>
 <dd><ul class="first last simple">
 <li>a <code class="docutils literal notranslate"><span class="pre">Jet</span></code> object with <code class="docutils literal notranslate"><span class="pre">name</span></code> <strong>test</strong>,</li>
-<li>using as electron distribution the <strong>lppl</strong> model, that is a log-parabola witha low-energy power-law branch.</li>
-<li>using as wokring directory <strong>test_jet_prod</strong></li>
+<li>using as electron distribution the <strong>lppl</strong> model, that is a log-parabola with a low-energy power-law branch.</li>
+<li>using as working directory <strong>test_jet_prod</strong></li>
 </ul>
 </dd>
 </dl>
@@ -338,7 +336,7 @@ bkn_pile_up:
 <span class="o">-------------------------------------------------------------------------------------------------------------------</span>
 </pre></div>
 </div>
-<p>Each parameter has default values. All the parameters listed are handled by <a class="reference internal" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray" title="jetset.model_parameters.ModelParameterArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParameterArray</span></code></a>, and each parameter is an instance of the the <a class="reference internal" href="../../api/jetset.jet_model.JetParameter.html#jetset.jet_model.JetParameter" title="jetset.jet_model.JetParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">JetParameter</span></code></a>. class</p>
+<p>Each parameter has default values. All the parameters listed are handled by <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParameterArray</span></code>, and each parameter is an instance of the the <code class="xref py py-class docutils literal notranslate"><span class="pre">JetParameter</span></code>. class</p>
 <p>To get a full description of the model you can use the instruction</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">show_model</span><span class="p">()</span>
 </pre></div>
@@ -388,9 +386,8 @@ bkn_pile_up:
 <span class="o">-------------------------------------------------------------------------------------------------------------------</span>
 </pre></div>
 </div>
-<p>as you can notice, you can now access further information regarding the
-model, such as numerical configuration of the grid. These parameters
-will be discussed in the :ref:`jet_numerical_guide’ section</p>
+<p>as you can notice, you can now access further information regarding the model, such as numerical configuration of the grid. These parameters will be discussed
+in the :ref:<a href="#id1"><span class="problematic" id="id2">`</span></a>jet_numerical_guide’ section</p>
 </div>
 <div class="section" id="setting-the-parameters">
 <h2>setting the parameters<a class="headerlink" href="#setting-the-parameters" title="Permalink to this headline">¶</a></h2>
@@ -414,8 +411,8 @@ will be discussed in the :ref:`jet_numerical_guide’ section</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="invetigating-the-electron-distribution">
-<h2>invetigating the electron distribution<a class="headerlink" href="#invetigating-the-electron-distribution" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="investigating-the-electron-distribution">
+<h2>investigating the electron distribution<a class="headerlink" href="#investigating-the-electron-distribution" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">show_electron_distribution</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -553,7 +550,7 @@ instruction</p>
 </pre></div>
 </div>
 <img alt="../../_images/Jet_example_phys_34_0.png" src="../../_images/Jet_example_phys_34_0.png" />
-<p>the <code class="docutils literal notranslate"><span class="pre">my_plot</span></code> objet returned will be built on the fly by the
+<p>the <code class="docutils literal notranslate"><span class="pre">my_plot</span></code> object returned will be built on the fly by the
 <code class="docutils literal notranslate"><span class="pre">plot_model</span></code> method</p>
 <p>if you wanto to have interacitve plot:</p>
 <ol class="arabic simple">
@@ -627,10 +624,10 @@ instruction</p>
 </div>
 <div class="section" id="switching-on-off-the-particle-distribution-normalization">
 <h2>switching on/off the particle distribution normalization<a class="headerlink" href="#switching-on-off-the-particle-distribution-normalization" title="Permalink to this headline">¶</a></h2>
-<p>As default the electron distributions are normalized, i.e. are mutliplied by a constant <code class="docutils literal notranslate"><span class="pre">N_0</span></code>, in such a way that :</p>
+<p>As default the electron distributions are normalized, i.e. are multiplied by a constant <code class="docutils literal notranslate"><span class="pre">N_0</span></code>, in such a way that :</p>
 <p><span class="math notranslate nohighlight">\(\int_{\gamma_{min}}^{\gamma_{max}} n(\gamma) d\gamma =1\)</span>,</p>
-<p>it means the the value <cite>N</cite>, refers to the actual desinty of emitters.
-If you want to chance this behaviour, you can start looking at the sate of <code class="docutils literal notranslate"><span class="pre">Norm_distr</span></code> flag with the following command</p>
+<p>it means the the value <cite>N</cite>, refers to the actual density of emitters.
+If you want to chance this behavior, you can start looking at the sate of <code class="docutils literal notranslate"><span class="pre">Norm_distr</span></code> flag with the following command</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">Norm_distr</span>
 </pre></div>
 </div>
@@ -646,9 +643,9 @@ If you want to chance this behaviour, you can start looking at the sate of <code
 </pre></div>
 </div>
 </div>
-<div class="section" id="setting-the-particle-density-from-observed-fluxes-or-luminosityes">
-<h2>setting the particle density from observed Fluxes or Luminosityes<a class="headerlink" href="#setting-the-particle-density-from-observed-fluxes-or-luminosityes" title="Permalink to this headline">¶</a></h2>
-<p>It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.set_N_from_nuFnu" title="jetset.jet_model.Jet.set_N_from_nuFnu"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.set_N_from_nuFnu()</span></code></a>,th:<cite>.Jet.set_N_from_nuLnu</cite>)</p>
+<div class="section" id="setting-the-particle-density-from-observed-fluxes-or-luminosities">
+<h2>setting the particle density from observed Fluxes or Luminosities<a class="headerlink" href="#setting-the-particle-density-from-observed-fluxes-or-luminosities" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     <code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.set_N_from_nuFnu()</span></code>,th:<cite>.Jet.set_N_from_nuLnu</cite>)</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -660,7 +657,7 @@ If you want to chance this behaviour, you can start looking at the sate of <code
 </pre></div>
 </div>
 <p>we now want to set the value of <code class="docutils literal notranslate"><span class="pre">N</span></code> in order that the observed synchrotron flux at a given frequency matches a desired value.
-For example, assume that we whis to set <code class="docutils literal notranslate"><span class="pre">N</span></code> in oreder that  the sychrotron flux at math:<cite>10^{15}</cite> Hz is exactly matching the desired value of <span class="math notranslate nohighlight">\(10^{-=14}\)</span> ergs cm-2 s-1. We can accomplish this by using the <code class="xref py py-class docutils literal notranslate"><span class="pre">Jet.get_par_by_name()</span></code> as follows:</p>
+For example, assume that we wish to set <code class="docutils literal notranslate"><span class="pre">N</span></code> in order that  the synchrotron flux at math:<cite>10^{15}</cite> Hz is exactly matching the desired value of <span class="math notranslate nohighlight">\(10^{-=14}\)</span> ergs cm-2 s-1. We can accomplish this by using the <code class="xref py py-class docutils literal notranslate"><span class="pre">Jet.get_par_by_name()</span></code> as follows:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">set_N_from_nuFnu</span><span class="p">(</span><span class="n">nuFnu_obs</span><span class="o">=</span><span class="mf">1E-14</span><span class="p">,</span><span class="n">nu_obs</span><span class="o">=</span><span class="mf">1E15</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -698,21 +695,17 @@ flux at the given frequency</p>
 </pre></div>
 </div>
 <img alt="../../_images/Jet_example_phys_63_0.png" src="../../_images/Jet_example_phys_63_0.png" />
-<p>as you can see, the sychrotron flux at <span class="math notranslate nohighlight">\(10^{15}\)</span> Hz is exactly matching the desired value of <span class="math notranslate nohighlight">\(10^{-14}\)</span> ergs cm-2 s-1.
-Alternatively, the value of N  can be obtained using the rest-frame luminosity and  freqency, using the :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>.Jet.set_N_from_nuLnu()</p>
+<p>as you can see, the synchrotron flux at <span class="math notranslate nohighlight">\(10^{15}\)</span> Hz is exactly matching the desired value of <span class="math notranslate nohighlight">\(10^{-14}\)</span> ergs cm-2 s-1.
+Alternatively, the value of N  can be obtained using the rest-frame luminosity and  frequency, using the :class:<a href="#id3"><span class="problematic" id="id4">`</span></a>.Jet.set_N_from_nuLnu()</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">set_N_from_nuLnu</span><span class="p">(</span><span class="n">L_0</span><span class="o">=</span><span class="mf">1E43</span><span class="p">,</span><span class="n">nu_0</span><span class="o">=</span><span class="mf">1E15</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">L_0</span></code> is the rest-frame luminosity in erg/s at the rest-frame frequency <code class="docutils literal notranslate"><span class="pre">nu_0</span></code> in Hz.</p>
-</div>
-<div class="section" id="setting-the-beaming-factor">
-<h2>setting the beaming factor<a class="headerlink" href="#setting-the-beaming-factor" title="Permalink to this headline">¶</a></h2>
-<p>It is possible to set the bemaing factor according to the realativistic
-BulkFactor and viewing angle, this can be done by setting the
-<code class="docutils literal notranslate"><span class="pre">beaming_expr</span></code> kw in the Jet constructor, possbile choiches are</p>
+<p>## setting the beaming factor</p>
+<p>It is possible to set the beaming factor according to the relativistic BulkFactor and viewing angle, this can be done by setting the <code class="docutils literal notranslate"><span class="pre">beaming_expr</span></code> kw in the Jet constructor, possible choices are</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">delta</span></code> to provide directly the beaming factor (default)</li>
-<li><code class="docutils literal notranslate"><span class="pre">bulk_theta</span></code> to provide the BulkFactor and the jet viewing angle</li>
+<li><cite>delta</cite> to provide directly the beaming factor (default)</li>
+<li><cite>bulk_theta</cite> to provide the BulkFactor and the jet  viewing angle</li>
 </ul>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;bulk_theta&#39;</span><span class="p">)</span>
 </pre></div>
@@ -738,7 +731,7 @@ BulkFactor and viewing angle, this can be done by setting the
 <span class="o">-------------------------------------------------------------------------------------------------------------------</span>
 </pre></div>
 </div>
-<p>the actual value of the beaming factor che be obatained using the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.get_beaming" title="jetset.jet_model.Jet.get_beaming"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.get_beaming()</span></code></a></p>
+<p>the actual value of the beaming factor can be obtained using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.get_beaming()</span></code></p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">get_beaming</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -755,7 +748,8 @@ BulkFactor and viewing angle, this can be done by setting the
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">4.968041140891955</span>
 </pre></div>
 </div>
-<p>of course setting <cite>beaming_expr=delta</cite> we get the same beaming expression as in the default case</p>
+<p>of course setting <code class="docutils literal notranslate"><span class="pre">beaming_expr=delta</span></code> we get the same beaming
+expression as in the default case</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;delta&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -782,12 +776,12 @@ BulkFactor and viewing angle, this can be done by setting the
 </div>
 <div class="section" id="accessing-individual-spectral-components">
 <h2>accessing individual spectral components<a class="headerlink" href="#accessing-individual-spectral-components" title="Permalink to this headline">¶</a></h2>
-<p>It is possible to access specific spectral components of oura model</p>
+<p>It is possible to access specific spectral components of our model</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;bulk_theta&#39;</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>We can obtain this information anytime using the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.list_spectral_components" title="jetset.jet_model.Jet.list_spectral_components"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.list_spectral_components()</span></code></a> method</p>
+<p>We can obtain this information anytime using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.list_spectral_components()</span></code> method</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">list_spectral_components</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -798,7 +792,7 @@ BulkFactor and viewing angle, this can be done by setting the
 </div>
 <p>the on-screen message is telling us which components have been
 evaluated.</p>
-<p>and we cann access a specific component using the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.get_spectral_component_by_name" title="jetset.jet_model.Jet.get_spectral_component_by_name"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.get_spectral_component_by_name()</span></code></a> method</p>
+<p>and we cann access a specific component using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.get_spectral_component_by_name()</span></code> method</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sync</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;Sync&#39;</span><span class="p">)</span>
 </pre></div>
 </div>

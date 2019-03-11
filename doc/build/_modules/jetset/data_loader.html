@@ -212,40 +212,7 @@
     <div class="col-md-9 content">
       
   <h1>Source code for jetset.data_loader</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Moudule: data_loader</span>
-<span class="sd">===================================================================</span>
-
-<span class="sd">This module contains all the classes necessary to load SED data</span>
-<span class="sd">from a file.  The most effective way to import the SED data is to create an object</span>
-<span class="sd">instance of :class:`ObsData` class.  </span>
-
-<span class="sd">Classes and Inheritance Structure</span>
-<span class="sd">-------------------------------------------------------------------</span>
-
-<span class="sd">.. inheritance-diagram:: BlazarSEDFit.data_loader</span>
-<span class="sd">   </span>
-
-
-<span class="sd">Classes relations</span>
-<span class="sd">----------------------------------------------</span>
-
-<span class="sd">.. figure::  classes_data_loader.png    </span>
-<span class="sd">   :align:   center     </span>
-
-
-<span class="sd">Summary</span>
-<span class="sd">---------</span>
-<span class="sd">.. autosummary::</span>
-<span class="sd">    ObsData</span>
-<span class="sd">    </span>
-
-<span class="sd">Module API</span>
-<span class="sd">-------------------------------------------------------------------</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
 <span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="nb">super</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span>
                       <span class="nb">zip</span><span class="p">,</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="nb">zip</span><span class="p">)</span>
@@ -1274,11 +1241,11 @@
 
 
 
-    <span class="k">def</span> <span class="nf">plot_sed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">plot_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,):</span>
+<div class="viewcode-block" id="ObsData.plot_sed"><a class="viewcode-back" href="../../api/jetset.data_loader.ObsData.html#jetset.data_loader.ObsData.plot_sed">[docs]</a>    <span class="k">def</span> <span class="nf">plot_sed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">plot_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,):</span>
         <span class="k">if</span> <span class="n">plot_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">plot_obj</span><span class="o">=</span><span class="n">PlotSED</span><span class="p">(</span><span class="n">sed_data</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">plot_obj</span>
+        <span class="k">return</span> <span class="n">plot_obj</span></div>
 
     
 <div class="viewcode-block" id="ObsData.plot_time_spans"><a class="viewcode-back" href="../../api/jetset.data_loader.ObsData.html#jetset.data_loader.ObsData.plot_time_spans">[docs]</a>    <span class="k">def</span> <span class="nf">plot_time_spans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">save_as</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

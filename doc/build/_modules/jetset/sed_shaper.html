@@ -212,45 +212,7 @@
     <div class="col-md-9 content">
       
   <h1>Source code for jetset.sed_shaper</h1><div class="highlight"><pre>
-<span></span><span class="ch">#!/usr/bin/env python</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">===================================================================</span>
-<span class="sd">Moudule: sed_shaper</span>
-<span class="sd">===================================================================</span>
-
-<span class="sd">This module contains all the classes necessary to estimate the phenomenlogical</span>
-<span class="sd">characterization of the SED, such as spectral indices, peack frequenicies</span>
-<span class="sd">and fluxes</span>
-
-
-
-
-<span class="sd">Classes and Inheritance Structure</span>
-<span class="sd">-------------------------------------------------------------------</span>
-
-<span class="sd">.. inheritance-diagram:: BlazarSEDFit.sed_shaper</span>
-
-
-
-<span class="sd">Classes relations</span>
-<span class="sd">----------------------------------------------</span>
-
-<span class="sd">.. figure::  classes_sed_shaper.png</span>
-<span class="sd">   :align:   center</span>
-
-
-
-<span class="sd">.. autosummary::</span>
-
-
-
-<span class="sd">Module API</span>
-<span class="sd">-------------------------------------------------------------------</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-
-
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
 <span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="nb">super</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span>
                       <span class="nb">zip</span><span class="p">,</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="nb">zip</span><span class="p">)</span>
@@ -766,7 +728,7 @@
         
         <span class="k">return</span> <span class="n">plot_obj</span></div>
 
-<div class="viewcode-block" id="SEDShape.plot_sahpe_fit"><a class="viewcode-back" href="../../api/jetset.sed_shaper.SEDShape.html#jetset.sed_shaper.SEDShape.plot_sahpe_fit">[docs]</a>    <span class="k">def</span> <span class="nf">plot_sahpe_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SEDShape.plot_shape_fit"><a class="viewcode-back" href="../../api/jetset.sed_shaper.SEDShape.html#jetset.sed_shaper.SEDShape.plot_shape_fit">[docs]</a>    <span class="k">def</span> <span class="nf">plot_shape_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">plot_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">plot_obj</span> <span class="o">=</span> <span class="n">PlotSED</span><span class="p">(</span><span class="n">sed_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sed_data</span><span class="p">)</span>
 

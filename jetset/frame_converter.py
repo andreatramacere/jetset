@@ -5,39 +5,6 @@ from builtins import (bytes, str, open, super, range,
 
 __author__ = "Andrea Tramacere"
 
-"""
-===================================================================
-Moudule: frame_converter
-===================================================================
-
-This module contains helper fucntions necessary to perform restframes
-conversions
-
-
-
-
-Classes and Inheritance Structure
--------------------------------------------------------------------
-
-.. inheritance-diagram:: BlazarSEDFit.frame_converter
-   
-
-
-Classes relations
-----------------------------------------------
-
-.. figure::  classes_frame_converter.png    
-   :align:   center     
-
-
-  
-.. autosummary::
-   
-   
-    
-Module API
--------------------------------------------------------------------
-"""
 
 import math as m
 import numpy as np

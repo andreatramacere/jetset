@@ -25,7 +25,7 @@ Phenomenological model constraining
 
 .. parsed-literal::
 
-    /Users/orion/anaconda3/lib/python3.7/site-packages/jetset-1.0.2-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.dat
+    /Users/orion/anaconda3/lib/python3.7/site-packages/jetset-1.0.2-py3.7-macosx-10.9-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.dat
 
 
 .. code:: ipython3
@@ -57,7 +57,7 @@ Phenomenological model constraining
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotSED at 0x1520b5f9e8>
+    <jetset.plot_sedfit.PlotSED at 0x151d3c0f98>
 
 
 
@@ -170,12 +170,12 @@ Phenomenological model constraining
 
     <table>
         <tr>
-            <td title="Minimum value of function">FCN = 13.927259927350658</td>
-            <td title="Total number of call to FCN so far">TOTAL NCALL = 368</td>
-            <td title="Number of call in last migrad">NCALLS = 368</td>
+            <td title="Minimum value of function">FCN = 13.284604107167203</td>
+            <td title="Total number of call to FCN so far">TOTAL NCALL = 398</td>
+            <td title="Number of call in last migrad">NCALLS = 398</td>
         </tr>
         <tr>
-            <td title="Estimated distance to minimum">EDM = 3.297347390795456e-05</td>
+            <td title="Estimated distance to minimum">EDM = 2.1272537435733377e-05</td>
             <td title="Maximum EDM definition of convergence">GOAL EDM = 1e-05</td>
             <td title="Error def. Amount of increase in FCN to be defined as 1 standard deviation">
             UP = 1.0</td>
@@ -218,7 +218,7 @@ Phenomenological model constraining
 
     <table>
         <tr>
-            <td><a href="#" onclick="$('#GEKDOYapoK').toggle()">+</a></td>
+            <td><a href="#" onclick="$('#GpAVfXjIkn').toggle()">+</a></td>
             <td title="Variable name">Name</td>
             <td title="Value of parameter">Value</td>
             <td title="Hesse error">Hesse Error</td>
@@ -231,8 +231,8 @@ Phenomenological model constraining
         <tr>
             <td>0</td>
             <td>par_0</td>
-            <td>-0.161899</td>
-            <td>0.0109177</td>
+            <td>-0.161658</td>
+            <td>0.012275</td>
             <td></td>
             <td></td>
             <td>-10</td>
@@ -242,8 +242,8 @@ Phenomenological model constraining
         <tr>
             <td>1</td>
             <td>par_1</td>
-            <td>-0.0113167</td>
-            <td>0.00168747</td>
+            <td>-0.0112831</td>
+            <td>0.00187672</td>
             <td></td>
             <td></td>
             <td>-10</td>
@@ -253,8 +253,8 @@ Phenomenological model constraining
         <tr>
             <td>2</td>
             <td>par_2</td>
-            <td>16.6977</td>
-            <td>0.0478326</td>
+            <td>16.6994</td>
+            <td>0.0494283</td>
             <td></td>
             <td></td>
             <td>0</td>
@@ -264,8 +264,8 @@ Phenomenological model constraining
         <tr>
             <td>3</td>
             <td>par_3</td>
-            <td>-9.48043</td>
-            <td>0.0353935</td>
+            <td>-9.48058</td>
+            <td>0.036992</td>
             <td></td>
             <td></td>
             <td>-30</td>
@@ -273,19 +273,19 @@ Phenomenological model constraining
             <td>No</td>
         </tr>
     </table>
-    <pre id="GEKDOYapoK" style="display:none;">
+    <pre id="GpAVfXjIkn" style="display:none;">
     <textarea rows="14" cols="50" onclick="this.select()" readonly>
     \begin{tabular}{|c|r|r|r|r|r|r|r|c|}
     \hline
      & Name & Value & Hesse Error & Minos Error- & Minos Error+ & Limit- & Limit+ & Fixed?\\
     \hline
-    0 & $par_{0}$ & -0.161899 & 0.0109177 &  &  & -10.0 & 0 & No\\
+    0 & $par_{0}$ & -0.161658 & 0.012275 &  &  & -10.0 & 0 & No\\
     \hline
-    1 & $par_{1}$ & -0.0113167 & 0.00168747 &  &  & -10.0 & 10 & No\\
+    1 & $par_{1}$ & -0.0112831 & 0.00187672 &  &  & -10.0 & 10 & No\\
     \hline
-    2 & $par_{2}$ & 16.6977 & 0.0478326 &  &  & 0.0 & 30 & No\\
+    2 & $par_{2}$ & 16.6994 & 0.0494283 &  &  & 0.0 & 30 & No\\
     \hline
-    3 & $par_{3}$ & -9.48043 & 0.0353935 &  &  & -30.0 & 0 & No\\
+    3 & $par_{3}$ & -9.48058 & 0.036992 &  &  & -30.0 & 0 & No\\
     \hline
     \end{tabular}
     </textarea>
@@ -306,11 +306,11 @@ Phenomenological model constraining
     model parameters:
      Name             | Type                 | Units            | value         | phys. boundaries              | log
     -------------------------------------------------------------------------------------------------------------------
-     b                | curvature            |                  | -1.618991e-01 | [-1.000000e+01,+0.000000e+00] | False 
-     c                | third-degree         |                  | -1.131671e-02 | [-1.000000e+01,+1.000000e+01] | False 
-     Ep               | peak freq            | Hz               | +1.669770e+01 | [+0.000000e+00,+3.000000e+01] | True 
-     Sp               | peak flux            | erg cm^-2 s^-1   | -9.480428e+00 | [-3.000000e+01,+0.000000e+00] | True 
-     nuFnu_p_host     | nuFnu-scale          | erg cm^-2 s^-1   | -9.480428e+00 | [-2.000000e+01,+2.000000e+01] | False 
+     b                | curvature            |                  | -1.616576e-01 | [-1.000000e+01,+0.000000e+00] | False 
+     c                | third-degree         |                  | -1.128313e-02 | [-1.000000e+01,+1.000000e+01] | False 
+     Ep               | peak freq            | Hz               | +1.669940e+01 | [+0.000000e+00,+3.000000e+01] | True 
+     Sp               | peak flux            | erg cm^-2 s^-1   | -9.480582e+00 | [-3.000000e+01,+0.000000e+00] | True 
+     nuFnu_p_host     | nuFnu-scale          | erg cm^-2 s^-1   | -9.480582e+00 | [-2.000000e+01,+2.000000e+01] | False 
      nu_scale         | nu-scale             | Hz               | +0.000000e+00 | [-2.000000e+00,+2.000000e+00] | False 
     -------------------------------------------------------------------------------------------------------------------
 
@@ -326,12 +326,12 @@ Phenomenological model constraining
 
     <table>
         <tr>
-            <td title="Minimum value of function">FCN = 13.683033407102968</td>
-            <td title="Total number of call to FCN so far">TOTAL NCALL = 295</td>
-            <td title="Number of call in last migrad">NCALLS = 295</td>
+            <td title="Minimum value of function">FCN = 13.064442640655018</td>
+            <td title="Total number of call to FCN so far">TOTAL NCALL = 665</td>
+            <td title="Number of call in last migrad">NCALLS = 657</td>
         </tr>
         <tr>
-            <td title="Estimated distance to minimum">EDM = 0.0001534264450456054</td>
+            <td title="Estimated distance to minimum">EDM = 4.928899697652773</td>
             <td title="Maximum EDM definition of convergence">GOAL EDM = 1e-05</td>
             <td title="Error def. Amount of increase in FCN to be defined as 1 standard deviation">
             UP = 1.0</td>
@@ -346,9 +346,9 @@ Phenomenological model constraining
             <td align="center" title="Was covariance matrix made posdef by adding diagonal element">Made PosDef</td>
         </tr>
         <tr>
+            <td align="center" style="background-color:#FF7878">False</td>
             <td align="center" style="background-color:#92CCA6">True</td>
-            <td align="center" style="background-color:#92CCA6">True</td>
-            <td align="center" style="background-color:#92CCA6">True</td>
+            <td align="center" style="background-color:#FF7878">False</td>
             <td align="center" style="background-color:#92CCA6">True</td>
             <td align="center" style="background-color:#92CCA6">False</td>
         </tr>
@@ -362,7 +362,7 @@ Phenomenological model constraining
         <tr>
             <td align="center" style="background-color:#92CCA6">False</td>
             <td align="center" style="background-color:#92CCA6">True</td>
-            <td align="center" style="background-color:#92CCA6">False</td>
+            <td align="center" style="background-color:#FF7878">True</td>
             <td align="center"></td>
             <td align="center" style="background-color:#92CCA6">False</td>
         </tr>
@@ -374,7 +374,7 @@ Phenomenological model constraining
 
     <table>
         <tr>
-            <td><a href="#" onclick="$('#CgysxQCYor').toggle()">+</a></td>
+            <td><a href="#" onclick="$('#sdDemIPhXh').toggle()">+</a></td>
             <td title="Variable name">Name</td>
             <td title="Value of parameter">Value</td>
             <td title="Hesse error">Hesse Error</td>
@@ -387,8 +387,8 @@ Phenomenological model constraining
         <tr>
             <td>0</td>
             <td>par_0</td>
-            <td>-0.163546</td>
-            <td>0.0120918</td>
+            <td>-0.163463</td>
+            <td>0.0127406</td>
             <td></td>
             <td></td>
             <td>-10</td>
@@ -398,8 +398,8 @@ Phenomenological model constraining
         <tr>
             <td>1</td>
             <td>par_1</td>
-            <td>-0.0116345</td>
-            <td>0.00190441</td>
+            <td>-0.0116222</td>
+            <td>0.00197459</td>
             <td></td>
             <td></td>
             <td>-10</td>
@@ -409,8 +409,8 @@ Phenomenological model constraining
         <tr>
             <td>2</td>
             <td>par_2</td>
-            <td>16.7129</td>
-            <td>0.0571933</td>
+            <td>16.7139</td>
+            <td>0.0561725</td>
             <td></td>
             <td></td>
             <td>0</td>
@@ -420,8 +420,8 @@ Phenomenological model constraining
         <tr>
             <td>3</td>
             <td>par_3</td>
-            <td>-9.4829</td>
-            <td>0.0363626</td>
+            <td>-9.48248</td>
+            <td>0.0372176</td>
             <td></td>
             <td></td>
             <td>-30</td>
@@ -431,19 +431,19 @@ Phenomenological model constraining
         <tr>
             <td>4</td>
             <td>par_4</td>
-            <td>-11.2044</td>
-            <td>0.838746</td>
+            <td>-11.2147</td>
+            <td>0.734734</td>
             <td></td>
             <td></td>
-            <td>-11.4804</td>
-            <td>-7.48043</td>
+            <td>-11.4806</td>
+            <td>-7.48058</td>
             <td>No</td>
         </tr>
         <tr>
             <td>5</td>
             <td>par_5</td>
-            <td>0.0215409</td>
-            <td>0.00144813</td>
+            <td>0.0254478</td>
+            <td>0.000283904</td>
             <td></td>
             <td></td>
             <td>-0.5</td>
@@ -451,23 +451,23 @@ Phenomenological model constraining
             <td>No</td>
         </tr>
     </table>
-    <pre id="CgysxQCYor" style="display:none;">
+    <pre id="sdDemIPhXh" style="display:none;">
     <textarea rows="18" cols="50" onclick="this.select()" readonly>
     \begin{tabular}{|c|r|r|r|r|r|r|r|c|}
     \hline
      & Name & Value & Hesse Error & Minos Error- & Minos Error+ & Limit- & Limit+ & Fixed?\\
     \hline
-    0 & $par_{0}$ & -0.163546 & 0.0120918 &  &  & -10.0 & 0 & No\\
+    0 & $par_{0}$ & -0.163463 & 0.0127406 &  &  & -10.0 & 0 & No\\
     \hline
-    1 & $par_{1}$ & -0.0116345 & 0.00190441 &  &  & -10.0 & 10 & No\\
+    1 & $par_{1}$ & -0.0116222 & 0.00197459 &  &  & -10.0 & 10 & No\\
     \hline
-    2 & $par_{2}$ & 16.7129 & 0.0571933 &  &  & 0.0 & 30 & No\\
+    2 & $par_{2}$ & 16.7139 & 0.0561725 &  &  & 0.0 & 30 & No\\
     \hline
-    3 & $par_{3}$ & -9.4829 & 0.0363626 &  &  & -30.0 & 0 & No\\
+    3 & $par_{3}$ & -9.48248 & 0.0372176 &  &  & -30.0 & 0 & No\\
     \hline
-    4 & $par_{4}$ & -11.2044 & 0.838746 &  &  & -11.480428205481736 & -7.48043 & No\\
+    4 & $par_{4}$ & -11.2147 & 0.734734 &  &  & -11.48058161554708 & -7.48058 & No\\
     \hline
-    5 & $par_{5}$ & 0.0215409 & 0.00144813 &  &  & -0.5 & 0.5 & No\\
+    5 & $par_{5}$ & 0.0254478 & 0.000283904 &  &  & -0.5 & 0.5 & No\\
     \hline
     \end{tabular}
     </textarea>
@@ -491,36 +491,36 @@ Phenomenological model constraining
     model parameters:
      Name             | Type                 | Units            | value         | phys. boundaries              | log
     -------------------------------------------------------------------------------------------------------------------
-     b                | curvature            |                  | -1.635465e-01 | [-1.000000e+01,+0.000000e+00] | False 
-     c                | third-degree         |                  | -1.163451e-02 | [-1.000000e+01,+1.000000e+01] | False 
-     Ep               | peak freq            | Hz               | +1.671294e+01 | [+0.000000e+00,+3.000000e+01] | True 
-     Sp               | peak flux            | erg cm^-2 s^-1   | -9.482903e+00 | [-3.000000e+01,+0.000000e+00] | True 
-     nuFnu_p_host     | nuFnu-scale          | erg cm^-2 s^-1   | -1.120444e+01 | [-2.000000e+01,+2.000000e+01] | False 
-     nu_scale         | nu-scale             | Hz               | +2.154095e-02 | [-2.000000e+00,+2.000000e+00] | False 
+     b                | curvature            |                  | -1.634633e-01 | [-1.000000e+01,+0.000000e+00] | False 
+     c                | third-degree         |                  | -1.162221e-02 | [-1.000000e+01,+1.000000e+01] | False 
+     Ep               | peak freq            | Hz               | +1.671387e+01 | [+0.000000e+00,+3.000000e+01] | True 
+     Sp               | peak flux            | erg cm^-2 s^-1   | -9.482476e+00 | [-3.000000e+01,+0.000000e+00] | True 
+     nuFnu_p_host     | nuFnu-scale          | erg cm^-2 s^-1   | -1.121472e+01 | [-2.000000e+01,+2.000000e+01] | False 
+     nu_scale         | nu-scale             | Hz               | +2.544782e-02 | [-2.000000e+00,+2.000000e+00] | False 
     -------------------------------------------------------------------------------------------------------------------
     
     converged=True
-    calls=296
+    calls=666
     mesg=
-    dof=18
-    chisq=13.683082, chisq/red=0.760171 null hypothesis sig=0.749505
+    dof=16
+    chisq=13.064443, chisq/red=0.816528 null hypothesis sig=0.668040
     
     best fit pars
     -------------------------------------------------------------------------------------------------------------------
     best-fit parameters:
       Name            | best-fit value| best-fit err +| best-fit err -|start value   | fit boundaries
     -------------------------------------------------------------------------------------------------------------------
-     b                | -1.635465e-01 | +1.209179e-02 | #             | -1.618991e-01 | [-1.000000e+01,+0.000000e+00]
-     c                | -1.163451e-02 | +1.904406e-03 | #             | -1.131671e-02 | [-1.000000e+01,+1.000000e+01]
-     Ep               | +1.671294e+01 | +5.719331e-02 | #             | +1.669770e+01 | [+0.000000e+00,+3.000000e+01]
-     Sp               | -9.482903e+00 | +3.636258e-02 | #             | -9.480428e+00 | [-3.000000e+01,+0.000000e+00]
-     nuFnu_p_host     | -1.120444e+01 | +8.387457e-01 | #             | -9.480428e+00 | [-1.148043e+01,-7.480428e+00]
-     nu_scale         | +2.154095e-02 | +1.448131e-03 | #             | +0.000000e+00 | [-5.000000e-01,+5.000000e-01]
+     b                | -1.634633e-01 | +1.274060e-02 | #             | -1.616576e-01 | [-1.000000e+01,+0.000000e+00]
+     c                | -1.162221e-02 | +1.974594e-03 | #             | -1.128313e-02 | [-1.000000e+01,+1.000000e+01]
+     Ep               | +1.671387e+01 | +5.617252e-02 | #             | +1.669940e+01 | [+0.000000e+00,+3.000000e+01]
+     Sp               | -9.482476e+00 | +3.721763e-02 | #             | -9.480582e+00 | [-3.000000e+01,+0.000000e+00]
+     nuFnu_p_host     | -1.121472e+01 | +7.347335e-01 | #             | -9.480582e+00 | [-1.148058e+01,-7.480582e+00]
+     nu_scale         | +2.544782e-02 | +2.839044e-04 | #             | +0.000000e+00 | [-5.000000e-01,+5.000000e-01]
     -------------------------------------------------------------------------------------------------------------------
     **************************************************************************************************
     
     ---> class:  HSP
-    ---> sync       nu_p=+1.671294e+01 (err=+5.719331e-02)  nuFnu_p=-9.482903e+00 (err=+3.636258e-02) curv.=-1.635465e-01 (err=+1.209179e-02)
+    ---> sync       nu_p=+1.671387e+01 (err=+5.617252e-02)  nuFnu_p=-9.482476e+00 (err=+3.721763e-02) curv.=-1.634633e-01 (err=+1.274060e-02)
 
 
 .. code:: ipython3
@@ -607,7 +607,7 @@ Phenomenological model constraining
 
     <table>
         <tr>
-            <td><a href="#" onclick="$('#oWqhhspLtR').toggle()">+</a></td>
+            <td><a href="#" onclick="$('#rWzgawRzxu').toggle()">+</a></td>
             <td title="Variable name">Name</td>
             <td title="Value of parameter">Value</td>
             <td title="Hesse error">Hesse Error</td>
@@ -662,7 +662,7 @@ Phenomenological model constraining
             <td>No</td>
         </tr>
     </table>
-    <pre id="oWqhhspLtR" style="display:none;">
+    <pre id="rWzgawRzxu" style="display:none;">
     <textarea rows="14" cols="50" onclick="this.select()" readonly>
     \begin{tabular}{|c|r|r|r|r|r|r|r|c|}
     \hline
@@ -788,77 +788,51 @@ Phenomenological model constraining
     ---> power-law index s, class obj=HSP s chosen is 2.182289
     ---> setting par type LE_spectral_slope, corresponding to par p
     --->  name = p                 type = LE_spectral_slope     units =                   val = +2.182289e+00  phys-bounds = [-1.000000e+01,+1.000000e+01] islog = False   
-    ---> gamma_3p_Sync= 1.022835e+05, assuming B=5.500000e-02
-    ---> gamma_max=1.624676e+06 from nu_max_Sync= 2.931204e+19, using B=5.500000e-02
+    ---> gamma_3p_Sync= 1.023929e+05, assuming B=5.500000e-02
+    ---> gamma_max=8.771910e+05 from nu_max_Sync= 8.544779e+18, using B=5.500000e-02
     ---> setting par type high-energy-cut-off, corresponding to par gmax
-    --->  name = gmax              type = high-energy-cut-off   units = Lorentz-factor    val = +6.210767e+00  phys-bounds = [+0.000000e+00,+1.500000e+01] islog = True   
+    --->  name = gmax              type = high-energy-cut-off   units = Lorentz-factor    val = +5.943094e+00  phys-bounds = [+0.000000e+00,+1.500000e+01] islog = True   
     
     ---> setting par type low-energy-cut-off, corresponding to par gmin
     --->  name = gmin              type = low-energy-cut-off    units = Lorentz-factor    val = +2.653335e+00  phys-bounds = [+0.000000e+00,+5.000000e+00] islog = True   
     
     ---> setting par type turn-over energy, corresponding to par gamma_cut
-    ---> using gamma_3p_Sync= 102283.46132364045
-    --->  name = gamma_cut         type = turn-over-energy      units = Lorentz-factor    val = +5.310835e+00  phys-bounds = [+0.000000e+00,+8.000000e+00] islog = True   
+    ---> using gamma_3p_Sync= 102392.850399564
+    --->  name = gamma_cut         type = turn-over-energy      units = Lorentz-factor    val = +5.311300e+00  phys-bounds = [+0.000000e+00,+8.000000e+00] islog = True   
     
-    nu_p_seed_blob 2128997964680136.8
-    COMP FACTOR 1.7624076398261943 25006.178045434473
-    ---> gamma_3p_SSCc= %e 161348.59516719714
+    nu_p_seed_blob 2133554197934815.2
+    COMP FACTOR 1.7680682147195645 24979.463263122077
+    ---> gamma_3p_SSCc= %e 161408.96929663006
     ---> setting par type turn-over energy, corresponding to par gamma_cut
-    ---> using gamma_3p_SSC= 161348.59516719714
-    --->  name = gamma_cut         type = turn-over-energy      units = Lorentz-factor    val = +5.508795e+00  phys-bounds = [+0.000000e+00,+8.000000e+00] islog = True   
+    ---> using gamma_3p_SSC= 161408.96929663006
+    --->  name = gamma_cut         type = turn-over-energy      units = Lorentz-factor    val = +5.508958e+00  phys-bounds = [+0.000000e+00,+8.000000e+00] islog = True   
     
     
     ---> setting par type electron_density, corresponding to par N
-    ---> name = N                 type = electron_density      units = cm^-3             val = +2.280157e-03  phys-bounds = [+0.000000e+00,No           ] islog = False   
-    ---> B from nu_p_S=2.210259e-02
+    ---> name = N                 type = electron_density      units = cm^-3             val = +2.310671e-03  phys-bounds = [+0.000000e+00,No           ] islog = False   
+    ---> B from nu_p_S=2.213332e-02
     ---> get B from best matching of nu_p_IC
-         Best B=1.261809e-02
+    ---> B=8.176819e-03, out of boundaries 1.000000e-02 1.000000e-01, rejected
+         Best B not found, (temporary set to 1.000000e-02)
     ---> setting par type magnetic_field, corresponding to par B
-    --->  name = B                 type = magnetic_field        units = G                 val = +1.261809e-02  phys-bounds = [+0.000000e+00,No           ] islog = False   
+    --->  name = B                 type = magnetic_field        units = G                 val = +1.000000e-02  phys-bounds = [+0.000000e+00,No           ] islog = False   
     
-    ---> best B found:  name = B                 type = magnetic_field        units = G                 val = +1.261809e-02  phys-bounds = [+0.000000e+00,No           ] islog = False   
+    ---> constrain failed, B set to:  name = B                 type = magnetic_field        units = G                 val = +1.000000e-02  phys-bounds = [+0.000000e+00,No           ] islog = False   
+    
     
     ---> update pars for new B 
     ---> setting par type low-energy-cut-off, corresponding to par gmin
-    --->  name = gmin              type = low-energy-cut-off    units = Lorentz-factor    val = +2.973019e+00  phys-bounds = [+0.000000e+00,+5.000000e+00] islog = True   
+    --->  name = gmin              type = low-energy-cut-off    units = Lorentz-factor    val = +3.023516e+00  phys-bounds = [+0.000000e+00,+5.000000e+00] islog = True   
     
     ---> setting par type low-energy-cut-off, corresponding to par gamma_cut
-    ---> using gamma_3p_Sync= 213545.2430143568
-    --->  name = gamma_cut         type = turn-over-energy      units = Lorentz-factor    val = +5.630520e+00  phys-bounds = [+0.000000e+00,+8.000000e+00] islog = True   
-    ---> gamma_max=3.391964e+06 from nu_max_Sync= 2.931204e+19, using B=1.261809e-02
+    ---> using gamma_3p_Sync= 240132.51960367887
+    --->  name = gamma_cut         type = turn-over-energy      units = Lorentz-factor    val = +5.681481e+00  phys-bounds = [+0.000000e+00,+8.000000e+00] islog = True   
+    ---> gamma_max=2.057195e+06 from nu_max_Sync= 8.544779e+18, using B=1.000000e-02
     ---> setting par type high-energy-cut-off, corresponding to par gmax
-    --->  name = gmax              type = high-energy-cut-off   units = Lorentz-factor    val = +6.530451e+00  phys-bounds = [+0.000000e+00,+1.500000e+01] islog = True   
+    --->  name = gmax              type = high-energy-cut-off   units = Lorentz-factor    val = +6.313275e+00  phys-bounds = [+0.000000e+00,+1.500000e+01] islog = True   
     
     ---> setting par type electron_density, corresponding to par N
     ---> get R from Compoton Dominance (CD)
-         Best R=1.012083e+17
-    ---> setting par type region_size, corresponding to par R
-    --->  name = R                 type = region_size           units = cm                val = +1.700522e+01  phys-bounds = [+0.000000e+00,+3.000000e+01] islog = True   
-    
-    ---> setting par type electron_density, corresponding to par N
-    ---> t_var (days) 1.6110761588550229
-    
-    show pars
-    -------------------------------------------------------------------------------------------------------------------
-    model parameters:
-     Name             | Type                 | Units            | value         | phys. boundaries              | log
-    -------------------------------------------------------------------------------------------------------------------
-     B                | magnetic_field       | G                | +1.261809e-02 | [+0.000000e+00,No           ] | False 
-     N                | electron_density     | cm^-3            | +9.316000e-02 | [+0.000000e+00,No           ] | False 
-     R                | region_size          | cm               | +1.700522e+01 | [+0.000000e+00,+3.000000e+01] | True 
-     beam_obj         | beaming              |                  | +2.500000e+01 | [+1.000000e+00,No           ] | False 
-     gamma_cut        | turn-over-energy     | Lorentz-factor   | +5.630520e+00 | [+0.000000e+00,+8.000000e+00] | True 
-     gmax             | high-energy-cut-off  | Lorentz-factor   | +6.530451e+00 | [+0.000000e+00,+1.500000e+01] | True 
-     gmin             | low-energy-cut-off   | Lorentz-factor   | +2.973019e+00 | [+0.000000e+00,+5.000000e+00] | True 
-     p                | LE_spectral_slope    |                  | +2.182289e+00 | [-1.000000e+01,+1.000000e+01] | False 
-     z_cosm           | redshift             |                  | +3.080000e-02 | [+0.000000e+00,No           ] | False 
-    -------------------------------------------------------------------------------------------------------------------
-    eval_model
-    ===================================================================================================================
-    
 
-
-
-.. image:: Jet_example_phenom_constr_files/Jet_example_phenom_constr_10_1.png
 
 

@@ -4,26 +4,6 @@ from builtins import (bytes, str, open, super, range,
                       zip, round, input, int, pow, object, map, zip)
 
 
-"""
-This module  provides an interface to call the BlazarSED code, setting the
-physical parameters and running the code. The BlazarSED code is a numerical 
-accurate C code, to evaluate SSC/EC emission processes in a relativistic jet. 
-The python wrappper is  built using SWIG. 
-
-The :class:`.Jet` is used to create a *jet* object, providing the high 
-level interface to set the jet physical  paramters, and evaluater the SSC/EC 
-emission processes.
-
-"""
-
-
-
-'''
-Created on 2013 1 27
-
-@author: andrea tramacere
-'''
-
 
 
 __author__ = "Andrea Tramacere"

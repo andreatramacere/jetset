@@ -66,26 +66,13 @@ It is possible to change the size of the grid for the electron
 distribution. It is worth noting that at lower values of the grid size
 the speed will increase, **but it is not recommended to go below 100**.
 
-.. code:: ipython3
-
-    The acutual value of the grid size is returned by the :meth:`.Jet.gamma_grid_size`
-
-
-::
-
-
-      File "<ipython-input-2-7a59ea1b6b35>", line 1
-        The acutual value of the grid size is returned by the :meth:`.Jet.gamma_grid_size`
-                  ^
-    SyntaxError: invalid syntax
-
-
+The actual value of the grid size is returned by the :meth:`.Jet.gamma_grid_size`
 
 .. code:: ipython3
 
     print (my_jet.gamma_grid_size)
 
-and this value can be changed using the method :meth:`.Jet.set_gamma_grid_size`. In the following we show the result for a grid of size=10, as anticiapted the final integration will be not satisfactory
+and this value can be changed using the method :meth:`.Jet.set_gamma_grid_size`. In the following we show the result for a grid of size=10, as anticipated the final integration will be not satisfactory
 
 .. code:: ipython3
 

@@ -1,36 +1,3 @@
-#!/usr/bin/env python
-"""
-Module: model
-===================================================================
-
-This module contains all the classes necessary to build a SED model.
-A SED model can be built by creating a  :class:`.SEDmodel` object.
-
-
-
-Classes and Inheritance Structure
-----------------------------------------------
-.. inheritance-diagram:: BlazarSEDFit.model_manager
-    
-Classes relations
-----------------------------------------------
-
-.. figure::  classes_model_manager.png
-   :align:   center    
-
-
-      
-.. autosummary::
-   FitModel
-   
-   
-    
-Module API
--------------------------------------------------------------------
-
-"""
-
-
 from __future__ import absolute_import, division, print_function
 
 from builtins import (bytes, str, open, super, range,
