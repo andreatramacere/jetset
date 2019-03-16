@@ -267,17 +267,17 @@
 <p>The data are treated using two classes from the module <a class="reference internal" href="../../api/data_loader.html#module-jetset.data_loader" title="jetset.data_loader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">data_loader</span></code></a></p>
 <ul class="simple">
 <li><code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.Data</span></code> class</li>
-<li><a class="reference internal" href="../../api/jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.ObsData</span></code></a> class</li>
+<li><code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.ObsData</span></code> class</li>
 </ul>
-<p>The class <code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.Data</span></code> is in charge of storing the data, giving access to the I/O fucntionalities, and provides and interface  to the <cite>~astropy.table.Table</cite> (see the <a href="#id2"><span class="problematic" id="id3">`astropy`_</span></a> documentation, for further information)</p>
-<p>The class <a class="reference internal" href="../../api/jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.ObsData</span></code></a> use the information stored in <code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.Data</span></code>, and can perform several operations</p>
+<p>The class <code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.Data</span></code> is in charge of storing the data, giving access to the I/O functionalities, and provides and interface  to the <cite>~astropy.table.Table</cite> (see the <a href="#id2"><span class="problematic" id="id3">`astropy`_</span></a> documentation, for further information)</p>
+<p>The class <code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.ObsData</span></code> use the information stored in <code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.Data</span></code>, and can perform several operations</p>
 <blockquote>
 <div><ul class="simple">
-<li>rebinning of the data</li>
+<li>rebinning (grouping) of the data</li>
 <li>selection of time ranges</li>
 <li>selection of datasets</li>
-<li>transformation from liner to logarthmic representation</li>
-<li>handling of errors and systematcis</li>
+<li>transformation from liner to logarithmic representation</li>
+<li>handling of errors and systemtics</li>
 </ul>
 </div></blockquote>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
@@ -297,8 +297,8 @@ easy to import from</p>
 <li>ascii files</li>
 <li>numpy array in general</li>
 </ol>
-<p>once that is clear the data format. The easiest way to undertand the
-data format is to build an empyt table to have a look at the structure
+<p>once that is clear the data format. The easiest way to understand the
+data format is to build an empty table to have a look at the structure
 of the table:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jetset.data_loader</span> <span class="k">import</span> <span class="n">Data</span>
 <span class="n">data</span><span class="o">=</span><span class="n">Data</span><span class="p">(</span><span class="n">n_rows</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -329,7 +329,7 @@ of the table:</p>
 <li><code class="docutils literal notranslate"><span class="pre">dx</span></code> columm is reserved to the error on the frequency,or bin width</li>
 <li><code class="docutils literal notranslate"><span class="pre">dy</span></code> columm is reserved to the error on the fluxes</li>
 <li><code class="docutils literal notranslate"><span class="pre">UL</span></code> columm is reserved to the flag for Upper Limit</li>
-<li><code class="docutils literal notranslate"><span class="pre">T_start</span></code> and <code class="docutils literal notranslate"><span class="pre">T_stop</span></code> are used to indentify the time range to
+<li><code class="docutils literal notranslate"><span class="pre">T_start</span></code> and <code class="docutils literal notranslate"><span class="pre">T_stop</span></code> are used to identify the time range to
 select data using the class <code class="docutils literal notranslate"><span class="pre">ObsData</span></code></li>
 <li><code class="docutils literal notranslate"><span class="pre">data_set</span></code></li>
 </ul>
@@ -348,8 +348,8 @@ select data using the class <code class="docutils literal notranslate"><span cla
 <li><code class="docutils literal notranslate"><span class="pre">z</span></code>: the redshift of the object</li>
 <li><code class="docutils literal notranslate"><span class="pre">UL_CL</span></code>: the CL for the UL</li>
 <li><code class="docutils literal notranslate"><span class="pre">restframe</span></code>: possible values<code class="docutils literal notranslate"><span class="pre">obs</span></code> or <code class="docutils literal notranslate"><span class="pre">src</span></code>, indicating if the
-data are oserved flux, or luminosities, respectively</li>
-<li><code class="docutils literal notranslate"><span class="pre">data_scale</span></code>: ossible values<code class="docutils literal notranslate"><span class="pre">lin-lin</span></code> or <code class="docutils literal notranslate"><span class="pre">log-log</span></code>,
+data are observed flux, or luminosities, respectively</li>
+<li><code class="docutils literal notranslate"><span class="pre">data_scale</span></code>: possible values<code class="docutils literal notranslate"><span class="pre">lin-lin</span></code> or <code class="docutils literal notranslate"><span class="pre">log-log</span></code>,
 indicating if the data are in linear or logarithmic scale,
 respectively</li>
 <li><code class="docutils literal notranslate"><span class="pre">obj_name</span></code>: the name of the object</li>
@@ -440,8 +440,8 @@ luminosities</strong></p>
 <div class="section" id="importing-data-from-an-arbitrary-ascii-file-or-numpy-array">
 <h2>importing data from an arbitrary ascii file or numpy array<a class="headerlink" href="#importing-data-from-an-arbitrary-ascii-file-or-numpy-array" title="Permalink to this headline">¶</a></h2>
 <p>Assume that your data are stored in an ASCII file named
-‘test-ascii.txt’, with - <code class="docutils literal notranslate"><span class="pre">x</span></code> in the first colum with frequency in
-<code class="docutils literal notranslate"><span class="pre">Hz</span></code> , - <code class="docutils literal notranslate"><span class="pre">y</span></code> in the second column with fluxes in erf <code class="docutils literal notranslate"><span class="pre">cm-2</span> <span class="pre">s-1</span></code>, -
+‘test-ascii.txt’, with - <code class="docutils literal notranslate"><span class="pre">x</span></code> in the first column with frequency in
+<code class="docutils literal notranslate"><span class="pre">Hz</span></code> , - <code class="docutils literal notranslate"><span class="pre">y</span></code> in the second column with fluxes in erg <code class="docutils literal notranslate"><span class="pre">cm-2</span> <span class="pre">s-1</span></code>, -
 <code class="docutils literal notranslate"><span class="pre">dy</span></code> in the third column with the same units as <code class="docutils literal notranslate"><span class="pre">y</span></code> - the data are
 in <code class="docutils literal notranslate"><span class="pre">log-log</span></code> scale</p>
 <p><strong>of course the column number depends on the file that you are using,
@@ -468,7 +468,7 @@ this is only an example</strong></p>
 <h2>importing data from the asi ssdc sedtool<a class="headerlink" href="#importing-data-from-the-asi-ssdc-sedtool" title="Permalink to this headline">¶</a></h2>
 <p>To import data from a data file downloaded from the asi ssdc sedtool:
 <a class="reference external" href="https://tools.ssdc.asi.it/SED/">https://tools.ssdc.asi.it/SED/</a></p>
-<p>we can use the importing tool in the <code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.Data</span></code>. We just need to have the file downloaded from the asi ssdc sedtool, and to know the redshfit of the object, the scale we selected (lin-lin, or log-log).
+<p>we can use the importing tool in the <code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.Data</span></code>. We just need to have the file downloaded from the asi ssdc sedtool, and to know the redshift of the object, the scale we selected (lin-lin, or log-log).
 Assume that we downloaded the data for Mrk421, in observed fluxes and linear scale, and the data are saved in the file ‘MRK421_asdc.txt’, we only have to do:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jetset.data_loader</span> <span class="k">import</span> <span class="n">Data</span>
 <span class="n">data</span><span class="o">=</span><span class="n">Data</span><span class="o">.</span><span class="n">from_asdc</span><span class="p">(</span><span class="n">asdc_sed_file</span><span class="o">=</span><span class="s1">&#39;MRK421_asdc.txt&#39;</span><span class="p">,</span><span class="n">obj_name</span><span class="o">=</span><span class="s1">&#39;Mrk421&#39;</span><span class="p">,</span><span class="n">restframe</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span><span class="p">,</span><span class="n">data_scale</span><span class="o">=</span><span class="s1">&#39;lin-lin&#39;</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="mf">0.038</span><span class="p">)</span>
@@ -480,7 +480,7 @@ luminosities</strong></p>
 </div>
 <div class="section" id="building-the-sed">
 <h2>Building the SED<a class="headerlink" href="#building-the-sed" title="Permalink to this headline">¶</a></h2>
-<p>Once we have a data table built with the class:<cite>jetset.data_loader.Data</cite>, following  one of the method described above, you can create  SED data using the  <a class="reference internal" href="../../api/jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.ObsData</span></code></a> class.
+<p>Once we have a data table built with the class:<cite>jetset.data_loader.Data</cite>, following  one of the method described above, you can create  SED data using the  <code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.data_loader.ObsData</span></code> class.
 In the example we use one of the test SEDs provided by the package:</p>
 <p>We start to loading the SED of Mrk 421, and we pass to <code class="docutils literal notranslate"><span class="pre">ObsData</span></code>
 directly the path to the file, because this is already in the format
@@ -494,7 +494,7 @@ that we need and that we have discussed above.</p>
 </pre></div>
 </div>
 <p>As you can see the all the meta-data have been properly sourced from the
-SED file header. You also get information on the lenght of the data,
+SED file header. You also get information on the length of the data,
 before and after elimination of duplicated entries, and upper limits
 These meta-data are parameters needed by the</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sed_data</span><span class="o">.</span><span class="n">table</span>
@@ -577,8 +577,8 @@ These meta-data are parameters needed by the</p>
 <h2>grouping data<a class="headerlink" href="#grouping-data" title="Permalink to this headline">¶</a></h2>
 <p>As you can see, due to the overlapping of different instruments and to
 different time snapshots, some points have multiple values. Although
-this is not a problem for the fit process, you might want to rebin your
-data. This can be obtained with the following command:</p>
+this is not a problem for the fit process, you might want to rebin
+(group) your data. This can be obtained with the following command:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sed_data</span><span class="o">.</span><span class="n">group_data</span><span class="p">(</span><span class="n">bin_width</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -601,7 +601,7 @@ for different reasons:</p>
 take this into account</li>
 <li>data (typically IR up to UV), might have very small errors compared
 to those at higher energies. This might bias the minimizer to
-accomodate the parameters in order to fit ‘better’ the low
+accommodate the parameters in order to fit ‘better’ the low
 frequencies branch.</li>
 </ul>
 <p>For these reasons the package offer the possibility to add systematics</p>

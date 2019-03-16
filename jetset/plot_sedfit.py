@@ -1,34 +1,3 @@
-"""
-===================================================================
-Moudule: plot_sedfit
-===================================================================
-
-This module contains all the classes necessary to build 
-
-
-..
-
-
-
-Classes and Inheritance Structure
--------------------------------------------------------------------
-
-.. inheritance-diagram:: BlazarSEDFit.plot_sedfit
-    
-
-
-  
-.. autosummary::
-  
-   
-   
-    
-Module API
--------------------------------------------------------------------
-
-"""
-
-
 from __future__ import absolute_import, division, print_function
 
 from builtins import (bytes, str, open, super, range,

@@ -20,7 +20,7 @@ SEDShape
       ~SEDShape.find_class
       ~SEDShape.get_nu_max
       ~SEDShape.plot_indices
-      ~SEDShape.plot_sahpe_fit
+      ~SEDShape.plot_shape_fit
       ~SEDShape.save_sync_fit_report
       ~SEDShape.save_values
       ~SEDShape.set_S_LE_slope
@@ -39,7 +39,7 @@ SEDShape
    .. automethod:: find_class
    .. automethod:: get_nu_max
    .. automethod:: plot_indices
-   .. automethod:: plot_sahpe_fit
+   .. automethod:: plot_shape_fit
    .. automethod:: save_sync_fit_report
    .. automethod:: save_values
    .. automethod:: set_S_LE_slope

@@ -10,8 +10,12 @@ Jet
 
    .. autosummary::
 
+      ~Jet.IC_nu_size
+      ~Jet.Norm_distr
+      ~Jet.gamma_grid_size
       ~Jet.nu_max
       ~Jet.nu_min
+      ~Jet.nu_seed_size
       ~Jet.nu_size
 
    .. rubric:: Methods Summary
@@ -41,7 +45,6 @@ Jet
       ~Jet.get_electron_distribution_name
       ~Jet.get_emiss_lim
       ~Jet.get_flag
-      ~Jet.get_gamma_grid_size
       ~Jet.get_par_by_name
       ~Jet.get_par_by_type
       ~Jet.get_path
@@ -70,14 +73,21 @@ Jet
       ~Jet.set_path
       ~Jet.set_seed_nu_size
       ~Jet.set_verbosity
+      ~Jet.show_electron_distribution
       ~Jet.show_model
       ~Jet.show_pars
       ~Jet.show_spectral_components
+      ~Jet.switch_Norm_distr_OFF
+      ~Jet.switch_Norm_distr_ON
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: IC_nu_size
+   .. autoattribute:: Norm_distr
+   .. autoattribute:: gamma_grid_size
    .. autoattribute:: nu_max
    .. autoattribute:: nu_min
+   .. autoattribute:: nu_seed_size
    .. autoattribute:: nu_size
 
    .. rubric:: Methods Documentation
@@ -105,7 +115,6 @@ Jet
    .. automethod:: get_electron_distribution_name
    .. automethod:: get_emiss_lim
    .. automethod:: get_flag
-   .. automethod:: get_gamma_grid_size
    .. automethod:: get_par_by_name
    .. automethod:: get_par_by_type
    .. automethod:: get_path
@@ -134,6 +143,9 @@ Jet
    .. automethod:: set_path
    .. automethod:: set_seed_nu_size
    .. automethod:: set_verbosity
+   .. automethod:: show_electron_distribution
    .. automethod:: show_model
    .. automethod:: show_pars
    .. automethod:: show_spectral_components
+   .. automethod:: switch_Norm_distr_OFF
+   .. automethod:: switch_Norm_distr_ON

@@ -1,57 +1,11 @@
-"""
-Module: model_template
-========================
-
-Overview
---------
-   
-This module  provides an interface handle the template model
-
-
-
-
-Classes relations
----------------------------------------
-.. figure::  classes_template_model.png
-   :align:   center  
-
-
-Classes and Inheritance Structure
-----------------------------------------------
-.. inheritance-diagram:: BlazarSEDFit.template_model
-
-
-  
-
-
-Module API
------------
-
-Summary
----------
-.. autosummary::
-
-   Template
-   TemplateParameter
-    
-Module API
-
-"""
-
-
 
 from __future__ import absolute_import, division, print_function
-
 from builtins import (bytes, str, open, super, range,
                       zip, round, input, int, pow, object, map, zip)
 
 __author__ = "Andrea Tramacere"
 
-'''
-Created on 2013 1 27
 
-@author: orion
-'''
 from .cosmo_tools import Cosmo
 
 from .data_loader import log_to_lin, lin_to_log

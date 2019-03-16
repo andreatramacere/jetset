@@ -112,13 +112,6 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">jetset.data_loader Module</a><ul>
-<li><a class="reference internal" href="#moudule-data-loader">Moudule: data_loader</a><ul>
-<li><a class="reference internal" href="#classes-and-inheritance-structure">Classes and Inheritance Structure</a></li>
-<li><a class="reference internal" href="#classes-relations">Classes relations</a></li>
-<li><a class="reference internal" href="#summary">Summary</a></li>
-<li><a class="reference internal" href="#module-api">Module API</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#functions">Functions</a></li>
 <li><a class="reference internal" href="#classes">Classes</a></li>
 <li><a class="reference internal" href="#class-inheritance-diagram">Class Inheritance Diagram</a></li>
@@ -236,13 +229,6 @@
 <li class="toctree-l2"><a class="reference internal" href="convert_qdp.html">convert_qdp</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cosmo_tools.html">cosmo_tools</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">data_loader</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#moudule-data-loader">Moudule: data_loader</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#classes-and-inheritance-structure">Classes and Inheritance Structure</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#classes-relations">Classes relations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-api">Module API</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="jetset.data_loader.get_data_set_msk.html">get_data_set_msk</a></li>
 <li class="toctree-l4"><a class="reference internal" href="jetset.data_loader.get_freq_range_msk.html">get_freq_range_msk</a></li>
@@ -252,6 +238,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#classes">Classes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="jetset.data_loader.ObsData.html">ObsData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jetset.data_loader.Data.html">Data</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#class-inheritance-diagram">Class Inheritance Diagram</a></li>
@@ -292,38 +279,6 @@
       
   <div class="section" id="module-jetset.data_loader">
 <span id="jetset-data-loader-module"></span><h1>jetset.data_loader Module<a class="headerlink" href="#module-jetset.data_loader" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="moudule-data-loader">
-<h2>Moudule: data_loader<a class="headerlink" href="#moudule-data-loader" title="Permalink to this headline">¶</a></h2>
-<p>This module contains all the classes necessary to load SED data
-from a file.  The most effective way to import the SED data is to create an object
-instance of <a class="reference internal" href="jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ObsData</span></code></a> class.</p>
-<div class="section" id="classes-and-inheritance-structure">
-<h3>Classes and Inheritance Structure<a class="headerlink" href="#classes-and-inheritance-structure" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="classes-relations">
-<h3>Classes relations<a class="headerlink" href="#classes-relations" title="Permalink to this headline">¶</a></h3>
-<div class="figure align-center">
-<img alt="api/classes_data_loader.png" src="api/classes_data_loader.png" />
-</div>
-</div>
-<div class="section" id="summary">
-<h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObsData</span></code></a>([data_table,&nbsp;dupl_filter,&nbsp;…])</td>
-<td>This class provides a  powerful interface  to load observational data stored in a file.</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="module-api">
-<h3>Module API<a class="headerlink" href="#module-api" title="Permalink to this headline">¶</a></h3>
-</div>
-</div>
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="longtable docutils">
@@ -358,14 +313,18 @@ instance of <a class="reference internal" href="jetset.data_loader.ObsData.html#
 <tr class="row-odd"><td><a class="reference internal" href="jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ObsData</span></code></a>([data_table,&nbsp;dupl_filter,&nbsp;…])</td>
 <td>This class provides a  powerful interface  to load observational data stored in a file.</td>
 </tr>
+<tr class="row-even"><td><a class="reference internal" href="jetset.data_loader.Data.html#jetset.data_loader.Data" title="jetset.data_loader.Data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Data</span></code></a>([n_rows,&nbsp;data_table])</td>
+<td></td>
+</tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="class-inheritance-diagram">
 <h2>Class Inheritance Diagram<a class="headerlink" href="#class-inheritance-diagram" title="Permalink to this headline">¶</a></h2>
-<div class="graphviz"><img src="../_images/inheritance-6f5edd4b0b92294afcbe90aa773c7724d64585eb.png" alt="Inheritance diagram of jetset.data_loader.ObsData" usemap="#inheritancef183ce12bd" class="inheritance graphviz" /></div>
-<map id="inheritancef183ce12bd" name="inheritancef183ce12bd">
-<area shape="rect" id="node1" href="jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" target="_top" title="This class provides a &#160;powerful interface &#160;to load observational data stored in a file." alt="" coords="5,5,80,30"/>
+<div class="graphviz"><img src="../_images/inheritance-6ce54d94cb24ecd969612996b71592a89ff4e7bc.png" alt="Inheritance diagram of jetset.data_loader.ObsData, jetset.data_loader.Data" usemap="#inheritanceb4745ec033" class="inheritance graphviz" /></div>
+<map id="inheritanceb4745ec033" name="inheritanceb4745ec033">
+<area shape="rect" id="node1" href="jetset.data_loader.Data.html#jetset.data_loader.Data" target="_top" title="Data" alt="" coords="7,54,79,79"/>
+<area shape="rect" id="node2" href="jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" target="_top" title="This class provides a &#160;powerful interface &#160;to load observational data stored in a file." alt="" coords="5,5,80,30"/>
 </map></div>
 </div>
 

@@ -1,5 +1,5 @@
 
 
-pyreverse -AS BlazarSEDFit 
+pyreverse -AS jetset 
 
-pyreverse -c SEDmodel -AS -mn  BlazarSEDFit.model
+pyreverse -c jetset -AS -mn  jetset.model

@@ -3,53 +3,7 @@ from __future__ import absolute_import, division, print_function
 from builtins import (bytes, str, open, super, range,
                       zip, round, input, int, pow, object, map, zip)
 
-"""
-Module: loglog_poly_model
-========================
 
-
-Overview
---------
-   
-This module  provides an interface handle the loglog polynomial model
-
-
-
-
-Classes relations
----------------------------------------
-.. figure::  classes_loglog_poly_model.png
-   :align:   center  
-
-
-Classes and Inheritance Structure
-----------------------------------------------
-.. inheritance-diagram:: BlazarSEDFit.loglog_poly_model
-
-
-  
-
-
-Module API
------------
-
-Summary
----------
-.. autosummary::
-
-    
-    
-Module API
-
-"""
-
-
-
-'''
-Created on 2013 1 27
-
-@author: orion
-'''
 
 
 

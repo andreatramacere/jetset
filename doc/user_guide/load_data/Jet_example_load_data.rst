@@ -9,15 +9,15 @@ The data are treated using two classes from the module :mod:`.data_loader`
 - :class:`jetset.data_loader.Data` class 
 - :class:`jetset.data_loader.ObsData` class 
 
-The class :class:`jetset.data_loader.Data` is in charge of storing the data, giving access to the I/O fucntionalities, and provides and interface  to the `~astropy.table.Table` (see the `astropy`_ documentation, for further information)
+The class :class:`jetset.data_loader.Data` is in charge of storing the data, giving access to the I/O functionalities, and provides and interface  to the `~astropy.table.Table` (see the `astropy`_ documentation, for further information)
 
 The class :class:`jetset.data_loader.ObsData` use the information stored in :class:`jetset.data_loader.Data`, and can perform several operations 
  
- - rebinning of the data
+ - rebinning (grouping) of the data
  - selection of time ranges
  - selection of datasets
- - transformation from liner to logarthmic representation
- - handling of errors and systematcis
+ - transformation from liner to logarithmic representation
+ - handling of errors and systemtics
  
 
 .. code:: ipython3
@@ -39,7 +39,7 @@ easy to import from
 1. ascii files
 2. numpy array in general
 
-once that is clear the data format. The easiest way to undertand the
+once that is clear the data format. The easiest way to understand the
 data format is to build an empty table to have a look at the structure
 of the table:
 
@@ -83,7 +83,7 @@ we can easily access the astropy table
 -  ``dx`` columm is reserved to the error on the frequency,or bin width
 -  ``dy`` columm is reserved to the error on the fluxes
 -  ``UL`` columm is reserved to the flag for Upper Limit
--  ``T_start`` and ``T_stop`` are used to indentify the time range to
+-  ``T_start`` and ``T_stop`` are used to identify the time range to
    select data using the class ``ObsData``
 -  ``data_set``
 
@@ -109,8 +109,8 @@ and we can easily access the metadata
 -  ``z``: the redshift of the object
 -  ``UL_CL``: the CL for the UL
 -  ``restframe``: possible values\ ``obs`` or ``src``, indicating if the
-   data are oserved flux, or luminosities, respectively
--  ``data_scale``: ossible values\ ``lin-lin`` or ``log-log``,
+   data are observed flux, or luminosities, respectively
+-  ``data_scale``: possible values\ ``lin-lin`` or ``log-log``,
    indicating if the data are in linear or logarithmic scale,
    respectively
 -  ``obj_name``: the name of the object
@@ -231,8 +231,8 @@ importing data from an arbitrary ascii file or numpy array
 ----------------------------------------------------------
 
 Assume that your data are stored in an ASCII file named
-'test-ascii.txt', with - ``x`` in the first colum with frequency in
-``Hz`` , - ``y`` in the second column with fluxes in erf ``cm-2 s-1``, -
+'test-ascii.txt', with - ``x`` in the first column with frequency in
+``Hz`` , - ``y`` in the second column with fluxes in erg ``cm-2 s-1``, -
 ``dy`` in the third column with the same units as ``y`` - the data are
 in ``log-log`` scale
 
@@ -267,7 +267,7 @@ importing data from the asi ssdc sedtool
 To import data from a data file downloaded from the asi ssdc sedtool:
 https://tools.ssdc.asi.it/SED/
 
-we can use the importing tool in the :class:`jetset.data_loader.Data`. We just need to have the file downloaded from the asi ssdc sedtool, and to know the redshfit of the object, the scale we selected (lin-lin, or log-log).
+we can use the importing tool in the :class:`jetset.data_loader.Data`. We just need to have the file downloaded from the asi ssdc sedtool, and to know the redshift of the object, the scale we selected (lin-lin, or log-log).
 Assume that we downloaded the data for Mrk421, in observed fluxes and linear scale, and the data are saved in the file 'MRK421_asdc.txt', we only have to do:
 
 .. code:: ipython3
@@ -300,7 +300,7 @@ that we need and that we have discussed above.
     sed_data=ObsData(data_table=data_table)
 
 As you can see the all the meta-data have been properly sourced from the
-SED file header. You also get information on the lenght of the data,
+SED file header. You also get information on the length of the data,
 before and after elimination of duplicated entries, and upper limits
 These meta-data are parameters needed by the
 
@@ -442,8 +442,8 @@ grouping data
 
 As you can see, due to the overlapping of different instruments and to
 different time snapshots, some points have multiple values. Although
-this is not a problem for the fit process, you might want to rebin your
-data. This can be obtained with the following command:
+this is not a problem for the fit process, you might want to rebin
+(group) your data. This can be obtained with the following command:
 
 .. code:: ipython3
 
@@ -472,7 +472,7 @@ for different reasons:
    take this into account
 -  data (typically IR up to UV), might have very small errors compared
    to those at higher energies. This might bias the minimizer to
-   accomodate the parameters in order to fit 'better' the low
+   accommodate the parameters in order to fit 'better' the low
    frequencies branch.
 
 For these reasons the package offer the possibility to add systematics
@@ -489,3 +489,4 @@ For these reasons the package offer the possibility to add systematics
 
 
 with this command we add 20% systematics for data between :math:`10^{6}<\nu<10^{29}` Hz
+

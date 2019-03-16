@@ -218,26 +218,6 @@
                       <span class="nb">zip</span><span class="p">,</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="nb">zip</span><span class="p">)</span>
 
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module  provides an interface to call the BlazarSED code, setting the</span>
-<span class="sd">physical parameters and running the code. The BlazarSED code is a numerical </span>
-<span class="sd">accurate C code, to evaluate SSC/EC emission processes in a relativistic jet. </span>
-<span class="sd">The python wrappper is  built using SWIG. </span>
-
-<span class="sd">The :class:`.Jet` is used to create a *jet* object, providing the high </span>
-<span class="sd">level interface to set the jet physical  paramters, and evaluater the SSC/EC </span>
-<span class="sd">emission processes.</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-
-
-
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">Created on 2013 1 27</span>
-
-<span class="sd">@author: andrea tramacere</span>
-<span class="sd">&#39;&#39;&#39;</span>
-
 
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Andrea Tramacere&quot;</span>
@@ -1679,11 +1659,11 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">Norm_distr</span>
 
 
-    <span class="k">def</span> <span class="nf">switch_Norm_distr_ON</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">Norm_distr</span><span class="o">=</span><span class="mi">1</span>
+<div class="viewcode-block" id="Jet.switch_Norm_distr_ON"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.switch_Norm_distr_ON">[docs]</a>    <span class="k">def</span> <span class="nf">switch_Norm_distr_ON</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">Norm_distr</span><span class="o">=</span><span class="mi">1</span></div>
 
-    <span class="k">def</span> <span class="nf">switch_Norm_distr_OFF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">Norm_distr</span><span class="o">=</span><span class="mi">0</span>
+<div class="viewcode-block" id="Jet.switch_Norm_distr_OFF"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.switch_Norm_distr_OFF">[docs]</a>    <span class="k">def</span> <span class="nf">switch_Norm_distr_OFF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blob</span><span class="o">.</span><span class="n">Norm_distr</span><span class="o">=</span><span class="mi">0</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nu_max</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1778,7 +1758,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">show_electron_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Jet.show_electron_distribution"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.show_electron_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">show_electron_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span>
             <span class="s2">&quot;-------------------------------------------------------------------------------------------------------------------&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;electron distribution:&#39;</span><span class="p">)</span>
@@ -1789,7 +1769,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">par_array</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">(</span><span class="n">names_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_electron_distribution_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">(</span><span class="n">names_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_electron_distribution_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="Jet.show_model"><a class="viewcode-back" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.show_model">[docs]</a>    <span class="k">def</span> <span class="nf">show_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

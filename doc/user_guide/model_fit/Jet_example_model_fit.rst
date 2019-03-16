@@ -21,7 +21,7 @@ Model fitting
 loading data
 ------------
 
-see the :ref:`data-format` user guide for further information about loading data
+see the :ref:`data_format` user guide for further information about loading data 
 
 .. code:: ipython3
 
@@ -32,7 +32,7 @@ see the :ref:`data-format` user guide for further information about loading data
 
 .. parsed-literal::
 
-    /Users/orion/anaconda3/lib/python3.7/site-packages/jetset-1.0.2-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.dat
+    /Users/orion/anaconda3/lib/python3.7/site-packages/jetset-1.0.2-py3.7-macosx-10.9-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.dat
 
 
 .. code:: ipython3
@@ -330,7 +330,7 @@ sed shaper
 
     <table>
         <tr>
-            <td><a href="#" onclick="$('#HCUZCsRooW').toggle()">+</a></td>
+            <td><a href="#" onclick="$('#QVTKcinQfY').toggle()">+</a></td>
             <td title="Variable name">Name</td>
             <td title="Value of parameter">Value</td>
             <td title="Hesse error">Hesse Error</td>
@@ -385,7 +385,7 @@ sed shaper
             <td>No</td>
         </tr>
     </table>
-    <pre id="HCUZCsRooW" style="display:none;">
+    <pre id="QVTKcinQfY" style="display:none;">
     <textarea rows="14" cols="50" onclick="this.select()" readonly>
     \begin{tabular}{|c|r|r|r|r|r|r|r|c|}
     \hline
@@ -562,7 +562,7 @@ model constraining
     --->  name = R                 type = region_size           units = cm                val = +1.689721e+01  phys-bounds = [+0.000000e+00,+3.000000e+01] islog = True   
     
     ---> setting par type electron_density, corresponding to par N
-    ---> t_var (days) 1.2597563330935855
+    ---> t_var (days) 1.2597563330935961
     
     show pars
     -------------------------------------------------------------------------------------------------------------------
@@ -610,6 +610,14 @@ model constraining
 Model fitting
 -------------
 
+We remind that we can use different ``minimizers`` for the model
+fitting. In the following we will use the ``minuit`` minimizer, but as
+alternative we can use the ``lsb`` minimizer. Using ``minuit`` we notice
+that sometime (as in the case below) the fit will converge, but the
+quality will not be enough (``valid==false``) to run ``minos``. Anyhow,
+as shown in the :ref:``MCMC sampling``, it still possible to estimate
+asymmetric errors by means of MCMC sampling
+
 .. code:: ipython3
 
     from jetset.model_manager import  FitModel
@@ -624,7 +632,10 @@ Model fitting
     fit_model.parameters.nu_scale.frozen=True
     fit_model.show_pars()
     
+    #lsb minimizer
     model_minimizer,best_fit=fit_SED(fit_model,sed_data,10.0**11.4,10**29.0,fitname='SSC-best-fit',minimizer='lsb')
+    
+    #minuti minimizer
     model_minimizer,best_fit=fit_SED(fit_model,sed_data,10.0**11.4,10**29.0,fitname='SSC-best-fit',minimizer='minuit')
 
 
@@ -668,7 +679,7 @@ Model fitting
      nuFnu_p_host     | nuFnu-scale          | erg cm^-2 s^-1   | -1.006556e+01 | [-2.000000e+01,+2.000000e+01] | False 
      nu_scale         | nu-scale             | Hz               | +1.730750e-02 | [-2.000000e+00,+2.000000e+00] | False 
     -------------------------------------------------------------------------------------------------------------------
-    | minim function calls=90, chisq=15.764734 UL part=-0.000000                                                                                                                                                                                                    
+    | minim function calls=50, chisq=13.292912 UL part=-0.000000
     **************************************************************************************************
     Fit report
     
@@ -677,38 +688,38 @@ Model fitting
     model parameters:
      Name             | Type                 | Units            | value         | phys. boundaries              | log
     -------------------------------------------------------------------------------------------------------------------
-     B                | magnetic_field       | G                | +3.842191e-03 | [+0.000000e+00,No           ] | False 
-     N                | electron_density     | cm^-3            | +6.237170e-02 | [+0.000000e+00,No           ] | False 
+     B                | magnetic_field       | G                | +3.842601e-03 | [+0.000000e+00,No           ] | False 
+     N                | electron_density     | cm^-3            | +7.492553e-02 | [+0.000000e+00,No           ] | False 
      R                | region_size          | cm               | +1.689721e+01 | [+0.000000e+00,+3.000000e+01] | True 
-     beam_obj         | beaming              |                  | +3.275536e+01 | [+1.000000e+00,No           ] | False 
-     gamma_cut        | turn-over-energy     | Lorentz-factor   | +2.387279e+06 | [+1.000000e+00,+1.000000e+08] | False 
-     gmax             | high-energy-cut-off  | Lorentz-factor   | +5.652011e+06 | [+1.000000e+00,+1.000000e+15] | False 
-     gmin             | low-energy-cut-off   | Lorentz-factor   | +3.663201e+03 | [+1.000000e+00,+1.000000e+05] | False 
-     p                | LE_spectral_slope    |                  | +2.618010e+00 | [-1.000000e+01,+1.000000e+01] | False 
+     beam_obj         | beaming              |                  | +3.285602e+01 | [+1.000000e+00,No           ] | False 
+     gamma_cut        | turn-over-energy     | Lorentz-factor   | +3.525224e+06 | [+1.000000e+00,+1.000000e+08] | False 
+     gmax             | high-energy-cut-off  | Lorentz-factor   | +5.650706e+06 | [+1.000000e+00,+1.000000e+15] | False 
+     gmin             | low-energy-cut-off   | Lorentz-factor   | +3.655704e+03 | [+1.000000e+00,+1.000000e+05] | False 
+     p                | LE_spectral_slope    |                  | +2.700310e+00 | [-1.000000e+01,+1.000000e+01] | False 
      z_cosm           | redshift             |                  | +3.360000e-02 | [+0.000000e+00,No           ] | False 
      nuFnu_p_host     | nuFnu-scale          | erg cm^-2 s^-1   | -1.006556e+01 | [-2.000000e+01,+2.000000e+01] | False 
      nu_scale         | nu-scale             | Hz               | +1.730750e-02 | [-2.000000e+00,+2.000000e+00] | False 
     -------------------------------------------------------------------------------------------------------------------
     
     converged=True
-    calls=91
+    calls=59
     mesg=The relative error between two consecutive iterates is at most 0.000000
     dof=23
-    chisq=15.754459, chisq/red=0.684976 null hypothesis sig=0.865577
+    chisq=13.292923, chisq/red=0.577953 null hypothesis sig=0.945350
     
     best fit pars
     -------------------------------------------------------------------------------------------------------------------
     best-fit parameters:
       Name            | best-fit value| best-fit err +| best-fit err -|start value   | fit boundaries
     -------------------------------------------------------------------------------------------------------------------
-     B                | +3.842191e-03 | +4.355962e-04 | #             | +3.868794e-03 | [+0.000000e+00,No           ]
-     N                | +6.237170e-02 | +6.037722e-04 | #             | +1.220832e-01 | [+0.000000e+00,No           ]
+     B                | +3.842601e-03 | +1.308141e-09 | #             | +3.868794e-03 | [+0.000000e+00,No           ]
+     N                | +7.492553e-02 | +9.296430e-03 | #             | +1.220832e-01 | [+0.000000e+00,No           ]
      R                | Frozen        | Frozen        | Frozen        | +1.689721e+01 | [+0.000000e+00,+3.000000e+01]
-     beam_obj         | +3.275536e+01 | +2.282689e+00 | #             | +2.500000e+01 | [+1.000000e+00,No           ]
-     gamma_cut        | +2.387279e+06 | +2.286063e+05 | #             | +1.122231e+06 | [+1.000000e+00,+1.000000e+08]
-     gmax             | +5.652011e+06 | +1.423124e+06 | #             | +5.565597e+06 | [+1.000000e+05,+1.000000e+08]
-     gmin             | +3.663201e+03 | +1.392166e-02 | #             | +1.699486e+03 | [+1.000000e+00,+1.000000e+05]
-     p                | +2.618010e+00 | +2.765739e-02 | #             | +2.248787e+00 | [-1.000000e+01,+1.000000e+01]
+     beam_obj         | +3.285602e+01 | +7.308139e-01 | #             | +2.500000e+01 | [+1.000000e+00,No           ]
+     gamma_cut        | +3.525224e+06 | +3.889897e+05 | #             | +1.122231e+06 | [+1.000000e+00,+1.000000e+08]
+     gmax             | +5.650706e+06 | +1.033713e+05 | #             | +5.565597e+06 | [+1.000000e+05,+1.000000e+08]
+     gmin             | +3.655704e+03 | +2.060421e-02 | #             | +1.699486e+03 | [+1.000000e+00,+1.000000e+05]
+     p                | +2.700310e+00 | +1.882426e-02 | #             | +2.248787e+00 | [-1.000000e+01,+1.000000e+01]
      z_cosm           | Frozen        | Frozen        | Frozen        | +3.360000e-02 | [+0.000000e+00,No           ]
      nuFnu_p_host     | Frozen        | Frozen        | Frozen        | -1.006556e+01 | [-1.225412e+01,-8.254123e+00]
      nu_scale         | Frozen        | Frozen        | Frozen        | +1.730750e-02 | [-5.000000e-01,+5.000000e-01]
@@ -727,19 +738,19 @@ Model fitting
     model parameters:
      Name             | Type                 | Units            | value         | phys. boundaries              | log
     -------------------------------------------------------------------------------------------------------------------
-     B                | magnetic_field       | G                | +3.842191e-03 | [+0.000000e+00,No           ] | False 
-     N                | electron_density     | cm^-3            | +6.237170e-02 | [+0.000000e+00,No           ] | False 
+     B                | magnetic_field       | G                | +3.842601e-03 | [+0.000000e+00,No           ] | False 
+     N                | electron_density     | cm^-3            | +7.492553e-02 | [+0.000000e+00,No           ] | False 
      R                | region_size          | cm               | +1.689721e+01 | [+0.000000e+00,+3.000000e+01] | True 
-     beam_obj         | beaming              |                  | +3.275536e+01 | [+1.000000e+00,No           ] | False 
-     gamma_cut        | turn-over-energy     | Lorentz-factor   | +2.387279e+06 | [+1.000000e+00,+1.000000e+08] | False 
-     gmax             | high-energy-cut-off  | Lorentz-factor   | +5.652011e+06 | [+1.000000e+00,+1.000000e+15] | False 
-     gmin             | low-energy-cut-off   | Lorentz-factor   | +3.663201e+03 | [+1.000000e+00,+1.000000e+05] | False 
-     p                | LE_spectral_slope    |                  | +2.618010e+00 | [-1.000000e+01,+1.000000e+01] | False 
+     beam_obj         | beaming              |                  | +3.285602e+01 | [+1.000000e+00,No           ] | False 
+     gamma_cut        | turn-over-energy     | Lorentz-factor   | +3.525224e+06 | [+1.000000e+00,+1.000000e+08] | False 
+     gmax             | high-energy-cut-off  | Lorentz-factor   | +5.650706e+06 | [+1.000000e+00,+1.000000e+15] | False 
+     gmin             | low-energy-cut-off   | Lorentz-factor   | +3.655704e+03 | [+1.000000e+00,+1.000000e+05] | False 
+     p                | LE_spectral_slope    |                  | +2.700310e+00 | [-1.000000e+01,+1.000000e+01] | False 
      z_cosm           | redshift             |                  | +3.360000e-02 | [+0.000000e+00,No           ] | False 
      nuFnu_p_host     | nuFnu-scale          | erg cm^-2 s^-1   | -1.006556e+01 | [-2.000000e+01,+2.000000e+01] | False 
      nu_scale         | nu-scale             | Hz               | +1.730750e-02 | [-2.000000e+00,+2.000000e+00] | False 
     -------------------------------------------------------------------------------------------------------------------
-    - minim function calls=270, chisq=24.172502 UL part=-0.000000                                                                                                                                                                                                   
+
 
 
 .. raw:: html
@@ -752,12 +763,12 @@ Model fitting
 
     <table>
         <tr>
-            <td title="Minimum value of function">FCN = 11.224647686021614</td>
-            <td title="Total number of call to FCN so far">TOTAL NCALL = 271</td>
-            <td title="Number of call in last migrad">NCALLS = 260</td>
+            <td title="Minimum value of function">FCN = 10.979598657004106</td>
+            <td title="Total number of call to FCN so far">TOTAL NCALL = 154</td>
+            <td title="Number of call in last migrad">NCALLS = 143</td>
         </tr>
         <tr>
-            <td title="Estimated distance to minimum">EDM = 1941654.7293684839</td>
+            <td title="Estimated distance to minimum">EDM = 119277.1671119715</td>
             <td title="Maximum EDM definition of convergence">GOAL EDM = 1e-05</td>
             <td title="Error def. Amount of increase in FCN to be defined as 1 standard deviation">
             UP = 1.0</td>
@@ -774,9 +785,9 @@ Model fitting
         <tr>
             <td align="center" style="background-color:#FF7878">False</td>
             <td align="center" style="background-color:#92CCA6">True</td>
-            <td align="center" style="background-color:#FF7878">False</td>
-            <td align="center" style="background-color:#FF7878">False</td>
-            <td align="center" style="background-color:#FF7878">True</td>
+            <td align="center" style="background-color:#92CCA6">True</td>
+            <td align="center" style="background-color:#92CCA6">True</td>
+            <td align="center" style="background-color:#92CCA6">False</td>
         </tr>
         <tr>
             <td align="center" title="Was last hesse call fail?">Hesse Fail</td>
@@ -800,7 +811,7 @@ Model fitting
 
     <table>
         <tr>
-            <td><a href="#" onclick="$('#yiyfYZfDhS').toggle()">+</a></td>
+            <td><a href="#" onclick="$('#lPyAVnJRfX').toggle()">+</a></td>
             <td title="Variable name">Name</td>
             <td title="Value of parameter">Value</td>
             <td title="Hesse error">Hesse Error</td>
@@ -813,8 +824,8 @@ Model fitting
         <tr>
             <td>0</td>
             <td>par_0</td>
-            <td>0.00383528</td>
-            <td>1.22418e-07</td>
+            <td>0.00384063</td>
+            <td>1.24941e-07</td>
             <td></td>
             <td></td>
             <td>0</td>
@@ -824,8 +835,8 @@ Model fitting
         <tr>
             <td>1</td>
             <td>par_1</td>
-            <td>0.072435</td>
-            <td>0.00135248</td>
+            <td>0.0770046</td>
+            <td>0.0066052</td>
             <td></td>
             <td></td>
             <td>0</td>
@@ -835,8 +846,8 @@ Model fitting
         <tr>
             <td>2</td>
             <td>par_2</td>
-            <td>31.8583</td>
-            <td>0.206364</td>
+            <td>32.9474</td>
+            <td>0.95594</td>
             <td></td>
             <td></td>
             <td>1</td>
@@ -846,8 +857,8 @@ Model fitting
         <tr>
             <td>3</td>
             <td>par_3</td>
-            <td>2.61095e+06</td>
-            <td>154824</td>
+            <td>3.16002e+06</td>
+            <td>640631</td>
             <td></td>
             <td></td>
             <td>1</td>
@@ -857,8 +868,8 @@ Model fitting
         <tr>
             <td>4</td>
             <td>par_4</td>
-            <td>5.65208e+06</td>
-            <td>705.189</td>
+            <td>5.65071e+06</td>
+            <td>77.4277</td>
             <td></td>
             <td></td>
             <td>100000</td>
@@ -868,8 +879,8 @@ Model fitting
         <tr>
             <td>5</td>
             <td>par_5</td>
-            <td>3663.22</td>
-            <td>0.221918</td>
+            <td>3655.72</td>
+            <td>0.0573383</td>
             <td></td>
             <td></td>
             <td>1</td>
@@ -879,8 +890,8 @@ Model fitting
         <tr>
             <td>6</td>
             <td>par_6</td>
-            <td>2.64001</td>
-            <td>0.005096</td>
+            <td>2.69845</td>
+            <td>0.040553</td>
             <td></td>
             <td></td>
             <td>-10</td>
@@ -888,25 +899,25 @@ Model fitting
             <td>No</td>
         </tr>
     </table>
-    <pre id="yiyfYZfDhS" style="display:none;">
+    <pre id="lPyAVnJRfX" style="display:none;">
     <textarea rows="20" cols="50" onclick="this.select()" readonly>
     \begin{tabular}{|c|r|r|r|r|r|r|r|c|}
     \hline
      & Name & Value & Hesse Error & Minos Error- & Minos Error+ & Limit- & Limit+ & Fixed?\\
     \hline
-    0 & $par_{0}$ & 0.00383528 & 1.22418e-07 &  &  & 0.0 &  & No\\
+    0 & $par_{0}$ & 0.00384063 & 1.24941e-07 &  &  & 0.0 &  & No\\
     \hline
-    1 & $par_{1}$ & 0.072435 & 0.00135248 &  &  & 0.0 &  & No\\
+    1 & $par_{1}$ & 0.0770046 & 0.0066052 &  &  & 0.0 &  & No\\
     \hline
-    2 & $par_{2}$ & 31.8583 & 0.206364 &  &  & 1.0 &  & No\\
+    2 & $par_{2}$ & 32.9474 & 0.95594 &  &  & 1.0 &  & No\\
     \hline
-    3 & $par_{3}$ & 2.61095e+06 & 154824 &  &  & 1.0 & 1e+08 & No\\
+    3 & $par_{3}$ & 3.16002e+06 & 640631 &  &  & 1.0 & 1e+08 & No\\
     \hline
-    4 & $par_{4}$ & 5.65208e+06 & 705.189 &  &  & 100000.0 & 1e+08 & No\\
+    4 & $par_{4}$ & 5.65071e+06 & 77.4277 &  &  & 100000.0 & 1e+08 & No\\
     \hline
-    5 & $par_{5}$ & 3663.22 & 0.221918 &  &  & 1.0 & 100000 & No\\
+    5 & $par_{5}$ & 3655.72 & 0.0573383 &  &  & 1.0 & 100000 & No\\
     \hline
-    6 & $par_{6}$ & 2.64001 & 0.005096 &  &  & -10.0 & 10 & No\\
+    6 & $par_{6}$ & 2.69845 & 0.040553 &  &  & -10.0 & 10 & No\\
     \hline
     \end{tabular}
     </textarea>
@@ -930,38 +941,38 @@ Model fitting
     model parameters:
      Name             | Type                 | Units            | value         | phys. boundaries              | log
     -------------------------------------------------------------------------------------------------------------------
-     B                | magnetic_field       | G                | +3.835280e-03 | [+0.000000e+00,No           ] | False 
-     N                | electron_density     | cm^-3            | +7.243498e-02 | [+0.000000e+00,No           ] | False 
+     B                | magnetic_field       | G                | +3.840635e-03 | [+0.000000e+00,No           ] | False 
+     N                | electron_density     | cm^-3            | +7.700463e-02 | [+0.000000e+00,No           ] | False 
      R                | region_size          | cm               | +1.689721e+01 | [+0.000000e+00,+3.000000e+01] | True 
-     beam_obj         | beaming              |                  | +3.185827e+01 | [+1.000000e+00,No           ] | False 
-     gamma_cut        | turn-over-energy     | Lorentz-factor   | +2.610952e+06 | [+1.000000e+00,+1.000000e+08] | False 
-     gmax             | high-energy-cut-off  | Lorentz-factor   | +5.652076e+06 | [+1.000000e+00,+1.000000e+15] | False 
-     gmin             | low-energy-cut-off   | Lorentz-factor   | +3.663220e+03 | [+1.000000e+00,+1.000000e+05] | False 
-     p                | LE_spectral_slope    |                  | +2.640014e+00 | [-1.000000e+01,+1.000000e+01] | False 
+     beam_obj         | beaming              |                  | +3.294741e+01 | [+1.000000e+00,No           ] | False 
+     gamma_cut        | turn-over-energy     | Lorentz-factor   | +3.160018e+06 | [+1.000000e+00,+1.000000e+08] | False 
+     gmax             | high-energy-cut-off  | Lorentz-factor   | +5.650706e+06 | [+1.000000e+00,+1.000000e+15] | False 
+     gmin             | low-energy-cut-off   | Lorentz-factor   | +3.655718e+03 | [+1.000000e+00,+1.000000e+05] | False 
+     p                | LE_spectral_slope    |                  | +2.698452e+00 | [-1.000000e+01,+1.000000e+01] | False 
      z_cosm           | redshift             |                  | +3.360000e-02 | [+0.000000e+00,No           ] | False 
      nuFnu_p_host     | nuFnu-scale          | erg cm^-2 s^-1   | -1.006556e+01 | [-2.000000e+01,+2.000000e+01] | False 
      nu_scale         | nu-scale             | Hz               | +1.730750e-02 | [-2.000000e+00,+2.000000e+00] | False 
     -------------------------------------------------------------------------------------------------------------------
     
     converged=True
-    calls=272
+    calls=155
     mesg=
     dof=23
-    chisq=14.387391, chisq/red=0.625539 null hypothesis sig=0.915239
+    chisq=11.291532, chisq/red=0.490936 null hypothesis sig=0.980012
     
     best fit pars
     -------------------------------------------------------------------------------------------------------------------
     best-fit parameters:
       Name            | best-fit value| best-fit err +| best-fit err -|start value   | fit boundaries
     -------------------------------------------------------------------------------------------------------------------
-     B                | +3.835280e-03 | +1.224179e-07 | #             | +3.842191e-03 | [+0.000000e+00,No           ]
-     N                | +7.243498e-02 | +1.352481e-03 | #             | +6.237170e-02 | [+0.000000e+00,No           ]
+     B                | +3.840635e-03 | +1.249409e-07 | #             | +3.842601e-03 | [+0.000000e+00,No           ]
+     N                | +7.700463e-02 | +6.605196e-03 | #             | +7.492553e-02 | [+0.000000e+00,No           ]
      R                | Frozen        | Frozen        | Frozen        | +1.689721e+01 | [+0.000000e+00,+3.000000e+01]
-     beam_obj         | +3.185827e+01 | +2.063639e-01 | #             | +3.275536e+01 | [+1.000000e+00,No           ]
-     gamma_cut        | +2.610952e+06 | +1.548236e+05 | #             | +2.387279e+06 | [+1.000000e+00,+1.000000e+08]
-     gmax             | +5.652076e+06 | +7.051889e+02 | #             | +5.652011e+06 | [+1.000000e+05,+1.000000e+08]
-     gmin             | +3.663220e+03 | +2.219181e-01 | #             | +3.663201e+03 | [+1.000000e+00,+1.000000e+05]
-     p                | +2.640014e+00 | +5.095999e-03 | #             | +2.618010e+00 | [-1.000000e+01,+1.000000e+01]
+     beam_obj         | +3.294741e+01 | +9.559399e-01 | #             | +3.285602e+01 | [+1.000000e+00,No           ]
+     gamma_cut        | +3.160018e+06 | +6.406310e+05 | #             | +3.525224e+06 | [+1.000000e+00,+1.000000e+08]
+     gmax             | +5.650706e+06 | +7.742767e+01 | #             | +5.650706e+06 | [+1.000000e+05,+1.000000e+08]
+     gmin             | +3.655718e+03 | +5.733830e-02 | #             | +3.655704e+03 | [+1.000000e+00,+1.000000e+05]
+     p                | +2.698452e+00 | +4.055301e-02 | #             | +2.700310e+00 | [-1.000000e+01,+1.000000e+01]
      z_cosm           | Frozen        | Frozen        | Frozen        | +3.360000e-02 | [+0.000000e+00,No           ]
      nuFnu_p_host     | Frozen        | Frozen        | Frozen        | -1.006556e+01 | [-1.225412e+01,-8.254123e+00]
      nu_scale         | Frozen        | Frozen        | Frozen        | +1.730750e-02 | [-5.000000e-01,+5.000000e-01]
@@ -979,7 +990,7 @@ Model fitting
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_19_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_20_0.png
 
 
 MCMC sampling
@@ -995,20 +1006,11 @@ MCMC sampling
 
 .. parsed-literal::
 
-    - progress=102.000% calls=7650 accepted=6370
+    / progress=102.000% calls=7650 accepted=6338
 
 .. code:: ipython3
 
     f=mcmc.corner_plot()
-
-
-
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_22_0.png
-
-
-.. code:: ipython3
-
-    f=mcmc.sampler_out.plot_par('N')
 
 
 
@@ -1017,11 +1019,20 @@ MCMC sampling
 
 .. code:: ipython3
 
-    f=mcmc.sampler_out.plot_par('beam_obj')
+    f=mcmc.sampler_out.plot_par('N')
 
 
 
 .. image:: Jet_example_model_fit_files/Jet_example_model_fit_24_0.png
+
+
+.. code:: ipython3
+
+    f=mcmc.sampler_out.plot_par('beam_obj')
+
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_25_0.png
 
 
 .. code:: ipython3
@@ -1040,7 +1051,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_27_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_28_0.png
 
 
 .. code:: ipython3
@@ -1050,7 +1061,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_28_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_29_0.png
 
 
 .. code:: ipython3
@@ -1060,6 +1071,6 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_29_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_30_0.png
 
 

@@ -3,37 +3,7 @@ from __future__ import absolute_import, division, print_function
 from builtins import (bytes, str, open, super, range,
                       zip, round, input, int, pow, object, map, zip)
 
-"""
-===================================================================
-Moudule: output
-===================================================================
 
-This module contains all the classes necessary to the output
-
-
-
-Classes and Inheritance Structure
--------------------------------------------------------------------
-
-.. inheritance-diagram:: BlazarSEDFit.output
-   
-
-
-Classes relations
-----------------------------------------------
-
-.. figure::  classes_output.png    
-   :align:   center     
-
-
-  
-.. autosummary::
-   
-   
-    
-Module API
--------------------------------------------------------------------
-"""
 
 import os
 import shutil

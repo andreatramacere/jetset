@@ -1,46 +1,12 @@
-"""
-Module: cosmo_tools
-===================================================================
-
-This module contains the class Cosmo, implementing cosmological
-calculations following Hogg 1999 (http://arxiv.org/abs/astroph/9905116)
-
-
-
-..
-
-
-
-Classes and Inheritance Structure
--------------------------------------------------------------------
-
-.. inheritance-diagram:: BlazarSEDFit.cosmo_tools
-    
-
-
-  
-.. autosummary::
-    Cosmo
-   
-Classes relations
-----------------------------------------------
-
-.. figure::  classes_cosmo_tools.png    
-   :align:   center     
-
-
-    
-Module API
--------------------------------------------------------------------
-
-"""
-
 from __future__ import absolute_import, division, print_function
 
 from builtins import (bytes, str, open, super, range,
                       zip, round, input, int, pow, object, map, zip)
 
+
 __author__ = "Andrea Tramacere"
+
+
 
 
 import numpy as np

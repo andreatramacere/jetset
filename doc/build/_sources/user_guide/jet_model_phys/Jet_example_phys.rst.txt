@@ -7,7 +7,7 @@ physical setup
 ==============
 
 
-In this section we describe how  to buil a model of jet able to reproduce SSC/EC emission processes, using the :class:`.Jet` class from the :mod:`.jet_model` module. to This class thorough a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compoton processes.  
+In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the :class:`.Jet` class from the :mod:`.jet_model` module. to This class thorough a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compton processes.  
 
 basic setup
 -----------
@@ -22,10 +22,10 @@ A jet can be built using the  the :class:`.Jet` class, istanciating a jet object
 
 This instruction will create:
     * a ``Jet`` object with ``name`` **test**,
-    * using as electron distribution the **lppl** model, that is a log-parabola witha low-energy power-law branch.
-    * using as wokring directory **test_jet_prod**
+    * using as electron distribution the **lppl** model, that is a log-parabola with a low-energy power-law branch.
+    * using as working directory **test_jet_prod**
 
-For a list of possible distribution you can run the command
+For a list of possible distribution you can run the command 
 
 .. code:: ipython3
 
@@ -73,7 +73,9 @@ The parameters of the model are accessible throug the instruction
     -------------------------------------------------------------------------------------------------------------------
 
 
+
 Each parameter has default values. All the parameters listed are handled by :class:`.ModelParameterArray`, and each parameter is an instance of the the :class:`.JetParameter`. class
+
 
 To get a full description of the model you can use the instruction
 
@@ -130,14 +132,13 @@ To get a full description of the model you can use the instruction
     -------------------------------------------------------------------------------------------------------------------
 
 
-as you can notice, you can now access further information regarding the
-model, such as numerical configuration of the grid. These parameters
-will be discussed in the :ref:\`jet\_numerical\_guide' section
+as you can notice, you can now access further information regarding the model, such as numerical configuration of the grid. These parameters will be discussed 
+in the :ref:`jet_numerical_guide' section
 
 setting the parameters
 ----------------------
 
-assume you want to change some of the parameters in your model, you can use two methods:
+assume you want to change some of the parameters in your model, you can use two methods: 
 
 1) using the :class:`.Jet.set_par()` method 
 
@@ -157,8 +158,8 @@ assume you want to change some of the parameters in your model, you can use two 
     my_jet.parameters.B.val=0.2
     my_jet.parameters.r.val=0.4
 
-invetigating the electron distribution
---------------------------------------
+investigating the electron distribution
+---------------------------------------
 
 .. code:: ipython3
 
@@ -340,7 +341,7 @@ alternatively, you can call the ``plot_model`` method without passing a
 .. image:: Jet_example_phys_files/Jet_example_phys_34_0.png
 
 
-the ``my_plot`` objet returned will be built on the fly by the
+the ``my_plot`` object returned will be built on the fly by the
 ``plot_model`` method
 
 if you wanto to have interacitve plot:
@@ -430,12 +431,12 @@ saving and lodaing a model
 switching on/off the particle distribution normalization
 --------------------------------------------------------
 
-As default the electron distributions are normalized, i.e. are mutliplied by a constant ``N_0``, in such a way that :
+As default the electron distributions are normalized, i.e. are multiplied by a constant ``N_0``, in such a way that :
 
 :math:`\int_{\gamma_{min}}^{\gamma_{max}} n(\gamma) d\gamma =1`, 
 
-it means the the value `N`, refers to the actual desinty of emitters.
-If you want to chance this behaviour, you can start looking at the sate of ``Norm_distr`` flag with the following command
+it means the the value `N`, refers to the actual density of emitters.
+If you want to chance this behavior, you can start looking at the sate of ``Norm_distr`` flag with the following command
 
 .. code:: ipython3
 
@@ -462,7 +463,7 @@ or set back the normalization on with
 
     my_jet.switch_Norm_distr_ON()
 
-setting the particle density from observed Fluxes or Luminosityes
+setting the particle density from observed Fluxes or Luminosities
 -----------------------------------------------------------------
 
 It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     :meth:`.Jet.set_N_from_nuFnu`,th:`.Jet.set_N_from_nuLnu`)
@@ -487,7 +488,7 @@ this is the initial value of N
 
 
 we now want to set the value of ``N`` in order that the observed synchrotron flux at a given frequency matches a desired value. 
-For example, assume that we whis to set ``N`` in oreder that  the sychrotron flux at math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-=14}` ergs cm-2 s-1. We can accomplish this by using the :class:`.Jet.get_par_by_name()` as follows: 
+For example, assume that we wish to set ``N`` in order that  the synchrotron flux at math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-=14}` ergs cm-2 s-1. We can accomplish this by using the :class:`.Jet.get_par_by_name()` as follows: 
 
 .. code:: ipython3
 
@@ -545,8 +546,8 @@ flux at the given frequency
 .. image:: Jet_example_phys_files/Jet_example_phys_63_0.png
 
 
-as you can see, the sychrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1.
-Alternatively, the value of N  can be obtained using the rest-frame luminosity and  freqency, using the :class:`.Jet.set_N_from_nuLnu()
+as you can see, the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1.
+Alternatively, the value of N  can be obtained using the rest-frame luminosity and  frequency, using the :class:`.Jet.set_N_from_nuLnu()
 
 .. code:: ipython3
 
@@ -556,15 +557,12 @@ where ``L_0`` is the rest-frame luminosity in erg/s at the rest-frame frequency 
 
 
 
-setting the beaming factor
---------------------------
+## setting the beaming factor
 
-It is possible to set the bemaing factor according to the realativistic
-BulkFactor and viewing angle, this can be done by setting the
-``beaming_expr`` kw in the Jet constructor, possbile choiches are
+It is possible to set the beaming factor according to the relativistic BulkFactor and viewing angle, this can be done by setting the ``beaming_expr`` kw in the Jet constructor, possible choices are
 
--  ``delta`` to provide directly the beaming factor (default)
--  ``bulk_theta`` to provide the BulkFactor and the jet viewing angle
+* `delta` to provide directly the beaming factor (default)
+* `bulk_theta` to provide the BulkFactor and the jet  viewing angle 
 
 .. code:: ipython3
 
@@ -595,7 +593,7 @@ BulkFactor and viewing angle, this can be done by setting the
     -------------------------------------------------------------------------------------------------------------------
 
 
-the actual value of the beaming factor che be obatained using the :meth:`.Jet.get_beaming`
+the actual value of the beaming factor can be obtained using the :meth:`.Jet.get_beaming`
 
 .. code:: ipython3
 
@@ -629,7 +627,8 @@ We can change the value of ``theta`` and get the updated value of the beaming fa
 
 
 
-of course setting `beaming_expr=delta` we get the same beaming expression as in the default case
+of course setting ``beaming_expr=delta`` we get the same beaming
+expression as in the default case
 
 .. code:: ipython3
 
@@ -662,7 +661,7 @@ of course setting `beaming_expr=delta` we get the same beaming expression as in 
 accessing individual spectral components
 ----------------------------------------
 
-It is possible to access specific spectral components of oura model
+It is possible to access specific spectral components of our model
 
 .. code:: ipython3
 
