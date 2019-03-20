@@ -29,7 +29,7 @@ if on_rtd==False:  # only import and set the  if we're building docs locally
     import sphinx_rtd_theme
 
     theme='bootstrap'
-    theme='sphinx_rtd_theme'
+    #theme='sphinx_rtd_theme'
 else:
 
 
@@ -39,11 +39,10 @@ else:
     #except ImportError:
     #    autodoc_mock_imports.append('jetset.jetkernel')
 
+    #theme = 'bootstrap'
+    theme='sphinx_rtd_theme'
 
-
-    theme = 'bootstrap'
-
-print( jetset.__file__)
+#print( jetset.__file__)
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
