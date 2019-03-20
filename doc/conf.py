@@ -29,6 +29,7 @@ if on_rtd==False:  # only import and set the  if we're building docs locally
     import sphinx_rtd_theme
 
     theme='bootstrap'
+    theme='sphinx_rtd_theme'
 else:
 
 
