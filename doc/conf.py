@@ -39,8 +39,8 @@ else:
     #except ImportError:
     #    autodoc_mock_imports.append('jetset.jetkernel')
 
-    #theme = 'bootstrap'
-    theme='sphinx_rtd_theme'
+    theme = 'bootstrap'
+    #theme='sphinx_rtd_theme'
 
 #print( jetset.__file__)
 # -- General configuration ------------------------------------------------
