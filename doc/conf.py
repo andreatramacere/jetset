@@ -23,13 +23,12 @@ import os
 sys.path.insert(0,os.path.abspath('../'))
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 import jetset
-if on_rtd==False:  # only import and set the t if we're building docs locally
+if on_rtd==False:  # only import and set the  if we're building docs locally
 
     import sphinx_bootstrap_theme
     import sphinx_rtd_theme
 
     theme='bootstrap'
-
 else:
 
 

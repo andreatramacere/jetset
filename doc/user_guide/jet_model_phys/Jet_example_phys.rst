@@ -34,20 +34,16 @@ For a list of possible distribution you can run the command
 
 .. parsed-literal::
 
-    lp: log-parabola: $K*\gamma^p$
+    lp: log-parabola
     pl: powerlaw
     lppl: log-parabola with low-energy powerlaw branch
     lpep: log-parabola defined by peak energy
     plc: powerlaw with cut-off
     bkn: broken powerlaw
-    spitkov: 
-    lppl_pile_up: 
-    bkn_pile_up: 
+    spitkov: spitkov
+    lppl_pile_up: log-parabola with low-energy powerlaw branch and pile-up
+    bkn_pile_up: broken powerlaw and pileup
 
-
-
-
-The parameters of the model are accessible throug the instruction
 
 .. code:: ipython3
 
@@ -194,7 +190,7 @@ investigating the electron distribution
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_21_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_19_0.png
 
 
 .. code:: ipython3
@@ -203,7 +199,7 @@ investigating the electron distribution
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_22_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_20_0.png
 
 
 .. code:: ipython3
@@ -219,7 +215,7 @@ investigating the electron distribution
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_23_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_21_0.png
 
 
 using log values for electron distribution parameters
@@ -325,7 +321,7 @@ and plot the corresponding SED:
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_32_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_30_0.png
 
 
 alternatively, you can call the ``plot_model`` method without passing a
@@ -338,7 +334,7 @@ alternatively, you can call the ``plot_model`` method without passing a
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_34_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_32_0.png
 
 
 the ``my_plot`` object returned will be built on the fly by the
@@ -385,7 +381,7 @@ to compare the same model after changing a parameter
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_39_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_37_0.png
 
 
 saving a plot
@@ -543,7 +539,7 @@ flux at the given frequency
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_63_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_61_0.png
 
 
 as you can see, the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1.
@@ -814,7 +810,7 @@ Broad Line Region
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_94_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_92_0.png
 
 
 Dusty Torus
@@ -897,7 +893,7 @@ Dusty Torus
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_97_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_95_0.png
 
 
 .. code:: ipython3
@@ -909,6 +905,6 @@ Dusty Torus
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_98_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_96_0.png
 
 
