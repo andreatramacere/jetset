@@ -77,15 +77,15 @@ gamma_3p_dic['bkn']='gamma_break'
 
 
 available_N_distr=['lp', 'pl', 'lppl', 'lpep', 'plc', 'bkn', 'spitkov', 'lppl_pile_up', 'bkn_pile_up']
-available_N_distr_descr=['log-parabola: $K*\gamma^p$',
+available_N_distr_descr=['log-parabola',
                          'powerlaw',
                          'log-parabola with low-energy powerlaw branch',
                          'log-parabola defined by peak energy',
                          'powerlaw with cut-off',
                          'broken powerlaw',
-                         '',
-                         '',
-                         '']
+                         'spitkov',
+                         'log-parabola with low-energy powerlaw branch and pile-up',
+                         'broken powerlaw and pileup']
 
 
 

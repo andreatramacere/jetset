@@ -282,10 +282,10 @@
       
   <div class="section" id="physical-setup">
 <span id="jet-physical-guide"></span><h1>physical setup<a class="headerlink" href="#physical-setup" title="Permalink to this headline">¶</a></h1>
-<p>In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the <code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code> class from the <a class="reference internal" href="../../api/jet_model.html#module-jetset.jet_model" title="jetset.jet_model"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jet_model</span></code></a> module. to This class thorough a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compton processes.</p>
+<p>In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet" title="jetset.jet_model.Jet"><code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code></a> class from the <a class="reference internal" href="../../api/jet_model.html#module-jetset.jet_model" title="jetset.jet_model"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jet_model</span></code></a> module. to This class thorough a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compton processes.</p>
 <div class="section" id="basic-setup">
 <h2>basic setup<a class="headerlink" href="#basic-setup" title="Permalink to this headline">¶</a></h2>
-<p>A jet can be built using the  the <code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code> class, istanciating a jet object, in the following way:</p>
+<p>A jet can be built using the  the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet" title="jetset.jet_model.Jet"><code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code></a> class, istanciating a jet object, in the following way:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
 <span class="kn">from</span> <span class="nn">jetset.jet_model</span> <span class="k">import</span> <span class="n">Jet</span>
 <span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,)</span>
@@ -304,18 +304,17 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Jet</span><span class="o">.</span><span class="n">available_electron_distributions</span><span class="p">()</span>
 </pre></div>
 </div>
-<pre class="literal-block">
-lp: log-parabola: $K*gamma^p$
-pl: powerlaw
-lppl: log-parabola with low-energy powerlaw branch
-lpep: log-parabola defined by peak energy
-plc: powerlaw with cut-off
-bkn: broken powerlaw
-spitkov:
-lppl_pile_up:
-bkn_pile_up:
-</pre>
-<p>The parameters of the model are accessible throug the instruction</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lp</span><span class="p">:</span> <span class="n">log</span><span class="o">-</span><span class="n">parabola</span>
+<span class="n">pl</span><span class="p">:</span> <span class="n">powerlaw</span>
+<span class="n">lppl</span><span class="p">:</span> <span class="n">log</span><span class="o">-</span><span class="n">parabola</span> <span class="k">with</span> <span class="n">low</span><span class="o">-</span><span class="n">energy</span> <span class="n">powerlaw</span> <span class="n">branch</span>
+<span class="n">lpep</span><span class="p">:</span> <span class="n">log</span><span class="o">-</span><span class="n">parabola</span> <span class="n">defined</span> <span class="n">by</span> <span class="n">peak</span> <span class="n">energy</span>
+<span class="n">plc</span><span class="p">:</span> <span class="n">powerlaw</span> <span class="k">with</span> <span class="n">cut</span><span class="o">-</span><span class="n">off</span>
+<span class="n">bkn</span><span class="p">:</span> <span class="n">broken</span> <span class="n">powerlaw</span>
+<span class="n">spitkov</span><span class="p">:</span> <span class="n">spitkov</span>
+<span class="n">lppl_pile_up</span><span class="p">:</span> <span class="n">log</span><span class="o">-</span><span class="n">parabola</span> <span class="k">with</span> <span class="n">low</span><span class="o">-</span><span class="n">energy</span> <span class="n">powerlaw</span> <span class="n">branch</span> <span class="ow">and</span> <span class="n">pile</span><span class="o">-</span><span class="n">up</span>
+<span class="n">bkn_pile_up</span><span class="p">:</span> <span class="n">broken</span> <span class="n">powerlaw</span> <span class="ow">and</span> <span class="n">pileup</span>
+</pre></div>
+</div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -336,7 +335,7 @@ bkn_pile_up:
 <span class="o">-------------------------------------------------------------------------------------------------------------------</span>
 </pre></div>
 </div>
-<p>Each parameter has default values. All the parameters listed are handled by <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParameterArray</span></code>, and each parameter is an instance of the the <code class="xref py py-class docutils literal notranslate"><span class="pre">JetParameter</span></code>. class</p>
+<p>Each parameter has default values. All the parameters listed are handled by <a class="reference internal" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray" title="jetset.model_parameters.ModelParameterArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParameterArray</span></code></a>, and each parameter is an instance of the the <a class="reference internal" href="../../api/jetset.jet_model.JetParameter.html#jetset.jet_model.JetParameter" title="jetset.jet_model.JetParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">JetParameter</span></code></a>. class</p>
 <p>To get a full description of the model you can use the instruction</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">show_model</span><span class="p">()</span>
 </pre></div>
@@ -439,11 +438,11 @@ in the :ref:<a href="#id1"><span class="problematic" id="id2">`</span></a>jet_nu
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">electron_distribution</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_21_0.png" src="../../_images/Jet_example_phys_21_0.png" />
+<img alt="../../_images/Jet_example_phys_19_0.png" src="../../_images/Jet_example_phys_19_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">electron_distribution</span><span class="o">.</span><span class="n">plot3p</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_22_0.png" src="../../_images/Jet_example_phys_22_0.png" />
+<img alt="../../_images/Jet_example_phys_20_0.png" src="../../_images/Jet_example_phys_20_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="n">p</span><span class="o">=</span><span class="kc">None</span>
 <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">):</span>
@@ -454,7 +453,7 @@ in the :ref:<a href="#id1"><span class="problematic" id="id2">`</span></a>jet_nu
         <span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">electron_distribution</span><span class="o">.</span><span class="n">plot3p</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_23_0.png" src="../../_images/Jet_example_phys_23_0.png" />
+<img alt="../../_images/Jet_example_phys_21_0.png" src="../../_images/Jet_example_phys_21_0.png" />
 <div class="section" id="using-log-values-for-electron-distribution-parameters">
 <h3>using log values for electron distribution parameters<a class="headerlink" href="#using-log-values-for-electron-distribution-parameters" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="n">electron_distribution_log_values</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -542,14 +541,14 @@ instruction</p>
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_32_0.png" src="../../_images/Jet_example_phys_32_0.png" />
+<img alt="../../_images/Jet_example_phys_30_0.png" src="../../_images/Jet_example_phys_30_0.png" />
 <p>alternatively, you can call the <code class="docutils literal notranslate"><span class="pre">plot_model</span></code> method without passing a
 <code class="docutils literal notranslate"><span class="pre">Plot</span></code> object</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_plot</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_34_0.png" src="../../_images/Jet_example_phys_34_0.png" />
+<img alt="../../_images/Jet_example_phys_32_0.png" src="../../_images/Jet_example_phys_32_0.png" />
 <p>the <code class="docutils literal notranslate"><span class="pre">my_plot</span></code> object returned will be built on the fly by the
 <code class="docutils literal notranslate"><span class="pre">plot_model</span></code> method</p>
 <p>if you wanto to have interacitve plot:</p>
@@ -587,7 +586,7 @@ instruction</p>
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_39_0.png" src="../../_images/Jet_example_phys_39_0.png" />
+<img alt="../../_images/Jet_example_phys_37_0.png" src="../../_images/Jet_example_phys_37_0.png" />
 </div>
 <div class="section" id="saving-a-plot">
 <h2>saving a plot<a class="headerlink" href="#saving-a-plot" title="Permalink to this headline">¶</a></h2>
@@ -645,7 +644,7 @@ If you want to chance this behavior, you can start looking at the sate of <code 
 </div>
 <div class="section" id="setting-the-particle-density-from-observed-fluxes-or-luminosities">
 <h2>setting the particle density from observed Fluxes or Luminosities<a class="headerlink" href="#setting-the-particle-density-from-observed-fluxes-or-luminosities" title="Permalink to this headline">¶</a></h2>
-<p>It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     <code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.set_N_from_nuFnu()</span></code>,th:<cite>.Jet.set_N_from_nuLnu</cite>)</p>
+<p>It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.set_N_from_nuFnu" title="jetset.jet_model.Jet.set_N_from_nuFnu"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.set_N_from_nuFnu()</span></code></a>,th:<cite>.Jet.set_N_from_nuLnu</cite>)</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -694,7 +693,7 @@ flux at the given frequency</p>
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_63_0.png" src="../../_images/Jet_example_phys_63_0.png" />
+<img alt="../../_images/Jet_example_phys_61_0.png" src="../../_images/Jet_example_phys_61_0.png" />
 <p>as you can see, the synchrotron flux at <span class="math notranslate nohighlight">\(10^{15}\)</span> Hz is exactly matching the desired value of <span class="math notranslate nohighlight">\(10^{-14}\)</span> ergs cm-2 s-1.
 Alternatively, the value of N  can be obtained using the rest-frame luminosity and  frequency, using the :class:<a href="#id3"><span class="problematic" id="id4">`</span></a>.Jet.set_N_from_nuLnu()</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">set_N_from_nuLnu</span><span class="p">(</span><span class="n">L_0</span><span class="o">=</span><span class="mf">1E43</span><span class="p">,</span><span class="n">nu_0</span><span class="o">=</span><span class="mf">1E15</span><span class="p">)</span>
@@ -731,7 +730,7 @@ Alternatively, the value of N  can be obtained using the rest-frame luminosity a
 <span class="o">-------------------------------------------------------------------------------------------------------------------</span>
 </pre></div>
 </div>
-<p>the actual value of the beaming factor can be obtained using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.get_beaming()</span></code></p>
+<p>the actual value of the beaming factor can be obtained using the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.get_beaming" title="jetset.jet_model.Jet.get_beaming"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.get_beaming()</span></code></a></p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">get_beaming</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -781,7 +780,7 @@ expression as in the default case</p>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>We can obtain this information anytime using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.list_spectral_components()</span></code> method</p>
+<p>We can obtain this information anytime using the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.list_spectral_components" title="jetset.jet_model.Jet.list_spectral_components"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.list_spectral_components()</span></code></a> method</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">list_spectral_components</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -792,7 +791,7 @@ expression as in the default case</p>
 </div>
 <p>the on-screen message is telling us which components have been
 evaluated.</p>
-<p>and we cann access a specific component using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.get_spectral_component_by_name()</span></code> method</p>
+<p>and we cann access a specific component using the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.get_spectral_component_by_name" title="jetset.jet_model.Jet.get_spectral_component_by_name"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.get_spectral_component_by_name()</span></code></a> method</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Sync</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">get_spectral_component_by_name</span><span class="p">(</span><span class="s1">&#39;Sync&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -900,7 +899,7 @@ evaluated.</p>
 <span class="n">p</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mi">15</span><span class="p">,</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">x_max</span><span class="o">=</span><span class="mi">27</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_94_0.png" src="../../_images/Jet_example_phys_94_0.png" />
+<img alt="../../_images/Jet_example_phys_92_0.png" src="../../_images/Jet_example_phys_92_0.png" />
 </div>
 <div class="section" id="dusty-torus">
 <h3>Dusty Torus<a class="headerlink" href="#dusty-torus" title="Permalink to this headline">¶</a></h3>
@@ -973,14 +972,14 @@ evaluated.</p>
 <span class="n">p</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mi">15</span><span class="p">,</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">x_max</span><span class="o">=</span><span class="mi">27</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_97_0.png" src="../../_images/Jet_example_phys_97_0.png" />
+<img alt="../../_images/Jet_example_phys_95_0.png" src="../../_images/Jet_example_phys_95_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">add_EC_component</span><span class="p">(</span><span class="s1">&#39;EC_DT&#39;</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 <span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
 <span class="n">p</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mi">15</span><span class="p">,</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">x_max</span><span class="o">=</span><span class="mi">27</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_98_0.png" src="../../_images/Jet_example_phys_98_0.png" />
+<img alt="../../_images/Jet_example_phys_96_0.png" src="../../_images/Jet_example_phys_96_0.png" />
 </div>
 </div>
 </div>
