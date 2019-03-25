@@ -193,7 +193,7 @@ struct spettro MakeBlob() {
     spettro_root.NH_pp = 0.1;
     spettro_root.N = 10;
     spettro_root.Norm_distr = 1;
-    spettro_root.Norm_distr_L_e_Sync=-1.0;
+    //spettro_root.Norm_distr_L_e_Sync=-1.0;
     spettro_root.Distr_e_done = 0;
     sprintf(spettro_root.DISTR, "lp");
     spettro_root.grid_bounded_to_gamma=1;
@@ -456,9 +456,7 @@ void Init(struct spettro *pt_base) {
     }
     
     if (strcmp(pt_base->PARTICLE, "leptons") == 0) {
-
         InitNe(pt_base);
-
         pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N;
         FindNe_NpGp(pt_base);
         EvalU_e(pt_base);

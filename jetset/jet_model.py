@@ -980,14 +980,42 @@ class Jet(Model):
 
         self.add_par_from_dic(self._emitting_region_dic)
 
-    #TODO fix is L_sync is missing
-    def set_N_from_L_sync(self,L_sync):
-        _L=self._blob.L_sync
-        setattr(self._blob,'Norm_distr_L_e_Sync',L_sync)
-        self.init_BlazarSED()
-        setattr(self._blob,'Norm_distr_L_e_Sync',_L)
 
-    # TODO fix is L_sync is missing
+    def set_N_from_Ue(self,U_e):
+        N = 1.0
+        setattr(self._blob, 'N', N)
+        gamma_grid_size = self._blob.gamma_grid_size
+        self.electron_distribution.set_grid_size(100)
+        self.init_BlazarSED()
+        BlazarSED.EvalU_e(self._blob)
+        ratio = self._blob.U_e/ U_e
+        self.electron_distribution.set_grid_size(gamma_grid_size)
+        self.set_par('N', val=N / ratio)
+
+    def set_N_from_Le(self,L_e):
+        gamma_grid_size = self._blob.gamma_grid_size
+        self.electron_distribution.set_grid_size(100)
+        self.init_BlazarSED()
+        U_e=L_e/    self._blob.Vol_sphere
+        self.electron_distribution.set_grid_size(gamma_grid_size)
+        self.set_N_from_Ue(U_e)
+
+
+    def set_N_from_L_sync(self,L_sync):
+
+        N = 1.0
+        setattr(self._blob, 'N', N)
+        gamma_grid_size = self._blob.gamma_grid_size
+        self.electron_distribution.set_grid_size(100)
+        self.init_BlazarSED()
+        delta = self._blob.beam_obj
+        ratio = (BlazarSED.Power_Sync_Electron(self._blob)* delta ** 4)/L_sync
+        self.electron_distribution.set_grid_size(gamma_grid_size)
+
+        # print 'N',N/ratio
+        self.set_par('N', val=N / ratio)
+
+
     def set_N_from_F_sync(self, F_sync):
         self.init_BlazarSED()
         DL = self._blob.dist
@@ -1003,7 +1031,7 @@ class Jet(Model):
         gamma_grid_size = self._blob.gamma_grid_size
         self.electron_distribution.set_grid_size(100)
 
-        z = self._blob.z_cosm
+
 
         self.init_BlazarSED()
 

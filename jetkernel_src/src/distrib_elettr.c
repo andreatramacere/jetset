@@ -212,7 +212,6 @@ void InitNe(struct spettro *pt){
     SetDistr(pt);
     Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Ne);
 
-
     //This transformation is correct
     //the grid is shifted by a factor of delta, hence the integration
     //boundaries are properly updated but the value of N[i] is still the
@@ -427,7 +426,7 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
     //Normalization
     pt->N_0 = 1.0;
     //if distr is e- from pp no normalization to compute
-    if (pt->Norm_distr == 1 && pt->TIPO_DISTR != -1 &&   pt->Norm_distr_L_e_Sync<=0.0) {
+    if (pt->Norm_distr == 1 && pt->TIPO_DISTR != -1 ) {
         pf_norm = &N_distr_integranda;
         pt->N_0 = integrale_trap_log_struct(pf_norm, pt, pt->gmin, pt->gmax, 10000);
         for (i = 0; i < pt->gamma_grid_size; i++) {
@@ -437,20 +436,19 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
     }
 
 
-    if (pt->Norm_distr_L_e_Sync>0.0 && pt->TIPO_DISTR != -1) {
-        pt->N=1.0;
-        pt->N_0 = 1.0;
-        for (i = 0; i < pt->gamma_grid_size; i++) {
-
-            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
-        }
-
-        pt->N=pt->Norm_distr_L_e_Sync/Power_Sync_Electron(pt);
-        for (i = 0; i < pt->gamma_grid_size; i++) {
-
-            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
-        }
-    }
+//    if (pt->Norm_distr_L_e_Sync>0.0 && pt->TIPO_DISTR != -1) {
+//        pt->N=1.0;
+//        pt->N_0 = 1.0;
+//        for (i = 0; i < pt->gamma_grid_size; i++) {
+//            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
+//        }
+//        pt->Distr_e_done = 1;
+//        pt->N=pt->Norm_distr_L_e_Sync/Power_Sync_Electron(pt);
+//        for (i = 0; i < pt->gamma_grid_size; i++) {
+//
+//            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
+//        }
+//    }
 
 
     pt->Distr_e_done = 1;

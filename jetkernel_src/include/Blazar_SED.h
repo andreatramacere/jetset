@@ -497,7 +497,7 @@ struct spettro {
 
     //----------- PARTICLE DISTRIBUTION --------------//
     int Norm_distr;
-    double Norm_distr_L_e_Sync;
+    //double Norm_distr_L_e_Sync;
     int Distr_e_done;
     int Distr_p_done;
     int Distr_e_pp_done;

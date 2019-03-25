@@ -20,7 +20,7 @@
 void spettro_compton(int Num_file, struct spettro *pt){
     double nu_src,nu_peak;
     double L_nu_SSC, nuL_nu_SSC, F_nu_SSC_obs;
-    double log_nu, log_nu_start,gmax,numax_KN,numax_TH;
+    double log_nu, log_nu_start,gmax,numax_KN,numax_TH,nu_min_TH_1,nu_min_TH_2;
     unsigned long l, NU_INT, i, I_MAX, stop,out;
     char f_SSC[static_file_name_max_legth];
     FILE *fp_SSC;
@@ -68,7 +68,10 @@ void spettro_compton(int Num_file, struct spettro *pt){
 		nu_peak = (4.0 / 3.0) * pow(pt->Gamma_p3, 2) * pt->nu_peak_Sync_blob;
 	}
 
-    pt->nu_start_SSC=pt->nu_peak_Sync_blob;
+    nu_min_TH_1=pt->gmax*pt->gmax*pt->nu_start_Sync;
+    nu_min_TH_2=pt->gmin*pt->gmin*pt->nu_stop_Sync;
+    pt->nu_start_SSC=min(nu_min_TH_1,nu_min_TH_2);
+    //pt->nu_start_SSC=min(1E13,pt->nu_peak_Sync_blob*0.01);
     
     pt->nu_start_SSC_obs =nu_blob_to_nu_obs(pt->nu_start_SSC, pt->beam_obj, pt->z_cosm);
     pt->nu_stop_SSC_obs = nu_blob_to_nu_obs(pt->nu_stop_SSC, pt->beam_obj, pt->z_cosm);
