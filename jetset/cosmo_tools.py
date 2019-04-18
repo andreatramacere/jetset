@@ -6,9 +6,6 @@ from builtins import (bytes, str, open, super, range,
 
 __author__ = "Andrea Tramacere"
 
-
-
-
 import numpy as np
 from scipy import integrate
 

@@ -36,9 +36,9 @@ from .base_model import  Model
 
 from .output import makedir,WorkPlace,clean_dir
 
-from .jetkernel_models_dic import nuFnu_obs_dic,gamma_dic,available_N_distr,N_distr_descr
+from .jetkernel_models_dic import nuFnu_obs_dic,gamma_dic,available_N_distr,N_distr_descr,n_seed_dic
 
-from  .plot_sedfit import PlotSED,PlotPdistr,PlotSpecComp
+from  .plot_sedfit import PlotSED,PlotPdistr,PlotSpecComp,PlotSeedPhotons
 
 __all__=['Jet','JetParameter','JetSpecComponent','ElectronDistribution','build_emitting_region_dic',
          'build_ExtFields_dic']
@@ -474,6 +474,79 @@ class ElectronDistribution(object):
 
 
 
+class JetSeedPhotons(object):
+    """
+
+    """
+    def __init__(self,name,blob_object,var_name=None):
+        self.name = name
+
+        self._blob_object = blob_object
+        self._n_name, self._nu_name = n_seed_dic[self.name]
+
+        self.n_ptr = getattr(blob_object, self._n_name)
+
+        self.nu_ptr = getattr(blob_object, self._nu_name)
+        #self.SED = spectral_shapes.SED(name=self.name)
+        if var_name is not None:
+            self._var_name=var_name
+
+        self.fill(emiss_lim=self._blob_object.emiss_lim)
+
+    def fill(self,log_log=False,emiss_lim=None):
+        self.nu,self.n=self.get_spectral_points(log_log=log_log,emiss_lim=emiss_lim)
+
+    def get_spectral_points(self,log_log=False,emiss_lim=0):
+
+        #try:
+
+        size=self._blob_object.nu_seed_size
+        x=zeros(size)
+        y=zeros(size)
+
+        for i in range(size):
+            x[i]=BlazarSED.get_spectral_array(self.nu_ptr,self._blob_object,i)
+            y[i]=BlazarSED.get_spectral_array(self.n_ptr,self._blob_object,i)
+
+            #print("%e %e"%(x[i],y[i]))
+
+        msk_nan=np.isnan(x)
+        msk_nan+=np.isnan(y)
+        #print('emiss lim',self.get_emiss_lim())
+        x[msk_nan]=0.
+        y[msk_nan]=emiss_lim
+
+        msk=y<emiss_lim
+
+
+        y[msk]=emiss_lim
+
+
+
+        if log_log==True:
+            msk = y <= 0.
+            y[msk] = emiss_lim
+
+            #x=x[msk]
+            #    y=y[msk]
+
+            x=log10(x)
+            y=log10(y)
+
+
+
+        return x,y
+
+        #except:
+        #    raise RuntimeError ('model evaluation failed in get_spectral_points')
+
+
+    def plot(self, y_min=None,y_max=None):
+        self.fill(emiss_lim=self._blob_object.emiss_lim)
+        p=PlotSeedPhotons()
+        p.plot(nu=self.nu,nuFnu=self.n,y_min=y_min,y_max=y_max)
+
+        return p
 
 
 class JetSpecComponent(object):
@@ -491,23 +564,26 @@ class JetSpecComponent(object):
         self.nu_ptr=getattr(blob_object,self._nu_name)
     
         self.SED=spectral_shapes.SED(name=self.name)
+        if name in n_seed_dic.keys():
+            self.seed_field=JetSeedPhotons(name,blob_object)
+
 
         if var_name is not None:
             self._var_name=var_name
 
             if state_dict is None:
-                self._state_dict = {}
+                self._state_dict = dict()
                 self._state_dict['on'] = 1
                 self._state_dict['off'] = 0
             else:
                 self._state_dict=state_dict
             self.state='on'
         else:
-            self._state_dict={}
+            self._state_dict = {}
             self._var_name=None
             self._state='on'
 
-        if state is not None and self._state_dict!={}:
+        if state is not None and self._state_dict != {}:
             self.state=state
 
     def show(self):
@@ -615,6 +691,10 @@ class TempEvol(object):
 class SpecCompList(object):
 
     def __init__(self):
+        """
+        this class is just a place holder
+        do not remove it!
+        """
         pass
 
 

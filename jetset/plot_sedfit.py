@@ -599,3 +599,22 @@ class  PlotSpecComp (object):
 
     def update_plot(self):
         self.fig.canvas.draw()
+
+
+class  PlotSeedPhotons (object):
+
+    def __init__(self):
+        self.fig, self.ax = plt.subplots()
+
+
+    def plot(self,nu,nuFnu,y_min=None,y_max=None):
+
+        self.ax.plot(np.log10(nu), np.log10(nuFnu))
+        self.ax.set_xlabel(r'log($ \nu $)  (Hz)')
+        self.ax.set_ylabel(r'log(n )  (photons cm$^{-3}$  Hz$^{-1}$  ster$^{-1}$)')
+        self.ax.set_ylim(y_min, y_max)
+        self.update_plot()
+
+
+    def update_plot(self):
+        self.fig.canvas.draw()

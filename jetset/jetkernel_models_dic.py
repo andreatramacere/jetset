@@ -39,6 +39,14 @@ nuFnu_obs_dic['EC_CMB_stat']=['nuFnu_EC_CMB_stat_grid','nu_grid']
 #nuFnu_obs_dic['CMB']=['nuF_nu_EC_CMB_obs','nu_grid']
 
 
+#seed-photon fields components
+n_seed_dic={'DT':['n_DT','nu_DT']}
+n_seed_dic['EC_DT']=['n_DT','nu_DT']
+
+n_seed_dic['EC_Disk']=['n_Disk','nu_Disk']
+n_seed_dic['Disk']=['n_Disk','nu_Disk']
+n_seed_dic['EC_BLR']=['n_BLR','nu_BLR']
+
 #nuLnu_dic={'SUM':['','nu_']}
 #nuLnu_dic['Sync']=['nuFnu_Sync','nu_']
 #nuLnu_dic['SSC']=['nuFnu_Sync','nu_']
