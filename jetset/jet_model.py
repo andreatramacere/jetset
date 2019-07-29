@@ -280,8 +280,8 @@ class ElectronDistribution(object):
 
 
     @classmethod
-    def from_custom(cls,jet,custom_Ne):
-        name='custom'
+    def from_array(cls,jet,custom_Ne):
+        name='from_array'
 
 
         BlazarSED.build_Ne_custom(jet._blob,custom_Ne.size)
@@ -465,7 +465,7 @@ class ElectronDistribution(object):
 
             model_dic['alpha_pile_up'] = ['turn-over-energy', 0.0, 10, '']
 
-        if electron_distribution_name == 'custom':
+        if electron_distribution_name == 'from_array':
             model_dic.pop('gmin')
             model_dic.pop('gmax')
 
@@ -941,9 +941,10 @@ class Jet(Model):
 
         if isinstance(name, ArrayElectronDistribution):
             self._electron_distribution_name='from_array'
-            self.electron_distribution=ElectronDistribution.from_custom(self,name)
+            #print('ciccio')
+            self.electron_distribution=ElectronDistribution.from_array(self,name)
 
-        if isinstance(name, ElectronDistribution):
+        elif isinstance(name, ElectronDistribution):
             self.electron_distribution = name
 
         else:

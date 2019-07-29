@@ -69,7 +69,7 @@ void spettro_compton(int Num_file, struct spettro *pt){
 	}
 
     nu_min_TH_1=pt->gmax*pt->gmax*pt->nu_start_Sync;
-    nu_min_TH_2=pt->gmin*pt->gmin*pt->nu_stop_Sync;
+    nu_min_TH_2=pt->gmin*pt->gmin*pt->nu_start_Sync;
     pt->nu_start_SSC=min(nu_min_TH_1,nu_min_TH_2);
     //pt->nu_start_SSC=min(1E13,pt->nu_peak_Sync_blob*0.01);
     

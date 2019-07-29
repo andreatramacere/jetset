@@ -168,7 +168,11 @@ class ObsConstrain(object):
     
     
     
-    def constrain_SSC_EC_model(self,name=None,jet_model=None,EC_componets_list=['BLR'],params_grid_size=10):
+    def constrain_SSC_EC_model(self,name=None,
+                               jet_model=None,
+                               EC_componets_list=['EC_BLR'],
+                               params_grid_size=10,
+                               electron_distribution_log_values=False):
         """
         constarin SSC model paramters
         """
@@ -180,7 +184,11 @@ class ObsConstrain(object):
         print
         
         
-        model=self.get_model_constraint(name=name,jet_model=jet_model,EC_componets_list=EC_componets_list,params_grid_size=params_grid_size)
+        model=self.get_model_constraint(name=name,
+                                        jet_model=jet_model,
+                                        EC_componets_list=EC_componets_list,
+                                        params_grid_size=params_grid_size,
+                                        electron_distribution_log_values=electron_distribution_log_values)
         
          
 
@@ -220,8 +228,8 @@ class ObsConstrain(object):
         nu_p_EC_seed_field=None
         if EC_componets_list is not None:
             jet_model.add_EC_component(EC_componets_list)
-            jet_model.set_par('L_disk',val=self.SEDShape.L_Disk)
-            jet_model.set_par('T_disk_max',val=self.SEDShape.T_Disk)
+            jet_model.set_par('L_Disk',val=self.SEDShape.L_Disk)
+            jet_model.set_par('T_Disk',val=self.SEDShape.T_Disk)
             nu_p_EC_seed_field=self.SEDShape.nu_p_Disk
      
         #setting the Jet object 

@@ -1031,7 +1031,7 @@ double eval_DT_L_nu(struct spettro *pt, double nu_torus){
 double eval_J_nu_DT_disk_RF(struct spettro *pt,double nu_torus_disk_RF){
 	double (*pf) (struct spettro *, double x);
 		pf = &integrand_J_nu_DT_disk_RF;
-		pt->nu_disk_RF=nu_torus_disk_RF;
+	    pt->nu_disk_RF=nu_torus_disk_RF;
 		return (2*pi/(4*pi))*integrale_simp_struct(pf, pt, pt->DT_mu_r_J_1, pt->DT_mu_r_J_2, 100.0);
 }
 

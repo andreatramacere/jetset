@@ -194,7 +194,7 @@ void Fill_Ne_IC(struct spettro *pt, double gmin, int stat_frame) {
 void build_Ne_custom(struct spettro *pt,  unsigned int size) {
     pt->gamma_custom_grid_size=size;
     if (pt->verbose>1) {
-        printf("Set array per Ne custom\n");
+        printf("Set array for Ne for from_array mode \n");
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
     }
     //printf("Set array per Ne %s \n",pt->DISTR);
@@ -770,7 +770,7 @@ void SetDistr(struct spettro *pt) {
     //8 is for secondary e- coming from pp
 
     /*** Associo ad ogni distribuzione di elettroni ***/
-    if (strcmp(pt->DISTR, "custom") == 0) {
+    if (strcmp(pt->DISTR, "from_array") == 0) {
         pt->TIPO_DISTR = 0;
     }
 
