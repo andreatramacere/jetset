@@ -1976,7 +1976,16 @@ class Jet(Model):
             x_id= np.argmax(y[msk1*msk2])
             return x[msk1*msk2][x_id],y_m
 
+    def get_component_peak(self,comp_name=None,log_log=False):
+        comp = self.get_spectral_component_by_name(comp_name)
 
+        ID = np.argmax(comp.SED.nuFnu)
+        x_p, y_p = comp.SED.nu[ID], comp.SED.nuFnu[ID]
+
+        if log_log is True:
+            x_p, y_p=np.log10([x_p,y_p])
+
+        return x_p, y_p
 
 
 
