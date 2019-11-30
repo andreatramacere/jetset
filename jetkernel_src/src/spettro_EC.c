@@ -269,23 +269,23 @@ void spettro_EC(int Num_file, struct spettro *pt) {
         }
         if ((freq_array[NU_INT] >= *nu_start_EC) && (freq_array[NU_INT] <= *nu_stop_EC)) {
 			if (!stop) {
-
+				
 				pt->q_comp[NU_INT] = rate_compton_GR(pt);
-                if (pt->EC == 6){
-                    //in this case we have q_comp in the disk frame, so j_nu is in the disk rest frame
-                    //and we have to use also the scattered nu in the disk rest frame
-                    j_nu_disk=pt->q_comp[NU_INT]*HPLANCK*freq_array[NU_INT]*pt->beam_obj;
+				if (pt->EC == 6){
+					//in this case we have q_comp in the disk frame, so j_nu is in the disk rest frame
+					//and we have to use also the scattered nu in the disk rest frame
+					j_nu_disk=pt->q_comp[NU_INT]*HPLANCK*freq_array[NU_INT]*pt->beam_obj;
 
-                    //now we go back to the blob
-                    //this is the j_nu in the blob frame at nu_blob
-                    //evaluated from j_disk at nu_disk
-                    pt->j_EC[NU_INT]=j_nu_disk/(pt->beam_obj*pt->beam_obj);
-
-                }
-                else{
-                    pt->j_EC[NU_INT] = pt->q_comp[NU_INT] *
-                    HPLANCK * freq_array[NU_INT];
-                }
+					//now we go back to the blob
+					//this is the j_nu in the blob frame at nu_blob
+					//evaluated from j_disk at nu_disk
+					pt->j_EC[NU_INT]=j_nu_disk/(pt->beam_obj*pt->beam_obj);
+				
+				}
+				else{
+					pt->j_EC[NU_INT] = pt->q_comp[NU_INT] *
+									   HPLANCK * freq_array[NU_INT];
+				}
 
 
 

@@ -76,6 +76,9 @@ class Data(object):
                 self._table.add_column(index=ID,col=Column(name=_cn,dtype=self._dt[ID],unit=self._units[ID],data=np.zeros(len(self._table))))
 
 
+    def _convert_units(self):
+        for ID,_cn in enumerate(self._names):
+            self._table[_cn]=self._table[_cn].to(self._units[ID])
 
     def set_meta_data(self,m,v):
         if m not in self._allowed_meta:
@@ -149,6 +152,7 @@ class Data(object):
         data_table['dy'] = data_table['dy'] * (u.erg / (u.cm ** 2 * u.s))
         data_table['T_start'] = data_table['T_start'] * cds.MJD
         data_table['T_stop'] = data_table['T_stop'] * cds.MJD
+        data_table['UL']=np.array(data_table['UL'], dtype=np.bool)
         data_table.meta['z'] = z
         data_table.meta['restframe'] = restframe
         data_table.meta['data_scale'] = data_scale

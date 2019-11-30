@@ -10,7 +10,7 @@ import numpy as np
 from scipy import integrate
 
 try:
-    from .jetkernel import jetkernel as BlazarSED
+    from jetkernel import jetkernel as BlazarSED
 except ImportError:
     from .mock import jetkernel as BlazarSED
 

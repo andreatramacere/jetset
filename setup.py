@@ -18,6 +18,7 @@ from distutils.sysconfig import get_python_lib
 import os
 import glob
 import shutil
+import fnmatch
 import json
 import sys
 
@@ -68,23 +69,32 @@ class CustomClean(install):
             shutil.rmtree(glob.glob('*.egg-info')[0])
         except:
             pass
+        try:
+            os.remove('jetkernel/jetkernel.py')
+        except:
+            pass
+        try:
+            os.remove('jetkernel/jetkernel_wrap.c')
+        except:
+            pass
+        try:
+            shutil.rmtree('jetkernel/__pycache__')
+        except:
+            pass
 
-
+        #to remove files installed by old versions
         site_p=get_python_lib()
-
+        #print('path',site_p)
+        #print(site_p, glob.glob(site_p + '/*_jetkernel*'))
         for f in glob.glob(site_p+'/*_jetkernel*'):
             print ('found .so object:', f)
-            print ('removing i')
-            print(site_p, glob.glob(site_p + '/*_jetkernel*'))
-            try:
-                shutil.rmtree(f)
-            except:
-                pass
-
+            print ('removing it')
             try:
                 os.remove(f)
             except:
                 pass
+
+
 
 custom_cmdclass = {'build': CustomBuild,
                    'install': CustomInstall,
@@ -108,9 +118,9 @@ f = open("./requirements.txt",'r')
 install_req=f.readlines()
 f.close()
 
-src_files=['jetset/jetkernel/jetkernel.i']
+src_files=['jetkernel/jetkernel.i']
 src_files.extend(glob.glob ('jetkernel_src/src/*.c'))
-_module=Extension('_jetkernel',
+_module=Extension('jetkernel/_jetkernel',
                   sources=src_files,
                   #extra_compile_options='-fPIC  -v  -c -m64 -I',
                   #extra_link_options='-suppress',
@@ -120,7 +130,7 @@ _module=Extension('_jetkernel',
 
 with open("README.md", "r") as f:
     long_description = f.read()
-
+print(__version__)
 setup(name='jetset',
       version=__version__,
       author='Andrea Tramacere',
@@ -129,11 +139,11 @@ setup(name='jetset',
       long_description_content_type='text/markdown',
       description="A framework for self-consistent modeling and fitting of  astrophysical relativistic jets SEDs",
       author_email='andrea.tramacere@gmail.com',
-      packages=['jetset', 'leastsqbound', 'jetset.jetkernel'],
+      packages=['jetset', 'leastsqbound', 'jetkernel'],
       package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*dat','jetkernel/mathkernel/*dat','./requirements.txt']},
       include_package_data = True,
       cmdclass=custom_cmdclass,
-      requires=install_req,
+#      requires=install_req,
       ext_modules = [_module],
-      py_modules=['jetkernel'],
+      py_modules=['jetkernel/jetkernel'],
       zip_safe=False)

@@ -60,27 +60,31 @@ All the dependencies can be installed following the Anaconda method
 
      - https://github.com/andreatramacere/jetset/archive/stable.tar.gz
      
- 
+    
+   - Uncompress the  archive  `jetset-stable.tar.gz`
+   
+   - cd to  the dir `jetset-stable` 
+
 ### Installation using Anaconda (suggested method)
  - I suggest to use anaconda and python3
  - https://www.anaconda.com/download/
  
- - Uncompress the  archive  `jetset-stable.tar.gz`
- - cd to  the dir `jetset-stable`
+ 
 
 
  - ##### Install requirements 
-  
-    * Linux/MAC : run on the command line
-        - `while read requirement; do conda install --yes $requirement; done < requirements.txt`
-     
-    * Windows   : run on the command line
-        - ` FOR /F "delims=~" %f in (requirements.txt) DO conda install --yes "%f"`
+    
+    run on the command line:
+    - `conda config --add channels astropy` 
+    - `conda install --file requirements.txt`
 
+    if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
+   
  - ##### Install JetSeT: 
    run on the command line: 
      * `python setup.py clean`
      * `python setup.py install`
+
 
 **run all the examples outside of the installation dir**
 
@@ -90,27 +94,16 @@ All the dependencies can be installed following the Anaconda method
  - ##### Install requirements 
     - run on the command line: `pip install -r requirements.txt `
     
-    - if pip fails to install swig you can try one of the following methods
-       
-        - SWIG (http://www.swig.org/)
-        - on linux Ubuntu:
-            - `sudo apt-get install python-dev`
-            - `sudo apt-get install swig`
-         - on linux Debian:
-            - `sudo aptitude install python-dev`
-            - `sudo aptitude install swig`
-         - on linux Fedora:
-            - `sudo yum install python-dev`
-            - `sudo yum install swig`
-         - on mac:
-            - `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null`
-            - `brew install swig`
-     
+    if pip fails to install swig, you can try one of the following alternative [methods](swig.md)
+   
 
 - ##### Install JetSeT: 
    run on the command line: 
      * `python setup.py clean`
      * `python setup.py install`
+
+---------
+
 
 
 **run all the examples outside of the installation dir**
@@ -145,4 +138,5 @@ The code is hosted here:
  
  
  
+
 

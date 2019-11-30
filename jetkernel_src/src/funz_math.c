@@ -299,17 +299,50 @@ double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, doub
 //INTEGRAZIONE TRAPEZOIDALE CON INT APERTO E GRIGLIA  LINEARE
 //=====================================================================
 
-double trapzd(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned long n_intervalli) {
-    double x, sum, del;
-    double s;
-    unsigned long it, j;
-    del = (b - a) / (double) n_intervalli;
-    x = a + 0.5 * del;
-    for (sum = 0.0, j = 1; j <= n_intervalli; j++, x += del) sum += pf(pt, x);
-    s = del*sum;
-    s += (pf(pt, a) + pf(pt, b))*0.5 * del;
-    //printf("it=%d s=%e\n",it,s);
-    return s;
+double trapzd_array_linear_grid(double *x, double *y, unsigned long SIZE)
+{
+    double I, y1, y2, x1,delta_x;
+    unsigned long INDEX;
+    I = 0;
+    x1 = x[0];
+    y1 = y[0];
+    delta_x=x[1]-x[0];
+
+    for (INDEX = 1; INDEX <= SIZE; INDEX++)
+    {
+        y2 = y[INDEX];
+        I += (y1 + y2) * delta_x;        
+        y1 = y2;
+        //printf("%e %e %d\n",nu2, Ptot, i);
+    }
+    return I * 0.5;
+}
+
+double trapzd_array_arbritary_grid( double *x, double *y, unsigned long SIZE)
+{
+    /**
+     * \author Andrea Tramacere
+     * \date 19-09-2004 \n
+     * Distribuzioni energetiche degli elettroni nel caso statico
+     * per calcolare Ue
+     */
+
+    double I, y1, y2, x1, x2;
+    unsigned long INDEX;
+
+    I = 0;
+    x1 = x[0];
+    y1 =y[0];
+    for (INDEX = 1; INDEX <= SIZE; INDEX++)
+    {
+        x2 = x[INDEX];
+        y2 = y[INDEX];
+        I += (y1 + y2) * (x1 - x2);
+        x1 = x2;
+        y1 = y2;
+        //printf("%e %e %d\n",nu2, Ptot, i);
+    }
+    return I * 0.5;
 }
 //=========================================================================================
 

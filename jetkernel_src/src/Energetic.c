@@ -187,9 +187,38 @@ void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned long NU_INT_MAX, st
 //=========================================================================================
 //Total Power integrating  Lnu_blob
 //=========================================================================================
-//Function to Integrate the Total Synch Power emitted by Electrons
+//Function to Integrate the Total Power of emitted photons in the blob rest frame
 
-double Power_Photons(struct spettro *pt, double * nu_blob, double * nuFnu, unsigned long NU_INT_STOP) {
+double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu_blob, double *nuFnu, unsigned long NU_INT_STOP)
+{
+    /**
+     * \author Andrea Tramacere
+     * \date 19-09-2004 \n
+     * Distribuzioni energetiche degli elettroni nel caso statico
+     * per calcolare Ue
+     */
+
+    double Ptot, P1, P2, nu1, nu2;
+    unsigned long i;
+
+    Ptot = 0;
+    nu1 = nu_blob[0];
+    P1 = nuFnu_obs_to_nuLnu_src(nuFnu[0], pt->beam_obj, pt->z_cosm, pt->dist) / nu1;
+
+    for (i = 1; i <= NU_INT_STOP; i++)
+    {
+        nu2 = nu_blob[i];
+        P2 = nuFnu_obs_to_nuLnu_src(nuFnu[i], pt->beam_obj, pt->z_cosm, pt->dist) / nu2;
+        Ptot += (P1 + P2) * (nu2 - nu1);
+        nu1 = nu2;
+        P1 = P2;
+        //printf("%e %e %d\n",nu2, Ptot, i);
+    }
+    return Ptot * 0.5;
+}
+
+double PowerPhotons_blob_rest_frame(struct spettro *pt, double *nu_blob, double *nuFnu, unsigned long NU_INT_STOP)
+{
     /**
      * \author Andrea Tramacere
      * \date 19-09-2004 \n
@@ -370,9 +399,14 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
     energetic.U_B= pt->UB;
     energetic.U_e= pt->U_e;
     energetic.U_p=  pt->N * 0.1 * MPC2;
-    if (write_file>0){
 
-
+    energetic.U_Synch = Uph_Sync(pt);
+    energetic.U_BLR = I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR);
+    energetic.U_DT=I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT);
+    energetic.U_CMB = I_nu_to_Uph(pt->nu_CMB, pt->I_nu_CMB, pt->NU_INT_MAX_CMB);
+    energetic.U_Disk = I_nu_to_Uph(pt->nu_Disk, pt->I_nu_Disk, pt->NU_INT_MAX_Disk);
+    
+    {
 
         sprintf(f_Energetic, "%s%s-Energetic.dat", pt->path, pt->STEM);
         //printf("%s\n", f_Energetic);
@@ -426,12 +460,12 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
 
     }
 
-    fprintf(fp_Energetic, "Uph_Sync =%e erg/cm^3\n", Uph_Sync(pt));
+    fprintf(fp_Energetic, "Uph_Sync =%e erg/cm^3\n", energetic.U_Synch);
     fprintf(fp_Energetic, "Uph_Sync(Gould Corrected) =%e erg/cm^3\n", 0.75*I_nu_to_Uph(pt->nu_Sync, pt->I_nu_Sync, pt->NU_INT_STOP_Sync_SSC));
-    fprintf(fp_Energetic, "Uph_BLR =%e erg/cm^3 (I_nu integral)\n", I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR));
+    fprintf(fp_Energetic, "Uph_BLR =%e erg/cm^3 (I_nu integral)\n", energetic.U_BLR);
     fprintf(fp_Energetic, "Uph_BLR =%e erg/cm^3 (Ldisk*BulkFactor^2*tau_BLR/(c*4pi*R_B)\n", pt->L_Disk * pt-> beaming_EC*pt-> beaming_EC *pt->tau_BLR /
             ( vluce_cm*four_pi * pow(pt->R_BLR_in, 2)));
-    fprintf(fp_Energetic, "Uph_DT =%e erg/cm^3\n", I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT));
+    fprintf(fp_Energetic, "Uph_DT =%e erg/cm^3\n", energetic.U_DT);
     fprintf(fp_Energetic, "U_ph_Sync/U_B  %e\n",Uph_Sync(pt) / pt->UB);
     fprintf(fp_Energetic, "E_tot (electron)  blob rest frame  %e erg     \n", pt->E_tot_e);
     fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
@@ -439,7 +473,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
 
 
     energetic.jet_L_rad = 0;
-    energetic.L_Sync_rf = Power_Photons(pt, pt->nu_Sync, pt->nuF_nu_Sync_obs, pt->NU_INT_STOP_Sync_SSC);
+    energetic.L_Sync_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_Sync, pt->nuF_nu_Sync_obs, pt->NU_INT_STOP_Sync_SSC);
     //!!!!!!
     //0.25*Gamma*Gamma*Lum is the jet Power carried for the radiative component
     //Lum is the integral in the L_nu in the comoving rest frame
@@ -460,8 +494,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
 
 
     if (pt->do_SSC) {
-        energetic.L_SSC_rf = Power_Photons(pt, pt->nu_SSC, pt->nuF_nu_SSC_obs, pt->NU_INT_STOP_COMPTON_SSC);
-
+        energetic.L_SSC_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_SSC, pt->nuF_nu_SSC_obs, pt->NU_INT_STOP_COMPTON_SSC);
 
         if (write_file>0){
             fprintf(fp_Energetic, "Lum_SSC Photons rest frame =%e U_ph=%e\n", energetic.L_SSC_rf, energetic.L_SSC_rf / (pt->Surf_sphere * vluce_cm));
@@ -486,7 +519,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
 
 
     if (strcmp(pt->PARTICLE, "hadrons") == 0) {
-        energetic.L_PP_rf = Power_Photons(pt, pt->nu_SSC, pt->nuF_nu_pp_obs, pt->NU_INT_STOP_PP);
+        energetic.L_PP_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_SSC, pt->nuF_nu_pp_obs, pt->NU_INT_STOP_PP);
 
         if (write_file>0){
             fprintf(fp_Energetic, "Lum_PP Photons rest frame =%e U_ph=%e\n", energetic.L_PP_rf, energetic.L_PP_rf / (pt->Surf_sphere * vluce_cm));
@@ -510,19 +543,20 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
     }
 
     if (pt->do_EC_Disk == 1 ) {
-	   energetic.L_EC_Disk_rf = Power_Photons(pt, pt->nu_EC_Disk, pt->nuF_nu_EC_Disk_obs, pt->NU_INT_STOP_EC_Disk);
+        energetic.L_EC_Disk_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_Disk, pt->nuF_nu_EC_Disk_obs, pt->NU_INT_STOP_EC_Disk);
 
-       if (write_file>0){
-           fprintf(fp_Energetic, "Lum_EC_Disk Photons rest frame=%e U_ph=%e\n", energetic.L_EC_Disk_rf, energetic.L_EC_Disk_rf / (pt->Surf_sphere * vluce_cm));
-           fprintf(fp_Energetic, "nu_EC_Disk_blob_peak=%e\n", pt->nu_peak_EC_Disk_blob);
-           fprintf(fp_Energetic, "nu_EC_Disk_src_peak=%e\n", pt->nu_peak_EC_Disk_src);
-           fprintf(fp_Energetic, "nu_EC_Disk_obs_peak=%e\n", pt->nu_peak_EC_Disk_obs);
+        if (write_file > 0)
+        {
+            fprintf(fp_Energetic, "Lum_EC_Disk Photons rest frame=%e U_ph=%e\n", energetic.L_EC_Disk_rf, energetic.L_EC_Disk_rf / (pt->Surf_sphere * vluce_cm));
+            fprintf(fp_Energetic, "nu_EC_Disk_blob_peak=%e\n", pt->nu_peak_EC_Disk_blob);
+            fprintf(fp_Energetic, "nu_EC_Disk_src_peak=%e\n", pt->nu_peak_EC_Disk_src);
+            fprintf(fp_Energetic, "nu_EC_Disk_obs_peak=%e\n", pt->nu_peak_EC_Disk_obs);
 
-           fprintf(fp_Energetic, "nuFnu EC_Disk_blob_peak=%e\n", pt->nuFnu_peak_EC_Disk_obs);
-           fprintf(fp_Energetic, "nuLnu EC_Disk_src_peak=%e  density=%e\n", pt->nuLnu_peak_EC_Disk_src, pt->nuLnu_peak_EC_Disk_src / (pt->Surf_sphere * vluce_cm));
-           fprintf(fp_Energetic, "nuLnu EC_Disk_obs_peak=%e\n", pt->nuLnu_peak_EC_Disk_blob);
-           fprintf(fp_Energetic, "nuLnu_EC_Disk/nuLnu_Synch %e\n", pt->nuFnu_peak_EC_Disk_obs / pt->nuFnu_peak_Sync_obs);
-           fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
+            fprintf(fp_Energetic, "nuFnu EC_Disk_blob_peak=%e\n", pt->nuFnu_peak_EC_Disk_obs);
+            fprintf(fp_Energetic, "nuLnu EC_Disk_src_peak=%e  density=%e\n", pt->nuLnu_peak_EC_Disk_src, pt->nuLnu_peak_EC_Disk_src / (pt->Surf_sphere * vluce_cm));
+            fprintf(fp_Energetic, "nuLnu EC_Disk_obs_peak=%e\n", pt->nuLnu_peak_EC_Disk_blob);
+            fprintf(fp_Energetic, "nuLnu_EC_Disk/nuLnu_Synch %e\n", pt->nuFnu_peak_EC_Disk_obs / pt->nuFnu_peak_Sync_obs);
+            fprintf(fp_Energetic, "------------------------------------------------------------------------------------\n");
        }
 	   energetic.jet_L_EC_Disk =energetic.L_EC_Disk_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
 	   energetic.jet_L_rad += energetic.jet_L_EC_Disk;
@@ -533,7 +567,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
     }
 
     if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 3) {
-        energetic.L_EC_BLR_rf = Power_Photons(pt, pt->nu_EC_BLR, pt->nuF_nu_EC_BLR_obs, pt->NU_INT_STOP_EC_BLR);
+        energetic.L_EC_BLR_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_BLR, pt->nuF_nu_EC_BLR_obs, pt->NU_INT_STOP_EC_BLR);
 
         if (write_file>0){
             fprintf(fp_Energetic, "Lum_EC_BLR Photons rest frame=%e U_ph=%e\n", energetic.L_EC_BLR_rf, energetic.L_EC_BLR_rf / (pt->Surf_sphere * vluce_cm));
@@ -556,7 +590,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
     }
 
     if (pt->do_EC_DT == 1) {
-        energetic.L_EC_DT_rf = Power_Photons(pt, pt->nu_EC_DT, pt->nuF_nu_EC_DT_obs, pt->NU_INT_STOP_EC_DT);
+        energetic.L_EC_DT_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_DT, pt->nuF_nu_EC_DT_obs, pt->NU_INT_STOP_EC_DT);
 
         if (write_file>0){
             fprintf(fp_Energetic, "Lum_EC_DT Photons rest frame =%e  U_ph density=%e\n", energetic.L_EC_DT_rf, energetic.L_EC_DT_rf / (pt->Surf_sphere * vluce_cm));
@@ -580,7 +614,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
 
 
     if (pt->do_EC_CMB_stat == 1) {
-        energetic.L_EC_CMB_rf = Power_Photons(pt, pt->nu_EC_CMB_stat, pt->nuF_nu_EC_CMB_stat_obs, pt->NU_INT_STOP_EC_CMB_stat);
+        energetic.L_EC_CMB_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_CMB_stat, pt->nuF_nu_EC_CMB_stat_obs, pt->NU_INT_STOP_EC_CMB_stat);
 
         if (write_file>0){
             fprintf(fp_Energetic, "Lum_IC_CMB Photons rest frame =%e  U_ph density=%e\n", energetic.L_EC_CMB_rf, energetic.L_EC_CMB_rf / (pt->Surf_sphere * vluce_cm));

@@ -231,7 +231,7 @@ void build_photons(struct spettro *pt_base){
 
     alloc_photons(&(pt_base->I_nu_BLR),pt_base->nu_seed_size);
     alloc_photons(&(pt_base->nu_BLR),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->J_nu_BLR_disk_RF),pt_base->nu_seed_size);
+    alloc_photons(&(pt_base->I_nu_BLR_disk_RF),pt_base->nu_seed_size);
     alloc_photons(&(pt_base->nu_BLR_disk_RF),pt_base->nu_seed_size);
     alloc_photons(&(pt_base->n_BLR),pt_base->nu_seed_size);
 
@@ -262,7 +262,7 @@ void build_photons(struct spettro *pt_base){
     alloc_photons(&(pt_base->nuFnu_DT_grid),pt_base->nu_grid_size);
 
     alloc_photons(&(pt_base->I_nu_DT),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->J_nu_DT_disk_RF),pt_base->nu_seed_size);
+    alloc_photons(&(pt_base->I_nu_DT_disk_RF),pt_base->nu_seed_size);
     alloc_photons(&(pt_base->nu_DT_obs),pt_base->nu_seed_size);
     alloc_photons(&(pt_base->nu_DT),pt_base->nu_seed_size);
     alloc_photons(&(pt_base->nu_DT_disk_RF),pt_base->nu_seed_size);

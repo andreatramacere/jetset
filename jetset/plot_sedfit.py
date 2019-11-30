@@ -268,8 +268,8 @@ class  PlotSED (object):
     def add_res_zeroline(self):
 
 
-        y0=np.zeros(2)
-        x0=[0,30]
+        y0 = np.zeros(2)
+        x0 = [0,30]
 
         self.resplot.plot(x0,y0,'--',color='black')
         self.update_plot()
@@ -342,33 +342,37 @@ class  PlotSED (object):
         self.fig.canvas.draw()
 
     def update_legend(self,label=None):
-        
 
         _handles=[]
-        _labels=[]
+
         if self.lines_data_list!=[] and self.lines_data_list is not None:
             _handles.extend(self.lines_data_list)
+
 
         if self.lines_model_list!=[] and self.lines_model_list is not None:
             _handles.extend(self.lines_model_list)
 
 
-        if _handles==[]:
-            _handles=None
 
-        if _handles is None:
-            _labels=[]
-        else:
-            _labels=None
+        for h in _handles[:]:
+            #print('_label',h._label)
+            if h._label is  None:
+                _handles.remove(h)
+            elif h._label.startswith('_line'):
+                _handles.remove(h)
+            else:
+                 pass
 
-        #print('_handles', _handles, _labels)
-        self.sedplot.legend(handles=_handles,labels=_labels,loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=3, prop={'size':12})
+        #for h in _handles:
+        #    print('_label',h._label)
+
+        self.sedplot.legend(handles=_handles,loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1, prop={'size':12})
         self.update_plot()
 
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None):
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True):
         try:
             # print "a"
             x, y = model.get_model_points(log_log=True)
@@ -383,13 +387,13 @@ class  PlotSED (object):
                 return
 
 
-        if color is None:
-            color = self.counter
+        #if color is None:
+        #    color = self.counter
 
         if line_style is None:
             line_style = '-'
 
-        if label is None:
+        if label is None and auto_label is True:
             if model.name is not None:
                 label = model.name
             else:
@@ -402,7 +406,7 @@ class  PlotSED (object):
         else:
             pass
 
-        line, = self.sedplot.plot(x, y, line_style, label=label)
+        line, = self.sedplot.plot(x, y, line_style, label=label,color=color)
 
 
         self.lines_model_list.append(line)

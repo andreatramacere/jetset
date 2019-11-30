@@ -341,7 +341,7 @@ void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
 
 
         for (i = 0; i < pt->gamma_grid_size; i++) {
-            if (N[i] <= 0/0) {
+            if (N[i] <= 0.0) {
                 N[i]=1E-200;
             }
                 fprintf(fp_distr, "%e\t%e\t%e\t%e\t%e\t%e\n",
@@ -817,8 +817,8 @@ void SetDistr(struct spettro *pt) {
 
 
 
-    if (pt->verbose) {
-     printf("tipo di distribuzione %d\n",pt->TIPO_DISTR);
-    }
+    //if (pt->verbose) {
+     //printf("tipo di distribuzione %d\n",pt->TIPO_DISTR);
+    //}
 }
 //=========================================================================================

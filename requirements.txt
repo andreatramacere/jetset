@@ -4,9 +4,9 @@ numpy
 astropy
 matplotlib
 swig
+swig
 future
 iminuit
 corner
 six
 emcee
-builtins

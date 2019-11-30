@@ -24,10 +24,10 @@ from numpy import log10,array,zeros,power,shape
 from scipy.interpolate import interp1d
 
 #import jet_wrapper
-try:
-    from .jetkernel import jetkernel as BlazarSED
-except ImportError:
-    from .mock import jetkernel as BlazarSED
+#try:
+from jetkernel import jetkernel as BlazarSED
+#except ImportError:
+#    from .mock import jetkernel as BlazarSED
 
 from . import spectral_shapes
 
@@ -205,7 +205,7 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list):
             model_dic['T_Disk']=['Disk',0,None,'K']
             model_dic['accr_eff']=['Disk',0,None,'']
             model_dic['R_H']=['Disk',0,None,'cm']
-    
+            model_dic['M_BH'] = ['Disk', 0, None, 'M_sun']
                     
         if 'BLR' in EC_model:
             model_dic['tau_BLR']=['BLR',0.0,1.0,'']
@@ -899,7 +899,7 @@ class Jet(Model):
 
         jet.model_type = 'jet'
 
-        jet.init_BlazarSED()
+        jet.set_blob()
         jet.parameters = ModelParameterArray()
 
         jet.set_electron_distribution(str(_model['electron_distribution']))
@@ -1067,7 +1067,7 @@ class Jet(Model):
         setattr(self._blob, 'N', N)
         gamma_grid_size = self._blob.gamma_grid_size
         self.electron_distribution.set_grid_size(100)
-        self.init_BlazarSED()
+        self.set_blob()
         BlazarSED.EvalU_e(self._blob)
         ratio = self._blob.U_e/ U_e
         self.electron_distribution.set_grid_size(gamma_grid_size)
@@ -1076,7 +1076,7 @@ class Jet(Model):
     def set_N_from_Le(self,L_e):
         gamma_grid_size = self._blob.gamma_grid_size
         self.electron_distribution.set_grid_size(100)
-        self.init_BlazarSED()
+        self.set_blob()
         U_e=L_e/    self._blob.Vol_sphere
         self.electron_distribution.set_grid_size(gamma_grid_size)
         self.set_N_from_Ue(U_e)
@@ -1088,7 +1088,7 @@ class Jet(Model):
         setattr(self._blob, 'N', N)
         gamma_grid_size = self._blob.gamma_grid_size
         self.electron_distribution.set_grid_size(100)
-        self.init_BlazarSED()
+        self.set_blob()
         delta = self._blob.beam_obj
         ratio = (BlazarSED.Power_Sync_Electron(self._blob)* delta ** 4)/L_sync
         self.electron_distribution.set_grid_size(gamma_grid_size)
@@ -1098,7 +1098,7 @@ class Jet(Model):
 
 
     def set_N_from_F_sync(self, F_sync):
-        self.init_BlazarSED()
+        self.set_blob()
         DL = self._blob.dist
         L = F_sync * DL * DL * 4.0 * np.pi
         self.set_N_from_L_sync(L)
@@ -1114,7 +1114,7 @@ class Jet(Model):
 
 
 
-        self.init_BlazarSED()
+        self.set_blob()
 
         delta = self._blob.beam_obj
         nu_blob = nu_0 / delta
@@ -1134,7 +1134,7 @@ class Jet(Model):
         sets the normalization of N to match the observed flux nu0F_nu0 at a given frequency nu_0
         """
 
-        self.init_BlazarSED()
+        self.set_blob()
         DL = self._blob.dist
 
         L = nuFnu_obs * DL * DL * 4.0 * np.pi
@@ -1160,7 +1160,7 @@ class Jet(Model):
         U_B = np.zeros(N_pts)
         N = np.zeros(N_pts)
         self.set_par('B', b_grid[0])
-        self.init_BlazarSED()
+        self.set_blob()
 
         for ID, b in enumerate(b_grid):
             self.set_par('B', b)
@@ -1168,7 +1168,7 @@ class Jet(Model):
             # print 'B_eq',ID
             self.set_N_from_nuFnu(nuFnu_obs, nu_obs)
             N[ID]=self.get_par_by_name('N').val
-            self.init_BlazarSED()
+            self.set_blob()
             #
             U_e[ID] = self._blob.U_e
             U_B[ID] = self._blob.UB
@@ -1217,7 +1217,7 @@ class Jet(Model):
         if isinstance(EC_components_list, six.string_types):
             EC_components_list = [EC_components_list]
 
-
+        #print(EC_components_list)
 
         if 'All' in EC_components_list:
             EC_components_list=self._allowed_EC_components_list[::]
@@ -1231,57 +1231,57 @@ class Jet(Model):
                                    self._allowed_EC_components_list)
 
             if EC_component=='Disk':
-                if self.get_spectral_component_by_name('Disk', verbose=False) is None:
+                if self.get_spectral_component_by_name('Disk', verbose=False) is not None:
                     self._del_spectral_component('Disk', verbose=False)
                     self.EC_components_list.remove('Disk')
 
-                if self.get_spectral_component_by_name('EC_Disk',verbose=False) is None:
+                if self.get_spectral_component_by_name('EC_Disk',verbose=False) is not None:
                     self._del_spectral_component('EC_Disk')
                     self._blob.do_EC_Disk = 0
                     self.EC_components_list.remove('EC_Disk')
 
-                if self.get_spectral_component_by_name('EC_BLR', verbose=False) is None:
+                if self.get_spectral_component_by_name('EC_BLR', verbose=False) is not None:
                     self._blob.do_EC_BLR=0
                     self._del_spectral_component('EC_BLR', verbose=False)
                     self.EC_components_list.remove('EC_BLR')
 
 
             if EC_component=='EC_Disk':
-                if self.get_spectral_component_by_name('EC_Disk', verbose=False) is None:
+                if self.get_spectral_component_by_name('EC_Disk', verbose=False) is not None:
                     self._blob.do_EC_Disk=0
                     self._del_spectral_component('EC_Disk', verbose=False)
                     self.EC_components_list.remove('EC_Disk')
 
 
             if EC_component=='EC_BLR':
-                if self.get_spectral_component_by_name('EC_BLR', verbose=False) is None:
+                if self.get_spectral_component_by_name('EC_BLR', verbose=False) is not None:
                     self._blob.do_EC_BLR=0
                     self._del_spectral_component('EC_BLR', verbose=False)
                     self.EC_components_list.remove('EC_BLR')
 
             if EC_component=='DT':
-                if self.get_spectral_component_by_name('DT', verbose=False) is None:
+                if self.get_spectral_component_by_name('DT', verbose=False) is not None:
                     self._del_spectral_component('DT', verbose=False)
                     self.EC_components_list.remove('DT')
-                if self.get_spectral_component_by_name('EC_DT', verbose=False) is None:
+                if self.get_spectral_component_by_name('EC_DT', verbose=False) is not None:
                     self._blob.do_EC_DT = 0
                     self._del_spectral_component('EC_DT', verbose=False)
                     self.EC_components_list.remove('EC_DT')
 
             if EC_component=='EC_DT':
-                if self.get_spectral_component_by_name('EC_DT', verbose=False) is None:
+                if self.get_spectral_component_by_name('EC_DT', verbose=False) is not None:
                     self._blob.do_EC_DT=0
                     self._del_spectral_component('EC_DT', verbose=False)
                     self.EC_components_list.remove('EC_DT')
 
-            if EC_component=='CMB':
-                if self.get_spectral_component_by_name('CMB', verbose=False) is None:
+            if EC_component=='EC_CMB':
+                if self.get_spectral_component_by_name('EC_CMB', verbose=False) is not None:
                     self._blob.do_EC_CMB=0
                     self._del_spectral_component('EC_CMB', verbose=False)
                     self.EC_components_list.remove('EC_CMB')
 
-            if EC_component=='CMB_stat':
-                if self.get_spectral_component_by_name('CMB_stat', verbose=False) is None:
+            if EC_component=='EC_CMB_stat':
+                if self.get_spectral_component_by_name('EC_CMB_stat', verbose=False) is not None:
                     self._blob.do_EC_CMB_stat=0
                     self._del_spectral_component('EC_CMB_stat', verbose=False)
                     self.EC_components_list.remove('EC_CMB_stat')
@@ -1424,7 +1424,7 @@ class Jet(Model):
 
 
     def get_DL_cm(self):
-        self.init_BlazarSED()
+        self.set_blob()
         return self._blob.dist
 
 
@@ -1706,7 +1706,7 @@ class Jet(Model):
 
         print("-------------------------------------------------------------------------------------------------------------------")
 
-    def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None):
+    def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-'):
         if plot_obj is None:
             plot_obj=PlotSED(sed_data=sed_data)
 
@@ -1714,23 +1714,28 @@ class Jet(Model):
         if clean==True:
             plot_obj.clean_model_lines()
 
-        line_style='-'
+        #line_style='-'
 
         if comp is not None:
             c = self.get_spectral_component_by_name(comp)
+
             if label is not None:
                 comp_label = label
-            else:
+            elif label is None and auto_label is True:
                 comp_label = c.name
+            else:
+                comp_label=None
             if c.state!='off':
-                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color)
+                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label)
 
         else:
             for c in self.spectral_components_list:
                 comp_label = c.name
-
+                if auto_label is not True:
+                    comp_label=label
+                print('comp label',comp_label)
                 if c.state != 'off' and c.name!='Sum':
-                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim)
+                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color)
 
 
             c=self.get_spectral_component_by_name('Sum')
@@ -1739,17 +1744,20 @@ class Jet(Model):
             else:
                 comp_label='Sum'
 
-            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim)
+            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color)
 
         return plot_obj
 
 
 
-    def init_BlazarSED(self):
+    def set_blob(self):
 
         BlazarSED.Init(self._blob)
 
 
+    def set_external_fields(self):
+
+        BlazarSED.spectra_External_Fields(1,self._blob)
 
 
     def eval(self,init=True,fill_SED=True,nu=None,get_model=False,loglog=False,plot=None,label=None,phys_output=False):
@@ -1909,7 +1917,10 @@ class Jet(Model):
             raise RuntimeError ('model evaluation failed in get_SED_points')
 
 
-    def energetic_report(self,write_file=False,getstring=True,wd=None,name=None):
+
+
+    def energetic_report(self,write_file=False,getstring=True,wd=None,name=None,verbose=True):
+        self.energetic_dict={}
 
         _energetic = BlazarSED.EnergeticOutput(self._blob,0)
         _par_array=ModelParameterArray()
@@ -1925,13 +1936,18 @@ class Jet(Model):
             if _n[0] == 'j':
                 par_type = 'jet Lum.'
                 units = 'erg/s'
+            self.energetic_dict[_n]=getattr(_energetic, _n)
             _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
 
-        print("-----------------------------------------------------------------------------------------")
-        print("jet eneregetic report:")
-        self._energetic_report = _par_array.show_pars(getstring=False)
+        if  verbose is True:
+            print("-----------------------------------------------------------------------------------------")
+            print("jet eneregetic report:")
+            self._energetic_report = _par_array.show_pars(getstring=False)
+            print("-----------------------------------------------------------------------------------------")
+
+
         self._energetic_report=_par_array.show_pars(getstring=getstring)
-        print("-----------------------------------------------------------------------------------------")
+
 
         if write_file==True:
 

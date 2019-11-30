@@ -57,7 +57,6 @@
 #define LIM_LOSS_KN 1.0
 #define min(a,b) (a<b) ? a:b;
 #define max(a,b) (a>b) ? a:b;
-
 /**
  * \file Blazar_SED.h
  * \author Andrea Tramacere
@@ -267,7 +266,7 @@ struct spettro {
 
     double nu_blob_RF;
     double nu_disk_RF;
-    double I_nu_disk_RF;
+    double L_nu_disk_RF;
 
     //dist BLOB/DISK or STAR
     double R_H;
@@ -352,15 +351,17 @@ struct spettro {
     //--- DISK
     //-PARAMTERS
     double L_Disk;
+    double L_Disk_radiative;
     double T_Disk;
     double accr_eff;
+    double M_BH,accr_rate,L_Edd,accr_Edd;
     double R_inner_Sw, R_ext_Sw;
     //
     double R_Sw;
     double T_disk_max_4;
     double R_inner, R_ext;
     double Cost_disk_Mulit_BB;
-    double Cost_Norm_disk_Mulit_BB;
+    //double Cost_Norm_disk_Mulit_BB;
     double Disk_surface;
     double Disk_mu_1,Disk_mu_2;
     double Disk_geom_factor;
@@ -378,6 +379,7 @@ struct spettro {
     unsigned long NU_INT_STOP_EC_Disk;
 
     //-FREQ/FLUX arrays
+    double L_nu_Disk_disk_RF[static_spec_arr_size];
     double I_nu_Disk[static_spec_arr_size];
     double J_nu_Disk_disk_RF[static_spec_arr_size];
     double I_nu_Disk_disk_RF[static_spec_arr_size];
@@ -399,7 +401,9 @@ struct spettro {
     double R_BLR_out;
     //
     double BLR_Volume;
-    double BLR_mu_1,BLR_mu_2;
+    double n0_BLR;
+    double mu_j;
+    double BLR_mu_1, BLR_mu_2;
     double BLR_mu_r_J_1,BLR_mu_r_J_2;
     double BLR_mu_r_in;
     double BLR_inner_Surface;
@@ -416,10 +420,11 @@ struct spettro {
     double nu_start_EC_BLR_obs;
     unsigned long NU_INT_MAX_BLR;
     unsigned long NU_INT_STOP_EC_BLR;
+    
     //-FREQ/FLUX arrays
     double I_nu_BLR[static_spec_arr_size];
     double nu_BLR[static_spec_arr_size];
-    double J_nu_BLR_disk_RF[static_spec_arr_size];
+    double I_nu_BLR_disk_RF[static_spec_arr_size];
     double nuF_nu_EC_BLR_obs[static_spec_arr_size];
     double nu_EC_BLR[static_spec_arr_size];
     double nu_EC_BLR_obs[static_spec_arr_size];
@@ -451,12 +456,13 @@ struct spettro {
 
     //-FREQ/FLUX arrays
     double I_nu_DT[static_spec_arr_size];
-    double J_nu_DT_disk_RF[static_spec_arr_size];
+    double I_nu_DT_disk_RF[static_spec_arr_size];
     double nu_DT_obs[static_spec_arr_size];
     double nu_DT[static_spec_arr_size];
     double nu_DT_disk_RF[static_spec_arr_size];
     double nuF_nu_EC_DT_obs[static_spec_arr_size];
     double n_DT[static_spec_arr_size];
+    double L_nu_DT_disk_RF[static_spec_arr_size];
     double nuF_nu_DT_obs[static_spec_arr_size];
     double nu_EC_DT[static_spec_arr_size];
     double nu_EC_DT_obs[static_spec_arr_size];
@@ -563,6 +569,8 @@ struct spettro {
 
 struct jet_energetic{
     double U_e,U_p,U_B;
+    double U_Synch;
+    double U_Disk, U_BLR, U_DT, U_CMB;
     double L_Sync_rf, L_SSC_rf, L_EC_Disk_rf,L_EC_BLR_rf, L_EC_DT_rf,L_EC_CMB_rf, L_PP_rf;
     double jet_L_Sync,jet_L_SSC, jet_L_EC_Disk, jet_L_EC_BLR, jet_L_EC_DT,jet_L_EC_CMB,jet_L_PP;
     double jet_L_rad,jet_L_kin, jet_L_tot, jet_L_e, jet_L_B, jet_L_p;
@@ -755,7 +763,9 @@ void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned long NU_INT_MAX, st
 struct jet_energetic EnergeticOutput(struct spettro *pt, int write_file);
 
 double I_nu_to_Uph(double * nu, double * I_nu, unsigned long NU_INT_STOP);
-double Power_Photons(struct spettro *pt, double * nu, double * nu_Fnu, unsigned long NU_INT_STOP);
+double PowerPhotons_blob_rest_frame(struct spettro *pt, double * nu, double * nu_Fnu, unsigned long NU_INT_STOP);
+double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu, double *nu_Fnu, unsigned long NU_INT_STOP);
+
 //===================================================================================
 
 
@@ -886,6 +896,7 @@ void spectra_External_Fields(int Num_file, struct spettro *pt_d);
 void spettro_EC(int num_file, struct spettro *);
 
 /***  DISK PLANCK FUNCTIONS  *********/
+double eval_T_disk(struct spettro *pt, double R);
 double eval_nu_peak_planck(double T);
 double f_planck_Multi_T(struct spettro *pt, double R, double nu);
 double f_planck_Multi_T_norm(struct spettro *pt, double R,double nu);
@@ -894,7 +905,7 @@ double f_planck(double temperatura, double nu);
 double f_planck_norm(double temperatura, double nu);
 
 /***  DISK ACCRETION POWER FUNCTIONS  **********/
-double eval_R_Sw(double L_disk, double accr_eff, double T_disk_max_4);
+double eval_R_Sw(double M_BH);
 double eval_M_BH(double R_S);
 double eval_accr_rate(double L_disk,double accr_eff);
 double eval_L_Edd(double M_BH);
@@ -920,8 +931,11 @@ void set_Star_geometry(struct spettro *pt);
 void set_Disk(struct spettro *pt);
 void Build_I_nu_Disk(struct spettro *pt_d);
 double Disk_Spectrum(struct spettro *pt, double nu_Disk_disk_RF);
-double eval_I_nu_Disk_disk_RF(struct spettro *pt,double nu_Disk_disk_RF);
-double eval_J_nu_Disk_disk_RF(struct spettro *pt, double I_nu_Disk_disk_RF);
+double eval_I_nu_Disk_disk_RF(struct spettro *pt,double Lnu_Disk_disk_RF);
+double eval_J_nu_Disk_disk_RF(struct spettro *pt, double nu_Disk_disk_RF, double I_nu_Disk_disk_RF);
+double eval_J_nu_Disk_disk_RF_single_BB(struct spettro *pt, double I_nu_Disk_disk_RF);
+double eval_J_nu_Disk_disk_RF_multi_BB(struct spettro *pt,  double  mu);
+
 double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_blob_RF);
 double integrand_I_nu_Disk_blob_RF(struct spettro *pt, double mu);
 double eval_Disk_L_nu(struct spettro *pt, double nu_Disk_disk_RF);
@@ -939,25 +953,33 @@ double eval_T_CMB_z(double z, double T_CMB_0);
 
 /*** SPECTRAL/GEOMETRIC FUNCTIONS EC BLR  ****/
 void Build_I_nu_BLR(struct spettro *pt);
-double eval_J_nu_BLR_disk_RF(struct spettro *pt, double I_nu_Disk_disk_RF);
-double eval_I_nu_BLR_blob_RF(struct spettro *pt, double nu_blob_RF);
-double integrand_J_nu_BLR_disk_RF(struct spettro *pt, double mu);
-double integrand_I_nu_BLR_blob_RF(struct spettro *pt, double mu);
-void set_BLR_geometry(struct spettro *pt);
-double l_BLR(struct spettro *pt, double mu);
+double j_nu_BLR_integrand(struct spettro *pt, double l);
+double eval_I_nu_theta_BLR(struct spettro *pt, double mu);
+double integrand_I_nu_BLR_disk_RF(struct spettro *, double theta);
+double eval_I_nu_BLR_disk_RF(struct spettro *pt, double nu_disk_RF);
+double integrand_I_nu_BLR_blob_RF(struct spettro *pt, double theta);
+double eval_I_nu_BLR_blob_RF(struct spettro *pt, double nu_disk_RF);
+double eval_theta_max_BLR(struct spettro *pt);
+void eval_l_values_BLR(struct spettro *pt, double mu, double l[]);
+//double eval_I_nu_BLR_blob_RF(struct spettro *pt, double nu_blob_RF);
+//double integrand_J_nu_BLR_disk_RF(struct spettro *pt, double mu);
+//double integrand_I_nu_BLR_blob_RF(struct spettro *pt, double mu);
+//void set_BLR_geometry(struct spettro *pt);
+//double l_BLR(struct spettro *pt, double mu);
 
 /***  FUNCTIONS Seed Photons EC DT  ***/
 void Build_I_nu_DT(struct spettro *pt);
-double eval_J_nu_DT_disk_RF(struct spettro *pt,double nu_torus_disk_RF);
-double eval_I_nu_DT_blob_RF(struct spettro *pt, double nu_blob_RF);
-double integrand_J_nu_DT_disk_RF(struct spettro *pt,double mu);
-double integrand_I_nu_DT_blob_RF(struct spettro *pt, double mu);
-double eval_DT_L_nu(struct spettro *pt, double nu_torus);
-void set_DT_geometry(struct spettro *pt);
-double l_TORUS(struct spettro *pt, double mu);
-
-double eval_circle_secant(double z,double R,double mu);
-double eval_circle_secant_ratio(double z,double R,double mu);
+double j_nu_DT_integrand(struct spettro *pt, double l);
+double eval_I_nu_theta_DT(struct spettro *pt, double mu);
+double integrand_I_nu_DT_disk_RF(struct spettro *, double theta);
+double eval_I_nu_DT_disk_RF(struct spettro *pt, double nu_disk_RF);
+double eval_I_nu_DT_blob_RF(struct spettro *pt, double nu_disk_RF);
+double integrand_I_nu_DT_blob_RF(struct spettro *pt, double theta);
+double eval_I_nu_DT_blob_RF(struct spettro *pt, double nu_disk_RF);
+double eval_DT_L_nu(struct spettro *pt, double DT_disk_RF);
+double eval_theta_max_DT(struct spettro *pt);
+double eval_l_DT(struct spettro *pt, double mu);
+//double eval_circle_secant(double z,double R,double mu);
 //===========================================================================================
 
 
@@ -980,8 +1002,8 @@ double integrale_trap_log_struct(double (*pf) (struct spettro *, double x),
 double integrale_simp_struct(double (*pf) (struct spettro *, double x),
         struct spettro * pt, double a, double b, unsigned long intervalli);
 double integrale_simp(double (*pf) ( double x), double a, double b, unsigned long n_intervalli);
-double trapzd(double (*pf) (struct spettro *, double x),
-        struct spettro * pt, double a, double b, unsigned long n_intervalli);
+double trapzd_array_linear_grid(double *x, double *y, unsigned long SIZE);
+double trapzd_array_arbritary_grid(double *x, double *y, unsigned long SIZE);
 double test_int(struct spettro *, double x);
 double test_int1(double x);
 double log_lin_interp(double nu,  double * nu_grid, double nu_min, double nu_max, double *  flux_grid , unsigned long SIZE, double emiss_lim);

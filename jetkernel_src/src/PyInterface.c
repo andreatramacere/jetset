@@ -234,6 +234,7 @@ struct spettro MakeBlob() {
     spettro_root.mono_planck_max_factor=2.0;
     sprintf(spettro_root.disk_type, "BB");
     spettro_root.R_H=1E17;
+    spettro_root.M_BH = 1E9;
     spettro_root.nu_start_EC_Disk = 1e13;
     spettro_root.nu_stop_EC_Disk = 1e26;
     spettro_root.nu_start_EC_BLR = 1e13;
@@ -250,7 +251,7 @@ struct spettro MakeBlob() {
     spettro_root.R_ext_Sw = 500;
     spettro_root.T_Disk = 1e5;
     spettro_root.T_CMB_0=2.725;
-    spettro_root.accr_eff = 0.1;
+    spettro_root.accr_eff = 0.08;
     spettro_root.R_BLR_in = 1e18;
     spettro_root.R_BLR_out=spettro_root.R_BLR_in*2;
     spettro_root.T_DT = 100;
