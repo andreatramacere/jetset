@@ -5,11 +5,6 @@
 # the SWIG interface file instead.
 
 from sys import version_info as _swig_python_version_info
-if __package__ or "." in __name__:
-    print(__package__,__name__)
-    from . import _jetkernel
-else:
-    import _jetkernel
 
 if _swig_python_version_info >= (2, 7, 0):
     def swig_import_helper():

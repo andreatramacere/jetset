@@ -612,6 +612,7 @@ class MinutiMinimizer(Minimizer):
     def _fit(self,max_ev=None):
         bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model.fit_par_free]
         self._set_minuit_func(self.model.pinit, bounds)
+        print('=>,')
         if max_ev is None or max_ev==0:
             max_ev =10000
 
@@ -627,7 +628,7 @@ class MinutiMinimizer(Minimizer):
 
 
     def _set_minuit_func(self, p_init, bounds,p_error=None):
-
+        print('=>Hi')
         if p_error==None:
             p_error=[0.1]*len(p_init)
 
@@ -656,9 +657,7 @@ class MinutiMinimizer(Minimizer):
             fcn=self.chisq_func,
             forced_parameters=p_names,
             pedantic=False,
-            frontend=None,
             errordef=1,
-
             **kwdarg)
 
     def chisq_func(self, *p):
