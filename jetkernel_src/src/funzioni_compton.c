@@ -69,19 +69,34 @@ double rate_compton_GR(struct spettro *pt_GR) {
 
 			if (pt_GR->verbose>1) {
 				printf("Disk\n");
-				printf("nu_start_EC_seed=%e\n", pt_GR->nu_start_Disk);
-				printf("nu_stop_EC_seed=%e\n", pt_GR->nu_stop_Disk);
-			}
-			pt_GR->nu_seed = pt_GR->nu_Disk;
-			pt_GR->n_seed = pt_GR->n_Disk;
-            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
-            //pt_GR->N_IC=pt_GR->Ne;
-			rate_comp = integrale_IC(pf_K,
-					pt_GR,
-					pt_GR->nu_start_Disk,
-					pt_GR->nu_stop_Disk,
-					0);
-			//printf("%e\n",rate_comp);
+				printf("(blob rest frame) nu_start_EC_seed=%e\n", pt_GR->nu_start_Disk);
+                printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->nu_stop_Disk);
+            }
+            if (pt_GR->EC_stat == 0)
+            {
+                pt_GR->nu_seed = pt_GR->nu_Disk;
+                pt_GR->n_seed = pt_GR->n_Disk;
+                rate_comp = integrale_IC(pf_K,
+                                         pt_GR,
+                                         pt_GR->nu_start_Disk,
+                                         pt_GR->nu_stop_Disk,
+                                         pt_GR->EC_stat);
+            }
+            else{
+                nu_1_original = pt_GR->nu_1;
+                pt_GR->nu_1 = pt_GR->nu_1 * pt_GR->beam_obj;
+
+                pt_GR->nu_seed = pt_GR->nu_Disk_disk_RF;
+                pt_GR->n_seed = pt_GR->n_Disk_DRF;
+                rate_comp = integrale_IC(pf_K,
+                                         pt_GR,
+                                         pt_GR->nu_start_Disk_DRF,
+                                         pt_GR->nu_stop_Disk_DRF,
+                                         pt_GR->EC_stat);
+
+                pt_GR->nu_1 = nu_1_original;
+            }
+			
 		}
     }
     //EC BLR
@@ -90,19 +105,34 @@ double rate_compton_GR(struct spettro *pt_GR) {
 
             if (pt_GR->verbose>1) {
                 printf("BLR\n");
-                printf("nu_start_EC_seed=%e\n", pt_GR->nu_start_BLR);
-                printf("nu_stop_EC_seed=%e\n", pt_GR->nu_stop_BLR);
+                printf("(blob rest frame) nu_start_EC_seed=%e\n", pt_GR->nu_start_BLR);
+                printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->nu_stop_BLR);
             }
-            pt_GR->nu_seed = pt_GR->nu_BLR;
-            pt_GR->n_seed = pt_GR->n_BLR;
-            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
-            //pt_GR->N_IC=pt_GR->Ne;
-            rate_comp = integrale_IC(pf_K,
-                    pt_GR,
-                    pt_GR->nu_start_BLR,
-                    pt_GR->nu_stop_BLR,
-                    0);
-            //printf("%e\n",rate_comp);
+
+            if (pt_GR->EC_stat == 0)
+            {
+                pt_GR->nu_seed = pt_GR->nu_BLR;
+                pt_GR->n_seed = pt_GR->n_BLR;
+                rate_comp = integrale_IC(pf_K,
+                                         pt_GR,
+                                         pt_GR->nu_start_BLR,
+                                         pt_GR->nu_stop_BLR,
+                                         pt_GR->EC_stat);
+            }
+            else
+            {
+                nu_1_original = pt_GR->nu_1;
+                pt_GR->nu_1 = pt_GR->nu_1 * pt_GR->beam_obj;
+                
+                pt_GR->nu_seed = pt_GR->nu_BLR_disk_RF;
+                pt_GR->n_seed = pt_GR->n_BLR_DRF;
+                rate_comp = integrale_IC(pf_K,
+                                         pt_GR,
+                                         pt_GR->nu_start_BLR_disk_RF,
+                                         pt_GR->nu_stop_BLR_disk_RF,
+                                         pt_GR->EC_stat);
+                pt_GR->nu_1 = nu_1_original;
+            }
         }
     }
     //EC DT
@@ -111,19 +141,34 @@ double rate_compton_GR(struct spettro *pt_GR) {
 
             if (pt_GR->verbose>1) {
                 printf("DT\n");
-                printf("nu_start_EC_seed DT=%e\n", pt_GR->nu_start_DT);
-                printf("nu_stop_EC_seed=%e\n", pt_GR->nu_stop_DT);
+                printf("(blob rest frame) nu_start_EC_seed DT=%e\n", pt_GR->nu_start_DT);
+                printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->nu_stop_DT);
             }
-            pt_GR->nu_seed = pt_GR->nu_DT;
-            pt_GR->n_seed = pt_GR->n_DT;
-            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
-            //pt_GR->N_IC=pt_GR->Ne;
-            rate_comp = integrale_IC(pf_K,
-                    pt_GR,
-                    pt_GR->nu_start_DT,
-                    pt_GR->nu_stop_DT,
-                    0);
-            //printf("%e\n",rate_comp);
+
+            if (pt_GR->EC_stat == 0)
+            {
+                pt_GR->nu_seed = pt_GR->nu_DT;
+                pt_GR->n_seed = pt_GR->n_DT;
+                rate_comp = integrale_IC(pf_K,
+                                         pt_GR,
+                                         pt_GR->nu_start_DT,
+                                         pt_GR->nu_stop_DT,
+                                         pt_GR->EC_stat);
+            }
+            else
+            {
+                nu_1_original = pt_GR->nu_1;
+                pt_GR->nu_1 = pt_GR->nu_1 * pt_GR->beam_obj;
+
+                pt_GR->nu_seed = pt_GR->nu_DT_disk_RF;
+                pt_GR->n_seed = pt_GR->n_DT_DRF;
+                rate_comp = integrale_IC(pf_K,
+                                         pt_GR,
+                                         pt_GR->nu_start_DT,
+                                         pt_GR->nu_stop_BLR_disk_RF,
+                                         pt_GR->EC_stat);
+                pt_GR->nu_1 = nu_1_original;
+            }
        }
     }
 
@@ -133,21 +178,44 @@ double rate_compton_GR(struct spettro *pt_GR) {
 
 		   if (pt_GR->verbose>1) {
 			   printf("DT\n");
-			   printf("nu_start_EC_seed Star=%e\n", pt_GR->nu_start_Star);
-			   printf("nu_stop_EC_seed=%e\n", pt_GR->nu_stop_Star);
-		   }
+               printf("(blob rest frame) nu_start_EC_seed Star=%e\n", pt_GR->nu_start_Star);
+               printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->nu_stop_Star);
+           }
 		   pt_GR->nu_seed = pt_GR->nu_Star;
 		   pt_GR->n_seed = pt_GR->n_Star;
            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
            //pt_GR->N_IC=pt_GR->Ne;
-		   rate_comp = integrale_IC(pf_K,
-				   pt_GR,
-				   pt_GR->nu_start_Star,
-				   pt_GR->nu_stop_Star,
-				   0);
+		   //rate_comp = integrale_IC(pf_K,
+		   //	   pt_GR,
+		   //		   pt_GR->nu_start_Star,
+		   //		   pt_GR->nu_stop_Star,
+		   //		   0);
 		   //printf("%e\n",rate_comp);
-	   }
+           if (pt_GR->EC_stat == 0)
+           {
+               pt_GR->nu_seed = pt_GR->nu_Star;
+               pt_GR->n_seed = pt_GR->n_Star;
+               rate_comp = integrale_IC(pf_K,
+                                        pt_GR,
+                                        pt_GR->nu_start_Star,
+                                        pt_GR->nu_stop_Star,
+                                        pt_GR->EC_stat);
+           }
+           else
+           {
+               nu_1_original = pt_GR->nu_1;
+               pt_GR->nu_1 = pt_GR->nu_1 * pt_GR->beam_obj;
 
+               pt_GR->nu_seed = pt_GR->nu_Star_disk_RF;
+               pt_GR->n_seed = pt_GR->n_Star_DRF;
+               rate_comp = integrale_IC(pf_K,
+                                        pt_GR,
+                                        pt_GR->nu_start_Star_DRF,
+                                        pt_GR->nu_stop_Star_DRF,
+                                        pt_GR->EC_stat);
+               pt_GR->nu_1 = nu_1_original;
+           }
+       }
     }
 
     //EC CMB
@@ -159,21 +227,37 @@ double rate_compton_GR(struct spettro *pt_GR) {
     			printf("nu_start_CMB_seed=%e\n", pt_GR->nu_start_CMB);
     			printf("nu_stop_CMB_seed=%e\n", pt_GR->nu_stop_CMB);
     		}
-    		pt_GR->nu_seed = pt_GR->nu_CMB;
-    		pt_GR->n_seed = pt_GR->n_CMB;
-            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
-            //pt_GR->N_IC=pt_GR->Ne;
-    		rate_comp = integrale_IC(pf_K,
-    				pt_GR,
-    				pt_GR->nu_start_CMB,
-    				pt_GR->nu_stop_CMB,
-    				0);
-    		//printf("%e\n",rate_comp);
-    	}
-
+    		
+            if (pt_GR->EC_stat == 0)
+            {
+                pt_GR->nu_seed = pt_GR->nu_CMB;
+                pt_GR->n_seed = pt_GR->n_CMB;
+                rate_comp = integrale_IC(pf_K,
+                                         pt_GR,
+                                         pt_GR->nu_start_CMB,
+                                         pt_GR->nu_stop_CMB,
+                                         pt_GR->EC_stat);
+            }
+            else
+            {
+                nu_1_original = pt_GR->nu_1;
+                pt_GR->nu_1 = pt_GR->nu_1 * pt_GR->beam_obj;
+                
+                pt_GR->nu_seed = pt_GR->nu_CMB_disk_RF;
+                pt_GR->n_seed = pt_GR->n_CMB_DRF;
+                rate_comp = integrale_IC(pf_K,
+                                         pt_GR,
+                                         pt_GR->nu_start_CMB_DRF,
+                                         pt_GR->nu_stop_CMB_DRF,
+                                         pt_GR->EC_stat);
+                pt_GR->nu_1 = nu_1_original;
+            }
+        }
     }
 
-    //EC CMB stat
+    
+
+ /*    //EC CMB stat
     if (pt_GR->nu_1 < pt_GR->nu_stop_EC_CMB && pt_GR->ord_comp == 1) {
         if (pt_GR->SSC == 0 && pt_GR->EC == 6) {
 
@@ -211,7 +295,7 @@ double rate_compton_GR(struct spettro *pt_GR) {
             //printf("rate comp%e\n",rate_comp);
         }
 
-    }
+    } */
 
 
     return rate_comp;

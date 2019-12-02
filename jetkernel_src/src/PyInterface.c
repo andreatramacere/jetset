@@ -218,12 +218,12 @@ struct spettro MakeBlob() {
     spettro_root.alpha_pile_up=1;
     //spettro_root.ratio_pile_up=1E-3;
 
-    
+    spettro_root.EC_stat=0; 
     spettro_root.do_EC_Disk = 0;
     spettro_root.do_EC_BLR = 0;
     spettro_root.do_EC_DT = 0;
     spettro_root.do_EC_CMB=0;
-    spettro_root.do_EC_CMB_stat=0;
+    //spettro_root.do_EC_CMB_stat=0;
     spettro_root.do_EC_Star=0;
     spettro_root.do_Disk=0;
     spettro_root.do_DT=0;
@@ -361,7 +361,7 @@ void Init(struct spettro *pt_base) {
         pt_base->nuF_nu_EC_DT_obs[i]=0;
         pt_base->nuF_nu_EC_Star_obs[i]=0;
         pt_base->nuF_nu_EC_CMB_obs[i]=0;
-        pt_base->nuF_nu_EC_CMB_stat_obs[i]=0;
+        //pt_base->nuF_nu_EC_CMB_stat_obs[i]=0;
         pt_base->nuF_nu_Disk_obs[i]=0;
         pt_base->nuF_nu_DT_obs[i]=0;
         pt_base->nuF_nu_Star_obs[i]=0;
@@ -549,7 +549,7 @@ void Run_SED(struct spettro *pt_base){
 	if (pt_base->do_IC) {
 		if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1
 				|| pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1
-				|| pt_base->do_EC_CMB == 1 || pt_base->do_EC_CMB_stat ==1
+				|| pt_base->do_EC_CMB == 1 
 				|| pt_base->do_Disk==1 || pt_base->do_DT==1) {
 			spectra_External_Fields(1, pt_base);
 			if (pt_base->do_EC_Star == 1) {
@@ -587,14 +587,14 @@ void Run_SED(struct spettro *pt_base){
 				pt_base->EC = 5;
 				spettro_EC(1, pt_base);
 			}
-            if (pt_base->do_EC_CMB_stat == 1) {
-                if (pt_base->verbose) {
-                    printf("************* CMB stat ****************\n");
-                }
-                //printf("************* CMB stat ****************\n");
-                pt_base->EC = 6;
-                spettro_EC(1, pt_base);
-            }
+            //if (pt_base->do_EC_CMB_stat == 1) {
+            //    if (pt_base->verbose) {
+            //       printf("************* CMB stat ****************\n");
+            //   }
+            //       printf("************* CMB stat ****************\n");
+            //    pt_base->EC = 6;
+            //    spettro_EC(1, pt_base);
+            //}
 		}
 	}
     //==================================================

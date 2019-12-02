@@ -124,7 +124,7 @@ struct spettro {
     double nuFnu_DT_grid[static_spec_arr_size];
     double nuFnu_Star_grid[static_spec_arr_size];
     double nuFnu_EC_CMB_grid[static_spec_arr_size];
-    double nuFnu_EC_CMB_stat_grid[static_spec_arr_size];
+    //double nuFnu_EC_CMB_stat_grid[static_spec_arr_size];
     double nuFnu_EC_BLR_grid[static_spec_arr_size];
     double nuFnu_EC_DT_grid[static_spec_arr_size];
     double nuFnu_EC_Disk_grid[static_spec_arr_size];
@@ -257,7 +257,7 @@ struct spettro {
     //!!! NOT USED, USED ONLY TO SCREEN OUTPUT
 
     //Const
-    int do_EC_Disk,do_EC_BLR,do_EC_DT,do_EC_Star,do_EC_CMB,do_EC_CMB_stat;
+    int do_EC_Disk,do_EC_BLR,do_EC_DT,do_EC_Star,do_EC_CMB,EC_stat;
     int do_Disk,do_DT;
     double nu_planck_min_factor;
     double nu_planck_max_factor;
@@ -289,7 +289,10 @@ struct spettro {
 	double nu_stop_Star_obs;
 	double nu_start_Star;
 	double nu_stop_Star;
-	unsigned long NU_INT_MAX_Star;
+    double nu_start_Star_DRF;
+    double nu_stop_Star_DRF;
+
+    unsigned long NU_INT_MAX_Star;
 	unsigned long NU_INT_STOP_EC_Star;
 	//-FREQ/FLUX arrays
 	double I_nu_Star[static_spec_arr_size];
@@ -303,9 +306,9 @@ struct spettro {
 	double nu_EC_Star_obs[static_spec_arr_size];
 	double nuF_nu_EC_Star_obs[static_spec_arr_size];
 	double n_Star[static_spec_arr_size];
+    double n_Star_DRF[static_spec_arr_size];
 
-
-	//--- CMB
+    //--- CMB
 	//-PARAMTERS
 	double T_CMB_0;
 	double CMB_mu_1,CMB_mu_2;
@@ -315,7 +318,9 @@ struct spettro {
 	double nu_stop_EC_CMB;
 	double nu_start_EC_CMB_obs;
 	double nu_stop_EC_CMB_obs;
-	unsigned long NU_INT_MAX_CMB,NU_INT_STOP_EC_CMB;
+    double nu_start_CMB_DRF;
+    double nu_stop_CMB_DRF;
+    unsigned long NU_INT_MAX_CMB,NU_INT_STOP_EC_CMB;
     //-FREQ/FLUX arrays
 	double I_nu_CMB[static_spec_arr_size];
 	double I_nu_CMB_disk_RF[static_spec_arr_size];
@@ -325,27 +330,28 @@ struct spettro {
 	double nu_EC_CMB[static_spec_arr_size];
 	double nu_EC_CMB_obs[static_spec_arr_size];
 	double nuF_nu_EC_CMB_obs[static_spec_arr_size];
-	double n_CMB[static_spec_arr_size];
+    double n_CMB[static_spec_arr_size];
+    double n_CMB_DRF[static_spec_arr_size];
 
-
+    //TODO REMOVE UNSUED FROM THE CODE
     //--- CMB stat
     //-FREQ BOUNDARIES
-    double nu_start_CMB_stat, nu_stop_CMB_stat;
-    double nu_start_EC_CMB_stat;
-    double nu_stop_EC_CMB_stat;
-    double nu_start_EC_CMB_stat_obs;
-    double nu_stop_EC_CMB_stat_obs;
-    unsigned long NU_INT_MAX_CMB_stat,NU_INT_STOP_EC_CMB_stat;
+    //double nu_start_CMB_stat, nu_stop_CMB_stat;
+    //double nu_start_EC_CMB_stat;
+    //double nu_stop_EC_CMB_stat;
+    //double nu_start_EC_CMB_stat_obs;
+    //double nu_stop_EC_CMB_stat_obs;
+    //unsigned long NU_INT_MAX_CMB_stat,NU_INT_STOP_EC_CMB_stat;
     //-FREQ/FLUX arrays
-    double I_nu_CMB_stat[static_spec_arr_size];
-    double I_nu_CMB_disk_RF_stat[static_spec_arr_size];
-    double nu_CMB_stat[static_spec_arr_size];
-    double nu_CMB_disk_RF_stat[static_spec_arr_size];
+    //double I_nu_CMB_stat[static_spec_arr_size];
+    //double I_nu_CMB_disk_RF_stat[static_spec_arr_size];
+    //double nu_CMB_stat[static_spec_arr_size];
+    //double nu_CMB_disk_RF_stat[static_spec_arr_size];
 
-    double nu_EC_CMB_stat[static_spec_arr_size];
-    double nu_EC_CMB_stat_obs[static_spec_arr_size];
-    double nuF_nu_EC_CMB_stat_obs[static_spec_arr_size];
-    double n_CMB_stat[static_spec_arr_size];
+    //double nu_EC_CMB_stat[static_spec_arr_size];
+    //double nu_EC_CMB_stat_obs[static_spec_arr_size];
+    //double nuF_nu_EC_CMB_stat_obs[static_spec_arr_size];
+    //double n_CMB_stat[static_spec_arr_size];
 
 
     //--- DISK
@@ -375,6 +381,8 @@ struct spettro {
     double nu_stop_Disk;
     double nu_start_Disk_obs;
     double nu_stop_Disk_obs;
+    double nu_start_Disk_DRF;
+    double nu_stop_Disk_DRF;
     unsigned long NU_INT_MAX_Disk;
     unsigned long NU_INT_STOP_EC_Disk;
 
@@ -391,6 +399,7 @@ struct spettro {
     double nu_EC_Disk_obs[static_spec_arr_size];
     double nuF_nu_EC_Disk_obs[static_spec_arr_size];
     double n_Disk[static_spec_arr_size];
+    double n_Disk_DRF[static_spec_arr_size];
 
     //--- FREQ/FLUX scalars
 
@@ -430,6 +439,7 @@ struct spettro {
     double nu_EC_BLR_obs[static_spec_arr_size];
     double nu_BLR_disk_RF[static_spec_arr_size];
     double n_BLR[static_spec_arr_size];
+    double n_BLR_DRF[static_spec_arr_size];
 
     //--- DT
     //-PARAMETERS
@@ -445,6 +455,8 @@ struct spettro {
     //-FREQ BOUNDARIES
     double nu_stop_DT;
     double nu_start_DT;
+    double nu_start_DT_DRF;
+    double nu_stop_DT_DRF;
     double nu_start_DT_obs;
     double nu_stop_DT_obs;
     double nu_stop_EC_DT;
@@ -462,6 +474,7 @@ struct spettro {
     double nu_DT_disk_RF[static_spec_arr_size];
     double nuF_nu_EC_DT_obs[static_spec_arr_size];
     double n_DT[static_spec_arr_size];
+    double n_DT_DRF[static_spec_arr_size];
     double L_nu_DT_disk_RF[static_spec_arr_size];
     double nuF_nu_DT_obs[static_spec_arr_size];
     double nu_EC_DT[static_spec_arr_size];
@@ -944,7 +957,7 @@ double eval_nu_peak_Disk(double T);
 
 /***  SPECTRAL/GEOMETRIC FUNCTIONS EC CMB ****/
 void Build_I_nu_CMB(struct spettro *pt_d);
-void Build_I_nu_CMB_stat(struct spettro *pt_d);
+//void Build_I_nu_CMB_stat(struct spettro *pt_d);
 double eval_I_nu_CMB_disk_RF(double T_CMB,double nu_CMB_disk_RF);
 double eval_I_nu_CMB_blob_RF(struct spettro *pt, double nu_blob_RF);
 double integrand_I_nu_CMB_blob_RF(struct spettro *pt, double mu);

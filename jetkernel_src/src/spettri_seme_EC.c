@@ -57,9 +57,9 @@ void spectra_External_Fields(int Num_file, struct spettro *pt) {
     	Build_I_nu_CMB(pt);
     }
 
-    if (pt->do_EC_CMB_stat==1){
-    	Build_I_nu_CMB_stat(pt);
-    }
+    //if (pt->do_EC_CMB_stat==1){
+    //	Build_I_nu_CMB_stat(pt);
+    //}
 
 }
 //=========================================================================================
@@ -95,6 +95,9 @@ void Build_I_nu_Star(struct spettro *pt){
 
 	pt->nu_start_Star = eval_nu_min_blob_RF(pt,pt->Star_mu_1, pt->Star_mu_2, nu_start_disk_RF);
 	pt->nu_stop_Star  = eval_nu_max_blob_RF(pt,pt->Star_mu_1, pt->Star_mu_2, nu_stop_disk_RF);
+
+	pt->nu_start_Star_DRF = nu_start_disk_RF;
+	pt->nu_stop_Star_DRF = nu_stop_disk_RF;
 
 	if (pt->verbose){
 		printf("-----------  Building I_nu Star     ----------- \n");
@@ -132,6 +135,8 @@ void Build_I_nu_Star(struct spettro *pt){
 
 		pt->I_nu_Star[NU_INT]=eval_I_nu_Star_blob_RF(pt,pt->nu_Star[NU_INT]);
 		pt->n_Star[NU_INT] =I_nu_to_n(pt->I_nu_Star[NU_INT], pt->nu_Star[NU_INT]);
+		//EC with n(gamma) transf
+		pt->n_Star_DRF[NU_INT] = I_nu_to_n(pt->J_nu_Star_disk_RF[NU_INT], pt->nu_Star_disk_RF[NU_INT]);
 		if (pt->verbose>1){
 			printf(" nu_Star_disk_RF=%e, I_nu_Star_disk_RF=%e, nu_Star=%e, , I_nu_Star=%e\n",
 					pt->nu_Star_disk_RF[NU_INT],
@@ -179,6 +184,7 @@ double eval_I_nu_Star_disk_RF(struct spettro *pt,double nu_Star_disk_RF){
 	return f_planck(pt->T_Star_max, nu_Star_disk_RF);;
 }
 
+//TODO!! THIS MUST BE IMPROVED FOR PROPER ANGULAR INTEGRATION
 double eval_J_nu_Star_disk_RF(struct spettro *pt, double I_nu_Star_disk_RF){
 	return I_nu_Star_disk_RF*(2.0*pi/(4*pi))*(pt->Star_mu_2- pt->Star_mu_1);
 }
@@ -294,6 +300,9 @@ void Build_I_nu_CMB(struct spettro *pt){
 	pt->nu_start_CMB = eval_nu_min_blob_RF(pt,-1, 1, nu_start_disk_RF);
 	pt->nu_stop_CMB  = eval_nu_max_blob_RF(pt,-1, 1, nu_stop_disk_RF);
 
+	pt->nu_start_CMB_DRF = nu_start_disk_RF;
+	pt->nu_stop_CMB_DRF = nu_stop_disk_RF;
+
 	//pt->nu_start_CMB_obs=nu_peak_CMB_0*pt->nu_planck_min_factor;
 	//pt->nu_stop_CMB_obs=nu_peak_CMB_0*pt->nu_planck_max_factor;
 
@@ -309,15 +318,13 @@ void Build_I_nu_CMB(struct spettro *pt){
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->I_nu_CMB[NU_INT]=eval_I_nu_CMB_blob_RF(pt,pt->nu_CMB[NU_INT]);
 		pt->n_CMB[NU_INT] =I_nu_to_n(pt->I_nu_CMB[NU_INT], pt->nu_CMB[NU_INT]);
-
+		//EC with n(gamma) transf
+		pt->n_CMB_DRF[NU_INT] = I_nu_to_n(pt->I_nu_CMB_disk_RF[NU_INT], pt->nu_CMB_disk_RF[NU_INT]);
 	}
 
 }
 
-
-
-
-void Build_I_nu_CMB_stat(struct spettro *pt){
+/* void Build_I_nu_CMB_stat(struct spettro *pt){
 	double T_CMB_z,T_CMB_0;
 	double nu_peak_CMB_z,nu_peak_CMB_0;
 	unsigned long NU_INT,NU_INT_MAX;
@@ -362,10 +369,9 @@ void Build_I_nu_CMB_stat(struct spettro *pt){
 		pt->n_CMB_stat[NU_INT] =I_nu_to_n(pt->I_nu_CMB_stat[NU_INT], pt->nu_CMB_stat[NU_INT]);
 
 	}
-
+ 
 }
-
-
+*/
 
 double eval_T_CMB_z(double z, double T_CMB_0){
 		return T_CMB_0*(1+z);
@@ -464,7 +470,11 @@ void Build_I_nu_Disk(struct spettro *pt){
 	pt->nu_start_Disk = eval_nu_min_blob_RF(pt,pt->Disk_mu_1, pt->Disk_mu_2, nu_start_disk_RF);
 	pt->nu_stop_Disk  = eval_nu_max_blob_RF(pt,pt->Disk_mu_1, pt->Disk_mu_2, nu_stop_disk_RF);
 
-	if (pt->verbose){
+	pt->nu_start_Disk_DRF=nu_start_disk_RF;
+	pt->nu_stop_Disk_DRF = nu_stop_disk_RF;
+
+		if (pt->verbose)
+	{
 		printf("nu_start_Disk=%e  nu_stop_Disk=%e \n",
 			pt->nu_start_Disk,
 			pt->nu_stop_Disk);
@@ -496,6 +506,8 @@ void Build_I_nu_Disk(struct spettro *pt){
 		pt->nu_Disk_obs[NU_INT]=nu_obs;
  		pt->I_nu_Disk[NU_INT]=eval_I_nu_Disk_blob_RF(pt,pt->nu_Disk[NU_INT]);
  		pt->n_Disk[NU_INT] =I_nu_to_n(pt->I_nu_Disk[NU_INT], pt->nu_Disk[NU_INT]);
+		//EC with n(gamma) transf
+		pt->n_Disk_DRF[NU_INT] = I_nu_to_n(pt->I_nu_Disk_disk_RF[NU_INT], pt->nu_Disk_disk_RF[NU_INT]);
 
 		if (pt->verbose>1){
 			printf(" nu_Disk_disk_RF=%e, I_nu_Disk_disk_RF=%e, nu_Disk=%e, , I_nu_Disk=%e\n",
@@ -656,6 +668,7 @@ double eval_J_nu_Disk_disk_RF(struct spettro *pt, double nu_Disk_disk_RF, double
 	return I;
 }
 
+//TODO!! THIS MUST BE IMPROVED FOR PROPER ANGULAR INTEGRATION
 double eval_J_nu_Disk_disk_RF_single_BB(struct spettro *pt, double I_nu_Disk_disk_RF){
 	double I;
 	double theta_ave;
@@ -832,8 +845,8 @@ void Build_I_nu_BLR(struct spettro *pt){
 		//the I' expressed in terms of I
 		pt->I_nu_BLR[NU_INT] = eval_I_nu_BLR_blob_RF(pt, pt->nu_BLR_disk_RF[NU_INT]);
 		pt->n_BLR[NU_INT] =I_nu_to_n(pt->I_nu_BLR[NU_INT], pt->nu_BLR[NU_INT]);
-		//pt->nu_stop_BLR = pt->nu_BLR[NU_INT];
-		//pt->NU_INT_MAX_BLR = NU_INT;
+		//EC with n(gamma) transf
+		pt->n_BLR_DRF[NU_INT] = I_nu_to_n(pt->I_nu_BLR_disk_RF[NU_INT], pt->nu_BLR_disk_RF[NU_INT]);
 
 		if (pt->I_nu_BLR[NU_INT]>pt->emiss_lim){
 			pt->nu_stop_BLR = pt->nu_BLR[NU_INT];
@@ -1059,6 +1072,9 @@ void Build_I_nu_DT(struct spettro *pt){
 	pt->nu_start_DT = eval_nu_min_blob_RF(pt,pt->DT_mu_1, pt->DT_mu_2, nu_start_DT_disk_RF);
 	pt->nu_stop_DT  = eval_nu_max_blob_RF(pt,pt->DT_mu_1, pt->DT_mu_2, nu_stop_DT_disk_RF);
 
+	pt->nu_start_DT_DRF=nu_start_DT_disk_RF;
+	pt->nu_stop_DT_DRF=nu_stop_DT_disk_RF;
+
 	pt->nu_start_DT_obs=nu_disk_to_nu_obs_disk(nu_start_DT_disk_RF , pt->z_cosm);
 	pt->nu_stop_DT_obs=nu_disk_to_nu_obs_disk(nu_stop_DT_disk_RF, pt->z_cosm);
 
@@ -1097,7 +1113,8 @@ void Build_I_nu_DT(struct spettro *pt){
 
 		pt->I_nu_DT[NU_INT] = eval_I_nu_DT_blob_RF(pt, pt->nu_DT_disk_RF[NU_INT]);
 		pt->n_DT[NU_INT] =I_nu_to_n(pt->I_nu_DT[NU_INT], pt->nu_DT[NU_INT]);
-
+		//EC with n(gamma) transf
+		pt->n_DT_DRF[NU_INT] = I_nu_to_n(pt->I_nu_DT_disk_RF[NU_INT], pt->nu_DT_disk_RF[NU_INT]);
 
 		if (pt->I_nu_DT[NU_INT]>pt->emiss_lim){
 			pt->nu_stop_DT = pt->nu_DT[NU_INT];

@@ -9,12 +9,13 @@
 *.egg
 *.xcodeproj
 *.ipynb_checkpoints
+/.vscode
 /build
 develop-eggs
 dist
 eggs
 lib
 lib64
-jetset/jetkernel/*.c
-jetset/jetkernel/jetkernel.py
+jetkernel/*.c
+jetkernel/jetkernel.py
 jetset/old

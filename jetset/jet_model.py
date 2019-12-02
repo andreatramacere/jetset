@@ -769,9 +769,7 @@ class Jet(Model):
                                           'EC_CMB',
                                           'Disk',
                                           'EC_Disk',
-                                          'All',
-                                          'CMB_stat',
-                                          'EC_CMB_stat']
+                                          'All']
 
         self.EC_components_list =[]
         self.spectral_components_list=[]
@@ -803,6 +801,10 @@ class Jet(Model):
         self._IC_states = {}
         self._IC_states['on'] = 1
         self._IC_states['off'] = 0
+
+        self._external_field_transf = {}
+        self._external_field_transf['blob'] = 0
+        self._external_field_transf['disk'] = 1
 
 
     @staticmethod
@@ -1280,11 +1282,11 @@ class Jet(Model):
                     self._del_spectral_component('EC_CMB', verbose=False)
                     self.EC_components_list.remove('EC_CMB')
 
-            if EC_component=='EC_CMB_stat':
-                if self.get_spectral_component_by_name('EC_CMB_stat', verbose=False) is not None:
-                    self._blob.do_EC_CMB_stat=0
-                    self._del_spectral_component('EC_CMB_stat', verbose=False)
-                    self.EC_components_list.remove('EC_CMB_stat')
+            #if EC_component=='EC_CMB_stat':
+            #    if self.get_spectral_component_by_name('EC_CMB_stat', verbose=False) is not None:
+            #        self._blob.do_EC_CMB_stat=0
+            #        self._del_spectral_component('EC_CMB_stat', verbose=False)
+            #        self.EC_components_list.remove('EC_CMB_stat')
 
         self.del_par_from_dic(build_ExtFields_dic(EC_components_list,self._allowed_EC_components_list))
 
@@ -1354,11 +1356,11 @@ class Jet(Model):
                     self._add_spectral_component('EC_CMB', var_name='do_EC_CMB', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_CMB')
 
-            if EC_component == 'EC_CMB_stat':
-                #self._blob.do_EC_CMB_stat = 1
-                if self.get_spectral_component_by_name('EC_CMB_stat', verbose=False) is  None:
-                    self._add_spectral_component('EC_CMB_stat', var_name='do_EC_CMB_stat', state_dict=dict((('on', 1), ('off', 0))))
-                    self.EC_components_list.append('EC_CMB_stat')
+            #if EC_component == 'EC_CMB_stat':
+            #    #self._blob.do_EC_CMB_stat = 1
+            #    if self.get_spectral_component_by_name('EC_CMB_stat', verbose=False) is  None:
+            #        self._add_spectral_component('EC_CMB_stat', var_name='do_EC_CMB_stat', state_dict=dict((('on', 1), ('off', 0))))
+            #        self.EC_components_list.append('EC_CMB_stat')
 
 
 
@@ -1471,6 +1473,8 @@ class Jet(Model):
 
 
 
+
+
     def set_IC_mode(self,val):
 
         if val not in self._IC_states.keys():
@@ -1480,6 +1484,17 @@ class Jet(Model):
 
     def get_IC_mode(self):
         return dict(map(reversed, self._IC_states.items()))[self._blob.do_IC]
+
+
+
+    def set_external_field_transf(self,val):
+        if val not in self._external_field_transf.keys():
+            raise RuntimeError('val',val,'not in allowed values',self._external_field_transf.keys())
+
+        self._blob.EC_stat=self._external_field_transf[val]
+
+    def get_external_field_transf(self):
+        return dict(map(reversed, self._external_field_transf.items()))[self._blob._external_field_transf]
 
     def set_emiss_lim(self,val):
         self._blob.emiss_lim=val
@@ -1693,6 +1708,7 @@ class Jet(Model):
         print(' spectral components:')
         for _s in self.spectral_components_list:
             print("   name:%s,"%_s.name, 'state:', _s.state)
+        print('external fields transformation method:', self.get_external_field_transf())
         print ('')
         print ('SED info:')
         print (' nu grid size :%d' % self._get_nu_grid_size())

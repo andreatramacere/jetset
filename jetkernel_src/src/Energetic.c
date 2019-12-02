@@ -613,8 +613,8 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
     }
 
 
-    if (pt->do_EC_CMB_stat == 1) {
-        energetic.L_EC_CMB_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_CMB_stat, pt->nuF_nu_EC_CMB_stat_obs, pt->NU_INT_STOP_EC_CMB_stat);
+    if (pt->do_EC_CMB == 1) {
+        energetic.L_EC_CMB_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_CMB, pt->nuF_nu_EC_CMB_obs, pt->NU_INT_STOP_EC_CMB);
 
         if (write_file>0){
             fprintf(fp_Energetic, "Lum_IC_CMB Photons rest frame =%e  U_ph density=%e\n", energetic.L_EC_CMB_rf, energetic.L_EC_CMB_rf / (pt->Surf_sphere * vluce_cm));
