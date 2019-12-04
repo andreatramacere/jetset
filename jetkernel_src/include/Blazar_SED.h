@@ -408,6 +408,7 @@ struct spettro {
     double tau_BLR;
     double R_BLR_in;
     double R_BLR_out;
+    double R_BLR_interp;
     //
     double BLR_Volume;
     double n0_BLR;
@@ -432,6 +433,7 @@ struct spettro {
     
     //-FREQ/FLUX arrays
     double I_nu_BLR[static_spec_arr_size];
+    double Lnu_BLR_disk_RF[static_spec_arr_size];
     double nu_BLR[static_spec_arr_size];
     double I_nu_BLR_disk_RF[static_spec_arr_size];
     double nuF_nu_EC_BLR_obs[static_spec_arr_size];
@@ -447,6 +449,8 @@ struct spettro {
     double tau_DT;
     double L_DT;
     double R_DT;
+    double R_DT_interp;
+    
     //
     double DT_mu_1,DT_mu_2;
     double DT_mu_r_J_1;
@@ -979,7 +983,7 @@ double integrand_I_nu_BLR_blob_RF(struct spettro *pt, double theta);
 double eval_I_nu_BLR_blob_RF(struct spettro *pt, double nu_disk_RF);
 double eval_theta_max_BLR(struct spettro *pt);
 void eval_l_values_BLR(struct spettro *pt, double mu, double l[]);
-//double eval_I_nu_BLR_blob_RF(struct spettro *pt, double nu_blob_RF);
+double eval_Lnu_BLR_disk_RF(struct spettro *pt, double nu_disk_RF);
 //double integrand_J_nu_BLR_disk_RF(struct spettro *pt, double mu);
 //double integrand_I_nu_BLR_blob_RF(struct spettro *pt, double mu);
 //void set_BLR_geometry(struct spettro *pt);

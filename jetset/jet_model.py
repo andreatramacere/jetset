@@ -1772,7 +1772,7 @@ class Jet(Model):
 
 
     def set_external_fields(self):
-        #BlazarSED.Init(self._blob)
+        #   BlazarSED.Init(self._blob)
         BlazarSED.spectra_External_Fields(1,self._blob)
 
 
