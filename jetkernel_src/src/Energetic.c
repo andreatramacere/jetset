@@ -405,7 +405,13 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
     energetic.U_DT=I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT);
     energetic.U_CMB = I_nu_to_Uph(pt->nu_CMB, pt->I_nu_CMB, pt->NU_INT_MAX_CMB);
     energetic.U_Disk = I_nu_to_Uph(pt->nu_Disk, pt->I_nu_Disk, pt->NU_INT_MAX_Disk);
-    
+
+    energetic.U_Synch_DRF = Uph_Sync(pt) * pt->beam_obj * pt->beam_obj * pt->beam_obj * pt->beam_obj;
+    energetic.U_BLR_DRF = I_nu_to_Uph(pt->nu_BLR_disk_RF, pt->I_nu_BLR_disk_RF, pt->NU_INT_MAX_BLR);
+    energetic.U_DT_DRF = I_nu_to_Uph(pt->nu_DT_disk_RF, pt->I_nu_DT_disk_RF, pt->NU_INT_MAX_DT);
+    energetic.U_CMB_DRF = I_nu_to_Uph(pt->nu_CMB_disk_RF, pt->I_nu_CMB_disk_RF, pt->NU_INT_MAX_CMB);
+    energetic.U_Disk_DRF = I_nu_to_Uph(pt->nu_Disk_disk_RF, pt->I_nu_Disk_disk_RF, pt->NU_INT_MAX_Disk);
+
     {
 
         sprintf(f_Energetic, "%s%s-Energetic.dat", pt->path, pt->STEM);

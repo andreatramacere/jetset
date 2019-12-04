@@ -44,8 +44,9 @@ void spectra_External_Fields(int Num_file, struct spettro *pt) {
     if (pt->do_EC_Star==1){
     	Build_I_nu_Star(pt);
     }
-    if (pt->do_EC_Disk==1 || pt->do_EC_BLR==1 || pt->do_Disk==1){
-    	Build_I_nu_Disk(pt);
+	if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 1 || pt->do_Disk == 1, pt->do_EC_DT == 1 || pt->do_DT)
+	{
+		Build_I_nu_Disk(pt);
     }
     if (pt->do_EC_BLR==1){
 		Build_I_nu_BLR(pt);
@@ -495,10 +496,12 @@ void Build_I_nu_Disk(struct spettro *pt){
 	build_log_grid( nu_start_disk_RF,  nu_stop_disk_RF, pt->nu_seed_size, pt->nu_Disk_disk_RF);
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->L_nu_Disk_disk_RF[NU_INT] = eval_Disk_L_nu(pt, pt->nu_Disk_disk_RF[NU_INT]);
-		pt->I_nu_Disk_disk_RF[NU_INT] = eval_I_nu_Disk_disk_RF(pt, pt->L_nu_Disk_disk_RF[NU_INT]);
-		pt->J_nu_Disk_disk_RF[NU_INT] = eval_J_nu_Disk_disk_RF(pt, pt->nu_Disk_disk_RF[NU_INT] ,pt->I_nu_Disk_disk_RF[NU_INT]);
+		
 	}
-
+	for (NU_INT = 0; NU_INT <= NU_INT_MAX; NU_INT++)
+	{
+		pt->I_nu_Disk_disk_RF[NU_INT] = eval_I_nu_Disk_disk_RF(pt, pt->nu_Disk_disk_RF[NU_INT]);		
+	}
 
 	build_log_grid( pt->nu_start_Disk,  pt->nu_stop_Disk, pt->nu_seed_size, pt->nu_Disk);
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
@@ -511,10 +514,10 @@ void Build_I_nu_Disk(struct spettro *pt){
 
 		if (pt->verbose>1){
 			printf(" nu_Disk_disk_RF=%e, I_nu_Disk_disk_RF=%e, nu_Disk=%e, , I_nu_Disk=%e\n",
-					pt->nu_Disk_disk_RF[NU_INT],
-					pt->J_nu_Disk_disk_RF[NU_INT],
-					pt->nu_Disk[NU_INT],
-					pt->I_nu_Disk[NU_INT]);
+				   pt->nu_Disk_disk_RF[NU_INT],
+				   pt->I_nu_Disk_disk_RF[NU_INT],
+				   pt->nu_Disk[NU_INT],
+				   pt->I_nu_Disk[NU_INT]);
 		}
 
 		if (pt->I_nu_Disk[NU_INT]>pt->emiss_lim){
@@ -622,13 +625,14 @@ void set_Disk(struct spettro *pt){
 
 double Disk_Spectrum(struct spettro *pt, double nu_Disk_disk_RF){
 	double I;
+	double (*pf)(struct spettro *, double x);
 	if (pt->disk == 1) {
 		// in this case we use a normalized planck function
 		I= f_planck_norm(pt->T_Disk, nu_Disk_disk_RF);
 	}
 	else if (pt->disk == 2) {
 		//in this case we acutally integrate every annluar BB along the disk
-		double (*pf) (struct spettro *, double x);
+		
 		pf = &integrand_f_planck_Multi_T;
 		pt->nu_disk_Multi_BB = nu_Disk_disk_RF;
 		//printf("=> pt->nu_disk_Multi_BB %e\n",pt->nu_disk_Multi_BB);
@@ -641,104 +645,108 @@ double Disk_Spectrum(struct spettro *pt, double nu_Disk_disk_RF){
 	return I;
 }
 
-double eval_I_nu_Disk_disk_RF(struct spettro *pt, double L_nu_Disk_disk_RF)
+double eval_I_nu_theta_Disk(struct spettro *pt, double mu)
 {
-	double I;
+	//double (*pf)(struct spettro *, double x);
+	unsigned long i;
+	double  I,R,R_D;
+	//pf = &j_nu_BLR_integrand;
+	//pt->mu_j = mu;
 	
-	if (pt->disk == 2) {
-		I = L_nu_Disk_disk_RF * pt->Disk_geom_factor;
+    if (pt->disk == 1) {
+		// in this case we use a normalized planck function
+		I = f_planck_norm(pt->T_Disk, pt->nu_disk_RF)*pt->L_Disk * pt->Disk_geom_factor;
 	}
-	else{
-		I = L_nu_Disk_disk_RF*pt->Disk_geom_factor;
+	else if (pt->disk == 2) {
+		//in this case we acutally integrate every annluar BB along the disk
+		
+	
+		R=pt->R_H/mu;
+		R_D = sqrt(R * R - pt->R_H * pt->R_H);
+		I = f_planck_Multi_T(pt, R_D, pt->nu_disk_RF)/pi;
 	}
+	else if (pt->disk==3){
+		I= eval_nu_peak_Disk(pt->T_Disk)*(pt->mono_planck_max_factor-pt->mono_planck_min_factor);
+	}
+
+	
 	return I;
 }
 
-double eval_J_nu_Disk_disk_RF(struct spettro *pt, double nu_Disk_disk_RF, double I_nu_Disk_disk_RF)
+double integrand_I_nu_Disk_blob_RF(struct spettro *pt, double mu)
 {
-	double I;
+	//double psi, sin_theta;
+	//sin_theta=sqrt(1.0 - mu*mu);
+	return 2 * pi  * eval_I_nu_theta_Disk(pt, mu) * pt->BulkFactor * (1.0 - pt->beta_Gamma * mu);
+}
+
+double integrand_I_nu_Disk_disk_RF(struct spettro *pt, double mu)
+{
+	//double psi, sin_theta;
+	//sin_theta = sqrt(1.0 - mu * mu);
+	//printf("=> %e %e\n", sin_theta, eval_I_nu_theta_Disk(pt, mu));
+	return 2 * pi  * eval_I_nu_theta_Disk(pt, mu);
+}
+
+double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_disk_RF)
+{
 	double (*pf)(struct spettro *, double x);
-	pf = &eval_J_nu_Disk_disk_RF_multi_BB;
-	pt->nu_disk_RF=nu_Disk_disk_RF;
-	if (pt->disk == 2){
-		I= 0.5 * integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, 100.0);
-	}else{
-		I = eval_J_nu_Disk_disk_RF_single_BB(pt,I_nu_Disk_disk_RF);
-	}
-	return I;
-}
-
-//TODO!! THIS MUST BE IMPROVED FOR PROPER ANGULAR INTEGRATION
-double eval_J_nu_Disk_disk_RF_single_BB(struct spettro *pt, double I_nu_Disk_disk_RF){
 	double I;
-	double theta_ave;
-	theta_ave = (pt->Disk_mu_2 + pt->Disk_mu_1) * 0.5;
-	I = I_nu_Disk_disk_RF * (2.0 * pi / (4 * pi)) * theta_ave;
-	return I;
-}
-
-double eval_J_nu_Disk_disk_RF_multi_BB(struct spettro *pt, double mu)
-{
-	double I,R,D;
-	D=pt->R_H/mu;
-	R=sqrt((D*D) - (pt->R_H*pt->R_H));
-	//printf("R=%e nu=%e\n", R, pt->nu_disk_RF);
-	if (R < pt->R_inner*1.0001){
-		I=0.0;
-	}else{
-		I = f_planck_Multi_T(pt, R, pt->nu_disk_RF) * (2.0 * pi / (4 * pi)) * mu;
-	}
-	
-
-	return I;
-}
-
-double integrand_I_nu_Disk_blob_RF(struct spettro *pt, double mu){
-	unsigned long i=0;
- 	double nu_disk_RF=nu_blob_RF_to_nu_disk_RF(pt->nu_blob_RF,pt->BulkFactor,pt->beta_Gamma,mu);
+	unsigned long i;
 	pt->nu_disk_RF = nu_disk_RF;
-	double res;
-	res = 0.0;
-	//double b;
-	//b = pt->BulkFactor * (1 - pt->beta_Gamma * mu);
-	
- 	if (pt->disk == 2)
-	 {
-		//find R
-		//eval J_nu
-		res= eval_J_nu_Disk_disk_RF_multi_BB(pt, mu) * pt->BulkFactor * (1 - pt->beta_Gamma * mu);
+	pf = &integrand_I_nu_Disk_blob_RF;
+
+	if (fabs(pt->Disk_mu_2 - 1.0) < pt->delta_mu_EC_point_like)
+	{
+		i = x_to_grid_index(pt->nu_Disk_disk_RF, nu_disk_RF, pt->nu_seed_size);
+		I = pt->L_nu_Disk_disk_RF[i] / (four_pi * pt->R_H * pt->R_H); 
+		I = I * pt->BulkFactor * (1.0 - pt->beta_Gamma * pt->Disk_mu_2);
 	}
 	else
 	{
-		i = x_to_grid_index(pt->nu_Disk_disk_RF, nu_disk_RF, pt->nu_seed_size);
-		if (i > 0)
-		{
-			res = pt->J_nu_Disk_disk_RF[i] * pt->BulkFactor * (1 - pt->beta_Gamma * mu);
-		}
+		I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, 100.);
 	}
-	
-	double R, D;
-	D = pt->R_H / mu;
-	R = sqrt((D * D) - (pt->R_H * pt->R_H));
-	//printf("R=%e nu=%e\n", R, pt->nu_disk_RF);	
-	//printf("res=%e mu=%e, R=%e, nu_d=%e, nu_b=%e I=%e\n", res, mu, R, nu_disk_RF, pt->nu_blob_RF, f_planck_Multi_T(pt, R, nu_disk_RF));
-	return res;
+	//printf("=>R_H=%e I=%e %e %e\n ",pt->R_H, I, theta_min, theta_max);
+	return I * one_by_four_pi;
 }
 
+double test_solid_anlge(struct spettro *pt,double theta)
+{
+	//double sin_theta;
+	//sin_theta = sqrt(1.0 - mu * mu);
+	return 2 * pi;
+}
 
-
-double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_blob_RF){
+	double eval_I_nu_Disk_disk_RF(struct spettro *pt, double nu_disk_RF)
+{
+	double (*pf)(struct spettro *, double x);
+	double I;
 	unsigned long i;
-	pt->nu_blob_RF=nu_blob_RF;
-	double (*pf) (struct spettro *, double x);
-	pf = &integrand_I_nu_Disk_blob_RF;
-	//0.5 comes from 2pi/(4pi)
-	//printf("Disk_mu_1=%e Disk_mu_2=%e nu_blob_RF=%e \n", pt->Disk_mu_1, pt->Disk_mu_2, pt->nu_blob_RF);
-	return  0.5*integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2,100.0);
+	pt->nu_disk_RF = nu_disk_RF;
+	pf = &integrand_I_nu_Disk_disk_RF;
+	i = x_to_grid_index(pt->nu_Disk_disk_RF, nu_disk_RF, pt->nu_seed_size);
+	if (fabs(pt->Disk_mu_2 - 1.0) < pt->delta_mu_EC_point_like)
+	{
+		
+		//I = Disk_Spectrum(pt, nu_disk_RF) * pt->L_Disk / (four_pi * pt->R_H * pt->R_H);
+		I = pt->L_nu_Disk_disk_RF[i] / (four_pi * pt->R_H * pt->R_H);
+		//printf("approx\n");
+	}
+	else{
+		I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, 100.);
+	}
+
+	//printf("=>nu=%e R_H=%e I=%e I1=%e %e %e %e %e\n ", nu_disk_RF, pt->R_H, I / (pt->L_nu_Disk_disk_RF[i] / (four_pi * pt->R_H * pt->R_H)), eval_I_nu_theta_Disk (pt,0)/ (pt->L_nu_Disk_disk_RF[i] / (four_pi * pt->R_H * pt->R_H)), pt->Disk_mu_1, pt->Disk_mu_2, pt->Disk_mu_2 - pt->Disk_mu_1, pt->Disk_mu_2 - 1.0);
+	return I *one_by_four_pi;
 }
 
+/* 
 
-double eval_Disk_L_nu(struct spettro *pt, double nu_Disk_disk_RF){
+
+*/
+
+double eval_Disk_L_nu(struct spettro *pt, double nu_Disk_disk_RF)
+{
 	if (pt->disk == 2) {
 		//in this case no multiplication by L_Disk, because we acutally integrate every annluar BB along the disk
 		//printf("=> %e\n", Disk_Spectrum(pt, nu_Disk_disk_RF));
@@ -769,8 +777,8 @@ void set_Disk_geometry(struct spettro *pt){
 	pt->Disk_mu_1=min(mu1,mu2);
 	pt->Disk_mu_2=max(mu1,mu2);
 
-	pt->Disk_surface=2*pi*((pt->R_ext * pt->R_ext) - (pt->R_inner*pt->R_inner) );
-	pt->Disk_geom_factor=(1.0)/(pi*pt->Disk_surface);
+	pt->Disk_surface=pi*((pt->R_ext * pt->R_ext) - (pt->R_inner*pt->R_inner) );
+	pt->Disk_geom_factor = (1.0) / (four_pi * pt->R_H * pt->R_H * (pt->Disk_surface / (pt->R_H * pt->R_H)));
 }
 
 
@@ -896,28 +904,30 @@ double j_nu_BLR_integrand(struct spettro *pt, double l)
 	
 	r2 = (pt->R_H * pt->R_H) - 2.0 * pt->R_H * l * pt->mu_j + l * l;
 
-	L = pt->L_nu_Disk_disk_RF[i] * pt->n0_BLR*SIGTH;
+	L = eval_Disk_L_nu(pt, pt->nu_disk_RF) * pt->n0_BLR * SIGTH;
 
-	return L / (16.0*pi*pi*r2);
+	return L / (four_pi*four_pi*r2);
 }
 
 double eval_I_nu_theta_BLR(struct spettro *pt, double mu)
 {
 	double (*pf)(struct spettro *, double x);
-	unsigned long i;
+	//unsigned long i;
 	double l_values[3], I;
 	eval_l_values_BLR(pt, mu, l_values);
 	pf = &j_nu_BLR_integrand;
 	pt->mu_j=mu;
-	if (pt->R_H<100.0*pt->R_BLR_out){
-		I = integrale_simp_struct(pf, pt, 0, l_values[0], 50.);
-		I += integrale_simp_struct(pf, pt, l_values[1], l_values[2], 50.);
+	if (pt->R_H<10*pt->R_BLR_out){
+		//I = integrale_simp_struct(pf, pt, 0, l_values[0], 50.);
+		//I += integrale_simp_struct(pf, pt, l_values[1], l_values[2], 50.);
+		//i = x_to_grid_index(pt->nu_BLR_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
+		I = eval_Disk_L_nu(pt, pt->nu_disk_RF) * pt->tau_BLR / (4 * pi * 4 * pi * pt->R_BLR_in * pt->R_BLR_in);
 	}
 	else{
-		i = x_to_grid_index(pt->nu_BLR_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
-		I = pt->L_nu_Disk_disk_RF[i]*pt->tau_BLR/(4 * pi * pt->R_H * pt->R_H) / (pi * (pt->R_BLR_out * pt->R_BLR_out) / (pt->R_H * pt->R_H));
+		//i = x_to_grid_index(pt->nu_BLR_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
+		I = eval_Disk_L_nu(pt, pt->nu_disk_RF) * pt->tau_BLR / (4 * pi * pt->R_BLR_in * pt->R_BLR_in) / (4*pi);
 	}
-	//printf("=> I=%e l1=%e l2=%e l3=%e\n",I,l1,l2,l3);
+	//printf("=> mu=%e l1=%e l2=%e l3=%e\n",mu,l_values[0],l_values[1],l_values[2]);
 	return I;
 }
 
@@ -983,6 +993,7 @@ double eval_theta_max_BLR(struct spettro *pt)
 	}
 	else
 	{
+		//printf("=> %e %e %e\n", pt->R_BLR_out , pt->R_H, acos(pt->R_BLR_out / pt->R_H));
 		theta_max = pi * 0.5 - acos(pt->R_BLR_out / pt->R_H);
 	}
 
@@ -1194,7 +1205,7 @@ double eval_I_nu_theta_DT(struct spettro *pt, double mu)
 	else
 	{
 		i = x_to_grid_index(pt->nu_DT_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
-		I = pt->L_nu_DT_disk_RF[i] / (4 * pi * pt->R_H * pt->R_H) / (pi * (pt->R_DT * pt->R_DT) / (pt->R_H * pt->R_H));
+		I = pt->L_nu_DT_disk_RF[i] / (4 * pi * pt->R_DT * pt->R_DT) /pi  ;
 	}
 	//printf("=> I=%e l1=%e l2=%e l3=%e\n",I,l1,l2,l3);
 	return I;
@@ -1224,7 +1235,7 @@ double eval_I_nu_DT_disk_RF(struct spettro *pt, double nu_disk_RF)
 	theta_max = eval_theta_max_DT(pt);
 
 	I = integrale_simp_struct(pf, pt, theta_min, theta_max, 100.);
-	printf("=>R_H=%e I=%e %e %e\n ",pt->R_H, I, theta_min, theta_max);
+	//printf("=>R_H=%e I=%e %e %e\n ",pt->R_H, I, theta_min, theta_max);
 	return I * one_by_four_pi;
 }
 
@@ -1349,6 +1360,9 @@ double eval_T_disk(struct spettro *pt, double R)
 }
 
 double f_planck_Multi_T(struct spettro *pt, double R ,double nu) {
+	if (R>pt->R_ext || R<pt->R_inner) {
+		return 0.0;
+	}
 	return f_planck(eval_T_disk(pt, R), nu);
 }
 

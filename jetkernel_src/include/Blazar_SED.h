@@ -57,6 +57,7 @@
 #define LIM_LOSS_KN 1.0
 #define min(a,b) (a<b) ? a:b;
 #define max(a,b) (a>b) ? a:b;
+
 /**
  * \file Blazar_SED.h
  * \author Andrea Tramacere
@@ -252,9 +253,7 @@ struct spettro {
 
 
     //-----------EC--------------//
-    // upscattered photons energies
-    //evaluated from phys parameters
-    //!!! NOT USED, USED ONLY TO SCREEN OUTPUT
+    
 
     //Const
     int do_EC_Disk,do_EC_BLR,do_EC_DT,do_EC_Star,do_EC_CMB,EC_stat;
@@ -263,6 +262,7 @@ struct spettro {
     double nu_planck_max_factor;
     double mono_planck_min_factor;
     double mono_planck_max_factor;
+    double delta_mu_EC_point_like;
 
     double nu_blob_RF;
     double nu_disk_RF;
@@ -389,7 +389,7 @@ struct spettro {
     //-FREQ/FLUX arrays
     double L_nu_Disk_disk_RF[static_spec_arr_size];
     double I_nu_Disk[static_spec_arr_size];
-    double J_nu_Disk_disk_RF[static_spec_arr_size];
+    //double J_nu_Disk_disk_RF[static_spec_arr_size];
     double I_nu_Disk_disk_RF[static_spec_arr_size];
     double nu_Disk[static_spec_arr_size];
     double nu_Disk_obs[static_spec_arr_size];
@@ -582,8 +582,9 @@ struct spettro {
 
 struct jet_energetic{
     double U_e,U_p,U_B;
-    double U_Synch;
+    double U_Synch, U_Synch_DRF;
     double U_Disk, U_BLR, U_DT, U_CMB;
+    double U_Disk_DRF, U_BLR_DRF, U_DT_DRF, U_CMB_DRF;
     double L_Sync_rf, L_SSC_rf, L_EC_Disk_rf,L_EC_BLR_rf, L_EC_DT_rf,L_EC_CMB_rf, L_PP_rf;
     double jet_L_Sync,jet_L_SSC, jet_L_EC_Disk, jet_L_EC_BLR, jet_L_EC_DT,jet_L_EC_CMB,jet_L_PP;
     double jet_L_rad,jet_L_kin, jet_L_tot, jet_L_e, jet_L_B, jet_L_p;
@@ -673,8 +674,8 @@ void MakeNe(struct spettro *pt_base);
 struct temp_ev MakeTempEv();
 void Init(struct spettro *pt);
 void InitNe(struct spettro *pt);
-void build_photons(struct spettro *pt_base);
-void alloc_photons(double ** pt,int size);
+//void build_photons(struct spettro *pt_base);
+//void alloc_photons(double ** pt,int size);
 void set_seed_freq_start(struct spettro *pt_base);
 void Run_SED(struct spettro *pt_base);
 void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev);
@@ -944,13 +945,17 @@ void set_Star_geometry(struct spettro *pt);
 void set_Disk(struct spettro *pt);
 void Build_I_nu_Disk(struct spettro *pt_d);
 double Disk_Spectrum(struct spettro *pt, double nu_Disk_disk_RF);
-double eval_I_nu_Disk_disk_RF(struct spettro *pt,double Lnu_Disk_disk_RF);
-double eval_J_nu_Disk_disk_RF(struct spettro *pt, double nu_Disk_disk_RF, double I_nu_Disk_disk_RF);
-double eval_J_nu_Disk_disk_RF_single_BB(struct spettro *pt, double I_nu_Disk_disk_RF);
-double eval_J_nu_Disk_disk_RF_multi_BB(struct spettro *pt,  double  mu);
 
-double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_blob_RF);
+//double eval_I_nu_Disk_disk_RF(struct spettro *pt,double Lnu_Disk_disk_RF);
+//double eval_J_nu_Disk_disk_RF(struct spettro *pt, double nu_Disk_disk_RF, double I_nu_Disk_disk_RF);
+//double eval_J_nu_Disk_disk_RF_single_BB(struct spettro *pt, double I_nu_Disk_disk_RF);
+//double eval_J_nu_Disk_disk_RF_multi_BB(struct spettro *pt,  double  mu);
+
+double eval_I_nu_Disk_disk_RF(struct spettro *pt, double nu_disk_RF);
+double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_disk_RF);
+double eval_I_nu_theta_Disk(struct spettro *pt, double mu);
 double integrand_I_nu_Disk_blob_RF(struct spettro *pt, double mu);
+double integrand_I_nu_Disk_disk_RF(struct spettro *pt, double mu );
 double eval_Disk_L_nu(struct spettro *pt, double nu_Disk_disk_RF);
 void set_Disk_geometry(struct spettro *pt);
 double eval_nu_peak_Disk(double T);
@@ -1033,8 +1038,7 @@ double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, doub
 //===========================================================================================
 /**********************         FUNZIONI DI TEST                     ************************/
 double test_lunghezza_vettore(double mesh, double a, double b, int Max_elem);
-
-
+double test_solid_anlge(struct spettro *pt, double mu);
 
 #endif
 

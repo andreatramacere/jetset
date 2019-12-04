@@ -7,7 +7,7 @@
 #include "Blazar_SED.h"
 
 
-
+/*
 void build_photons(struct spettro *pt_base){
 
 // Grid
@@ -198,7 +198,7 @@ void build_photons(struct spettro *pt_base){
     alloc_photons(&(pt_base->nuFnu_Disk_grid),pt_base->nu_grid_size);
 
     alloc_photons(&(pt_base->I_nu_Disk),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->J_nu_Disk_disk_RF),pt_base->nu_seed_size);
+    //alloc_photons(&(pt_base->J_nu_Disk_disk_RF),pt_base->nu_seed_size);
     alloc_photons(&(pt_base->I_nu_Disk_disk_RF),pt_base->nu_seed_size);
     alloc_photons(&(pt_base->nu_Disk),pt_base->nu_seed_size);
     alloc_photons(&(pt_base->nu_Disk_obs),pt_base->nu_seed_size);
@@ -292,3 +292,4 @@ void alloc_photons(double ** pt,int size){
 
     }
 
+*/

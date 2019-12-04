@@ -1494,7 +1494,7 @@ class Jet(Model):
         self._blob.EC_stat=self._external_field_transf[val]
 
     def get_external_field_transf(self):
-        return dict(map(reversed, self._external_field_transf.items()))[self._blob._external_field_transf]
+        return dict(map(reversed, self._external_field_transf.items()))[self._blob.EC_stat]
 
     def set_emiss_lim(self,val):
         self._blob.emiss_lim=val
@@ -1772,7 +1772,7 @@ class Jet(Model):
 
 
     def set_external_fields(self):
-
+        #BlazarSED.Init(self._blob)
         BlazarSED.spectra_External_Fields(1,self._blob)
 
 
@@ -1944,14 +1944,19 @@ class Jet(Model):
         _name = [i for i in _energetic.__class__.__dict__.keys() if i[:1] != '_']
         for _n in _name:
             if _n[0]=='L':
-                par_type='Lum. rest. frme.'
+                par_type='Lum. blob rest. frme.'
                 units='erg/s'
-            if _n[0] == 'U':
-                par_type = 'Energy dens.'
+            elif _n[0] == 'U' and 'DRF' not in _n:
+                par_type = 'Energy dens. blob rest. frame'
                 units = 'erg/cm^3'
-            if _n[0] == 'j':
+            elif _n[0] == 'U' and 'DRF'  in _n:
+                par_type = 'Energy dens. disk rest. frame'
+                units = 'erg/cm^3'
+            elif _n[0] == 'j':
                 par_type = 'jet Lum.'
                 units = 'erg/s'
+            else:
+                raise RuntimeWarning('enegetic name %s not understood'%n)
             self.energetic_dict[_n]=getattr(_energetic, _n)
             _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
 
