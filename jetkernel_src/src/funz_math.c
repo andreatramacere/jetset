@@ -681,6 +681,16 @@ double test_int1(double x) {
     // printf("f=%e, x=%e\n",x*x,x);
     return x*x;
 }
+
+double test_solid_anlge(struct spettro *pt,double theta)
+{
+	//double sin_theta;
+	//sin_theta = sqrt(1.0 - mu * mu);
+	return 2 * pi;
+}
+
+
+
 //=========================================================================================
 
 

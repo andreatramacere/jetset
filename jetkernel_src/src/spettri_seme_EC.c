@@ -576,6 +576,7 @@ void set_Disk(struct spettro *pt){
 	pt->R_inner = pt->R_inner_Sw * pt->R_Sw;
 	//R_ext
 	pt->R_ext = pt->R_ext_Sw * pt->R_Sw;
+	pt->R_Disk_interp = 2.0 * pt->R_ext;
 	pt->L_Edd = eval_L_Edd(pt->M_BH);
 	pt->accr_rate = eval_accr_rate(pt->L_Disk, pt->accr_eff);
 	pt->accr_Edd = eval_accr_Edd(pt->L_Edd, pt->accr_eff);
@@ -691,11 +692,28 @@ double integrand_I_nu_Disk_disk_RF(struct spettro *pt, double mu)
 double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_disk_RF)
 {
 	double (*pf)(struct spettro *, double x);
-	double I;
+	double I,c,R_H_orig;
 	unsigned long i;
 	pt->nu_disk_RF = nu_disk_RF;
 	pf = &integrand_I_nu_Disk_blob_RF;
 
+	c = 1.0;
+	R_H_orig = pt->R_H;
+	if (pt->R_H > pt->R_DT_interp)
+	{
+
+		pt->R_H = pt->R_DT_interp;
+		c = (pt->R_DT_interp / R_H_orig) * (pt->R_DT_interp / R_H_orig);
+		//printf("=>R_H=%e R_H_orig=%e  pt->R_BLR_interp=%e\n",pt->R_H,R_H_orig,pt->R_BLR_interp);
+	}
+
+	set_Disk_angles(pt);
+	I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, 100.);
+	pt->R_H = R_H_orig;
+	//printf("=>R_H=%e R_BLR_inter=%e I=%e %e %e c=%e\n ",pt->R_H,pt->R_BLR_interp, I, theta_min, theta_max,c);
+	return I * one_by_four_pi * c;
+
+	/*
 	if (fabs(pt->Disk_mu_2 - 1.0) < pt->delta_mu_EC_point_like)
 	{
 		i = x_to_grid_index(pt->nu_Disk_disk_RF, nu_disk_RF, pt->nu_seed_size);
@@ -708,42 +726,50 @@ double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_disk_RF)
 	}
 	//printf("=>R_H=%e I=%e %e %e\n ",pt->R_H, I, theta_min, theta_max);
 	return I * one_by_four_pi;
+	*/
 }
 
-double test_solid_anlge(struct spettro *pt,double theta)
-{
-	//double sin_theta;
-	//sin_theta = sqrt(1.0 - mu * mu);
-	return 2 * pi;
-}
-
-	double eval_I_nu_Disk_disk_RF(struct spettro *pt, double nu_disk_RF)
+double eval_I_nu_Disk_disk_RF(struct spettro *pt, double nu_disk_RF)
 {
 	double (*pf)(struct spettro *, double x);
-	double I;
+	double  I, R_H_orig, c;
 	unsigned long i;
 	pt->nu_disk_RF = nu_disk_RF;
 	pf = &integrand_I_nu_Disk_disk_RF;
+
+	c = 1.0;
+	R_H_orig = pt->R_H;
+	if (pt->R_H > pt->R_DT_interp)
+	{
+
+		pt->R_H = pt->R_DT_interp;
+		c = (pt->R_DT_interp / R_H_orig) * (pt->R_DT_interp / R_H_orig);
+		//printf("=>R_H=%e R_H_orig=%e  pt->R_BLR_interp=%e\n",pt->R_H,R_H_orig,pt->R_BLR_interp);
+	}
+	set_Disk_angles(pt);
+	I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, 100.);
+	pt->R_H = R_H_orig;
+	//printf("=>R_H=%e R_BLR_inter=%e I=%e %e %e c=%e\n ",pt->R_H,pt->R_BLR_interp, I, theta_min, theta_max,c);
+	return I * one_by_four_pi * c;
+	
+	/*
 	i = x_to_grid_index(pt->nu_Disk_disk_RF, nu_disk_RF, pt->nu_seed_size);
 	if (fabs(pt->Disk_mu_2 - 1.0) < pt->delta_mu_EC_point_like)
 	{
-		
+
 		//I = Disk_Spectrum(pt, nu_disk_RF) * pt->L_Disk / (four_pi * pt->R_H * pt->R_H);
 		I = pt->L_nu_Disk_disk_RF[i] / (four_pi * pt->R_H * pt->R_H);
 		//printf("approx\n");
 	}
-	else{
+	else
+	{
 		I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, 100.);
 	}
 
 	//printf("=>nu=%e R_H=%e I=%e I1=%e %e %e %e %e\n ", nu_disk_RF, pt->R_H, I / (pt->L_nu_Disk_disk_RF[i] / (four_pi * pt->R_H * pt->R_H)), eval_I_nu_theta_Disk (pt,0)/ (pt->L_nu_Disk_disk_RF[i] / (four_pi * pt->R_H * pt->R_H)), pt->Disk_mu_1, pt->Disk_mu_2, pt->Disk_mu_2 - pt->Disk_mu_1, pt->Disk_mu_2 - 1.0);
-	return I *one_by_four_pi;
+	return I * one_by_four_pi;
+	*/
 }
-
-/* 
-
-
-*/
 
 double eval_Disk_L_nu(struct spettro *pt, double nu_Disk_disk_RF)
 {
@@ -768,14 +794,18 @@ double eval_nu_peak_Disk(double T){
 // Disk Geometrical Functions
 //========================
 
-void set_Disk_geometry(struct spettro *pt){
-	double mu1,mu2;
-	mu1=pt->R_H/sqrt(pt->R_H*pt->R_H+pt->R_inner*pt->R_inner);
-	mu2=pt->R_H/sqrt(pt->R_H*pt->R_H+pt->R_ext*pt->R_ext);
+void set_Disk_angles(struct spettro *pt)
+{
+	double mu1, mu2;
+	mu1 = pt->R_H / sqrt(pt->R_H * pt->R_H + pt->R_inner * pt->R_inner);
+	mu2 = pt->R_H / sqrt(pt->R_H * pt->R_H + pt->R_ext * pt->R_ext);
 	//mu1=1.0/sqrt(1+((pt->R_inner*pt->R_inner)/(pt->R_H*pt->R_H)));
 	//mu2 = 1.0 / sqrt(1 + ((pt->R_ext * pt->R_ext) / (pt->R_H * pt->R_H)));
-	pt->Disk_mu_1=min(mu1,mu2);
-	pt->Disk_mu_2=max(mu1,mu2);
+	pt->Disk_mu_1 = min(mu1, mu2);
+	pt->Disk_mu_2 = max(mu1, mu2);
+}
+
+void set_Disk_geometry(struct spettro *pt){
 
 	pt->Disk_surface=pi*((pt->R_ext * pt->R_ext) - (pt->R_inner*pt->R_inner) );
 	pt->Disk_geom_factor = (1.0) / (four_pi * pt->R_H * pt->R_H * (pt->Disk_surface / (pt->R_H * pt->R_H)));
@@ -1281,7 +1311,7 @@ double eval_I_nu_DT_disk_RF(struct spettro *pt, double nu_disk_RF)
 
 	I = integrale_simp_struct(pf, pt, theta_min, theta_max, 30.);
 	pt->R_H = R_H_orig;
-	printf("=>R_H=%e R_BLR_inter=%e I=%e %e %e c=%e\n ",pt->R_H,pt->R_BLR_interp, I, theta_min, theta_max,c);
+	//printf("=>R_H=%e R_BLR_inter=%e I=%e %e %e c=%e\n ",pt->R_H,pt->R_BLR_interp, I, theta_min, theta_max,c);
 	return I * one_by_four_pi * c;
 }
 

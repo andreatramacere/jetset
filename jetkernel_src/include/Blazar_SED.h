@@ -262,7 +262,7 @@ struct spettro {
     double nu_planck_max_factor;
     double mono_planck_min_factor;
     double mono_planck_max_factor;
-    double delta_mu_EC_point_like;
+    //double delta_mu_EC_point_like;
 
     double nu_blob_RF;
     double nu_disk_RF;
@@ -362,6 +362,7 @@ struct spettro {
     double accr_eff;
     double M_BH,accr_rate,L_Edd,accr_Edd;
     double R_inner_Sw, R_ext_Sw;
+    double R_Disk_interp;
     //
     double R_Sw;
     double T_disk_max_4;
@@ -450,7 +451,7 @@ struct spettro {
     double L_DT;
     double R_DT;
     double R_DT_interp;
-    
+
     //
     double DT_mu_1,DT_mu_2;
     double DT_mu_r_J_1;
@@ -947,6 +948,7 @@ void set_Star_geometry(struct spettro *pt);
 
 /***  SPECTRAL/GEOMETRIC FUNCTIONS EC DISK ****/
 void set_Disk(struct spettro *pt);
+void set_Disk_angles(struct spettro *pt);
 void Build_I_nu_Disk(struct spettro *pt_d);
 double Disk_Spectrum(struct spettro *pt, double nu_Disk_disk_RF);
 
