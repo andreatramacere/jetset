@@ -799,6 +799,7 @@ void Build_I_nu_BLR(struct spettro *pt){
 	//-------------------------------------
 	double nu_start_BLR_blob_RF,nu_stop_BLR_blob_RF,n0;
 	unsigned long NU_INT,NU_INT_MAX;
+	double I_nu_theta_disk_RF,I_nu_theta_blob_RF;
 	char f_BLR_disk[static_file_name_max_legth];
 	FILE *fp_BLR_disk;
 
@@ -854,13 +855,18 @@ void Build_I_nu_BLR(struct spettro *pt){
 
 	NU_INT_MAX = pt->nu_seed_size-1;
 	pt->NU_INT_MAX_BLR=NU_INT_MAX;
+	//This is evaluating the angular pattern
+	//It does not depends on frequency, because each region
+	//is emitting the same spectrum
+	I_nu_theta_disk_RF = eval_I_nu_BLR_disk_RF(pt);
+	I_nu_theta_blob_RF = eval_I_nu_BLR_blob_RF(pt);
 
 	build_log_grid( pt->nu_start_BLR_disk_RF,  pt->nu_stop_BLR_disk_RF, pt->nu_seed_size, pt->nu_BLR_disk_RF);
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->Lnu_BLR_disk_RF[NU_INT] = eval_Lnu_BLR_disk_RF(pt, pt->nu_BLR_disk_RF[NU_INT]);
 	}
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
-		pt->I_nu_BLR_disk_RF[NU_INT] = eval_I_nu_BLR_disk_RF(pt, pt->nu_BLR_disk_RF[NU_INT]);
+		pt->I_nu_BLR_disk_RF[NU_INT] = I_nu_theta_disk_RF * pt->Lnu_BLR_disk_RF[NU_INT];
 	}
 
 
@@ -868,7 +874,7 @@ void Build_I_nu_BLR(struct spettro *pt){
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		//we have to pass nu_BLR_disk_RF, because we integrate
 		//the I' expressed in terms of I
-		pt->I_nu_BLR[NU_INT] = eval_I_nu_BLR_blob_RF(pt, pt->nu_BLR_disk_RF[NU_INT]);
+		pt->I_nu_BLR[NU_INT] = I_nu_theta_blob_RF * pt->Lnu_BLR_disk_RF[NU_INT];
 		pt->n_BLR[NU_INT] =I_nu_to_n(pt->I_nu_BLR[NU_INT], pt->nu_BLR[NU_INT]);
 		//EC with n(gamma) transf
 		pt->n_BLR_DRF[NU_INT] = I_nu_to_n(pt->I_nu_BLR_disk_RF[NU_INT], pt->nu_BLR_disk_RF[NU_INT]);
@@ -921,7 +927,7 @@ double j_nu_BLR_integrand(struct spettro *pt, double l)
 	unsigned long i;
 	double L, r2;
 
-	i = x_to_grid_index(pt->nu_BLR_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
+	//i = x_to_grid_index(pt->nu_BLR_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
 	
 	r2 = (pt->R_H * pt->R_H) - 2.0 * pt->R_H * l * pt->mu_j + l * l;
 	
@@ -932,7 +938,7 @@ double j_nu_BLR_integrand(struct spettro *pt, double l)
 		L=0.0;
 	}
 	else{
-		L = pt->Lnu_BLR_disk_RF[i] / (four_pi * four_pi * r2);
+		L =1.0/ (four_pi * four_pi * r2);
 	}
 	return L;
 }
@@ -959,22 +965,22 @@ double eval_I_nu_theta_BLR(struct spettro *pt, double mu)
 
 double integrand_I_nu_BLR_blob_RF(struct spettro *pt, double theta)
 {
-	double psi;
+	//double psi;
 	return 2 * pi * sin(theta) * eval_I_nu_theta_BLR(pt, cos(theta)) * pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta));
 }
 
 double integrand_I_nu_BLR_disk_RF(struct spettro * pt, double theta)
 {
-	double psi;
+	//double psi;
 	return 2 * pi * sin(theta) * eval_I_nu_theta_BLR( pt,  cos(theta));
 }
 
-double eval_I_nu_BLR_disk_RF(struct spettro *pt, double nu_disk_RF)
+double eval_I_nu_BLR_disk_RF(struct spettro *pt)
 {
 	double (*pf)(struct spettro *, double x);
 	double theta_min, theta_max, I, R_H_orig,c;
 
-	pt->nu_disk_RF=nu_disk_RF;
+	//pt->nu_disk_RF=nu_disk_RF;
 	pf = &integrand_I_nu_BLR_disk_RF;
 	c=1.0;
 	R_H_orig = pt->R_H;
@@ -995,13 +1001,13 @@ double eval_I_nu_BLR_disk_RF(struct spettro *pt, double nu_disk_RF)
 }
 
 
-double eval_I_nu_BLR_blob_RF(struct spettro *pt, double nu_disk_RF)
+double eval_I_nu_BLR_blob_RF(struct spettro *pt)
 {
 	double (*pf)(struct spettro *, double x);
 	double theta_min, theta_max, I, R_H_orig,c;
 	// we use directly nu_disk_RF
 	// because we integrate the I' expressed as I
-	pt->nu_disk_RF = nu_disk_RF;
+	//pt->nu_disk_RF = nu_disk_RF;
 	pf = &integrand_I_nu_BLR_blob_RF;
 	
 	c=1.0;
