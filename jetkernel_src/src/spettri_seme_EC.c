@@ -947,7 +947,12 @@ double eval_I_nu_theta_BLR(struct spettro *pt, double mu)
 	pt->mu_j=mu;
 	
 	eval_l_values_BLR(pt, mu, l_values);
-	I = integrale_simp_struct(pf, pt, 0, l_values[0], pt->l_n_int)+ integrale_simp_struct(pf, pt, l_values[1], l_values[2], pt->l_n_int);
+	if(pt->R_H<pt->R_BLR_out){
+		I = integrale_simp_struct(pf, pt, 0, l_values[0], pt->l_n_int)+ integrale_simp_struct(pf, pt, l_values[1], l_values[2], pt->l_n_int);
+	}
+	else{
+		I = integrale_simp_struct(pf, pt, 0, l_values[2], pt->l_n_int);
+	}
 	//printf("mu=%e, l0=%e, l1=%e, l2=%e, delta=%e\n", mu, l_values[0], l_values[1], l_values[2], l_values[2]- l_values[1]);
 	return I;
 }
@@ -1182,8 +1187,8 @@ void Build_I_nu_DT(struct spettro *pt){
 	NU_INT_MAX = pt->nu_seed_size-1;
 	pt->NU_INT_MAX_DT = NU_INT_MAX;
 
-	pt->R_DT_interp_val = pt->R_DT* 2.0;
-	pt->R_DT_interp_start = pt->R_DT * 2.0;
+	pt->R_DT_interp_val = pt->R_DT* 5.0;
+	pt->R_DT_interp_start = pt->R_DT * 5.0;
 
 	pt->DT_Volume=(4./3.)*pi*pt->R_DT*pt->R_DT*pt->R_DT;
 
@@ -1257,6 +1262,7 @@ void Build_I_nu_DT(struct spettro *pt){
 //========================
 // Torus Spectral Functions
 //========================
+/*
 double j_nu_DT_integrand(struct spettro *pt, double l)
 {
 	unsigned long i;
@@ -1267,7 +1273,7 @@ double j_nu_DT_integrand(struct spettro *pt, double l)
 	r = sqrt((pt->R_H * pt->R_H) - 2.0 * pt->R_H * l * pt->mu_j + l * l);
 
 	if (r<pt->R_DT){
-		L=pt->L_nu_DT_disk_RF[i]/ pt->DT_Volume /(r*r);
+		L = pt->L_nu_DT_disk_RF[i] / (four_pi * four_pi * r*r)/pt->R_DT;
 	}
 	else{
 		L=0.0;
@@ -1277,17 +1283,19 @@ double j_nu_DT_integrand(struct spettro *pt, double l)
 	//printf("l=%e mu=%e R_H=%e r2=%e  L=%e \n ", l, pt->mu_j, pt->R_H, r2, pt->L_nu_DT_disk_RF[i]);
 	return L;
 }
+*/
 
 double eval_I_nu_theta_DT(struct spettro *pt, double mu)
 {
-	double (*pf)(struct spettro *, double x);
+	//double (*pf)(struct spettro *, double x);
 	unsigned long i;
 	double l, I;
-	l = eval_l_DT(pt, mu);
-	pf = &j_nu_DT_integrand;
+	//l = eval_l_DT(pt, mu);
+	//pf = &j_nu_DT_integrand;
 	pt->mu_j = mu;
 	i = x_to_grid_index(pt->nu_DT_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
 	I = pt->L_nu_DT_disk_RF[i] / (4 * pi * 4 * pi * pt->R_DT * pt->R_DT);
+	//I = integrale_simp_struct(pf, pt, 0, l, pt->l_n_int);
 	return I;
 }
 

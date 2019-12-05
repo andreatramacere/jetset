@@ -999,7 +999,7 @@ void set_BLR_geometry(struct spettro *pt);
 
 /***  FUNCTIONS Seed Photons EC DT  ***/
 void Build_I_nu_DT(struct spettro *pt);
-double j_nu_DT_integrand(struct spettro *pt, double l);
+//double j_nu_DT_integrand(struct spettro *pt, double l);
 double eval_I_nu_theta_DT(struct spettro *pt, double mu);
 double integrand_I_nu_DT_disk_RF(struct spettro *, double theta);
 double eval_I_nu_DT_disk_RF(struct spettro *pt, double nu_disk_RF);
