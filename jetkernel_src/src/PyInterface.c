@@ -236,7 +236,9 @@ struct spettro MakeBlob() {
     sprintf(spettro_root.disk_type, "BB");
     spettro_root.R_H=1E17;
     spettro_root.M_BH = 1E9;
-    spettro_root.EC_field_interp_factor = 5;
+    //spettro_root.EC_field_interp_factor = 5;
+    spettro_root.theta_n_int=50;
+    spettro_root.l_n_int=50;
     spettro_root.nu_start_EC_Disk = 1e13;
     spettro_root.nu_stop_EC_Disk = 1e26;
     spettro_root.nu_start_EC_BLR = 1e13;

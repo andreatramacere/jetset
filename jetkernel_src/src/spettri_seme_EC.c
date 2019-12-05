@@ -219,7 +219,7 @@ double eval_I_nu_Star_blob_RF(struct spettro *pt, double nu_blob_RF){
 	double (*pf) (struct spettro *, double x);
 	pf = &integrand_I_nu_Star_blob_RF;
 	//0.5 comes from 2pi/(4pi)
-	return  0.5*integrale_simp_struct(pf, pt, pt->Star_mu_1, pt->Star_mu_2,100.0);
+	return  0.5*integrale_simp_struct(pf, pt, pt->Star_mu_1, pt->Star_mu_2,pt->theta_n_int);
 }
 
 double eval_Star_L_nu(struct spettro *pt, double nu_Star_disk_RF){
@@ -396,7 +396,7 @@ double eval_I_nu_CMB_blob_RF(struct spettro *pt, double nu_blob_RF){
 	double (*pf) (struct spettro *, double x);
 	pf = &integrand_I_nu_CMB_blob_RF;
 	//0.5 comes from 2pi/(4pi)
-	return  0.5*integrale_simp_struct(pf, pt, pt->CMB_mu_1, pt->CMB_mu_2,100.0);
+	return 0.5 * integrale_simp_struct(pf, pt, pt->CMB_mu_1, pt->CMB_mu_2, pt->theta_n_int);
 }
 
 double integrand_I_nu_CMB_blob_RF(struct spettro *pt, double mu){
@@ -459,10 +459,10 @@ void Build_I_nu_Disk(struct spettro *pt){
 		nu_peak_BB=eval_nu_peak_Disk(pt->T_Disk);
 		nu_start_disk_RF = nu_peak_BB*pt->nu_planck_min_factor;
 		nu_stop_disk_RF  = nu_peak_BB*pt->nu_planck_max_factor;
-		double (*pf) (struct spettro *, double x);
-		pf = &Disk_Spectrum;
+		//double (*pf) (struct spettro *, double x);
+		//pf = &Disk_Spectrum;
 		//pt->Cost_Norm_disk_Mulit_BB= 1.0/
-		//		integrale_simp_struct(pf, pt,nu_start_disk_RF, nu_stop_disk_RF, 1000.0);
+		//		integrale_simp_struct(pf, pt,nu_start_disk_RF, nu_stop_disk_RF, pt->theta_n_int);
 		//printf( "%e\n",pt->Cost_Norm_disk_Mulit_BB);
 	 }
 	 else if (pt->disk == 3)
@@ -588,7 +588,7 @@ void set_Disk(struct spettro *pt){
 	pt->R_inner = pt->R_inner_Sw * pt->R_Sw;
 	//R_ext
 	pt->R_ext = pt->R_ext_Sw * pt->R_Sw;
-	pt->R_Disk_interp = pt->EC_field_interp_factor * pt->R_ext;
+	pt->R_Disk_interp =   pt->R_ext*10;
 	pt->L_Edd = eval_L_Edd(pt->M_BH);
 	pt->accr_rate = eval_accr_rate(pt->L_Disk, pt->accr_eff);
 	pt->accr_Edd = eval_accr_Edd(pt->L_Edd, pt->accr_eff);
@@ -719,7 +719,7 @@ double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_disk_RF)
 	}
 
 	set_Disk_angles(pt);
-	I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, 100.);
+	I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, pt->theta_n_int);
 	pt->R_H = R_H_orig;
 	return I * one_by_four_pi * c;
 
@@ -742,7 +742,7 @@ double eval_I_nu_Disk_disk_RF(struct spettro *pt, double nu_disk_RF)
 		c = (pt->R_Disk_interp / R_H_orig) * (pt->R_Disk_interp / R_H_orig);
 	}
 	set_Disk_angles(pt);
-	I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, 100.);
+	I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, pt->theta_n_int);
 	pt->R_H = R_H_orig;
 	//printf("=> R_DT_interp=%e R_H=%e Disk_mu_1=%e Disk_mu_2=%e i=%e \n", pt->R_DT_interp, pt->R_H, pt->Disk_mu_1, pt->Disk_mu_2, I);
 	return I * one_by_four_pi * c;
@@ -830,7 +830,8 @@ void Build_I_nu_BLR(struct spettro *pt){
 	pt->nu_start_BLR = eval_nu_min_blob_RF(pt,pt->BLR_mu_1, pt->BLR_mu_2, pt->nu_start_BLR_disk_RF);
 	pt->nu_stop_BLR  = eval_nu_max_blob_RF(pt,pt->BLR_mu_1, pt->BLR_mu_2, pt->nu_stop_BLR_disk_RF);
 
-	pt->R_BLR_interp = pt->EC_field_interp_factor * pt->R_BLR_out;
+	pt->R_BLR_interp_val = pt->R_BLR_out * 5.0;
+	pt->R_BLR_interp_start = pt->R_BLR_out * 5.0;
 
 	pt->n0_BLR = pt->tau_BLR / (SIGTH * (pt->R_BLR_out - pt->R_BLR_in));
 	
@@ -923,11 +924,17 @@ double j_nu_BLR_integrand(struct spettro *pt, double l)
 	i = x_to_grid_index(pt->nu_BLR_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
 	
 	r2 = (pt->R_H * pt->R_H) - 2.0 * pt->R_H * l * pt->mu_j + l * l;
-
+	
 	
 	//L = eval_Disk_L_nu(pt, pt->nu_disk_RF) * pt->n0_BLR * SIGTH;
-
-	return pt->Lnu_BLR_disk_RF[i] / (four_pi * four_pi * r2);
+	if ((r2 > (pt->R_BLR_out * pt->R_BLR_out)) || (r2 < (pt->R_BLR_in * pt->R_BLR_in)))
+	{
+		L=0.0;
+	}
+	else{
+		L = pt->Lnu_BLR_disk_RF[i] / (four_pi * four_pi * r2);
+	}
+	return L;
 }
 
 double eval_I_nu_theta_BLR(struct spettro *pt, double mu)
@@ -940,8 +947,8 @@ double eval_I_nu_theta_BLR(struct spettro *pt, double mu)
 	pt->mu_j=mu;
 	
 	eval_l_values_BLR(pt, mu, l_values);
-	I = integrale_simp_struct(pf, pt, 0, l_values[0], 20.)+ integrale_simp_struct(pf, pt, l_values[1], l_values[2], 20.);
-	
+	I = integrale_simp_struct(pf, pt, 0, l_values[0], pt->l_n_int)+ integrale_simp_struct(pf, pt, l_values[1], l_values[2], pt->l_n_int);
+	//printf("mu=%e, l0=%e, l1=%e, l2=%e, delta=%e\n", mu, l_values[0], l_values[1], l_values[2], l_values[2]- l_values[1]);
 	return I;
 }
 
@@ -966,17 +973,17 @@ double eval_I_nu_BLR_disk_RF(struct spettro *pt, double nu_disk_RF)
 	pf = &integrand_I_nu_BLR_disk_RF;
 	c=1.0;
 	R_H_orig = pt->R_H;
-	if (pt->R_H > pt->R_BLR_interp)
+	if (pt->R_H > pt->R_BLR_interp_start)
 	{
 		
-		pt->R_H = pt->R_BLR_interp;
-		c = (pt->R_BLR_interp / R_H_orig) * (pt->R_BLR_interp / R_H_orig);
+		pt->R_H = pt->R_BLR_interp_val;
+		c = (pt->R_BLR_interp_val / R_H_orig) * (pt->R_BLR_interp_val / R_H_orig);
 		//printf("=>R_H=%e R_H_orig=%e  pt->R_BLR_interp=%e\n",pt->R_H,R_H_orig,pt->R_BLR_interp);
 	}
 	theta_min=0.0;
 	theta_max = eval_theta_max_BLR(pt);
 
-	I = integrale_simp_struct(pf, pt, theta_min, theta_max, 30.);
+	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->theta_n_int);
 	pt->R_H = R_H_orig;
 	//printf("=>R_H=%e R_BLR_inter=%e I=%e %e %e c=%e\n ",pt->R_H,pt->R_BLR_interp, I, theta_min, theta_max,c);
 	return I*one_by_four_pi*c;
@@ -994,17 +1001,17 @@ double eval_I_nu_BLR_blob_RF(struct spettro *pt, double nu_disk_RF)
 	
 	c=1.0;
 	R_H_orig = pt->R_H;
-	if (pt->R_H > pt->R_BLR_interp)
+	if (pt->R_H > pt->R_BLR_interp_start)
 	{
 
-		pt->R_H = pt->R_BLR_interp;
-		c = (pt->R_BLR_interp / R_H_orig) * (pt->R_BLR_interp / R_H_orig);
+		pt->R_H = pt->R_BLR_interp_val;
+		c = (pt->R_BLR_interp_val / R_H_orig) * (pt->R_BLR_interp_val / R_H_orig);
 		//printf("=>R_H=%e R_H_orig=%e  pt->R_BLR_interp=%e\n",pt->R_H,R_H_orig,pt->R_BLR_interp);
 	}
 	theta_min = 0.0;
 	theta_max = eval_theta_max_BLR(pt);
 
-	I = integrale_simp_struct(pf, pt, theta_min, theta_max, 30.);
+	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->theta_n_int);
 	pt->R_H = R_H_orig;
 	return I*one_by_four_pi*c;
 }
@@ -1043,37 +1050,33 @@ void eval_l_values_BLR(struct spettro *pt, double mu, double l[])
 {
 	double s;
 
+		
 	s = mu * mu + (pt->R_BLR_in / pt->R_H) * (pt->R_BLR_in / pt->R_H) - 1.0;
-	if (s < 0.0)
-	{
+	if (s < 0.0){
 		l[0] = 0.0;
 		l[1] = 0.0;
-	}
-	else
+	}else
 	{
 		l[1] = pt->R_H * mu + pt->R_H * sqrt(s);
 		l[0]= pt->R_H * mu - pt->R_H * sqrt(s);
 	}
-	if (l[1] < 0.0)
-	{
+	if (l[1] < 0.0){
 		l[1] = 0.;
 	}
-	if (l[0] < 0.0)
-	{
+
+	if (l[0] < 0.0){
 		l[0] = 0.;
 	}
 
 	s = mu * mu + (pt->R_BLR_out / pt->R_H) * (pt->R_BLR_out / pt->R_H) - 1.0;
-	if (s < 0.0)
-	{
+	if (s < 0.0){
 		l[2] = 0;
 	}
-	else
-	{
+	else{
 
 		l[2] = pt->R_H * mu + pt->R_H * sqrt(s);
-		if (l[2] < 0.0)
-		{
+		
+		if (l[2] < 0.0){
 			l[2] = 0.;
 		}
 	}
@@ -1179,7 +1182,8 @@ void Build_I_nu_DT(struct spettro *pt){
 	NU_INT_MAX = pt->nu_seed_size-1;
 	pt->NU_INT_MAX_DT = NU_INT_MAX;
 
-	pt->R_DT_interp = pt->EC_field_interp_factor * pt->R_DT;
+	pt->R_DT_interp_val = pt->R_DT* 2.0;
+	pt->R_DT_interp_start = pt->R_DT * 2.0;
 
 	pt->DT_Volume=(4./3.)*pi*pt->R_DT*pt->R_DT*pt->R_DT;
 
@@ -1256,16 +1260,22 @@ void Build_I_nu_DT(struct spettro *pt){
 double j_nu_DT_integrand(struct spettro *pt, double l)
 {
 	unsigned long i;
-	double  r;
+	double  r,L;
 
 	i = x_to_grid_index(pt->nu_DT_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
 
 	r = sqrt((pt->R_H * pt->R_H) - 2.0 * pt->R_H * l * pt->mu_j + l * l);
 
+	if (r<pt->R_DT){
+		L=pt->L_nu_DT_disk_RF[i]/ pt->DT_Volume /(r*r);
+	}
+	else{
+		L=0.0;
+	}
 	//pt->DT_Volume *l_TORUS(pt, mu)
 	//L = pt->L_nu_DT_disk_RF[i];
 	//printf("l=%e mu=%e R_H=%e r2=%e  L=%e \n ", l, pt->mu_j, pt->R_H, r2, pt->L_nu_DT_disk_RF[i]);
-	return pt->L_nu_DT_disk_RF[i]/ pt->DT_Volume /(r*r);
+	return L;
 }
 
 double eval_I_nu_theta_DT(struct spettro *pt, double mu)
@@ -1278,20 +1288,6 @@ double eval_I_nu_theta_DT(struct spettro *pt, double mu)
 	pt->mu_j = mu;
 	i = x_to_grid_index(pt->nu_DT_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
 	I = pt->L_nu_DT_disk_RF[i] / (4 * pi * 4 * pi * pt->R_DT * pt->R_DT);
-	/*
-	if (pt->R_H < 2* pt->R_DT)
-	{
-		//I = integrale_simp_struct(pf, pt, 0, l, 50.);
-		
-		I = pt->L_nu_DT_disk_RF[i] / (4 * pi * 4 * pi * pt->R_DT * pt->R_DT) ;
-	}
-	else
-	{
-		i = x_to_grid_index(pt->nu_DT_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
-		I = pt->L_nu_DT_disk_RF[i] / (4 * pi * pt->R_DT * pt->R_DT) /pi  ;
-	}
-	//printf("=> I=%e l1=%e l2=%e l3=%e\n",I,l1,l2,l3);
-	*/
 	return I;
 }
 
@@ -1324,19 +1320,17 @@ double eval_I_nu_DT_disk_RF(struct spettro *pt, double nu_disk_RF)
 
 	c = 1.0;
 	R_H_orig = pt->R_H;
-	if (pt->R_H > pt->R_DT_interp)
+	if (pt->R_H > pt->R_DT_interp_start)
 	{
 
-		pt->R_H = pt->R_DT_interp;
-		c = (pt->R_DT_interp / R_H_orig) * (pt->R_DT_interp / R_H_orig);
-		//printf("=>R_H=%e R_H_orig=%e  pt->R_BLR_interp=%e\n",pt->R_H,R_H_orig,pt->R_BLR_interp);
+		pt->R_H = pt->R_DT_interp_val;
+		c = (pt->R_DT_interp_val / R_H_orig) * (pt->R_DT_interp_val / R_H_orig);
 	}
 	theta_min = 0.0;
 	theta_max = eval_theta_max_DT(pt);
 
-	I = integrale_simp_struct(pf, pt, theta_min, theta_max, 30.);
+	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->theta_n_int);
 	pt->R_H = R_H_orig;
-	//printf("=>R_H=%e R_BLR_inter=%e I=%e %e %e c=%e\n ",pt->R_H,pt->R_BLR_interp, I, theta_min, theta_max,c);
 	return I * one_by_four_pi * c;
 }
 
@@ -1349,25 +1343,18 @@ double eval_I_nu_DT_blob_RF(struct spettro *pt, double nu_disk_RF)
 	pt->nu_disk_RF = nu_disk_RF;
 	pf = &integrand_I_nu_DT_blob_RF;
 
-	//theta_min = 0.0;
-	//theta_max = eval_theta_max_DT(pt);
-
-	//I = integrale_simp_struct(pf, pt, theta_min, theta_max, 100.);
-	//return I * one_by_four_pi;
-
 	c=1.0;
 	R_H_orig = pt->R_H;
-	if (pt->R_H > pt->R_DT_interp)
+	if (pt->R_H > pt->R_DT_interp_start)
 	{
 
-		pt->R_H = pt->R_DT_interp;
-		c = (pt->R_DT_interp / R_H_orig) * (pt->R_DT_interp / R_H_orig);
-		//printf("=>R_H=%e R_H_orig=%e  pt->R_BLR_interp=%e\n",pt->R_H,R_H_orig,pt->R_BLR_interp);
+		pt->R_H = pt->R_DT_interp_val;
+		c = (pt->R_DT_interp_val / R_H_orig) * (pt->R_DT_interp_val / R_H_orig);
 	}
 	theta_min = 0.0;
 	theta_max = eval_theta_max_DT(pt);
 
-	I = integrale_simp_struct(pf, pt, theta_min, theta_max, 30.);
+	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->theta_n_int);
 	pt->R_H = R_H_orig;
 	//printf("=>R_H=%e R_BLR_inter=%e I=%e %e %e c=%e\n ",pt->R_H,pt->R_BLR_interp, I, theta_min, theta_max,c);
 	return I * one_by_four_pi * c;
@@ -1541,3 +1528,27 @@ double I_nu_disk_RF_to_blob_RF(double I_nu_diks_RF, double nu_disk_RF, double nu
 	return I_nu_diks_RF/(beta*Gamma)*(nu_blob_RF*nu_blob_RF*nu_blob_RF)/(nu_disk_RF*nu_disk_RF*nu_disk_RF);
 }
 
+//========================
+//GENERIC GEOMETRICAL TRANSFORAMTION FUNCTIONS
+//========================
+
+
+double eval_circle_secant(double z, double R, double mu)
+{
+	double x1, x2, y1, y2, l, m, b, c, a;
+	m = tan(acos(mu));
+	b = -2 * z;
+	c = z * z - R * R;
+	a = 1 + m * m;
+	if ((b * b - 4 * a * c) > 0)
+	{
+		x1 = (-b + sqrt(b * b - 4 * a * c)) / (2 * a);
+		x2 = (-b - sqrt(b * b - 4 * a * c)) / (2 * a);
+		//printf("%e %e\n",x1,x2);
+		y1 = m * x1;
+		y2 = m * x2;
+		return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+	}
+	else
+		return 0;
+}

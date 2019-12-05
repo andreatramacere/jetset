@@ -263,7 +263,9 @@ struct spettro {
     double nu_planck_max_factor;
     double mono_planck_min_factor;
     double mono_planck_max_factor;
-    double EC_field_interp_factor;
+    //double EC_field_interp_factor;
+    unsigned long theta_n_int;
+    unsigned long l_n_int;
 
     double nu_blob_RF;
     double nu_disk_RF;
@@ -410,7 +412,9 @@ struct spettro {
     double tau_BLR;
     double R_BLR_in;
     double R_BLR_out;
-    double R_BLR_interp;
+    double R_BLR_interp_val;
+    double R_BLR_interp_start;
+
     //
     double BLR_Volume;
     double n0_BLR;
@@ -451,7 +455,8 @@ struct spettro {
     double tau_DT;
     double L_DT;
     double R_DT;
-    double R_DT_interp;
+    double R_DT_interp_val ;
+    double R_DT_interp_start;
 
     //
     double DT_mu_1,DT_mu_2;
@@ -1004,7 +1009,7 @@ double eval_I_nu_DT_blob_RF(struct spettro *pt, double nu_disk_RF);
 double eval_DT_L_nu(struct spettro *pt, double DT_disk_RF);
 double eval_theta_max_DT(struct spettro *pt);
 double eval_l_DT(struct spettro *pt, double mu);
-//double eval_circle_secant(double z,double R,double mu);
+double eval_circle_secant(double z,double R,double mu);
 //===========================================================================================
 
 
