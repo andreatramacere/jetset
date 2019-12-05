@@ -321,40 +321,42 @@ void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
     sprintf(f_distr, "%s%s-%s", pt->path, pt->STEM, name);
     unsigned long i;
     
-    fp_distr = fopen(f_distr, "w");
-    if (fp_distr == NULL) {
-        printf("warning non riesco ad aprire %s\n", f_distr);
-        exit(1);
-    }
-    distr_e_header(fp_distr);
-
-    if (pt->TIPO_DISTR != 0) {
-        if (pt->TIPO_DISTR == -1 && strcmp(pt->PARTICLE, "hadrons") == 0) {
-            mass = MEC2_TeV;
-        }
-        if (pt->TIPO_DISTR != -1 && strcmp(pt->PARTICLE, "hadrons") == 0) {
-            mass = MPC2_TeV;
-        }
-        if (strcmp(pt->PARTICLE, "leptons") == 0) {
-            mass = MEC2_TeV;
-        }
-
-
-        for (i = 0; i < pt->gamma_grid_size; i++) {
-            if (N[i] <= 0.0) {
-                N[i]=1E-200;
+    if (pt->WRITE_TO_FILE==1){
+            fp_distr = fopen(f_distr, "w");
+            if (fp_distr == NULL) {
+                printf("warning non riesco ad aprire %s\n", f_distr);
+                exit(1);
             }
-                fprintf(fp_distr, "%e\t%e\t%e\t%e\t%e\t%e\n",
-                        log10(g[i]),
-                        log10(N[i]),
-                        g[i],
-                        N[i],
-                        g[i] * mass,
-                        N[i] / mass);
-            //}
+            distr_e_header(fp_distr);
+        
+        if (pt->TIPO_DISTR != 0) {
+            if (pt->TIPO_DISTR == -1 && strcmp(pt->PARTICLE, "hadrons") == 0) {
+                mass = MEC2_TeV;
+            }
+            if (pt->TIPO_DISTR != -1 && strcmp(pt->PARTICLE, "hadrons") == 0) {
+                mass = MPC2_TeV;
+            }
+            if (strcmp(pt->PARTICLE, "leptons") == 0) {
+                mass = MEC2_TeV;
+            }
+
+
+            for (i = 0; i < pt->gamma_grid_size; i++) {
+                if (N[i] <= 0.0) {
+                    N[i]=1E-200;
+                }
+                    fprintf(fp_distr, "%e\t%e\t%e\t%e\t%e\t%e\n",
+                            log10(g[i]),
+                            log10(N[i]),
+                            g[i],
+                            N[i],
+                            g[i] * mass,
+                            N[i] / mass);
+                //}
+            }
         }
+        fclose(fp_distr);
     }
-    fclose(fp_distr);
 }
 //=====================================================
 

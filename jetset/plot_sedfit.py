@@ -87,7 +87,7 @@ class  PlotSED (object):
         #Build sedplot    
       
             
-        self.fig=plt.figure(figsize=(10,6))
+        self.fig=plt.figure()
         
 
 
@@ -340,6 +340,7 @@ class  PlotSED (object):
     
     def update_plot(self):
         self.fig.canvas.draw()
+        self.fig.tight_layout()
 
     def update_legend(self,label=None):
 
@@ -366,7 +367,7 @@ class  PlotSED (object):
         #for h in _handles:
         #    print('_label',h._label)
 
-        self.sedplot.legend(handles=_handles,loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1, prop={'size':12})
+        self.sedplot.legend(handles=_handles,loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1, prop={'size':10})
         self.update_plot()
 
 

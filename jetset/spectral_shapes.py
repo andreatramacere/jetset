@@ -6,9 +6,14 @@ from builtins import (bytes, str, open, super, range,
 __author__ = "Andrea Tramacere"
 
 from numpy import  array,zeros,log10
+from astropy import units
 
 
-__all__=['SED','poly_shape']
+__all__=['SED']
+
+
+
+
 
 class SED(object):
     """
@@ -16,12 +21,43 @@ class SED(object):
     """
     def __init__(self,name=None,nu=None,nuFnu=None,nu_residuals=None,residuals=None):
         self.name=name
-        
+
+        self._nu_units=units.Hz
+        self._nuFnu_units=units.erg/units.cm**2/units.s
+
+        #if nu is not None:
         self.nu=nu
+
+        #if nuFnu  is not None:
         self.nuFnu=nuFnu
         
         self.nu_residuals=nu_residuals
         self.residuals=residuals
+
+
+    @property
+    def nu(self):
+        return self._nu
+
+    @nu.setter
+    def nu(self,nu):
+        if nu is None:
+            self._nu=nu
+        else:
+            self._nu=nu*self._nu_units
+
+
+    @property
+    def nuFnu(self):
+        return self._nuFnu
+
+
+    @nuFnu.setter
+    def nuFnu(self,nuFnu):
+        if nuFnu is None:
+            self._nuFnu=nuFnu
+        else:
+            self._nuFnu = nuFnu * self._nuFnu_units
 
 
 
@@ -30,15 +66,15 @@ class SED(object):
  
         if log_log==False:
             
-            return self.nu,self.nuFnu
+            return self.nu.value,self.nuFnu.value
         
         else:
         
-            msk=self.nuFnu>0
+            msk=self.nuFnu.value>0
             
-            y=log10(self.nuFnu[msk])
+            y=log10(self.nuFnu[msk].value)
 
-            x=log10(self.nu[msk])
+            x=log10(self.nu[msk].value)
         
         return x,y
 
@@ -54,11 +90,11 @@ class SED(object):
 
     def fill(self,nu=None,nuFnu=None,nu_residuals=None,residuals=None):
         
-        if nu is not None:
-            self.nu=nu
+        #if nu is not None:
+        self.nu=nu
         
-        if nuFnu is not None:
-            self.nuFnu=nuFnu
+        #if nuFnu is not None:
+        self.nuFnu=nuFnu
          
         if residuals is not None:
             
@@ -69,18 +105,18 @@ class SED(object):
             self.nu_residuals=nu_residuals
             
             
-            
-class poly_shape(object):
-    """
-    Class for log-log polynomial shapes
-    """
-    def __init__(self,name=None,nu=None,nuFnu=None):
-        self.name=name
-        self.nu=nu
-        self.nuFnu=nuFnu
-    
-    def get_model_points(self):
-        return self.nu,self.nuFnu
-    
-        
+#
+# class poly_shape(object):
+#     """
+#     Class for log-log polynomial shapes
+#     """
+#     def __init__(self,name=None,nu=None,nuFnu=None):
+#         self.name=name
+#         self.nu=nu
+#         self.nuFnu=nuFnu
+#
+#     def get_model_points(self):
+#         return self.nu,self.nuFnu
+#
+#
 

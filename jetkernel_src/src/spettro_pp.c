@@ -30,23 +30,25 @@ void spettro_pp(int Num_file, struct spettro *pt) {
     // apre i files dove scrive i dati di SSC
     // HEADER FILES
     //=================================
-    sprintf(f_pp, "%s%s-pp-gamma.dat",
-            pt->path, pt->STEM);
+    if (pt->WRITE_TO_FILE==1){
+        sprintf(f_pp, "%s%s-pp-gamma.dat",
+                pt->path, pt->STEM);
 
-    sprintf(f_pp_energy, "%s%s-pp-gamma-energy.dat",
-            pt->path, pt->STEM);
+        sprintf(f_pp_energy, "%s%s-pp-gamma-energy.dat",
+                pt->path, pt->STEM);
 
-    fp_pp = fopen(f_pp, "w");
-    if (fp_pp == NULL) {
-        printf("non posso aprire %s\n ", f_pp);
-        exit(1);
+        fp_pp = fopen(f_pp, "w");
+        if (fp_pp == NULL) {
+            printf("non posso aprire %s\n ", f_pp);
+            exit(1);
+        }
+        fp_pp_energy = fopen(f_pp_energy, "w");
+        if (fp_pp == NULL) {
+            printf("non posso aprire %s\n ", f_pp);
+            exit(1);
+        }
+        flux_header(fp_pp);
     }
-    fp_pp_energy = fopen(f_pp_energy, "w");
-    if (fp_pp == NULL) {
-        printf("non posso aprire %s\n ", f_pp);
-        exit(1);
-    }
-    flux_header(fp_pp);
     //==================================================================
 
 
@@ -137,19 +139,21 @@ void spettro_pp(int Num_file, struct spettro *pt) {
             //===========================================
             // FILES output nu dnu nuFnu dnuFnu
             //==========================================
-            if (!stop) {
-                fprintf(fp_pp, "%4.4e\t%4.4e\t%4.4e\t %4.4e\t%4.4e\t%4.4e\n",
-                        log10(nu_obs_1),
-                        log10(pt->nuF_nu_pp_obs[NU_INT]),
-                        nu_obs_1,
-                        pt->nuF_nu_pp_obs[NU_INT],
-                        nu_src,
-                        nuL_nu_pp);
+            if (pt->WRITE_TO_FILE==1){
+                if (!stop) {
+                    fprintf(fp_pp, "%4.4e\t%4.4e\t%4.4e\t %4.4e\t%4.4e\t%4.4e\n",
+                            log10(nu_obs_1),
+                            log10(pt->nuF_nu_pp_obs[NU_INT]),
+                            nu_obs_1,
+                            pt->nuF_nu_pp_obs[NU_INT],
+                            nu_src,
+                            nuL_nu_pp);
 
-                fprintf(fp_pp_energy, "%4.4e\t%4.4e\n",
-                        nu_1*HPLANCK_TeV,
-                        pt->j_pp[NU_INT] * nu_1 * erg_to_TeV);
-                // nuL_nu_pp);
+                    fprintf(fp_pp_energy, "%4.4e\t%4.4e\n",
+                            nu_1*HPLANCK_TeV,
+                            pt->j_pp[NU_INT] * nu_1 * erg_to_TeV);
+                    // nuL_nu_pp);
+                }
             }
             if (pt->verbose) {
                 printf("#-> ********************************\n\n");
@@ -164,9 +168,10 @@ void spettro_pp(int Num_file, struct spettro *pt) {
         pt->NU_INT_STOP_PP = NU_INT - 1;
     }
     printf("nu_stop_pp=%e NU_INT_STOP_PP=%d\n", pt->nu_stop_pp, pt->NU_INT_STOP_PP);
-    fclose(fp_pp);
-    fclose(fp_pp_energy);
-
+    if (pt->WRITE_TO_FILE==1){
+        fclose(fp_pp);
+        fclose(fp_pp_energy);
+    }
 
     //===========================================
     //    trova nu peak e Flux peak

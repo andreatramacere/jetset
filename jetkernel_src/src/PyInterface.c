@@ -154,6 +154,7 @@ struct spettro MakeBlob() {
     struct spettro spettro_root;
     spettro_root.spec_array_size=static_spec_arr_size;
 
+    spettro_root.WRITE_TO_FILE=0;
     spettro_root.BESSEL_TABLE_DONE=0;
     spettro_root.verbose = 0;
     sprintf(spettro_root.path, "./");
@@ -235,7 +236,7 @@ struct spettro MakeBlob() {
     sprintf(spettro_root.disk_type, "BB");
     spettro_root.R_H=1E17;
     spettro_root.M_BH = 1E9;
-    //spettro_root.delta_mu_EC_point_like=1E-7;
+    spettro_root.EC_field_interp_factor = 5;
     spettro_root.nu_start_EC_Disk = 1e13;
     spettro_root.nu_stop_EC_Disk = 1e26;
     spettro_root.nu_start_EC_BLR = 1e13;
@@ -551,53 +552,55 @@ void Run_SED(struct spettro *pt_base){
 		if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1
 				|| pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1
 				|| pt_base->do_EC_CMB == 1 
-				|| pt_base->do_Disk==1 || pt_base->do_DT==1) {
-			spectra_External_Fields(1, pt_base);
-			if (pt_base->do_EC_Star == 1) {
-				if (pt_base->verbose) {
-					printf("************* Disk ****************\n");
-				}
-				pt_base->EC = 4;
-				spettro_EC(1, pt_base);
-			}
-			if (pt_base->do_EC_Disk == 1) {
-				if (pt_base->verbose) {
-					printf("************* Disk ****************\n");
-				}
-				pt_base->EC = 1;
-				spettro_EC(1, pt_base);
-			}
-			if (pt_base->do_EC_BLR == 1) {
-				if (pt_base->verbose) {
-					printf("************* BLR ****************\n");
-				}
-				pt_base->EC = 2;
-				spettro_EC(1, pt_base);
-			}
-			if (pt_base->do_EC_DT == 1) {
-				if (pt_base->verbose) {
-					printf("************* DT ****************\n");
-				}
-				pt_base->EC = 3;
-				spettro_EC(1, pt_base);
-			}
-			if (pt_base->do_EC_CMB == 1) {
-				if (pt_base->verbose) {
-					printf("************* CMB ****************\n");
-				}
-				pt_base->EC = 5;
-				spettro_EC(1, pt_base);
-			}
-            //if (pt_base->do_EC_CMB_stat == 1) {
-            //    if (pt_base->verbose) {
-            //       printf("************* CMB stat ****************\n");
-            //   }
-            //       printf("************* CMB stat ****************\n");
-            //    pt_base->EC = 6;
-            //    spettro_EC(1, pt_base);
-            //}
-		}
-	}
+				|| pt_base->do_Disk==1 || pt_base->do_DT==1) 
+                {
+                spectra_External_Fields(1, pt_base);
+                if (pt_base->do_EC_Star == 1) {
+                    //if (pt_base->verbose) {
+                    //    printf("************* Disk ****************\n");
+                    //}
+                    pt_base->EC = 4;
+                    spettro_EC(1, pt_base);
+                }
+                if (pt_base->do_EC_Disk == 1 || pt_base->do_Disk==1) {
+                    //if (pt_base->verbose) {
+                    //    printf("************* Disk ****************\n");
+                   // }
+                    pt_base->EC = 1;
+                    spettro_EC(1, pt_base);
+                }
+                if (pt_base->do_EC_BLR == 1) {
+                    //if (pt_base->verbose) {
+                    //    printf("************* BLR ****************\n");
+                    //}
+                    pt_base->EC = 2;
+                    spettro_EC(1, pt_base);
+                }
+                if (pt_base->do_EC_DT == 1) {
+                    //if (pt_base->verbose) {
+                    //    printf("************* DT ****************\n");
+                    // }
+                    pt_base->EC = 3;
+                    spettro_EC(1, pt_base);
+                }
+                if (pt_base->do_EC_CMB == 1) {
+                    //if (pt_base->verbose) {
+                    //    printf("************* CMB ****************\n");
+                   // }
+                    pt_base->EC = 5;
+                    spettro_EC(1, pt_base);
+                }
+                //if (pt_base->do_EC_CMB_stat == 1) {
+                //    if (pt_base->verbose) {
+                //       printf("************* CMB stat ****************\n");
+                //   }
+                //       printf("************* CMB stat ****************\n");
+                //    pt_base->EC = 6;
+                //    spettro_EC(1, pt_base);
+                //}
+            }
+        //printf("=>done\n");
+    }
     //==================================================
     //Sum Up all the Spectral Components
     //==================================================

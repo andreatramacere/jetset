@@ -54,6 +54,27 @@ def str_hook(pairs):
         new_pairs.append((key, value))
     return dict(new_pairs)
 
+
+class JetkerneltException(Exception):
+
+    def __init__(self, message='Remote analysis exception', debug_message=''):
+        super(JetkerneltException, self).__init__(message)
+        self.message=message
+        self.debug_message=debug_message
+
+def safe_run(func):
+
+    def func_wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+           message =  'the jetkernel failed\n'
+           message += '\n exception message: '
+           message += '%s'%e
+           raise JetkerneltException(message=message)
+
+    return func_wrapper
+
 class JetParameter(ModelParameter):
     """
     
@@ -193,7 +214,8 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list):
     model_dic={}
 
     for EC_model in EC_model_list:
-            
+
+        print('EC_model',EC_model)
         #if EC_model not in allowed_EC_components_list:
         #   raise RuntimeError("EC model %s not allowed"%EC_model,"please choose among ", allowed_EC_components_list)
      
@@ -218,7 +240,7 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list):
             model_dic['T_DT']=['DT',0.0,None,'K']
             model_dic['R_DT']=['DT',0.0,None,'cm']
             model_dic['tau_DT']=['DT',0.0,1.0,'']
-    
+            model_dic['R_H'] = ['Disk', 0, None, 'cm']
     
     return model_dic
 
@@ -619,7 +641,7 @@ class JetSpecComponent(object):
 
     def plot(self, y_min=None,y_max=None):
         p=PlotSpecComp()
-        p.plot(nu=self.SED.nu,nuFnu=self.SED.nuFnu,y_min=y_min,y_max=y_max)
+        p.plot(nu=self.SED.nu.value,nuFnu=self.SED.nuFnu.value,y_min=y_min,y_max=y_max)
 
         return p
 
@@ -1340,15 +1362,27 @@ class Jet(Model):
                     self._add_spectral_component('DT',var_name='do_DT', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('DT')
 
+                if self.get_spectral_component_by_name('Disk',verbose=False) is None:
+                    # TODO add state
+                    self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('Disk')
+
+
             if EC_component=='EC_DT':
                 #self._blob.do_EC_DT=1
                 if self.get_spectral_component_by_name('EC_DT',verbose=False) is None:
                     self._add_spectral_component('EC_DT', var_name='do_EC_DT', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_DT')
+
                 #TODO add state
                 if self.get_spectral_component_by_name('DT',verbose=False) is None:
                     self._add_spectral_component('DT',var_name='do_DT', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('DT')
+
+                if self.get_spectral_component_by_name('Disk',verbose=False) is None:
+                    # TODO add state
+                    self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('Disk')
 
             if EC_component=='EC_CMB':
                 #self._blob.do_EC_CMB=1
@@ -1430,7 +1464,7 @@ class Jet(Model):
         return self._blob.dist
 
 
-
+    @safe_run
     def get_beaming(self,theta=None,bulk_factor=None,beaming=None):
 
         if theta is None:
@@ -1764,18 +1798,17 @@ class Jet(Model):
 
         return plot_obj
 
-
-
+    @safe_run
     def set_blob(self):
 
         BlazarSED.Init(self._blob)
 
-
+    @safe_run
     def set_external_fields(self):
-        #   BlazarSED.Init(self._blob)
+        BlazarSED.Init(self._blob)
         BlazarSED.spectra_External_Fields(1,self._blob)
 
-
+    @safe_run
     def eval(self,init=True,fill_SED=True,nu=None,get_model=False,loglog=False,plot=None,label=None,phys_output=False):
         """
         Runs the BlazarSED  code for the current `JetModel` instance.
@@ -1879,10 +1912,7 @@ class Jet(Model):
         else:
             return None
 
-
-
-
-
+    @safe_run
     def get_SED_points(self,log_log=False,name='Sum'):
 
         try:
@@ -1932,9 +1962,7 @@ class Jet(Model):
         except:
             raise RuntimeError ('model evaluation failed in get_SED_points')
 
-
-
-
+    @safe_run
     def energetic_report(self,write_file=False,getstring=True,wd=None,name=None,verbose=True):
         self.energetic_dict={}
 
@@ -1956,7 +1984,7 @@ class Jet(Model):
                 par_type = 'jet Lum.'
                 units = 'erg/s'
             else:
-                raise RuntimeWarning('enegetic name %s not understood'%n)
+                raise RuntimeWarning('enegetic name %s not understood'%_n)
             self.energetic_dict[_n]=getattr(_energetic, _n)
             _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
 
@@ -2016,8 +2044,8 @@ class Jet(Model):
     def get_component_peak(self,comp_name=None,log_log=False):
         comp = self.get_spectral_component_by_name(comp_name)
 
-        ID = np.argmax(comp.SED.nuFnu)
-        x_p, y_p = comp.SED.nu[ID], comp.SED.nuFnu[ID]
+        ID = np.argmax(comp.SED.nuFnu.value)
+        x_p, y_p = comp.SED.nu[ID].value, comp.SED.nuFnu[ID].value
 
         if log_log is True:
             x_p, y_p=np.log10([x_p,y_p])

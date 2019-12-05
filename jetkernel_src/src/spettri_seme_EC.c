@@ -25,8 +25,10 @@ void spectra_External_Fields(int Num_file, struct spettro *pt) {
 
     //==================================================================
 	//if (pt->verbose){
-	//printf("-----------  Eval. seed photon fields for  EC  ----------- \n");
-	//}
+	if (pt->verbose > 0)
+	{
+		printf("**********************   Eval. seed photon fields for  EC       *******************************\n");
+	}
 
 
     // ====================================================
@@ -37,15 +39,14 @@ void spectra_External_Fields(int Num_file, struct spettro *pt) {
     //=====================================================
 	pt->beaming_EC = pt->BulkFactor;
 
+	//printf("=> Ciccio %d %d %d %d %d\n", pt->do_EC_Disk, pt->do_EC_BLR, pt->do_Disk, pt->do_EC_DT, pt->do_DT);
 
-
-    //T
-    
-    if (pt->do_EC_Star==1){
+	if (pt->do_EC_Star==1){
     	Build_I_nu_Star(pt);
     }
-	if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 1 || pt->do_Disk == 1, pt->do_EC_DT == 1 || pt->do_DT ==1)
+	if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 1 || pt->do_Disk == 1 || pt->do_EC_DT == 1 || pt->do_DT ==1)
 	{
+		
 		Build_I_nu_Disk(pt);
     }
     if (pt->do_EC_BLR==1){
@@ -61,7 +62,10 @@ void spectra_External_Fields(int Num_file, struct spettro *pt) {
     //if (pt->do_EC_CMB_stat==1){
     //	Build_I_nu_CMB_stat(pt);
     //}
-
+	if (pt->verbose > 1)
+	{
+		printf("#-> ********************************\n\n");
+	}
 }
 //=========================================================================================
 
@@ -78,13 +82,14 @@ void Build_I_nu_Star(struct spettro *pt){
 
 	sprintf(f_SED_star, "%s%s-SED-star.dat",pt->path, pt->STEM);
 
-	fp_SED_star = fopen(f_SED_star, "w");
-	if (fp_SED_star == NULL) {
-		printf("unable to open %s\n ", fp_SED_star);
-		exit(1);
+	if (pt->WRITE_TO_FILE==1){
+		fp_SED_star = fopen(f_SED_star, "w");
+		if (fp_SED_star == NULL) {
+			printf("unable to open %s\n ", fp_SED_star);
+			exit(1);
+		}
+		flux_DISK_header(fp_SED_star);
 	}
-	flux_DISK_header(fp_SED_star);
-
 
 
 	set_Star_geometry(pt);
@@ -160,20 +165,22 @@ void Build_I_nu_Star(struct spettro *pt){
 		F_nu_disk_obs= L_nu_Disk_to_F_nu(nuL_nu_disk / pt->nu_Star_disk_RF[NU_INT], pt-> z_cosm, pt-> dist);
 		pt->nuF_nu_Star_obs[NU_INT] = F_nu_disk_obs*nu_obs;
 
-		fprintf(fp_SED_star, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t%4.4e\t%4.4e \n",
-			log10(nu_obs),
-			log10(nu_obs * F_nu_disk_obs),
-			nu_obs,
-			nu_obs*F_nu_disk_obs,
-			pt->nu_Star_disk_RF[NU_INT],
-			nuL_nu_disk);
-
+		if (pt->WRITE_TO_FILE==1){
+			fprintf(fp_SED_star, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t%4.4e\t%4.4e \n",
+				log10(nu_obs),
+				log10(nu_obs * F_nu_disk_obs),
+				nu_obs,
+				nu_obs*F_nu_disk_obs,
+				pt->nu_Star_disk_RF[NU_INT],
+				nuL_nu_disk);
+		}
 
 
 	}
-
-	fclose(fp_SED_star);
-
+	if (pt->WRITE_TO_FILE == 1)
+	{
+		fclose(fp_SED_star);
+	}
 }
 
 
@@ -422,20 +429,21 @@ void Build_I_nu_Disk(struct spettro *pt){
 	double nu_start_disk_RF,nu_start_blob_RF;
 	double nu_stop_disk_RF,nu_stop_blob_RF;
 	double nuL_nu_disk,F_nu_disk_obs;
-
+	//printf("=> Ciccio 1\n");
 	if (pt->verbose){
 		printf("-----------  Building I_nu disk     ----------- \n");
 	}
 
-	sprintf(f_SED_disk, "%s%s-SED-disk.dat",pt->path, pt->STEM);
+	if (pt->WRITE_TO_FILE==1){
+		sprintf(f_SED_disk, "%s%s-SED-disk.dat",pt->path, pt->STEM);
 
-	fp_SED_disk = fopen(f_SED_disk, "w");
-	if (fp_SED_disk == NULL) {
-		printf("unable to open %s\n ", f_SED_disk);
-		exit(1);
+		fp_SED_disk = fopen(f_SED_disk, "w");
+		if (fp_SED_disk == NULL) {
+			printf("unable to open %s\n ", f_SED_disk);
+			exit(1);
+		}
+		flux_DISK_header(fp_SED_disk);
 	}
-	flux_DISK_header(fp_SED_disk);
-
 
 	set_Disk(pt);
 	set_Disk_geometry(pt);
@@ -534,19 +542,23 @@ void Build_I_nu_Disk(struct spettro *pt){
 		F_nu_disk_obs= L_nu_Disk_to_F_nu(nuL_nu_disk / pt->nu_Disk_disk_RF[NU_INT], pt-> z_cosm, pt-> dist);
 		pt->nuF_nu_Disk_obs[NU_INT] = F_nu_disk_obs*nu_obs;
 
-		fprintf(fp_SED_disk, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t%4.4e\t%4.4e \n",
-			log10(nu_obs),
-			log10(nu_obs * F_nu_disk_obs),
-			nu_obs,
-			nu_obs*F_nu_disk_obs,
-			pt->nu_Disk_disk_RF[NU_INT],
-			nuL_nu_disk);
-
+		if (pt->WRITE_TO_FILE==1){
+			fprintf(fp_SED_disk, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t%4.4e\t%4.4e \n",
+				log10(nu_obs),
+				log10(nu_obs * F_nu_disk_obs),
+				nu_obs,
+				nu_obs*F_nu_disk_obs,
+				pt->nu_Disk_disk_RF[NU_INT],
+				nuL_nu_disk);
+		}
 
 
 	}
 	pt->L_Disk_radiative = PowerPhotons_disk_rest_frame(pt, pt->nu_Disk_disk_RF, pt->nuF_nu_Disk_obs, pt->NU_INT_MAX_Disk);
-	fclose(fp_SED_disk);
+	
+	if (pt->WRITE_TO_FILE==1){
+		fclose(fp_SED_disk);
+	}
 }
 
 
@@ -576,7 +588,7 @@ void set_Disk(struct spettro *pt){
 	pt->R_inner = pt->R_inner_Sw * pt->R_Sw;
 	//R_ext
 	pt->R_ext = pt->R_ext_Sw * pt->R_Sw;
-	pt->R_Disk_interp = 2.0 * pt->R_ext;
+	pt->R_Disk_interp = pt->EC_field_interp_factor * pt->R_ext;
 	pt->L_Edd = eval_L_Edd(pt->M_BH);
 	pt->accr_rate = eval_accr_rate(pt->L_Disk, pt->accr_eff);
 	pt->accr_Edd = eval_accr_Edd(pt->L_Edd, pt->accr_eff);
@@ -699,34 +711,18 @@ double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_disk_RF)
 
 	c = 1.0;
 	R_H_orig = pt->R_H;
-	if (pt->R_H > pt->R_DT_interp)
+	if (pt->R_H > pt->R_Disk_interp)
 	{
 
-		pt->R_H = pt->R_DT_interp;
-		c = (pt->R_DT_interp / R_H_orig) * (pt->R_DT_interp / R_H_orig);
-		//printf("=>R_H=%e R_H_orig=%e  pt->R_BLR_interp=%e\n",pt->R_H,R_H_orig,pt->R_BLR_interp);
+		pt->R_H = pt->R_Disk_interp;
+		c = (pt->R_Disk_interp / R_H_orig) * (pt->R_Disk_interp / R_H_orig);
 	}
 
 	set_Disk_angles(pt);
 	I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, 100.);
 	pt->R_H = R_H_orig;
-	//printf("=>R_H=%e R_BLR_inter=%e I=%e %e %e c=%e\n ",pt->R_H,pt->R_BLR_interp, I, theta_min, theta_max,c);
 	return I * one_by_four_pi * c;
 
-	/*
-	if (fabs(pt->Disk_mu_2 - 1.0) < pt->delta_mu_EC_point_like)
-	{
-		i = x_to_grid_index(pt->nu_Disk_disk_RF, nu_disk_RF, pt->nu_seed_size);
-		I = pt->L_nu_Disk_disk_RF[i] / (four_pi * pt->R_H * pt->R_H); 
-		I = I * pt->BulkFactor * (1.0 - pt->beta_Gamma * pt->Disk_mu_2);
-	}
-	else
-	{
-		I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, 100.);
-	}
-	//printf("=>R_H=%e I=%e %e %e\n ",pt->R_H, I, theta_min, theta_max);
-	return I * one_by_four_pi;
-	*/
 }
 
 double eval_I_nu_Disk_disk_RF(struct spettro *pt, double nu_disk_RF)
@@ -739,36 +735,17 @@ double eval_I_nu_Disk_disk_RF(struct spettro *pt, double nu_disk_RF)
 
 	c = 1.0;
 	R_H_orig = pt->R_H;
-	if (pt->R_H > pt->R_DT_interp)
+	if (pt->R_H > pt->R_Disk_interp)
 	{
 
-		pt->R_H = pt->R_DT_interp;
-		c = (pt->R_DT_interp / R_H_orig) * (pt->R_DT_interp / R_H_orig);
-		//printf("=>R_H=%e R_H_orig=%e  pt->R_BLR_interp=%e\n",pt->R_H,R_H_orig,pt->R_BLR_interp);
+		pt->R_H = pt->R_Disk_interp;
+		c = (pt->R_Disk_interp / R_H_orig) * (pt->R_Disk_interp / R_H_orig);
 	}
 	set_Disk_angles(pt);
 	I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, 100.);
 	pt->R_H = R_H_orig;
-	//printf("=>R_H=%e R_BLR_inter=%e I=%e %e %e c=%e\n ",pt->R_H,pt->R_BLR_interp, I, theta_min, theta_max,c);
+	//printf("=> R_DT_interp=%e R_H=%e Disk_mu_1=%e Disk_mu_2=%e i=%e \n", pt->R_DT_interp, pt->R_H, pt->Disk_mu_1, pt->Disk_mu_2, I);
 	return I * one_by_four_pi * c;
-	
-	/*
-	i = x_to_grid_index(pt->nu_Disk_disk_RF, nu_disk_RF, pt->nu_seed_size);
-	if (fabs(pt->Disk_mu_2 - 1.0) < pt->delta_mu_EC_point_like)
-	{
-
-		//I = Disk_Spectrum(pt, nu_disk_RF) * pt->L_Disk / (four_pi * pt->R_H * pt->R_H);
-		I = pt->L_nu_Disk_disk_RF[i] / (four_pi * pt->R_H * pt->R_H);
-		//printf("approx\n");
-	}
-	else
-	{
-		I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, 100.);
-	}
-
-	//printf("=>nu=%e R_H=%e I=%e I1=%e %e %e %e %e\n ", nu_disk_RF, pt->R_H, I / (pt->L_nu_Disk_disk_RF[i] / (four_pi * pt->R_H * pt->R_H)), eval_I_nu_theta_Disk (pt,0)/ (pt->L_nu_Disk_disk_RF[i] / (four_pi * pt->R_H * pt->R_H)), pt->Disk_mu_1, pt->Disk_mu_2, pt->Disk_mu_2 - pt->Disk_mu_1, pt->Disk_mu_2 - 1.0);
-	return I * one_by_four_pi;
-	*/
 }
 
 double eval_Disk_L_nu(struct spettro *pt, double nu_Disk_disk_RF)
@@ -825,19 +802,21 @@ void Build_I_nu_BLR(struct spettro *pt){
 	char f_BLR_disk[static_file_name_max_legth];
 	FILE *fp_BLR_disk;
 
-	sprintf(f_BLR_disk, "%s%s-I_nu_BLR.dat",pt->path, pt->STEM);
+	if (pt->WRITE_TO_FILE==1){
+		sprintf(f_BLR_disk, "%s%s-I_nu_BLR.dat",pt->path, pt->STEM);
 
-	fp_BLR_disk = fopen(f_BLR_disk, "w");
-	if (fp_BLR_disk == NULL) {
-		printf("unable to open %s\n ", fp_BLR_disk);
-		exit(1);
+		fp_BLR_disk = fopen(f_BLR_disk, "w");
+		if (fp_BLR_disk == NULL) {
+			printf("unable to open %s\n ", fp_BLR_disk);
+			exit(1);
+		}
 	}
 	//flux_DISK_header(fp_BLR_disk);
 	if (pt->verbose){
 
 		printf("-----------  Building I_nu BLR     ----------- \n");
 	}
-	//set_BLR_geometry(pt);
+	set_BLR_geometry(pt);
 
 	if (pt->tau_BLR>0.9){
 		printf ("!!! Waring, the fraction of L_Disk reaching DT is (1-tau_BLR)\n");
@@ -851,15 +830,17 @@ void Build_I_nu_BLR(struct spettro *pt){
 	pt->nu_start_BLR = eval_nu_min_blob_RF(pt,pt->BLR_mu_1, pt->BLR_mu_2, pt->nu_start_BLR_disk_RF);
 	pt->nu_stop_BLR  = eval_nu_max_blob_RF(pt,pt->BLR_mu_1, pt->BLR_mu_2, pt->nu_stop_BLR_disk_RF);
 
-	pt->R_BLR_interp = 2.0 * pt->R_BLR_out;
+	pt->R_BLR_interp = pt->EC_field_interp_factor * pt->R_BLR_out;
 
 	pt->n0_BLR = pt->tau_BLR / (SIGTH * (pt->R_BLR_out - pt->R_BLR_in));
 	
 
 	if (pt->verbose)
 	{
+		printf("BLR_mu_1=%e BLR_mu_2=%e\n", pt->BLR_mu_1, pt->BLR_mu_2);
+
 		printf("n0_BLR=%e \n", pt->n0_BLR);
-		
+
 		printf("nu_start_BLR_disk_RF=%e  nu_stop_BLR_disk_RF=%e \n",
 				   pt->nu_start_BLR_disk_RF,
 				   pt->nu_stop_BLR_disk_RF);
@@ -907,17 +888,21 @@ void Build_I_nu_BLR(struct spettro *pt){
 					pt->nu_BLR[NU_INT],
 					pt->I_nu_BLR[NU_INT]);
 		}
-		fprintf(fp_BLR_disk, "%4.4e\t %4.4e\t %4.4e\t %4.4e \n",
-			log10(pt->nu_BLR_disk_RF[NU_INT]),
-			log10(pt->I_nu_BLR_disk_RF[NU_INT]),
-			log10(pt->nu_BLR[NU_INT]),
-			log10(pt->I_nu_BLR[NU_INT]));
+		if (pt->WRITE_TO_FILE==1){
 
+			fprintf(fp_BLR_disk, "%4.4e\t %4.4e\t %4.4e\t %4.4e \n",
+				log10(pt->nu_BLR_disk_RF[NU_INT]),
+				log10(pt->I_nu_BLR_disk_RF[NU_INT]),
+				log10(pt->nu_BLR[NU_INT]),
+				log10(pt->I_nu_BLR[NU_INT]));
+		}
 
 
 	}
-
-	fclose(fp_BLR_disk);
+	if (pt->WRITE_TO_FILE == 1)
+	{
+		fclose(fp_BLR_disk);
+	}
 }
 
 
@@ -955,7 +940,7 @@ double eval_I_nu_theta_BLR(struct spettro *pt, double mu)
 	pt->mu_j=mu;
 	
 	eval_l_values_BLR(pt, mu, l_values);
-	I = integrale_simp_struct(pf, pt, 0, l_values[0], 10.)+ integrale_simp_struct(pf, pt, l_values[1], l_values[2], 10.);
+	I = integrale_simp_struct(pf, pt, 0, l_values[0], 20.)+ integrale_simp_struct(pf, pt, l_values[1], l_values[2], 20.);
 	
 	return I;
 }
@@ -1094,6 +1079,41 @@ void eval_l_values_BLR(struct spettro *pt, double mu, double l[])
 	}
 }
 
+void set_BLR_geometry(struct spettro *pt)
+{
+
+	pt->BLR_Volume = (4. / 3.) * pi * ((pt->R_BLR_out * pt->R_BLR_out * pt->R_BLR_out) - (pt->R_BLR_in * pt->R_BLR_in * pt->R_BLR_in));
+	pt->BLR_inner_Surface = 4 * pi * (pt->R_BLR_in * pt->R_BLR_in);
+	pt->Delta_R_BLR = pt->R_BLR_out - pt->R_BLR_in;
+
+	if (pt->R_H < pt->R_BLR_in)
+	{
+		pt->BLR_mu_1 = -1.0;
+		pt->BLR_mu_2 = pt->R_H / sqrt(pt->R_H * pt->R_H + pt->R_ext * pt->R_ext);
+		//pt->BLR_mu_r_J_2 = pt->R_H / sqrt(pt->R_H * pt->R_H + pt->R_ext * pt->R_ext);
+		//pt->BLR_mu_r_J_1 = -1.0;
+		//pt->BLR_geom_factor=(1.0)/(4*pi*4*pi);
+		//pt->BLR_geom_factor*=1.0/(pt->R_BLR_in*pt->R_BLR_in);
+	}
+	else if (pt->R_H >= pt->R_BLR_in && pt->R_H < pt->R_BLR_out)
+	{
+		pt->BLR_mu_1 = -1.0;
+		pt->BLR_mu_2 = pt->R_H / sqrt(pt->R_H * pt->R_H + pt->R_ext * pt->R_ext);
+		//pt->BLR_mu_r_in = sqrt(pt->R_H * pt->R_H - pt->R_BLR_in * pt->R_BLR_in) / pt->R_H;
+		//pt->BLR_mu_r_J_2 = pt->R_H / sqrt(pt->R_H * pt->R_H + pt->R_ext * pt->R_ext);
+		//pt->BLR_mu_r_J_1 = -1.0;
+	}
+	else
+	{
+		pt->BLR_mu_2 = pt->R_H / sqrt(pt->R_H * pt->R_H + pt->R_ext * pt->R_ext);
+		pt->BLR_mu_1 = sqrt(pt->R_H * pt->R_H - pt->R_BLR_out * pt->R_BLR_out) / pt->R_H;
+		//pt->BLR_mu_r_in = sqrt(pt->R_H * pt->R_H - pt->R_BLR_in * pt->R_BLR_in) / pt->R_H;
+		//pt->BLR_mu_r_J_1 = pt->BLR_mu_1;
+		//pt->BLR_mu_r_J_2 = pt->BLR_mu_2;
+		//pt->BLR_geom_factor=(1.0)/(4*pi*4*pi);
+		//pt->BLR_geom_factor*=1.0/(pt->R_BLR_in*pt->R_BLR_in);
+	}
+}
 
 //=========================================================================================
 
@@ -1106,15 +1126,18 @@ void Build_I_nu_DT(struct spettro *pt){
 	double nu_obs;
 	double nuL_nu_DT,F_nu_DT_obs;
 
-	sprintf(f_SED_DT, "%s%s-SED-DT.dat",
-	            pt->path, pt->STEM);
 
-	fp_SED_DT = fopen(f_SED_DT, "w");
-	if (fp_SED_DT == NULL) {
-		printf("unable to open %s\n ", f_SED_DT);
-		exit(1);
+	if (pt->WRITE_TO_FILE==1){
+		sprintf(f_SED_DT, "%s%s-SED-DT.dat",
+					pt->path, pt->STEM);
+
+		fp_SED_DT = fopen(f_SED_DT, "w");
+		if (fp_SED_DT == NULL) {
+			printf("unable to open %s\n ", f_SED_DT);
+			exit(1);
+		}
+		flux_DISK_header(fp_SED_DT);
 	}
-	flux_DISK_header(fp_SED_DT);
 
 	if (pt->verbose){
 
@@ -1156,7 +1179,7 @@ void Build_I_nu_DT(struct spettro *pt){
 	NU_INT_MAX = pt->nu_seed_size-1;
 	pt->NU_INT_MAX_DT = NU_INT_MAX;
 
-	pt->R_DT_interp = 2.0 * pt->R_DT;
+	pt->R_DT_interp = pt->EC_field_interp_factor * pt->R_DT;
 
 	pt->DT_Volume=(4./3.)*pi*pt->R_DT*pt->R_DT*pt->R_DT;
 
@@ -1208,17 +1231,19 @@ void Build_I_nu_DT(struct spettro *pt){
 				pt->nu_DT[NU_INT],
 				pt->I_nu_DT[NU_INT]);
 		}
-		fprintf(fp_SED_DT, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t%4.4e\t%4.4e \n",
-								log10(nu_obs),
-								log10(nu_obs * F_nu_DT_obs),
-								nu_obs,
-								nu_obs*F_nu_DT_obs,
-								pt->nu_DT_disk_RF[NU_INT],
-								nuL_nu_DT);
+		if (pt->WRITE_TO_FILE==1){
+			fprintf(fp_SED_DT, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t%4.4e\t%4.4e \n",
+									log10(nu_obs),
+									log10(nu_obs * F_nu_DT_obs),
+									nu_obs,
+									nu_obs*F_nu_DT_obs,
+									pt->nu_DT_disk_RF[NU_INT],
+									nuL_nu_DT);
+		}
 	}
-
-	fclose(fp_SED_DT);
-
+	if (pt->WRITE_TO_FILE==1){
+		fclose(fp_SED_DT);
+	}
 
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->n_DT[NU_INT] =I_nu_to_n(pt->I_nu_DT[NU_INT], pt->nu_DT[NU_INT]);

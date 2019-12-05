@@ -86,6 +86,7 @@ struct spettro {
     int START_FILE;
     int Num_file;
     int SSC, EC, TOT;
+    int WRITE_TO_FILE;
 
     int do_Sync, do_SSC,do_IC,Sync_kernel;
     //int attesa_Sync_cooling, attesa_compton_cooling;
@@ -262,7 +263,7 @@ struct spettro {
     double nu_planck_max_factor;
     double mono_planck_min_factor;
     double mono_planck_max_factor;
-    //double delta_mu_EC_point_like;
+    double EC_field_interp_factor;
 
     double nu_blob_RF;
     double nu_disk_RF;
@@ -415,8 +416,8 @@ struct spettro {
     double n0_BLR;
     double mu_j;
     double BLR_mu_1, BLR_mu_2;
-    double BLR_mu_r_J_1,BLR_mu_r_J_2;
-    double BLR_mu_r_in;
+    //double BLR_mu_r_J_1,BLR_mu_r_J_2;
+    //double BLR_mu_r_in;
     double BLR_inner_Surface;
     double Delta_R_BLR;
     //double BLR_geom_factor;
@@ -988,7 +989,7 @@ void eval_l_values_BLR(struct spettro *pt, double mu, double l[]);
 double eval_Lnu_BLR_disk_RF(struct spettro *pt, double nu_disk_RF);
 //double integrand_J_nu_BLR_disk_RF(struct spettro *pt, double mu);
 //double integrand_I_nu_BLR_blob_RF(struct spettro *pt, double mu);
-//void set_BLR_geometry(struct spettro *pt);
+void set_BLR_geometry(struct spettro *pt);
 //double l_BLR(struct spettro *pt, double mu);
 
 /***  FUNCTIONS Seed Photons EC DT  ***/

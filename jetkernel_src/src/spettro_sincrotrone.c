@@ -56,15 +56,16 @@ void spettro_sincrotrone(int Num_file, struct spettro * pt) {
     // SCRITTURA HEADER FILES
     //=======================================================
    
-    if (pt->OUT_FILE) {
+    if (pt->OUT_FILE==1 && pt->WRITE_TO_FILE) {
         sprintf(f_Synch, "%s%s-Sync.dat", pt->path, pt->STEM);
         fp_Synch = fopen(f_Synch, "w");
         if (fp_Synch == NULL) {
             printf("warning non riesco ad aprire %s\n", f_Synch);
             exit(1);
         }
+        flux_header(fp_Synch);
     }
-    flux_header(fp_Synch);
+    
 
     //=================== FINE  SCRITTURA NOME FILE ED APERTURA =============
 
@@ -199,7 +200,8 @@ void spettro_sincrotrone(int Num_file, struct spettro * pt) {
         //===========================================
         // FILES output nu dnu nuFnu dnuFnu
         //==========================================
-        if (pt->OUT_FILE && !stop) {
+        if (pt->OUT_FILE && !stop && pt->WRITE_TO_FILE)
+        {
             if (pt->nuF_nu_Sync_obs[NU_INT] > pt->emiss_lim) {
                 fprintf(fp_Synch, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t%4.4e\t%4.4e\t%4.4e\t%4.4e \n",
                         log10(pt->nu_Sync_obs[NU_INT]),
@@ -212,17 +214,7 @@ void spettro_sincrotrone(int Num_file, struct spettro * pt) {
                         pt->nu_Sync[NU_INT] * I_nu_to_L_nu_blob(pt->I_nu_Sync[NU_INT], pt->Surf_sphere));
             }
         }
-/*
-        printf("%4.4e\t %4.4e\t %4.4e\t %4.4e\t%4.4e\t%4.4e\t%4.4e\t%4.4e \n",
-                        log10(nu_obs),
-                        log10(pt->nuF_nu_Sync_obs[NU_INT]),
-                        nu_obs,
-                        pt->nuF_nu_Sync_obs[NU_INT],
-                        nu_src,
-                        nuL_nu_Sync,
-                        nu,
-                        nu * I_nu_to_L_nu_blob(pt->I_nu_Sync[NU_INT], pt->Surf_sphere));
-*/
+
     }
 
     //Se ancora non ha trovato nu_stop
@@ -255,7 +247,8 @@ void spettro_sincrotrone(int Num_file, struct spettro * pt) {
     //=========================
     //       chiusura file
     //=========================
-    if (pt->OUT_FILE) {
+    if (pt->OUT_FILE && pt->WRITE_TO_FILE)
+    {
         fclose(fp_Synch);
     }
 
