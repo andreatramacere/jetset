@@ -373,14 +373,14 @@ class  PlotSED (object):
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True):
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,frame='obs'):
         try:
-            # print "a"
-            x, y = model.get_model_points(log_log=True)
+            #print( "a")
+            x, y = model.get_model_points(log_log=True,frame=frame)
         except:
             try:
                 # print "b"
-                x, y = model.SED.get_model_points(log_log=True)
+                x, y = model.SED.get_model_points(log_log=True,frame=frame)
             except Exception as e:
 
                 print(model, "!!! Error has no SED instance or something wrong in get_model_points()")

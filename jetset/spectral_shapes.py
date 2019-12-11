@@ -5,9 +5,9 @@ from builtins import (bytes, str, open, super, range,
 
 __author__ = "Andrea Tramacere"
 
-from numpy import  array,zeros,log10
+import numpy as np
 from astropy import units
-
+from .frame_converter import  convert_nuFnu_to_nuLnu_src, convert_nu_to_src
 
 __all__=['SED']
 
@@ -19,21 +19,45 @@ class SED(object):
     """
     Class handling the SED 
     """
-    def __init__(self,name=None,nu=None,nuFnu=None,nu_residuals=None,residuals=None):
+    def __init__(self,name=None,
+                 nu=None,
+                 nuFnu=None,
+                 nu_residuals=None,
+                 residuals=None,
+                 nu_src_residuals=None,
+                 nuLnu_src_residuals=None,
+                 dl=None,
+                 z=None,
+                 log_log=False):
+
         self.name=name
 
         self._nu_units=units.Hz
         self._nuFnu_units=units.erg/units.cm**2/units.s
 
-        #if nu is not None:
-        self.nu=nu
+        self._nu_src_units=units.Hz
+        self._nuLnu_src_units = units.erg/units.s
 
-        #if nuFnu  is not None:
-        self.nuFnu=nuFnu
-        
+
+
+        self.nu=(nu)
+
+        self.nuFnu=(nuFnu)
+
+        self._loglog=log_log
+
+        if z is not None and dl is not None:
+
+            self.nu_src= z
+
+            #print('1')
+            self.nuLnu_src = (z,dl)
+
         self.nu_residuals=nu_residuals
         self.residuals=residuals
 
+        self.nu_src_residuals = nu_src_residuals
+        self.nuLnu_src_residuals = nuLnu_src_residuals
 
     @property
     def nu(self):
@@ -59,24 +83,59 @@ class SED(object):
         else:
             self._nuFnu = nuFnu * self._nuFnu_units
 
+    @property
+    def nu_src(self):
+        return self._nu_src
 
-
-    def get_model_points(self,log_log=False):
-    
- 
-        if log_log==False:
-            
-            return self.nu.value,self.nuFnu.value
-        
+    @nu_src.setter
+    def nu_src(self, z):
+        if self._nu is None:
+            self._nu_src = self._nu
         else:
-        
-            msk=self.nuFnu.value>0
-            
-            y=log10(self.nuFnu[msk].value)
+            if self._loglog is True:
+                self._nu_src =np.log10( convert_nu_to_src(10**(self._nu.value),z,in_frame='obs') )* self._nu_units
+            else:
+                self._nu_src = convert_nu_to_src(self._nu.value,z,in_frame='obs') * self._nu_units
 
-            x=log10(self.nu[msk].value)
+
+    @property
+    def nuLnu_src(self):
+        return self._nuLnu
+
+    @nuLnu_src.setter
+    def nuLnu_src(self, t):
+        z,dl=t
+        #print('2')
+        #print('->',t,z,dl,self._loglog)
+        if self._nuFnu is None:
+            self._nuLnu = None
+        else:
+            if self._loglog is True:
+                self._nuLnu =np.log10( convert_nuFnu_to_nuLnu_src(10**(self._nuFnu.value),z,'obs',dl)) * self._nuLnu_src_units
+            else:
+                self._nuLnu = convert_nuFnu_to_nuLnu_src(self._nuFnu.value, z, 'obs', dl) * self._nuLnu_src_units
+
+
+
+
+    def get_model_points(self,log_log=False,frame='obs'):
+
+        if frame == 'obs':
+            x, y = self.nu.value, self.nuFnu.value
+        elif frame == 'src':
+            x, y = self.nu_src.value, self.nuLnu_src.value
+        else:
+            raise RuntimeError('frame ', frame, 'not allowed (obs/src)')
+
+        if log_log==True:
+
+            msk=y>0
+            
+            y=np.log10(x[msk])
+
+            x=np.log10(y[msk])
         
-        return x,y
+        return x, y
 
     def get_residuals(self, log_log=False):
 
@@ -86,15 +145,16 @@ class SED(object):
         if log_log == False:
             return nu_residuals, residuals
         else:
-            return nu_residuals, log10(residuals)
+            return nu_residuals, np.log10(residuals)
 
-    def fill(self,nu=None,nuFnu=None,nu_residuals=None,residuals=None):
-        
+    def fill(self,nu=None,nuFnu=None,nu_residuals=None,residuals=None,log_log=False):
+
+        self._loglog=log_log
         #if nu is not None:
-        self.nu=nu
+        self.nu=(nu)
         
         #if nuFnu is not None:
-        self.nuFnu=nuFnu
+        self.nuFnu=(nuFnu)
          
         if residuals is not None:
             
@@ -103,7 +163,21 @@ class SED(object):
         if nu_residuals is not None:
             
             self.nu_residuals=nu_residuals
-            
+
+    def fill_nuLnu(self, nu_src_residuals=None, nuLnu_src_residuals=None, z=None, dl=None):
+
+
+        if z is not None and dl is not None:
+
+            self.nu_src = (z)
+
+            self.nuLnu_src = (z,dl)
+
+        if nuLnu_src_residuals is not None:
+            self.nuLnu_src_residuals = nuLnu_src_residuals
+
+        if nu_src_residuals is not None:
+            self.nu_src_residuals = nu_src_residuals
             
 #
 # class poly_shape(object):

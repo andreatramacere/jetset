@@ -75,7 +75,7 @@ All the dependencies can be installed following the Anaconda method
  - ##### Install requirements 
     
     run on the command line:
-    - `conda config --add channels astropy` 
+   # - `conda config --add channels astropy` 
     - `conda install --file requirements.txt`
 
     if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)

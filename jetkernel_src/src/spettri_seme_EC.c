@@ -819,11 +819,11 @@ void Build_I_nu_BLR(struct spettro *pt){
 	}
 	set_BLR_geometry(pt);
 
-	if (pt->tau_BLR>0.9){
-		printf ("!!! Waring, the fraction of L_Disk reaching DT is (1-tau_BLR)\n");
-		printf ("!!! if tau_BLR=1.0 no DT photons will be generated\n");
+	//if (pt->tau_BLR>0.9){
+	//	printf ("!!! Waring, the fraction of L_Disk reaching DT is (1-tau_BLR)\n");
+	//	printf ("!!! if tau_BLR=1.0 no DT photons will be generated\n");
 
-	}
+	//}
 
 	pt->nu_start_BLR_disk_RF=pt->nu_Disk_disk_RF[0];
 	pt->nu_stop_BLR_disk_RF=pt->nu_Disk_disk_RF[pt->NU_INT_MAX_Disk];
@@ -1135,6 +1135,7 @@ void Build_I_nu_DT(struct spettro *pt){
 	FILE *fp_SED_DT;
 	char f_SED_DT[static_file_name_max_legth];
 	unsigned long NU_INT,NU_INT_MAX;
+	double I_nu_theta_disk_RF, I_nu_theta_blob_RF;
 	double nu_peak_DT_disk_RF,nu_torus_disk_RF;
 	double nu_start_DT_disk_RF,nu_stop_DT_disk_RF;
 	double nu_obs;
@@ -1159,11 +1160,11 @@ void Build_I_nu_DT(struct spettro *pt){
 	}
 
 
-	if (pt->tau_BLR>0.9){
-			printf ("!!! Waring, the fraction of L_Disk reaching DT is (1-tau_BLR)\n");
-			printf ("!!! if tau_BLR=1.0 no DT photons will be generated\n");
+	//if (pt->tau_BLR>0.9){
+	//		printf ("!!! Waring, the fraction of L_Disk reaching DT is (1-tau_BLR)\n");
+	//		printf ("!!! if tau_BLR=1.0 no DT photons will be generated\n");
 
-	}
+	//}
 
 	nu_peak_DT_disk_RF=eval_nu_peak_planck(pt->T_DT);
 
@@ -1193,17 +1194,23 @@ void Build_I_nu_DT(struct spettro *pt){
 	NU_INT_MAX = pt->nu_seed_size-1;
 	pt->NU_INT_MAX_DT = NU_INT_MAX;
 
-	pt->R_DT_interp_val = pt->R_DT* 5.0;
-	pt->R_DT_interp_start = pt->R_DT * 5.0;
+	pt->R_DT_interp_val = pt->R_DT* 10.0;
+	pt->R_DT_interp_start = pt->R_DT * 10.0;
 
 	pt->DT_Volume=(4./3.)*pi*pt->R_DT*pt->R_DT*pt->R_DT;
+
+	//This is evaluating the angular pattern
+	//It does not depends on frequency, because each region
+	//is emitting the same spectrum
+	I_nu_theta_disk_RF = eval_I_nu_DT_disk_RF(pt);
+	I_nu_theta_blob_RF = eval_I_nu_DT_blob_RF(pt);
 
 	build_log_grid( nu_start_DT_disk_RF,  nu_stop_DT_disk_RF, pt->nu_seed_size, pt->nu_DT_disk_RF);
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->L_nu_DT_disk_RF[NU_INT] = eval_DT_L_nu(pt, pt->nu_DT_disk_RF[NU_INT]);
 	}
 	for (NU_INT = 0; NU_INT <= NU_INT_MAX; NU_INT++){
-		pt->I_nu_DT_disk_RF[NU_INT] = eval_I_nu_DT_disk_RF(pt, pt->nu_DT_disk_RF[NU_INT]);		
+		pt->I_nu_DT_disk_RF[NU_INT] = I_nu_theta_disk_RF * pt->L_nu_DT_disk_RF[NU_INT];
 	}
 
 
@@ -1215,7 +1222,7 @@ void Build_I_nu_DT(struct spettro *pt){
 
 		pt->nu_DT_obs[NU_INT]=nu_obs;
 
-		pt->I_nu_DT[NU_INT] = eval_I_nu_DT_blob_RF(pt, pt->nu_DT_disk_RF[NU_INT]);
+		pt->I_nu_DT[NU_INT] = I_nu_theta_disk_RF*pt->L_nu_DT_disk_RF[NU_INT];
 		pt->n_DT[NU_INT] =I_nu_to_n(pt->I_nu_DT[NU_INT], pt->nu_DT[NU_INT]);
 		//EC with n(gamma) transf
 		pt->n_DT_DRF[NU_INT] = I_nu_to_n(pt->I_nu_DT_disk_RF[NU_INT], pt->nu_DT_disk_RF[NU_INT]);
@@ -1229,13 +1236,13 @@ void Build_I_nu_DT(struct spettro *pt){
 			pt->n_DT[NU_INT] =I_nu_to_n(pt->I_nu_DT[NU_INT], pt->nu_DT[NU_INT]);
 		}
 
-
-		if (pt->tau_BLR<1.0){
-			nuL_nu_DT = pt->L_nu_DT_disk_RF[NU_INT] * pt->nu_DT_disk_RF[NU_INT];
-		}
-		else {
-			nuL_nu_DT = 0;
-		}
+		nuL_nu_DT = pt->L_nu_DT_disk_RF[NU_INT] * pt->nu_DT_disk_RF[NU_INT];
+		//if (pt->tau_BLR<1.0){
+		//	nuL_nu_DT = pt->L_nu_DT_disk_RF[NU_INT] * pt->nu_DT_disk_RF[NU_INT];
+		//}
+		//else {
+		//	nuL_nu_DT = 0;
+		//}
 		F_nu_DT_obs = L_nu_Disk_to_F_nu(nuL_nu_DT / pt->nu_DT_disk_RF[NU_INT], pt-> z_cosm, pt-> dist);
 
 		pt->nuF_nu_DT_obs[NU_INT] = F_nu_DT_obs*nu_obs;
@@ -1294,13 +1301,13 @@ double j_nu_DT_integrand(struct spettro *pt, double l)
 double eval_I_nu_theta_DT(struct spettro *pt, double mu)
 {
 	//double (*pf)(struct spettro *, double x);
-	unsigned long i;
+	//unsigned long i;
 	double l, I;
 	//l = eval_l_DT(pt, mu);
 	//pf = &j_nu_DT_integrand;
 	pt->mu_j = mu;
-	i = x_to_grid_index(pt->nu_DT_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
-	I = pt->L_nu_DT_disk_RF[i] / (4 * pi * 4 * pi * pt->R_DT * pt->R_DT);
+	//i = x_to_grid_index(pt->nu_DT_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
+	I =1.0 / (4 * pi  * pi * pt->R_DT * pt->R_DT);
 	//I = integrale_simp_struct(pf, pt, 0, l, pt->l_n_int);
 	return I;
 }
@@ -1317,21 +1324,19 @@ double integrand_I_nu_DT_disk_RF(struct spettro *pt, double theta)
 	return 2 * pi * sin(theta) * eval_I_nu_theta_DT(pt, cos(theta));
 }
 
-double eval_I_nu_DT_disk_RF(struct spettro *pt, double nu_disk_RF)
+double eval_I_nu_DT_disk_RF(struct spettro *pt )
 {
 	double (*pf)(struct spettro *, double x);
 	double theta_min, theta_max, I, R_H_orig, c;
 
 	
-	pt->nu_disk_RF = nu_disk_RF;
+	//now integrating only over angles
+	//not needed anymore
+	//pt->nu_disk_RF = nu_disk_RF;
+
 	pf = &integrand_I_nu_DT_disk_RF;
 
-	//theta_min = 0.0;
-	//theta_max = eval_theta_max_DT(pt);
-
-	//I = integrale_simp_struct(pf, pt, theta_min, theta_max, 100.);
-	//printf("=>R_H=%e I=%e %e %e\n ",pt->R_H, I, theta_min, theta_max);
-
+	
 	c = 1.0;
 	R_H_orig = pt->R_H;
 	if (pt->R_H > pt->R_DT_interp_start)
@@ -1348,13 +1353,15 @@ double eval_I_nu_DT_disk_RF(struct spettro *pt, double nu_disk_RF)
 	return I * one_by_four_pi * c;
 }
 
-double eval_I_nu_DT_blob_RF(struct spettro *pt, double nu_disk_RF)
+double eval_I_nu_DT_blob_RF(struct spettro *pt )
 {
 	double (*pf)(struct spettro *, double x);
 	double theta_min, theta_max, I, R_H_orig, c;
-	// we use directly nu_disk_RF
-	// because we integrate the I' expressed as I
-	pt->nu_disk_RF = nu_disk_RF;
+
+	//now integrating only over angles
+	//not needed anymore
+	//pt->nu_disk_RF = nu_disk_RF;
+
 	pf = &integrand_I_nu_DT_blob_RF;
 
 	c=1.0;

@@ -67,13 +67,13 @@ def convert_nu_to_src(nu,z,in_frame):
 
 def convert_nuFnu_to_nuLnu_src(nuFnu,z,in_frame,dl):
     if in_frame == "obs":
-        z_c = z
+       c=4.0*np.pi*dl**2
     elif in_frame == "src":
-        z_c = 0
+        c=1.0
     else:
         raise RuntimeError("reference frame keyword not valid %s" % in_frame)
 
-    return 4.0*np.pi*dl**2
+    return c*nuFnu
 
 
 

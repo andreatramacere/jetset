@@ -23,7 +23,6 @@ import json
 import sys
 
 
-
 class CustomBuild(build):
     def run(self):
         print('----> custom build')
@@ -108,7 +107,6 @@ with open('jetset/pkg_info.json') as fp:
     _info = json.load(fp)
 
 __version__ = _info['version']
-
 
 
 

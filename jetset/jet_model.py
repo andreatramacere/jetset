@@ -22,6 +22,7 @@ import numpy as np
 from numpy import log10,array,zeros,power,shape
 
 from scipy.interpolate import interp1d
+from astropy.table import Table
 
 #import jet_wrapper
 #try:
@@ -201,12 +202,21 @@ def build_emitting_region_dic(beaming_expr='delta'):
     return model_dic
     
 
+def BLR_constraints(L_Disk):
+    r1_min = 1E17 * (L_Disk / 1E45) ** 0.5
+    r2_min = r1_min * 1.01
+    r2_max = r1_min * 2
+    return r1_min, r2_min, r2_max
 
 
 
-def build_ExtFields_dic(EC_model_list,allowed_EC_components_list):
+def DT_constraints(L_Disk):
+    return 1E18 * (L_Disk / 1E45) ** 0.5
+
+def build_ExtFields_dic(EC_model_list,allowed_EC_components_list,L_Disk):
     """
-    """
+
+        """
     
 
         
@@ -215,12 +225,13 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list):
 
     for EC_model in EC_model_list:
 
-        print('EC_model',EC_model)
+        #print('EC_model',EC_model)
         #if EC_model not in allowed_EC_components_list:
         #   raise RuntimeError("EC model %s not allowed"%EC_model,"please choose among ", allowed_EC_components_list)
      
      
         if 'Disk' in EC_model:
+
             model_dic['L_Disk']=['Disk',0,None,'erg/s']
             model_dic['R_inner_Sw']=['Disk',0,None,'Sw. radii']
             model_dic['R_ext_Sw']=['Disk',0,None,'Sw. radii']
@@ -228,17 +239,18 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list):
             model_dic['accr_eff']=['Disk',0,None,'']
             model_dic['R_H']=['Disk',0,None,'cm']
             model_dic['M_BH'] = ['Disk', 0, None, 'M_sun']
-                    
+
         if 'BLR' in EC_model:
+            r1_BLR_min, r2_BLR_min, r2_BLR_max = BLR_constraints(L_Disk)
             model_dic['tau_BLR']=['BLR',0.0,1.0,'']
-            model_dic['R_BLR_in']=['BLR',0,None,'cm']
-            model_dic['R_BLR_out']=['BLR',0,None,'cm']
+            model_dic['R_BLR_in']=['BLR',r1_BLR_min,None,'cm',True]
+            model_dic['R_BLR_out']=['BLR',r2_BLR_min,r2_BLR_max,'cm',True]
     
     
             
         if 'DT' in EC_model:
             model_dic['T_DT']=['DT',0.0,None,'K']
-            model_dic['R_DT']=['DT',0.0,None,'cm']
+            model_dic['R_DT']=['DT',DT_constraints(L_Disk),None,'cm',True]
             model_dic['tau_DT']=['DT',0.0,1.0,'']
             model_dic['R_H'] = ['Disk', 0, None, 'cm']
     
@@ -515,7 +527,7 @@ class JetSeedPhotons(object):
 
         self.fill(emiss_lim=self._blob_object.emiss_lim)
 
-    def fill(self,log_log=False,emiss_lim=None):
+    def fill(self,log_log=False,emiss_lim=0):
         self.nu,self.n=self.get_spectral_points(log_log=log_log,emiss_lim=emiss_lim)
 
     def get_spectral_points(self,log_log=False,emiss_lim=0):
@@ -530,7 +542,7 @@ class JetSeedPhotons(object):
             x[i]=BlazarSED.get_spectral_array(self.nu_ptr,self._blob_object,i)
             y[i]=BlazarSED.get_spectral_array(self.n_ptr,self._blob_object,i)
 
-            #print("%e %e"%(x[i],y[i]))
+            #print("->%e %e"%(x[i],y[i]))
 
         msk_nan=np.isnan(x)
         msk_nan+=np.isnan(y)
@@ -574,10 +586,19 @@ class JetSeedPhotons(object):
 class JetSpecComponent(object):
     """
     """
-    def __init__(self,name,blob_object,var_name=None,state_dict=None,state=None):
+
+    def __repr__(self):
+        return str(self.show())
+
+    #def __str__(self):
+    #    return str(self.show())
+
+
+    def __init__(self,jet_obj,name,blob_object,var_name=None,state_dict=None,state=None):
         
         self.name=name
-        
+        self.jet_obj=jet_obj
+
         self._blob_object=blob_object
         self._nuFnu_name, self._nu_name=nuFnu_obs_dic[self.name]
         
@@ -586,6 +607,8 @@ class JetSpecComponent(object):
         self.nu_ptr=getattr(blob_object,self._nu_name)
     
         self.SED=spectral_shapes.SED(name=self.name)
+        self.seed_field=None
+        #print('->',name,n_seed_dic.keys())
         if name in n_seed_dic.keys():
             self.seed_field=JetSeedPhotons(name,blob_object)
 
@@ -608,13 +631,72 @@ class JetSpecComponent(object):
         if state is not None and self._state_dict != {}:
             self.state=state
 
+    def get_emiss_lim(self,seed=False):
+        return self._blob_object.emiss_lim
+
+
+    def fill_SED(self,log_log=False):
+
+        x,y=self.get_SED_points( log_log=log_log)
+
+        self.SED.fill(nu=x,nuFnu=y,log_log=log_log)
+        self.SED.fill_nuLnu(z=self.jet_obj.get_par_by_type('redshift').val,dl=self.jet_obj.get_DL_cm())
+
+        if self.seed_field is not None:
+            self.seed_field.fill(log_log=log_log)
+
+
+
+    def get_SED_points(self, log_log=False):
+
+        size = self._blob_object.nu_grid_size
+        x = zeros(size)
+        y = zeros(size)
+
+        for i in range(size):
+            x[i] = BlazarSED.get_spectral_array(self.nu_ptr, self._blob_object, i)
+            y[i] = BlazarSED.get_spectral_array(self.nuFnu_ptr, self._blob_object, i)
+
+
+        msk_nan = np.isnan(x)
+        msk_nan += np.isnan(y)
+
+        x[msk_nan] = 0.
+        y[msk_nan] = self.get_emiss_lim()
+
+        msk = y < self.get_emiss_lim()
+
+        y[msk] = self.get_emiss_lim()
+
+        if log_log == True:
+            msk = y <= 0.
+            y[msk] = self.get_emiss_lim()
+
+            x = log10(x)
+            y = log10(y)
+
+        return x, y
+
+
+
+
+    def update(self):
+        size = self._blob.nu_grid_size
+        x = zeros(size)
+        y = zeros(size)
+
+        for i in range(size):
+            x[i] = BlazarSED.get_spectral_array(self.nu_ptr, self._blob, i)
+            y[i] = BlazarSED.get_spectral_array(self.nuFnu_ptr, self._blob, i)
+
+
     def show(self):
         print('name     :',self.name)
         print('var name :',self._var_name)
         print('state    :',self._state)
         if self._state_dict is not None:
             print('allowed states :',[k for k in self._state_dict.keys()])
-        #print('var value',self.get_var_state())
+
 
     @property
     def state(self,):
@@ -712,12 +794,47 @@ class TempEvol(object):
 
 class SpecCompList(object):
 
-    def __init__(self):
-        """
-        this class is just a place holder
-        do not remove it!
-        """
-        pass
+    def __init__(self,sc_list):
+        self._sc_list=sc_list
+        self._table=None
+
+
+    def show(self):
+        for sc in self._sc_list:
+            sc.show()
+
+    def __repr__(self):
+        return str(self.show())
+
+    def build_table(self, restframe='obs'):
+
+        _names = ['nu']
+        _cols=[]
+        if restframe=='obs':
+           _cols.append(self._sc_list[0].SED.nu)
+        elif restframe=='src':
+            _cols.append(self._sc_list[0].SED.nu_src)
+        else:
+            raise RuntimeError('rest frame',restframe,'not allowed, src or obs')
+
+        for ID,sc in enumerate(self._sc_list):
+            _names.append(sc.name)
+            if restframe == 'obs':
+                _cols.append(sc.SED.nuFnu)
+            else:
+                _cols.append(sc.SED.nuLnu_src)
+
+
+
+        _meta=dict(src_name=sc.jet_obj.name)
+        _meta['redshift']=sc.jet_obj.get_par_by_type('redshift').val
+        _meta['restframe']= restframe
+        self._table = Table(_cols, names=_names,meta=_meta)
+
+    @property
+    def table(self):
+        return self._table
+
 
 
 class Jet(Model):
@@ -738,6 +855,11 @@ class Jet(Model):
 
 
     """
+    def __repr__(self):
+        return str(self.show_model())
+
+    #def __str__(self):
+    #    return str(self.show_model())
 
     def __init__(self,name='test',
                  electron_distribution='pl',
@@ -797,7 +919,7 @@ class Jet(Model):
         self.spectral_components_list=[]
 
 
-        self.spectral_components=SpecCompList()
+        self.spectral_components=SpecCompList(self.spectral_components_list)
         self.add_basic_components()
 
 
@@ -998,7 +1120,7 @@ class Jet(Model):
 
             print ("comp: %s "%(comp.name))
 
-        print
+        print()
 
 
 
@@ -1058,13 +1180,13 @@ class Jet(Model):
 
     def _add_spectral_component(self, name, var_name=None, state_dict=None,state=None):
 
-        self.spectral_components_list.append(JetSpecComponent(name, self._blob, var_name=var_name, state_dict=state_dict,state=state))
+        self.spectral_components_list.append(JetSpecComponent(self,name, self._blob, var_name=var_name, state_dict=state_dict,state=state))
         setattr(self.spectral_components,name,self.spectral_components_list[-1])
 
     def _update_spectral_components(self):
         _l=[]
         for ID,s in enumerate(self.spectral_components_list):
-            self.spectral_components_list[ID]=JetSpecComponent(s.name, self._blob, var_name=s._var_name, state_dict=s._state_dict,state=s.state)
+            self.spectral_components_list[ID]=JetSpecComponent(self,s.name, self._blob, var_name=s._var_name, state_dict=s._state_dict,state=s.state)
             setattr(self.spectral_components, self.spectral_components_list[ID].name, self.spectral_components_list[ID])
 
 
@@ -1319,6 +1441,9 @@ class Jet(Model):
 
     def add_EC_component(self,EC_components_list):
 
+        self._blob.R_BLR_in, self._blob.R_BLR_out, _=BLR_constraints(self._blob.L_Disk)
+        self._blob.R_BLR_DT=DT_constraints(self._blob.L_Disk)
+
         if isinstance(EC_components_list, six.string_types):
             EC_components_list=[EC_components_list]
 
@@ -1398,7 +1523,7 @@ class Jet(Model):
 
 
 
-        self.add_par_from_dic(build_ExtFields_dic(self.EC_components_list,self._allowed_EC_components_list))
+        self.add_par_from_dic(build_ExtFields_dic(self.EC_components_list,self._allowed_EC_components_list,self._blob.L_Disk))
 
 
 
@@ -1756,7 +1881,7 @@ class Jet(Model):
 
         print("-------------------------------------------------------------------------------------------------------------------")
 
-    def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-'):
+    def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-',frame='obs'):
         if plot_obj is None:
             plot_obj=PlotSED(sed_data=sed_data)
 
@@ -1776,16 +1901,16 @@ class Jet(Model):
             else:
                 comp_label=None
             if c.state!='off':
-                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label)
+                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label,frame=frame)
 
         else:
             for c in self.spectral_components_list:
                 comp_label = c.name
                 if auto_label is not True:
                     comp_label=label
-                print('comp label',comp_label)
+                #print('comp label',comp_label)
                 if c.state != 'off' and c.name!='Sum':
-                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color)
+                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color,frame=frame)
 
 
             c=self.get_spectral_component_by_name('Sum')
@@ -1794,7 +1919,7 @@ class Jet(Model):
             else:
                 comp_label='Sum'
 
-            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color)
+            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color,frame=frame)
 
         return plot_obj
 
@@ -1835,7 +1960,8 @@ class Jet(Model):
         if phys_output==True:
             BlazarSED.EnergeticOutput(self._blob)
 
-        nu_sed_sum,nuFnu_sed_sum= self.get_SED_points()
+        nu_sed_sum,nuFnu_sed_sum= self.spectral_components.Sum.get_SED_points()
+        #self.get_SED_points()
         #print('nu_sed_sum,nuFnu_sed_sum',nu_sed_sum,nuFnu_sed_sum)
 
 
@@ -1846,9 +1972,9 @@ class Jet(Model):
             for i in range(len(self.spectral_components_list)):
 
                 #print ('fill name',self.spectral_components_list[i].name)
-                nu_sed,nuFnu_sed= self.get_SED_points(name=self.spectral_components_list[i].name)
-
-                self.spectral_components_list[i].SED.fill(nu=nu_sed, nuFnu=nuFnu_sed)
+                #nu_sed,nuFnu_sed= self.get_SED_points(name=self.spectral_components_list[i].name)
+                #self.spectral_components_list[i].SED.fill(nu=nu_sed, nuFnu=nuFnu_sed)
+                self.spectral_components_list[i].fill_SED()
 
         if nu is None:
 
@@ -2033,7 +2159,7 @@ class Jet(Model):
                 raise ValueError
 
         else:
-            x,y=self.get_SED_points(log_log=log_log)
+            x,y=self.spectral_components.Sum.get_SED_points(log_log=log_log)
             msk1=x>freq_range[0]
             msk2=x<freq_range[1]
             #print x,freq_range,x[msk1*msk2]

@@ -4,16 +4,17 @@ from builtins import (bytes, str, open, super, range,
                       zip, round, input, int, pow, object, map, zip)
 
 import  numpy as np
-
-
+from astropy.table import Table
+from astropy import  units as u
 
 __all__=['ModelParameter','ModelParameterArray','Value']
 
 class Value(object):
 
-    def __init__(self,val,islog=False):
-        self._val=val
-        self._islog=islog
+    def __init__(self,val,units,islog=False):
+        self.val=val
+        self.islog=islog
+        self.units=units
 
     def __repr__(self):
         return '%s'%self._val
@@ -21,6 +22,10 @@ class Value(object):
     @property
     def islog(self):
         return  self._islog
+
+    @islog.setter
+    def islog(self,val):
+        self._islog=val
 
     @property
     def val(self):
@@ -48,6 +53,18 @@ class Value(object):
         else:
             return np.log10(self._val)
 
+    @property
+    def units(self):
+        return self._units
+
+    @units.setter
+    def units(self, units):
+        try:
+            self._units = u.Unit(units)
+            #print(units,type(self._units))
+        except Exception as e:
+            #print('*',units)
+            self._units = units + '*'
 
 
 class ModelParameter(object):
@@ -116,19 +133,25 @@ class ModelParameter(object):
 
         _v = None
         _l = False
-
+        _units= None
+        
         if 'val' in keywords.keys():
             _v = keywords['val']
 
         if 'log' in keywords.keys():
             _l = keywords['log']
+        
+        if 'units' in keywords.keys():
+           _units= keywords['units']
 
-        self._val = Value(val=_v, islog=_l)
+        self._val = Value(val=_v, islog=_l,units=_units)
 
         for kw in self.allowed_keywords.keys():
             if kw == 'val':
                 pass
             elif kw == 'log':
+                pass
+            elif kw == 'units':
                 pass
             else:
                 setattr(self,kw,self.allowed_keywords[kw])
@@ -158,6 +181,15 @@ class ModelParameter(object):
     @val.setter
     def val(self,val):
         self.set(val=val)
+
+    @property
+    def units(self):
+        return self._val.units
+
+    @units.setter
+    def units(self,val):
+        self._val.units=val
+
 
     @property
     def fit_range(self):
@@ -199,11 +231,15 @@ class ModelParameter(object):
             if kw in  self.allowed_keywords.keys() :
                 if kw == 'val':
                     self._val.val = keywords[kw]
+
+                elif kw == 'log':
+                    self._val.islog = keywords[kw]
+
+                elif kw== 'units':
+
+                    self._val.units = keywords[kw]
                 else:
-                    if kw == 'log':
-                        pass
-                    else:
-                        setattr(self,kw,keywords[kw])
+                    setattr(self,kw,keywords[kw])
 
                     
             else:
@@ -331,11 +367,11 @@ class ModelParameter(object):
             val=str("%+e"%self.val)
         
         if nofields==False:
-            descr= "name = %-16s  type = %-20s  units = %-16s  val = %s  phys-bounds = [%-13s,%-13s] islog = %s   "%(self.name, self.par_type ,
-                                                                                   self.units, val, val_min, val_max,self.islog)
+            descr= "name = %-16s  type = %-20s  units = %-16s  val = %s  phys-bounds = [%-13s,%-13s] islog = %s  froze= %s "%(self.name, self.par_type ,
+                                                                                   self.units, val, val_min, val_max,self.islog,self.frozen)
         else:
-            descr= " %-16s | %-20s | %-16s | %s | [%-13s,%-13s] | %s "%(self.name, self.par_type ,
-                                                                                   self.units, val, val_min, val_max,self.islog)
+            descr= " %-16s | %-20s | %-16s | %s | [%-13s,%-13s] | %s | %s"%(self.name, self.par_type ,
+                                                                                   self.units, val, val_min, val_max,self.islog,self.frozen)
             
         return descr
     
@@ -403,7 +439,13 @@ class ModelParameterArray(object):
     par_array :  list 
         list of :class:`ModelParameter` objects
     """   
-    
+
+    def __repr__(self):
+        return str(self.show_pars())
+
+    #def __str__(self):
+    #    return str(self.show_pars())
+
     def __init__(self):
             
         """
@@ -433,6 +475,42 @@ class ModelParameterArray(object):
 
         setattr(self,par.name, par)
         self.properties[par.name]=par
+
+
+    def _build_par_table(self,names_list=None):
+        _name=[]
+        _type=[]
+        _unit=[]
+        _val=[]
+        _bound_min=[]
+        _bound_max=[]
+        _islog=[]
+        _frozen=[]
+        _fields=[_name,_type,_unit,_val,_bound_min,_bound_max,_islog,_frozen]
+        _names=['name','par type','units','val','phys. bound. min','phys. bound. max','log','frozen']
+        for par in self.par_array:
+
+            append=False
+
+            if names_list is not None:
+                if par.name in names_list:
+                    append=True
+            else:
+                append = True
+
+            if append:
+                _name.append(par.name)
+                _type.append(par.par_type)
+                _unit.append(par.units)
+                _val.append(par.val)
+                _bound_min.append(par.val_min)
+                _bound_max.append(par.val_max)
+                _islog.append(par.islog)
+                _frozen.append(par.frozen)
+        #print(len(_fields),len(_names))
+
+        self._par_table= Table(_fields,names=_names)
+
 
     def __setattr__(self, name, value):
         if "properties" in self.__dict__ and name in self.properties:
@@ -472,62 +550,64 @@ class ModelParameterArray(object):
             return None
                 
         
-    
-    
+    @property
+    def par_table(self):
+        self._build_par_table()
+        return self._par_table
+
     def show_pars(self,getstring=False,names_list=None):
         """
         shows the information for all the items in the :attr:`~ModelParameterArray.par_array`
         
         """
         
-        text=[]
-        text.append( "-------------------------------------------------------------------------------------------------------------------")
-        text.append( "model parameters:")
-        text.append( " Name             | Type                 | Units            | value         | phys. boundaries              | log")
-        text.append( "-------------------------------------------------------------------------------------------------------------------")
+        #text=[]
+        #text.append( "-------------------------------------------------------------------------------------------------------------------------")
+        #text.append( "model parameters:")
+        #text.append( " Name             | Type                 | Units            | value         | phys. boundaries              | log | frozen")
+        #text.append( "-------------------------------------------------------------------------------------------------------------------------")
        
-        for par in self.par_array:
-            if names_list is not None:
-                if par.name in names_list:
-                    text.append( par.get_description(nofields=True))
-            else:
-                text.append(par.get_description(nofields=True))
-        
-        text.append( "-------------------------------------------------------------------------------------------------------------------")
-        
-        
+        #for par in self.par_array:
+        #    if names_list is not None:
+        #        if par.name in names_list:
+        #            text.append( par.get_description(nofields=True))
+        #    else:
+        #        text.append(par.get_description(nofields=True))
+        #
+        #text.append( "-------------------------------------------------------------------------------------------------------------------------")
 
+        self._build_par_table(names_list)
         if getstring==True:
-            return text
+            return self.par_table.pformat_all()
         else:
-            for line in text:
-                print (line)
+            self.par_table.pprint_all()
         
     
     
     def show_best_fit_pars(self,getstring=False):
+        pass
         """
         shows the best-fit information for all the items in the :py:attr:`par_array`
         """
         
-        text=[]
-        text.append("-------------------------------------------------------------------------------------------------------------------")
-        text.append("best-fit parameters:")
-        text.append("  Name            | best-fit value| best-fit err +| best-fit err -|start value   | fit boundaries")
-        text.append("-------------------------------------------------------------------------------------------------------------------")
+        #text=[]
+        #text.append("-------------------------------------------------------------------------------------------------------------------")
+        #text.append("best-fit parameters:")
+        #text.append("  Name            | best-fit value| best-fit err +| best-fit err -|start value   | fit boundaries")
+        #text.append("-------------------------------------------------------------------------------------------------------------------")
 
        
-        for par in self.par_array:
-            text.append( par.get_bestfit_description(nofields=True))
+        #for par in self.par_array:
+        #    text.append( par.get_bestfit_description(nofields=True))
 
-        text.append("-------------------------------------------------------------------------------------------------------------------")
+        #text.append("-------------------------------------------------------------------------------------------------------------------")
         
 
-        if getstring==True:
-            return text
-        else:
-            for line in text:
-                print (line)
+        #if getstring==True:
+        #    return text
+        #else:
+        #    for line in text:
+        #        print (line)
         
         
     

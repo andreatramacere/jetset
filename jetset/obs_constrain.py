@@ -597,9 +597,9 @@ def check_gamma_tansp(jet,beaming_val,nu_IC_data,rest_frame):
     jet.eval()
     
     
-    nu_obs=sp.array([])
-    nuFnu_obs=sp.array([])
-    nu_obs,nuFnu_obs=jet.get_SED_points(log_log=True,name='Sync')
+    #nu_obs=sp.array([])
+    #nuFnu_obs=sp.array([])
+    nu_obs,nuFnu_obs=jet.spectral_components.Sync.get_SED_points(log_log=True,name='Sync')
    
     #for i in range(BlazarSED.GetNuIntMaxSynch()):
     #    
