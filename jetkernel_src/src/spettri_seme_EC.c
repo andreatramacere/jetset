@@ -1307,7 +1307,7 @@ double eval_I_nu_theta_DT(struct spettro *pt, double mu)
 	//pf = &j_nu_DT_integrand;
 	pt->mu_j = mu;
 	//i = x_to_grid_index(pt->nu_DT_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
-	I =1.0 / (4 * pi  * pi * pt->R_DT * pt->R_DT);
+	I =1.0 / (4 * pi  4* pi * pt->R_DT * pt->R_DT);
 	//I = integrale_simp_struct(pf, pt, 0, l, pt->l_n_int);
 	return I;
 }
