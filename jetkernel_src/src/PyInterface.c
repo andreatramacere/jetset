@@ -306,7 +306,10 @@ void set_seed_freq_start(struct spettro *pt_base){
 
 //=========================================================================================
 
-void Init(struct spettro *pt_base) {
+void Init(struct spettro *pt_base, double luminosity_distance) {
+    // if luminosity_distance is negative is evaluated internally
+    // otherwise the passed value is used
+
     //struct spettro *pt_base;
     double (*pf) (struct spettro *, double);
     double test, prova;
@@ -442,8 +445,14 @@ void Init(struct spettro *pt_base) {
 
     //========================================================
 
-    pt_base->dist=dist_lum_cm(pt_base->z_cosm);
-    
+    if (luminosity_distance<0){
+
+        pt_base->dist = dist_lum_cm(pt_base->z_cosm);
+    }
+    else{
+        pt_base->dist = luminosity_distance;
+    }
+
     if (pt_base->verbose) {
         printf("Distanza rigorosa=%e in Mpc \n", pt_base->dist/(1.0e6*1.0e2));
         printf("Distanza rigorosa=%e in cm \n", pt_base->dist);

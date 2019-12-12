@@ -8,6 +8,7 @@ __author__ = "Andrea Tramacere"
 import numpy as np
 from astropy import units
 from .frame_converter import  convert_nuFnu_to_nuLnu_src, convert_nu_to_src
+from .utils import *
 
 __all__=['SED']
 
@@ -89,6 +90,7 @@ class SED(object):
 
     @nu_src.setter
     def nu_src(self, z):
+        #print('->self._nu',self._nu)
         if self._nu is None:
             self._nu_src = self._nu
         else:
@@ -97,6 +99,7 @@ class SED(object):
             else:
                 self._nu_src = convert_nu_to_src(self._nu.value,z,in_frame='obs') * self._nu_units
 
+        #print('->self._nu_src', self._nu_src)
 
     @property
     def nuLnu_src(self):
@@ -116,24 +119,25 @@ class SED(object):
                 self._nuLnu = convert_nuFnu_to_nuLnu_src(self._nuFnu.value, z, 'obs', dl) * self._nuLnu_src_units
 
 
-
+        print('->self._nuLnu', self._nuLnu.max())
 
     def get_model_points(self,log_log=False,frame='obs'):
 
+        check_frame(frame)
         if frame == 'obs':
             x, y = self.nu.value, self.nuFnu.value
         elif frame == 'src':
             x, y = self.nu_src.value, self.nuLnu_src.value
         else:
-            raise RuntimeError('frame ', frame, 'not allowed (obs/src)')
+            unexpetced_behaviour()
 
         if log_log==True:
 
             msk=y>0
             
-            y=np.log10(x[msk])
+            x=np.log10(x[msk])
 
-            x=np.log10(y[msk])
+            y=np.log10(y[msk])
         
         return x, y
 

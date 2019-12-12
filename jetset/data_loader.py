@@ -7,7 +7,7 @@ __author__ = "Andrea Tramacere"
 
 
 import numpy as np
-from .cosmo_tools import Cosmo
+#from .cosmo_tools import Cosmo
 #from poly_fit import filter_interval
 from astropy.table  import  Table,Column
 from astropy import  units as u
@@ -15,6 +15,9 @@ from astropy.units import cds
 from .plot_sedfit import PlotSED
 
 from .output import section_separator
+from .utils import *
+from .cosmo_tools import Cosmo
+
 import os
 
 __all__=['get_data_set_msk','get_freq_range_msk','lin_to_log','log_to_lin','ObsData','Data']
@@ -224,7 +227,9 @@ class ObsData(object):
     
     """
     
-    def __init__(self, data_table=None,
+    def __init__(self,
+                 cosmo,
+                 data_table=None,
                  dupl_filter=False,
                  data_set_filter=None,
                  UL_filtering=False,
@@ -250,8 +255,14 @@ class ObsData(object):
             self.data_set_filter=data_set_filter.split(',')
         else:
             self.data_set_filter=['No']
-            
-        self.cosmo_eval=Cosmo(units='cm')
+
+        if cosmo is None:
+
+            self.cosmo=Cosmo()
+        else:
+
+            self.cosmo=cosmo
+
         self.UL_value=UL_value
         self.UL_filtering=UL_filtering
         self.zero_error_replacment=0.2
@@ -486,18 +497,22 @@ class ObsData(object):
         # handles data cosmological conversion
         # and axis transformation
 
+        check_frame(self.restframe)
+
         if self.restframe=='obs':
-            nu_conv_factor=1
-            Lum_conv_factor=1
+            self.nu_conv_factor=1
+            self.Lum_conv_factor=1
         
         elif self.restframe=='src':
-            DL=self.cosmo_eval.DL(self.z)
+            #TODO this must be the same as in jetset
+            DL=self.cosmo.get_DL_cm(self.z)
             print ("--->DL=%e"%DL)
             
             #!! usa le funzioni in frame_converter
-            nu_conv_factor=1.0/(1+self.z)
-            Lum_conv_factor=1.0/(np.pi*4.0*DL*DL)
-
+            self.nu_conv_factor=1.0/(1+self.z)
+            self.Lum_conv_factor=1.0/(np.pi*4.0*DL*DL)
+        else:
+            unexpetced_behaviour()
 
         if self.data_scale=='lin-lin':
             
@@ -511,8 +526,8 @@ class ObsData(object):
             else:
                 self.data['nu_data_log']=self.lin_to_log(val=self.data['nu_data'])
             
-            self.data['nu_data_log']+= np.log10(nu_conv_factor)
-            self.data['nuFnu_data_log']+= np.log10(Lum_conv_factor)
+            self.data['nu_data_log']+= np.log10(self.nu_conv_factor)
+            self.data['nuFnu_data_log']+= np.log10(self.Lum_conv_factor)
             
             
             
@@ -530,8 +545,8 @@ class ObsData(object):
             
             
             #print self.data['nuFnu_data'],self.data['dnuFnu_data']
-            self.data['nu_data']*=nu_conv_factor
-            self.data['nuFnu_data']*=Lum_conv_factor
+            self.data['nu_data']*=self.nu_conv_factor
+            self.data['nuFnu_data']*=self.Lum_conv_factor
         
         
 
@@ -998,10 +1013,11 @@ class ObsData(object):
         self.data['dnuFnu_facke']= self.data['nuFnu_data'] * self.facke_error
         
     
-    def get_data_points(self,log_log=False,skip_UL=False):
+    def get_data_points(self,log_log=False,skip_UL=False,frame='obs'):
         """
         Gives data point
-        """ 
+        """
+
         if    skip_UL==True:
             msk= self.data['UL'] == False
         else:
@@ -1031,9 +1047,9 @@ class ObsData(object):
 
 
 
-    def plot_sed(self,plot_obj=None,):
+    def plot_sed(self,plot_obj=None,frame='obs'):
         if plot_obj is None:
-            plot_obj=PlotSED(sed_data=self)
+            plot_obj=PlotSED(sed_data=self,frame=frame)
 
         return plot_obj
 

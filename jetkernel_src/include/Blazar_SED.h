@@ -683,13 +683,13 @@ int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],uns
 struct spettro MakeBlob();
 void MakeNe(struct spettro *pt_base);
 struct temp_ev MakeTempEv();
-void Init(struct spettro *pt);
+void Init(struct spettro *pt, double luminosity_distance);
 void InitNe(struct spettro *pt);
 //void build_photons(struct spettro *pt_base);
 //void alloc_photons(double ** pt,int size);
 void set_seed_freq_start(struct spettro *pt_base);
 void Run_SED(struct spettro *pt_base);
-void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev);
+void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev, double luminosity_distance);
 double get_spectral_array(double * arr, struct spettro *pt, unsigned long id);
 double get_elec_array(double * arr, struct spettro *pt, unsigned long id);
 double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned long id);

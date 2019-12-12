@@ -27,6 +27,8 @@ from collections import namedtuple
 
 from .output import section_separator,WorkPlace
 
+from .utils import *
+
 import numpy as np
 
 
@@ -38,15 +40,19 @@ class  PlotSED (object):
     
     def __init__(self,sed_data=None,
                  model=None,
-                 x_min=6.0,
-                 x_max=3.0,
-                 y_min=-20.0,
-                 y_max=-9.0,
+                 #x_min=6.0,
+                 #x_max=3.0,
+                 #y_min=-20.0,
+                 #y_max=-9.0,
                  interactive=False,
                  plot_workplace=None,
-                 title='Plot'):
+                 title='Plot',
+                 frame='obs'):
                  #autoscale=True):
-      
+
+        check_frame(frame)
+        self.frame=frame
+
         self.axis_kw=['x_min','x_max','y_min','y_max']
         self.interactive=interactive
 
@@ -97,7 +103,7 @@ class  PlotSED (object):
         self.sedplot= self.fig.add_subplot(self.gs[0])
         self._add_res_plot()
         
-        self.set_plot_axis_labels(sed_data)
+        self.set_plot_axis_labels()
         
         #if autoscale==True:
         self.sedplot.set_autoscalex_on(True)
@@ -112,7 +118,14 @@ class  PlotSED (object):
 
 
         self.sedplot.set_xlim(5, 30)
-        self.sedplot.set_ylim(-20, -8)
+        if frame == 'obs':
+           self.sedplot.set_ylim(-20, -8)
+
+        elif frame == 'src':
+            self.sedplot.set_ylim(30, 55)
+        else:
+            unexpetced_behaviour()
+
         self.resplot.set_ybound(-2,2)
         try:
             if hasattr(self.fig.canvas.manager,'toolbar'):
@@ -243,21 +256,19 @@ class  PlotSED (object):
             self.update_plot()
             self.update_legend()
 
-    def set_plot_axis_labels(self,sed_data=None):
-        
-        if sed_data is not None :
-            self.lx='log($ \\nu $)  (Hz)'
-                
-            if sed_data.restframe=='src':
-                self.ly='log($ \\nu L_{\\nu} $ )  (erg  s$^{-1}$)' 
+    def set_plot_axis_labels(self):
+        self.lx = 'log($ \\nu $)  (Hz)'
+
+        if self.frame == 'obs':
+
+            self.ly = 'log($ \\nu L_{\\nu} $ )  (erg  s$^{-1}$)'
             
-            elif sed_data.restframe=='obs':
-                self.ly='log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)' 
-        
+        elif self.frame == 'obs':
+
+                self.ly = 'log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)'
         else:
-            self.lx='log($ \\nu $)  (Hz)'
-            self.ly='log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)'
-            
+            unexpetced_behaviour()
+
         self.sedplot.set_ylabel(self.ly)
         self.sedplot.set_xlabel(self.lx)
         
@@ -374,12 +385,13 @@ class  PlotSED (object):
 
 
     def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,frame='obs'):
+        check_frame(frame)
         try:
             #print( "a")
             x, y = model.get_model_points(log_log=True,frame=frame)
         except:
             try:
-                # print "b"
+                #print("b")
                 x, y = model.SED.get_model_points(log_log=True,frame=frame)
             except Exception as e:
 
@@ -387,7 +399,7 @@ class  PlotSED (object):
                 print(e)
                 return
 
-
+        #print('->x,y',x,y)
         #if color is None:
         #    color = self.counter
 
@@ -417,12 +429,12 @@ class  PlotSED (object):
 
         self.counter += 1
 
-    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=None,mew=None):
+    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=None,mew=None,frame='obs'):
 
-
+        check_frame(frame)
 
         try:
-            x,y,dx,dy,=sed_data.get_data_points(log_log=True)
+            x,y,dx,dy,=sed_data.get_data_points(log_log=True,frame=frame)
         except:
             print ("!!! ERROR failed to get data points from", sed_data)
             print

@@ -5,7 +5,7 @@ from builtins import (bytes, str, open, super, range,
 
 __author__ = "Andrea Tramacere"
 
-from .cosmo_tools import Cosmo
+#from .cosmo_tools import Cosmo
 
 from .template_model import Template
 from .output import section_separator
@@ -307,7 +307,7 @@ class SEDShape(object):
         
         self.sed_data=sed_data
         
-        self.cosmo_eval=Cosmo(units='cm')
+        self.cosmo=sed_data.cosmo
 
        
         self.BBB=None
@@ -470,7 +470,7 @@ class SEDShape(object):
             do_fit=self.check_adapt_range_size(self.sed_data.data['nu_data_log'],index,3)
             if do_fit==True:
 
-                loglog_pl=FitModel(name='%s'%index.name,loglog_poly=LogLinear())
+                loglog_pl=FitModel(cosmo=self.cosmo, name='%s'%index.name,loglog_poly=LogLinear())
                 #print(10.**index.idx_range[0],10.**index.idx_range[1])
                 mm,best_fit=fit_SED(loglog_pl,
                                  self.sed_data,10.**index.idx_range[0],
@@ -589,7 +589,7 @@ class SEDShape(object):
         else:
             fit_law=LogCubic()
 
-        self.sync_fit_model=FitModel(loglog_poly=fit_law,name='sync_model')
+        self.sync_fit_model=FitModel(cosmo=self.cosmo, loglog_poly=fit_law,name='sync_model')
         self.sync_fit_model.set('b',fit_range_max=0)
         self.sync_fit_model.set('b',val_max=0)
         self.sync_fit_model.set('b',fit_range_min=-10)
@@ -753,7 +753,7 @@ class SEDShape(object):
     
     def add_disk(self,fit_model):
         
-        disk=Disk(self.sed_data.z)
+        disk=Disk(cosmo=fit_model.cosmo, z=self.sed_data.z)
         
         fit_model.add_component(disk)
 
@@ -769,7 +769,7 @@ class SEDShape(object):
     
     def   add_BBB_template(self,fit_model):
         
-        BBB_template=Template('BBB',z=self.sed_data.z)
+        BBB_template=Template('BBB',cosmo=fit_model.cosmo,z=self.sed_data.z)
         
         fit_model.add_component(BBB_template)
    
@@ -788,7 +788,7 @@ class SEDShape(object):
 
     def add_host_template(self,fit_model):
         
-        host_gal=Template('host-galaxy',z=self.sed_data.z)
+        host_gal=Template('host-galaxy',cosmo=fit_model.cosmo,z=self.sed_data.z)
                  
         fit_model.add_component(host_gal)
 
@@ -847,7 +847,7 @@ class SEDShape(object):
         if use_log_par==True:
             print("---> LogParabola fit")
             logpar_model = LogParabolaEp()
-            self.IC_fit_model = FitModel(loglog_poly=logpar_model, name='IC_log-par_model')
+            self.IC_fit_model = FitModel(cosmo=self.cosmo, loglog_poly=logpar_model, name='IC_log-par_model')
 
 
 
@@ -866,7 +866,7 @@ class SEDShape(object):
         else:
             print("---> LogCubic fit")
             cubic_model = LogCubic()
-            self.IC_fit_model = FitModel(loglog_poly=cubic_model, name='IC_cubic_model')
+            self.IC_fit_model = FitModel(cosmo=self.cosmo, loglog_poly=cubic_model, name='IC_cubic_model')
 
             self.IC_fit_model.set('b', fit_range_max=0)
             self.IC_fit_model.set('b', val_max=0)
@@ -888,7 +888,7 @@ class SEDShape(object):
                 print ("---> LogCubic fit failed",e)
                 print ("---> try LogParabola ")
                 logpar_model=LogParabolaEp()
-                self.IC_fit_model=FitModel(loglog_poly=logpar_model,name='IC_log-par_model')
+                self.IC_fit_model=FitModel(cosmo=self.cosmo, loglog_poly=logpar_model,name='IC_log-par_model')
                 if Ep is not None:
                     self.IC_fit_model.set('Ep', val=Ep)
 

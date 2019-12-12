@@ -36,6 +36,7 @@ from .sed_shaper import index_array,peak_values
 
 from .output import section_separator,WorkPlace,makedir
 
+from .utils import *
 
 __all__=['ObsConstrain','check_boundaries','check_gamma_tansp','check_t_var',
          'constr_B_from_nu_peaks','constr_R_from_CD','find_B_from_nu_p_S','find_gamma0',
@@ -58,7 +59,7 @@ class ObsConstrain(object):
                  theta=None,
                  bulk_factor=None,
                  obj_class=None,
-                 restframe=None,
+                 #restframe=None,
                  z=None,
                  obspar_workplace=None,
                  **keywords):
@@ -105,7 +106,7 @@ class ObsConstrain(object):
             self.class_obj=self.SEDShape.obj_class
             self.z=self.SEDShape.sed_data.z
             self.rest_frame='obs'
-            
+            check_frame(self.rest_frame)
            
 
         

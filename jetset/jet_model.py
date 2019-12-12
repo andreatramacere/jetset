@@ -41,6 +41,10 @@ from .jetkernel_models_dic import nuFnu_obs_dic,gamma_dic,available_N_distr,N_di
 
 from  .plot_sedfit import PlotSED,PlotPdistr,PlotSpecComp,PlotSeedPhotons
 
+from .cosmo_tools import Cosmo
+
+from .utils import *
+
 __all__=['Jet','JetParameter','JetSpecComponent','ElectronDistribution','build_emitting_region_dic',
          'build_ExtFields_dic']
 
@@ -810,12 +814,14 @@ class SpecCompList(object):
 
         _names = ['nu']
         _cols=[]
+
+        check_frame(restframe)
         if restframe=='obs':
            _cols.append(self._sc_list[0].SED.nu)
         elif restframe=='src':
             _cols.append(self._sc_list[0].SED.nu_src)
         else:
-            raise RuntimeError('rest frame',restframe,'not allowed, src or obs')
+            unexpetced_behaviour()
 
         for ID,sc in enumerate(self._sc_list):
             _names.append(sc.name)
@@ -861,7 +867,9 @@ class Jet(Model):
     #def __str__(self):
     #    return str(self.show_model())
 
-    def __init__(self,name='test',
+    def __init__(self,
+                 cosmo=None,
+                 name='test',
                  electron_distribution='pl',
                  electron_distribution_log_values=False,
                  beaming_expr='delta',
@@ -874,6 +882,7 @@ class Jet(Model):
 
         Parameters
         ----------
+        cosmo
         name
         electron_distribution
         electron_distribution_log_values
@@ -884,6 +893,11 @@ class Jet(Model):
         keywords
         """
         super(Jet,self).__init__(  **keywords)
+
+        if cosmo is not None:
+            self.cosmo=cosmo
+        else:
+            self.cosmo= Cosmo()
 
         self.name = name
 
@@ -1584,8 +1598,11 @@ class Jet(Model):
 
 
 
-    def get_DL_cm(self):
-        self.set_blob()
+    def get_DL_cm(self,eval=False):
+
+        if eval is True:
+            self.set_blob()
+
         return self._blob.dist
 
 
@@ -1925,12 +1942,11 @@ class Jet(Model):
 
     @safe_run
     def set_blob(self):
-
-        BlazarSED.Init(self._blob)
+        BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.z))
 
     @safe_run
     def set_external_fields(self):
-        BlazarSED.Init(self._blob)
+        BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.z))
         BlazarSED.spectra_External_Fields(1,self._blob)
 
     @safe_run
@@ -1949,8 +1965,9 @@ class Jet(Model):
 
         if init==True:
 
-            BlazarSED.Init(self._blob)
+            BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.z) )
             #self.set_electron_distribution()
+
             #TODO investigate if this is necessary!!!
             self._update_spectral_components()
 
@@ -1966,14 +1983,15 @@ class Jet(Model):
 
 
         if fill_SED==True:
-
-            self.SED.fill(nu=nu_sed_sum,nuFnu=nuFnu_sed_sum)
+            #TODO check if this is not usefule!!!
+            #self.SED.fill(nu=nu_sed_sum,nuFnu=nuFnu_sed_sum)
 
             for i in range(len(self.spectral_components_list)):
 
                 #print ('fill name',self.spectral_components_list[i].name)
                 #nu_sed,nuFnu_sed= self.get_SED_points(name=self.spectral_components_list[i].name)
                 #self.spectral_components_list[i].SED.fill(nu=nu_sed, nuFnu=nuFnu_sed)
+
                 self.spectral_components_list[i].fill_SED()
 
         if nu is None:

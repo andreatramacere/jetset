@@ -62,7 +62,7 @@ class FitModel(Model):
   
     """
     
-    def __init__(self,elec_distr=None,jet=None,name='no-name',out_dir=None,flag=None,template=None,loglog_poly=None,analytical=None,nu_size=100,  **keywords):
+    def __init__(self,elec_distr=None,jet=None,name='no-name',out_dir=None,flag=None,template=None,loglog_poly=None,analytical=None,nu_size=100,cosmo=None,  **keywords):
  
         """
         Constructor
@@ -83,7 +83,8 @@ class FitModel(Model):
         
           
        
-        
+
+
         self.sed_data=None
         
         self.nu_min_fit=1E6
@@ -107,14 +108,19 @@ class FitModel(Model):
         self.parameters=ModelParameterArray()
 
         if elec_distr is not None:
-            jet=Jet(name=flag, electron_distribution=elec_distr, jet_workplace=None)
+            jet=Jet(cosmo=cosmo,name=flag, electron_distribution=elec_distr, jet_workplace=None)
             
             self.add_component(jet)
         
         if jet is not None:
             self.add_component(jet)
-            
-        
+
+        if jet is not None:
+            self.cosmo = jet.cosmo
+        else:
+            self.cosmo = cosmo
+
+
         if template is not None:
             self.add_component(template)
            
