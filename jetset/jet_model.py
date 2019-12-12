@@ -210,6 +210,7 @@ def BLR_constraints(L_Disk):
     r1_min = 1E17 * (L_Disk / 1E45) ** 0.5
     r2_min = r1_min * 1.01
     r2_max = r1_min * 2
+    print('-> BLR constraints',L_Disk,r1_min, r2_min, r2_max)
     return r1_min, r2_min, r2_max
 
 
@@ -217,7 +218,7 @@ def BLR_constraints(L_Disk):
 def DT_constraints(L_Disk):
     return 1E18 * (L_Disk / 1E45) ** 0.5
 
-def build_ExtFields_dic(EC_model_list,allowed_EC_components_list,L_Disk):
+def build_ExtFields_dic(EC_model_list,allowed_EC_components_list,):
     """
 
         """
@@ -245,16 +246,16 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list,L_Disk):
             model_dic['M_BH'] = ['Disk', 0, None, 'M_sun']
 
         if 'BLR' in EC_model:
-            r1_BLR_min, r2_BLR_min, r2_BLR_max = BLR_constraints(L_Disk)
+            #r1_BLR_min, r2_BLR_min, r2_BLR_max = BLR_constraints(L_Disk)
             model_dic['tau_BLR']=['BLR',0.0,1.0,'']
-            model_dic['R_BLR_in']=['BLR',r1_BLR_min,None,'cm',True]
-            model_dic['R_BLR_out']=['BLR',r2_BLR_min,r2_BLR_max,'cm',True]
+            model_dic['R_BLR_in']=['BLR',0,None,'cm',True]
+            model_dic['R_BLR_out']=['BLR',0,None,'cm',True]
     
     
             
         if 'DT' in EC_model:
             model_dic['T_DT']=['DT',0.0,None,'K']
-            model_dic['R_DT']=['DT',DT_constraints(L_Disk),None,'cm',True]
+            model_dic['R_DT']=['DT',0,None,'cm',True]
             model_dic['tau_DT']=['DT',0.0,1.0,'']
             model_dic['R_H'] = ['Disk', 0, None, 'cm']
     
@@ -1456,8 +1457,8 @@ class Jet(Model):
 
     def add_EC_component(self,EC_components_list):
 
-        self._blob.R_BLR_in, self._blob.R_BLR_out, _=BLR_constraints(self._blob.L_Disk)
-        self._blob.R_BLR_DT=DT_constraints(self._blob.L_Disk)
+        #self._blob.R_BLR_in, self._blob.R_BLR_out, _=BLR_constraints(self._blob.L_Disk)
+        #self._blob.R_BLR_DT=DT_constraints(self._blob.L_Disk)
 
         if isinstance(EC_components_list, six.string_types):
             EC_components_list=[EC_components_list]
@@ -1538,7 +1539,7 @@ class Jet(Model):
 
 
 
-        self.add_par_from_dic(build_ExtFields_dic(self.EC_components_list,self._allowed_EC_components_list,self._blob.L_Disk))
+        self.add_par_from_dic(build_ExtFields_dic(self.EC_components_list,self._allowed_EC_components_list))
 
 
 
