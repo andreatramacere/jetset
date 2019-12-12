@@ -894,11 +894,12 @@ class Jet(Model):
         """
         super(Jet,self).__init__(  **keywords)
 
+        print('cosmo',cosmo)
         if cosmo is not None:
             self.cosmo=cosmo
         else:
             self.cosmo= Cosmo()
-
+        print('cosmo', self.cosmo)
         self.name = name
 
         self.model_type='jet'
@@ -1900,7 +1901,7 @@ class Jet(Model):
 
     def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-',frame='obs'):
         if plot_obj is None:
-            plot_obj=PlotSED(sed_data=sed_data)
+            plot_obj=PlotSED(sed_data=sed_data, frame= frame)
 
 
         if clean==True:
@@ -1918,7 +1919,7 @@ class Jet(Model):
             else:
                 comp_label=None
             if c.state!='off':
-                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label,frame=frame)
+                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label)
 
         else:
             for c in self.spectral_components_list:
@@ -1927,7 +1928,7 @@ class Jet(Model):
                     comp_label=label
                 #print('comp label',comp_label)
                 if c.state != 'off' and c.name!='Sum':
-                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color,frame=frame)
+                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color)
 
 
             c=self.get_spectral_component_by_name('Sum')
@@ -1936,17 +1937,17 @@ class Jet(Model):
             else:
                 comp_label='Sum'
 
-            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color,frame=frame)
+            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color)
 
         return plot_obj
 
     @safe_run
     def set_blob(self):
-        BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.z))
+        BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.parameters.z_cosm.val))
 
     @safe_run
     def set_external_fields(self):
-        BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.z))
+        BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.parameters.z_cosm.val))
         BlazarSED.spectra_External_Fields(1,self._blob)
 
     @safe_run
@@ -1965,7 +1966,7 @@ class Jet(Model):
 
         if init==True:
 
-            BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.z) )
+            BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.parameters.z_cosm.val) )
             #self.set_electron_distribution()
 
             #TODO investigate if this is necessary!!!

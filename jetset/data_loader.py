@@ -17,6 +17,7 @@ from .plot_sedfit import PlotSED
 from .output import section_separator
 from .utils import *
 from .cosmo_tools import Cosmo
+from .frame_converter import convert_nu_to_src, convert_nuFnu_to_nuLnu_src
 
 import os
 
@@ -1018,16 +1019,42 @@ class ObsData(object):
         Gives data point
         """
 
-        if    skip_UL==True:
+        if   skip_UL==True:
             msk= self.data['UL'] == False
         else:
             msk=np.ones(self.data['nu_data_log'].size, dtype=bool)
-            
-        if   log_log==True:
-            return self.data['nu_data_log'][msk], self.data['nuFnu_data_log'][msk], self.data['dnu_data_log'][msk], self.data['dnuFnu_data_log'][msk]
+
+        check_frame(frame)
+        if frame == 'obs':
+            if   log_log  is True:
+                _x = self.data['nu_data_log'][msk]
+                _dx = self.data['dnu_data_log'][msk]
+                _y = self.data['nuFnu_data_log'][msk]
+                _dy =  self.data['dnuFnu_data_log'][msk]
+
+            else:
+                _x = self.data['nu_data'][msk]
+                _dx = self.data['dnu_data'][msk]
+                _y = self.data['nuFnu_data'][msk]
+                _dy = self.data['dnuFnu_data'][msk]
+
+        elif frame == 'src':
+
+            dl = self.cosmo.get_DL_cm(self.z)
+
+            _x = convert_nu_to_src(self.data['nu_data'][msk], self.z, 'obs')
+            _dx = convert_nu_to_src(self.data['dnu_data'][msk], self.z, 'obs')
+            _y = convert_nuFnu_to_nuLnu_src(self.data['nuFnu_data'][msk], self.z, 'obs', dl)
+            _dy = convert_nuFnu_to_nuLnu_src(self.data['dnuFnu_data'][msk], self.z, 'obs', dl)
+
+            if log_log is True:
+                _x, _dx = self.lin_to_log(_x, _dx)
+                _y, _dy = self.lin_to_log(_y, _dy)
+
         else:
-            return self.data['nu_data'][msk] , self.data['nuFnu_data'][msk] , self.data['dnu_data'][msk] , self.data['dnuFnu_data'][msk]
-        
+            unexpetced_behaviour()
+
+        return _x ,_y, _dx, _dy
     
     def show_data_sets(self):
         shown=[]

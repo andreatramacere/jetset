@@ -51,6 +51,7 @@ class  PlotSED (object):
                  #autoscale=True):
 
         check_frame(frame)
+
         self.frame=frame
 
         self.axis_kw=['x_min','x_max','y_min','y_max']
@@ -117,12 +118,12 @@ class  PlotSED (object):
        
 
 
-        self.sedplot.set_xlim(5, 30)
+        self.sedplot.set_xlim(6, 30)
         if frame == 'obs':
            self.sedplot.set_ylim(-20, -8)
 
         elif frame == 'src':
-            self.sedplot.set_ylim(30, 55)
+            self.sedplot.set_ylim(38, 55)
         else:
             unexpetced_behaviour()
 
@@ -259,7 +260,7 @@ class  PlotSED (object):
     def set_plot_axis_labels(self):
         self.lx = 'log($ \\nu $)  (Hz)'
 
-        if self.frame == 'obs':
+        if self.frame == 'src':
 
             self.ly = 'log($ \\nu L_{\\nu} $ )  (erg  s$^{-1}$)'
             
@@ -384,15 +385,15 @@ class  PlotSED (object):
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,frame='obs'):
-        check_frame(frame)
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True):
+
         try:
             #print( "a")
-            x, y = model.get_model_points(log_log=True,frame=frame)
+            x, y = model.get_model_points(log_log=True, frame = self.frame)
         except:
             try:
                 #print("b")
-                x, y = model.SED.get_model_points(log_log=True,frame=frame)
+                x, y = model.SED.get_model_points(log_log=True, frame = self.frame)
             except Exception as e:
 
                 print(model, "!!! Error has no SED instance or something wrong in get_model_points()")
@@ -429,12 +430,12 @@ class  PlotSED (object):
 
         self.counter += 1
 
-    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=None,mew=None,frame='obs'):
+    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=None,mew=None):
 
-        check_frame(frame)
+
 
         try:
-            x,y,dx,dy,=sed_data.get_data_points(log_log=True,frame=frame)
+            x,y,dx,dy,=sed_data.get_data_points(log_log=True,frame=self.frame)
         except:
             print ("!!! ERROR failed to get data points from", sed_data)
             print

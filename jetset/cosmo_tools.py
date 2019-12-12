@@ -43,7 +43,7 @@ class  Cosmo (object):
 
     def get_DL_cm(self,z):
         if self._c is not None:
-            _d= self.cosmo.luminosity_distance( z ).to('cm').value
+            _d= self._c.luminosity_distance( z ).to('cm').value
         else:
             _d = self._DL_cm
 
