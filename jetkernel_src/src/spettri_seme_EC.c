@@ -1222,7 +1222,7 @@ void Build_I_nu_DT(struct spettro *pt){
 
 		pt->nu_DT_obs[NU_INT]=nu_obs;
 
-		pt->I_nu_DT[NU_INT] = I_nu_theta_disk_RF*pt->L_nu_DT_disk_RF[NU_INT];
+		pt->I_nu_DT[NU_INT] = I_nu_theta_blob_RF * pt->L_nu_DT_disk_RF[NU_INT];
 		pt->n_DT[NU_INT] =I_nu_to_n(pt->I_nu_DT[NU_INT], pt->nu_DT[NU_INT]);
 		//EC with n(gamma) transf
 		pt->n_DT_DRF[NU_INT] = I_nu_to_n(pt->I_nu_DT_disk_RF[NU_INT], pt->nu_DT_disk_RF[NU_INT]);
