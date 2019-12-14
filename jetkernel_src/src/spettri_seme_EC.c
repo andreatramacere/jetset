@@ -476,7 +476,7 @@ void Build_I_nu_Disk(struct spettro *pt){
 		exit(1);
 	}
 
-	pt->nu_start_Disk = eval_nu_min_blob_RF(pt,pt->Disk_mu_1, pt->Disk_mu_2, nu_start_disk_RF);
+	pt->nu_start_Disk = eval_nu_min_blob_RF(pt, pt->Disk_mu_1, pt->Disk_mu_2, nu_start_disk_RF);
 	pt->nu_stop_Disk  = eval_nu_max_blob_RF(pt,pt->Disk_mu_1, pt->Disk_mu_2, nu_stop_disk_RF);
 
 	pt->nu_start_Disk_DRF=nu_start_disk_RF;
@@ -515,8 +515,8 @@ void Build_I_nu_Disk(struct spettro *pt){
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
  		nu_obs = nu_disk_to_nu_obs_disk(pt->nu_Disk_disk_RF[NU_INT],pt->z_cosm);
 		pt->nu_Disk_obs[NU_INT]=nu_obs;
- 		pt->I_nu_Disk[NU_INT]=eval_I_nu_Disk_blob_RF(pt,pt->nu_Disk[NU_INT]);
- 		pt->n_Disk[NU_INT] =I_nu_to_n(pt->I_nu_Disk[NU_INT], pt->nu_Disk[NU_INT]);
+		pt->I_nu_Disk[NU_INT] = eval_I_nu_Disk_blob_RF(pt, pt->nu_Disk_disk_RF[NU_INT]);
+		pt->n_Disk[NU_INT] =I_nu_to_n(pt->I_nu_Disk[NU_INT], pt->nu_Disk[NU_INT]);
 		//EC with n(gamma) transf
 		pt->n_Disk_DRF[NU_INT] = I_nu_to_n(pt->I_nu_Disk_disk_RF[NU_INT], pt->nu_Disk_disk_RF[NU_INT]);
 
@@ -588,7 +588,7 @@ void set_Disk(struct spettro *pt){
 	pt->R_inner = pt->R_inner_Sw * pt->R_Sw;
 	//R_ext
 	pt->R_ext = pt->R_ext_Sw * pt->R_Sw;
-	pt->R_Disk_interp =   pt->R_ext*10;
+	pt->R_Disk_interp =   pt->R_ext*50.0;
 	pt->L_Edd = eval_L_Edd(pt->M_BH);
 	pt->accr_rate = eval_accr_rate(pt->L_Disk, pt->accr_eff);
 	pt->accr_Edd = eval_accr_Edd(pt->L_Edd, pt->accr_eff);
@@ -650,7 +650,7 @@ double Disk_Spectrum(struct spettro *pt, double nu_Disk_disk_RF){
 		pt->nu_disk_Multi_BB = nu_Disk_disk_RF;
 		//printf("=> pt->nu_disk_Multi_BB %e\n",pt->nu_disk_Multi_BB);
 		//pi is the angular part for a disk face
-		I= pi *integrale_trap_log_struct(pf, pt, pt->R_inner * 1.01, pt->R_ext, 100.0);
+		I= pi *integrale_trap_log_struct(pf, pt, pt->R_inner * 1.01, pt->R_ext, 100);
 	}
 	else if (pt->disk==3){
 		I= eval_nu_peak_Disk(pt->T_Disk)*(pt->mono_planck_max_factor-pt->mono_planck_min_factor);
@@ -721,6 +721,7 @@ double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_disk_RF)
 	set_Disk_angles(pt);
 	I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, pt->theta_n_int);
 	pt->R_H = R_H_orig;
+	set_Disk_angles(pt);
 	return I * one_by_four_pi * c;
 
 }
@@ -744,6 +745,7 @@ double eval_I_nu_Disk_disk_RF(struct spettro *pt, double nu_disk_RF)
 	set_Disk_angles(pt);
 	I = integrale_simp_struct(pf, pt, pt->Disk_mu_1, pt->Disk_mu_2, pt->theta_n_int);
 	pt->R_H = R_H_orig;
+	set_Disk_angles(pt);
 	//printf("=> R_DT_interp=%e R_H=%e Disk_mu_1=%e Disk_mu_2=%e i=%e \n", pt->R_DT_interp, pt->R_H, pt->Disk_mu_1, pt->Disk_mu_2, I);
 	return I * one_by_four_pi * c;
 }
@@ -818,7 +820,11 @@ void Build_I_nu_BLR(struct spettro *pt){
 		printf("-----------  Building I_nu BLR     ----------- \n");
 	}
 	set_BLR_geometry(pt);
+	//printf("=>R_H=%e BLR_mu_1=%e BLR_mu_2=%e\n",pt->R_H,pt->BLR_mu_1,pt->BLR_mu_2);
 
+	pt->BLR_mu_1 = 1.0;
+	pt->BLR_mu_2 = cos(eval_theta_max_BLR(pt));
+	
 	//if (pt->tau_BLR>0.9){
 	//	printf ("!!! Waring, the fraction of L_Disk reaching DT is (1-tau_BLR)\n");
 	//	printf ("!!! if tau_BLR=1.0 no DT photons will be generated\n");
@@ -828,12 +834,12 @@ void Build_I_nu_BLR(struct spettro *pt){
 	pt->nu_start_BLR_disk_RF=pt->nu_Disk_disk_RF[0];
 	pt->nu_stop_BLR_disk_RF=pt->nu_Disk_disk_RF[pt->NU_INT_MAX_Disk];
 
-	pt->nu_start_BLR = eval_nu_min_blob_RF(pt,pt->BLR_mu_1, pt->BLR_mu_2, pt->nu_start_BLR_disk_RF);
+	pt->nu_start_BLR = eval_nu_max_blob_RF(pt, pt->BLR_mu_1, pt->BLR_mu_2, pt->nu_start_BLR_disk_RF);
 	pt->nu_stop_BLR  = eval_nu_max_blob_RF(pt,pt->BLR_mu_1, pt->BLR_mu_2, pt->nu_stop_BLR_disk_RF);
 
-	pt->R_BLR_interp_val = pt->R_BLR_out * 5.0;
-	pt->R_BLR_interp_start = pt->R_BLR_out * 5.0;
-
+	pt->R_BLR_interp_val = pt->R_BLR_out * 50.0;
+	pt->R_BLR_interp_start = pt->R_BLR_out * 50.0;
+	//printf("=>R_H=%e BLR_mu_1=%e BLR_mu_2=%e nu1=%e nu2=%e  nu1 d=%e nu2 d=%e\n", pt->R_H, pt->BLR_mu_1, pt->BLR_mu_2, pt->nu_start_BLR, pt->nu_stop_BLR, pt->nu_start_BLR_disk_RF, pt->nu_stop_BLR_disk_RF);
 	pt->n0_BLR = pt->tau_BLR / (SIGTH * (pt->R_BLR_out - pt->R_BLR_in));
 	
 
@@ -965,7 +971,13 @@ double eval_I_nu_theta_BLR(struct spettro *pt, double mu)
 
 double integrand_I_nu_BLR_blob_RF(struct spettro *pt, double theta)
 {
-	//double psi;
+	//double psi
+	//double mu,mu1,c;
+	//mu = cos(theta);
+	//mu1 = (pt->beta_Gamma - mu )/(pt->beta_Gamma*mu - 1.0 );
+	//c=(pt->BulkFactor * pt->BulkFactor * pt->BulkFactor );
+	//c = c * (1.0 + pt->BulkFactor * mu + 1.0) * (1.0 + pt->BulkFactor * mu + 1.0) * (1.0 + pt->BulkFactor * mu + 1.0);
+
 	return 2 * pi * sin(theta) * eval_I_nu_theta_BLR(pt, cos(theta)) * pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta));
 }
 
@@ -1024,6 +1036,7 @@ double eval_I_nu_BLR_blob_RF(struct spettro *pt)
 
 	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->theta_n_int);
 	pt->R_H = R_H_orig;
+	//printf("=>BLR R_H=%e R_B=%e I=%e %e %e c=%e\n ", pt->R_H, pt->R_BLR_out, I, theta_min, theta_max, c);
 	return I*one_by_four_pi*c;
 }
 
@@ -1044,14 +1057,14 @@ double eval_theta_max_BLR(struct spettro *pt)
 	double theta_max;
 	if (pt->R_H > pt->R_BLR_out)
 	{
-		theta_max = pi * 0.5 - acos(pt->R_BLR_out / pt->R_H);
+		theta_max = asin(pt->R_BLR_out / pt->R_H);
+		//theta_max = 2 * (pi * 0.5 - acos(pt->R_BLR_out / pt->R_H))	;
 	}
 	else
 	{
 		theta_max = pi;
 	}
 
-	return theta_max;
 
 	return theta_max;
 	
@@ -1100,6 +1113,9 @@ void set_BLR_geometry(struct spettro *pt)
 	pt->BLR_inner_Surface = 4 * pi * (pt->R_BLR_in * pt->R_BLR_in);
 	pt->Delta_R_BLR = pt->R_BLR_out - pt->R_BLR_in;
 
+	
+
+	/*
 	if (pt->R_H < pt->R_BLR_in)
 	{
 		pt->BLR_mu_1 = -1.0;
@@ -1127,6 +1143,7 @@ void set_BLR_geometry(struct spettro *pt)
 		//pt->BLR_geom_factor=(1.0)/(4*pi*4*pi);
 		//pt->BLR_geom_factor*=1.0/(pt->R_BLR_in*pt->R_BLR_in);
 	}
+	*/
 }
 
 //=========================================================================================
@@ -1171,7 +1188,11 @@ void Build_I_nu_DT(struct spettro *pt){
 	nu_start_DT_disk_RF=nu_peak_DT_disk_RF*pt->nu_planck_min_factor;
 	nu_stop_DT_disk_RF=nu_peak_DT_disk_RF*pt->nu_planck_max_factor;
 
-	pt->nu_start_DT = eval_nu_min_blob_RF(pt,pt->DT_mu_1, pt->DT_mu_2, nu_start_DT_disk_RF);
+
+	pt->DT_mu_1 = 1.0;
+	pt->DT_mu_2 = cos(eval_theta_max_DT(pt));
+
+	pt->nu_start_DT = eval_nu_max_blob_RF(pt, pt->DT_mu_1, pt->DT_mu_2, nu_start_DT_disk_RF);
 	pt->nu_stop_DT  = eval_nu_max_blob_RF(pt,pt->DT_mu_1, pt->DT_mu_2, nu_stop_DT_disk_RF);
 
 	pt->nu_start_DT_DRF=nu_start_DT_disk_RF;
@@ -1194,8 +1215,8 @@ void Build_I_nu_DT(struct spettro *pt){
 	NU_INT_MAX = pt->nu_seed_size-1;
 	pt->NU_INT_MAX_DT = NU_INT_MAX;
 
-	pt->R_DT_interp_val = pt->R_DT* 10.0;
-	pt->R_DT_interp_start = pt->R_DT * 10.0;
+	pt->R_DT_interp_val = pt->R_DT* 50.0;
+	pt->R_DT_interp_start = pt->R_DT * 50.0;
 
 	pt->DT_Volume=(4./3.)*pi*pt->R_DT*pt->R_DT*pt->R_DT;
 
@@ -1275,39 +1296,59 @@ void Build_I_nu_DT(struct spettro *pt){
 //========================
 // Torus Spectral Functions
 //========================
-/*
+
 double j_nu_DT_integrand(struct spettro *pt, double l)
 {
 	unsigned long i;
-	double  r,L;
+	double L, r2;
 
-	i = x_to_grid_index(pt->nu_DT_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
-
-	r = sqrt((pt->R_H * pt->R_H) - 2.0 * pt->R_H * l * pt->mu_j + l * l);
-
-	if (r<pt->R_DT){
-		L = pt->L_nu_DT_disk_RF[i] / (four_pi * four_pi * r*r)/pt->R_DT;
-	}
-	else{
+	//i = x_to_grid_index(pt->nu_BLR_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
+	
+	r2 = (pt->R_H * pt->R_H) - 2.0 * pt->R_DT * l * pt->mu_j + l * l;
+	
+	
+	//L = eval_Disk_L_nu(pt, pt->nu_disk_RF) * pt->n0_BLR * SIGTH;
+	if  (r2 > (pt->R_DT * pt->R_DT) )
+	{
 		L=0.0;
 	}
-	//pt->DT_Volume *l_TORUS(pt, mu)
-	//L = pt->L_nu_DT_disk_RF[i];
-	//printf("l=%e mu=%e R_H=%e r2=%e  L=%e \n ", l, pt->mu_j, pt->R_H, r2, pt->L_nu_DT_disk_RF[i]);
+	else{
+		L =1.0/ (four_pi * four_pi * r2*pt->R_DT);
+	}
 	return L;
 }
-*/
 
-double eval_I_nu_theta_DT(struct spettro *pt, double mu)
+
+double eval_I_nu_theta_DT(struct spettro *pt, double mu, double theta)
 {
-	//double (*pf)(struct spettro *, double x);
+	double (*pf)(struct spettro *, double x);
 	//unsigned long i;
-	double l, I;
-	//l = eval_l_DT(pt, mu);
-	//pf = &j_nu_DT_integrand;
-	pt->mu_j = mu;
+	double l, I,cos_theta_norm,alpha;
+	//double I;
+	
+	
 	//i = x_to_grid_index(pt->nu_DT_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
-	I =1.0 / (4 * pi * 4* pi * pt->R_DT * pt->R_DT);
+	if (pt->R_H < pt->R_DT)
+	{
+		I = 1.0 / (4 * pi * 4 * pi * pt->R_DT * pt->R_DT);
+	}	
+	else
+	{
+		l = eval_l_DT(pt, mu);
+		//pf = &j_nu_DT_integrand;
+		//pt->mu_j = mu;
+
+		
+		alpha = acos(l * sin(theta) / pt->R_DT);
+
+		cos_theta_norm = cos(pi - (alpha + 0.5 * pi - theta ));
+
+		I = cos_theta_norm	 / ((4 * pi * pi * pt->R_H * pt->R_H) * ((pt->R_DT / pt->R_H) * (pt->R_DT / pt->R_H)));
+
+		//I = integrale_simp_struct(pf, pt, 0, l, pt->l_n_int);
+
+	}
+			
 	//I = integrale_simp_struct(pf, pt, 0, l, pt->l_n_int);
 	return I;
 }
@@ -1315,13 +1356,13 @@ double eval_I_nu_theta_DT(struct spettro *pt, double mu)
 double integrand_I_nu_DT_blob_RF(struct spettro *pt, double theta)
 {
 	//double psi;
-	return 2 * pi * sin(theta) * eval_I_nu_theta_DT(pt, cos(theta)) * pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta));
+	return 2 * pi * sin(theta) * eval_I_nu_theta_DT(pt, cos(theta), theta) * pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta));
 }
 
 double integrand_I_nu_DT_disk_RF(struct spettro *pt, double theta)
 {
 	//double psi;
-	return 2 * pi * sin(theta) * eval_I_nu_theta_DT(pt, cos(theta));
+	return 2 * pi * sin(theta) * eval_I_nu_theta_DT(pt, cos(theta), theta);
 }
 
 double eval_I_nu_DT_disk_RF(struct spettro *pt )
@@ -1377,7 +1418,7 @@ double eval_I_nu_DT_blob_RF(struct spettro *pt )
 
 	I = integrale_simp_struct(pf, pt, theta_min, theta_max, pt->theta_n_int);
 	pt->R_H = R_H_orig;
-	//printf("=>R_H=%e R_BLR_inter=%e I=%e %e %e c=%e\n ",pt->R_H,pt->R_BLR_interp, I, theta_min, theta_max,c);
+	//printf("=>DT  R_H=%e R_D=%e I=%e %e %e c=%e\n ", pt->R_H, pt->R_DT, I, theta_min, theta_max, c);
 	return I * one_by_four_pi * c;
 }
 
@@ -1396,7 +1437,7 @@ double eval_theta_max_DT(struct spettro *pt)
 	double theta_max;
 
 	if (pt->R_H > pt->R_DT){
-		theta_max= pi * 0.5 - acos(pt->R_DT / pt->R_H);
+		theta_max= asin(pt->R_DT / pt->R_H);
 	}
 	else{
 		theta_max=pi;
@@ -1414,7 +1455,7 @@ double eval_l_DT(struct spettro *pt, double mu)
 		l=0.0;
 	}
 	else{
-		l= pt->R_H * mu + pt->R_H * sqrt(s);
+		l= pt->R_H * mu - pt->R_H * sqrt(s);
 	}
 	if (l < 0.0){
 		l = 0.;

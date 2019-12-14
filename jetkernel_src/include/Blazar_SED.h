@@ -967,7 +967,7 @@ double eval_I_nu_Disk_disk_RF(struct spettro *pt, double nu_disk_RF);
 double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_disk_RF);
 double eval_I_nu_theta_Disk(struct spettro *pt, double mu);
 double integrand_I_nu_Disk_blob_RF(struct spettro *pt, double mu);
-double integrand_I_nu_Disk_disk_RF(struct spettro *pt, double mu );
+double integrand_I_nu_Disk_disk_RF(struct spettro *pt, double mu);
 double eval_Disk_L_nu(struct spettro *pt, double nu_Disk_disk_RF);
 void set_Disk_geometry(struct spettro *pt);
 double eval_nu_peak_Disk(double T);
@@ -999,8 +999,8 @@ void set_BLR_geometry(struct spettro *pt);
 
 /***  FUNCTIONS Seed Photons EC DT  ***/
 void Build_I_nu_DT(struct spettro *pt);
-//double j_nu_DT_integrand(struct spettro *pt, double l);
-double eval_I_nu_theta_DT(struct spettro *pt, double mu);
+double j_nu_DT_integrand(struct spettro *pt, double l);
+double eval_I_nu_theta_DT(struct spettro *pt, double mu, double theta);
 double integrand_I_nu_DT_disk_RF(struct spettro *, double theta);
 double eval_I_nu_DT_disk_RF(struct spettro *pt);
 double eval_I_nu_DT_blob_RF(struct spettro *pt);
