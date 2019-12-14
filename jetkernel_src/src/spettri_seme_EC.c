@@ -447,7 +447,7 @@ void Build_I_nu_Disk(struct spettro *pt){
 
 	set_Disk(pt);
 	set_Disk_geometry(pt);
-
+	set_Disk_angles(pt);
 	if (pt->disk == 1)
 	{
 		nu_peak_BB=eval_nu_peak_Disk(pt->T_Disk);
@@ -477,9 +477,9 @@ void Build_I_nu_Disk(struct spettro *pt){
 	}
 
 	pt->nu_start_Disk = eval_nu_min_blob_RF(pt, pt->Disk_mu_1, pt->Disk_mu_2, nu_start_disk_RF);
-	pt->nu_stop_Disk  = eval_nu_max_blob_RF(pt,pt->Disk_mu_1, pt->Disk_mu_2, nu_stop_disk_RF);
+	pt->nu_stop_Disk = eval_nu_max_blob_RF(pt,pt->Disk_mu_1, pt->Disk_mu_2, nu_stop_disk_RF);
 
-	pt->nu_start_Disk_DRF=nu_start_disk_RF;
+	pt->nu_start_Disk_DRF = nu_start_disk_RF;
 	pt->nu_stop_Disk_DRF = nu_stop_disk_RF;
 
 		if (pt->verbose)
