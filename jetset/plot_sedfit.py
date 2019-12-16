@@ -114,7 +114,7 @@ class  PlotSED (object):
 
 
 
-        self.sedplot.grid(True)   
+        self.sedplot.grid(True,alpha=0.5)
        
 
 
@@ -420,7 +420,7 @@ class  PlotSED (object):
         else:
             pass
 
-        line, = self.sedplot.plot(x, y, line_style, label=label,color=color)
+        line, = self.sedplot.plot(x, y, line_style, label=label,color=color,linewidth=1.0)
 
 
         self.lines_model_list.append(line)

@@ -99,6 +99,7 @@ class JetParameter(ModelParameter):
                             'BLR',
                             'DT',
                             'region_size',
+                            'region_position',
                             'electron_energy',
                             'LE_spectral_slope',
                             'HE_spectral_slope',
@@ -190,6 +191,7 @@ def build_emitting_region_dic(beaming_expr='delta'):
     
     model_dic={}
     model_dic['R']=['region_size',0,30,'cm',False,True]
+    model_dic['R_H'] = ['region_position', 0, None, 'cm']
     model_dic['B']=['magnetic_field',0,None,'G']
     
     if beaming_expr=='bulk_theta':
@@ -242,7 +244,7 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list,):
             model_dic['R_ext_Sw']=['Disk',0,None,'Sw. radii']
             model_dic['T_Disk']=['Disk',0,None,'K']
             model_dic['accr_eff']=['Disk',0,None,'']
-            model_dic['R_H']=['Disk',0,None,'cm']
+            #model_dic['R_H']=['Disk',0,None,'cm']
             model_dic['M_BH'] = ['Disk', 0, None, 'M_sun']
 
         if 'BLR' in EC_model:
@@ -257,7 +259,7 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list,):
             model_dic['T_DT']=['DT',0.0,None,'K']
             model_dic['R_DT']=['DT',0,None,'cm',True]
             model_dic['tau_DT']=['DT',0.0,1.0,'']
-            model_dic['R_H'] = ['Disk', 0, None, 'cm']
+            #model_dic['R_H'] = ['Disk', 0, None, 'cm']
     
     return model_dic
 
@@ -446,8 +448,8 @@ class ElectronDistribution(object):
         model_dic['N'] = ['electron_density', 0, None, 'cm^-3']
 
         a_h,b_h=self.set_bounds(1,1E15,log_val=self._log_values)
-        a_l, b_l = self.set_bounds(1, 1E5, log_val=self._log_values)
-        a_t, b_t = self.set_bounds(1, 1E8, log_val=self._log_values)
+        a_l, b_l = self.set_bounds(1, 1E9, log_val=self._log_values)
+        a_t, b_t = self.set_bounds(1, 1E9, log_val=self._log_values)
         model_dic['gmin'] = ['low-energy-cut-off', a_l, b_l, 'Lorentz-factor',False,self._log_values]
         model_dic['gmax'] = ['high-energy-cut-off', a_h, b_h, 'Lorentz-factor',False,self._log_values]
 
@@ -952,6 +954,8 @@ class Jet(Model):
 
         self.set_electron_distribution(electron_distribution,electron_distribution_log_values)
 
+        self._blob.adaptive_e_binning=0
+    
         self.set_emitting_region(beaming_expr)
 
 

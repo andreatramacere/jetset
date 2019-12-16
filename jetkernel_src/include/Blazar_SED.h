@@ -216,6 +216,7 @@ struct spettro {
     //-----------SSC-IC--------------//
     //--- CONST
     int ord_comp;
+    int adaptive_e_binning;
     double COST_IC_K1,COST_IC_COOLING ;
 
     //--- FREQ BOUNDARIES
@@ -834,6 +835,7 @@ double I_nu_to_L_nu_blob(double I_nu, double R);
 double I_nu_to_L_nu_src(double I_nu, double R, double beam_obj);
 double j_nu_to_L_nu_blob(double j_nu, double R);
 double j_nu_to_L_nu_src(double j_nu, double R, double beam_obj);
+double j_nu_src_to_L_nu_src(double j_nu, double R, double beam_obj);
 double nu_blob_to_nu_obs(double nu, double delta, double z);
 double nu_blob_to_nu_src(double nu, double delta, double z);
 double nu_disk_to_nu_obs_disk(double nu, double z);
@@ -897,6 +899,7 @@ unsigned long x_to_grid_index(double * nu_grid, double nu, unsigned long SIZE);
 //=================================================================================
 /************************************ FUNCTIONS  IC  *****************************/
 double f_compton_K1(struct spettro *, double Gamma);
+void set_N_distr_for_Compton(struct spettro *, double nu_in, double nu_out, int stat_frame);
 double rate_compton_GR(struct spettro *);
 double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b,int stat_frame);
 double integrale_IC_cooling(struct spettro * pt, double a, double b, double gamma);

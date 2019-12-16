@@ -164,8 +164,8 @@ double rate_compton_GR(struct spettro *pt_GR) {
                 pt_GR->n_seed = pt_GR->n_DT_DRF;
                 rate_comp = integrale_IC(pf_K,
                                          pt_GR,
-                                         pt_GR->nu_start_DT,
-                                         pt_GR->nu_stop_BLR_disk_RF,
+                                         pt_GR->nu_stop_DT_DRF,
+                                         pt_GR->nu_stop_DT_DRF,
                                          pt_GR->EC_stat);
                 pt_GR->nu_1 = nu_1_original;
             }
@@ -428,9 +428,28 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
 }
 //=========================================================================================
 
+void set_N_distr_for_Compton(struct spettro * pt, double nu_in, double nu_out, int stat_frame)
+{
+    double epsilon_0, epsilon_1, g_min_BG;
+    epsilon_0 = HPLANCK * nu_in * one_by_MEC2;
+    epsilon_1 = HPLANCK * nu_out * one_by_MEC2;
+    
+    g_min_BG = 0.5 * epsilon_1 *(1 + sqrt(1.0 + (1.0 / (epsilon_1 * epsilon_0))));
 
-
-
+    
+    if (pt->EC_stat == 1)
+    {
+        g_min_BG = g_min_BG / pt->beam_obj;
+    }
+    if (g_min_BG > pt->gmin_griglia)
+    {
+        Fill_Ne_IC(pt, g_min_BG, stat_frame);
+    }
+    else
+    {
+        Fill_Ne_IC(pt, pt->gmin_griglia, stat_frame);
+    }
+}
 
 //=========================================================================================
 // INTEGRAZIONE SSC TRAPEZOIDALE/METODO DI SIMPSON E GRIGLIA EQUI-LOG
@@ -441,10 +460,9 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
 //=========================================================================================
 double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, int stat_frame) {
     double nu1, nu2, integr_gamma, integr_nu;
-    double g3, g1, y_g1, y_g2, y_g3, y_nu1, y_nu2;
+    double g3, g1, y_g1, y_g2, y_g3, y_nu1, y_nu2, g;
     double delta_g, delta_nu;
-    unsigned long i, start_BG,g;
-    double g_min_BG,epsilon_0,epsilon_1;
+    unsigned long i;
     double (*pf_K1) (struct spettro *, double x);
 
     pf_K1 = &f_compton_K1;
@@ -452,14 +470,13 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
     integr_nu = 0.0;
     i = 0;
 
-    epsilon_0 = HPLANCK * pt->nu_compton_0*one_by_MEC2;
-    epsilon_1 = HPLANCK * pt->nu_1*one_by_MEC2;
-    g_min_BG=0.5*epsilon_1*(1+sqrt(1.0+(1.0/(epsilon_1*epsilon_0))));
+   
+    
+    g = pt->gmin_griglia;
 
-
-    g=pt->gmin_griglia;
-    pt->gmin_griglia=g_min_BG;
-    Fill_Ne_IC(pt,g_min_BG,stat_frame);
+    //wit this choice gmin is set to its lowest possible
+    //value for enay nu_seed in the range (a,b)
+    set_N_distr_for_Compton(pt, b, pt->nu_1, stat_frame);
 
     while (pt->nu_seed[i] < a && i<pt->nu_seed_size) {
         i++;
@@ -468,7 +485,7 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
     if (pt->verbose>1) {
         printf("***** Integrale  IC ******\n");
         printf("i=%d\n", i);
-        printf("nu=%e a=%e b=%e\n", pt->nu_seed[i], a, b);
+        printf("nu=%e a=%e b=%e  g_min_grid=%e g_max_grid=%e\n", pt->nu_seed[i], a, b, pt->griglia_gamma_Ne_log_IC[0], pt->griglia_gamma_Ne_log_IC[pt->gamma_grid_size - 1]);
     }
 
     nu1=0.;
@@ -487,6 +504,13 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
 
         g1 = pt->griglia_gamma_Ne_log_IC[0];
         pt->nu_compton_0 = pt->nu_seed[i];
+
+        if (pt->adaptive_e_binning ==1){
+            //wit this choice gmin is set to its lowest valeu
+            //the actual nu_seed value
+            set_N_distr_for_Compton(pt, pt->nu_compton_0, pt->nu_1, stat_frame);
+        }
+        
         y_g1 = f_compton_K1(pt, g1) * pt->Ne_IC[0];
 
 
@@ -519,7 +543,6 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
         nu1 = nu2;
         y_nu1 = y_nu2;
         i++;
-
 
     }
 

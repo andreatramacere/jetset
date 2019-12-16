@@ -119,7 +119,7 @@ class SED(object):
                 self._nuLnu = convert_nuFnu_to_nuLnu_src(self._nuFnu.value, z, 'obs', dl) * self._nuLnu_src_units
 
 
-        print('->self._nuLnu', self._nuLnu.max())
+        #print('->self._nuLnu', self._nuLnu.max())
 
     def get_model_points(self,log_log=False,frame='obs'):
 

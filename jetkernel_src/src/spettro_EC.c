@@ -257,8 +257,8 @@ void spettro_EC(int Num_file, struct spettro *pt) {
 		printf("SSC=%d EC=%d TOT=%d\n",
 				pt->SSC, pt->EC,
 				pt->TOT);
-
-   	}
+		printf("emiss limit=%e\n", pt->emiss_lim);
+	}
 
 	I_MAX = pt->nu_IC_size-1;
 	stop=0;
@@ -283,7 +283,7 @@ void spettro_EC(int Num_file, struct spettro *pt) {
 					//now we go back to the blob
 					//this is the j_nu in the blob frame at nu_blob
 					//evaluated from j_disk at nu_disk
-					pt->j_EC[NU_INT]=j_nu_disk/(pt->beam_obj*pt->beam_obj);
+					pt->j_EC[NU_INT]=j_nu_disk;
 				
 				}
 				else{
@@ -301,8 +301,15 @@ void spettro_EC(int Num_file, struct spettro *pt) {
 
 				nu_src = nu_blob_to_nu_src(freq_array[NU_INT], pt->beam_obj,
 						pt->z_cosm);
-				L_nu_EC = j_nu_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_sphere,
+				if (pt->EC_stat == 1)
+				{
+					L_nu_EC = j_nu_src_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_sphere,
+												   pt->beam_obj);
+				}
+				else{
+					L_nu_EC = j_nu_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_sphere,
 						pt->beam_obj);
+				}
 				nuL_nu_EC = L_nu_EC * nu_src;
 				F_nu_EC_obs = L_nu_src_to_F_nu(L_nu_EC, pt->beam_obj,
 						pt->z_cosm, pt->dist);

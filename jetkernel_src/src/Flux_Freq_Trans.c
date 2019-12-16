@@ -91,6 +91,11 @@ double I_nu_to_L_nu_blob(double I_nu, double S) {
 double j_nu_to_L_nu_src(double j_nu, double V, double beam_obj) {
     return beam_obj * beam_obj * beam_obj * j_nu * four_pi*V;
 }
+
+double j_nu_src_to_L_nu_src(double j_nu, double V, double beam_obj)
+{
+    return beam_obj  * j_nu * four_pi * V;
+}
 //=========================================================================================
 
 
