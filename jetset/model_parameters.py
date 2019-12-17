@@ -512,6 +512,8 @@ class ModelParameterArray(object):
         self._par_table= Table(_fields,names=_names)
 
 
+
+
     def __setattr__(self, name, value):
         if "properties" in self.__dict__ and name in self.properties:
             raise AttributeError('this member is protected, use del_par,add_par, to add/remove, and set() to set values or .val attribute')
@@ -665,8 +667,10 @@ class ModelParameterArray(object):
         
         if keywords!={}:
         
-            
-            par.set( **keywords)
+            if par is None:
+                raise RuntimeWarning('parameter %s is not present in the model'%par_name)
+            else:
+                par.set( **keywords)
         
         
         

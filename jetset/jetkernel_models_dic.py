@@ -106,3 +106,4 @@ for m,d in zip(available_N_distr,available_N_distr_descr):
     N_distr_descr[m]=d
 
 
+allowed_disk_type=['BB','MultiBB','Mono']

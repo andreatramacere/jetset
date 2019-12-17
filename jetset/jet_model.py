@@ -37,7 +37,7 @@ from .base_model import  Model
 
 from .output import makedir,WorkPlace,clean_dir
 
-from .jetkernel_models_dic import nuFnu_obs_dic,gamma_dic,available_N_distr,N_distr_descr,n_seed_dic
+from .jetkernel_models_dic import nuFnu_obs_dic,gamma_dic,available_N_distr,N_distr_descr,n_seed_dic,allowed_disk_type
 
 from  .plot_sedfit import PlotSED,PlotPdistr,PlotSpecComp,PlotSeedPhotons
 
@@ -897,12 +897,12 @@ class Jet(Model):
         """
         super(Jet,self).__init__(  **keywords)
 
-        print('cosmo',cosmo)
+        #print('cosmo',cosmo)
         if cosmo is not None:
             self.cosmo=cosmo
         else:
             self.cosmo= Cosmo()
-        print('cosmo', self.cosmo)
+        #print('cosmo', self.cosmo)
         self.name = name
 
         self.model_type='jet'
@@ -955,7 +955,7 @@ class Jet(Model):
         self.set_electron_distribution(electron_distribution,electron_distribution_log_values)
 
         self._blob.adaptive_e_binning=0
-    
+
         self.set_emitting_region(beaming_expr)
 
 
@@ -1685,6 +1685,14 @@ class Jet(Model):
         return self._blob.emiss_lim
 
 
+    def set_disk_type(self,disk_type='MultiBB'):
+
+        if disk_type in allowed_disk_type:
+
+            self._blob.disk_type = disk_type
+        else:
+            raise RuntimeError('Disk type %s, not in allowed '%disk_type,allowed_disk_type)
+
         #BlazarSED.build_photons(self._blob)
 
     @property
@@ -1891,6 +1899,7 @@ class Jet(Model):
         for _s in self.spectral_components_list:
             print("   name:%s,"%_s.name, 'state:', _s.state)
         print('external fields transformation method:', self.get_external_field_transf())
+        print('disk type:', self._blob.disk_type)
         print ('')
         print ('SED info:')
         print (' nu grid size :%d' % self._get_nu_grid_size())

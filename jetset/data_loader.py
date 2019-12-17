@@ -7,6 +7,8 @@ __author__ = "Andrea Tramacere"
 
 
 import numpy as np
+import copy
+
 #from .cosmo_tools import Cosmo
 #from poly_fit import filter_interval
 from astropy.table  import  Table,Column
@@ -19,15 +21,19 @@ from .utils import *
 from .cosmo_tools import Cosmo
 from .frame_converter import convert_nu_to_src, convert_nuFnu_to_nuLnu_src
 
-import os
 
 __all__=['get_data_set_msk','get_freq_range_msk','lin_to_log','log_to_lin','ObsData','Data']
 
 
 class Data(object):
 
-    def __init__(self,n_rows=None,data_table=None):
+    def __init__(self,
+                 n_rows=None,
+                 data_table=None,
+                 meta_data=None,
+                 import_dictionary=None):
 
+        self._necessary_meta = ['data_scale', 'z', 'restframe']
         self._allowed_meta={}
         self._allowed_meta['z']= None
         self._allowed_meta['UL_CL'] = None
@@ -37,15 +43,30 @@ class Data(object):
 
         self._names = ['x', 'dx', 'y', 'dy', 'T_start', 'T_stop', 'UL', 'data_set']
         self._dt = ('f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'bool', 'S16')
-        self._units = [u.Hz, (u.erg / (u.cm ** 2 * u.s)), u.Hz, (u.erg / (u.cm ** 2 * u.s)), cds.MJD, cds.MJD, None, None]
+        self._units = [u.Hz, u.Hz,(u.erg / (u.cm ** 2 * u.s)) ,(u.erg / (u.cm ** 2 * u.s)), cds.MJD, cds.MJD, None, None]
 
 
         if data_table is None:
-            self._build_empty_table(n_rows)
+            self._build_empty_table(n_rows,meta_data=meta_data)
 
+
+        if import_dictionary is not None:
+            for k in import_dictionary.keys():
+                data_table.rename_column(k, import_dictionary[k])
+
+        self._table = copy.deepcopy(data_table)
+
+        if meta_data is not None:
+            self._table.meta = {}
+            for k in meta_data.keys():
+
+                self.set_meta_data(k,meta_data[k])
         else:
-            self._load_data(data_table)
+            for k in self._table.meta:
+                self.set_meta_data(k,meta_data[k])
 
+        self._check_table()
+        self._convert_units()
 
 
 
@@ -59,30 +80,37 @@ class Data(object):
 
     @classmethod
     def from_file(cls,data_table,format='ascii.ecsv'):
-        cls(data_table=data_table,format=format)
+        cls(data_table= Table.read(data_table, format=format),format=format)
         return cls
 
     @classmethod
     def save_file(cls, name, format='ascii.ecsv'):
-        Table.write(name=name,format=format)
+        cls.table.write(name=name,format=format)
 
-    def _load_data(self,data_table,format='ascii.ecsv'):
-        if isinstance(data_table, Table):
-            self._table = data_table
-        else:
-            self._table = Table.read(data_table, format=format)
 
-        self._check_table()
+
+
 
     def _check_table(self):
+
         for ID,_cn in enumerate(self._names):
             if _cn not in self._table.colnames:
                 self._table.add_column(index=ID,col=Column(name=_cn,dtype=self._dt[ID],unit=self._units[ID],data=np.zeros(len(self._table))))
 
+        for _n in  self._necessary_meta:
+            if _n not in  self._table.meta:
+                raise RuntimeError('meta data',_n,'not defined, but it is necessary')
+
 
     def _convert_units(self):
         for ID,_cn in enumerate(self._names):
-            self._table[_cn]=self._table[_cn].to(self._units[ID])
+            if hasattr(self._table[_cn],'unit'):
+                if self._table[_cn].unit is not None and self._units[ID] is not None:
+                    try:
+                        self._table[_cn]=self._table[_cn].to(self._units[ID])
+                    except:
+                        raise RuntimeError ('Unito conversion problem for ',self._table[_cn].unit,'to',self._units[ID])
+
 
     def set_meta_data(self,m,v):
         if m not in self._allowed_meta:
@@ -91,7 +119,7 @@ class Data(object):
         if  self._allowed_meta[m] is not None:
             #print (self._allowed_meta[m])
             if v not in self._allowed_meta[m]:
-                raise RuntimeError('meta data ', m, 'not in allowed', self._allowed_meta.keys())
+                raise RuntimeError('meta data value ', v, 'not in allowed', self._allowed_meta[m])
 
 
         self._table.meta[m]=v
@@ -108,7 +136,7 @@ class Data(object):
         if unit is not None:
             self._table[field] *= unit
 
-    def _build_empty_table(self,n_rows):
+    def _build_empty_table(self,n_rows,meta_data=None):
 
 
         self._table = Table(np.zeros((n_rows, len(self._names))), names=self._names, dtype=self._dt)
@@ -122,6 +150,11 @@ class Data(object):
         self._table.meta['restframe'] = 'obs'
         self._table.meta['data_scale'] = 'lin-lin'
         self._table.meta['obj_name'] = 'new-src'
+
+        if meta_data is not None:
+            for k in self._table.meta.keys():
+                if k in meta_data.keys():
+                    self._table.meta[k]=meta_data[k]
 
 
 
@@ -424,9 +457,10 @@ class ObsData(object):
 
         self.col_types = []
         for n in self._input_data_table.colnames:
-            self.col_types.append(n)
-            #print ('-->n',self._input_data_table[n].unit)
-            self.data[self._file_col_dict[n]]=self._input_data_table[n]
+            if n  in self._file_col_dict.keys():
+                self.col_types.append(n)
+
+                self.data[self._file_col_dict[n]]=self._input_data_table[n]
 
         self.col_nums=len(self.col_types)
 
@@ -1074,10 +1108,10 @@ class ObsData(object):
 
 
 
-    def plot_sed(self,plot_obj=None,frame='obs'):
+    def plot_sed(self,plot_obj=None,frame='obs',color=None,fmt='o',ms=4,mew=0.5):
         if plot_obj is None:
-            plot_obj=PlotSED(sed_data=self,frame=frame)
-
+            plot_obj=PlotSED(frame=frame)
+        plot_obj.add_data_plot(self,color=color,fmt=fmt,ms=ms,mew=mew)
         return plot_obj
 
     
