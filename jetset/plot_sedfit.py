@@ -47,7 +47,8 @@ class  PlotSED (object):
                  interactive=False,
                  plot_workplace=None,
                  title='Plot',
-                 frame='obs'):
+                 frame='obs',
+                 figsize=None):
                  #autoscale=True):
 
         check_frame(frame)
@@ -93,8 +94,10 @@ class  PlotSED (object):
         
         #Build sedplot    
       
-            
-        self.fig=plt.figure()
+        if figsize is None:
+            figsize=(10,8)
+
+        self.fig=plt.figure(figsize=figsize)
         
 
 
@@ -126,6 +129,7 @@ class  PlotSED (object):
             self.sedplot.set_ylim(38, 55)
         else:
             unexpetced_behaviour()
+
 
         self.resplot.set_ybound(-2,2)
         try:
@@ -454,8 +458,8 @@ class  PlotSED (object):
         
           
         # set color
-        if color is None:
-            color=self.counter
+        #if color is None:
+        #    color=self.counter
 
                 
         if label is None:
@@ -465,7 +469,7 @@ class  PlotSED (object):
                 label='line %d'%self.counter
 
         line = self.sedplot.errorbar(x, y, xerr=dx, yerr=dy, fmt=fmt
-                                     , uplims=sed_data.data['UL'],label=label,ms=ms,mew=mew)
+                                     , uplims=sed_data.data['UL'],label=label,ms=ms,mew=mew,color=color)
 
 
         
@@ -483,8 +487,8 @@ class  PlotSED (object):
     def add_xy_plot(self,x,y,label=None,color=None,line_style=None,autoscale=False):
 
         #color setting  
-        if color is None:
-            color=self.counter
+        #if color is None:
+        #    color=self.counter
        
     
         

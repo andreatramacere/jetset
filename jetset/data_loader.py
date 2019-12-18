@@ -1108,9 +1108,9 @@ class ObsData(object):
 
 
 
-    def plot_sed(self,plot_obj=None,frame='obs',color=None,fmt='o',ms=4,mew=0.5):
+    def plot_sed(self,plot_obj=None,frame='obs',color=None,fmt='o',ms=4,mew=0.5,figsize=None):
         if plot_obj is None:
-            plot_obj=PlotSED(frame=frame)
+            plot_obj=PlotSED(frame=frame,figsize=figsize)
         plot_obj.add_data_plot(self,color=color,fmt=fmt,ms=ms,mew=mew)
         return plot_obj
 

@@ -80,6 +80,28 @@ def safe_run(func):
 
     return func_wrapper
 
+
+class JetModelDictionaryPar(object):
+
+    def __init__(self,
+                 ptype=None,
+                 vmin=None,
+                 vmax=None,
+                 punit=None,
+                 froz=False,
+                 log=False,
+                 allowed_values=None ):
+
+        self.ptype =ptype
+        self.vmin =vmin
+        self.vmax =vmax
+        self.punit =punit
+        self.froz =froz
+        self.log =log
+        self.allowed_values =allowed_values
+
+
+
 class JetParameter(ModelParameter):
     """
     
@@ -147,8 +169,13 @@ class JetParameter(ModelParameter):
         """
         sets the :class:`.JetParameter` value in the BlazarSED object
         """
+        #TODO improve this with allowed values, Done!
+        #if name=='disk_type':
 
-    
+        #    if val not in allowed_disk_type:
+
+        #        raise RuntimeError('Disk type %s, not in allowed '%val,allowed_disk_type)
+        print('-> assign val',name,val)
         b=getattr(self._blob,name)
         
         
@@ -190,19 +217,26 @@ def build_emitting_region_dic(beaming_expr='delta'):
     """
     
     model_dic={}
-    model_dic['R']=['region_size',0,30,'cm',False,True]
-    model_dic['R_H'] = ['region_position', 0, None, 'cm']
-    model_dic['B']=['magnetic_field',0,None,'G']
+    model_dic['R']=JetModelDictionaryPar(ptype='region_size',vmin=0,vmax=30,punit='cm',froz=False,log=True)
+    #    ['region_size',0,30,'cm',False,True]
+    model_dic['R_H'] = JetModelDictionaryPar(ptype='region_position',vmin=0,vmax=None,punit='cm')
+    #['region_position', 0, None, 'cm']
+    model_dic['B']=JetModelDictionaryPar(ptype='magnetic_field',vmin=0,vmax=None,punit='G')
+    #['magnetic_field',0,None,'G']
     
     if beaming_expr=='bulk_theta':
-        model_dic['theta']=['jet-viewing-angle',0.0,None,'deg']
-        model_dic['BulkFactor']=['jet-bulk-factor',1.0,None,'Lorentz-factor']
+        model_dic['theta']=JetModelDictionaryPar(ptype='jet-viewing-angle',vmin=0,vmax=None,punit='deg')
+        #['jet-viewing-angle',0.0,None,'deg']
+        model_dic['BulkFactor']=JetModelDictionaryPar(ptype='jet-bulk-factor',vmin=1.0,vmax=None,punit='Lorentz-factor')
+        #['jet-bulk-factor',1.0,None,'Lorentz-factor']
     elif beaming_expr=='delta' or beaming_expr=='':
-        model_dic['beam_obj']=['beaming',1,None,'']
+        model_dic['beam_obj']=JetModelDictionaryPar(ptype='beaming',vmin=1E-4,vmax=None,punit='Lorentz-factor')
+        #['beaming', 1, None, '']
     else:
         raise  RuntimeError('''wrong beaming_expr="%s" value, allowed 'delta' or 'bulk_theta' '''%(beaming_expr))
     
-    model_dic['z_cosm']=['redshift',0,None,'']
+    model_dic['z_cosm']=JetModelDictionaryPar(ptype='redshift',vmin=0,vmax=None,punit='')
+    # ['redshift',0,None,'']
     
     
     return model_dic
@@ -239,28 +273,40 @@ def build_ExtFields_dic(EC_model_list,allowed_EC_components_list,):
      
         if 'Disk' in EC_model:
 
-            model_dic['L_Disk']=['Disk',0,None,'erg/s']
-            model_dic['R_inner_Sw']=['Disk',0,None,'Sw. radii']
-            model_dic['R_ext_Sw']=['Disk',0,None,'Sw. radii']
-            model_dic['T_Disk']=['Disk',0,None,'K']
-            model_dic['accr_eff']=['Disk',0,None,'']
-            #model_dic['R_H']=['Disk',0,None,'cm']
-            model_dic['M_BH'] = ['Disk', 0, None, 'M_sun']
+            model_dic['L_Disk']=JetModelDictionaryPar(ptype='Disk',vmin=0,vmax=None,punit='erg/s')
+            #['Disk',0,None,'erg/s']
+            model_dic['R_inner_Sw']=JetModelDictionaryPar(ptype='Disk',vmin=0,vmax=None,punit='Sw. radii')
+            # ['Disk',0,None,'Sw. radii']
+            model_dic['R_ext_Sw']=JetModelDictionaryPar(ptype='Disk',vmin=0,vmax=None,punit='Sw. radii')
+            # ['Disk',0,None,'Sw. radii']
+            model_dic['T_Disk']=JetModelDictionaryPar(ptype='Disk',vmin=0,vmax=None,punit='K')
+            # ['Disk',0,None,'K']
+            model_dic['accr_eff']=JetModelDictionaryPar(ptype='Disk',vmin=0,vmax=None,punit='')
+            #['Disk',0,None,'']
+            model_dic['disk_type']=JetModelDictionaryPar(ptype='Disk',vmin=None,vmax=None,punit='',froz=True,allowed_values=allowed_disk_type)
+            #['Disk',None,None,'',True,False,allowed_disk_type]
+            model_dic['M_BH'] = JetModelDictionaryPar(ptype='Disk',vmin=0,vmax=None,punit='M_sun')
+            #['Disk', 0, None, 'M_sun']
 
         if 'BLR' in EC_model:
             #r1_BLR_min, r2_BLR_min, r2_BLR_max = BLR_constraints(L_Disk)
-            model_dic['tau_BLR']=['BLR',0.0,1.0,'']
-            model_dic['R_BLR_in']=['BLR',0,None,'cm',True]
-            model_dic['R_BLR_out']=['BLR',0,None,'cm',True]
+            model_dic['tau_BLR']=JetModelDictionaryPar(ptype='BLR',vmin=0,vmax=1.0,punit='')
+            #['BLR',0.0,1.0,'']
+            model_dic['R_BLR_in']=JetModelDictionaryPar(ptype='BLR',vmin=0,vmax=None,punit='cm',froz=True)
+            #['BLR',0,None,'cm',True]
+            model_dic['R_BLR_out']=JetModelDictionaryPar(ptype='BLR',vmin=0,vmax=None,punit='cm',froz=True)
+            #['BLR',0,None,'cm',True]
     
     
             
         if 'DT' in EC_model:
-            model_dic['T_DT']=['DT',0.0,None,'K']
-            model_dic['R_DT']=['DT',0,None,'cm',True]
-            model_dic['tau_DT']=['DT',0.0,1.0,'']
-            #model_dic['R_H'] = ['Disk', 0, None, 'cm']
-    
+            model_dic['T_DT']=JetModelDictionaryPar(ptype='DT',vmin=0,vmax=None,punit='K')
+            #['DT',0.0,None,'K']
+            model_dic['R_DT']=JetModelDictionaryPar(ptype='DT',vmin=0,vmax=None,punit='cm')
+            #['DT',0,None,'cm',True]
+            model_dic['tau_DT']=JetModelDictionaryPar(ptype='DT',vmin=0,vmax=1.0,punit='')
+            #['DT',0.0,1.0,'']
+
     return model_dic
 
 
@@ -445,66 +491,98 @@ class ElectronDistribution(object):
         """
 
         model_dic = {}
-        model_dic['N'] = ['electron_density', 0, None, 'cm^-3']
+        model_dic['N'] = JetModelDictionaryPar(ptype='electron_density',vmin=0,vmax=None,punit='cm^-3')
+        #['electron_density', 0, None, 'cm^-3']
 
         a_h,b_h=self.set_bounds(1,1E15,log_val=self._log_values)
         a_l, b_l = self.set_bounds(1, 1E9, log_val=self._log_values)
         a_t, b_t = self.set_bounds(1, 1E9, log_val=self._log_values)
-        model_dic['gmin'] = ['low-energy-cut-off', a_l, b_l, 'Lorentz-factor',False,self._log_values]
-        model_dic['gmax'] = ['high-energy-cut-off', a_h, b_h, 'Lorentz-factor',False,self._log_values]
+        model_dic['gmin'] = JetModelDictionaryPar(ptype='low-energy-cut-off',vmin=a_l,vmax=b_l,punit='lorentz-factor',log=self._log_values)
+        #['low-energy-cut-off', a_l, b_l, 'Lorentz-factor',False,self._log_values]
+        model_dic['gmax'] = JetModelDictionaryPar(ptype='high-energy-cut-off',vmin=a_h,vmax=b_h,punit='lorentz-factor',log=self._log_values)
+        #['high-energy-cut-off', a_h, b_h, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'pl':
-            model_dic['p'] = ['HE_spectral_slope', -10, 10, '']
+            model_dic['p'] = JetModelDictionaryPar(ptype='HE_spectral_slope',vmin=-10.,vmax=10.,punit='')
+            #['HE_spectral_slope', -10, 10, '']
 
         if electron_distribution_name == 'bkn':
-            model_dic['p'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['p_1'] = ['HE_spectral_slope', -10, 10, '']
-            model_dic['gamma_break'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
+            model_dic['p'] = JetModelDictionaryPar(ptype='LE_spectral_slope',vmin=-10.,vmax=10.,punit='')
+            #['LE_spectral_slope', -10, 10, '']
+            model_dic['p_1'] = JetModelDictionaryPar(ptype='HE_spectral_slope',vmin=-10.,vmax=10.,punit='')
+            #['HE_spectral_slope', -10, 10, '']
+            model_dic['gamma_break'] = JetModelDictionaryPar(ptype='turn-over-energy',vmin=a_t,vmax=b_t,punit='lorentz-factor',log=self._log_values)
+            #['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'lp':
-            model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['r'] = ['spectral_curvature', -15, 15, '']
-            model_dic['gamma0_log_parab'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor', True,self._log_values]
+            model_dic['s'] = JetModelDictionaryPar(ptype='LE_spectral_slope', vmin=-10., vmax=10., punit='')
+            # ['LE_spectral_slope', -10, 10, '']
+            model_dic['r'] = JetModelDictionaryPar(ptype='spectral_curvature', vmin=-15., vmax=15., punit='')
+            # ['spectral_curvature', -15, 15, '']
+            model_dic['gamma0_log_parab'] = JetModelDictionaryPar(ptype='turn-over-energy', vmin=a_t, vmax=b_t,punit='lorentz-factor', log=self._log_values,froz=True)
 
         if electron_distribution_name == 'lppl':
-            model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['r'] = ['spectral_curvature', -15, 15, '']
-            model_dic['gamma0_log_parab'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
+            model_dic['s'] = JetModelDictionaryPar(ptype='LE_spectral_slope',vmin=-10.,vmax=10.,punit='')
+            #['LE_spectral_slope', -10, 10, '']
+            model_dic['r'] = JetModelDictionaryPar(ptype='spectral_curvature',vmin=-15.,vmax=15.,punit='')
+            #['spectral_curvature', -15, 15, '']
+            model_dic['gamma0_log_parab'] = JetModelDictionaryPar(ptype='turn-over-energy',vmin=a_t,vmax=b_t,punit='lorentz-factor',log=self._log_values)
+            #['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'lpep':
-            model_dic['r'] = ['spectral_curvature', -15, 15, '']
-            model_dic['gammap_log_parab'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
+            model_dic['r'] =  JetModelDictionaryPar(ptype='spectral_curvature',vmin=-15.,vmax=15.,punit='')
+            #['spectral_curvature', -15, 15, '']
+            model_dic['gammap_log_parab'] = JetModelDictionaryPar(ptype='turn-over-energy',vmin=a_t,vmax=b_t,punit='lorentz-factor',log=self._log_values)
+            #['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'plc':
-            model_dic['p'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['gamma_cut'] = ['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
+            model_dic['p'] = JetModelDictionaryPar(ptype='LE_spectral_slope', vmin=-10., vmax=10., punit='')
+            #['LE_spectral_slope', -10, 10, '']
+            model_dic['gamma_cut'] = JetModelDictionaryPar(ptype='turn-over-energy',vmin=a_t,vmax=b_t,punit='lorentz-factor',log=self._log_values)
+            #['turn-over-energy', a_t, b_t, 'Lorentz-factor',False,self._log_values]
 
         if electron_distribution_name == 'spitkov':
-            model_dic['spit_index'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['spit_temp'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
-            model_dic['spit_gamma_th'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['spit_index'] = JetModelDictionaryPar(ptype='LE_spectral_slope',vmin=-10.,vmax=10.,punit='')
+            #['LE_spectral_slope', -10, 10, '']
+            model_dic['spit_temp'] = JetModelDictionaryPar(ptype='turn-over-energy',vmin=a_t,vmax=b_t,punit='lorentz-factor',log=self._log_values)
+            #['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['spit_gamma_th'] =JetModelDictionaryPar(ptype='turn-over-energy',vmin=a_t,vmax=b_t,punit='lorentz-factor',log=self._log_values)
+            #['turn-over-energy', 1, None, 'Lorentz-factor']
 
         if electron_distribution_name == 'lppl_pile_up':
-            model_dic['s'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['r'] = ['spectral_curvature', -15, 15, '']
-            model_dic['gamma0_log_parab'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
-            model_dic['gamma_inj'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['s'] =JetModelDictionaryPar(ptype='LE_spectral_slope',vmin=-10.,vmax=10.,punit='')
+            #['LE_spectral_slope', -10, 10, '']
+            model_dic['r'] =JetModelDictionaryPar(ptype='spectral_curvature',vmin=-15.,vmax=15.,punit='')
+            # ['spectral_curvature', -15, 15, '']
+            model_dic['gamma0_log_parab'] = JetModelDictionaryPar(ptype='turn-over-energy',vmin=a_t,vmax=b_t,punit='lorentz-factor',log=self._log_values)
+            #['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gamma_inj'] = JetModelDictionaryPar(ptype='turn-over-energy',vmin=a_t,vmax=b_t,punit='lorentz-factor',log=self._log_values)
+            #['turn-over-energy', 1, None, 'Lorentz-factor']
 
-            model_dic['gamma_pile_up'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
-            model_dic['ratio_pile_up'] = ['turn-over-energy', 0, None, '']
+            model_dic['gamma_pile_up'] = JetModelDictionaryPar(ptype='turn-over-energy',vmin=a_t,vmax=b_t,punit='lorentz-factor',log=self._log_values)
+           # ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['ratio_pile_up'] = JetModelDictionaryPar(ptype='turn-over-energy',vmin=0.0,vmax=None,punit='')
+            #['turn-over-energy', 0, None, '']
 
-            model_dic['alpha_pile_up'] = ['turn-over-energy', 0.0, 10, '']
-           # model_dic['ratio_pile_up'] = ['turn-over-energy',0, None, '']
+            model_dic['alpha_pile_up'] = JetModelDictionaryPar(ptype='turn-over-energy',vmin=0.0,vmax=10.0,punit='')
+            #['turn-over-energy', 0.0, 10, '']
+
 
         if electron_distribution_name == 'bkn_pile_up':
-            model_dic['p'] = ['LE_spectral_slope', -10, 10, '']
-            model_dic['p_1'] = ['HE_spectral_slope', -10, 10, '']
-            model_dic['gamma_break'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['p'] = JetModelDictionaryPar(ptype='LE_spectral_slope',vmin=-10.,vmax=10.,punit='')
+            #['LE_spectral_slope', -10, 10, '']
+            model_dic['p_1'] = JetModelDictionaryPar(ptype='LE_spectral_slope',vmin=-10.,vmax=10.,punit='')
+            # ['HE_spectral_slope', -10, 10, '']
+            model_dic['gamma_break'] =  JetModelDictionaryPar(ptype='turn-over-energy',vmin=a_t,vmax=b_t,punit='lorentz-factor',log=self._log_values)
+            #['turn-over-energy', 1, None, 'Lorentz-factor']
 
-            model_dic['gamma_pile_up'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
-            model_dic['gamma_pile_up_cut'] = ['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gamma_pile_up'] = JetModelDictionaryPar(ptype='turn-over-energy',vmin=a_t,vmax=b_t,punit='lorentz-factor',log=self._log_values)
+            #['turn-over-energy', 1, None, 'Lorentz-factor']
+            model_dic['gamma_pile_up_cut'] =JetModelDictionaryPar(ptype='turn-over-energy',vmin=a_t,vmax=b_t,punit='lorentz-factor',log=self._log_values)
+            #['turn-over-energy', 1, None, 'Lorentz-factor']
 
-            model_dic['alpha_pile_up'] = ['turn-over-energy', 0.0, 10, '']
+            model_dic['alpha_pile_up'] = JetModelDictionaryPar(ptype='turn-over-energy',vmin=0.0,vmax=10.0,punit='')
+            #['turn-over-energy', 0.0, 10, '']
 
         if electron_distribution_name == 'from_array':
             model_dic.pop('gmin')
@@ -1570,30 +1648,46 @@ class Jet(Model):
         for key in model_dic.keys():
 
             pname=key
-            log=False
+            #log=False
+            #allowed_values=None
             p_test=self.parameters.get_par_by_name(pname)
+
+            #TODO add keys to dict and remove length checking
+
+
             if p_test is None:
 
                 pval=getattr(self._blob,pname)
+                print('-> add_par_from_dic', len(model_dic[key]), model_dic[key])
+                #if len(model_dic[key])>5:
+                log=model_dic[key].log
 
-                if len(model_dic[key])>5:
-                    log=model_dic[key][5]
+                if len(model_dic[key])>6:
+                    allowed_values=model_dic[key].allowed_values
 
                 if log is True:
                     pval = np.log10(pval)
 
-                ptype=model_dic[key][0]
-                vmin=model_dic[key][1]
-                vmax=model_dic[key][2]
-                punit=model_dic[key][3]
+                ptype=model_dic[key].ptype
+                vmin=model_dic[key].vmin
+                vmax=model_dic[key].vmax
+                punit=model_dic[key].punit
 
-                froz=False
+                #froz=False
 
-                if len(model_dic[key])>4:
-                    froz=model_dic[key][4]
+                #if len(model_dic[key])>4:
+                froz=model_dic[key].froz
 
 
-                self.parameters.add_par(JetParameter(self._blob,name=pname,par_type=ptype,val=pval,val_min=vmin,val_max=vmax,units=punit,frozen=froz,log=log))
+                self.parameters.add_par(JetParameter(self._blob,name=pname,
+                                                     par_type=ptype,
+                                                     val=pval,
+                                                     val_min=vmin,
+                                                     val_max=vmax,
+                                                     units=punit,
+                                                     frozen=froz,
+                                                     log=log,
+                                                     allowed_values=allowed_values))
 
 
 
@@ -1685,13 +1779,13 @@ class Jet(Model):
         return self._blob.emiss_lim
 
 
-    def set_disk_type(self,disk_type='MultiBB'):
+    #def set_disk_type(self,disk_type='MultiBB'):
 
-        if disk_type in allowed_disk_type:
+    #    if disk_type in allowed_disk_type:
 
-            self._blob.disk_type = disk_type
-        else:
-            raise RuntimeError('Disk type %s, not in allowed '%disk_type,allowed_disk_type)
+    #        self._blob.disk_type = disk_type
+    #    else:
+    #        raise RuntimeError('Disk type %s, not in allowed '%disk_type,allowed_disk_type)
 
         #BlazarSED.build_photons(self._blob)
 
@@ -1853,9 +1947,9 @@ class Jet(Model):
         return None
 
 
-    def show_pars(self):
-        self.parameters.par_array.sort(key=lambda x: x.name, reverse=False)
-        self.parameters.show_pars()
+    def show_pars(self,sort_key='par type'):
+        #self.parameters.par_array.sort(key=lambda x: x.name, reverse=False)
+        self.parameters.show_pars(sort_key=sort_key)
 
 
     def show_electron_distribution(self):
@@ -1899,7 +1993,7 @@ class Jet(Model):
         for _s in self.spectral_components_list:
             print("   name:%s,"%_s.name, 'state:', _s.state)
         print('external fields transformation method:', self.get_external_field_transf())
-        print('disk type:', self._blob.disk_type)
+        #print('disk type:', self._blob.disk_type)
         print ('')
         print ('SED info:')
         print (' nu grid size :%d' % self._get_nu_grid_size())

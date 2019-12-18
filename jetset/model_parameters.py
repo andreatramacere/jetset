@@ -126,7 +126,7 @@ class ModelParameter(object):
         self.allowed_keywords['best_fit_err']=None
         self.allowed_keywords['frozen']=False
         self.allowed_keywords['log']=False
-        
+        self.allowed_keywords['allowed_values'] = None
       
         #self._skip_kw=['val']
         #defualt
@@ -230,6 +230,12 @@ class ModelParameter(object):
             
             if kw in  self.allowed_keywords.keys() :
                 if kw == 'val':
+                    print('->',self.allowed_values )
+                    if self.allowed_values is not None:
+
+                        if keywords[kw]  not in self.allowed_values:
+                            raise RuntimeError('parameter  %s' %(self.name), 'the value', keywords[kw] , 'is not in the allowed list',self.allowed_values)
+
                     self._val.val = keywords[kw]
 
                 elif kw == 'log':
@@ -557,7 +563,7 @@ class ModelParameterArray(object):
         self._build_par_table()
         return self._par_table
 
-    def show_pars(self,getstring=False,names_list=None):
+    def show_pars(self,getstring=False,names_list=None,sort_key=None):
         """
         shows the information for all the items in the :attr:`~ModelParameterArray.par_array`
         
@@ -579,6 +585,9 @@ class ModelParameterArray(object):
         #text.append( "-------------------------------------------------------------------------------------------------------------------------")
 
         self._build_par_table(names_list)
+        if sort_key is not None:
+            self.par_table.sort(sort_key)
+
         if getstring==True:
             return self.par_table.pformat_all()
         else:
