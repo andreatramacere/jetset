@@ -230,7 +230,7 @@ class ModelParameter(object):
             
             if kw in  self.allowed_keywords.keys() :
                 if kw == 'val':
-                    print('->',self.allowed_values )
+                    #print('->',self.allowed_values )
                     if self.allowed_values is not None:
 
                         if keywords[kw]  not in self.allowed_values:

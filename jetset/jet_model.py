@@ -169,13 +169,13 @@ class JetParameter(ModelParameter):
         """
         sets the :class:`.JetParameter` value in the BlazarSED object
         """
-        #TODO improve this with allowed values, Done!
+        #TODO improve this with allowed values: Done!
         #if name=='disk_type':
 
         #    if val not in allowed_disk_type:
 
         #        raise RuntimeError('Disk type %s, not in allowed '%val,allowed_disk_type)
-        print('-> assign val',name,val)
+        #print('-> assign val',name,val)
         b=getattr(self._blob,name)
         
         
@@ -1654,19 +1654,24 @@ class Jet(Model):
 
             #TODO add keys to dict and remove length checking
 
-
+            #print('-> add_par_from_dic', key)
             if p_test is None:
 
+                #print('-> par name', pname, 'log',model_dic[key].log)
                 pval=getattr(self._blob,pname)
-                print('-> add_par_from_dic', len(model_dic[key]), model_dic[key])
+
                 #if len(model_dic[key])>5:
                 log=model_dic[key].log
 
-                if len(model_dic[key])>6:
-                    allowed_values=model_dic[key].allowed_values
+                #if len(model_dic[key])>6:
+                allowed_values=model_dic[key].allowed_values
 
+                #IMPORTANT
+                #This has to stay here, because the parameter, even if log, is stored as linear
                 if log is True:
+                    #print('-> is log',log)
                     pval = np.log10(pval)
+                    #print('-> log_pval', pval)
 
                 ptype=model_dic[key].ptype
                 vmin=model_dic[key].vmin
