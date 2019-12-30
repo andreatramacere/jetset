@@ -8,11 +8,19 @@ Requirements
 
 The following python packages are required:
 
-- python 2.7 or >=3.6 (python 3 is suggested, python 2 should work still fine)
+- python 2.7 or >=3.6 (python 3 is suggested, python 2 should work still fine but it is not supported anymore)
+- setuptools
 - scipy
 - numpy
 - astropy
-- iminuit (https://github.com/iminuit/iminuit)
+- matplotlib
+- swig
+- future
+- iminuit
+- corner
+- six
+- emcee
+- pyyaml
 
 
 
@@ -22,18 +30,14 @@ All the dependencies can be installed following the Anaconda method
 (suggested) **OR** the pip method, as described in the following sections.
 
 
-I strongly encourage to use anaconda and python3 (https://www.anaconda.com/download/)
+I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
 Download the JeTseT code
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Get the source code from:
 
-    https://gitlab.com/andreatramacere/jetset/-/archive/stable/jetset-stable.tar.gz
-
-or
-
-    https://github.com/andreatramacere/jetset/archive/stable.tar.gz
+https://github.com/andreatramacere/jetset/archive/stable.tar.gz
 
 Uncompress the  archive
 
@@ -55,19 +59,13 @@ Installation using Anaconda (suggested method)
 
 Install the requiremets:
 
-- Linux/MAC : run on the command line
 
-    .. code-block:: bash
+.. code-block:: bash
 
-       while read requirement; do conda install --yes $requirement; done < requirements.txt
-
+    conda install --file requirements.txt
 
 
-- Windows   : run on the command line
 
-     .. code-block:: console
-
-      FOR /F "delims=~" %f in (requirements.txt) DO conda install --yes "%f"
 
 Install JetSeT running on the command line:
 

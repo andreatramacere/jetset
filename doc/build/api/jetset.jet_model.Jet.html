@@ -2,17 +2,19 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Jet &#8212; jetset 1.0.a documentation</title>
+    <meta charset="utf-8" />
+    <title>Jet &#8212; jetset  documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jetset.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
@@ -40,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html"><span><img src="../_static/logo_small_transp.png"></span>
           JetSeT</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -63,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -168,6 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -208,15 +212,18 @@
 //-->
 
 
+
 <div class="sidebar-block">
   <div class="sidebar-wrapper">
     <h2></h2>
   </div>
   <div class="sidebar-toc">
+
     
     
       <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
@@ -227,13 +234,7 @@
 <li class="toctree-l2"><a class="reference internal" href="frame_converter.html">frame_converter</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="jet_model.html">jet_model</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="jet_model.html#functions">Functions</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="jet_model.html#classes">Classes</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Jet</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.jet_model.JetParameter.html">JetParameter</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.jet_model.JetSpecComponent.html">JetSpecComponent</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.jet_model.ElectronDistribution.html">ElectronDistribution</a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="reference internal" href="jet_model.html#classes">Classes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jet_model.html#class-inheritance-diagram">Class Inheritance Diagram</a></li>
 </ul>
 </li>
@@ -272,7 +273,7 @@
 <h1>Jet<a class="headerlink" href="#jet" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="jetset.jet_model.Jet">
-<em class="property">class </em><code class="descname">Jet</code><span class="sig-paren">(</span><em>name='test'</em>, <em>electron_distribution='pl'</em>, <em>electron_distribution_log_values=False</em>, <em>beaming_expr='delta'</em>, <em>jet_workplace=None</em>, <em>verbose=None</em>, <em>clean_work_dir=True</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">Jet</code><span class="sig-paren">(</span><em class="sig-param">cosmo=None</em>, <em class="sig-param">name='test'</em>, <em class="sig-param">electron_distribution='pl'</em>, <em class="sig-param">electron_distribution_log_values=False</em>, <em class="sig-param">beaming_expr='delta'</em>, <em class="sig-param">jet_workplace=None</em>, <em class="sig-param">verbose=None</em>, <em class="sig-param">clean_work_dir=True</em>, <em class="sig-param">**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="jetset.base_model.Model.html#jetset.base_model.Model" title="jetset.base_model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.base_model.Model</span></code></a></p>
 <p>This class allows to build a <code class="docutils literal notranslate"><span class="pre">Jet</span></code> model providing the interface to the
 C code, giving  full access to the physical parameters and
@@ -284,270 +285,288 @@ All the physical parameters are  also accessible as attributes of
 the  :<code class="xref py py-attr docutils literal notranslate"><span class="pre">Jet.parameters</span></code></p>
 <p><strong>Examples</strong></p>
 <p class="rubric">Attributes Summary</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.IC_nu_size" title="jetset.jet_model.Jet.IC_nu_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IC_nu_size</span></code></a></td>
-<td></td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.IC_nu_size" title="jetset.jet_model.Jet.IC_nu_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IC_nu_size</span></code></a></p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.Norm_distr" title="jetset.jet_model.Jet.Norm_distr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Norm_distr</span></code></a></td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.Norm_distr" title="jetset.jet_model.Jet.Norm_distr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Norm_distr</span></code></a></p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.gamma_grid_size" title="jetset.jet_model.Jet.gamma_grid_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gamma_grid_size</span></code></a></td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.gamma_grid_size" title="jetset.jet_model.Jet.gamma_grid_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gamma_grid_size</span></code></a></p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.nu_max" title="jetset.jet_model.Jet.nu_max"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nu_max</span></code></a></td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.nu_max" title="jetset.jet_model.Jet.nu_max"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nu_max</span></code></a></p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.nu_min" title="jetset.jet_model.Jet.nu_min"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nu_min</span></code></a></td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.nu_min" title="jetset.jet_model.Jet.nu_min"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nu_min</span></code></a></p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.nu_seed_size" title="jetset.jet_model.Jet.nu_seed_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nu_seed_size</span></code></a></td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.nu_seed_size" title="jetset.jet_model.Jet.nu_seed_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nu_seed_size</span></code></a></p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.nu_size" title="jetset.jet_model.Jet.nu_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nu_size</span></code></a></td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.nu_size" title="jetset.jet_model.Jet.nu_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nu_size</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Methods Summary</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.add_EC_component" title="jetset.jet_model.Jet.add_EC_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_EC_component</span></code></a>(EC_components_list)</td>
-<td></td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.add_EC_component" title="jetset.jet_model.Jet.add_EC_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_EC_component</span></code></a>(EC_components_list)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.add_SSC_component" title="jetset.jet_model.Jet.add_SSC_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_SSC_component</span></code></a>([state])</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.add_SSC_component" title="jetset.jet_model.Jet.add_SSC_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_SSC_component</span></code></a>([state])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.add_basic_components" title="jetset.jet_model.Jet.add_basic_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_basic_components</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.add_basic_components" title="jetset.jet_model.Jet.add_basic_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_basic_components</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.add_par_from_dic" title="jetset.jet_model.Jet.add_par_from_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_par_from_dic</span></code></a>(model_dic)</td>
-<td>add the <a class="reference internal" href="jetset.jet_model.JetParameter.html#jetset.jet_model.JetParameter" title="jetset.jet_model.JetParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">JetParameter</span></code></a> object to the <a class="reference internal" href="jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray" title="jetset.model_parameters.ModelParameterArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParameterArray</span></code></a> usign the dictionaries built by the <a class="reference internal" href="jetset.jet_model.build_emitting_region_dic.html#jetset.jet_model.build_emitting_region_dic" title="jetset.jet_model.build_emitting_region_dic"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_emitting_region_dic()</span></code></a> and <code class="xref py py-func docutils literal notranslate"><span class="pre">build_electron_distribution_dic()</span></code></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.add_par_from_dic" title="jetset.jet_model.Jet.add_par_from_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_par_from_dic</span></code></a>(model_dic)</p></td>
+<td><p>add the <a class="reference internal" href="jetset.jet_model.JetParameter.html#jetset.jet_model.JetParameter" title="jetset.jet_model.JetParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">JetParameter</span></code></a> object to the <a class="reference internal" href="jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray" title="jetset.model_parameters.ModelParameterArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParameterArray</span></code></a> usign the dictionaries built by the <a class="reference internal" href="jetset.jet_model.build_emitting_region_dic.html#jetset.jet_model.build_emitting_region_dic" title="jetset.jet_model.build_emitting_region_dic"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_emitting_region_dic()</span></code></a> and <code class="xref py py-func docutils literal notranslate"><span class="pre">build_electron_distribution_dic()</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.add_sync_component" title="jetset.jet_model.Jet.add_sync_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_sync_component</span></code></a>([state])</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.add_sync_component" title="jetset.jet_model.Jet.add_sync_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_sync_component</span></code></a>([state])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.available_electron_distributions" title="jetset.jet_model.Jet.available_electron_distributions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">available_electron_distributions</span></code></a>()</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.available_electron_distributions" title="jetset.jet_model.Jet.available_electron_distributions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">available_electron_distributions</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.build_blob" title="jetset.jet_model.Jet.build_blob"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_blob</span></code></a>([verbose])</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.build_blob" title="jetset.jet_model.Jet.build_blob"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_blob</span></code></a>([verbose])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.debug_SSC" title="jetset.jet_model.Jet.debug_SSC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">debug_SSC</span></code></a>()</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.debug_SSC" title="jetset.jet_model.Jet.debug_SSC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">debug_SSC</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.debug_synch" title="jetset.jet_model.Jet.debug_synch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">debug_synch</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.debug_synch" title="jetset.jet_model.Jet.debug_synch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">debug_synch</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.del_EC_component" title="jetset.jet_model.Jet.del_EC_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">del_EC_component</span></code></a>(EC_components_list)</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.del_EC_component" title="jetset.jet_model.Jet.del_EC_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">del_EC_component</span></code></a>(EC_components_list)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.del_par_from_dic" title="jetset.jet_model.Jet.del_par_from_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">del_par_from_dic</span></code></a>(model_dic)</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.del_par_from_dic" title="jetset.jet_model.Jet.del_par_from_dic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">del_par_from_dic</span></code></a>(model_dic)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.del_spectral_component" title="jetset.jet_model.Jet.del_spectral_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">del_spectral_component</span></code></a>(name)</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.del_spectral_component" title="jetset.jet_model.Jet.del_spectral_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">del_spectral_component</span></code></a>(name)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.energetic_report" title="jetset.jet_model.Jet.energetic_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">energetic_report</span></code></a>([write_file,&nbsp;getstring,&nbsp;…])</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.energetic_report" title="jetset.jet_model.Jet.energetic_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">energetic_report</span></code></a>(**kwargs)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.eval" title="jetset.jet_model.Jet.eval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code></a>([init,&nbsp;fill_SED,&nbsp;nu,&nbsp;get_model,&nbsp;…])</td>
-<td>Runs the BlazarSED  code for the current <cite>JetModel</cite> instance.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.eval" title="jetset.jet_model.Jet.eval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code></a>(**kwargs)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_DL_cm" title="jetset.jet_model.Jet.get_DL_cm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_DL_cm</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_DL_cm" title="jetset.jet_model.Jet.get_DL_cm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_DL_cm</span></code></a>([eval])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_IC_mode" title="jetset.jet_model.Jet.get_IC_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_IC_mode</span></code></a>()</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_IC_mode" title="jetset.jet_model.Jet.get_IC_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_IC_mode</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_IC_nu_size" title="jetset.jet_model.Jet.get_IC_nu_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_IC_nu_size</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_IC_nu_size" title="jetset.jet_model.Jet.get_IC_nu_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_IC_nu_size</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_SED_peak" title="jetset.jet_model.Jet.get_SED_peak"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_SED_peak</span></code></a>([peak_name,&nbsp;freq_range,&nbsp;log_log])</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_SED_peak" title="jetset.jet_model.Jet.get_SED_peak"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_SED_peak</span></code></a>([peak_name, freq_range, log_log])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_SED_points" title="jetset.jet_model.Jet.get_SED_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_SED_points</span></code></a>([log_log,&nbsp;name])</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_SED_points" title="jetset.jet_model.Jet.get_SED_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_SED_points</span></code></a>(**kwargs)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_beaming" title="jetset.jet_model.Jet.get_beaming"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_beaming</span></code></a>([theta,&nbsp;bulk_factor,&nbsp;beaming])</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_beaming" title="jetset.jet_model.Jet.get_beaming"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_beaming</span></code></a>(**kwargs)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_electron_distribution_name" title="jetset.jet_model.Jet.get_electron_distribution_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_electron_distribution_name</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_component_peak" title="jetset.jet_model.Jet.get_component_peak"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_component_peak</span></code></a>([comp_name, log_log])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_emiss_lim" title="jetset.jet_model.Jet.get_emiss_lim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_emiss_lim</span></code></a>()</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_electron_distribution_name" title="jetset.jet_model.Jet.get_electron_distribution_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_electron_distribution_name</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_flag" title="jetset.jet_model.Jet.get_flag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_flag</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_emiss_lim" title="jetset.jet_model.Jet.get_emiss_lim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_emiss_lim</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_par_by_name" title="jetset.jet_model.Jet.get_par_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_par_by_name</span></code></a>(par_name)</td>
-<td>get parameter by type</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_external_field_transf" title="jetset.jet_model.Jet.get_external_field_transf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_external_field_transf</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_par_by_type" title="jetset.jet_model.Jet.get_par_by_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_par_by_type</span></code></a>(par_type)</td>
-<td>get parameter by type</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_flag" title="jetset.jet_model.Jet.get_flag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_flag</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_path" title="jetset.jet_model.Jet.get_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_path</span></code></a>()</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_par_by_name" title="jetset.jet_model.Jet.get_par_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_par_by_name</span></code></a>(par_name)</p></td>
+<td><p>get parameter by type</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_seed_nu_size" title="jetset.jet_model.Jet.get_seed_nu_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_seed_nu_size</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_par_by_type" title="jetset.jet_model.Jet.get_par_by_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_par_by_type</span></code></a>(par_type)</p></td>
+<td><p>get parameter by type</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_spectral_component_by_name" title="jetset.jet_model.Jet.get_spectral_component_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_component_by_name</span></code></a>(name[,&nbsp;verbose])</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_path" title="jetset.jet_model.Jet.get_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_path</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_spectral_component_names_list" title="jetset.jet_model.Jet.get_spectral_component_names_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_component_names_list</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_seed_nu_size" title="jetset.jet_model.Jet.get_seed_nu_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_seed_nu_size</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.get_verbosity" title="jetset.jet_model.Jet.get_verbosity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_verbosity</span></code></a>()</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_spectral_component_by_name" title="jetset.jet_model.Jet.get_spectral_component_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_component_by_name</span></code></a>(name[, verbose])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.init_BlazarSED" title="jetset.jet_model.Jet.init_BlazarSED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_BlazarSED</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_spectral_component_names_list" title="jetset.jet_model.Jet.get_spectral_component_names_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_component_names_list</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.list_spectral_components" title="jetset.jet_model.Jet.list_spectral_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_spectral_components</span></code></a>()</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.get_verbosity" title="jetset.jet_model.Jet.get_verbosity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_verbosity</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.load_model" title="jetset.jet_model.Jet.load_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_model</span></code></a>(file_name)</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.list_spectral_components" title="jetset.jet_model.Jet.list_spectral_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_spectral_components</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.plot_model" title="jetset.jet_model.Jet.plot_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_model</span></code></a>([plot_obj,&nbsp;clean,&nbsp;label,&nbsp;comp,&nbsp;…])</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.load_model" title="jetset.jet_model.Jet.load_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_model</span></code></a>(file_name)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.save_model" title="jetset.jet_model.Jet.save_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_model</span></code></a>(file_name)</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.plot_model" title="jetset.jet_model.Jet.plot_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_model</span></code></a>([plot_obj, clean, label, comp, …])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_B_eq" title="jetset.jet_model.Jet.set_B_eq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_B_eq</span></code></a>(nuFnu_obs,&nbsp;nu_obs[,&nbsp;B_min,&nbsp;B_max,&nbsp;…])</td>
-<td>returns equipartiont B</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.save_model" title="jetset.jet_model.Jet.save_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_model</span></code></a>(file_name)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_IC_mode" title="jetset.jet_model.Jet.set_IC_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_IC_mode</span></code></a>(val)</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_B_eq" title="jetset.jet_model.Jet.set_B_eq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_B_eq</span></code></a>(nuFnu_obs, nu_obs[, B_min, B_max, …])</p></td>
+<td><p>returns equipartiont B</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_IC_nu_size" title="jetset.jet_model.Jet.set_IC_nu_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_IC_nu_size</span></code></a>(val)</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_IC_mode" title="jetset.jet_model.Jet.set_IC_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_IC_mode</span></code></a>(val)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_N_from_F_sync" title="jetset.jet_model.Jet.set_N_from_F_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_N_from_F_sync</span></code></a>(F_sync)</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_IC_nu_size" title="jetset.jet_model.Jet.set_IC_nu_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_IC_nu_size</span></code></a>(val)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_N_from_L_sync" title="jetset.jet_model.Jet.set_N_from_L_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_N_from_L_sync</span></code></a>(L_sync)</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_N_from_F_sync" title="jetset.jet_model.Jet.set_N_from_F_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_N_from_F_sync</span></code></a>(F_sync)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_N_from_nuFnu" title="jetset.jet_model.Jet.set_N_from_nuFnu"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_N_from_nuFnu</span></code></a>(nuFnu_obs,&nbsp;nu_obs)</td>
-<td>sets the normalization of N to match the observed flux nu0F_nu0 at a given frequency nu_0</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_N_from_L_sync" title="jetset.jet_model.Jet.set_N_from_L_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_N_from_L_sync</span></code></a>(L_sync)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_N_from_nuLnu" title="jetset.jet_model.Jet.set_N_from_nuLnu"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_N_from_nuLnu</span></code></a>(L_0,&nbsp;nu_0)</td>
-<td>sets the normalization of N to match the rest frame luminosity L_0, at a given frequency nu_0</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_N_from_Le" title="jetset.jet_model.Jet.set_N_from_Le"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_N_from_Le</span></code></a>(L_e)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_electron_distribution" title="jetset.jet_model.Jet.set_electron_distribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_electron_distribution</span></code></a>([name,&nbsp;log_values])</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_N_from_Ue" title="jetset.jet_model.Jet.set_N_from_Ue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_N_from_Ue</span></code></a>(U_e)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_emiss_lim" title="jetset.jet_model.Jet.set_emiss_lim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_emiss_lim</span></code></a>(val)</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_N_from_nuFnu" title="jetset.jet_model.Jet.set_N_from_nuFnu"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_N_from_nuFnu</span></code></a>(nuFnu_obs, nu_obs)</p></td>
+<td><p>sets the normalization of N to match the observed flux nu0F_nu0 at a given frequency nu_0</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_emitting_region" title="jetset.jet_model.Jet.set_emitting_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_emitting_region</span></code></a>(beaming_expr)</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_N_from_nuLnu" title="jetset.jet_model.Jet.set_N_from_nuLnu"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_N_from_nuLnu</span></code></a>(nuLnu_src, nu_src)</p></td>
+<td><p>sets the normalization of N to match the rest frame luminosity L_0, at a given frequency nu_0</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_flag" title="jetset.jet_model.Jet.set_flag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_flag</span></code></a>(flag)</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_blob" title="jetset.jet_model.Jet.set_blob"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_blob</span></code></a>(**kwargs)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_gamma_grid_size" title="jetset.jet_model.Jet.set_gamma_grid_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_gamma_grid_size</span></code></a>(val)</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_electron_distribution" title="jetset.jet_model.Jet.set_electron_distribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_electron_distribution</span></code></a>([name, log_values])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_par" title="jetset.jet_model.Jet.set_par"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_par</span></code></a>(par_name,&nbsp;val)</td>
-<td>shortcut to <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParametersArray.set</span></code> method set a parameter value</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_emiss_lim" title="jetset.jet_model.Jet.set_emiss_lim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_emiss_lim</span></code></a>(val)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_path" title="jetset.jet_model.Jet.set_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_path</span></code></a>(path[,&nbsp;clean_work_dir])</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_emitting_region" title="jetset.jet_model.Jet.set_emitting_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_emitting_region</span></code></a>(beaming_expr)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_seed_nu_size" title="jetset.jet_model.Jet.set_seed_nu_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_seed_nu_size</span></code></a>(val)</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_external_field_transf" title="jetset.jet_model.Jet.set_external_field_transf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_external_field_transf</span></code></a>(val)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.set_verbosity" title="jetset.jet_model.Jet.set_verbosity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_verbosity</span></code></a>(val)</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_external_fields" title="jetset.jet_model.Jet.set_external_fields"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_external_fields</span></code></a>(**kwargs)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.show_electron_distribution" title="jetset.jet_model.Jet.show_electron_distribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_electron_distribution</span></code></a>()</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_flag" title="jetset.jet_model.Jet.set_flag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_flag</span></code></a>(flag)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.show_model" title="jetset.jet_model.Jet.show_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_model</span></code></a>()</td>
-<td>shortcut to <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParametersArray.show_pars</span></code> method shows all the paramters in the model</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_gamma_grid_size" title="jetset.jet_model.Jet.set_gamma_grid_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_gamma_grid_size</span></code></a>(val)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.show_pars" title="jetset.jet_model.Jet.show_pars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_pars</span></code></a>()</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_par" title="jetset.jet_model.Jet.set_par"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_par</span></code></a>(par_name, val)</p></td>
+<td><p>shortcut to <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParametersArray.set</span></code> method set a parameter value</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.show_spectral_components" title="jetset.jet_model.Jet.show_spectral_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_spectral_components</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_path" title="jetset.jet_model.Jet.set_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_path</span></code></a>(path[, clean_work_dir])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.Jet.switch_Norm_distr_OFF" title="jetset.jet_model.Jet.switch_Norm_distr_OFF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">switch_Norm_distr_OFF</span></code></a>()</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_seed_nu_size" title="jetset.jet_model.Jet.set_seed_nu_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_seed_nu_size</span></code></a>(val)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.Jet.switch_Norm_distr_ON" title="jetset.jet_model.Jet.switch_Norm_distr_ON"><code class="xref py py-obj docutils literal notranslate"><span class="pre">switch_Norm_distr_ON</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.set_verbosity" title="jetset.jet_model.Jet.set_verbosity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_verbosity</span></code></a>(val)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.show_electron_distribution" title="jetset.jet_model.Jet.show_electron_distribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_electron_distribution</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.show_model" title="jetset.jet_model.Jet.show_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_model</span></code></a>()</p></td>
+<td><p>shortcut to <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParametersArray.show_pars</span></code> method shows all the paramters in the model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.show_pars" title="jetset.jet_model.Jet.show_pars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_pars</span></code></a>([sort_key])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.show_spectral_components" title="jetset.jet_model.Jet.show_spectral_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_spectral_components</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.switch_Norm_distr_OFF" title="jetset.jet_model.Jet.switch_Norm_distr_OFF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">switch_Norm_distr_OFF</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.Jet.switch_Norm_distr_ON" title="jetset.jet_model.Jet.switch_Norm_distr_ON"><code class="xref py py-obj docutils literal notranslate"><span class="pre">switch_Norm_distr_ON</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Attributes Documentation</p>
 <dl class="attribute">
 <dt id="jetset.jet_model.Jet.IC_nu_size">
-<code class="descname">IC_nu_size</code><a class="headerlink" href="#jetset.jet_model.Jet.IC_nu_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">IC_nu_size</code><a class="headerlink" href="#jetset.jet_model.Jet.IC_nu_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="jetset.jet_model.Jet.Norm_distr">
-<code class="descname">Norm_distr</code><a class="headerlink" href="#jetset.jet_model.Jet.Norm_distr" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Norm_distr</code><a class="headerlink" href="#jetset.jet_model.Jet.Norm_distr" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="jetset.jet_model.Jet.gamma_grid_size">
-<code class="descname">gamma_grid_size</code><a class="headerlink" href="#jetset.jet_model.Jet.gamma_grid_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">gamma_grid_size</code><a class="headerlink" href="#jetset.jet_model.Jet.gamma_grid_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="jetset.jet_model.Jet.nu_max">
-<code class="descname">nu_max</code><a class="headerlink" href="#jetset.jet_model.Jet.nu_max" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">nu_max</code><a class="headerlink" href="#jetset.jet_model.Jet.nu_max" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="jetset.jet_model.Jet.nu_min">
-<code class="descname">nu_min</code><a class="headerlink" href="#jetset.jet_model.Jet.nu_min" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">nu_min</code><a class="headerlink" href="#jetset.jet_model.Jet.nu_min" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="jetset.jet_model.Jet.nu_seed_size">
-<code class="descname">nu_seed_size</code><a class="headerlink" href="#jetset.jet_model.Jet.nu_seed_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">nu_seed_size</code><a class="headerlink" href="#jetset.jet_model.Jet.nu_seed_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="jetset.jet_model.Jet.nu_size">
-<code class="descname">nu_size</code><a class="headerlink" href="#jetset.jet_model.Jet.nu_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">nu_size</code><a class="headerlink" href="#jetset.jet_model.Jet.nu_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods Documentation</p>
 <dl class="method">
 <dt id="jetset.jet_model.Jet.add_EC_component">
-<code class="descname">add_EC_component</code><span class="sig-paren">(</span><em>EC_components_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.add_EC_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.add_EC_component" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_EC_component</code><span class="sig-paren">(</span><em class="sig-param">EC_components_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.add_EC_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.add_EC_component" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.add_SSC_component">
-<code class="descname">add_SSC_component</code><span class="sig-paren">(</span><em>state='on'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.add_SSC_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.add_SSC_component" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_SSC_component</code><span class="sig-paren">(</span><em class="sig-param">state='on'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.add_SSC_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.add_SSC_component" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.add_basic_components">
-<code class="descname">add_basic_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.add_basic_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.add_basic_components" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_basic_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.add_basic_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.add_basic_components" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.add_par_from_dic">
-<code class="descname">add_par_from_dic</code><span class="sig-paren">(</span><em>model_dic</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.add_par_from_dic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.add_par_from_dic" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_par_from_dic</code><span class="sig-paren">(</span><em class="sig-param">model_dic</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.add_par_from_dic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.add_par_from_dic" title="Permalink to this definition">¶</a></dt>
 <dd><p>add the <a class="reference internal" href="jetset.jet_model.JetParameter.html#jetset.jet_model.JetParameter" title="jetset.jet_model.JetParameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">JetParameter</span></code></a> object to the <a class="reference internal" href="jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray" title="jetset.model_parameters.ModelParameterArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParameterArray</span></code></a>
 usign the dictionaries built by the <a class="reference internal" href="jetset.jet_model.build_emitting_region_dic.html#jetset.jet_model.build_emitting_region_dic" title="jetset.jet_model.build_emitting_region_dic"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_emitting_region_dic()</span></code></a>
 and <code class="xref py py-func docutils literal notranslate"><span class="pre">build_electron_distribution_dic()</span></code></p>
@@ -555,298 +574,314 @@ and <code class="xref py py-func docutils literal notranslate"><span class="pre"
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.add_sync_component">
-<code class="descname">add_sync_component</code><span class="sig-paren">(</span><em>state='self-abs'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.add_sync_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.add_sync_component" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_sync_component</code><span class="sig-paren">(</span><em class="sig-param">state='self-abs'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.add_sync_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.add_sync_component" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="jetset.jet_model.Jet.available_electron_distributions">
-<em class="property">static </em><code class="descname">available_electron_distributions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.available_electron_distributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.available_electron_distributions" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">available_electron_distributions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.available_electron_distributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.available_electron_distributions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.build_blob">
-<code class="descname">build_blob</code><span class="sig-paren">(</span><em>verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.build_blob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.build_blob" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_blob</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.build_blob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.build_blob" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.debug_SSC">
-<code class="descname">debug_SSC</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.debug_SSC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.debug_SSC" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">debug_SSC</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.debug_SSC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.debug_SSC" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.debug_synch">
-<code class="descname">debug_synch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.debug_synch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.debug_synch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">debug_synch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.debug_synch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.debug_synch" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.del_EC_component">
-<code class="descname">del_EC_component</code><span class="sig-paren">(</span><em>EC_components_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.del_EC_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.del_EC_component" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">del_EC_component</code><span class="sig-paren">(</span><em class="sig-param">EC_components_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.del_EC_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.del_EC_component" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.del_par_from_dic">
-<code class="descname">del_par_from_dic</code><span class="sig-paren">(</span><em>model_dic</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.del_par_from_dic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.del_par_from_dic" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">del_par_from_dic</code><span class="sig-paren">(</span><em class="sig-param">model_dic</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.del_par_from_dic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.del_par_from_dic" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.del_spectral_component">
-<code class="descname">del_spectral_component</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.del_spectral_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.del_spectral_component" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">del_spectral_component</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.del_spectral_component"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.del_spectral_component" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.energetic_report">
-<code class="descname">energetic_report</code><span class="sig-paren">(</span><em>write_file=False</em>, <em>getstring=True</em>, <em>wd=None</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.energetic_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.energetic_report" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">energetic_report</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.energetic_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.energetic_report" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.eval">
-<code class="descname">eval</code><span class="sig-paren">(</span><em>init=True</em>, <em>fill_SED=True</em>, <em>nu=None</em>, <em>get_model=False</em>, <em>loglog=False</em>, <em>plot=None</em>, <em>label=None</em>, <em>phys_output=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.eval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs the BlazarSED  code for the current <cite>JetModel</cite> instance.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>init</strong> – (boolean), “defualt=True” initializes the BlazarSED code
-for the current <cite>Jet</cite> instance parameters values.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="sig-name descname">eval</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.eval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_DL_cm">
-<code class="descname">get_DL_cm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_DL_cm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_DL_cm" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_DL_cm</code><span class="sig-paren">(</span><em class="sig-param">eval=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_DL_cm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_DL_cm" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_IC_mode">
-<code class="descname">get_IC_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_IC_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_IC_mode" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_IC_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_IC_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_IC_mode" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_IC_nu_size">
-<code class="descname">get_IC_nu_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_IC_nu_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_IC_nu_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_IC_nu_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_IC_nu_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_IC_nu_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_SED_peak">
-<code class="descname">get_SED_peak</code><span class="sig-paren">(</span><em>peak_name=None</em>, <em>freq_range=None</em>, <em>log_log=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_SED_peak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_SED_peak" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_SED_peak</code><span class="sig-paren">(</span><em class="sig-param">peak_name=None</em>, <em class="sig-param">freq_range=None</em>, <em class="sig-param">log_log=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_SED_peak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_SED_peak" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_SED_points">
-<code class="descname">get_SED_points</code><span class="sig-paren">(</span><em>log_log=False</em>, <em>name='Sum'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_SED_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_SED_points" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_SED_points</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_SED_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_SED_points" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_beaming">
-<code class="descname">get_beaming</code><span class="sig-paren">(</span><em>theta=None</em>, <em>bulk_factor=None</em>, <em>beaming=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_beaming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_beaming" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_beaming</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_beaming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_beaming" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.jet_model.Jet.get_component_peak">
+<code class="sig-name descname">get_component_peak</code><span class="sig-paren">(</span><em class="sig-param">comp_name=None</em>, <em class="sig-param">log_log=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_component_peak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_component_peak" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_electron_distribution_name">
-<code class="descname">get_electron_distribution_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_electron_distribution_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_electron_distribution_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_electron_distribution_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_electron_distribution_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_electron_distribution_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_emiss_lim">
-<code class="descname">get_emiss_lim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_emiss_lim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_emiss_lim" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_emiss_lim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_emiss_lim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_emiss_lim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.jet_model.Jet.get_external_field_transf">
+<code class="sig-name descname">get_external_field_transf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_external_field_transf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_external_field_transf" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_flag">
-<code class="descname">get_flag</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_flag" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_flag</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_flag" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_par_by_name">
-<code class="descname">get_par_by_name</code><span class="sig-paren">(</span><em>par_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_par_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_par_by_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_par_by_name</code><span class="sig-paren">(</span><em class="sig-param">par_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_par_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_par_by_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>get parameter by type</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_par_by_type">
-<code class="descname">get_par_by_type</code><span class="sig-paren">(</span><em>par_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_par_by_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_par_by_type" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_par_by_type</code><span class="sig-paren">(</span><em class="sig-param">par_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_par_by_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_par_by_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>get parameter by type</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_path">
-<code class="descname">get_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_path" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_seed_nu_size">
-<code class="descname">get_seed_nu_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_seed_nu_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_seed_nu_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_seed_nu_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_seed_nu_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_seed_nu_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_spectral_component_by_name">
-<code class="descname">get_spectral_component_by_name</code><span class="sig-paren">(</span><em>name</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_spectral_component_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_spectral_component_by_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_spectral_component_by_name</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_spectral_component_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_spectral_component_by_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_spectral_component_names_list">
-<code class="descname">get_spectral_component_names_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_spectral_component_names_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_spectral_component_names_list" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_spectral_component_names_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_spectral_component_names_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_spectral_component_names_list" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.get_verbosity">
-<code class="descname">get_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_verbosity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="jetset.jet_model.Jet.init_BlazarSED">
-<code class="descname">init_BlazarSED</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.init_BlazarSED"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.init_BlazarSED" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.get_verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.get_verbosity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.list_spectral_components">
-<code class="descname">list_spectral_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.list_spectral_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.list_spectral_components" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">list_spectral_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.list_spectral_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.list_spectral_components" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="classmethod">
+<dl class="method">
 <dt id="jetset.jet_model.Jet.load_model">
-<em class="property">classmethod </em><code class="descname">load_model</code><span class="sig-paren">(</span><em>file_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.load_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.load_model" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">load_model</code><span class="sig-paren">(</span><em class="sig-param">file_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.load_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.load_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.plot_model">
-<code class="descname">plot_model</code><span class="sig-paren">(</span><em>plot_obj=None</em>, <em>clean=False</em>, <em>label=None</em>, <em>comp=None</em>, <em>sed_data=None</em>, <em>color=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.plot_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.plot_model" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot_model</code><span class="sig-paren">(</span><em class="sig-param">plot_obj=None</em>, <em class="sig-param">clean=False</em>, <em class="sig-param">label=None</em>, <em class="sig-param">comp=None</em>, <em class="sig-param">sed_data=None</em>, <em class="sig-param">color=None</em>, <em class="sig-param">auto_label=True</em>, <em class="sig-param">line_style='-'</em>, <em class="sig-param">frame='obs'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.plot_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.plot_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.save_model">
-<code class="descname">save_model</code><span class="sig-paren">(</span><em>file_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.save_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.save_model" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">save_model</code><span class="sig-paren">(</span><em class="sig-param">file_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.save_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.save_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_B_eq">
-<code class="descname">set_B_eq</code><span class="sig-paren">(</span><em>nuFnu_obs</em>, <em>nu_obs</em>, <em>B_min=1e-09</em>, <em>B_max=1.0</em>, <em>N_pts=20</em>, <em>plot=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_B_eq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_B_eq" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_B_eq</code><span class="sig-paren">(</span><em class="sig-param">nuFnu_obs</em>, <em class="sig-param">nu_obs</em>, <em class="sig-param">B_min=1e-09</em>, <em class="sig-param">B_max=1.0</em>, <em class="sig-param">N_pts=20</em>, <em class="sig-param">plot=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_B_eq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_B_eq" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns equipartiont B</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_IC_mode">
-<code class="descname">set_IC_mode</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_IC_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_IC_mode" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_IC_mode</code><span class="sig-paren">(</span><em class="sig-param">val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_IC_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_IC_mode" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_IC_nu_size">
-<code class="descname">set_IC_nu_size</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_IC_nu_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_IC_nu_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_IC_nu_size</code><span class="sig-paren">(</span><em class="sig-param">val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_IC_nu_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_IC_nu_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_N_from_F_sync">
-<code class="descname">set_N_from_F_sync</code><span class="sig-paren">(</span><em>F_sync</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_N_from_F_sync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_N_from_F_sync" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_N_from_F_sync</code><span class="sig-paren">(</span><em class="sig-param">F_sync</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_N_from_F_sync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_N_from_F_sync" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_N_from_L_sync">
-<code class="descname">set_N_from_L_sync</code><span class="sig-paren">(</span><em>L_sync</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_N_from_L_sync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_N_from_L_sync" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_N_from_L_sync</code><span class="sig-paren">(</span><em class="sig-param">L_sync</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_N_from_L_sync"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_N_from_L_sync" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.jet_model.Jet.set_N_from_Le">
+<code class="sig-name descname">set_N_from_Le</code><span class="sig-paren">(</span><em class="sig-param">L_e</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_N_from_Le"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_N_from_Le" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.jet_model.Jet.set_N_from_Ue">
+<code class="sig-name descname">set_N_from_Ue</code><span class="sig-paren">(</span><em class="sig-param">U_e</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_N_from_Ue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_N_from_Ue" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_N_from_nuFnu">
-<code class="descname">set_N_from_nuFnu</code><span class="sig-paren">(</span><em>nuFnu_obs</em>, <em>nu_obs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_N_from_nuFnu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_N_from_nuFnu" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_N_from_nuFnu</code><span class="sig-paren">(</span><em class="sig-param">nuFnu_obs</em>, <em class="sig-param">nu_obs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_N_from_nuFnu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_N_from_nuFnu" title="Permalink to this definition">¶</a></dt>
 <dd><p>sets the normalization of N to match the observed flux nu0F_nu0 at a given frequency nu_0</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_N_from_nuLnu">
-<code class="descname">set_N_from_nuLnu</code><span class="sig-paren">(</span><em>L_0</em>, <em>nu_0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_N_from_nuLnu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_N_from_nuLnu" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_N_from_nuLnu</code><span class="sig-paren">(</span><em class="sig-param">nuLnu_src</em>, <em class="sig-param">nu_src</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_N_from_nuLnu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_N_from_nuLnu" title="Permalink to this definition">¶</a></dt>
 <dd><p>sets the normalization of N to match the rest frame luminosity L_0, at a given frequency nu_0</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="jetset.jet_model.Jet.set_blob">
+<code class="sig-name descname">set_blob</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_blob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_blob" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="jetset.jet_model.Jet.set_electron_distribution">
-<code class="descname">set_electron_distribution</code><span class="sig-paren">(</span><em>name=None</em>, <em>log_values=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_electron_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_electron_distribution" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_electron_distribution</code><span class="sig-paren">(</span><em class="sig-param">name=None</em>, <em class="sig-param">log_values=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_electron_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_electron_distribution" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_emiss_lim">
-<code class="descname">set_emiss_lim</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_emiss_lim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_emiss_lim" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_emiss_lim</code><span class="sig-paren">(</span><em class="sig-param">val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_emiss_lim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_emiss_lim" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_emitting_region">
-<code class="descname">set_emitting_region</code><span class="sig-paren">(</span><em>beaming_expr</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_emitting_region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_emitting_region" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_emitting_region</code><span class="sig-paren">(</span><em class="sig-param">beaming_expr</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_emitting_region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_emitting_region" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.jet_model.Jet.set_external_field_transf">
+<code class="sig-name descname">set_external_field_transf</code><span class="sig-paren">(</span><em class="sig-param">val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_external_field_transf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_external_field_transf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.jet_model.Jet.set_external_fields">
+<code class="sig-name descname">set_external_fields</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_external_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_external_fields" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_flag">
-<code class="descname">set_flag</code><span class="sig-paren">(</span><em>flag</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_flag" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_flag</code><span class="sig-paren">(</span><em class="sig-param">flag</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_flag" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_gamma_grid_size">
-<code class="descname">set_gamma_grid_size</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_gamma_grid_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_gamma_grid_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_gamma_grid_size</code><span class="sig-paren">(</span><em class="sig-param">val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_gamma_grid_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_gamma_grid_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_par">
-<code class="descname">set_par</code><span class="sig-paren">(</span><em>par_name</em>, <em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_par"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_par" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_par</code><span class="sig-paren">(</span><em class="sig-param">par_name</em>, <em class="sig-param">val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_par"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_par" title="Permalink to this definition">¶</a></dt>
 <dd><p>shortcut to <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParametersArray.set</span></code> method
 set a parameter value</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>par_name</strong> – (srt), name of the parameter</li>
-<li><strong>val</strong> – parameter value</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>par_name</strong> – (srt), name of the parameter</p></li>
+<li><p><strong>val</strong> – parameter value</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_path">
-<code class="descname">set_path</code><span class="sig-paren">(</span><em>path</em>, <em>clean_work_dir=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_path" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_path</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">clean_work_dir=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_path" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_seed_nu_size">
-<code class="descname">set_seed_nu_size</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_seed_nu_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_seed_nu_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_seed_nu_size</code><span class="sig-paren">(</span><em class="sig-param">val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_seed_nu_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_seed_nu_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.set_verbosity">
-<code class="descname">set_verbosity</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_verbosity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><em class="sig-param">val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.set_verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.set_verbosity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.show_electron_distribution">
-<code class="descname">show_electron_distribution</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.show_electron_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.show_electron_distribution" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">show_electron_distribution</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.show_electron_distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.show_electron_distribution" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.show_model">
-<code class="descname">show_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.show_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.show_model" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">show_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.show_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.show_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>shortcut to <code class="xref py py-class docutils literal notranslate"><span class="pre">ModelParametersArray.show_pars</span></code> method
 shows all the paramters in the model</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.show_pars">
-<code class="descname">show_pars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.show_pars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.show_pars" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">show_pars</code><span class="sig-paren">(</span><em class="sig-param">sort_key='par type'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.show_pars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.show_pars" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.show_spectral_components">
-<code class="descname">show_spectral_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.show_spectral_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.show_spectral_components" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">show_spectral_components</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.show_spectral_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.show_spectral_components" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.switch_Norm_distr_OFF">
-<code class="descname">switch_Norm_distr_OFF</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.switch_Norm_distr_OFF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.switch_Norm_distr_OFF" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">switch_Norm_distr_OFF</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.switch_Norm_distr_OFF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.switch_Norm_distr_OFF" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.Jet.switch_Norm_distr_ON">
-<code class="descname">switch_Norm_distr_ON</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.switch_Norm_distr_ON"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.switch_Norm_distr_ON" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">switch_Norm_distr_ON</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#Jet.switch_Norm_distr_ON"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.Jet.switch_Norm_distr_ON" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -865,8 +900,8 @@ shows all the paramters in the model</p>
       
     </p>
     <p>
-        &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
+        &copy; Copyright 2019, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

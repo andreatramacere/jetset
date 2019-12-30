@@ -2,9 +2,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>jetset.spectral_shapes &#8212; jetset 1.0.a documentation</title>
+    <meta charset="utf-8" />
+    <title>jetset.spectral_shapes &#8212; jetset  documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -12,7 +11,9 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
@@ -38,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html"><span><img src="../../_static/logo_small_transp.png"></span>
           JetSeT</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -61,6 +62,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -151,6 +153,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -191,15 +194,18 @@
 //-->
 
 
+
 <div class="sidebar-block">
   <div class="sidebar-wrapper">
     <h2></h2>
   </div>
   <div class="sidebar-toc">
+
     
     
       <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a></li>
 </ul>
@@ -212,49 +218,148 @@
     <div class="col-md-9 content">
       
   <h1>Source code for jetset.spectral_shapes</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="nb">super</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="nb">super</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span>
                       <span class="nb">zip</span><span class="p">,</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="nb">zip</span><span class="p">)</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Andrea Tramacere&quot;</span>
 
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span>  <span class="n">array</span><span class="p">,</span><span class="n">zeros</span><span class="p">,</span><span class="n">log10</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span>
+<span class="kn">from</span> <span class="nn">.frame_converter</span> <span class="kn">import</span>  <span class="n">convert_nuFnu_to_nuLnu_src</span><span class="p">,</span> <span class="n">convert_nu_to_src</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;SED&#39;</span><span class="p">]</span>
 
 
-<span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;SED&#39;</span><span class="p">,</span><span class="s1">&#39;poly_shape&#39;</span><span class="p">]</span>
+
+
 
 <div class="viewcode-block" id="SED"><a class="viewcode-back" href="../../api/jetset.spectral_shapes.SED.html#jetset.spectral_shapes.SED">[docs]</a><span class="k">class</span> <span class="nc">SED</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class handling the SED </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nuFnu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nu_residuals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">residuals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">nu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">nuFnu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">nu_residuals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">residuals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">nu_src_residuals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">nuLnu_src_residuals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">dl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">log_log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">name</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="o">=</span><span class="n">nu</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu</span><span class="o">=</span><span class="n">nuFnu</span>
-        
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nu_units</span><span class="o">=</span><span class="n">units</span><span class="o">.</span><span class="n">Hz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nuFnu_units</span><span class="o">=</span><span class="n">units</span><span class="o">.</span><span class="n">erg</span><span class="o">/</span><span class="n">units</span><span class="o">.</span><span class="n">cm</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">units</span><span class="o">.</span><span class="n">s</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nu_src_units</span><span class="o">=</span><span class="n">units</span><span class="o">.</span><span class="n">Hz</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nuLnu_src_units</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">erg</span><span class="o">/</span><span class="n">units</span><span class="o">.</span><span class="n">s</span>
+
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="o">=</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu</span><span class="o">=</span><span class="p">(</span><span class="n">nuFnu</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loglog</span><span class="o">=</span><span class="n">log_log</span>
+
+        <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_src</span><span class="o">=</span> <span class="n">z</span>
+
+            <span class="c1">#print(&#39;1&#39;)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_src</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">dl</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">nu_residuals</span><span class="o">=</span><span class="n">nu_residuals</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span><span class="o">=</span><span class="n">residuals</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu_src_residuals</span> <span class="o">=</span> <span class="n">nu_src_residuals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_src_residuals</span> <span class="o">=</span> <span class="n">nuLnu_src_residuals</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nu</span>
 
-<div class="viewcode-block" id="SED.get_model_points"><a class="viewcode-back" href="../../api/jetset.spectral_shapes.SED.html#jetset.spectral_shapes.SED.get_model_points">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    
- 
-        <span class="k">if</span> <span class="n">log_log</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
-            
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu</span>
-        
+    <span class="nd">@nu</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">nu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">nu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nu</span><span class="o">=</span><span class="n">nu</span>
         <span class="k">else</span><span class="p">:</span>
-        
-            <span class="n">msk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu</span><span class="o">&gt;</span><span class="mi">0</span>
-            
-            <span class="n">y</span><span class="o">=</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu</span><span class="p">[</span><span class="n">msk</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nu</span><span class="o">=</span><span class="n">nu</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_nu_units</span>
 
-            <span class="n">x</span><span class="o">=</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">[</span><span class="n">msk</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nuFnu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nuFnu</span>
+
+
+    <span class="nd">@nuFnu</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">nuFnu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nuFnu</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">nuFnu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nuFnu</span><span class="o">=</span><span class="n">nuFnu</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nuFnu</span> <span class="o">=</span> <span class="n">nuFnu</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nuFnu_units</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nu_src</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nu_src</span>
+
+    <span class="nd">@nu_src</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">nu_src</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="c1">#print(&#39;-&gt;self._nu&#39;,self._nu)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nu_src</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nu</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loglog</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nu_src</span> <span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span> <span class="n">convert_nu_to_src</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nu</span><span class="o">.</span><span class="n">value</span><span class="p">),</span><span class="n">z</span><span class="p">,</span><span class="n">in_frame</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span><span class="p">)</span> <span class="p">)</span><span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nu_units</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nu_src</span> <span class="o">=</span> <span class="n">convert_nu_to_src</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nu</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">in_frame</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nu_units</span>
+
+        <span class="c1">#print(&#39;-&gt;self._nu_src&#39;, self._nu_src)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nuLnu_src</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nuLnu</span>
+
+    <span class="nd">@nuLnu_src</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">nuLnu_src</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="n">z</span><span class="p">,</span><span class="n">dl</span><span class="o">=</span><span class="n">t</span>
+        <span class="c1">#print(&#39;2&#39;)</span>
+        <span class="c1">#print(&#39;-&gt;&#39;,t,z,dl,self._loglog)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nuFnu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nuLnu</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loglog</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nuLnu</span> <span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span> <span class="n">convert_nuFnu_to_nuLnu_src</span><span class="p">(</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nuFnu</span><span class="o">.</span><span class="n">value</span><span class="p">),</span><span class="n">z</span><span class="p">,</span><span class="s1">&#39;obs&#39;</span><span class="p">,</span><span class="n">dl</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nuLnu_src_units</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nuLnu</span> <span class="o">=</span> <span class="n">convert_nuFnu_to_nuLnu_src</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nuFnu</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="s1">&#39;obs&#39;</span><span class="p">,</span> <span class="n">dl</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nuLnu_src_units</span>
+
+
+        <span class="c1">#print(&#39;-&gt;self._nuLnu&#39;, self._nuLnu.max())</span>
+
+<div class="viewcode-block" id="SED.get_model_points"><a class="viewcode-back" href="../../api/jetset.spectral_shapes.SED.html#jetset.spectral_shapes.SED.get_model_points">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">frame</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span><span class="p">):</span>
+
+        <span class="n">check_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="o">==</span> <span class="s1">&#39;obs&#39;</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">elif</span> <span class="n">frame</span> <span class="o">==</span> <span class="s1">&#39;src&#39;</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu_src</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_src</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">unexpetced_behaviour</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">log_log</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+
+            <span class="n">msk</span><span class="o">=</span><span class="n">y</span><span class="o">&gt;</span><span class="mi">0</span>
+            
+            <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">msk</span><span class="p">])</span>
+
+            <span class="n">y</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">msk</span><span class="p">])</span>
         
-        <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span></div>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
 
 <div class="viewcode-block" id="SED.get_residuals"><a class="viewcode-back" href="../../api/jetset.spectral_shapes.SED.html#jetset.spectral_shapes.SED.get_residuals">[docs]</a>    <span class="k">def</span> <span class="nf">get_residuals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
@@ -264,15 +369,16 @@
         <span class="k">if</span> <span class="n">log_log</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">nu_residuals</span><span class="p">,</span> <span class="n">residuals</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">nu_residuals</span><span class="p">,</span> <span class="n">log10</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">nu_residuals</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SED.fill"><a class="viewcode-back" href="../../api/jetset.spectral_shapes.SED.html#jetset.spectral_shapes.SED.fill">[docs]</a>    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nuFnu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nu_residuals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">residuals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SED.fill"><a class="viewcode-back" href="../../api/jetset.spectral_shapes.SED.html#jetset.spectral_shapes.SED.fill">[docs]</a>    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">nu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nuFnu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nu_residuals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">residuals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">log_log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loglog</span><span class="o">=</span><span class="n">log_log</span>
+        <span class="c1">#if nu is not None:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="o">=</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span>
         
-        <span class="k">if</span> <span class="n">nu</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="o">=</span><span class="n">nu</span>
-        
-        <span class="k">if</span> <span class="n">nuFnu</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu</span><span class="o">=</span><span class="n">nuFnu</span>
+        <span class="c1">#if nuFnu is not None:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu</span><span class="o">=</span><span class="p">(</span><span class="n">nuFnu</span><span class="p">)</span>
          
         <span class="k">if</span> <span class="n">residuals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             
@@ -280,23 +386,37 @@
          
         <span class="k">if</span> <span class="n">nu_residuals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             
-            <span class="bp">self</span><span class="o">.</span><span class="n">nu_residuals</span><span class="o">=</span><span class="n">nu_residuals</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_residuals</span><span class="o">=</span><span class="n">nu_residuals</span></div>
+
+<div class="viewcode-block" id="SED.fill_nuLnu"><a class="viewcode-back" href="../../api/jetset.spectral_shapes.SED.html#jetset.spectral_shapes.SED.fill_nuLnu">[docs]</a>    <span class="k">def</span> <span class="nf">fill_nuLnu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nu_src_residuals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nuLnu_src_residuals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dl</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+
+        <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_src</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_src</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">dl</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">nuLnu_src_residuals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuLnu_src_residuals</span> <span class="o">=</span> <span class="n">nuLnu_src_residuals</span>
+
+        <span class="k">if</span> <span class="n">nu_src_residuals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_src_residuals</span> <span class="o">=</span> <span class="n">nu_src_residuals</span></div></div>
             
-            
-            
-<div class="viewcode-block" id="poly_shape"><a class="viewcode-back" href="../../api/jetset.spectral_shapes.poly_shape.html#jetset.spectral_shapes.poly_shape">[docs]</a><span class="k">class</span> <span class="nc">poly_shape</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class for log-log polynomial shapes</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nuFnu</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="o">=</span><span class="n">nu</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nuFnu</span><span class="o">=</span><span class="n">nuFnu</span>
-    
-<div class="viewcode-block" id="poly_shape.get_model_points"><a class="viewcode-back" href="../../api/jetset.spectral_shapes.poly_shape.html#jetset.spectral_shapes.poly_shape.get_model_points">[docs]</a>    <span class="k">def</span> <span class="nf">get_model_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nuFnu</span></div></div>
-    
-        
+<span class="c1">#</span>
+<span class="c1"># class poly_shape(object):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Class for log-log polynomial shapes</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     def __init__(self,name=None,nu=None,nuFnu=None):</span>
+<span class="c1">#         self.name=name</span>
+<span class="c1">#         self.nu=nu</span>
+<span class="c1">#         self.nuFnu=nuFnu</span>
+<span class="c1">#</span>
+<span class="c1">#     def get_model_points(self):</span>
+<span class="c1">#         return self.nu,self.nuFnu</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
 
 </pre></div>
 
@@ -311,8 +431,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
+        &copy; Copyright 2019, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

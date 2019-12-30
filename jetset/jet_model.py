@@ -24,11 +24,15 @@ from numpy import log10,array,zeros,power,shape
 from scipy.interpolate import interp1d
 from astropy.table import Table
 
-#import jet_wrapper
-#try:
-from jetkernel import jetkernel as BlazarSED
-#except ImportError:
-#    from .mock import jetkernel as BlazarSED
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+if on_rtd == True:
+    try:
+        from jetkernel import jetkernel as BlazarSED
+    except ImportError:
+        from .mock import jetkernel as BlazarSED
+else:
+    from jetkernel import jetkernel as BlazarSED
 
 from . import spectral_shapes
 
@@ -1347,7 +1351,7 @@ class Jet(Model):
         L = F_sync * DL * DL * 4.0 * np.pi
         self.set_N_from_L_sync(L)
 
-    def set_N_from_nuLnu(self,L_0, nu_0):
+    def set_N_from_nuLnu(self,nuLnu_src, nu_src):
         """
         sets the normalization of N to match the rest frame luminosity L_0, at a given frequency nu_0
         """
@@ -1361,12 +1365,12 @@ class Jet(Model):
         self.set_blob()
 
         delta = self._blob.beam_obj
-        nu_blob = nu_0 / delta
+        nu_blob = nu_src / delta
 
         L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
 
 
-        ratio = (L_out / L_0)
+        ratio = (L_out / nuLnu_src)
         self.electron_distribution.set_grid_size(gamma_grid_size)
 
         #print 'N',N/ratio
@@ -2255,6 +2259,7 @@ class Jet(Model):
 
         self._energetic_report=_par_array.show_pars(getstring=getstring)
 
+        self.energetic_report_table=_par_array.par_table
 
         if write_file==True:
 

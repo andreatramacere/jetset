@@ -6,13 +6,14 @@ from builtins import (bytes, str, open, super, range,
 
 __author__ = "Andrea Tramacere"
 
-
+from astropy.units import  Unit as u
 
 
 __all__=['Cosmo']
 
 
 class  Cosmo (object):
+
 
     def __init__(self,astropy_cosmo=None,DL_cm=None):
 
@@ -40,6 +41,17 @@ class  Cosmo (object):
         self._c = _c
         self._DL_cm = DL_cm
 
+    def __repr__(self):
+        if self._c is not None:
+            s= '%s' % self._c
+        elif self._DL_cm is not None:
+            x=self._DL_cm*u('cm')
+
+            s= 'cosmology is not defined, the luminosity distance has been set to %s'%x
+        else:
+            s='you have to define either an astropy comoslogy model or set a luminosity distance in cm'
+
+        return s
 
     def get_DL_cm(self,z):
         if self._c is not None:

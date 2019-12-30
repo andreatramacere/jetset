@@ -2,17 +2,19 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>LogLinear &#8212; jetset 1.0.a documentation</title>
+    <meta charset="utf-8" />
+    <title>LogLinear &#8212; jetset  documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jetset.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
@@ -40,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html"><span><img src="../_static/logo_small_transp.png"></span>
           JetSeT</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -63,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -168,6 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -208,15 +212,18 @@
 //-->
 
 
+
 <div class="sidebar-block">
   <div class="sidebar-wrapper">
     <h2></h2>
   </div>
   <div class="sidebar-toc">
+
     
     
       <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
@@ -229,15 +236,7 @@
 <li class="toctree-l2"><a class="reference internal" href="jetkernel_models_dic.html">jetkernel_models_dic</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="loglog_poly_model.html">loglog_poly_model</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="loglog_poly_model.html#functions">Functions</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="loglog_poly_model.html#classes">Classes</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="jetset.loglog_poly_model.LogCubic.html">LogCubic</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">LogLinear</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.loglog_poly_model.LogLogModel.html">LogLogModel</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.loglog_poly_model.LogParabolaEp.html">LogParabolaEp</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.loglog_poly_model.LogParabolaPL.html">LogParabolaPL</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.loglog_poly_model.PolyParameter.html">PolyParameter</a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="reference internal" href="loglog_poly_model.html#classes">Classes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="loglog_poly_model.html#class-inheritance-diagram">Class Inheritance Diagram</a></li>
 </ul>
 </li>
@@ -274,25 +273,25 @@
 <h1>LogLinear<a class="headerlink" href="#loglinear" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="jetset.loglog_poly_model.LogLinear">
-<em class="property">class </em><code class="descname">LogLinear</code><span class="sig-paren">(</span><em>nu_size=100</em>, <em>**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/loglog_poly_model.html#LogLinear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.loglog_poly_model.LogLinear" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">LogLinear</code><span class="sig-paren">(</span><em class="sig-param">nu_size=100</em>, <em class="sig-param">**keywords</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/loglog_poly_model.html#LogLinear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.loglog_poly_model.LogLinear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="jetset.loglog_poly_model.LogLogModel.html#jetset.loglog_poly_model.LogLogModel" title="jetset.loglog_poly_model.LogLogModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">jetset.loglog_poly_model.LogLogModel</span></code></a></p>
 <p>Class to handle log-linear model</p>
 <p class="rubric">Methods Summary</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.loglog_poly_model.LogLinear.log_func" title="jetset.loglog_poly_model.LogLinear.log_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_func</span></code></a>(log_nu)</td>
-<td></td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.loglog_poly_model.LogLinear.log_func" title="jetset.loglog_poly_model.LogLinear.log_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_func</span></code></a>(log_nu)</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Methods Documentation</p>
 <dl class="method">
 <dt id="jetset.loglog_poly_model.LogLinear.log_func">
-<code class="descname">log_func</code><span class="sig-paren">(</span><em>log_nu</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/loglog_poly_model.html#LogLinear.log_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.loglog_poly_model.LogLinear.log_func" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">log_func</code><span class="sig-paren">(</span><em class="sig-param">log_nu</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/loglog_poly_model.html#LogLinear.log_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.loglog_poly_model.LogLinear.log_func" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -311,8 +310,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
+        &copy; Copyright 2019, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

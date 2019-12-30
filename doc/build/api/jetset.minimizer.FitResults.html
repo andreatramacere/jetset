@@ -2,17 +2,19 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>FitResults &#8212; jetset 1.0.a documentation</title>
+    <meta charset="utf-8" />
+    <title>FitResults &#8212; jetset  documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jetset.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
@@ -40,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html"><span><img src="../_static/logo_small_transp.png"></span>
           JetSeT</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -63,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -168,6 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -208,15 +212,18 @@
 //-->
 
 
+
 <div class="sidebar-block">
   <div class="sidebar-wrapper">
     <h2></h2>
   </div>
   <div class="sidebar-toc">
+
     
     
       <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
@@ -231,15 +238,7 @@
 <li class="toctree-l2"><a class="reference internal" href="mcmc.html">mcmc</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="minimizer.html">minimizer</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="minimizer.html#functions">Functions</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="minimizer.html#classes">Classes</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">FitResults</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.minimizer.Minimizer.html">Minimizer</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.minimizer.LSMinimizer.html">LSMinimizer</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.minimizer.LSBMinimizer.html">LSBMinimizer</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.minimizer.MinutiMinimizer.html">MinutiMinimizer</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.minimizer.ModelMinimizer.html">ModelMinimizer</a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="reference internal" href="minimizer.html#classes">Classes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="minimizer.html#class-inheritance-diagram">Class Inheritance Diagram</a></li>
 </ul>
 </li>
@@ -274,7 +273,7 @@
 <h1>FitResults<a class="headerlink" href="#fitresults" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="jetset.minimizer.FitResults">
-<em class="property">class </em><code class="descname">FitResults</code><span class="sig-paren">(</span><em>name</em>, <em>mm</em>, <em>parameters</em>, <em>calls</em>, <em>mesg</em>, <em>success</em>, <em>chisq</em>, <em>dof</em>, <em>chisq_red</em>, <em>null_hyp_sig</em>, <em>wd</em>, <em>chisq_no_UL=None</em>, <em>dof_no_UL=None</em>, <em>chisq_red_no_UL=None</em>, <em>null_hyp_sig_no_UL=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/minimizer.html#FitResults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.minimizer.FitResults" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">FitResults</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">mm</em>, <em class="sig-param">parameters</em>, <em class="sig-param">calls</em>, <em class="sig-param">mesg</em>, <em class="sig-param">success</em>, <em class="sig-param">chisq</em>, <em class="sig-param">dof</em>, <em class="sig-param">chisq_red</em>, <em class="sig-param">null_hyp_sig</em>, <em class="sig-param">wd</em>, <em class="sig-param">chisq_no_UL=None</em>, <em class="sig-param">dof_no_UL=None</em>, <em class="sig-param">chisq_red_no_UL=None</em>, <em class="sig-param">null_hyp_sig_no_UL=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/minimizer.html#FitResults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.minimizer.FitResults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class to store the fit results</p>
 <p>Parameters</p>
@@ -290,37 +289,37 @@
 :ivar fit_report: ivar get_report()
 ——-</p>
 <p class="rubric">Methods Summary</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.minimizer.FitResults.get_report" title="jetset.minimizer.FitResults.get_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_report</span></code></a>()</td>
-<td></td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.minimizer.FitResults.get_report" title="jetset.minimizer.FitResults.get_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_report</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.minimizer.FitResults.save_report" title="jetset.minimizer.FitResults.save_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_report</span></code></a>([wd,&nbsp;name])</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.minimizer.FitResults.save_report" title="jetset.minimizer.FitResults.save_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_report</span></code></a>([wd, name])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.minimizer.FitResults.show_report" title="jetset.minimizer.FitResults.show_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_report</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.minimizer.FitResults.show_report" title="jetset.minimizer.FitResults.show_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show_report</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Methods Documentation</p>
 <dl class="method">
 <dt id="jetset.minimizer.FitResults.get_report">
-<code class="descname">get_report</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/minimizer.html#FitResults.get_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.minimizer.FitResults.get_report" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_report</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/minimizer.html#FitResults.get_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.minimizer.FitResults.get_report" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.minimizer.FitResults.save_report">
-<code class="descname">save_report</code><span class="sig-paren">(</span><em>wd=None</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/minimizer.html#FitResults.save_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.minimizer.FitResults.save_report" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">save_report</code><span class="sig-paren">(</span><em class="sig-param">wd=None</em>, <em class="sig-param">name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/minimizer.html#FitResults.save_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.minimizer.FitResults.save_report" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.minimizer.FitResults.show_report">
-<code class="descname">show_report</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/minimizer.html#FitResults.show_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.minimizer.FitResults.show_report" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">show_report</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/minimizer.html#FitResults.show_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.minimizer.FitResults.show_report" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -339,8 +338,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
+        &copy; Copyright 2019, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

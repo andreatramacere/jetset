@@ -11,7 +11,7 @@ ElectronDistribution
    .. autosummary::
 
       ~ElectronDistribution.available_distributions
-      ~ElectronDistribution.from_custom
+      ~ElectronDistribution.from_array
       ~ElectronDistribution.plot
       ~ElectronDistribution.plot3p
       ~ElectronDistribution.set_bounds
@@ -21,7 +21,7 @@ ElectronDistribution
    .. rubric:: Methods Documentation
 
    .. automethod:: available_distributions
-   .. automethod:: from_custom
+   .. automethod:: from_array
    .. automethod:: plot
    .. automethod:: plot3p
    .. automethod:: set_bounds

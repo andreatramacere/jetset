@@ -1,5 +1,5 @@
 <map id="inheritanceb6c170f453" name="inheritanceb6c170f453">
-<area shape="rect" id="node1" href="jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter" target="_top" title="This class is the base class for models parameters. The following keywords " alt="" coords="21,103,141,129"/>
-<area shape="rect" id="node2" href="jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray" target="_top" title="This class provide and interface to handle an array of :class:`ModelParameter` objects." alt="" coords="5,54,157,79"/>
-<area shape="rect" id="node3" href="jetset.model_parameters.Value.html#jetset.model_parameters.Value" target="_top" title="Value" alt="" coords="45,5,117,30"/>
+<area shape="rect" id="node1" href="jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter" target="_top" title="This class is the base class for models parameters. The following keywords " alt="" coords="21,104,141,129"/>
+<area shape="rect" id="node2" href="jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray" target="_top" title="This class provide and interface to handle an array of :class:`ModelParameter` objects." alt="" coords="5,55,157,80"/>
+<area shape="rect" id="node3" href="jetset.model_parameters.Value.html#jetset.model_parameters.Value" target="_top" title="Value" alt="" coords="45,5,117,31"/>
 </map>

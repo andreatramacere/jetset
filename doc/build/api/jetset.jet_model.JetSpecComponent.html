@@ -2,17 +2,19 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>JetSpecComponent &#8212; jetset 1.0.a documentation</title>
+    <meta charset="utf-8" />
+    <title>JetSpecComponent &#8212; jetset  documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jetset.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
@@ -40,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html"><span><img src="../_static/logo_small_transp.png"></span>
           JetSeT</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -63,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -168,6 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -208,15 +212,18 @@
 //-->
 
 
+
 <div class="sidebar-block">
   <div class="sidebar-wrapper">
     <h2></h2>
   </div>
   <div class="sidebar-toc">
+
     
     
       <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
@@ -227,13 +234,7 @@
 <li class="toctree-l2"><a class="reference internal" href="frame_converter.html">frame_converter</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="jet_model.html">jet_model</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="jet_model.html#functions">Functions</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="jet_model.html#classes">Classes</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="jetset.jet_model.Jet.html">Jet</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.jet_model.JetParameter.html">JetParameter</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">JetSpecComponent</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.jet_model.ElectronDistribution.html">ElectronDistribution</a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="reference internal" href="jet_model.html#classes">Classes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jet_model.html#class-inheritance-diagram">Class Inheritance Diagram</a></li>
 </ul>
 </li>
@@ -272,58 +273,90 @@
 <h1>JetSpecComponent<a class="headerlink" href="#jetspeccomponent" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="jetset.jet_model.JetSpecComponent">
-<em class="property">class </em><code class="descname">JetSpecComponent</code><span class="sig-paren">(</span><em>name</em>, <em>blob_object</em>, <em>var_name=None</em>, <em>state_dict=None</em>, <em>state=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">JetSpecComponent</code><span class="sig-paren">(</span><em class="sig-param">jet_obj</em>, <em class="sig-param">name</em>, <em class="sig-param">blob_object</em>, <em class="sig-param">var_name=None</em>, <em class="sig-param">state_dict=None</em>, <em class="sig-param">state=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p class="rubric">Attributes Summary</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.state" title="jetset.jet_model.JetSpecComponent.state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state</span></code></a></td>
-<td></td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.state" title="jetset.jet_model.JetSpecComponent.state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Methods Summary</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.get_var_state" title="jetset.jet_model.JetSpecComponent.get_var_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_var_state</span></code></a>()</td>
-<td></td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.fill_SED" title="jetset.jet_model.JetSpecComponent.fill_SED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_SED</span></code></a>([log_log])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.plot" title="jetset.jet_model.JetSpecComponent.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([y_min,&nbsp;y_max])</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.get_SED_points" title="jetset.jet_model.JetSpecComponent.get_SED_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_SED_points</span></code></a>([log_log])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.show" title="jetset.jet_model.JetSpecComponent.show"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.get_emiss_lim" title="jetset.jet_model.JetSpecComponent.get_emiss_lim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_emiss_lim</span></code></a>([seed])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.get_var_state" title="jetset.jet_model.JetSpecComponent.get_var_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_var_state</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.plot" title="jetset.jet_model.JetSpecComponent.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([y_min, y_max])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.show" title="jetset.jet_model.JetSpecComponent.show"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.JetSpecComponent.update" title="jetset.jet_model.JetSpecComponent.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Attributes Documentation</p>
 <dl class="attribute">
 <dt id="jetset.jet_model.JetSpecComponent.state">
-<code class="descname">state</code><a class="headerlink" href="#jetset.jet_model.JetSpecComponent.state" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">state</code><a class="headerlink" href="#jetset.jet_model.JetSpecComponent.state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods Documentation</p>
 <dl class="method">
+<dt id="jetset.jet_model.JetSpecComponent.fill_SED">
+<code class="sig-name descname">fill_SED</code><span class="sig-paren">(</span><em class="sig-param">log_log=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent.fill_SED"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent.fill_SED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.jet_model.JetSpecComponent.get_SED_points">
+<code class="sig-name descname">get_SED_points</code><span class="sig-paren">(</span><em class="sig-param">log_log=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent.get_SED_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent.get_SED_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.jet_model.JetSpecComponent.get_emiss_lim">
+<code class="sig-name descname">get_emiss_lim</code><span class="sig-paren">(</span><em class="sig-param">seed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent.get_emiss_lim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent.get_emiss_lim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="jetset.jet_model.JetSpecComponent.get_var_state">
-<code class="descname">get_var_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent.get_var_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent.get_var_state" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_var_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent.get_var_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent.get_var_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.JetSpecComponent.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>y_min=None</em>, <em>y_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent.plot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">y_min=None</em>, <em class="sig-param">y_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent.plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.JetSpecComponent.show">
-<code class="descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent.show" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent.show" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jetset.jet_model.JetSpecComponent.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#JetSpecComponent.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.JetSpecComponent.update" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -342,8 +375,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
+        &copy; Copyright 2019, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

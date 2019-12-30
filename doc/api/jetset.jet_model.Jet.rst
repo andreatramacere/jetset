@@ -42,8 +42,10 @@ Jet
       ~Jet.get_SED_peak
       ~Jet.get_SED_points
       ~Jet.get_beaming
+      ~Jet.get_component_peak
       ~Jet.get_electron_distribution_name
       ~Jet.get_emiss_lim
+      ~Jet.get_external_field_transf
       ~Jet.get_flag
       ~Jet.get_par_by_name
       ~Jet.get_par_by_type
@@ -52,7 +54,6 @@ Jet
       ~Jet.get_spectral_component_by_name
       ~Jet.get_spectral_component_names_list
       ~Jet.get_verbosity
-      ~Jet.init_BlazarSED
       ~Jet.list_spectral_components
       ~Jet.load_model
       ~Jet.plot_model
@@ -62,11 +63,16 @@ Jet
       ~Jet.set_IC_nu_size
       ~Jet.set_N_from_F_sync
       ~Jet.set_N_from_L_sync
+      ~Jet.set_N_from_Le
+      ~Jet.set_N_from_Ue
       ~Jet.set_N_from_nuFnu
       ~Jet.set_N_from_nuLnu
+      ~Jet.set_blob
       ~Jet.set_electron_distribution
       ~Jet.set_emiss_lim
       ~Jet.set_emitting_region
+      ~Jet.set_external_field_transf
+      ~Jet.set_external_fields
       ~Jet.set_flag
       ~Jet.set_gamma_grid_size
       ~Jet.set_par
@@ -112,8 +118,10 @@ Jet
    .. automethod:: get_SED_peak
    .. automethod:: get_SED_points
    .. automethod:: get_beaming
+   .. automethod:: get_component_peak
    .. automethod:: get_electron_distribution_name
    .. automethod:: get_emiss_lim
+   .. automethod:: get_external_field_transf
    .. automethod:: get_flag
    .. automethod:: get_par_by_name
    .. automethod:: get_par_by_type
@@ -122,7 +130,6 @@ Jet
    .. automethod:: get_spectral_component_by_name
    .. automethod:: get_spectral_component_names_list
    .. automethod:: get_verbosity
-   .. automethod:: init_BlazarSED
    .. automethod:: list_spectral_components
    .. automethod:: load_model
    .. automethod:: plot_model
@@ -132,11 +139,16 @@ Jet
    .. automethod:: set_IC_nu_size
    .. automethod:: set_N_from_F_sync
    .. automethod:: set_N_from_L_sync
+   .. automethod:: set_N_from_Le
+   .. automethod:: set_N_from_Ue
    .. automethod:: set_N_from_nuFnu
    .. automethod:: set_N_from_nuLnu
+   .. automethod:: set_blob
    .. automethod:: set_electron_distribution
    .. automethod:: set_emiss_lim
    .. automethod:: set_emitting_region
+   .. automethod:: set_external_field_transf
+   .. automethod:: set_external_fields
    .. automethod:: set_flag
    .. automethod:: set_gamma_grid_size
    .. automethod:: set_par

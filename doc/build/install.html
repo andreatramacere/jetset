@@ -2,17 +2,19 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Installation &#8212; jetset 1.0.a documentation</title>
+    <meta charset="utf-8" />
+    <title>Installation &#8212; jetset  documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jetset.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
@@ -20,7 +22,7 @@
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="JetSeT User Guide" href="user_guide/user_guide.html" />
+    <link rel="next" title="What’s new in version 1.1.0" href="new_release.html" />
     <link rel="prev" title="JetSeT Documentation" href="index.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -40,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="index.html"><span><img src="_static/logo_small_transp.png"></span>
           JetSeT</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -63,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -131,7 +134,7 @@
     </a>
   </li>
   <li>
-    <a href="user_guide/user_guide.html" title="Next Chapter: JetSeT User Guide"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">JetSeT User Guide &raquo;</span>
+    <a href="new_release.html" title="Next Chapter: What’s new in version 1.1.0"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">What’s new in... &raquo;</span>
     </a>
   </li>
               
@@ -174,6 +177,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -214,11 +218,13 @@
 //-->
 
 
+
 <div class="sidebar-block">
   <div class="sidebar-wrapper">
     <h2></h2>
   </div>
   <div class="sidebar-toc">
+
     
     
       <ul class="current">
@@ -229,6 +235,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/user_guide.html">user guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">code documentation (API)</a></li>
 </ul>
@@ -250,25 +257,29 @@
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>The following python packages are required:</p>
 <ul class="simple">
-<li>python 2.7 or &gt;=3.6 (python 3 is suggested, python 2 should work still fine)</li>
-<li>scipy</li>
-<li>numpy</li>
-<li>astropy</li>
-<li>iminuit (<a class="reference external" href="https://github.com/iminuit/iminuit">https://github.com/iminuit/iminuit</a>)</li>
+<li><p>python 2.7 or &gt;=3.6 (python 3 is suggested, python 2 should work still fine but it is not supported anymore)</p></li>
+<li><p>setuptools</p></li>
+<li><p>scipy</p></li>
+<li><p>numpy</p></li>
+<li><p>astropy</p></li>
+<li><p>matplotlib</p></li>
+<li><p>swig</p></li>
+<li><p>future</p></li>
+<li><p>iminuit</p></li>
+<li><p>corner</p></li>
+<li><p>six</p></li>
+<li><p>emcee</p></li>
+<li><p>pyyaml</p></li>
 </ul>
 <p>A C compiler is also necessary, plus the SWIG wrapper generator.</p>
 <p>All the dependencies can be installed following the Anaconda method
 (suggested) <strong>OR</strong> the pip method, as described in the following sections.</p>
-<p>I strongly encourage to use anaconda and python3 (<a class="reference external" href="https://www.anaconda.com/download/">https://www.anaconda.com/download/</a>)</p>
+<p>I suggest to use anaconda and python3 (<a class="reference external" href="https://www.anaconda.com/download/">https://www.anaconda.com/download/</a>)</p>
 </div>
 <div class="section" id="download-the-jetset-code">
 <h2>Download the JeTseT code<a class="headerlink" href="#download-the-jetset-code" title="Permalink to this headline">¶</a></h2>
 <p>Get the source code from:</p>
-<blockquote>
-<div><a class="reference external" href="https://gitlab.com/andreatramacere/jetset/-/archive/stable/jetset-stable.tar.gz">https://gitlab.com/andreatramacere/jetset/-/archive/stable/jetset-stable.tar.gz</a></div></blockquote>
-<p>or</p>
-<blockquote>
-<div><a class="reference external" href="https://github.com/andreatramacere/jetset/archive/stable.tar.gz">https://github.com/andreatramacere/jetset/archive/stable.tar.gz</a></div></blockquote>
+<p><a class="reference external" href="https://github.com/andreatramacere/jetset/archive/stable.tar.gz">https://github.com/andreatramacere/jetset/archive/stable.tar.gz</a></p>
 <p>Uncompress the  archive</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jetset-stable.tar.gz
 </pre></div>
@@ -281,22 +292,9 @@
 <div class="section" id="installation-using-anaconda-suggested-method">
 <h2>Installation using Anaconda (suggested method)<a class="headerlink" href="#installation-using-anaconda-suggested-method" title="Permalink to this headline">¶</a></h2>
 <p>Install the requiremets:</p>
-<ul>
-<li><p class="first">Linux/MAC : run on the command line</p>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="nb">read</span> requirement<span class="p">;</span> <span class="k">do</span> conda install --yes <span class="nv">$requirement</span><span class="p">;</span> <span class="k">done</span> &lt; requirements.txt
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install --file requirements.txt
 </pre></div>
 </div>
-</div></blockquote>
-</li>
-<li><p class="first">Windows   : run on the command line</p>
-<blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">FOR /F &quot;delims=~&quot; %f in (requirements.txt) DO conda install --yes &quot;%f&quot;</span>
-</pre></div>
-</div>
-</div></blockquote>
-</li>
-</ul>
 <p>Install JetSeT running on the command line:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python setup.py clean
 python setup.py install
@@ -313,28 +311,28 @@ python setup.py install
 <p><strong>if pip fails to install swig you can try one of the following methods:</strong></p>
 <blockquote>
 <div><ul class="simple">
-<li>on linux Ubuntu:</li>
+<li><p>on linux Ubuntu:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>- sudo apt-get install python-dev
 - sudo apt-get install swig
 </pre></div>
 </div>
 <ul class="simple">
-<li>on linux Debian:</li>
+<li><p>on linux Debian:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>- sudo aptitude install python-dev
 - sudo aptitude install swig
 </pre></div>
 </div>
 <ul class="simple">
-<li>on linux Fedora:</li>
+<li><p>on linux Fedora:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>- sudo yum install python-dev
 - sudo yum install swig
 </pre></div>
 </div>
 <ul class="simple">
-<li>on mac:</li>
+<li><p>on mac:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>- ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span> &lt; /dev/null <span class="m">2</span>&gt; /dev/null
 - brew install swig
@@ -362,8 +360,8 @@ python setup.py install
       
     </p>
     <p>
-        &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
+        &copy; Copyright 2019, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

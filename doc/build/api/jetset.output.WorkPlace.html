@@ -2,17 +2,19 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>WorkPlace &#8212; jetset 1.0.a documentation</title>
+    <meta charset="utf-8" />
+    <title>WorkPlace &#8212; jetset  documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jetset.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
@@ -40,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html"><span><img src="../_static/logo_small_transp.png"></span>
           JetSeT</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -63,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -168,6 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -208,15 +212,18 @@
 //-->
 
 
+
 <div class="sidebar-block">
   <div class="sidebar-wrapper">
     <h2></h2>
   </div>
   <div class="sidebar-toc">
+
     
     
       <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
@@ -236,10 +243,7 @@
 <li class="toctree-l2"><a class="reference internal" href="obs_constrain.html">obs_constrain</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="output.html">output</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="output.html#functions">Functions</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="output.html#classes">Classes</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">WorkPlace</a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="reference internal" href="output.html#classes">Classes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="output.html#class-inheritance-diagram">Class Inheritance Diagram</a></li>
 </ul>
 </li>
@@ -269,23 +273,19 @@
 <h1>WorkPlace<a class="headerlink" href="#workplace" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="jetset.output.WorkPlace">
-<em class="property">class </em><code class="descname">WorkPlace</code><span class="sig-paren">(</span><em>out_dir='./'</em>, <em>flag='sed-fit-test'</em>, <em>clean=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/output.html#WorkPlace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.output.WorkPlace" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">WorkPlace</code><span class="sig-paren">(</span><em class="sig-param">out_dir='./'</em>, <em class="sig-param">flag='sed-fit-test'</em>, <em class="sig-param">clean=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/output.html#WorkPlace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.output.WorkPlace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class to set the working place
 using static members (class members)</p>
 <p>Variables</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>out_dir</strong> – directory name (default=./)</li>
-<li><strong>flag</strong> – flag name (default=sed-fit-test)</li>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_dir</strong> – directory name (default=./)</p></li>
+<li><p><strong>flag</strong> – flag name (default=sed-fit-test)</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -302,8 +302,8 @@ using static members (class members)</p>
       
     </p>
     <p>
-        &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
+        &copy; Copyright 2019, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

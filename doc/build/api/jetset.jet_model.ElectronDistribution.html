@@ -2,17 +2,19 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ElectronDistribution &#8212; jetset 1.0.a documentation</title>
+    <meta charset="utf-8" />
+    <title>ElectronDistribution &#8212; jetset  documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jetset.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
@@ -40,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html"><span><img src="../_static/logo_small_transp.png"></span>
           JetSeT</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -63,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -168,6 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -208,15 +212,18 @@
 //-->
 
 
+
 <div class="sidebar-block">
   <div class="sidebar-wrapper">
     <h2></h2>
   </div>
   <div class="sidebar-toc">
+
     
     
       <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
@@ -227,13 +234,7 @@
 <li class="toctree-l2"><a class="reference internal" href="frame_converter.html">frame_converter</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="jet_model.html">jet_model</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="jet_model.html#functions">Functions</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="jet_model.html#classes">Classes</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="jetset.jet_model.Jet.html">Jet</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.jet_model.JetParameter.html">JetParameter</a></li>
-<li class="toctree-l4"><a class="reference internal" href="jetset.jet_model.JetSpecComponent.html">JetSpecComponent</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">ElectronDistribution</a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="reference internal" href="jet_model.html#classes">Classes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="jet_model.html#class-inheritance-diagram">Class Inheritance Diagram</a></li>
 </ul>
 </li>
@@ -272,72 +273,72 @@
 <h1>ElectronDistribution<a class="headerlink" href="#electrondistribution" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="jetset.jet_model.ElectronDistribution">
-<em class="property">class </em><code class="descname">ElectronDistribution</code><span class="sig-paren">(</span><em>name</em>, <em>jet</em>, <em>gamma_grid_size=None</em>, <em>log_values=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">ElectronDistribution</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">jet</em>, <em class="sig-param">gamma_grid_size=None</em>, <em class="sig-param">log_values=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p class="rubric">Methods Summary</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.available_distributions" title="jetset.jet_model.ElectronDistribution.available_distributions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">available_distributions</span></code></a>()</td>
-<td></td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.available_distributions" title="jetset.jet_model.ElectronDistribution.available_distributions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">available_distributions</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.from_custom" title="jetset.jet_model.ElectronDistribution.from_custom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_custom</span></code></a>(jet,&nbsp;custom_Ne)</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.from_array" title="jetset.jet_model.ElectronDistribution.from_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_array</span></code></a>(jet, custom_Ne)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.plot" title="jetset.jet_model.ElectronDistribution.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([p,&nbsp;y_min,&nbsp;y_max,&nbsp;x_min,&nbsp;x_max])</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.plot" title="jetset.jet_model.ElectronDistribution.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([p, y_min, y_max, x_min, x_max])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.plot3p" title="jetset.jet_model.ElectronDistribution.plot3p"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot3p</span></code></a>([p,&nbsp;y_min,&nbsp;y_max,&nbsp;x_min,&nbsp;x_max])</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.plot3p" title="jetset.jet_model.ElectronDistribution.plot3p"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot3p</span></code></a>([p, y_min, y_max, x_min, x_max])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.set_bounds" title="jetset.jet_model.ElectronDistribution.set_bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_bounds</span></code></a>(a,&nbsp;b[,&nbsp;log_val])</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.set_bounds" title="jetset.jet_model.ElectronDistribution.set_bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_bounds</span></code></a>(a, b[, log_val])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.set_grid_size" title="jetset.jet_model.ElectronDistribution.set_grid_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_grid_size</span></code></a>(gamma_grid_size)</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.set_grid_size" title="jetset.jet_model.ElectronDistribution.set_grid_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_grid_size</span></code></a>(gamma_grid_size)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.update" title="jetset.jet_model.ElectronDistribution.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>()</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.jet_model.ElectronDistribution.update" title="jetset.jet_model.ElectronDistribution.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Methods Documentation</p>
-<dl class="staticmethod">
+<dl class="method">
 <dt id="jetset.jet_model.ElectronDistribution.available_distributions">
-<em class="property">static </em><code class="descname">available_distributions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.available_distributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.available_distributions" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">available_distributions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.available_distributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.available_distributions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="classmethod">
-<dt id="jetset.jet_model.ElectronDistribution.from_custom">
-<em class="property">classmethod </em><code class="descname">from_custom</code><span class="sig-paren">(</span><em>jet</em>, <em>custom_Ne</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.from_custom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.from_custom" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="jetset.jet_model.ElectronDistribution.from_array">
+<em class="property">classmethod </em><code class="sig-name descname">from_array</code><span class="sig-paren">(</span><em class="sig-param">jet</em>, <em class="sig-param">custom_Ne</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.from_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.from_array" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.ElectronDistribution.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>p=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>x_min=None</em>, <em>x_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.plot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">p=None</em>, <em class="sig-param">y_min=None</em>, <em class="sig-param">y_max=None</em>, <em class="sig-param">x_min=None</em>, <em class="sig-param">x_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.ElectronDistribution.plot3p">
-<code class="descname">plot3p</code><span class="sig-paren">(</span><em>p=None</em>, <em>y_min=None</em>, <em>y_max=None</em>, <em>x_min=None</em>, <em>x_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.plot3p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.plot3p" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot3p</code><span class="sig-paren">(</span><em class="sig-param">p=None</em>, <em class="sig-param">y_min=None</em>, <em class="sig-param">y_max=None</em>, <em class="sig-param">x_min=None</em>, <em class="sig-param">x_max=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.plot3p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.plot3p" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.ElectronDistribution.set_bounds">
-<code class="descname">set_bounds</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>log_val=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.set_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.set_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_bounds</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">b</em>, <em class="sig-param">log_val=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.set_bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.set_bounds" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.ElectronDistribution.set_grid_size">
-<code class="descname">set_grid_size</code><span class="sig-paren">(</span><em>gamma_grid_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.set_grid_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.set_grid_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_grid_size</code><span class="sig-paren">(</span><em class="sig-param">gamma_grid_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.set_grid_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.set_grid_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.jet_model.ElectronDistribution.update">
-<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/jet_model.html#ElectronDistribution.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.jet_model.ElectronDistribution.update" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -356,8 +357,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
+        &copy; Copyright 2019, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

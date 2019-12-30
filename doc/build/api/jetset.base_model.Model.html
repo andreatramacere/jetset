@@ -2,17 +2,19 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Model &#8212; jetset 1.0.a documentation</title>
+    <meta charset="utf-8" />
+    <title>Model &#8212; jetset  documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jetset.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
@@ -40,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html"><span><img src="../_static/logo_small_transp.png"></span>
           JetSeT</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -63,6 +65,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -168,6 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../install.html#installation-using-pip">Installation using PIP</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
@@ -208,23 +212,23 @@
 //-->
 
 
+
 <div class="sidebar-block">
   <div class="sidebar-wrapper">
     <h2></h2>
   </div>
   <div class="sidebar-toc">
+
     
     
       <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">code documentation (API)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="analytical_model.html">analytical_model</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="base_model.html">base_model</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="base_model.html#classes">Classes</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Model</a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="reference internal" href="base_model.html#classes">Classes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="base_model.html#class-inheritance-diagram">Class Inheritance Diagram</a></li>
 </ul>
 </li>
@@ -268,56 +272,56 @@
 <h1>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="jetset.base_model.Model">
-<em class="property">class </em><code class="descname">Model</code><span class="sig-paren">(</span><em>name='no-name'</em>, <em>nu_size=100</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/base_model.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.base_model.Model" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">Model</code><span class="sig-paren">(</span><em class="sig-param">name='no-name'</em>, <em class="sig-param">nu_size=100</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/base_model.html#Model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.base_model.Model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p class="rubric">Methods Summary</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.base_model.Model.eval" title="jetset.base_model.Model.eval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code></a>([fill_SED,&nbsp;nu,&nbsp;get_model,&nbsp;loglog,&nbsp;label])</td>
-<td></td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.base_model.Model.eval" title="jetset.base_model.Model.eval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code></a>([fill_SED, nu, get_model, loglog, label])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.base_model.Model.get_residuals" title="jetset.base_model.Model.get_residuals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_residuals</span></code></a>(data[,&nbsp;log_log,&nbsp;filter_UL])</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.base_model.Model.get_residuals" title="jetset.base_model.Model.get_residuals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_residuals</span></code></a>(data[, log_log, filter_UL])</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.base_model.Model.lin_func" title="jetset.base_model.Model.lin_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lin_func</span></code></a>(nu)</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.base_model.Model.lin_func" title="jetset.base_model.Model.lin_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lin_func</span></code></a>(nu)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#jetset.base_model.Model.log_func" title="jetset.base_model.Model.log_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_func</span></code></a>(log_nu)</td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.base_model.Model.log_func" title="jetset.base_model.Model.log_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_func</span></code></a>(log_nu)</p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#jetset.base_model.Model.set_nu_grid" title="jetset.base_model.Model.set_nu_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nu_grid</span></code></a>([nu_min,&nbsp;nu_max,&nbsp;nu_size])</td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jetset.base_model.Model.set_nu_grid" title="jetset.base_model.Model.set_nu_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nu_grid</span></code></a>([nu_min, nu_max, nu_size])</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Methods Documentation</p>
 <dl class="method">
 <dt id="jetset.base_model.Model.eval">
-<code class="descname">eval</code><span class="sig-paren">(</span><em>fill_SED=True</em>, <em>nu=None</em>, <em>get_model=False</em>, <em>loglog=False</em>, <em>label=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/base_model.html#Model.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.base_model.Model.eval" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">eval</code><span class="sig-paren">(</span><em class="sig-param">fill_SED=True</em>, <em class="sig-param">nu=None</em>, <em class="sig-param">get_model=False</em>, <em class="sig-param">loglog=False</em>, <em class="sig-param">label=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/base_model.html#Model.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.base_model.Model.eval" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.base_model.Model.get_residuals">
-<code class="descname">get_residuals</code><span class="sig-paren">(</span><em>data</em>, <em>log_log=False</em>, <em>filter_UL=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/base_model.html#Model.get_residuals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.base_model.Model.get_residuals" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_residuals</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">log_log=False</em>, <em class="sig-param">filter_UL=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/base_model.html#Model.get_residuals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.base_model.Model.get_residuals" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.base_model.Model.lin_func">
-<code class="descname">lin_func</code><span class="sig-paren">(</span><em>nu</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/base_model.html#Model.lin_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.base_model.Model.lin_func" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">lin_func</code><span class="sig-paren">(</span><em class="sig-param">nu</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/base_model.html#Model.lin_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.base_model.Model.lin_func" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.base_model.Model.log_func">
-<code class="descname">log_func</code><span class="sig-paren">(</span><em>log_nu</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/base_model.html#Model.log_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.base_model.Model.log_func" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">log_func</code><span class="sig-paren">(</span><em class="sig-param">log_nu</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/base_model.html#Model.log_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.base_model.Model.log_func" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="jetset.base_model.Model.set_nu_grid">
-<code class="descname">set_nu_grid</code><span class="sig-paren">(</span><em>nu_min=None</em>, <em>nu_max=None</em>, <em>nu_size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/base_model.html#Model.set_nu_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.base_model.Model.set_nu_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_nu_grid</code><span class="sig-paren">(</span><em class="sig-param">nu_min=None</em>, <em class="sig-param">nu_max=None</em>, <em class="sig-param">nu_size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/base_model.html#Model.set_nu_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.base_model.Model.set_nu_grid" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -336,8 +340,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
+        &copy; Copyright 2019, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

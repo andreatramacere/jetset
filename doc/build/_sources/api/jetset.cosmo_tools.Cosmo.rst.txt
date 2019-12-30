@@ -10,22 +10,8 @@ Cosmo
 
    .. autosummary::
 
-      ~Cosmo.DA
-      ~Cosmo.DC
-      ~Cosmo.DL
-      ~Cosmo.DM
-      ~Cosmo.EZ
-      ~Cosmo.VC
-      ~Cosmo.four_pi_dVC
-      ~Cosmo.show
+      ~Cosmo.get_DL_cm
 
    .. rubric:: Methods Documentation
 
-   .. automethod:: DA
-   .. automethod:: DC
-   .. automethod:: DL
-   .. automethod:: DM
-   .. automethod:: EZ
-   .. automethod:: VC
-   .. automethod:: four_pi_dVC
-   .. automethod:: show
+   .. automethod:: get_DL_cm

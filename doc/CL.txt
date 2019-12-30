@@ -1,2 +1,5 @@
+#To avoid to import the jetkernel module
+export READTHEDOCS='True'
+
 python make_apidoc_and_uml_graphs.py
-sphinx-build -b html ../doc build
+sphinx-build -b html ./ build

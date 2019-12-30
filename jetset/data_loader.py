@@ -21,6 +21,7 @@ from .utils import *
 from .cosmo_tools import Cosmo
 from .frame_converter import convert_nu_to_src, convert_nuFnu_to_nuLnu_src
 
+cds.enable()
 
 __all__=['get_data_set_msk','get_freq_range_msk','lin_to_log','log_to_lin','ObsData','Data']
 
@@ -49,12 +50,12 @@ class Data(object):
         if data_table is None:
             self._build_empty_table(n_rows,meta_data=meta_data)
 
+        else:
+            if import_dictionary is not None:
+                for k in import_dictionary.keys():
+                    data_table.rename_column(k, import_dictionary[k])
 
-        if import_dictionary is not None:
-            for k in import_dictionary.keys():
-                data_table.rename_column(k, import_dictionary[k])
-
-        self._table = copy.deepcopy(data_table)
+            self._table = copy.deepcopy(data_table)
 
         if meta_data is not None:
             self._table.meta = {}
@@ -62,8 +63,9 @@ class Data(object):
 
                 self.set_meta_data(k,meta_data[k])
         else:
-            for k in self._table.meta:
-                self.set_meta_data(k,meta_data[k])
+            #print('->',self._table.meta)
+            for k in self._table.meta.keys():
+                self.set_meta_data(k,self._table.meta[k])
 
         self._check_table()
         self._convert_units()
@@ -79,13 +81,11 @@ class Data(object):
         return self._table.meta
 
     @classmethod
-    def from_file(cls,data_table,format='ascii.ecsv'):
-        cls(data_table= Table.read(data_table, format=format),format=format)
-        return cls
+    def from_file(cls,data_table,format='ascii.ecsv',import_dictionary=None):
+        return cls(data_table= Table.read(data_table, format=format),import_dictionary=import_dictionary)
 
-    @classmethod
-    def save_file(cls, name, format='ascii.ecsv'):
-        cls.table.write(name=name,format=format)
+    def save_file(self, name, format='ascii.ecsv'):
+        self._table.write(name,format=format)
 
 
 
