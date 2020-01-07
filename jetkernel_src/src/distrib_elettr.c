@@ -135,6 +135,9 @@ void build_Ne(struct spettro *pt) {
     if (pt->grid_bounded_to_gamma==1){
         pt->gmax_griglia=pt->gmax;
         pt->gmin_griglia=pt->gmin;
+        //if (pt->gmin_griglia<1.0){
+        //    pt->gmin_griglia=1.0;
+       // }
     }
 
     //printf("Set array per Ne %s \n",pt->DISTR);
@@ -397,61 +400,39 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
     //integranda Disre e
     double (*pf_norm) (struct spettro *, double x);
 
-
-
     //=========================================
     // interpolate custom Ne
     //=========================================
     if (pt->TIPO_DISTR == 0)
     {
-        for (i = 0; i < pt->gamma_grid_size; i++) {
-           N[i]=N_distr_interp(pt->gamma_custom_grid_size,
-                                griglia_gamma_N_log[i],
-                                pt->gamma_e_custom,
-                                pt->Ne_custom);
-
-
-//                N[i] =log_lin_interp( griglia_gamma_N_log[i],
-//                pt->gamma_e_custom,
-//                pt->gmin,
-//                pt->gmax,
-//                pt->Ne_custom ,
-//                pt->gamma_custom_grid_size,
-//                0.0);
-
+        for (i = 0; i < pt->gamma_grid_size; i++)
+        {
+            N[i] = N_distr_interp(pt->gamma_custom_grid_size,
+                                  griglia_gamma_N_log[i],
+                                  pt->gamma_e_custom,
+                                  pt->Ne_custom);
         }
     }
+    //=========================================
+    // fill defined Ne
+    //=========================================
+    else
+    {
 
+        //Normalization
+        pt->N_0 = 1.0;
+        //if distr is e- from pp no normalization to compute
+        if (pt->Norm_distr == 1 && pt->TIPO_DISTR != -1)
+        {
+            pf_norm = &N_distr_integranda;
+            pt->N_0 = integrale_trap_log_struct(pf_norm, pt, pt->gmin, pt->gmax, 10000);
+        }
 
-
-
-    //Normalization
-    pt->N_0 = 1.0;
-    //if distr is e- from pp no normalization to compute
-    if (pt->Norm_distr == 1 && pt->TIPO_DISTR != -1 ) {
-        pf_norm = &N_distr_integranda;
-        pt->N_0 = integrale_trap_log_struct(pf_norm, pt, pt->gmin, pt->gmax, 10000);
-        for (i = 0; i < pt->gamma_grid_size; i++) {
+        for (i = 0; i < pt->gamma_grid_size; i++)
+        {
             N[i] = N_distr(pt, griglia_gamma_N_log[i]);
-
         }
     }
-
-
-//    if (pt->Norm_distr_L_e_Sync>0.0 && pt->TIPO_DISTR != -1) {
-//        pt->N=1.0;
-//        pt->N_0 = 1.0;
-//        for (i = 0; i < pt->gamma_grid_size; i++) {
-//            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
-//        }
-//        pt->Distr_e_done = 1;
-//        pt->N=pt->Norm_distr_L_e_Sync/Power_Sync_Electron(pt);
-//        for (i = 0; i < pt->gamma_grid_size; i++) {
-//
-//            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
-//        }
-//    }
-
 
     pt->Distr_e_done = 1;
 

@@ -389,19 +389,21 @@ class  PlotSED (object):
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True):
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None):
 
         try:
             #print( "a")
             x, y = model.get_model_points(log_log=True, frame = self.frame)
-        except:
+        except Exception as e:
+            #print("a",e)
             try:
-                #print("b")
-                x, y = model.SED.get_model_points(log_log=True, frame = self.frame)
-            except Exception as e:
 
-                print(model, "!!! Error has no SED instance or something wrong in get_model_points()")
-                print(e)
+                x, y = model.SED.get_model_points(log_log=True, frame = self.frame)
+
+            except Exception as e:
+                #print("b", e)
+                #print(model, "!!! Error has no SED instance or something wrong in get_model_points()")
+                #print(e)
                 return
 
         #print('->x,y',x,y)
@@ -423,6 +425,13 @@ class  PlotSED (object):
             y=y[msk]
         else:
             pass
+
+        if fit_range is not None:
+            msk1 = x < fit_range[1]
+            msk2 = x > fit_range[0]
+
+            x = x[msk1 * msk2]
+            y = y[msk1 * msk2]
 
         line, = self.sedplot.plot(x, y, line_style, label=label,color=color,linewidth=1.0)
 

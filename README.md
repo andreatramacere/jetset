@@ -32,56 +32,59 @@ If you use this code in any kind of scientific publication please cite the follo
 # Documentation
 visit: https://jetset.readthedocs.io/en/latest/
 
-#  Requirements
+
+# Install  JetSeT from Anaconda (suggested)
+ - I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
+ 
+ - create a virtual environment (not necessary): `conda create --name jetset python=3.7 ipython jupyter`
+
+- `conda activate jetset` 
+
+- `conda install -c andreatramacere jetset`
+
+# Install the JetSeT from source 
+
+##  Requirements
 The following python packages are required:
 
-          python 2.7 or >=3.6 (python 3 is suggested, python 2 should work still fine)
-          scipy
-          numpy
-          astropy
-          iminuit (https://github.com/iminuit/iminuit)
+        python 2.7 or >=3.6 (python 3 is suggested, python 2 should work still fine)
+        setuptools
+        scipy
+        numpy
+        astropy
+        matplotlib
+        swig
+        future
+        iminuit
+        corner
+        six
+        emcee
+        pyyaml
          
 
 
 A C compiler is also necessary, plus the SWIG wrapper generator.
 
 All the dependencies can be installed following the Anaconda method 
-(suggested) **OR** the pip method, as described in the following sections.
+ **OR** the pip method, as described below.
 
-
-
-# Install the JetSeT code
-
-### Download the code
+## Download the code
    - Get the source code from: 
+
      - https://gitlab.com/andreatramacere/jetset/-/archive/stable/jetset-stable.tar.gz
 
-     OR
-
-     - https://github.com/andreatramacere/jetset/archive/stable.tar.gz
-     
-    
    - Uncompress the  archive  `jetset-stable.tar.gz`
    
    - cd to  the dir `jetset-stable` 
 
-### Installation using Anaconda (suggested method)
- - I suggest to use anaconda and python3
- - https://www.anaconda.com/download/
+## Installation from source using Anaconda 
  
- 
-
-
- - ##### Install requirements 
-    
-    run on the command line:
-   # - `conda config --add channels astropy` 
+ - Install requirements, run on the command line:
     - `conda install --file requirements.txt`
 
-    if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
+        if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
    
- - ##### Install JetSeT: 
-   run on the command line: 
+ - run on the command line: 
      * `python setup.py clean`
      * `python setup.py install`
 
@@ -89,23 +92,17 @@ All the dependencies can be installed following the Anaconda method
 **run all the examples outside of the installation dir**
 
 ---------
-### Installation using PIP 
- - cd to  the dir `jetset-stable`
- - ##### Install requirements 
-    - run on the command line: `pip install -r requirements.txt `
+## Installation from source using PIP 
+ 
+ - Install requirements, run on the command line: `pip install -r requirements.txt `
     
-    if pip fails to install swig, you can try one of the following alternative [methods](swig.md)
-   
-
-- ##### Install JetSeT: 
-   run on the command line: 
+   if pip fails to install swig, you can try one of the following alternative [methods](swig.md)
+  
+  - run on the command line: 
      * `python setup.py clean`
      * `python setup.py install`
 
 ---------
-
-
-
 **run all the examples outside of the installation dir**
 
 
@@ -114,10 +111,6 @@ All the dependencies can be installed following the Anaconda method
 # jetset code repoistory
 
 The code is hosted here: 
- - https://gitlab.com/andreatramacere/jetset
- 
- OR
- 
  -  https://github.com/andreatramacere/jetset
  
 

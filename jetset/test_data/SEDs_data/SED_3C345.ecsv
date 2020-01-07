@@ -2,16 +2,17 @@
 # ---
 # datatype:
 # - {name: x, unit: Hz, datatype: float64}
-# - {name: y, unit: erg/(cm2 s) , datatype: float64}
-# - {name: dy, unit: erg/(cm2 s) ,datatype: float64}
+# - {name: y, unit: erg/s , datatype: float64}
+# - {name: dx, unit: Hz , datatype: float64}
+# - {name: dy, unit: erg/s ,datatype: float64}
 # - {name: data_set, datatype: string}
 # meta: !!omap
 # - {z: 0.593 }
-# - {restframe: obs}
-# - {data_scale: lin-lin}
+# - {restframe: src}
+# - {data_scale: log-log}
 # - {obj_name: '1642p3948,3C345'}
 # schema: astropy-2.0
-x y dy data_set
+x y dx dy data_set
 
 14.5876697758 46.0448601659 0 0.0125820003 -1
 14.4587047758 46.1042951659 0 0.0113479998 -1

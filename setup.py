@@ -125,10 +125,13 @@ _module=Extension('jetkernel/_jetkernel',
                   swig_opts=['-v',],
                   include_dirs=['jetkernel_src/include'])
 
-'jetkernel/mathkernel/*dat'
+#'jetkernel/mathkernel/*dat'
+
 with open("README.md", "r") as f:
     long_description = f.read()
+
 print(__version__)
+
 setup(name='jetset',
       version=__version__,
       author='Andrea Tramacere',
@@ -138,10 +141,11 @@ setup(name='jetset',
       description="A framework for self-consistent modeling and fitting of  astrophysical relativistic jets SEDs",
       author_email='andrea.tramacere@gmail.com',
       packages=['jetset', 'leastsqbound', 'jetkernel'],
-      package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*dat','./requirements.txt'],'jetkernel':['mathkernel/*dat']},
+      package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*ecsv','./requirements.txt'],'jetkernel':['mathkernel/*dat']},
       include_package_data = True,
       cmdclass=custom_cmdclass,
-#      requires=install_req,
+      #requires=install_req,
       ext_modules = [_module],
+      #install_requires=install_req,
       py_modules=['jetkernel/jetkernel'],
       zip_safe=False)

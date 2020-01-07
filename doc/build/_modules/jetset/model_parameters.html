@@ -37,8 +37,8 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="../../index.html"><span><img src="../../_static/logo_small_transp.png"></span>
-          JetSeT</a>
+        <a class="navbar-brand" href="../../index.html"><span><img src="../../_static/logo_small_color_neg_transparent.png"></span>
+          JetSeT doc</a>
         <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
       </div>
 
@@ -737,7 +737,64 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_par_table</span><span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">_fields</span><span class="p">,</span><span class="n">names</span><span class="o">=</span><span class="n">_names</span><span class="p">)</span>
 
+    
+    <span class="k">def</span> <span class="nf">_build_best_fit_par_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">names_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">_name</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">_best_fit_val</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">_best_fit_err_p</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">_best_fit_err_m</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">_val_start</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">_fit_range_min</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">_fit_range_max</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">_frozen</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">_fields</span><span class="o">=</span><span class="p">[</span><span class="n">_name</span><span class="p">,</span><span class="n">_best_fit_val</span><span class="p">,</span><span class="n">_best_fit_err_p</span><span class="p">,</span><span class="n">_best_fit_err_m</span><span class="p">,</span><span class="n">_val_start</span><span class="p">,</span><span class="n">_fit_range_min</span><span class="p">,</span><span class="n">_fit_range_max</span><span class="p">,</span><span class="n">_frozen</span><span class="p">]</span>
+        <span class="n">_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="s1">&#39;bestfit val&#39;</span><span class="p">,</span><span class="s1">&#39;err +&#39;</span><span class="p">,</span><span class="s1">&#39;err -&#39;</span><span class="p">,</span><span class="s1">&#39;start val&#39;</span><span class="p">,</span><span class="s1">&#39;fit range min&#39;</span><span class="p">,</span><span class="s1">&#39;fit range max&#39;</span><span class="p">,</span><span class="s1">&#39;frozen&#39;</span><span class="p">]</span>
 
+        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">:</span>
+
+            <span class="n">append</span><span class="o">=</span><span class="kc">False</span>
+
+            <span class="k">if</span> <span class="n">names_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">par</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">names_list</span><span class="p">:</span>
+                    <span class="n">append</span><span class="o">=</span><span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">append</span><span class="p">:</span>
+                <span class="n">_name</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">par</span><span class="o">.</span><span class="n">frozen</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">best_fit_val</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">best_fit_err_p</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">best_fit_err_m</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">best_fit_val</span><span class="o">=</span><span class="n">par</span><span class="o">.</span><span class="n">best_fit_val</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="s1">&#39;err_p&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="s1">&#39;err_m&#39;</span><span class="p">):</span>
+                        <span class="n">best_fit_err_m</span> <span class="o">=</span>  <span class="n">par</span><span class="o">.</span><span class="n">err_m</span>
+                        <span class="n">best_fit_err_p</span> <span class="o">=</span>  <span class="n">par</span><span class="o">.</span><span class="n">err_p</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">best_fit_err_m</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">if</span> <span class="n">par</span><span class="o">.</span><span class="n">best_fit_err</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">best_fit_err_p</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">best_fit_err_p</span> <span class="o">=</span>  <span class="n">par</span><span class="o">.</span><span class="n">best_fit_err</span>
+
+                <span class="n">_val_start</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">val_start</span><span class="p">)</span>
+                <span class="n">_best_fit_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best_fit_val</span><span class="p">)</span>
+                <span class="n">_best_fit_err_p</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best_fit_err_p</span><span class="p">)</span>
+                <span class="n">_best_fit_err_m</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best_fit_err_m</span><span class="p">)</span>
+
+                <span class="n">_fit_range_min</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">fit_range_min</span><span class="p">)</span>
+                <span class="n">_fit_range_max</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">fit_range_max</span><span class="p">)</span>
+
+                <span class="n">_frozen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">frozen</span><span class="p">)</span>
+
+        <span class="c1">#print(len(_fields),len(_names))</span>
+        <span class="c1">#for ID,n in enumerate(_names):</span>
+        <span class="c1">#    print(ID,_fields[ID],n)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_best_fit_par_table</span><span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">_fields</span><span class="p">,</span><span class="n">names</span><span class="o">=</span><span class="n">_names</span><span class="p">)</span>
+    
 
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -816,10 +873,9 @@
     
     
 <div class="viewcode-block" id="ModelParameterArray.show_best_fit_pars"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.show_best_fit_pars">[docs]</a>    <span class="k">def</span> <span class="nf">show_best_fit_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">getstring</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">pass</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        shows the best-fit information for all the items in the :py:attr:`par_array`</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        &quot;&quot;&quot;</span>
         
         <span class="c1">#text=[]</span>
         <span class="c1">#text.append(&quot;-------------------------------------------------------------------------------------------------------------------&quot;)</span>
@@ -839,8 +895,12 @@
         <span class="c1">#else:</span>
         <span class="c1">#    for line in text:</span>
         <span class="c1">#        print (line)</span>
-        
-        
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_best_fit_par_table</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">getstring</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_best_fit_par_table</span><span class="o">.</span><span class="n">pformat_all</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_best_fit_par_table</span><span class="o">.</span><span class="n">pprint_all</span><span class="p">()</span></div>
     
 <div class="viewcode-block" id="ModelParameterArray.set"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par_name</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">keywords</span><span class="p">):</span>
         

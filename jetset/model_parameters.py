@@ -517,7 +517,64 @@ class ModelParameterArray(object):
 
         self._par_table= Table(_fields,names=_names)
 
+    
+    def _build_best_fit_par_table(self,names_list=None):
+        _name=[]
+        _best_fit_val=[]
+        _best_fit_err_p=[]
+        _best_fit_err_m=[]
+        _val_start=[]
+        _fit_range_min=[]
+        _fit_range_max=[]
+        _frozen=[]
+        _fields=[_name,_best_fit_val,_best_fit_err_p,_best_fit_err_m,_val_start,_fit_range_min,_fit_range_max,_frozen]
+        _names=['name','bestfit val','err +','err -','start val','fit range min','fit range max','frozen']
 
+        for par in self.par_array:
+
+            append=False
+
+            if names_list is not None:
+                if par.name in names_list:
+                    append=True
+            else:
+                append = True
+
+            if append:
+                _name.append(par.name)
+
+                if par.frozen == True:
+                    best_fit_val = None
+                    best_fit_err_p = None
+                    best_fit_err_m = None
+                else:
+                    best_fit_val=par.best_fit_val
+                    if hasattr(par, 'err_p') and hasattr(par, 'err_m'):
+                        best_fit_err_m =  par.err_m
+                        best_fit_err_p =  par.err_p
+                    else:
+                        best_fit_err_m = None
+                        if par.best_fit_err is None:
+                            best_fit_err_p = None
+                        else:
+                            best_fit_err_p =  par.best_fit_err
+
+                _val_start.append(par.val_start)
+                _best_fit_val.append(best_fit_val)
+                _best_fit_err_p.append(best_fit_err_p)
+                _best_fit_err_m.append(best_fit_err_m)
+
+                _fit_range_min.append(par.fit_range_min)
+                _fit_range_max.append(par.fit_range_max)
+
+                _frozen.append(par.frozen)
+
+        #print(len(_fields),len(_names))
+        #for ID,n in enumerate(_names):
+        #    print(ID,_fields[ID],n)
+
+        self._best_fit_par_table= Table(_fields,names=_names)
+    
 
 
     def __setattr__(self, name, value):
@@ -596,7 +653,6 @@ class ModelParameterArray(object):
     
     
     def show_best_fit_pars(self,getstring=False):
-        pass
         """
         shows the best-fit information for all the items in the :py:attr:`par_array`
         """
@@ -619,8 +675,12 @@ class ModelParameterArray(object):
         #else:
         #    for line in text:
         #        print (line)
-        
-        
+
+        self._build_best_fit_par_table()
+        if getstring == True:
+            return self._best_fit_par_table.pformat_all()
+        else:
+            self._best_fit_par_table.pprint_all()
     
     def set(self,par_name,*args, **keywords):
         

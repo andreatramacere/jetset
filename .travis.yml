@@ -14,7 +14,7 @@ services:
   - docker
 
 os:
-  #- linux
+  - linux
   - osx
 
 

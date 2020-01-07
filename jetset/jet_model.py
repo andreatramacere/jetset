@@ -795,7 +795,7 @@ class JetSpecComponent(object):
     def state(self, val):
         if self._state_dict!={}:
             if val not in self._state_dict.keys():
-                raise RuntimeError('val', val, 'not in allowed', self._state.keys())
+                raise RuntimeError('val', val, 'not in allowed', self._state_dict.keys())
             self._state = val
             if self._var_name is not None:
                 setattr(self._blob_object, self._var_name, self._state_dict[val])
@@ -1172,11 +1172,11 @@ class Jet(Model):
         jet.set_emitting_region(str(_model['beaming_expr']))
         jet.set_electron_distribution(str(_model['electron_distribution']))
         _par_dict=_model['pars']
-        jet.show_pars()
+
         for k in _par_dict.keys():
             #print ('set', k,_par_dict[k])
             jet.set_par(par_name=str(k),val=_par_dict[str(k)])
-
+        jet.show_pars()
         jet.eval()
         return jet
 

@@ -148,22 +148,26 @@ class FitModel(Model):
 
         for mc in self.components:
             comp_label = mc.name
-            #print ('comp_label',comp_label)
-            plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim)
+            #print ('comp_label',comp_label,mc.SED)
+            try:
+                plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim)
+            except Exception as e:
+                #print('name',e)
+                pass
 
             if hasattr(mc,'spectral_components_list'):
                 for c in mc.spectral_components_list:
 
                     comp_label = c.name
                     if comp_label!='Sum':
-                        #print('comp_label', comp_label)
+                        #print('comp comp_label', comp_label,c.SED)
                         plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label, flim=self.flux_plot_lim)
 
         line_style = '-'
         #print('comp_label', self.name)
-        plot_obj.add_model_plot(self.SED, line_style=line_style, label=self.name, flim=self.flux_plot_lim)
+        plot_obj.add_model_plot(self.SED, line_style=line_style, label=self.name, flim=self.flux_plot_lim,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]))
 
-        plot_obj.add_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min,self.nu_max]))
+        plot_obj.add_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]))
         return plot_obj
 
 
@@ -355,8 +359,8 @@ class FitModel(Model):
         if fill_SED==True:
  
             self.SED.fill(nu=lin_nu,nuFnu=model)
-            
-
+            #TODO ADD cosmo properly to all components
+            #self.SED.fill_nuLnu(z=self.jet_obj.get_par_by_type('redshift').val, dl=self.jet_obj.get_DL_cm())
             
         if get_model==True:
             

@@ -29,10 +29,18 @@ __all__=['get_data_set_msk','get_freq_range_msk','lin_to_log','log_to_lin','ObsD
 class Data(object):
 
     def __init__(self,
-                 n_rows=None,
                  data_table=None,
+                 n_rows=None,
                  meta_data=None,
-                 import_dictionary=None):
+                 import_dictionary=None,
+                 cosmo=None):
+
+        if cosmo is None:
+
+            self.cosmo = Cosmo()
+        else:
+
+            self.cosmo = cosmo
 
         self._necessary_meta = ['data_scale', 'z', 'restframe']
         self._allowed_meta={}
@@ -44,8 +52,12 @@ class Data(object):
 
         self._names = ['x', 'dx', 'y', 'dy', 'T_start', 'T_stop', 'UL', 'data_set']
         self._dt = ('f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'bool', 'S16')
+
         self._units = [u.Hz, u.Hz,(u.erg / (u.cm ** 2 * u.s)) ,(u.erg / (u.cm ** 2 * u.s)), cds.MJD, cds.MJD, None, None]
 
+        #print('h', type(data_table))
+        if isinstance(data_table,str):
+            data_table = Table.read(data_table, guess=True)
 
         if data_table is None:
             self._build_empty_table(n_rows,meta_data=meta_data)
@@ -68,6 +80,7 @@ class Data(object):
                 self.set_meta_data(k,self._table.meta[k])
 
         self._check_table()
+        self._check_frame_and_scale()
         self._convert_units()
 
 
@@ -81,15 +94,36 @@ class Data(object):
         return self._table.meta
 
     @classmethod
-    def from_file(cls,data_table,format='ascii.ecsv',import_dictionary=None):
-        return cls(data_table= Table.read(data_table, format=format),import_dictionary=import_dictionary)
+    def from_file(cls,data_table,format='ascii.ecsv',import_dictionary=None,guess=None):
+        return cls(data_table= Table.read(data_table, format=format,guess=guess),import_dictionary=import_dictionary)
 
     def save_file(self, name, format='ascii.ecsv'):
         self._table.write(name,format=format)
 
 
 
+    def _check_frame_and_scale(self):
+        if self.metadata['data_scale'] == 'log-log':
+            self._table['x'], self._table['dx'] = log_to_lin(self._table['x'], self._table['dx'])
+            self._table['y'], self._table['dy'] = log_to_lin(self._table['y'], self._table['dy'])
 
+            self.metadata['data_scale']='lin-lin'
+
+        if self.metadata['restframe'] == 'src':
+            if self._table['y'].unit.is_equivalent('erg/s') and  self._table['dy'].unit.is_equivalent('erg/s'):
+                pass
+            else:
+                raise  RuntimeError('when importing src frame table, units for luminosities have to be in erg/s')
+
+
+
+            _c=self.cosmo.get_DL_cm(self.metadata['z'])
+            _c=1.0/(4*np.pi*_c*_c)
+            self._table['y']  = self._table['y'] * _c
+            self._table['dy'] = self._table['dy']  * _c
+            self._table['y'].unit = 'erg/(cm2 s)'
+            self._table['dy'].unit = 'erg/(cm2 s)'
+            self.metadata['restframe'] = 'obs'
 
     def _check_table(self):
 
@@ -262,7 +296,7 @@ class ObsData(object):
     """
     
     def __init__(self,
-                 cosmo,
+                 cosmo=None,
                  data_table=None,
                  dupl_filter=False,
                  data_set_filter=None,
@@ -291,16 +325,18 @@ class ObsData(object):
             self.data_set_filter=['No']
 
         if cosmo is None:
+            if hasattr(data_table,'cosmo'):
+               self.cosmo=data_table.cosmo
+            else:
 
-            self.cosmo=Cosmo()
-        else:
-
-            self.cosmo=cosmo
+                self.cosmo=cosmo
 
         self.UL_value=UL_value
         self.UL_filtering=UL_filtering
         self.zero_error_replacment=0.2
         self.facke_error=0.2
+
+
 
         if  hasattr(data_table,'table'):
             _t=data_table.table
@@ -308,6 +344,7 @@ class ObsData(object):
             _t=data_table
 
         self._input_data_table=None
+
         if isinstance(_t,Table):
             self._input_data_table = _t
         else:

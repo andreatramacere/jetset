@@ -169,7 +169,7 @@ class SamplerOutput(object):
             f = corner.corner(self.samples, labels=self.labels)
         return f
 
-    def get_par(self,p=None):
+    def get_par(self,p):
         if type(p) == int:
             pass
 
@@ -182,30 +182,18 @@ class SamplerOutput(object):
         if p > len(self.labels):
             raise RuntimeError('label id larger then labels size')
 
-        return self.samples[:, p].flatten()
+        return self.samples[:, p].flatten(),p
 
-    def plot_par(self,p=None,nbins=20,log_plot=False):
-        #if type(p)==int:
-        #    pass
-
-        #else:
-        #    try:
-        #        p=self.labels.index(p)
-        #    except:
-        #        raise RuntimeError('paramter p', p, 'not found')
-
-        #if p>len(self.labels):
-        #    raise RuntimeError('label id larger then labels size')
+    def plot_par(self,p,nbins=20,log_plot=False):
 
 
-        _d = self.get_par(p)
+        _d,idx = self.get_par(p)
 
-
-        n = self.labels[p]
+        n = self.labels[idx]
 
         if self.labels_units is not None:
-            if self.labels_units[p] is not None:
-                n += ' (%s)' % self.labels_units[p]
+            if self.labels_units[idx] is not None:
+                n += ' (%s)' % self.labels_units[idx]
 
         f = plt.figure()
         ax=f.add_subplot(111)

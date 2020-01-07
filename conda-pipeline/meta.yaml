@@ -1,10 +1,10 @@
 package:
   name: jetset
-  version: "1.0.0"
+  version: "1.1.0"
 
 source:
   git_url: https://github.com/andreatramacere/jetset.git
-  git_rev: py23
+  git_rev: develop
 
 
 build:
@@ -15,42 +15,27 @@ requirements:
 
   build:
     - swig
-    - python {{PY_VER}}*
+    - python
      
 #
-#  run:
-#    - python
-#    - setuptools
-#    - scipy
-#    - numpy
-#    - astropy
-#    - matplotlib
-#    - future
-#    - iminuit
-#    - corner
-#    - six
-#    - emcee
-#
+  run:
+  - scipy
+  - numpy
+  - astropy
+  - matplotlib
+  - future
+  - iminuit
+  - corner
+  - six
+  - emcee
+  - pyyaml
 #
 #test:
-#  # Python imports
-#  imports:
-#    - MDAnalysis
-#    - MDAnalysis.analysis
-#    - MDAnalysis.analysis.hbonds
-#    - MDAnalysis.coordinates
-#    - MDAnalysis.coordinates.pdb
-#    - MDAnalysis.core
-#    - MDAnalysis.lib
-#    - MDAnalysis.lib.formats
-#    - MDAnalysis.migration
-#    - MDAnalysis.migration.fixes
-#    - MDAnalysis.selections
-#    - MDAnalysis.tests
-#    - MDAnalysis.topology
-#    - MDAnalysis.topology.tpr
-#    - MDAnalysis.visualization
+#    imports:
+#        - jetset
+#        - jetset.jetmodel
 #
+
 #  # commands:
 #    # You can put test commands to be run here.  Use this to test that the
 #    # entry points work.

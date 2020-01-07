@@ -1,4 +1,4 @@
-.. JetSeT documentation master file
+.. install file
 
 Installation
 ============

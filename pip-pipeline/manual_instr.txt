@@ -1,0 +1,13 @@
+https://packaging.python.org/tutorials/packaging-projects/
+
+#build
+python setup.py sdist bdist_wheel
+
+#test deploy to twine
+python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+#test pip install 
+python -m pip install --index-url https://test.pypi.org/simple/ --no-deps jetset-andreatramacere
+
+#test deploy to Pypi
+python -m twine upload  dist/*

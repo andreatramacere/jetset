@@ -553,7 +553,7 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
 
     //============================================================
     //0.75 fattore di correzione di GOULD
-        //has been moved to spetto_sincrotrone.c
+    //has been moved to spetto_sincrotrone.c
 
     //0.5/3.0 viene dall'int simpson in gamma
     //lo 0.5 viene dalla regola del trapezio dell'integrale in nu

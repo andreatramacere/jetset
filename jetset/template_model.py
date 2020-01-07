@@ -105,7 +105,7 @@ class Template(Model):
     
         self.parameters = ModelParameterArray()
       
-        self.cosmo_eval=cosmo
+        self.cosmo=cosmo
 
         self.DL=self.cosmo.get_DL_cm(self.z)
         self.flux_plot_lim=1E-30
@@ -196,7 +196,7 @@ class Template(Model):
     
     def set_BBB_pars(self,fit_model):
         
-        self.DL=self.cosmo_eval.DL(self.z)
+        self.DL=self.cosmo.get_DL_cm(self.z)
         
         
         nuFnu_p,nuFnu_p_err=log_to_lin(log_val=fit_model.parameters.get('nuFnu_p_BBB','best_fit_val'),log_err=fit_model.parameters.get('nuFnu_p_BBB','best_fit_err'))
@@ -215,7 +215,7 @@ class Template(Model):
         
     def set_host_pars(self,fit_model):
         
-        self.DL=self.cosmo_eval.DL(self.z)
+        self.DL=self.cosmo.get_DL_cm(self.z)
         
         
         nuFnu_p,nuFnu_p_err=log_to_lin(log_val=fit_model.parameters.get('nuFnu_p_host','best_fit_val'),log_err=fit_model.parameters.get('nuFnu_p_host','best_fit_err'))

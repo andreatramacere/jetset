@@ -30,17 +30,15 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd==False:  # only import and set the  if we're building docs locally
 
     import sphinx_bootstrap_theme
-    #import sphinx_rtd_theme
 
-    theme='basicstrap'
+    theme='bootstrap'
     #theme='sphinx_rtd_theme'
 
 
 
 else:
     theme = 'bootstrap'
-    #theme = 'basicstrap'
-    #theme='sphinx_rtd_theme'
+
 
 #import jetset
 #print( jetset.__file__)
@@ -157,7 +155,7 @@ pygments_style = 'sphinx'
 
 
 html_static_path = ['_static']
-html_logo = "_static/logo_small_transp_black.png"
+html_logo = "_static/logo_small_color_transparent.png"
 
 
 
@@ -165,7 +163,7 @@ html_logo = "_static/logo_small_transp_black.png"
 
 
 if theme=='sphinx_rtd_theme':
-    html_logo = "_static/logo_small_transp.png"
+    html_logo = "_static/logo_small_color_transparent.png"
     html_theme_options = {
         #'canonical_url': '',
         #'analytics_id': 'UA-XXXXXXX-1',  # Provided by Google in your dashboard
@@ -193,15 +191,16 @@ if theme=='bootstrap':
 
     html_sidebars = {'**': ['my_side_bar.html', 'sourcelink.html']}
 
-    html_logo = "_static/logo_small_transp.png"
+    html_logo = "_static/logo_small_color_neg_transparent.png"
     html_theme = 'bootstrap'
     if not on_rtd:
         html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
-    html_static_path = ['_static']
+    else:
+        html_static_path = ['_static']
 
     html_theme_options = {
         # Navigation bar title. (Default: ``project`` value)
-        'navbar_title': "JetSeT",
+        'navbar_title': "JetSeT doc",
 
         # Tab name for entire site. (Default: "Site")
         'navbar_site_name': "JetSeT",
@@ -271,10 +270,7 @@ if theme=='bootstrap':
     }
 
 
-if theme=='basicstrap':
-    html_theme_options = {
-        'nosidebar': False,
-    }
+
 
 
 
