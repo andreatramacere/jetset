@@ -113,7 +113,7 @@ f = open("./requirements.txt",'r')
 req=f.readlines()
 f.close()
 
-if  os.getenv('PIP_BUILD')=='TRUE':
+if  os.getenv('USE_PIP')=='TRUE':
     install_req=req
 else:
     install_req=None

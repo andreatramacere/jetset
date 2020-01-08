@@ -39,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html"><span><img src="../../_static/logo_small_color_neg_transparent.png"></span>
           JetSeT doc</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0a3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -56,10 +56,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-the-jetset-from-source">Install the JetSeT from source</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
@@ -147,10 +145,8 @@
 <ul class="globaltoc"
 ><ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-the-jetset-from-source">Install the JetSeT from source</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
@@ -330,14 +326,22 @@
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Fit report&quot;</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Model: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">pars_rep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">(</span><span class="n">getstring</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">pars_rep</span><span class="p">:</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-        
+        <span class="c1">#pars_rep=self.parameters.show_pars(getstring=True)</span>
+        <span class="c1">#for string in pars_rep:</span>
+        <span class="c1">#    out.append(string)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">_build_par_table</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_table</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">_par_table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">_build_best_fit_par_table</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bestfit_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">_best_fit_par_table</span>
+        <span class="k">for</span> <span class="n">_l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_table</span><span class="o">.</span><span class="n">pformat_all</span><span class="p">():</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_l</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;converged=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;calls=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">calls</span><span class="p">)</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mesg=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">mesg</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;mesg=&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">mesg</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesg</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;dof=</span><span class="si">%d</span><span class="s2">&quot;</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">dof</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;chisq=</span><span class="si">%f</span><span class="s2">, chisq/red=</span><span class="si">%f</span><span class="s2"> null hypothesis sig=</span><span class="si">%f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chisq</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">chisq_red</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">null_hyp_sig</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dof_no_UL</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -349,10 +353,11 @@
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;best fit pars&quot;</span><span class="p">)</span>
-        
-        <span class="n">pars_rep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_best_fit_pars</span><span class="p">(</span><span class="n">getstring</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">pars_rep</span><span class="p">:</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bestfit_table</span><span class="o">.</span><span class="n">pformat_all</span><span class="p">():</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_l</span><span class="p">)</span>
+        <span class="c1">#pars_rep=self.parameters.show_best_fit_pars(getstring=True)</span>
+        <span class="c1">#for string in pars_rep:</span>
+        <span class="c1">#    out.append(string)</span>
             
 
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;**************************************************************************************************&quot;</span><span class="p">)</span>    
@@ -368,8 +373,11 @@
 <div class="viewcode-block" id="FitResults.show_report"><a class="viewcode-back" href="../../api/jetset.minimizer.FitResults.html#jetset.minimizer.FitResults.show_report">[docs]</a>    <span class="k">def</span> <span class="nf">show_report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_report</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_report</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_report</span><span class="p">:</span>
-        
-            <span class="nb">print</span> <span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="ne">RuntimeWarning</span><span class="p">,</span><span class="s1">&#39;problem in formatting text for report&#39;</span><span class="p">,</span><span class="n">e</span><span class="p">)</span></div>
+
     
 <div class="viewcode-block" id="FitResults.save_report"><a class="viewcode-back" href="../../api/jetset.minimizer.FitResults.html#jetset.minimizer.FitResults.save_report">[docs]</a>    <span class="k">def</span> <span class="nf">save_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">wd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -480,6 +488,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;filtering data in fit range = [</span><span class="si">%e</span><span class="s2">,</span><span class="si">%e</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nu_fit_start</span><span class="p">,</span> <span class="n">nu_fit_stop</span><span class="p">))</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;data length&quot;</span><span class="p">,</span> <span class="n">nu_fit</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 
+
         <span class="c1"># print nu_fit,len(nu_fit)</span>
 
         <span class="c1"># set starting value of parameters</span>
@@ -507,7 +516,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;initial pars: &quot;</span><span class="p">)</span>
 
             <span class="n">fit_Model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
-
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----- &quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pinit</span><span class="o">=</span><span class="n">pinit</span>
@@ -519,6 +528,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_Model</span><span class="o">=</span><span class="n">fit_Model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loglog</span><span class="o">=</span><span class="n">loglog</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">UL</span><span class="o">=</span><span class="n">UL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_Model</span><span class="o">.</span><span class="n">nu_min_fit</span> <span class="o">=</span> <span class="n">nu_fit_start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_Model</span><span class="o">.</span><span class="n">nu_max_fit</span> <span class="o">=</span> <span class="n">nu_fit_stop</span>
+        <span class="c1">#print(&#39;--&gt;nu_fit_start A %e&#39; % nu_fit_start)</span>
+        <span class="c1">#print(&#39;--&gt;nu_fit_start B %e&#39; % self.fit_Model.nu_min_fit)</span>
 
 <div class="viewcode-block" id="ModelMinimizer.fit"><a class="viewcode-back" href="../../api/jetset.minimizer.ModelMinimizer.html#jetset.minimizer.ModelMinimizer.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fit_Model</span><span class="p">,</span>
             <span class="n">sed_data</span><span class="p">,</span>
@@ -535,6 +548,7 @@
             <span class="n">skip_minimizer</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="o">=</span><span class="n">silent</span>
+        <span class="c1">#print(&#39;--&gt;nu_fit_start&#39;, nu_fit_start)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_fit</span><span class="p">(</span> <span class="n">fit_Model</span><span class="p">,</span> <span class="n">sed_data</span><span class="p">,</span> <span class="n">nu_fit_start</span><span class="p">,</span> <span class="n">nu_fit_stop</span><span class="p">,</span> <span class="n">fitname</span><span class="o">=</span><span class="n">fitname</span><span class="p">,</span> <span class="n">fit_workplace</span><span class="o">=</span><span class="n">fit_workplace</span><span class="p">,</span>
                      <span class="n">loglog</span><span class="o">=</span><span class="n">loglog</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="n">silent</span><span class="p">,</span> <span class="n">get_conf_int</span><span class="o">=</span><span class="n">get_conf_int</span><span class="p">,</span> <span class="n">use_facke_err</span><span class="o">=</span><span class="n">use_facke_err</span><span class="p">,</span><span class="n">use_UL</span><span class="o">=</span><span class="n">use_UL</span><span class="p">)</span>
@@ -545,6 +559,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">pass</span>
 
+        <span class="c1">#print(&#39;--&gt;nu_fit_start&#39;, nu_fit_start)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fit_results</span><span class="p">(</span><span class="n">fit_Model</span><span class="p">,</span><span class="n">nu_fit_start</span><span class="p">,</span><span class="n">nu_fit_stop</span><span class="p">,</span><span class="n">fitname</span><span class="p">,</span><span class="n">loglog</span><span class="o">=</span><span class="n">loglog</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="n">silent</span><span class="p">)</span></div>
 
@@ -568,6 +583,10 @@
 
         <span class="k">if</span> <span class="n">silent</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">best_fit</span><span class="o">.</span><span class="n">show_report</span><span class="p">()</span>
+
+        <span class="c1">#_nu1=fit_Model.nu_min</span>
+        <span class="c1">#_nu2=fit_Model.nu_max</span>
+        <span class="c1">#print(&#39;--&gt;nu_fit_start&#39;, nu_fit_start)</span>
 
         <span class="n">fit_Model</span><span class="o">.</span><span class="n">set_nu_grid</span><span class="p">(</span><span class="n">nu_min</span><span class="o">=</span><span class="n">nu_fit_start</span><span class="p">,</span> <span class="n">nu_max</span><span class="o">=</span><span class="n">nu_fit_stop</span><span class="p">)</span>
         <span class="n">fit_Model</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">fill_SED</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">loglog</span><span class="o">=</span><span class="n">loglog</span><span class="p">,</span> <span class="n">phys_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -595,7 +614,10 @@
         <span class="k">if</span> <span class="n">silent</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">section_separator</span><span class="p">)</span>
 
+        <span class="c1">#fit_Model.set_nu_grid(nu_min=_nu1, nu_max=_nu2)</span>
         <span class="n">fit_Model</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">fill_SED</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1">#print(&#39;--&gt;nu_fit_start bf A%e&#39;%nu_fit_start)</span>
+        <span class="c1">#print(&#39;--&gt;nu_fit_start bf B%e&#39;%self.fit_Model.nu_min_fit)</span>
         <span class="k">return</span> <span class="n">best_fit</span></div>
 
 <div class="viewcode-block" id="ModelMinimizer.reset_to_best_fit"><a class="viewcode-back" href="../../api/jetset.minimizer.ModelMinimizer.html#jetset.minimizer.ModelMinimizer.reset_to_best_fit">[docs]</a>    <span class="k">def</span> <span class="nf">reset_to_best_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -836,9 +858,8 @@
         <span class="k">if</span> <span class="n">max_ev</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">max_ev</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
             <span class="n">max_ev</span> <span class="o">=</span><span class="mi">10000</span>
 
-        <span class="n">fmin</span><span class="p">,</span> <span class="n">param</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">minuit_fun</span><span class="o">.</span><span class="n">migrad</span><span class="p">(</span><span class="n">ncall</span><span class="o">=</span><span class="n">max_ev</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">minuit_fun</span><span class="o">.</span><span class="n">migrad</span><span class="p">(</span><span class="n">ncall</span><span class="o">=</span><span class="n">max_ev</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pout</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">minuit_fun</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">minuit_fun</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mesg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">_set_fit_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">minuit_fun</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">minuit_fun</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
@@ -1080,6 +1101,7 @@
 <div class="viewcode-block" id="fit_SED"><a class="viewcode-back" href="../../api/jetset.minimizer.fit_SED.html#jetset.minimizer.fit_SED">[docs]</a><span class="k">def</span> <span class="nf">fit_SED</span><span class="p">(</span><span class="n">fit_Model</span><span class="p">,</span> <span class="n">sed_data</span><span class="p">,</span> <span class="n">nu_fit_start</span><span class="p">,</span> <span class="n">nu_fit_stop</span><span class="p">,</span> <span class="n">fitname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fit_workplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loglog</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">get_conf_int</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_ev</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">use_facke_err</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">minimizer</span><span class="o">=</span><span class="s1">&#39;lsb&#39;</span><span class="p">,</span> <span class="n">use_UL</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="n">mm</span> <span class="o">=</span> <span class="n">ModelMinimizer</span><span class="p">(</span><span class="n">minimizer</span><span class="p">)</span>
+    <span class="c1">#print(&#39;--&gt;nu_fit_start&#39;,nu_fit_start)</span>
     <span class="k">return</span> <span class="n">mm</span><span class="p">,</span><span class="n">mm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">fit_Model</span><span class="p">,</span>
                   <span class="n">sed_data</span><span class="p">,</span>
                   <span class="n">nu_fit_start</span><span class="p">,</span>

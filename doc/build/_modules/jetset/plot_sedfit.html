@@ -39,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html"><span><img src="../../_static/logo_small_color_neg_transparent.png"></span>
           JetSeT doc</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0a3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -56,10 +56,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-the-jetset-from-source">Install the JetSeT from source</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
@@ -147,10 +145,8 @@
 <ul class="globaltoc"
 ><ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-the-jetset-from-source">Install the JetSeT from source</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
@@ -609,19 +605,21 @@
 
 
 
-<div class="viewcode-block" id="PlotSED.add_model_plot"><a class="viewcode-back" href="../../api/jetset.plot_sedfit.PlotSED.html#jetset.plot_sedfit.PlotSED.add_model_plot">[docs]</a>    <span class="k">def</span> <span class="nf">add_model_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line_style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">auto_label</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="PlotSED.add_model_plot"><a class="viewcode-back" href="../../api/jetset.plot_sedfit.PlotSED.html#jetset.plot_sedfit.PlotSED.add_model_plot">[docs]</a>    <span class="k">def</span> <span class="nf">add_model_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line_style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">auto_label</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">fit_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1">#print( &quot;a&quot;)</span>
             <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_model_points</span><span class="p">(</span><span class="n">log_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1">#print(&quot;a&quot;,e)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="c1">#print(&quot;b&quot;)</span>
-                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">get_model_points</span><span class="p">(</span><span class="n">log_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;!!! Error has no SED instance or something wrong in get_model_points()&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">get_model_points</span><span class="p">(</span><span class="n">log_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1">#print(&quot;b&quot;, e)</span>
+                <span class="c1">#print(model, &quot;!!! Error has no SED instance or something wrong in get_model_points()&quot;)</span>
+                <span class="c1">#print(e)</span>
                 <span class="k">return</span>
 
         <span class="c1">#print(&#39;-&gt;x,y&#39;,x,y)</span>
@@ -643,6 +641,13 @@
             <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">[</span><span class="n">msk</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">fit_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msk1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">fit_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">msk2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">fit_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">msk1</span> <span class="o">*</span> <span class="n">msk2</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">msk1</span> <span class="o">*</span> <span class="n">msk2</span><span class="p">]</span>
 
         <span class="n">line</span><span class="p">,</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sedplot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">line_style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 

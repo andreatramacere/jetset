@@ -1,0 +1,50 @@
+http://www.wgilpin.com/howto/howto_conda.html
+https://docs.conda.io/projects/conda-build/en/latest/user-guide/tutorials/build-pkgs.html
+https://docs.anaconda.com/anaconda-cloud/user-guide/getting-started/#cloud-getting-started-build-upload
+http://mlg.eng.cam.ac.uk/hoffmanm/blog/2016-02-25-conda-build/
+
+cd /Users/orion/astro/Programmi/Projects/Active/JetSeT/JetSeT_CICD/LINUX/CONDA
+docker run -it --rm -v $PWD:/workdir -w /workdir  miniconda-jetset bash
+
+#already installde in the miniconda_jetset image
+#conda update conda
+#conda install anaconda-client conda-build
+#apt-get update
+#apt-get install -y swig gcc
+
+#set pip_build envvar
+export USE_PIP='FALSE'
+
+#building
+cd integration
+git clone https://github.com/andreatramacere/jetset.git
+cd jetset
+git checkout develop
+git pull origin develop
+python setup.py clean
+cd conda-pipeline
+conda-build . --output
+(conda build .  --output -c defaults -c astropy  #for linux)
+
+#testing
+cd ../../../test/
+conda create --name jetset python=3.7 ipython
+conda activate jetset
+conda install --file ../integration/jetset/requirements.txt
+(conda install   -c astropy --file ../integration/jetset/requirements.txt #for linux)
+conda install --offline /path/produced/by/conda-build
+run test
+conda deactivate
+conda env remove --name jetset
+
+
+
+#deploy
+anaconda login
+anaconda upload /path/produced/by/conda-build
+
+#test after deploy
+conda install -c andreatramacere jetset
+(conda install -c andreatramacere -c astropy jetset #for linux)
+
+

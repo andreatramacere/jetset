@@ -41,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="index.html"><span><img src="_static/logo_small_color_neg_transparent.png"></span>
           JetSeT doc</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0a3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -58,10 +58,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#download-the-jetset-code">Download the JeTseT code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-using-pip">Installation using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-the-jetset-from-source">Install the JetSeT from source</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="new_release.html">what's new in jetset 1.1.0</a></li>
@@ -114,10 +112,14 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
+<li><a class="reference internal" href="#install-the-jetset-from-source">Install the JetSeT from source</a><ul>
+<li><a class="reference internal" href="#download-the-code">Download the code</a></li>
+<li><a class="reference internal" href="#installation-from-source-using-anaconda">Installation from source using Anaconda</a></li>
+<li><a class="reference internal" href="#installation-from-source-using-pip">Installation from source using PIP</a></li>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
-<li><a class="reference internal" href="#download-the-jetset-code">Download the JeTseT code</a></li>
-<li><a class="reference internal" href="#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
-<li><a class="reference internal" href="#installation-using-pip">Installation using PIP</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -170,10 +172,8 @@
 <ul class="globaltoc"
 ><ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#download-the-jetset-code">Download the JeTseT code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-using-pip">Installation using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-the-jetset-from-source">Install the JetSeT from source</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="new_release.html">what's new in jetset 1.1.0</a></li>
@@ -228,10 +228,14 @@
     
       <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#download-the-jetset-code">Download the JeTseT code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-using-pip">Installation using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-the-jetset-from-source">Install the JetSeT from source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#download-the-code">Download the code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation-from-source-using-anaconda">Installation from source using Anaconda</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation-from-source-using-pip">Installation from source using PIP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#requirements">Requirements</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="new_release.html">what's new in jetset 1.1.0</a></li>
@@ -252,11 +256,86 @@
       
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
-<p>The following python packages are required:</p>
+<div class="section" id="install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">
+<h2>Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)<a class="headerlink" href="#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx" title="Permalink to this headline">¶</a></h2>
+<p>I suggest to use anaconda and python3 (<a class="reference external" href="https://www.anaconda.com/download/">https://www.anaconda.com/download/</a>)</p>
 <ul class="simple">
-<li><p>python 2.7 or &gt;=3.6 (python 3 is suggested, python 2 should work still fine but it is not supported anymore)</p></li>
+<li><p>create a virtual environment (not necessary, but suggested):</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create --name jetset <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7 ipython jupyter
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda activate jetset
+</pre></div>
+</div>
+<ul>
+<li><p>install the code</p>
+<ul>
+<li><p>on linux:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c andreatramacere -c astropy jetset
+</pre></div>
+</div>
+</li>
+<li><p>on Mac:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c andreatramacere  jetset
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="install-the-jetset-from-source">
+<h2>Install the JetSeT from source<a class="headerlink" href="#install-the-jetset-from-source" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="download-the-code">
+<h3>Download the code<a class="headerlink" href="#download-the-code" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Get the source code from: <a class="reference external" href="https://github.com/andreatramacere/jetset/archive/stable.tar.gz">https://github.com/andreatramacere/jetset/archive/stable.tar.gz</a></p></li>
+<li><p>Uncompress the  archive  <cite>jetset-stable.tar.gz</cite></p></li>
+<li><p>cd to  the dir <cite>jetset-stable</cite></p></li>
+</ul>
+</div>
+<div class="section" id="installation-from-source-using-anaconda">
+<h3>Installation from source using Anaconda<a class="headerlink" href="#installation-from-source-using-anaconda" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p>Install requirements, run on the command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install --file requirements.txt
+</pre></div>
+</div>
+</li>
+<li><p>run on the command line</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python setup.py clean
+
+python setup.py install
+</pre></div>
+</div>
+</li>
+</ul>
+<p><strong>run all the examples outside of the installation dir</strong></p>
+</div>
+<div class="section" id="installation-from-source-using-pip">
+<h3>Installation from source using PIP<a class="headerlink" href="#installation-from-source-using-pip" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p>Install requirements, run on the command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -r requirements.txt <span class="sb">`</span>
+</pre></div>
+</div>
+</li>
+<li><p>Install JetSeT: run on the command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python setup.py clean
+
+python setup.py install
+</pre></div>
+</div>
+</li>
+</ul>
+<p><strong>run all the examples outside of the installation dir</strong></p>
+</div>
+<div class="section" id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>The following python packages are required:</dt><dd><ul class="simple">
+<li><p>python 2.7 or &gt;=3.6 (python 3 is suggested, python 2 should work still fine)</p></li>
 <li><p>setuptools</p></li>
 <li><p>scipy</p></li>
 <li><p>numpy</p></li>
@@ -270,80 +349,11 @@
 <li><p>emcee</p></li>
 <li><p>pyyaml</p></li>
 </ul>
+</dd>
+</dl>
 <p>A C compiler is also necessary, plus the SWIG wrapper generator.</p>
-<p>All the dependencies can be installed following the Anaconda method
-(suggested) <strong>OR</strong> the pip method, as described in the following sections.</p>
-<p>I suggest to use anaconda and python3 (<a class="reference external" href="https://www.anaconda.com/download/">https://www.anaconda.com/download/</a>)</p>
+<p>All the dependencies are installed following the Anaconda method <strong>OR</strong> the pip method, as described below.</p>
 </div>
-<div class="section" id="download-the-jetset-code">
-<h2>Download the JeTseT code<a class="headerlink" href="#download-the-jetset-code" title="Permalink to this headline">¶</a></h2>
-<p>Get the source code from:</p>
-<p><a class="reference external" href="https://github.com/andreatramacere/jetset/archive/stable.tar.gz">https://github.com/andreatramacere/jetset/archive/stable.tar.gz</a></p>
-<p>Uncompress the  archive</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jetset-stable.tar.gz
-</pre></div>
-</div>
-<p>cd to  the dir</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> jetset-stable
-</pre></div>
-</div>
-</div>
-<div class="section" id="installation-using-anaconda-suggested-method">
-<h2>Installation using Anaconda (suggested method)<a class="headerlink" href="#installation-using-anaconda-suggested-method" title="Permalink to this headline">¶</a></h2>
-<p>Install the requiremets:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install --file requirements.txt
-</pre></div>
-</div>
-<p>Install JetSeT running on the command line:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python setup.py clean
-python setup.py install
-</pre></div>
-</div>
-<p><strong>run all the examples outside of the installation dir</strong></p>
-</div>
-<div class="section" id="installation-using-pip">
-<h2>Installation using PIP<a class="headerlink" href="#installation-using-pip" title="Permalink to this headline">¶</a></h2>
-<p>Install requirements running on the command line:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -r requirements.txt <span class="sb">``</span>
-</pre></div>
-</div>
-<p><strong>if pip fails to install swig you can try one of the following methods:</strong></p>
-<blockquote>
-<div><ul class="simple">
-<li><p>on linux Ubuntu:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>- sudo apt-get install python-dev
-- sudo apt-get install swig
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>on linux Debian:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>- sudo aptitude install python-dev
-- sudo aptitude install swig
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>on linux Fedora:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>- sudo yum install python-dev
-- sudo yum install swig
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>on mac:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>- ruby -e <span class="s2">&quot;</span><span class="k">$(</span>curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install<span class="k">)</span><span class="s2">&quot;</span> &lt; /dev/null <span class="m">2</span>&gt; /dev/null
-- brew install swig
-</pre></div>
-</div>
-</div></blockquote>
-<p>Install JetSeT running on the command line:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python setup.py clean
-python setup.py install
-</pre></div>
-</div>
-<p><strong>run all the examples outside of the installation dir</strong></p>
 </div>
 </div>
 

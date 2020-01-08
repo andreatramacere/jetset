@@ -39,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html"><span><img src="../../_static/logo_small_color_neg_transparent.png"></span>
           JetSeT doc</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0a3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -56,10 +56,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-the-jetset-from-source">Install the JetSeT from source</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
@@ -147,10 +145,8 @@
 <ul class="globaltoc"
 ><ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-the-jetset-from-source">Install the JetSeT from source</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
@@ -368,22 +364,26 @@
 
         <span class="k">for</span> <span class="n">mc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
             <span class="n">comp_label</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">name</span>
-            <span class="c1">#print (&#39;comp_label&#39;,comp_label)</span>
-            <span class="n">plot_obj</span><span class="o">.</span><span class="n">add_model_plot</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">SED</span><span class="p">,</span> <span class="n">line_style</span><span class="o">=</span><span class="n">line_style</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">comp_label</span><span class="p">,</span><span class="n">flim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">flux_plot_lim</span><span class="p">)</span>
+            <span class="c1">#print (&#39;comp_label&#39;,comp_label,mc.SED)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">plot_obj</span><span class="o">.</span><span class="n">add_model_plot</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">SED</span><span class="p">,</span> <span class="n">line_style</span><span class="o">=</span><span class="n">line_style</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">comp_label</span><span class="p">,</span><span class="n">flim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">flux_plot_lim</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1">#print(&#39;name&#39;,e)</span>
+                <span class="k">pass</span>
 
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span><span class="s1">&#39;spectral_components_list&#39;</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">mc</span><span class="o">.</span><span class="n">spectral_components_list</span><span class="p">:</span>
 
                     <span class="n">comp_label</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span>
                     <span class="k">if</span> <span class="n">comp_label</span><span class="o">!=</span><span class="s1">&#39;Sum&#39;</span><span class="p">:</span>
-                        <span class="c1">#print(&#39;comp_label&#39;, comp_label)</span>
+                        <span class="c1">#print(&#39;comp comp_label&#39;, comp_label,c.SED)</span>
                         <span class="n">plot_obj</span><span class="o">.</span><span class="n">add_model_plot</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">SED</span><span class="p">,</span> <span class="n">line_style</span><span class="o">=</span><span class="n">line_style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">comp_label</span><span class="p">,</span> <span class="n">flim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">flux_plot_lim</span><span class="p">)</span>
 
         <span class="n">line_style</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
         <span class="c1">#print(&#39;comp_label&#39;, self.name)</span>
-        <span class="n">plot_obj</span><span class="o">.</span><span class="n">add_model_plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SED</span><span class="p">,</span> <span class="n">line_style</span><span class="o">=</span><span class="n">line_style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">flim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">flux_plot_lim</span><span class="p">)</span>
+        <span class="n">plot_obj</span><span class="o">.</span><span class="n">add_model_plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SED</span><span class="p">,</span> <span class="n">line_style</span><span class="o">=</span><span class="n">line_style</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">flim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">flux_plot_lim</span><span class="p">,</span><span class="n">fit_range</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_min_fit</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_max_fit</span><span class="p">]))</span>
 
-        <span class="n">plot_obj</span><span class="o">.</span><span class="n">add_residual_plot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">sed_data</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">fit_range</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_min</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_max</span><span class="p">]))</span>
+        <span class="n">plot_obj</span><span class="o">.</span><span class="n">add_residual_plot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">sed_data</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">fit_range</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_min_fit</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_max_fit</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">plot_obj</span></div>
 
 
@@ -575,8 +575,8 @@
         <span class="k">if</span> <span class="n">fill_SED</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
  
             <span class="bp">self</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">nu</span><span class="o">=</span><span class="n">lin_nu</span><span class="p">,</span><span class="n">nuFnu</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
-            
-
+            <span class="c1">#TODO ADD cosmo properly to all components</span>
+            <span class="c1">#self.SED.fill_nuLnu(z=self.jet_obj.get_par_by_type(&#39;redshift&#39;).val, dl=self.jet_obj.get_DL_cm())</span>
             
         <span class="k">if</span> <span class="n">get_model</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
             

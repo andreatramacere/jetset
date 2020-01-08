@@ -33,45 +33,33 @@ If you use this code in any kind of scientific publication please cite the follo
 visit: https://jetset.readthedocs.io/en/latest/
 
 
-# Install  JetSeT from Anaconda (suggested)
+
+# Install  JetSeT from Anaconda  (suggested for OSX and Linux)
  - I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
  
- - create a virtual environment (not necessary): `conda create --name jetset python=3.7 ipython jupyter`
-
-- `conda activate jetset` 
-
-- `conda install -c andreatramacere jetset`
+ - create a virtual environment (not necessary, but suggested): 
+ 
+    `conda create --name jetset python=3.7 ipython jupyter`
+    
+     `conda activate jetset`
+     
+- install the code:
+   
+   - on Mac  
+ 
+     `conda install -c andreatramacere jetset`
+  
+  - on linxu
+   
+    `conda install -c andreatramacere -c astropy jetset`
 
 # Install the JetSeT from source 
 
-##  Requirements
-The following python packages are required:
-
-        python 2.7 or >=3.6 (python 3 is suggested, python 2 should work still fine)
-        setuptools
-        scipy
-        numpy
-        astropy
-        matplotlib
-        swig
-        future
-        iminuit
-        corner
-        six
-        emcee
-        pyyaml
-         
-
-
-A C compiler is also necessary, plus the SWIG wrapper generator.
-
-All the dependencies can be installed following the Anaconda method 
- **OR** the pip method, as described below.
 
 ## Download the code
    - Get the source code from: 
 
-     - https://gitlab.com/andreatramacere/jetset/-/archive/stable/jetset-stable.tar.gz
+     - https://github.com/andreatramacere/jetset/archive/stable.tar.gz
 
    - Uncompress the  archive  `jetset-stable.tar.gz`
    
@@ -105,7 +93,29 @@ All the dependencies can be installed following the Anaconda method
 **run all the examples outside of the installation dir**
 
 
+##  Requirements
+The following python packages are required:
 
+        python 2.7 or >=3.6 (python 3 is suggested, python 2 should work still fine)
+        setuptools
+        scipy
+        numpy
+        astropy
+        matplotlib
+        swig
+        future
+        iminuit
+        corner
+        six
+        emcee
+        pyyaml
+         
+
+
+A C compiler is also necessary, plus the SWIG wrapper generator.
+
+All the dependencies are be installed following the Anaconda method 
+ **OR** the pip method, as described above.
 
 # jetset code repoistory
 

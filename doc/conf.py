@@ -14,7 +14,7 @@
 
 import sys
 import os
-
+import json
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -94,10 +94,14 @@ source_suffix = '.rst'
 
 # The master toctree document.
 master_doc = 'index'
+with open('../jetset/pkg_info.json') as fp:
+    _info = json.load(fp)
+
+__version__ = _info['version']
 
 # General information about the project.
 # The short X.Y version.
-version = '1.1.0'
+version = __version__
 # The full version, including alpha/beta/rc tags.
 project = u'jetset'
 copyright = u'2019, andrea tramacere'
