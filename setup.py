@@ -137,7 +137,7 @@ print(__version__)
 setup(name='jetset',
       version=__version__,
       author='Andrea Tramacere',
-      url='https://gitlab.com/andreatramacere/jetset',
+      url='https://github.com/andreatramacere/jetset',
       long_description=long_description,
       long_description_content_type='text/markdown',
       description="A framework for self-consistent modeling and fitting of  astrophysical relativistic jets SEDs",

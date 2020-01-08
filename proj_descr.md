@@ -90,7 +90,8 @@ All the dependencies can be installed following the Anaconda method
 
 ## Installation from source using PIP 
  
- - Install requirements, run on the command line: `pip install -r requirements.txt `
+ - Install requirements, run on the command line: 
+  - `pip install -r requirements.txt `
     
    if pip fails to install swig, you can try one of the following alternative [methods](swig.md)
   
