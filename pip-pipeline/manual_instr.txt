@@ -7,6 +7,7 @@ curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 sudo python get-pip.py
 
 python3 -m pip install --user virtualenv
+python3 -m pip install --user --upgrade twine
 
 local installation is in: Users/orion/Library/Python/3.7
 
@@ -29,19 +30,20 @@ export PIP_BUILD='TRUE'
 #build
 git clone git@github.com:andreatramacere/jetset.git
 
-python setup.py sdist bdist_wheel
-
+python3 setup.py clean
+python3 setup.py sdist bdist_wheel
+python3 -m twine  check dist/*
 #set pip_build envvar
 export PIP_BUILD='FALSE'
 
 #DEPLOYMENT
 
 #test deploy to twine
-python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
 #test pip install
 pip install --no-cache-dir --index-url https://test.pypi.org/simple/  --extra-index-url=https://pypi.org/simple/ jetset
 
 
 #test deploy to Pypi
-python -m twine upload  dist/*
+python3 -m twine upload  dist/*
