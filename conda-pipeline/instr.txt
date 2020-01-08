@@ -1,3 +1,7 @@
+#set pip_build envvar
+
+export PIP_BUILD='FALSE'
+
 #building
 
 conda-build .

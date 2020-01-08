@@ -1,13 +1,47 @@
 https://packaging.python.org/tutorials/packaging-projects/
+https://github.com/pySTEPS/pysteps/blob/master/doc/source/developer_guide/pypi.rst
+
+#build pip virtual env: https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+
+sudo python get-pip.py
+
+python3 -m pip install --user virtualenv
+
+local installation is in: Users/orion/Library/Python/3.7
+
+working dir: /Users/orion/astro/Programmi/Projects/Active/JetSeT/JetSeT_CICD/PIP
+
+python3 -m venv jetset_pip
+source jetset_pip/bin/activate
+
+#INTEGRATION
+cd integration
+
+
+#dactivate conda
+conda deactivate
+source jetset_pip/bin/activate
+
+#set pip_build envvar
+export PIP_BUILD='TRUE'
 
 #build
+git clone git@github.com:andreatramacere/jetset.git
+
 python setup.py sdist bdist_wheel
+
+#set pip_build envvar
+export PIP_BUILD='FALSE'
+
+#DEPLOYMENT
 
 #test deploy to twine
 python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
-#test pip install 
-python -m pip install --index-url https://test.pypi.org/simple/ --no-deps jetset-andreatramacere
+#test pip install
+pip install --no-cache-dir --index-url https://test.pypi.org/simple/  --extra-index-url=https://pypi.org/simple/ jetset
+
 
 #test deploy to Pypi
 python -m twine upload  dist/*

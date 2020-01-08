@@ -109,12 +109,14 @@ with open('jetset/pkg_info.json') as fp:
 __version__ = _info['version']
 
 
-
-
-
 f = open("./requirements.txt",'r')
-install_req=f.readlines()
+req=f.readlines()
 f.close()
+
+if  os.getenv('PIP_BUILD')=='TRUE':
+    install_req=req
+else:
+    install_req=None
 
 src_files=['jetkernel/jetkernel.i']
 src_files.extend(glob.glob ('jetkernel_src/src/*.c'))
@@ -127,7 +129,7 @@ _module=Extension('jetkernel/_jetkernel',
 
 #'jetkernel/mathkernel/*dat'
 
-with open("README.md", "r") as f:
+with open("proj_descr.md", "r") as f:
     long_description = f.read()
 
 print(__version__)
@@ -144,8 +146,8 @@ setup(name='jetset',
       package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*ecsv','./requirements.txt'],'jetkernel':['mathkernel/*dat']},
       include_package_data = True,
       cmdclass=custom_cmdclass,
-      #requires=install_req,
+      requires=reg,
       ext_modules = [_module],
-      #install_requires=install_req,
+      install_requires=install_req,
       py_modules=['jetkernel/jetkernel'],
       zip_safe=False)
