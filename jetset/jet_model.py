@@ -168,7 +168,8 @@ class JetParameter(ModelParameter):
             self.assign_val(self.name,keywords['val']) 
 
 
-    
+
+
     def assign_val(self,name,val):
         """
         sets the :class:`.JetParameter` value in the BlazarSED object
@@ -1163,11 +1164,13 @@ class Jet(Model):
         self.set_electron_distribution(str(_model['electron_distribution']))
         _par_dict = _model['pars']
 
+
+
+        self.parameters._decode_pars(_par_dict)
         #for k in _par_dict.keys():
         #    # print ('set', k,_par_dict[k])
         #    self.set_par(par_name=str(k), val=_par_dict[str(k)])
 
-        self.parameters._decode_pars(_par_dict)
 
     @classmethod
     def load_model(cls,file_name):
