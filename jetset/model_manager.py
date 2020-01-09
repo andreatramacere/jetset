@@ -438,7 +438,7 @@ class FitModel(Model):
             print(_m)
             if _m[1]=='jet':
                 j = Jet()
-                j._decode_model( _m[0])
+                j._decode_model(_m[0])
 
                 c.add_component(j)
             else:

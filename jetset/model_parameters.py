@@ -118,7 +118,7 @@ class ModelParameter(object):
         self.allowed_keywords['units']='No'
         self.allowed_keywords['val_min']=None
         self.allowed_keywords['val_max']=None
-        self.allowed_keywords['val_start_fit']=None
+        self.allowed_keywords['val_start']=None
         self.allowed_keywords['val_last_call']=None
         self.allowed_keywords['fit_range_min']=None
         self.allowed_keywords['fit_range_max']=None
@@ -788,4 +788,22 @@ class ModelParameterArray(object):
         for pi in range(len(self.par_array)):
             self.par_array[pi].free()
         
-        
+
+
+    def _serialize_pars(self):
+        _par_keys=['val_min','val_max','val_start','val_last_call','fit_range_min','fit_range_max','best_fit_val','best_fit_err','frozen','allowed_values']
+        _par_dict = {}
+        for par in self.par_array:
+            _val_dict={}
+
+            for k in _par_keys:
+                if hasattr(par,k):
+                    _val_dict[k]=getattr(par,k)
+
+            _par_dict[par.name] = _val_dict
+
+        return _par_dict
+
+    def _decode_pars(self,_par_dict):
+        for p_name in _par_dict.keys():
+            self.set(p_name,**_par_dict[p_name])

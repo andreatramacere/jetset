@@ -1124,9 +1124,13 @@ class Jet(Model):
         _model['cosmo'] = self.cosmo
 
         _model['pars'] = {}
-        for p in self.parameters.par_array:
-            _model['pars'][p.name] = p.val
 
+        #for p in self.parameters.par_array:
+        #    _dict_value={}
+
+        #    _model['pars'][p.name] = p.val
+
+        _model['pars']=self.parameters._serialize_pars()
         return _model
 
     def save_model(self,file_name):
@@ -1159,9 +1163,11 @@ class Jet(Model):
         self.set_electron_distribution(str(_model['electron_distribution']))
         _par_dict = _model['pars']
 
-        for k in _par_dict.keys():
-            # print ('set', k,_par_dict[k])
-            self.set_par(par_name=str(k), val=_par_dict[str(k)])
+        #for k in _par_dict.keys():
+        #    # print ('set', k,_par_dict[k])
+        #    self.set_par(par_name=str(k), val=_par_dict[str(k)])
+
+        self.parameters._decode_pars(_par_dict)
 
     @classmethod
     def load_model(cls,file_name):
