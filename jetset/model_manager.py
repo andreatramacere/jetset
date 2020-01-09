@@ -26,10 +26,20 @@ from .base_model import  Model
 
 from .plot_sedfit import  PlotSED
 
+from .utils import  clean_var_name
+
+from .jet_model import Jet
+
+import copy
+
+import  pickle
 
 __all__=['FitModel']
 
+class ModelComoponentContainer(object):
 
+    def __init__(self):
+        pass
 
 class FitModel(Model):
     
@@ -103,8 +113,10 @@ class FitModel(Model):
 
         self.flux_plot_lim=1E-30
 
-        self.components=[]    
-        
+        self.components_list=[]
+
+        self.components=ModelComoponentContainer()
+
         self.parameters=ModelParameterArray()
 
         if elec_distr is not None:
@@ -146,7 +158,7 @@ class FitModel(Model):
         line_style='--'
 
 
-        for mc in self.components:
+        for mc in self.components_list:
             comp_label = mc.name
             #print ('comp_label',comp_label,mc.SED)
             try:
@@ -183,7 +195,7 @@ class FitModel(Model):
         if nu_max is not None:
             self.nu_max=nu_max
         
-        for model_comp in self.components:
+        for model_comp in self.components_list:
         
             if nu_size is not None:
                 model_comp.nu_size=nu_size
@@ -196,7 +208,7 @@ class FitModel(Model):
 
     def add_component(self, moldel_comp):
         
-        self.components.append(moldel_comp)
+        self.components_list.append(moldel_comp)
         
         for par in moldel_comp.parameters.par_array:
             
@@ -208,7 +220,8 @@ class FitModel(Model):
                 
             self.parameters.add_par(par)
 
-
+        #print('-->', self.components, moldel_comp.name, moldel_comp)
+        setattr(self.components,  clean_var_name(moldel_comp.name), moldel_comp)
     
     def show_pars(self):
         """
@@ -219,7 +232,7 @@ class FitModel(Model):
         self.parameters.show_pars()
 
     def show_model(self):
-        for c in self.components:
+        for c in self.components_list:
             c.show_model()
 
     def freeze(self,par_name):
@@ -345,7 +358,7 @@ class FitModel(Model):
         
         
         
-        for model_comp in self.components:
+        for model_comp in self.components_list:
             
             #print "model",model_comp.name
             
@@ -376,11 +389,59 @@ class FitModel(Model):
 
 
 
+    @classmethod
+    def _build_serializable(cls):
+        return cls()
+
+    def save_model(self,file_name):
+        c=self._build_serializable()
+
+        c._serialized_model_list=[]
+        for _m in self.components_list:
+            if isinstance(_m,Jet):
+                c._serialized_model_list.append([_m._serialize_model(),_m.model_type])
+            else:
+                c._serialized_model_list.append([_m,_m.model_type])
 
 
-    def save_model(self):
-        pass
+        _keep_member_list = ['model_type',
+                             'name',
+                             # TODO 'parameters' removed  form _keep_member_list because we need to improve parmeter serilization in order to handle _blob member
+                             #'parameters'
+                             'SED',
+                             '_scale',
+                             'nu_size',
+                             'nu_min',
+                             'nu_max',
+                             'sed_data',
+                             'nu_min_fit',
+                             'nu_max_fit',
+                             'fitname',
+                             'flux_plot_lim',
+                             'cosmo']
+
+        for km in _keep_member_list:
+            setattr(c,km,getattr(self,km))
+
+
+        pickle.dump(c, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+
+        #self.components = _components
+        #self.components_list = _components_list
 
     @classmethod
     def load_model(cls, file_name):
-        pass
+        #c=cls()
+        c = pickle.load(open(file_name, "rb"))
+        for _m in c._serialized_model_list:
+
+            print(_m)
+            if _m[1]=='jet':
+                j = Jet()
+                j._decode_model( _m[0])
+
+                c.add_component(j)
+            else:
+                c.add_component(_m[0])
+        c.eval()
+        return c

@@ -230,7 +230,7 @@ class ModelMinimizer(object):
 
         makedir(out_dir)
 
-        for model in fit_Model.components:
+        for model in fit_Model.components_list:
             if model.model_type == 'jet':
                 model.set_path(out_dir)
 

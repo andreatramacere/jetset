@@ -1111,71 +1111,68 @@ class Jet(Model):
 
         return blob
 
-    def save_model(self,file_name):
-        # TODO update to  changes in spectral components
-        _model={}
-        _model['electron_distribution']=self._electron_distribution_name
-        _model['electron_distribution_log_values']=self._electron_distribution_log_values
-        _model['beaming_expr']=self._beaming_expr
-        _model['spectral_components_name']=self.get_spectral_component_names_list()
+    def _serialize_model(self):
+        _model = {}
+        _model['electron_distribution'] = self._electron_distribution_name
+        _model['electron_distribution_log_values'] = self._electron_distribution_log_values
+        _model['beaming_expr'] = self._beaming_expr
+        _model['spectral_components_name'] = self.get_spectral_component_names_list()
         _model['spectral_components_state'] = [c.state for c in self.spectral_components_list]
         _model['EC_components_name'] = self.EC_components_list
         _model['basic_components_name'] = self.basic_components_list
-        #_model['EC_components_state'] = [c.state for c in self.spectral_components_list]
-        _model['pars']={}
+        # _model['EC_components_state'] = [c.state for c in self.spectral_components_list]
+        _model['cosmo'] = self.cosmo
 
+        _model['pars'] = {}
         for p in self.parameters.par_array:
-            _model['pars'][p.name]=p.val
+            _model['pars'][p.name] = p.val
 
-        with open(file_name, 'w', encoding="utf-8") as outfile:
-            outfile.write(str(json.dumps(_model, ensure_ascii=False)))
+        return _model
 
+    def save_model(self,file_name):
+        pickle.dump(self._serialize_model(), open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
+    def _decode_model(self,_model):
 
+        self.cosmo = _model['cosmo']
+        self.model_type = 'jet'
 
+        self.set_blob()
+        self.parameters = ModelParameterArray()
 
+        self.set_electron_distribution(str(_model['electron_distribution']))
 
+        for c in self.basic_components_list:
+            if c not in _model['basic_components_name']:
+                self.del_spectral_component(c)
+
+        self.add_EC_component(_model['EC_components_name'])
+
+        for ID, c in enumerate(_model['spectral_components_name']):
+            comp = getattr(self.spectral_components, c)
+            if comp._state_dict != {}:
+                comp.state = _model['spectral_components_state'][ID]
+
+        self.SED = self.get_spectral_component_by_name('Sum').SED
+
+        self.set_emitting_region(str(_model['beaming_expr']))
+        self.set_electron_distribution(str(_model['electron_distribution']))
+        _par_dict = _model['pars']
+
+        for k in _par_dict.keys():
+            # print ('set', k,_par_dict[k])
+            self.set_par(par_name=str(k), val=_par_dict[str(k)])
 
     @classmethod
     def load_model(cls,file_name):
         #TODO update to  changes in spectral components
+
+        #with open(file_name, 'r') as infile:
+        #    _model = json.load(infile)
+
+        _model=pickle.load( open(file_name, "rb" ) )
         jet = cls()
-        with open(file_name, 'r') as infile:
-            _model = json.load(infile)
-
-        #print ('_model',_model)
-
-        jet.model_type = 'jet'
-
-        jet.set_blob()
-        jet.parameters = ModelParameterArray()
-
-        jet.set_electron_distribution(str(_model['electron_distribution']))
-
-
-        for c in jet.basic_components_list:
-            if c not in _model['basic_components_name']:
-                jet.del_spectral_component(c)
-
-        jet.add_EC_component(_model['EC_components_name'])
-
-
-        for ID,c in enumerate(_model['spectral_components_name']):
-            comp=getattr(jet.spectral_components,c)
-            if comp._state_dict!={}:
-                comp.state=_model['spectral_components_state'][ID]
-
-
-
-        jet.SED = jet.get_spectral_component_by_name('Sum').SED
-
-        jet.set_emitting_region(str(_model['beaming_expr']))
-        jet.set_electron_distribution(str(_model['electron_distribution']))
-        _par_dict=_model['pars']
-
-        for k in _par_dict.keys():
-            #print ('set', k,_par_dict[k])
-            jet.set_par(par_name=str(k),val=_par_dict[str(k)])
+        jet._decode_model(_model)
         jet.show_pars()
         jet.eval()
         return jet

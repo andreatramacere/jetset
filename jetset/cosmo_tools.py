@@ -55,7 +55,14 @@ class  Cosmo (object):
 
     def get_DL_cm(self,z=None):
         if self._c is not None:
-            _d= self._c.luminosity_distance( z ).to('cm').value
+            #THIS IS FIXING THE ERROR WITH PICKLED COSMO
+            #TODO open issue on astropy!
+            try:
+                _d= self._c.luminosity_distance( z ).to('cm').value
+            except:
+                _d = self._c.luminosity_distance(z)
+                _d = _d.value*u(str(_d.unit))
+                _d = _d.to('cm').value
         else:
             _d = self._DL_cm
 

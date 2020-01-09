@@ -6,6 +6,7 @@ from builtins import (bytes, str, open, super, range,
 import  numpy as np
 from astropy.table import Table
 from astropy import  units as u
+from .utils import clean_var_name
 
 __all__=['ModelParameter','ModelParameterArray','Value']
 
@@ -479,7 +480,7 @@ class ModelParameterArray(object):
 
         self.par_array.append(par)
 
-        setattr(self,par.name, par)
+        setattr(self,clean_var_name(par.name), par)
         self.properties[par.name]=par
 
 

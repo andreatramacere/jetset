@@ -11,7 +11,7 @@ from .spectral_shapes import SED
 from .data_loader import  ObsData
 import numpy as np
 import json
-
+import pickle
 
 __all__=['Model']
 class Model(object):
@@ -143,28 +143,13 @@ class Model(object):
             return  np.log10(nu_residuals[msk]),  residuals[msk]
 
     def save_model(self, file_name):
-        _model = {}
 
-        _model['pars'] = {}
 
-        for p in self.parameters.par_array:
-            _model['pars'][p.name] = p.val
-
-        with open(file_name, 'w', encoding="utf-8") as outfile:
-            outfile.write(str(json.dumps(_model, ensure_ascii=False)))
+        pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
     @classmethod
     def load_model(cls, file_name):
-        c = cls()
-        with open(file_name, 'r') as infile:
-            _model = json.load(infile)
 
+        c= pickle.load(open(file_name, "rb"))
 
-        _par_dict = _model['pars']
-
-        for k in _par_dict.keys():
-            # print ('set', k,_par_dict[k])
-            c.set_par(par_name=str(k), val=_par_dict[str(k)])
-        c.show_pars()
-        c.eval()
         return c
