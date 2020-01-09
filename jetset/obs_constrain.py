@@ -155,7 +155,7 @@ class ObsConstrain(object):
         
         print  (section_separator)
         print ("***  constrains parameters from observable ***")
-        print
+        print()
         
         
         model=self.get_model_constraint(name=name,
@@ -164,7 +164,7 @@ class ObsConstrain(object):
                                         electron_distribution_log_values=electron_distribution_log_values)
          
         
-        print
+        print()
         print  (section_separator)
 
         return model
@@ -185,7 +185,7 @@ class ObsConstrain(object):
         
         print  (section_separator)
         print  ("***  constrains parameters from observable ***")
-        print
+        print()
         
         
         model=self.get_model_constraint(name=name,
@@ -196,7 +196,7 @@ class ObsConstrain(object):
         
          
 
-        print
+        print()
         print  (section_separator)
 
         return model
@@ -286,7 +286,7 @@ class ObsConstrain(object):
             print ("---> setting par type redshift, corresponding to par %s"%(z_par.name))
             z_par.set(val=self.z)
             print ("---> ",z_par.get_description())
-            print
+            print()
         #B
         B_par=jet_model.get_par_by_type('magnetic_field')
         if B_par is not None:
@@ -305,11 +305,11 @@ class ObsConstrain(object):
             R_par.set(val=set_lin_log_val(R_par,R_tvar))
 
             print ("---> ",R_par.get_description())
-            print
+            print()
         
         
         
-        print
+        print()
         
         print ("---> *** electron distribution parameters ***")
         
@@ -331,7 +331,7 @@ class ObsConstrain(object):
  
             print ("---> setting par type curvature, corresponding to par %s"%(curvature_par.name))
             print ("---> ",curvature_par.get_description())
-            print
+            print()
         
         #s
         LE_spectral_slope_par=jet_model.get_par_by_type('LE_spectral_slope')
@@ -340,7 +340,7 @@ class ObsConstrain(object):
             LE_spectral_slope_par.set(val=index_s)
             print ("---> setting par type LE_spectral_slope, corresponding to par %s"%(LE_spectral_slope_par.name))
             print ("---> ",LE_spectral_slope_par.get_description())
-            print
+            print()
 
 
         #s1
@@ -462,7 +462,7 @@ class ObsConstrain(object):
                 print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(turn_over_par.name))
                 print ("---> using gamma_3p_Sync=",gamma_3p_Sync)
                 print ("---> ",turn_over_par.get_description())
-                print
+                print()
                 
             
             #update gmax for New B

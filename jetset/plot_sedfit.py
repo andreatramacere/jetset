@@ -443,7 +443,7 @@ class  PlotSED (object):
 
         self.counter += 1
 
-    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=4,mew=0.5):
+    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=4,mew=0.5,fit_range=None):
 
 
 
@@ -463,8 +463,8 @@ class  PlotSED (object):
 
         if dy is None:
             dy=np.zeros(len(sed_data.data['nu_data']))
-        
-        
+
+        UL = sed_data.data['UL']
           
         # set color
         #if color is None:
@@ -477,8 +477,18 @@ class  PlotSED (object):
             else:
                 label='line %d'%self.counter
 
+        if fit_range is not None:
+            msk1 = x < fit_range[1]
+            msk2 = x > fit_range[0]
+
+            x = x[msk1 * msk2]
+            y = y[msk1 * msk2]
+            dx= dx[msk1 * msk2]
+            dy = dy[msk1 * msk2]
+            UL=UL[msk1 * msk2]
+
         line = self.sedplot.errorbar(x, y, xerr=dx, yerr=dy, fmt=fmt
-                                     , uplims=sed_data.data['UL'],label=label,ms=ms,mew=mew,color=color)
+                                     , uplims=UL,label=label,ms=ms,mew=mew,color=color)
 
 
         

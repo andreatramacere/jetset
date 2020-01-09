@@ -207,8 +207,8 @@ class FitModel(Model):
             #    par.set(fit_range=fit_range)
                 
             self.parameters.add_par(par)
-        
-        
+
+
     
     def show_pars(self):
         """
@@ -377,3 +377,10 @@ class FitModel(Model):
 
 
 
+
+    def save_model(self):
+        pass
+
+    @classmethod
+    def load_model(cls, file_name):
+        pass

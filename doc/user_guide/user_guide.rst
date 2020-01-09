@@ -12,7 +12,9 @@ The complete user guide will be available during spring 2019
    jet model: nemerical setup   <jet_model_num/Jet_example_num.rst>
    data format   <load_data/Jet_example_load_data.rst>
    phenomological constrain  <phen_constr/Jet_example_phenom_constr.rst>
-   model fitting  <model_fit/Jet_example_model_fit.rst>
+   model fitting and MCMC <model_fit_1/Jet_example_model_fit.rst>
+   model fitting with gal. template <model_fit_2/Jet_example_model_fit_wiht_gal_template.rst>
+
    temporal evolution <temporal_evolution/temp_ev.rst>
  
 

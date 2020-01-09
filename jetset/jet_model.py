@@ -221,9 +221,9 @@ def build_emitting_region_dic(beaming_expr='delta'):
     """
     
     model_dic={}
-    model_dic['R']=JetModelDictionaryPar(ptype='region_size',vmin=0,vmax=30,punit='cm',froz=False,log=True)
+    model_dic['R']=JetModelDictionaryPar(ptype='region_size',vmin=0,vmax=1E30,punit='cm',froz=False,log=False)
     #    ['region_size',0,30,'cm',False,True]
-    model_dic['R_H'] = JetModelDictionaryPar(ptype='region_position',vmin=0,vmax=None,punit='cm')
+    model_dic['R_H'] = JetModelDictionaryPar(ptype='region_position',vmin=0,vmax=None,punit='cm',froz=True)
     #['region_position', 0, None, 'cm']
     model_dic['B']=JetModelDictionaryPar(ptype='magnetic_field',vmin=0,vmax=None,punit='G')
     #['magnetic_field',0,None,'G']
