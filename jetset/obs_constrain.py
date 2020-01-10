@@ -146,7 +146,7 @@ class ObsConstrain(object):
             self.out_dir=obspar_workplace.out_dir
             self.flag=obspar_workplace.flag
     
-    def constrain_SSC_model(self,name=None,jet_model=None,params_grid_size=10,electron_distribution_log_values=False):
+    def constrain_SSC_model(self,name=None,jet_model=None,params_grid_size=10,electron_distribution_log_values=False,silent=False):
         """
         constarin SSC model paramters
         """
@@ -161,7 +161,8 @@ class ObsConstrain(object):
         model=self.get_model_constraint(name=name,
                                         jet_model=jet_model,
                                         params_grid_size=params_grid_size,
-                                        electron_distribution_log_values=electron_distribution_log_values)
+                                        electron_distribution_log_values=electron_distribution_log_values,
+                                        silent=silent)
          
         
         print()
@@ -208,7 +209,8 @@ class ObsConstrain(object):
                              jet_model=None,
                              EC_componets_list=None,
                              params_grid_size=10,
-                             electron_distribution_log_values=False):
+                             electron_distribution_log_values=False,
+                             silent=False):
         
         if name is None:
             name=self.distr_e
@@ -250,10 +252,12 @@ class ObsConstrain(object):
         jet_model.set_IC_nu_size(50)
         jet_model.set_seed_nu_size(50)
 
-        jet_model.show_pars()
+
+        #jet_model.show_pars()
         
         #beaming
-        print ("---> ***  emitting region parameters  ***")
+        if silent is False:
+            print ("---> ***  emitting region parameters  ***")
        
        
         #SEtting emetting_region parameters
@@ -264,7 +268,8 @@ class ObsConstrain(object):
         if self.beaming_expr=='delta':
             beaming_par=jet_model.get_par_by_type('beaming')
             beaming_par.set(val=self.beaming)
-            print ("--->",beaming_par.get_description())
+            if silent is False:
+                print ("--->",beaming_par.get_description())
             
            
         elif self.beaming_expr=='bulk_theta': 
@@ -272,10 +277,12 @@ class ObsConstrain(object):
             theta_par=jet_model.get_par_by_type('jet-viewing-angle')
             theta_par.set(val=self.theta)
             bulk_factor_par.set(val=self.bulk_factor)
-            print ("--->",theta_par.get_description())
-            print ("--->",bulk_factor_par.get_description())
+            if silent is False:
+                print ("--->",theta_par.get_description())
+                print ("--->",bulk_factor_par.get_description())
             self.beaming=jet_model.get_beaming(theta=self.theta,bulk_factor=self.bulk_factor,beaming=-1.0)
-            print ("---> beaming set to",self.beaming)
+            if silent is False:
+                print ("---> beaming set to",self.beaming)
         else:
             raise RuntimeError('''wrong beaming_expr value=%s, allowed 'delta' or 'bulk_theta' '''%self.beaming_expr)
         
@@ -283,38 +290,42 @@ class ObsConstrain(object):
         #z
         z_par=jet_model.get_par_by_type('redshift')
         if z_par is not None:
-            print ("---> setting par type redshift, corresponding to par %s"%(z_par.name))
+            if silent is False:
+                print ("---> setting par type redshift, corresponding to par %s"%(z_par.name))
             z_par.set(val=self.z)
-            print ("---> ",z_par.get_description())
-            print()
+            if silent is False:
+                print ("---> ",z_par.get_description())
+                print()
         #B
         B_par=jet_model.get_par_by_type('magnetic_field')
         if B_par is not None:
-            print ("---> setting par type magnetic_field, corresponding to par %s"%(B_par.name))
+            if silent is False:
+                print ("---> setting par type magnetic_field, corresponding to par %s"%(B_par.name))
             B_par.set(val=self.B_start)
-            print ("---> ",B_par.get_description())
-            print
+            if silent is False:
+                print ("---> ",B_par.get_description())
+                print()
 
 
         #R
         R_tvar=get_R_tvar(self.beaming,self.t_var_sec,+self.z)
         R_par=jet_model.get_par_by_type('region_size')
         if R_par is not None:
-            print ("---> setting par type region_size, corresponding to par %s"%(R_par.name))
+            if silent is False:
+                print ("---> setting par type region_size, corresponding to par %s"%(R_par.name))
 
             R_par.set(val=set_lin_log_val(R_par,R_tvar))
+            if silent is False:
+                print ("---> ",R_par.get_description())
+                print()
 
-            print ("---> ",R_par.get_description())
+        if silent is False:
             print()
         
+            print ("---> *** electron distribution parameters ***")
         
-        
-        print()
-        
-        print ("---> *** electron distribution parameters ***")
-        
-        #elec distr law
-        print ("---> distribution type: ",jet_model.get_electron_distribution_name())
+            #elec distr law
+            print ("---> distribution type: ",jet_model.get_electron_distribution_name())
         
        
         
@@ -324,23 +335,26 @@ class ObsConstrain(object):
         
             if self.beta_S is not None:
                 curvature_par.set(val=self.beta_S*5.0)
-                print ("---> r elec. spec. curvature =%e"%curvature_par.val)
+                if silent is False:
+                    print ("---> r elec. spec. curvature =%e"%curvature_par.val)
             else:
                 curvature_par.set(val=0.4*5.0)
-                print ("---> beta Sync not provided, using 0.4, corresponding to r=2.0")
- 
-            print ("---> setting par type curvature, corresponding to par %s"%(curvature_par.name))
-            print ("---> ",curvature_par.get_description())
-            print()
+                if silent is False:
+                    print ("---> beta Sync not provided, using 0.4, corresponding to r=2.0")
+            if silent is False:
+                print ("---> setting par type curvature, corresponding to par %s"%(curvature_par.name))
+                print ("---> ",curvature_par.get_description())
+                print()
         
         #s
         LE_spectral_slope_par=jet_model.get_par_by_type('LE_spectral_slope')
         if LE_spectral_slope_par is not None:
-            s_Plank,s_X,s_Fermi,index_s=find_s(self.class_obj,self.nu_p_S_obs,self.S_LE_slope,self.indices) 
+            s_Plank,s_X,s_Fermi,index_s=find_s(self.class_obj,self.nu_p_S_obs,self.S_LE_slope,self.indices,silent=silent)
             LE_spectral_slope_par.set(val=index_s)
-            print ("---> setting par type LE_spectral_slope, corresponding to par %s"%(LE_spectral_slope_par.name))
-            print ("---> ",LE_spectral_slope_par.get_description())
-            print()
+            if silent is False:
+                print ("---> setting par type LE_spectral_slope, corresponding to par %s"%(LE_spectral_slope_par.name))
+                print ("---> ",LE_spectral_slope_par.get_description())
+                print()
 
 
         #s1
@@ -348,35 +362,39 @@ class ObsConstrain(object):
         if HE_spectral_slope_par is not None:
             index_s1=find_s1(self.class_obj,self.indices) 
             HE_spectral_slope_par.set(val=index_s1)
-            print ("---> setting par type LE_spectral_slope, corresponding to par %s"%(HE_spectral_slope_par.name))
-            print ("---> ",HE_spectral_slope_par.get_description())
-            print()
+            if silent is False:
+                print ("---> setting par type LE_spectral_slope, corresponding to par %s"%(HE_spectral_slope_par.name))
+                print ("---> ",HE_spectral_slope_par.get_description())
+                print()
 
         gamma_3p_Sync=find_gamma_Synch(self.nu_p_S_obs,self.rest_frame,B_par.val,self.beaming,z_par.val)
-        print ("---> gamma_3p_Sync= %e, assuming B=%e"%(gamma_3p_Sync,B_par.val))
+        if silent is False:
+            print ("---> gamma_3p_Sync= %e, assuming B=%e"%(gamma_3p_Sync,B_par.val))
 
         
         
         #gmax start
         gmax=find_HE_cut_off(self.distr_e,self.S_nu_max,self.rest_frame,B_par.val,self.beaming,z_par.val)
-        print ("---> gamma_max=%e from nu_max_Sync= %e, using B=%e"%(gmax,self.S_nu_max,B_par.val))
+        if silent is False:
+            print ("---> gamma_max=%e from nu_max_Sync= %e, using B=%e"%(gmax,self.S_nu_max,B_par.val))
+
         HE_cut_off_par=jet_model.get_par_by_type('high-energy-cut-off')
         if HE_cut_off_par is not None:
             HE_cut_off_par.set(val=set_lin_log_val(HE_cut_off_par,gmax))
-
-            print ("---> setting par type high-energy-cut-off, corresponding to par %s"%(HE_cut_off_par.name))
-            print ("---> ",HE_cut_off_par.get_description())
-            print ()
+            if silent is False:
+                print ("---> setting par type high-energy-cut-off, corresponding to par %s"%(HE_cut_off_par.name))
+                print ("---> ",HE_cut_off_par.get_description())
+                print ()
         
         #gmin start
         gmin= set_gmin_from_nu_cut_IR(self.nu_cut_IR,self.rest_frame,B_par.val,self.beaming,z_par.val)  
         par_LE_cut_off_par=jet_model.get_par_by_type('low-energy-cut-off')
         if par_LE_cut_off_par is not None:
             par_LE_cut_off_par.set(val=set_lin_log_val(par_LE_cut_off_par,gmin))
-
-            print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(par_LE_cut_off_par.name))
-            print ("---> ",par_LE_cut_off_par.get_description())
-            print ()
+            if silent is False:
+                print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(par_LE_cut_off_par.name))
+                print ("---> ",par_LE_cut_off_par.get_description())
+                print ()
         
         
         #turn-over-energy from gamma_3p_Sync
@@ -385,27 +403,31 @@ class ObsConstrain(object):
             _t=find_turn_over(jet_model,self.distr_e,gamma_3p_Sync)
             turn_over_par.set(val=set_lin_log_val(turn_over_par,_t))
 
-            print ("---> setting par type turn-over energy, corresponding to par %s"%(turn_over_par.name))
-            print ("---> using gamma_3p_Sync=",gamma_3p_Sync)
-            print ("---> ",turn_over_par.get_description())
-            print ()
+            if silent is False:
+                print ("---> setting par type turn-over energy, corresponding to par %s"%(turn_over_par.name))
+                print ("---> using gamma_3p_Sync=",gamma_3p_Sync)
+                print ("---> ",turn_over_par.get_description())
+                print ()
          
    
         
         #turn-over-energy from gamma_3p_SSC
-        gamma_3p_SSC= find_gamma_3p_SSC(self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,gamma_3p_Sync,self.beaming,z_par.val,nu_p_EC_seed_field=nu_p_EC_seed_field)
-        print ("---> gamma_3p_SSCc= %e",gamma_3p_SSC)
+        gamma_3p_SSC= find_gamma_3p_SSC(self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,gamma_3p_Sync,self.beaming,z_par.val,nu_p_EC_seed_field=nu_p_EC_seed_field,silent=silent)
+        if silent is False:
+            print ("---> gamma_3p_SSCc= %e",gamma_3p_SSC)
        
         if turn_over_par is not None:
             _t=find_turn_over(jet_model,self.distr_e,gamma_3p_SSC)
             turn_over_par.set(val=set_lin_log_val(turn_over_par,_t))
 
-            print ("---> setting par type turn-over energy, corresponding to par %s"%(turn_over_par.name))
-            print ("---> using gamma_3p_SSC=",gamma_3p_SSC)
-            print ("---> ",turn_over_par.get_description())
+            if silent is False:
+                print ("---> setting par type turn-over energy, corresponding to par %s"%(turn_over_par.name))
+                print ("---> using gamma_3p_SSC=",gamma_3p_SSC)
+                print ("---> ",turn_over_par.get_description())
+                print ()
+
+        if silent is False:
             print ()
-        
-        print ()
        
        
        
@@ -413,72 +435,87 @@ class ObsConstrain(object):
         N_par=jet_model.get_par_by_type('electron_density')
         if N_par is not None:
             N,ratio=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.rest_frame)
-            print ("---> setting par type electron_density, corresponding to par %s"%(N_par.name))
+            if silent is False:
+                print ("---> setting par type electron_density, corresponding to par %s"%(N_par.name))
             N_par.set(val=N)
-            print('--->',N_par.get_description())
+            if silent is False:
+               print('--->',N_par.get_description())
         #find B
         #print "estimate B from nu_p_S, and gamma_3p_SSC"
         B=find_B_from_nu_p_S(self.nu_p_S_obs,gamma_3p_SSC,self.rest_frame,self.beaming,z_par.val)
-        print ("---> B from nu_p_S=%e"%B)
-       
+        if silent is False:
+            print ("---> B from nu_p_S=%e"%B)
 
-        print ("---> get B from best matching of nu_p_IC")
+        if silent is False:
+            print ("---> get B from best matching of nu_p_IC")
+
         if B_par is not None:
             if EC_componets_list is None:
-                B_from_nu_peaks,failed=constr_B_from_nu_peaks (jet_model,self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,self.B_min,self.B_max,self.beaming,params_grid_size)
+                B_from_nu_peaks,failed=constr_B_from_nu_peaks (jet_model,self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,self.B_min,self.B_max,self.beaming,params_grid_size,silent=silent)
             else:
-                B_from_nu_peaks,failed=constr_B_from_nu_peaks (jet_model,self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,self.B_min,self.B_max,self.beaming,params_grid_size,EC=True)
+                B_from_nu_peaks,failed=constr_B_from_nu_peaks (jet_model,self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,self.B_min,self.B_max,self.beaming,params_grid_size,EC=True,silent=silent)
 
             B_par.set(val=B_from_nu_peaks)
-            print ("---> setting par type magnetic_field, corresponding to par %s"%(B_par.name))
-            print ("---> ",B_par.get_description())
-            print ()
+            if silent is False:
+                print ("---> setting par type magnetic_field, corresponding to par %s"%(B_par.name))
+                print ("---> ",B_par.get_description())
+                print ()
 
             if failed==False:
-                print ("---> best B found: ",B_par.get_description())
+                if silent is False:
+                    print ("---> best B found: ",B_par.get_description())
             else:
-                print ("---> constrain failed, B set to: ",B_par.get_description())
+                if silent is False:
+
+                    print ("---> constrain failed, B set to: ",B_par.get_description())
+                    print ()
+
+            if silent is False:
                 print ()
-                
-    
-                
-            print ()
-            print ("---> update pars for new B ")
+                print ("---> update pars for new B ")
             
             #update gmin from new B
             gmin= set_gmin_from_nu_cut_IR(self.nu_cut_IR,self.rest_frame,B_par.val,self.beaming,z_par.val)  
             if par_LE_cut_off_par is not None:
                 par_LE_cut_off_par.set(val=set_lin_log_val(par_LE_cut_off_par,gmin))
 
-                print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(par_LE_cut_off_par.name))
-                print ("---> ",par_LE_cut_off_par.get_description())
-                print ()
-         
+                if silent is False:
+                    print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(par_LE_cut_off_par.name))
+                    print ("---> ",par_LE_cut_off_par.get_description())
+                    print ()
+
             #update gamma_3p and gamma_cut from new B
             gamma_3p_Sync=find_gamma_Synch(self.nu_p_S_obs,self.rest_frame,B_par.val,self.beaming,z_par.val)
             if turn_over_par is not None:
                 _t=find_turn_over(jet_model,self.distr_e,gamma_3p_Sync)
                 turn_over_par.set(val=set_lin_log_val(turn_over_par,_t))
-                print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(turn_over_par.name))
-                print ("---> using gamma_3p_Sync=",gamma_3p_Sync)
-                print ("---> ",turn_over_par.get_description())
-                print()
+
+                if silent is False:
+                    print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(turn_over_par.name))
+                    print ("---> using gamma_3p_Sync=",gamma_3p_Sync)
+                    print ("---> ",turn_over_par.get_description())
+                    print()
                 
             
             #update gmax for New B
             gmax=find_HE_cut_off(self.distr_e,self.S_nu_max,self.rest_frame,B_par.val,self.beaming,z_par.val)
-            print ("---> gamma_max=%e from nu_max_Sync= %e, using B=%e"%(gmax,self.S_nu_max,B_par.val))
+            if silent is False:
+                print ("---> gamma_max=%e from nu_max_Sync= %e, using B=%e"%(gmax,self.S_nu_max,B_par.val))
+
             if HE_cut_off_par is not None:
                 HE_cut_off_par.set(val=set_lin_log_val(HE_cut_off_par,gmax))
 
-                print ("---> setting par type high-energy-cut-off, corresponding to par %s"%(HE_cut_off_par.name))
-                print ("---> ",HE_cut_off_par.get_description())
-                print ()
+                if silent is False:
+                    print ("---> setting par type high-energy-cut-off, corresponding to par %s"%(HE_cut_off_par.name))
+                    print ("---> ",HE_cut_off_par.get_description())
+                    print ()
             
             #update N for New B
             if N_par is not None:
                 N,ratio=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.rest_frame)
-                print ("---> setting par type electron_density, corresponding to par %s"%(N_par.name))
+                if silent is False:
+                    print ("---> setting par type electron_density, corresponding to par %s"%(N_par.name))
+
                 N_par.set(val=N)
                 
             
@@ -486,44 +523,56 @@ class ObsConstrain(object):
         
         
         #Improve R according to CD
-        print ("---> get R from Compoton Dominance (CD)")
+        if silent is False:
+            print ("---> get R from Compoton Dominance (CD)")
+
         R_start=R_tvar
         if EC_componets_list  is None:
-            R_from_CD,failed=constr_R_from_CD(jet_model,self.nuFnu_p_S_obs,self.nuFnu_p_IC_obs,self.nu_p_IC_obs,self.rest_frame,R_tvar,params_grid_size)
+            R_from_CD,failed=constr_R_from_CD(jet_model,self.nuFnu_p_S_obs,self.nuFnu_p_IC_obs,self.nu_p_IC_obs,self.rest_frame,R_tvar,params_grid_size,silent=silent)
         else:
-            R_from_CD,failed=constr_R_from_CD(jet_model,self.nuFnu_p_S_obs,self.nuFnu_p_IC_obs,self.nu_p_IC_obs,self.rest_frame,R_tvar,params_grid_size,EC=True)
+            R_from_CD,failed=constr_R_from_CD(jet_model,self.nuFnu_p_S_obs,self.nuFnu_p_IC_obs,self.nu_p_IC_obs,self.rest_frame,R_tvar,params_grid_size,EC=True,silent=silent)
 
         if failed==False:
             
 
             if R_par is not None:
-                print ("---> setting par type region_size, corresponding to par %s"%(R_par.name))
+                if silent is False:
+                    print ("---> setting par type region_size, corresponding to par %s"%(R_par.name))
                 R_par.set(val=set_lin_log_val(R_par,R_from_CD))
-                print ("---> ",R_par.get_description())
-                print ()
+
+                if silent is False:
+                    print ("---> ",R_par.get_description())
+                    print ()
 
 
                 if N_par is not None:
                     N,ratio=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.rest_frame)
-                    print ("---> setting par type electron_density, corresponding to par %s"%(N_par.name))
+
+                    if silent is False:
+                        print ("---> setting par type electron_density, corresponding to par %s"%(N_par.name))
                     N_par.set(val=N)
         else:
             R_par.set(val=set_lin_log_val(R_par,R_start))
-            print ("---> constrain failed, R unchanged: ")
-            print ("---> ",R_par.get_description())
-            print ()
+
+            if silent is False:
+                print ("---> constrain failed, R unchanged: ")
+                print ("---> ",R_par.get_description())
+                print ()
             
          
         #Check tau_gamma_gamma and t_var
         #check_gamma_tansp(jet_model,self.beaming,sp.logspace(21,28,10),self.rest_frame)
-        print ("---> t_var (days)", check_t_var(R_par.val_lin,self.beaming,z_par.val)/86400.)
+        if silent is False:
+            print ("---> t_var (days)", check_t_var(R_par.val_lin,self.beaming,z_par.val)/86400.)
     
                 
         jet_model.set_flag('obs_constrain_final')
-       
-        print ()
+
+        if silent is False:
+            print ()
         
-        print ("show pars")
+            print ("show pars")
+
         jet_model.show_pars()
         
         #sets to initial values
@@ -531,9 +580,10 @@ class ObsConstrain(object):
         #if self.nu_p_IC_obs is not None:
         jet_model.set_IC_nu_size(IC_nu_size_initial)
         jet_model.set_seed_nu_size(nu_seed_size_initial)
-        
-        
-        print ("eval_model")
+
+        if silent is False:
+           print ("eval_model")
+
         jet_model.eval(fill_SED=True)
         
         jet_model.set_flag(flag_initial)
@@ -759,7 +809,7 @@ def  find_gamma_Synch (nu_S,rest_frame,B,beaming,z):
 
 
 
-def find_gamma_3p_SSC(nu_p_S,nu_p_IC,rest_frame,gamma_3p_Sync,beaming,z,nu_p_EC_seed_field=None):
+def find_gamma_3p_SSC(nu_p_S,nu_p_IC,rest_frame,gamma_3p_Sync,beaming,z,nu_p_EC_seed_field=None,silent=False):
     """returns the value of gamma_3p from nu_p_S/nu_p_IC
 
 
@@ -791,11 +841,13 @@ def find_gamma_3p_SSC(nu_p_S,nu_p_IC,rest_frame,gamma_3p_Sync,beaming,z,nu_p_EC_
         g_TH=(4./3)*m.sqrt(nu_p_IC/nu_p_seed_blob)
     #print"--> comp_fac,gamma_TH", comp_factor,g_TH,
     comp_factor=get_Comp_factor(gamma_3p_Sync,nu_p_seed_blob)
-    print ("nu_p_seed_blob",nu_p_seed_blob)
+    if silent is False:
+        print ("nu_p_seed_blob",nu_p_seed_blob)
 
     gamma_3p_SSC_TH=g_TH
     #print "--> gamma_3p_SSC_TH",gamma_3p_SSC_TH,g_TH
-    print ("COMP FACTOR",comp_factor,gamma_3p_SSC_TH)
+    if silent is False:
+        print ("COMP FACTOR",comp_factor,gamma_3p_SSC_TH)
     
     if comp_factor>0.01:
         #print "--> correction", 0.2*pow(comp_factor,-0.45)
@@ -825,7 +877,7 @@ def get_Comp_factor(gamma,nu_p_S_blob):
 
 
 
-def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices):
+def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices,silent=False):
     """Find the index of the low-energy PL branch of n(gamma), from PL fit over various instrument bands
 
     Args:
@@ -848,7 +900,8 @@ def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices):
             if indices.get_by_name('radio_mm').val is not None:
                 radio_mm_index=indices.get_by_name('radio_mm').val.spectral
                 s_radio_mm=(1.0-2*radio_mm_index)
-                print ("---> s_radio_mm",radio_mm_index,s_radio_mm)
+                if silent is False:
+                    print ("---> s_radio_mm",radio_mm_index,s_radio_mm)
 
                 
         
@@ -857,7 +910,8 @@ def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices):
             if indices.get_by_name('X').val is not None:
                 X_index=indices.get_by_name('X').val.spectral
                 s_X=(1.0-2*X_index)
-                print ("---> s_X",s_X)
+                if silent is False:
+                    print ("---> s_X",s_X)
     
 
 
@@ -867,7 +921,8 @@ def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices):
             if indices.get_by_name('Fermi').val is not None:
                 Fermi_index=indices.get_by_name('Fermi').val.spectral
                 s_Fermi=(0.4+ Fermi_index*-1*1.60)
-                print ("---> s_Fermi",s_Fermi)
+                if silent is False:
+                   print ("---> s_Fermi",s_Fermi)
     
         
         s_UV_X=None
@@ -875,31 +930,36 @@ def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices):
             if indices.get_by_name('UV_X').val is not None:
                 UV_X_index=indices.get_by_name('UV_X').val.spectral
                 s_UV_X=(1+ UV_X_index*-1*2.0)
-                print ("---> s_UV_X",s_UV_X)
+                if silent is False:
+                    print ("---> s_UV_X",s_UV_X)
         
         s_Opt_UV=None
         if indices.get_by_name('Opt_UV') is not None:
             if indices.get_by_name('Opt_UV').val is not None:
                 Opt_UV_index=indices.get_by_name('Opt_UV').val.spectral
                 s_Opt_UV=(1 -1.0*Opt_UV_index*2.0)
-                print ("---> s_Opt_UV",Opt_UV_index,s_Opt_UV)
+                if silent is False:
+                    print ("---> s_Opt_UV",Opt_UV_index,s_Opt_UV)
         
         if class_obj=='LSP' :
             #print s_X
             if s_X is not None and s_X-3.0<0:
                 #if X_index+1.0>0.2:
                 s=s_X
-                print ("---> s from X_index",s)
+                if silent is False:
+                    print ("---> s from X_index",s)
             elif s_radio_mm is not None and s_radio_mm+2>0.0:
                 s=s_radio_mm
-                print ("---> s from radio_mm_index")
+                if silent is False:
+                    print ("---> s from radio_mm_index")
             else:   
                 s=2.0
         
         if class_obj=='ISP':
             if s_radio_mm is not None and s_radio_mm+2>0.2:
                 s=s_radio_mm
-                print ("---> s from radio_mm_index")
+                if silent is False:
+                    print ("---> s from radio_mm_index")
             else:   
                 s=2.0
         
@@ -913,7 +973,8 @@ def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices):
         
         s_SED_shape_photon=S_LE_slope-2.0
         s_SED_shape=-2.0*s_SED_shape_photon-1.0
-        print ("---> s from synch log-log fit",s_SED_shape)
+        if silent is False:
+            print ("---> s from synch log-log fit",s_SED_shape)
 
         if class_obj=='HSP':
            
@@ -928,25 +989,29 @@ def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices):
                 
             if s_Fermi is not None and s_UV is not None:
                 s=(s_Fermi +s_UV )/(2.0)
-                print ("---> s from (s_Fermi + s_UV)/2")
+                if silent is False:
+                    print ("---> s from (s_Fermi + s_UV)/2")
             elif s_UV is not None :
                 s=s_UV
-                print ("---> s from  s_UV")
+                if silent is False:
+                    print ("---> s from  s_UV")
 
             elif s_Fermi is not None :
                 s=s_Fermi
-                print ("---> s from Fermi")
+                if silent is False:
+                    print ("---> s from Fermi")
 
             
             elif s_radio_mm is not None :
                 s=s_radio_mm
-                print ("---> s from radio_mm")
+                if silent is False:
+                    print ("---> s from radio_mm")
 
             else:
-                s=2.0 
-   
-    print ("---> power-law index s, class obj=%s s chosen is %f"%(class_obj,s))
-    #print s_mm, s_X, s_Fermi, s
+                s=2.0
+    if silent is False:
+        print ("---> power-law index s, class obj=%s s chosen is %f"%(class_obj,s))
+
     return s_radio_mm, s_X, s_Fermi, s
 
 
@@ -1039,7 +1104,7 @@ def get_U_Sync_from_Ph(jet,re_eval_sync=False):
     return BlazarSED.Uph_Sync(jet.blob)
 
 
-def check_boundaries(val,val_min,val_max,val_name):
+def check_boundaries(val,val_min,val_max,val_name,silent=False):
     failed=False
     if val<val_min or val>val_max:
         failed=True
@@ -1049,8 +1114,9 @@ def check_boundaries(val,val_min,val_max,val_name):
         elif val>val_max:
             val=val_max
         print ("     Best %s not found, (temporary set to %e)"%(val_name,val))
-    else:        
-        print ("     Best %s=%e"%(val_name,val))
+    else:
+        if silent is False:
+            print ("     Best %s=%e"%(val_name,val))
 
     return val,failed
 
@@ -1063,7 +1129,7 @@ def set_lin_log_val(p,v):
 
     return v
 
-def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_grid_size,EC=False):
+def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_grid_size,EC=False,silent=False):
     #################################
     # This function must not        #
     # change jet.blob attributes    #
@@ -1120,7 +1186,7 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
     best_R=polyval(p,n.log10(CD_obs))
     
     Best_R=n.power(10.,best_R)
-    Best_R,failed=check_boundaries(Best_R,R_min,R_max,'R')
+    Best_R,failed=check_boundaries(Best_R,R_min,R_max,'R',silent=silent)
     
     jet.set_flag(flag_initial)
 
@@ -1131,7 +1197,7 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
 
 
 
-def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,params_grid_size,EC=False):
+def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,params_grid_size,EC=False,silent=False):
     #################################
     # This function must not        #
     # change jet.blob attributes    #
@@ -1194,7 +1260,7 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
     
     Best_B=polyval(p,n.log10(nu_p_IC))
     Best_B = n.power(10., Best_B)
-    Best_B,failed = check_boundaries(Best_B, B_min, B_max, 'B')
+    Best_B,failed = check_boundaries(Best_B, B_min, B_max, 'B',silent=silent)
     
     
     #REST CHANGED VALUES
