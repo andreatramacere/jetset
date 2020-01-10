@@ -406,8 +406,10 @@ class FitModel(Model):
 
         _keep_member_list = ['model_type',
                              'name',
-                             # TODO 'parameters' removed  form _keep_member_list because we need to improve parmeter serilization in order to handle _blob member
-                             #'parameters'
+                             # 'parameters' removed  form _keep_member_list because
+                             # parmeter serilization is handlde separtely to get rid of the _blob member
+                             # that is not serializable
+                             # do not add 'parameters' !!!
                              'SED',
                              '_scale',
                              'nu_size',

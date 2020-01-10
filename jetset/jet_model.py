@@ -1121,17 +1121,19 @@ class Jet(Model):
         _model['spectral_components_state'] = [c.state for c in self.spectral_components_list]
         _model['EC_components_name'] = self.EC_components_list
         _model['basic_components_name'] = self.basic_components_list
-        # _model['EC_components_state'] = [c.state for c in self.spectral_components_list]
         _model['cosmo'] = self.cosmo
 
         _model['pars'] = {}
-
-        #for p in self.parameters.par_array:
-        #    _dict_value={}
-
-        #    _model['pars'][p.name] = p.val
-
         _model['pars']=self.parameters._serialize_pars()
+
+        _model['internal_pars'] = {}
+        _model['internal_pars']['nu_size'] = self.nu_size
+        _model['internal_pars']['nu_seed_size'] = self.nu_seed_size
+        _model['internal_pars']['gamma_grid_size'] = self.gamma_grid_size
+        _model['internal_pars']['IC_nu_size']=self.IC_nu_size
+        _model['internal_pars']['nu_min']=self.nu_min
+        _model['internal_pars']['nu_max']=self.nu_max
+        _model['internal_pars']['Norm_distr'] = self.Norm_distr
         return _model
 
     def save_model(self,file_name):
@@ -1162,14 +1164,15 @@ class Jet(Model):
 
         self.set_emitting_region(str(_model['beaming_expr']))
         self.set_electron_distribution(str(_model['electron_distribution']))
+
         _par_dict = _model['pars']
-
-
-
         self.parameters._decode_pars(_par_dict)
-        #for k in _par_dict.keys():
-        #    # print ('set', k,_par_dict[k])
-        #    self.set_par(par_name=str(k), val=_par_dict[str(k)])
+
+        _par_dict = _model['internal_pars']
+        for k in _par_dict.keys():
+            print ('set', k,_par_dict[k])
+            setattr(self,k,_par_dict[str(k)])
+            #self.set_par(par_name=str(k), val=_par_dict[str(k)])
 
 
     @classmethod
@@ -1847,6 +1850,10 @@ class Jet(Model):
     def gamma_grid_size(self):
         return self._blob.gamma_grid_size
 
+    @gamma_grid_size.setter
+    def gamma_grid_size(self,val):
+        self.electron_distribution.set_grid_size(gamma_grid_size=val)
+
     @property
     def nu_min(self):
         return self._get_nu_min_grid()
@@ -1862,11 +1869,18 @@ class Jet(Model):
 
     def _set_nu_min_grid(self, val):
         self._blob.nu_start_grid=val
-
     @property
     def Norm_distr(self):
         return self._blob.Norm_distr
 
+    @Norm_distr.setter
+    def Norm_distr(self, val):
+        if val == 1:
+            self._blob.Norm_distr = val
+        elif val == 0:
+            self._blob.Norm_distr = val
+        else:
+            raise RuntimeError('value', val, 'not allowed, allowed 0 or 1')
 
     def switch_Norm_distr_ON(self):
         self._blob.Norm_distr=1
@@ -1888,6 +1902,9 @@ class Jet(Model):
 
     def _get_nu_max_grid(self):
         return  self._blob.nu_stop_grid
+
+    def set_nu_grid_size(self,size):
+        self.nu_size=size
 
     @property
     def nu_size(self):
@@ -1999,6 +2016,7 @@ class Jet(Model):
         print (" electron energy grid size: ",self.gamma_grid_size)
         print (" gmin grid : %e"%self._blob.gmin_griglia)
         print (" gmax grid : %e"%self._blob.gmax_griglia)
+        print (" normalization",self.Norm_distr)
         print('')
         print('radiative fields:')
         print (" seed photons grid size: ", self.nu_seed_size)
