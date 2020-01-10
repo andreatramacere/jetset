@@ -222,7 +222,7 @@ def build_emitting_region_dic(beaming_expr='delta'):
     """
     
     model_dic={}
-    model_dic['R']=JetModelDictionaryPar(ptype='region_size',vmin=0,vmax=1E30,punit='cm',froz=False,log=False)
+    model_dic['R']=JetModelDictionaryPar(ptype='region_size',vmin=1E3,vmax=1E30,punit='cm',froz=False,log=False)
     #    ['region_size',0,30,'cm',False,True]
     model_dic['R_H'] = JetModelDictionaryPar(ptype='region_position',vmin=0,vmax=None,punit='cm',froz=True)
     #['region_position', 0, None, 'cm']
@@ -1170,7 +1170,7 @@ class Jet(Model):
 
         _par_dict = _model['internal_pars']
         for k in _par_dict.keys():
-            print ('set', k,_par_dict[k])
+            #print ('set', k,_par_dict[k])
             setattr(self,k,_par_dict[str(k)])
             #self.set_par(par_name=str(k), val=_par_dict[str(k)])
 
@@ -1992,6 +1992,8 @@ class Jet(Model):
         print(" electron energy grid size: ", self.gamma_grid_size)
         print(" gmin grid : %e" % self._blob.gmin_griglia)
         print(" gmax grid : %e" % self._blob.gmax_griglia)
+        print(" normalization ", self.Norm_distr>0)
+        print(" log-values ", self._electron_distribution_log_values)
         print('')
         self.parameters.par_array.sort(key=lambda x: x.name, reverse=False)
 
@@ -2016,7 +2018,8 @@ class Jet(Model):
         print (" electron energy grid size: ",self.gamma_grid_size)
         print (" gmin grid : %e"%self._blob.gmin_griglia)
         print (" gmax grid : %e"%self._blob.gmax_griglia)
-        print (" normalization",self.Norm_distr)
+        print(" normalization ", self.Norm_distr>0)
+        print(" log-values ", self._electron_distribution_log_values)
         print('')
         print('radiative fields:')
         print (" seed photons grid size: ", self.nu_seed_size)
@@ -2272,18 +2275,24 @@ class Jet(Model):
             else:
                 raise RuntimeWarning('enegetic name %s not understood'%_n)
             self.energetic_dict[_n]=getattr(_energetic, _n)
+
             _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
+
+            self.energetic_report_table = _par_array.par_table
+            self.energetic_report_table.remove_columns(['log','frozen','phys. bound. min','phys. bound. max'])
+            self.energetic_report_table.rename_column('par type','type')
+
+        self._energetic_report = self.energetic_report_table.pformat_all()
 
         if  verbose is True:
             print("-----------------------------------------------------------------------------------------")
             print("jet eneregetic report:")
-            self._energetic_report = _par_array.show_pars(getstring=False)
+            self.energetic_report_table.pprint_all()
             print("-----------------------------------------------------------------------------------------")
 
 
-        self._energetic_report=_par_array.show_pars(getstring=getstring)
 
-        self.energetic_report_table=_par_array.par_table
+
 
         if write_file==True:
 

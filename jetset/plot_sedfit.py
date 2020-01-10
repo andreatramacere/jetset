@@ -30,7 +30,7 @@ from .output import section_separator,WorkPlace
 from .utils import *
 
 import numpy as np
-
+import  os
 
 __all__=['PlotSED']
 
@@ -585,10 +585,18 @@ class  PlotSED (object):
         self.PLT.redraw()
 
 
-    def save(self,filename):
-        outfile=self.out_dir+'/'+filename
-        self.fig.savefig(outfile)
+    def save(self,filename=None):
 
+
+        if filename is None:
+            wd=self.out_dir
+            filename = 'jetset_fig.png'
+
+        else:
+            wd=''
+
+        outname = os.path.join(wd,filename)
+        self.fig.savefig(outname)
 
     def show(self):
         self.fig.show()
