@@ -163,15 +163,19 @@ class FitResults(object):
                 raise(RuntimeWarning,'problem in formatting text for report',e)
 
     
-    def save_report(self,wd=None,name=None):
-        if wd is None:
-            wd=self.wd
-        
+    def save_report(self,name=None):
+
         if name is None:
-            name='best_fit_report_%s'%self.name+'.txt'
-        
-            
-        outname='%s/%s'%(wd,name)
+            wd=self.wd
+            name = 'best_fit_report_%s' % self.name + '.txt'
+
+        else:
+            wd=''
+            name = 'best_fit_report_%s' % self.name + '.txt'
+
+
+
+        outname = os.path.join(wd,name)
          
         outfile=open(outname,'w')
     
@@ -217,10 +221,10 @@ class ModelMinimizer(object):
 
 
     def _prepare_fit(self,fit_Model,sed_data,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,use_facke_err=False,use_UL=False):
-
+        #print('--> DEBUG WorkPlace.flag',WorkPlace.flag,fit_workplace)
         if fitname is None:
-            fitname = fit_Model.name + '_' + WorkPlace.flag
-
+            fitname = fit_Model.name
+            #print('--> DEBUG ')
 
         if fit_workplace is None:
             fit_workplace = WorkPlace()

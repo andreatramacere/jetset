@@ -19,7 +19,7 @@ import numpy as np
 import copy
 import  traceback
 import  sys
-
+from astropy.table import Table
 
 __all__=['filter_interval','find_E0','IC_fit_range','index','index_array','index_typecasting','peak_values',
          'SEDShape','spectral_index_range','sync_fit_range']
@@ -444,12 +444,12 @@ class SEDShape(object):
         _dt.append(('nuFnu_p_IC_err', 'f8'))
         _v.extend([self.IC_peak.nuFnu_p_val, self.IC_peak.nuFnu_p_err])
 
-        print(_v,_dt)
 
         _out=np.zeros(1,dtype=_dt)
-        print(_out)
         _out[0]=tuple(_v)
-        np.save(name,_out)
+
+        t=Table(_out)
+        t.write(name,overwrite=True)
 
     def eval_indices(self,minimizer='lsb',silent=True,show_fit_report=False):
         """

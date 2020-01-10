@@ -19,7 +19,7 @@ def data():
 def spectral_indices(sed_data):
     from jetset.sed_shaper import SEDShape
 
-    sed_data=data()
+
 
 
 
@@ -39,11 +39,14 @@ def sed_shaper(my_shape):
                                      fit_range=[10, 21])
 
     best_fit.show_report()
+    best_fit.save_report('synch_shape_fit_rep.txt')
 
-    my_shape.IC_fit(fit_range=[23, 29], minimizer='minuit')
+    mm, best_fit= my_shape.IC_fit(fit_range=[23, 29], minimizer='minuit')
     p = my_shape.plot_shape_fit()
     p.rescale(y_min=-15)
-
+    best_fit.show_report()
+    best_fit.save_report('IC_shape_fit_rep.txt')
+    my_shape.save_values('sed_shape_values.ecsv')
     return my_shape
 
 def model_constr(my_shape):
@@ -75,7 +78,7 @@ def model_fit_lsb(sed_data,):
     fit_model.parameters.gmax.fit_range = [1E4, 1E8]
     model_minimizer_lsb, best_fit_lsb = fit_SED(fit_model, sed_data, 10.0 ** 11, 10 ** 29.0, fitname='SSC-best-fit',
                                                 minimizer='lsb')
-    #
+    fit_model.save_model('fit_model_minuit.dat')
 
 def model_fit_minuit(sed_data):
     from jetset.minimizer import fit_SED
@@ -93,10 +96,20 @@ def model_fit_minuit(sed_data):
     model_minimizer_minuit, best_fit_minuit = fit_SED(fit_model, sed_data, 10.0 ** 11, 10 ** 29.0,
                                                       fitname='SSC-best-fit', minimizer='minuit', loglog=False)
 
+    fit_model.save_model('fit_model_minuit.dat')
+
 def test_full():
+
     sed_data=data()
+    print('done')
     my_shape=spectral_indices(sed_data)
+    print('done')
     my_shape=sed_shaper(my_shape)
-    prefit_jet=model_constr(my_shape)
-    model_fit_lsb(sed_data)
-    model_fit_minuit(sed_data)
+    print('done')
+    #prefit_jet=model_constr(my_shape)
+    print('done')
+    #model_fit_lsb(sed_data)
+    #model_fit_minuit(sed_data)
+
+
+test_full()
