@@ -65,10 +65,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -169,10 +169,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/user_guide.html">user guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -321,7 +321,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#jetset.plot_sedfit.PlotSED.rescale_res" title="jetset.plot_sedfit.PlotSED.rescale_res"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rescale_res</span></code></a>([x_min, x_max, y_min, y_max])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#jetset.plot_sedfit.PlotSED.save" title="jetset.plot_sedfit.PlotSED.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(filename)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#jetset.plot_sedfit.PlotSED.save" title="jetset.plot_sedfit.PlotSED.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>([filename])</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#jetset.plot_sedfit.PlotSED.set_plot_axis_labels" title="jetset.plot_sedfit.PlotSED.set_plot_axis_labels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_plot_axis_labels</span></code></a>()</p></td>
@@ -341,7 +341,7 @@
 <p class="rubric">Methods Documentation</p>
 <dl class="method">
 <dt id="jetset.plot_sedfit.PlotSED.add_data_plot">
-<code class="sig-name descname">add_data_plot</code><span class="sig-paren">(</span><em class="sig-param">sed_data</em>, <em class="sig-param">label=None</em>, <em class="sig-param">color=None</em>, <em class="sig-param">autoscale=True</em>, <em class="sig-param">fmt='o'</em>, <em class="sig-param">ms=4</em>, <em class="sig-param">mew=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/plot_sedfit.html#PlotSED.add_data_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.plot_sedfit.PlotSED.add_data_plot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_data_plot</code><span class="sig-paren">(</span><em class="sig-param">sed_data</em>, <em class="sig-param">label=None</em>, <em class="sig-param">color=None</em>, <em class="sig-param">autoscale=True</em>, <em class="sig-param">fmt='o'</em>, <em class="sig-param">ms=4</em>, <em class="sig-param">mew=0.5</em>, <em class="sig-param">fit_range=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/plot_sedfit.html#PlotSED.add_data_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.plot_sedfit.PlotSED.add_data_plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -416,7 +416,7 @@
 
 <dl class="method">
 <dt id="jetset.plot_sedfit.PlotSED.save">
-<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/plot_sedfit.html#PlotSED.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.plot_sedfit.PlotSED.save" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jetset/plot_sedfit.html#PlotSED.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jetset.plot_sedfit.PlotSED.save" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

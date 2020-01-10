@@ -326,10 +326,11 @@ class ObsData(object):
 
         if cosmo is None:
             if hasattr(data_table,'cosmo'):
-               self.cosmo=data_table.cosmo
+                self.cosmo=data_table.cosmo
             else:
-
-                self.cosmo=cosmo
+                self.cosmo=Cosmo()
+        else:
+            self.cosmo=cosmo
 
         self.UL_value=UL_value
         self.UL_filtering=UL_filtering

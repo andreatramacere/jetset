@@ -62,11 +62,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model physical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -151,11 +151,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model physical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -242,10 +242,20 @@
 
 <span class="kn">from</span> <span class="nn">.plot_sedfit</span> <span class="kn">import</span>  <span class="n">PlotSED</span>
 
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span>  <span class="n">clean_var_name</span>
+
+<span class="kn">from</span> <span class="nn">.jet_model</span> <span class="kn">import</span> <span class="n">Jet</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">import</span>  <span class="nn">pickle</span>
 
 <span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;FitModel&#39;</span><span class="p">]</span>
 
+<span class="k">class</span> <span class="nc">ModelComoponentContainer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
 
 <div class="viewcode-block" id="FitModel"><a class="viewcode-back" href="../../api/jetset.model_manager.FitModel.html#jetset.model_manager.FitModel">[docs]</a><span class="k">class</span> <span class="nc">FitModel</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
     
@@ -319,8 +329,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">flux_plot_lim</span><span class="o">=</span><span class="mf">1E-30</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">=</span><span class="p">[]</span>    
-        
+        <span class="bp">self</span><span class="o">.</span><span class="n">components_list</span><span class="o">=</span><span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">=</span><span class="n">ModelComoponentContainer</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">=</span><span class="n">ModelParameterArray</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">elec_distr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -362,7 +374,7 @@
         <span class="n">line_style</span><span class="o">=</span><span class="s1">&#39;--&#39;</span>
 
 
-        <span class="k">for</span> <span class="n">mc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">mc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components_list</span><span class="p">:</span>
             <span class="n">comp_label</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">name</span>
             <span class="c1">#print (&#39;comp_label&#39;,comp_label,mc.SED)</span>
             <span class="k">try</span><span class="p">:</span>
@@ -399,7 +411,7 @@
         <span class="k">if</span> <span class="n">nu_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">nu_max</span><span class="o">=</span><span class="n">nu_max</span>
         
-        <span class="k">for</span> <span class="n">model_comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">model_comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components_list</span><span class="p">:</span>
         
             <span class="k">if</span> <span class="n">nu_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">model_comp</span><span class="o">.</span><span class="n">nu_size</span><span class="o">=</span><span class="n">nu_size</span>
@@ -412,7 +424,7 @@
 
 <div class="viewcode-block" id="FitModel.add_component"><a class="viewcode-back" href="../../api/jetset.model_manager.FitModel.html#jetset.model_manager.FitModel.add_component">[docs]</a>    <span class="k">def</span> <span class="nf">add_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">moldel_comp</span><span class="p">):</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">moldel_comp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">components_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">moldel_comp</span><span class="p">)</span>
         
         <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">moldel_comp</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">par_array</span><span class="p">:</span>
             
@@ -422,9 +434,10 @@
                 
             <span class="c1">#    par.set(fit_range=fit_range)</span>
                 
-            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">par</span><span class="p">)</span></div>
-        
-        
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">add_par</span><span class="p">(</span><span class="n">par</span><span class="p">)</span>
+
+        <span class="c1">#print(&#39;--&gt;&#39;, self.components, moldel_comp.name, moldel_comp)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">,</span>  <span class="n">clean_var_name</span><span class="p">(</span><span class="n">moldel_comp</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">moldel_comp</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="FitModel.show_pars"><a class="viewcode-back" href="../../api/jetset.model_manager.FitModel.html#jetset.model_manager.FitModel.show_pars">[docs]</a>    <span class="k">def</span> <span class="nf">show_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -435,7 +448,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="FitModel.show_model"><a class="viewcode-back" href="../../api/jetset.model_manager.FitModel.html#jetset.model_manager.FitModel.show_model">[docs]</a>    <span class="k">def</span> <span class="nf">show_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components_list</span><span class="p">:</span>
             <span class="n">c</span><span class="o">.</span><span class="n">show_model</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="FitModel.freeze"><a class="viewcode-back" href="../../api/jetset.model_manager.FitModel.html#jetset.model_manager.FitModel.freeze">[docs]</a>    <span class="k">def</span> <span class="nf">freeze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par_name</span><span class="p">):</span>
@@ -561,7 +574,7 @@
         
         
         
-        <span class="k">for</span> <span class="n">model_comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">model_comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components_list</span><span class="p">:</span>
             
             <span class="c1">#print &quot;model&quot;,model_comp.name</span>
             
@@ -588,11 +601,68 @@
         
         <span class="k">else</span><span class="p">:</span>
             
-            <span class="k">return</span> <span class="kc">None</span></div></div>
+            <span class="k">return</span> <span class="kc">None</span></div>
 
 
 
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_build_serializable</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="nf">save_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">file_name</span><span class="p">):</span>
+        <span class="n">c</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_serializable</span><span class="p">()</span>
+
+        <span class="n">c</span><span class="o">.</span><span class="n">_serialized_model_list</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_m</span><span class="p">,</span><span class="n">Jet</span><span class="p">):</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">_serialized_model_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">_m</span><span class="o">.</span><span class="n">_serialize_model</span><span class="p">(),</span><span class="n">_m</span><span class="o">.</span><span class="n">model_type</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">_serialized_model_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">_m</span><span class="p">,</span><span class="n">_m</span><span class="o">.</span><span class="n">model_type</span><span class="p">])</span>
+
+
+        <span class="n">_keep_member_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;model_type&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;name&#39;</span><span class="p">,</span>
+                             <span class="c1"># &#39;parameters&#39; removed  form _keep_member_list because</span>
+                             <span class="c1"># parmeter serilization is handlde separtely to get rid of the _blob member</span>
+                             <span class="c1"># that is not serializable</span>
+                             <span class="c1"># do not add &#39;parameters&#39; !!!</span>
+                             <span class="s1">&#39;SED&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;_scale&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;nu_size&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;nu_min&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;nu_max&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;sed_data&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;nu_min_fit&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;nu_max_fit&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;fitname&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;flux_plot_lim&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;cosmo&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">km</span> <span class="ow">in</span> <span class="n">_keep_member_list</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">km</span><span class="p">,</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">km</span><span class="p">))</span>
+
+
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+
+        <span class="c1">#self.components = _components</span>
+        <span class="c1">#self.components_list = _components_list</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+        <span class="c1">#c=cls()</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">_m</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">_serialized_model_list</span><span class="p">:</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="n">_m</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;jet&#39;</span><span class="p">:</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">Jet</span><span class="p">()</span>
+                <span class="n">j</span><span class="o">.</span><span class="n">_decode_model</span><span class="p">(</span><span class="n">_m</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+                <span class="n">c</span><span class="o">.</span><span class="n">add_component</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">add_component</span><span class="p">(</span><span class="n">_m</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">c</span></div>
 </pre></div>
 
     </div>

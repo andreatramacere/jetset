@@ -23,6 +23,10 @@ from numpy import log10,array,zeros,power,shape
 
 from scipy.interpolate import interp1d
 from astropy.table import Table
+import warnings
+import inspect
+
+
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
@@ -49,8 +53,43 @@ from .cosmo_tools import Cosmo
 
 from .utils import *
 
+
 __all__=['Jet','JetParameter','JetSpecComponent','ElectronDistribution','build_emitting_region_dic',
          'build_ExtFields_dic']
+
+
+
+class NoTraceBackWithLineNumber(Exception):
+    def __init__(self, msg):
+        try:
+            ln = sys.exc_info()[-1].tb_lineno
+        except AttributeError:
+            ln = inspect.currentframe().f_back.f_lineno
+        self.args = "{0.__name__} (line {1}): {2}".format(type(self), ln, msg),
+        sys.exit(self)
+
+def new_version_warning():
+    m = '\n\n' + '*'*80 + '\n'
+    m+= 'Starting from version 1.1.0, the R parameter as default is linear \nand not logarithmic, please update your scripts\n'
+    m+= 'Also the format of the jet_model has changed, now it is a binary file.\n'
+    m+= '*' * 80 + '\n'
+    warnings.warn(m)
+
+
+def old_model_warning():
+    m = '\n\n' + '*'*80 + '\n'
+    m+= 'you are loading a model supported for version<1.1.0, starting from version 1.1.0 \n'
+    m+= 'the saved model has changed,  plase update to the new model the new format, \n'
+    m += 'by saving it with this version\n'
+    m+= '*' * 80 + '\n'
+    warnings.warn(m)
+
+class JetkerneltException(NoTraceBackWithLineNumber):
+
+    def __init__(self, message='Remote analysis exception', debug_message=''):
+        super(JetkerneltException, self).__init__(message)
+        self.message=message
+        self.debug_message=debug_message
 
 
 def str_hook(pairs):
@@ -64,12 +103,6 @@ def str_hook(pairs):
     return dict(new_pairs)
 
 
-class JetkerneltException(Exception):
-
-    def __init__(self, message='Remote analysis exception', debug_message=''):
-        super(JetkerneltException, self).__init__(message)
-        self.message=message
-        self.debug_message=debug_message
 
 def safe_run(func):
 
@@ -80,7 +113,10 @@ def safe_run(func):
            message =  'the jetkernel failed\n'
            message += '\n exception message: '
            message += '%s'%e
+           new_version_warning()
+
            raise JetkerneltException(message=message)
+
 
     return func_wrapper
 
@@ -155,6 +191,8 @@ class JetParameter(ModelParameter):
         
         
     #OVERRIDES Base Method
+
+    @safe_run
     def set(self,**keywords):
         """        
         overrides the  :meth:`.ModelParameter.set` method in order to propagate the
@@ -1174,13 +1212,52 @@ class Jet(Model):
             setattr(self,k,_par_dict[str(k)])
             #self.set_par(par_name=str(k), val=_par_dict[str(k)])
 
+    @classmethod
+    def load_old_model(cls, file_name):
+
+        old_model_warning()
+        jet = cls()
+        with open(file_name, 'r') as infile:
+            _model = json.load(infile)
+
+        # print ('_model',_model)
+
+        jet.model_type = 'jet'
+
+        jet.init_BlazarSED()
+        jet.parameters = ModelParameterArray()
+
+        jet.set_electron_distribution(str(_model['electron_distribution']))
+
+        for c in jet.basic_components_list:
+            if c not in _model['basic_components_name']:
+                jet.del_spectral_component(c)
+
+        jet.add_EC_component(_model['EC_components_name'])
+
+        for ID, c in enumerate(_model['spectral_components_name']):
+            comp = getattr(jet.spectral_components, c)
+            if comp._state_dict != {}:
+                comp.state = _model['spectral_components_state'][ID]
+
+        jet.SED = jet.get_spectral_component_by_name('Sum').SED
+
+        jet.set_emitting_region(str(_model['beaming_expr']))
+        jet.set_electron_distribution(str(_model['electron_distribution']))
+        _par_dict = _model['pars']
+        jet.show_pars()
+        for k in _par_dict.keys():
+            # print ('set', k,_par_dict[k])
+            jet.set_par(par_name=str(k), val=_par_dict[str(k)])
+
+        jet.eval()
+        return jet
 
     @classmethod
+    @safe_run
     def load_model(cls,file_name):
-        #TODO update to  changes in spectral components
 
-        #with open(file_name, 'r') as infile:
-        #    _model = json.load(infile)
+
 
         _model=pickle.load( open(file_name, "rb" ) )
         jet = cls()

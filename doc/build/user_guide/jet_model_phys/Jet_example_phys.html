@@ -64,11 +64,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html">user guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model: physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model physical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -121,11 +121,11 @@
 <li><a class="reference internal" href="#evaluate-and-plot-the-model">evaluate and plot the model</a></li>
 <li><a class="reference internal" href="#comparing-models-on-the-same-plot">comparing models on the same plot</a></li>
 <li><a class="reference internal" href="#saving-a-plot">saving a plot</a></li>
-<li><a class="reference internal" href="#saving-and-lodaing-a-model">saving and lodaing a model</a></li>
+<li><a class="reference internal" href="#saving-and-loading-a-model">saving and loading a model</a></li>
 <li><a class="reference internal" href="#switching-on-off-the-particle-distribution-normalization">switching on/off the particle distribution normalization</a></li>
 <li><a class="reference internal" href="#setting-the-particle-density-from-observed-fluxes-or-luminosities">setting the particle density from observed Fluxes or Luminosities</a></li>
 <li><a class="reference internal" href="#accessing-individual-spectral-components">accessing individual spectral components</a></li>
-<li><a class="reference internal" href="#getting-an-energetic-report">Getting an energetic report</a></li>
+<li><a class="reference internal" href="#energetic-report">Energetic report</a></li>
 <li><a class="reference internal" href="#external-compton">External Compton</a><ul>
 <li><a class="reference internal" href="#broad-line-region">Broad Line Region</a></li>
 <li><a class="reference internal" href="#change-disk-type">change Disk type</a></li>
@@ -135,6 +135,7 @@
 <li><a class="reference internal" href="#ic-against-the-cmb">IC against the CMB</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#equipartition">Equipartition</a></li>
 </ul>
 </li>
 </ul>
@@ -193,11 +194,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html">user guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model: physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model physical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -245,25 +246,26 @@
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html">user guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model: physical setup</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model physical setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#basic-setup">basic setup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setting-the-parameters">setting the parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#investigating-the-electron-distribution">investigating the electron distribution</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#evaluate-and-plot-the-model">evaluate and plot the model</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#comparing-models-on-the-same-plot">comparing models on the same plot</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#saving-a-plot">saving a plot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#saving-and-lodaing-a-model">saving and lodaing a model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#saving-and-loading-a-model">saving and loading a model</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#switching-on-off-the-particle-distribution-normalization">switching on/off the particle distribution normalization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setting-the-particle-density-from-observed-fluxes-or-luminosities">setting the particle density from observed Fluxes or Luminosities</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#accessing-individual-spectral-components">accessing individual spectral components</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#getting-an-energetic-report">Getting an energetic report</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#energetic-report">Energetic report</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#external-compton">External Compton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equipartition">Equipartition</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -283,7 +285,7 @@
       
   <div class="section" id="physical-setup">
 <span id="jet-physical-guide"></span><h1>physical setup<a class="headerlink" href="#physical-setup" title="Permalink to this headline">¶</a></h1>
-<p>In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet" title="jetset.jet_model.Jet"><code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code></a> class from the <a class="reference internal" href="../../api/jet_model.html#module-jetset.jet_model" title="jetset.jet_model"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jet_model</span></code></a> module. to This class thorough a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compton processes.</p>
+<p>In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet" title="jetset.jet_model.Jet"><code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code></a> class from the <a class="reference internal" href="../../api/jet_model.html#module-jetset.jet_model" title="jetset.jet_model"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jet_model</span></code></a> module. to This class through a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compton fdsfsd processes.</p>
 <div class="section" id="basic-setup">
 <h2>basic setup<a class="headerlink" href="#basic-setup" title="Permalink to this headline">¶</a></h2>
 <p>A jet instance can be built using the  the <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet" title="jetset.jet_model.Jet"><code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code></a> class, istanciating the object in the following way:</p>
@@ -314,6 +316,7 @@
 <span class="n">bkn_pile_up</span><span class="p">:</span> <span class="n">broken</span> <span class="n">powerlaw</span> <span class="ow">and</span> <span class="n">pileup</span>
 </pre></div>
 </div>
+<p>to view all the paramters:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -325,8 +328,8 @@
                <span class="n">s</span>   <span class="n">LE_spectral_slope</span>                                <span class="mf">2.0</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
                <span class="n">r</span>  <span class="n">spectral_curvature</span>                                <span class="mf">0.4</span>            <span class="o">-</span><span class="mf">15.0</span>               <span class="mf">15.0</span> <span class="kc">False</span>  <span class="kc">False</span>
 <span class="n">gamma0_log_parab</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>            <span class="mf">10000.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">15.698970004336019</span>              <span class="mf">0.0</span>                 <span class="mi">30</span>  <span class="kc">True</span>  <span class="kc">False</span>
-             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">5000000000000000.0</span>           <span class="mf">1000.0</span>              <span class="mf">1e+30</span> <span class="kc">False</span>  <span class="kc">False</span>
+             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>   <span class="kc">True</span>
                <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
         <span class="n">beam_obj</span>             <span class="n">beaming</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>               <span class="mf">10.0</span>           <span class="mf">0.0001</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
           <span class="n">z_cosm</span>            <span class="n">redshift</span>                                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
@@ -337,7 +340,7 @@
 </pre></div>
 </div>
 <i>Table length=11</i>
-<table id="table47686602192" class="table-striped table-bordered table-condensed">
+<table id="table47805559120" class="table-striped table-bordered table-condensed">
 <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
 <thead><tr><th>str16</th><th>str19</th><th>object</th><th>float64</th><th>float64</th><th>object</th><th>bool</th><th>bool</th></tr></thead>
 <tr><td>N</td><td>electron_density</td><td>1 / cm3</td><td>100.0</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
@@ -346,15 +349,12 @@
 <tr><td>s</td><td>LE_spectral_slope</td><td></td><td>2.0</td><td>-10.0</td><td>10.0</td><td>False</td><td>False</td></tr>
 <tr><td>r</td><td>spectral_curvature</td><td></td><td>0.4</td><td>-15.0</td><td>15.0</td><td>False</td><td>False</td></tr>
 <tr><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>10000.0</td><td>1.0</td><td>1000000000.0</td><td>False</td><td>False</td></tr>
-<tr><td>R</td><td>region_size</td><td>cm</td><td>15.698970004336019</td><td>0.0</td><td>30</td><td>True</td><td>False</td></tr>
-<tr><td>R_H</td><td>region_position</td><td>cm</td><td>1e+17</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
+<tr><td>R</td><td>region_size</td><td>cm</td><td>5000000000000000.0</td><td>1000.0</td><td>1e+30</td><td>False</td><td>False</td></tr>
+<tr><td>R_H</td><td>region_position</td><td>cm</td><td>1e+17</td><td>0.0</td><td>None</td><td>False</td><td>True</td></tr>
 <tr><td>B</td><td>magnetic_field</td><td>G</td><td>0.1</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
 <tr><td>beam_obj</td><td>beaming</td><td>Lorentz-factor*</td><td>10.0</td><td>0.0001</td><td>None</td><td>False</td><td>False</td></tr>
 <tr><td>z_cosm</td><td>redshift</td><td></td><td>0.1</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
-</table><p>this means that you can easily convert the values in the table using the
-units module of astropy. <strong>Please note, that the table is built on the
-fly from the</strong> :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>.ModelParameterArray <strong>and each modificatio you
-do to this table will not be reflected on the actual parameters values</strong></p>
+</table><p>this means that you can easily convert the values in the table using the units module of astropy. <strong>Please note, that the table is built on the fly from the</strong>  :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>.ModelParameterArray <strong>and each modification you do to this table will not be reflected on the actual parameters values</strong></p>
 <p>To get a full description of the model you can use the instruction</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">show_model</span><span class="p">()</span>
 </pre></div>
@@ -369,6 +369,8 @@ do to this table will not be reflected on the actual parameters values</strong><
  <span class="n">electron</span> <span class="n">energy</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">1001</span>
  <span class="n">gmin</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">2.000000e+00</span>
  <span class="n">gmax</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">1.000000e+06</span>
+ <span class="n">normalization</span>  <span class="kc">True</span>
+ <span class="n">log</span><span class="o">-</span><span class="n">values</span>  <span class="kc">False</span>
 
 <span class="n">radiative</span> <span class="n">fields</span><span class="p">:</span>
  <span class="n">seed</span> <span class="n">photons</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">100</span>
@@ -395,16 +397,22 @@ do to this table will not be reflected on the actual parameters values</strong><
                <span class="n">s</span>   <span class="n">LE_spectral_slope</span>                                <span class="mf">2.0</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
                <span class="n">r</span>  <span class="n">spectral_curvature</span>                                <span class="mf">0.4</span>            <span class="o">-</span><span class="mf">15.0</span>               <span class="mf">15.0</span> <span class="kc">False</span>  <span class="kc">False</span>
 <span class="n">gamma0_log_parab</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>            <span class="mf">10000.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">15.698970004336019</span>              <span class="mf">0.0</span>                 <span class="mi">30</span>  <span class="kc">True</span>  <span class="kc">False</span>
-             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">5000000000000000.0</span>           <span class="mf">1000.0</span>              <span class="mf">1e+30</span> <span class="kc">False</span>  <span class="kc">False</span>
+             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>   <span class="kc">True</span>
                <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
         <span class="n">beam_obj</span>             <span class="n">beaming</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>               <span class="mf">10.0</span>           <span class="mf">0.0001</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
           <span class="n">z_cosm</span>            <span class="n">redshift</span>                                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
 <span class="o">-------------------------------------------------------------------------------------------------------------------</span>
 </pre></div>
 </div>
-<p>as you can notice, you can now access further information regarding the model, such as numerical configuration of the grid. These parameters will be discussed
+<p>as you can notice, you can now access further information regarding the model, such as numerical configuration of the grida. These parameters will be discussed
 in the :ref:<a href="#id3"><span class="problematic" id="id4">`</span></a>jet_numerical_guide’ section</p>
+<p>Ff you want to use a comoslogy model different from the dafault one please read the <a class="reference internal" href="../cosmology/Jet_example_cosmo.html#cosmology"><span class="std std-ref">Choosing a cosmology model</span></a> section.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Starting from version 1.1.0, the <cite>R</cite> parameter as default is linear and not logarithmic, please update your old scripts
+setting <cite>R</cite> with linear values.</p>
+</div>
 </div>
 <div class="section" id="setting-the-parameters">
 <h2>setting the parameters<a class="headerlink" href="#setting-the-parameters" title="Permalink to this headline">¶</a></h2>
@@ -416,7 +424,7 @@ in the :ref:<a href="#id3"><span class="problematic" id="id4">`</span></a>jet_nu
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">5E3</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gmin&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E2</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gmax&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E8</span><span class="p">)</span>
-<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">14.5</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E15</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E3</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -439,30 +447,32 @@ in the :ref:<a href="#id3"><span class="problematic" id="id4">`</span></a>jet_nu
  <span class="n">electron</span> <span class="n">energy</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">1001</span>
  <span class="n">gmin</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">2.000000e+00</span>
  <span class="n">gmax</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">1.000000e+06</span>
+ <span class="n">normalization</span>  <span class="kc">True</span>
+ <span class="n">log</span><span class="o">-</span><span class="n">values</span>  <span class="kc">False</span>
 
-      <span class="n">name</span>             <span class="n">par</span> <span class="nb">type</span>           <span class="n">units</span>          <span class="n">val</span>     <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">min</span>  <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">max</span>   <span class="n">log</span>  <span class="n">frozen</span>
-<span class="o">----------------</span> <span class="o">-------------------</span> <span class="o">---------------</span> <span class="o">-----------</span> <span class="o">----------------</span> <span class="o">------------------</span> <span class="o">-----</span> <span class="o">------</span>
-               <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>         <span class="mf">0.2</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-               <span class="n">N</span>    <span class="n">electron_density</span>         <span class="mi">1</span> <span class="o">/</span> <span class="n">cm3</span>      <span class="mf">1000.0</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span>        <span class="mf">14.5</span>              <span class="mf">0.0</span>                 <span class="mi">30</span>  <span class="kc">True</span>  <span class="kc">False</span>
-             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>       <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-        <span class="n">beam_obj</span>             <span class="n">beaming</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>        <span class="mf">10.0</span>           <span class="mf">0.0001</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-<span class="n">gamma0_log_parab</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>      <span class="mf">5000.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-            <span class="n">gmax</span> <span class="n">high</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span> <span class="mf">100000000.0</span>              <span class="mf">1.0</span> <span class="mf">1000000000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-            <span class="n">gmin</span>  <span class="n">low</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>       <span class="mf">100.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-               <span class="n">r</span>  <span class="n">spectral_curvature</span>                         <span class="mf">0.4</span>            <span class="o">-</span><span class="mf">15.0</span>               <span class="mf">15.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-               <span class="n">s</span>   <span class="n">LE_spectral_slope</span>                         <span class="mf">2.0</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-          <span class="n">z_cosm</span>            <span class="n">redshift</span>                         <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+      <span class="n">name</span>             <span class="n">par</span> <span class="nb">type</span>           <span class="n">units</span>             <span class="n">val</span>         <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">min</span>  <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">max</span>   <span class="n">log</span>  <span class="n">frozen</span>
+<span class="o">----------------</span> <span class="o">-------------------</span> <span class="o">---------------</span> <span class="o">------------------</span> <span class="o">----------------</span> <span class="o">------------------</span> <span class="o">-----</span> <span class="o">------</span>
+               <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>                <span class="mf">0.2</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">N</span>    <span class="n">electron_density</span>         <span class="mi">1</span> <span class="o">/</span> <span class="n">cm3</span>             <span class="mf">1000.0</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">1000000000000000.0</span>           <span class="mf">1000.0</span>              <span class="mf">1e+30</span> <span class="kc">False</span>  <span class="kc">False</span>
+             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>   <span class="kc">True</span>
+        <span class="n">beam_obj</span>             <span class="n">beaming</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>               <span class="mf">10.0</span>           <span class="mf">0.0001</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+<span class="n">gamma0_log_parab</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>             <span class="mf">5000.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+            <span class="n">gmax</span> <span class="n">high</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>        <span class="mf">100000000.0</span>              <span class="mf">1.0</span> <span class="mf">1000000000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+            <span class="n">gmin</span>  <span class="n">low</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>              <span class="mf">100.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">r</span>  <span class="n">spectral_curvature</span>                                <span class="mf">0.4</span>            <span class="o">-</span><span class="mf">15.0</span>               <span class="mf">15.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">s</span>   <span class="n">LE_spectral_slope</span>                                <span class="mf">2.0</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+          <span class="n">z_cosm</span>            <span class="n">redshift</span>                                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">electron_distribution</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_22_0.png" src="../../_images/Jet_example_phys_22_0.png" />
+<img alt="../../_images/Jet_example_phys_25_0.png" src="../../_images/Jet_example_phys_25_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">electron_distribution</span><span class="o">.</span><span class="n">plot3p</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_23_0.png" src="../../_images/Jet_example_phys_23_0.png" />
+<img alt="../../_images/Jet_example_phys_26_0.png" src="../../_images/Jet_example_phys_26_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="n">p</span><span class="o">=</span><span class="kc">None</span>
 <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">):</span>
@@ -473,7 +483,7 @@ in the :ref:<a href="#id3"><span class="problematic" id="id4">`</span></a>jet_nu
         <span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">electron_distribution</span><span class="o">.</span><span class="n">plot3p</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_24_0.png" src="../../_images/Jet_example_phys_24_0.png" />
+<img alt="../../_images/Jet_example_phys_27_0.png" src="../../_images/Jet_example_phys_27_0.png" />
 <div class="section" id="using-log-values-for-electron-distribution-parameters">
 <h3>using log values for electron distribution parameters<a class="headerlink" href="#using-log-values-for-electron-distribution-parameters" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="n">electron_distribution_log_values</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -490,6 +500,8 @@ in the :ref:<a href="#id3"><span class="problematic" id="id4">`</span></a>jet_nu
  <span class="n">electron</span> <span class="n">energy</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">1001</span>
  <span class="n">gmin</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">2.000000e+00</span>
  <span class="n">gmax</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">1.000000e+06</span>
+ <span class="n">normalization</span>  <span class="kc">True</span>
+ <span class="n">log</span><span class="o">-</span><span class="n">values</span>  <span class="kc">True</span>
 
 <span class="n">radiative</span> <span class="n">fields</span><span class="p">:</span>
  <span class="n">seed</span> <span class="n">photons</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">100</span>
@@ -516,8 +528,8 @@ in the :ref:<a href="#id3"><span class="problematic" id="id4">`</span></a>jet_nu
                <span class="n">s</span>   <span class="n">LE_spectral_slope</span>                                <span class="mf">2.0</span>            <span class="o">-</span><span class="mf">10.0</span>             <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
                <span class="n">r</span>  <span class="n">spectral_curvature</span>                                <span class="mf">0.4</span>            <span class="o">-</span><span class="mf">15.0</span>             <span class="mf">15.0</span> <span class="kc">False</span>  <span class="kc">False</span>
 <span class="n">gamma0_log_parab</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>                <span class="mf">4.0</span>              <span class="mf">0.0</span>              <span class="mf">9.0</span>  <span class="kc">True</span>  <span class="kc">False</span>
-               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">15.698970004336019</span>              <span class="mf">0.0</span>               <span class="mi">30</span>  <span class="kc">True</span>  <span class="kc">False</span>
-             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">5000000000000000.0</span>           <span class="mf">1000.0</span>            <span class="mf">1e+30</span> <span class="kc">False</span>  <span class="kc">False</span>
+             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>             <span class="kc">None</span> <span class="kc">False</span>   <span class="kc">True</span>
                <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>                <span class="mf">0.1</span>              <span class="mf">0.0</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
         <span class="n">beam_obj</span>             <span class="n">beaming</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>               <span class="mf">10.0</span>           <span class="mf">0.0001</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
           <span class="n">z_cosm</span>            <span class="n">redshift</span>                                <span class="mf">0.1</span>              <span class="mf">0.0</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
@@ -544,8 +556,8 @@ instruction</p>
                <span class="n">s</span>   <span class="n">LE_spectral_slope</span>                                <span class="mf">2.0</span>            <span class="o">-</span><span class="mf">10.0</span>             <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
                <span class="n">r</span>  <span class="n">spectral_curvature</span>                                <span class="mf">0.4</span>            <span class="o">-</span><span class="mf">15.0</span>             <span class="mf">15.0</span> <span class="kc">False</span>  <span class="kc">False</span>
 <span class="n">gamma0_log_parab</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>                <span class="mf">4.0</span>              <span class="mf">0.0</span>              <span class="mf">9.0</span>  <span class="kc">True</span>  <span class="kc">False</span>
-               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">15.698970004336019</span>              <span class="mf">0.0</span>               <span class="mi">30</span>  <span class="kc">True</span>  <span class="kc">False</span>
-             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">5000000000000000.0</span>           <span class="mf">1000.0</span>            <span class="mf">1e+30</span> <span class="kc">False</span>  <span class="kc">False</span>
+             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>             <span class="kc">None</span> <span class="kc">False</span>   <span class="kc">True</span>
                <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>                <span class="mf">0.1</span>              <span class="mf">0.0</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
         <span class="n">beam_obj</span>             <span class="n">beaming</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>               <span class="mf">10.0</span>           <span class="mf">0.0001</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
           <span class="n">z_cosm</span>            <span class="n">redshift</span>                                <span class="mf">0.1</span>              <span class="mf">0.0</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
@@ -558,15 +570,15 @@ instruction</p>
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_32_0.png" src="../../_images/Jet_example_phys_32_0.png" />
+<img alt="../../_images/Jet_example_phys_35_0.png" src="../../_images/Jet_example_phys_35_0.png" />
 <p>alternatively, you can call the <code class="docutils literal notranslate"><span class="pre">plot_model</span></code> method without passing a
 <code class="docutils literal notranslate"><span class="pre">Plot</span></code> object</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_plot</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_34_0.png" src="../../_images/Jet_example_phys_34_0.png" />
-<p>If you want ot have more points on the IC spectrum can set the numerical  parameters for radiavite fields(see :ref:<a href="#id5"><span class="problematic" id="id6">`</span></a>jet_numerical_guide’ section for more details):</p>
+<img alt="../../_images/Jet_example_phys_37_0.png" src="../../_images/Jet_example_phys_37_0.png" />
+<p>If you want to have more points on the IC spectrum you can set the numerical  parameters for radiavite fields(see :ref:<a href="#id5"><span class="problematic" id="id6">`</span></a>jet_numerical_guide’ section for more details):</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">set_IC_nu_size</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -575,7 +587,7 @@ instruction</p>
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_37_0.png" src="../../_images/Jet_example_phys_37_0.png" />
+<img alt="../../_images/Jet_example_phys_40_0.png" src="../../_images/Jet_example_phys_40_0.png" />
 <p>you can access the same plot, but in the rest frame of the black hole,
 or accretion disk, hence plotting the istropic luminosity, by simply
 passing the <code class="docutils literal notranslate"><span class="pre">frame</span></code> kw to <code class="docutils literal notranslate"><span class="pre">src</span></code></p>
@@ -583,7 +595,7 @@ passing the <code class="docutils literal notranslate"><span class="pre">frame</
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=</span><span class="mi">43</span><span class="p">,</span><span class="n">y_min</span><span class="o">=</span><span class="mi">38</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_39_0.png" src="../../_images/Jet_example_phys_39_0.png" />
+<img alt="../../_images/Jet_example_phys_42_0.png" src="../../_images/Jet_example_phys_42_0.png" />
 <p>the <code class="docutils literal notranslate"><span class="pre">my_plot</span></code> object returned will be built on the fly by the
 <code class="docutils literal notranslate"><span class="pre">plot_model</span></code> method</p>
 <p>if you wanto to have interacitve plot:</p>
@@ -617,7 +629,7 @@ passing the <code class="docutils literal notranslate"><span class="pre">frame</
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">5E3</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gmin&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E2</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gmax&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E8</span><span class="p">)</span>
-<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">14.5</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mf">14.5</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E3</span><span class="p">)</span>
 
 <span class="n">my_jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">gamma0_log_parab</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mf">1E4</span>
@@ -629,7 +641,7 @@ passing the <code class="docutils literal notranslate"><span class="pre">frame</
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_44_0.png" src="../../_images/Jet_example_phys_44_0.png" />
+<img alt="../../_images/Jet_example_phys_47_0.png" src="../../_images/Jet_example_phys_47_0.png" />
 </div>
 <div class="section" id="saving-a-plot">
 <h2>saving a plot<a class="headerlink" href="#saving-a-plot" title="Permalink to this headline">¶</a></h2>
@@ -638,8 +650,14 @@ passing the <code class="docutils literal notranslate"><span class="pre">frame</
 </pre></div>
 </div>
 </div>
-<div class="section" id="saving-and-lodaing-a-model">
-<h2>saving and lodaing a model<a class="headerlink" href="#saving-and-lodaing-a-model" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="saving-and-loading-a-model">
+<h2>saving and loading a model<a class="headerlink" href="#saving-and-loading-a-model" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>starting from version 1.1.0 the saved model format has changed, if you have models saved vith version&lt;1.1.0,
+plase update them the new models by loading the old models with the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.load_old_model()</span></code>
+and then saving them again.</p>
+</div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="s1">&#39;test_model.dat&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -648,17 +666,17 @@ passing the <code class="docutils literal notranslate"><span class="pre">frame</
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      <span class="n">name</span>             <span class="n">par</span> <span class="nb">type</span>           <span class="n">units</span>             <span class="n">val</span>         <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">min</span>  <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">max</span>   <span class="n">log</span>  <span class="n">frozen</span>
 <span class="o">----------------</span> <span class="o">-------------------</span> <span class="o">---------------</span> <span class="o">------------------</span> <span class="o">----------------</span> <span class="o">------------------</span> <span class="o">-----</span> <span class="o">------</span>
-               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">15.698970004336019</span>              <span class="mf">0.0</span>                 <span class="mi">30</span>  <span class="kc">True</span>  <span class="kc">False</span>
-             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-               <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">316227766016837.94</span>           <span class="mf">1000.0</span>              <span class="mf">1e+30</span> <span class="kc">False</span>  <span class="kc">False</span>
+             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>   <span class="kc">True</span>
+               <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>                <span class="mf">0.2</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
         <span class="n">beam_obj</span>             <span class="n">beaming</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>               <span class="mf">10.0</span>           <span class="mf">0.0001</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
           <span class="n">z_cosm</span>            <span class="n">redshift</span>                                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-               <span class="n">N</span>    <span class="n">electron_density</span>         <span class="mi">1</span> <span class="o">/</span> <span class="n">cm3</span>              <span class="mf">100.0</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-            <span class="n">gmin</span>  <span class="n">low</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>                <span class="mf">2.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-            <span class="n">gmax</span> <span class="n">high</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>          <span class="mf">1000000.0</span>              <span class="mf">1.0</span> <span class="mf">1000000000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">N</span>    <span class="n">electron_density</span>         <span class="mi">1</span> <span class="o">/</span> <span class="n">cm3</span>             <span class="mf">1000.0</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+            <span class="n">gmin</span>  <span class="n">low</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>              <span class="mf">100.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+            <span class="n">gmax</span> <span class="n">high</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>        <span class="mf">100000000.0</span>              <span class="mf">1.0</span> <span class="mf">1000000000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
                <span class="n">s</span>   <span class="n">LE_spectral_slope</span>                                <span class="mf">2.0</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
                <span class="n">r</span>  <span class="n">spectral_curvature</span>                                <span class="mf">0.4</span>            <span class="o">-</span><span class="mf">15.0</span>               <span class="mf">15.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-<span class="n">gamma0_log_parab</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>            <span class="mf">10000.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+<span class="n">gamma0_log_parab</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>           <span class="mf">100000.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
 </pre></div>
 </div>
 </div>
@@ -678,14 +696,22 @@ If you want to chance this behavior, you can start looking at the sate of <code 
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">switch_Norm_distr_OFF</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>OR</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">Norm_distr</span><span class="o">=</span><span class="mi">0</span>
+</pre></div>
+</div>
 <p>or set back the normalization on with</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">switch_Norm_distr_ON</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>OR</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">Norm_distr</span><span class="o">=</span><span class="mi">1</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="setting-the-particle-density-from-observed-fluxes-or-luminosities">
 <h2>setting the particle density from observed Fluxes or Luminosities<a class="headerlink" href="#setting-the-particle-density-from-observed-fluxes-or-luminosities" title="Permalink to this headline">¶</a></h2>
-<p>It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.set_N_from_nuFnu" title="jetset.jet_model.Jet.set_N_from_nuFnu"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.set_N_from_nuFnu()</span></code></a>,th:<cite>.Jet.set_N_from_nuLnu</cite>)</p>
+<p>It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     <a class="reference internal" href="../../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet.set_N_from_nuFnu" title="jetset.jet_model.Jet.set_N_from_nuFnu"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Jet.set_N_from_nuFnu()</span></code></a>, meth:<cite>.Jet.set_N_from_nuLnu</cite>)</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -706,7 +732,7 @@ flux at the given frequency</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">get_par_by_name</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">val</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">271.7733867972609</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">271.77338679726074</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
@@ -714,14 +740,14 @@ flux at the given frequency</p>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      <span class="n">name</span>             <span class="n">par</span> <span class="nb">type</span>           <span class="n">units</span>             <span class="n">val</span>         <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">min</span>  <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">max</span>   <span class="n">log</span>  <span class="n">frozen</span>
 <span class="o">----------------</span> <span class="o">-------------------</span> <span class="o">---------------</span> <span class="o">------------------</span> <span class="o">----------------</span> <span class="o">------------------</span> <span class="o">-----</span> <span class="o">------</span>
-               <span class="n">N</span>    <span class="n">electron_density</span>         <span class="mi">1</span> <span class="o">/</span> <span class="n">cm3</span>  <span class="mf">271.7733867972609</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">N</span>    <span class="n">electron_density</span>         <span class="mi">1</span> <span class="o">/</span> <span class="n">cm3</span> <span class="mf">271.77338679726074</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
             <span class="n">gmin</span>  <span class="n">low</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>                <span class="mf">2.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
             <span class="n">gmax</span> <span class="n">high</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>          <span class="mf">1000000.0</span>              <span class="mf">1.0</span> <span class="mf">1000000000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
                <span class="n">s</span>   <span class="n">LE_spectral_slope</span>                                <span class="mf">2.0</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
                <span class="n">r</span>  <span class="n">spectral_curvature</span>                                <span class="mf">0.4</span>            <span class="o">-</span><span class="mf">15.0</span>               <span class="mf">15.0</span> <span class="kc">False</span>  <span class="kc">False</span>
 <span class="n">gamma0_log_parab</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>            <span class="mf">10000.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">15.698970004336019</span>              <span class="mf">0.0</span>                 <span class="mi">30</span>  <span class="kc">True</span>  <span class="kc">False</span>
-             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">5000000000000000.0</span>           <span class="mf">1000.0</span>              <span class="mf">1e+30</span> <span class="kc">False</span>  <span class="kc">False</span>
+             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>   <span class="kc">True</span>
                <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
         <span class="n">beam_obj</span>             <span class="n">beaming</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>               <span class="mf">10.0</span>           <span class="mf">0.0001</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
           <span class="n">z_cosm</span>            <span class="n">redshift</span>                                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
@@ -732,7 +758,7 @@ flux at the given frequency</p>
 <span class="n">my_plot</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_max</span><span class="o">=-</span><span class="mi">13</span><span class="p">,</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_68_0.png" src="../../_images/Jet_example_phys_68_0.png" />
+<img alt="../../_images/Jet_example_phys_76_0.png" src="../../_images/Jet_example_phys_76_0.png" />
 <p>as you can see, the synchrotron flux at <span class="math notranslate nohighlight">\(10^{15}\)</span> Hz is exactly matching the desired value of <span class="math notranslate nohighlight">\(10^{-14}\)</span> ergs cm-2 s-1.
 Alternatively, the value of N  can be obtained using the rest-frame luminosity and  frequency, using the :class:<a href="#id7"><span class="problematic" id="id8">`</span></a>.Jet.set_N_from_nuLnu()</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">set_N_from_nuLnu</span><span class="p">(</span><span class="n">nuLnu_src</span><span class="o">=</span><span class="mf">1E43</span><span class="p">,</span><span class="n">nu_src</span><span class="o">=</span><span class="mf">1E15</span><span class="p">)</span>
@@ -759,8 +785,8 @@ Alternatively, the value of N  can be obtained using the rest-frame luminosity a
                <span class="n">s</span>   <span class="n">LE_spectral_slope</span>                                <span class="mf">2.0</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
                <span class="n">r</span>  <span class="n">spectral_curvature</span>                                <span class="mf">0.4</span>            <span class="o">-</span><span class="mf">15.0</span>               <span class="mf">15.0</span> <span class="kc">False</span>  <span class="kc">False</span>
 <span class="n">gamma0_log_parab</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>            <span class="mf">10000.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">15.698970004336019</span>              <span class="mf">0.0</span>                 <span class="mi">30</span>  <span class="kc">True</span>  <span class="kc">False</span>
-             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">5000000000000000.0</span>           <span class="mf">1000.0</span>              <span class="mf">1e+30</span> <span class="kc">False</span>  <span class="kc">False</span>
+             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>   <span class="kc">True</span>
                <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
            <span class="n">theta</span>   <span class="n">jet</span><span class="o">-</span><span class="n">viewing</span><span class="o">-</span><span class="n">angle</span>             <span class="n">deg</span>                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
       <span class="n">BulkFactor</span>     <span class="n">jet</span><span class="o">-</span><span class="n">bulk</span><span class="o">-</span><span class="n">factor</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>               <span class="mf">10.0</span>              <span class="mf">1.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
@@ -800,8 +826,8 @@ expression as in the default case</p>
                <span class="n">s</span>   <span class="n">LE_spectral_slope</span>                                <span class="mf">2.0</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
                <span class="n">r</span>  <span class="n">spectral_curvature</span>                                <span class="mf">0.4</span>            <span class="o">-</span><span class="mf">15.0</span>               <span class="mf">15.0</span> <span class="kc">False</span>  <span class="kc">False</span>
 <span class="n">gamma0_log_parab</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>            <span class="mf">10000.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">15.698970004336019</span>              <span class="mf">0.0</span>                 <span class="mi">30</span>  <span class="kc">True</span>  <span class="kc">False</span>
-             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">5000000000000000.0</span>           <span class="mf">1000.0</span>              <span class="mf">1e+30</span> <span class="kc">False</span>  <span class="kc">False</span>
+             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>   <span class="kc">True</span>
                <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
         <span class="n">beam_obj</span>             <span class="n">beaming</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>               <span class="mf">10.0</span>           <span class="mf">0.0001</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
           <span class="n">z_cosm</span>            <span class="n">redshift</span>                                <span class="mf">0.1</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
@@ -849,12 +875,22 @@ evaluated.</p>
  <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span> <span class="mf">1.00000000e-120</span><span class="p">]</span> <span class="n">erg</span> <span class="o">/</span> <span class="p">(</span><span class="n">cm2</span> <span class="n">s</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>or for the <code class="docutils literal notranslate"><span class="pre">src</span></code> rest frame (isotropic luminosity</p>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nu_sync</span><span class="o">=</span><span class="n">Sync</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">nu_src</span>
-<span class="n">nuFnu_sync</span><span class="o">=</span><span class="n">Sync</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">nuLnu_src_residuals</span>
+<p>or for the <code class="docutils literal notranslate"><span class="pre">src</span></code> rest frame (isotropic luminosity)</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nu_sync_src</span><span class="o">=</span><span class="n">Sync</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">nu_src</span>
+<span class="n">nuLnu_sync_src</span><span class="o">=</span><span class="n">Sync</span><span class="o">.</span><span class="n">SED</span><span class="o">.</span><span class="n">nuLnu_src</span>
 </pre></div>
 </div>
-<p>Moreover, you can access the correspondin astropy table</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="p">(</span><span class="n">nuLnu_sync_src</span><span class="p">[::</span><span class="mi">10</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">2.70118406e-65</span> <span class="mf">2.70118406e-65</span> <span class="mf">2.92939742e+33</span> <span class="mf">4.63897473e+37</span>
+ <span class="mf">1.10156425e+40</span> <span class="mf">4.42146923e+40</span> <span class="mf">1.75167660e+41</span> <span class="mf">6.66383927e+41</span>
+ <span class="mf">1.96865559e+42</span> <span class="mf">3.35752756e+42</span> <span class="mf">3.02971688e+42</span> <span class="mf">3.83614730e+41</span>
+ <span class="mf">1.11899760e+28</span> <span class="mf">2.70118406e-65</span> <span class="mf">2.70118406e-65</span> <span class="mf">2.70118406e-65</span>
+ <span class="mf">2.70118406e-65</span> <span class="mf">2.70118406e-65</span> <span class="mf">2.70118406e-65</span> <span class="mf">2.70118406e-65</span><span class="p">]</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>
+</pre></div>
+</div>
+<p>Moreover, you can access the corresponding astropy table</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">spectral_components</span><span class="o">.</span><span class="n">build_table</span><span class="p">(</span><span class="n">restframe</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span><span class="p">)</span>
 <span class="n">t_obs</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">spectral_components</span><span class="o">.</span><span class="n">table</span>
 </pre></div>
@@ -863,7 +899,7 @@ evaluated.</p>
 </pre></div>
 </div>
 <i>Table length=20</i>
-<table id="table103538716432" class="table-striped table-bordered table-condensed">
+<table id="table103654980944" class="table-striped table-bordered table-condensed">
 <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
 <thead><tr><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th></tr></thead>
 <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -871,7 +907,7 @@ evaluated.</p>
 <tr><td>15848931.924611142</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
 <tr><td>251188643.1509582</td><td>1.0844864302391386e-22</td><td>1.0844864159585182e-22</td><td>1.4280620238888498e-30</td></tr>
 <tr><td>3981071705.5349693</td><td>1.7173856696253947e-18</td><td>1.7173856494785146e-18</td><td>2.0146879965841637e-26</td></tr>
-<tr><td>63095734448.019424</td><td>4.078079552134753e-16</td><td>4.0780791901431997e-16</td><td>3.6199155354751893e-23</td></tr>
+<tr><td>63095734448.019424</td><td>4.078079552134786e-16</td><td>4.0780791901432327e-16</td><td>3.6199155354751893e-23</td></tr>
 <tr><td>1000000000000.0</td><td>1.6368645001464381e-15</td><td>1.6368633684904028e-15</td><td>1.1316560354507247e-21</td></tr>
 <tr><td>15848931924611.11</td><td>6.484856227306914e-15</td><td>6.484847252386628e-15</td><td>8.974920286013819e-21</td></tr>
 <tr><td>251188643150958.22</td><td>2.467012104235855e-14</td><td>2.4670067379508708e-14</td><td>5.366284984149398e-20</td></tr>
@@ -882,9 +918,9 @@ evaluated.</p>
 <tr><td>2.5118864315095718e+20</td><td>8.198273815038918e-17</td><td>4.142618855201174e-28</td><td>8.198273814997492e-17</td></tr>
 <tr><td>3.9810717055349854e+21</td><td>2.6806229698492253e-16</td><td>1e-120</td><td>2.6806229698492253e-16</td></tr>
 <tr><td>6.309573444801943e+22</td><td>7.79329160185085e-16</td><td>1e-120</td><td>7.79329160185085e-16</td></tr>
-<tr><td>1e+24</td><td>1.876892626829054e-15</td><td>1e-120</td><td>1.876892626829054e-15</td></tr>
+<tr><td>1e+24</td><td>1.876892626829062e-15</td><td>1e-120</td><td>1.876892626829062e-15</td></tr>
 <tr><td>1.584893192461111e+25</td><td>2.722149689253548e-15</td><td>1e-120</td><td>2.722149689253548e-15</td></tr>
-<tr><td>2.511886431509572e+26</td><td>9.271731262955761e-16</td><td>1e-120</td><td>9.271731262955761e-16</td></tr>
+<tr><td>2.511886431509572e+26</td><td>9.2717312629558e-16</td><td>1e-120</td><td>9.2717312629558e-16</td></tr>
 <tr><td>3.9810717055349856e+27</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
 <tr><td>6.309573444801943e+28</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
 </table><p>and also in the <code class="docutils literal notranslate"><span class="pre">src</span></code> restframe</p>
@@ -896,7 +932,7 @@ evaluated.</p>
 </pre></div>
 </div>
 <i>Table length=20</i>
-<table id="table103536859152" class="table-striped table-bordered table-condensed">
+<table id="table103654793104" class="table-striped table-bordered table-condensed">
 <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
 <thead><tr><th>Hz</th><th>erg / s</th><th>erg / s</th><th>erg / s</th></tr></thead>
 <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -904,7 +940,7 @@ evaluated.</p>
 <tr><td>17433825.11707226</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
 <tr><td>276307507.4660541</td><td>2.929397454400055e+33</td><td>2.929397415825471e+33</td><td>3.8574583700258197e+25</td></tr>
 <tr><td>4379178876.088467</td><td>4.638974788937108e+37</td><td>4.638974734516677e+37</td><td>5.442043094354434e+29</td></tr>
-<tr><td>69405307892.82137</td><td>1.1015643465663463e+40</td><td>1.1015642487857652e+40</td><td>9.77805812879182e+32</td></tr>
+<tr><td>69405307892.82137</td><td>1.1015643465663552e+40</td><td>1.101564248785774e+40</td><td>9.77805812879182e+32</td></tr>
 <tr><td>1100000000000.0</td><td>4.421472289763414e+40</td><td>4.421469232952174e+40</td><td>3.056811239929309e+34</td></tr>
 <tr><td>17433825117072.223</td><td>1.751679024719035e+41</td><td>1.7516766004278765e+41</td><td>2.424291158119413e+35</td></tr>
 <tr><td>276307507466054.06</td><td>6.663853762125038e+41</td><td>6.663839266801599e+41</td><td>1.449532343958061e+36</td></tr>
@@ -915,9 +951,9 @@ evaluated.</p>
 <tr><td>2.7630750746605293e+20</td><td>2.2145046516583798e+39</td><td>1.118997600209717e+28</td><td>2.21450465164719e+39</td></tr>
 <tr><td>4.3791788760884844e+21</td><td>7.240856026525909e+39</td><td>2.7011840560827467e-65</td><td>7.240856026525909e+39</td></tr>
 <tr><td>6.940530789282138e+22</td><td>2.1051115019323087e+40</td><td>2.7011840560827467e-65</td><td>2.1051115019323087e+40</td></tr>
-<tr><td>1.1e+24</td><td>5.069832438569905e+40</td><td>2.7011840560827467e-65</td><td>5.069832438569905e+40</td></tr>
+<tr><td>1.1e+24</td><td>5.069832438569926e+40</td><td>2.7011840560827467e-65</td><td>5.069832438569926e+40</td></tr>
 <tr><td>1.7433825117072222e+25</td><td>7.353027338882288e+40</td><td>2.7011840560827467e-65</td><td>7.353027338882288e+40</td></tr>
-<tr><td>2.7630750746605295e+26</td><td>2.504465265978005e+40</td><td>2.7011840560827467e-65</td><td>2.504465265978005e+40</td></tr>
+<tr><td>2.7630750746605295e+26</td><td>2.5044652659780157e+40</td><td>2.7011840560827467e-65</td><td>2.5044652659780157e+40</td></tr>
 <tr><td>4.379178876088485e+27</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
 <tr><td>6.940530789282138e+28</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
 </table><p>Of cousrse, since these colums have units, you can easily convert the
@@ -939,51 +975,58 @@ units of the Synchrotron luminostity form erg/s to GeV/s</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="getting-an-energetic-report">
-<h2>Getting an energetic report<a class="headerlink" href="#getting-an-energetic-report" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="energetic-report">
+<h2>Energetic report<a class="headerlink" href="#energetic-report" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to get an energetic report of the jet model (updated each
+time that you eval the model). This report gives energy densities
+(<code class="docutils literal notranslate"><span class="pre">U_</span></code>) (both in the blob end disk restframe), the luminosities of the
+emitted components in the blob resftrame (<code class="docutils literal notranslate"><span class="pre">L_</span></code>), and the luminosity
+carried by the jet (<code class="docutils literal notranslate"><span class="pre">jet_L</span></code>) for the radiative components, the
+electrons, the magnetic fields, and for the cold protons in the jet.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">energetic_report</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-----------------------------------------------------------------------------------------</span>
 <span class="n">jet</span> <span class="n">eneregetic</span> <span class="n">report</span><span class="p">:</span>
-     <span class="n">name</span>                <span class="n">par</span> <span class="nb">type</span>             <span class="n">units</span>            <span class="n">val</span>           <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">min</span> <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">max</span>  <span class="n">log</span>  <span class="n">frozen</span>
-<span class="o">-------------</span> <span class="o">-----------------------------</span> <span class="o">---------</span> <span class="o">----------------------</span> <span class="o">----------------</span> <span class="o">----------------</span> <span class="o">-----</span> <span class="o">------</span>
-          <span class="n">U_e</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>  <span class="mf">0.0017404342430246782</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-          <span class="n">U_p</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>         <span class="mf">0.015032764261</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-          <span class="n">U_B</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span> <span class="mf">0.00039788735772973844</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-      <span class="n">U_Synch</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>  <span class="mf">5.506769532122051e-05</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-  <span class="n">U_Synch_DRF</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">disk</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>      <span class="mf">8.712292317747343</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-       <span class="n">U_Disk</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-        <span class="n">U_BLR</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-         <span class="n">U_DT</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-        <span class="n">U_CMB</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-   <span class="n">U_Disk_DRF</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">disk</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-    <span class="n">U_BLR_DRF</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">disk</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-     <span class="n">U_DT_DRF</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">disk</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-    <span class="n">U_CMB_DRF</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">disk</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-    <span class="n">L_Sync_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span> <span class="mf">1.7287643525921238e+38</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-     <span class="n">L_SSC_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span> <span class="mf">3.8288790975793374e+36</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
- <span class="n">L_EC_Disk_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-  <span class="n">L_EC_BLR_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-   <span class="n">L_EC_DT_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-  <span class="n">L_EC_CMB_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-      <span class="n">L_PP_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-   <span class="n">jet_L_Sync</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">4.321910881480309e+39</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-    <span class="n">jet_L_SSC</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">9.572197743948343e+37</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-<span class="n">jet_L_EC_Disk</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
- <span class="n">jet_L_EC_BLR</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-  <span class="n">jet_L_EC_DT</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
- <span class="n">jet_L_EC_CMB</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-     <span class="n">jet_L_PP</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-    <span class="n">jet_L_rad</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span> <span class="mf">4.4176328589197927e+39</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-    <span class="n">jet_L_kin</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">4.043042849486073e+42</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-    <span class="n">jet_L_tot</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span> <span class="mf">4.0474604823449925e+42</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-      <span class="n">jet_L_e</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">4.097964612089289e+41</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-      <span class="n">jet_L_B</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">9.368514312499998e+40</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
-      <span class="n">jet_L_p</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">3.539561245152144e+42</span>             <span class="kc">None</span>             <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+     <span class="n">name</span>                  <span class="nb">type</span>               <span class="n">units</span>            <span class="n">val</span>
+<span class="o">-------------</span> <span class="o">-----------------------------</span> <span class="o">---------</span> <span class="o">----------------------</span>
+          <span class="n">U_e</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>  <span class="mf">0.0017404342430246782</span>
+          <span class="n">U_p</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>         <span class="mf">0.015032764261</span>
+          <span class="n">U_B</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span> <span class="mf">0.00039788735772973844</span>
+      <span class="n">U_Synch</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>  <span class="mf">5.506769532122052e-05</span>
+  <span class="n">U_Synch_DRF</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">disk</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>      <span class="mf">8.712292317747346</span>
+       <span class="n">U_Disk</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>
+        <span class="n">U_BLR</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>
+         <span class="n">U_DT</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>
+        <span class="n">U_CMB</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>
+   <span class="n">U_Disk_DRF</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">disk</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>
+    <span class="n">U_BLR_DRF</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">disk</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>
+     <span class="n">U_DT_DRF</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">disk</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>
+    <span class="n">U_CMB_DRF</span> <span class="n">Energy</span> <span class="n">dens</span><span class="o">.</span> <span class="n">disk</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frame</span> <span class="n">erg</span> <span class="o">/</span> <span class="n">cm3</span>                    <span class="mf">0.0</span>
+    <span class="n">L_Sync_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">1.728764352592126e+38</span>
+     <span class="n">L_SSC_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>   <span class="mf">3.82887909757934e+36</span>
+ <span class="n">L_EC_Disk_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>
+  <span class="n">L_EC_BLR_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>
+   <span class="n">L_EC_DT_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>
+  <span class="n">L_EC_CMB_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>
+      <span class="n">L_PP_rf</span>         <span class="n">Lum</span><span class="o">.</span> <span class="n">blob</span> <span class="n">rest</span><span class="o">.</span> <span class="n">frme</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>
+   <span class="n">jet_L_Sync</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span> <span class="mf">4.3219108814803147e+39</span>
+    <span class="n">jet_L_SSC</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">9.572197743948349e+37</span>
+<span class="n">jet_L_EC_Disk</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>
+ <span class="n">jet_L_EC_BLR</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>
+  <span class="n">jet_L_EC_DT</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>
+ <span class="n">jet_L_EC_CMB</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>
+     <span class="n">jet_L_PP</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>                    <span class="mf">0.0</span>
+    <span class="n">jet_L_rad</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">4.417632858919798e+39</span>
+    <span class="n">jet_L_kin</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">4.043042849486075e+42</span>
+    <span class="n">jet_L_tot</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">4.047460482344995e+42</span>
+      <span class="n">jet_L_e</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">4.097964612089291e+41</span>
+      <span class="n">jet_L_B</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">9.368514312500004e+40</span>
+      <span class="n">jet_L_p</span>                      <span class="n">jet</span> <span class="n">Lum</span><span class="o">.</span>   <span class="n">erg</span> <span class="o">/</span> <span class="n">s</span>  <span class="mf">3.539561245152146e+42</span>
 <span class="o">-----------------------------------------------------------------------------------------</span>
 </pre></div>
 </div>
+<p>If you want to evaluate the energetic report in non verbose mode:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">energetic_report</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -993,8 +1036,8 @@ units of the Synchrotron luminostity form erg/s to GeV/s</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;U_e&#39;</span><span class="p">:</span> <span class="mf">0.0017404342430246782</span><span class="p">,</span>
  <span class="s1">&#39;U_p&#39;</span><span class="p">:</span> <span class="mf">0.015032764261</span><span class="p">,</span>
  <span class="s1">&#39;U_B&#39;</span><span class="p">:</span> <span class="mf">0.00039788735772973844</span><span class="p">,</span>
- <span class="s1">&#39;U_Synch&#39;</span><span class="p">:</span> <span class="mf">5.506769532122051e-05</span><span class="p">,</span>
- <span class="s1">&#39;U_Synch_DRF&#39;</span><span class="p">:</span> <span class="mf">8.712292317747343</span><span class="p">,</span>
+ <span class="s1">&#39;U_Synch&#39;</span><span class="p">:</span> <span class="mf">5.506769532122052e-05</span><span class="p">,</span>
+ <span class="s1">&#39;U_Synch_DRF&#39;</span><span class="p">:</span> <span class="mf">8.712292317747346</span><span class="p">,</span>
  <span class="s1">&#39;U_Disk&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
  <span class="s1">&#39;U_BLR&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
  <span class="s1">&#39;U_DT&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
@@ -1003,114 +1046,65 @@ units of the Synchrotron luminostity form erg/s to GeV/s</p>
  <span class="s1">&#39;U_BLR_DRF&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
  <span class="s1">&#39;U_DT_DRF&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
  <span class="s1">&#39;U_CMB_DRF&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
- <span class="s1">&#39;L_Sync_rf&#39;</span><span class="p">:</span> <span class="mf">1.7287643525921238e+38</span><span class="p">,</span>
- <span class="s1">&#39;L_SSC_rf&#39;</span><span class="p">:</span> <span class="mf">3.8288790975793374e+36</span><span class="p">,</span>
+ <span class="s1">&#39;L_Sync_rf&#39;</span><span class="p">:</span> <span class="mf">1.728764352592126e+38</span><span class="p">,</span>
+ <span class="s1">&#39;L_SSC_rf&#39;</span><span class="p">:</span> <span class="mf">3.82887909757934e+36</span><span class="p">,</span>
  <span class="s1">&#39;L_EC_Disk_rf&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
  <span class="s1">&#39;L_EC_BLR_rf&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
  <span class="s1">&#39;L_EC_DT_rf&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
  <span class="s1">&#39;L_EC_CMB_rf&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
  <span class="s1">&#39;L_PP_rf&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
- <span class="s1">&#39;jet_L_Sync&#39;</span><span class="p">:</span> <span class="mf">4.321910881480309e+39</span><span class="p">,</span>
- <span class="s1">&#39;jet_L_SSC&#39;</span><span class="p">:</span> <span class="mf">9.572197743948343e+37</span><span class="p">,</span>
+ <span class="s1">&#39;jet_L_Sync&#39;</span><span class="p">:</span> <span class="mf">4.3219108814803147e+39</span><span class="p">,</span>
+ <span class="s1">&#39;jet_L_SSC&#39;</span><span class="p">:</span> <span class="mf">9.572197743948349e+37</span><span class="p">,</span>
  <span class="s1">&#39;jet_L_EC_Disk&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
  <span class="s1">&#39;jet_L_EC_BLR&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
  <span class="s1">&#39;jet_L_EC_DT&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
  <span class="s1">&#39;jet_L_EC_CMB&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
  <span class="s1">&#39;jet_L_PP&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
- <span class="s1">&#39;jet_L_rad&#39;</span><span class="p">:</span> <span class="mf">4.4176328589197927e+39</span><span class="p">,</span>
- <span class="s1">&#39;jet_L_kin&#39;</span><span class="p">:</span> <span class="mf">4.043042849486073e+42</span><span class="p">,</span>
- <span class="s1">&#39;jet_L_tot&#39;</span><span class="p">:</span> <span class="mf">4.0474604823449925e+42</span><span class="p">,</span>
- <span class="s1">&#39;jet_L_e&#39;</span><span class="p">:</span> <span class="mf">4.097964612089289e+41</span><span class="p">,</span>
- <span class="s1">&#39;jet_L_B&#39;</span><span class="p">:</span> <span class="mf">9.368514312499998e+40</span><span class="p">,</span>
- <span class="s1">&#39;jet_L_p&#39;</span><span class="p">:</span> <span class="mf">3.539561245152144e+42</span><span class="p">}</span>
+ <span class="s1">&#39;jet_L_rad&#39;</span><span class="p">:</span> <span class="mf">4.417632858919798e+39</span><span class="p">,</span>
+ <span class="s1">&#39;jet_L_kin&#39;</span><span class="p">:</span> <span class="mf">4.043042849486075e+42</span><span class="p">,</span>
+ <span class="s1">&#39;jet_L_tot&#39;</span><span class="p">:</span> <span class="mf">4.047460482344995e+42</span><span class="p">,</span>
+ <span class="s1">&#39;jet_L_e&#39;</span><span class="p">:</span> <span class="mf">4.097964612089291e+41</span><span class="p">,</span>
+ <span class="s1">&#39;jet_L_B&#39;</span><span class="p">:</span> <span class="mf">9.368514312500004e+40</span><span class="p">,</span>
+ <span class="s1">&#39;jet_L_p&#39;</span><span class="p">:</span> <span class="mf">3.539561245152146e+42</span><span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">energetic_report_table</span><span class="o">.</span><span class="n">show_in_notebook</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">energetic_report_table</span>
 </pre></div>
 </div>
 <i>Table length=33</i>
-<table id="table103556379216-24190" class="table-striped table-bordered table-condensed">
-<thead><tr><th>idx</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-<tr><td>0</td><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0017404342430246782</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>1</td><td>U_p</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.015032764261</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>2</td><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.00039788735772973844</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>3</td><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>5.506769532122051e-05</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>4</td><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.712292317747343</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>5</td><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>6</td><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>7</td><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>8</td><td>U_CMB</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>9</td><td>U_Disk_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>10</td><td>U_BLR_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>11</td><td>U_DT_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>12</td><td>U_CMB_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>13</td><td>L_Sync_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>1.7287643525921238e+38</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>14</td><td>L_SSC_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>3.8288790975793374e+36</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>15</td><td>L_EC_Disk_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>16</td><td>L_EC_BLR_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>17</td><td>L_EC_DT_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>18</td><td>L_EC_CMB_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>19</td><td>L_PP_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>20</td><td>jet_L_Sync</td><td>jet Lum.</td><td>erg / s</td><td>4.321910881480309e+39</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>21</td><td>jet_L_SSC</td><td>jet Lum.</td><td>erg / s</td><td>9.572197743948343e+37</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>22</td><td>jet_L_EC_Disk</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>23</td><td>jet_L_EC_BLR</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>24</td><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>25</td><td>jet_L_EC_CMB</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>26</td><td>jet_L_PP</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>27</td><td>jet_L_rad</td><td>jet Lum.</td><td>erg / s</td><td>4.4176328589197927e+39</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>28</td><td>jet_L_kin</td><td>jet Lum.</td><td>erg / s</td><td>4.043042849486073e+42</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>29</td><td>jet_L_tot</td><td>jet Lum.</td><td>erg / s</td><td>4.0474604823449925e+42</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>30</td><td>jet_L_e</td><td>jet Lum.</td><td>erg / s</td><td>4.097964612089289e+41</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>31</td><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>9.368514312499998e+40</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-<tr><td>32</td><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>3.539561245152144e+42</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-</table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
-.dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
-display: inline-block; margin-right: 1em; }
-.paginate_button { margin-right: 5px; }
-</style>
-<script>
-
-var astropy_sort_num = function(a, b) {
-    var a_num = parseFloat(a);
-    var b_num = parseFloat(b);
-
-    if (isNaN(a_num) && isNaN(b_num))
-        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-    else if (!isNaN(a_num) && !isNaN(b_num))
-        return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
-    else
-        return isNaN(a_num) ? -1 : 1;
-}
-
-require.config({paths: {
-    datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
-}});
-require(["datatables"], function(){
-    console.log("$('#table103556379216-24190').dataTable()");
-
-jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-    "optionalnum-asc": astropy_sort_num,
-    "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
-});
-
-    $('#table103556379216-24190').dataTable({
-        order: [],
-        pageLength: 50,
-        lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
-        pagingType: "full_numbers",
-        columnDefs: [{targets: [0, 4], type: "optionalnum"}]
-    });
-});
-</script></div>
+<table id="table103675359760" class="table-striped table-bordered table-condensed">
+<thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
+<thead><tr><th>str13</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
+<tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0017404342430246782</td></tr>
+<tr><td>U_p</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.015032764261</td></tr>
+<tr><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.00039788735772973844</td></tr>
+<tr><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>5.506769532122052e-05</td></tr>
+<tr><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.712292317747346</td></tr>
+<tr><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
+<tr><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
+<tr><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
+<tr><td>U_CMB</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
+<tr><td>U_Disk_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
+<tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+<tr><td>jet_L_EC_BLR</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td></tr>
+<tr><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td></tr>
+<tr><td>jet_L_EC_CMB</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td></tr>
+<tr><td>jet_L_PP</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td></tr>
+<tr><td>jet_L_rad</td><td>jet Lum.</td><td>erg / s</td><td>4.417632858919798e+39</td></tr>
+<tr><td>jet_L_kin</td><td>jet Lum.</td><td>erg / s</td><td>4.043042849486075e+42</td></tr>
+<tr><td>jet_L_tot</td><td>jet Lum.</td><td>erg / s</td><td>4.047460482344995e+42</td></tr>
+<tr><td>jet_L_e</td><td>jet Lum.</td><td>erg / s</td><td>4.097964612089291e+41</td></tr>
+<tr><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>9.368514312500004e+40</td></tr>
+<tr><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>3.539561245152146e+42</td></tr>
+</table></div>
 <div class="section" id="external-compton">
 <h2>External Compton<a class="headerlink" href="#external-compton" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="broad-line-region">
-<h3>Broad Line Region<a class="headerlink" href="#broad-line-region" title="Permalink to this headline">¶</a></h3>
 <div class="figure align-default" id="id9">
 <img alt="EC scheme" src="../../_images/jetset_EC_scheme.png" />
 <p class="caption"><span class="caption-text">EC scheme</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
 </div>
+<div class="section" id="broad-line-region">
+<h3>Broad Line Region<a class="headerlink" href="#broad-line-region" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;BLR example&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;bkn&#39;</span><span class="p">,</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;bulk_theta&#39;</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">add_EC_component</span><span class="p">([</span><span class="s1">&#39;EC_BLR&#39;</span><span class="p">,</span><span class="s1">&#39;EC_Disk&#39;</span><span class="p">])</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">show_model</span><span class="p">()</span>
@@ -1126,6 +1120,8 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
  <span class="n">electron</span> <span class="n">energy</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">1001</span>
  <span class="n">gmin</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">2.000000e+00</span>
  <span class="n">gmax</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">1.000000e+06</span>
+ <span class="n">normalization</span>  <span class="kc">True</span>
+ <span class="n">log</span><span class="o">-</span><span class="n">values</span>  <span class="kc">False</span>
 
 <span class="n">radiative</span> <span class="n">fields</span><span class="p">:</span>
  <span class="n">seed</span> <span class="n">photons</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">100</span>
@@ -1155,8 +1151,8 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
           <span class="n">p</span>   <span class="n">LE_spectral_slope</span>                                <span class="mf">2.0</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
         <span class="n">p_1</span>   <span class="n">HE_spectral_slope</span>                                <span class="mf">3.0</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
 <span class="n">gamma_break</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>            <span class="mf">10000.0</span>                <span class="mi">1</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-          <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">15.698970004336019</span>                <span class="mi">0</span>                 <span class="mi">30</span>  <span class="kc">True</span>  <span class="kc">False</span>
-        <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>                <span class="mi">0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+          <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">5000000000000000.0</span>           <span class="mf">1000.0</span>              <span class="mf">1e+30</span> <span class="kc">False</span>  <span class="kc">False</span>
+        <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">1e+17</span>                <span class="mi">0</span>               <span class="kc">None</span> <span class="kc">False</span>   <span class="kc">True</span>
           <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>                <span class="mf">0.1</span>                <span class="mi">0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
       <span class="n">theta</span>   <span class="n">jet</span><span class="o">-</span><span class="n">viewing</span><span class="o">-</span><span class="n">angle</span>             <span class="n">deg</span>                <span class="mf">0.1</span>                <span class="mi">0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
  <span class="n">BulkFactor</span>     <span class="n">jet</span><span class="o">-</span><span class="n">bulk</span><span class="o">-</span><span class="n">factor</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>               <span class="mf">10.0</span>              <span class="mf">1.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
@@ -1190,7 +1186,7 @@ or as a more realistic multi temperature BB</p>
 
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;p_1&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">3.2</span><span class="p">)</span>
-<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">15.5</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">3E15</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;z_cosm&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;BulkFactor&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
@@ -1205,7 +1201,7 @@ or as a more realistic multi temperature BB</p>
 <span class="n">p</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">13.5</span><span class="p">,</span><span class="n">y_max</span><span class="o">=-</span><span class="mf">9.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span><span class="n">x_max</span><span class="o">=</span><span class="mi">27</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_124_0.png" src="../../_images/Jet_example_phys_124_0.png" />
+<img alt="../../_images/Jet_example_phys_135_0.png" src="../../_images/Jet_example_phys_135_0.png" />
 </div>
 <div class="section" id="dusty-torus">
 <h3>Dusty Torus<a class="headerlink" href="#dusty-torus" title="Permalink to this headline">¶</a></h3>
@@ -1223,6 +1219,8 @@ or as a more realistic multi temperature BB</p>
  <span class="n">electron</span> <span class="n">energy</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">1001</span>
  <span class="n">gmin</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">2.000000e+00</span>
  <span class="n">gmax</span> <span class="n">grid</span> <span class="p">:</span> <span class="mf">5.000000e+04</span>
+ <span class="n">normalization</span>  <span class="kc">True</span>
+ <span class="n">log</span><span class="o">-</span><span class="n">values</span>  <span class="kc">False</span>
 
 <span class="n">radiative</span> <span class="n">fields</span><span class="p">:</span>
  <span class="n">seed</span> <span class="n">photons</span> <span class="n">grid</span> <span class="n">size</span><span class="p">:</span>  <span class="mi">100</span>
@@ -1247,14 +1245,14 @@ or as a more realistic multi temperature BB</p>
 
     <span class="n">name</span>          <span class="n">par</span> <span class="nb">type</span>           <span class="n">units</span>             <span class="n">val</span>         <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">min</span>  <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">max</span>   <span class="n">log</span>  <span class="n">frozen</span>
 <span class="o">-----------</span> <span class="o">-------------------</span> <span class="o">---------------</span> <span class="o">------------------</span> <span class="o">----------------</span> <span class="o">------------------</span> <span class="o">-----</span> <span class="o">------</span>
-          <span class="n">N</span>    <span class="n">electron_density</span>         <span class="mi">1</span> <span class="o">/</span> <span class="n">cm3</span> <span class="mf">3563.8932821890858</span>                <span class="mi">0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+          <span class="n">N</span>    <span class="n">electron_density</span>         <span class="mi">1</span> <span class="o">/</span> <span class="n">cm3</span>  <span class="mf">4174.081522033596</span>                <span class="mi">0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
        <span class="n">gmin</span>  <span class="n">low</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>                <span class="mf">2.0</span>                <span class="mi">1</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
        <span class="n">gmax</span> <span class="n">high</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>            <span class="mf">50000.0</span>                <span class="mi">1</span> <span class="mf">1000000000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
           <span class="n">p</span>   <span class="n">LE_spectral_slope</span>                                <span class="mf">1.5</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
         <span class="n">p_1</span>   <span class="n">HE_spectral_slope</span>                                <span class="mf">3.2</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
 <span class="n">gamma_break</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>              <span class="mf">500.0</span>                <span class="mi">1</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
-          <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span>               <span class="mf">15.5</span>                <span class="mi">0</span>                 <span class="mi">30</span>  <span class="kc">True</span>  <span class="kc">False</span>
-        <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">3e+17</span>                <span class="mi">0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+          <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span> <span class="mf">3000000000000000.0</span>           <span class="mf">1000.0</span>              <span class="mf">1e+30</span> <span class="kc">False</span>  <span class="kc">False</span>
+        <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>              <span class="mf">3e+17</span>                <span class="mi">0</span>               <span class="kc">None</span> <span class="kc">False</span>   <span class="kc">True</span>
           <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span>                <span class="mf">1.5</span>                <span class="mi">0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
       <span class="n">theta</span>   <span class="n">jet</span><span class="o">-</span><span class="n">viewing</span><span class="o">-</span><span class="n">angle</span>             <span class="n">deg</span>                  <span class="mi">1</span>                <span class="mi">0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
  <span class="n">BulkFactor</span>     <span class="n">jet</span><span class="o">-</span><span class="n">bulk</span><span class="o">-</span><span class="n">factor</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>                 <span class="mi">20</span>              <span class="mf">1.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
@@ -1280,13 +1278,14 @@ or as a more realistic multi temperature BB</p>
 <span class="n">p</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">13.5</span><span class="p">,</span><span class="n">y_max</span><span class="o">=-</span><span class="mf">9.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span><span class="n">x_max</span><span class="o">=</span><span class="mi">27</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../../_images/Jet_example_phys_127_0.png" src="../../_images/Jet_example_phys_127_0.png" />
+<img alt="../../_images/Jet_example_phys_138_0.png" src="../../_images/Jet_example_phys_138_0.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">add_EC_component</span><span class="p">(</span><span class="s1">&#39;EC_DT&#39;</span><span class="p">)</span>
 <span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 <span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
 <span class="n">p</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">13.5</span><span class="p">,</span><span class="n">y_max</span><span class="o">=-</span><span class="mf">9.5</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span><span class="n">x_max</span><span class="o">=</span><span class="mi">27</span><span class="p">)</span>
 </pre></div>
 </div>
+<img alt="../../_images/Jet_example_phys_139_0.png" src="../../_images/Jet_example_phys_139_0.png" />
 </div>
 <div class="section" id="changing-the-external-field-transformation">
 <h3>Changing the external field transformation<a class="headerlink" href="#changing-the-external-field-transformation" title="Permalink to this headline">¶</a></h3>
@@ -1354,6 +1353,10 @@ the disk/BH frame.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x1823b4de50</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../../_images/Jet_example_phys_148_1.png" src="../../_images/Jet_example_phys_148_1.png" />
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
 
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
@@ -1406,10 +1409,98 @@ the disk/BH frame.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 </pre></div>
 </div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">legend</span><span class="o">.</span><span class="n">Legend</span> <span class="n">at</span> <span class="mh">0x1822def0d0</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../../_images/Jet_example_phys_149_1.png" src="../../_images/Jet_example_phys_149_1.png" />
 </div>
 <div class="section" id="ic-against-the-cmb">
 <h3>IC against the CMB<a class="headerlink" href="#ic-against-the-cmb" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">=</span><span class="n">Jet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;test_equipartition&#39;</span><span class="p">,</span><span class="n">electron_distribution</span><span class="o">=</span><span class="s1">&#39;lppl&#39;</span><span class="p">,</span><span class="n">beaming_expr</span><span class="o">=</span><span class="s1">&#39;bulk_theta&#39;</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">1E21</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;z_cosm&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span> <span class="mf">0.651</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">2E-5</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gmin&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">35.0E3</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;gmax&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">30E5</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">12.0</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;BulkFactor&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">3.5</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">2.58</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_par</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">val</span><span class="o">=</span><span class="mf">0.42</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_N_from_nuFnu</span><span class="p">(</span><span class="mf">5E-15</span><span class="p">,</span><span class="mf">1E12</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">add_EC_component</span><span class="p">(</span><span class="s1">&#39;EC_CMB&#39;</span><span class="p">)</span>
+</pre></div>
 </div>
+<p>We can now compare the different beaming pattern for the EC emission if
+the CMB, and realize that the beaming pattern is different. This is very
+important in the case of radio galaxies. The <code class="docutils literal notranslate"><span class="pre">src</span></code> transformation is
+the one to use in the case of radio galaies or misaligned AGNs, and
+gives a more accurate resut. Anyhow,be careful that this works onlyt for
+isotropic external fields, suchs as the CMB, of the Disk and BLR seed
+photons whitin the Dusty torus radius, and BLR radius, respectively</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">PlotSED</span><span class="p">()</span>
+
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_external_field_transf</span><span class="p">(</span><span class="s1">&#39;blob&#39;</span><span class="p">)</span>
+<span class="n">c</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">ID</span><span class="p">,</span><span class="n">theta</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">4</span><span class="p">)):</span>
+    <span class="n">my_jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">theta</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">theta</span>
+    <span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">plot_obj</span><span class="o">=</span><span class="n">p</span><span class="p">,</span><span class="n">comp</span><span class="o">=</span><span class="s1">&#39;Sum&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;blob, theta=</span><span class="si">%2.2f</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">theta</span>,line_style=&#39;--&#39;,color=c[ID])
+
+<span class="n">my_jet</span><span class="o">.</span><span class="n">set_external_field_transf</span><span class="p">(</span><span class="s1">&#39;disk&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ID</span><span class="p">,</span><span class="n">theta</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">4</span><span class="p">)):</span>
+    <span class="n">my_jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">theta</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">theta</span>
+    <span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">plot_obj</span><span class="o">=</span><span class="n">p</span><span class="p">,</span><span class="n">comp</span><span class="o">=</span><span class="s1">&#39;Sum&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;disk, theta=</span><span class="si">%2.2f</span><span class="s1">&#39;</span><span class="o">%</span><span class="k">theta</span>,line_style=&#39;&#39;,color=c[ID])
+
+<span class="n">p</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span><span class="n">y_max</span><span class="o">=-</span><span class="mf">12.5</span><span class="p">,</span><span class="n">x_max</span><span class="o">=</span><span class="mi">28</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../_images/Jet_example_phys_153_0.png" src="../../_images/Jet_example_phys_153_0.png" />
+</div>
+</div>
+<div class="section" id="equipartition">
+<h2>Equipartition<a class="headerlink" href="#equipartition" title="Permalink to this headline">¶</a></h2>
+<p>It is also possible to set our jet at the equipartition, that is
+achieved not using analytical approximation, but by numerically finding
+the equipartition value over a grid. We have to provide the value of the
+observed flux (<code class="docutils literal notranslate"><span class="pre">nuFnu_obs</span></code>) at a given observed frequency
+(<code class="docutils literal notranslate"><span class="pre">nu_obs</span></code>), the minimum value of B (<code class="docutils literal notranslate"><span class="pre">B_min</span></code>), and the number of grid
+points (<code class="docutils literal notranslate"><span class="pre">N_pts</span></code>)</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">theta</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mi">12</span>
+<span class="n">B_min</span><span class="p">,</span><span class="n">b_grid</span><span class="p">,</span><span class="n">U_B</span><span class="p">,</span><span class="n">U_e</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">set_B_eq</span><span class="p">(</span><span class="n">nuFnu_obs</span><span class="o">=</span><span class="mf">5E-15</span><span class="p">,</span><span class="n">nu_obs</span><span class="o">=</span><span class="mf">1E12</span><span class="p">,</span><span class="n">B_min</span><span class="o">=</span><span class="mf">1E-9</span><span class="p">,</span><span class="n">N_pts</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">my_jet</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+
+<span class="n">my_jet</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">p</span><span class="o">=</span><span class="n">my_jet</span><span class="o">.</span><span class="n">plot_model</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">y_min</span><span class="o">=-</span><span class="mf">16.5</span><span class="p">,</span><span class="n">y_max</span><span class="o">=-</span><span class="mf">13.5</span><span class="p">,</span><span class="n">x_max</span><span class="o">=</span><span class="mi">28</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">B</span> <span class="n">grid</span> <span class="nb">min</span>  <span class="mf">1e-09</span>
+<span class="n">B</span> <span class="n">grid</span> <span class="nb">max</span>  <span class="mf">1.0</span>
+<span class="n">grid</span> <span class="n">points</span> <span class="mi">50</span>
+</pre></div>
+</div>
+<img alt="../../_images/Jet_example_phys_156_1.png" src="../../_images/Jet_example_phys_156_1.png" />
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setting</span> <span class="n">B</span> <span class="n">to</span>  <span class="mf">0.0001389495494373139</span>
+<span class="n">setting</span> <span class="n">N</span> <span class="n">to</span>  <span class="mf">9.13927847193837e-06</span>
+      <span class="n">name</span>             <span class="n">par</span> <span class="nb">type</span>           <span class="n">units</span>               <span class="n">val</span>          <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">min</span>  <span class="n">phys</span><span class="o">.</span> <span class="n">bound</span><span class="o">.</span> <span class="nb">max</span>   <span class="n">log</span>  <span class="n">frozen</span>
+<span class="o">----------------</span> <span class="o">-------------------</span> <span class="o">---------------</span> <span class="o">---------------------</span> <span class="o">----------------</span> <span class="o">------------------</span> <span class="o">-----</span> <span class="o">------</span>
+               <span class="n">N</span>    <span class="n">electron_density</span>         <span class="mi">1</span> <span class="o">/</span> <span class="n">cm3</span>  <span class="mf">9.13927847193837e-06</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+            <span class="n">gmin</span>  <span class="n">low</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>                  <span class="mf">50.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+            <span class="n">gmax</span> <span class="n">high</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>             <span class="mf">3000000.0</span>              <span class="mf">1.0</span> <span class="mf">1000000000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">s</span>   <span class="n">LE_spectral_slope</span>                                  <span class="mf">2.58</span>            <span class="o">-</span><span class="mf">10.0</span>               <span class="mf">10.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">r</span>  <span class="n">spectral_curvature</span>                                  <span class="mf">0.42</span>            <span class="o">-</span><span class="mf">15.0</span>               <span class="mf">15.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+<span class="n">gamma0_log_parab</span>    <span class="n">turn</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">energy</span> <span class="n">lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>               <span class="mf">35000.0</span>              <span class="mf">1.0</span>       <span class="mf">1000000000.0</span> <span class="kc">False</span>  <span class="kc">False</span>
+               <span class="n">R</span>         <span class="n">region_size</span>              <span class="n">cm</span>                 <span class="mf">1e+21</span>           <span class="mf">1000.0</span>              <span class="mf">1e+30</span> <span class="kc">False</span>  <span class="kc">False</span>
+             <span class="n">R_H</span>     <span class="n">region_position</span>              <span class="n">cm</span>                 <span class="mf">1e+17</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>   <span class="kc">True</span>
+               <span class="n">B</span>      <span class="n">magnetic_field</span>               <span class="n">G</span> <span class="mf">0.0001389495494373139</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+           <span class="n">theta</span>   <span class="n">jet</span><span class="o">-</span><span class="n">viewing</span><span class="o">-</span><span class="n">angle</span>             <span class="n">deg</span>                  <span class="mf">12.0</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+      <span class="n">BulkFactor</span>     <span class="n">jet</span><span class="o">-</span><span class="n">bulk</span><span class="o">-</span><span class="n">factor</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">factor</span><span class="o">*</span>                   <span class="mf">3.5</span>              <span class="mf">1.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+          <span class="n">z_cosm</span>            <span class="n">redshift</span>                                 <span class="mf">0.651</span>              <span class="mf">0.0</span>               <span class="kc">None</span> <span class="kc">False</span>  <span class="kc">False</span>
+</pre></div>
+</div>
+<img alt="../../_images/Jet_example_phys_156_3.png" src="../../_images/Jet_example_phys_156_3.png" />
 </div>
 </div>
 

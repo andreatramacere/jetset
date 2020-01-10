@@ -27,8 +27,8 @@ allowing to fit the numerical models to observed data. The main features of this
   order and second order (stochastic acceleration) processes.
 
 .. Important::
-    Acknowledgements
-    ---------------------
+
+   Acknowledgements
 
 
     If you use this code in any kind of scientific publication please cite the following papers:
@@ -69,7 +69,7 @@ Documentation
 
 
 Index
----------------------
+------
 
 * :ref:`genindex`
 * :ref:`modindex`

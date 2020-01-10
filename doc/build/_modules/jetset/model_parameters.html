@@ -62,11 +62,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model physical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -151,11 +151,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model physical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -222,6 +222,7 @@
 <span class="kn">import</span>  <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span>
 <span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span>  <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">clean_var_name</span>
 
 <span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ModelParameter&#39;</span><span class="p">,</span><span class="s1">&#39;ModelParameterArray&#39;</span><span class="p">,</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
 
@@ -333,7 +334,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;No&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_min&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_max&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_start_fit&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_start&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;val_last_call&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;fit_range_min&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">allowed_keywords</span><span class="p">[</span><span class="s1">&#39;fit_range_max&#39;</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
@@ -695,7 +696,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">par</span><span class="p">)</span>
 
-        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">par</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">par</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">clean_var_name</span><span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">par</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">par</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">=</span><span class="n">par</span></div>
 
 
@@ -1001,9 +1002,27 @@
 <div class="viewcode-block" id="ModelParameterArray.free_all"><a class="viewcode-back" href="../../api/jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray.free_all">[docs]</a>    <span class="k">def</span> <span class="nf">free_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">all_frozen</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">pi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">free</span><span class="p">()</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">[</span><span class="n">pi</span><span class="p">]</span><span class="o">.</span><span class="n">free</span><span class="p">()</span></div>
         
-        
+
+
+    <span class="k">def</span> <span class="nf">_serialize_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_par_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">,</span><span class="s1">&#39;val_min&#39;</span><span class="p">,</span><span class="s1">&#39;val_max&#39;</span><span class="p">,</span><span class="s1">&#39;val_start&#39;</span><span class="p">,</span><span class="s1">&#39;val_last_call&#39;</span><span class="p">,</span><span class="s1">&#39;fit_range_min&#39;</span><span class="p">,</span><span class="s1">&#39;fit_range_max&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_val&#39;</span><span class="p">,</span><span class="s1">&#39;best_fit_err&#39;</span><span class="p">,</span><span class="s1">&#39;frozen&#39;</span><span class="p">,</span><span class="s1">&#39;allowed_values&#39;</span><span class="p">]</span>
+        <span class="n">_par_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">par_array</span><span class="p">:</span>
+            <span class="n">_val_dict</span><span class="o">=</span><span class="p">{}</span>
+
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_par_keys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">par</span><span class="p">,</span><span class="n">k</span><span class="p">):</span>
+                    <span class="n">_val_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">par</span><span class="p">,</span><span class="n">k</span><span class="p">)</span>
+
+            <span class="n">_par_dict</span><span class="p">[</span><span class="n">par</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_val_dict</span>
+
+        <span class="k">return</span> <span class="n">_par_dict</span>
+
+    <span class="k">def</span> <span class="nf">_decode_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">_par_dict</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">p_name</span> <span class="ow">in</span> <span class="n">_par_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">p_name</span><span class="p">,</span><span class="o">**</span><span class="n">_par_dict</span><span class="p">[</span><span class="n">p_name</span><span class="p">])</span></div>
 </pre></div>
 
     </div>

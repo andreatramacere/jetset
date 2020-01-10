@@ -5,8 +5,7 @@
 physical setup
 ==============
 
-
-In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the :class:`.Jet` class from the :mod:`.jet_model` module. to This class thorough a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compton processes.    
+In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the :class:`.Jet` class from the :mod:`.jet_model` module. to This class through a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compton fdsfsd processes.  
 
 basic setup
 -----------
@@ -43,6 +42,8 @@ For a list of possible distribution you can run the command
     bkn_pile_up: broken powerlaw and pileup
 
 
+to view all the paramters:
+
 .. code:: ipython3
 
     my_jet.show_pars()
@@ -58,15 +59,14 @@ For a list of possible distribution you can run the command
                    s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
                    r  spectral_curvature                                0.4            -15.0               15.0 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm 15.698970004336019              0.0                 30  True  False
-                 R_H     region_position              cm              1e+17              0.0               None False  False
+                   R         region_size              cm 5000000000000000.0           1000.0              1e+30 False  False
+                 R_H     region_position              cm              1e+17              0.0               None False   True
                    B      magnetic_field               G                0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
               z_cosm            redshift                                0.1              0.0               None False  False
 
 
-
-Each parameter has default values. All the parameters listed are handled by :class:`.ModelParameterArray`, and each parameter is an instance of the the :class:`.JetParameter`. class. These parameters are also accessible as an astropy table, with units:
+Each parameter has default values. All the parameters listed are handled by :class:`.ModelParameterArray`, and each parameter is an instance of the the :class:`.JetParameter`. class. These parameters are also accessible as an astropy table, with units: 
 
 .. code:: ipython3
 
@@ -78,7 +78,7 @@ Each parameter has default values. All the parameters listed are handled by :cla
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table47686602192" class="table-striped table-bordered table-condensed">
+    <table id="table47805559120" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <thead><tr><th>str16</th><th>str19</th><th>object</th><th>float64</th><th>float64</th><th>object</th><th>bool</th><th>bool</th></tr></thead>
     <tr><td>N</td><td>electron_density</td><td>1 / cm3</td><td>100.0</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
@@ -87,8 +87,8 @@ Each parameter has default values. All the parameters listed are handled by :cla
     <tr><td>s</td><td>LE_spectral_slope</td><td></td><td>2.0</td><td>-10.0</td><td>10.0</td><td>False</td><td>False</td></tr>
     <tr><td>r</td><td>spectral_curvature</td><td></td><td>0.4</td><td>-15.0</td><td>15.0</td><td>False</td><td>False</td></tr>
     <tr><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>10000.0</td><td>1.0</td><td>1000000000.0</td><td>False</td><td>False</td></tr>
-    <tr><td>R</td><td>region_size</td><td>cm</td><td>15.698970004336019</td><td>0.0</td><td>30</td><td>True</td><td>False</td></tr>
-    <tr><td>R_H</td><td>region_position</td><td>cm</td><td>1e+17</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
+    <tr><td>R</td><td>region_size</td><td>cm</td><td>5000000000000000.0</td><td>1000.0</td><td>1e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>R_H</td><td>region_position</td><td>cm</td><td>1e+17</td><td>0.0</td><td>None</td><td>False</td><td>True</td></tr>
     <tr><td>B</td><td>magnetic_field</td><td>G</td><td>0.1</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
     <tr><td>beam_obj</td><td>beaming</td><td>Lorentz-factor*</td><td>10.0</td><td>0.0001</td><td>None</td><td>False</td><td>False</td></tr>
     <tr><td>z_cosm</td><td>redshift</td><td></td><td>0.1</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
@@ -96,10 +96,7 @@ Each parameter has default values. All the parameters listed are handled by :cla
 
 
 
-this means that you can easily convert the values in the table using the
-units module of astropy. **Please note, that the table is built on the
-fly from the** :class:`.ModelParameterArray **and each modificatio you
-do to this table will not be reflected on the actual parameters values**
+this means that you can easily convert the values in the table using the units module of astropy. **Please note, that the table is built on the fly from the**  :class:`.ModelParameterArray **and each modification you do to this table will not be reflected on the actual parameters values**
 
 To get a full description of the model you can use the instruction
 
@@ -121,6 +118,8 @@ To get a full description of the model you can use the instruction
      electron energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
+     normalization  True
+     log-values  False
     
     radiative fields:
      seed photons grid size:  100
@@ -147,16 +146,23 @@ To get a full description of the model you can use the instruction
                    s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
                    r  spectral_curvature                                0.4            -15.0               15.0 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm 15.698970004336019              0.0                 30  True  False
-                 R_H     region_position              cm              1e+17              0.0               None False  False
+                   R         region_size              cm 5000000000000000.0           1000.0              1e+30 False  False
+                 R_H     region_position              cm              1e+17              0.0               None False   True
                    B      magnetic_field               G                0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
               z_cosm            redshift                                0.1              0.0               None False  False
     -------------------------------------------------------------------------------------------------------------------
 
 
-as you can notice, you can now access further information regarding the model, such as numerical configuration of the grid. These parameters will be discussed 
+as you can notice, you can now access further information regarding the model, such as numerical configuration of the grida. These parameters will be discussed 
 in the :ref:`jet_numerical_guide' section
+
+Ff you want to use a comoslogy model different from the dafault one please read the :ref:`cosmology` section.
+
+.. warning::
+    Starting from version 1.1.0, the `R` parameter as default is linear and not logarithmic, please update your old scripts
+    setting `R` with linear values.   
+   
 
 setting the parameters
 ----------------------
@@ -171,7 +177,7 @@ assume you want to change some of the parameters in your model, you can use two 
     my_jet.set_par('gamma0_log_parab',val=5E3)
     my_jet.set_par('gmin',val=1E2)
     my_jet.set_par('gmax',val=1E8)
-    my_jet.set_par('R',val=14.5)
+    my_jet.set_par('R',val=1E15)
     my_jet.set_par('N',val=1E3)
 
 2) accessing directly the parameter 
@@ -197,20 +203,22 @@ investigating the electron distribution
      electron energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
+     normalization  True
+     log-values  False
     
-          name             par type           units          val     phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- ----------- ---------------- ------------------ ----- ------
-                   B      magnetic_field               G         0.2              0.0               None False  False
-                   N    electron_density         1 / cm3      1000.0              0.0               None False  False
-                   R         region_size              cm        14.5              0.0                 30  True  False
-                 R_H     region_position              cm       1e+17              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*        10.0           0.0001               None False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*      5000.0              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor* 100000000.0              1.0 1000000000000000.0 False  False
-                gmin  low-energy-cut-off lorentz-factor*       100.0              1.0       1000000000.0 False  False
-                   r  spectral_curvature                         0.4            -15.0               15.0 False  False
-                   s   LE_spectral_slope                         2.0            -10.0               10.0 False  False
-              z_cosm            redshift                         0.1              0.0               None False  False
+          name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
+    ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
+                   B      magnetic_field               G                0.2              0.0               None False  False
+                   N    electron_density         1 / cm3             1000.0              0.0               None False  False
+                   R         region_size              cm 1000000000000000.0           1000.0              1e+30 False  False
+                 R_H     region_position              cm              1e+17              0.0               None False   True
+            beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor*             5000.0              1.0       1000000000.0 False  False
+                gmax high-energy-cut-off lorentz-factor*        100000000.0              1.0 1000000000000000.0 False  False
+                gmin  low-energy-cut-off lorentz-factor*              100.0              1.0       1000000000.0 False  False
+                   r  spectral_curvature                                0.4            -15.0               15.0 False  False
+                   s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
+              z_cosm            redshift                                0.1              0.0               None False  False
 
 
 .. code:: ipython3
@@ -219,7 +227,7 @@ investigating the electron distribution
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_22_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_25_0.png
 
 
 .. code:: ipython3
@@ -228,7 +236,7 @@ investigating the electron distribution
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_23_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_26_0.png
 
 
 .. code:: ipython3
@@ -244,7 +252,7 @@ investigating the electron distribution
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_24_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_27_0.png
 
 
 using log values for electron distribution parameters
@@ -269,6 +277,8 @@ using log values for electron distribution parameters
      electron energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
+     normalization  True
+     log-values  True
     
     radiative fields:
      seed photons grid size:  100
@@ -295,8 +305,8 @@ using log values for electron distribution parameters
                    s   LE_spectral_slope                                2.0            -10.0             10.0 False  False
                    r  spectral_curvature                                0.4            -15.0             15.0 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor*                4.0              0.0              9.0  True  False
-                   R         region_size              cm 15.698970004336019              0.0               30  True  False
-                 R_H     region_position              cm              1e+17              0.0             None False  False
+                   R         region_size              cm 5000000000000000.0           1000.0            1e+30 False  False
+                 R_H     region_position              cm              1e+17              0.0             None False   True
                    B      magnetic_field               G                0.1              0.0             None False  False
             beam_obj             beaming Lorentz-factor*               10.0           0.0001             None False  False
               z_cosm            redshift                                0.1              0.0             None False  False
@@ -328,8 +338,8 @@ instruction
                    s   LE_spectral_slope                                2.0            -10.0             10.0 False  False
                    r  spectral_curvature                                0.4            -15.0             15.0 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor*                4.0              0.0              9.0  True  False
-                   R         region_size              cm 15.698970004336019              0.0               30  True  False
-                 R_H     region_position              cm              1e+17              0.0             None False  False
+                   R         region_size              cm 5000000000000000.0           1000.0            1e+30 False  False
+                 R_H     region_position              cm              1e+17              0.0             None False   True
                    B      magnetic_field               G                0.1              0.0             None False  False
             beam_obj             beaming Lorentz-factor*               10.0           0.0001             None False  False
               z_cosm            redshift                                0.1              0.0             None False  False
@@ -346,7 +356,7 @@ and plot the corresponding SED:
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_32_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_35_0.png
 
 
 alternatively, you can call the ``plot_model`` method without passing a
@@ -359,10 +369,10 @@ alternatively, you can call the ``plot_model`` method without passing a
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_34_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_37_0.png
 
 
-If you want ot have more points on the IC spectrum can set the numerical  parameters for radiavite fields(see :ref:`jet_numerical_guide' section for more details):
+If you want to have more points on the IC spectrum you can set the numerical  parameters for radiavite fields(see :ref:`jet_numerical_guide' section for more details):
 
 .. code:: ipython3
 
@@ -376,7 +386,7 @@ If you want ot have more points on the IC spectrum can set the numerical  parame
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_37_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_40_0.png
 
 
 you can access the same plot, but in the rest frame of the black hole,
@@ -390,7 +400,7 @@ passing the ``frame`` kw to ``src``
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_39_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_42_0.png
 
 
 the ``my_plot`` object returned will be built on the fly by the
@@ -430,7 +440,7 @@ to compare the same model after changing a parameter
     my_jet.set_par('gamma0_log_parab',val=5E3)
     my_jet.set_par('gmin',val=1E2)
     my_jet.set_par('gmax',val=1E8)
-    my_jet.set_par('R',val=14.5)
+    my_jet.set_par('R',val=10**14.5)
     my_jet.set_par('N',val=1E3)
     
     my_jet.parameters.gamma0_log_parab.val=1E4
@@ -443,7 +453,7 @@ to compare the same model after changing a parameter
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_44_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_47_0.png
 
 
 saving a plot
@@ -455,8 +465,13 @@ to save the plot
 
     my_plot.save('jet1.png')
 
-saving and lodaing a model
+saving and loading a model
 --------------------------
+
+.. warning::
+    starting from version 1.1.0 the saved model format has changed, if you have models saved vith version<1.1.0,  
+    plase update them the new models by loading the old models with the :meth:`.Jet.load_old_model`  
+    and then saving them again.
 
 .. code:: ipython3
 
@@ -471,17 +486,17 @@ saving and lodaing a model
 
           name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
     ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   R         region_size              cm 15.698970004336019              0.0                 30  True  False
-                 R_H     region_position              cm              1e+17              0.0               None False  False
-                   B      magnetic_field               G                0.1              0.0               None False  False
+                   R         region_size              cm 316227766016837.94           1000.0              1e+30 False  False
+                 R_H     region_position              cm              1e+17              0.0               None False   True
+                   B      magnetic_field               G                0.2              0.0               None False  False
             beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
               z_cosm            redshift                                0.1              0.0               None False  False
-                   N    electron_density         1 / cm3              100.0              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*                2.0              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*          1000000.0              1.0 1000000000000000.0 False  False
+                   N    electron_density         1 / cm3             1000.0              0.0               None False  False
+                gmin  low-energy-cut-off lorentz-factor*              100.0              1.0       1000000000.0 False  False
+                gmax high-energy-cut-off lorentz-factor*        100000000.0              1.0 1000000000000000.0 False  False
                    s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
                    r  spectral_curvature                                0.4            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor*           100000.0              1.0       1000000000.0 False  False
 
 
 switching on/off the particle distribution normalization
@@ -513,16 +528,28 @@ and then you can switch off the normalization withe command
 
     my_jet.switch_Norm_distr_OFF()
 
+OR
+
+.. code:: ipython3
+
+    my_jet.Norm_distr=0
+
 or set back the normalization on with
 
 .. code:: ipython3
 
     my_jet.switch_Norm_distr_ON()
 
+OR
+
+.. code:: ipython3
+
+    my_jet.Norm_distr=1
+
 setting the particle density from observed Fluxes or Luminosities
 -----------------------------------------------------------------
 
-It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     :meth:`.Jet.set_N_from_nuFnu`,th:`.Jet.set_N_from_nuLnu`)
+It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     :meth:`.Jet.set_N_from_nuFnu`, meth:`.Jet.set_N_from_nuLnu`)
 
 .. code:: ipython3
 
@@ -563,7 +590,7 @@ flux at the given frequency
 
 .. parsed-literal::
 
-    271.7733867972609
+    271.77338679726074
 
 
 
@@ -576,14 +603,14 @@ flux at the given frequency
 
           name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
     ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   N    electron_density         1 / cm3  271.7733867972609              0.0               None False  False
+                   N    electron_density         1 / cm3 271.77338679726074              0.0               None False  False
                 gmin  low-energy-cut-off lorentz-factor*                2.0              1.0       1000000000.0 False  False
                 gmax high-energy-cut-off lorentz-factor*          1000000.0              1.0 1000000000000000.0 False  False
                    s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
                    r  spectral_curvature                                0.4            -15.0               15.0 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm 15.698970004336019              0.0                 30  True  False
-                 R_H     region_position              cm              1e+17              0.0               None False  False
+                   R         region_size              cm 5000000000000000.0           1000.0              1e+30 False  False
+                 R_H     region_position              cm              1e+17              0.0               None False   True
                    B      magnetic_field               G                0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
               z_cosm            redshift                                0.1              0.0               None False  False
@@ -597,7 +624,7 @@ flux at the given frequency
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_68_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_76_0.png
 
 
 as you can see, the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1.
@@ -637,8 +664,8 @@ It is possible to set the beaming factor according to the relativistic BulkFacto
                    s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
                    r  spectral_curvature                                0.4            -15.0               15.0 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm 15.698970004336019              0.0                 30  True  False
-                 R_H     region_position              cm              1e+17              0.0               None False  False
+                   R         region_size              cm 5000000000000000.0           1000.0              1e+30 False  False
+                 R_H     region_position              cm              1e+17              0.0               None False   True
                    B      magnetic_field               G                0.1              0.0               None False  False
                theta   jet-viewing-angle             deg                0.1              0.0               None False  False
           BulkFactor     jet-bulk-factor Lorentz-factor*               10.0              1.0               None False  False
@@ -701,8 +728,8 @@ expression as in the default case
                    s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
                    r  spectral_curvature                                0.4            -15.0               15.0 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm 15.698970004336019              0.0                 30  True  False
-                 R_H     region_position              cm              1e+17              0.0               None False  False
+                   R         region_size              cm 5000000000000000.0           1000.0              1e+30 False  False
+                 R_H     region_position              cm              1e+17              0.0               None False   True
                    B      magnetic_field               G                0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
               z_cosm            redshift                                0.1              0.0               None False  False
@@ -769,14 +796,28 @@ and from the ``SED`` object we can extract both the nu and nuFnu array
      1.00000000e-120 1.00000000e-120 1.00000000e-120 1.00000000e-120] erg / (cm2 s)
 
 
-or for the ``src`` rest frame (isotropic luminosity
+or for the ``src`` rest frame (isotropic luminosity)
 
 .. code:: ipython3
 
-    nu_sync=Sync.SED.nu_src
-    nuFnu_sync=Sync.SED.nuLnu_src_residuals
+    nu_sync_src=Sync.SED.nu_src
+    nuLnu_sync_src=Sync.SED.nuLnu_src
 
-Moreover, you can access the correspondin astropy table
+.. code:: ipython3
+
+    print (nuLnu_sync_src[::10])
+
+
+.. parsed-literal::
+
+    [2.70118406e-65 2.70118406e-65 2.92939742e+33 4.63897473e+37
+     1.10156425e+40 4.42146923e+40 1.75167660e+41 6.66383927e+41
+     1.96865559e+42 3.35752756e+42 3.02971688e+42 3.83614730e+41
+     1.11899760e+28 2.70118406e-65 2.70118406e-65 2.70118406e-65
+     2.70118406e-65 2.70118406e-65 2.70118406e-65 2.70118406e-65] erg / s
+
+
+Moreover, you can access the corresponding astropy table
 
 .. code:: ipython3
 
@@ -793,7 +834,7 @@ Moreover, you can access the correspondin astropy table
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table103538716432" class="table-striped table-bordered table-condensed">
+    <table id="table103654980944" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -801,7 +842,7 @@ Moreover, you can access the correspondin astropy table
     <tr><td>15848931.924611142</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
     <tr><td>251188643.1509582</td><td>1.0844864302391386e-22</td><td>1.0844864159585182e-22</td><td>1.4280620238888498e-30</td></tr>
     <tr><td>3981071705.5349693</td><td>1.7173856696253947e-18</td><td>1.7173856494785146e-18</td><td>2.0146879965841637e-26</td></tr>
-    <tr><td>63095734448.019424</td><td>4.078079552134753e-16</td><td>4.0780791901431997e-16</td><td>3.6199155354751893e-23</td></tr>
+    <tr><td>63095734448.019424</td><td>4.078079552134786e-16</td><td>4.0780791901432327e-16</td><td>3.6199155354751893e-23</td></tr>
     <tr><td>1000000000000.0</td><td>1.6368645001464381e-15</td><td>1.6368633684904028e-15</td><td>1.1316560354507247e-21</td></tr>
     <tr><td>15848931924611.11</td><td>6.484856227306914e-15</td><td>6.484847252386628e-15</td><td>8.974920286013819e-21</td></tr>
     <tr><td>251188643150958.22</td><td>2.467012104235855e-14</td><td>2.4670067379508708e-14</td><td>5.366284984149398e-20</td></tr>
@@ -812,9 +853,9 @@ Moreover, you can access the correspondin astropy table
     <tr><td>2.5118864315095718e+20</td><td>8.198273815038918e-17</td><td>4.142618855201174e-28</td><td>8.198273814997492e-17</td></tr>
     <tr><td>3.9810717055349854e+21</td><td>2.6806229698492253e-16</td><td>1e-120</td><td>2.6806229698492253e-16</td></tr>
     <tr><td>6.309573444801943e+22</td><td>7.79329160185085e-16</td><td>1e-120</td><td>7.79329160185085e-16</td></tr>
-    <tr><td>1e+24</td><td>1.876892626829054e-15</td><td>1e-120</td><td>1.876892626829054e-15</td></tr>
+    <tr><td>1e+24</td><td>1.876892626829062e-15</td><td>1e-120</td><td>1.876892626829062e-15</td></tr>
     <tr><td>1.584893192461111e+25</td><td>2.722149689253548e-15</td><td>1e-120</td><td>2.722149689253548e-15</td></tr>
-    <tr><td>2.511886431509572e+26</td><td>9.271731262955761e-16</td><td>1e-120</td><td>9.271731262955761e-16</td></tr>
+    <tr><td>2.511886431509572e+26</td><td>9.2717312629558e-16</td><td>1e-120</td><td>9.2717312629558e-16</td></tr>
     <tr><td>3.9810717055349856e+27</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
     <tr><td>6.309573444801943e+28</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
     </table>
@@ -838,7 +879,7 @@ and also in the ``src`` restframe
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table103536859152" class="table-striped table-bordered table-condensed">
+    <table id="table103654793104" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / s</th><th>erg / s</th><th>erg / s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -846,7 +887,7 @@ and also in the ``src`` restframe
     <tr><td>17433825.11707226</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
     <tr><td>276307507.4660541</td><td>2.929397454400055e+33</td><td>2.929397415825471e+33</td><td>3.8574583700258197e+25</td></tr>
     <tr><td>4379178876.088467</td><td>4.638974788937108e+37</td><td>4.638974734516677e+37</td><td>5.442043094354434e+29</td></tr>
-    <tr><td>69405307892.82137</td><td>1.1015643465663463e+40</td><td>1.1015642487857652e+40</td><td>9.77805812879182e+32</td></tr>
+    <tr><td>69405307892.82137</td><td>1.1015643465663552e+40</td><td>1.101564248785774e+40</td><td>9.77805812879182e+32</td></tr>
     <tr><td>1100000000000.0</td><td>4.421472289763414e+40</td><td>4.421469232952174e+40</td><td>3.056811239929309e+34</td></tr>
     <tr><td>17433825117072.223</td><td>1.751679024719035e+41</td><td>1.7516766004278765e+41</td><td>2.424291158119413e+35</td></tr>
     <tr><td>276307507466054.06</td><td>6.663853762125038e+41</td><td>6.663839266801599e+41</td><td>1.449532343958061e+36</td></tr>
@@ -857,9 +898,9 @@ and also in the ``src`` restframe
     <tr><td>2.7630750746605293e+20</td><td>2.2145046516583798e+39</td><td>1.118997600209717e+28</td><td>2.21450465164719e+39</td></tr>
     <tr><td>4.3791788760884844e+21</td><td>7.240856026525909e+39</td><td>2.7011840560827467e-65</td><td>7.240856026525909e+39</td></tr>
     <tr><td>6.940530789282138e+22</td><td>2.1051115019323087e+40</td><td>2.7011840560827467e-65</td><td>2.1051115019323087e+40</td></tr>
-    <tr><td>1.1e+24</td><td>5.069832438569905e+40</td><td>2.7011840560827467e-65</td><td>5.069832438569905e+40</td></tr>
+    <tr><td>1.1e+24</td><td>5.069832438569926e+40</td><td>2.7011840560827467e-65</td><td>5.069832438569926e+40</td></tr>
     <tr><td>1.7433825117072222e+25</td><td>7.353027338882288e+40</td><td>2.7011840560827467e-65</td><td>7.353027338882288e+40</td></tr>
-    <tr><td>2.7630750746605295e+26</td><td>2.504465265978005e+40</td><td>2.7011840560827467e-65</td><td>2.504465265978005e+40</td></tr>
+    <tr><td>2.7630750746605295e+26</td><td>2.5044652659780157e+40</td><td>2.7011840560827467e-65</td><td>2.5044652659780157e+40</td></tr>
     <tr><td>4.379178876088485e+27</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
     <tr><td>6.940530789282138e+28</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
     </table>
@@ -900,8 +941,15 @@ or in fits format
     WARNING: VerifyWarning: Keyword name 'restframe' is greater than 8 characters or contains characters not allowed by the FITS standard; a HIERARCH card will be created. [astropy.io.fits.card]
 
 
-Getting an energetic report
----------------------------
+Energetic report
+----------------
+
+It is possible to get an energetic report of the jet model (updated each
+time that you eval the model). This report gives energy densities
+(``U_``) (both in the blob end disk restframe), the luminosities of the
+emitted components in the blob resftrame (``L_``), and the luminosity
+carried by the jet (``jet_L``) for the radiative components, the
+electrons, the magnetic fields, and for the cold protons in the jet.
 
 .. code:: ipython3
 
@@ -912,43 +960,45 @@ Getting an energetic report
 
     -----------------------------------------------------------------------------------------
     jet eneregetic report:
-         name                par type             units            val           phys. bound. min phys. bound. max  log  frozen
-    ------------- ----------------------------- --------- ---------------------- ---------------- ---------------- ----- ------
-              U_e Energy dens. blob rest. frame erg / cm3  0.0017404342430246782             None             None False  False
-              U_p Energy dens. blob rest. frame erg / cm3         0.015032764261             None             None False  False
-              U_B Energy dens. blob rest. frame erg / cm3 0.00039788735772973844             None             None False  False
-          U_Synch Energy dens. blob rest. frame erg / cm3  5.506769532122051e-05             None             None False  False
-      U_Synch_DRF Energy dens. disk rest. frame erg / cm3      8.712292317747343             None             None False  False
-           U_Disk Energy dens. blob rest. frame erg / cm3                    0.0             None             None False  False
-            U_BLR Energy dens. blob rest. frame erg / cm3                    0.0             None             None False  False
-             U_DT Energy dens. blob rest. frame erg / cm3                    0.0             None             None False  False
-            U_CMB Energy dens. blob rest. frame erg / cm3                    0.0             None             None False  False
-       U_Disk_DRF Energy dens. disk rest. frame erg / cm3                    0.0             None             None False  False
-        U_BLR_DRF Energy dens. disk rest. frame erg / cm3                    0.0             None             None False  False
-         U_DT_DRF Energy dens. disk rest. frame erg / cm3                    0.0             None             None False  False
-        U_CMB_DRF Energy dens. disk rest. frame erg / cm3                    0.0             None             None False  False
-        L_Sync_rf         Lum. blob rest. frme.   erg / s 1.7287643525921238e+38             None             None False  False
-         L_SSC_rf         Lum. blob rest. frme.   erg / s 3.8288790975793374e+36             None             None False  False
-     L_EC_Disk_rf         Lum. blob rest. frme.   erg / s                    0.0             None             None False  False
-      L_EC_BLR_rf         Lum. blob rest. frme.   erg / s                    0.0             None             None False  False
-       L_EC_DT_rf         Lum. blob rest. frme.   erg / s                    0.0             None             None False  False
-      L_EC_CMB_rf         Lum. blob rest. frme.   erg / s                    0.0             None             None False  False
-          L_PP_rf         Lum. blob rest. frme.   erg / s                    0.0             None             None False  False
-       jet_L_Sync                      jet Lum.   erg / s  4.321910881480309e+39             None             None False  False
-        jet_L_SSC                      jet Lum.   erg / s  9.572197743948343e+37             None             None False  False
-    jet_L_EC_Disk                      jet Lum.   erg / s                    0.0             None             None False  False
-     jet_L_EC_BLR                      jet Lum.   erg / s                    0.0             None             None False  False
-      jet_L_EC_DT                      jet Lum.   erg / s                    0.0             None             None False  False
-     jet_L_EC_CMB                      jet Lum.   erg / s                    0.0             None             None False  False
-         jet_L_PP                      jet Lum.   erg / s                    0.0             None             None False  False
-        jet_L_rad                      jet Lum.   erg / s 4.4176328589197927e+39             None             None False  False
-        jet_L_kin                      jet Lum.   erg / s  4.043042849486073e+42             None             None False  False
-        jet_L_tot                      jet Lum.   erg / s 4.0474604823449925e+42             None             None False  False
-          jet_L_e                      jet Lum.   erg / s  4.097964612089289e+41             None             None False  False
-          jet_L_B                      jet Lum.   erg / s  9.368514312499998e+40             None             None False  False
-          jet_L_p                      jet Lum.   erg / s  3.539561245152144e+42             None             None False  False
+         name                  type               units            val          
+    ------------- ----------------------------- --------- ----------------------
+              U_e Energy dens. blob rest. frame erg / cm3  0.0017404342430246782
+              U_p Energy dens. blob rest. frame erg / cm3         0.015032764261
+              U_B Energy dens. blob rest. frame erg / cm3 0.00039788735772973844
+          U_Synch Energy dens. blob rest. frame erg / cm3  5.506769532122052e-05
+      U_Synch_DRF Energy dens. disk rest. frame erg / cm3      8.712292317747346
+           U_Disk Energy dens. blob rest. frame erg / cm3                    0.0
+            U_BLR Energy dens. blob rest. frame erg / cm3                    0.0
+             U_DT Energy dens. blob rest. frame erg / cm3                    0.0
+            U_CMB Energy dens. blob rest. frame erg / cm3                    0.0
+       U_Disk_DRF Energy dens. disk rest. frame erg / cm3                    0.0
+        U_BLR_DRF Energy dens. disk rest. frame erg / cm3                    0.0
+         U_DT_DRF Energy dens. disk rest. frame erg / cm3                    0.0
+        U_CMB_DRF Energy dens. disk rest. frame erg / cm3                    0.0
+        L_Sync_rf         Lum. blob rest. frme.   erg / s  1.728764352592126e+38
+         L_SSC_rf         Lum. blob rest. frme.   erg / s   3.82887909757934e+36
+     L_EC_Disk_rf         Lum. blob rest. frme.   erg / s                    0.0
+      L_EC_BLR_rf         Lum. blob rest. frme.   erg / s                    0.0
+       L_EC_DT_rf         Lum. blob rest. frme.   erg / s                    0.0
+      L_EC_CMB_rf         Lum. blob rest. frme.   erg / s                    0.0
+          L_PP_rf         Lum. blob rest. frme.   erg / s                    0.0
+       jet_L_Sync                      jet Lum.   erg / s 4.3219108814803147e+39
+        jet_L_SSC                      jet Lum.   erg / s  9.572197743948349e+37
+    jet_L_EC_Disk                      jet Lum.   erg / s                    0.0
+     jet_L_EC_BLR                      jet Lum.   erg / s                    0.0
+      jet_L_EC_DT                      jet Lum.   erg / s                    0.0
+     jet_L_EC_CMB                      jet Lum.   erg / s                    0.0
+         jet_L_PP                      jet Lum.   erg / s                    0.0
+        jet_L_rad                      jet Lum.   erg / s  4.417632858919798e+39
+        jet_L_kin                      jet Lum.   erg / s  4.043042849486075e+42
+        jet_L_tot                      jet Lum.   erg / s  4.047460482344995e+42
+          jet_L_e                      jet Lum.   erg / s  4.097964612089291e+41
+          jet_L_B                      jet Lum.   erg / s  9.368514312500004e+40
+          jet_L_p                      jet Lum.   erg / s  3.539561245152146e+42
     -----------------------------------------------------------------------------------------
 
+
+If you want to evaluate the energetic report in non verbose mode:
 
 .. code:: ipython3
 
@@ -966,8 +1016,8 @@ Getting an energetic report
     {'U_e': 0.0017404342430246782,
      'U_p': 0.015032764261,
      'U_B': 0.00039788735772973844,
-     'U_Synch': 5.506769532122051e-05,
-     'U_Synch_DRF': 8.712292317747343,
+     'U_Synch': 5.506769532122052e-05,
+     'U_Synch_DRF': 8.712292317747346,
      'U_Disk': 0.0,
      'U_BLR': 0.0,
      'U_DT': 0.0,
@@ -976,32 +1026,32 @@ Getting an energetic report
      'U_BLR_DRF': 0.0,
      'U_DT_DRF': 0.0,
      'U_CMB_DRF': 0.0,
-     'L_Sync_rf': 1.7287643525921238e+38,
-     'L_SSC_rf': 3.8288790975793374e+36,
+     'L_Sync_rf': 1.728764352592126e+38,
+     'L_SSC_rf': 3.82887909757934e+36,
      'L_EC_Disk_rf': 0.0,
      'L_EC_BLR_rf': 0.0,
      'L_EC_DT_rf': 0.0,
      'L_EC_CMB_rf': 0.0,
      'L_PP_rf': 0.0,
-     'jet_L_Sync': 4.321910881480309e+39,
-     'jet_L_SSC': 9.572197743948343e+37,
+     'jet_L_Sync': 4.3219108814803147e+39,
+     'jet_L_SSC': 9.572197743948349e+37,
      'jet_L_EC_Disk': 0.0,
      'jet_L_EC_BLR': 0.0,
      'jet_L_EC_DT': 0.0,
      'jet_L_EC_CMB': 0.0,
      'jet_L_PP': 0.0,
-     'jet_L_rad': 4.4176328589197927e+39,
-     'jet_L_kin': 4.043042849486073e+42,
-     'jet_L_tot': 4.0474604823449925e+42,
-     'jet_L_e': 4.097964612089289e+41,
-     'jet_L_B': 9.368514312499998e+40,
-     'jet_L_p': 3.539561245152144e+42}
+     'jet_L_rad': 4.417632858919798e+39,
+     'jet_L_kin': 4.043042849486075e+42,
+     'jet_L_tot': 4.047460482344995e+42,
+     'jet_L_e': 4.097964612089291e+41,
+     'jet_L_B': 9.368514312500004e+40,
+     'jet_L_p': 3.539561245152146e+42}
 
 
 
 .. code:: ipython3
 
-    my_jet.energetic_report_table.show_in_notebook()
+    my_jet.energetic_report_table
 
 
 
@@ -1009,86 +1059,41 @@ Getting an energetic report
 .. raw:: html
 
     <i>Table length=33</i>
-    <table id="table103556379216-24190" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>idx</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>0</td><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0017404342430246782</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>1</td><td>U_p</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.015032764261</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>2</td><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.00039788735772973844</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>3</td><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>5.506769532122051e-05</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>4</td><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.712292317747343</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>5</td><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>6</td><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>7</td><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>8</td><td>U_CMB</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>9</td><td>U_Disk_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>10</td><td>U_BLR_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>11</td><td>U_DT_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>12</td><td>U_CMB_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>13</td><td>L_Sync_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>1.7287643525921238e+38</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>14</td><td>L_SSC_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>3.8288790975793374e+36</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>15</td><td>L_EC_Disk_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>16</td><td>L_EC_BLR_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>17</td><td>L_EC_DT_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>18</td><td>L_EC_CMB_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>19</td><td>L_PP_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>20</td><td>jet_L_Sync</td><td>jet Lum.</td><td>erg / s</td><td>4.321910881480309e+39</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>21</td><td>jet_L_SSC</td><td>jet Lum.</td><td>erg / s</td><td>9.572197743948343e+37</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>22</td><td>jet_L_EC_Disk</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>23</td><td>jet_L_EC_BLR</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>24</td><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>25</td><td>jet_L_EC_CMB</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>26</td><td>jet_L_PP</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>27</td><td>jet_L_rad</td><td>jet Lum.</td><td>erg / s</td><td>4.4176328589197927e+39</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>28</td><td>jet_L_kin</td><td>jet Lum.</td><td>erg / s</td><td>4.043042849486073e+42</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>29</td><td>jet_L_tot</td><td>jet Lum.</td><td>erg / s</td><td>4.0474604823449925e+42</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>30</td><td>jet_L_e</td><td>jet Lum.</td><td>erg / s</td><td>4.097964612089289e+41</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>31</td><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>9.368514312499998e+40</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>32</td><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>3.539561245152144e+42</td><td>None</td><td>None</td><td>False</td><td>False</td></tr>
-    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
-    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
-    display: inline-block; margin-right: 1em; }
-    .paginate_button { margin-right: 5px; }
-    </style>
-    <script>
-    
-    var astropy_sort_num = function(a, b) {
-        var a_num = parseFloat(a);
-        var b_num = parseFloat(b);
-    
-        if (isNaN(a_num) && isNaN(b_num))
-            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-        else if (!isNaN(a_num) && !isNaN(b_num))
-            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
-        else
-            return isNaN(a_num) ? -1 : 1;
-    }
-    
-    require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
-    }});
-    require(["datatables"], function(){
-        console.log("$('#table103556379216-24190').dataTable()");
-    
-    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-        "optionalnum-asc": astropy_sort_num,
-        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
-    });
-    
-        $('#table103556379216-24190').dataTable({
-            order: [],
-            pageLength: 50,
-            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
-            pagingType: "full_numbers",
-            columnDefs: [{targets: [0, 4], type: "optionalnum"}]
-        });
-    });
-    </script>
-
+    <table id="table103675359760" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
+    <thead><tr><th>str13</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
+    <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0017404342430246782</td></tr>
+    <tr><td>U_p</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.015032764261</td></tr>
+    <tr><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.00039788735772973844</td></tr>
+    <tr><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>5.506769532122052e-05</td></tr>
+    <tr><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.712292317747346</td></tr>
+    <tr><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
+    <tr><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
+    <tr><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
+    <tr><td>U_CMB</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
+    <tr><td>U_Disk_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
+    <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>jet_L_EC_BLR</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td></tr>
+    <tr><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td></tr>
+    <tr><td>jet_L_EC_CMB</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td></tr>
+    <tr><td>jet_L_PP</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td></tr>
+    <tr><td>jet_L_rad</td><td>jet Lum.</td><td>erg / s</td><td>4.417632858919798e+39</td></tr>
+    <tr><td>jet_L_kin</td><td>jet Lum.</td><td>erg / s</td><td>4.043042849486075e+42</td></tr>
+    <tr><td>jet_L_tot</td><td>jet Lum.</td><td>erg / s</td><td>4.047460482344995e+42</td></tr>
+    <tr><td>jet_L_e</td><td>jet Lum.</td><td>erg / s</td><td>4.097964612089291e+41</td></tr>
+    <tr><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>9.368514312500004e+40</td></tr>
+    <tr><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>3.539561245152146e+42</td></tr>
+    </table>
 
 
 
 External Compton
 ----------------
+
+.. figure:: jetset_EC_scheme.png
+   :alt: EC scheme
+
+   EC scheme
 
 Broad Line Region
 ~~~~~~~~~~~~~~~~~
@@ -1097,11 +1102,6 @@ Broad Line Region
   :width: 400
   :alt: EC scheme
 
-
-.. figure:: jetset_EC_scheme.png
-   :alt: EC scheme
-
-   EC scheme
 
 .. code:: ipython3
 
@@ -1123,6 +1123,8 @@ Broad Line Region
      electron energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
+     normalization  True
+     log-values  False
     
     radiative fields:
      seed photons grid size:  100
@@ -1152,8 +1154,8 @@ Broad Line Region
               p   LE_spectral_slope                                2.0            -10.0               10.0 False  False
             p_1   HE_spectral_slope                                3.0            -10.0               10.0 False  False
     gamma_break    turn-over-energy lorentz-factor*            10000.0                1       1000000000.0 False  False
-              R         region_size              cm 15.698970004336019                0                 30  True  False
-            R_H     region_position              cm              1e+17                0               None False  False
+              R         region_size              cm 5000000000000000.0           1000.0              1e+30 False  False
+            R_H     region_position              cm              1e+17                0               None False   True
               B      magnetic_field               G                0.1                0               None False  False
           theta   jet-viewing-angle             deg                0.1                0               None False  False
      BulkFactor     jet-bulk-factor Lorentz-factor*               10.0              1.0               None False  False
@@ -1193,7 +1195,7 @@ now we set some parameter for the model
     
     my_jet.set_par('p',val=1.5)
     my_jet.set_par('p_1',val=3.2)
-    my_jet.set_par('R',val=15.5)
+    my_jet.set_par('R',val=3E15)
     my_jet.set_par('B',val=1.5)
     my_jet.set_par('z_cosm',val=0.6)
     my_jet.set_par('BulkFactor',val=20)
@@ -1210,7 +1212,7 @@ now we set some parameter for the model
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_124_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_135_0.png
 
 
 Dusty Torus
@@ -1235,6 +1237,8 @@ Dusty Torus
      electron energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 5.000000e+04
+     normalization  True
+     log-values  False
     
     radiative fields:
      seed photons grid size:  100
@@ -1259,14 +1263,14 @@ Dusty Torus
     
         name          par type           units             val         phys. bound. min  phys. bound. max   log  frozen
     ----------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-              N    electron_density         1 / cm3 3563.8932821890858                0               None False  False
+              N    electron_density         1 / cm3  4174.081522033596                0               None False  False
            gmin  low-energy-cut-off lorentz-factor*                2.0                1       1000000000.0 False  False
            gmax high-energy-cut-off lorentz-factor*            50000.0                1 1000000000000000.0 False  False
               p   LE_spectral_slope                                1.5            -10.0               10.0 False  False
             p_1   HE_spectral_slope                                3.2            -10.0               10.0 False  False
     gamma_break    turn-over-energy lorentz-factor*              500.0                1       1000000000.0 False  False
-              R         region_size              cm               15.5                0                 30  True  False
-            R_H     region_position              cm              3e+17                0               None False  False
+              R         region_size              cm 3000000000000000.0           1000.0              1e+30 False  False
+            R_H     region_position              cm              3e+17                0               None False   True
               B      magnetic_field               G                1.5                0               None False  False
           theta   jet-viewing-angle             deg                  1                0               None False  False
      BulkFactor     jet-bulk-factor Lorentz-factor*                 20              1.0               None False  False
@@ -1295,7 +1299,7 @@ Dusty Torus
 
 
 
-.. image:: Jet_example_phys_files/Jet_example_phys_127_0.png
+.. image:: Jet_example_phys_files/Jet_example_phys_138_0.png
 
 
 .. code:: ipython3
@@ -1304,6 +1308,11 @@ Dusty Torus
     my_jet.eval()
     p=my_jet.plot_model()
     p.rescale(y_min=-13.5,y_max=-9.5,x_min=9,x_max=27)
+
+
+
+.. image:: Jet_example_phys_files/Jet_example_phys_139_0.png
+
 
 Changing the external field transformation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1381,6 +1390,19 @@ EC seed photon fields, in the Disk rest frame
     ax.legend()
 
 
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x1823b4de50>
+
+
+
+
+.. image:: Jet_example_phys_files/Jet_example_phys_148_1.png
+
+
 .. code:: ipython3
 
     %matplotlib inline
@@ -1435,7 +1457,123 @@ EC seed photon fields, in the Disk rest frame
     ax.legend()
 
 
+
+
+
+.. parsed-literal::
+
+    <matplotlib.legend.Legend at 0x1822def0d0>
+
+
+
+
+.. image:: Jet_example_phys_files/Jet_example_phys_149_1.png
+
+
 IC against the CMB
 ~~~~~~~~~~~~~~~~~~
+
+.. code:: ipython3
+
+    my_jet=Jet(name='test_equipartition',electron_distribution='lppl',beaming_expr='bulk_theta')
+    my_jet.set_par('R',val=1E21)
+    my_jet.set_par('z_cosm',val= 0.651)
+    my_jet.set_par('B',val=2E-5)
+    my_jet.set_par('gmin',val=50)
+    my_jet.set_par('gamma0_log_parab',val=35.0E3)
+    my_jet.set_par('gmax',val=30E5)
+    my_jet.set_par('theta',val=12.0)
+    my_jet.set_par('BulkFactor',val=3.5)
+    my_jet.set_par('s',val=2.58)
+    my_jet.set_par('r',val=0.42)
+    my_jet.set_N_from_nuFnu(5E-15,1E12)
+    my_jet.add_EC_component('EC_CMB')
+
+We can now compare the different beaming pattern for the EC emission if
+the CMB, and realize that the beaming pattern is different. This is very
+important in the case of radio galaxies. The ``src`` transformation is
+the one to use in the case of radio galaies or misaligned AGNs, and
+gives a more accurate resut. Anyhow,be careful that this works onlyt for
+isotropic external fields, suchs as the CMB, of the Disk and BLR seed
+photons whitin the Dusty torus radius, and BLR radius, respectively
+
+.. code:: ipython3
+
+    p=PlotSED()
+    
+    my_jet.set_external_field_transf('blob')
+    c= ['k', 'g', 'r', 'c'] 
+    for ID,theta in enumerate(np.linspace(2,20,4)):
+        my_jet.parameters.theta.val=theta
+        my_jet.eval()
+        my_jet.plot_model(plot_obj=p,comp='Sum',label='blob, theta=%2.2f'%theta,line_style='--',color=c[ID])
+    
+    my_jet.set_external_field_transf('disk')
+    for ID,theta in enumerate(np.linspace(2,20,4)):
+        my_jet.parameters.theta.val=theta
+        my_jet.eval()
+        my_jet.plot_model(plot_obj=p,comp='Sum',label='disk, theta=%2.2f'%theta,line_style='',color=c[ID])
+    
+    p.rescale(y_min=-17.5,y_max=-12.5,x_max=28)
+
+
+
+.. image:: Jet_example_phys_files/Jet_example_phys_153_0.png
+
+
+Equipartition
+-------------
+
+It is also possible to set our jet at the equipartition, that is
+achieved not using analytical approximation, but by numerically finding
+the equipartition value over a grid. We have to provide the value of the
+observed flux (``nuFnu_obs``) at a given observed frequency
+(``nu_obs``), the minimum value of B (``B_min``), and the number of grid
+points (``N_pts``)
+
+.. code:: ipython3
+
+    my_jet.parameters.theta.val=12
+    B_min,b_grid,U_B,U_e=my_jet.set_B_eq(nuFnu_obs=5E-15,nu_obs=1E12,B_min=1E-9,N_pts=50,plot=True)
+    my_jet.show_pars()
+    
+    my_jet.eval()
+    p=my_jet.plot_model()
+    p.rescale(y_min=-16.5,y_max=-13.5,x_max=28)
+
+
+.. parsed-literal::
+
+    B grid min  1e-09
+    B grid max  1.0
+    grid points 50
+
+
+
+.. image:: Jet_example_phys_files/Jet_example_phys_156_1.png
+
+
+.. parsed-literal::
+
+    setting B to  0.0001389495494373139
+    setting N to  9.13927847193837e-06
+          name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
+    ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
+                   N    electron_density         1 / cm3  9.13927847193837e-06              0.0               None False  False
+                gmin  low-energy-cut-off lorentz-factor*                  50.0              1.0       1000000000.0 False  False
+                gmax high-energy-cut-off lorentz-factor*             3000000.0              1.0 1000000000000000.0 False  False
+                   s   LE_spectral_slope                                  2.58            -10.0               10.0 False  False
+                   r  spectral_curvature                                  0.42            -15.0               15.0 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor*               35000.0              1.0       1000000000.0 False  False
+                   R         region_size              cm                 1e+21           1000.0              1e+30 False  False
+                 R_H     region_position              cm                 1e+17              0.0               None False   True
+                   B      magnetic_field               G 0.0001389495494373139              0.0               None False  False
+               theta   jet-viewing-angle             deg                  12.0              0.0               None False  False
+          BulkFactor     jet-bulk-factor Lorentz-factor*                   3.5              1.0               None False  False
+              z_cosm            redshift                                 0.651              0.0               None False  False
+
+
+
+.. image:: Jet_example_phys_files/Jet_example_phys_156_3.png
 
 

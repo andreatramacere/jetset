@@ -62,11 +62,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model physical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -151,11 +151,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model physical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -235,7 +235,7 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span>  <span class="nn">traceback</span>
 <span class="kn">import</span>  <span class="nn">sys</span>
-
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span>
 
 <span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;filter_interval&#39;</span><span class="p">,</span><span class="s1">&#39;find_E0&#39;</span><span class="p">,</span><span class="s1">&#39;IC_fit_range&#39;</span><span class="p">,</span><span class="s1">&#39;index&#39;</span><span class="p">,</span><span class="s1">&#39;index_array&#39;</span><span class="p">,</span><span class="s1">&#39;index_typecasting&#39;</span><span class="p">,</span><span class="s1">&#39;peak_values&#39;</span><span class="p">,</span>
          <span class="s1">&#39;SEDShape&#39;</span><span class="p">,</span><span class="s1">&#39;spectral_index_range&#39;</span><span class="p">,</span><span class="s1">&#39;sync_fit_range&#39;</span><span class="p">]</span>
@@ -601,8 +601,8 @@
         
             <span class="n">index</span><span class="o">.</span><span class="n">show_val</span><span class="p">()</span>
         
-        <span class="nb">print</span> 
-        <span class="nb">print</span>    
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">()</span>
         <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;---&gt; S/IC peak values&quot;</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">S_peak</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -660,12 +660,12 @@
         <span class="n">_dt</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;nuFnu_p_IC_err&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">))</span>
         <span class="n">_v</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">IC_peak</span><span class="o">.</span><span class="n">nuFnu_p_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">IC_peak</span><span class="o">.</span><span class="n">nuFnu_p_err</span><span class="p">])</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="n">_v</span><span class="p">,</span><span class="n">_dt</span><span class="p">)</span>
 
         <span class="n">_out</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_dt</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">_out</span><span class="p">)</span>
         <span class="n">_out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">_v</span><span class="p">)</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">_out</span><span class="p">)</span></div>
+
+        <span class="n">t</span><span class="o">=</span><span class="n">Table</span><span class="p">(</span><span class="n">_out</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SEDShape.eval_indices"><a class="viewcode-back" href="../../api/jetset.sed_shaper.SEDShape.html#jetset.sed_shaper.SEDShape.eval_indices">[docs]</a>    <span class="k">def</span> <span class="nf">eval_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">minimizer</span><span class="o">=</span><span class="s1">&#39;lsb&#39;</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">show_fit_report</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -865,7 +865,7 @@
         
       
         <span class="c1">#fit_model1=copy.deepcopy(fit_model)</span>
-        
+
         <span class="k">if</span> <span class="n">fit_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">s_fit_range</span><span class="o">=</span><span class="n">sync_fit_range</span><span class="p">(</span><span class="s1">&#39;blind&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -873,7 +873,8 @@
             
         <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;---&gt; first blind fit run,  fit range:&quot;</span><span class="p">,</span><span class="n">s_fit_range</span><span class="p">)</span>
 
-        <span class="n">fit_model</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">silent</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">fit_model</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">Ep_start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">Ep</span><span class="o">=</span><span class="n">find_max_cubic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sed_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">sed_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">]</span> <span class="p">,</span><span class="n">x_range</span><span class="o">=</span><span class="n">s_fit_range</span><span class="p">)</span>
@@ -887,8 +888,6 @@
 
         <span class="c1">#else:</span>
         <span class="c1">#    fit_model1.set(&#39;E0&#39;, val=Ep - 1)</span>
-
-
 
         <span class="n">mm</span><span class="p">,</span><span class="n">best_fit</span><span class="o">=</span><span class="n">fit_SED</span><span class="p">(</span><span class="n">fit_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sed_data</span><span class="p">,</span><span class="mf">10.</span><span class="o">**</span><span class="n">s_fit_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mf">10.</span><span class="o">**</span><span class="n">s_fit_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">loglog</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="n">silent</span><span class="p">,</span><span class="n">fitname</span><span class="o">=</span><span class="s1">&#39;sync-shape-fit&#39;</span><span class="p">,</span><span class="n">minimizer</span><span class="o">=</span><span class="n">minimizer</span><span class="p">)</span>
 
@@ -906,33 +905,33 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">add_host_template</span><span class="p">(</span><span class="n">fit_model</span><span class="p">)</span>
             <span class="n">refit</span><span class="o">=</span><span class="kc">True</span>
 
-        <span class="k">if</span> <span class="n">show_fit_report</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">best_fit</span><span class="o">.</span><span class="n">show_report</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">silent</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">show_fit_report</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">best_fit</span><span class="o">.</span><span class="n">show_report</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">()</span>
         <span class="c1">#Ep=None</span>
 
 
-        
 
-        
-            
-        <span class="c1">#print(&#39;Refit&#39;)</span>
-        <span class="n">fit_model</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">refit</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fit_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">s_fit_range</span> <span class="o">=</span> <span class="n">sync_fit_range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
 
             <span class="n">mm</span><span class="p">,</span><span class="n">best_fit</span><span class="o">=</span><span class="n">fit_SED</span><span class="p">(</span><span class="n">fit_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sed_data</span><span class="p">,</span><span class="mf">10.</span><span class="o">**</span><span class="n">s_fit_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mf">10.</span><span class="o">**</span><span class="n">s_fit_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">loglog</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">fitname</span><span class="o">=</span><span class="s1">&#39;sync-shape-fit&#39;</span><span class="p">,</span><span class="n">minimizer</span><span class="o">=</span><span class="n">minimizer</span><span class="p">)</span>
 
-
-            <span class="n">best_fit</span><span class="o">.</span><span class="n">show_report</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">silent</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">best_fit</span><span class="o">.</span><span class="n">show_report</span><span class="p">()</span>
 
             <span class="c1">#if use_log_par==False:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">S_peak</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fit_model</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">find_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S_peak</span><span class="o">.</span><span class="n">nu_p_val</span><span class="p">)</span>
 
-        
+        <span class="n">fit_model</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">S_peak</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">S_nu_max</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_nu_max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sed_data</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span> <span class="p">,</span><span class="n">s_fit_range</span><span class="p">)</span>
@@ -963,7 +962,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_Disk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">BBB</span><span class="o">.</span><span class="n">nu_p</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">nu_p_Disk_err</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">BBB</span><span class="o">.</span><span class="n">nu_p_err</span>
 
-        
+        <span class="nb">print</span><span class="p">(</span><span class="n">section_separator</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">mm</span><span class="p">,</span><span class="n">best_fit</span></div>
         
     
@@ -1031,7 +1031,7 @@
       
    
     
-<div class="viewcode-block" id="SEDShape.IC_fit"><a class="viewcode-back" href="../../api/jetset.sed_shaper.SEDShape.html#jetset.sed_shaper.SEDShape.IC_fit">[docs]</a>    <span class="k">def</span> <span class="nf">IC_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fit_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">use_log_par</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Ep_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">minimizer</span><span class="o">=</span><span class="s1">&#39;minuit&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="SEDShape.IC_fit"><a class="viewcode-back" href="../../api/jetset.sed_shaper.SEDShape.html#jetset.sed_shaper.SEDShape.IC_fit">[docs]</a>    <span class="k">def</span> <span class="nf">IC_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fit_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">use_log_par</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Ep_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">minimizer</span><span class="o">=</span><span class="s1">&#39;minuit&#39;</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     
         <span class="nb">print</span>  <span class="p">(</span><span class="n">section_separator</span><span class="p">)</span>
               
@@ -1070,13 +1070,14 @@
             <span class="k">if</span> <span class="n">Ep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;Ep&#39;</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">Ep</span><span class="p">)</span>
 
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">silent</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
 
             <span class="n">mm</span><span class="p">,</span><span class="n">best_fit</span> <span class="o">=</span> <span class="n">fit_SED</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sed_data</span><span class="p">,</span> <span class="mf">10.</span> <span class="o">**</span> <span class="n">fit_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">10.</span> <span class="o">**</span> <span class="n">fit_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">loglog</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fitname</span><span class="o">=</span><span class="s1">&#39;IC-shape-fit&#39;</span><span class="p">,</span> <span class="n">minimizer</span><span class="o">=</span><span class="n">minimizer</span><span class="p">)</span>
 
-            <span class="n">best_fit</span><span class="o">.</span><span class="n">show_report</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">silent</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">best_fit</span><span class="o">.</span><span class="n">show_report</span><span class="p">()</span>
 
             <span class="n">best_fit_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1094,7 +1095,8 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">mm</span><span class="p">,</span><span class="n">best_fit</span><span class="o">=</span><span class="n">fit_SED</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sed_data</span><span class="p">,</span><span class="mf">10.</span><span class="o">**</span><span class="n">fit_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mf">10.</span><span class="o">**</span><span class="n">fit_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">loglog</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">fitname</span><span class="o">=</span><span class="s1">&#39;IC-shape-fit&#39;</span><span class="p">,</span><span class="n">minimizer</span><span class="o">=</span><span class="n">minimizer</span><span class="p">)</span>
 
-                <span class="n">best_fit</span><span class="o">.</span><span class="n">show_report</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">silent</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">best_fit</span><span class="o">.</span><span class="n">show_report</span><span class="p">()</span>
 
                 <span class="n">best_fit_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span>
 
@@ -1108,12 +1110,13 @@
                 <span class="k">if</span> <span class="n">Ep</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;Ep&#39;</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">Ep</span><span class="p">)</span>
 
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">silent</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
 
                 <span class="n">mm</span><span class="p">,</span><span class="n">best_fit</span><span class="o">=</span><span class="n">fit_SED</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sed_data</span><span class="p">,</span><span class="mf">10.</span><span class="o">**</span><span class="n">fit_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mf">10.</span><span class="o">**</span><span class="n">fit_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">loglog</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">fitname</span><span class="o">=</span><span class="s1">&#39;IC-shape-fit&#39;</span><span class="p">,</span><span class="n">minimizer</span><span class="o">=</span><span class="n">minimizer</span><span class="p">)</span>
 
-                <span class="n">best_fit</span><span class="o">.</span><span class="n">show_report</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">silent</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">best_fit</span><span class="o">.</span><span class="n">show_report</span><span class="p">()</span>
 
                 <span class="n">best_fit_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span>
             
@@ -1122,7 +1125,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">IC</span><span class="o">=</span><span class="n">best_fit_model</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">IC_peak</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">best_fit_model</span><span class="p">)</span>
-        
+
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">IC_fit_model</span><span class="o">.</span><span class="n">show_pars</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">IC_peak</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         
       
