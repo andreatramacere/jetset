@@ -78,6 +78,7 @@ def model_fit_lsb(sed_data,):
     fit_model.parameters.gmax.fit_range = [1E4, 1E8]
     model_minimizer_lsb, best_fit_lsb = fit_SED(fit_model, sed_data, 10.0 ** 11, 10 ** 29.0, fitname='SSC-best-fit',
                                                 minimizer='lsb')
+    best_fit_lsb.save_report('best-fit-lsb-report.txt')
     fit_model.save_model('fit_model_lsb.dat')
 
 def model_fit_minuit(sed_data):
@@ -96,6 +97,7 @@ def model_fit_minuit(sed_data):
     model_minimizer_minuit, best_fit_minuit = fit_SED(fit_model, sed_data, 10.0 ** 11, 10 ** 29.0,
                                                       fitname='SSC-best-fit', minimizer='minuit', loglog=False)
 
+    best_fit_minuit.save_report('best-fit-minuit-report.txt')
     fit_model.save_model('fit_model_minuit.dat')
 
 def test_full():
