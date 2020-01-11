@@ -96,7 +96,10 @@ Each parameter has default values. All the parameters listed are handled by :cla
 
 
 
-this means that you can easily convert the values in the table using the units module of astropy. **Please note, that the table is built on the fly from the**  :class:`.ModelParameterArray **and each modification you do to this table will not be reflected on the actual parameters values**
+this means that you can easily convert the values in the table using the units module of astropy. 
+
+.. warning::
+    Please note, that the table is built on the fly from the  :class:`.ModelParameterArray` and each modification you do to this table will not be reflected on the actual parameters values
 
 To get a full description of the model you can use the instruction
 
@@ -157,7 +160,7 @@ To get a full description of the model you can use the instruction
 as you can notice, you can now access further information regarding the model, such as numerical configuration of the grida. These parameters will be discussed 
 in the :ref:`jet_numerical_guide' section
 
-Ff you want to use a comoslogy model different from the dafault one please read the :ref:`cosmology` section.
+If you want to use a comoslogy model different from the dafault one please read the :ref:`cosmology` section.
 
 .. warning::
     Starting from version 1.1.0, the `R` parameter as default is linear and not logarithmic, please update your old scripts

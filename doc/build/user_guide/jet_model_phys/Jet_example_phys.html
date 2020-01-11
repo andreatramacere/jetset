@@ -21,8 +21,6 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Numerical setup" href="../jet_model_num/Jet_example_num.html" />
-    <link rel="prev" title="JetSeT User Guide" href="../user_guide.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -41,7 +39,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html"><span><img src="../../_static/logo_small_color_neg_transparent.png"></span>
           JetSeT doc</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.1.0a3</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -56,18 +54,23 @@
      href="../../index.html">JetSeT <b class="caret"></b></a>
   <ul class="dropdown-menu globaltoc"
       role="menu"
-      aria-labelledby="dLabelGlobalToc"><ul class="current">
+      aria-labelledby="dLabelGlobalToc"><ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../install.html#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../install.html#install-the-jetset-from-source">Install the JetSeT from source</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html">user guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_SSC/Jet_example_phys_SSC.html">jet model physical setup  (basic features and SSC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_EC/Jet_example_phys_EC.html">External Compton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_EC/Jet_example_phys_EC.html#equipartition">Equipartition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_num/Jet_example_num.html">jet model numerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomenological model constraining</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_fit_1/Jet_example_model_fit.html">model fitting  1: SSC model fit and MCMC for Mrk 421</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_fit_2/Jet_example_model_fit_wiht_gal_template.html">model fitting  2: SSC and galaxy template model fit and MCMC for Mrk 501</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_fit_2/Jet_example_model_fit_wiht_gal_template.html">model fitting  3: Only Synchroton and minuit contours for Mrk 421</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
@@ -146,14 +149,6 @@
             
               
                 
-  <li>
-    <a href="../user_guide.html" title="Previous Chapter: JetSeT User Guide"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; JetSeT User Guide</span>
-    </a>
-  </li>
-  <li>
-    <a href="../jet_model_num/Jet_example_num.html" title="Next Chapter: Numerical setup"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Numerical setup &raquo;</span>
-    </a>
-  </li>
               
             
             
@@ -186,18 +181,23 @@
       <div class="col-md-3">
         <div id="sidebar" class="bs-sidenav" role="complementary"><!--
 <ul class="globaltoc"
-><ul class="current">
+><ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../install.html#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../install.html#install-the-jetset-from-source">Install the JetSeT from source</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html">user guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html">user guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_SSC/Jet_example_phys_SSC.html">jet model physical setup  (basic features and SSC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_EC/Jet_example_phys_EC.html">External Compton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_EC/Jet_example_phys_EC.html#equipartition">Equipartition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_num/Jet_example_num.html">jet model numerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomenological model constraining</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_fit_1/Jet_example_model_fit.html">model fitting  1: SSC model fit and MCMC for Mrk 421</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_fit_2/Jet_example_model_fit_wiht_gal_template.html">model fitting  2: SSC and galaxy template model fit and MCMC for Mrk 501</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_fit_2/Jet_example_model_fit_wiht_gal_template.html">model fitting  3: Only Synchroton and minuit contours for Mrk 421</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
@@ -242,33 +242,10 @@
 
     
     
-      <ul class="current">
+      <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html">user guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model physical setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#basic-setup">basic setup</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#setting-the-parameters">setting the parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#investigating-the-electron-distribution">investigating the electron distribution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#evaluate-and-plot-the-model">evaluate and plot the model</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#comparing-models-on-the-same-plot">comparing models on the same plot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#saving-a-plot">saving a plot</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#saving-and-loading-a-model">saving and loading a model</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#switching-on-off-the-particle-distribution-normalization">switching on/off the particle distribution normalization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#setting-the-particle-density-from-observed-fluxes-or-luminosities">setting the particle density from observed Fluxes or Luminosities</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#accessing-individual-spectral-components">accessing individual spectral components</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#energetic-report">Energetic report</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#external-compton">External Compton</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#equipartition">Equipartition</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../temporal_evolution/temp_ev.html">temporal evolution</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide.html">user guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a></li>
 </ul>
 

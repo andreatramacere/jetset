@@ -18,7 +18,11 @@ reported in the table below.
 
    phenomenological model constraining  <phen_constr/Jet_example_phenom_constr.rst>
 
-   model fitting  <model_fit/Jet_example_model_fit.rst>
+   model fitting  1: SSC model fit and MCMC for Mrk 421 <model_fit_1/Jet_example_model_fit.rst>
+
+   model fitting  2: SSC and galaxy template model fit and MCMC for Mrk 501 <model_fit_2/Jet_example_model_fit_wiht_gal_template.rst>
+
+   model fitting  3: Only Synchroton and minuit contours for Mrk 421 <model_fit_3/Jet_example_only_synchrotron.rst>
 
    change cosmology model <cosmology/Jet_example_cosmo.rst>
 

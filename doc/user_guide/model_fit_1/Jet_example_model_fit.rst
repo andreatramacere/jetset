@@ -26,9 +26,9 @@ Model fitting
 
 .. parsed-literal::
 
-    ['/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0a3-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_3C345.ecsv',
-     '/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0a3-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.ecsv',
-     '/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0a3-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk501.ecsv']
+    ['/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_3C345.ecsv',
+     '/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.ecsv',
+     '/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk501.ecsv']
 
 
 
@@ -46,7 +46,7 @@ see the :ref:`data_format` user guide for further information about loading data
 
 .. parsed-literal::
 
-    /Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0a3-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.ecsv
+    /Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.ecsv
 
 
 .. code:: ipython3
@@ -76,6 +76,8 @@ see the :ref:`data_format` user guide for further information about loading data
 
 phenomenological model constraining
 -----------------------------------
+
+see the :ref:`phenom_constr` user guide for further information about loading data 
 
 spectral indices
 ~~~~~~~~~~~~~~~~
@@ -139,7 +141,7 @@ spectral indices
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_10_1.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_11_1.png
 
 
 sed shaper
@@ -160,12 +162,6 @@ sed shaper
     
     *** Log-Polynomial fitting of the synchrotron component ***
     ---> first blind fit run,  fit range: [10, 21]
-    name   par type       units      val  phys. bound. min phys. bound. max  log  frozen
-    ---- ------------ ------------- ----- ---------------- ---------------- ----- ------
-       b    curvature                -1.0            -10.0              0.0 False  False
-       c third-degree                -1.0            -10.0             10.0 False  False
-      Ep    peak freq            Hz  14.0              0.0             30.0  True  False
-      Sp    peak flux erg / (cm2 s) -10.0            -30.0              0.0  True  False
     ---> class:  HSP
     
     name   par type       units              val          phys. bound. min phys. bound. max  log  frozen
@@ -174,43 +170,10 @@ sed shaper
        c third-degree               -0.010232447712917647            -10.0             10.0 False  False
       Ep    peak freq            Hz    16.722672085915843              0.0             30.0  True  False
       Sp    peak flux erg / (cm2 s)    -9.491658506170065            -30.0              0.0  True  False
+    
+    
     ---> sync       nu_p=+1.672267e+01 (err=+4.139905e-02)  nuFnu_p=-9.491659e+00 (err=+2.515288e-02) curv.=-1.545300e-01 (err=+9.534752e-03)
-
-
-.. code:: ipython3
-
-    best_fit.show_report()
-
-
-.. parsed-literal::
-
-    
-    **************************************************************************************************
-    Fit report
-    
-    Model: sync-shape-fit
-    name   par type       units              val          phys. bound. min phys. bound. max  log  frozen
-    ---- ------------ ------------- --------------------- ---------------- ---------------- ----- ------
-       b    curvature                -0.15453004839441498            -10.0              0.0 False  False
-       c third-degree               -0.010232447712917647            -10.0             10.0 False  False
-      Ep    peak freq            Hz    16.722672085915843              0.0             30.0  True  False
-      Sp    peak flux erg / (cm2 s)    -9.491658506170065            -30.0              0.0  True  False
-    
-    converged=True
-    calls=28
-    Both actual and predicted relative reductions in the sum of squares
-      are at most 0.000000
-    dof=18
-    chisq=28.486970, chisq/red=1.582609 null hypothesis sig=0.055021
-    
-    best fit pars
-    name      bestfit val              err +         err -     start val     fit range min fit range max frozen
-    ---- --------------------- --------------------- ----- ----------------- ------------- ------------- ------
-       b  -0.15453004839441498  0.009534751941233537  None              -1.0         -10.0           0.0  False
-       c -0.010232447712917647 0.0014330731417558273  None              -1.0         -10.0          10.0  False
-      Ep    16.722672085915843   0.04139904904390632  None 16.67039161699804           0.0          30.0  False
-      Sp    -9.491658506170065  0.025152884830117343  None             -10.0         -30.0           0.0  False
-    **************************************************************************************************
+    ===================================================================================================================
     
 
 
@@ -274,6 +237,14 @@ sed shaper
       Sp  -10.110940957544976  0.03498801209549285  None              -10.0         -30.0           0.0  False
     **************************************************************************************************
     
+    
+    
+    name   par type       units             val          phys. bound. min phys. bound. max  log  frozen
+    ---- ------------ ------------- -------------------- ---------------- ---------------- ----- ------
+       b    curvature               -0.20979248257934202            -10.0              0.0 False  False
+       c third-degree               -0.04662648109652068            -10.0             10.0 False  False
+      Ep    peak freq            Hz   25.249320432055992              0.0             30.0  True  False
+      Sp    peak flux erg / (cm2 s)  -10.110940957544976            -30.0              0.0  True  False
     ---> IC         nu_p=+2.524932e+01 (err=+1.147867e-01)  nuFnu_p=-1.011094e+01 (err=+3.498801e-02) curv.=-2.097925e-01 (err=+3.133728e-02)
     ===================================================================================================================
     
@@ -309,19 +280,6 @@ model constraining
     
     ***  constrains parameters from observable ***
     
-          name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   N    electron_density         1 / cm3              100.0              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*                2.0              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*          1000000.0              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
-                   r  spectral_curvature                                0.4            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm 5000000000000000.0              0.0              1e+30 False  False
-                 R_H     region_position              cm              1e+17              0.0               None False   True
-                   B      magnetic_field               G                0.1              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
-              z_cosm            redshift                                0.1              0.0               None False  False
     ---> ***  emitting region parameters  ***
     ---> name = beam_obj          type = beaming               units = Lorentz-factor*   val = +2.500000e+01  phys-bounds = [+1.000000e-04,No           ] islog = False  froze= False 
     ---> setting par type redshift, corresponding to par z_cosm
@@ -329,8 +287,9 @@ model constraining
     
     ---> setting par type magnetic_field, corresponding to par B
     --->  name = B                 type = magnetic_field        units = G                 val = +5.050000e-02  phys-bounds = [+0.000000e+00,No           ] islog = False  froze= False 
+    
     ---> setting par type region_size, corresponding to par R
-    --->  name = R                 type = region_size           units = cm                val = +1.884609e+17  phys-bounds = [+0.000000e+00,+1.000000e+30] islog = False  froze= False 
+    --->  name = R                 type = region_size           units = cm                val = +1.884609e+17  phys-bounds = [+1.000000e+03,+1.000000e+30] islog = False  froze= False 
     
     
     ---> *** electron distribution parameters ***
@@ -398,7 +357,7 @@ model constraining
     ---> get R from Compoton Dominance (CD)
          Best R=1.649188e+16
     ---> setting par type region_size, corresponding to par R
-    --->  name = R                 type = region_size           units = cm                val = +1.649188e+16  phys-bounds = [+0.000000e+00,+1.000000e+30] islog = False  froze= False 
+    --->  name = R                 type = region_size           units = cm                val = +1.649188e+16  phys-bounds = [+1.000000e+03,+1.000000e+30] islog = False  froze= False 
     
     ---> setting par type electron_density, corresponding to par N
     ---> t_var (days) 0.2625246202253361
@@ -412,7 +371,7 @@ model constraining
                    s   LE_spectral_slope                    2.1815775138311513            -10.0               10.0 False  False
                    r  spectral_curvature                    0.7726502419720749            -15.0               15.0 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor*     22658.54895147617              1.0       1000000000.0 False  False
-                   R         region_size              cm 1.649187684856415e+16              0.0              1e+30 False  False
+                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False  False
                  R_H     region_position              cm                 1e+17              0.0               None False   True
                    B      magnetic_field               G                   0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
@@ -437,7 +396,7 @@ model constraining
 Model fitting
 -------------
 
-We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer, but as alternative we can use the ``lsb`` minimizer. Using ``minuit`` we notice that sometime (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling
+We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer and the``lsb`` (least square bound scipy minimizer). Using ``minuit`` we notice that sometimes (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling
 
 Model fitting with LSB
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -453,6 +412,7 @@ Model fitting with LSB
     fit_model_lsb=FitModel( jet=jet_lsb, name='SSC-best-fit-lsb',template=None) 
     fit_model_lsb.freeze('z_cosm')
     fit_model_lsb.freeze('R_H')
+    fit_model_lsb.freeze('R')
     fit_model_lsb.parameters.R.fit_range=[10**15.5,10**17.5]
     fit_model_lsb.parameters.beam_obj.fit_range=[5,50]
     
@@ -464,7 +424,7 @@ Model fitting with LSB
 
           name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
     ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm 1.649187684856415e+16              0.0              1e+30 False  False
+                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False  False
                  R_H     region_position              cm                 1e+17              0.0               None False   True
                    B      magnetic_field               G                   0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
@@ -483,7 +443,7 @@ Model fitting with LSB
     initial pars: 
           name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
     ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm 1.649187684856415e+16              0.0              1e+30 False  False
+                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False   True
                  R_H     region_position              cm                 1e+17              0.0               None False   True
                    B      magnetic_field               G                   0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
@@ -495,45 +455,45 @@ Model fitting with LSB
                    r  spectral_curvature                    0.7726502419720749            -15.0               15.0 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor*     22658.54895147617              1.0       1000000000.0 False  False
     ----- 
-    | minim function calls=50, chisq=73.029402 UL part=-0.000000                                                                                                                                                                                                    
+    / minim function calls=60, chisq=48.923269 UL part=-0.000000                                                                                                                                                                                                    
     **************************************************************************************************
     Fit report
     
     Model: SSC-best-fit-lsb
-          name             par type           units               val           phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- ---------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm 1.6642929916477756e+16              0.0              1e+30 False  False
-                 R_H     region_position              cm                  1e+17              0.0               None False   True
-                   B      magnetic_field               G    0.06501987655354347              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*     28.536784397612355           0.0001               None False  False
-              z_cosm            redshift                                 0.0308              0.0               None False   True
-                   N    electron_density         1 / cm3     2.5165097279650115              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*      334.3352783238633              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*      909650.3003291064              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                     2.1417963813836582            -10.0               10.0 False  False
-                   r  spectral_curvature                     0.6649632565774048            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*      26109.96973746294              1.0       1000000000.0 False  False
+          name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
+    ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
+                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False   True
+                 R_H     region_position              cm                 1e+17              0.0               None False   True
+                   B      magnetic_field               G   0.06916225594979553              0.0               None False  False
+            beam_obj             beaming Lorentz-factor*    27.552744125021306           0.0001               None False  False
+              z_cosm            redshift                                0.0308              0.0               None False   True
+                   N    electron_density         1 / cm3     2.418659878957038              0.0               None False  False
+                gmin  low-energy-cut-off lorentz-factor*    334.20946885003934              1.0       1000000000.0 False  False
+                gmax high-energy-cut-off lorentz-factor*     813122.7921203407              1.0 1000000000000000.0 False  False
+                   s   LE_spectral_slope                    2.1056008787062837            -10.0               10.0 False  False
+                   r  spectral_curvature                    0.7022959568214855            -15.0               15.0 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor*     26110.25250121951              1.0       1000000000.0 False  False
     
     converged=True
-    calls=56
+    calls=60
     The relative error between two consecutive iterates is at most 0.000000
-    dof=26
-    chisq=71.714028, chisq/red=2.758232 null hypothesis sig=0.000004
+    dof=27
+    chisq=48.230380, chisq/red=1.786310 null hypothesis sig=0.007236
     
     best fit pars
-          name            bestfit val               err +          err -       start val         fit range min        fit range max      frozen
-    ---------------- ---------------------- ---------------------- ----- --------------------- ------------------ ---------------------- ------
-                   R 1.6642929916477756e+16 2.7270654501155972e+16  None 1.649187684856415e+16 3162277660168379.5 3.1622776601683795e+17  False
-                 R_H                   None                   None  None                 1e+17                0.0                   None   True
-                   B    0.06501987655354347    0.03891038733488095  None                   0.1                0.0                   None  False
-            beam_obj     28.536784397612355     19.136265066937863  None                  25.0                5.0                     50  False
-              z_cosm                   None                   None  None                0.0308                0.0                   None   True
-                   N     2.5165097279650115     3.9332637069110143  None     3.072163777115778                0.0                   None  False
-                gmin      334.3352783238633     13.325849906281588  None    333.82306366971983                1.0           1000000000.0  False
-                gmax      909650.3003291064      675879.8536214805  None     975813.3512932507                1.0     1000000000000000.0  False
-                   s     2.1417963813836582    0.15543014304830927  None    2.1815775138311513              -10.0                   10.0  False
-                   r     0.6649632565774048     0.1494473022841518  None    0.7726502419720749              -15.0                   15.0  False
-    gamma0_log_parab      26109.96973746294      28708.10949194676  None     22658.54895147617                1.0           1000000000.0  False
+          name           bestfit val            err +         err -       start val         fit range min        fit range max      frozen
+    ---------------- ------------------- -------------------- ----- --------------------- ------------------ ---------------------- ------
+                   R                None                 None  None 1.649187684856415e+16 3162277660168379.5 3.1622776601683795e+17   True
+                 R_H                None                 None  None                 1e+17                0.0                   None   True
+                   B 0.06916225594979553 0.014325604761837876  None                   0.1                0.0                   None  False
+            beam_obj  27.552744125021306   3.3740786683861543  None                  25.0                5.0                     50  False
+              z_cosm                None                 None  None                0.0308                0.0                   None   True
+                   N   2.418659878957038   0.6300436996936624  None     3.072163777115778                0.0                   None  False
+                gmin  334.20946885003934   1.8869219620853956  None    333.82306366971983                1.0           1000000000.0  False
+                gmax   813122.7921203407     98034.7733100579  None     975813.3512932507                1.0     1000000000000000.0  False
+                   s  2.1056008787062837  0.11094341853405444  None    2.1815775138311513              -10.0                   10.0  False
+                   r  0.7022959568214855   0.1455121490620552  None    0.7726502419720749              -15.0                   15.0  False
+    gamma0_log_parab   26110.25250121951   10412.937795892183  None     22658.54895147617                1.0           1000000000.0  False
     **************************************************************************************************
     
     ===================================================================================================================
@@ -542,7 +502,7 @@ Model fitting with LSB
 
 .. code:: ipython3
 
-    best_fit_lsb.save_report()
+    best_fit_lsb.save_report('SSC-best-fit-lsb.txt')
     best_fit_lsb.bestfit_table
 
 
@@ -551,20 +511,20 @@ Model fitting with LSB
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table112149537424" class="table-striped table-bordered table-condensed">
+    <table id="table112247741520" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <thead><tr><th>str16</th><th>object</th><th>object</th><th>object</th><th>float64</th><th>float64</th><th>object</th><th>bool</th></tr></thead>
-    <tr><td>R</td><td>1.6642929916477756e+16</td><td>2.7270654501155972e+16</td><td>None</td><td>1.649187684856415e+16</td><td>3162277660168379.5</td><td>3.1622776601683795e+17</td><td>False</td></tr>
+    <tr><td>R</td><td>None</td><td>None</td><td>None</td><td>1.649187684856415e+16</td><td>3162277660168379.5</td><td>3.1622776601683795e+17</td><td>True</td></tr>
     <tr><td>R_H</td><td>None</td><td>None</td><td>None</td><td>1e+17</td><td>0.0</td><td>None</td><td>True</td></tr>
-    <tr><td>B</td><td>0.06501987655354347</td><td>0.03891038733488095</td><td>None</td><td>0.1</td><td>0.0</td><td>None</td><td>False</td></tr>
-    <tr><td>beam_obj</td><td>28.536784397612355</td><td>19.136265066937863</td><td>None</td><td>25.0</td><td>5.0</td><td>50</td><td>False</td></tr>
+    <tr><td>B</td><td>0.06916225594979553</td><td>0.014325604761837876</td><td>None</td><td>0.1</td><td>0.0</td><td>None</td><td>False</td></tr>
+    <tr><td>beam_obj</td><td>27.552744125021306</td><td>3.3740786683861543</td><td>None</td><td>25.0</td><td>5.0</td><td>50</td><td>False</td></tr>
     <tr><td>z_cosm</td><td>None</td><td>None</td><td>None</td><td>0.0308</td><td>0.0</td><td>None</td><td>True</td></tr>
-    <tr><td>N</td><td>2.5165097279650115</td><td>3.9332637069110143</td><td>None</td><td>3.072163777115778</td><td>0.0</td><td>None</td><td>False</td></tr>
-    <tr><td>gmin</td><td>334.3352783238633</td><td>13.325849906281588</td><td>None</td><td>333.82306366971983</td><td>1.0</td><td>1000000000.0</td><td>False</td></tr>
-    <tr><td>gmax</td><td>909650.3003291064</td><td>675879.8536214805</td><td>None</td><td>975813.3512932507</td><td>1.0</td><td>1000000000000000.0</td><td>False</td></tr>
-    <tr><td>s</td><td>2.1417963813836582</td><td>0.15543014304830927</td><td>None</td><td>2.1815775138311513</td><td>-10.0</td><td>10.0</td><td>False</td></tr>
-    <tr><td>r</td><td>0.6649632565774048</td><td>0.1494473022841518</td><td>None</td><td>0.7726502419720749</td><td>-15.0</td><td>15.0</td><td>False</td></tr>
-    <tr><td>gamma0_log_parab</td><td>26109.96973746294</td><td>28708.10949194676</td><td>None</td><td>22658.54895147617</td><td>1.0</td><td>1000000000.0</td><td>False</td></tr>
+    <tr><td>N</td><td>2.418659878957038</td><td>0.6300436996936624</td><td>None</td><td>3.072163777115778</td><td>0.0</td><td>None</td><td>False</td></tr>
+    <tr><td>gmin</td><td>334.20946885003934</td><td>1.8869219620853956</td><td>None</td><td>333.82306366971983</td><td>1.0</td><td>1000000000.0</td><td>False</td></tr>
+    <tr><td>gmax</td><td>813122.7921203407</td><td>98034.7733100579</td><td>None</td><td>975813.3512932507</td><td>1.0</td><td>1000000000000000.0</td><td>False</td></tr>
+    <tr><td>s</td><td>2.1056008787062837</td><td>0.11094341853405444</td><td>None</td><td>2.1815775138311513</td><td>-10.0</td><td>10.0</td><td>False</td></tr>
+    <tr><td>r</td><td>0.7022959568214855</td><td>0.1455121490620552</td><td>None</td><td>0.7726502419720749</td><td>-15.0</td><td>15.0</td><td>False</td></tr>
+    <tr><td>gamma0_log_parab</td><td>26110.25250121951</td><td>10412.937795892183</td><td>None</td><td>22658.54895147617</td><td>1.0</td><td>1000000000.0</td><td>False</td></tr>
     </table>
 
 
@@ -593,17 +553,20 @@ Model fitting with Minuit
     fit_model_minuit=FitModel( jet=jet_minuit, name='SSC-best-fit-minuit',template=None) 
     fit_model_minuit.freeze('z_cosm')
     fit_model_minuit.freeze('R_H')
+    fit_model_minuit.freeze('R')
+    fit_model_minuit.freeze('gmax')
     fit_model_minuit.parameters.R.fit_range=[10**15.5,10**17.5]
     fit_model_minuit.parameters.beam_obj.fit_range=[5,50]
     
     model_minimizer_minuit,best_fit_minuit=fit_SED(fit_model_minuit,sed_data,10.0**11,10**29.0,fitname='SSC-best-fit-minuit',minimizer='minuit',max_ev=None)
+    best_fit_minuit.save_report('SSC-best-fit-minuit.txt')
 
 
 .. parsed-literal::
 
           name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
     ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm 1.649187684856415e+16              0.0              1e+30 False  False
+                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False  False
                  R_H     region_position              cm                 1e+17              0.0               None False   True
                    B      magnetic_field               G                   0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
@@ -622,42 +585,42 @@ Model fitting with Minuit
     initial pars: 
           name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
     ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm 1.649187684856415e+16              0.0              1e+30 False  False
+                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False   True
                  R_H     region_position              cm                 1e+17              0.0               None False   True
                    B      magnetic_field               G                   0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
               z_cosm            redshift                                0.0308              0.0               None False   True
                    N    electron_density         1 / cm3     3.072163777115778              0.0               None False  False
                 gmin  low-energy-cut-off lorentz-factor*    333.82306366971983              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*     975813.3512932507              1.0 1000000000000000.0 False  False
+                gmax high-energy-cut-off lorentz-factor*     975813.3512932507              1.0 1000000000000000.0 False   True
                    s   LE_spectral_slope                    2.1815775138311513            -10.0               10.0 False  False
                    r  spectral_curvature                    0.7726502419720749            -15.0               15.0 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor*     22658.54895147617              1.0       1000000000.0 False  False
     ----- 
-    / minim function calls=780, chisq=53.541723 UL part=-0.000000                                                                                                                                                                                                   
+    - minim function calls=550, chisq=39.001442 UL part=-0.000000                                                                                                                                                                                                   
     **************************************************************************************************
     Fit report
     
     Model: SSC-best-fit-minuit
-          name             par type           units               val           phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- ---------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm 1.5498060407388818e+16              0.0              1e+30 False  False
-                 R_H     region_position              cm                  1e+17              0.0               None False   True
-                   B      magnetic_field               G    0.08167021968270172              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*     26.508206233217923           0.0001               None False  False
-              z_cosm            redshift                                 0.0308              0.0               None False   True
-                   N    electron_density         1 / cm3     2.3422623949460637              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*       332.303233848766              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*      947683167.6077591              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                     2.0753218222094123            -10.0               10.0 False  False
-                   r  spectral_curvature                     1.1189366770330018            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*      36969.05045317013              1.0       1000000000.0 False  False
+          name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
+    ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
+                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False   True
+                 R_H     region_position              cm                 1e+17              0.0               None False   True
+                   B      magnetic_field               G   0.06058352581334625              0.0               None False  False
+            beam_obj             beaming Lorentz-factor*    30.109626301151785           0.0001               None False  False
+              z_cosm            redshift                                0.0308              0.0               None False   True
+                   N    electron_density         1 / cm3    1.6248135468210165              0.0               None False  False
+                gmin  low-energy-cut-off lorentz-factor*    331.64776983302454              1.0       1000000000.0 False  False
+                gmax high-energy-cut-off lorentz-factor*     975813.3512932507              1.0 1000000000000000.0 False   True
+                   s   LE_spectral_slope                     1.973930840782213            -10.0               10.0 False  False
+                   r  spectral_curvature                    0.7553177382257097            -15.0               15.0 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor*     20314.12691347771              1.0       1000000000.0 False  False
     
     converged=True
-    calls=780
+    calls=554
     ------------------------------------------------------------------
-    | FCN = 53.29                   |     Ncalls=774 (779 total)     |
-    | EDM = 0.0774 (Goal: 1E-05)    |            up = 1.0            |
+    | FCN = 38.37                   |     Ncalls=548 (553 total)     |
+    | EDM = 0.0855 (Goal: 1E-05)    |            up = 1.0            |
     ------------------------------------------------------------------
     |  Valid Min.   | Valid Param.  | Above EDM | Reached call limit |
     ------------------------------------------------------------------
@@ -665,38 +628,36 @@ Model fitting with Minuit
     ------------------------------------------------------------------
     | Hesse failed  |   Has cov.    | Accurate  | Pos. def. | Forced |
     ------------------------------------------------------------------
-    |     False     |     True      |   False   |   False   |  True  |
+    |     False     |     True      |   False   |   True    | False  |
     ------------------------------------------------------------------
     -------------------------------------------------------------------------------------------
     |   | Name  |   Value   | Hesse Err | Minos Err- | Minos Err+ | Limit-  | Limit+  | Fixed |
     -------------------------------------------------------------------------------------------
-    | 0 | par_0 | 1.550E16  | 0.032E16  |            |            |3.16228e+15|3.16228e+17|       |
-    | 1 | par_1 |   0.082   |   0.004   |            |            |    0    |         |       |
-    | 2 | par_2 |   26.51   |   0.09    |            |            |    5    |   50    |       |
-    | 3 | par_3 |   2.34    |   0.07    |            |            |    0    |         |       |
-    | 4 | par_4 |  332.303  |   0.003   |            |            |    1    |  1e+09  |       |
-    | 5 | par_5 |  0.948E9  |  0.000E9  |            |            |    1    |  1e+15  |       |
-    | 6 | par_6 |   2.075   |   0.011   |            |            |   -10   |   10    |       |
-    | 7 | par_7 |   1.12    |   0.05    |            |            |   -15   |   15    |       |
-    | 8 | par_8 |  0.370E5  |  0.012E5  |            |            |    1    |  1e+09  |       |
+    | 0 | par_0 |   0.061   |   0.003   |            |            |    0    |         |       |
+    | 1 | par_1 |   30.1    |    0.8    |            |            |    5    |   50    |       |
+    | 2 | par_2 |   1.62    |   0.08    |            |            |    0    |         |       |
+    | 3 | par_3 |  331.65   |   0.20    |            |            |    1    |  1e+09  |       |
+    | 4 | par_4 |   1.974   |   0.016   |            |            |   -10   |   10    |       |
+    | 5 | par_5 |   0.76    |   0.05    |            |            |   -15   |   15    |       |
+    | 6 | par_6 |  2.03E4   |  0.19E4   |            |            |    1    |  1e+09  |       |
     -------------------------------------------------------------------------------------------
-    dof=26
-    chisq=53.541723, chisq/red=2.059297 null hypothesis sig=0.001159
+    dof=28
+    chisq=39.025823, chisq/red=1.393779 null hypothesis sig=0.080508
     
     best fit pars
-          name            bestfit val              err +         err -       start val         fit range min        fit range max      frozen
-    ---------------- ---------------------- -------------------- ----- --------------------- ------------------ ---------------------- ------
-                   R 1.5498060407388818e+16    316108006199718.0  None 1.649187684856415e+16 3162277660168379.5 3.1622776601683795e+17  False
-                 R_H                   None                 None  None                 1e+17                0.0                   None   True
-                   B    0.08167021968270172 0.004150406681923013  None                   0.1                0.0                   None  False
-            beam_obj     26.508206233217923  0.09369501047857831  None                  25.0                5.0                     50  False
-              z_cosm                   None                 None  None                0.0308                0.0                   None   True
-                   N     2.3422623949460637  0.07096331407593004  None     3.072163777115778                0.0                   None  False
-                gmin       332.303233848766 0.003429145852749116  None    333.82306366971983                1.0           1000000000.0  False
-                gmax      947683167.6077591   129834.36548095942  None     975813.3512932507                1.0     1000000000000000.0  False
-                   s     2.0753218222094123 0.011060782996470842  None    2.1815775138311513              -10.0                   10.0  False
-                   r     1.1189366770330018  0.04657714653558109  None    0.7726502419720749              -15.0                   15.0  False
-    gamma0_log_parab      36969.05045317013   1218.8935358838025  None     22658.54895147617                1.0           1000000000.0  False
+          name           bestfit val             err +         err -       start val         fit range min        fit range max      frozen
+    ---------------- ------------------- --------------------- ----- --------------------- ------------------ ---------------------- ------
+                   R                None                  None  None 1.649187684856415e+16 3162277660168379.5 3.1622776601683795e+17   True
+                 R_H                None                  None  None                 1e+17                0.0                   None   True
+                   B 0.06058352581334625 0.0034225881909554223  None                   0.1                0.0                   None  False
+            beam_obj  30.109626301151785    0.7912679928816146  None                  25.0                5.0                     50  False
+              z_cosm                None                  None  None                0.0308                0.0                   None   True
+                   N  1.6248135468210165    0.0833986032427847  None     3.072163777115778                0.0                   None  False
+                gmin  331.64776983302454    0.1987910667421886  None    333.82306366971983                1.0           1000000000.0  False
+                gmax                None                  None  None     975813.3512932507                1.0     1000000000000000.0   True
+                   s   1.973930840782213   0.01598278864521685  None    2.1815775138311513              -10.0                   10.0  False
+                   r  0.7553177382257097  0.046975529202972766  None    0.7726502419720749              -15.0                   15.0  False
+    gamma0_log_parab   20314.12691347771    1920.7117363473099  None     22658.54895147617                1.0           1000000000.0  False
     **************************************************************************************************
     
     ===================================================================================================================
@@ -728,15 +689,15 @@ Model fitting with Minuit
     <table>
     <tr>
     <td colspan="2" title="Minimum value of function">
-    FCN = 53.29
+    FCN = 38.37
     </td>
     <td align="center" colspan="3" title="No. of calls in last algorithm and total number of calls">
-    Ncalls = 774 (779 total)
+    Ncalls = 548 (553 total)
     </td>
     </tr>
     <tr>
     <td colspan="2" title="Estimated distance to minimum and target threshold">
-    EDM = 0.0774 (Goal: 1E-05)
+    EDM = 0.0855 (Goal: 1E-05)
     </td>
     <td align="center" colspan="3" title="Increase in FCN which corresponds to 1 standard deviation">
     up = 1.0
@@ -797,11 +758,11 @@ Model fitting with Minuit
     <td align="center" style="background-color:#FF7878;">
     False
     </td>
-    <td align="center" style="background-color:#FF7878;">
-    False
-    </td>
-    <td align="center" style="background-color:#FF7878;">
+    <td align="center" style="background-color:#92CCA6;">
     True
+    </td>
+    <td align="center" style="background-color:#92CCA6;">
+    False
     </td>
     </tr>
     </table>
@@ -841,39 +802,10 @@ Model fitting with Minuit
     par_0
     </td>
     <td>
-    1.550E16
+    0.061
     </td>
     <td>
-    0.032E16
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    3.16E+15
-    </td>
-    <td>
-    3.16E+17
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#F4F4F4;">
-    <td>
-    1
-    </td>
-    <td>
-    par_1
-    </td>
-    <td>
-    0.082
-    </td>
-    <td>
-    0.004
+    0.003
     </td>
     <td>
     
@@ -891,18 +823,18 @@ Model fitting with Minuit
     
     </td>
     </tr>
-    <tr style="background-color:#FFFFFF;">
+    <tr style="background-color:#F4F4F4;">
     <td>
-    2
+    1
     </td>
     <td>
-    par_2
+    par_1
     </td>
     <td>
-    26.51
+    30.1
     </td>
     <td>
-    0.09
+    0.8
     </td>
     <td>
     
@@ -920,18 +852,18 @@ Model fitting with Minuit
     
     </td>
     </tr>
-    <tr style="background-color:#F4F4F4;">
+    <tr style="background-color:#FFFFFF;">
     <td>
-    3
+    2
     </td>
     <td>
-    par_3
+    par_2
     </td>
     <td>
-    2.34
+    1.62
     </td>
     <td>
-    0.07
+    0.08
     </td>
     <td>
     
@@ -949,18 +881,18 @@ Model fitting with Minuit
     
     </td>
     </tr>
-    <tr style="background-color:#FFFFFF;">
+    <tr style="background-color:#F4F4F4;">
     <td>
-    4
+    3
     </td>
     <td>
-    par_4
+    par_3
     </td>
     <td>
-    332.303
+    331.65
     </td>
     <td>
-    0.003
+    0.20
     </td>
     <td>
     
@@ -978,47 +910,18 @@ Model fitting with Minuit
     
     </td>
     </tr>
-    <tr style="background-color:#F4F4F4;">
-    <td>
-    5
-    </td>
-    <td>
-    par_5
-    </td>
-    <td>
-    0.948E9
-    </td>
-    <td>
-    0.000E9
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    1
-    </td>
-    <td>
-    1E+15
-    </td>
-    <td>
-    
-    </td>
-    </tr>
     <tr style="background-color:#FFFFFF;">
     <td>
-    6
+    4
     </td>
     <td>
-    par_6
+    par_4
     </td>
     <td>
-    2.075
+    1.974
     </td>
     <td>
-    0.011
+    0.016
     </td>
     <td>
     
@@ -1038,13 +941,13 @@ Model fitting with Minuit
     </tr>
     <tr style="background-color:#F4F4F4;">
     <td>
-    7
+    5
     </td>
     <td>
-    par_7
+    par_5
     </td>
     <td>
-    1.12
+    0.76
     </td>
     <td>
     0.05
@@ -1067,16 +970,16 @@ Model fitting with Minuit
     </tr>
     <tr style="background-color:#FFFFFF;">
     <td>
-    8
+    6
     </td>
     <td>
-    par_8
+    par_6
     </td>
     <td>
-    0.370E5
+    2.03E4
     </td>
     <td>
-    0.012E5
+    0.19E4
     </td>
     <td>
     
@@ -1118,7 +1021,6 @@ Model fitting with Minuit
 .. image:: Jet_example_model_fit_files/Jet_example_model_fit_28_0.png
 
 
-
 MCMC sampling
 -------------
 
@@ -1136,21 +1038,15 @@ MCMC sampling
 
 .. parsed-literal::
 
-    - progress=102.000% calls=7650 accepted=6461
+    \ progress=102.000% calls=7650 accepted=6349
 
 .. code:: ipython3
 
     f=mcmc.corner_plot()
 
 
-.. parsed-literal::
 
-    WARNING:root:Too few points to create valid contours
-    WARNING:root:Too few points to create valid contours
-
-
-
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_33_1.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_32_0.png
 
 
 .. code:: ipython3
@@ -1162,8 +1058,8 @@ MCMC sampling
 
 .. parsed-literal::
 
-    (array([2.84378306, 2.92525054, 2.44577632, ..., 3.12461893, 3.12461893,
-            2.9350844 ]), 3)
+    (array([2.38091458, 2.38091458, 2.38091458, ..., 4.28541072, 4.28541072,
+            4.28541072]), 2)
 
 
 
@@ -1173,7 +1069,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_35_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_34_0.png
 
 
 .. code:: ipython3
@@ -1192,7 +1088,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_38_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_37_0.png
 
 
 .. code:: ipython3
@@ -1202,7 +1098,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_39_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_38_0.png
 
 
 .. code:: ipython3
@@ -1212,7 +1108,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_40_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_39_0.png
 
 
 .. code:: ipython3
@@ -1224,7 +1120,7 @@ MCMC sampling
 
 .. parsed-literal::
 
-    | progress=101.867% calls=7640 accepted=6246
+    / progress=102.000% calls=7650 accepted=6300
 
 .. code:: ipython3
 
@@ -1232,7 +1128,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_42_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_41_0.png
 
 
 .. code:: ipython3
@@ -1242,6 +1138,6 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_43_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_42_0.png
 
 
