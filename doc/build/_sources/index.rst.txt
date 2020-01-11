@@ -10,6 +10,8 @@
 
 :Author: `Andrea Tramacere <andrea.tramacere@gmail.com>`_
 
+.. important::
+    Starting from version 1.1.0, python 2 is not supported anymore. Versions of python 3 < 3.6 should work.
 
 
 

@@ -5,6 +5,11 @@ Installation
 
 Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)
 -------------------------------------------------------------------
+.. important::
+    Starting from version 1.1.0, python 2 is not supported anymore. Versions of python 3 < 3.6 should work.
+
+
+
 I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
 - create a virtual environment (not necessary, but suggested):
@@ -21,18 +26,27 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
 - install the code
 
-  - on linux:
+  .. code-block:: bash
 
-    .. code-block:: bash
-
-        conda install -c andreatramacere -c astropy jetset
+    conda install -c andreatramacere -c astropy jetset
 
 
-  - on Mac:
 
-    .. code-block:: bash
 
-        conda install -c andreatramacere  jetset
+
+  if conda fails with dependencies you can try
+
+  .. code-block:: bash
+
+      conda install -c andreatramacere -c astropy jetset
+
+
+
+  OR
+
+  .. code-block:: bash
+
+      conda install -c andreatramacere -c conda-forge jetset
 
 Install the JetSeT from source
 ------------------------------
@@ -52,6 +66,18 @@ Installation from source using Anaconda
   .. code-block:: bash
 
     conda install --file requirements.txt
+
+  if conda fails with dependencies you can try
+
+  .. code-block:: bash
+
+      conda install -c astropy --file requirements.txt
+
+  OR
+
+  .. code-block:: bash
+
+      conda install -c conda-forge --file requirements.txt
 
 -  run on the command line
 
@@ -85,7 +111,7 @@ Installation from source using PIP
 Requirements
 ^^^^^^^^^^^^
 The following python packages are required:
- - python 2.7 or >=3.6 (python 3 is suggested, python 2 should work still fine)
+ - python >=3.6 (python >=3.6 is suggested, older python 3 versions should  work, python 2 is not supported any more from version>=1.1.0)
  - setuptools
  - scipy
  - numpy

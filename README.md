@@ -44,15 +44,16 @@ visit: https://jetset.readthedocs.io/en/latest/
      `conda activate jetset`
      
 - install the code:
-   
-   - on Mac  
- 
-     `conda install -c andreatramacere jetset`
   
-  - on linxu
-   
-    `conda install -c andreatramacere -c astropy jetset`
+  `conda install -c andreatramacere jetset`
+  
+if conda fails with dependencies you can try
+  
+   - `conda install -c andreatramacere -c astropy jetset`
+    
+     OR
 
+   - `conda install -c andreatramacere -c conda-forge jetset`
 # Install the JetSeT from source 
 
 
@@ -69,8 +70,16 @@ visit: https://jetset.readthedocs.io/en/latest/
  
  - Install requirements, run on the command line:
     - `conda install --file requirements.txt`
+     
+     if conda fails with dependencies you can try
+  
+   - `conda install -c astropy  --file requirements.txt`
+    
+     OR
 
-        if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
+   - `conda install -c conda-forge  --file requirements.txt` 
+   
+    if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
    
  - run on the command line: 
      * `python setup.py clean`
@@ -96,7 +105,7 @@ visit: https://jetset.readthedocs.io/en/latest/
 ##  Requirements
 The following python packages are required:
 
-        python 2.7 or >=3.6 (python 3 is suggested, python 2 should work still fine)
+        python >=3.6 (python >=3.6 is suggested, older python 3 versions should  work, python 2 is not supported any more from version>=1.1.0)
         setuptools
         scipy
         numpy

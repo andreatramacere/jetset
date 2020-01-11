@@ -78,7 +78,7 @@ def model_fit_lsb(sed_data,):
     fit_model.parameters.gmax.fit_range = [1E4, 1E8]
     model_minimizer_lsb, best_fit_lsb = fit_SED(fit_model, sed_data, 10.0 ** 11, 10 ** 29.0, fitname='SSC-best-fit',
                                                 minimizer='lsb')
-    fit_model.save_model('fit_model_minuit.dat')
+    fit_model.save_model('fit_model_lsb.dat')
 
 def model_fit_minuit(sed_data):
     from jetset.minimizer import fit_SED
@@ -106,9 +106,9 @@ def test_full():
     print('done')
     my_shape=sed_shaper(my_shape)
     print('done')
-    #prefit_jet=model_constr(my_shape)
+    prefit_jet=model_constr(my_shape)
     print('done')
-    #model_fit_lsb(sed_data)
+    model_fit_lsb(sed_data)
     #model_fit_minuit(sed_data)
 
 

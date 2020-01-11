@@ -64,10 +64,12 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_phys/Jet_example_phys.html">jet model physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_phys_SSC/Jet_example_phys_SSC.html">jet model physical setup  (basic features and SSC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_phys_EC/Jet_example_phys_EC.html">External Compton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_phys_EC/Jet_example_phys_EC.html#equipartition">Equipartition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_num/Jet_example_num.html">jet model numerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/phen_constr/Jet_example_phenom_constr.html">phenomenological model constraining</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
@@ -178,10 +180,12 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_phys/Jet_example_phys.html">jet model physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_num/Jet_example_num.html">jet model nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_phys_SSC/Jet_example_phys_SSC.html">jet model physical setup  (basic features and SSC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_phys_EC/Jet_example_phys_EC.html">External Compton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_phys_EC/Jet_example_phys_EC.html#equipartition">Equipartition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/jet_model_num/Jet_example_num.html">jet model numerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/phen_constr/Jet_example_phenom_constr.html">phenomenological model constraining</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
@@ -258,6 +262,10 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">
 <h2>Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)<a class="headerlink" href="#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx" title="Permalink to this headline">¶</a></h2>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Starting from version 1.1.0, python 2 is not supported anymore. Versions of python 3 &lt; 3.6 should work.</p>
+</div>
 <p>I suggest to use anaconda and python3 (<a class="reference external" href="https://www.anaconda.com/download/">https://www.anaconda.com/download/</a>)</p>
 <ul class="simple">
 <li><p>create a virtual environment (not necessary, but suggested):</p></li>
@@ -335,7 +343,7 @@ python setup.py install
 <h3>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>The following python packages are required:</dt><dd><ul class="simple">
-<li><p>python 2.7 or &gt;=3.6 (python 3 is suggested, python 2 should work still fine)</p></li>
+<li><p>python &gt;=3.6 (python &gt;=3.6 is suggested, older python 3 versions should  work, python 2 is not supported any more from version&gt;=1.1.0)</p></li>
 <li><p>setuptools</p></li>
 <li><p>scipy</p></li>
 <li><p>numpy</p></li>
