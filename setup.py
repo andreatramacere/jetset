@@ -112,6 +112,7 @@ __version__ = _info['version']
 f = open("./requirements.txt",'r')
 req=f.readlines()
 f.close()
+req=[n.strip() for n in req]
 
 if  os.getenv('USE_PIP')=='TRUE':
     install_req=req
@@ -146,8 +147,9 @@ setup(name='jetset',
       package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*ecsv','./requirements.txt'],'jetkernel':['mathkernel/*dat']},
       include_package_data = True,
       cmdclass=custom_cmdclass,
-      requires=req,
+      #requires=req,
       ext_modules = [_module],
       install_requires=install_req,
       py_modules=['jetkernel/jetkernel'],
+      python_requires='>=3.5',
       zip_safe=False)

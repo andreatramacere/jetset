@@ -171,12 +171,12 @@ class FitResults(object):
 
         else:
             wd=''
-            name = 'best_fit_report_%s' % self.name + '.txt'
+
 
 
 
         outname = os.path.join(wd,name)
-         
+
         outfile=open(outname,'w')
     
         
