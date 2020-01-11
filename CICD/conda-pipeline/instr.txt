@@ -22,22 +22,23 @@ cd jetset
 git checkout develop
 git pull origin develop
 python setup.py clean
-cd conda-pipeline
-conda-build . --output
-(conda build .  --output -c defaults -c astropy  #for linux)
+CICD/conda-pipeline/
+conda create --name jetset python=3.7 ipython anaconda-client conda-build pyqtconda install -c anaconda pyqt
+
+conda activate jetset
+set the proper branch/tag in:mata.yaml-> git_rev: develop
+conda build purge
+conda-build .
+(conda build . -c defaults -c astropy  #for linux)
 
 #testing
-cd ../../../test/
-conda create --name jetset python=3.7 ipython
-conda activate jetset
-conda install --file ../integration/jetset/requirements.txt
-(conda install   -c astropy --file ../integration/jetset/requirements.txt #for linux)
+cd ../../test/
+conda install --file ../requirements.txt
+(conda install   -c astropy --file ../requirements.txt #for linux)
 conda install --offline /path/produced/by/conda-build
-run test
+pytest test.py
 conda deactivate
 conda env remove --name jetset
-
-
 
 #deploy
 anaconda login

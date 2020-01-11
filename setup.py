@@ -147,6 +147,7 @@ setup(name='jetset',
       package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*ecsv','./requirements.txt'],'jetkernel':['mathkernel/*dat']},
       include_package_data = True,
       cmdclass=custom_cmdclass,
+      #not to use with setup tools
       #requires=req,
       ext_modules = [_module],
       install_requires=install_req,
