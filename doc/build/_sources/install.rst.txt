@@ -26,18 +26,27 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
 - install the code
 
-  - on linux:
+  .. code-block:: bash
 
-    .. code-block:: bash
-
-        conda install -c andreatramacere -c astropy jetset
+    conda install -c andreatramacere -c astropy jetset
 
 
-  - on Mac:
 
-    .. code-block:: bash
 
-        conda install -c andreatramacere  jetset
+
+  if conda fails with dependencies you can try
+
+  .. code-block:: bash
+
+      conda install -c andreatramacere -c astropy jetset
+
+
+
+  OR
+
+  .. code-block:: bash
+
+      conda install -c andreatramacere -c conda-forge jetset
 
 Install the JetSeT from source
 ------------------------------
@@ -57,6 +66,18 @@ Installation from source using Anaconda
   .. code-block:: bash
 
     conda install --file requirements.txt
+
+  if conda fails with dependencies you can try
+
+  .. code-block:: bash
+
+      conda install -c astropy --file requirements.txt
+
+  OR
+
+  .. code-block:: bash
+
+      conda install -c conda-forge --file requirements.txt
 
 -  run on the command line
 

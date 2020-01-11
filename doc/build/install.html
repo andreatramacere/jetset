@@ -278,18 +278,17 @@
 </div>
 <ul>
 <li><p>install the code</p>
-<ul>
-<li><p>on linux:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c andreatramacere -c astropy jetset
 </pre></div>
 </div>
-</li>
-<li><p>on Mac:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c andreatramacere  jetset
+<p>if conda fails with dependencies you can try</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c andreatramacere -c astropy jetset
 </pre></div>
 </div>
-</li>
-</ul>
+<p>OR</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c andreatramacere -c conda-forge jetset
+</pre></div>
+</div>
 </li>
 </ul>
 </div>
@@ -308,6 +307,14 @@
 <ul>
 <li><p>Install requirements, run on the command line:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install --file requirements.txt
+</pre></div>
+</div>
+<p>if conda fails with dependencies you can try</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c astropy --file requirements.txt
+</pre></div>
+</div>
+<p>OR</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c conda-forge --file requirements.txt
 </pre></div>
 </div>
 </li>
