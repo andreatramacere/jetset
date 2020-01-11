@@ -1,7 +1,7 @@
 sphinx-bootstrap-theme
 sphinx-automodapi
 sphinx_rtd_theme>=0.3.1
-sphinx-astropy
+sphinxcontrib-bibtex
 nbsphinx
 numpydoc
 setuptools
