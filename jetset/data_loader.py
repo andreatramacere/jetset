@@ -7,7 +7,9 @@ __author__ = "Andrea Tramacere"
 
 
 import numpy as np
-from .cosmo_tools import Cosmo
+import copy
+
+#from .cosmo_tools import Cosmo
 #from poly_fit import filter_interval
 from astropy.table  import  Table,Column
 from astropy import  units as u
@@ -15,15 +17,32 @@ from astropy.units import cds
 from .plot_sedfit import PlotSED
 
 from .output import section_separator
-import os
+from .utils import *
+from .cosmo_tools import Cosmo
+from .frame_converter import convert_nu_to_src, convert_nuFnu_to_nuLnu_src
+
+cds.enable()
 
 __all__=['get_data_set_msk','get_freq_range_msk','lin_to_log','log_to_lin','ObsData','Data']
 
 
 class Data(object):
 
-    def __init__(self,n_rows=None,data_table=None):
+    def __init__(self,
+                 data_table=None,
+                 n_rows=None,
+                 meta_data=None,
+                 import_dictionary=None,
+                 cosmo=None):
 
+        if cosmo is None:
+
+            self.cosmo = Cosmo()
+        else:
+
+            self.cosmo = cosmo
+
+        self._necessary_meta = ['data_scale', 'z', 'restframe']
         self._allowed_meta={}
         self._allowed_meta['z']= None
         self._allowed_meta['UL_CL'] = None
@@ -33,15 +52,36 @@ class Data(object):
 
         self._names = ['x', 'dx', 'y', 'dy', 'T_start', 'T_stop', 'UL', 'data_set']
         self._dt = ('f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'bool', 'S16')
-        self._units = [u.Hz, (u.erg / (u.cm ** 2 * u.s)), u.Hz, (u.erg / (u.cm ** 2 * u.s)), cds.MJD, cds.MJD, None, None]
 
+        self._units = [u.Hz, u.Hz,(u.erg / (u.cm ** 2 * u.s)) ,(u.erg / (u.cm ** 2 * u.s)), cds.MJD, cds.MJD, None, None]
+
+        #print('h', type(data_table))
+        if isinstance(data_table,str):
+            data_table = Table.read(data_table, guess=True)
 
         if data_table is None:
-            self._build_empty_table(n_rows)
+            self._build_empty_table(n_rows,meta_data=meta_data)
 
         else:
-            self._load_data(data_table)
+            if import_dictionary is not None:
+                for k in import_dictionary.keys():
+                    data_table.rename_column(k, import_dictionary[k])
 
+            self._table = copy.deepcopy(data_table)
+
+        if meta_data is not None:
+            self._table.meta = {}
+            for k in meta_data.keys():
+
+                self.set_meta_data(k,meta_data[k])
+        else:
+            #print('->',self._table.meta)
+            for k in self._table.meta.keys():
+                self.set_meta_data(k,self._table.meta[k])
+
+        self._check_table()
+        self._check_frame_and_scale()
+        self._convert_units()
 
 
 
@@ -54,27 +94,56 @@ class Data(object):
         return self._table.meta
 
     @classmethod
-    def from_file(cls,data_table,format='ascii.ecsv'):
-        cls(data_table=data_table,format=format)
-        return cls
+    def from_file(cls,data_table,format='ascii.ecsv',import_dictionary=None,guess=None):
+        return cls(data_table= Table.read(data_table, format=format,guess=guess),import_dictionary=import_dictionary)
 
-    @classmethod
-    def save_file(cls, name, format='ascii.ecsv'):
-        Table.write(name=name,format=format)
+    def save_file(self, name, format='ascii.ecsv'):
+        self._table.write(name,format=format)
 
-    def _load_data(self,data_table,format='ascii.ecsv'):
-        if isinstance(data_table, Table):
-            self._table = data_table
-        else:
-            self._table = Table.read(data_table, format=format)
 
-        self._check_table()
+
+    def _check_frame_and_scale(self):
+        if self.metadata['data_scale'] == 'log-log':
+            self._table['x'], self._table['dx'] = log_to_lin(self._table['x'], self._table['dx'])
+            self._table['y'], self._table['dy'] = log_to_lin(self._table['y'], self._table['dy'])
+
+            self.metadata['data_scale']='lin-lin'
+
+        if self.metadata['restframe'] == 'src':
+            if self._table['y'].unit.is_equivalent('erg/s') and  self._table['dy'].unit.is_equivalent('erg/s'):
+                pass
+            else:
+                raise  RuntimeError('when importing src frame table, units for luminosities have to be in erg/s')
+
+
+
+            _c=self.cosmo.get_DL_cm(self.metadata['z'])
+            _c=1.0/(4*np.pi*_c*_c)
+            self._table['y']  = self._table['y'] * _c
+            self._table['dy'] = self._table['dy']  * _c
+            self._table['y'].unit = 'erg/(cm2 s)'
+            self._table['dy'].unit = 'erg/(cm2 s)'
+            self.metadata['restframe'] = 'obs'
 
     def _check_table(self):
+
         for ID,_cn in enumerate(self._names):
             if _cn not in self._table.colnames:
                 self._table.add_column(index=ID,col=Column(name=_cn,dtype=self._dt[ID],unit=self._units[ID],data=np.zeros(len(self._table))))
 
+        for _n in  self._necessary_meta:
+            if _n not in  self._table.meta:
+                raise RuntimeError('meta data',_n,'not defined, but it is necessary')
+
+
+    def _convert_units(self):
+        for ID,_cn in enumerate(self._names):
+            if hasattr(self._table[_cn],'unit'):
+                if self._table[_cn].unit is not None and self._units[ID] is not None:
+                    try:
+                        self._table[_cn]=self._table[_cn].to(self._units[ID])
+                    except:
+                        raise RuntimeError ('Unito conversion problem for ',self._table[_cn].unit,'to',self._units[ID])
 
 
     def set_meta_data(self,m,v):
@@ -84,7 +153,7 @@ class Data(object):
         if  self._allowed_meta[m] is not None:
             #print (self._allowed_meta[m])
             if v not in self._allowed_meta[m]:
-                raise RuntimeError('meta data ', m, 'not in allowed', self._allowed_meta.keys())
+                raise RuntimeError('meta data value ', v, 'not in allowed', self._allowed_meta[m])
 
 
         self._table.meta[m]=v
@@ -101,7 +170,7 @@ class Data(object):
         if unit is not None:
             self._table[field] *= unit
 
-    def _build_empty_table(self,n_rows):
+    def _build_empty_table(self,n_rows,meta_data=None):
 
 
         self._table = Table(np.zeros((n_rows, len(self._names))), names=self._names, dtype=self._dt)
@@ -115,6 +184,11 @@ class Data(object):
         self._table.meta['restframe'] = 'obs'
         self._table.meta['data_scale'] = 'lin-lin'
         self._table.meta['obj_name'] = 'new-src'
+
+        if meta_data is not None:
+            for k in self._table.meta.keys():
+                if k in meta_data.keys():
+                    self._table.meta[k]=meta_data[k]
 
 
 
@@ -149,6 +223,7 @@ class Data(object):
         data_table['dy'] = data_table['dy'] * (u.erg / (u.cm ** 2 * u.s))
         data_table['T_start'] = data_table['T_start'] * cds.MJD
         data_table['T_stop'] = data_table['T_stop'] * cds.MJD
+        data_table['UL']=np.array(data_table['UL'], dtype=np.bool)
         data_table.meta['z'] = z
         data_table.meta['restframe'] = restframe
         data_table.meta['data_scale'] = data_scale
@@ -220,7 +295,9 @@ class ObsData(object):
     
     """
     
-    def __init__(self, data_table=None,
+    def __init__(self,
+                 cosmo=None,
+                 data_table=None,
                  dupl_filter=False,
                  data_set_filter=None,
                  UL_filtering=False,
@@ -246,12 +323,21 @@ class ObsData(object):
             self.data_set_filter=data_set_filter.split(',')
         else:
             self.data_set_filter=['No']
-            
-        self.cosmo_eval=Cosmo(units='cm')
+
+        if cosmo is None:
+            if hasattr(data_table,'cosmo'):
+                self.cosmo=data_table.cosmo
+            else:
+                self.cosmo=Cosmo()
+        else:
+            self.cosmo=cosmo
+
         self.UL_value=UL_value
         self.UL_filtering=UL_filtering
         self.zero_error_replacment=0.2
         self.facke_error=0.2
+
+
 
         if  hasattr(data_table,'table'):
             _t=data_table.table
@@ -259,6 +345,7 @@ class ObsData(object):
             _t=data_table
 
         self._input_data_table=None
+
         if isinstance(_t,Table):
             self._input_data_table = _t
         else:
@@ -408,9 +495,10 @@ class ObsData(object):
 
         self.col_types = []
         for n in self._input_data_table.colnames:
-            self.col_types.append(n)
-            #print ('-->n',self._input_data_table[n].unit)
-            self.data[self._file_col_dict[n]]=self._input_data_table[n]
+            if n  in self._file_col_dict.keys():
+                self.col_types.append(n)
+
+                self.data[self._file_col_dict[n]]=self._input_data_table[n]
 
         self.col_nums=len(self.col_types)
 
@@ -482,18 +570,22 @@ class ObsData(object):
         # handles data cosmological conversion
         # and axis transformation
 
+        check_frame(self.restframe)
+
         if self.restframe=='obs':
-            nu_conv_factor=1
-            Lum_conv_factor=1
+            self.nu_conv_factor=1
+            self.Lum_conv_factor=1
         
         elif self.restframe=='src':
-            DL=self.cosmo_eval.DL(self.z)
+            #TODO this must be the same as in jetset
+            DL=self.cosmo.get_DL_cm(self.z)
             print ("--->DL=%e"%DL)
             
             #!! usa le funzioni in frame_converter
-            nu_conv_factor=1.0/(1+self.z)
-            Lum_conv_factor=1.0/(np.pi*4.0*DL*DL)
-
+            self.nu_conv_factor=1.0/(1+self.z)
+            self.Lum_conv_factor=1.0/(np.pi*4.0*DL*DL)
+        else:
+            unexpetced_behaviour()
 
         if self.data_scale=='lin-lin':
             
@@ -507,8 +599,8 @@ class ObsData(object):
             else:
                 self.data['nu_data_log']=self.lin_to_log(val=self.data['nu_data'])
             
-            self.data['nu_data_log']+= np.log10(nu_conv_factor)
-            self.data['nuFnu_data_log']+= np.log10(Lum_conv_factor)
+            self.data['nu_data_log']+= np.log10(self.nu_conv_factor)
+            self.data['nuFnu_data_log']+= np.log10(self.Lum_conv_factor)
             
             
             
@@ -526,8 +618,8 @@ class ObsData(object):
             
             
             #print self.data['nuFnu_data'],self.data['dnuFnu_data']
-            self.data['nu_data']*=nu_conv_factor
-            self.data['nuFnu_data']*=Lum_conv_factor
+            self.data['nu_data']*=self.nu_conv_factor
+            self.data['nuFnu_data']*=self.Lum_conv_factor
         
         
 
@@ -994,20 +1086,47 @@ class ObsData(object):
         self.data['dnuFnu_facke']= self.data['nuFnu_data'] * self.facke_error
         
     
-    def get_data_points(self,log_log=False,skip_UL=False):
+    def get_data_points(self,log_log=False,skip_UL=False,frame='obs'):
         """
         Gives data point
-        """ 
-        if    skip_UL==True:
+        """
+
+        if   skip_UL==True:
             msk= self.data['UL'] == False
         else:
             msk=np.ones(self.data['nu_data_log'].size, dtype=bool)
-            
-        if   log_log==True:
-            return self.data['nu_data_log'][msk], self.data['nuFnu_data_log'][msk], self.data['dnu_data_log'][msk], self.data['dnuFnu_data_log'][msk]
+
+        check_frame(frame)
+        if frame == 'obs':
+            if   log_log  is True:
+                _x = self.data['nu_data_log'][msk]
+                _dx = self.data['dnu_data_log'][msk]
+                _y = self.data['nuFnu_data_log'][msk]
+                _dy =  self.data['dnuFnu_data_log'][msk]
+
+            else:
+                _x = self.data['nu_data'][msk]
+                _dx = self.data['dnu_data'][msk]
+                _y = self.data['nuFnu_data'][msk]
+                _dy = self.data['dnuFnu_data'][msk]
+
+        elif frame == 'src':
+
+            dl = self.cosmo.get_DL_cm(self.z)
+
+            _x = convert_nu_to_src(self.data['nu_data'][msk], self.z, 'obs')
+            _dx = convert_nu_to_src(self.data['dnu_data'][msk], self.z, 'obs')
+            _y = convert_nuFnu_to_nuLnu_src(self.data['nuFnu_data'][msk], self.z, 'obs', dl)
+            _dy = convert_nuFnu_to_nuLnu_src(self.data['dnuFnu_data'][msk], self.z, 'obs', dl)
+
+            if log_log is True:
+                _x, _dx = self.lin_to_log(_x, _dx)
+                _y, _dy = self.lin_to_log(_y, _dy)
+
         else:
-            return self.data['nu_data'][msk] , self.data['nuFnu_data'][msk] , self.data['dnu_data'][msk] , self.data['dnuFnu_data'][msk]
-        
+            unexpetced_behaviour()
+
+        return _x ,_y, _dx, _dy
     
     def show_data_sets(self):
         shown=[]
@@ -1027,10 +1146,10 @@ class ObsData(object):
 
 
 
-    def plot_sed(self,plot_obj=None,):
+    def plot_sed(self,plot_obj=None,frame='obs',color=None,fmt='o',ms=4,mew=0.5,figsize=None):
         if plot_obj is None:
-            plot_obj=PlotSED(sed_data=self)
-
+            plot_obj=PlotSED(frame=frame,figsize=figsize)
+        plot_obj.add_data_plot(self,color=color,fmt=fmt,ms=ms,mew=mew)
         return plot_obj
 
     

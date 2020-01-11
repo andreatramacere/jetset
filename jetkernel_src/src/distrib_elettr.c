@@ -135,6 +135,9 @@ void build_Ne(struct spettro *pt) {
     if (pt->grid_bounded_to_gamma==1){
         pt->gmax_griglia=pt->gmax;
         pt->gmin_griglia=pt->gmin;
+        //if (pt->gmin_griglia<1.0){
+        //    pt->gmin_griglia=1.0;
+       // }
     }
 
     //printf("Set array per Ne %s \n",pt->DISTR);
@@ -194,7 +197,7 @@ void Fill_Ne_IC(struct spettro *pt, double gmin, int stat_frame) {
 void build_Ne_custom(struct spettro *pt,  unsigned int size) {
     pt->gamma_custom_grid_size=size;
     if (pt->verbose>1) {
-        printf("Set array per Ne custom\n");
+        printf("Set array for Ne for from_array mode \n");
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
     }
     //printf("Set array per Ne %s \n",pt->DISTR);
@@ -211,7 +214,6 @@ void InitNe(struct spettro *pt){
     build_Ne(pt);
     SetDistr(pt);
     Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Ne);
-
 
     //This transformation is correct
     //the grid is shifted by a factor of delta, hence the integration
@@ -322,40 +324,42 @@ void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
     sprintf(f_distr, "%s%s-%s", pt->path, pt->STEM, name);
     unsigned long i;
     
-    fp_distr = fopen(f_distr, "w");
-    if (fp_distr == NULL) {
-        printf("warning non riesco ad aprire %s\n", f_distr);
-        exit(1);
-    }
-    distr_e_header(fp_distr);
-
-    if (pt->TIPO_DISTR != 0) {
-        if (pt->TIPO_DISTR == -1 && strcmp(pt->PARTICLE, "hadrons") == 0) {
-            mass = MEC2_TeV;
-        }
-        if (pt->TIPO_DISTR != -1 && strcmp(pt->PARTICLE, "hadrons") == 0) {
-            mass = MPC2_TeV;
-        }
-        if (strcmp(pt->PARTICLE, "leptons") == 0) {
-            mass = MEC2_TeV;
-        }
-
-
-        for (i = 0; i < pt->gamma_grid_size; i++) {
-            if (N[i] <= 0/0) {
-                N[i]=1E-200;
+    if (pt->WRITE_TO_FILE==1){
+            fp_distr = fopen(f_distr, "w");
+            if (fp_distr == NULL) {
+                printf("warning non riesco ad aprire %s\n", f_distr);
+                exit(1);
             }
-                fprintf(fp_distr, "%e\t%e\t%e\t%e\t%e\t%e\n",
-                        log10(g[i]),
-                        log10(N[i]),
-                        g[i],
-                        N[i],
-                        g[i] * mass,
-                        N[i] / mass);
-            //}
+            distr_e_header(fp_distr);
+        
+        if (pt->TIPO_DISTR != 0) {
+            if (pt->TIPO_DISTR == -1 && strcmp(pt->PARTICLE, "hadrons") == 0) {
+                mass = MEC2_TeV;
+            }
+            if (pt->TIPO_DISTR != -1 && strcmp(pt->PARTICLE, "hadrons") == 0) {
+                mass = MPC2_TeV;
+            }
+            if (strcmp(pt->PARTICLE, "leptons") == 0) {
+                mass = MEC2_TeV;
+            }
+
+
+            for (i = 0; i < pt->gamma_grid_size; i++) {
+                if (N[i] <= 0.0) {
+                    N[i]=1E-200;
+                }
+                    fprintf(fp_distr, "%e\t%e\t%e\t%e\t%e\t%e\n",
+                            log10(g[i]),
+                            log10(N[i]),
+                            g[i],
+                            N[i],
+                            g[i] * mass,
+                            N[i] / mass);
+                //}
+            }
         }
+        fclose(fp_distr);
     }
-    fclose(fp_distr);
 }
 //=====================================================
 
@@ -396,62 +400,39 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
     //integranda Disre e
     double (*pf_norm) (struct spettro *, double x);
 
-
-
     //=========================================
     // interpolate custom Ne
     //=========================================
     if (pt->TIPO_DISTR == 0)
     {
-        for (i = 0; i < pt->gamma_grid_size; i++) {
-           N[i]=N_distr_interp(pt->gamma_custom_grid_size,
-                                griglia_gamma_N_log[i],
-                                pt->gamma_e_custom,
-                                pt->Ne_custom);
-
-
-//                N[i] =log_lin_interp( griglia_gamma_N_log[i],
-//                pt->gamma_e_custom,
-//                pt->gmin,
-//                pt->gmax,
-//                pt->Ne_custom ,
-//                pt->gamma_custom_grid_size,
-//                0.0);
-
+        for (i = 0; i < pt->gamma_grid_size; i++)
+        {
+            N[i] = N_distr_interp(pt->gamma_custom_grid_size,
+                                  griglia_gamma_N_log[i],
+                                  pt->gamma_e_custom,
+                                  pt->Ne_custom);
         }
     }
+    //=========================================
+    // fill defined Ne
+    //=========================================
+    else
+    {
 
-
-
-
-    //Normalization
-    pt->N_0 = 1.0;
-    //if distr is e- from pp no normalization to compute
-    if (pt->Norm_distr == 1 && pt->TIPO_DISTR != -1 &&   pt->Norm_distr_L_e_Sync<=0.0) {
-        pf_norm = &N_distr_integranda;
-        pt->N_0 = integrale_trap_log_struct(pf_norm, pt, pt->gmin, pt->gmax, 10000);
-        for (i = 0; i < pt->gamma_grid_size; i++) {
-            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
-
-        }
-    }
-
-
-    if (pt->Norm_distr_L_e_Sync>0.0 && pt->TIPO_DISTR != -1) {
-        pt->N=1.0;
+        //Normalization
         pt->N_0 = 1.0;
-        for (i = 0; i < pt->gamma_grid_size; i++) {
-
-            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
+        //if distr is e- from pp no normalization to compute
+        if (pt->Norm_distr == 1 && pt->TIPO_DISTR != -1)
+        {
+            pf_norm = &N_distr_integranda;
+            pt->N_0 = integrale_trap_log_struct(pf_norm, pt, pt->gmin, pt->gmax, 10000);
         }
 
-        pt->N=pt->Norm_distr_L_e_Sync/Power_Sync_Electron(pt);
-        for (i = 0; i < pt->gamma_grid_size; i++) {
-
+        for (i = 0; i < pt->gamma_grid_size; i++)
+        {
             N[i] = N_distr(pt, griglia_gamma_N_log[i]);
         }
     }
-
 
     pt->Distr_e_done = 1;
 
@@ -772,7 +753,7 @@ void SetDistr(struct spettro *pt) {
     //8 is for secondary e- coming from pp
 
     /*** Associo ad ogni distribuzione di elettroni ***/
-    if (strcmp(pt->DISTR, "custom") == 0) {
+    if (strcmp(pt->DISTR, "from_array") == 0) {
         pt->TIPO_DISTR = 0;
     }
 
@@ -819,8 +800,8 @@ void SetDistr(struct spettro *pt) {
 
 
 
-    if (pt->verbose) {
-     printf("tipo di distribuzione %d\n",pt->TIPO_DISTR);
-    }
+    //if (pt->verbose) {
+     //printf("tipo di distribuzione %d\n",pt->TIPO_DISTR);
+    //}
 }
 //=========================================================================================

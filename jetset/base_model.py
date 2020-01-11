@@ -10,6 +10,8 @@ from .model_parameters import ModelParameterArray, ModelParameter
 from .spectral_shapes import SED
 from .data_loader import  ObsData
 import numpy as np
+import json
+import pickle
 
 __all__=['Model']
 class Model(object):
@@ -139,3 +141,15 @@ class Model(object):
             return nu_residuals[msk], residuals[msk]
         else:
             return  np.log10(nu_residuals[msk]),  residuals[msk]
+
+    def save_model(self, file_name):
+
+
+        pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+
+    @classmethod
+    def load_model(cls, file_name):
+
+        c= pickle.load(open(file_name, "rb"))
+
+        return c

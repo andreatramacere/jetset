@@ -54,7 +54,7 @@ class WorkPlace(object):
     
     
     """
-    def __init__(self,out_dir='./',flag='sed-fit-test',clean=False):
+    def __init__(self,out_dir='./jet_wd',flag='sed-fit-test',clean=False):
         self.out_dir=out_dir
         self.flag=flag
 

@@ -10,7 +10,7 @@ import numpy as np
 from .spectral_shapes import SED
 from .base_model import  Model
 
-from .cosmo_tools import Cosmo
+#from .cosmo_tools import Cosmo_facotry
 
 __all__=['AnalyticalParameter','Disk']
 
@@ -65,7 +65,7 @@ class AnalyticalParameter(ModelParameter):
 
 
 class Disk(Model):
-    def __init__(self,z,nu_size=100,**keywords):
+    def __init__(self,cosmo,z,nu_size=100,**keywords):
         """
         """
         
@@ -94,9 +94,9 @@ class Disk(Model):
         self.K_boltz=1.3806503e-16
 
 
-        self.cosmo_eval=Cosmo(units='cm')
+        self.cosmo=cosmo
 
-        self.DL=self.cosmo_eval.DL(self.z)
+        self.DL=self.cosmo.get_DL_cm(self.z)
         
         self.L_D=self.get_L_D()
         self.nu_p_Disk=self.get_nu_p()

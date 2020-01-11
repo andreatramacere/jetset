@@ -2,9 +2,8 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>jetset.data_loader &#8212; jetset 1.0.a documentation</title>
+    <meta charset="utf-8" />
+    <title>jetset.data_loader &#8212; jetset  documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
@@ -12,7 +11,9 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
@@ -36,9 +37,9 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="../../index.html"><span><img src="../../_static/logo_small_transp.png"></span>
-          JetSeT</a>
-        <span class="navbar-text navbar-version pull-left"><b>1.0</b></span>
+        <a class="navbar-brand" href="../../index.html"><span><img src="../../_static/logo_small_color_neg_transparent.png"></span>
+          JetSeT doc</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.1.0a3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -55,18 +56,19 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-the-jetset-from-source">Install the JetSeT from source</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys_SSC/Jet_example_phys_SSC.html">jet model physical setup  (basic features and SSC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys_EC/Jet_example_phys_EC.html">External Compton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys_EC/Jet_example_phys_EC.html#equipartition">Equipartition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model numerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomenological model constraining</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -145,18 +147,19 @@
 <ul class="globaltoc"
 ><ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#download-the-jetset-code">Download the JeTseT code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-anaconda-suggested-method">Installation using Anaconda (suggested method)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../install.html#installation-using-pip">Installation using PIP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-jetset-from-anaconda-suggested-for-linux-and-mac-osx">Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../install.html#install-the-jetset-from-source">Install the JetSeT from source</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys/Jet_example_phys.html">jet model: physical setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model: nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys_SSC/Jet_example_phys_SSC.html">jet model physical setup  (basic features and SSC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys_EC/Jet_example_phys_EC.html">External Compton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_phys_EC/Jet_example_phys_EC.html#equipartition">Equipartition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/jet_model_num/Jet_example_num.html">jet model numerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../user_guide/model_fit/Jet_example_model_fit.html">model fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/phen_constr/Jet_example_phenom_constr.html">phenomenological model constraining</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
 </li>
@@ -191,15 +194,18 @@
 //-->
 
 
+
 <div class="sidebar-block">
   <div class="sidebar-wrapper">
     <h2></h2>
   </div>
   <div class="sidebar-toc">
+
     
     
       <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guide/user_guide.html">user guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">code documentation (API)</a></li>
 </ul>
@@ -212,32 +218,51 @@
     <div class="col-md-9 content">
       
   <h1>Source code for jetset.data_loader</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="nb">super</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">open</span><span class="p">,</span> <span class="nb">super</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span>
                       <span class="nb">zip</span><span class="p">,</span> <span class="nb">round</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">pow</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="nb">zip</span><span class="p">)</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Andrea Tramacere&quot;</span>
 
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.cosmo_tools</span> <span class="k">import</span> <span class="n">Cosmo</span>
-<span class="c1">#from poly_fit import filter_interval</span>
-<span class="kn">from</span> <span class="nn">astropy.table</span>  <span class="k">import</span>  <span class="n">Table</span><span class="p">,</span><span class="n">Column</span>
-<span class="kn">from</span> <span class="nn">astropy</span> <span class="k">import</span>  <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
-<span class="kn">from</span> <span class="nn">astropy.units</span> <span class="k">import</span> <span class="n">cds</span>
-<span class="kn">from</span> <span class="nn">.plot_sedfit</span> <span class="k">import</span> <span class="n">PlotSED</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 
-<span class="kn">from</span> <span class="nn">.output</span> <span class="k">import</span> <span class="n">section_separator</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1">#from .cosmo_tools import Cosmo</span>
+<span class="c1">#from poly_fit import filter_interval</span>
+<span class="kn">from</span> <span class="nn">astropy.table</span>  <span class="kn">import</span>  <span class="n">Table</span><span class="p">,</span><span class="n">Column</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span>  <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+<span class="kn">from</span> <span class="nn">astropy.units</span> <span class="kn">import</span> <span class="n">cds</span>
+<span class="kn">from</span> <span class="nn">.plot_sedfit</span> <span class="kn">import</span> <span class="n">PlotSED</span>
+
+<span class="kn">from</span> <span class="nn">.output</span> <span class="kn">import</span> <span class="n">section_separator</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.cosmo_tools</span> <span class="kn">import</span> <span class="n">Cosmo</span>
+<span class="kn">from</span> <span class="nn">.frame_converter</span> <span class="kn">import</span> <span class="n">convert_nu_to_src</span><span class="p">,</span> <span class="n">convert_nuFnu_to_nuLnu_src</span>
+
+<span class="n">cds</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
 
 <span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;get_data_set_msk&#39;</span><span class="p">,</span><span class="s1">&#39;get_freq_range_msk&#39;</span><span class="p">,</span><span class="s1">&#39;lin_to_log&#39;</span><span class="p">,</span><span class="s1">&#39;log_to_lin&#39;</span><span class="p">,</span><span class="s1">&#39;ObsData&#39;</span><span class="p">,</span><span class="s1">&#39;Data&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../api/jetset.data_loader.Data.html#jetset.data_loader.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">data_table</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">data_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">n_rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">meta_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">import_dictionary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
+        <span class="k">if</span> <span class="n">cosmo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">Cosmo</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_necessary_meta</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;data_scale&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;restframe&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_meta</span><span class="o">=</span><span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_meta</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span><span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_meta</span><span class="p">[</span><span class="s1">&#39;UL_CL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -247,15 +272,36 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;dx&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;dy&#39;</span><span class="p">,</span> <span class="s1">&#39;T_start&#39;</span><span class="p">,</span> <span class="s1">&#39;T_stop&#39;</span><span class="p">,</span> <span class="s1">&#39;UL&#39;</span><span class="p">,</span> <span class="s1">&#39;data_set&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span> <span class="s1">&#39;S16&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_units</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Hz</span><span class="p">,</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">erg</span> <span class="o">/</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)),</span> <span class="n">u</span><span class="o">.</span><span class="n">Hz</span><span class="p">,</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">erg</span> <span class="o">/</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)),</span> <span class="n">cds</span><span class="o">.</span><span class="n">MJD</span><span class="p">,</span> <span class="n">cds</span><span class="o">.</span><span class="n">MJD</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_units</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Hz</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Hz</span><span class="p">,(</span><span class="n">u</span><span class="o">.</span><span class="n">erg</span> <span class="o">/</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">))</span> <span class="p">,(</span><span class="n">u</span><span class="o">.</span><span class="n">erg</span> <span class="o">/</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)),</span> <span class="n">cds</span><span class="o">.</span><span class="n">MJD</span><span class="p">,</span> <span class="n">cds</span><span class="o">.</span><span class="n">MJD</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+
+        <span class="c1">#print(&#39;h&#39;, type(data_table))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_table</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+            <span class="n">data_table</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">data_table</span><span class="p">,</span> <span class="n">guess</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">data_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_build_empty_table</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_build_empty_table</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span><span class="n">meta_data</span><span class="o">=</span><span class="n">meta_data</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_load_data</span><span class="p">(</span><span class="n">data_table</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">import_dictionary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">import_dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">data_table</span><span class="o">.</span><span class="n">rename_column</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">import_dictionary</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">data_table</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">meta_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_meta_data</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">meta_data</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#print(&#39;-&gt;&#39;,self._table.meta)</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_meta_data</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_table</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_frame_and_scale</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_convert_units</span><span class="p">()</span>
 
 
 
@@ -268,27 +314,56 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">meta</span>
 
 <div class="viewcode-block" id="Data.from_file"><a class="viewcode-back" href="../../api/jetset.data_loader.Data.html#jetset.data_loader.Data.from_file">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">data_table</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ascii.ecsv&#39;</span><span class="p">):</span>
-        <span class="bp">cls</span><span class="p">(</span><span class="n">data_table</span><span class="o">=</span><span class="n">data_table</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span></div>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">data_table</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ascii.ecsv&#39;</span><span class="p">,</span><span class="n">import_dictionary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data_table</span><span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">data_table</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span><span class="n">guess</span><span class="o">=</span><span class="n">guess</span><span class="p">),</span><span class="n">import_dictionary</span><span class="o">=</span><span class="n">import_dictionary</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Data.save_file"><a class="viewcode-back" href="../../api/jetset.data_loader.Data.html#jetset.data_loader.Data.save_file">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">save_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ascii.ecsv&#39;</span><span class="p">):</span>
-        <span class="n">Table</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Data.save_file"><a class="viewcode-back" href="../../api/jetset.data_loader.Data.html#jetset.data_loader.Data.save_file">[docs]</a>    <span class="k">def</span> <span class="nf">save_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ascii.ecsv&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data_table</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ascii.ecsv&#39;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_table</span><span class="p">,</span> <span class="n">Table</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">data_table</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">data_table</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_table</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_check_frame_and_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;data_scale&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;log-log&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">log_to_lin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">log_to_lin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">])</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;data_scale&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;lin-lin&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;restframe&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;src&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">is_equivalent</span><span class="p">(</span><span class="s1">&#39;erg/s&#39;</span><span class="p">)</span> <span class="ow">and</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">is_equivalent</span><span class="p">(</span><span class="s1">&#39;erg/s&#39;</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span>  <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;when importing src frame table, units for luminosities have to be in erg/s&#39;</span><span class="p">)</span>
+
+
+
+            <span class="n">_c</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">get_DL_cm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">])</span>
+            <span class="n">_c</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">_c</span><span class="o">*</span><span class="n">_c</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">_c</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span>  <span class="o">*</span> <span class="n">_c</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;erg/(cm2 s)&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="s1">&#39;erg/(cm2 s)&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;restframe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;obs&#39;</span>
 
     <span class="k">def</span> <span class="nf">_check_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
         <span class="k">for</span> <span class="n">ID</span><span class="p">,</span><span class="n">_cn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">_cn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">ID</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">_cn</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dt</span><span class="p">[</span><span class="n">ID</span><span class="p">],</span><span class="n">unit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_units</span><span class="p">[</span><span class="n">ID</span><span class="p">],</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">))))</span>
 
+        <span class="k">for</span> <span class="n">_n</span> <span class="ow">in</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_necessary_meta</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_n</span> <span class="ow">not</span> <span class="ow">in</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">meta</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;meta data&#39;</span><span class="p">,</span><span class="n">_n</span><span class="p">,</span><span class="s1">&#39;not defined, but it is necessary&#39;</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_convert_units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ID</span><span class="p">,</span><span class="n">_cn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="n">_cn</span><span class="p">],</span><span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="n">_cn</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_units</span><span class="p">[</span><span class="n">ID</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="n">_cn</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="n">_cn</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_units</span><span class="p">[</span><span class="n">ID</span><span class="p">])</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span> <span class="p">(</span><span class="s1">&#39;Unito conversion problem for &#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="n">_cn</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span><span class="s1">&#39;to&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_units</span><span class="p">[</span><span class="n">ID</span><span class="p">])</span>
 
 
 <div class="viewcode-block" id="Data.set_meta_data"><a class="viewcode-back" href="../../api/jetset.data_loader.Data.html#jetset.data_loader.Data.set_meta_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
@@ -298,7 +373,7 @@
         <span class="k">if</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_meta</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1">#print (self._allowed_meta[m])</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_meta</span><span class="p">[</span><span class="n">m</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;meta data &#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="s1">&#39;not in allowed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_meta</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;meta data value &#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="s1">&#39;not in allowed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_meta</span><span class="p">[</span><span class="n">m</span><span class="p">])</span>
 
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">=</span><span class="n">v</span></div>
@@ -315,7 +390,7 @@
         <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">*=</span> <span class="n">unit</span></div>
 
-    <span class="k">def</span> <span class="nf">_build_empty_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_rows</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_build_empty_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_rows</span><span class="p">,</span><span class="n">meta_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_rows</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">))),</span> <span class="n">names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dt</span><span class="p">)</span>
@@ -329,6 +404,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;restframe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;obs&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;data_scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;lin-lin&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;obj_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;new-src&#39;</span>
+
+        <span class="k">if</span> <span class="n">meta_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">meta_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">meta_data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
 
 
 
@@ -363,6 +443,7 @@
         <span class="n">data_table</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_table</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">erg</span> <span class="o">/</span> <span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">cm</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">))</span>
         <span class="n">data_table</span><span class="p">[</span><span class="s1">&#39;T_start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_table</span><span class="p">[</span><span class="s1">&#39;T_start&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">cds</span><span class="o">.</span><span class="n">MJD</span>
         <span class="n">data_table</span><span class="p">[</span><span class="s1">&#39;T_stop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_table</span><span class="p">[</span><span class="s1">&#39;T_stop&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">cds</span><span class="o">.</span><span class="n">MJD</span>
+        <span class="n">data_table</span><span class="p">[</span><span class="s1">&#39;UL&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data_table</span><span class="p">[</span><span class="s1">&#39;UL&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
         <span class="n">data_table</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;z&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span>
         <span class="n">data_table</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;restframe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">restframe</span>
         <span class="n">data_table</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;data_scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_scale</span>
@@ -434,7 +515,9 @@
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">data_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">dupl_filter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">data_set_filter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">UL_filtering</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -460,12 +543,21 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">data_set_filter</span><span class="o">=</span><span class="n">data_set_filter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data_set_filter</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;No&#39;</span><span class="p">]</span>
-            
-        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo_eval</span><span class="o">=</span><span class="n">Cosmo</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="s1">&#39;cm&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cosmo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data_table</span><span class="p">,</span><span class="s1">&#39;cosmo&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">=</span><span class="n">data_table</span><span class="o">.</span><span class="n">cosmo</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">=</span><span class="n">Cosmo</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">UL_value</span><span class="o">=</span><span class="n">UL_value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">UL_filtering</span><span class="o">=</span><span class="n">UL_filtering</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zero_error_replacment</span><span class="o">=</span><span class="mf">0.2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span><span class="o">=</span><span class="mf">0.2</span>
+
+
 
         <span class="k">if</span>  <span class="nb">hasattr</span><span class="p">(</span><span class="n">data_table</span><span class="p">,</span><span class="s1">&#39;table&#39;</span><span class="p">):</span>
             <span class="n">_t</span><span class="o">=</span><span class="n">data_table</span><span class="o">.</span><span class="n">table</span>
@@ -473,6 +565,7 @@
             <span class="n">_t</span><span class="o">=</span><span class="n">data_table</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_data_table</span><span class="o">=</span><span class="kc">None</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_t</span><span class="p">,</span><span class="n">Table</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_input_data_table</span> <span class="o">=</span> <span class="n">_t</span>
         <span class="k">else</span><span class="p">:</span>
@@ -622,9 +715,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_data_table</span><span class="o">.</span><span class="n">colnames</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-            <span class="c1">#print (&#39;--&gt;n&#39;,self._input_data_table[n].unit)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_col_dict</span><span class="p">[</span><span class="n">n</span><span class="p">]]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_data_table</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">n</span>  <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_col_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_col_dict</span><span class="p">[</span><span class="n">n</span><span class="p">]]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_data_table</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">col_nums</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">col_types</span><span class="p">)</span>
 
@@ -696,18 +790,22 @@
         <span class="c1"># handles data cosmological conversion</span>
         <span class="c1"># and axis transformation</span>
 
+        <span class="n">check_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restframe</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">restframe</span><span class="o">==</span><span class="s1">&#39;obs&#39;</span><span class="p">:</span>
-            <span class="n">nu_conv_factor</span><span class="o">=</span><span class="mi">1</span>
-            <span class="n">Lum_conv_factor</span><span class="o">=</span><span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_conv_factor</span><span class="o">=</span><span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Lum_conv_factor</span><span class="o">=</span><span class="mi">1</span>
         
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">restframe</span><span class="o">==</span><span class="s1">&#39;src&#39;</span><span class="p">:</span>
-            <span class="n">DL</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo_eval</span><span class="o">.</span><span class="n">DL</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            <span class="c1">#TODO this must be the same as in jetset</span>
+            <span class="n">DL</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">get_DL_cm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
             <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;---&gt;DL=</span><span class="si">%e</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">DL</span><span class="p">)</span>
             
             <span class="c1">#!! usa le funzioni in frame_converter</span>
-            <span class="n">nu_conv_factor</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
-            <span class="n">Lum_conv_factor</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mf">4.0</span><span class="o">*</span><span class="n">DL</span><span class="o">*</span><span class="n">DL</span><span class="p">)</span>
-
+            <span class="bp">self</span><span class="o">.</span><span class="n">nu_conv_factor</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Lum_conv_factor</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mf">4.0</span><span class="o">*</span><span class="n">DL</span><span class="o">*</span><span class="n">DL</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">unexpetced_behaviour</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_scale</span><span class="o">==</span><span class="s1">&#39;lin-lin&#39;</span><span class="p">:</span>
             
@@ -721,8 +819,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_to_log</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">])</span>
             
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">nu_conv_factor</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">]</span><span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">Lum_conv_factor</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_conv_factor</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">]</span><span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lum_conv_factor</span><span class="p">)</span>
             
             
             
@@ -740,8 +838,8 @@
             
             
             <span class="c1">#print self.data[&#39;nuFnu_data&#39;],self.data[&#39;dnuFnu_data&#39;]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">*=</span><span class="n">nu_conv_factor</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">]</span><span class="o">*=</span><span class="n">Lum_conv_factor</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">]</span><span class="o">*=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu_conv_factor</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">]</span><span class="o">*=</span><span class="bp">self</span><span class="o">.</span><span class="n">Lum_conv_factor</span>
         
         
 
@@ -1208,20 +1306,47 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_facke&#39;</span><span class="p">]</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">facke_error</span></div>
         
     
-<div class="viewcode-block" id="ObsData.get_data_points"><a class="viewcode-back" href="../../api/jetset.data_loader.ObsData.html#jetset.data_loader.ObsData.get_data_points">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">skip_UL</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ObsData.get_data_points"><a class="viewcode-back" href="../../api/jetset.data_loader.ObsData.html#jetset.data_loader.ObsData.get_data_points">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">log_log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">skip_UL</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">frame</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gives data point</span>
-<span class="sd">        &quot;&quot;&quot;</span> 
-        <span class="k">if</span>    <span class="n">skip_UL</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span>   <span class="n">skip_UL</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
             <span class="n">msk</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;UL&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msk</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-            
-        <span class="k">if</span>   <span class="n">log_log</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+
+        <span class="n">check_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="o">==</span> <span class="s1">&#39;obs&#39;</span><span class="p">:</span>
+            <span class="k">if</span>   <span class="n">log_log</span>  <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+                <span class="n">_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+                <span class="n">_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+                <span class="n">_dy</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data_log&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+                <span class="n">_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+                <span class="n">_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+                <span class="n">_dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">frame</span> <span class="o">==</span> <span class="s1">&#39;src&#39;</span><span class="p">:</span>
+
+            <span class="n">dl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">get_DL_cm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+
+            <span class="n">_x</span> <span class="o">=</span> <span class="n">convert_nu_to_src</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="s1">&#39;obs&#39;</span><span class="p">)</span>
+            <span class="n">_dx</span> <span class="o">=</span> <span class="n">convert_nu_to_src</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="s1">&#39;obs&#39;</span><span class="p">)</span>
+            <span class="n">_y</span> <span class="o">=</span> <span class="n">convert_nuFnu_to_nuLnu_src</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="s1">&#39;obs&#39;</span><span class="p">,</span> <span class="n">dl</span><span class="p">)</span>
+            <span class="n">_dy</span> <span class="o">=</span> <span class="n">convert_nuFnu_to_nuLnu_src</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="s1">&#39;obs&#39;</span><span class="p">,</span> <span class="n">dl</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">log_log</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">_x</span><span class="p">,</span> <span class="n">_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_to_log</span><span class="p">(</span><span class="n">_x</span><span class="p">,</span> <span class="n">_dx</span><span class="p">)</span>
+                <span class="n">_y</span><span class="p">,</span> <span class="n">_dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_to_log</span><span class="p">(</span><span class="n">_y</span><span class="p">,</span> <span class="n">_dy</span><span class="p">)</span>
+
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;nuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dnuFnu_data&#39;</span><span class="p">][</span><span class="n">msk</span><span class="p">]</span></div>
-        
+            <span class="n">unexpetced_behaviour</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">_x</span> <span class="p">,</span><span class="n">_y</span><span class="p">,</span> <span class="n">_dx</span><span class="p">,</span> <span class="n">_dy</span></div>
     
 <div class="viewcode-block" id="ObsData.show_data_sets"><a class="viewcode-back" href="../../api/jetset.data_loader.ObsData.html#jetset.data_loader.ObsData.show_data_sets">[docs]</a>    <span class="k">def</span> <span class="nf">show_data_sets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">shown</span><span class="o">=</span><span class="p">[]</span>
@@ -1241,10 +1366,10 @@
 
 
 
-<div class="viewcode-block" id="ObsData.plot_sed"><a class="viewcode-back" href="../../api/jetset.data_loader.ObsData.html#jetset.data_loader.ObsData.plot_sed">[docs]</a>    <span class="k">def</span> <span class="nf">plot_sed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">plot_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,):</span>
+<div class="viewcode-block" id="ObsData.plot_sed"><a class="viewcode-back" href="../../api/jetset.data_loader.ObsData.html#jetset.data_loader.ObsData.plot_sed">[docs]</a>    <span class="k">def</span> <span class="nf">plot_sed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">plot_obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">frame</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">ms</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">mew</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">plot_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">plot_obj</span><span class="o">=</span><span class="n">PlotSED</span><span class="p">(</span><span class="n">sed_data</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-
+            <span class="n">plot_obj</span><span class="o">=</span><span class="n">PlotSED</span><span class="p">(</span><span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+        <span class="n">plot_obj</span><span class="o">.</span><span class="n">add_data_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span><span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span><span class="n">mew</span><span class="o">=</span><span class="n">mew</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">plot_obj</span></div>
 
     
@@ -1409,8 +1534,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, andrea tramacere.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
+        &copy; Copyright 2019, andrea tramacere.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

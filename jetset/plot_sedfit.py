@@ -27,8 +27,10 @@ from collections import namedtuple
 
 from .output import section_separator,WorkPlace
 
-import numpy as np
+from .utils import *
 
+import numpy as np
+import  os
 
 __all__=['PlotSED']
 
@@ -38,15 +40,21 @@ class  PlotSED (object):
     
     def __init__(self,sed_data=None,
                  model=None,
-                 x_min=6.0,
-                 x_max=3.0,
-                 y_min=-20.0,
-                 y_max=-9.0,
+                 #x_min=6.0,
+                 #x_max=3.0,
+                 #y_min=-20.0,
+                 #y_max=-9.0,
                  interactive=False,
                  plot_workplace=None,
-                 title='Plot'):
+                 title='Plot',
+                 frame='obs',
+                 figsize=None):
                  #autoscale=True):
-      
+
+        check_frame(frame)
+
+        self.frame=frame
+
         self.axis_kw=['x_min','x_max','y_min','y_max']
         self.interactive=interactive
 
@@ -86,8 +94,10 @@ class  PlotSED (object):
         
         #Build sedplot    
       
-            
-        self.fig=plt.figure(figsize=(10,6))
+        if figsize is None:
+            figsize=(10,8)
+
+        self.fig=plt.figure(figsize=figsize)
         
 
 
@@ -97,7 +107,7 @@ class  PlotSED (object):
         self.sedplot= self.fig.add_subplot(self.gs[0])
         self._add_res_plot()
         
-        self.set_plot_axis_labels(sed_data)
+        self.set_plot_axis_labels()
         
         #if autoscale==True:
         self.sedplot.set_autoscalex_on(True)
@@ -107,12 +117,20 @@ class  PlotSED (object):
 
 
 
-        self.sedplot.grid(True)   
+        self.sedplot.grid(True,alpha=0.5)
        
 
 
-        self.sedplot.set_xlim(5, 30)
-        self.sedplot.set_ylim(-20, -8)
+        self.sedplot.set_xlim(6, 30)
+        if frame == 'obs':
+           self.sedplot.set_ylim(-20, -8)
+
+        elif frame == 'src':
+            self.sedplot.set_ylim(38, 55)
+        else:
+            unexpetced_behaviour()
+
+
         self.resplot.set_ybound(-2,2)
         try:
             if hasattr(self.fig.canvas.manager,'toolbar'):
@@ -243,21 +261,19 @@ class  PlotSED (object):
             self.update_plot()
             self.update_legend()
 
-    def set_plot_axis_labels(self,sed_data=None):
-        
-        if sed_data is not None :
-            self.lx='log($ \\nu $)  (Hz)'
-                
-            if sed_data.restframe=='src':
-                self.ly='log($ \\nu L_{\\nu} $ )  (erg  s$^{-1}$)' 
+    def set_plot_axis_labels(self):
+        self.lx = 'log($ \\nu $)  (Hz)'
+
+        if self.frame == 'src':
+
+            self.ly = 'log($ \\nu L_{\\nu} $ )  (erg  s$^{-1}$)'
             
-            elif sed_data.restframe=='obs':
-                self.ly='log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)' 
-        
+        elif self.frame == 'obs':
+
+                self.ly = 'log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)'
         else:
-            self.lx='log($ \\nu $)  (Hz)'
-            self.ly='log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)'
-            
+            unexpetced_behaviour()
+
         self.sedplot.set_ylabel(self.ly)
         self.sedplot.set_xlabel(self.lx)
         
@@ -268,8 +284,8 @@ class  PlotSED (object):
     def add_res_zeroline(self):
 
 
-        y0=np.zeros(2)
-        x0=[0,30]
+        y0 = np.zeros(2)
+        x0 = [0,30]
 
         self.resplot.plot(x0,y0,'--',color='black')
         self.update_plot()
@@ -340,56 +356,64 @@ class  PlotSED (object):
     
     def update_plot(self):
         self.fig.canvas.draw()
+        self.fig.tight_layout()
 
     def update_legend(self,label=None):
-        
 
         _handles=[]
-        _labels=[]
+
         if self.lines_data_list!=[] and self.lines_data_list is not None:
             _handles.extend(self.lines_data_list)
+
 
         if self.lines_model_list!=[] and self.lines_model_list is not None:
             _handles.extend(self.lines_model_list)
 
 
-        if _handles==[]:
-            _handles=None
 
-        if _handles is None:
-            _labels=[]
-        else:
-            _labels=None
+        for h in _handles[:]:
+            #print('_label',h._label)
+            if h._label is  None:
+                _handles.remove(h)
+            elif h._label.startswith('_line'):
+                _handles.remove(h)
+            else:
+                 pass
 
-        #print('_handles', _handles, _labels)
-        self.sedplot.legend(handles=_handles,labels=_labels,loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=3, prop={'size':12})
+        #for h in _handles:
+        #    print('_label',h._label)
+
+        self.sedplot.legend(handles=_handles,loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1, prop={'size':10})
         self.update_plot()
 
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None):
-        try:
-            # print "a"
-            x, y = model.get_model_points(log_log=True)
-        except:
-            try:
-                # print "b"
-                x, y = model.SED.get_model_points(log_log=True)
-            except Exception as e:
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None):
 
-                print(model, "!!! Error has no SED instance or something wrong in get_model_points()")
-                print(e)
+        try:
+            #print( "a")
+            x, y = model.get_model_points(log_log=True, frame = self.frame)
+        except Exception as e:
+            #print("a",e)
+            try:
+
+                x, y = model.SED.get_model_points(log_log=True, frame = self.frame)
+
+            except Exception as e:
+                #print("b", e)
+                #print(model, "!!! Error has no SED instance or something wrong in get_model_points()")
+                #print(e)
                 return
 
-
-        if color is None:
-            color = self.counter
+        #print('->x,y',x,y)
+        #if color is None:
+        #    color = self.counter
 
         if line_style is None:
             line_style = '-'
 
-        if label is None:
+        if label is None and auto_label is True:
             if model.name is not None:
                 label = model.name
             else:
@@ -402,7 +426,14 @@ class  PlotSED (object):
         else:
             pass
 
-        line, = self.sedplot.plot(x, y, line_style, label=label)
+        if fit_range is not None:
+            msk1 = x < fit_range[1]
+            msk2 = x > fit_range[0]
+
+            x = x[msk1 * msk2]
+            y = y[msk1 * msk2]
+
+        line, = self.sedplot.plot(x, y, line_style, label=label,color=color,linewidth=1.0)
 
 
         self.lines_model_list.append(line)
@@ -412,12 +443,12 @@ class  PlotSED (object):
 
         self.counter += 1
 
-    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=None,mew=None):
+    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=4,mew=0.5,fit_range=None):
 
 
 
         try:
-            x,y,dx,dy,=sed_data.get_data_points(log_log=True)
+            x,y,dx,dy,=sed_data.get_data_points(log_log=True,frame=self.frame)
         except:
             print ("!!! ERROR failed to get data points from", sed_data)
             print
@@ -432,12 +463,12 @@ class  PlotSED (object):
 
         if dy is None:
             dy=np.zeros(len(sed_data.data['nu_data']))
-        
-        
+
+        UL = sed_data.data['UL']
           
         # set color
-        if color is None:
-            color=self.counter
+        #if color is None:
+        #    color=self.counter
 
                 
         if label is None:
@@ -446,8 +477,18 @@ class  PlotSED (object):
             else:
                 label='line %d'%self.counter
 
+        if fit_range is not None:
+            msk1 = x < fit_range[1]
+            msk2 = x > fit_range[0]
+
+            x = x[msk1 * msk2]
+            y = y[msk1 * msk2]
+            dx= dx[msk1 * msk2]
+            dy = dy[msk1 * msk2]
+            UL=UL[msk1 * msk2]
+
         line = self.sedplot.errorbar(x, y, xerr=dx, yerr=dy, fmt=fmt
-                                     , uplims=sed_data.data['UL'],label=label,ms=ms,mew=mew)
+                                     , uplims=UL,label=label,ms=ms,mew=mew,color=color)
 
 
         
@@ -465,8 +506,8 @@ class  PlotSED (object):
     def add_xy_plot(self,x,y,label=None,color=None,line_style=None,autoscale=False):
 
         #color setting  
-        if color is None:
-            color=self.counter
+        #if color is None:
+        #    color=self.counter
        
     
         
@@ -544,10 +585,18 @@ class  PlotSED (object):
         self.PLT.redraw()
 
 
-    def save(self,filename):
-        outfile=self.out_dir+'/'+filename
-        self.fig.savefig(outfile)
+    def save(self,filename=None):
 
+
+        if filename is None:
+            wd=self.out_dir
+            filename = 'jetset_fig.png'
+
+        else:
+            wd=''
+
+        outname = os.path.join(wd,filename)
+        self.fig.savefig(outname)
 
     def show(self):
         self.fig.show()
@@ -593,6 +642,25 @@ class  PlotSpecComp (object):
         self.ax.plot(np.log10(nu), np.log10(nuFnu))
         self.ax.set_xlabel(r'log($ \nu $)  (Hz)')
         self.ax.set_ylabel(r'log($ \nu F_{\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)')
+        self.ax.set_ylim(y_min, y_max)
+        self.update_plot()
+
+
+    def update_plot(self):
+        self.fig.canvas.draw()
+
+
+class  PlotSeedPhotons (object):
+
+    def __init__(self):
+        self.fig, self.ax = plt.subplots()
+
+
+    def plot(self,nu,nuFnu,y_min=None,y_max=None):
+
+        self.ax.plot(np.log10(nu), np.log10(nuFnu))
+        self.ax.set_xlabel(r'log($ \nu $)  (Hz)')
+        self.ax.set_ylabel(r'log(n )  (photons cm$^{-3}$  Hz$^{-1}$  ster$^{-1}$)')
         self.ax.set_ylim(y_min, y_max)
         self.update_plot()
 

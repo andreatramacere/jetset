@@ -8,6 +8,7 @@ __author__ = "Andrea Tramacere"
 
 import math as m
 import numpy as np
+from .utils import *
 
 __all__=['convert_nu_to_blob','convert_nu_to_src']
 
@@ -24,6 +25,8 @@ def convert_nu_to_blob(nu,in_frame,delta,z):
             E/nu in blob rest frame
 
     """
+    check_frame(frame=in_frame)
+
     if in_frame=="obs":
         z_c=z
         delta_c=delta
@@ -34,7 +37,7 @@ def convert_nu_to_blob(nu,in_frame,delta,z):
         delta_c=1
         z_c=0
     else:
-        raise RuntimeError("reference frame keyword not valid %s"%in_frame)
+        unexpetced_behaviour()
 
     return nu*(1+z_c)/delta_c
 
@@ -55,25 +58,27 @@ def convert_nu_to_src(nu,z,in_frame):
             E/nu in blob rest frame
 
     """
+    check_frame(in_frame)
     if in_frame=="obs":
         z_c=z
     elif in_frame=="src":
         z_c=0
     else:
-        raise RuntimeError("reference frame keyword not valid %s"%in_frame)
+         unexpetced_behaviour()
 
     return nu*(1+z_c)
 
 
 def convert_nuFnu_to_nuLnu_src(nuFnu,z,in_frame,dl):
+    check_frame(in_frame)
     if in_frame == "obs":
-        z_c = z
+       c=4.0*np.pi*dl**2
     elif in_frame == "src":
-        z_c = 0
+        c=1.0
     else:
-        raise RuntimeError("reference frame keyword not valid %s" % in_frame)
+        unexpetced_behaviour()
 
-    return 4.0*np.pi*dl**2
+    return c*nuFnu
 
 
 

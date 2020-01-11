@@ -11,6 +11,7 @@ McmcSampler
    .. autosummary::
 
       ~McmcSampler.corner_plot
+      ~McmcSampler.get_par
       ~McmcSampler.log_like
       ~McmcSampler.log_prior
       ~McmcSampler.log_prob
@@ -21,6 +22,7 @@ McmcSampler
    .. rubric:: Methods Documentation
 
    .. automethod:: corner_plot
+   .. automethod:: get_par
    .. automethod:: log_like
    .. automethod:: log_prior
    .. automethod:: log_prob

@@ -18,51 +18,53 @@
  *
  */
 
-    void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
-    unsigned long i, E_SIZE, E_N_SIZE, Gamma, T, TMP;
-    double Q_scalig_factor;
+    void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev, double luminosity_distance) {
 
-    double STEP_FILE,COUNT_FILE,OUT_FILE;
-    double *x, *N1;
-    double duration, deltat, t;
-    double g,t_D,t_DA,t_A,t_Sync_cool;
-    double *xm_p, *xm_m;
-    double *dxm_p, *dxm_m, *dxm;
-    double K, Cp, Cm, wm_p, wm_m;
-    double WP_pm, WM_mm, WP_mm, WM_pm;
-    double *A, *B, *C, *R, *Q, *T_inj;
-    int grid_bounded_to_gamma;
-    //double t_cool_Sync, B2;
-    //double t_acc_sist, t_acc_stoc;
-    //double c2;
-    char stringa[static_file_name_max_legth];
-    //double dato;
-    //int dato_i;
-    char name[static_file_name_max_legth], old[static_file_name_max_legth], name1[static_file_name_max_legth];
-    FILE *fp;
+        // if luminosity_distance is negative is evaluated internally
+        // otherwise the passed value is used
 
+        unsigned long i, E_SIZE, E_N_SIZE, Gamma, T, TMP;
+        double Q_scalig_factor;
 
-    //For temp_ev we need to have boundaris of gamma grid
-    //unbound from gmin and gmax
-    grid_bounded_to_gamma=pt_spec->grid_bounded_to_gamma;
-    pt_spec->grid_bounded_to_gamma=0;
-    build_Ne(pt_spec);
+        double STEP_FILE, COUNT_FILE, OUT_FILE;
+        double *x, *N1;
+        double duration, deltat, t;
+        double g, t_D, t_DA, t_A, t_Sync_cool;
+        double *xm_p, *xm_m;
+        double *dxm_p, *dxm_m, *dxm;
+        double K, Cp, Cm, wm_p, wm_m;
+        double WP_pm, WM_mm, WP_mm, WM_pm;
+        double *A, *B, *C, *R, *Q, *T_inj;
+        int grid_bounded_to_gamma;
+        //double t_cool_Sync, B2;
+        //double t_acc_sist, t_acc_stoc;
+        //double c2;
+        char stringa[static_file_name_max_legth];
+        //double dato;
+        //int dato_i;
+        char name[static_file_name_max_legth], old[static_file_name_max_legth], name1[static_file_name_max_legth];
+        FILE *fp;
 
-    //----SCELTA DELLA VARIABILE ADIMENSIONALE-------------------------
-    //    E=mec2*gamma, mec2 rest electron energy
-    //    beta=v/c
-    //    E_kin=E-mec2=mec2(gamma-1)
-    //    x=E_kin/mec2=(g-1)=beta*gamma
-    //------------------------------------------------------------------
-    
+        //For temp_ev we need to have boundaris of gamma grid
+        //unbound from gmin and gmax
+        grid_bounded_to_gamma = pt_spec->grid_bounded_to_gamma;
+        pt_spec->grid_bounded_to_gamma = 0;
+        build_Ne(pt_spec);
 
-    /*
+        //----SCELTA DELLA VARIABILE ADIMENSIONALE-------------------------
+        //    E=mec2*gamma, mec2 rest electron energy
+        //    beta=v/c
+        //    E_kin=E-mec2=mec2(gamma-1)
+        //    x=E_kin/mec2=(g-1)=beta*gamma
+        //------------------------------------------------------------------
+
+        /*
       fscanf(fp,"%s %d",stringa,&dato_i);
       SIZE=dato_i;
       printf("E_SIZE=%d\n",SIZE);
      */
 
-    /*
+        /*
       fscanf(fp,"%s %lf",stringa,&dato);
       pt_ev->gmin_inj=dato;
       printf("gmin_inj=%e\n",pt_ev->gmin_inj);
@@ -85,10 +87,9 @@
       printf("B=%e\n",pt_ev->B);
      */
 
-
-
-    if (pt_spec->do_Sync>0){
-    	pt_ev->do_Sync_cooling=1;
+        if (pt_spec->do_Sync > 0)
+        {
+            pt_ev->do_Sync_cooling = 1;
     }
 
     if (pt_ev->do_Compton_cooling>0);{
@@ -362,12 +363,12 @@
 
 
     //-----Injection and Escape Terms-------
-    Init(pt_spec);
+    Init(pt_spec, luminosity_distance);
     EvalU_e(pt_spec);
     Q_scalig_factor = pt_ev->L_inj *deltat / (pt_spec->U_e * pt_spec->Vol_sphere);
     printf("old N_e=%e \n",pt_spec->N);
     pt_spec->N= pt_spec->N*Q_scalig_factor;
-    Init(pt_spec);
+    Init(pt_spec, luminosity_distance);
     printf("new N_e=%e,  multiplied by the Q_scalig_factor=%e, to match L_inj \n",pt_spec->N,Q_scalig_factor);
     for (TMP = 0; TMP < E_SIZE; TMP++) {
         //The injection term is the N_electron

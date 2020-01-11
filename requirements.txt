@@ -1,7 +1,7 @@
 setuptools
 scipy
 numpy
-astropy
+astropy>=4.0
 matplotlib
 swig
 future
@@ -9,4 +9,5 @@ iminuit
 corner
 six
 emcee
-builtins
+pyyaml
+pyqt

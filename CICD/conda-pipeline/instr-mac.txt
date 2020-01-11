@@ -1,0 +1,42 @@
+http://www.wgilpin.com/howto/howto_conda.html
+https://docs.conda.io/projects/conda-build/en/latest/user-guide/tutorials/build-pkgs.html
+https://docs.anaconda.com/anaconda-cloud/user-guide/getting-started/#cloud-getting-started-build-upload
+http://mlg.eng.cam.ac.uk/hoffmanm/blog/2016-02-25-conda-build/
+
+cd /Users/orion/astro/Programmi/Projects/Active/JetSeT/JetSeT_CICD/MAC_OS/CONDA
+
+export USE_PIP='FALSE'
+
+#building
+cd integration
+git clone https://github.com/andreatramacere/jetset.git
+cd jetset
+git checkout develop
+git pull origin develop
+python setup.py clean
+CICD/conda-pipeline/
+conda create --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython
+
+conda activate jetset-cidc
+set the proper branch/tag in: mata.yaml-> git_rev:
+conda build purge
+conda-build .
+
+#testing
+cd ../../test/
+conda install --file ../requirements.txt
+conda install --offline /path/produced/by/conda-build
+pytest test.py
+
+
+#deploy
+anaconda login
+anaconda upload /path/produced/by/conda-build
+
+#test after deploy
+conda uninstall jetset
+conda install -c andreatramacere jetset
+pytest test.py
+
+conda deactivate
+conda env remove --name jetset-cidc

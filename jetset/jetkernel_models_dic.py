@@ -35,8 +35,20 @@ nuFnu_obs_dic['DT']=['nuFnu_DT_grid','nu_grid']
 nuFnu_obs_dic['EC_Disk']=['nuFnu_EC_Disk_grid','nu_grid']
 nuFnu_obs_dic['Disk']=['nuFnu_Disk_grid','nu_grid']
 nuFnu_obs_dic['EC_CMB']=['nuFnu_EC_CMB_grid','nu_grid']
-nuFnu_obs_dic['EC_CMB_stat']=['nuFnu_EC_CMB_stat_grid','nu_grid']
+#nuFnu_obs_dic['EC_CMB_stat']=['nuFnu_EC_CMB_stat_grid','nu_grid']
 #nuFnu_obs_dic['CMB']=['nuF_nu_EC_CMB_obs','nu_grid']
+
+
+#seed-photon fields components
+n_seed_dic={'DT':['n_DT','nu_DT']}
+n_seed_dic['EC_DT']=['n_DT','nu_DT']
+
+n_seed_dic['EC_Disk']=['n_Disk','nu_Disk']
+n_seed_dic['Disk']=['n_Disk','nu_Disk']
+n_seed_dic['EC_BLR']=['n_BLR','nu_BLR']
+n_seed_dic['EC_CMB']=['n_CMB','nu_CMB']
+n_seed_dic['EC_S']=['n_CMB','nu_CMB']
+n_seed_dic['SSC']=['n_Sync','nu_Sync']
 
 
 #nuLnu_dic={'SUM':['','nu_']}
@@ -94,3 +106,4 @@ for m,d in zip(available_N_distr,available_N_distr_descr):
     N_distr_descr[m]=d
 
 
+allowed_disk_type=['BB','MultiBB','Mono']

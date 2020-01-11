@@ -26,10 +26,20 @@ from .base_model import  Model
 
 from .plot_sedfit import  PlotSED
 
+from .utils import  clean_var_name
+
+from .jet_model import Jet
+
+import copy
+
+import  pickle
 
 __all__=['FitModel']
 
+class ModelComoponentContainer(object):
 
+    def __init__(self):
+        pass
 
 class FitModel(Model):
     
@@ -62,7 +72,7 @@ class FitModel(Model):
   
     """
     
-    def __init__(self,elec_distr=None,jet=None,name='no-name',out_dir=None,flag=None,template=None,loglog_poly=None,analytical=None,nu_size=100,  **keywords):
+    def __init__(self,elec_distr=None,jet=None,name='no-name',out_dir=None,flag=None,template=None,loglog_poly=None,analytical=None,nu_size=100,cosmo=None,  **keywords):
  
         """
         Constructor
@@ -83,7 +93,8 @@ class FitModel(Model):
         
           
        
-        
+
+
         self.sed_data=None
         
         self.nu_min_fit=1E6
@@ -102,19 +113,26 @@ class FitModel(Model):
 
         self.flux_plot_lim=1E-30
 
-        self.components=[]    
-        
+        self.components_list=[]
+
+        self.components=ModelComoponentContainer()
+
         self.parameters=ModelParameterArray()
 
         if elec_distr is not None:
-            jet=Jet(name=flag, electron_distribution=elec_distr, jet_workplace=None)
+            jet=Jet(cosmo=cosmo,name=flag, electron_distribution=elec_distr, jet_workplace=None)
             
             self.add_component(jet)
         
         if jet is not None:
             self.add_component(jet)
-            
-        
+
+        if jet is not None:
+            self.cosmo = jet.cosmo
+        else:
+            self.cosmo = cosmo
+
+
         if template is not None:
             self.add_component(template)
            
@@ -140,24 +158,28 @@ class FitModel(Model):
         line_style='--'
 
 
-        for mc in self.components:
+        for mc in self.components_list:
             comp_label = mc.name
-            #print ('comp_label',comp_label)
-            plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim)
+            #print ('comp_label',comp_label,mc.SED)
+            try:
+                plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim)
+            except Exception as e:
+                #print('name',e)
+                pass
 
             if hasattr(mc,'spectral_components_list'):
                 for c in mc.spectral_components_list:
 
                     comp_label = c.name
                     if comp_label!='Sum':
-                        #print('comp_label', comp_label)
+                        #print('comp comp_label', comp_label,c.SED)
                         plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label, flim=self.flux_plot_lim)
 
         line_style = '-'
         #print('comp_label', self.name)
-        plot_obj.add_model_plot(self.SED, line_style=line_style, label=self.name, flim=self.flux_plot_lim)
+        plot_obj.add_model_plot(self.SED, line_style=line_style, label=self.name, flim=self.flux_plot_lim,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]))
 
-        plot_obj.add_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min,self.nu_max]))
+        plot_obj.add_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]))
         return plot_obj
 
 
@@ -173,7 +195,7 @@ class FitModel(Model):
         if nu_max is not None:
             self.nu_max=nu_max
         
-        for model_comp in self.components:
+        for model_comp in self.components_list:
         
             if nu_size is not None:
                 model_comp.nu_size=nu_size
@@ -186,7 +208,7 @@ class FitModel(Model):
 
     def add_component(self, moldel_comp):
         
-        self.components.append(moldel_comp)
+        self.components_list.append(moldel_comp)
         
         for par in moldel_comp.parameters.par_array:
             
@@ -197,8 +219,9 @@ class FitModel(Model):
             #    par.set(fit_range=fit_range)
                 
             self.parameters.add_par(par)
-        
-        
+
+        #print('-->', self.components, moldel_comp.name, moldel_comp)
+        setattr(self.components,  clean_var_name(moldel_comp.name), moldel_comp)
     
     def show_pars(self):
         """
@@ -209,7 +232,7 @@ class FitModel(Model):
         self.parameters.show_pars()
 
     def show_model(self):
-        for c in self.components:
+        for c in self.components_list:
             c.show_model()
 
     def freeze(self,par_name):
@@ -335,7 +358,7 @@ class FitModel(Model):
         
         
         
-        for model_comp in self.components:
+        for model_comp in self.components_list:
             
             #print "model",model_comp.name
             
@@ -349,8 +372,8 @@ class FitModel(Model):
         if fill_SED==True:
  
             self.SED.fill(nu=lin_nu,nuFnu=model)
-            
-
+            #TODO ADD cosmo properly to all components
+            #self.SED.fill_nuLnu(z=self.jet_obj.get_par_by_type('redshift').val, dl=self.jet_obj.get_DL_cm())
             
         if get_model==True:
             
@@ -366,4 +389,61 @@ class FitModel(Model):
 
 
 
+    @classmethod
+    def _build_serializable(cls):
+        return cls()
 
+    def save_model(self,file_name):
+        c=self._build_serializable()
+
+        c._serialized_model_list=[]
+        for _m in self.components_list:
+            if isinstance(_m,Jet):
+                c._serialized_model_list.append([_m._serialize_model(),_m.model_type])
+            else:
+                c._serialized_model_list.append([_m,_m.model_type])
+
+
+        _keep_member_list = ['model_type',
+                             'name',
+                             # 'parameters' removed  form _keep_member_list because
+                             # parmeter serilization is handlde separtely to get rid of the _blob member
+                             # that is not serializable
+                             # do not add 'parameters' !!!
+                             'SED',
+                             '_scale',
+                             'nu_size',
+                             'nu_min',
+                             'nu_max',
+                             'sed_data',
+                             'nu_min_fit',
+                             'nu_max_fit',
+                             'fitname',
+                             'flux_plot_lim',
+                             'cosmo']
+
+        for km in _keep_member_list:
+            setattr(c,km,getattr(self,km))
+
+
+        pickle.dump(c, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+
+        #self.components = _components
+        #self.components_list = _components_list
+
+    @classmethod
+    def load_model(cls, file_name):
+        #c=cls()
+        c = pickle.load(open(file_name, "rb"))
+        for _m in c._serialized_model_list:
+
+            print(_m)
+            if _m[1]=='jet':
+                j = Jet()
+                j._decode_model(_m[0])
+
+                c.add_component(j)
+            else:
+                c.add_component(_m[0])
+        c.eval()
+        return c

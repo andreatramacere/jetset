@@ -91,10 +91,8 @@ double Sync_self_abs_int(struct spettro *pt,unsigned long  ID){
         y1=pt->Ne[ID-1]/(x1*x1);
         y2=pt->Ne[ID]/(x2*x2);
     }
-    
     delta=x2-x1;
     a=(y2-y1)/delta;
-
     g=pt->griglia_gamma_Ne_log[ID];
     if (pt->Sync_kernel==0){
     	y=(pt->nu/(g*g))*pt->C2_Sync_K53;
@@ -104,7 +102,10 @@ double Sync_self_abs_int(struct spettro *pt,unsigned long  ID){
     	y=pt->nu/(g*g)*pt->C2_Sync_K_AVE;
     	a*=(g*g)*F_K_ave(pt, y);
     }
-
+    //This is fixing numerical instabilities 
+    if( a>0.0){
+        a=0.0;
+    }
     return a;   
 }
 //=========================================================================================
@@ -215,9 +216,10 @@ double integrale_Sync(double (*pf) (struct spettro *, unsigned long  ID), struct
     integr=0;
     x1=pt->griglia_gamma_Ne_log[0];
     y1=pf(pt,0);
+    //printf("x1=%e, y1=%e\n", x1,y1);
 
-
-    for(ID=1;ID<pt->gamma_grid_size-1;ID++){
+    for (ID = 1; ID < pt->gamma_grid_size - 1; ID++)
+    {
 
         y2=pf(pt,ID);
         ID++;
@@ -232,7 +234,7 @@ double integrale_Sync(double (*pf) (struct spettro *, unsigned long  ID), struct
         integr+=(y1+4.0*y2+y3)*delta;
         y1=y3;
         x1=x3;
-        
+        //printf("ID=%d, delta=%e, integr=%e\n",ID,delta,integr);
     }
     if(pt->verbose>2){
         printf("Synch Integr=%e\n", integr);

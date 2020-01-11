@@ -110,14 +110,22 @@ class FitResults(object):
         out.append("Fit report")
         out.append("")
         out.append("Model: %s"%self.name)
-        pars_rep=self.parameters.show_pars(getstring=True)
-        for string in pars_rep:
-            out.append(string)
-        
+        #pars_rep=self.parameters.show_pars(getstring=True)
+        #for string in pars_rep:
+        #    out.append(string)
+        self.parameters._build_par_table()
+        self.model_table=self.parameters._par_table
+        self.parameters._build_best_fit_par_table()
+        self.bestfit_table = self.parameters._best_fit_par_table
+        for _l in self.model_table.pformat_all():
+            out.append(_l)
         out.append("")
         out.append("converged=%s"%self.success)
         out.append("calls=%d"%self.calls)
-        out.append("mesg=%s"%self.mesg)
+        try:
+            out.append("mesg=",self.mesg)
+        except:
+            out.append(self.mesg)
         out.append("dof=%d"%self.dof)
         out.append("chisq=%f, chisq/red=%f null hypothesis sig=%f"%(self.chisq,self.chisq_red,self.null_hyp_sig))
         if self.dof_no_UL is not None:
@@ -129,10 +137,11 @@ class FitResults(object):
             out.append("")
         out.append("")
         out.append("best fit pars")
-        
-        pars_rep=self.parameters.show_best_fit_pars(getstring=True)
-        for string in pars_rep:
-            out.append(string)
+        for _l in self.bestfit_table.pformat_all():
+            out.append(_l)
+        #pars_rep=self.parameters.show_best_fit_pars(getstring=True)
+        #for string in pars_rep:
+        #    out.append(string)
             
 
         out.append("**************************************************************************************************")    
@@ -148,19 +157,26 @@ class FitResults(object):
     def show_report(self):
         self.fit_report=self.get_report()
         for text in self.fit_report:
-        
-            print (text)
+            try:
+                print (text)
+            except Exception as e:
+                raise(RuntimeWarning,'problem in formatting text for report',e)
+
     
-    def save_report(self,wd=None,name=None):
-        if wd is None:
-            wd=self.wd
-        
+    def save_report(self,name=None):
+
         if name is None:
-            name='best_fit_report_%s'%self.name+'.txt'
-        
-            
-        outname='%s/%s'%(wd,name)
-         
+            wd=self.wd
+            name = 'best_fit_report_%s' % self.name + '.txt'
+
+        else:
+            wd=''
+
+
+
+
+        outname = os.path.join(wd,name)
+
         outfile=open(outname,'w')
     
         
@@ -205,10 +221,10 @@ class ModelMinimizer(object):
 
 
     def _prepare_fit(self,fit_Model,sed_data,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,use_facke_err=False,use_UL=False):
-
+        #print('--> DEBUG WorkPlace.flag',WorkPlace.flag,fit_workplace)
         if fitname is None:
-            fitname = fit_Model.name + '_' + WorkPlace.flag
-
+            fitname = fit_Model.name
+            #print('--> DEBUG ')
 
         if fit_workplace is None:
             fit_workplace = WorkPlace()
@@ -218,7 +234,7 @@ class ModelMinimizer(object):
 
         makedir(out_dir)
 
-        for model in fit_Model.components:
+        for model in fit_Model.components_list:
             if model.model_type == 'jet':
                 model.set_path(out_dir)
 
@@ -260,6 +276,7 @@ class ModelMinimizer(object):
             print("filtering data in fit range = [%e,%e]" % (nu_fit_start, nu_fit_stop))
             print("data length", nu_fit.size)
 
+
         # print nu_fit,len(nu_fit)
 
         # set starting value of parameters
@@ -287,7 +304,7 @@ class ModelMinimizer(object):
             print("initial pars: ")
 
             fit_Model.parameters.show_pars()
-
+            print("----- ")
 
         self.out_dir=out_dir
         self.pinit=pinit
@@ -299,6 +316,10 @@ class ModelMinimizer(object):
         self.fit_Model=fit_Model
         self.loglog=loglog
         self.UL=UL
+        self.fit_Model.nu_min_fit = nu_fit_start
+        self.fit_Model.nu_max_fit = nu_fit_stop
+        #print('-->nu_fit_start A %e' % nu_fit_start)
+        #print('-->nu_fit_start B %e' % self.fit_Model.nu_min_fit)
 
     def fit(self,fit_Model,
             sed_data,
@@ -315,6 +336,7 @@ class ModelMinimizer(object):
             skip_minimizer=False):
 
         self.silent=silent
+        #print('-->nu_fit_start', nu_fit_start)
 
         self._prepare_fit( fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=fitname, fit_workplace=fit_workplace,
                      loglog=loglog, silent=silent, get_conf_int=get_conf_int, use_facke_err=use_facke_err,use_UL=use_UL)
@@ -325,6 +347,7 @@ class ModelMinimizer(object):
         else:
             pass
 
+        #print('-->nu_fit_start', nu_fit_start)
 
         return self.get_fit_results(fit_Model,nu_fit_start,nu_fit_stop,fitname,loglog=loglog,silent=silent)
 
@@ -348,6 +371,10 @@ class ModelMinimizer(object):
 
         if silent == False:
             best_fit.show_report()
+
+        #_nu1=fit_Model.nu_min
+        #_nu2=fit_Model.nu_max
+        #print('-->nu_fit_start', nu_fit_start)
 
         fit_Model.set_nu_grid(nu_min=nu_fit_start, nu_max=nu_fit_stop)
         fit_Model.eval(fill_SED=True, loglog=loglog, phys_output=True)
@@ -375,7 +402,10 @@ class ModelMinimizer(object):
         if silent == False:
             print(section_separator)
 
+        #fit_Model.set_nu_grid(nu_min=_nu1, nu_max=_nu2)
         fit_Model.eval(fill_SED=True)
+        #print('-->nu_fit_start bf A%e'%nu_fit_start)
+        #print('-->nu_fit_start bf B%e'%self.fit_Model.nu_min_fit)
         return best_fit
 
     def reset_to_best_fit(self):
@@ -612,12 +642,12 @@ class MinutiMinimizer(Minimizer):
     def _fit(self,max_ev=None):
         bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model.fit_par_free]
         self._set_minuit_func(self.model.pinit, bounds)
+        #print('=>,')
         if max_ev is None or max_ev==0:
             max_ev =10000
 
-        fmin, param=self.minuit_fun.migrad(ncall=max_ev)
+        self.mesg=self.minuit_fun.migrad(ncall=max_ev)
         self.pout=[self.minuit_fun.values[k] for k in self.minuit_fun.values.keys()]
-        self.mesg = ''
 
     def _set_fit_errors(self):
         self.errors = [self.minuit_fun.errors[k] for k in self.minuit_fun.errors.keys()]
@@ -627,7 +657,7 @@ class MinutiMinimizer(Minimizer):
 
 
     def _set_minuit_func(self, p_init, bounds,p_error=None):
-
+        #print('=>Hi')
         if p_error==None:
             p_error=[0.1]*len(p_init)
 
@@ -656,9 +686,7 @@ class MinutiMinimizer(Minimizer):
             fcn=self.chisq_func,
             forced_parameters=p_names,
             pedantic=False,
-            frontend=None,
             errordef=1,
-
             **kwdarg)
 
     def chisq_func(self, *p):
@@ -861,6 +889,7 @@ class MinutiMinimizer(Minimizer):
 def fit_SED(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_workplace=None, loglog=False, silent=False,
             get_conf_int=False, max_ev=0, use_facke_err=False, minimizer='lsb', use_UL=False):
     mm = ModelMinimizer(minimizer)
+    #print('-->nu_fit_start',nu_fit_start)
     return mm,mm.fit(fit_Model,
                   sed_data,
                   nu_fit_start,

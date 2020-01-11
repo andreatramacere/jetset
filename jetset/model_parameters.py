@@ -4,16 +4,18 @@ from builtins import (bytes, str, open, super, range,
                       zip, round, input, int, pow, object, map, zip)
 
 import  numpy as np
-
-
+from astropy.table import Table
+from astropy import  units as u
+from .utils import clean_var_name
 
 __all__=['ModelParameter','ModelParameterArray','Value']
 
 class Value(object):
 
-    def __init__(self,val,islog=False):
-        self._val=val
-        self._islog=islog
+    def __init__(self,val,units,islog=False):
+        self.val=val
+        self.islog=islog
+        self.units=units
 
     def __repr__(self):
         return '%s'%self._val
@@ -21,6 +23,10 @@ class Value(object):
     @property
     def islog(self):
         return  self._islog
+
+    @islog.setter
+    def islog(self,val):
+        self._islog=val
 
     @property
     def val(self):
@@ -48,6 +54,18 @@ class Value(object):
         else:
             return np.log10(self._val)
 
+    @property
+    def units(self):
+        return self._units
+
+    @units.setter
+    def units(self, units):
+        try:
+            self._units = u.Unit(units)
+            #print(units,type(self._units))
+        except Exception as e:
+            #print('*',units)
+            self._units = units + '*'
 
 
 class ModelParameter(object):
@@ -100,7 +118,7 @@ class ModelParameter(object):
         self.allowed_keywords['units']='No'
         self.allowed_keywords['val_min']=None
         self.allowed_keywords['val_max']=None
-        self.allowed_keywords['val_start_fit']=None
+        self.allowed_keywords['val_start']=None
         self.allowed_keywords['val_last_call']=None
         self.allowed_keywords['fit_range_min']=None
         self.allowed_keywords['fit_range_max']=None
@@ -109,26 +127,32 @@ class ModelParameter(object):
         self.allowed_keywords['best_fit_err']=None
         self.allowed_keywords['frozen']=False
         self.allowed_keywords['log']=False
-        
+        self.allowed_keywords['allowed_values'] = None
       
         #self._skip_kw=['val']
         #defualt
 
         _v = None
         _l = False
-
+        _units= None
+        
         if 'val' in keywords.keys():
             _v = keywords['val']
 
         if 'log' in keywords.keys():
             _l = keywords['log']
+        
+        if 'units' in keywords.keys():
+           _units= keywords['units']
 
-        self._val = Value(val=_v, islog=_l)
+        self._val = Value(val=_v, islog=_l,units=_units)
 
         for kw in self.allowed_keywords.keys():
             if kw == 'val':
                 pass
             elif kw == 'log':
+                pass
+            elif kw == 'units':
                 pass
             else:
                 setattr(self,kw,self.allowed_keywords[kw])
@@ -158,6 +182,15 @@ class ModelParameter(object):
     @val.setter
     def val(self,val):
         self.set(val=val)
+
+    @property
+    def units(self):
+        return self._val.units
+
+    @units.setter
+    def units(self,val):
+        self._val.units=val
+
 
     @property
     def fit_range(self):
@@ -198,12 +231,22 @@ class ModelParameter(object):
             
             if kw in  self.allowed_keywords.keys() :
                 if kw == 'val':
+                    #print('->',self.allowed_values )
+                    if self.allowed_values is not None:
+
+                        if keywords[kw]  not in self.allowed_values:
+                            raise RuntimeError('parameter  %s' %(self.name), 'the value', keywords[kw] , 'is not in the allowed list',self.allowed_values)
+
                     self._val.val = keywords[kw]
+
+                elif kw == 'log':
+                    self._val.islog = keywords[kw]
+
+                elif kw== 'units':
+
+                    self._val.units = keywords[kw]
                 else:
-                    if kw == 'log':
-                        pass
-                    else:
-                        setattr(self,kw,keywords[kw])
+                    setattr(self,kw,keywords[kw])
 
                     
             else:
@@ -331,11 +374,11 @@ class ModelParameter(object):
             val=str("%+e"%self.val)
         
         if nofields==False:
-            descr= "name = %-16s  type = %-20s  units = %-16s  val = %s  phys-bounds = [%-13s,%-13s] islog = %s   "%(self.name, self.par_type ,
-                                                                                   self.units, val, val_min, val_max,self.islog)
+            descr= "name = %-16s  type = %-20s  units = %-16s  val = %s  phys-bounds = [%-13s,%-13s] islog = %s  froze= %s "%(self.name, self.par_type ,
+                                                                                   self.units, val, val_min, val_max,self.islog,self.frozen)
         else:
-            descr= " %-16s | %-20s | %-16s | %s | [%-13s,%-13s] | %s "%(self.name, self.par_type ,
-                                                                                   self.units, val, val_min, val_max,self.islog)
+            descr= " %-16s | %-20s | %-16s | %s | [%-13s,%-13s] | %s | %s"%(self.name, self.par_type ,
+                                                                                   self.units, val, val_min, val_max,self.islog,self.frozen)
             
         return descr
     
@@ -403,7 +446,13 @@ class ModelParameterArray(object):
     par_array :  list 
         list of :class:`ModelParameter` objects
     """   
-    
+
+    def __repr__(self):
+        return str(self.show_pars())
+
+    #def __str__(self):
+    #    return str(self.show_pars())
+
     def __init__(self):
             
         """
@@ -431,8 +480,103 @@ class ModelParameterArray(object):
 
         self.par_array.append(par)
 
-        setattr(self,par.name, par)
+        setattr(self,clean_var_name(par.name), par)
         self.properties[par.name]=par
+
+
+    def _build_par_table(self,names_list=None):
+        _name=[]
+        _type=[]
+        _unit=[]
+        _val=[]
+        _bound_min=[]
+        _bound_max=[]
+        _islog=[]
+        _frozen=[]
+        _fields=[_name,_type,_unit,_val,_bound_min,_bound_max,_islog,_frozen]
+        _names=['name','par type','units','val','phys. bound. min','phys. bound. max','log','frozen']
+        for par in self.par_array:
+
+            append=False
+
+            if names_list is not None:
+                if par.name in names_list:
+                    append=True
+            else:
+                append = True
+
+            if append:
+                _name.append(par.name)
+                _type.append(par.par_type)
+                _unit.append(par.units)
+                _val.append(par.val)
+                _bound_min.append(par.val_min)
+                _bound_max.append(par.val_max)
+                _islog.append(par.islog)
+                _frozen.append(par.frozen)
+        #print(len(_fields),len(_names))
+
+        self._par_table= Table(_fields,names=_names)
+
+    
+    def _build_best_fit_par_table(self,names_list=None):
+        _name=[]
+        _best_fit_val=[]
+        _best_fit_err_p=[]
+        _best_fit_err_m=[]
+        _val_start=[]
+        _fit_range_min=[]
+        _fit_range_max=[]
+        _frozen=[]
+        _fields=[_name,_best_fit_val,_best_fit_err_p,_best_fit_err_m,_val_start,_fit_range_min,_fit_range_max,_frozen]
+        _names=['name','bestfit val','err +','err -','start val','fit range min','fit range max','frozen']
+
+        for par in self.par_array:
+
+            append=False
+
+            if names_list is not None:
+                if par.name in names_list:
+                    append=True
+            else:
+                append = True
+
+            if append:
+                _name.append(par.name)
+
+                if par.frozen == True:
+                    best_fit_val = None
+                    best_fit_err_p = None
+                    best_fit_err_m = None
+                else:
+                    best_fit_val=par.best_fit_val
+                    if hasattr(par, 'err_p') and hasattr(par, 'err_m'):
+                        best_fit_err_m =  par.err_m
+                        best_fit_err_p =  par.err_p
+                    else:
+                        best_fit_err_m = None
+                        if par.best_fit_err is None:
+                            best_fit_err_p = None
+                        else:
+                            best_fit_err_p =  par.best_fit_err
+
+                _val_start.append(par.val_start)
+                _best_fit_val.append(best_fit_val)
+                _best_fit_err_p.append(best_fit_err_p)
+                _best_fit_err_m.append(best_fit_err_m)
+
+                _fit_range_min.append(par.fit_range_min)
+                _fit_range_max.append(par.fit_range_max)
+
+                _frozen.append(par.frozen)
+
+        #print(len(_fields),len(_names))
+        #for ID,n in enumerate(_names):
+        #    print(ID,_fields[ID],n)
+
+        self._best_fit_par_table= Table(_fields,names=_names)
+    
+
 
     def __setattr__(self, name, value):
         if "properties" in self.__dict__ and name in self.properties:
@@ -472,36 +616,40 @@ class ModelParameterArray(object):
             return None
                 
         
-    
-    
-    def show_pars(self,getstring=False,names_list=None):
+    @property
+    def par_table(self):
+        self._build_par_table()
+        return self._par_table
+
+    def show_pars(self,getstring=False,names_list=None,sort_key=None):
         """
         shows the information for all the items in the :attr:`~ModelParameterArray.par_array`
         
         """
         
-        text=[]
-        text.append( "-------------------------------------------------------------------------------------------------------------------")
-        text.append( "model parameters:")
-        text.append( " Name             | Type                 | Units            | value         | phys. boundaries              | log")
-        text.append( "-------------------------------------------------------------------------------------------------------------------")
+        #text=[]
+        #text.append( "-------------------------------------------------------------------------------------------------------------------------")
+        #text.append( "model parameters:")
+        #text.append( " Name             | Type                 | Units            | value         | phys. boundaries              | log | frozen")
+        #text.append( "-------------------------------------------------------------------------------------------------------------------------")
        
-        for par in self.par_array:
-            if names_list is not None:
-                if par.name in names_list:
-                    text.append( par.get_description(nofields=True))
-            else:
-                text.append(par.get_description(nofields=True))
-        
-        text.append( "-------------------------------------------------------------------------------------------------------------------")
-        
-        
+        #for par in self.par_array:
+        #    if names_list is not None:
+        #        if par.name in names_list:
+        #            text.append( par.get_description(nofields=True))
+        #    else:
+        #        text.append(par.get_description(nofields=True))
+        #
+        #text.append( "-------------------------------------------------------------------------------------------------------------------------")
+
+        self._build_par_table(names_list)
+        if sort_key is not None:
+            self.par_table.sort(sort_key)
 
         if getstring==True:
-            return text
+            return self.par_table.pformat_all()
         else:
-            for line in text:
-                print (line)
+            self.par_table.pprint_all()
         
     
     
@@ -510,26 +658,30 @@ class ModelParameterArray(object):
         shows the best-fit information for all the items in the :py:attr:`par_array`
         """
         
-        text=[]
-        text.append("-------------------------------------------------------------------------------------------------------------------")
-        text.append("best-fit parameters:")
-        text.append("  Name            | best-fit value| best-fit err +| best-fit err -|start value   | fit boundaries")
-        text.append("-------------------------------------------------------------------------------------------------------------------")
+        #text=[]
+        #text.append("-------------------------------------------------------------------------------------------------------------------")
+        #text.append("best-fit parameters:")
+        #text.append("  Name            | best-fit value| best-fit err +| best-fit err -|start value   | fit boundaries")
+        #text.append("-------------------------------------------------------------------------------------------------------------------")
 
        
-        for par in self.par_array:
-            text.append( par.get_bestfit_description(nofields=True))
+        #for par in self.par_array:
+        #    text.append( par.get_bestfit_description(nofields=True))
 
-        text.append("-------------------------------------------------------------------------------------------------------------------")
+        #text.append("-------------------------------------------------------------------------------------------------------------------")
         
 
-        if getstring==True:
-            return text
+        #if getstring==True:
+        #    return text
+        #else:
+        #    for line in text:
+        #        print (line)
+
+        self._build_best_fit_par_table()
+        if getstring == True:
+            return self._best_fit_par_table.pformat_all()
         else:
-            for line in text:
-                print (line)
-        
-        
+            self._best_fit_par_table.pprint_all()
     
     def set(self,par_name,*args, **keywords):
         
@@ -585,8 +737,10 @@ class ModelParameterArray(object):
         
         if keywords!={}:
         
-            
-            par.set( **keywords)
+            if par is None:
+                raise RuntimeWarning('parameter %s is not present in the model'%par_name)
+            else:
+                par.set( **keywords)
         
         
         
@@ -634,4 +788,22 @@ class ModelParameterArray(object):
         for pi in range(len(self.par_array)):
             self.par_array[pi].free()
         
-        
+
+
+    def _serialize_pars(self):
+        _par_keys=['val','val_min','val_max','val_start','val_last_call','fit_range_min','fit_range_max','best_fit_val','best_fit_err','frozen','allowed_values']
+        _par_dict = {}
+        for par in self.par_array:
+            _val_dict={}
+
+            for k in _par_keys:
+                if hasattr(par,k):
+                    _val_dict[k]=getattr(par,k)
+
+            _par_dict[par.name] = _val_dict
+
+        return _par_dict
+
+    def _decode_pars(self,_par_dict):
+        for p_name in _par_dict.keys():
+            self.set(p_name,**_par_dict[p_name])

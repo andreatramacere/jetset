@@ -64,6 +64,9 @@ class McmcSampler(object):
     def corner_plot(self, ):
         return self.sampler_out.corner_plot()
 
+    def get_par(self, p=None):
+        return self.sampler_out.get_par(p)
+
     def seve_run(self,name):
         self.sampler_out.save(name)
 
@@ -166,26 +169,31 @@ class SamplerOutput(object):
             f = corner.corner(self.samples, labels=self.labels)
         return f
 
-    def plot_par(self,p=None,nbins=20,log_plot=False):
-        if type(p)==int:
+    def get_par(self,p):
+        if type(p) == int:
             pass
 
         else:
             try:
-                p=self.labels.index(p)
+                p = self.labels.index(p)
             except:
                 raise RuntimeError('paramter p', p, 'not found')
 
-        if p>len(self.labels):
+        if p > len(self.labels):
             raise RuntimeError('label id larger then labels size')
 
+        return self.samples[:, p].flatten(),p
 
-        _d = self.samples[:,p].flatten()
-        n = self.labels[p]
+    def plot_par(self,p,nbins=20,log_plot=False):
+
+
+        _d,idx = self.get_par(p)
+
+        n = self.labels[idx]
 
         if self.labels_units is not None:
-            if self.labels_units[p] is not None:
-                n += ' (%s)' % self.labels_units[p]
+            if self.labels_units[idx] is not None:
+                n += ' (%s)' % self.labels_units[idx]
 
         f = plt.figure()
         ax=f.add_subplot(111)

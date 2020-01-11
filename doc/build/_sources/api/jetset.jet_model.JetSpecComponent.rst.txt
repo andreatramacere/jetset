@@ -16,9 +16,13 @@ JetSpecComponent
 
    .. autosummary::
 
+      ~JetSpecComponent.fill_SED
+      ~JetSpecComponent.get_SED_points
+      ~JetSpecComponent.get_emiss_lim
       ~JetSpecComponent.get_var_state
       ~JetSpecComponent.plot
       ~JetSpecComponent.show
+      ~JetSpecComponent.update
 
    .. rubric:: Attributes Documentation
 
@@ -26,6 +30,10 @@ JetSpecComponent
 
    .. rubric:: Methods Documentation
 
+   .. automethod:: fill_SED
+   .. automethod:: get_SED_points
+   .. automethod:: get_emiss_lim
    .. automethod:: get_var_state
    .. automethod:: plot
    .. automethod:: show
+   .. automethod:: update

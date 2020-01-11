@@ -1,0 +1,41 @@
+
+**************************************************************************************************
+Fit report
+
+Model: SSC-best-fit
+      name             par type           units               val           phys. bound. min  phys. bound. max   log  frozen
+---------------- ------------------- --------------- ---------------------- ---------------- ------------------ ----- ------
+               R         region_size              cm 1.7085883907501698e+16           1000.0              1e+30 False  False
+             R_H     region_position              cm                  1e+17              0.0               None False   True
+               B      magnetic_field               G   0.060195407831094006              0.0               None False  False
+        beam_obj             beaming Lorentz-factor*     29.391482763444024           0.0001               None False  False
+          z_cosm            redshift                                 0.0308              0.0               None False   True
+               N    electron_density         1 / cm3      2.513077159786476              0.0               None False  False
+            gmin  low-energy-cut-off lorentz-factor*     335.79479333125414              1.0       1000000000.0 False  False
+            gmax high-energy-cut-off lorentz-factor*      975766.5115616962              1.0 1000000000000000.0 False  False
+               s   LE_spectral_slope                     2.1566804501292154            -10.0               10.0 False  False
+               r  spectral_curvature                      0.825310673976464            -15.0               15.0 False  False
+gamma0_log_parab    turn-over-energy lorentz-factor*      33907.21909705737              1.0       1000000000.0 False  False
+
+converged=True
+calls=49
+The relative error between two consecutive iterates is at most 0.000000
+dof=26
+chisq=80.878585, chisq/red=3.110715 null hypothesis sig=0.000000
+
+best fit pars
+      name            bestfit val               err +         err -       start val         fit range min        fit range max      frozen
+---------------- ---------------------- --------------------- ----- --------------------- ------------------ ---------------------- ------
+               R 1.7085883907501698e+16 2.442131767267518e+16  None 1.649187684856415e+16 3162277660168379.5 3.1622776601683795e+17  False
+             R_H                   None                  None  None                 1e+17                0.0                   None   True
+               B   0.060195407831094006  0.034696212265820016  None                   0.1                0.0                   None  False
+        beam_obj     29.391482763444024     17.07698692020788  None                  25.0             0.0001                   None  False
+          z_cosm                   None                  None  None                0.0308                0.0                   None   True
+               N      2.513077159786476     2.411517421442304  None     3.072163777115778                0.0                   None  False
+            gmin     335.79479333125414    25.068273564186736  None    333.82306366971983                1.0           1000000000.0  False
+            gmax      975766.5115616962     636049.6590938864  None     975813.3512932507            10000.0            100000000.0  False
+               s     2.1566804501292154    0.2294139143060235  None    2.1815775138311513              -10.0                   10.0  False
+               r      0.825310673976464    0.3144144236557833  None    0.7726502419720749              -15.0                   15.0  False
+gamma0_log_parab      33907.21909705737     42235.93946135301  None     22658.54895147617                1.0           1000000000.0  False
+**************************************************************************************************
+
