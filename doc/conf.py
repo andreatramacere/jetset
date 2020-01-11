@@ -68,7 +68,7 @@ extensions = [
     'sphinx_automodapi.smart_resolver',
     'sphinx.ext.autosectionlabel',
     #'sphinxcontrib.plantuml',
-    #'sphinxcontrib.bibtex',
+    'sphinxcontrib.bibtex',
     'sphinx.ext.napoleon',
     #'matplotlib.sphinxext.plot_directive',
     'sphinx.ext.inheritance_diagram',

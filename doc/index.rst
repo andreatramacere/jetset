@@ -27,11 +27,7 @@ allowing to fit the numerical models to observed data. The main features of this
   order and second order (stochastic acceleration) processes.
 
 .. Important::
-
-   Acknowledgements
-
-
-    If you use this code in any kind of scientific publication please cite the following papers:
+    Acknowledgements: if you use this code in any kind of scientific publication please cite the following papers:
 
     * `Tramacere A. et al. 2011 <http://adsabs.harvard.edu/abs/2011ApJ...739...66T>`_
     * `Tramacere A. et al. 2009 <http://adsabs.harvard.edu/abs/2009A%26A...501..879T>`_

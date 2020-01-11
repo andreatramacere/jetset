@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Data format and SED data" href="../load_data/Jet_example_load_data.html" />
-    <link rel="prev" title="physical setup" href="../jet_model_phys/Jet_example_phys.html" />
+    <link rel="prev" title="External Compton" href="../jet_model_phys_EC/Jet_example_phys_EC.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -64,10 +64,12 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html">user guide</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys/Jet_example_phys.html">jet model physical setup</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_SSC/Jet_example_phys_SSC.html">jet model physical setup  (basic features and SSC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_EC/Jet_example_phys_EC.html">External Compton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_EC/Jet_example_phys_EC.html#equipartition">Equipartition</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model numerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomenological model constraining</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
@@ -126,7 +128,7 @@
               
                 
   <li>
-    <a href="../jet_model_phys/Jet_example_phys.html" title="Previous Chapter: physical setup"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; physical setup</span>
+    <a href="../jet_model_phys_EC/Jet_example_phys_EC.html" title="Previous Chapter: External Compton"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; External Compton</span>
     </a>
   </li>
   <li>
@@ -173,10 +175,12 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html">user guide</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys/Jet_example_phys.html">jet model physical setup</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model nemerical setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_SSC/Jet_example_phys_SSC.html">jet model physical setup  (basic features and SSC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_EC/Jet_example_phys_EC.html">External Compton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_EC/Jet_example_phys_EC.html#equipartition">Equipartition</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model numerical setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomenological model constraining</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
@@ -225,15 +229,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_release.html">what's new in jetset 1.1.0</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../user_guide.html">user guide</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys/Jet_example_phys.html">jet model physical setup</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model nemerical setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_SSC/Jet_example_phys_SSC.html">jet model physical setup  (basic features and SSC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_EC/Jet_example_phys_EC.html">External Compton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jet_model_phys_EC/Jet_example_phys_EC.html#equipartition">Equipartition</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">jet model numerical setup</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#changing-the-grid-size-for-the-electron-distribution">Changing the grid size for the electron distribution</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changing-the-grid-size-for-the-seed-photons">Changing the grid size for the seed photons</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changing-the-grid-size-for-the-ic-process-spectra">Changing the grid size for the IC process spectra</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../load_data/Jet_example_load_data.html">data format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomological constrain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html">phenomenological model constraining</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cosmology/Jet_example_cosmo.html">change cosmology model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../temporal_evolution/temp_ev.html">temporal evolution</a></li>
 </ul>
