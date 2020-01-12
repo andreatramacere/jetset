@@ -20,8 +20,7 @@ A jet instance can be built using the  the :class:`.Jet` class, istanciating the
 This instruction will create:
     * a ``Jet`` object with ``name`` **test**,
     * using as electron distribution the **lppl** model, that is a log-parabola with a low-energy power-law branch.
-
-(a  working directory ``jet_wd`` will be created, this directory can be deleted when all the precesses of your script are done)
+    * using as working directory **test_jet_prod**
 
 For a list of possible distribution you can run the command 
 
