@@ -16,3 +16,5 @@ test_SEDs=[]
 
 for test_SED in glob.glob(test_SED_data_path+'/*.ecsv'):
     test_SEDs.append(test_SED)
+
+test_SEDs.sort()
