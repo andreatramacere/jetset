@@ -114,3 +114,13 @@ def test_full():
     model_fit_minuit(sed_data)
 
 
+def test_short():
+    sed_data = data()
+    print('done')
+    my_shape = spectral_indices(sed_data)
+    print('done')
+    my_shape = sed_shaper(my_shape)
+    print('done')
+    prefit_jet = model_constr(my_shape)
+    print('done')
+    model_fit_lsb(sed_data)

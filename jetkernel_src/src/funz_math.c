@@ -170,7 +170,7 @@ void tabella_Bessel(struct spettro *pt_TB) {
             else{
             	pt_TB->log_F_ave_Sync_y[i]=-300.0;
             }
-            fprintf(fp, "%e\t%e\t%e\t%e\n",
+            fprintf(fp, "%e %e %e %e\n",
             		pt_TB->F_Sync_x[i] , pt_TB->F_Sync_y[i] , pt_TB->F_ave_Sync_x[i], pt_TB->F_ave_Sync_y[i]);
             
             //printf("i=%d i_max=%d x=%e F(x)=%e\n",i,elementi_tabelle,x,pt_TB->tabella_F[i][1]);
