@@ -41,7 +41,7 @@ pytest test.py
 anaconda login
 anaconda upload /path/produced/by/conda-build
 
-#test after deploy
+#tests after deploy
 conda uninstall jetset
 conda install -c andreatramacere -c astropy jetset #for linux
 pytest test.py

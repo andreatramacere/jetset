@@ -19,4 +19,4 @@ lib64
 jetkernel/*.c
 jetkernel/jetkernel.py
 jetset/old
-!/test/*.py
+!/jetset/tests/*.py

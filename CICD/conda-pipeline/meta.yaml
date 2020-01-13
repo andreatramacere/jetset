@@ -31,23 +31,23 @@ requirements:
   - pyyaml
   - pyqt
 #
-#test:
+#tests:
 #    imports:
 #        - jetset
 #        - jetset.jetmodel
 #
 
 #  # commands:
-#    # You can put test commands to be run here.  Use this to test that the
+#    # You can put tests commands to be run here.  Use this to tests that the
 #    # entry points work.
 #
 #
 #  # You can also put a file called run_test.py in the recipe that will be run
-#  # at test time.
+#  # at tests time.
 #
 #  requires:
 #    - nose >=1.3.7
-#    # Put any additional test requirements here.  For example
+#    # Put any additional tests requirements here.  For example
 #    # - nose
 
 

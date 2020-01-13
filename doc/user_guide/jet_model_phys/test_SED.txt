@@ -5,7 +5,7 @@
 # - {name: Sum, unit: erg / s, datatype: float64}
 # - {name: Sync, unit: erg / s, datatype: float64}
 # - {name: SSC, unit: erg / s, datatype: float64}
-# meta: {redshift: 0.1, restframe: src, src_name: test}
+# meta: {redshift: 0.1, restframe: src, src_name: tests}
 # schema: astropy-2.0
 nu Sum Sync SSC
 1100000.0 2.7011840560827467e-65 2.7011840560827467e-65 2.7011840560827467e-65
