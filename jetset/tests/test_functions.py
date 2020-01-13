@@ -119,8 +119,8 @@ def test_full():
     print('done')
     prefit_jet=model_constr(my_shape)
     print('done')
-    model_fit_lsb(sed_data)
-    model_fit_minuit(sed_data)
+    model_fit_lsb(sed_data,my_shape)
+    model_fit_minuit(sed_data,my_shape)
 
 
 def test_short():
@@ -132,4 +132,4 @@ def test_short():
     print('done')
     prefit_jet = model_constr(my_shape)
     print('done')
-    model_fit_lsb(sed_data)
+    model_fit_lsb(sed_data,my_shape)
