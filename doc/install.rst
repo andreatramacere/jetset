@@ -6,7 +6,9 @@ Installation
 Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)
 -------------------------------------------------------------------
 .. important::
-    Starting from version 1.1.0, python 2 is not supported anymore. Versions of python 3 < 3.6 should work.
+    Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.6 is suggested, older python 3 versions should work.
+
+Versions of python 3 < 3.6 should work.
 
 
 
