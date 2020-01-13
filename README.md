@@ -47,13 +47,22 @@ visit: https://jetset.readthedocs.io/en/latest/
   
   `conda install -c andreatramacere jetset`
   
-if conda fails with dependencies you can try
+  if conda fails with dependencies you can try
   
    - `conda install -c andreatramacere -c astropy jetset`
     
      OR
 
    - `conda install -c andreatramacere -c conda-forge jetset`
+
+- run the test in python or ipython or jupyter-notebook
+```python
+from jetset.tests import test_functions 
+test_functions.test_short() 
+```  
+
+**run all the examples outside of the installation dir**
+
 # Install the JetSeT from source 
 
 
@@ -85,6 +94,11 @@ if conda fails with dependencies you can try
      * `python setup.py clean`
      * `python setup.py install`
 
+ - run the test in python or ipython or jupyter-notebook
+```python
+from jetset.tests import test_functions 
+test_functions.test_short() 
+```  
 
 **run all the examples outside of the installation dir**
 
@@ -98,6 +112,14 @@ if conda fails with dependencies you can try
   - run on the command line: 
     * `python setup.py clean`
     * `python setup.py install`
+
+ - run the test in python or ipython or jupyter-notebook
+```python
+from jetset.tests import test_functions 
+test_functions.test_short() 
+```  
+      
+   
 
 **run all the examples outside of the installation dir**
 

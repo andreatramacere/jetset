@@ -48,6 +48,18 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
       conda install -c andreatramacere -c conda-forge jetset
 
+- run the test in python or ipython or jupyter-notebook
+
+.. code-block:: python
+
+    from jetset.tests import test_functions
+    test_functions.test_short()
+
+**run all the examples outside of the installation dir**
+
+
+
+
 Install the JetSeT from source
 ------------------------------
 
@@ -87,6 +99,14 @@ Installation from source using Anaconda
 
        python setup.py install
 
+- run the test in python or ipython or jupyter-notebook
+
+.. code-block:: python
+
+    from jetset.tests import test_functions
+    test_functions.test_short()
+
+
 **run all the examples outside of the installation dir**
 
 Installation from source using PIP
@@ -105,6 +125,14 @@ Installation from source using PIP
         python setup.py clean
 
         python setup.py install
+
+- run the test in python or ipython or jupyter-notebook
+
+.. code-block:: python
+
+    from jetset.tests import test_functions
+    test_functions.test_short()
+
 
 **run all the examples outside of the installation dir**
 
