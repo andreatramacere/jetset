@@ -60,7 +60,7 @@ def model_constr(my_shape):
                               SEDShape=my_shape)
 
     prefit_jet = sed_obspar.constrain_SSC_model(electron_distribution_log_values=False)
-    prefit_jet.save_model('prefit_jet.dat')
+    prefit_jet.save_model('prefit_jet_gal_templ.dat')
 
     return prefit_jet
 
@@ -84,8 +84,8 @@ def model_fit_lsb(sed_data,my_shape):
     model_minimizer_lsb, best_fit_lsb = fit_SED(fit_model_lsb, sed_data, 10.0 ** 11, 10 ** 29.0,
                                                 fitname='SSC-best-fit-lsb', minimizer='lsb')
 
-    model_minimizer_lsb.save_report('best-fit-minuit-report.txt')
-    best_fit_lsb.save_model('fit_model_lsb.dat')
+    best_fit_lsb.save_report('best-fit-minuit-report.txt')
+    fit_model_lsb.save_model('fit_model_lsb.dat')
 
 def model_fit_minuit(sed_data,my_shape):
     from jetset.minimizer import fit_SED
