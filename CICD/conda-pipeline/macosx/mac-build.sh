@@ -24,7 +24,7 @@ echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<
 conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython
 source $CONDA_PREFIX/etc/profile.d/conda.sh
 conda activate jetset-cidc
-conda install --yes  -c astropy --file ../../../requirements.txt
+conda install --yes  --file ../../../requirements.txt
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> SET VERSION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
@@ -39,7 +39,7 @@ echo  $PKG_VERSION
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
 conda build purge
-conda-build .  -c defaults -c astropy
+conda-build .  > build.log 2>build.err
 export CONDABUILDJETSET=$(conda-build . --output)
 echo  $CONDABUILDJETSET
 

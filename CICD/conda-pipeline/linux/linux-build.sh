@@ -24,7 +24,7 @@ echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD BESSESL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 conda install --yes   -c astropy --file requirements.txt
 rm jetkernel/mathkernel/F_Sync.dat
 python setup.py clean
-python setup.py install
+python setup.py install > install.log 2>install.err
 python setup.py clean
 
 #cd ..
@@ -42,7 +42,7 @@ echo  $PKG_VERSION
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
 conda build purge
-conda build .  -c defaults -c astropy  #for linux
+conda build .  -c defaults -c astropy > build.log 2>build.err #for linux
 export CONDABUILDJETSET=$(conda-build . --output)
 echo  $CONDABUILDJETSET
 
