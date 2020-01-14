@@ -1,6 +1,6 @@
 package:
   name: jetset
-  version: "1.1.0"
+  version:  {{ os.environ.get('PKG_VERSION') }}
 
 source:
   git_url: https://github.com/andreatramacere/jetset.git
@@ -31,13 +31,15 @@ requirements:
   - pyyaml
   - pyqt
 #
-#tests:
+tests:
 #    imports:
 #        - jetset
 #        - jetset.jetmodel
 #
 
-#  # commands:
+#    commands:
+#      - python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
+#      test_functions.test_short()
 #    # You can put tests commands to be run here.  Use this to tests that the
 #    # entry points work.
 #

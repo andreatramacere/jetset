@@ -22,7 +22,7 @@ os:
 env:
   # Build and tests package on all supported python version
   - BUILD_TARGET=3.7
-  - BUILD_TARGET=3.6
+  # BUILD_TARGET=3.6
   #- BUILD_TARGET=2.7
 
 
@@ -71,5 +71,5 @@ deploy:
   on:
     tags: False
     all_branches: False
-    #branch: py23
+    branch: develop
 
