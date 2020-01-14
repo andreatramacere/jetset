@@ -133,12 +133,22 @@ _module=Extension('jetkernel/_jetkernel',
                   swig_opts=['-v',],
                   include_dirs=['jetkernel_src/include'])
 
+
+
 #'jetkernel/mathkernel/*dat'
+
+
+if os.getenv('JETSETSKIPBESSELBUILD') == 'TRUE':
+    _test_suite=None
+else:
+    _test_suite='jetset.tests.test_build_functions'
 
 with open("proj_descr.md", "r") as f:
     long_description = f.read()
 
 print(__version__)
+
+
 
 setup(name='jetset',
       version=__version__,
@@ -158,5 +168,5 @@ setup(name='jetset',
       install_requires=install_req,
       py_modules=['jetkernel/jetkernel'],
       python_requires='>=3.5',
-      test_suite = 'jetset.tests.test_build_functions',
+      test_suite =_test_suite,
       zip_safe=False)
