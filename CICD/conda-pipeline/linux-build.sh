@@ -1,7 +1,6 @@
 cd /Users/orion/astro/Programmi/Projects/Active/JetSeT/JetSeT_CICD/MAC_OS/LINUX
 
-export USE_PIP='FALSE'
-export JETSETSKIPBESSELBUILD='FALSE'
+
 #building
 cd integration
 git clone https://github.com/andreatramacere/jetset.git
@@ -10,14 +9,17 @@ git checkout develop
 git pull origin develop
 
 #to build bessel fucntion locally
+
+
+export USE_PIP='FALSE'
+export JETSETSKIPBESSELBUILD='FALSE'
 conda install --yes   -c astropy --file requirements.txt
 
 python setup.py clean
 python setup.py install
 python setup.py clean
-
 cd ..
-python -c 'import jetkernel; import os;p=os.path.join(jetkernel.__path__[0],"mathkernel","F_Sync.dat"); os.system("cp %s jetset/jetkernel/mathkernel"%p)'
+python -c 'import jetkernel; import os;p=os.path.join(jetkernel.__path__[0],"mathkernel"); os.system("cp jetset/jetkernel/mathkernel/F_Sync.dat %s"%p)'
 
 export JETSETSKIPBESSELBUILD='TRUE'
 cd jetset/CICD/conda-pipeline/

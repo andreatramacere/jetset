@@ -16,6 +16,7 @@ dist
 eggs
 lib
 lib64
+jetkernel/mathkernel/F_Sync.dat
 jetkernel/*.c
 jetkernel/jetkernel.py
 jetset/old
