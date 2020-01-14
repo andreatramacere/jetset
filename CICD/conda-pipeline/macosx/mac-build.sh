@@ -24,7 +24,7 @@ echo  $PKG_VERSION
 
 #now using env var
 #set the proper branch/tag in: mata.yaml-> git_rev:
-conda install --yes  -c astropy --file ../../requirements.txt
+conda install --yes  -c astropy --file ../../../requirements.txt
 conda build purge
 conda-build .  -c defaults -c astropy
 export CONDABUILDJETSET=$(conda-build . --output)
