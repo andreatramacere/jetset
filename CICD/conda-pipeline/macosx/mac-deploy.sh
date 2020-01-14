@@ -9,7 +9,7 @@ anaconda upload --force $CONDABUILDJETSET
 
 #tests after deploy
 conda uninstall jetset
-conda install -c andreatramacere jetset
+conda install --yes -c andreatramacere jetset
 cd test
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
 
