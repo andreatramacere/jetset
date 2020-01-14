@@ -17,12 +17,12 @@ export PKG_VERSION=$(cd jetset && python -c "import jetset;print(jetset.__versio
 rm -rf ../../jetset/__pycache__/
 #now using env var
 #set the proper branch/tag in: mata.yaml-> git_rev:
+conda install --yes  -c astropy --file ../../requirements.txt
 conda build purge
 conda-build .  -c defaults -c astropy
 export CONDABUILDJETSET=$(conda-build . --output)
 
 #testing
-conda install --yes  -c astropy --file ../../requirements.txt
 conda install --yes --offline $CONDABUILDJETSET
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
 #
