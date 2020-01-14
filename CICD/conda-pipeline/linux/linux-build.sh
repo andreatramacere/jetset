@@ -33,8 +33,8 @@ python setup.py clean
 python setup.py install
 python setup.py clean
 
-#cd ..
-#python -c 'import jetkernel; import os;p=os.path.join(jetkernel.__path__[0],"mathkernel"); os.system("cp jetset/jetkernel/mathkernel/F_Sync.dat %s"%p)'
+cd ..
+python -c 'import jetkernel; import os;p=os.path.join(jetkernel.__path__[0],"mathkernel"); os.system("cp jetset/jetkernel/mathkernel/F_Sync.dat %s"%p)'
 
 export JETSETBESSELBUILD='FALSE'
 cd CICD/conda-pipeline/linux
