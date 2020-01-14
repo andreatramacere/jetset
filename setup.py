@@ -48,6 +48,7 @@ class CustomInstall(install):
         except:
             install.run(self)
 
+        print ('JETSETSKIPBESSELBUILD',os.getenv('JETSETSKIPBESSELBUILD') == 'TRUE')
         if os.getenv('JETSETSKIPBESSELBUILD') == 'TRUE':
             pass
         else:

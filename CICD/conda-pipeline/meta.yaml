@@ -10,6 +10,9 @@ source:
 build:
   # noarch_python: True
   preserve_egg_dir: True
+  script_env:
+    - name: JETSETSKIPBESSELBUILD
+       value: TRUE
 
 requirements:
 
@@ -29,7 +32,9 @@ requirements:
   - emcee
   - pyyaml
   - pyqt
-#
+
+
+
 #tests:
 #    imports:
 #        - jetset
