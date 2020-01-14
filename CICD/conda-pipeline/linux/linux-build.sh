@@ -1,4 +1,5 @@
-cd /Users/orion/astro/Programmi/Projects/Active/JetSeT/JetSeT_CICD/MAC_OS/LINUX
+#path on miniconda docker
+cd /workdir
 
 
 #building
