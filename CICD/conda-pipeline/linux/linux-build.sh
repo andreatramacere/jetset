@@ -27,15 +27,15 @@ python setup.py clean
 export JETSETBESSELBUILD='FALSE'
 cd CICD/conda-pipeline/linux
 
-conda  update --yes conda-build anaconda-client
+conda update --yes conda-build anaconda-client
+conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython
+conda activate jetset-cidc
+
 export PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")
 rm -rf ../../../jetset/__pycache__/
 echo  $PKG_VERSION
 
 
-#now using env var
-#set the proper branch/tag in: mata.yaml-> git_rev:
- #for linux
 conda build purge
 conda build .  -c defaults -c astropy  #for linux
 export CONDABUILDJETSET=$(conda-build . --output)
@@ -44,8 +44,6 @@ echo  $CONDABUILDJETSET
 
 
 #testing
-conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython
-conda activate jetset-cidc
 conda install --yes   -c astropy --file ../../../requirements.txt
 conda install  --yes --offline $CONDABUILDJETSET
 cd /workdir/test

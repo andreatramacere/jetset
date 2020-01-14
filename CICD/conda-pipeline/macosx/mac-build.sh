@@ -16,7 +16,9 @@ python setup.py clean
 
 cd CICD/conda-pipeline/macosx
 
+conda update --yes conda-build anaconda-client
 conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython
+source $CONDA_PREFIX/etc/profile.d/conda.sh
 conda activate jetset-cidc
 export PKG_VERSION=$(cd ../../../ && python -c "import jetset;print(jetset.__version__)")
 rm -rf ../../../jetset/__pycache__/
