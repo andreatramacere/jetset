@@ -13,7 +13,6 @@ git pull origin develop
 
 export USE_PIP='FALSE'
 export JETSETBESSELBUILD='TRUE'
-export SRC_DIR='/workdir/integration/jetset'
 
 conda install --yes   -c astropy --file requirements.txt
 rm jetkernel/mathkernel/F_Sync.dat
@@ -29,7 +28,7 @@ cd CICD/conda-pipeline/linux
 
 conda  update --yes conda-build anaconda-client
 export PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")
-rm -rf ../../jetset/__pycache__/
+rm -rf ../../../jetset/__pycache__/
 echo  $PKG_VERSION
 
 
@@ -46,7 +45,8 @@ echo  $CONDABUILDJETSET
 #testing
 conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython
 conda activate jetset-cidc
-conda install --yes   -c astropy --file ../../requirements.txt
+conda install --yes   -c astropy --file ../../../requirements.txt
 conda install  --yes --offline $CONDABUILDJETSET
 cd /workdir/test
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
+conda deactivate
