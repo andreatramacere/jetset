@@ -49,14 +49,12 @@ echo  $CONDABUILDJETSET
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
-conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython
+conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build
 source $CONDA_PREFIX/etc/profile.d/conda.sh
 conda activate jetset-cidc
-conda install --yes   -c astropy --file requirements.txt
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
-
 #testing
 conda install --yes   -c astropy --file ../../../requirements.txt
 conda install  --yes --offline $CONDABUILDJETSET
