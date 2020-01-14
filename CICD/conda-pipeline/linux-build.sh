@@ -23,11 +23,9 @@ python setup.py clean
 #python -c 'import jetkernel; import os;p=os.path.join(jetkernel.__path__[0],"mathkernel"); os.system("cp jetset/jetkernel/mathkernel/F_Sync.dat %s"%p)'
 
 export JETSETBESSELBUILD='FALSE'
-cd jetset/CICD/conda-pipeline/
+cd CICD/conda-pipeline/
 
-conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython
-conda activate jetset-cidc
-conda install --yes   -c astropy --file requirements.txt
+conda update conda-build anaconda-client
 export PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")
 rm -rf ../../jetset/__pycache__/
 
@@ -37,12 +35,16 @@ rm -rf ../../jetset/__pycache__/
  #for linux
 conda build purge
 export CONDABUILDJETSET=$(conda-build . --output)
+echo  $CONDABUILDJETSET
 conda build .  -c defaults -c astropy  #for linux
 
 
 
 
 #testing
+conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython
+conda activate jetset-cidc
+conda install --yes   -c astropy --file ../../requirements.txt
 conda install  --yes --offline $CONDABUILDJETSET
 cd /workdir/test
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
