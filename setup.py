@@ -48,7 +48,7 @@ class CustomInstall(install):
         except:
             install.run(self)
 
-        if os.getenv('CONDABUILDSETUP') == 'TRUE':
+        if os.getenv('JETSETSKIPBESSELBUIL') == 'TRUE':
             pass
         else:
             self.run_command('test')
