@@ -19,3 +19,5 @@ lib64
 jetkernel/*.c
 jetkernel/jetkernel.py
 jetset/old
+notebooks/*
+!notebooks/*ipynb
