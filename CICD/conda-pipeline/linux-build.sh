@@ -11,6 +11,7 @@ git pull origin develop
 
 #to build bessel fucntion locally
 conda install --yes   -c astropy --file requirements.txt
+
 python setup.py clean
 python setup.py install
 python setup.py clean
@@ -23,6 +24,7 @@ cd jetset/CICD/conda-pipeline/
 
 conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython
 conda activate jetset-cidc
+conda install --yes   -c astropy --file requirements.txt
 export PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")
 rm -rf ../../jetset/__pycache__/
 
@@ -31,11 +33,13 @@ rm -rf ../../jetset/__pycache__/
 #set the proper branch/tag in: mata.yaml-> git_rev:
  #for linux
 conda build purge
-conda build .  -c defaults -c astropy  #for linux
 export CONDABUILDJETSET=$(conda-build . --output)
+conda build .  -c defaults -c astropy  #for linux
+
 
 
 
 #testing
 conda install  --yes --offline $CONDABUILDJETSET
+cd /workdir/test
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
