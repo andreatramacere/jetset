@@ -109,6 +109,12 @@ def model_fit_minuit(sed_data,my_shape):
     best_fit_minuit.save_report('best-fit-minuit-report.txt')
     fit_model_minuit.save_model('fit_model_minuit.dat')
 
+
+def test_build_bessel():
+    from jetset.jet_model import Jet
+    Jet().eval()
+
+
 def test_full():
 
     sed_data=data()

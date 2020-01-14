@@ -48,8 +48,7 @@ class CustomInstall(install):
         except:
             install.run(self)
 
-
-
+        self.run_command('test')
 
 class CustomClean(install):
     def run(self):
@@ -153,4 +152,5 @@ setup(name='jetset',
       install_requires=install_req,
       py_modules=['jetkernel/jetkernel'],
       python_requires='>=3.5',
+      test_suite = 'jetset.tests.test_build_functions',
       zip_safe=False)
