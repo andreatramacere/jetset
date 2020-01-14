@@ -12,16 +12,17 @@ git pull origin develop
 
 
 export USE_PIP='FALSE'
-export JETSETSKIPBESSELBUILD='FALSE'
+export JETSETBESSELBUILD='TRUE'
 conda install --yes   -c astropy --file requirements.txt
-
+rm jetkernel/mathkernel/F_Sync.dat
 python setup.py clean
 python setup.py install
 python setup.py clean
-cd ..
-python -c 'import jetkernel; import os;p=os.path.join(jetkernel.__path__[0],"mathkernel"); os.system("cp jetset/jetkernel/mathkernel/F_Sync.dat %s"%p)'
 
-export JETSETSKIPBESSELBUILD='TRUE'
+#cd ..
+#python -c 'import jetkernel; import os;p=os.path.join(jetkernel.__path__[0],"mathkernel"); os.system("cp jetset/jetkernel/mathkernel/F_Sync.dat %s"%p)'
+
+export JETSETBESSELBUILD='FALSE'
 cd jetset/CICD/conda-pipeline/
 
 conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython

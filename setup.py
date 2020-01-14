@@ -48,11 +48,11 @@ class CustomInstall(install):
         except:
             install.run(self)
 
-        print ('JETSETSKIPBESSELBUILD',os.getenv('JETSETSKIPBESSELBUILD') == 'TRUE')
-        if os.getenv('JETSETSKIPBESSELBUILD') == 'TRUE':
-            pass
-        else:
+        print ('JETSETBESSELBUILD',os.getenv('JETSETBESSELBUILD') == 'TRUE')
+        if os.getenv('JETSETBESSELBUILD') == 'TRUE':
             self.run_command('test')
+        else:
+            pass
 
 
 
@@ -139,10 +139,10 @@ _module=Extension('jetkernel/_jetkernel',
 #'jetkernel/mathkernel/*dat'
 
 
-if os.getenv('JETSETSKIPBESSELBUILD') == 'TRUE':
-    _test_suite=None
+if os.getenv('JETSETBESSELBUILD') == 'TRUE':
+    _test_suite = 'jetset.tests.test_build_functions'
 else:
-    _test_suite='jetset.tests.test_build_functions'
+    _test_suite = None
 
 with open("proj_descr.md", "r") as f:
     long_description = f.read()

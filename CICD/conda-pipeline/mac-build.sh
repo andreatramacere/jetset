@@ -8,12 +8,16 @@ git checkout develop
 git pull origin develop
 
 
+export JETSETBESSELBUILD='FALSE'
+export USE_PIP='FALSE'
+
 python setup.py clean
 cd jetset/CICD/conda-pipeline/
 conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython
 conda activate jetset-cidc
 export PKG_VERSION=$(cd jetset && python -c "import jetset;print(jetset.__version__)")
 rm -rf ../../jetset/__pycache__/
+
 #now using env var
 #set the proper branch/tag in: mata.yaml-> git_rev:
 conda install --yes  -c astropy --file ../../requirements.txt
