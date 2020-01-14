@@ -3,15 +3,16 @@ package:
   version:  {{ os.environ.get('PKG_VERSION') }}
 
 source:
-  #git_url: https://github.com/andreatramacere/jetset.git
-  #git_rev: develop
-  path: /workdir/integration/jetset
+  git_url: https://github.com/andreatramacere/jetset.git
+  git_rev: develop
+  #path: /workdir/integration/jetset
 
 build:
   # noarch_python: True
   preserve_egg_dir: True
   script_env:
     - JETSETBESSELBUILD
+   # - SRC_DIR
 
 requirements:
 

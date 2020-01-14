@@ -13,6 +13,8 @@ git pull origin develop
 
 export USE_PIP='FALSE'
 export JETSETBESSELBUILD='TRUE'
+export SRC_DIR='/workdir/integration/jetset'
+
 conda install --yes   -c astropy --file requirements.txt
 rm jetkernel/mathkernel/F_Sync.dat
 python setup.py clean
@@ -23,21 +25,21 @@ python setup.py clean
 #python -c 'import jetkernel; import os;p=os.path.join(jetkernel.__path__[0],"mathkernel"); os.system("cp jetset/jetkernel/mathkernel/F_Sync.dat %s"%p)'
 
 export JETSETBESSELBUILD='FALSE'
-cd CICD/conda-pipeline/
+cd CICD/conda-pipeline/linux
 
-conda update conda-build anaconda-client
+conda  update --yes conda-build anaconda-client
 export PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")
 rm -rf ../../jetset/__pycache__/
+echo  $PKG_VERSION
 
 
 #now using env var
 #set the proper branch/tag in: mata.yaml-> git_rev:
  #for linux
 conda build purge
+conda build .  -c defaults -c astropy  #for linux
 export CONDABUILDJETSET=$(conda-build . --output)
 echo  $CONDABUILDJETSET
-conda build .  -c defaults -c astropy  #for linux
-
 
 
 
