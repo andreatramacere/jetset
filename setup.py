@@ -48,7 +48,13 @@ class CustomInstall(install):
         except:
             install.run(self)
 
-        self.run_command('test')
+        if os.getenv('CONDABUILDSETUP') == 'TRUE':
+            pass
+        else:
+            self.run_command('test')
+
+
+
 
 class CustomClean(install):
     def run(self):

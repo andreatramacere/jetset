@@ -1,6 +1,7 @@
 cd /Users/orion/astro/Programmi/Projects/Active/JetSeT/JetSeT_CICD/MAC_OS/LINUX
 
 export USE_PIP='FALSE'
+export CONDABUILDSETUP='TRUE'
 #building
 cd integration
 git clone https://github.com/andreatramacere/jetset.git
