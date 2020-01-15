@@ -3,7 +3,7 @@ JetSeT User Guide
 =================
 
 The following tutorial covers a large fraction of the code features. Please, follow the order
-reported in the table below. A quick start notebook is available on the github repository, but before I suggest to through the tutorails below
+reported in the table below. A quick start is available on the github repository `here <https://github.com/andreatramacere/jetset/tree/develop/notebooks>`_, but before I suggest to through the tutorails below
 
 .. toctree::
    :maxdepth: 1
