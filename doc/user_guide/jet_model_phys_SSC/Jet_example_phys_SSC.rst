@@ -79,7 +79,7 @@ Each parameter has default values. All the parameters listed are handled by :cla
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table47785282576" class="table-striped table-bordered table-condensed">
+    <table id="table47755138448" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <thead><tr><th>str16</th><th>str19</th><th>object</th><th>float64</th><th>float64</th><th>object</th><th>bool</th><th>bool</th></tr></thead>
     <tr><td>N</td><td>electron_density</td><td>1 / cm3</td><td>100.0</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
@@ -227,20 +227,11 @@ investigating the electron distribution
 
 .. code:: ipython3
 
-    p=my_jet.electron_distribution.plot()
-
-
-
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_25_0.png
-
-
-.. code:: ipython3
-
     p=my_jet.electron_distribution.plot3p()
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_26_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_25_0.png
 
 
 .. code:: ipython3
@@ -256,7 +247,7 @@ investigating the electron distribution
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_27_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_26_0.png
 
 
 using log values for electron distribution parameters
@@ -360,7 +351,7 @@ and plot the corresponding SED:
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_35_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_34_0.png
 
 
 alternatively, you can call the ``plot_model`` method without passing a
@@ -373,7 +364,7 @@ alternatively, you can call the ``plot_model`` method without passing a
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_37_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_36_0.png
 
 
 If you want to have more points on the IC spectrum you can set the numerical  parameters for radiavite fields(see :ref:`jet_numerical_guide' section for more details):
@@ -390,7 +381,7 @@ If you want to have more points on the IC spectrum you can set the numerical  pa
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_40_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_39_0.png
 
 
 you can access the same plot, but in the rest frame of the black hole,
@@ -404,7 +395,7 @@ passing the ``frame`` kw to ``src``
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_42_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_41_0.png
 
 
 the ``my_plot`` object returned will be built on the fly by the
@@ -457,7 +448,7 @@ to compare the same model after changing a parameter
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_47_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_46_0.png
 
 
 saving a plot
@@ -575,7 +566,7 @@ this is the initial value of N
 
 
 we now want to set the value of ``N`` in order that the observed synchrotron flux at a given frequency matches a desired value. 
-For example, assume that we wish to set ``N`` in order that  the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1. We can accomplish this by using the  method :meth:`.Jet.get_par_by_name()` as follows: 
+For example, assume that we wish to set ``N`` in order that  the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1. We can accomplish this by using the  method :meth:`.Jet.set_N_from_nuFnu()` as follows: 
 
 .. code:: ipython3
 
@@ -588,6 +579,21 @@ flux at the given frequency
 .. code:: ipython3
 
     my_jet.get_par_by_name('N').val
+
+
+
+
+.. parsed-literal::
+
+    271.77338679726074
+
+
+
+OR
+
+.. code:: ipython3
+
+    my_jet.parameters.N.val
 
 
 
@@ -628,7 +634,7 @@ flux at the given frequency
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_76_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_77_0.png
 
 
 as you can see, the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1.
@@ -842,7 +848,7 @@ Moreover, you can access the corresponding astropy table
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table103637935888" class="table-striped table-bordered table-condensed">
+    <table id="table103602755280" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -887,7 +893,7 @@ and also in the ``src`` restframe
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table103637960912" class="table-striped table-bordered table-condensed">
+    <table id="table103612139728" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / s</th><th>erg / s</th><th>erg / s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -1067,7 +1073,7 @@ If you want to evaluate the energetic report in non verbose mode:
 .. raw:: html
 
     <i>Table length=33</i>
-    <table id="table103658689424" class="table-striped table-bordered table-condensed">
+    <table id="table103625200272" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <thead><tr><th>str13</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0017404342430246782</td></tr>
