@@ -859,7 +859,7 @@ class JetSpecComponent(object):
 
 class TempEvol(object):
 
-    def __init__(self,out_dir='temp_ev',flag='test',clean_work_dir=True):
+    def __init__(self,out_dir='temp_ev',flag='tests',clean_work_dir=True):
 
         self.build_TempEv()
 
@@ -993,7 +993,7 @@ class Jet(Model):
 
     def __init__(self,
                  cosmo=None,
-                 name='test',
+                 name='tests',
                  electron_distribution='pl',
                  electron_distribution_log_values=False,
                  beaming_expr='delta',

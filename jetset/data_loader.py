@@ -877,7 +877,7 @@ class ObsData(object):
             for j in range(1,len(data[:i])):
                 test= data[i]==data[j]
                 if test.all():
-                    #print i,test,data[i],data[j]
+                    #print i,tests,data[i],data[j]
                     msk[i]=False
                
         data=data[msk]

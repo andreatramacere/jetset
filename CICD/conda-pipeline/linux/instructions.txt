@@ -1,0 +1,8 @@
+http://www.wgilpin.com/howto/howto_conda.html
+https://docs.conda.io/projects/conda-build/en/latest/user-guide/tutorials/build-pkgs.html
+https://docs.anaconda.com/anaconda-cloud/user-guide/getting-started/#cloud-getting-started-build-upload
+http://mlg.eng.cam.ac.uk/hoffmanm/blog/2016-02-25-conda-build/
+
+cd /Users/orion/astro/Programmi/Projects/Active/JetSeT/JetSeT_CICD/LINUX/CONDA
+docker run -it --rm -v $PWD:/workdir -w /workdir  miniconda-jetset bash
+

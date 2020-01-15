@@ -48,6 +48,12 @@ class CustomInstall(install):
         except:
             install.run(self)
 
+        print ('JETSETBESSELBUILD',os.getenv('JETSETBESSELBUILD') == 'TRUE')
+        if os.getenv('JETSETBESSELBUILD') == 'TRUE':
+            self.run_command('test')
+        else:
+            pass
+
 
 
 
@@ -128,12 +134,22 @@ _module=Extension('jetkernel/_jetkernel',
                   swig_opts=['-v',],
                   include_dirs=['jetkernel_src/include'])
 
+
+
 #'jetkernel/mathkernel/*dat'
+
+
+if os.getenv('JETSETBESSELBUILD') == 'TRUE':
+    _test_suite = 'jetset.tests.test_build_functions'
+else:
+    _test_suite = None
 
 with open("proj_descr.md", "r") as f:
     long_description = f.read()
 
 print(__version__)
+
+
 
 setup(name='jetset',
       version=__version__,
@@ -143,7 +159,7 @@ setup(name='jetset',
       long_description_content_type='text/markdown',
       description="A framework for self-consistent modeling and fitting of  astrophysical relativistic jets SEDs",
       author_email='andrea.tramacere@gmail.com',
-      packages=['jetset', 'leastsqbound', 'jetkernel'],
+      packages=['jetset', 'leastsqbound', 'jetkernel','jetset.tests'],
       package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*ecsv','./requirements.txt'],'jetkernel':['mathkernel/*dat']},
       include_package_data = True,
       cmdclass=custom_cmdclass,
@@ -153,4 +169,5 @@ setup(name='jetset',
       install_requires=install_req,
       py_modules=['jetkernel/jetkernel'],
       python_requires='>=3.5',
+      test_suite =_test_suite,
       zip_safe=False)

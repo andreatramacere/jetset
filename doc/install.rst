@@ -6,7 +6,9 @@ Installation
 Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)
 -------------------------------------------------------------------
 .. important::
-    Starting from version 1.1.0, python 2 is not supported anymore. Versions of python 3 < 3.6 should work.
+    Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.6 is suggested, older python 3 versions (<3.6)  should work.
+
+
 
 
 
@@ -14,15 +16,15 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
 - create a virtual environment (not necessary, but suggested):
 
-.. code-block:: bash
+  .. code-block:: bash
 
-   conda create --name jetset python=3.7 ipython jupyter
+      conda create --name jetset python=3.7 ipython jupyter
 
 
 
-.. code-block:: bash
+  .. code-block:: bash
 
-   conda activate jetset
+      conda activate jetset
 
 - install the code
 
@@ -32,21 +34,30 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
 
 
-
-
   if conda fails with dependencies you can try
 
   .. code-block:: bash
 
       conda install -c andreatramacere -c astropy jetset
 
-
-
   OR
 
   .. code-block:: bash
 
       conda install -c andreatramacere -c conda-forge jetset
+
+
+- run the test in python or ipython or jupyter-notebook
+
+  .. code-block:: python
+
+    from jetset.tests import test_functions
+    test_functions.test_short()
+
+
+
+
+
 
 Install the JetSeT from source
 ------------------------------
@@ -87,7 +98,15 @@ Installation from source using Anaconda
 
        python setup.py install
 
-**run all the examples outside of the installation dir**
+- run the test in python or ipython or jupyter-notebook (**run all the examples outside of the installation dir**)
+
+  .. code-block:: python
+
+     from jetset.tests import test_functions
+     test_functions.test_short()
+
+
+
 
 Installation from source using PIP
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -106,7 +125,15 @@ Installation from source using PIP
 
         python setup.py install
 
-**run all the examples outside of the installation dir**
+- run the test in python or ipython or jupyter-notebook (**run all the examples outside of the installation dir**)
+
+  .. code-block:: python
+
+     from jetset.tests import test_functions
+     test_functions.test_short()
+
+
+
 
 Requirements
 ^^^^^^^^^^^^

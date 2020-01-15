@@ -70,6 +70,8 @@ see the :ref:`data_format` user guide for further information about loading data
 phenomenological model constraining
 -----------------------------------
 
+see the :ref:`phenom_constr` user guide for further information about loading data 
+
 spectral indices
 ~~~~~~~~~~~~~~~~
 
@@ -132,7 +134,7 @@ spectral indices
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_10_1.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_11_1.png
 
 
 sed shaper
@@ -310,7 +312,7 @@ sed shaper
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_14_1.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_15_1.png
 
 
 model constraining
@@ -461,13 +463,13 @@ model constraining
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_17_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_18_0.png
 
 
 Model fitting
 -------------
 
-We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer, but as alternative we can use the ``lsb`` minimizer. Using ``minuit`` we notice that sometime (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling
+We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer and the``lsb`` (least square bound scipy minimizer). Using ``minuit`` we notice that sometimes (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling
 
 Model fitting with LSB
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -621,7 +623,7 @@ Model fitting with LSB
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_23_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_24_0.png
 
 
 Model fitting with Minuit
@@ -764,7 +766,7 @@ Model fitting with Minuit
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_26_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_27_0.png
 
 
 .. code:: ipython3
@@ -1195,7 +1197,7 @@ Model fitting with Minuit
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_28_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_29_0.png
 
 
 Model fitting with a bkn pl
@@ -1344,7 +1346,7 @@ Model fitting with a bkn pl
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_31_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_32_0.png
 
 
 .. code:: ipython3
@@ -1484,7 +1486,7 @@ Model fitting with a bkn pl
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_33_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_34_0.png
 
 
 .. code:: ipython3
@@ -1505,6 +1507,6 @@ Model fitting with a bkn pl
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_34_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_35_0.png
 
 

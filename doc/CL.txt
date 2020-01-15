@@ -1,5 +1,14 @@
-#To avoid to import the jetkernel module
+
+#!!!!!To avoid to import the jetkernel module otherwise the build will crash
 export READTHEDOCS='True'
+#!!!!!!!!!!!!!!!!!!!!
 
 python make_apidoc_and_uml_graphs.py
+
+#notebooks are built in the ../../documentation_notebooks/user_guide, update them before building doc!
+
+
+cp -r ../../documentation_notebooks/user_guide .
+cp -r ../notebooks/QuickStart.ipynb  quickstart/
+
 sphinx-build -b html ./ build

@@ -20,7 +20,8 @@ A jet instance can be built using the  the :class:`.Jet` class, istanciating the
 This instruction will create:
     * a ``Jet`` object with ``name`` **test**,
     * using as electron distribution the **lppl** model, that is a log-parabola with a low-energy power-law branch.
-    * using as working directory **test_jet_prod**
+
+(a  working directory ``jet_wd`` will be created, this directory can be deleted when all the precesses of your script are done)
 
 For a list of possible distribution you can run the command 
 
@@ -78,7 +79,7 @@ Each parameter has default values. All the parameters listed are handled by :cla
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table47838080336" class="table-striped table-bordered table-condensed">
+    <table id="table47755138448" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <thead><tr><th>str16</th><th>str19</th><th>object</th><th>float64</th><th>float64</th><th>object</th><th>bool</th><th>bool</th></tr></thead>
     <tr><td>N</td><td>electron_density</td><td>1 / cm3</td><td>100.0</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
@@ -96,7 +97,10 @@ Each parameter has default values. All the parameters listed are handled by :cla
 
 
 
-this means that you can easily convert the values in the table using the units module of astropy. **Please note, that the table is built on the fly from the**  :class:`.ModelParameterArray **and each modification you do to this table will not be reflected on the actual parameters values**
+this means that you can easily convert the values in the table using the units module of astropy. 
+
+.. warning::
+    Please note, that the table is built on the fly from the  :class:`.ModelParameterArray` and each modification you do to this table will not be reflected on the actual parameters values
 
 To get a full description of the model you can use the instruction
 
@@ -157,7 +161,7 @@ To get a full description of the model you can use the instruction
 as you can notice, you can now access further information regarding the model, such as numerical configuration of the grida. These parameters will be discussed 
 in the :ref:`jet_numerical_guide' section
 
-Ff you want to use a comoslogy model different from the dafault one please read the :ref:`cosmology` section.
+If you want to use a comoslogy model different from the dafault one please read the :ref:`cosmology` section.
 
 .. warning::
     Starting from version 1.1.0, the `R` parameter as default is linear and not logarithmic, please update your old scripts
@@ -223,20 +227,11 @@ investigating the electron distribution
 
 .. code:: ipython3
 
-    p=my_jet.electron_distribution.plot()
-
-
-
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_25_0.png
-
-
-.. code:: ipython3
-
     p=my_jet.electron_distribution.plot3p()
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_26_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_25_0.png
 
 
 .. code:: ipython3
@@ -252,7 +247,7 @@ investigating the electron distribution
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_27_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_26_0.png
 
 
 using log values for electron distribution parameters
@@ -356,7 +351,7 @@ and plot the corresponding SED:
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_35_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_34_0.png
 
 
 alternatively, you can call the ``plot_model`` method without passing a
@@ -369,7 +364,7 @@ alternatively, you can call the ``plot_model`` method without passing a
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_37_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_36_0.png
 
 
 If you want to have more points on the IC spectrum you can set the numerical  parameters for radiavite fields(see :ref:`jet_numerical_guide' section for more details):
@@ -386,7 +381,7 @@ If you want to have more points on the IC spectrum you can set the numerical  pa
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_40_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_39_0.png
 
 
 you can access the same plot, but in the rest frame of the black hole,
@@ -400,7 +395,7 @@ passing the ``frame`` kw to ``src``
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_42_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_41_0.png
 
 
 the ``my_plot`` object returned will be built on the fly by the
@@ -453,7 +448,7 @@ to compare the same model after changing a parameter
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_47_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_46_0.png
 
 
 saving a plot
@@ -534,7 +529,7 @@ OR
 
     my_jet.Norm_distr=0
 
-or set back the normalization on with
+
 
 .. code:: ipython3
 
@@ -549,7 +544,7 @@ OR
 setting the particle density from observed Fluxes or Luminosities
 -----------------------------------------------------------------
 
-It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     :meth:`.Jet.set_N_from_nuFnu`, meth:`.Jet.set_N_from_nuLnu`)
+It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     :meth:`.Jet.set_N_from_nuFnu`, and  :meth:`.Jet.set_N_from_nuLnu`)
 
 .. code:: ipython3
 
@@ -571,7 +566,7 @@ this is the initial value of N
 
 
 we now want to set the value of ``N`` in order that the observed synchrotron flux at a given frequency matches a desired value. 
-For example, assume that we wish to set ``N`` in order that  the synchrotron flux at math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-=14}` ergs cm-2 s-1. We can accomplish this by using the :class:`.Jet.get_par_by_name()` as follows: 
+For example, assume that we wish to set ``N`` in order that  the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1. We can accomplish this by using the  method :meth:`.Jet.set_N_from_nuFnu()` as follows: 
 
 .. code:: ipython3
 
@@ -584,6 +579,21 @@ flux at the given frequency
 .. code:: ipython3
 
     my_jet.get_par_by_name('N').val
+
+
+
+
+.. parsed-literal::
+
+    271.77338679726074
+
+
+
+OR
+
+.. code:: ipython3
+
+    my_jet.parameters.N.val
 
 
 
@@ -624,11 +634,11 @@ flux at the given frequency
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_76_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_77_0.png
 
 
 as you can see, the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1.
-Alternatively, the value of N  can be obtained using the rest-frame luminosity and  frequency, using the :class:`.Jet.set_N_from_nuLnu()
+Alternatively, the value of N  can be obtained using the rest-frame luminosity and  frequency, using the method :meth:`.Jet.set_N_from_nuLnu`
 
 .. code:: ipython3
 
@@ -638,12 +648,16 @@ where ``L_0`` is the source rest-frame istropic luminosity in erg/s at the rest-
 
 
 
-## setting the beaming factor
+setting the beaming factor and expression
+-----------------------------------------
+
+## 
 
 It is possible to set the beaming factor according to the relativistic BulkFactor and viewing angle, this can be done by setting the ``beaming_expr`` kw in the Jet constructor, possible choices are
 
 * `delta` to provide directly the beaming factor (default)
 * `bulk_theta` to provide the BulkFactor and the jet  viewing angle 
+
 
 .. code:: ipython3
 
@@ -834,7 +848,7 @@ Moreover, you can access the corresponding astropy table
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table103693358800" class="table-striped table-bordered table-condensed">
+    <table id="table103602755280" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -879,7 +893,7 @@ and also in the ``src`` restframe
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table103693302224" class="table-striped table-bordered table-condensed">
+    <table id="table103612139728" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / s</th><th>erg / s</th><th>erg / s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -1059,7 +1073,7 @@ If you want to evaluate the energetic report in non verbose mode:
 .. raw:: html
 
     <i>Table length=33</i>
-    <table id="table103711276688" class="table-striped table-bordered table-condensed">
+    <table id="table103625200272" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <thead><tr><th>str13</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0017404342430246782</td></tr>
