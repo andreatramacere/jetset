@@ -94,13 +94,13 @@ test_functions.test_short()
      * `python setup.py clean`
      * `python setup.py install`
 
- - run the test in python or ipython or jupyter-notebook
+ - run the test in python or ipython or jupyter-notebook (**run all the examples outside of the installation dir**)
 ```python
 from jetset.tests import test_functions 
 test_functions.test_short() 
 ```  
 
-**run all the examples outside of the installation dir**
+
 
 
 ## Installation from source using PIP 
@@ -113,15 +113,14 @@ test_functions.test_short()
     * `python setup.py clean`
     * `python setup.py install`
 
- - run the test in python or ipython or jupyter-notebook
+ - run the test in python or ipython or jupyter-notebook (**run all the examples outside of the installation dir**)
 ```python
 from jetset.tests import test_functions 
 test_functions.test_short() 
-```  
+```   
       
    
 
-**run all the examples outside of the installation dir**
 
 
 ##  Requirements

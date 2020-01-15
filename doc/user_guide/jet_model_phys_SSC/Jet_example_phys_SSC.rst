@@ -79,7 +79,7 @@ Each parameter has default values. All the parameters listed are handled by :cla
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table47838080336" class="table-striped table-bordered table-condensed">
+    <table id="table47785282576" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <thead><tr><th>str16</th><th>str19</th><th>object</th><th>float64</th><th>float64</th><th>object</th><th>bool</th><th>bool</th></tr></thead>
     <tr><td>N</td><td>electron_density</td><td>1 / cm3</td><td>100.0</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
@@ -538,7 +538,7 @@ OR
 
     my_jet.Norm_distr=0
 
-or set back the normalization on with
+
 
 .. code:: ipython3
 
@@ -553,7 +553,7 @@ OR
 setting the particle density from observed Fluxes or Luminosities
 -----------------------------------------------------------------
 
-It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     :meth:`.Jet.set_N_from_nuFnu`, meth:`.Jet.set_N_from_nuLnu`)
+It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     :meth:`.Jet.set_N_from_nuFnu`, and  :meth:`.Jet.set_N_from_nuLnu`)
 
 .. code:: ipython3
 
@@ -575,7 +575,7 @@ this is the initial value of N
 
 
 we now want to set the value of ``N`` in order that the observed synchrotron flux at a given frequency matches a desired value. 
-For example, assume that we wish to set ``N`` in order that  the synchrotron flux at math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-=14}` ergs cm-2 s-1. We can accomplish this by using the :class:`.Jet.get_par_by_name()` as follows: 
+For example, assume that we wish to set ``N`` in order that  the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1. We can accomplish this by using the  method :meth:`.Jet.get_par_by_name()` as follows: 
 
 .. code:: ipython3
 
@@ -632,7 +632,7 @@ flux at the given frequency
 
 
 as you can see, the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1.
-Alternatively, the value of N  can be obtained using the rest-frame luminosity and  frequency, using the :class:`.Jet.set_N_from_nuLnu()
+Alternatively, the value of N  can be obtained using the rest-frame luminosity and  frequency, using the method :meth:`.Jet.set_N_from_nuLnu`
 
 .. code:: ipython3
 
@@ -642,12 +642,16 @@ where ``L_0`` is the source rest-frame istropic luminosity in erg/s at the rest-
 
 
 
-## setting the beaming factor
+setting the beaming factor and expression
+-----------------------------------------
+
+## 
 
 It is possible to set the beaming factor according to the relativistic BulkFactor and viewing angle, this can be done by setting the ``beaming_expr`` kw in the Jet constructor, possible choices are
 
 * `delta` to provide directly the beaming factor (default)
 * `bulk_theta` to provide the BulkFactor and the jet  viewing angle 
+
 
 .. code:: ipython3
 
@@ -838,7 +842,7 @@ Moreover, you can access the corresponding astropy table
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table103693358800" class="table-striped table-bordered table-condensed">
+    <table id="table103637935888" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -883,7 +887,7 @@ and also in the ``src`` restframe
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table103693302224" class="table-striped table-bordered table-condensed">
+    <table id="table103637960912" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / s</th><th>erg / s</th><th>erg / s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -1063,7 +1067,7 @@ If you want to evaluate the energetic report in non verbose mode:
 .. raw:: html
 
     <i>Table length=33</i>
-    <table id="table103711276688" class="table-striped table-bordered table-condensed">
+    <table id="table103658689424" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <thead><tr><th>str13</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0017404342430246782</td></tr>

@@ -23,7 +23,7 @@ Regading the single external radiavite fiels
 
 * CMB 
 
-Please read :ref:`jet_physical_guide_EC` if you skipped it.
+Please read :ref:`jet_physical_guide_SSC` if you skipped it.
 
 .. figure:: jetset_EC_scheme.png
    :alt: EC scheme
@@ -429,9 +429,9 @@ We can now compare the different beaming pattern for the EC emission if
 the CMB, and realize that the beaming pattern is different. This is very
 important in the case of radio galaxies. The ``src`` transformation is
 the one to use in the case of radio galaies or misaligned AGNs, and
-gives a more accurate resut. Anyhow,be careful that this works onlyt for
-isotropic external fields, suchs as the CMB, of the Disk and BLR seed
-photons whitin the Dusty torus radius, and BLR radius, respectively
+gives a more accurate results. Anyhow, be careful that this works only
+for isotropic external fields, suchs as the CMB, or the BLR seed photons
+whitin the Dusty torus radius, and BLR radius, respectively
 
 .. code:: ipython3
 
@@ -515,3 +515,4 @@ points (``N_pts``)
 
 
 .. bibliography:: references.bib
+

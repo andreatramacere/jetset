@@ -2,7 +2,7 @@
 *.py[cod]
 /doc/out.txt
 /doc/err.txt
-/doc/build
+/doc/build/
 /.idea
 /.DS_Store
 *.egg-info
@@ -18,6 +18,7 @@ lib
 lib64
 jetkernel/*.c
 jetkernel/jetkernel.py
-jetset/old
+jetset/old/
 notebooks/*
 !notebooks/*ipynb
+!notebooks/images
