@@ -8,12 +8,11 @@ ENV HOME /home/${NB_USER}
 ENV PATH /opt/conda/envs/env/bin:$PATH
 USER root
 ADD requirements_docker.txt /requirements_docker.txt
-RUN conda update
+RUN conda update --prefix /opt/conda anaconda
 RUN conda create -n jetset-env python=3.7 ipython notebook
 RUN echo "source activate jetset-env" > ~/.bashrc
 
 RUN conda activate jetset-env
-ADD requirements.txt /requirements_docker.txt
 RUN conda install --yes -c astropy --file requirements_docker.txt
 RUN conda install --yes -c andreatramacere -c astropy jetset
 ADD notebooks/QuickStart.ipynb $HOME/notebooks
