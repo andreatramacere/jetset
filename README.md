@@ -33,7 +33,7 @@ If you use this code in any kind of scientific publication please cite the follo
 ## Licence
 
 JetSeT is released under a 3-clause BSD  license,  for deatils see
-[License](https://github.com/andreatramacere/jetset/blob/master/LICENSE.txt`) file 
+[License](https://github.com/andreatramacere/jetset/blob/master/LICENSE.txt) file 
 
 
 # Documentation
