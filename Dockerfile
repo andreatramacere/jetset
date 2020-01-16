@@ -37,6 +37,6 @@ ADD notebooks/QuickStart.ipynb $HOME/notebooks/QuickStart.ipynb
 
 
 USER ${NB_USER}
-ENV PATH /opt/conda/envs/jetset-env/bin:$PATH
+#ENV PATH /opt/conda/envs/jetset-env/bin:$PATH
 #CMD echo "source activate jetset-env" > ~/.bashrc
 WORKDIR /home/jovyan/notebooks
