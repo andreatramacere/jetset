@@ -6,11 +6,7 @@ RUN pip install --no-cache --upgrade pip && \
     pip install --no-cache notebook
 
 
-ARG NB_USER=jovyan
-ARG NB_UID=1000
-ENV USER ${NB_USER}
-ENV NB_UID ${NB_UID}
-ENV HOME /home/${NB_USER}
+
 
 
 USER root
@@ -34,9 +30,17 @@ RUN apt-get install -y gcc
 RUN pip install git+http://github.com/andreatramacere/jetset#egg=jetset
 ADD notebooks/ $HOME/notebooks
 
+# create user with a home directory
+ARG NB_USER=jovyan
+ARG NB_UID=1000
+ENV USER ${NB_USER}
+ENV NB_UID ${NB_UID}
+ENV HOME /home/${NB_USER}
 
+RUN adduser --disabled-password \
+    --gecos "Default user" \
+    --uid ${NB_UID} \
+    ${NB_USER}
 
 USER ${NB_USER}
-#ENV PATH /opt/conda/envs/jetset-env/bin:$PATH
-#CMD echo "source activate jetset-env" > ~/.bashrc
-WORKDIR /home/jovyan/notebooks
+WORKDIR ${HOME}/notebooks
