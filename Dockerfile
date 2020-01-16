@@ -44,3 +44,5 @@ RUN adduser --disabled-password \
 
 USER ${NB_USER}
 WORKDIR ${HOME}/notebooks
+CMD cd ${HOME}/notebooks
+CMD ls
