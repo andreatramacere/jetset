@@ -27,7 +27,7 @@ ADD requirements_docker.txt /requirements_docker.txt
 
 #RUN conda install --yes -c astropy --file requirements_docker.txt
 RUN pip install -r requirements_docker.txt
-RUN sudo apt-get install swig
+RUN apt-get install swig
 RUN pip install -e https://github.com/andreatramacere/jetset#egg=jetset
 ADD notebooks/QuickStart.ipynb $HOME/notebooks/QuickStart.ipynb
 
