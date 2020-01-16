@@ -29,7 +29,7 @@ ADD requirements_docker.txt /requirements_docker.txt
 RUN pip install -r requirements_docker.txt
 RUN apt-get update -y
 RUN apt-get install -y swig
-RUN pip install git+git://github.com/andreatramacere/jetset#egg=jetset
+RUN pip install git+http://github.com/andreatramacere/jetset#egg=jetset
 ADD notebooks/QuickStart.ipynb $HOME/notebooks/QuickStart.ipynb
 
 
