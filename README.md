@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/andreatramacere/jetset.svg?branch=py23)](https://travis-ci.org/andreatramacere/jetset)
 
-![img](./logo/logo_large.png)
+![img](./logo/logo_git.png)
 
 
 JetSeT is  an open source  C/Python   framework  to reproduce radiative and accelerative processes acting in relativistic jets,  
