@@ -21,7 +21,7 @@ RUN conda create -n jetset-env python=3.7 ipython notebook
 
 RUN conda install --yes -c astropy --file requirements_docker.txt
 RUN conda install --yes -c andreatramacere -c astropy jetset
-ADD notebooks/QuickStart.ipynb $HOME/notebooks
+ADD notebooks/QuickStart.ipynb $HOME/notebooks/QuickStart.ipynb
 
 
 
