@@ -29,12 +29,19 @@ If you use this code in any kind of scientific publication please cite the follo
 * `Tramacere A. et al. 2009` http://adsabs.harvard.edu/abs/2009A%26A...501..879T
 * `Massaro E. et. al 2006`   http://adsabs.harvard.edu/abs/2006A%26A...448..861M
 
+
+JetSeT is released under a 3-clause BSD  license,  for deatils see
+[License](https://github.com/andreatramacere/jetset/blob/master/LICENSE.txt`) file 
+
+
 # Documentation
 visit: https://jetset.readthedocs.io/en/latest/
 
+#Installation 
+> **_NOTE:_** Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.6 is suggested, older python 3 versions (<3.6) should work.
 
+## Install  JetSeT from Anaconda  (suggested for OSX and Linux)
 
-# Install  JetSeT from Anaconda  (suggested for OSX and Linux)
  - I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
  
  - create a virtual environment (not necessary, but suggested): 
@@ -63,19 +70,21 @@ test_functions.test_short()
 
 **run all the examples outside of the installation dir**
 
-# Install the JetSeT from source 
+## Install the JetSeT from source 
 
 
-## Download the code
+### Download the code
    - Get the source code from: 
 
      - https://github.com/andreatramacere/jetset/archive/stable.tar.gz
 
    - Uncompress the  archive  `jetset-stable.tar.gz`
    
-   - cd to  the dir `jetset-stable` 
+   - cd to  the dir 
+    
+     - `cd jetset-stable` 
 
-## Installation from source using Anaconda 
+### Installation from source using Anaconda 
  
  - Install requirements, run on the command line:
     - `conda install --file requirements.txt`
@@ -103,9 +112,10 @@ test_functions.test_short()
 
 
 
-## Installation from source using PIP 
+### Installation from source using PIP 
  
- - Install requirements, run on the command line: `pip install -r requirements.txt `
+ - Install requirements, run on the command line: 
+   * `pip install -r requirements.txt `
     
    if pip fails to install swig, you can try one of the following alternative [methods](swig.md)
   

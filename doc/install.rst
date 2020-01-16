@@ -3,10 +3,12 @@
 Installation
 ============
 
-Install  JetSeT from ANACONDA (suggested for Linux and Mac OSX)
--------------------------------------------------------------------
 .. important::
     Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.6 is suggested, older python 3 versions (<3.6)  should work.
+
+
+Install  JetSeT from Anaconda (suggested for Linux and Mac OSX)
+-------------------------------------------------------------------
 
 
 
@@ -67,8 +69,13 @@ Download the code
 ^^^^^^^^^^^^^^^^^
 
 - Get the source code from: https://github.com/andreatramacere/jetset/archive/stable.tar.gz
-- Uncompress the  archive  `jetset-stable.tar.gz`
-- cd to  the dir `jetset-stable`
+- Uncompress the  archive:  `jetset-stable.tar.gz`
+
+- cd to  the dir source code dir
+
+  .. code-block:: bash
+
+   cd jetset-stable
 
 Installation from source using Anaconda
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -13,7 +13,7 @@
 
 
 
-`JetSeT` is an open source  C/Python   framework  to reproduce radiative and accelerative processes acting in relativistic jets,
+JetSeT is an open source  C/Python   framework  to reproduce radiative and accelerative processes acting in relativistic jets,
 allowing to fit the numerical models to observed data. The main features of this framework are:
 
 * handling observed data: re-binning, definition of data sets, bindings to astropy tables and quantities definition of complex numerical radiative scenarios: Synchrotron Self-Compton (SSC), external Compton (EC) and EC against the CMB
@@ -39,7 +39,8 @@ allowing to fit the numerical models to observed data. The main features of this
 
 
 Documentation
--------------
+^^^^^^^^^^^^^
+
 
 .. toctree::
    :maxdepth: 1
@@ -49,6 +50,10 @@ Documentation
    user guide <user_guide/user_guide.rst>
    code documentation (API) <api/modules.rst>
 
+License
+^^^^^^^
+JetSeT is released under a 3-clause BSD  license - for deatils see the
+`License <https://github.com/andreatramacere/jetset/blob/master/LICENSE.txt>`_ file
 
 ..   jet model <user_guide/jet_model/Jet_example.rst>
 ..   model fitting  <user_guide/model_fit/fit_example.rst>
@@ -64,10 +69,4 @@ Documentation
 
 
 
-Index
-------
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
