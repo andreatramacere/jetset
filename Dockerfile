@@ -32,7 +32,7 @@ RUN apt-get install -y swig
 RUN apt-get install -y git
 RUN apt-get install -y gcc
 RUN pip install git+http://github.com/andreatramacere/jetset#egg=jetset
-ADD notebooks/QuickStart.ipynb $HOME/notebooks/QuickStart.ipynb
+ADD notebooks/ $HOME/notebooks
 
 
 
