@@ -12,9 +12,9 @@ RUN conda create -n jetset-env python=3.7
 RUN echo "source activate jetset-env" > ~/.bashrc
 ENV PATH /opt/conda/envs/jetset-env/bin:$PATH
 
-RUN /bin/bash -c" source ~/.bashrc"
-RUN /bin/bash -c "conda init bash"
-RUN /bin/bash -c "conda activate jetset-env"
+RUN /bin/bash  source ~/.bashrc
+RUN /bin/bash  conda init bash
+RUN /bin/bash  conda activate jetset-env
 
 ADD requirements_docker.txt /requirements_docker.txt
 RUN conda create -n jetset-env python=3.7 ipython notebook
