@@ -7,7 +7,7 @@ reported in the table below. A quick start is available on the github repository
 but before I suggest to through the tutorials below.You can also run the quick start notebook on binder, by clicking the badge below:
 
 .. image:: https://mybinder.org/badge_logo.svg
- :target: https://mybinder.org/v2/gh/andreatramacere/jetset/maste
+ :target: https://mybinder.org/v2/gh/andreatramacere/jetset/master
 
 
 Tutorial
