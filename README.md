@@ -39,6 +39,8 @@ JetSeT is released under a 3-clause BSD  license,  for deatils see
 # Documentation
 visit: https://jetset.readthedocs.io/en/latest/
 
+run the notebook on binder: 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/andreatramacere/jetset/master)
 # Installation 
 > **_NOTE:_** Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.6 is suggested, older python 3 versions (<3.6) should work.
 
