@@ -28,7 +28,7 @@ RUN apt-get install -y swig
 RUN apt-get install -y git
 RUN apt-get install -y gcc
 RUN pip install git+http://github.com/andreatramacere/jetset#egg=jetset
-ADD notebooks/ $HOME/notebooks
+ADD notebooks/QuickStart.ipynb $HOME/notebooks/QuickStart.ipynb
 
 # create user with a home directory
 ARG NB_USER=jovyan
