@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/andreatramacere/jetset.svg?branch=py23)](https://travis-ci.org/andreatramacere/jetset)
 
-![img](./logo/logo_large.png)
+
+![img](./logo/logo_git.png)
 
 
 JetSeT is  an open source  C/Python   framework  to reproduce radiative and accelerative processes acting in relativistic jets,  
@@ -21,7 +22,7 @@ allowing to fit the numerical models to observed data. The main features of this
 
 
 
-# Acknowledgements
+## Acknowledgements
 
 If you use this code in any kind of scientific publication please cite the following papers:
 
@@ -29,6 +30,7 @@ If you use this code in any kind of scientific publication please cite the follo
 * `Tramacere A. et al. 2009` http://adsabs.harvard.edu/abs/2009A%26A...501..879T
 * `Massaro E. et. al 2006`   http://adsabs.harvard.edu/abs/2006A%26A...448..861M
 
+## Licence
 
 JetSeT is released under a 3-clause BSD  license,  for deatils see
 [License](https://github.com/andreatramacere/jetset/blob/master/LICENSE.txt`) file 
