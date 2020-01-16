@@ -1,0 +1,12 @@
+setuptools
+scipy
+numpy
+astropy>=4.0
+matplotlib
+future
+iminuit
+corner
+six
+emcee
+pyyaml
+pyqt

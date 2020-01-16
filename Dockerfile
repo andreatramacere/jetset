@@ -6,8 +6,8 @@ ENV USER ${NB_USER}
 ENV NB_UID ${NB_UID}
 ENV HOME /home/${NB_USER}
 ENV PATH /opt/conda/envs/env/bin:$PATH
-
 USER root
+ADD requirements_docker.txt /requirements_docker.txt
 RUN conda update
 RUN conda create -n jetset-env python=3.7 ipython notebook
 RUN echo "source activate jetset-env" > ~/.bashrc
