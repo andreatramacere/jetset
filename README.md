@@ -39,7 +39,7 @@ JetSeT is released under a 3-clause BSD  license,  for deatils see
 # Documentation
 visit: https://jetset.readthedocs.io/en/latest/
 
-#Installation 
+# Installation 
 > **_NOTE:_** Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.6 is suggested, older python 3 versions (<3.6) should work.
 
 ## Install  JetSeT from Anaconda  (suggested for OSX and Linux)
