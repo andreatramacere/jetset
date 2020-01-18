@@ -107,9 +107,9 @@ Installation from source using Anaconda
 
 - run the test (**run all the examples outside of the installation dir**)
 
-   .. code-block:: bash
+  .. code-block:: bash
 
-       python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+      python -c 'from jetset.tests import test_functions; test_functions.test_short()'
 
 
 

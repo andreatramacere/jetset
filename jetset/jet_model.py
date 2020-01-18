@@ -2337,6 +2337,7 @@ class Jet(Model):
         _par_array=ModelParameterArray()
 
         _name = [i for i in _energetic.__class__.__dict__.keys() if i[:1] != '_']
+        units=''
         for _n in _name:
             if _n[0]=='L':
                 par_type='Lum. blob rest. frme.'

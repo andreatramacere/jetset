@@ -29,7 +29,9 @@ Tutorial
 
    model fitting  2: SSC and galaxy template model fit and MCMC for Mrk 501 <model_fit_2/Jet_example_model_fit_wiht_gal_template.rst>
 
-   model fitting  3: Only Synchroton and minuit contours for Mrk 421 <model_fit_3/Jet_example_only_synchrotron.rst>
+   model fitting  3: SSC and EC fit for 3C 454.3 <model_fit_3/Jet_example_model_fit_EC.rst>
+
+   model fitting  4: Only Synchroton and minuit contours for Mrk 421 <model_fit_4/Jet_example_only_synchrotron.rst>
 
    change cosmology model <cosmology/Jet_example_cosmo.rst>
 
