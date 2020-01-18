@@ -1,7 +1,7 @@
 #building
 
 
-cd jetset
+cd integration/jetset/
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
