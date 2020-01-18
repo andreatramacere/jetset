@@ -19,7 +19,7 @@ echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 export USE_PIP='FALSE'
 export JETSETBESSELBUILD='TRUE'
 
-
+conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD BESSESL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 conda install --yes   -c astropy --file requirements.txt
 rm jetkernel/mathkernel/F_Sync.dat
@@ -39,6 +39,7 @@ export PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__versio
 rm -rf ../../../jetset/__pycache__/
 echo  $PKG_VERSION
 
+
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
 conda build purge
@@ -49,7 +50,7 @@ echo  $CONDABUILDJETSET
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
-conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build
+
 source $CONDA_PREFIX/etc/profile.d/conda.sh
 conda activate jetset-cidc
 
