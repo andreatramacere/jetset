@@ -1,5 +1,5 @@
 #deploy
-cd /Users/orion/astro/Programmi/Projects/Active/JetSeT/JetSeT_CICD/MAC_OS/CONDA
+cd deploy
 
 source $CONDA_PREFIX/etc/profile.d/conda.sh
 conda activate jetset-cidc

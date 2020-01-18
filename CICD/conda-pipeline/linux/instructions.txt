@@ -8,7 +8,10 @@ docker run -it --rm -v $PWD:/workdir -w /workdir  miniconda-jetset bash
 cd workdir
 mkdir integration
 mkdir test
+mkdir deploy
+
 git clone https://github.com/andreatramacere/jetset.git
 mv jetset integration
 integration/jetset/CICD/conda-pipeline/linux/linux-update-git.sh
 integration/jetset/CICD/conda-pipeline/linux/linux-build.sh
+integration/jetset/CICD/conda-pipeline/linux/linux-deploy.sh
