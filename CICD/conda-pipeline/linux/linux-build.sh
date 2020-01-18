@@ -32,7 +32,6 @@ echo  $PKG_VERSION
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PKG_VERSION
-conda clean -a
 conda build purge
 conda build .  -c defaults -c astropy > build.log 2>build.err #for linux
 export CONDABUILDJETSET=$(conda-build . --output)
@@ -54,3 +53,5 @@ conda install  --yes --offline $CONDABUILDJETSET
 cd /workdir/test
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
 conda deactivate
+export CONDABUILDJETSET=$(conda-build . --output)
+echo  $CONDABUILDJETSET
