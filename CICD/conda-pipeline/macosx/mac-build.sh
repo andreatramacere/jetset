@@ -4,9 +4,10 @@ echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 export JETSETBESSELBUILD='FALSE'
 export USE_PIP='FALSE'
 
+cd integration/jetset
 python setup.py clean
 
-cd integration/jetset/CICD/conda-pipeline/macosx
+cd CICD/conda-pipeline/macosx
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PWD
 conda env remove --name jetset-cidc
