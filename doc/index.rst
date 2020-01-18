@@ -33,6 +33,12 @@ allowing to fit the numerical models to observed data. The main features of this
     * `Tramacere A. et al. 2009 <http://adsabs.harvard.edu/abs/2009A%26A...501..879T>`_
     * `Massaro E. et. al 2006 <http://adsabs.harvard.edu/abs/2006A%26A...448..861M>`_
 
+Testers
+-------
+I would like to thanks the most active testers:
+
+
+Hubing Xiao, Cosimo Nigro, Vaidehi S. Paliya, Sara Buson
 
 .. _user-docs:
 
@@ -49,6 +55,8 @@ Documentation
    what's new in jetset 1.1.1  <new_release.rst>
    user guide <user_guide/user_guide.rst>
    code documentation (API) <api/modules.rst>
+
+
 
 License
 ^^^^^^^
