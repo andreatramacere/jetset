@@ -4,6 +4,7 @@ cd /workdir/deploy
 
 source $CONDA_PREFIX/etc/profile.d/conda.sh
 conda activate jetset-cidc
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$CONDABUILDJETSET
 
 anaconda login
 anaconda upload --force $CONDABUILDJETSET
