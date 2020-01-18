@@ -55,5 +55,6 @@ python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import te
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> DECATIVATING CONDA <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 conda deactivate
+cd /workdir/jetset/CICD/conda-pipeline/linux
 export CONDABUILDJETSET=$(conda-build . --output)
 echo  $CONDABUILDJETSET
