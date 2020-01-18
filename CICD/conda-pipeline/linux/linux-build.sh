@@ -45,7 +45,7 @@ conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-b
 source $CONDA_PREFIX/etc/profile.d/conda.sh
 
 cd /workdir/test
-echo 'export CONDABUILDJETSET='$CONDABUILDJETSET>./deploy/CONDABUILD.sh
+echo 'export CONDABUILDJETSET='$CONDABUILDJETSET>../deploy/CONDABUILD.sh
 
 
 conda activate jetset-cidc
