@@ -32,7 +32,7 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
   .. code-block:: bash
 
-    conda install -c andreatramacere -c astropy jetset
+    conda install -c andreatramacere  jetset
 
 
 
@@ -42,11 +42,6 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
       conda install -c andreatramacere -c astropy jetset
 
-  OR
-
-  .. code-block:: bash
-
-      conda install -c andreatramacere -c conda-forge jetset
 
 
 - run the test
@@ -91,11 +86,6 @@ Installation from source using Anaconda
 
       conda install -c astropy --file requirements.txt
 
-  OR
-
-  .. code-block:: bash
-
-      conda install -c conda-forge --file requirements.txt
 
 -  run on the command line
 

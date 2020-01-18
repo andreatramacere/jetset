@@ -46,7 +46,7 @@ Documentation
    :maxdepth: 1
 
    installation <install.rst>
-   what's new in jetset 1.1.0  <new_release.rst>
+   what's new in jetset 1.1.1  <new_release.rst>
    user guide <user_guide/user_guide.rst>
    code documentation (API) <api/modules.rst>
 

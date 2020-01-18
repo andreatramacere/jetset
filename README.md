@@ -62,9 +62,6 @@ run the notebook on binder:
   
    - `conda install -c andreatramacere -c astropy jetset`
     
-     OR
-
-   - `conda install -c andreatramacere -c conda-forge jetset`
 
 - run the test
 ```bash
@@ -96,11 +93,9 @@ python -c 'from jetset.tests import test_functions; test_functions.test_short()'
   
    - `conda install -c astropy  --file requirements.txt`
     
-     OR
-
-   - `conda install -c conda-forge  --file requirements.txt` 
-   
-    if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
+  
+  
+   if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
    
  - run on the command line: 
      * `python setup.py clean`
