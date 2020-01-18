@@ -54,7 +54,7 @@ conda activate jetset-cidc
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$CONDABUILDJETSET
 #testing
-conda install --yes   -c astropy --file integration/jetset/requirements.txt
+conda install --yes   -c astropy --file ../integration/jetset/requirements.txt
 conda install  --yes --offline $CONDABUILDJETSET
 
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
