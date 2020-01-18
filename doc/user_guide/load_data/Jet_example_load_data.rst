@@ -64,7 +64,7 @@ we can easily access the astropy table
 .. raw:: html
 
     <i>Table length=10</i>
-    <table id="table4677994320" class="table-striped table-bordered table-condensed">
+    <table id="table4867803984" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -192,7 +192,7 @@ As you can see there are three 3 files. We use in this example the file for Mrk 
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table4684492432" class="table-striped table-bordered table-condensed">
+    <table id="table4868147152" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>str13</th></tr></thead>
@@ -285,7 +285,7 @@ the data can be loaded from the saved table
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table4684664464" class="table-striped table-bordered table-condensed">
+    <table id="table4874450896" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>str13</th></tr></thead>
@@ -359,7 +359,7 @@ of course this method applies if you have a generic 2-dim numpy array.
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table4684799184" class="table-striped table-bordered table-condensed">
+    <table id="table4874543568" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -428,7 +428,7 @@ Assume that we downloaded the data for Mrk421, in observed fluxes and linear sca
 .. raw:: html
 
     <i>Table length=3550</i>
-    <table id="table4684797328" class="table-striped table-bordered table-condensed">
+    <table id="table4874527376" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -494,7 +494,7 @@ and after elimination of duplicated entries, and upper limits
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table4684678864" class="table-striped table-bordered table-condensed">
+    <table id="table4874307152" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu_data</th><th>dnu_data</th><th>nuFnu_data</th><th>dnuFnu_data</th><th>nu_data_log</th><th>dnu_data_log</th><th>nuFnu_data_log</th><th>dnuFnu_data_log</th><th>dnuFnu_facke</th><th>dnuFnu_facke_log</th><th>UL</th><th>zero_error</th><th>T_start</th><th>T_stop</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th></th><th></th><th></th><th>MJD</th><th>MJD</th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bool</th><th>float64</th><th>float64</th><th>str13</th></tr></thead>
@@ -667,4 +667,170 @@ For these reasons the package offer the possibility to add systematics
 
 
 with this command we add 20% systematics for data between :math:`10^{6}<\nu<10^{29}` Hz
+
+filtering data sets
+-------------------
+
+we use the ``show_data_sets()`` method to have know wich data sets are
+defined in our table
+
+.. code:: ipython3
+
+    sed_data.show_data_sets()
+
+
+
+.. parsed-literal::
+
+    current datasets
+    dataset -1
+    dataset 0
+    dataset 1
+    dataset 2
+
+
+we use ``show_dataset=True`` to have the legend of all the datasets
+
+.. code:: ipython3
+
+    data=Data.from_file(test_SEDs[0])
+    sed_data=ObsData(data_table=data)
+    %matplotlib inline
+    p=sed_data.plot_sed(show_dataset=True)
+
+
+
+.. image:: Jet_example_load_data_files/Jet_example_load_data_79_0.png
+
+
+.. code:: ipython3
+
+    sed_data.show_data_sets()
+
+
+
+.. parsed-literal::
+
+    current datasets
+    dataset -1
+    dataset 0
+    dataset 1
+    dataset 2
+
+
+we filter out the data set ``-1`` using the ``filter_data_set()``
+method. Please not with ``exclude=True`` we exclude dataset in
+``filters``
+
+.. code:: ipython3
+
+    sed_data.filter_data_set(filters='-1',exclude=True)
+    sed_data.show_data_sets()
+    p=sed_data.plot_sed(show_dataset=True)
+
+
+.. parsed-literal::
+
+    ---> excluding  data_set/s ['-1']
+    filter -1 192
+    current datasets
+    dataset 0
+    dataset 1
+    dataset 2
+    ---> data sets left after filtering None
+    ---> data len after filtering=192
+    current datasets
+    dataset 0
+    dataset 1
+    dataset 2
+
+
+
+.. image:: Jet_example_load_data_files/Jet_example_load_data_82_1.png
+
+
+we can pass more datasets, comma separated
+
+.. code:: ipython3
+
+    sed_data.filter_data_set(filters='-1,0',exclude=True)
+    sed_data.show_data_sets()
+    p=sed_data.plot_sed(show_dataset=True)
+
+
+.. parsed-literal::
+
+    ---> excluding  data_set/s ['-1', '0']
+    filter -1 192
+    filter 0 57
+    current datasets
+    dataset 1
+    dataset 2
+    ---> data sets left after filtering None
+    ---> data len after filtering=57
+    current datasets
+    dataset 1
+    dataset 2
+
+
+
+.. image:: Jet_example_load_data_files/Jet_example_load_data_84_1.png
+
+
+we can also use ``filter_data_set`` to exclude *only* the datasets in
+``filters`` with ``exclude=False``
+
+.. code:: ipython3
+
+    sed_data.filter_data_set(filters='-1',exclude=True)
+    sed_data.show_data_sets()
+    p=sed_data.plot_sed(show_dataset=True)
+
+
+.. parsed-literal::
+
+    ---> excluding  data_set/s ['-1']
+    filter -1 192
+    current datasets
+    dataset 0
+    dataset 1
+    dataset 2
+    ---> data sets left after filtering None
+    ---> data len after filtering=192
+    current datasets
+    dataset 0
+    dataset 1
+    dataset 2
+
+
+
+.. image:: Jet_example_load_data_files/Jet_example_load_data_86_1.png
+
+
+.. code:: ipython3
+
+    we can revert `sed_data` to the original statwe
+
+.. code:: ipython3
+
+    sed_data.reset_data()
+
+.. code:: ipython3
+
+    sed_data.show_data_sets()
+    p=sed_data.plot_sed(show_dataset=True)
+
+
+.. parsed-literal::
+
+    current datasets
+    dataset -1
+    dataset 0
+    dataset 1
+    dataset 2
+
+
+
+.. image:: Jet_example_load_data_files/Jet_example_load_data_89_1.png
+
 

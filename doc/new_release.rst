@@ -1,5 +1,15 @@
-What's new in version 1.1.0
+What's new in version 1.1.1
 ===========================
+
+This release fixes some minor bugs, and fixes a problem with swig for mac os mojave for the Jet.energetic_report method
+
+The QuickStart notebook has been improved.
+
+
+The conda-forge channel has ben removed becase was installing on mac os mojave a bugged version of matplotlib.
+
+In the following are listed the main new features common to 1.1.0 and 1.1.1
+
 
 #. Astropy Tables with units have been implemented for most of the products.
 

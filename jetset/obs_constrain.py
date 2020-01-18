@@ -1138,13 +1138,13 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
     # values                        #
     #################################
     
-    flag_initial=jet.get_flag()
+    #flag_initial=jet.get_flag()
 
     
     R_initial=jet.get_par_by_name('R').val_lin
     N_initial=jet.get_par_by_name('N').val
 
-    jet.set_flag('constr_R')
+    #jet.set_flag('constr_R')
     
     CD_model_log=[]
     CD_obs=nuFnu_p_IC/nuFnu_p_S
@@ -1152,16 +1152,21 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
     R_min=1E13
     R_max=R_tvar*2
     R_grid=logspace(n.log10(R_min),n.log10(R_max),params_grid_size)
-    f=open('%s/R_vs_CD.dat'%jet.get_path(),'w')
+    #f=open('%s/R_vs_CD.dat'%jet.get_path(),'w')
     for R in R_grid:
 
         jet.set_par('R',val=set_lin_log_val(jet.get_par_by_name('R'),R))
         #print('--> 1',jet.get_par_by_name('R').val)
 
+
         N_res,ratio=rescale_Ne(jet,nuFnu_p_S,rest_frame)
-        
-        jet.set_par('N',val=N_res)
-        
+
+
+        if N_res>0.:
+            jet.set_par('N',val=N_res)
+        else:
+            print('N_res was negative', N_res)
+
         jet.eval()
 
         Lp_S=jet.get_SED_peak(Model_dic.Sync_nuFnu_p_dic[rest_frame])
@@ -1178,7 +1183,7 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
         #print "     R=%e, CD_obs=%e, CD_model=%e"%(R,CD_obs,CD)
         #print(n.log10(R),n.log10(CD/CD_obs),file=f)
 
-    f.close()
+    #f.close()
 
     R_grid_log=n.log10(R_grid)
     p=polyfit(CD_model_log,R_grid_log,2)
@@ -1188,7 +1193,7 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
     Best_R=n.power(10.,best_R)
     Best_R,failed=check_boundaries(Best_R,R_min,R_max,'R',silent=silent)
     
-    jet.set_flag(flag_initial)
+    #jet.set_flag(flag_initial)
 
     jet.set_par('R',val=set_lin_log_val(jet.get_par_by_name('R'),R_initial))
     jet.set_par('N',val=N_initial)
@@ -1216,7 +1221,7 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
     
     B_grid=logspace(sp.log10(B_min),sp.log10(B_max),params_grid_size)
     
-    f=open('%s/B_vs_nu_p_IC.dat'%jet.get_path(),'w')
+    #f=open('%s/B_vs_nu_p_IC.dat'%jet.get_path(),'w')
     
     #fin the turn-over variable to update with B
     turn_over_energy=jet.get_par_by_type('turn-over-energy')
@@ -1248,10 +1253,10 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
         
         nu_p_IC_model_log.append(n.log10(nu_p_model))
 
-        print(n.log10(B),n.log10(nu_p_model),file=f)
+        #print(n.log10(B),n.log10(nu_p_model),file=f)
         #print n.log10(B),n.log10(nu_p_model)
 
-    f.close()
+    #f.close()
     
     B_grid_log=n.log10(B_grid)
     

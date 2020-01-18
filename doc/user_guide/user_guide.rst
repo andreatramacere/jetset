@@ -3,7 +3,7 @@ JetSeT User Guide
 =================
 
 The following tutorial covers a large fraction of the code features. Please, follow the order
-reported in the table below. A quick start is available on the github repository `here <https://github.com/andreatramacere/jetset/tree/develop/notebooks>`_,
+reported in the table below. A quick start is available on the github repository `here <https://github.com/andreatramacere/jetset/tree/1.1.1/notebooks>`_,
 but before I suggest to through the tutorials below.You can also run the quick start notebook on binder, by clicking the badge below:
 
 .. image:: https://mybinder.org/badge_logo.svg
@@ -29,7 +29,9 @@ Tutorial
 
    model fitting  2: SSC and galaxy template model fit and MCMC for Mrk 501 <model_fit_2/Jet_example_model_fit_wiht_gal_template.rst>
 
-   model fitting  3: Only Synchroton and minuit contours for Mrk 421 <model_fit_3/Jet_example_only_synchrotron.rst>
+   model fitting  3: SSC and EC fit for 3C 454.3 <model_fit_3/Jet_example_model_fit_EC.rst>
+
+   model fitting  4: Only Synchroton and minuit contours for Mrk 421 <model_fit_4/Jet_example_only_synchrotron.rst>
 
    change cosmology model <cosmology/Jet_example_cosmo.rst>
 

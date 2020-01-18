@@ -1,4 +1,4 @@
-
+import sys
 
 
 
@@ -6,6 +6,17 @@
 def data():
     from jetset.data_loader import ObsData, Data
     from jetset.test_data_helper import test_SEDs
+
+    data = Data.from_file(test_SEDs[0])
+    sed_data = ObsData(data_table=data)
+    sed_data.show_data_sets()
+    sed_data.filter_data_set('-1', exclude=True)
+    sed_data.show_data_sets()
+    sed_data.reset_data()
+    sed_data.show_data_sets()
+    sed_data.filter_data_set('-1', exclude=False)
+    sed_data.show_data_sets()
+    sed_data.reset_data()
 
     data=Data.from_file(test_SEDs[2])
     sed_data=ObsData(data_table=data)
@@ -115,8 +126,17 @@ def test_build_bessel():
     Jet().eval()
 
 
-def test_full():
+def test_jet():
+    from jetset.jet_model import Jet
+    j=Jet()
+    j.eval()
+    j.energetic_report()
 
+
+def test_full():
+    from jetset.plot_sedfit import plt
+    plt.ioff()
+    test_jet()
     sed_data=data()
     print('done')
     my_shape=spectral_indices(sed_data)
@@ -128,8 +148,10 @@ def test_full():
     model_fit_lsb(sed_data,my_shape)
     model_fit_minuit(sed_data,my_shape)
 
-
 def test_short():
+    from jetset.plot_sedfit import  plt
+    plt.ioff()
+    test_jet()
     sed_data = data()
     print('done')
     my_shape = spectral_indices(sed_data)

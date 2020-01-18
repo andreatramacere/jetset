@@ -14,7 +14,7 @@ import copy
 from astropy.table  import  Table,Column
 from astropy import  units as u
 from astropy.units import cds
-from .plot_sedfit import PlotSED
+from .plot_sedfit import PlotSED, plt
 
 from .output import section_separator
 from .utils import *
@@ -143,7 +143,7 @@ class Data(object):
                     try:
                         self._table[_cn]=self._table[_cn].to(self._units[ID])
                     except:
-                        raise RuntimeError ('Unito conversion problem for ',self._table[_cn].unit,'to',self._units[ID])
+                        raise RuntimeError ('Unit conversion problem for ',self._table[_cn].unit,'to',self._units[ID])
 
 
     def set_meta_data(self,m,v):
@@ -658,28 +658,41 @@ class ObsData(object):
     
     
     
-    def filter_data_set(self,filters,exclude=False):
+    def filter_data_set(self,filters,exclude=False,silent=False):
 
         filters=filters.split(',')
 
-        if exclude==False:
-            print ("---> filtering for fit data_set==",filters)
-        else:
-            print ("---> filtering for fit data_set!=",filters)
+        if silent is False:
+            if exclude==False:
+                print ("---> including  only data_set/s",filters)
+            else:
+                print ("---> excluding  data_set/s",filters)
 
         
         msk=np.ones(self.data['nu_data'].size, dtype=bool)
+
+        if exclude == True:
+            msk = np.ones(self.data['nu_data'].size, dtype=bool)
+
+        if exclude == False:
+            msk = np.zeros(self.data['nu_data'].size, dtype=bool)
+
         for filter in filters:
-        
-            msk1= np.char.decode(self.data['data_set']) == filter
-            msk=msk*msk1
-        if exclude==True:
-            msk=np.invert(msk)
+            #print ('filter',filter)
+            msk1= self.data['data_set'] == filter
+            if exclude == True:
+                msk1 = np.invert(msk1)
+                msk = np.logical_and(msk, msk1)
+            else:
+                msk=np.logical_or(msk,msk1)
+            if silent is False:
+                print('filter', filter, np.sum(msk))
+
         
         self.data=self.data[msk]
-        
-        
-        print ("---> data len after filtering=%d" % len(self.data['nu_data']))
+        if silent is False:
+            print("---> data sets left after filtering",self.show_data_sets())
+            print ("---> data len after filtering=%d" % len(self.data['nu_data']))
         
 
     def set_facke_error(self,):
@@ -1130,32 +1143,43 @@ class ObsData(object):
     
     def show_data_sets(self):
         shown=[]
+        print('current datasets')
         for entry in self.data['data_set']:
             if entry not in shown:
                 shown.append(entry)
-                print (entry)
+                print ('dataset', entry)
                 
     
     def get_data_sets(self):
         shown=[]
         for entry in np.unique(self.data['data_set']):
             if entry not in shown:
-                shown.append(entry.decode('UTF-8'))
+                shown.append(entry)
         
         return shown
 
 
 
-    def plot_sed(self,plot_obj=None,frame='obs',color=None,fmt='o',ms=4,mew=0.5,figsize=None):
+    def plot_sed(self,plot_obj=None,frame='obs',color=None,fmt='o',ms=4,mew=0.5,figsize=None,show_dataset=False):
         if plot_obj is None:
-            plot_obj=PlotSED(frame=frame,figsize=figsize)
-        plot_obj.add_data_plot(self,color=color,fmt=fmt,ms=ms,mew=mew)
+            plot_obj = PlotSED(frame=frame, figsize=figsize)
+
+        if show_dataset is False:
+
+            plot_obj.add_data_plot(self, color=color, fmt=fmt, ms=ms, mew=mew)
+        else:
+            for ds in self.get_data_sets():
+                self.filter_data_set(filters=ds,silent=True,exclude=False)
+                plot_obj.add_data_plot(self, color=color, fmt=fmt, ms=ms, mew=mew ,label='dataset %s'%ds)
+                self.reset_data()
+            self.reset_data()
+
         return plot_obj
 
     
     def plot_time_spans(self,save_as=None):
-        import pylab as plt
-        
+
+
         fig=plt.figure(figsize=(12,9))
         ax1 = fig.add_subplot(111)
         ax1.set_xlabel('MJD')
@@ -1164,9 +1188,9 @@ class ObsData(object):
         line_style='-'
         for data_set in data_sets:
             print (data_set)
-            
-            #try:
-                
+
+
+
             T1,T2,dT,n=self.get_time_span(data_set=data_set)
             print(T1,T2,dT,n)
             if T1!=-1:
@@ -1174,17 +1198,13 @@ class ObsData(object):
                 x=(T1+T2)/2
                 ax1.text(x,y+0.3,data_set+' (%d)'%n)
                 y=y+1
-                #print("---->", dT,T1,T2,y)
-            #except Exception as e:
-            #    print ('Exception',e)
-            #    print ("no Time span for data_set",data_set)
-            
+
         ax1.set_ylim(-0.5,y+0.5)
-        fig.show()
+
         if save_as is not None:
             fig.savefig(save_as)
-       
-        
+
+        return fig
        
         
     
@@ -1199,48 +1219,61 @@ class ObsData(object):
         returns Tstart, Tstop, and Delta T for the full data set (if no dat_set
         is provided), or for a specific data_set
         """
-        
+
+        time_span_found = False
+
+        T1 = -1
+        T2 = -1
+        DT = -1
+        nT = 0
+
+
         if data_set is None:
-            m1= self.data['T_start'] != 0
-            T1=self.data['T_start'][m1].min()
-            T2=self.data['T_stop'][m1].max()
-            DT=T2-T1
-            nT=self.data['T_start'][m1].size
+            #m1= self.data['T_start'] != 0
+
+            T1 = self.data['T_start'].min()
+            T2 = self.data['T_stop'].max()
+            DT = T2 - T1
+            nT = self.data['T_start'].size
+            time_span_found=True
+
             
         elif  data_set  in self.data['data_set'].astype(str):
         
-            m1= self.data['T_start'] != 0
+            #m1= self.data['T_start'] != 0
             m2= self.data['data_set'].astype(str) == data_set
             if self.data['data_set'][m2].size>0:
                 try:
-                    T1=self.data['T_start'][m1 * m2].min()
-                    T2=self.data['T_stop'][m1 * m2].max()
+
+                    T1=self.data['T_start'][m2].min()
+                    T2=self.data['T_stop'][m2].max()
                     DT=T2-T1
-                    nT=self.data['T_start'][m1 * m2].size
+                    nT=self.data['T_start'][m2].size
+                    time_span_found = True
                 except:
+                    time_span_found = False
                     T1=-1
                     T2=-1
                     DT=-1
                     nT=0
                     print ('something wrong with T_start and T_stop columns, check the values please, for data_set=',data_set)
         else:
+            time_span_found = False
             print ("no data found for this selection, data_set= ",data_set)
             if data_set not in self.data['data_set']:
                 print ("the data_set %s is not present in the data"%data_set)
                 print ("possible data_set: ")
                 print (self.show_data_sets())
                     
-            T1=-1
-            T2=-1
-            DT=-1
-            nT=0
+
         
-        if silent==False:
-            print ("T_start=%f T_stop=%f DT=%f, number of points=%d"%(T1,T2,DT,nT))
-        if get_values==True: 
+        if silent==False and time_span_found is True:
+            print ("T_start=%f T_stop=%f DT=%f, number of points=%d"%(T1, T2, DT, nT))
+
+        if get_values==True:
             return T1,T2,DT,nT
             
-            
+
     def lin_to_log(self,val=None,err=None):
         
        return lin_to_log(val=val,err=err)

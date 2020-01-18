@@ -1,23 +1,14 @@
-#path on miniconda docker
-cd /workdir
-
-
 #building
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> git  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
-cd integration
-git clone https://github.com/andreatramacere/jetset.git
-cd jetset
-git checkout develop
-git reset --hard HEAD
-git pull origin develop
 
-#to build bessel fucntion locally
+cd integration/jetset
+
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
 export USE_PIP='FALSE'
 export JETSETBESSELBUILD='TRUE'
+
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD BESSESL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
@@ -39,25 +30,34 @@ export PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__versio
 rm -rf ../../../jetset/__pycache__/
 echo  $PKG_VERSION
 
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PKG_VERSION
 conda build purge
 conda build .  -c defaults -c astropy > build.log 2>build.err #for linux
 export CONDABUILDJETSET=$(conda-build . --output)
 echo  $CONDABUILDJETSET
 
 
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
-conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$CONDABUILDJETSET
+conda env remove --name jetset-cidc
+conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build>conda_env_build.log
 source $CONDA_PREFIX/etc/profile.d/conda.sh
+
+cd /workdir/test
+echo 'export CONDABUILDJETSET='$CONDABUILDJETSET>../deploy/CONDABUILD.sh
+
+
 conda activate jetset-cidc
 
 
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$CONDABUILDJETSET
 #testing
-conda install --yes   -c astropy --file ../../../requirements.txt
+conda install --yes   -c astropy --file ../integration/jetset/requirements.txt
 conda install  --yes --offline $CONDABUILDJETSET
-cd /workdir/test
+
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
+
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> DECATIVATING CONDA <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 conda deactivate

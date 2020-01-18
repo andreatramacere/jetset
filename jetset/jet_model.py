@@ -47,7 +47,7 @@ from .output import makedir,WorkPlace,clean_dir
 
 from .jetkernel_models_dic import nuFnu_obs_dic,gamma_dic,available_N_distr,N_distr_descr,n_seed_dic,allowed_disk_type
 
-from  .plot_sedfit import PlotSED,PlotPdistr,PlotSpecComp,PlotSeedPhotons
+from  .plot_sedfit import PlotSED,PlotPdistr,PlotSpecComp,PlotSeedPhotons,plt
 
 from .cosmo_tools import Cosmo
 
@@ -70,7 +70,8 @@ class NoTraceBackWithLineNumber(Exception):
 
 def new_version_warning():
     m = '\n\n' + '*'*80 + '\n'
-    m+= 'Starting from version 1.1.0, the R parameter as default is linear \nand not logarithmic, please update your scripts\n'
+    m+= 'Something wrong has happened. Please, look at the exception message. Note also that\n'
+    m+= 'starting from version 1.1.0, the R parameter as default is linear \nand not logarithmic, please update your scripts\n'
     m+= 'Also the format of the jet_model has changed, now it is a binary file.\n'
     m+= '*' * 80 + '\n'
     warnings.warn(m)
@@ -86,7 +87,7 @@ def old_model_warning():
 
 class JetkerneltException(NoTraceBackWithLineNumber):
 
-    def __init__(self, message='Remote analysis exception', debug_message=''):
+    def __init__(self, message='Jeset  exception', debug_message=''):
         super(JetkerneltException, self).__init__(message)
         self.message=message
         self.debug_message=debug_message
@@ -1512,7 +1513,7 @@ class Jet(Model):
         ID_min = np.argmin(U_B + U_e)
 
         if plot==True:
-            import  pylab as plt
+            #import  pylab as plt
             fig, ax = plt.subplots()
             ax.plot(b_grid,U_e)
             ax.plot(b_grid,U_B)
@@ -2328,7 +2329,7 @@ class Jet(Model):
         except:
             raise RuntimeError ('model evaluation failed in get_SED_points')
 
-    @safe_run
+    #@safe_run
     def energetic_report(self,write_file=False,getstring=True,wd=None,name=None,verbose=True):
         self.energetic_dict={}
 
@@ -2336,28 +2337,39 @@ class Jet(Model):
         _par_array=ModelParameterArray()
 
         _name = [i for i in _energetic.__class__.__dict__.keys() if i[:1] != '_']
-        for _n in _name:
-            if _n[0]=='L':
-                par_type='Lum. blob rest. frme.'
-                units='erg/s'
-            elif _n[0] == 'U' and 'DRF' not in _n:
-                par_type = 'Energy dens. blob rest. frame'
-                units = 'erg/cm^3'
-            elif _n[0] == 'U' and 'DRF'  in _n:
-                par_type = 'Energy dens. disk rest. frame'
-                units = 'erg/cm^3'
-            elif _n[0] == 'j':
-                par_type = 'jet Lum.'
-                units = 'erg/s'
-            else:
-                raise RuntimeWarning('enegetic name %s not understood'%_n)
-            self.energetic_dict[_n]=getattr(_energetic, _n)
 
-            _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
+        try:
+            for _n in _name:
+                units = 'skip_this'
+                if _n[0]=='L':
+                    par_type='Lum. blob rest. frme.'
+                    units='erg/s'
+                elif _n[0] == 'U' and 'DRF' not in _n:
+                    par_type = 'Energy dens. blob rest. frame'
+                    units = 'erg/cm^3'
+                elif _n[0] == 'U' and 'DRF'  in _n:
+                    par_type = 'Energy dens. disk rest. frame'
+                    units = 'erg/cm^3'
+                elif _n[0] == 'j':
+                    par_type = 'jet Lum.'
+                    units = 'erg/s'
+                else:
+                    warnings.warn('energetic name %s not understood'%_n)
+
+                if units == 'skip_this':
+                    pass
+                else:
+                    self.energetic_dict[_n]=getattr(_energetic, _n)
+
+                    _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
 
             self.energetic_report_table = _par_array.par_table
             self.energetic_report_table.remove_columns(['log','frozen','phys. bound. min','phys. bound. max'])
             self.energetic_report_table.rename_column('par type','type')
+
+        except Exception as e:
+            print('_energetic',_energetic)
+            raise RuntimeError('energetic_report failed',e)
 
         self._energetic_report = self.energetic_report_table.pformat_all()
 
