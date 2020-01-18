@@ -52,6 +52,8 @@ conda install --yes   -c astropy --file ../../../requirements.txt
 conda install  --yes --offline $CONDABUILDJETSET
 cd /workdir/test
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
+
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> DECATIVATING CONDA <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 conda deactivate
 export CONDABUILDJETSET=$(conda-build . --output)
 echo  $CONDABUILDJETSET
