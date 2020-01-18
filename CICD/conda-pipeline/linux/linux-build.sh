@@ -44,7 +44,8 @@ conda env remove --name jetset-cidc
 conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build>conda_env_build.log
 source $CONDA_PREFIX/etc/profile.d/conda.sh
 
-echo 'export CONDABUILDJETSET='$CONDABUILDJETSET>../deploy/CONDABUILD.sh
+cd /workdir/test
+echo 'export CONDABUILDJETSET='$CONDABUILDJETSET>./deploy/CONDABUILD.sh
 
 
 conda activate jetset-cidc
@@ -55,7 +56,7 @@ echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$
 #testing
 conda install --yes   -c astropy --file ../../../requirements.txt
 conda install  --yes --offline $CONDABUILDJETSET
-cd /workdir/test
+
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> DECATIVATING CONDA <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
