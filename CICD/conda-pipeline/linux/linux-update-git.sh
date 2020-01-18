@@ -11,4 +11,4 @@ cd jetset
 git checkout develop
 git reset --hard HEAD
 git pull origin develop
-cd ..
+cd /workdir
