@@ -26,7 +26,8 @@ except:
     minuit_installed=False
 #from iminuit.frontends import ConsoleFrontend
 #from iminuit.frontends import console
-import  pylab as plt
+from .plot_sedfit import plt
+
 from scipy.optimize import leastsq
 
 from scipy.optimize import least_squares,curve_fit

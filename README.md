@@ -42,7 +42,7 @@ visit: https://jetset.readthedocs.io/en/latest/
 run the notebook on binder: 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/andreatramacere/jetset/master)
 # Installation 
-> **_NOTE:_** Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.6 is suggested, older python 3 versions (<3.6) should work.
+> **_NOTE:_** Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.6 is suggested, older python 3 versions (< 3.6) should work.
 
 ## Install  JetSeT from Anaconda  (suggested for OSX and Linux)
 
@@ -66,11 +66,10 @@ run the notebook on binder:
 
    - `conda install -c andreatramacere -c conda-forge jetset`
 
-- run the test in python or ipython or jupyter-notebook
-```python
-from jetset.tests import test_functions 
-test_functions.test_short() 
-```  
+- run the test
+```bash
+python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+ ```  
 
 **run all the examples outside of the installation dir**
 
@@ -107,11 +106,10 @@ test_functions.test_short()
      * `python setup.py clean`
      * `python setup.py install`
 
- - run the test in python or ipython or jupyter-notebook (**run all the examples outside of the installation dir**)
-```python
-from jetset.tests import test_functions 
-test_functions.test_short() 
-```  
+ - run the test (**run all the examples outside of the installation dir**)
+```bash
+python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+ ```  
 
 
 
@@ -127,11 +125,10 @@ test_functions.test_short()
     * `python setup.py clean`
     * `python setup.py install`
 
- - run the test in python or ipython or jupyter-notebook (**run all the examples outside of the installation dir**)
-```python
-from jetset.tests import test_functions 
-test_functions.test_short() 
-```   
+ - run the test (**run all the examples outside of the installation dir**)
+```bash
+python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+ ```    
       
    
 

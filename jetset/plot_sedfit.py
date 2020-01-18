@@ -5,22 +5,25 @@ from builtins import (bytes, str, open, super, range,
 
 __author__ = "Andrea Tramacere"
 
-NOPYLAB=True
+#NOPYLAB=True
 
 try:
     
-    import  pylab as plt
+    import matplotlib.pyplot as plt
    
-    from matplotlib import pylab as pp
-    from matplotlib import  gridspec
-
+    #print('import matplotlib.pyplot as plt')
 except:
+    from matplotlib import pylab as plt
 
-    NOPYLAB=True
+    #print('from matplotlib import pylab as plt')
+    try:
+        import  pylab as plt
 
-    #print "pylab not found on this system"
-    #print "install package, and/or update pythonpath"
+        #print('import  pylab as plt')
+    except:
+        raise RuntimeError('Unable to import pylab/pyplot from matplotlib')
 
+from matplotlib import gridspec
 
 
 from collections import namedtuple

@@ -49,12 +49,12 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
       conda install -c andreatramacere -c conda-forge jetset
 
 
-- run the test in python or ipython or jupyter-notebook
+- run the test
 
-  .. code-block:: python
+  .. code-block:: bash
 
-    from jetset.tests import test_functions
-    test_functions.test_short()
+      python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+
 
 
 
@@ -105,12 +105,12 @@ Installation from source using Anaconda
 
        python setup.py install
 
-- run the test in python or ipython or jupyter-notebook (**run all the examples outside of the installation dir**)
+- run the test (**run all the examples outside of the installation dir**)
 
-  .. code-block:: python
+   .. code-block:: bash
 
-     from jetset.tests import test_functions
-     test_functions.test_short()
+       python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+
 
 
 
@@ -132,12 +132,12 @@ Installation from source using PIP
 
         python setup.py install
 
-- run the test in python or ipython or jupyter-notebook (**run all the examples outside of the installation dir**)
+- run the test  (**run all the examples outside of the installation dir**)
 
-  .. code-block:: python
+  .. code-block:: bash
 
-     from jetset.tests import test_functions
-     test_functions.test_short()
+       python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+
 
 
 

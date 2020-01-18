@@ -13,7 +13,7 @@ from itertools import cycle
 import numpy as np
 import scipy as sp
 from scipy import stats
-from pylab import  plt
+from .plot_sedfit import  plt
 import corner
 import pickle
 

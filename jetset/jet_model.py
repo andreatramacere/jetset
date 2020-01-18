@@ -47,7 +47,7 @@ from .output import makedir,WorkPlace,clean_dir
 
 from .jetkernel_models_dic import nuFnu_obs_dic,gamma_dic,available_N_distr,N_distr_descr,n_seed_dic,allowed_disk_type
 
-from  .plot_sedfit import PlotSED,PlotPdistr,PlotSpecComp,PlotSeedPhotons
+from  .plot_sedfit import PlotSED,PlotPdistr,PlotSpecComp,PlotSeedPhotons,plt
 
 from .cosmo_tools import Cosmo
 
@@ -70,7 +70,8 @@ class NoTraceBackWithLineNumber(Exception):
 
 def new_version_warning():
     m = '\n\n' + '*'*80 + '\n'
-    m+= 'Starting from version 1.1.0, the R parameter as default is linear \nand not logarithmic, please update your scripts\n'
+    m+= 'Something wrong has happened. Please, look at the exception message. Note also that\n'
+    m+= 'starting from version 1.1.0, the R parameter as default is linear \nand not logarithmic, please update your scripts\n'
     m+= 'Also the format of the jet_model has changed, now it is a binary file.\n'
     m+= '*' * 80 + '\n'
     warnings.warn(m)
@@ -86,7 +87,7 @@ def old_model_warning():
 
 class JetkerneltException(NoTraceBackWithLineNumber):
 
-    def __init__(self, message='Remote analysis exception', debug_message=''):
+    def __init__(self, message='Jeset  exception', debug_message=''):
         super(JetkerneltException, self).__init__(message)
         self.message=message
         self.debug_message=debug_message
@@ -1512,7 +1513,7 @@ class Jet(Model):
         ID_min = np.argmin(U_B + U_e)
 
         if plot==True:
-            import  pylab as plt
+            #import  pylab as plt
             fig, ax = plt.subplots()
             ax.plot(b_grid,U_e)
             ax.plot(b_grid,U_B)
@@ -2350,7 +2351,8 @@ class Jet(Model):
                 par_type = 'jet Lum.'
                 units = 'erg/s'
             else:
-                raise RuntimeWarning('enegetic name %s not understood'%_n)
+                warnings.warn('enegetic name %s not understood'%_n)
+
             self.energetic_dict[_n]=getattr(_energetic, _n)
 
             _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
