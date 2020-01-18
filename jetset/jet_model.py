@@ -2329,7 +2329,7 @@ class Jet(Model):
         except:
             raise RuntimeError ('model evaluation failed in get_SED_points')
 
-    @safe_run
+    #@safe_run
     def energetic_report(self,write_file=False,getstring=True,wd=None,name=None,verbose=True):
         self.energetic_dict={}
 
