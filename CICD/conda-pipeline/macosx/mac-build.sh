@@ -36,7 +36,7 @@ echo  $PKG_VERSION
 #now using env var
 #set the proper branch/tag in: mata.yaml-> git_rev:
 
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD $PKG_VERSION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
 conda build purge
 conda-build .  > build.log 2>build.err
@@ -44,7 +44,7 @@ export CONDABUILDJETSET=$(conda-build . --output)
 echo  $CONDABUILDJETSET
 
 #testing
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING $CONDABUILDJETSET <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
 conda install --yes --offline $CONDABUILDJETSET
 cd ../../../../../test
