@@ -6,9 +6,9 @@ export USE_PIP='FALSE'
 
 python setup.py clean
 
-cd jetset/CICD/conda-pipeline/macosx
+cd integration/jetset/CICD/conda-pipeline/macosx
 
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PWD
 
 conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython>conda_env_build.log
 source $CONDA_PREFIX/etc/profile.d/conda.sh
