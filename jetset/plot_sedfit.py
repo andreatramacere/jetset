@@ -9,19 +9,18 @@ __author__ = "Andrea Tramacere"
 
 try:
     
-    import matplotlib.pyplot as plt
+    from matplotlib import  pyplot as plt
    
-    #print('import matplotlib.pyplot as plt')
 except:
-    from matplotlib import pylab as plt
-
-    #print('from matplotlib import pylab as plt')
     try:
-        import  pylab as plt
+        from matplotlib import pylab as plt
 
-        #print('import  pylab as plt')
     except:
-        raise RuntimeError('Unable to import pylab/pyplot from matplotlib')
+        try:
+           import  pylab as plt
+
+        except:
+            raise RuntimeError('Unable to import pylab/pyplot from matplotlib')
 
 from matplotlib import gridspec
 
