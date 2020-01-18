@@ -40,6 +40,7 @@ conda install --yes --offline $CONDABUILDJETSET
 cd ../../../../../test
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
 conda deactivate
+echo  $CONDABUILDJETSET
 
 
 
