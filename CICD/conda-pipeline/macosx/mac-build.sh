@@ -21,7 +21,7 @@ cd CICD/conda-pipeline/macosx
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
-conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython
+conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython>conda_env_build.log
 source $CONDA_PREFIX/etc/profile.d/conda.sh
 conda activate jetset-cidc
 conda install --yes  --file ../../../requirements.txt
@@ -36,7 +36,7 @@ echo  $PKG_VERSION
 #now using env var
 #set the proper branch/tag in: mata.yaml-> git_rev:
 
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD $PKG_VERSION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PKG_VERSION
 
 conda build purge
 conda-build .  > build.log 2>build.err
@@ -44,7 +44,7 @@ export CONDABUILDJETSET=$(conda-build . --output)
 echo  $CONDABUILDJETSET
 
 #testing
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING $CONDABUILDJETSET <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$CONDABUILDJETSET
 
 conda install --yes --offline $CONDABUILDJETSET
 cd ../../../../../test

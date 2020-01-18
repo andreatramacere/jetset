@@ -44,7 +44,7 @@ rm -rf ../../../jetset/__pycache__/
 echo  $PKG_VERSION
 
 
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD $PKG_VERSION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PKG_VERSION
 
 conda build purge
 conda build .  -c defaults -c astropy > build.log 2>build.err #for linux
@@ -59,7 +59,7 @@ echo  $CONDABUILDJETSET
 #conda activate jetset-cidc
 
 
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING $CONDABUILDJETSET <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$CONDABUILDJETSET
 #testing
 conda install --yes   -c astropy --file ../../../requirements.txt
 conda install  --yes --offline $CONDABUILDJETSET
