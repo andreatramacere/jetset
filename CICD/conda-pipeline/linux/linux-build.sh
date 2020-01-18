@@ -19,10 +19,7 @@ echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 export USE_PIP='FALSE'
 export JETSETBESSELBUILD='TRUE'
 
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
-conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build>conda_env_build.log
-source $CONDA_PREFIX/etc/profile.d/conda.sh
-conda activate jetset-cidc
+
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD BESSESL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 conda install --yes   -c astropy --file requirements.txt
@@ -45,7 +42,7 @@ echo  $PKG_VERSION
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PKG_VERSION
-
+conda clean jetset
 conda build purge
 conda build .  -c defaults -c astropy > build.log 2>build.err #for linux
 export CONDABUILDJETSET=$(conda-build . --output)
@@ -53,10 +50,11 @@ echo  $CONDABUILDJETSET
 
 
 
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build>conda_env_build.log
+source $CONDA_PREFIX/etc/profile.d/conda.sh
+conda activate jetset-cidc
 
-
-#source $CONDA_PREFIX/etc/profile.d/conda.sh
-#conda activate jetset-cidc
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$CONDABUILDJETSET
