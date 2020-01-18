@@ -26,9 +26,9 @@ Model fitting
 
 .. parsed-literal::
 
-    ['/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0a3-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_3C345.ecsv',
-     '/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0a3-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.ecsv',
-     '/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0a3-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk501.ecsv']
+    ['/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_3C345.ecsv',
+     '/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.ecsv',
+     '/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk501.ecsv']
 
 
 
@@ -155,27 +155,9 @@ sed shaper
     
     *** Log-Polynomial fitting of the synchrotron component ***
     ---> first blind fit run,  fit range: [10, 21]
-    name   par type       units      val  phys. bound. min phys. bound. max  log  frozen
-    ---- ------------ ------------- ----- ---------------- ---------------- ----- ------
-       b    curvature                -1.0            -10.0              0.0 False  False
-       c third-degree                -1.0            -10.0             10.0 False  False
-      Ep    peak freq            Hz  14.0              0.0             30.0  True  False
-      Sp    peak flux erg / (cm2 s) -10.0            -30.0              0.0  True  False
     ---> class:  HSP
     
-        name       par type       units              val          phys. bound. min phys. bound. max  log  frozen
-    ------------ ------------ ------------- --------------------- ---------------- ---------------- ----- ------
-               b    curvature                -0.04778764423637938            -10.0              0.0 False  False
-               c third-degree               0.0035762013845097584            -10.0             10.0 False  False
-              Ep    peak freq            Hz    16.268703084421343              0.0             30.0  True  False
-              Sp    peak flux erg / (cm2 s)    -10.25412262810351            -30.0              0.0  True  False
-    nuFnu_p_host  nuFnu-scale erg / (cm2 s)    -10.25412262810351            -20.0             20.0 False  False
-        nu_scale     nu-scale            Hz                   0.0             -2.0              2.0 False  False
-    
-    **************************************************************************************************
-    Fit report
-    
-    Model: sync-shape-fit
+    ---> class:  HSP
         name       par type       units              val           phys. bound. min phys. bound. max  log  frozen
     ------------ ------------ ------------- ---------------------- ---------------- ---------------- ----- ------
                b    curvature                 -0.06411142567190709            -10.0              0.0 False  False
@@ -185,25 +167,10 @@ sed shaper
     nuFnu_p_host  nuFnu-scale erg / (cm2 s)    -10.065562043463723            -20.0             20.0 False  False
         nu_scale     nu-scale            Hz    0.01730750205131648             -2.0              2.0 False  False
     
-    converged=True
-    calls=144
-    The relative error between two consecutive iterates is at most 0.000000
-    dof=15
-    chisq=15.371959, chisq/red=1.024797 null hypothesis sig=0.424971
     
-    best fit pars
-        name          bestfit val               err +         err -       start val         fit range min      fit range max   frozen
-    ------------ ---------------------- --------------------- ----- --------------------- ------------------ ----------------- ------
-               b   -0.06411142567190709  0.007838949891087113  None  -0.04778764423637938              -10.0               0.0  False
-               c -0.0017517043999486503 0.0011269419345774961  None 0.0035762013845097584              -10.0              10.0  False
-              Ep     17.037469323035243   0.09437330920664459  None    16.268703084421343                0.0              30.0  False
-              Sp    -10.300678073393044  0.018841147588972495  None    -10.25412262810351              -30.0               0.0  False
-    nuFnu_p_host    -10.065562043463723   0.05462494081480342  None    -10.25412262810351 -12.25412262810351 -8.25412262810351  False
-        nu_scale    0.01730750205131648 0.0036948369484981407  None                   0.0               -0.5               0.5  False
-    **************************************************************************************************
-    
-    ---> class:  HSP
     ---> sync       nu_p=+1.703747e+01 (err=+9.437331e-02)  nuFnu_p=-1.030068e+01 (err=+1.884115e-02) curv.=-6.411143e-02 (err=+7.838950e-03)
+    ===================================================================================================================
+    
 
 
 .. code:: ipython3
@@ -306,6 +273,14 @@ sed shaper
       Sp  -10.579458692670435 0.043330596273419175  None             -10.0         -30.0           0.0  False
     **************************************************************************************************
     
+    
+    
+    name   par type       units             val          phys. bound. min phys. bound. max  log  frozen
+    ---- ------------ ------------- -------------------- ---------------- ---------------- ----- ------
+       b    curvature                -0.1310958292206994            -10.0              0.0 False  False
+       c third-degree               -0.03300307548904158            -10.0             10.0 False  False
+      Ep    peak freq            Hz   25.496044142870343              0.0             30.0  True  False
+      Sp    peak flux erg / (cm2 s)  -10.579458692670435            -30.0              0.0  True  False
     ---> IC         nu_p=+2.549604e+01 (err=+2.235556e-01)  nuFnu_p=-1.057946e+01 (err=+4.333060e-02) curv.=-1.310958e-01 (err=+3.244101e-02)
     ===================================================================================================================
     
@@ -341,19 +316,6 @@ model constraining
     
     ***  constrains parameters from observable ***
     
-          name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   N    electron_density         1 / cm3              100.0              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*                2.0              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*          1000000.0              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
-                   r  spectral_curvature                                0.4            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm 5000000000000000.0              0.0              1e+30 False  False
-                 R_H     region_position              cm              1e+17              0.0               None False   True
-                   B      magnetic_field               G                0.1              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
-              z_cosm            redshift                                0.1              0.0               None False  False
     ---> ***  emitting region parameters  ***
     ---> name = beam_obj          type = beaming               units = Lorentz-factor*   val = +2.500000e+01  phys-bounds = [+1.000000e-04,No           ] islog = False  froze= False 
     ---> setting par type redshift, corresponding to par z_cosm
@@ -361,8 +323,9 @@ model constraining
     
     ---> setting par type magnetic_field, corresponding to par B
     --->  name = B                 type = magnetic_field        units = G                 val = +5.050000e-02  phys-bounds = [+0.000000e+00,No           ] islog = False  froze= False 
+    
     ---> setting par type region_size, corresponding to par R
-    --->  name = R                 type = region_size           units = cm                val = +1.879504e+17  phys-bounds = [+0.000000e+00,+1.000000e+30] islog = False  froze= False 
+    --->  name = R                 type = region_size           units = cm                val = +1.879504e+17  phys-bounds = [+1.000000e+03,+1.000000e+30] islog = False  froze= False 
     
     
     ---> *** electron distribution parameters ***
@@ -430,7 +393,7 @@ model constraining
     ---> get R from Compoton Dominance (CD)
          Best R=5.485641e+15
     ---> setting par type region_size, corresponding to par R
-    --->  name = R                 type = region_size           units = cm                val = +5.485641e+15  phys-bounds = [+0.000000e+00,+1.000000e+30] islog = False  froze= False 
+    --->  name = R                 type = region_size           units = cm                val = +5.485641e+15  phys-bounds = [+1.000000e+03,+1.000000e+30] islog = False  froze= False 
     
     ---> setting par type electron_density, corresponding to par N
     ---> t_var (days) 0.08755993893706769
@@ -444,7 +407,7 @@ model constraining
                    s   LE_spectral_slope                 2.2487867617516875            -10.0               10.0 False  False
                    r  spectral_curvature                 0.3205571283595354            -15.0               15.0 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor*  7432.062863037491              1.0       1000000000.0 False  False
-                   R         region_size              cm 5485641265784695.0              0.0              1e+30 False  False
+                   R         region_size              cm 5485641265784695.0           1000.0              1e+30 False  False
                  R_H     region_position              cm              1e+17              0.0               None False   True
                    B      magnetic_field               G                0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*               25.0           0.0001               None False  False
@@ -469,7 +432,10 @@ model constraining
 Model fitting
 -------------
 
-We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer and the``lsb`` (least square bound scipy minimizer). Using ``minuit`` we notice that sometimes (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling
+We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer and the``lsb`` (least square bound scipy minimizer). Using ``minuit`` we notice that sometimes (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling.
+
+We freeze some parameters, and we also set some ``fit_range`` values, indeed ``minuit`` works better if ``fit_range`` is set for some parameters that might impact significantly on the fit.
+
 
 Model fitting with LSB
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -500,7 +466,7 @@ Model fitting with LSB
 
           name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
     ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   R         region_size              cm 5485641265784695.0              0.0              1e+30 False  False
+                   R         region_size              cm 5485641265784695.0           1000.0              1e+30 False  False
                  R_H     region_position              cm              1e+17              0.0               None False   True
                    B      magnetic_field               G                0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*               25.0           0.0001               None False  False
@@ -519,7 +485,7 @@ Model fitting with LSB
     initial pars: 
           name             par type           units              val         phys. bound. min  phys. bound. max   log  frozen
     ---------------- ------------------- --------------- ------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm  5485641265784695.0              0.0              1e+30 False  False
+                   R         region_size              cm  5485641265784695.0           1000.0              1e+30 False  False
                  R_H     region_position              cm               1e+17              0.0               None False   True
                    B      magnetic_field               G                 0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*                25.0           0.0001               None False  False
@@ -540,7 +506,7 @@ Model fitting with LSB
     Model: SSC-best-fit-lsb
           name             par type           units              val          phys. bound. min  phys. bound. max   log  frozen
     ---------------- ------------------- --------------- -------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm   8378228093120288.0              0.0              1e+30 False  False
+                   R         region_size              cm   8378228093120288.0           1000.0              1e+30 False  False
                  R_H     region_position              cm                1e+17              0.0               None False   True
                    B      magnetic_field               G 0.017801553453728358              0.0               None False  False
             beam_obj             beaming Lorentz-factor*    46.95494511788813           0.0001               None False  False
@@ -593,7 +559,7 @@ Model fitting with LSB
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table112254942992" class="table-striped table-bordered table-condensed">
+    <table id="table4705254864" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <thead><tr><th>str16</th><th>object</th><th>object</th><th>object</th><th>float64</th><th>float64</th><th>object</th><th>bool</th></tr></thead>
     <tr><td>R</td><td>8378228093120288.0</td><td>2.204486627707412e+16</td><td>None</td><td>5485641265784695.0</td><td>3162277660168379.5</td><td>3.1622776601683795e+17</td><td>False</td></tr>
@@ -649,7 +615,7 @@ Model fitting with Minuit
 
           name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
     ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   R         region_size              cm 5485641265784695.0              0.0              1e+30 False  False
+                   R         region_size              cm 5485641265784695.0           1000.0              1e+30 False  False
                  R_H     region_position              cm              1e+17              0.0               None False   True
                    B      magnetic_field               G                0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*               25.0           0.0001               None False  False
@@ -668,7 +634,7 @@ Model fitting with Minuit
     initial pars: 
           name             par type           units              val         phys. bound. min  phys. bound. max   log  frozen
     ---------------- ------------------- --------------- ------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm  5485641265784695.0              0.0              1e+30 False  False
+                   R         region_size              cm  5485641265784695.0           1000.0              1e+30 False  False
                  R_H     region_position              cm               1e+17              0.0               None False   True
                    B      magnetic_field               G                 0.1              0.0               None False  False
             beam_obj             beaming Lorentz-factor*                25.0           0.0001               None False  False
@@ -689,7 +655,7 @@ Model fitting with Minuit
     Model: SSC-best-fit-minuit
           name             par type           units              val         phys. bound. min  phys. bound. max   log  frozen
     ---------------- ------------------- --------------- ------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm  7005902449303527.0              0.0              1e+30 False  False
+                   R         region_size              cm  7005902449303527.0           1000.0              1e+30 False  False
                  R_H     region_position              cm               1e+17              0.0               None False   True
                    B      magnetic_field               G 0.02824843541131483              0.0               None False  False
             beam_obj             beaming Lorentz-factor*  39.675103214017845           0.0001               None False  False
@@ -1226,19 +1192,6 @@ Model fitting with a bkn pl
     
     ***  constrains parameters from observable ***
     
-        name          par type           units             val         phys. bound. min  phys. bound. max   log  frozen
-    ----------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-              N    electron_density         1 / cm3              100.0              0.0               None False  False
-           gmin  low-energy-cut-off lorentz-factor*                2.0              1.0       1000000000.0 False  False
-           gmax high-energy-cut-off lorentz-factor*          1000000.0              1.0 1000000000000000.0 False  False
-              p   LE_spectral_slope                                2.0            -10.0               10.0 False  False
-            p_1   HE_spectral_slope                                3.0            -10.0               10.0 False  False
-    gamma_break    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-              R         region_size              cm 5000000000000000.0              0.0              1e+30 False  False
-            R_H     region_position              cm              1e+17              0.0               None False   True
-              B      magnetic_field               G                0.1              0.0               None False  False
-       beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
-         z_cosm            redshift                                0.1              0.0               None False  False
     ---> ***  emitting region parameters  ***
     ---> name = beam_obj          type = beaming               units = Lorentz-factor*   val = +2.500000e+01  phys-bounds = [+1.000000e-04,No           ] islog = False  froze= False 
     ---> setting par type redshift, corresponding to par z_cosm
@@ -1246,8 +1199,9 @@ Model fitting with a bkn pl
     
     ---> setting par type magnetic_field, corresponding to par B
     --->  name = B                 type = magnetic_field        units = G                 val = +5.050000e-02  phys-bounds = [+0.000000e+00,No           ] islog = False  froze= False 
+    
     ---> setting par type region_size, corresponding to par R
-    --->  name = R                 type = region_size           units = cm                val = +1.879504e+17  phys-bounds = [+0.000000e+00,+1.000000e+30] islog = False  froze= False 
+    --->  name = R                 type = region_size           units = cm                val = +1.879504e+17  phys-bounds = [+1.000000e+03,+1.000000e+30] islog = False  froze= False 
     
     
     ---> *** electron distribution parameters ***
@@ -1313,7 +1267,7 @@ Model fitting with a bkn pl
     ---> get R from Compoton Dominance (CD)
          Best R=1.045240e+16
     ---> setting par type region_size, corresponding to par R
-    --->  name = R                 type = region_size           units = cm                val = +1.045240e+16  phys-bounds = [+0.000000e+00,+1.000000e+30] islog = False  froze= False 
+    --->  name = R                 type = region_size           units = cm                val = +1.045240e+16  phys-bounds = [+1.000000e+03,+1.000000e+30] islog = False  froze= False 
     
     ---> setting par type electron_density, corresponding to par N
     ---> t_var (days) 0.16683760488534477
@@ -1327,7 +1281,7 @@ Model fitting with a bkn pl
               p   LE_spectral_slope                    2.2487867617516875            -10.0               10.0 False  False
             p_1   HE_spectral_slope                                   3.5            -10.0               10.0 False  False
     gamma_break    turn-over-energy lorentz-factor*     197187.9234306636              1.0       1000000000.0 False  False
-              R         region_size              cm 1.045239707969101e+16              0.0              1e+30 False  False
+              R         region_size              cm 1.045239707969101e+16           1000.0              1e+30 False  False
             R_H     region_position              cm                 1e+17              0.0               None False   True
               B      magnetic_field               G  0.031327047381077736              0.0               None False  False
        beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
@@ -1369,7 +1323,7 @@ Model fitting with a bkn pl
 
         name          par type           units               val          phys. bound. min  phys. bound. max   log  frozen
     ----------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-              R         region_size              cm 1.045239707969101e+16              0.0              1e+30 False  False
+              R         region_size              cm 1.045239707969101e+16           1000.0              1e+30 False  False
             R_H     region_position              cm                 1e+17              0.0               None False   True
               B      magnetic_field               G  0.031327047381077736              0.0               None False  False
        beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
@@ -1388,7 +1342,7 @@ Model fitting with a bkn pl
     initial pars: 
         name           par type           units               val          phys. bound. min  phys. bound. max   log  frozen
     ------------ ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-               R         region_size              cm 1.045239707969101e+16              0.0              1e+30 False  False
+               R         region_size              cm 1.045239707969101e+16           1000.0              1e+30 False  False
              R_H     region_position              cm                 1e+17              0.0               None False   True
                B      magnetic_field               G  0.031327047381077736              0.0               None False  False
         beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
@@ -1409,7 +1363,7 @@ Model fitting with a bkn pl
     Model: SSC-best-fit-minuit
         name           par type           units               val           phys. bound. min  phys. bound. max   log  frozen
     ------------ ------------------- --------------- ---------------------- ---------------- ------------------ ----- ------
-               R         region_size              cm 1.2444390794818728e+16              0.0              1e+30 False  False
+               R         region_size              cm 1.2444390794818728e+16           1000.0              1e+30 False  False
              R_H     region_position              cm                  1e+17              0.0               None False   True
                B      magnetic_field               G   0.019430715234125984              0.0               None False  False
         beam_obj             beaming Lorentz-factor*      32.26117240293633           0.0001               None False  False

@@ -2337,30 +2337,39 @@ class Jet(Model):
         _par_array=ModelParameterArray()
 
         _name = [i for i in _energetic.__class__.__dict__.keys() if i[:1] != '_']
-        units=''
-        for _n in _name:
-            if _n[0]=='L':
-                par_type='Lum. blob rest. frme.'
-                units='erg/s'
-            elif _n[0] == 'U' and 'DRF' not in _n:
-                par_type = 'Energy dens. blob rest. frame'
-                units = 'erg/cm^3'
-            elif _n[0] == 'U' and 'DRF'  in _n:
-                par_type = 'Energy dens. disk rest. frame'
-                units = 'erg/cm^3'
-            elif _n[0] == 'j':
-                par_type = 'jet Lum.'
-                units = 'erg/s'
-            else:
-                warnings.warn('enegetic name %s not understood'%_n)
 
-            self.energetic_dict[_n]=getattr(_energetic, _n)
+        try:
+            for _n in _name:
+                units = 'skip_this'
+                if _n[0]=='L':
+                    par_type='Lum. blob rest. frme.'
+                    units='erg/s'
+                elif _n[0] == 'U' and 'DRF' not in _n:
+                    par_type = 'Energy dens. blob rest. frame'
+                    units = 'erg/cm^3'
+                elif _n[0] == 'U' and 'DRF'  in _n:
+                    par_type = 'Energy dens. disk rest. frame'
+                    units = 'erg/cm^3'
+                elif _n[0] == 'j':
+                    par_type = 'jet Lum.'
+                    units = 'erg/s'
+                else:
+                    warnings.warn('energetic name %s not understood'%_n)
 
-            _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
+                if units == 'skip_this':
+                    pass
+                else:
+                    self.energetic_dict[_n]=getattr(_energetic, _n)
+
+                    _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
 
             self.energetic_report_table = _par_array.par_table
             self.energetic_report_table.remove_columns(['log','frozen','phys. bound. min','phys. bound. max'])
             self.energetic_report_table.rename_column('par type','type')
+
+        except Exception as e:
+            print('_energetic',_energetic)
+            raise RuntimeError('energetic_report failed',e)
 
         self._energetic_report = self.energetic_report_table.pformat_all()
 

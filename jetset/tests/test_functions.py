@@ -126,9 +126,17 @@ def test_build_bessel():
     Jet().eval()
 
 
+def test_jet():
+    from jetset.jet_model import Jet
+    j=Jet()
+    j.eval()
+    j.energetic_report()
+
+
 def test_full():
     from jetset.plot_sedfit import plt
     plt.ioff()
+    test_jet()
     sed_data=data()
     print('done')
     my_shape=spectral_indices(sed_data)
@@ -143,6 +151,7 @@ def test_full():
 def test_short():
     from jetset.plot_sedfit import  plt
     plt.ioff()
+    test_jet()
     sed_data = data()
     print('done')
     my_shape = spectral_indices(sed_data)
