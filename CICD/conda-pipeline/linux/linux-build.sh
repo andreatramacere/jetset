@@ -1,18 +1,8 @@
-#path on miniconda docker
-cd /workdir
-
-
 #building
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> git  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
-cd integration
-git clone https://github.com/andreatramacere/jetset.git
+
 cd jetset
-git checkout develop
-git reset --hard HEAD
-git pull origin develop
 
-#to build bessel fucntion locally
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
@@ -42,7 +32,7 @@ echo  $PKG_VERSION
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PKG_VERSION
-conda clean jetset
+conda clean -a
 conda build purge
 conda build .  -c defaults -c astropy > build.log 2>build.err #for linux
 export CONDABUILDJETSET=$(conda-build . --output)

@@ -1,23 +1,12 @@
-cd /Users/orion/astro/Programmi/Projects/Active/JetSeT/JetSeT_CICD/MAC_OS/CONDA
 
-#building
-cd integration
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> git  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
-
-git clone https://github.com/andreatramacere/jetset.git
-cd jetset
-git checkout develop
-git reset --hard HEAD
-git pull origin develop
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
-
 export JETSETBESSELBUILD='FALSE'
 export USE_PIP='FALSE'
 
 python setup.py clean
 
-cd CICD/conda-pipeline/macosx
+cd jetset/CICD/conda-pipeline/macosx
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
