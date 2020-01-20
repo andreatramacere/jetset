@@ -34,12 +34,12 @@ allowing to fit the numerical models to observed data. The main features of this
     * `Massaro E. et. al 2006 <http://adsabs.harvard.edu/abs/2006A%26A...448..861M>`_
 
 
+
 .. _user-docs:
 
 
-
 Documentation
-^^^^^^^^^^^^^
+-------------
 
 
 .. toctree::
@@ -50,17 +50,19 @@ Documentation
    user guide <user_guide/user_guide.rst>
    code documentation (API) <api/modules.rst>
 
+
+Testers
+-------
+I would like to thanks the most active testers:
+
+Hubing Xiao, Cosimo Nigro, Vaidehi S. Paliya, Sara Buson
+
+
 License
-^^^^^^^
-JetSeT is released under a 3-clause BSD  license - for deatils see the
+-------
+JetSeT is released under a 3-clause BSD  license - for details see the
 `License <https://github.com/andreatramacere/jetset/blob/master/LICENSE.txt>`_ file
 
-..   jet model <user_guide/jet_model/Jet_example.rst>
-..   model fitting  <user_guide/model_fit/fit_example.rst>
-..
-
-..   introduction <intro/intro.rst>
-..   tutorial <tutorial/tutorial.rst>
 
 
 
