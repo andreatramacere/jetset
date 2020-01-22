@@ -240,11 +240,15 @@ void tabella_Bessel(struct spettro *pt_TB) {
             printf("delete it and re-execute the code\n");
             exit(0);
         }
+       
+    }
+    if (pt_TB->verbose > 0)
+    {
         printf("i_max=%d elementi_tabelle=%d \n", i, static_bess_table_size);
         printf("F_Sync_x min=%e, %e\n", pt_TB->F_Sync_x[0], pt_TB->x_Bessel_min);
         printf("F_Sync_x max=%e, %e\n", pt_TB->F_Sync_x[static_bess_table_size - 1], pt_TB->x_Bessel_max);
+        printf("F_Sync_y max=%e\n", pt_TB->F_Sync_y[static_bess_table_size - 1]);
     }
-    
     fclose(fp);
     pt_TB->BESSEL_TABLE_DONE=1;
 }
