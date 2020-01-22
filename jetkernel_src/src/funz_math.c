@@ -92,11 +92,13 @@ void tabella_Bessel(struct spettro *pt_TB) {
     double (*pf) (struct spettro *, double x);
     unsigned long i;
     FILE *fp ;
+    char *end;
     char f_bessel_file[static_file_name_max_legth];
-
+    double _x,_y,_in_ave_y, _in_ave_x;
     /*** kernel Sync per alfa fisso e kernel delta ***/
-    if (pt_TB->verbose>0) {
-    	printf("Evaluation of Bessel Tables\n");
+        if (pt_TB->verbose > 0)
+    {
+        printf("Evaluation of Bessel Tables\n");
     }
 	//printf("start=%e\n", pt_TB->x_Bessel_min = (pt_TB->nu_start_Sync) /
 	//	((3.0 * pt_TB->nu_B * (pt_TB->gmax_griglia * pt_TB->gmax_griglia) / 2.0) * pt_TB->sin_psi));
@@ -184,15 +186,26 @@ void tabella_Bessel(struct spettro *pt_TB) {
 
         }
         while (!feof(fp)) {
-            fscanf(fp, "%s %s %s %s\n", in_x, in_y,in_ave_x,in_ave_y);
-            pt_TB->F_Sync_x[i] = strtod(in_x, NULL);
-            pt_TB->F_Sync_y[i] = strtod(in_y, NULL);
+            //fscanf(fp, "%s %s %s %s\n", in_x, in_y,in_ave_x,in_ave_y);
+            //pt_TB->F_Sync_x[i] = strtod(in_x, &end);
+            //pt_TB->F_Sync_y[i] = strtod(in_y, NULL);
 
-            pt_TB->F_ave_Sync_x[i] = strtod(in_ave_x, NULL);
-            pt_TB->F_ave_Sync_y[i] = strtod(in_ave_y, NULL);
+            //pt_TB->F_ave_Sync_x[i] = strtod(in_ave_x, NULL);
+            //pt_TB->F_ave_Sync_y[i] = strtod(in_ave_y, NULL);
+
+
+
+            fscanf(fp, "%lf %lf %lf %lf\n", &_x, &_y, &_in_ave_x, &_in_ave_y);
+            
+
+            pt_TB->F_Sync_x[i] = _x;
+            pt_TB->F_Sync_y[i] = _y;
+
+            pt_TB->F_ave_Sync_x[i] = _in_ave_x;
+            pt_TB->F_ave_Sync_y[i] = _in_ave_y;
 
             pt_TB->log_F_Sync_x[i] = log10(pt_TB->F_Sync_x[i]);
-
+            
             if (pt_TB->F_Sync_y[i]>0.0){
             	pt_TB->log_F_Sync_y[i] = log10(pt_TB->F_Sync_y[i]);
             }
@@ -227,6 +240,9 @@ void tabella_Bessel(struct spettro *pt_TB) {
             printf("delete it and re-execute the code\n");
             exit(0);
         }
+        printf("i_max=%d elementi_tabelle=%d \n", i, static_bess_table_size);
+        printf("F_Sync_x min=%e, %e\n", pt_TB->F_Sync_x[0], pt_TB->x_Bessel_min);
+        printf("F_Sync_x max=%e, %e\n", pt_TB->F_Sync_x[static_bess_table_size - 1], pt_TB->x_Bessel_max);
     }
     
     fclose(fp);
