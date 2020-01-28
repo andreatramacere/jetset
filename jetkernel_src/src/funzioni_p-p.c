@@ -83,7 +83,7 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
         a1 = pp_electron_kernel_delta(Ee_TeV, pt);
         pt->pp_racc_elec = a2 / a1;
         //printf("gamma_p_min=%e Ee_TeV=%e i_start=%d\n", gamma_p_min, Ee_TeV,i_start);
-        printf("e- >>>>>>>>>>%e %e %e \n", pt->pp_racc_elec, a1, a2);
+        //printf("e- >>>>>>>>>>%e %e %e \n", pt->pp_racc_elec, a1, a2);
         pt->Gamma = Gamma_1;
     }
 
@@ -265,7 +265,7 @@ double rate_gamma_pp(struct spettro *pt) {
 
         pt->pp_racc_gamma = a2 / a1;
         //printf("gamma_p_min=%e E_gamma=%e\n", gamma_p_min, E_gamma);
-        printf("gamma >>>>>>>>>>%e %e %en\n", pt->pp_racc_gamma, a1, a2);
+        //printf("gamma >>>>>>>>>>%e %e %e\n", pt->pp_racc_gamma, a1, a2);
         pt->nu_1 = nu1;
     }
 
@@ -311,9 +311,7 @@ double pp_gamma_kernel_delta(struct spettro *pt, double Epi_TeV) {
     double qpi,Ep_TeV, Gamma;
     Ep_TeV = Epi_TeV/Kpi +MPC2_TeV;
     Gamma=Ep_TeV/MPC2_TeV;
-    qpi = pt->pp_racc_gamma / (Kpi) * sigma_pp_inel(Ep_TeV) *
-                N_distr(pt, Gamma);
-               //N_distr_interp(pt, Gamma, pt->griglia_gamma_Np_log, pt->Np);
+    qpi = pt->pp_racc_gamma / (Kpi) * sigma_pp_inel(Ep_TeV) *N_distr_interp(pt, Gamma, pt->griglia_gamma_Np_log, pt->Np);
     return 2.0 * qpi / sqrt(Epi_TeV * Epi_TeV - MPIC2_TeV * MPIC2_TeV);
 }
 

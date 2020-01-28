@@ -126,7 +126,7 @@ struct spettro {
     double nuFnu_DT_grid[static_spec_arr_size];
     double nuFnu_Star_grid[static_spec_arr_size];
     double nuFnu_EC_CMB_grid[static_spec_arr_size];
-    //double nuFnu_EC_CMB_stat_grid[static_spec_arr_size];
+    double nuFnu_pp_grid[static_spec_arr_size];
     double nuFnu_EC_BLR_grid[static_spec_arr_size];
     double nuFnu_EC_DT_grid[static_spec_arr_size];
     double nuFnu_EC_Disk_grid[static_spec_arr_size];
@@ -191,14 +191,12 @@ struct spettro {
     //--- FREQ BOUNDARIES
     double nu_stop_pp_pred,nu_stop_pp;
     double nu_start_pp;
+    double nu_start_pp_obs;
+    double nu_stop_pp_obs;
     unsigned long NU_INT_STOP_PP;
 
-    //--- FREQ/FLUX array
-    double j_pp[static_spec_arr_size];
-    double nu_pp[static_spec_arr_size];
-    double nuF_nu_pp_obs[static_spec_arr_size];
-
     //
+    int do_pp_gamma;
     int set_pp_racc_gamma, set_pp_racc_elec;
     double pp_racc_gamma, pp_racc_elec;
 
@@ -209,6 +207,14 @@ struct spettro {
     double nuLnu_peak_PP_src;
     double nu_peak_PP_obs;
     double nuFnu_peak_PP_obs;
+
+    //--- FREQ/FLUX array
+    double j_pp[static_spec_arr_size];
+    double nu_pp[static_spec_arr_size];
+    double nu_pp_obs[static_spec_arr_size];
+    double nuFnu_pp_obs[static_spec_arr_size];
+   
+
     //--------------------------------//
 
 
@@ -516,7 +522,8 @@ struct spettro {
     double beaming_EC;
 
     
-
+    
+    
 
     //----------- INTEGRATION MESH--------------//
     unsigned long nu_seed_size;
@@ -716,12 +723,13 @@ void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev);
 /************************************ FUNZIONI Distr N *****************************/
 //void Genera_griglia_gamma_e_log(struct spettro *pt, double *griglia);
 void alloc_N_distr(double ** pt,int size);
-
+void setNgrid(struct spettro *pt); 
 void Fill_N(struct spettro *pt, double *griglia_gamma_N_log, double *N);
 void build_Ne_custom(struct spettro *pt,  unsigned int size);
 void build_Ne(struct spettro *pt);
+void build_Np(struct spettro *pt);
 void Fill_Ne_IC(struct spettro *pt, double gmin, int stat_frame);
-void Genera_Np_Ne_pp(struct spettro *pt);
+void Init_Np_Ne_pp(struct spettro *pt);
 double N_distr(struct spettro *, double Gamma);
 double N_distr_U_e(struct spettro *, double Gamma);
 double N_distr_U_p(struct spettro *, double Gamma);

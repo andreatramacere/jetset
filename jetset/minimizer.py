@@ -373,9 +373,6 @@ class ModelMinimizer(object):
         if silent == False:
             best_fit.show_report()
 
-        #_nu1=fit_Model.nu_min
-        #_nu2=fit_Model.nu_max
-        #print('-->nu_fit_start', nu_fit_start)
 
         fit_Model.set_nu_grid(nu_min=nu_fit_start, nu_max=nu_fit_stop)
         fit_Model.eval(fill_SED=True, loglog=loglog, phys_output=True)
@@ -389,10 +386,7 @@ class ModelMinimizer(object):
                                                  self.loglog,
                                                  self.UL)
 
-        #msk1 = self.nu_fit > nu_fit_start
-        #msk2 = self.nu_fit < nu_fit_stop
 
-        #res_bestfit=res_bestfit[msk1*msk2]
 
         if loglog == True:
             fit_Model.SED.fill(nu_residuals=np.power(10, self.nu_fit), residuals=res_bestfit)
@@ -403,10 +397,8 @@ class ModelMinimizer(object):
         if silent == False:
             print(section_separator)
 
-        #fit_Model.set_nu_grid(nu_min=_nu1, nu_max=_nu2)
         fit_Model.eval(fill_SED=True)
-        #print('-->nu_fit_start bf A%e'%nu_fit_start)
-        #print('-->nu_fit_start bf B%e'%self.fit_Model.nu_min_fit)
+
         return best_fit
 
     def reset_to_best_fit(self):
@@ -488,7 +480,6 @@ class Minimizer(object):
                       use_UL=False,
                       silent=False):
 
-        #hide_cursor()
         _warn=False
         for pi in range(len(fit_par)):
             fit_par[pi].set(val=p[pi])
@@ -524,8 +515,6 @@ class Minimizer(object):
         else:
             res=_res
 
-        #print('res', res, chisq,use_UL)
-        #show_cursor()
 
         return res
 

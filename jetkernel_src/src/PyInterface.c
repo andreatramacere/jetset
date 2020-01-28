@@ -160,11 +160,12 @@ struct spettro MakeBlob() {
     sprintf(spettro_root.path, "./");
     sprintf(spettro_root.STEM, "TEST");
 
-    sprintf(spettro_root.PARTICLE, "leptons");
+    sprintf(spettro_root.PARTICLE, "electrons");
     spettro_root.do_Sync = 1;
     spettro_root.Sync_kernel=1;
     spettro_root.do_SSC = 1;
     spettro_root.do_IC=1;
+    spettro_root.do_pp_gamma=1;
     spettro_root.adaptive_e_binning =0;
     sprintf(spettro_root.MODE, "fast");
     //GRID SIZE FOR SEED
@@ -469,7 +470,7 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
         printf("Volume for Spherical Geom.=%e\n", pt_base->Vol_sphere);
     }
     
-    if (strcmp(pt_base->PARTICLE, "leptons") == 0) {
+    if (strcmp(pt_base->PARTICLE, "electrons") == 0) {
         InitNe(pt_base);
         pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N;
         FindNe_NpGp(pt_base);
@@ -491,9 +492,9 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
             printf("************************************************************************\n");
         }
 
-    } else if (strcmp(pt_base->PARTICLE, "hadrons") == 0) {
+    } else if (strcmp(pt_base->PARTICLE, "protons") == 0) {
         
-        Genera_Np_Ne_pp(pt_base);        
+        Init_Np_Ne_pp(pt_base);        
         pt_base->N_tot_p_Sferic = pt_base->Vol_sphere * pt_base->N;             
         EvalU_p(pt_base);             
         pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N_e_pp;
@@ -533,7 +534,7 @@ void Run_SED(struct spettro *pt_base){
     //==================================================
     // Evaluate hadronic pp Spectrum
     //==================================================
-    if (strcmp(pt_base->PARTICLE, "hadrons") == 0) {
+    if ((strcmp(pt_base->PARTICLE, "protons") == 0) && pt_base->do_pp_gamma) {
 
         spettro_pp(1, pt_base);
     }

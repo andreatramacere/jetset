@@ -36,6 +36,11 @@ import  os
 
 __all__=['PlotSED']
 
+def y_ev_transf(x):
+    return x - np.log10(2.417E14)
+
+def y_ev_transf_inv(x):
+    return x + np.log10(2.417E14)
 
 class  PlotSED (object):
     
@@ -133,6 +138,10 @@ class  PlotSED (object):
             unexpetced_behaviour()
 
 
+
+        secaxy = self.sedplot.secondary_xaxis('top', functions=(y_ev_transf, y_ev_transf_inv))
+        secaxy.set_xlabel('log(E) (eV)')
+
         self.resplot.set_ybound(-2,2)
         try:
             if hasattr(self.fig.canvas.manager,'toolbar'):
@@ -147,7 +156,7 @@ class  PlotSED (object):
             self.add_model_plot(model)
 
 
-            
+
         self.counter_res=0
 
 
@@ -278,7 +287,7 @@ class  PlotSED (object):
 
         self.sedplot.set_ylabel(self.ly)
         self.sedplot.set_xlabel(self.lx)
-        
+
         #self.sedplot.set_xlim(self.x_min,self.x_max)
         #self.sedplot.set_ylim(self.y_min,self.y_max)
         
@@ -353,10 +362,12 @@ class  PlotSED (object):
 
         self.resplot.set_xlim(x_min,x_max)
         self.resplot.set_ylim(y_min,y_max)
-        
         self.update_plot()
     
     def update_plot(self):
+
+
+
         self.fig.canvas.draw()
         self.fig.tight_layout()
 

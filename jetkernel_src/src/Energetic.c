@@ -81,7 +81,7 @@ void EvalU_p(struct spettro *pt) {
 
 
     if (pt->Distr_p_done == 0) {
-        printf("No electron distribution calculated \n ");
+        printf("No proton distribution calculated \n ");
         exit(0);
         //Genera_Ne(pt);
     }
@@ -429,8 +429,8 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
         energetic.jet_L_SSC=0;
     }
     
-    if (strcmp(pt->PARTICLE, "hadrons") == 0) {
-        energetic.L_PP_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_SSC, pt->nuF_nu_pp_obs, pt->NU_INT_STOP_PP);
+    if (strcmp(pt->PARTICLE, "protons") == 0) {
+        energetic.L_PP_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_SSC, pt->nuFnu_pp_obs, pt->NU_INT_STOP_PP);
      
         energetic.jet_L_PP = energetic.L_PP_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
         energetic.jet_L_rad += energetic.jet_L_PP;
@@ -516,7 +516,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
 
         fprintf(fp_Energetic, "N=%e N/N_0 %e\n", pt->N, pt->N / pt->N_0);
         fprintf(fp_Energetic, "Volume for Spherical Geom.  %e  (cm^3)\n", pt->Vol_sphere);
-        if (strcmp(pt->PARTICLE, "leptons") == 0) 
+        if (strcmp(pt->PARTICLE, "electrons") == 0) 
         {
             fprintf(fp_Energetic, "********************       Leptonic Scenario       ********************\n");
             fprintf(fp_Energetic, "Total number of electrons     %e\n", pt->N_tot_e_Sferic);
@@ -530,7 +530,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
             fprintf(fp_Energetic, "U_p   blob rest frame (1p+ each 10e-) %e erg/cm^3\n", pt->N * 0.1 * MPC2);
             fprintf(fp_Energetic, "U_e/U_B  %e\n", pt->U_e / pt->UB);
         } 
-        else if (strcmp(pt->PARTICLE, "hadrons") == 0) 
+        else if (strcmp(pt->PARTICLE, "protons") == 0) 
         {
             fprintf(fp_Energetic, "********************       Hadronic Scenario       ********************\n");
             //fprintf(fp_Energetic, "Total number of electrons     %e\n", pt->N_tot_e_Sferic);
@@ -601,7 +601,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
      
 
 
-        if (strcmp(pt->PARTICLE, "hadrons") == 0) {
+        if (strcmp(pt->PARTICLE, "protons") == 0) {
             
             if (write_file>0){
                 fprintf(fp_Energetic, "Lum_PP Photons rest frame =%e U_ph=%e\n", energetic.L_PP_rf, energetic.L_PP_rf / (pt->Surf_sphere * vluce_cm));
