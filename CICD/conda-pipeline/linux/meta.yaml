@@ -24,7 +24,7 @@ requirements:
   - scipy
   - numpy
   - astropy>=4.0
-  - matplotlib
+  - matplotlib>4.1.0
   - future
   - iminuit
   - corner

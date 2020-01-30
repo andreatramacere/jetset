@@ -1412,7 +1412,7 @@ class Jet(JetBase):
 
         super(Jet,self).__init__(cosmo=cosmo,
                                  name=name,
-                                 emitters_type='protons',
+                                 emitters_type='electrons',
                                  emitters_distribution=electron_distribution,
                                  emitters_distribution_log_values=electron_distribution_log_values,
                                  beaming_expr=beaming_expr,

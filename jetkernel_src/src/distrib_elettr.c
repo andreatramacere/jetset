@@ -234,8 +234,8 @@ void build_Ne_custom(struct spettro *pt,  unsigned int size) {
 
 
 void InitNe(struct spettro *pt){
-    //char *name;
-    //unsigned long i;
+    double (*pf_distr)(struct spettro *, double x);
+    pf_distr = &N_distr_integranda;
 
     setNgrid(pt);
     build_Ne(pt);
@@ -246,21 +246,26 @@ void InitNe(struct spettro *pt){
     //the grid is shifted by a factor of delta, hence the integration
     //boundaries are properly updated but the value of N[i] is still the
     //value of N(gamma') as in the formula 6.133 in Dermer&Menon
-//    for (i = 0; i < pt->gamma_grid_size; i++) {
-//		pt->griglia_gamma_Ne_log_stat[i]=pt->griglia_gamma_Ne_log[i]*pt->beam_obj;
-//	}
+    //for (i = 0; i < pt->gamma_grid_size; i++) {
+    //	pt->griglia_gamma_Ne_log_stat[i]=pt->griglia_gamma_Ne_log[i]*pt->beam_obj;
+    //}
 
     //the delta^2 in Ne_stat is also correct because we use electron density
     //so the relativistic invariant is
     //N/(V*gamma^2)=N'/(V'gamma'2^)
-//	for (i = 0; i < pt->gamma_grid_size; i ++) {
-//		pt->Ne_stat[i]=pt->Ne[i]*pt->beam_obj*pt->beam_obj;
-//	}
+    //for (i = 0; i < pt->gamma_grid_size; i ++) {
+    //  pt->Ne_stat[i]=pt->Ne[i]*pt->beam_obj*pt->beam_obj;
+    //}
 
 	//This flag is set to 1 to know that
 	pt->Distr_e_done = 1;
 
     pt->N_0e = pt->N_0;
+    pt->N_e = integrale_trap_log_struct(pf_distr,
+                                        pt,
+                                        pt->gmin,
+                                        pt->gmax,
+                                        10000);
 
     //name = "distr-e.dat";
     //Scrivi_N_file(pt, name, pt->griglia_gamma_Ne_log, pt->Ne);
@@ -276,8 +281,7 @@ void Init_Np_Ne_pp(struct spettro *pt)
 {
     //char *name;
     double (*pf_distr) (struct spettro *, double x);
-    
-  
+    pf_distr = &N_distr_integranda;
 
     setNgrid(pt);
     build_Np(pt);
@@ -289,34 +293,39 @@ void Init_Np_Ne_pp(struct spettro *pt)
         printf("TIPO_DISTR %d\n", pt->TIPO_DISTR);
     }
     Fill_N(pt, pt->griglia_gamma_Np_log, pt->Np);
+    //
     //This flag si set to 1 to know that
     //N(gamma) has been properly initialized and filled
+    //printf("-->\n" );
+    //printf("--> N0e %e N0 %e N0p %e\n", pt->N_0e, pt->N_0, pt->N_0p);
+    
     pt->Distr_p_done = 1;
     pt->N_0p = pt->N_0;
+    
+    //printf("--> N0e %e N0 %e N0p %e\n", pt->N_0e, pt->N_0, pt->N_0p);
+    
+    pt->N_p = N_tot(pt, N_distr_integranda);
 
     //name = "distr-p.dat";
     //Scrivi_N_file(pt, name, pt->griglia_gamma_Np_log, pt->Np);
 
-
     // Secondaries e- from pp
-    
-  
+
     //Set N to e- from pp
     sprintf(pt->PARTICLE, "secondaries_el");
     build_Ne(pt);
     SetDistr(pt);
-    //printf("TIPO_DISTR %d\n", pt->TIPO_DISTR);
     Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Ne);
     
     pt->Distr_e_done = 1;
     pt->N_0e = pt->N_0;
-    pf_distr = &N_distr_integranda;
+    
 
-    pt-> N_e_pp = integrale_trap_log_struct(pf_distr,
-            pt,
-            pt->gmin,
-            pt->gmax,
-            10000);
+    
+    //printf("--> N0e %e N0 %e N0p %e\n", pt->N_0e, pt->N_0, pt->N_0p);
+    //printf("-->\n");
+    pt->N_e_pp = N_tot(pt, N_distr_integranda);
+
     if (pt->verbose > 1)
     {
         printf("****** secondary leptons *****\n");
@@ -324,9 +333,12 @@ void Init_Np_Ne_pp(struct spettro *pt)
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
         printf("N_e_pp =%e\n", pt->N_e_pp);
     }
-    
+
     //name = "distr-e-from-pp.dat";
     //Scrivi_N_file(pt, name, pt->griglia_gamma_Ne_log, pt->Ne);
+    
+    //set back pt->N_0 to the proton value and particle name
+    pt->N_0 = pt->N_0p;
     sprintf(pt->PARTICLE, "protons");
 }
 
@@ -422,6 +434,7 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
     //integranda Disre e
     double (*pf_norm) (struct spettro *, double x);
 
+    pt->N_0 = 1.0;
     //=========================================
     // interpolate custom Ne
     //=========================================
@@ -441,8 +454,8 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
     else if (pt->TIPO_DISTR != -1){
 
         //Normalization
-        pt->N_0 = 1.0;
-        //if distr is e- from pp no normalization to compute
+        
+        
         if (pt->Norm_distr == 1 && pt->TIPO_DISTR != -1)
         {
             pf_norm = &N_distr_integranda;
@@ -454,6 +467,8 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
             N[i] = N_distr(pt, griglia_gamma_N_log[i]);
         }
     }
+
+    //if distr is e- from pp no normalization to compute
     else if (pt->TIPO_DISTR == -1){
         for (i = 0; i < pt->gamma_grid_size; i++)
         {
@@ -465,7 +480,7 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
         exit(1);
     }
 
-    pt->Distr_e_done = 1;
+    //pt->Distr_e_done = 1;
 
 }   
 
@@ -639,10 +654,32 @@ double N_distr(struct spettro *pt_N, double Gamma) {
 
 }
 
+double N_tot(struct spettro *pt, double (*pf_distr)(struct spettro *, double x))
+{
+    /**
+     * \author Andrea Tramacere
+     * \date 19-09-2004 \n
+     * questa funzione restituisce il numero tototale di particelle                      \n
+     *
+     */
 
+    double a;
+    a = 0.;
 
+    a= integrale_trap_log_struct(pf_distr,
+                                pt,
+                                pt->gmin,
+                                pt->gmax,
+                                10000);
 
+    //if the distr is not secondaries or interpolated
+    if (pt->TIPO_DISTR > 0)
+    {
+        a = a * pt->N / pt->N_0;
+    }
 
+    return a;
+}
 
 //==============================================================
 //   funzione integranda per la distribuzione degli e-

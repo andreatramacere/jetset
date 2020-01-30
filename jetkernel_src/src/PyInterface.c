@@ -472,7 +472,7 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
     
     if (strcmp(pt_base->PARTICLE, "electrons") == 0) {
         InitNe(pt_base);
-        pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N;
+        pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N_e;
         FindNe_NpGp(pt_base);
         EvalU_e(pt_base);
         
@@ -480,7 +480,7 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
             printf("********************       Leptonic Scenario       ********************\n");
             printf("type of distr=%d\n", pt_base->TIPO_DISTR);
             printf("*******  Leptonic Energetic   **********\n");
-            printf("N_e=%e Ne/Ne_0=%e\n", pt_base->N, pt_base->N / pt_base->N_0e);
+            printf("N_e=%e Ne/Ne_0=%e\n", pt_base->N_e, pt_base->N / pt_base->N_0e);
             printf("Total number of electrons    =%e\n", pt_base->N_tot_e_Sferic);
             printf("Gamma_p of N(gamma)*gamma^2 = %e\n", pt_base->Gamma_p2);
             printf("Gamma_p of N(gamma)*gamma^3 = %e\n", pt_base->Gamma_p3);
@@ -493,9 +493,8 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
         }
 
     } else if (strcmp(pt_base->PARTICLE, "protons") == 0) {
-        
         Init_Np_Ne_pp(pt_base);        
-        pt_base->N_tot_p_Sferic = pt_base->Vol_sphere * pt_base->N;             
+        pt_base->N_tot_p_Sferic = pt_base->Vol_sphere * pt_base->N_p;             
         EvalU_p(pt_base);             
         pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N_e_pp;
         EvalU_e(pt_base);

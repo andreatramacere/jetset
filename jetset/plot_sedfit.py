@@ -24,15 +24,17 @@ except:
 
 from matplotlib import gridspec
 
+from astropy.constants import m_e,m_p,c
+
+
+import numpy as np
+import  os
 
 from collections import namedtuple
 
 from .output import section_separator,WorkPlace
 
 from .utils import *
-
-import numpy as np
-import  os
 
 __all__=['PlotSED']
 
@@ -619,23 +621,71 @@ class  PlotSED (object):
 
 class  PlotPdistr (object):
 
-    def __init__(self):
+    def __init__(self,):
+
         self.fig, self.ax = plt.subplots()
 
-    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None):
+    def _set_variable(self,gamma,n_gamma,particle,energy_scale):
 
-        self.ax.plot(np.log10(gamma), np.log10(n_gamma))
-        self.ax.set_xlabel(r'log($\gamma$)')
-        self.ax.set_ylabel(r'log(n($\gamma$))')
+        energy_plot=False
+        if energy_scale == 'gamma':
+            energy_name = '\gamma'
+            energy_units=''
+        else:
+            energy_name='E'
+            energy_units= '(%s)'%energy_scale
+            energy_plot=True
+
+
+        if  energy_plot is False:
+            x=gamma
+            y=n_gamma
+        else:
+
+            if particle=='electrons':
+                x = gamma*(m_e*c*c).to(energy_scale)
+                y = n_gamma * 1.0/(m_e*c*c).to(energy_scale)
+            elif particle=='protons':
+                x = gamma * (m_p * c * c).to(energy_scale)
+                y = n_gamma * 1.0 / (m_p * c * c).to(energy_scale)
+
+
+            else:
+                raise  RuntimeError('particle ',particle, 'not implemented')
+
+        return x.value,y.value,energy_name,energy_units
+
+    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_scale='gamma'):
+
+        x,y,energy_name,energy_units=self._set_variable(gamma,n_gamma,particle,energy_scale)
+        self.ax.plot(np.log10(x), np.log10(y))
+
+        self.ax.set_xlabel(r'log($%s$)  %s'%(energy_name,energy_units))
+        self.ax.set_ylabel(r'log(n($%s$) '%(energy_name))
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
         self.update_plot()
 
-    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None):
+    def plot_distr2p(self, gamma, n_gamma, y_min=None, y_max=None, x_min=None, x_max=None,particle='electrons',energy_scale='gamma'):
 
-        self.ax.plot(np.log10(gamma), np.log10(n_gamma *  gamma * gamma *  gamma))
-        self.ax.set_xlabel(r'log($\gamma$)')
-        self.ax.set_ylabel(r'log(n($\gamma$) \gamma^3)')
+        x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_scale)
+
+        self.ax.plot(np.log10(x), np.log10(y * x *  x))
+
+        self.ax.set_xlabel(r'log($%s$)  %s'%(energy_name,energy_units))
+        self.ax.set_ylabel(r'log(n($%s$)) $%s^2$  '%(energy_name,energy_name))
+        self.ax.set_ylim(y_min, y_max)
+        self.ax.set_xlim(x_min, x_max)
+        self.update_plot()
+
+    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_scale='gamma'):
+
+        x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_scale)
+
+        self.ax.plot(np.log10(x), np.log10(y * x * x * x))
+
+        self.ax.set_xlabel(r'log($%s$)  %s' % (energy_name, energy_units))
+        self.ax.set_ylabel(r'log(n($%s$) $%s^3$ ' % (energy_name, energy_name))
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
         self.update_plot()

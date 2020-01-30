@@ -177,29 +177,85 @@ class EmittersDistribution(object):
         #print("==> __fill 5")
 
 
-    def plot(self, p=None, y_min=None,y_max=None,x_min=None,x_max=None):
+    def plot(self, p=None, y_min=None,y_max=None,x_min=None,x_max=None,energy_scale='gamma'):
 
         self.update()
         if p is None:
             p=PlotPdistr()
 
-        p.plot_distr(self.gamma_e, self.n_gamma_e, y_min=y_min, y_max=y_max, x_min=x_min, x_max=x_max)
+        p.plot_distr(self.gamma_e,
+                     self.n_gamma_e,
+                     y_min=y_min,
+                     y_max=y_max,
+                     x_min=x_min,
+                     x_max=x_max,
+                     particle='electrons',
+                     energy_scale=energy_scale)
 
         if  self.emitters_type=='protons':
-            p.plot_distr(self.gamma_p, self.n_gamma_p, y_min=y_min, y_max=y_max, x_min=x_min, x_max=x_max)
+            p.plot_distr(self.gamma_p,
+                         self.n_gamma_p,
+                         y_min=y_min,
+                         y_max=y_max,
+                         x_min=x_min,
+                         x_max=x_max,
+                         particle='protons',
+                         energy_scale=energy_scale)
 
         return p
 
-
-    def plot3p(self, p=None,y_min=None,y_max=None,x_min=None,x_max=None):
+    def plot2p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None,energy_scale='gamma'):
         self.update()
 
         if p is None:
             p = PlotPdistr()
 
-        p.plot_distr3p(self.gamma_e, self.n_gamma_e, y_min=y_min, y_max=y_max, x_min=x_min, x_max=x_max)
+        p.plot_distr2p(self.gamma_e,
+                       self.n_gamma_e,
+                       y_min=y_min,
+                       y_max=y_max,
+                       x_min=x_min,
+                       x_max=x_max,
+                       particle='electrons',
+                       energy_scale=energy_scale)
+
+        if self.emitters_type == 'protons':
+            p.plot_distr2p(self.gamma_p,
+                           self.n_gamma_p,
+                           y_min=y_min,
+                           y_max=y_max,
+                           x_min=x_min,
+                           x_max=x_max,
+                           particle='protons',
+                           energy_scale=energy_scale)
+
+        return p
+
+
+    def plot3p(self, p=None,y_min=None,y_max=None,x_min=None,x_max=None,energy_scale='gamma'):
+        self.update()
+
+        if p is None:
+            p = PlotPdistr()
+
+        p.plot_distr3p(self.gamma_e,
+                       self.n_gamma_e,
+                       y_min=y_min,
+                       y_max=y_max,
+                       x_min=x_min,
+                       x_max=x_max,
+                       particle='electrons',
+                       energy_scale=energy_scale)
+
         if  self.emitters_type=='protons':
-            p.plot_distr3p(self.gamma_p, self.n_gamma_p, y_min=y_min, y_max=y_max, x_min=x_min, x_max=x_max)
+            p.plot_distr3p(self.gamma_p,
+                           self.n_gamma_p,
+                           y_min=y_min,
+                           y_max=y_max,
+                           x_min=x_min,
+                           x_max=x_max,
+                           particle='protons',
+                           energy_scale=energy_scale)
 
         return p
 
