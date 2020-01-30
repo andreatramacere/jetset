@@ -202,8 +202,9 @@ class JetBase(Model):
 
     def _serialize_model(self):
         _model = {}
-        _model['electron_distribution'] = self._electron_distribution_name
-        _model['electron_distribution_log_values'] = self._electron_distribution_log_values
+        _model['emitters_distribution'] = self._emitters_distribution_name
+        _model['emitters_distribution_log_values'] = self._emitters_distribution_log_values
+        _model['emitters_type'] = self._emitters_type
         _model['beaming_expr'] = self._beaming_expr
         _model['spectral_components_name'] = self.get_spectral_component_names_list()
         _model['spectral_components_state'] = [c.state for c in self.spectral_components_list]
@@ -235,7 +236,24 @@ class JetBase(Model):
         self.set_blob()
         self.parameters = ModelParameterArray()
 
-        self.set_electron_distribution(str(_model['electron_distribution']))
+        emitters_type='electrons'
+        if 'emitters_type' in _model.keys():
+            emitters_type=str(_model[emitters_type])
+
+        if 'electron_distribution' in _model.keys():
+            _v=_model['electron_distribution']
+            del(_model['electron_distribution'])
+            _model['emitters_distribution']=_v
+
+        if 'electron_distribution_log_values' in _model.keys():
+            _v=_model['electron_distribution_log_values']
+            del(_model['electron_distribution_log_values'])
+            _model['emitters_distribution_log_values']=_v
+
+
+        self.set_emitters_distribution(name=str(_model['emitters_distribution']),
+                                   log_values=_model['emitters_distribution_log_values'],
+                                   emitters_type=emitters_type)
 
         for c in self.basic_components_list:
             if c not in _model['basic_components_name']:
@@ -251,7 +269,7 @@ class JetBase(Model):
         self.SED = self.get_spectral_component_by_name('Sum').SED
 
         self.set_emitting_region(str(_model['beaming_expr']))
-        self.set_electron_distribution(str(_model['electron_distribution']))
+        #self.set_electron_distribution(str(_model['electron_distribution']))
 
         _par_dict = _model['pars']
         self.parameters._decode_pars(_par_dict)
@@ -275,9 +293,22 @@ class JetBase(Model):
         jet.model_type = 'jet'
 
         jet.init_BlazarSED()
+
         jet.parameters = ModelParameterArray()
 
-        jet.set_electron_distribution(str(_model['electron_distribution']))
+        if 'electron_distribution' in _model.keys():
+            _v = _model['electron_distribution']
+            del (_model['electron_distribution'])
+            _model['emitters_distribution'] = _v
+
+        if 'electron_distribution_log_values' in _model.keys():
+            _v = _model['electron_distribution_log_values']
+            del (_model['electron_distribution_log_values'])
+            _model['emitters_distribution_log_values'] = _v
+
+        jet.set_emitters_distribution(name=str(_model['emitters_distribution']),
+                                       log_values=_model['emitters_distribution_log_values'],
+                                       emitters_type='electrons')
 
         for c in jet.basic_components_list:
             if c not in _model['basic_components_name']:
@@ -293,7 +324,7 @@ class JetBase(Model):
         jet.SED = jet.get_spectral_component_by_name('Sum').SED
 
         jet.set_emitting_region(str(_model['beaming_expr']))
-        jet.set_electron_distribution(str(_model['electron_distribution']))
+
         _par_dict = _model['pars']
         jet.show_pars()
         for k in _par_dict.keys():
