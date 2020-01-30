@@ -352,11 +352,12 @@ void Init_Np_Ne_pp(struct spettro *pt)
 
 void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
     double mass;
-    char f_distr[static_file_name_max_legth];
-    FILE *fp_distr;
-    sprintf(f_distr, "%s%s-%s", pt->path, pt->STEM, name);
+    //char f_distr[static_file_name_max_legth];
+    //FILE *fp_distr;
+    //sprintf(f_distr, "%s%s-%s", pt->path, pt->STEM, name);
     unsigned int i;
     
+    /*
     if (pt->WRITE_TO_FILE==1){
             fp_distr = fopen(f_distr, "w");
             if (fp_distr == NULL) {
@@ -394,7 +395,9 @@ void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
         }
         fclose(fp_distr);
     }
+*/
 }
+
 //=====================================================
 
 

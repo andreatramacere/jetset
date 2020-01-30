@@ -72,14 +72,15 @@ void spectra_External_Fields(int Num_file, struct spettro *pt) {
 
 //=========================================================================================
 void Build_I_nu_Star(struct spettro *pt){
-	char f_SED_star[static_file_name_max_legth];
-	FILE *fp_SED_star;
+	//char f_SED_star[static_file_name_max_legth];
+	//FILE *fp_SED_star;
 	double nu_peak_BB,nu_obs;
 	unsigned int NU_INT,NU_INT_MAX;
 	double nu_start_disk_RF;
 	double nu_stop_disk_RF;
 	double nuL_nu_disk,F_nu_disk_obs;
 
+	/*
 	sprintf(f_SED_star, "%s%s-SED-star.dat",pt->path, pt->STEM);
 
 	if (pt->WRITE_TO_FILE==1){
@@ -90,7 +91,7 @@ void Build_I_nu_Star(struct spettro *pt){
 		}
 		flux_DISK_header(fp_SED_star);
 	}
-
+	*/
 
 	set_Star_geometry(pt);
 
@@ -165,6 +166,7 @@ void Build_I_nu_Star(struct spettro *pt){
 		F_nu_disk_obs= L_nu_Disk_to_F_nu(nuL_nu_disk / pt->nu_Star_disk_RF[NU_INT], pt-> z_cosm, pt-> dist);
 		pt->nuF_nu_Star_obs[NU_INT] = F_nu_disk_obs*nu_obs;
 
+		/*
 		if (pt->WRITE_TO_FILE==1){
 			fprintf(fp_SED_star, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t%4.4e\t%4.4e \n",
 				log10(nu_obs),
@@ -174,13 +176,15 @@ void Build_I_nu_Star(struct spettro *pt){
 				pt->nu_Star_disk_RF[NU_INT],
 				nuL_nu_disk);
 		}
-
+		*/
 
 	}
+	/*
 	if (pt->WRITE_TO_FILE == 1)
 	{
 		fclose(fp_SED_star);
 	}
+	*/
 }
 
 
@@ -422,8 +426,8 @@ double integrand_I_nu_CMB_blob_RF(struct spettro *pt, double mu){
 //=========================================================================================
 void Build_I_nu_Disk(struct spettro *pt){
 
-	char f_SED_disk[static_file_name_max_legth];
-	FILE *fp_SED_disk;
+	//char f_SED_disk[static_file_name_max_legth];
+	//FILE *fp_SED_disk;
 	double nu_peak_BB,nu_obs;
 	unsigned int NU_INT,NU_INT_MAX;
 	double nu_start_disk_RF;
@@ -434,6 +438,7 @@ void Build_I_nu_Disk(struct spettro *pt){
 		printf("-----------  Building I_nu disk     ----------- \n");
 	}
 
+	/*
 	if (pt->WRITE_TO_FILE==1){
 		sprintf(f_SED_disk, "%s%s-SED-disk.dat",pt->path, pt->STEM);
 
@@ -444,7 +449,7 @@ void Build_I_nu_Disk(struct spettro *pt){
 		}
 		flux_DISK_header(fp_SED_disk);
 	}
-
+	*/
 	set_Disk(pt);
 	set_Disk_geometry(pt);
 	set_Disk_angles(pt);
@@ -541,7 +546,7 @@ void Build_I_nu_Disk(struct spettro *pt){
 		nuL_nu_disk = pt->L_nu_Disk_disk_RF[NU_INT] * pt->nu_Disk_disk_RF[NU_INT];
 		F_nu_disk_obs= L_nu_Disk_to_F_nu(nuL_nu_disk / pt->nu_Disk_disk_RF[NU_INT], pt-> z_cosm, pt-> dist);
 		pt->nuF_nu_Disk_obs[NU_INT] = F_nu_disk_obs*nu_obs;
-
+		/*
 		if (pt->WRITE_TO_FILE==1){
 			fprintf(fp_SED_disk, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t%4.4e\t%4.4e \n",
 				log10(nu_obs),
@@ -551,14 +556,17 @@ void Build_I_nu_Disk(struct spettro *pt){
 				pt->nu_Disk_disk_RF[NU_INT],
 				nuL_nu_disk);
 		}
+		*/
 
 
 	}
 	pt->L_Disk_radiative = PowerPhotons_disk_rest_frame(pt, pt->nu_Disk_disk_RF, pt->nuF_nu_Disk_obs, pt->NU_INT_MAX_Disk);
 	
+	/*
 	if (pt->WRITE_TO_FILE==1){
 		fclose(fp_SED_disk);
 	}
+	*/
 }
 
 
@@ -803,9 +811,10 @@ void Build_I_nu_BLR(struct spettro *pt){
 	//double nu_stop_BLR_blob_RF;
 	unsigned int NU_INT,NU_INT_MAX;
 	double I_nu_theta_disk_RF,I_nu_theta_blob_RF;
-	char f_BLR_disk[static_file_name_max_legth];
-	FILE *fp_BLR_disk;
+	//char f_BLR_disk[static_file_name_max_legth];
+	//FILE *fp_BLR_disk;
 
+	/*
 	if (pt->WRITE_TO_FILE==1){
 		sprintf(f_BLR_disk, "%s%s-I_nu_BLR.dat",pt->path, pt->STEM);
 
@@ -815,6 +824,7 @@ void Build_I_nu_BLR(struct spettro *pt){
 			exit(1);
 		}
 	}
+	*/
 	//flux_DISK_header(fp_BLR_disk);
 	if (pt->verbose){
 
@@ -902,6 +912,7 @@ void Build_I_nu_BLR(struct spettro *pt){
 					pt->nu_BLR[NU_INT],
 					pt->I_nu_BLR[NU_INT]);
 		}
+		/*
 		if (pt->WRITE_TO_FILE==1){
 
 			fprintf(fp_BLR_disk, "%4.4e\t %4.4e\t %4.4e\t %4.4e \n",
@@ -910,13 +921,15 @@ void Build_I_nu_BLR(struct spettro *pt){
 				log10(pt->nu_BLR[NU_INT]),
 				log10(pt->I_nu_BLR[NU_INT]));
 		}
-
+		*/
 
 	}
+	/*
 	if (pt->WRITE_TO_FILE == 1)
 	{
 		fclose(fp_BLR_disk);
 	}
+	*/
 }
 
 
@@ -1150,8 +1163,8 @@ void set_BLR_geometry(struct spettro *pt)
 //=========================================================================================
 
 void Build_I_nu_DT(struct spettro *pt){
-	FILE *fp_SED_DT;
-	char f_SED_DT[static_file_name_max_legth];
+	//FILE *fp_SED_DT;
+	//char f_SED_DT[static_file_name_max_legth];
 	unsigned int NU_INT,NU_INT_MAX;
 	double I_nu_theta_disk_RF, I_nu_theta_blob_RF;
 	double nu_peak_DT_disk_RF;
@@ -1159,7 +1172,7 @@ void Build_I_nu_DT(struct spettro *pt){
 	double nu_obs;
 	double nuL_nu_DT,F_nu_DT_obs;
 
-
+	/*
 	if (pt->WRITE_TO_FILE==1){
 		sprintf(f_SED_DT, "%s%s-SED-DT.dat",
 					pt->path, pt->STEM);
@@ -1171,6 +1184,7 @@ void Build_I_nu_DT(struct spettro *pt){
 		}
 		flux_DISK_header(fp_SED_DT);
 	}
+	*/
 
 	if (pt->verbose){
 
@@ -1275,6 +1289,7 @@ void Build_I_nu_DT(struct spettro *pt){
 				pt->nu_DT[NU_INT],
 				pt->I_nu_DT[NU_INT]);
 		}
+		/*
 		if (pt->WRITE_TO_FILE==1){
 			fprintf(fp_SED_DT, "%4.4e\t %4.4e\t %4.4e\t %4.4e\t%4.4e\t%4.4e \n",
 									log10(nu_obs),
@@ -1284,11 +1299,13 @@ void Build_I_nu_DT(struct spettro *pt){
 									pt->nu_DT_disk_RF[NU_INT],
 									nuL_nu_DT);
 		}
+		*/
 	}
+	/*
 	if (pt->WRITE_TO_FILE==1){
 		fclose(fp_SED_DT);
 	}
-
+	*/
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->n_DT[NU_INT] =I_nu_to_n(pt->I_nu_DT[NU_INT], pt->nu_DT[NU_INT]);
 	}

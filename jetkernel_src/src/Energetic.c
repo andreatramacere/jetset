@@ -501,6 +501,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
     energetic.jet_L_kin = energetic.jet_L_B + energetic.jet_L_e + energetic.jet_L_p_cold + energetic.jet_L_p;
     energetic.jet_L_tot = energetic.jet_L_kin + energetic.jet_L_rad;
 
+    /*
     if (pt->WRITE_TO_FILE == 1)
     {
 
@@ -718,15 +719,16 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
             fclose(fp_Energetic);
         }
     }
+    */
     return energetic;
 }
 
 void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev) {
     unsigned int i,a;
     double Uph,IC_cr,S_cr ;
-    char f_cooling[static_file_name_max_legth];
-    FILE *fp_cooling;
-
+    //char f_cooling[static_file_name_max_legth];
+    //FILE *fp_cooling;
+    /*
     if (pt->WRITE_TO_FILE == 1)
     {
         sprintf(f_cooling, "%s%s-cooling-rates.dat", pt->path, pt->STEM);
@@ -758,6 +760,7 @@ void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev) {
         pt_ev->do_Compton_cooling = a;
         fclose(fp_cooling);
     }   
+    */
 }
 
 

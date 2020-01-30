@@ -23,13 +23,14 @@ void spettro_pp(int Num_file, struct spettro *pt) {
     double L_nu_pp, nuL_nu_pp, F_nu_pp_obs;
     double log_nu_start;
     unsigned int NU_INT, i, I_MAX, stop;
-    char f_pp[static_file_name_max_legth], f_pp_energy[static_file_name_max_legth];
-    FILE *fp_pp, *fp_pp_energy;
+    //char f_pp[static_file_name_max_legth], f_pp_energy[static_file_name_max_legth];
+    //FILE *fp_pp, *fp_pp_energy;
 
     //=================================
     // apre i files dove scrive i dati di SSC
     // HEADER FILES
     //=================================
+    /*
     if (pt->WRITE_TO_FILE==1){
         sprintf(f_pp, "%s%s-pp-gamma.dat",
                 pt->path, pt->STEM);
@@ -49,6 +50,7 @@ void spettro_pp(int Num_file, struct spettro *pt) {
         }
         flux_header(fp_pp);
     }
+    */
     //==================================================================
 
 
@@ -143,6 +145,7 @@ void spettro_pp(int Num_file, struct spettro *pt) {
             //===========================================
             // FILES output nu dnu nuFnu dnuFnu
             //==========================================
+            /*
             if (pt->WRITE_TO_FILE==1){
                 if (!stop) {
                     fprintf(fp_pp, "%4.4e\t%4.4e\t%4.4e\t %4.4e\t%4.4e\t%4.4e\n",
@@ -159,6 +162,7 @@ void spettro_pp(int Num_file, struct spettro *pt) {
                     // nuL_nu_pp);
                 }
             }
+            */
             if (pt->verbose) {
                 printf("#-> ********************************\n\n");
             }
@@ -173,11 +177,12 @@ void spettro_pp(int Num_file, struct spettro *pt) {
     }
     //printf("nu_stop_pp=%e NU_INT_STOP_PP=%d\n", pt->nu_stop_pp, pt->NU_INT_STOP_PP);
     pt->nu_stop_pp_obs = nu_blob_to_nu_obs(pt->nu_stop_pp, pt->beam_obj, pt->z_cosm);
+    /*
     if (pt->WRITE_TO_FILE==1){
         fclose(fp_pp);
         fclose(fp_pp_energy);
     }
-
+    */
     //===========================================
     //    trova nu peak e Flux peak
     //===========================================

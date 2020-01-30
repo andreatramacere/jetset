@@ -28,14 +28,15 @@ void spettro_EC(int Num_file, struct spettro *pt) {
     double * nu_start_EC, * nu_stop_EC, * nu_start_EC_obs, * nu_stop_EC_obs, nu_seed_max;
     unsigned int * NU_INT_STOP_EC;
     unsigned int NU_INT, I_MAX, stop,out;
-    char f_EC[static_file_name_max_legth];
-    FILE *fp_EC;
+    //char f_EC[static_file_name_max_legth];
+    //FILE *fp_EC;
 
     //=================================
     // apre i files dove scrive i dati di SSC
     // HEADER FILES
     //=================================
-    if (pt->WRITE_TO_FILE==1){
+    /*
+	if (pt->WRITE_TO_FILE==1){
 
 		if (pt->EC == 1) {
 			sprintf(f_EC, "%s%s-EC-Diks.dat",
@@ -71,6 +72,7 @@ void spettro_EC(int Num_file, struct spettro *pt) {
 
 		flux_header(fp_EC);
 	}
+	*/
     //==================================================================
 
 
@@ -349,7 +351,8 @@ void spettro_EC(int Num_file, struct spettro *pt) {
             //===========================================
             // FILES output nu dnu nuFnu dnuFnu
             //===========================================
-            if (pt->WRITE_TO_FILE==1){
+            /*
+			if (pt->WRITE_TO_FILE==1){
 				if (!stop && out) {
 					fprintf(fp_EC, "%4.4e\t%4.4e\t%4.4e\t %4.4e\t%4.4e\t%4.4e\n",
 							log10(freq_array_obs[NU_INT]),
@@ -360,6 +363,7 @@ void spettro_EC(int Num_file, struct spettro *pt) {
 							nuL_nu_EC);
 				}
 			}
+			*/
             if (pt->verbose>1) {
                 printf("#-> ********************************\n\n");
             }
@@ -403,9 +407,11 @@ void spettro_EC(int Num_file, struct spettro *pt) {
             //}
     	}
     }
+	/*
 	if (pt->WRITE_TO_FILE == 1){
 		fclose(fp_EC);
 	}
+	*/
 	//===========================================
 	//    trova nu peak e Flux peak
 	//===========================================
