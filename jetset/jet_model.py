@@ -236,9 +236,11 @@ class JetBase(Model):
         self.set_blob()
         self.parameters = ModelParameterArray()
 
-        emitters_type='electrons'
+
         if 'emitters_type' in _model.keys():
-            emitters_type=str(_model[emitters_type])
+            emitters_type=str(_model['emitters_type'])
+        else:
+            emitters_type = 'electrons'
 
         if 'electron_distribution' in _model.keys():
             _v=_model['electron_distribution']

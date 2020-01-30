@@ -66,7 +66,7 @@ def old_model_warning():
     m+= '*' * 80 + '\n'
     warnings.warn(m)
 
-class JetkerneltException(NoTraceBackWithLineNumber):
+class JetkerneltException(Exception):
 
     def __init__(self, message='Jeset  exception', debug_message=''):
         super(JetkerneltException, self).__init__(message)
