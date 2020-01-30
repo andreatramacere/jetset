@@ -117,7 +117,7 @@ class JetBase(Model):
         self.model_type='jet'
         self._emitters_type=emitters_type
         self._scale='lin-lin'
-
+        self._nu_static_size=1000
         self._blob = self.build_blob(verbose=verbose)
 
         if jet_workplace is None:
@@ -201,7 +201,9 @@ class JetBase(Model):
 
 
     def _serialize_model(self):
+        import jetset
         _model = {}
+        _model['version']=jetset.__version__
         _model['emitters_distribution'] = self._emitters_distribution_name
         _model['emitters_distribution_log_values'] = self._emitters_distribution_log_values
         _model['emitters_type'] = self._emitters_type
@@ -849,8 +851,8 @@ class JetBase(Model):
         return self._blob.nu_IC_size
 
     def set_IC_nu_size(self, val):
-        if val > 1000:
-            raise RuntimeError('value can not exceed 1000')
+        if val > self._nu_static_size:
+            raise RuntimeError('value can not exceed',self._nu_static_size)
         self._blob.nu_IC_size = val
 
     @property
@@ -865,8 +867,8 @@ class JetBase(Model):
         self.set_seed_nu_size(val)
 
     def set_seed_nu_size(self,val):
-        if val>1000:
-            raise RuntimeError('value can not exceed 1000')
+        if val>self._nu_static_size:
+            raise RuntimeError('value can not exceed',self._nu_static_size)
         self._blob.nu_seed_size=val
 
 
