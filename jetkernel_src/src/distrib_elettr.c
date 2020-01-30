@@ -28,7 +28,7 @@
 //==============================================================
 
 void Genera_griglia_gamma_N_log(struct spettro *pt, double * griglia_gamma_N_log) {
-	unsigned long i;
+	unsigned int i;
     double delta_log;
     double log_a, log_b;
     if (pt->verbose>1) {
@@ -187,7 +187,7 @@ void build_Np(struct spettro *pt)
 }
 
 void Fill_Ne_IC(struct spettro *pt, double gmin, int stat_frame) {
-    unsigned long i;
+    unsigned int i;
     if (pt->verbose>1) {
         printf("Set array per Ne IC\n");
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
@@ -355,7 +355,7 @@ void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
     char f_distr[static_file_name_max_legth];
     FILE *fp_distr;
     sprintf(f_distr, "%s%s-%s", pt->path, pt->STEM, name);
-    unsigned long i;
+    unsigned int i;
     
     if (pt->WRITE_TO_FILE==1){
             fp_distr = fopen(f_distr, "w");
@@ -406,7 +406,7 @@ void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
 //========================================
 
 double Find_gmax(struct spettro *pt, double *N, double *g) {
-	unsigned long i;
+	unsigned int i;
     double gmax;
     gmax = g[0];
 
@@ -430,7 +430,7 @@ double Find_gmax(struct spettro *pt, double *N, double *g) {
 //========================================
 
 void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
-	unsigned long i, K;
+	unsigned int i;
     //integranda Disre e
     double (*pf_norm) (struct spettro *, double x);
 
@@ -476,7 +476,7 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
         }
     }
     else {
-        printf("TIPO_DISTR set to wrong value: %d\n, pt->TIPO_DISTR");
+        printf("TIPO_DISTR set to wrong value: %d\n",pt->TIPO_DISTR);
         exit(1);
     }
 
@@ -777,8 +777,8 @@ double N_distr_integranda(struct spettro *pt_N, double Gamma) {
     return a;
 }
 
-double N_distr_interp(unsigned long size, double Gamma, double *griglia_gamma, double *N) {
-	unsigned long i;
+double N_distr_interp(unsigned int size, double Gamma, double *griglia_gamma, double *N) {
+	unsigned int i;
     double gamma_piu, gamma_meno, Npiu, Nmeno, g, a;
     i = 0;
     while (griglia_gamma[i] < Gamma && i < size) {

@@ -59,8 +59,8 @@ void show_blob(struct spettro pt ) {
     printf("do_EC_BLR=%d\n", pt.do_EC_BLR);
     printf("do_EC_DT=%d\n", pt.do_EC_DT);
     printf("disk type =%s\n", pt.disk_type);
-    printf("nu_start_EC_BLR\n", pt.nu_start_EC_BLR);
-    printf("nu_stop_EC_BLR\n", pt.nu_stop_EC_BLR);
+    printf("nu_start_EC_BLR %e\n", pt.nu_start_EC_BLR);
+    printf("nu_stop_EC_BLR %e\n", pt.nu_stop_EC_BLR);
     printf("Lum Diks %e\n", pt.L_Disk);
     printf("tau BLR %e\n", pt.tau_BLR);
     printf("R_inner_Sw %e (Rs)\n", pt.R_inner_Sw);
@@ -69,8 +69,8 @@ void show_blob(struct spettro pt ) {
     printf("T disk max (T max for MultiBB) %e\n", pt.T_Disk);
     printf("dist disk BLR (cm))%e\n", pt.R_BLR_in);
     printf("test array=%e\n", pt.nuF_nu_SSC_obs[0]);
-    printf("nu_start_EC_DT\n", pt.nu_start_EC_DT);
-    printf("nu_stop_EC_DT\n", pt.nu_stop_EC_DT);
+    printf("nu_start_EC_DT %e\n", pt.nu_start_EC_DT);
+    printf("nu_stop_EC_DT %e\n", pt.nu_stop_EC_DT);
     printf("T_DT (T Dusty Torus) %e\n", pt.T_DT);
     printf("dist disk DT (cm))%e\n", pt.R_DT);
     printf("tau DT %e\n", pt.tau_DT);
@@ -312,9 +312,9 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
     // otherwise the passed value is used
 
     //struct spettro *pt_base;
-    double (*pf) (struct spettro *, double);
-    double test, prova;
-    unsigned long i;
+    //double (*pf) (struct spettro *, double);
+    
+    unsigned int i;
     //char * ENV;
     pt_base->SYSPATH=getenv("BLAZARSED");
     set_seed_freq_start(pt_base);
@@ -525,7 +525,7 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
 
 }
 void Run_SED(struct spettro *pt_base){
-	unsigned long i;
+	unsigned int i;
     if (pt_base->verbose) {
         printf("STEM=%s\n", pt_base->STEM);
         printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> RUN      <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
@@ -634,7 +634,7 @@ void Run_SED(struct spettro *pt_base){
 //==================================================
 //Funtions To access Ne and Spectral components form Python
 //==================================================
-double get_spectral_array(double * arr, struct spettro * pt, unsigned long id){
+double get_spectral_array(double * arr, struct spettro * pt, unsigned int id){
 	if ((id >=0) && (id <= pt->nu_grid_size)){
 		return arr[id];
 	}
@@ -645,7 +645,7 @@ double get_spectral_array(double * arr, struct spettro * pt, unsigned long id){
 }
 
 
-double get_elec_array(double * arr, struct spettro *pt, unsigned long id){
+double get_elec_array(double * arr, struct spettro *pt, unsigned int id){
 	if ((id>=0) && (id<=pt->gamma_grid_size)){
 		return arr[id];
 	}
@@ -655,7 +655,7 @@ double get_elec_array(double * arr, struct spettro *pt, unsigned long id){
 	}
 }
 
-double set_elec_array(double * arr,struct spettro *pt, double val, unsigned long id){
+double set_elec_array(double * arr,struct spettro *pt, double val, unsigned int id){
     if ((id>=0) && (id<=pt->gamma_grid_size)){
            arr[id]=val;
         }
@@ -665,7 +665,7 @@ double set_elec_array(double * arr,struct spettro *pt, double val, unsigned long
         }
 }
 
-double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned long id){
+double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned int id){
     if ((id>=0) && (id<=pt->gamma_custom_grid_size)){
            arr[id]=val;
         }

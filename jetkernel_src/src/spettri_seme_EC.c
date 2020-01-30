@@ -75,9 +75,9 @@ void Build_I_nu_Star(struct spettro *pt){
 	char f_SED_star[static_file_name_max_legth];
 	FILE *fp_SED_star;
 	double nu_peak_BB,nu_obs;
-	unsigned long NU_INT,NU_INT_MAX;
-	double nu_start_disk_RF,nu_start_blob_RF;
-	double nu_stop_disk_RF,nu_stop_blob_RF;
+	unsigned int NU_INT,NU_INT_MAX;
+	double nu_start_disk_RF;
+	double nu_stop_disk_RF;
 	double nuL_nu_disk,F_nu_disk_obs;
 
 	sprintf(f_SED_star, "%s%s-SED-star.dat",pt->path, pt->STEM);
@@ -199,7 +199,7 @@ double eval_J_nu_Star_disk_RF(struct spettro *pt, double I_nu_Star_disk_RF){
 
 
 double integrand_I_nu_Star_blob_RF(struct spettro *pt, double mu){
-	unsigned long i;
+	unsigned int i;
 	double nu_disk_RF=nu_blob_RF_to_nu_disk_RF(pt->nu_blob_RF,pt->BulkFactor,pt->beta_Gamma,mu);
 
 	i=x_to_grid_index( pt->nu_Star_disk_RF,nu_disk_RF,pt->nu_seed_size);
@@ -214,7 +214,6 @@ double integrand_I_nu_Star_blob_RF(struct spettro *pt, double mu){
 
 
 double eval_I_nu_Star_blob_RF(struct spettro *pt, double nu_blob_RF){
-	unsigned long i;
 	pt->nu_blob_RF=nu_blob_RF;
 	double (*pf) (struct spettro *, double x);
 	pf = &integrand_I_nu_Star_blob_RF;
@@ -289,7 +288,7 @@ void set_Star_geometry(struct spettro *pt){
 void Build_I_nu_CMB(struct spettro *pt){
 	double T_CMB_z,T_CMB_0;
 	double nu_peak_CMB_z,nu_peak_CMB_0;
-	unsigned long NU_INT,NU_INT_MAX;
+	unsigned int NU_INT,NU_INT_MAX;
 	double nu_start_disk_RF;
 	double nu_stop_disk_RF;
 
@@ -335,7 +334,7 @@ void Build_I_nu_CMB(struct spettro *pt){
 /* void Build_I_nu_CMB_stat(struct spettro *pt){
 	double T_CMB_z,T_CMB_0;
 	double nu_peak_CMB_z,nu_peak_CMB_0;
-	unsigned long NU_INT,NU_INT_MAX;
+	unsigned int NU_INT,NU_INT_MAX;
 	double nu_start_disk_RF;
 	double nu_stop_disk_RF;
 
@@ -391,7 +390,8 @@ double eval_I_nu_CMB_disk_RF(double T_CMB,double nu_CMB_disk_RF){
 
 
 double eval_I_nu_CMB_blob_RF(struct spettro *pt, double nu_blob_RF){
-	unsigned long i;
+
+
 	pt->nu_blob_RF=nu_blob_RF;
 	double (*pf) (struct spettro *, double x);
 	pf = &integrand_I_nu_CMB_blob_RF;
@@ -400,7 +400,7 @@ double eval_I_nu_CMB_blob_RF(struct spettro *pt, double nu_blob_RF){
 }
 
 double integrand_I_nu_CMB_blob_RF(struct spettro *pt, double mu){
-	unsigned long i=0;
+	unsigned int i=0;
  	double nu_disk_RF=nu_blob_RF_to_nu_disk_RF(pt->nu_blob_RF,pt->BulkFactor,pt->beta_Gamma,mu);
 	i=x_to_grid_index( pt->nu_CMB_disk_RF,nu_disk_RF,pt->nu_seed_size);
  	if (i>0){
@@ -425,9 +425,9 @@ void Build_I_nu_Disk(struct spettro *pt){
 	char f_SED_disk[static_file_name_max_legth];
 	FILE *fp_SED_disk;
 	double nu_peak_BB,nu_obs;
-	unsigned long NU_INT,NU_INT_MAX;
-	double nu_start_disk_RF,nu_start_blob_RF;
-	double nu_stop_disk_RF,nu_stop_blob_RF;
+	unsigned int NU_INT,NU_INT_MAX;
+	double nu_start_disk_RF;
+	double nu_stop_disk_RF;
 	double nuL_nu_disk,F_nu_disk_obs;
 	//printf("=> Ciccio 1\n");
 	if (pt->verbose){
@@ -639,6 +639,7 @@ void set_Disk(struct spettro *pt){
 double Disk_Spectrum(struct spettro *pt, double nu_Disk_disk_RF){
 	double I;
 	double (*pf)(struct spettro *, double x);
+	I=0;
 	if (pt->disk == 1) {
 		// in this case we use a normalized planck function
 		I= f_planck_norm(pt->T_Disk, nu_Disk_disk_RF);
@@ -661,11 +662,11 @@ double Disk_Spectrum(struct spettro *pt, double nu_Disk_disk_RF){
 double eval_I_nu_theta_Disk(struct spettro *pt, double mu)
 {
 	//double (*pf)(struct spettro *, double x);
-	unsigned long i;
+	//unsigned int i;
 	double  I,R,R_D;
 	//pf = &j_nu_BLR_integrand;
 	//pt->mu_j = mu;
-	
+	I=0;
     if (pt->disk == 1) {
 		// in this case we use a normalized planck function
 		I = f_planck_norm(pt->T_Disk, pt->nu_disk_RF)*pt->L_Disk * pt->Disk_geom_factor;
@@ -705,7 +706,7 @@ double eval_I_nu_Disk_blob_RF(struct spettro *pt, double nu_disk_RF)
 {
 	double (*pf)(struct spettro *, double x);
 	double I,c,R_H_orig;
-	unsigned long i;
+	//unsigned int i;
 	pt->nu_disk_RF = nu_disk_RF;
 	pf = &integrand_I_nu_Disk_blob_RF;
 
@@ -730,7 +731,7 @@ double eval_I_nu_Disk_disk_RF(struct spettro *pt, double nu_disk_RF)
 {
 	double (*pf)(struct spettro *, double x);
 	double  I, R_H_orig, c;
-	unsigned long i;
+	//unsigned int i;
 	pt->nu_disk_RF = nu_disk_RF;
 	pf = &integrand_I_nu_Disk_disk_RF;
 
@@ -799,8 +800,8 @@ void Build_I_nu_BLR(struct spettro *pt){
 	//-------------------------------------
 	// we follow the method in Donea&Protheroe https://arxiv.org/abs/astro-ph/0202068v1
 	//-------------------------------------
-	double nu_start_BLR_blob_RF,nu_stop_BLR_blob_RF,n0;
-	unsigned long NU_INT,NU_INT_MAX;
+	//double nu_stop_BLR_blob_RF;
+	unsigned int NU_INT,NU_INT_MAX;
 	double I_nu_theta_disk_RF,I_nu_theta_blob_RF;
 	char f_BLR_disk[static_file_name_max_legth];
 	FILE *fp_BLR_disk;
@@ -930,7 +931,7 @@ void Build_I_nu_BLR(struct spettro *pt){
 
 double j_nu_BLR_integrand(struct spettro *pt, double l)
 {
-	unsigned long i;
+	//unsigned int i;
 	double L, r2;
 
 	//i = x_to_grid_index(pt->nu_BLR_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
@@ -952,7 +953,7 @@ double j_nu_BLR_integrand(struct spettro *pt, double l)
 double eval_I_nu_theta_BLR(struct spettro *pt, double mu)
 {
 	double (*pf)(struct spettro *, double x);
-	unsigned long i;
+	//unsigned int i;
 	double l_values[3], I;
 	
 	pf = &j_nu_BLR_integrand;
@@ -1151,9 +1152,9 @@ void set_BLR_geometry(struct spettro *pt)
 void Build_I_nu_DT(struct spettro *pt){
 	FILE *fp_SED_DT;
 	char f_SED_DT[static_file_name_max_legth];
-	unsigned long NU_INT,NU_INT_MAX;
+	unsigned int NU_INT,NU_INT_MAX;
 	double I_nu_theta_disk_RF, I_nu_theta_blob_RF;
-	double nu_peak_DT_disk_RF,nu_torus_disk_RF;
+	double nu_peak_DT_disk_RF;
 	double nu_start_DT_disk_RF,nu_stop_DT_disk_RF;
 	double nu_obs;
 	double nuL_nu_DT,F_nu_DT_obs;
@@ -1299,7 +1300,7 @@ void Build_I_nu_DT(struct spettro *pt){
 
 double j_nu_DT_integrand(struct spettro *pt, double l)
 {
-	unsigned long i;
+	//unsigned int i;
 	double L, r2;
 
 	//i = x_to_grid_index(pt->nu_BLR_disk_RF, pt->nu_disk_RF, pt->nu_seed_size);
@@ -1321,8 +1322,8 @@ double j_nu_DT_integrand(struct spettro *pt, double l)
 
 double eval_I_nu_theta_DT(struct spettro *pt, double mu, double theta)
 {
-	double (*pf)(struct spettro *, double x);
-	//unsigned long i;
+	//double (*pf)(struct spettro *, double x);
+	//unsigned int i;
 	double l, I,cos_theta_norm,alpha;
 	//double I;
 	
@@ -1424,7 +1425,7 @@ double eval_I_nu_DT_blob_RF(struct spettro *pt )
 
 double eval_DT_L_nu(struct spettro *pt, double DT_disk_RF)
 {
-	//unsigned long i;
+	//unsigned int i;
 	//i = x_to_grid_index(pt->nu_Disk_disk_RF, DT_disk_RF, pt->nu_seed_size);
 	return pt->L_Disk_radiative * pt->tau_DT * f_planck_norm(pt->T_DT, DT_disk_RF);
 }
@@ -1519,7 +1520,7 @@ double eval_nu_peak_planck(double T){
 
 double eval_T_disk(struct spettro *pt, double R)
 {
-	double a, T_disco_r;
+	double  T_disco_r;
 	T_disco_r = pt->Cost_disk_Mulit_BB/(R*R*R) * (1 - pow((pt->R_inner / R), 0.5));
 	T_disco_r = pow(T_disco_r, 0.25);
 	//printf("=> T_disco_r %e\n",T_disco_r);
@@ -1597,7 +1598,7 @@ double I_nu_disk_RF_to_blob_RF(double I_nu_diks_RF, double nu_disk_RF, double nu
 
 double eval_circle_secant(double z, double R, double mu)
 {
-	double x1, x2, y1, y2, l, m, b, c, a;
+	double x1, x2, y1, y2, m, b, c, a;
 	m = tan(acos(mu));
 	b = -2 * z;
 	c = z * z - R * R;

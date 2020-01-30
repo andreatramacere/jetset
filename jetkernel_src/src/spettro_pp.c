@@ -21,8 +21,8 @@
 void spettro_pp(int Num_file, struct spettro *pt) {
     double  k, nu_1, nu_src;
     double L_nu_pp, nuL_nu_pp, F_nu_pp_obs;
-    double log_nu, log_nu_start;
-    unsigned long l, NU_INT, i, I_MAX, stop;
+    double log_nu_start;
+    unsigned int NU_INT, i, I_MAX, stop;
     char f_pp[static_file_name_max_legth], f_pp_energy[static_file_name_max_legth];
     FILE *fp_pp, *fp_pp_energy;
 

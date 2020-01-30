@@ -21,21 +21,21 @@
 
 void spettro_sincrotrone(int Num_file, struct spettro * pt) {
     int stop;
-    unsigned long j_max, NU_INT, I_MAX;
-    double nu_obs, k, nu, nu_src,gmax;
-    double log_nu_start,nu_p_ext;
+    unsigned int NU_INT, I_MAX;
+    double nu_src,gmax;
+    double nu_p_ext;
 
     double suggested_nu_stop_Sync;
 
 
     //double N_tot_e_Sferic;
 
-    double tau_nu;
+    //double tau_nu;
 
     double F_nu_Sync_obs,S_nu;
     double L_nu_Sync, nuL_nu_Sync;
 
-    double (*pf_norm) (struct spettro *, double x);
+    //double (*pf_norm) (struct spettro *, double x);
 
 
     char f_Synch[static_file_name_max_legth];
@@ -150,7 +150,7 @@ void spettro_sincrotrone(int Num_file, struct spettro * pt) {
         pt->j_Sync[NU_INT] = 0.0;
         pt->alfa_Sync[NU_INT] = 0.0;
 
-        // Synch is evaluated as long as  nu_start_Sync <nu<nu_stop_Sync
+        // Synch is evaluated as int as  nu_start_Sync <nu<nu_stop_Sync
         if ( pt->nu_Sync[NU_INT] <= pt->nu_stop_Sync &&  pt->nu_Sync[NU_INT] >= pt->nu_start_Sync && stop != 1) {
 
             /* erg*s^-1*cm^-3*Hz^-1*sterad^-1 */

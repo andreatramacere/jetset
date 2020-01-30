@@ -121,7 +121,7 @@ double N_distr_U_e(struct spettro *pt_N, double Gamma) {
     //return N_distr(pt_N, Gamma) * Gamma;
     //!!!!!! ricordati di che si puo' usare N_distr
     // quando non usi i leptoni secondari
-    return N_distr_interp(pt_N, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne) * Gamma;
+    return N_distr_interp(pt_N->gamma_grid_size, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne) * Gamma;
 }
 
 double N_distr_U_p(struct spettro *pt_N, double Gamma) {
@@ -137,7 +137,7 @@ double N_distr_U_p(struct spettro *pt_N, double Gamma) {
     //return N_distr(pt_N, Gamma) * Gamma;
     //!!!!!! ricordati di che si puo' usare N_distr
     // quando non usi i leptoni secondari
-    return N_distr_interp(pt_N, Gamma, pt_N->griglia_gamma_Np_log, pt_N->Np) * Gamma;
+    return N_distr_interp(pt_N->gamma_grid_size, Gamma, pt_N->griglia_gamma_Np_log, pt_N->Np) * Gamma;
 }
 
 
@@ -152,14 +152,14 @@ double N_distr_U_p(struct spettro *pt_N, double Gamma) {
 // Find EsSp
 //=========================================================================================
 
-void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned long NU_INT_MAX, struct spettro * pt,
+void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned int NU_INT_MAX, struct spettro * pt,
         double * nu_peak_obs,
         double * nu_peak_src,
         double * nu_peak_blob,
         double * nuFnu_peak_obs,
         double * nuLnu_peak_src,
         double * nuLnu_peak_blob) {
-	unsigned long i;
+	unsigned int i;
     
     *nu_peak_obs=nu_blob_to_nu_obs(nu_blob[0], pt->beam_obj, pt->z_cosm);
     *nu_peak_blob=nu_blob[0];
@@ -189,7 +189,7 @@ void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned long NU_INT_MAX, st
 //=========================================================================================
 //Function to Integrate the Total Power of emitted photons in the blob rest frame
 
-double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu_blob, double *nuFnu, unsigned long NU_INT_STOP)
+double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu_blob, double *nuFnu, unsigned int NU_INT_STOP)
 {
     /**
      * \author Andrea Tramacere
@@ -199,7 +199,7 @@ double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu_blob, double 
      */
 
     double Ptot, P1, P2, nu1, nu2;
-    unsigned long i;
+    unsigned int i;
 
     Ptot = 0;
     nu1 = nu_blob[0];
@@ -217,7 +217,7 @@ double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu_blob, double 
     return Ptot * 0.5;
 }
 
-double PowerPhotons_blob_rest_frame(struct spettro *pt, double *nu_blob, double *nuFnu, unsigned long NU_INT_STOP)
+double PowerPhotons_blob_rest_frame(struct spettro *pt, double *nu_blob, double *nuFnu, unsigned int NU_INT_STOP)
 {
     /**
      * \author Andrea Tramacere
@@ -227,7 +227,7 @@ double PowerPhotons_blob_rest_frame(struct spettro *pt, double *nu_blob, double 
      */
 
     double Ptot, P1, P2, nu1, nu2;
-    unsigned long i;
+    unsigned int i;
 
     Ptot = 0;
     nu1 = nu_blob[0];
@@ -347,7 +347,7 @@ double Power_Sync_Electron(struct spettro *pt) {
 //==============================
 
 double Power_Sync_Electron_Integ(struct spettro *pt_N, double Gamma) {
-    return N_distr_interp(pt_N, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne)
+    return N_distr_interp(pt_N->gamma_grid_size, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne)
             * Gamma * Gamma;
     //(1.0 - (1.0 / (Gamma * Gamma)));
     //return N_distr(pt_N, Gamma) * Gamma * Gamma * (1.0 - (1.0 / (Gamma * Gamma)));
@@ -361,9 +361,9 @@ double Power_Sync_Electron_Integ(struct spettro *pt_N, double Gamma) {
 //Function to get the U_ph of a given photon field from I_nu 
 //U_ph= 4pi* Inu*dnu
 
-double I_nu_to_Uph(double * nu, double * I_nu, unsigned long NU_INT_STOP) {
+double I_nu_to_Uph(double * nu, double * I_nu, unsigned int NU_INT_STOP) {
     double Uph, n_nu1, n_nu2, nu1, nu2;
-    unsigned long i;
+    unsigned int i;
     Uph = 0;
     nu1 = nu[0];
     n_nu1 = I_nu_to_n(I_nu[0], nu1);

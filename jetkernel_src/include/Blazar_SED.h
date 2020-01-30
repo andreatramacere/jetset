@@ -91,7 +91,7 @@ struct spettro {
     int do_Sync, do_SSC,do_IC,Sync_kernel;
     //int attesa_Sync_cooling, attesa_compton_cooling;
 
-    unsigned long spec_array_size;
+    unsigned int spec_array_size;
 
     int disk;
     double emiss_lim;
@@ -113,7 +113,7 @@ struct spettro {
 
 
     //---- somma observer frame
-    unsigned long nu_grid_size ;
+    unsigned int nu_grid_size ;
     double nu_start_grid;
     double nu_stop_grid;
 
@@ -148,7 +148,7 @@ struct spettro {
     double nu_start_Sync_obs;
     double nu_stop_Sync_obs;
     double nu_stop_Sync_ssc;
-    unsigned long NU_INT_STOP_Sync_SSC;
+    unsigned int NU_INT_STOP_Sync_SSC;
 
     //--- FREQ/FLUX scalars
     double nu_peak_Sync_blob;
@@ -193,7 +193,7 @@ struct spettro {
     double nu_start_pp;
     double nu_start_pp_obs;
     double nu_stop_pp_obs;
-    unsigned long NU_INT_STOP_PP;
+    unsigned int NU_INT_STOP_PP;
 
     //
     int do_pp_gamma;
@@ -233,7 +233,7 @@ struct spettro {
     double nu_start_SSC_obs;
     double nu_stop_SSC_obs;
 
-    unsigned long NU_INT_STOP_COMPTON_SSC;
+    unsigned int NU_INT_STOP_COMPTON_SSC;
 
     //--- IC Kernel computation
     double Gamma;
@@ -271,8 +271,8 @@ struct spettro {
     double mono_planck_min_factor;
     double mono_planck_max_factor;
     //double EC_field_interp_factor;
-    unsigned long theta_n_int;
-    unsigned long l_n_int;
+    unsigned int theta_n_int;
+    unsigned int l_n_int;
 
     double nu_blob_RF;
     double nu_disk_RF;
@@ -302,8 +302,8 @@ struct spettro {
     double nu_start_Star_DRF;
     double nu_stop_Star_DRF;
 
-    unsigned long NU_INT_MAX_Star;
-	unsigned long NU_INT_STOP_EC_Star;
+    unsigned int NU_INT_MAX_Star;
+	unsigned int NU_INT_STOP_EC_Star;
 	//-FREQ/FLUX arrays
 	double I_nu_Star[static_spec_arr_size];
 	double J_nu_Star_disk_RF[static_spec_arr_size];
@@ -330,7 +330,7 @@ struct spettro {
 	double nu_stop_EC_CMB_obs;
     double nu_start_CMB_DRF;
     double nu_stop_CMB_DRF;
-    unsigned long NU_INT_MAX_CMB,NU_INT_STOP_EC_CMB;
+    unsigned int NU_INT_MAX_CMB,NU_INT_STOP_EC_CMB;
     //-FREQ/FLUX arrays
 	double I_nu_CMB[static_spec_arr_size];
 	double I_nu_CMB_disk_RF[static_spec_arr_size];
@@ -351,7 +351,7 @@ struct spettro {
     //double nu_stop_EC_CMB_stat;
     //double nu_start_EC_CMB_stat_obs;
     //double nu_stop_EC_CMB_stat_obs;
-    //unsigned long NU_INT_MAX_CMB_stat,NU_INT_STOP_EC_CMB_stat;
+    //unsigned int NU_INT_MAX_CMB_stat,NU_INT_STOP_EC_CMB_stat;
     //-FREQ/FLUX arrays
     //double I_nu_CMB_stat[static_spec_arr_size];
     //double I_nu_CMB_disk_RF_stat[static_spec_arr_size];
@@ -394,8 +394,8 @@ struct spettro {
     double nu_stop_Disk_obs;
     double nu_start_Disk_DRF;
     double nu_stop_Disk_DRF;
-    unsigned long NU_INT_MAX_Disk;
-    unsigned long NU_INT_STOP_EC_Disk;
+    unsigned int NU_INT_MAX_Disk;
+    unsigned int NU_INT_STOP_EC_Disk;
 
     //-FREQ/FLUX arrays
     double L_nu_Disk_disk_RF[static_spec_arr_size];
@@ -441,8 +441,8 @@ struct spettro {
     double nu_start_EC_BLR;
     double nu_stop_EC_BLR_obs;
     double nu_start_EC_BLR_obs;
-    unsigned long NU_INT_MAX_BLR;
-    unsigned long NU_INT_STOP_EC_BLR;
+    unsigned int NU_INT_MAX_BLR;
+    unsigned int NU_INT_STOP_EC_BLR;
     
     //-FREQ/FLUX arrays
     double I_nu_BLR[static_spec_arr_size];
@@ -481,8 +481,8 @@ struct spettro {
     double nu_start_EC_DT;
     double nu_stop_EC_DT_obs;
     double nu_start_EC_DT_obs;
-    unsigned long NU_INT_MAX_DT;
-    unsigned long NU_INT_STOP_EC_DT;
+    unsigned int NU_INT_MAX_DT;
+    unsigned int NU_INT_STOP_EC_DT;
 
     //-FREQ/FLUX arrays
     double I_nu_DT[static_spec_arr_size];
@@ -526,12 +526,11 @@ struct spettro {
     
 
     //----------- INTEGRATION MESH--------------//
-    unsigned long nu_seed_size;
-    unsigned long nu_IC_size;
+    unsigned int nu_seed_size;
+    unsigned int nu_IC_size;
 
-    //unsigned long mesh_intComp;
-    //unsigned long mesh_intComp1;
-
+    //unsigned int mesh_intComp;
+    //unsigned int mesh_intComp1;
 
     //----------- PARTICLE DISTRIBUTION --------------//
     int Norm_distr;
@@ -543,13 +542,13 @@ struct spettro {
     int TIPO_DISTR;
     double *Ne_custom;
     double *gamma_e_custom;
-    unsigned long gamma_custom_grid_size;
+    unsigned int gamma_custom_grid_size;
     double *gam;
     double *Ne;
     double *Ne_IC;
     double *Ne_stat;
     double *Np;
-    unsigned long gamma_grid_size;
+    unsigned int gamma_grid_size;
     double * griglia_gamma_Ne_log;
     double * griglia_gamma_Ne_log_IC;
     double * griglia_gamma_Ne_log_stat;
@@ -558,7 +557,7 @@ struct spettro {
     //double *griglia_gamma_log_IC;
     //double *N_IC;
 
-    unsigned long i_griglia_gamma;
+    unsigned int i_griglia_gamma;
     double N_tot_e_Sferic;
     double N_tot_p_Sferic;
     double N;
@@ -567,7 +566,7 @@ struct spettro {
     double gmin;
     double gmax;
     int grid_bounded_to_gamma;
-    //unsigned long pt_griglia_max;
+    //unsigned int pt_griglia_max;
     double gmin_griglia;
     double gmax_griglia;
     double U_e, E_tot_e;
@@ -655,8 +654,8 @@ struct temp_ev{
 	double TStart_Acc;
 	double TStop_Acc;
 	double Inj_temp_slope;
-	unsigned long NUM_SET;
-	unsigned long T_SIZE;
+	unsigned int NUM_SET;
+	unsigned int T_SIZE;
 	double duration,t_D0,t_DA0,t_A0;
 
 };
@@ -675,7 +674,7 @@ double Inj_temp_prof (double t,struct temp_ev *);
 //double f_Inj(double x,struct temp_ev *);
 void Wm (double, double* ,double *);
 double Cooling(double,struct temp_ev *,struct spettro *);
-int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],unsigned long size);
+int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],unsigned int size);
 //===================================================================================
 
 
@@ -700,9 +699,9 @@ void InitNe(struct spettro *pt);
 void set_seed_freq_start(struct spettro *pt_base);
 void Run_SED(struct spettro *pt_base);
 void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev, double luminosity_distance);
-double get_spectral_array(double * arr, struct spettro *pt, unsigned long id);
-double get_elec_array(double * arr, struct spettro *pt, unsigned long id);
-double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned long id);
+double get_spectral_array(double * arr, struct spettro *pt, unsigned int id);
+double get_elec_array(double * arr, struct spettro *pt, unsigned int id);
+double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned int id);
 //===================================================================================
 
 
@@ -714,7 +713,6 @@ double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsign
 //===================================================================================
 //ENERGETIC
 double GetU_e(struct spettro *pt);
-void EvalU_e(struct spettro *pt);
 double GetE_tot(struct spettro *pt);
 void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev);
 //===================================================================================
@@ -738,7 +736,7 @@ double N_distr_U_p(struct spettro *, double Gamma);
 double N_distr_integranda(struct spettro *, double Gamma);
 void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N);
 void FindNe_NpGp(struct spettro *pt);
-double N_distr_interp(unsigned long size, double Gamma, double *griglia_gamma, double *N);
+double N_distr_interp(unsigned int size, double Gamma, double *griglia_gamma, double *N);
 double Find_gmax(struct spettro *pt, double *g, double *N);
 double pl_func(double Gamma,double p);
 double plc_func(double Gamma,double gamma_cut,double p);
@@ -772,7 +770,7 @@ void somma_header(FILE *fp);
 
 //===================================================================================
 /************************************ SUMMED SPECTRA *******************************/
-void interpola_somma(struct spettro *pt_j, double nu, unsigned long i);
+void interpola_somma(struct spettro *pt_j, double nu, unsigned int i);
 void spettro_somma_Sync_ic(int num_file, struct spettro *);
 //===================================================================================
 
@@ -788,7 +786,7 @@ double Power_Sync_Electron_Integ(struct spettro *pt_N, double Gamma);
 double Lum_Sync_at_nu (struct spettro *pt, double nu);
 double	Lum_SSC_at_nu (struct spettro *pt , double nu_1);
 
-void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned long NU_INT_MAX, struct spettro * pt,
+void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned int NU_INT_MAX, struct spettro * pt,
         double * nu_peak_obs,
         double * nu_peak_src,
         double * nu_peak_blob,
@@ -799,9 +797,11 @@ void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned long NU_INT_MAX, st
 
 struct jet_energetic EnergeticOutput(struct spettro *pt, int write_file);
 
-double I_nu_to_Uph(double * nu, double * I_nu, unsigned long NU_INT_STOP);
-double PowerPhotons_blob_rest_frame(struct spettro *pt, double * nu, double * nu_Fnu, unsigned long NU_INT_STOP);
-double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu, double *nu_Fnu, unsigned long NU_INT_STOP);
+void EvalU_e(struct spettro *pt);
+void EvalU_p(struct spettro *pt); 
+double I_nu_to_Uph(double * nu, double * I_nu, unsigned int NU_INT_STOP);
+double PowerPhotons_blob_rest_frame(struct spettro *pt, double *nu, double *nu_Fnu, unsigned int NU_INT_STOP);
+double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu, double *nu_Fnu, unsigned int NU_INT_STOP);
 
 //===================================================================================
 
@@ -863,13 +863,13 @@ double nu_obs_to_nu_src(double nu, double z);
 void spettro_sincrotrone(int Num_file, struct spettro *);
 double F_K_53(struct spettro *, double x);
 double F_K_ave(struct spettro *, double x);
-double F_int_fix(struct spettro *,  unsigned long  ID);
-double F_int_ave(struct spettro *, unsigned long  ID);
-double Sync_self_abs_int(struct spettro *, unsigned long  ID);
+double F_int_fix(struct spettro *, unsigned int ID);
+double F_int_ave(struct spettro *, unsigned int  ID);
+double Sync_self_abs_int(struct spettro *, unsigned int ID);
 double j_nu_Sync(struct spettro *);
-double solve_S_nu_Sync(struct spettro * pt, unsigned long  NU_INT);
+double solve_S_nu_Sync(struct spettro *pt, unsigned int NU_INT);
 double alfa_nu_Sync(struct spettro *);
-double integrale_Sync(double (*pf) (struct spettro *, unsigned long  ID), struct spettro * pt );
+double integrale_Sync(double (*pf)(struct spettro *, unsigned int ID), struct spettro *pt);
 double Sync_tcool(struct spettro * , double g);
 double Sync_cool(struct spettro * , double g);
 //===========================================================================================
@@ -890,8 +890,8 @@ double pp_gamma_kernel(double gamma_p, double nu_pp,struct spettro * pt);
 double pp_gamma_kernel_delta(struct spettro *pt, double Epi_TeV);
 double pp_electron_kernel_delta(double Ee_TeV, struct spettro *pt);
 double pp_electrons_kernel(double gamma_p, double Gamma_e, struct spettro *pt);
-double integrale_pp_gamma_rate(double (*pf_pp_gamma_kernel) (double gamma_p, double nu_pp,struct spettro *pt), struct spettro * pt, unsigned long i_start);
-double integrale_pp_electrons_rate(double (*pf_pp_gamma_kernel) (double gamma_p, double Gamma_e,struct spettro *pt), struct spettro * pt, unsigned long i_start);
+double integrale_pp_gamma_rate(double (*pf_pp_gamma_kernel)(double gamma_p, double nu_pp, struct spettro *pt), struct spettro *pt, unsigned int i_start);
+double integrale_pp_electrons_rate(double (*pf_pp_gamma_kernel)(double gamma_p, double Gamma_e, struct spettro *pt), struct spettro *pt, unsigned int i_start);
 //===========================================================================================
 
 
@@ -899,8 +899,8 @@ double integrale_pp_electrons_rate(double (*pf_pp_gamma_kernel) (double gamma_p,
 
 //========================================================================================
 /************************************ PHOTON GRID FUNCTIONS *****************************/
-void build_log_grid(double nu_start, double nu_stop, unsigned long SIZE, double * nu_grid);
-unsigned long x_to_grid_index(double * nu_grid, double nu, unsigned long SIZE);
+void build_log_grid(double nu_start, double nu_stop, unsigned int SIZE, double *nu_grid);
+unsigned int x_to_grid_index(double *nu_grid, double nu, unsigned int SIZE);
 //===========================================================================================
 
 
@@ -1040,17 +1040,17 @@ double bessel_K_53(struct spettro *, double x);
 double bessel_K_pitch_ave(struct spettro *pt, double x);
 void tabella_Bessel(struct spettro *);
 double derivata(double (*pf) (struct spettro *, double x), struct spettro *pt, double x);
-double integrale_trap_log_struct(double (*pf) (struct spettro *, double x),
-        struct spettro * pt, double a, double b, unsigned long intervalli);
-double integrale_simp_struct(double (*pf) (struct spettro *, double x),
-        struct spettro * pt, double a, double b, unsigned long intervalli);
-double integrale_simp(double (*pf) ( double x), double a, double b, unsigned long n_intervalli);
-double trapzd_array_linear_grid(double *x, double *y, unsigned long SIZE);
-double trapzd_array_arbritary_grid(double *x, double *y, unsigned long SIZE);
+double integrale_trap_log_struct(double (*pf)(struct spettro *, double x),
+                                 struct spettro *pt, double a, double b, unsigned int intervalli);
+double integrale_simp_struct(double (*pf)(struct spettro *, double x),
+                             struct spettro *pt, double a, double b, unsigned int intervalli);
+double integrale_simp(double (*pf)(double x), double a, double b, unsigned int n_intervalli);
+double trapzd_array_linear_grid(double *x, double *y, unsigned int SIZE);
+double trapzd_array_arbritary_grid(double *x, double *y, unsigned int SIZE);
 double test_int(struct spettro *, double x);
 double test_int1(double x);
-double log_lin_interp(double nu,  double * nu_grid, double nu_min, double nu_max, double *  flux_grid , unsigned long SIZE, double emiss_lim);
-double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, double log_x_max, double *  log_y_grid , unsigned long SIZE, double emiss_lim);
+double log_lin_interp(double nu, double *nu_grid, double nu_min, double nu_max, double *flux_grid, unsigned int SIZE, double emiss_lim);
+double log_log_interp(double log_x, double *log_x_grid, double log_x_min, double log_x_max, double *log_y_grid, unsigned int SIZE, double emiss_lim);
 
 //===========================================================================================
 

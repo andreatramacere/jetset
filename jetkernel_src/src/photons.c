@@ -273,7 +273,7 @@ void build_photons(struct spettro *pt_base){
 
 void alloc_photons(double ** pt,int size){
         printf("pre %p\n",*pt);
-        unsigned long i;
+        unsigned int i;
         if (*pt){
 
 

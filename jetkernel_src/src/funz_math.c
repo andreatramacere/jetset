@@ -85,14 +85,12 @@ double bessel_K_pitch_ave(struct spettro *pt, double x) {
 //===================================================
 
 void tabella_Bessel(struct spettro *pt_TB) {
-    double a, t_Bessel;
-    double ri, rip, rkp, K13, K43;
-    char in_x[80], in_y[80], in_ave_y[80], in_ave_x[80];
-    double x, x_c;
+    //double a, t_Bessel;
+
     double (*pf) (struct spettro *, double x);
-    unsigned long i;
+    unsigned int i;
     FILE *fp ;
-    char *end;
+
     char f_bessel_file[static_file_name_max_legth];
     double _x,_y,_in_ave_y, _in_ave_x;
     /*** kernel Sync per alfa fisso e kernel delta ***/
@@ -259,8 +257,8 @@ void tabella_Bessel(struct spettro *pt_TB) {
 //=====================================================================
 
 
-double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, double *  y_grid , unsigned long SIZE, double emiss_lim){
-	unsigned long ID;
+double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, double *  y_grid , unsigned int SIZE, double emiss_lim){
+	unsigned int ID;
 	double y1,y2,x1,x2,a_c;
 	ID=x_to_grid_index(x_grid,  x,   SIZE);
 
@@ -291,8 +289,8 @@ double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, do
 //=====================================================================
 //LOG-LOG INTERPOLATION
 //=====================================================================
-double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, double log_x_max, double *  log_y_grid , unsigned long SIZE, double emiss_lim){
-	unsigned long ID;
+double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, double log_x_max, double *  log_y_grid , unsigned int SIZE, double emiss_lim){
+	unsigned int ID;
 	double y1,y2,x1,x2,a_c;
 	ID=x_to_grid_index(log_x_grid,  log_x,   SIZE);
 
@@ -321,10 +319,10 @@ double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, doub
 //INTEGRAZIONE TRAPEZOIDALE CON INT APERTO E GRIGLIA  LINEARE
 //=====================================================================
 
-double trapzd_array_linear_grid(double *x, double *y, unsigned long SIZE)
+double trapzd_array_linear_grid(double *x, double *y, unsigned int SIZE)
 {
     double I, y1, y2, x1,delta_x;
-    unsigned long INDEX;
+    unsigned int INDEX;
     I = 0;
     x1 = x[0];
     y1 = y[0];
@@ -340,7 +338,7 @@ double trapzd_array_linear_grid(double *x, double *y, unsigned long SIZE)
     return I * 0.5;
 }
 
-double trapzd_array_arbritary_grid( double *x, double *y, unsigned long SIZE)
+double trapzd_array_arbritary_grid( double *x, double *y, unsigned int SIZE)
 {
     /**
      * \author Andrea Tramacere
@@ -350,7 +348,7 @@ double trapzd_array_arbritary_grid( double *x, double *y, unsigned long SIZE)
      */
 
     double I, y1, y2, x1, x2;
-    unsigned long INDEX;
+    unsigned int INDEX;
 
     I = 0;
     x1 = x[0];
@@ -376,8 +374,8 @@ double trapzd_array_arbritary_grid( double *x, double *y, unsigned long SIZE)
 // INTEGRAZIONE TRAPEZOIDALE CON INT CHIUSO E GRIGLIA  EQUI_LOG
 //============================================================================
 
-double integrale_trap_log_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned long n_intervalli) {
-    double integr, h, k, griglia, ordinata, ordinata1;
+double integrale_trap_log_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned int n_intervalli) {
+    double integr, k, griglia, ordinata, ordinata1;
     double delta;
     integr = 0.0;
     griglia = 0.0;
@@ -421,8 +419,8 @@ double integrale_trap_log_struct(double (*pf) (struct spettro *, double x), stru
 // INTEGRAZIONE ALLA SINPSON CON INT CHIUSO E GRIGLIA LIN                
 //=========================================================
 
-double integrale_simp(double (*pf) ( double x), double a, double b, unsigned long n_intervalli) {
-    double integr1, integr2, h, k, griglia;
+double integrale_simp(double (*pf) ( double x), double a, double b, unsigned int n_intervalli) {
+    double integr1, integr2, h, k;
     
     //CHECK on n_intervalli even
     if (n_intervalli % 2 != 0) {
@@ -452,8 +450,8 @@ double integrale_simp(double (*pf) ( double x), double a, double b, unsigned lon
 // INTEGRAZIONE ALLA SINPSON CON INT CHIUSO E GRIGLIA LIN                
 //=========================================================
 
-double integrale_simp_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned long n_intervalli) {
-    double integr1, integr2, h, k, griglia;
+double integrale_simp_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned int n_intervalli) {
+    double integr1, integr2, h, k;
     
     //CHECK on n_intervalli even
     if (n_intervalli % 2 != 0) {
