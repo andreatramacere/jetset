@@ -384,6 +384,7 @@ class JetBase(Model):
 
         blob.N = 100
 
+
         blob.NH_pp = 1E10
 
         blob.L_Disk = 1E45
@@ -1158,7 +1159,7 @@ class JetBase(Model):
 
         if fill_SED==True:
             #TODO check if this is not usefule!!!
-            #self.SED.fill(nu=nu_sed_sum,nuFnu=nuFnu_sed_sum)
+            self.SED.fill(nu=nu_sed_sum,nuFnu=nuFnu_sed_sum)
 
             for i in range(len(self.spectral_components_list)):
 

@@ -563,6 +563,7 @@ struct spettro {
     double N;
     double N_e_pp, N_p, N_e;
     double N_0,N_0p,N_0e; /* costante di normalizzazione per distrib elettr staz */
+    double N0_e_pp_factor; /*scaling factor to transform secondary rate to density*/
     double gmin;
     double gmax;
     int grid_bounded_to_gamma;

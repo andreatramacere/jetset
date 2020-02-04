@@ -475,7 +475,7 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
     else if (pt->TIPO_DISTR == -1){
         for (i = 0; i < pt->gamma_grid_size; i++)
         {
-            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
+            N[i] = N_distr(pt, griglia_gamma_N_log[i])*pt->N0_e_pp_factor;
         }
     }
     else {

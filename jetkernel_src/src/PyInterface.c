@@ -195,6 +195,7 @@ struct spettro MakeBlob() {
     spettro_root.NH_pp = 0.1;
     spettro_root.N = 10;
     spettro_root.Norm_distr = 1;
+    spettro_root.N0_e_pp_factor =1.0;
     //spettro_root.Norm_distr_L_e_Sync=-1.0;
     spettro_root.Distr_e_done = 0;
     sprintf(spettro_root.DISTR, "lp");

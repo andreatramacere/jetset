@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 from builtins import (bytes, str, open, super, range,
                       zip, round, input, int, pow, object, map, zip)
-
+import ast
 import  numpy as np
 from astropy.table import Table
 from astropy import  units as u
@@ -464,6 +464,9 @@ class ModelParameterArray(object):
 
         self.properties={}
 
+        self._numeric_fields = ['val', 'phys. bound. min', 'phys. bound. max','bestfit val','err +','err -','start val','fit range min','fit range max']
+
+
     def add_par(self,par):
         """
         adds a new :class:`ModelParameter` object  to the `par_array`
@@ -515,10 +518,39 @@ class ModelParameterArray(object):
                 _islog.append(par.islog)
                 _frozen.append(par.frozen)
         #print(len(_fields),len(_names))
+        t=Table(_fields,names=_names,masked=True)
 
-        self._par_table= Table(_fields,names=_names)
+        self._fromat_column_entrie(t)
 
-    
+        self._par_table= t
+
+    def _fromat_column_entrie(self,t):
+        for n in self._numeric_fields:
+            if n in t.colnames:
+                #print('--> n',n,t[n].data)
+                try:
+                    t[n].mask = t[n].data==None
+                    t[n].format='%e'
+                except:
+                    for ID,v in enumerate(t[n].data):
+                        try:
+                            c=ast.literal_eval(t[n].data[ID])
+                            if type(c) == int:
+                                t[n].data[ID] = '%d' % c
+                            else:
+                                t[n].data[ID] = '%e' % c
+                        except:
+                           pass
+
+
+
+
+
+                    # print('2 name',name, val, self._val.islog)
+
+
+
+
     def _build_best_fit_par_table(self,names_list=None):
         _name=[]
         _best_fit_val=[]
@@ -574,7 +606,13 @@ class ModelParameterArray(object):
         #for ID,n in enumerate(_names):
         #    print(ID,_fields[ID],n)
 
-        self._best_fit_par_table= Table(_fields,names=_names)
+        t = Table(_fields, names=_names, masked=True)
+
+        self._fromat_column_entrie(t)
+
+        self._par_table = t
+
+        self._best_fit_par_table= t
     
 
 

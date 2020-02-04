@@ -230,9 +230,7 @@ class  PlotSED (object):
                     for item1 in item:
                         item1.remove()
 
-                # self.sedplot.lines.remove(self.lines_list[line_ID].ref[0])
 
-            #self.legend.remove(self.lines_data_list[line_ID].label)
 
             del self.lines_data_list[line_ID]
 
@@ -290,9 +288,7 @@ class  PlotSED (object):
         self.sedplot.set_ylabel(self.ly)
         self.sedplot.set_xlabel(self.lx)
 
-        #self.sedplot.set_xlim(self.x_min,self.x_max)
-        #self.sedplot.set_ylim(self.y_min,self.y_max)
-        
+
     
     def add_res_zeroline(self):
 
@@ -318,45 +314,7 @@ class  PlotSED (object):
 
 
     
-    #def autoscale(self):
 
-        
-        #self.sedplot.autoscale_view(tight=True)
-    #    for l in self.sedplot.lines:
-
-    #        x_min,x_max=self.sedplot.get_xlim()
-
-    #        y_min,y_max=self.sedplot.get_ylim()
-        
-    #    self.sedplot.set_xticks(np.arange(int(x_min)-2,int(x_max)+2,1.0))
-        
-    #    self.sedplot.set_xlim(x_min-1,x_max+1)
-        
-    #    self.sedplot.set_ylim(y_min-1,y_max+1)
-        
-        
-        
-      #  if self.resplot is not None  :
-            
-            #self.resplot.autoscale_view(tight=True)
-            
-            #self.x_min_res=self.x_min-1
-            #self.x_max_res=self.x_max+1
-
-        #    y_min_res,y_max_res=self.resplot.get_ylim()
-        #    x_min_res,x_max_res=self.resplot.get_xlim()
-
-            
-        #    self.resplot.set_xticks(np.arange(int(x_min_res)-2,int(x_max_res)+2,1.0))
-            
-        #    self.resplot.set_xlim(x_min_res,x_max_res)
-        #    self.resplot.set_ylim(y_min_res,y_max_res)
-            
-            
-            
-        #self.update_plot()
-        
-        #self.sedplot.set_autoscale_on(False)
    
    
     
@@ -417,13 +375,8 @@ class  PlotSED (object):
 
             except Exception as e:
                 #print("b", e)
-                #print(model, "!!! Error has no SED instance or something wrong in get_model_points()")
-                #print(e)
-                return
+                raise RuntimeError (model, "!!! Error has no SED instance or something wrong in get_model_points()",e)
 
-        #print('->x,y',x,y)
-        #if color is None:
-        #    color = self.counter
 
         if line_style is None:
             line_style = '-'
@@ -653,7 +606,8 @@ class  PlotPdistr (object):
             else:
                 raise  RuntimeError('particle ',particle, 'not implemented')
 
-        return x.value,y.value,energy_name,energy_units
+        m=y.value>0
+        return x.value[m],y.value[m],energy_name,energy_units
 
     def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_scale='gamma'):
 
