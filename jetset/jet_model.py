@@ -179,6 +179,8 @@ class JetBase(Model):
 
         self.set_emitters_distribution(emitters_distribution, emitters_distribution_log_values, emitters_type)
 
+
+
         self._blob.adaptive_e_binning = 0
 
         self.set_emitting_region(beaming_expr)
@@ -1015,12 +1017,12 @@ class JetBase(Model):
         self.parameters.show_pars(sort_key=sort_key)
 
 
-    def show_electron_distribution(self):
+    def show_emitters_distribution(self):
         print(
             "-------------------------------------------------------------------------------------------------------------------")
         print('%s distribution:'%self._emitters_type)
         print(" type: %s  " % (self._emitters_distribution_name))
-        print(" electron energy grid size: ", self.gamma_grid_size)
+        print(" gamma energy grid size: ", self.gamma_grid_size)
         print(" gmin grid : %e" % self._blob.gmin_griglia)
         print(" gmax grid : %e" % self._blob.gmax_griglia)
         print(" normalization ", self.Norm_distr>0)
@@ -1028,7 +1030,7 @@ class JetBase(Model):
         print('')
         self.parameters.par_array.sort(key=lambda x: x.name, reverse=False)
 
-        self.parameters.show_pars(names_list=self._electron_distribution_dic.keys())
+        self.parameters.show_pars(names_list=self._emitters_distribution_dic.keys())
 
     def show_model(self):
         """
@@ -1046,7 +1048,7 @@ class JetBase(Model):
         print('')
         print('%s distribution:'%self._emitters_type)
         print(" type: %s  " % (self._emitters_distribution_name))
-        print (" electron energy grid size: ",self.gamma_grid_size)
+        print (" gamma energy grid size: ",self.gamma_grid_size)
         print (" gmin grid : %e"%self._blob.gmin_griglia)
         print (" gmax grid : %e"%self._blob.gmax_griglia)
         print(" normalization ", self.Norm_distr>0)
@@ -1417,6 +1419,7 @@ class Jetpp(JetBase):
                                  verbose=verbose,
                                  clean_work_dir=clean_work_dir)
 
+        self.proton_distribution = self.emitters_distribution
 
         self.add_pp_gamma_component()
 
@@ -1430,6 +1433,8 @@ class Jetpp(JetBase):
     def add_pp_gamma_component(self):
         self._add_spectral_component('PP_gamma',var_name='do_pp_gamma',state_dict=dict((('on', 1), ('off', 0))))
 
+    def show_proton_distribution(self):
+        self.show_emitters_distribution()
 
 class Jet(JetBase):
     """
@@ -1456,6 +1461,8 @@ class Jet(JetBase):
                                  verbose=verbose,
                                  clean_work_dir=clean_work_dir)
 
+        self.electron_distribution = self.emitters_distribution
+
     @staticmethod
     def available_electron_distributions():
         EmittersDistribution.available_distributions()
@@ -1463,6 +1470,10 @@ class Jet(JetBase):
     def get_electron_distribution_name(self):
         return self.get_emitters_distribution_name()
 
+
+
+    def show_electron_distribution(self):
+        self.show_emitters_distribution()
 
     def set_N_from_Ue(self,U_e):
         N = 1.0

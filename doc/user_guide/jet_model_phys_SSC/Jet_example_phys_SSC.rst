@@ -52,19 +52,19 @@ to view all the paramters:
 
 .. parsed-literal::
 
-          name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   N    electron_density         1 / cm3              100.0              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*                2.0              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*          1000000.0              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
-                   r  spectral_curvature                                0.4            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm 5000000000000000.0           1000.0              1e+30 False  False
-                 R_H     region_position              cm              1e+17              0.0               None False   True
-                   B      magnetic_field               G                0.1              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
-              z_cosm            redshift                                0.1              0.0               None False  False
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                   N    electron_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
+                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
 
 
 Each parameter has default values. All the parameters listed are handled by :class:`.ModelParameterArray`, and each parameter is an instance of the the :class:`.JetParameter`. class. These parameters are also accessible as an astropy table, with units: 
@@ -78,21 +78,21 @@ Each parameter has default values. All the parameters listed are handled by :cla
 
 .. raw:: html
 
-    <i>Table length=11</i>
-    <table id="table47755138448" class="table-striped table-bordered table-condensed">
+    <i>Table masked=True length=11</i>
+    <table id="table47702569616" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <thead><tr><th>str16</th><th>str19</th><th>object</th><th>float64</th><th>float64</th><th>object</th><th>bool</th><th>bool</th></tr></thead>
-    <tr><td>N</td><td>electron_density</td><td>1 / cm3</td><td>100.0</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.0</td><td>1.0</td><td>1000000000.0</td><td>False</td><td>False</td></tr>
-    <tr><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1000000.0</td><td>1.0</td><td>1000000000000000.0</td><td>False</td><td>False</td></tr>
-    <tr><td>s</td><td>LE_spectral_slope</td><td></td><td>2.0</td><td>-10.0</td><td>10.0</td><td>False</td><td>False</td></tr>
-    <tr><td>r</td><td>spectral_curvature</td><td></td><td>0.4</td><td>-15.0</td><td>15.0</td><td>False</td><td>False</td></tr>
-    <tr><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>10000.0</td><td>1.0</td><td>1000000000.0</td><td>False</td><td>False</td></tr>
-    <tr><td>R</td><td>region_size</td><td>cm</td><td>5000000000000000.0</td><td>1000.0</td><td>1e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>R_H</td><td>region_position</td><td>cm</td><td>1e+17</td><td>0.0</td><td>None</td><td>False</td><td>True</td></tr>
-    <tr><td>B</td><td>magnetic_field</td><td>G</td><td>0.1</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>beam_obj</td><td>beaming</td><td>Lorentz-factor*</td><td>10.0</td><td>0.0001</td><td>None</td><td>False</td><td>False</td></tr>
-    <tr><td>z_cosm</td><td>redshift</td><td></td><td>0.1</td><td>0.0</td><td>None</td><td>False</td><td>False</td></tr>
+    <tr><td>N</td><td>electron_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>B</td><td>magnetic_field</td><td>G</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>beam_obj</td><td>beaming</td><td>Lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     </table>
 
 
@@ -117,9 +117,9 @@ To get a full description of the model you can use the instruction
     -------------------------------------------------------------------------------------------------------------------
     name: test  
     
-    electron distribution:
+    electrons distribution:
      type: lppl  
-     electron energy grid size:  1001
+     gamma energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
      normalization  True
@@ -142,19 +142,19 @@ To get a full description of the model you can use the instruction
     
     flux plot lower bound   :  1.000000e-30
     
-          name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   N    electron_density         1 / cm3              100.0              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*                2.0              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*          1000000.0              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
-                   r  spectral_curvature                                0.4            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm 5000000000000000.0           1000.0              1e+30 False  False
-                 R_H     region_position              cm              1e+17              0.0               None False   True
-                   B      magnetic_field               G                0.1              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
-              z_cosm            redshift                                0.1              0.0               None False  False
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                   N    electron_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
+                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
     -------------------------------------------------------------------------------------------------------------------
 
 
@@ -202,27 +202,27 @@ investigating the electron distribution
 .. parsed-literal::
 
     -------------------------------------------------------------------------------------------------------------------
-    electron distribution:
+    electrons distribution:
      type: lppl  
-     electron energy grid size:  1001
+     gamma energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
      normalization  True
      log-values  False
     
-          name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   B      magnetic_field               G                0.2              0.0               None False  False
-                   N    electron_density         1 / cm3             1000.0              0.0               None False  False
-                   R         region_size              cm 1000000000000000.0           1000.0              1e+30 False  False
-                 R_H     region_position              cm              1e+17              0.0               None False   True
-            beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*             5000.0              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*        100000000.0              1.0 1000000000000000.0 False  False
-                gmin  low-energy-cut-off lorentz-factor*              100.0              1.0       1000000000.0 False  False
-                   r  spectral_curvature                                0.4            -15.0               15.0 False  False
-                   s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
-              z_cosm            redshift                                0.1              0.0               None False  False
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                   B      magnetic_field               G 2.000000e-01     0.000000e+00               -- False  False
+                   N    electron_density         1 / cm3 1.000000e+03     0.000000e+00               -- False  False
+                   R         region_size              cm 1.000000e+15     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 5.000000e+03     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 1.000000e+08     1.000000e+00     1.000000e+15 False  False
+                gmin  low-energy-cut-off lorentz-factor* 1.000000e+02     1.000000e+00     1.000000e+09 False  False
+                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
+                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
 
 
 .. code:: ipython3
@@ -267,9 +267,9 @@ using log values for electron distribution parameters
     -------------------------------------------------------------------------------------------------------------------
     name: test  
     
-    electron distribution:
+    electrons distribution:
      type: lppl  
-     electron energy grid size:  1001
+     gamma energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
      normalization  True
@@ -292,19 +292,19 @@ using log values for electron distribution parameters
     
     flux plot lower bound   :  1.000000e-30
     
-          name             par type           units             val         phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------------ ---------------- ---------------- ----- ------
-                   N    electron_density         1 / cm3              100.0              0.0             None False  False
-                gmin  low-energy-cut-off lorentz-factor* 0.3010299956639812              0.0              9.0  True  False
-                gmax high-energy-cut-off lorentz-factor*                6.0              0.0             15.0  True  False
-                   s   LE_spectral_slope                                2.0            -10.0             10.0 False  False
-                   r  spectral_curvature                                0.4            -15.0             15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*                4.0              0.0              9.0  True  False
-                   R         region_size              cm 5000000000000000.0           1000.0            1e+30 False  False
-                 R_H     region_position              cm              1e+17              0.0             None False   True
-                   B      magnetic_field               G                0.1              0.0             None False  False
-            beam_obj             beaming Lorentz-factor*               10.0           0.0001             None False  False
-              z_cosm            redshift                                0.1              0.0             None False  False
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                   N    electron_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
+                gmin  low-energy-cut-off lorentz-factor* 3.010300e-01     0.000000e+00     9.000000e+00  True  False
+                gmax high-energy-cut-off lorentz-factor* 6.000000e+00     0.000000e+00     1.500000e+01  True  False
+                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 4.000000e+00     0.000000e+00     9.000000e+00  True  False
+                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
     -------------------------------------------------------------------------------------------------------------------
 
 
@@ -325,19 +325,19 @@ instruction
 
 .. parsed-literal::
 
-          name             par type           units             val         phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------------ ---------------- ---------------- ----- ------
-                   N    electron_density         1 / cm3              100.0              0.0             None False  False
-                gmin  low-energy-cut-off lorentz-factor* 0.3010299956639812              0.0              9.0  True  False
-                gmax high-energy-cut-off lorentz-factor*                6.0              0.0             15.0  True  False
-                   s   LE_spectral_slope                                2.0            -10.0             10.0 False  False
-                   r  spectral_curvature                                0.4            -15.0             15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*                4.0              0.0              9.0  True  False
-                   R         region_size              cm 5000000000000000.0           1000.0            1e+30 False  False
-                 R_H     region_position              cm              1e+17              0.0             None False   True
-                   B      magnetic_field               G                0.1              0.0             None False  False
-            beam_obj             beaming Lorentz-factor*               10.0           0.0001             None False  False
-              z_cosm            redshift                                0.1              0.0             None False  False
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                   N    electron_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
+                gmin  low-energy-cut-off lorentz-factor* 3.010300e-01     0.000000e+00     9.000000e+00  True  False
+                gmax high-energy-cut-off lorentz-factor* 6.000000e+00     0.000000e+00     1.500000e+01  True  False
+                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 4.000000e+00     0.000000e+00     9.000000e+00  True  False
+                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
 
 
 and plot the corresponding SED:
@@ -479,19 +479,19 @@ saving and loading a model
 
 .. parsed-literal::
 
-          name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   R         region_size              cm 316227766016837.94           1000.0              1e+30 False  False
-                 R_H     region_position              cm              1e+17              0.0               None False   True
-                   B      magnetic_field               G                0.2              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
-              z_cosm            redshift                                0.1              0.0               None False  False
-                   N    electron_density         1 / cm3             1000.0              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*              100.0              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*        100000000.0              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
-                   r  spectral_curvature                                0.4            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*           100000.0              1.0       1000000000.0 False  False
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                   N    electron_density         1 / cm3 1.000000e+03     0.000000e+00               -- False  False
+                gmin  low-energy-cut-off lorentz-factor* 1.000000e+02     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 1.000000e+08     1.000000e+00     1.000000e+15 False  False
+                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+05     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 3.162278e+14     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 2.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
 
 
 switching on/off the particle distribution normalization
@@ -611,19 +611,19 @@ OR
 
 .. parsed-literal::
 
-          name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   N    electron_density         1 / cm3 271.77338679726074              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*                2.0              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*          1000000.0              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
-                   r  spectral_curvature                                0.4            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm 5000000000000000.0           1000.0              1e+30 False  False
-                 R_H     region_position              cm              1e+17              0.0               None False   True
-                   B      magnetic_field               G                0.1              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
-              z_cosm            redshift                                0.1              0.0               None False  False
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                   N    electron_density         1 / cm3 2.717734e+02     0.000000e+00               -- False  False
+                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
 
 
 .. code:: ipython3
@@ -670,20 +670,20 @@ It is possible to set the beaming factor according to the relativistic BulkFacto
 
 .. parsed-literal::
 
-          name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   N    electron_density         1 / cm3              100.0              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*                2.0              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*          1000000.0              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
-                   r  spectral_curvature                                0.4            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm 5000000000000000.0           1000.0              1e+30 False  False
-                 R_H     region_position              cm              1e+17              0.0               None False   True
-                   B      magnetic_field               G                0.1              0.0               None False  False
-               theta   jet-viewing-angle             deg                0.1              0.0               None False  False
-          BulkFactor     jet-bulk-factor Lorentz-factor*               10.0              1.0               None False  False
-              z_cosm            redshift                                0.1              0.0               None False  False
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                   N    electron_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
+                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+               theta   jet-viewing-angle             deg 1.000000e-01     0.000000e+00               -- False  False
+          BulkFactor     jet-bulk-factor Lorentz-factor* 1.000000e+01     1.000000e+00               -- False  False
+              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
 
 
 the actual value of the beaming factor can be obtained using the :meth:`.Jet.get_beaming`
@@ -734,19 +734,19 @@ expression as in the default case
 
 .. parsed-literal::
 
-          name             par type           units             val         phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-                   N    electron_density         1 / cm3              100.0              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*                2.0              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*          1000000.0              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                                2.0            -10.0               10.0 False  False
-                   r  spectral_curvature                                0.4            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*            10000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm 5000000000000000.0           1000.0              1e+30 False  False
-                 R_H     region_position              cm              1e+17              0.0               None False   True
-                   B      magnetic_field               G                0.1              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*               10.0           0.0001               None False  False
-              z_cosm            redshift                                0.1              0.0               None False  False
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                   N    electron_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
+                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
 
 
 accessing individual spectral components
@@ -848,7 +848,7 @@ Moreover, you can access the corresponding astropy table
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table103602755280" class="table-striped table-bordered table-condensed">
+    <table id="table103569354896" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -893,7 +893,7 @@ and also in the ``src`` restframe
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table103612139728" class="table-striped table-bordered table-condensed">
+    <table id="table103569357904" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / s</th><th>erg / s</th><th>erg / s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -974,41 +974,44 @@ electrons, the magnetic fields, and for the cold protons in the jet.
 
     -----------------------------------------------------------------------------------------
     jet eneregetic report:
-         name                  type               units            val          
-    ------------- ----------------------------- --------- ----------------------
-              U_e Energy dens. blob rest. frame erg / cm3  0.0017404342430246782
-              U_p Energy dens. blob rest. frame erg / cm3         0.015032764261
-              U_B Energy dens. blob rest. frame erg / cm3 0.00039788735772973844
-          U_Synch Energy dens. blob rest. frame erg / cm3  5.506769532122052e-05
-      U_Synch_DRF Energy dens. disk rest. frame erg / cm3      8.712292317747346
-           U_Disk Energy dens. blob rest. frame erg / cm3                    0.0
-            U_BLR Energy dens. blob rest. frame erg / cm3                    0.0
-             U_DT Energy dens. blob rest. frame erg / cm3                    0.0
-            U_CMB Energy dens. blob rest. frame erg / cm3                    0.0
-       U_Disk_DRF Energy dens. disk rest. frame erg / cm3                    0.0
-        U_BLR_DRF Energy dens. disk rest. frame erg / cm3                    0.0
-         U_DT_DRF Energy dens. disk rest. frame erg / cm3                    0.0
-        U_CMB_DRF Energy dens. disk rest. frame erg / cm3                    0.0
-        L_Sync_rf         Lum. blob rest. frme.   erg / s  1.728764352592126e+38
-         L_SSC_rf         Lum. blob rest. frme.   erg / s   3.82887909757934e+36
-     L_EC_Disk_rf         Lum. blob rest. frme.   erg / s                    0.0
-      L_EC_BLR_rf         Lum. blob rest. frme.   erg / s                    0.0
-       L_EC_DT_rf         Lum. blob rest. frme.   erg / s                    0.0
-      L_EC_CMB_rf         Lum. blob rest. frme.   erg / s                    0.0
-          L_PP_rf         Lum. blob rest. frme.   erg / s                    0.0
-       jet_L_Sync                      jet Lum.   erg / s 4.3219108814803147e+39
-        jet_L_SSC                      jet Lum.   erg / s  9.572197743948349e+37
-    jet_L_EC_Disk                      jet Lum.   erg / s                    0.0
-     jet_L_EC_BLR                      jet Lum.   erg / s                    0.0
-      jet_L_EC_DT                      jet Lum.   erg / s                    0.0
-     jet_L_EC_CMB                      jet Lum.   erg / s                    0.0
-         jet_L_PP                      jet Lum.   erg / s                    0.0
-        jet_L_rad                      jet Lum.   erg / s  4.417632858919798e+39
-        jet_L_kin                      jet Lum.   erg / s  4.043042849486075e+42
-        jet_L_tot                      jet Lum.   erg / s  4.047460482344995e+42
-          jet_L_e                      jet Lum.   erg / s  4.097964612089291e+41
-          jet_L_B                      jet Lum.   erg / s  9.368514312500004e+40
-          jet_L_p                      jet Lum.   erg / s  3.539561245152146e+42
+         name                   type               units       val     
+    -------------- ----------------------------- --------- ------------
+               U_e Energy dens. blob rest. frame erg / cm3 1.740434e-03
+          U_p_cold Energy dens. blob rest. frame erg / cm3 7.516095e+03
+               U_B Energy dens. blob rest. frame erg / cm3 3.978874e-04
+               U_p Energy dens. blob rest. frame erg / cm3 0.000000e+00
+        U_p_target Energy dens. blob rest. frame erg / cm3 0.000000e+00
+           U_Synch Energy dens. blob rest. frame erg / cm3 5.506770e-05
+       U_Synch_DRF Energy dens. disk rest. frame erg / cm3 8.712292e+00
+            U_Disk Energy dens. blob rest. frame erg / cm3 0.000000e+00
+             U_BLR Energy dens. blob rest. frame erg / cm3 0.000000e+00
+              U_DT Energy dens. blob rest. frame erg / cm3 0.000000e+00
+             U_CMB Energy dens. blob rest. frame erg / cm3 0.000000e+00
+        U_Disk_DRF Energy dens. disk rest. frame erg / cm3 0.000000e+00
+         U_BLR_DRF Energy dens. disk rest. frame erg / cm3 0.000000e+00
+          U_DT_DRF Energy dens. disk rest. frame erg / cm3 0.000000e+00
+         U_CMB_DRF Energy dens. disk rest. frame erg / cm3 0.000000e+00
+         L_Sync_rf         Lum. blob rest. frme.   erg / s 1.728764e+38
+          L_SSC_rf         Lum. blob rest. frme.   erg / s 3.828879e+36
+      L_EC_Disk_rf         Lum. blob rest. frme.   erg / s 0.000000e+00
+       L_EC_BLR_rf         Lum. blob rest. frme.   erg / s 0.000000e+00
+        L_EC_DT_rf         Lum. blob rest. frme.   erg / s 0.000000e+00
+       L_EC_CMB_rf         Lum. blob rest. frme.   erg / s 0.000000e+00
+     L_pp_gamma_rf         Lum. blob rest. frme.   erg / s 0.000000e+00
+        jet_L_Sync                      jet Lum.   erg / s 4.321911e+39
+         jet_L_SSC                      jet Lum.   erg / s 9.572198e+37
+     jet_L_EC_Disk                      jet Lum.   erg / s 0.000000e+00
+      jet_L_EC_BLR                      jet Lum.   erg / s 0.000000e+00
+       jet_L_EC_DT                      jet Lum.   erg / s 0.000000e+00
+      jet_L_EC_CMB                      jet Lum.   erg / s 0.000000e+00
+    jet_L_pp_gamma                      jet Lum.   erg / s 0.000000e+00
+         jet_L_rad                      jet Lum.   erg / s 4.417633e+39
+         jet_L_kin                      jet Lum.   erg / s 1.769714e+48
+         jet_L_tot                      jet Lum.   erg / s 1.769714e+48
+           jet_L_e                      jet Lum.   erg / s 4.097965e+41
+           jet_L_B                      jet Lum.   erg / s 9.368514e+40
+      jet_L_p_cold                      jet Lum.   erg / s 1.769713e+48
+           jet_L_p                      jet Lum.   erg / s 0.000000e+00
     -----------------------------------------------------------------------------------------
 
 
@@ -1028,8 +1031,10 @@ If you want to evaluate the energetic report in non verbose mode:
 .. parsed-literal::
 
     {'U_e': 0.0017404342430246782,
-     'U_p': 0.015032764261,
+     'U_p_cold': 7516.095405557228,
      'U_B': 0.00039788735772973844,
+     'U_p': 0.0,
+     'U_p_target': 2.1710845093e-314,
      'U_Synch': 5.506769532122052e-05,
      'U_Synch_DRF': 8.712292317747346,
      'U_Disk': 0.0,
@@ -1046,20 +1051,21 @@ If you want to evaluate the energetic report in non verbose mode:
      'L_EC_BLR_rf': 0.0,
      'L_EC_DT_rf': 0.0,
      'L_EC_CMB_rf': 0.0,
-     'L_PP_rf': 0.0,
+     'L_pp_gamma_rf': 0.0,
      'jet_L_Sync': 4.3219108814803147e+39,
      'jet_L_SSC': 9.572197743948349e+37,
      'jet_L_EC_Disk': 0.0,
      'jet_L_EC_BLR': 0.0,
      'jet_L_EC_DT': 0.0,
      'jet_L_EC_CMB': 0.0,
-     'jet_L_PP': 0.0,
+     'jet_L_pp_gamma': 0.0,
      'jet_L_rad': 4.417632858919798e+39,
-     'jet_L_kin': 4.043042849486075e+42,
-     'jet_L_tot': 4.047460482344995e+42,
+     'jet_L_kin': 1.7697136148216973e+48,
+     'jet_L_tot': 1.76971361923933e+48,
      'jet_L_e': 4.097964612089291e+41,
      'jet_L_B': 9.368514312500004e+40,
-     'jet_L_p': 3.539561245152146e+42}
+     'jet_L_p_cold': 1.769713111340093e+48,
+     'jet_L_p': 0.0}
 
 
 
@@ -1072,31 +1078,31 @@ If you want to evaluate the energetic report in non verbose mode:
 
 .. raw:: html
 
-    <i>Table length=33</i>
-    <table id="table103625200272" class="table-striped table-bordered table-condensed">
+    <i>Table masked=True length=36</i>
+    <table id="table103569323024" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
-    <thead><tr><th>str13</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
-    <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0017404342430246782</td></tr>
-    <tr><td>U_p</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.015032764261</td></tr>
-    <tr><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.00039788735772973844</td></tr>
-    <tr><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>5.506769532122052e-05</td></tr>
-    <tr><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.712292317747346</td></tr>
-    <tr><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
-    <tr><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
-    <tr><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
-    <tr><td>U_CMB</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
-    <tr><td>U_Disk_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.0</td></tr>
+    <thead><tr><th>str14</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
+    <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.740434e-03</td></tr>
+    <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>7.516095e+03</td></tr>
+    <tr><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>3.978874e-04</td></tr>
+    <tr><td>U_p</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_p_target</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>2.171085e-314</td></tr>
+    <tr><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>5.506770e-05</td></tr>
+    <tr><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.712292e+00</td></tr>
+    <tr><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-    <tr><td>jet_L_EC_BLR</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td></tr>
-    <tr><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td></tr>
-    <tr><td>jet_L_EC_CMB</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td></tr>
-    <tr><td>jet_L_PP</td><td>jet Lum.</td><td>erg / s</td><td>0.0</td></tr>
-    <tr><td>jet_L_rad</td><td>jet Lum.</td><td>erg / s</td><td>4.417632858919798e+39</td></tr>
-    <tr><td>jet_L_kin</td><td>jet Lum.</td><td>erg / s</td><td>4.043042849486075e+42</td></tr>
-    <tr><td>jet_L_tot</td><td>jet Lum.</td><td>erg / s</td><td>4.047460482344995e+42</td></tr>
-    <tr><td>jet_L_e</td><td>jet Lum.</td><td>erg / s</td><td>4.097964612089291e+41</td></tr>
-    <tr><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>9.368514312500004e+40</td></tr>
-    <tr><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>3.539561245152146e+42</td></tr>
+    <tr><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>jet_L_EC_CMB</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>jet_L_pp_gamma</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>jet_L_rad</td><td>jet Lum.</td><td>erg / s</td><td>4.417633e+39</td></tr>
+    <tr><td>jet_L_kin</td><td>jet Lum.</td><td>erg / s</td><td>1.769714e+48</td></tr>
+    <tr><td>jet_L_tot</td><td>jet Lum.</td><td>erg / s</td><td>1.769714e+48</td></tr>
+    <tr><td>jet_L_e</td><td>jet Lum.</td><td>erg / s</td><td>4.097965e+41</td></tr>
+    <tr><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>9.368514e+40</td></tr>
+    <tr><td>jet_L_p_cold</td><td>jet Lum.</td><td>erg / s</td><td>1.769713e+48</td></tr>
+    <tr><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     </table>
 
 

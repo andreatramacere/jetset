@@ -1,3 +1,4 @@
+#To run and convert notebooks for doc:  jupyter nbconvert --execute notebook.ipynb --to rst
 
 #!!!!!To avoid to import the jetkernel module otherwise the build will crash
 export READTHEDOCS='True'

@@ -589,25 +589,25 @@ class  PlotPdistr (object):
             energy_units= '(%s)'%energy_scale
             energy_plot=True
 
-
+        #print('--> energy_plot',energy_plot)
         if  energy_plot is False:
             x=gamma
             y=n_gamma
+
         else:
 
             if particle=='electrons':
-                x = gamma*(m_e*c*c).to(energy_scale)
-                y = n_gamma * 1.0/(m_e*c*c).to(energy_scale)
+                x = gamma*(m_e*c*c).to(energy_scale).value
+                y = n_gamma * 1.0/(m_e*c*c).to(energy_scale).value
             elif particle=='protons':
-                x = gamma * (m_p * c * c).to(energy_scale)
-                y = n_gamma * 1.0 / (m_p * c * c).to(energy_scale)
-
-
+                x = gamma * (m_p * c * c).to(energy_scale).value
+                y = n_gamma * 1.0 / (m_p * c * c).to(energy_scale).value
             else:
                 raise  RuntimeError('particle ',particle, 'not implemented')
 
-        m=y.value>0
-        return x.value[m],y.value[m],energy_name,energy_units
+        m = y > 0
+
+        return x[m], y[m], energy_name,energy_units
 
     def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_scale='gamma'):
 
@@ -615,7 +615,7 @@ class  PlotPdistr (object):
         self.ax.plot(np.log10(x), np.log10(y))
 
         self.ax.set_xlabel(r'log($%s$)  %s'%(energy_name,energy_units))
-        self.ax.set_ylabel(r'log(n($%s$) '%(energy_name))
+        self.ax.set_ylabel(r'log(n($%s$))'%(energy_name))
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
         self.update_plot()
@@ -627,7 +627,7 @@ class  PlotPdistr (object):
         self.ax.plot(np.log10(x), np.log10(y * x *  x))
 
         self.ax.set_xlabel(r'log($%s$)  %s'%(energy_name,energy_units))
-        self.ax.set_ylabel(r'log(n($%s$)) $%s^2$  '%(energy_name,energy_name))
+        self.ax.set_ylabel(r'log(n($%s$) $%s^2$)  '%(energy_name,energy_name))
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
         self.update_plot()
@@ -639,7 +639,7 @@ class  PlotPdistr (object):
         self.ax.plot(np.log10(x), np.log10(y * x * x * x))
 
         self.ax.set_xlabel(r'log($%s$)  %s' % (energy_name, energy_units))
-        self.ax.set_ylabel(r'log(n($%s$) $%s^3$ ' % (energy_name, energy_name))
+        self.ax.set_ylabel(r'log(n($%s$) $%s^3$) ' % (energy_name, energy_name))
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
         self.update_plot()
