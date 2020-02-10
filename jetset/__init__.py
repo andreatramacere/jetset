@@ -6,6 +6,7 @@ JetSeT package
 import pkgutil
 import os
 import json
+from .utils import get_info
 
 __author__ = "Andrea Tramacere"
 
@@ -14,10 +15,10 @@ pkg_dir = os.path.abspath(os.path.dirname(__file__))
 pkg_name = os.path.basename(pkg_dir)
 __all__=[]
 
-with open(os.path.dirname(__file__) + '/pkg_info.json') as fp:
-    _info = json.load(fp)
 
-__version__ = _info['version']
+
+_info = get_info()
+__version__=_info['version']
 
 if 'label'  in _info.keys():
     __label__= _info['label']

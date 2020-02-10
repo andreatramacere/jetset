@@ -4,13 +4,17 @@ from __future__ import absolute_import, division, print_function
 from builtins import (bytes, str, open, super, range,
                       zip, round, input, int, pow, object, map, zip)
 
+import re
+import inspect
+import sys
+import warnings
+import os
+import json
+
+
 __author__ = "Andrea Tramacere"
 
 __all__=['check_frame','unexpetced_behaviour']
-import re
-import inspect
-import  sys
-import warnings
 
 
 
@@ -114,3 +118,10 @@ def set_str_attr(obj,name,val):
     except Exception as e:
         raise RuntimeError('error setting attr',name,'execption:',e)
 
+
+
+def get_info():
+    with open(os.path.dirname(__file__) + '/pkg_info.json') as fp:
+        _info = json.load(fp)
+
+    return _info

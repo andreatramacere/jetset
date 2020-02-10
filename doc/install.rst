@@ -32,7 +32,7 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
   .. code-block:: bash
 
-    conda install -c andreatramacere  jetset
+      conda install -c andreatramacere  jetset
 
 
 
@@ -48,7 +48,7 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
   .. code-block:: bash
 
-      python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+      pytest --pyargs jetset.tests.test_users::test_short
 
 
 
@@ -70,7 +70,7 @@ Download the code
 
   .. code-block:: bash
 
-   cd jetset-stable
+      cd jetset-stable
 
 Installation from source using Anaconda
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -99,7 +99,11 @@ Installation from source using Anaconda
 
   .. code-block:: bash
 
-      python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+     cd ~/
+     mkdir test_jetset
+     cd test_jetset
+
+     pytest --pyargs jetset.tests.test_users::test_short
 
 
 
@@ -126,7 +130,10 @@ Installation from source using PIP
 
   .. code-block:: bash
 
-       python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+       cd ~/
+       mkdir test_jetset
+       cd test_jetset
+       pytest --pyargs jetset.tests.test_users::test_short
 
 
 

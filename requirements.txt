@@ -8,6 +8,7 @@ future
 iminuit
 corner
 six
-emcee
+emcee>=2.2.0,<3.0
 pyyaml
 pyqt
+pytest

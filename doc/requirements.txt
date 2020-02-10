@@ -14,3 +14,4 @@ iminuit
 corner
 six
 emcee
+pytest

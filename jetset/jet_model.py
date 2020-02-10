@@ -4,12 +4,6 @@ from builtins import (str, open, super, range,
                       object, map)
 
 
-
-
-__author__ = "Andrea Tramacere"
-
-
-
 import os
 import json
 import pickle
@@ -44,13 +38,16 @@ from  .plot_sedfit import PlotSED,plt
 
 from .cosmo_tools import Cosmo
 
-from .utils import safe_run,set_str_attr, old_model_warning
+from .utils import safe_run,set_str_attr, old_model_warning, get_info
 
 from .jet_paramters import  *
 
 from .jet_emitters import *
 
 from .jet_tools import  *
+
+
+__author__ = "Andrea Tramacere"
 
 __all__=['Jet']
 
@@ -106,7 +103,9 @@ class JetBase(Model):
         """
         super(JetBase,self).__init__(  **keywords)
 
-        #print('cosmo',cosmo)
+
+        self._set_version(v=None)
+
         if cosmo is not None:
             self.cosmo=cosmo
         else:
@@ -162,6 +161,12 @@ class JetBase(Model):
 
         self._setup(emitters_distribution,emitters_distribution_log_values,beaming_expr,emitters_type)
 
+    def _set_version(self, v=None):
+        if v is None:
+            self.__version__ = get_info()['version']
+        else:
+            self.__version__ = v
+
     def _setup(self, emitters_distribution, emitters_distribution_log_values, beaming_expr, emitters_type):
         self.EC_components_list = []
         self.spectral_components_list = []
@@ -203,9 +208,9 @@ class JetBase(Model):
 
 
     def _serialize_model(self):
-        import jetset
+
         _model = {}
-        _model['version']=jetset.__version__
+        _model['version']=get_info()['version']
         _model['emitters_distribution'] = self._emitters_distribution_name
         _model['emitters_distribution_log_values'] = self._emitters_distribution_log_values
         _model['emitters_type'] = self._emitters_type
@@ -233,6 +238,11 @@ class JetBase(Model):
         pickle.dump(self._serialize_model(), open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
     def _decode_model(self,_model):
+
+        if 'version' in _model.keys():
+            self._set_version(_model['version'])
+        else:
+            self._set_version(v='unknown(<1.1.2)')
 
         self.cosmo = _model['cosmo']
         self.model_type = 'jet'
@@ -343,8 +353,6 @@ class JetBase(Model):
     @classmethod
     @safe_run
     def load_model(cls,file_name):
-
-
 
         _model=pickle.load( open(file_name, "rb" ) )
         jet = cls()

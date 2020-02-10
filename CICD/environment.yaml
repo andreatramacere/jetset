@@ -9,7 +9,7 @@ dependencies:
  - setuptools
  - scipy
  - numpy
- - astropy
+ - astropy>=4.0
  - matplotlib>3.1.0
  - swig
  - future
@@ -17,3 +17,4 @@ dependencies:
  - corner
  - six
  - emcee
+ - pytest
