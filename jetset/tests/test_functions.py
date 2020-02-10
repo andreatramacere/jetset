@@ -131,7 +131,12 @@ def test_jet():
     j=Jet()
     j.eval()
     j.energetic_report()
-
+    j.plot_model()
+    j.emitters_distribution.plot()
+    j.emitters_distribution.plot2p()
+    j.emitters_distribution.plot3p()
+    j.emitters_distribution.plot3p(energy_unit='eV')
+    j.emitters_distribution.plot3p(energy_unit='erg')
 
 def test_full():
     from jetset.plot_sedfit import plt

@@ -578,15 +578,15 @@ class  PlotPdistr (object):
 
         self.fig, self.ax = plt.subplots()
 
-    def _set_variable(self,gamma,n_gamma,particle,energy_scale):
+    def _set_variable(self,gamma,n_gamma,particle,energy_unit):
 
         energy_plot=False
-        if energy_scale == 'gamma':
+        if energy_unit == 'gamma':
             energy_name = '\gamma'
             energy_units=''
         else:
             energy_name='E'
-            energy_units= '(%s)'%energy_scale
+            energy_units= '(%s)'%energy_unit
             energy_plot=True
 
         #print('--> energy_plot',energy_plot)
@@ -597,11 +597,11 @@ class  PlotPdistr (object):
         else:
 
             if particle=='electrons':
-                x = gamma*(m_e*c*c).to(energy_scale).value
-                y = n_gamma * 1.0/(m_e*c*c).to(energy_scale).value
+                x = gamma*(m_e*c*c).to(energy_unit).value
+                y = n_gamma * 1.0/(m_e*c*c).to(energy_unit).value
             elif particle=='protons':
-                x = gamma * (m_p * c * c).to(energy_scale).value
-                y = n_gamma * 1.0 / (m_p * c * c).to(energy_scale).value
+                x = gamma * (m_p * c * c).to(energy_unit).value
+                y = n_gamma * 1.0 / (m_p * c * c).to(energy_unit).value
             else:
                 raise  RuntimeError('particle ',particle, 'not implemented')
 
@@ -609,9 +609,9 @@ class  PlotPdistr (object):
 
         return x[m], y[m], energy_name,energy_units
 
-    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_scale='gamma'):
+    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma'):
 
-        x,y,energy_name,energy_units=self._set_variable(gamma,n_gamma,particle,energy_scale)
+        x,y,energy_name,energy_units=self._set_variable(gamma,n_gamma,particle,energy_unit)
         self.ax.plot(np.log10(x), np.log10(y))
 
         self.ax.set_xlabel(r'log($%s$)  %s'%(energy_name,energy_units))
@@ -620,9 +620,9 @@ class  PlotPdistr (object):
         self.ax.set_xlim(x_min, x_max)
         self.update_plot()
 
-    def plot_distr2p(self, gamma, n_gamma, y_min=None, y_max=None, x_min=None, x_max=None,particle='electrons',energy_scale='gamma'):
+    def plot_distr2p(self, gamma, n_gamma, y_min=None, y_max=None, x_min=None, x_max=None,particle='electrons',energy_unit='gamma'):
 
-        x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_scale)
+        x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit)
 
         self.ax.plot(np.log10(x), np.log10(y * x *  x))
 
@@ -632,9 +632,9 @@ class  PlotPdistr (object):
         self.ax.set_xlim(x_min, x_max)
         self.update_plot()
 
-    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_scale='gamma'):
+    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma'):
 
-        x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_scale)
+        x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit)
 
         self.ax.plot(np.log10(x), np.log10(y * x * x * x))
 

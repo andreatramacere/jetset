@@ -177,7 +177,7 @@ class EmittersDistribution(object):
         #print("==> __fill 5")
 
 
-    def plot(self, p=None, y_min=None,y_max=None,x_min=None,x_max=None,energy_scale='gamma'):
+    def plot(self, p=None, y_min=None,y_max=None,x_min=None,x_max=None,energy_unit='gamma'):
 
         self.update()
         if p is None:
@@ -190,7 +190,7 @@ class EmittersDistribution(object):
                      x_min=x_min,
                      x_max=x_max,
                      particle='electrons',
-                     energy_scale=energy_scale)
+                     energy_unit=energy_unit)
 
         if  self.emitters_type=='protons':
             p.plot_distr(self.gamma_p,
@@ -200,11 +200,11 @@ class EmittersDistribution(object):
                          x_min=x_min,
                          x_max=x_max,
                          particle='protons',
-                         energy_scale=energy_scale)
+                         energy_unit=energy_unit)
 
         return p
 
-    def plot2p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None,energy_scale='gamma'):
+    def plot2p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None,energy_unit='gamma'):
         self.update()
 
         if p is None:
@@ -217,7 +217,7 @@ class EmittersDistribution(object):
                        x_min=x_min,
                        x_max=x_max,
                        particle='electrons',
-                       energy_scale=energy_scale)
+                       energy_unit=energy_unit)
 
         if self.emitters_type == 'protons':
             p.plot_distr2p(self.gamma_p,
@@ -227,12 +227,12 @@ class EmittersDistribution(object):
                            x_min=x_min,
                            x_max=x_max,
                            particle='protons',
-                           energy_scale=energy_scale)
+                           energy_unit=energy_unit)
 
         return p
 
 
-    def plot3p(self, p=None,y_min=None,y_max=None,x_min=None,x_max=None,energy_scale='gamma'):
+    def plot3p(self, p=None,y_min=None,y_max=None,x_min=None,x_max=None,energy_unit='gamma'):
         self.update()
 
         if p is None:
@@ -245,7 +245,7 @@ class EmittersDistribution(object):
                        x_min=x_min,
                        x_max=x_max,
                        particle='electrons',
-                       energy_scale=energy_scale)
+                       energy_unit=energy_unit)
 
         if  self.emitters_type=='protons':
             p.plot_distr3p(self.gamma_p,
@@ -255,7 +255,7 @@ class EmittersDistribution(object):
                            x_min=x_min,
                            x_max=x_max,
                            particle='protons',
-                           energy_scale=energy_scale)
+                           energy_unit=energy_unit)
 
         return p
 
