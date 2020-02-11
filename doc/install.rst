@@ -48,7 +48,7 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
   .. code-block:: bash
 
-      pytest --pyargs jetset.tests.test_users::test_short
+      pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
 
 
 
@@ -103,7 +103,7 @@ Installation from source using Anaconda
      mkdir test_jetset
      cd test_jetset
 
-     pytest --pyargs jetset.tests.test_users::test_short
+     pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
 
 
 
@@ -133,7 +133,7 @@ Installation from source using PIP
        cd ~/
        mkdir test_jetset
        cd test_jetset
-       pytest --pyargs jetset.tests.test_users::test_short
+       pytest  --disable-warnings --pyargs jetset.tests.test_users::test_short
 
 
 

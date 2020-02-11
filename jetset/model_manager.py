@@ -145,8 +145,6 @@ class FitModel(Model):
             self.add_component(analytical)
 
 
-
-
     def plot_model(self,plot_obj=None,clean=False,sed_data=None):
         if plot_obj is None:
             plot_obj=PlotSED(sed_data=sed_data)

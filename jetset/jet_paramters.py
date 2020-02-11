@@ -46,9 +46,9 @@ class JetParameter(ModelParameter):
 
 
     """
-    def __init__(self,blob,**keywords):
+    def __init__(self,jet,**keywords):
 
-        self._blob=blob
+        self._jet=jet
 
         self.par_type_list = ['proton_density',
                               'electron_density',
@@ -114,7 +114,7 @@ class JetParameter(ModelParameter):
 
         #        raise RuntimeError('Disk type %s, not in allowed '%val,allowed_disk_type)
         #print('-> assign val',name,val)
-        b=getattr(self._blob,name)
+        b=getattr(self._jet._blob,name)
 
 
         #print('1 name',name,val,self._val.islog)
@@ -131,4 +131,4 @@ class JetParameter(ModelParameter):
         elif type(b)==str:
             val=val
         #print('2 name',name, val, self._val.islog)
-        setattr(self._blob,name,val)
+        setattr(self._jet._blob,name,val)

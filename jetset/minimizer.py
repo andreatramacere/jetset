@@ -463,8 +463,8 @@ class Minimizer(object):
 
     def _progess_bar(self, _res_sum, res_UL):
         if np.mod(self.calls, 10) == 0 and self.calls != 0:
-            _c= ' ' * 256
-            print("\r%s"%_c,end="")
+            #_c= ' ' * 256
+            #print("\r%s"%_c,end="")
             print("\r%s minim function calls=%d, chisq=%f UL part=%f" % (next(self._progress_iter),self.calls, _res_sum, -2.0*np.sum(res_UL)), end="")
 
 

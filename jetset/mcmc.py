@@ -16,8 +16,22 @@ from scipy import stats
 from .plot_sedfit import  plt
 import corner
 import pickle
+from multiprocessing import Pool,cpu_count
+import warnings
+import  time
 
 __all__=['McmcSampler']
+
+
+
+class Counter(object):
+
+
+    def __init__(self,count_tot):
+        self.count = 0
+        self.count_OK = 0
+        self.count_tot = count_tot
+        self._progress_iter = cycle(['|', '/', '-', '\\'])
 
 class McmcSampler(object):
 
@@ -28,24 +42,50 @@ class McmcSampler(object):
         self._progress_iter = cycle(['|', '/', '-', '\\'])
 
 
-    def run_sampler(self,nwalkers=500,steps=100,pos=None,burnin=50,use_UL=False, threads=8):
-        self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, self.log_prob,threads=threads)
-        self.calls=0
-        self.calls_OK=0
-        self.use_UL=use_UL
+    def run_sampler(self,nwalkers=500,steps=100,pos=None,burnin=50,use_UL=False, threads=1):
+
+
+        if threads>cpu_count():
+            threads=cpu_count()
+            warnings.warn('number of threads has been reduced to cpu_count',cpu_count())
+
+        counter=Counter(nwalkers*steps)
+
 
         if pos is None:
             pos = emcee.utils.sample_ball(np.array([p.best_fit_val for p in self.model_minimizer.fit_par_free]),
-                                     np.array([p.best_fit_val*0.005 for p in self.model_minimizer.fit_par_free]),
-                                     nwalkers)
+                                          np.array([p.best_fit_val * 0.005 for p in self.model_minimizer.fit_par_free]),
+                                          nwalkers)
 
-        self.pos=pos
-        self.nwalkers=nwalkers
-        self.steps=steps
-        self.calls_tot=nwalkers*steps
-        self.labels=[par.name for par in self.model_minimizer.fit_par_free]
-        self.labels_units =[par.units for par in self.model_minimizer.fit_par_free]
-        self.sampler.run_mcmc(pos,steps)
+        self.calls = 0
+        self.calls_OK = 0
+        self.use_UL = use_UL
+
+        self.pos = pos
+        self.nwalkers = nwalkers
+        self.steps = steps
+        self.calls_tot = nwalkers * steps
+        self.labels = [par.name for par in self.model_minimizer.fit_par_free]
+        self.labels_units = [par.units for par in self.model_minimizer.fit_par_free]
+
+        print('mcmc run starting')
+        start = time.time()
+        if emcee.__version__ >="3":
+            with Pool(processes=threads) as pool:
+
+                self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob,threads=threads,args=(self.model_minimizer,use_UL,counter),pool=pool)
+
+                self.sampler.run_mcmc(pos,steps,progress=True)
+        else:
+            self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob, threads=threads,
+                                                 args=(self.model_minimizer, use_UL, counter), n=pool)
+
+            self.sampler.run_mcmc(pos, steps, progress=True)
+
+        end = time.time()
+        comp_time = end - start
+        print("mcmc run done, with %d threads took %2.2f seconds"%(threads,comp_time))
+
         self.samples = self.sampler.chain[:, burnin:, :].reshape((-1, self.ndim))
 
         self.sampler_out=SamplerOutput(self.samples,
@@ -70,59 +110,68 @@ class McmcSampler(object):
     def seve_run(self,name):
         self.sampler_out.save(name)
 
-    def log_like(self,theta,_warn=False):
 
-        for pi in range(len(theta)):
-            self.model_minimizer.fit_par_free[pi].set(val=theta[pi])
-            if np.isnan(theta[pi]):
-                _warn=True
-
-
-
-
-
-        _m = self.model_minimizer.fit_Model.eval(nu=self.model_minimizer.nu_fit, fill_SED=False, get_model=True, loglog=self.model_minimizer.loglog)
-
-        _res_sum, _res, _res_UL= log_like(self.model_minimizer.nuFnu_fit,
-                        _m,
-                        self.model_minimizer.err_nuFnu_fit,
-                        self.model_minimizer.UL,
-                        use_UL=self.use_UL)
-
-        self._progess_bar()
-        return  _res_sum
-
-
-
-    def log_prob(self,theta):
-        lp = self.log_prior(theta)
-        self.calls+=1
-        if not np.isfinite(lp):
-            return -np.inf
-        self.calls_OK += 1
-        return lp + self.log_like(theta)
-
-    def log_prior(self,theta):
-        _r=0.
-        bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model_minimizer.fit_par_free]
-        for pi in range(len(theta)):
-            if bounds[pi][1] is not None:
-                if theta[pi]<bounds[pi][1]:
-                    pass
-                else:
-                    _r = -np.inf
-            if bounds[pi][0] is not None:
-                if theta[pi]>bounds[pi][0]:
-                    pass
-                else:
-                    _r=-np.inf
-
-        return _r
 
     def _progess_bar(self,):
         if np.mod(self.calls, 10) == 0 and self.calls != 0:
             print("\r%s progress=%3.3f%% calls=%d accepted=%d" % (next(self._progress_iter),float(100*self.calls)/(self.calls_tot),self.calls,self.calls_OK), end="")
 
+
+
+def emcee_log_like(theta,model_minimizer,counter,use_UL):
+    _warn = False
+    for pi in range(len(theta)):
+        model_minimizer.fit_par_free[pi].set(val=theta[pi])
+        if np.isnan(theta[pi]):
+            _warn=True
+
+
+
+
+
+    _m = model_minimizer.fit_Model.eval(nu=model_minimizer.nu_fit, fill_SED=False, get_model=True, loglog=model_minimizer.loglog)
+
+    _res_sum, _res, _res_UL= log_like(model_minimizer.nuFnu_fit,
+                    _m,
+                    model_minimizer.err_nuFnu_fit,
+                    model_minimizer.UL,
+                    use_UL=use_UL)
+
+    #_progess_bar(counter)
+    return  _res_sum
+
+
+def _progess_bar(counter):
+
+    if np.mod(counter.count, 10) == 0 and counter.count != 0:
+        print("\r%s progress=%3.3f%% calls=%d accepted=%d" % (next( counter._progress_iter),float(100* counter.count)/( counter.count_tot),counter.count,counter.count_OK), end="")
+
+
+
+def log_prob(theta,model_minimizer,use_UL,counter):
+    lp = log_prior(theta,model_minimizer)
+    counter.count += 1
+    if not np.isfinite(lp):
+        return -np.inf
+    counter.count_OK += 1
+    return lp + emcee_log_like(theta,model_minimizer,counter,use_UL)
+
+def log_prior(theta,model_minimizer):
+    _r=0.
+    bounds = [(par.fit_range_min, par.fit_range_max) for par in model_minimizer.fit_par_free]
+    for pi in range(len(theta)):
+        if bounds[pi][1] is not None:
+            if theta[pi]<bounds[pi][1]:
+                pass
+            else:
+                _r = -np.inf
+        if bounds[pi][0] is not None:
+            if theta[pi]>bounds[pi][0]:
+                pass
+            else:
+                _r=-np.inf
+
+    return _r
 
 
 class SamplerOutput(object):

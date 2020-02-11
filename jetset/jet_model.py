@@ -207,6 +207,13 @@ class JetBase(Model):
         self._external_field_transf['disk'] = 1
 
 
+    def __getstate__(self):
+        return  self._serialize_model()
+
+    def __setstate__(self,state):
+        self.__init__()
+        self._decode_model(state)
+
     def _serialize_model(self):
 
         _model = {}
@@ -772,7 +779,7 @@ class JetBase(Model):
                 froz=model_dic[key].froz
 
 
-                self.parameters.add_par(JetParameter(self._blob, name=pname,
+                self.parameters.add_par(JetParameter(self, name=pname,
                                                      par_type=ptype,
                                                      val=pval,
                                                      val_min=vmin,

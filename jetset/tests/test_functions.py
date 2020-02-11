@@ -97,6 +97,8 @@ def model_fit_lsb(sed_data,my_shape):
 
     best_fit_lsb.save_report('best-fit-minuit-report.txt')
     fit_model_lsb.save_model('fit_model_lsb.dat')
+    return jet_lsb, model_minimizer_lsb
+
 
 def model_fit_minuit(sed_data,my_shape):
     from jetset.minimizer import fit_SED
@@ -119,6 +121,15 @@ def model_fit_minuit(sed_data,my_shape):
 
     best_fit_minuit.save_report('best-fit-minuit-report.txt')
     fit_model_minuit.save_model('fit_model_minuit.dat')
+
+    return jet_minuit,model_minimizer_minuit
+
+def test_emcee(jet_bf_model,model_minimizer):
+    from jetset.mcmc import McmcSampler
+
+    mcmc = McmcSampler(model_minimizer)
+    mcmc.run_sampler(nwalkers=150, burnin=10, steps=50)
+
 
 
 def test_build_bessel():
@@ -150,8 +161,8 @@ def test_full():
     print('done')
     prefit_jet=model_constr(my_shape)
     print('done')
-    model_fit_lsb(sed_data,my_shape)
-    model_fit_minuit(sed_data,my_shape)
+    jet_lsb,model_minimizer_lsb=model_fit_lsb(sed_data,my_shape)
+    jet_minuit,model_minimizer_minuit=model_fit_minuit(sed_data,my_shape)
 
 def test_short():
     from jetset.plot_sedfit import  plt
@@ -165,4 +176,5 @@ def test_short():
     print('done')
     prefit_jet = model_constr(my_shape)
     print('done')
-    model_fit_lsb(sed_data,my_shape)
+    jet_lsb, model_minimizer_lsb = model_fit_lsb(sed_data, my_shape)
+    test_emcee(jet_lsb,model_minimizer_lsb)
