@@ -65,7 +65,7 @@ run the notebook on binder:
 
 - run the test
 ```bash
-python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
  ```  
 
 **run all the examples outside of the installation dir**
@@ -103,7 +103,7 @@ python -c 'from jetset.tests import test_functions; test_functions.test_short()'
 
  - run the test (**run all the examples outside of the installation dir**)
 ```bash
-python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
  ```  
 
 
@@ -122,7 +122,7 @@ python -c 'from jetset.tests import test_functions; test_functions.test_short()'
 
  - run the test (**run all the examples outside of the installation dir**)
 ```bash
-python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
  ```    
       
    
