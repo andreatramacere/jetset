@@ -2,3 +2,4 @@
 ./make_tag.py stable -do_remote_tag
 
  pytest --pyargs jetset.tests.test_functions::test_short
+ python -c'from jetset.tests.test_functions import test_short; test_short()'

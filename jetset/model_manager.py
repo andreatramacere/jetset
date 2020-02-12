@@ -387,61 +387,56 @@ class FitModel(Model):
 
 
 
-    @classmethod
-    def _build_serializable(cls):
-        return cls()
+    #@classmethod
+    #def _build_serializable(cls):
+    #    return cls()
 
-    def save_model(self,file_name):
-        c=self._build_serializable()
-
-        c._serialized_model_list=[]
-        for _m in self.components_list:
-            if isinstance(_m,Jet):
-                c._serialized_model_list.append([_m._serialize_model(),_m.model_type])
-            else:
-                c._serialized_model_list.append([_m,_m.model_type])
-
-
-        _keep_member_list = ['model_type',
-                             'name',
-                             # 'parameters' removed  form _keep_member_list because
-                             # parmeter serilization is handlde separtely to get rid of the _blob member
-                             # that is not serializable
-                             # do not add 'parameters' !!!
-                             'SED',
-                             '_scale',
-                             'nu_size',
-                             'nu_min',
-                             'nu_max',
-                             'sed_data',
-                             'nu_min_fit',
-                             'nu_max_fit',
-                             'fitname',
-                             'flux_plot_lim',
-                             'cosmo']
-
-        for km in _keep_member_list:
-            setattr(c,km,getattr(self,km))
+    #def save_model(self,file_name):
+        # c=self._build_serializable()
+        #
+        # c._serialized_model_list=[]
+        # for _m in self.components_list:
+        #     if isinstance(_m,Jet):
+        #         c._serialized_model_list.append([_m._serialize_model(),_m.model_type])
+        #     else:
+        #         c._serialized_model_list.append([_m,_m.model_type])
+        #
+        #
+        # _keep_member_list = ['model_type',
+        #                      'name',
+        #                      'parameters',
+        #                      'SED',
+        #                      '_scale',
+        #                      'nu_size',
+        #                      'nu_min',
+        #                      'nu_max',
+        #                      'sed_data',
+        #                      'nu_min_fit',
+        #                      'nu_max_fit',
+        #                      'fitname',
+        #                      'flux_plot_lim',
+        #                      'cosmo']
+        #
+        # for km in _keep_member_list:
+        #     setattr(c,km,getattr(self,km))
 
 
-        pickle.dump(c, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+        #pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
-        #self.components = _components
-        #self.components_list = _components_list
 
-    @classmethod
-    def load_model(cls, file_name):
-        #c=cls()
-        c = pickle.load(open(file_name, "rb"))
-        for _m in c._serialized_model_list:
 
-            print(_m)
-            if _m[1]=='jet':
-                j = Jet()
-                j._decode_model(_m[0])
-
-                c.add_component(j)
-            else:
-                c.add_component(_m[0])
-        c.eval()
-        return c
+    #@classmethod
+    #def load_model(cls, file_name):
+        # c = pickle.load(open(file_name, "rb"))
+        # for _m in c._serialized_model_list:
+        #
+        #     #print(_m)
+        #     if _m[1]=='jet':
+        #         j = Jet()
+        #         j._decode_model(_m[0])
+        #
+        #         c.add_component(j)
+        #     else:
+        #         c.add_component(_m[0])
+        # c.eval()
+        # return c

@@ -36,7 +36,7 @@ from leastsqbound.leastsqbound import  leastsqbound
 
 from .output import section_separator,WorkPlace,makedir
 
-
+import pickle
 
 
 
@@ -219,6 +219,19 @@ class ModelMinimizer(object):
             raise RuntimeError('minimizer factory failed')
 
         #print('minimizer',minimizer_type)
+
+    def save_model(self, file_name):
+
+        pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+
+    @classmethod
+    def load_model(cls, file_name):
+
+        c= pickle.load(open(file_name, "rb"))
+        if isinstance(c,ModelMinimizer):
+            return c
+        else:
+            raise RuntimeError('The model you loaded is a',type(c),'but you want to load a ',type(cls),'please check the file name')
 
 
     def _prepare_fit(self,fit_Model,sed_data,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,use_facke_err=False,use_UL=False):

@@ -76,7 +76,7 @@ def model_constr(my_shape):
     return prefit_jet
 
 def model_fit_lsb(sed_data,my_shape):
-    from jetset.minimizer import fit_SED
+    from jetset.minimizer import fit_SED,ModelMinimizer
     from jetset.model_manager import FitModel
     from jetset.jet_model import Jet
 
@@ -97,7 +97,13 @@ def model_fit_lsb(sed_data,my_shape):
 
     best_fit_lsb.save_report('best-fit-minuit-report.txt')
     fit_model_lsb.save_model('fit_model_lsb.dat')
-    return jet_lsb, model_minimizer_lsb
+    fit_model_lsb_new = FitModel.load_model('fit_model_lsb.dat')
+
+    model_minimizer_lsb.save_model('model_minimizer_lsb.dat')
+    model_minimizer_lsb_new=ModelMinimizer.load_model('model_minimizer_lsb.dat')
+
+
+    return jet_lsb, model_minimizer_lsb_new, fit_model_lsb_new
 
 
 def model_fit_minuit(sed_data,my_shape):
@@ -128,7 +134,7 @@ def test_emcee(jet_bf_model,model_minimizer):
     from jetset.mcmc import McmcSampler
 
     mcmc = McmcSampler(model_minimizer)
-    mcmc.run_sampler(nwalkers=150, burnin=10, steps=50)
+    mcmc.run_sampler(nwalkers=150, burnin=10, steps=50,threads=2)
 
 
 
@@ -148,6 +154,9 @@ def test_jet():
     j.emitters_distribution.plot3p()
     j.emitters_distribution.plot3p(energy_unit='eV')
     j.emitters_distribution.plot3p(energy_unit='erg')
+    j.save_model('test_jet.dat')
+    j_new=Jet.load_model('test_jet.dat')
+
 
 def test_full():
     from jetset.plot_sedfit import plt
@@ -161,7 +170,7 @@ def test_full():
     print('done')
     prefit_jet=model_constr(my_shape)
     print('done')
-    jet_lsb,model_minimizer_lsb=model_fit_lsb(sed_data,my_shape)
+    jet_lsb, model_minimizer_lsb, fit_model_lsb =model_fit_lsb(sed_data,my_shape)
     jet_minuit,model_minimizer_minuit=model_fit_minuit(sed_data,my_shape)
 
 def test_short():
@@ -176,5 +185,5 @@ def test_short():
     print('done')
     prefit_jet = model_constr(my_shape)
     print('done')
-    jet_lsb, model_minimizer_lsb = model_fit_lsb(sed_data, my_shape)
+    jet_lsb, model_minimizer_lsb,fit_model_lsb = model_fit_lsb(sed_data, my_shape)
     test_emcee(jet_lsb,model_minimizer_lsb)

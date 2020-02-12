@@ -9,6 +9,7 @@ __author__ = "Andrea Tramacere"
 from .model_parameters import ModelParameterArray, ModelParameter
 from .spectral_shapes import SED
 from .data_loader import  ObsData
+from .utils import  safe_run
 import numpy as np
 import json
 import pickle
@@ -144,12 +145,22 @@ class Model(object):
 
     def save_model(self, file_name):
 
-
         pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
+
     @classmethod
+    @safe_run
     def load_model(cls, file_name):
 
-        c= pickle.load(open(file_name, "rb"))
+        try:
+            c = pickle.load(open(file_name, "rb"))
+            if isinstance(c, cls):
+                c.eval()
+                return c
+            else:
+                raise RuntimeError('The model you loaded is not valid please check the file name')
 
-        return c
+        except Exception as e:
+            raise RuntimeError('The model you loaded is not valid please check the file name',e)
+
+
