@@ -9,7 +9,7 @@ __author__ = "Andrea Tramacere"
 from .model_parameters import ModelParameterArray, ModelParameter
 from .spectral_shapes import SED
 from .data_loader import  ObsData
-from .utils import  safe_run
+from .utils import  get_info
 import numpy as np
 import json
 import pickle
@@ -35,9 +35,20 @@ class Model(object):
         self.nu_min=None
         
         self.nu_max=None
+
+        self._set_version(v=None)
         
-        
-   
+    @property
+    def version(self):
+        return self._version
+
+    def _set_version(self, v=None):
+        if v is None:
+            self._version = get_info()['version']
+        else:
+            self._version = v
+
+
     def eval(self,fill_SED=True,nu=None,get_model=False,loglog=False,label=None):
         
         if nu is None:
@@ -149,18 +160,17 @@ class Model(object):
 
 
     @classmethod
-    @safe_run
     def load_model(cls, file_name):
 
         try:
             c = pickle.load(open(file_name, "rb"))
-            if isinstance(c, cls):
+            if isinstance(c, Model):
                 c.eval()
                 return c
             else:
                 raise RuntimeError('The model you loaded is not valid please check the file name')
 
         except Exception as e:
-            raise RuntimeError('The model you loaded is not valid please check the file name',e)
+            raise RuntimeError(e)
 
 

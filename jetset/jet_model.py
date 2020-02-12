@@ -104,7 +104,7 @@ class JetBase(Model):
         super(JetBase,self).__init__(  **keywords)
 
 
-        self._set_version(v=None)
+
 
         if cosmo is not None:
             self.cosmo=cosmo
@@ -161,11 +161,7 @@ class JetBase(Model):
 
         self._setup(emitters_distribution,emitters_distribution_log_values,beaming_expr,emitters_type)
 
-    def _set_version(self, v=None):
-        if v is None:
-            self.__version__ = get_info()['version']
-        else:
-            self.__version__ = v
+
 
     def _setup(self, emitters_distribution, emitters_distribution_log_values, beaming_expr, emitters_type):
         self.EC_components_list = []
@@ -360,13 +356,17 @@ class JetBase(Model):
     @classmethod
     @safe_run
     def load_model(cls,file_name):
+        try:
+            _model=pickle.load( open(file_name, "rb" ) )
+            jet = cls()
+            jet._decode_model(_model)
+            jet.show_pars()
+            jet.eval()
+            return jet
 
-        _model=pickle.load( open(file_name, "rb" ) )
-        jet = cls()
-        jet._decode_model(_model)
-        jet.show_pars()
-        jet.eval()
-        return jet
+        except Exception as e:
+
+            raise RuntimeError('The model you loaded is not valid please check the file name',e)
 
     def build_blob(self, verbose=None):
 

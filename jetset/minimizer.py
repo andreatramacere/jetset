@@ -227,12 +227,15 @@ class ModelMinimizer(object):
     @classmethod
     def load_model(cls, file_name):
 
-        c= pickle.load(open(file_name, "rb"))
-        if isinstance(c,ModelMinimizer):
-            return c
-        else:
-            raise RuntimeError('The model you loaded is a',type(c),'but you want to load a ',type(cls),'please check the file name')
+        try:
+            c = pickle.load(open(file_name, "rb"))
+            if isinstance(c, ModelMinimizer):
+                return c
+            else:
+                raise RuntimeError('The model you loaded is not valid please check the file name')
 
+        except Exception as e:
+            raise RuntimeError(e)
 
     def _prepare_fit(self,fit_Model,sed_data,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,use_facke_err=False,use_UL=False):
         #print('--> DEBUG WorkPlace.flag',WorkPlace.flag,fit_workplace)

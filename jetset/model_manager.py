@@ -86,14 +86,7 @@ class FitModel(Model):
        
         if  jet is not None and elec_distr is not None:
             #!! warning or error?
-            
-            print ("you can't provide both elec_distr and jet, only one")
-            
-            raise RuntimeError
-        
-          
-       
-
+            raise RuntimeError("you can't provide both elec_distr and jet, only one")
 
         self.sed_data=None
         
