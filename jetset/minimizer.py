@@ -218,11 +218,15 @@ class ModelMinimizer(object):
         else:
             raise RuntimeError('minimizer factory failed')
 
+        self.minimizer_type=minimizer_type
         #print('minimizer',minimizer_type)
 
     def save_model(self, file_name):
+        _m= self.minimizer
+        self.minimizer=self.minimizer_type
 
         pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+        self.minimizer =_m
 
     @classmethod
     def load_model(cls, file_name):
@@ -230,7 +234,8 @@ class ModelMinimizer(object):
         try:
             c = pickle.load(open(file_name, "rb"))
             if isinstance(c, ModelMinimizer):
-                return c
+                c.__init__(c.minimizer)
+                return  c
             else:
                 raise RuntimeError('The model you loaded is not valid please check the file name')
 

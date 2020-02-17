@@ -258,7 +258,7 @@ void tabella_Bessel(struct spettro *pt_TB) {
 
 
 double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, double *  y_grid , unsigned int SIZE, double emiss_lim){
-	unsigned int ID;
+	int ID;
 	double y1,y2,x1,x2,a_c;
 	ID=x_to_grid_index(x_grid,  x,   SIZE);
 
@@ -290,7 +290,7 @@ double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, do
 //LOG-LOG INTERPOLATION
 //=====================================================================
 double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, double log_x_max, double *  log_y_grid , unsigned int SIZE, double emiss_lim){
-	unsigned int ID;
+    int ID;
 	double y1,y2,x1,x2,a_c;
 	ID=x_to_grid_index(log_x_grid,  log_x,   SIZE);
 

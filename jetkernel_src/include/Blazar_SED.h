@@ -901,7 +901,7 @@ double integrale_pp_electrons_rate(double (*pf_pp_gamma_kernel)(double gamma_p, 
 //========================================================================================
 /************************************ PHOTON GRID FUNCTIONS *****************************/
 void build_log_grid(double nu_start, double nu_stop, unsigned int SIZE, double *nu_grid);
-unsigned int x_to_grid_index(double *nu_grid, double nu, unsigned int SIZE);
+int x_to_grid_index(double *nu_grid, double nu, unsigned int SIZE);
 //===========================================================================================
 
 

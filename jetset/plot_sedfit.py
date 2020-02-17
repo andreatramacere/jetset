@@ -386,6 +386,7 @@ class  PlotSED (object):
                 label = model.name
             else:
                 label = 'line %d' % self.counter
+
         if flim is not None:
 
             msk=y>np.log10(flim)

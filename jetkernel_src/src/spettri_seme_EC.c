@@ -203,7 +203,7 @@ double eval_J_nu_Star_disk_RF(struct spettro *pt, double I_nu_Star_disk_RF){
 
 
 double integrand_I_nu_Star_blob_RF(struct spettro *pt, double mu){
-	unsigned int i;
+	int i;
 	double nu_disk_RF=nu_blob_RF_to_nu_disk_RF(pt->nu_blob_RF,pt->BulkFactor,pt->beta_Gamma,mu);
 
 	i=x_to_grid_index( pt->nu_Star_disk_RF,nu_disk_RF,pt->nu_seed_size);
@@ -313,7 +313,6 @@ void Build_I_nu_CMB(struct spettro *pt){
 
 	pt->nu_start_CMB_DRF = nu_start_disk_RF;
 	pt->nu_stop_CMB_DRF = nu_stop_disk_RF;
-
 	//pt->nu_start_CMB_obs=nu_peak_CMB_0*pt->nu_planck_min_factor;
 	//pt->nu_stop_CMB_obs=nu_peak_CMB_0*pt->nu_planck_max_factor;
 
@@ -321,10 +320,10 @@ void Build_I_nu_CMB(struct spettro *pt){
 	pt->NU_INT_MAX_CMB = NU_INT_MAX;
 
 	build_log_grid( nu_start_disk_RF,  nu_stop_disk_RF, pt->nu_seed_size, pt->nu_CMB_disk_RF);
+	
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 			pt->I_nu_CMB_disk_RF[NU_INT]=eval_I_nu_CMB_disk_RF(T_CMB_z, pt->nu_CMB_disk_RF[NU_INT]);
 	}
-
 	build_log_grid( pt->nu_start_CMB,  pt->nu_stop_CMB, pt->nu_seed_size, pt->nu_CMB);
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->I_nu_CMB[NU_INT]=eval_I_nu_CMB_blob_RF(pt,pt->nu_CMB[NU_INT]);
@@ -332,7 +331,7 @@ void Build_I_nu_CMB(struct spettro *pt){
 		//EC with n(gamma) transf
 		pt->n_CMB_DRF[NU_INT] = I_nu_to_n(pt->I_nu_CMB_disk_RF[NU_INT], pt->nu_CMB_disk_RF[NU_INT]);
 	}
-
+	
 }
 
 /* void Build_I_nu_CMB_stat(struct spettro *pt){
@@ -404,11 +403,11 @@ double eval_I_nu_CMB_blob_RF(struct spettro *pt, double nu_blob_RF){
 }
 
 double integrand_I_nu_CMB_blob_RF(struct spettro *pt, double mu){
-	unsigned int i=0;
+	int i=0;
  	double nu_disk_RF=nu_blob_RF_to_nu_disk_RF(pt->nu_blob_RF,pt->BulkFactor,pt->beta_Gamma,mu);
 	i=x_to_grid_index( pt->nu_CMB_disk_RF,nu_disk_RF,pt->nu_seed_size);
- 	if (i>0){
- 		return pt->I_nu_CMB_disk_RF[i]*pt->BulkFactor*(1-pt->beta_Gamma*mu);
+	if (i>0){
+		return pt->I_nu_CMB_disk_RF[i]*pt->BulkFactor*(1-pt->beta_Gamma*mu);
 	}
 	else{
 		return 0;
