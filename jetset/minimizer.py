@@ -160,8 +160,10 @@ class FitResults(object):
         for text in self.fit_report:
             try:
                 print (text)
-            except Exception as e:
-                raise(RuntimeWarning,'problem in formatting text for report',e)
+            except:
+                print('problem in formatting text for report')
+            #except Exception as e:
+            #    raise(RuntimeWarning,'problem in formatting text for report',e)
 
     
     def save_report(self,name=None):

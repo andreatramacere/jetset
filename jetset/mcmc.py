@@ -19,7 +19,7 @@ import pickle
 from multiprocessing import cpu_count, Pool
 import warnings
 import  time
-
+import copy
 
 __all__=['McmcSampler']
 
@@ -36,13 +36,13 @@ class Counter(object):
 
 class McmcSampler(object):
 
-    def __init__(self,model_minimizer,labels=None):
+    def __init__(self,model_minimizer):
 
         self.model_minimizer=model_minimizer
-        self.ndim = self.model_minimizer.free_pars
+
         self._progress_iter = cycle(['|', '/', '-', '\\'])
 
-    def run_sampler(self,nwalkers=500,steps=100,pos=None,burnin=50,use_UL=False,bound=0.2,bound_rel=False,threads=None,walker_start_bound=0.002):
+    def run_sampler(self,nwalkers=500,steps=100,pos=None,burnin=50,use_UL=False,bound=0.2,bound_rel=False,threads=None,walker_start_bound=0.002,labels=None):
 
 
 
@@ -50,10 +50,7 @@ class McmcSampler(object):
         counter=Counter(nwalkers*steps)
 
 
-        if pos is None:
-            pos = emcee.utils.sample_ball(np.array([p.best_fit_val for p in self.model_minimizer.fit_par_free]),
-                                          np.array([p.best_fit_val * walker_start_bound for p in self.model_minimizer.fit_par_free]),
-                                          nwalkers)
+
 
         self.calls = 0
         self.calls_OK = 0
@@ -63,9 +60,31 @@ class McmcSampler(object):
         self.nwalkers = nwalkers
         self.steps = steps
         self.calls_tot = nwalkers * steps
-        self.labels = [par.name for par in self.model_minimizer.fit_par_free]
-        self.labels_units = [par.units for par in self.model_minimizer.fit_par_free]
-        self.labels_start_val = [p.best_fit_val for p in self.model_minimizer.fit_par_free]
+        if labels is None:
+            self.par_array = copy.deepcopy(self.model_minimizer.fit_par_free)
+
+            self.labels = [par.name for par in self.par_array]
+            self.labels_units = [par.units for par in self.par_array]
+            self.labels_start_val = [p.best_fit_val for p in self.par_array]
+        else:
+            self.labels=[]
+            self.par_array=[]
+            self.labels_units=[]
+            self.labels_start_val=[]
+            for l in labels:
+                p=copy.deepcopy(self.model_minimizer.fit_Model.parameters.get_par_by_name(l))
+                self.par_array.append(p)
+                self.labels.append( p.name)
+                self.labels_units.append(p.units)
+                self.labels_start_val.append(p.best_fit_val)
+
+        #print ('->',self.labels)
+        self.ndim = len(self.labels)
+        if pos is None:
+            pos = emcee.utils.sample_ball(np.array([p.best_fit_val for p in self.par_array]),
+                                          np.array([p.best_fit_val * walker_start_bound for p in self.par_array]),
+                                          nwalkers)
+
         self._build_bounds(bound=bound,bound_rel=bound_rel)
         print('mcmc run starting')
         start = time.time()
@@ -77,17 +96,17 @@ class McmcSampler(object):
             if emcee.__version__ >="3":
                 with Pool(processes=threads) as pool:
 
-                    self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob,threads=threads,args=(self.model_minimizer,use_UL,counter,self._bounds),pool=pool)
+                    self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob,threads=threads,args=(self.model_minimizer,use_UL,counter,self._bounds, self.par_array),pool=pool)
                     self.sampler.run_mcmc(pos, steps, progress=True)
 
             else:
                 self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob, threads=threads,
-                                                     args=(self.model_minimizer, use_UL, counter,self._bounds))
+                                                     args=(self.model_minimizer, use_UL, counter,self._bounds, self.par_array))
 
                 self.sampler.run_mcmc(pos, steps, progress=True)
         else:
             threads=1
-            self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob,args=(self.model_minimizer, use_UL, counter,self._bounds))
+            self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob,args=(self.model_minimizer, use_UL, counter,self._bounds, self.par_array))
             self.sampler.run_mcmc(pos, steps, progress=True)
 
 
@@ -102,7 +121,7 @@ class McmcSampler(object):
         self._reset_to_best_fit()
 
     def _reset_to_best_fit(self):
-        for par in self.model_minimizer.fit_par_free:
+        for par in self.par_array:
             self.model_minimizer.fit_Model.set(par_name=par.name, val=par.best_fit_val)
 
     def _build_bounds(self, bound=0.2,bound_rel=True):
@@ -119,8 +138,9 @@ class McmcSampler(object):
 
 
 
-        for par in self.model_minimizer.fit_par_free:
-            if  bound_rel is False:
+        for par in self.par_array:
+            if  bound_rel is False and par.best_fit_err is not None:
+
                 _min =  par.best_fit_val - par.best_fit_err * bound[0]
                 _max =  par.best_fit_val + par.best_fit_err * bound[1]
             else:
@@ -270,10 +290,10 @@ class McmcSampler(object):
 
 
 
-def emcee_log_like(theta,model_minimizer,counter,use_UL):
+def emcee_log_like(theta,model_minimizer,counter,use_UL,par_array):
     _warn = False
     for pi in range(len(theta)):
-        model_minimizer.fit_par_free[pi].set(val=theta[pi])
+        par_array[pi].set(val=theta[pi])
         if np.isnan(theta[pi]):
             _warn=True
 
@@ -300,13 +320,13 @@ def _progess_bar(counter):
 
 
 
-def log_prob(theta,model_minimizer,use_UL,counter,bounds):
+def log_prob(theta,model_minimizer,use_UL,counter,bounds,par_array):
     lp = log_prior(theta,bounds)
     counter.count += 1
     if not np.isfinite(lp):
         pass
     else:
-        lp += emcee_log_like(theta,model_minimizer,counter,use_UL)
+        lp += emcee_log_like(theta,model_minimizer,counter,use_UL,par_array)
     counter.count_OK += 1
     return lp
 
