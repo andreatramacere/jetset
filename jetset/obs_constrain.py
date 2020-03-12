@@ -432,11 +432,11 @@ class ObsConstrain(object):
        
        
         #N
-        N_par=jet_model.get_par_by_type('electron_density')
+        N_par=jet_model.get_par_by_type('emitters_density')
         if N_par is not None:
             N,ratio=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.rest_frame)
             if silent is False:
-                print ("---> setting par type electron_density, corresponding to par %s"%(N_par.name))
+                print ("---> setting par type emitters_density, corresponding to par %s"%(N_par.name))
             N_par.set(val=N)
             if silent is False:
                print('--->',N_par.get_description())
@@ -514,7 +514,7 @@ class ObsConstrain(object):
             if N_par is not None:
                 N,ratio=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.rest_frame)
                 if silent is False:
-                    print ("---> setting par type electron_density, corresponding to par %s"%(N_par.name))
+                    print ("---> setting par type emitters_density, corresponding to par %s"%(N_par.name))
 
                 N_par.set(val=N)
                 
@@ -549,7 +549,7 @@ class ObsConstrain(object):
                     N,ratio=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.rest_frame)
 
                     if silent is False:
-                        print ("---> setting par type electron_density, corresponding to par %s"%(N_par.name))
+                        print ("---> setting par type emitters_density, corresponding to par %s"%(N_par.name))
                     N_par.set(val=N)
         else:
             R_par.set(val=set_lin_log_val(R_par,R_start))

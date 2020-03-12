@@ -32,41 +32,29 @@ class PolyParameter(ModelParameter):
         
         self.polymodel=polymodel
 
-        self.par_type_list=['curvature','peak freq','peak flux','third-degree','spectral-slope','flux-const','turn-over freq']
+        self.allowed_par_types=['curvature','peak freq','peak flux','third-degree','spectral-slope','flux-const','turn-over freq']
         
-        if 'par_type' in keywords.keys() and keywords['par_type'] not in self.par_type_list:
-            print ("blob_parameter type %s not allowed"%self.par_type)
-            print ("please choose among ",self.par_type_list)
-            return
-
-
 
         super(PolyParameter,self).__init__(  **keywords)
 
-        #print('set logp in  init',self.name, keywords)
         if 'val' in keywords.keys():
             val=keywords['val']
             self.assign_val(self.name,val)
             
         
         
-    #OVERRIDES Base Method
     def set(self,**keywords):
         super(PolyParameter,self).set(**keywords )
         
         """
         sets a parameter value checking for physical boundaries 
         """
-        #print('set logp in  set',self.name, keywords)
-        if 'val' in keywords.keys():    
+        if 'val' in keywords.keys():
             self.assign_val(self.name,keywords['val']) 
         
     
     def assign_val(self,name,val):
-        """
-        assigns the parameter value to the :class:`Template` object
-        """
-        #print('set logp in assign_val',name,val)
+
         setattr(self.polymodel,name,val)
 
 
@@ -75,7 +63,7 @@ class LogLogModel(Model):
     
     def __init__(self,nu_size=100, **keywords):
        
-        super(LogLogModel,self).__init__(  **keywords)
+        super(LogLogModel,self).__init__(**keywords)
         self.model_type='LogLogModel'
     
     
@@ -114,11 +102,11 @@ class LogLinear(LogLogModel):
         
     def log_func(self,log_nu):
     
-            x_log=log_nu
+            #x_log=log_nu
             #print(x_log)
             #print self.Ep,self.Sp,self.b,self.c,x_log
             
-            return self.K + self.alpha*(x_log)
+            return self.K + self.alpha*(log_nu)
     
     
     
@@ -156,8 +144,7 @@ class LogParabolaEp(LogLogModel):
     def log_func(self,log_nu):
     
             x_log=log_nu-self.Ep
-            
-            #print self.Ep,self.Sp,self.b,self.c,x_log
+
             
             return self.Sp + self.b*(x_log*x_log)
     
@@ -186,7 +173,7 @@ class LogParabolaPL(LogLogModel):
       
         self.b=-1.0
         self.parameters.add_par(PolyParameter(self,name='b',par_type='curvature',val=-1.0,val_min=-10.,val_max=10.,units=''))
-        
+
         self.E0=14.0
         self.parameters.add_par(PolyParameter(self,name='E0',par_type='turn-over freq',val=14.0,val_min=0.,val_max=30.,units='Hz',log=True))
         
@@ -200,7 +187,7 @@ class LogParabolaPL(LogLogModel):
     def log_func(self,log_nu):
         
         
-        
+        #TODO fix this to numpy array function
         if shape(log_nu)==():
             return self.composite_func(log_nu)
 

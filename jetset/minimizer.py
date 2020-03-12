@@ -35,7 +35,7 @@ from scipy.optimize import least_squares,curve_fit
 from leastsqbound.leastsqbound import  leastsqbound
 
 from .output import section_separator,WorkPlace,makedir
-
+from .data_loader import ObsData
 import pickle
 
 
@@ -246,6 +246,7 @@ class ModelMinimizer(object):
 
     def _prepare_fit(self,fit_Model,sed_data,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,use_facke_err=False,use_UL=False):
         #print('--> DEBUG WorkPlace.flag',WorkPlace.flag,fit_workplace)
+
         if fitname is None:
             fitname = fit_Model.name
             #print('--> DEBUG ')
@@ -258,7 +259,7 @@ class ModelMinimizer(object):
 
         makedir(out_dir)
 
-        for model in fit_Model.components_list:
+        for model in fit_Model.components.components_list:
             if model.model_type == 'jet':
                 model.set_path(out_dir)
 
@@ -301,16 +302,17 @@ class ModelMinimizer(object):
             print("data length", nu_fit.size)
 
 
-        # print nu_fit,len(nu_fit)
 
-        # set starting value of parameters
         for par in fit_Model.parameters.par_array:
             if get_conf_int == True:
                 par.set_fit_initial_value(par.best_fit_val)
             else:
                 par.set_fit_initial_value(par.val)
 
-        fit_par_free = [par for par in fit_Model.parameters.par_array if par.frozen == False]
+        fit_par_free = [par for par in fit_Model.parameters.par_array if par.frozen is False and (par.linked is False or par.root is True)]
+
+        #remove duplicates and keeps the order
+        fit_par_free = sorted(set(fit_par_free), key=fit_par_free.index)
 
         pinit = [par.get_fit_initial_value() for par in fit_par_free]
 
@@ -325,25 +327,32 @@ class ModelMinimizer(object):
         if silent == False:
             print(section_separator)
             print("*** start fit process ***")
-            print("initial pars: ")
-
-            fit_Model.parameters.show_pars()
+            #print("initial pars: ")
+            #fit_Model.parameters.show_pars()
             print("----- ")
 
         self.out_dir=out_dir
         self.pinit=pinit
+        self.pout=None
         self.free_pars=free_pars
         self.fit_par_free=fit_par_free
-        self.nu_fit=nu_fit
-        self.nuFnu_fit=nuFnu_fit
-        self.err_nuFnu_fit=err_nuFnu_fit
+
         self.fit_Model=fit_Model
         self.loglog=loglog
-        self.UL=UL
+
         self.fit_Model.nu_min_fit = nu_fit_start
         self.fit_Model.nu_max_fit = nu_fit_stop
-        #print('-->nu_fit_start A %e' % nu_fit_start)
-        #print('-->nu_fit_start B %e' % self.fit_Model.nu_min_fit)
+
+        #self.nu_fit = nu_fit
+        #self.nuFnu_fit = nuFnu_fit
+        #self.err_nuFnu_fit = err_nuFnu_fit
+        #self.UL = UL
+        self.data  = np.zeros(nu_fit.size, dtype=[('x', nu_fit.dtype), ('y', nuFnu_fit.dtype),('dy', err_nuFnu_fit.dtype),('UL', UL.dtype)])
+        self.data['x'] = nu_fit
+        self.data['y'] = nuFnu_fit
+        self.data['dy'] = err_nuFnu_fit
+        self.data['UL'] = UL
+        self.sed_data=sed_data
 
     def fit(self,fit_Model,
             sed_data,
@@ -368,10 +377,15 @@ class ModelMinimizer(object):
 
         if skip_minimizer == False:
             self.minimizer.fit(self,max_ev=max_ev,silent=silent)
+
+            self.pout = self.minimizer.pout
+            self.errors = self.minimizer.errors
+            if  hasattr(self.minimizer,'asymm_errors'):
+                self.asymm_errors = self.minimizer.asymm_errors
         else:
             pass
 
-        #print('-->nu_fit_start', nu_fit_start)
+
 
         return self.get_fit_results(fit_Model,nu_fit_start,nu_fit_stop,fitname,loglog=loglog,silent=silent)
 
@@ -396,25 +410,21 @@ class ModelMinimizer(object):
         if silent == False:
             best_fit.show_report()
 
-
         fit_Model.set_nu_grid(nu_min=nu_fit_start, nu_max=nu_fit_stop)
         fit_Model.eval(fill_SED=True, loglog=loglog, phys_output=True)
 
         res_bestfit = self.minimizer.residuals_Fit(self.minimizer.pout,
                                                  self.fit_par_free,
-                                                 self.nu_fit,
-                                                 self.nuFnu_fit,
-                                                 self.err_nuFnu_fit,
+                                                 self.data,
                                                  self.fit_Model,
-                                                 self.loglog,
-                                                 self.UL)
+                                                 self.loglog)
 
 
 
         if loglog == True:
-            fit_Model.SED.fill(nu_residuals=np.power(10, self.nu_fit), residuals=res_bestfit)
+            fit_Model.SED.fill(nu_residuals=np.power(10, self.data['x']), residuals=res_bestfit)
         else:
-            fit_Model.SED.fill(nu_residuals=self.nu_fit, residuals=res_bestfit)
+            fit_Model.SED.fill(nu_residuals=self.data['x'], residuals=res_bestfit)
 
 
         if silent == False:
@@ -425,13 +435,14 @@ class ModelMinimizer(object):
         return best_fit
 
     def reset_to_best_fit(self):
+
         for pi in range(len(self.fit_par_free)):
-            self.fit_par_free[pi].set(val=self.minimizer.pout[pi])
-            self.fit_par_free[pi].best_fit_val = self.minimizer.pout[pi]
-            self.fit_par_free[pi].best_fit_err = self.minimizer.errors[pi]
-            if  hasattr(self.minimizer,'asymm_errors'):
-                self.fit_par_free[pi].err_p=self.minimizer.asymm_errors[pi][0]
-                self.fit_par_free[pi].err_m=self.minimizer.asymm_errors[pi][1]
+            self.fit_par_free[pi].set(val=self.pout[pi])
+            self.fit_par_free[pi].best_fit_val = self.pout[pi]
+            self.fit_par_free[pi].best_fit_err = self.errors[pi]
+            if  hasattr(self,'asymm_errors'):
+                self.fit_par_free[pi].err_p=self.asymm_errors[pi][0]
+                self.fit_par_free[pi].err_m=self.asymm_errors[pi][1]
 
         self.fit_Model.eval()
 
@@ -456,12 +467,12 @@ class Minimizer(object):
 
 
     def _fit_stats(self):
-        self.dof = len(self.model.nu_fit) - self.model.free_pars
+        self.dof = len(self.model.data['x']) - self.model.free_pars
         self.chisq = self.get_chisq()
         self.chisq_red = self.chisq / float(self.dof)
         self.null_hyp_sig = 1.0 - chi2.cdf(self.chisq, self.dof)
         if self.use_UL==True:
-            self.dof_no_UL = len(self.model.nu_fit) - self.model.free_pars - self.model.UL.sum()
+            self.dof_no_UL = len(self.model.data['x']) - self.model.free_pars - self.model.data['UL'].sum()
             self.use_UL=False
             self.chisq_no_UL = self.get_chisq()
             self.use_UL = True
@@ -491,14 +502,12 @@ class Minimizer(object):
             print("\r%s minim function calls=%d, chisq=%f UL part=%f" % (next(self._progress_iter),self.calls, _res_sum, -2.0*np.sum(res_UL)), end="")
 
 
-    def residuals_Fit(self,p,
+    def residuals_Fit(self,
+                      p,
                       fit_par,
-                      nu_data,
-                      nuFnu_data,
-                      err_nuFnu_data,
+                      data,
                       best_fit_SEDModel,
                       loglog,
-                      UL,
                       chisq=False,
                       use_UL=False,
                       silent=False):
@@ -517,10 +526,9 @@ class Minimizer(object):
             print('res_UL_chekc', self._res_UL_chekc)
 
 
-        model = best_fit_SEDModel.eval(nu=nu_data, fill_SED=False, get_model=True, loglog=loglog)
+        model = best_fit_SEDModel.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
 
-
-        _res_sum, _res, _res_UL=log_like(nuFnu_data,model,err_nuFnu_data,UL,use_UL=use_UL)
+        _res_sum, _res, _res_UL=_eval_res(data['y'], model, data['dy'], data['UL'], use_UL=use_UL)
 
         self._res_sum_chekc=_res_sum
         self._res_chekc = _res
@@ -542,17 +550,18 @@ class Minimizer(object):
         return res
 
 
-def log_like(data,model,data_error,UL,use_UL=False):
+def _eval_res(data, model, data_error, UL, use_UL=False):
+
     res_no_UL = (data[~UL] - model[~UL]) / (data_error[~UL])
     res = (data - model) / (data_error)
     res_UL = [0]
     if UL.sum() > 0 and use_UL == True:
-        res_UL = UL_log_like(data[UL], model[UL], data_error[UL])
+        res_UL = _eval_res_UL(data[UL], model[UL], data_error[UL])
 
     res_sum=np.sum(res_no_UL * res_no_UL) - 2.0*np.sum(res_UL)
     return res_sum,res,res_UL
 
-def UL_log_like(y_UL,y_model,y_err):
+def _eval_res_UL(y_UL,y_model,y_err):
     y = (y_UL - y_model) / (np.sqrt(2) *y_err)
     x=0.5*(1.0+sp.special.erf(y))
     x[x==0]=1E-200
@@ -571,12 +580,9 @@ class LSBMinimizer(Minimizer):
         pout, covar, info, mesg, success = leastsqbound(self.residuals_Fit,
                                                         self.model.pinit,
                                                         args=(self.model.fit_par_free,
-                                                              self.model.nu_fit,
-                                                              self.model.nuFnu_fit,
-                                                              self.model.err_nuFnu_fit,
+                                                              self.model.data,
                                                               self.model.fit_Model,
                                                               self.model.loglog,
-                                                              self.model.UL,
                                                               False,
                                                               False,
                                                               self.silent),
@@ -610,12 +616,9 @@ class LSMinimizer(Minimizer):
         fit = least_squares(self.residuals_Fit,
                             self.model.pinit,
                             args=(self.model.fit_par_free,
-                                  self.model.nu_fit,
-                                  self.model.nuFnu_fit,
-                                  self.model.err_nuFnu_fit,
+                                  self.model.data,
                                   self.model.fit_Model,
                                   self.model.loglog,
-                                  self.model.UL,
                                   False,
                                   False,
                                   self.silent),
@@ -661,6 +664,7 @@ class MinutiMinimizer(Minimizer):
 
         self.mesg=self.minuit_fun.migrad(ncall=max_ev)
         self.pout=[self.minuit_fun.values[k] for k in self.minuit_fun.values.keys()]
+        self.p=[self.minuit_fun.values[k] for k in self.minuit_fun.values.keys()]
 
     def _set_fit_errors(self):
         self.errors = [self.minuit_fun.errors[k] for k in self.minuit_fun.errors.keys()]
@@ -695,8 +699,7 @@ class MinutiMinimizer(Minimizer):
             self.minuit_bounds_dict[par.name]=bounds[ID]
             self.par_dict[par.name]=par
 
-        self.minuit_fun = iminuit.Minuit(
-            fcn=self.chisq_func,
+        self.minuit_fun = iminuit.Minuit(fcn=self.chisq_func,
             forced_parameters=p_names,
             pedantic=False,
             errordef=1,
@@ -706,12 +709,9 @@ class MinutiMinimizer(Minimizer):
         self.p = p
         return self.residuals_Fit(p,
                           self.model.fit_par_free,
-                          self.model.nu_fit,
-                          self.model.nuFnu_fit,
-                          self.model.err_nuFnu_fit,
+                          self.model.data,
                           self.model.fit_Model,
                           self.model.loglog,
-                          self.model.UL,
                           chisq=True,
                           use_UL=self.use_UL,
                           silent=self.silent)
@@ -888,7 +888,6 @@ class MinutiMinimizer(Minimizer):
         return bound
 
     def _check_bounds(self,par,bound):
-
         if  self.minuit_bounds_dict[par][0] is not None:
             if bound[0]<self.minuit_bounds_dict[par][0]:
                 bound[0]=self.minuit_bounds_dict[par][0]
@@ -901,8 +900,8 @@ class MinutiMinimizer(Minimizer):
 
 def fit_SED(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_workplace=None, loglog=False, silent=False,
             get_conf_int=False, max_ev=0, use_facke_err=False, minimizer='lsb', use_UL=False):
+
     mm = ModelMinimizer(minimizer)
-    #print('-->nu_fit_start',nu_fit_start)
     return mm,mm.fit(fit_Model,
                   sed_data,
                   nu_fit_start,
@@ -915,3 +914,5 @@ def fit_SED(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_wo
                   max_ev=max_ev,
                   use_facke_err=use_facke_err,
                   use_UL=use_UL)
+
+

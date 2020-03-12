@@ -10,9 +10,7 @@ import pickle
 import six
 
 import numpy as np
-from numpy import log10,array,zeros,power,shape
 
-from scipy.interpolate import interp1d
 
 import warnings
 
@@ -84,6 +82,7 @@ class JetBase(Model):
                  beaming_expr='delta',
                  jet_workplace=None,
                  verbose=None,
+                 nu_size=200,
                  clean_work_dir=True,
                  **keywords):
 
@@ -118,7 +117,7 @@ class JetBase(Model):
         self._scale='lin-lin'
         self._nu_static_size=1000
         self._blob = self.build_blob(verbose=verbose)
-
+        self.nu_size = nu_size
         if jet_workplace is None:
             jet_workplace=WorkPlace()
             out_dir= jet_workplace.out_dir + '/' + self.name + '_jet_prod/'
@@ -181,7 +180,6 @@ class JetBase(Model):
         self.set_emitters_distribution(emitters_distribution, emitters_distribution_log_values, emitters_type)
 
 
-
         self._blob.adaptive_e_binning = 0
 
         self.set_emitting_region(beaming_expr)
@@ -191,7 +189,7 @@ class JetBase(Model):
         self.set_emitting_region(beaming_expr)
 
 
-        self.flux_plot_lim=1E-30
+        self.flux_plot_lim=1E-120
         self.set_emiss_lim(1E-120)
 
         self._IC_states = {}
@@ -386,6 +384,8 @@ class JetBase(Model):
         blob.nu_IC_size = 50
         blob.nu_seed_size = 100
 
+        blob.nu_grid_size=500
+
         blob.do_Sync = 2
 
         blob.do_SSC = 1
@@ -439,42 +439,55 @@ class JetBase(Model):
 
     @staticmethod
     def available_emitters_distributions():
-        EmittersDistribution.available_distributions()
+        JetkernelEmittersDistribution.available_distributions()
 
     def set_emitters_distribution(self, name=None, log_values=False, emitters_type='electrons'):
 
+
         self._emitters_distribution_log_values = log_values
-        #print('==>,set_emitters_distribution 1')
+
         if self._emitters_distribution_dic is not None:
             self.del_par_from_dic(self._emitters_distribution_dic)
-        #print('==>,set_emitters_distribution 2')
+
         if isinstance(name, ArrayDistribution):
             self._emitters_distribution_name = 'from_array'
-            # print('ciccio')
-            self.emitters_distribution = EmittersDistribution.from_array(self, name, emitters_type=emitters_type)
+            self.emitters_distribution = JetkernelEmittersDistribution.from_array(self, name, emitters_type=emitters_type)
 
-        elif isinstance(name, EmittersDistribution):
+        elif isinstance(name, JetkernelEmittersDistribution):
+            #print('--> JetkernelEmittersDistribution')
             self.emitters_distribution = name
 
-        else:
-
-            self.emitters_distribution = EmittersDistribution(name, self, log_values=log_values,
-                                                              emitters_type=emitters_type)
-        #print('==>,set_emitters_distribution 3')
-        if self.emitters_distribution is not None:
-            self._emitters_distribution_name = name
-            self._emitters_distribution_dic = self.emitters_distribution._build_emitters_distribution_dic(
-                self._emitters_distribution_name, emitters_type=emitters_type)
+            self._emitters_distribution_name = self.emitters_distribution.name
+            self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
 
             self.add_par_from_dic(self._emitters_distribution_dic)
 
-        else:
-            raise RuntimeError('name for electron distribution was not valid')
 
-        #print('==>,set_emitters_distribution 4')
+        elif isinstance(name, EmittersDistribution):
+            #print('--> EmittersDistribution')
+            self.emitters_distribution = name
+            self.emitters_distribution.set_jet(self)
+            self.emitters_distribution._update_parameters_dict()
+
+            self._emitters_distribution_name = self.emitters_distribution.name
+            self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
+
+            for par in self.emitters_distribution.parameters.par_array:
+                self.parameters.add_par(par)
+
+        else:
+            self.emitters_distribution = JetkernelEmittersDistribution(name, self, log_values=log_values,
+                                                                       emitters_type=emitters_type)
+
+            self._emitters_distribution_name = self.emitters_distribution.name
+            self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
+
+            self.add_par_from_dic(self._emitters_distribution_dic)
+
+
 
     def get_emitters_distribution_name(self):
-        return self.emitters_distribution._name
+        return self.emitters_distribution.name
 
 
     def show_spectral_components(self):
@@ -734,7 +747,7 @@ class JetBase(Model):
 
 
 
-    def add_par_from_dic(self,model_dic):
+    def add_par_from_dic(self,model_dic,):
         """
         add the :class:`.JetParameter` object to the :class:`.ModelParameterArray`
         usign the dictionaries built by the :func:`build_emitting_region_dic`
@@ -743,43 +756,43 @@ class JetBase(Model):
         for key in model_dic.keys():
 
             pname=key
-            #log=False
-            #allowed_values=None
+
             p_test=self.parameters.get_par_by_name(pname)
 
-            #TODO add keys to dict and remove length checking
 
-            #print('-> add_par_from_dic', key)
+
             if p_test is None:
 
-                #print('-> par name', pname, 'log',model_dic[key].log)
-                pval=getattr(self._blob,pname)
+                if hasattr(self._blob,pname) and model_dic[key].is_in_blob is True :
+                    pval=getattr(self._blob,pname)
+                else:
+                    if model_dic[key].val is not None:
+                        pval=model_dic[key].val
 
-                #if len(model_dic[key])>5:
+
                 log=model_dic[key].log
 
-                #if len(model_dic[key])>6:
+
                 allowed_values=model_dic[key].allowed_values
 
                 #IMPORTANT
                 #This has to stay here, because the parameter, even if log, is stored as linear
                 if log is True:
-                    #print('-> is log',log)
+
                     pval = np.log10(pval)
-                    #print('-> log_pval', pval)
+
 
                 ptype=model_dic[key].ptype
                 vmin=model_dic[key].vmin
                 vmax=model_dic[key].vmax
                 punit=model_dic[key].punit
 
-                #froz=False
 
-                #if len(model_dic[key])>4:
                 froz=model_dic[key].froz
+                is_in_blob=model_dic[key].is_in_blob
 
-
-                self.parameters.add_par(JetParameter(self, name=pname,
+                self.parameters.add_par(JetParameter(self,
+                                                     name=pname,
                                                      par_type=ptype,
                                                      val=pval,
                                                      val_min=vmin,
@@ -787,6 +800,7 @@ class JetBase(Model):
                                                      units=punit,
                                                      frozen=froz,
                                                      log=log,
+                                                     is_in_blob=is_in_blob,
                                                      allowed_values=allowed_values))
 
 
@@ -917,24 +931,36 @@ class JetBase(Model):
 
     def _set_nu_min_grid(self, val):
         self._blob.nu_start_grid=val
+
     @property
     def Norm_distr(self):
-        return self._blob.Norm_distr
+        if hasattr(self,'emitters_distribution'):
+            if self.emitters_distribution._user_defined is False:
+                return self._blob.Norm_distr
+            else:
+                return self.emitters_distribution.normalize
+        else:
+            return None
+
 
     @Norm_distr.setter
     def Norm_distr(self, val):
-        if val == 1:
-            self._blob.Norm_distr = val
-        elif val == 0:
-            self._blob.Norm_distr = val
-        else:
-            raise RuntimeError('value', val, 'not allowed, allowed 0 or 1')
+        if hasattr(self, 'emitters_distribution'):
+            if self.emitters_distribution._user_defined is False:
+                if val == 1 or val is True:
+                    self._blob.Norm_distr = 1
+                elif val == 0 or val is False:
+                    self._blob.Norm_distr = 0
+                else:
+                    raise RuntimeError('value', val, 'not allowed, allowed 0/1 or False/True')
+            else:
+                self.emitters_distribution.normalize = val
 
     def switch_Norm_distr_ON(self):
-        self._blob.Norm_distr=1
+        self.Norm_distr=True
 
     def switch_Norm_distr_OFF(self):
-        self._blob.Norm_distr=0
+        self.Norm_distr = False
 
     @property
     def nu_max(self):
@@ -956,18 +982,22 @@ class JetBase(Model):
 
     @property
     def nu_size(self):
-        return self._get_nu_grid_size()
+        return self._nu_size
+        #return self._get_nu_grid_size()
 
     @nu_size.setter
     def nu_size(self, val):
+        self._nu_size=val
+        #self.nu_size=val
         if hasattr(self, '_blob'):
-            self._set_nu_grid_size(val)
+            self._set_nu_grid_size_blob(val)
 
-    def _set_nu_grid_size(self, val):
+    def _set_nu_grid_size_blob(self, val):
+        if val < 100:
+            val = 100
         self._blob.nu_grid_size=val
-        #BlazarSED.build_photons(self._blob)
 
-    def _get_nu_grid_size(self):
+    def _get_nu_grid_size_blob(self):
         return  self._blob.nu_grid_size
 
 
@@ -987,49 +1017,6 @@ class JetBase(Model):
         print ("nu start SSC", self._blob.nu_start_SSC)
         print ("nu stop SSC", self._blob.nu_stop_SSC)
         print ("ID MAX SSC", self._blob.NU_INT_STOP_COMPTON_SSC)
-
-    def set_par(self,par_name,val):
-        """
-        shortcut to :class:`ModelParametersArray.set` method
-        set a parameter value
-
-        :param par_name: (srt), name of the parameter
-        :param val: parameter value
-
-        """
-
-        self.parameters.set(par_name, val=val)
-
-
-
-    def get_par_by_type(self,par_type):
-        """
-
-        get parameter by type
-
-        """
-        for param in self.parameters.par_array:
-            if param.par_type==par_type:
-                return param
-
-        return None
-
-    def get_par_by_name(self,par_name):
-        """
-
-        get parameter by type
-
-        """
-        for param in self.parameters.par_array:
-            if param.name==par_name:
-                return param
-
-        return None
-
-
-    def show_pars(self,sort_key='par type'):
-        #self.parameters.par_array.sort(key=lambda x: x.name, reverse=False)
-        self.parameters.show_pars(sort_key=sort_key)
 
 
     def show_emitters_distribution(self):
@@ -1079,7 +1066,7 @@ class JetBase(Model):
         print('external fields transformation method:', self.get_external_field_transf())
         print ('')
         print ('SED info:')
-        print (' nu grid size :%d' % self._get_nu_grid_size())
+        print (' nu grid size :%d' % self.nu_size)
         print (' nu mix (Hz): %e' % self._get_nu_min_grid())
         print (' nu max (Hz): %e' % self._get_nu_max_grid())
         print('')
@@ -1094,11 +1081,12 @@ class JetBase(Model):
         if plot_obj is None:
             plot_obj=PlotSED(sed_data=sed_data, frame= frame)
 
+        if frame == 'src' and sed_data is not None:
+            z_sed_data = sed_data.z
+            sed_data.z = self.get_par_by_type('redshift').val
 
         if clean==True:
             plot_obj.clean_model_lines()
-
-
 
         if comp is not None:
             c = self.get_spectral_component_by_name(comp)
@@ -1121,7 +1109,6 @@ class JetBase(Model):
                 if c.state != 'off' and c.name!='Sum':
                     plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color)
 
-
             c=self.get_spectral_component_by_name('Sum')
             if label is not None:
                 comp_label = label
@@ -1129,6 +1116,9 @@ class JetBase(Model):
                 comp_label='Sum'
 
             plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color)
+
+        if frame == 'src' and sed_data is not None:
+            sed_data.z = z_sed_data
 
         return plot_obj
 
@@ -1141,160 +1131,127 @@ class JetBase(Model):
         BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.parameters.z_cosm.val))
         BlazarSED.spectra_External_Fields(1,self._blob)
 
-    @safe_run
-    def eval(self,init=True,fill_SED=True,nu=None,get_model=False,loglog=False,plot=None,label=None,phys_output=False,update_emitters=True):
-        """
-        Runs the BlazarSED  code for the current `JetModel` instance.
-
-        :param init: (boolean), "defualt=True" initializes the BlazarSED code
-            for the current `Jet` instance parameters values.
-
-        """
+    def lin_func(self, lin_nu, init, phys_output=False, update_emitters=True):
 
         if self.emitters_distribution is None:
             raise RuntimeError('emitters distribution not defined')
 
-
-        if init==True:
-
+        if init is True:
+            if self.emitters_distribution._user_defined is True:
+                self.emitters_distribution.update()
             BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.parameters.z_cosm.val) )
-            #self.set_electron_distribution()
-
-            #TODO investigate if this is necessary!!!
             self._update_spectral_components()
 
         BlazarSED.Run_SED(self._blob)
 
-
         if phys_output==True:
-            BlazarSED.EnergeticOutput(self._blob)
+            BlazarSED.EnergeticOutput(self._blob,0)
 
-        nu_sed_sum,nuFnu_sed_sum= self.spectral_components.Sum.get_SED_points()
-        #self.get_SED_points()
-        #print('nu_sed_sum,nuFnu_sed_sum',nu_sed_sum,nuFnu_sed_sum)
+        if self.emitters_distribution._user_defined is False:
+            if update_emitters is True:
+                self.emitters_distribution.update()
+
+        nu_sed_sum, nuFnu_sed_sum = self.spectral_components.Sum.get_SED_points(lin_nu=lin_nu,log_log=False)
+        return nu_sed_sum, nuFnu_sed_sum
+
+    def _eval_model(self, lin_nu, log_nu, init, loglog, phys_output=False, update_emitters=True):
+        log_model = None
+        lin_nu, lin_model = self.lin_func(lin_nu, init, phys_output, update_emitters)
+        if loglog is True:
+            log_model = np.log10(lin_model)
+
+        return lin_model, log_model
 
 
-        if fill_SED==True:
-            #TODO check if this is not usefule!!!
-            self.SED.fill(nu=nu_sed_sum,nuFnu=nuFnu_sed_sum)
-
-            for i in range(len(self.spectral_components_list)):
-
-                #print ('fill name',self.spectral_components_list[i].name)
-                #nu_sed,nuFnu_sed= self.get_SED_points(name=self.spectral_components_list[i].name)
-                #self.spectral_components_list[i].SED.fill(nu=nu_sed, nuFnu=nuFnu_sed)
-
-                self.spectral_components_list[i].fill_SED()
-
+    def _prepare_nu_model(self, nu, loglog):
         if nu is None:
-
-
-
-            if loglog==True:
-
-                model=log10(nuFnu_sed_sum)
-            else:
-                model=nuFnu_sed_sum
-
-        else :
-
-            if shape(nu)==():
-
-                nu=array([nu])
-
-            if loglog==False:
-                nu_log=log10(nu)
-            else:
-                nu_log=nu
-
-
-            nu_sed_log=np.log10(nu_sed_sum)
-            nuFnu_sed_log=np.log10(nuFnu_sed_sum)
-
-            msk= nu_log > nu_sed_log.min()
-
-
-            msk*=  nu_log < nu_sed_log.max()
-
-
-
-            if loglog==False:
-                model=zeros(nu_log.size)
-
-                nuFnu_log=np.log10(nuFnu_sed_sum)
-
-                f_interp =interp1d(nu_sed_log,nuFnu_sed_log,bounds_error=True)
-
-
-                model[msk] = power(10.0,f_interp(nu_log[msk]))
-
-            else:
-                model=zeros(nu_log.size) + np.log10(self.flux_plot_lim)
-
-                f_interp =interp1d(nu_sed_log,nuFnu_sed_log,bounds_error=True)
-
-                model[msk] = f_interp(nu_log[msk])
-
-        if update_emitters is True:
-            self.emitters_distribution.update()
-
-        if plot is not None:
-            if label is None:
-                label= self.name
-
-            self.plot_model(plot, clean=True, label=label)
-
-
-        if get_model==True:
-            return model
+            lin_nu = np.logspace(np.log10(self.nu_min), np.log10(self.nu_max), self.nu_size)
+            log_nu = np.log10(lin_nu)
         else:
-            return None
+            if np.shape(nu) == ():
+                nu = np.array([nu])
+
+            if loglog is True:
+                lin_nu = np.power(10., nu)
+                log_nu = nu
+            else:
+                log_nu = np.log10(nu)
+                lin_nu = nu
+
+        return lin_nu, log_nu
 
     @safe_run
-    def get_SED_points(self,log_log=False,name='Sum'):
+    def eval(self,
+             init=True,
+             fill_SED=True,
+             nu=None,
+             get_model=False,
+             loglog=False,
+             plot=None,
+             label=None,
+             phys_output=False,
+             update_emitters=True):
 
-        try:
-            spec_comp=self.get_spectral_component_by_name(name)
+        out_model = None
+        lin_nu, log_nu = self._prepare_nu_model(nu, loglog)
+        lin_model, log_model= self._eval_model( lin_nu, log_nu ,init, loglog, phys_output=phys_output)
+        #print('-->',lin_nu.min(),lin_nu.max())
+        if fill_SED is True:
+            self._fill(lin_nu,lin_model)
 
-            nuFnu_ptr=spec_comp.nuFnu_ptr
-            nu_ptr=spec_comp.nu_ptr
+        if get_model is True:
 
-            size=self._blob.nu_grid_size
-            x=zeros(size)
-            y=zeros(size)
+            if loglog is True:
+                out_model = log_model
+            else:
+                out_model = lin_model
 
-            for i in range(size):
-                x[i]=BlazarSED.get_spectral_array(nu_ptr,self._blob,i)
-                y[i]=BlazarSED.get_spectral_array(nuFnu_ptr,self._blob,i)
+        return out_model
 
-
-            msk_nan=np.isnan(x)
-            msk_nan+=np.isnan(y)
-
-            x[msk_nan]=0.
-            y[msk_nan]=self.get_emiss_lim()
-
-            msk=y<self.get_emiss_lim()
-
-
-            y[msk]=self.get_emiss_lim()
-
-
-
-            if log_log==True:
-                msk = y <= 0.
-                y[msk] = self.get_emiss_lim()
-
-
-                x=log10(x)
-                y=log10(y)
-
-
-
-            return x,y
-
-        except:
-            raise RuntimeError ('model evaluation failed in get_SED_points')
+    # @safe_run
+    # def get_SED_points(self,log_log=False,name='Sum'):
+    #     try:
+    #         spec_comp=self.get_spectral_component_by_name(name)
+    #
+    #         nuFnu_ptr=spec_comp.nuFnu_ptr
+    #         nu_ptr=spec_comp.nu_ptr
+    #
+    #         size=self._blob.nu_grid_size
+    #         x=np.zeros(size)
+    #         y=np.zeros(size)
+    #
+    #         for i in range(size):
+    #             x[i]=BlazarSED.get_spectral_array(nu_ptr,self._blob,i)
+    #             y[i]=BlazarSED.get_spectral_array(nuFnu_ptr,self._blob,i)
+    #
+    #
+    #         msk_nan=np.isnan(x)
+    #         msk_nan+=np.isnan(y)
+    #
+    #         x[msk_nan]=0.
+    #         y[msk_nan]=self.get_emiss_lim()
+    #
+    #         msk=y<self.get_emiss_lim()
+    #
+    #
+    #         y[msk]=self.get_emiss_lim()
+    #
+    #
+    #
+    #         if log_log==True:
+    #             msk = y <= 0.
+    #             y[msk] = self.get_emiss_lim()
+    #
+    #
+    #             x=np.log10(x)
+    #             y=np.log10(y)
+    #
+    #
+    #
+    #         return x,y
+    #
+    #     except:
+    #         raise RuntimeError ('model evaluation failed in get_SED_points')
 
     #@safe_run
     def energetic_report(self,write_file=False,getstring=True,wd=None,name=None,verbose=True):
@@ -1405,10 +1362,6 @@ class JetBase(Model):
 
 
 
-
-
-
-
 class Jetpp(JetBase):
     """
     Hadroinc  Jet pp process
@@ -1440,7 +1393,7 @@ class Jetpp(JetBase):
 
     @staticmethod
     def available_proton_distributions():
-        EmittersDistribution.available_distributions()
+        JetkernelEmittersDistribution.available_distributions()
 
     def get_proton_distribution_name(self):
         return self.get_emitters_distribution_name()
@@ -1458,7 +1411,7 @@ class Jet(JetBase):
 
     def __init__(self,
                  cosmo=None,
-                 name='tests',
+                 name='jet_leptonic',
                  electron_distribution='pl',
                  electron_distribution_log_values=False,
                  beaming_expr='delta',
@@ -1480,7 +1433,7 @@ class Jet(JetBase):
 
     @staticmethod
     def available_electron_distributions():
-        EmittersDistribution.available_distributions()
+        JetkernelEmittersDistribution.available_distributions()
 
     def get_electron_distribution_name(self):
         return self.get_emitters_distribution_name()

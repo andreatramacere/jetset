@@ -1,9 +1,39 @@
-import sys
+import pytest
+
+@pytest.fixture
+def plot():
+   input = False
+   return input
+
+def custom_emitters(plot=True):
+    from jetset.jet_model import Jet
 
 
+    from jetset.jet_emitters import EmittersDistribution
+    import numpy as np
+    def distr_func_bkn(gamma_break, gamma, s1, s2):
+        return np.power(gamma, -s1) * (1. + (gamma / gamma_break)) ** (-(s2 - s1))
 
+    n_e = EmittersDistribution('bkn')
+    n_e.add_par('gamma_break', par_type='turn-over-energy', val=1E3, vmin=1., vmax=None, unit='lorentz-factor')
+    n_e.add_par('s1', par_type='LE_spectral_slope', val=2.5, vmin=-10., vmax=10, unit='')
+    n_e.add_par('s2', par_type='LE_spectral_slope', val=3.2, vmin=-10., vmax=10, unit='')
+    n_e.set_distr_func(distr_func_bkn)
+    n_e.parameters.show_pars()
+    n_e.parameters.s1.val = 2.0
+    n_e.parameters.s2.val = 3.5
+    if plot is True:
+        n_e.plot()
 
-def data():
+    my_jet= Jet(electron_distribution=n_e)
+    my_jet.Norm_distr = True
+    my_jet.parameters.N.val = 5E4
+    my_jet.eval()
+    diff= np.fabs(np.trapz(n_e.n_gamma_e, n_e.gamma_e )- my_jet.parameters.N.val)
+    print('diff',diff)
+    assert ( diff<1E-3)
+
+def data(plot=True):
     from jetset.data_loader import ObsData, Data
     from jetset.test_data_helper import test_SEDs
 
@@ -23,11 +53,12 @@ def data():
     sed_data.group_data(bin_width=0.2)
 
     sed_data.add_systematics(0.1,[10.**6,10.**29])
-    p=sed_data.plot_sed()
+    if plot is True:
+        p=sed_data.plot_sed()
 
     return sed_data
 
-def spectral_indices(sed_data):
+def spectral_indices(sed_data,plot=True):
     from jetset.sed_shaper import SEDShape
 
 
@@ -36,12 +67,13 @@ def spectral_indices(sed_data):
 
     my_shape = SEDShape(sed_data)
     my_shape.eval_indices(silent=True)
-    p = my_shape.plot_indices()
-    p.rescale(y_min=-15, y_max=-6)
+    if plot is True:
+        p = my_shape.plot_indices()
+        p.rescale(y_min=-15, y_max=-6)
 
     return my_shape
 
-def sed_shaper(my_shape):
+def sed_shaper(my_shape, plot=True):
 
     mm, best_fit = my_shape.sync_fit(check_host_gal_template=True,
                                      Ep_start=None,
@@ -53,14 +85,17 @@ def sed_shaper(my_shape):
     best_fit.save_report('synch_shape_fit_rep.txt')
 
     mm, best_fit= my_shape.IC_fit(fit_range=[23, 29], minimizer='minuit')
-    p = my_shape.plot_shape_fit()
-    p.rescale(y_min=-15)
+
+    if plot is True:
+        p = my_shape.plot_shape_fit()
+        p.rescale(y_min=-15)
+
     best_fit.show_report()
     best_fit.save_report('IC_shape_fit_rep.txt')
     my_shape.save_values('sed_shape_values.ecsv')
     return my_shape
 
-def model_constr(my_shape):
+def model_constr(my_shape, plot=True):
     from jetset.obs_constrain import ObsConstrain
 
     sed_obspar = ObsConstrain(beaming=25,
@@ -75,7 +110,7 @@ def model_constr(my_shape):
 
     return prefit_jet
 
-def model_fit_lsb(sed_data,my_shape):
+def model_fit_lsb(sed_data,my_shape, plot=True):
     from jetset.minimizer import fit_SED,ModelMinimizer
     from jetset.model_manager import FitModel
     from jetset.jet_model import Jet
@@ -106,7 +141,7 @@ def model_fit_lsb(sed_data,my_shape):
     return jet_lsb, model_minimizer_lsb_new, fit_model_lsb_new
 
 
-def model_fit_minuit(sed_data,my_shape):
+def model_fit_minuit(sed_data,my_shape, plot=True):
     from jetset.minimizer import fit_SED
     from jetset.model_manager import FitModel
     from jetset.jet_model import Jet
@@ -143,17 +178,19 @@ def test_build_bessel():
     Jet().eval()
 
 
-def test_jet():
+def test_jet(plot=True):
     from jetset.jet_model import Jet
     j=Jet()
     j.eval()
     j.energetic_report()
-    j.plot_model()
-    j.emitters_distribution.plot()
-    j.emitters_distribution.plot2p()
-    j.emitters_distribution.plot3p()
-    j.emitters_distribution.plot3p(energy_unit='eV')
-    j.emitters_distribution.plot3p(energy_unit='erg')
+
+    if plot is True:
+        j.plot_model()
+        j.emitters_distribution.plot()
+        j.emitters_distribution.plot2p()
+        j.emitters_distribution.plot3p()
+        j.emitters_distribution.plot3p(energy_unit='eV')
+        j.emitters_distribution.plot3p(energy_unit='erg')
     j.save_model('test_jet.dat')
     j_new=Jet.load_model('test_jet.dat')
 

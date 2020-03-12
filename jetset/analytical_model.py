@@ -7,10 +7,10 @@ from builtins import (bytes, str, open, super, range,
 from .model_parameters import ModelParameterArray, ModelParameter
 
 import numpy as np
+from astropy import constants as const
 from .spectral_shapes import SED
 from .base_model import  Model
 
-#from .cosmo_tools import Cosmo_facotry
 
 __all__=['AnalyticalParameter','Disk']
 
@@ -23,25 +23,16 @@ class AnalyticalParameter(ModelParameter):
         
         self.polymodel=polymodel
 
-        self.par_type_list=['Temperature','peak freq','peak flux']
-        
-        if 'par_type' in keywords.keys() and keywords['par_type'] not in self.par_type_list:
-            print ("blob_parameter type %s not allowed"%self.par_type)
-            print ("please choose among ",self.par_type_list)
-            return
-
-
+        self.allowed_par_types=['Temperature','peak freq','peak flux']
 
         super(AnalyticalParameter,self).__init__(  **keywords)
-        
-       
+
         if 'val' in keywords.keys():
             val=keywords['val']
             self.assign_val(self.name,val)
             
         
         
-    #OVERRIDES Base Method
     def set(self,**keywords):
         super(AnalyticalParameter,self).set(**keywords )
         
@@ -88,10 +79,10 @@ class Disk(Model):
         self.nuFnu_p_D=1E-10
         self.parameters.add_par(AnalyticalParameter(self,name='nuFnu_p',par_type='peak flux',val=1E-10,val_min=0.,val_max=1E-3,units='erg cm^-2 s^-1',log=True))
         
-        self.HPLANCK=6.626075540e-27
-        self.SIGSB=5.670400e-5
-        self.vluce_cm=2.99792458e+10
-        self.K_boltz=1.3806503e-16
+        self.HPLANCK=const.h.cgs.value
+        self.SIGSB=const.sigma_sb.cgs.value
+        self.vluce_cm=const.c.cgs.value
+        self.K_boltz=const.k_B.cgs.value
 
 
         self.cosmo=cosmo
@@ -103,16 +94,16 @@ class Disk(Model):
         
         
 
-    def set_disk_pars(self,fit_model):
+    def set_disk_pars(self,fit_model,model_name):
         
         self.L_Disk=self.get_L_D()
           
-        self.L_Disk_err=self.L_Disk*(fit_model.get('nuFnu_p','best_fit_err')/
-                                     fit_model.get('nuFnu_p','best_fit_val'))
+        self.L_Disk_err=self.L_Disk*(fit_model.get(model_name,'nuFnu_p','best_fit_err')/
+                                     fit_model.get(model_name,'nuFnu_p','best_fit_val'))
 
                         
-        self.T_Disk=fit_model.get('T_Disk','best_fit_val')
-        self.T_Disk_err=fit_model.get('T_Disk','best_fit_err')
+        self.T_Disk=fit_model.get(model_name,'T_Disk','best_fit_val')
+        self.T_Disk_err=fit_model.get(model_name,'T_Disk','best_fit_err')
 
         self.nu_p_Disk=self.get_nu_p()
         self.nu_p_Disk_err=self.nu_p_Disk*(self.T_Disk_err/self.T_Disk)

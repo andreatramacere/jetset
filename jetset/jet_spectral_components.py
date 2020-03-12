@@ -12,11 +12,12 @@ __author__ = "Andrea Tramacere"
 import numpy as np
 from astropy.table import Table
 from numpy.core._multiarray_umath import zeros, log10
+from scipy import interpolate
 
 from jetkernel import jetkernel as BlazarSED
 from . import spectral_shapes
 from .jetkernel_models_dic import nuFnu_obs_dic, n_seed_dic
-from .plot_sedfit import PlotSpecComp
+from .plot_sedfit import PlotSpecComp,PlotSeedPhotons
 from .utils import check_frame, unexpetced_behaviour
 
 __all__=['JetSeedPhotons','JetSpecComponent','SpecCompList']
@@ -122,7 +123,7 @@ class JetSpecComponent(object):
 
         self.SED=spectral_shapes.SED(name=self.name)
         self.seed_field=None
-        #print('->',name,n_seed_dic.keys())
+
         if name in n_seed_dic.keys():
             self.seed_field=JetSeedPhotons(name,blob_object)
 
@@ -149,9 +150,9 @@ class JetSpecComponent(object):
         return self._blob_object.emiss_lim
 
 
-    def fill_SED(self,log_log=False):
+    def fill_SED(self,log_log=False,lin_nu=None):
 
-        x,y=self.get_SED_points( log_log=log_log)
+        x,y=self.get_SED_points( log_log=log_log,lin_nu=lin_nu)
 
         self.SED.fill(nu=x,nuFnu=y,log_log=log_log)
         self.SED.fill_nuLnu(z=self.jet_obj.get_par_by_type('redshift').val,dl=self.jet_obj.get_DL_cm())
@@ -161,7 +162,7 @@ class JetSpecComponent(object):
 
 
 
-    def get_SED_points(self, log_log=False):
+    def get_SED_points(self, log_log=False, lin_nu=None):
 
         size = self._blob_object.nu_grid_size
         x = zeros(size)
@@ -179,16 +180,21 @@ class JetSpecComponent(object):
         y[msk_nan] = self.get_emiss_lim()
 
         msk = y < self.get_emiss_lim()
-
         y[msk] = self.get_emiss_lim()
+
+        if lin_nu is not None:
+            #f_interp=interpolate.Akima1DInterpolator(log10(x), log10(y))
+            f_interp = interpolate.interp1d(log10(x), log10(y), bounds_error=False, kind='linear')
+            y = np.power(10., f_interp(log10(lin_nu)))
+            x=lin_nu
+            msk_nan = np.isnan(y)
+            y[msk_nan] = self.get_emiss_lim()
 
         if log_log == True:
             msk = y <= 0.
             y[msk] = self.get_emiss_lim()
-
             x = log10(x)
             y = log10(y)
-
         return x, y
 
 
