@@ -2,4 +2,4 @@ doc/* linguist-documentation=true
 notebooks/* linguist-documentation=true
 doc/* linguist-vendored=true
 notebooks/* linguist-vendored=true
-*.ipynb linguist-vendored
+*.ipynb linguist-vendored=true
