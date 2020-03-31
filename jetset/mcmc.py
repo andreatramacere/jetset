@@ -46,7 +46,7 @@ class McmcSampler(object):
 
 
 
-    def run_sampler(self,nwalkers=500,steps=100,pos=None,burnin=50,use_UL=False,bound=0.2,bound_rel=False,threads=None,walker_start_bound=0.002,labels=None, loglog = False):
+    def run_sampler(self,nwalkers=500,steps=100,pos=None,burnin=50,use_UL=False,bound=0.2,bound_rel=False,threads=None,walker_start_bound=0.002,use_labels_dict=None,loglog = False):
         counter=Counter(nwalkers*steps)
         self.calls = 0
         self.calls_OK = 0
@@ -57,7 +57,7 @@ class McmcSampler(object):
         self.steps = steps
         self.calls_tot = nwalkers * steps
 
-        if labels is None:
+        if use_labels_dict is None:
             self.par_array =  self.fit_par_free
 
             self.labels = [par.name for par in self.par_array]
@@ -69,12 +69,13 @@ class McmcSampler(object):
             self.labels_units=[]
             self.labels_start_val=[]
             #TODO update for new model manager
-            for l in labels:
-                p= self.model.parameters.get_par_by_name(l)
-                self.par_array.append(p)
-                self.labels.append( p.name)
-                self.labels_units.append(p.units)
-                self.labels_start_val.append(p.best_fit_val)
+            for model_name in use_labels_dict.keys():
+                for par_name in use_labels_dict[model_name]:
+                    p= self.model.parameters.get_par_by_name(model_name,par_name)
+                    self.par_array.append(p)
+                    self.labels.append( p.name)
+                    self.labels_units.append(p.units)
+                    self.labels_start_val.append(p.best_fit_val)
 
         self.par_array_best_fit=copy.deepcopy(self.par_array)
         self.ndim = len(self.labels)
@@ -210,14 +211,19 @@ class McmcSampler(object):
 
         return self.samples[:, p].flatten(), p
 
+
     def plot_chain(self, p, log_plot=False):
         _d, idx = self.get_par(p)
 
         n = self.labels[idx]
 
+        traces=self.sampler.chain[:, :, idx]
+
         if self.labels_units is not None:
             if self.labels_units[idx] is not None:
                 n += ' (%s)' % self.labels_units[idx]
+
+        alpha_true = np.median(_d)
 
         f = plt.figure()
         ax = f.add_subplot(111)
@@ -227,14 +233,17 @@ class McmcSampler(object):
             if np.any(_d <= 0):
                 raise RuntimeWarning('negative values in p')
             else:
-                _d = np.log10(_d)
+                traces = np.log10(traces)
+                alpha_true = np.log10(alpha_true)
+        for t in traces:
+            ax.plot(t, '-', color='k', alpha=0.5)
 
-        ax.plot(_d, '-', color='k', alpha=0.3)
-        alpha_true = np.median(_d)
+
+
         ax.axhline(alpha_true, color='blue')
 
         ax.set_ylabel(n)
-
+        ax.set_xlabel('steps')
         return f
 
     def plot_par(self, p, nbins=20, log_plot=False,quantiles=(0.16,0.5,0.84),figsize=None):
@@ -267,7 +276,7 @@ class McmcSampler(object):
                 bins=nbins,
                 density=True,
                 alpha=0.5,
-                label=r'$\mathrm{%s} = %.3f^{+%.3f}_{-%.3f} $'%(par_name,q_vals[0],q_diff[1],q_diff[0]))
+                label=r'%s = $%.3e^{+%.3e}_{-%.3e} $'%(par_name,q_vals[0],q_diff[1],q_diff[0]))
 
         for q in q_vals:
             if log_plot is True:
