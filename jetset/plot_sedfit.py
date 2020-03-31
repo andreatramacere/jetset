@@ -272,7 +272,6 @@ class  PlotSED (object):
             _handles.extend(self.lines_model_list)
 
         for h in _handles[:]:
-            #print('_label',h._label)
             if h._label is  None:
                 _handles.remove(h)
             elif h._label.startswith('_line'):
@@ -487,6 +486,8 @@ class  PlotPdistr (BasePlot):
     def __init__(self,):
         super(PlotPdistr, self).__init__()
 
+
+
     def _set_variable(self,gamma,n_gamma,particle,energy_unit):
 
         energy_plot=False
@@ -515,7 +516,9 @@ class  PlotPdistr (BasePlot):
 
         m = y > 0
 
+
         return x[m], y[m], energy_name,energy_units
+
 
     def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma'):
 

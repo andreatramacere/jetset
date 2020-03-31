@@ -260,7 +260,7 @@ void interpola_somma(struct spettro *pt_j, double nu_obs, unsigned int i)
 	}
 
 	//Star
-	if (pt_j->do_EC_Star==1) {
+	if (pt_j->do_Star==1) {
 		interp_flux=log_lin_interp( nu_obs,  pt_j->nu_Star_obs,  pt_j->nu_start_Star_obs,pt_j->nu_stop_Star_obs, pt_j->nuF_nu_Star_obs , pt_j->nu_seed_size, pt_j->emiss_lim);
 
 		if (interp_flux > pt_j->emiss_lim) {
@@ -270,6 +270,7 @@ void interpola_somma(struct spettro *pt_j, double nu_obs, unsigned int i)
 			pt_j->nuFnu_Star_grid[i] = 0;
 		}
 		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_Star_grid[i];
+		printf("=> pt->nuFnu_Star_grid %e\n", pt_j->nuFnu_Star_grid[i]);
 	}
 
 	return;

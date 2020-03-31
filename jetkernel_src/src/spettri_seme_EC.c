@@ -41,7 +41,7 @@ void spectra_External_Fields(int Num_file, struct spettro *pt) {
 
 	//printf("=> Ciccio %d %d %d %d %d\n", pt->do_EC_Disk, pt->do_EC_BLR, pt->do_Disk, pt->do_EC_DT, pt->do_DT);
 
-	if (pt->do_EC_Star==1){
+	if (pt->do_EC_Star==1 || pt->do_Star==1){
     	Build_I_nu_Star(pt);
     }
 	if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 1 || pt->do_Disk == 1 || pt->do_EC_DT == 1 || pt->do_DT ==1)
@@ -93,8 +93,12 @@ void Build_I_nu_Star(struct spettro *pt){
 	}
 	*/
 
-	set_Star_geometry(pt);
+	//set_Star_geometry(pt);
 
+	pt->Star_mu_1=0;
+	pt->Star_mu_2=1;
+	pt->Star_surface = 4 * pi * pt->R_Star * pt->R_Star;
+   
 	nu_peak_BB=eval_nu_peak_Disk(pt->T_Star_max);
 
 	nu_start_disk_RF = nu_peak_BB*pt->nu_planck_min_factor;
@@ -106,30 +110,35 @@ void Build_I_nu_Star(struct spettro *pt){
 	pt->nu_start_Star_DRF = nu_start_disk_RF;
 	pt->nu_stop_Star_DRF = nu_stop_disk_RF;
 
-	if (pt->verbose){
-		printf("-----------  Building I_nu Star     ----------- \n");
-
-		printf("nu_start_Star=%e  nu_stop_Star=%e \n",
-			pt->nu_start_Star,
-			pt->nu_stop_Star);
-
-		printf("nu_start_Star_disk_RF=%e  nu_stop_Star_disk_RF=%e \n",
-			nu_start_disk_RF,
-			nu_stop_disk_RF);
-	}
-
 
 	NU_INT_MAX=pt->nu_seed_size-1;
 	pt->NU_INT_MAX_Star = NU_INT_MAX;
 
 
 	pt->nu_start_Star_obs=nu_disk_to_nu_obs_disk(nu_start_disk_RF , pt->z_cosm);
-	pt->nu_stop_Star_obs=nu_disk_to_nu_obs_disk(nu_start_disk_RF, pt->z_cosm);
+	pt->nu_stop_Star_obs=nu_disk_to_nu_obs_disk(nu_stop_disk_RF, pt->z_cosm);
+
+	if (pt->verbose)
+	{
+		printf("-----------  Building I_nu Star     ----------- \n");
+
+		printf("nu_start_Star=%e  nu_stop_Star=%e \n",
+			   pt->nu_start_Star,
+			   pt->nu_stop_Star);
+
+		printf("nu_start_Star_disk_RF=%e  nu_stop_Star_disk_RF=%e \n",
+			   nu_start_disk_RF,
+			   nu_stop_disk_RF);
+
+		printf("nu_start_Star_obs=%e  nu_stop_Star_obs=%e \n",
+			   pt->nu_start_Star_obs,
+			   pt->nu_stop_Star_obs);
+	}
 
 	build_log_grid( nu_start_disk_RF,  nu_stop_disk_RF, pt->nu_seed_size, pt->nu_Star_disk_RF);
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->I_nu_Star_disk_RF[NU_INT]=eval_I_nu_Star_disk_RF(pt, pt->nu_Star_disk_RF[NU_INT]);
-		pt->J_nu_Star_disk_RF[NU_INT]=eval_J_nu_Star_disk_RF(pt, pt->I_nu_Star_disk_RF[NU_INT]);
+		//pt->J_nu_Star_disk_RF[NU_INT]=eval_J_nu_Star_disk_RF(pt, pt->I_nu_Star_disk_RF[NU_INT]);
 
 	}
 
@@ -144,13 +153,7 @@ void Build_I_nu_Star(struct spettro *pt){
 		pt->n_Star[NU_INT] =I_nu_to_n(pt->I_nu_Star[NU_INT], pt->nu_Star[NU_INT]);
 		//EC with n(gamma) transf
 		pt->n_Star_DRF[NU_INT] = I_nu_to_n(pt->J_nu_Star_disk_RF[NU_INT], pt->nu_Star_disk_RF[NU_INT]);
-		if (pt->verbose>1){
-			printf(" nu_Star_disk_RF=%e, I_nu_Star_disk_RF=%e, nu_Star=%e, , I_nu_Star=%e\n",
-					pt->nu_Star_disk_RF[NU_INT],
-					pt->J_nu_Star_disk_RF[NU_INT],
-					pt->nu_Star[NU_INT],
-					pt->I_nu_Star[NU_INT]);
-		}
+		
 
 		if (pt->I_nu_Star[NU_INT]>pt->emiss_lim){
 			pt->nu_stop_Star = pt->nu_Star[NU_INT];
@@ -165,6 +168,17 @@ void Build_I_nu_Star(struct spettro *pt){
 		nuL_nu_disk = eval_Star_L_nu(pt,pt->nu_Star_disk_RF[NU_INT]) * pt->nu_Star_disk_RF[NU_INT];
 		F_nu_disk_obs= L_nu_Disk_to_F_nu(nuL_nu_disk / pt->nu_Star_disk_RF[NU_INT], pt-> z_cosm, pt-> dist);
 		pt->nuF_nu_Star_obs[NU_INT] = F_nu_disk_obs*nu_obs;
+		if (pt->verbose > 1)
+		{
+			printf(" nu_Star_disk_RF=%e, nuF_nu_Star_obs=%e, nu_Star=%e, , I_nu_Star=%e,  nuL_nu_disk=%e, Star surface=%e nu_Star_obs=%e\n",
+				   pt->nu_Star_disk_RF[NU_INT],
+				   pt->nuF_nu_Star_obs[NU_INT],
+				   pt->nu_Star[NU_INT],
+				   pt->I_nu_Star_disk_RF[NU_INT],
+				   nuL_nu_disk,
+				   pt->Star_surface,
+				   pt->nu_Star_obs[NU_INT]);
+		}
 
 		/*
 		if (pt->WRITE_TO_FILE==1){
@@ -193,13 +207,14 @@ void Build_I_nu_Star(struct spettro *pt){
 //========================
 
 double eval_I_nu_Star_disk_RF(struct spettro *pt,double nu_Star_disk_RF){
-	return f_planck(pt->T_Star_max, nu_Star_disk_RF);;
+	return f_planck(pt->T_Star_max, nu_Star_disk_RF);
+	
 }
 
 //TODO!! THIS MUST BE IMPROVED FOR PROPER ANGULAR INTEGRATION
-double eval_J_nu_Star_disk_RF(struct spettro *pt, double I_nu_Star_disk_RF){
-	return I_nu_Star_disk_RF*(2.0*pi/(4*pi))*(pt->Star_mu_2- pt->Star_mu_1);
-}
+//double eval_J_nu_Star_disk_RF(struct spettro *pt, double I_nu_Star_disk_RF){
+//	return I_nu_Star_disk_RF*(2.0*pi/(4*pi))*(pt->Star_mu_2- pt->Star_mu_1);
+//}
 
 
 double integrand_I_nu_Star_blob_RF(struct spettro *pt, double mu){

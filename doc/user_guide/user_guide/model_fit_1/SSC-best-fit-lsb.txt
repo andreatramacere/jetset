@@ -1,0 +1,41 @@
+
+**************************************************************************************************
+Fit report
+
+Model: SSC-best-fit-lsb
+      name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+               N    electron_density         1 / cm3 2.659764e+00     0.000000e+00               -- False  False
+            gmin  low-energy-cut-off lorentz-factor* 3.340621e+02     1.000000e+00     1.000000e+09 False  False
+            gmax high-energy-cut-off lorentz-factor* 8.827031e+05     1.000000e+00     1.000000e+15 False  False
+               s   LE_spectral_slope                 2.135826e+00    -1.000000e+01     1.000000e+01 False  False
+               r  spectral_curvature                 7.599517e-01    -1.500000e+01     1.500000e+01 False  False
+gamma0_log_parab    turn-over-energy lorentz-factor* 3.051003e+04     1.000000e+00     1.000000e+09 False  False
+               R         region_size              cm 1.649188e+16     1.000000e+03     1.000000e+30 False   True
+             R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+               B      magnetic_field               G 7.457967e-02     0.000000e+00               -- False  False
+        beam_obj             beaming Lorentz-factor* 2.641744e+01     1.000000e-04               -- False  False
+          z_cosm            redshift                 3.080000e-02     0.000000e+00               -- False   True
+
+converged=True
+calls=42
+The relative error between two consecutive iterates is at most 0.000000
+dof=27
+chisq=62.131572, chisq/red=2.301169 null hypothesis sig=0.000138
+
+best fit pars
+      name       bestfit val     err +     err -  start val   fit range min fit range max frozen
+---------------- ------------ ------------ ----- ------------ ------------- ------------- ------
+               N 2.659764e+00 4.926714e-01    -- 3.072164e+00  0.000000e+00            --  False
+            gmin 3.340621e+02 6.114562e-01    -- 3.338231e+02  1.000000e+00  1.000000e+09  False
+            gmax 8.827031e+05 4.259265e+05    -- 9.758134e+05  1.000000e+00  1.000000e+15  False
+               s 2.135826e+00 9.549258e-02    -- 2.181578e+00 -1.000000e+01  1.000000e+01  False
+               r 7.599517e-01 1.626997e-01    -- 7.726503e-01 -1.500000e+01  1.500000e+01  False
+gamma0_log_parab 3.051003e+04 1.015594e+04    -- 2.265855e+04  1.000000e+00  1.000000e+09  False
+               R           --           --    -- 1.649188e+16  3.162278e+15  3.162278e+17   True
+             R_H           --           --    -- 1.000000e+17  0.000000e+00            --   True
+               B 7.457967e-02 1.943815e-02    -- 1.000000e-01  0.000000e+00            --  False
+        beam_obj 2.641744e+01 4.012268e+00    -- 2.500000e+01  5.000000e+00  5.000000e+01  False
+          z_cosm           --           --    -- 3.080000e-02  0.000000e+00            --   True
+**************************************************************************************************
+

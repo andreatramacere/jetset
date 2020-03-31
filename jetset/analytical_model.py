@@ -56,7 +56,7 @@ class AnalyticalParameter(ModelParameter):
 
 
 class Disk(Model):
-    def __init__(self,cosmo,z,nu_size=100,**keywords):
+    def __init__(self,cosmo,z,nu_size=100,name='disk',**keywords):
         """
         """
         
@@ -64,7 +64,7 @@ class Disk(Model):
         
         self.z=z
 
-        self.name='disk'
+        self.name=name
 
         self.model_type='analytical'
             

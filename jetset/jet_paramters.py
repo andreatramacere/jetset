@@ -56,6 +56,7 @@ class JetParameter(ModelParameter):
                                   'Disk',
                                   'BLR',
                                   'DT',
+                                  'Star',
                                   'region_size',
                                   'region_position',
                                   'electron_energy',

@@ -108,6 +108,9 @@ class CompositeModelContainer(object):
             print()
 
 
+
+
+
 class FitModel(Model):
     """
     """
@@ -167,7 +170,7 @@ class FitModel(Model):
         if analytical is not None:
             self.add_component(analytical)
 
-    def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs'):
+    def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None):
         if plot_obj is None:
             plot_obj=PlotSED(sed_data = sed_data, frame = frame)
 
@@ -178,25 +181,28 @@ class FitModel(Model):
         if clean is True:
             plot_obj.clean_model_lines()
 
-        line_style = '--'
+        if skip_components is False:
+            line_style = '--'
 
-        for mc in self.components._components_list:
-            comp_label = mc.name
-            if hasattr(mc,'SED'):
-                #print('--> m name',mc.name)
-                plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim)
+            for mc in self.components._components_list:
+                comp_label = mc.name
+                if hasattr(mc,'SED'):
+                    #print('--> m name',mc.name)
+                    plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim)
 
-            if hasattr(mc,'spectral_components_list'):
-                for c in mc.spectral_components_list:
-                    #print('--> c name', c.name)
-                    comp_label = c.name
-                    if comp_label!='Sum':
-                        if hasattr(c, 'SED'):
-                            plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label, flim=self.flux_plot_lim)
+                if hasattr(mc,'spectral_components_list'):
+                    for c in mc.spectral_components_list:
+                        #print('--> c name', c.name)
+                        comp_label = c.name
+                        if comp_label!='Sum':
+                            if hasattr(c, 'SED'):
+                                plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim)
 
         line_style = '-'
-        #print('--> OK')
-        plot_obj.add_model_plot(self.SED, line_style=line_style, label=self.name, flim=self.flux_plot_lim,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]) )
+        if label is None:
+            label=self.name
+
+        plot_obj.add_model_plot(self.SED, line_style=line_style, label=label, flim=self.flux_plot_lim,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit])  )
         plot_obj.add_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]) )
 
         if frame == 'src' and sed_data is not None:
@@ -227,40 +233,32 @@ class FitModel(Model):
             if nu_max is not None:
                 model_comp.nu_max=nu_max
 
-    def set(self,model_name,par_name, *args, **kw):
-        self.parameters.set(model_name, par_name, *args, **kw)
+    def set(self,model,par_name, *args, **kw):
+        self.parameters.set(model, par_name, *args, **kw)
 
-    def set_par(self,model_name,par_name,val):
-        """
-        shortcut to :class:`ModelParametersArray.set` method
-        set a parameter value
+    def set_par(self,model,par_name,val):
+        self.parameters.set(model, par_name, val=val)
 
-        :param par_name: (srt), name of the parameter
-        :param val: parameter value
+    def get(self,model,par_name,*args):
+        self.parameters.get(model,par_name,*args)
 
-        """
-        self.parameters.set(model_name, par_name, val=val)
+    def freeze(self,model,par_name):
+        self.parameters.freeze(model,par_name)
 
-    def get(self,model_name,par_name,*args):
-        self.parameters.get(model_name,par_name,*args)
-
-    def add_component(self,m):
-        self.components.add_component(m,self)
-
-    def del_component(self,m):
-        self.components.del_component(m,self)
-
-    def freeze(self,model_name,par_name):
-        self.parameters.freeze(model_name,par_name)
-
-    def free(self,model_name,par_name):
-        self.parameters.free(model_name,par_name)
+    def free(self,model,par_name):
+        self.parameters.free(model,par_name)
 
     def free_all(self,):
         self.parameters.free_all()
 
     def freeze_all(self,):
         self.parameters.freeze_all()
+
+    def add_component(self,m):
+        self.components.add_component(m,self)
+
+    def del_component(self,m):
+        self.components.del_component(m,self)
 
     @property
     def composite_expr(self):
@@ -338,7 +336,7 @@ class FitModel(Model):
 
         return out_model
 
-    def show_components(self):
+    def show_model_components(self):
         print("")
         print(
             "-------------------------------------------------------------------------------------------------------------------")

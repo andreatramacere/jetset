@@ -77,7 +77,7 @@ extensions = [
     'sphinx.ext.mathjax',
 ]
 
-exclude_patterns = ['_build', '**.ipynb_checkpoints','../jetkernel']
+exclude_patterns = ['_build', '**.ipynb_checkpoints','../jetkernel/*']
 
 #autosummary_generate = True
 

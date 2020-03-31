@@ -17,9 +17,15 @@ Tutorial
 
    jet model physical setup  (basic features and SSC) <jet_model_phys_SSC/Jet_example_phys_SSC.rst>
 
+   jet model custom  emitters distributions   <custom_emitters_distr/custom_emitters.rst>
+
    jet model physical setup 2 (EC and Equipartition) <jet_model_phys_EC/Jet_example_phys_EC.rst>
 
    jet model numerical setup   <jet_model_num/Jet_example_num.rst>
+
+   composite models <composite_model/Composite_model.rst>
+
+   EBL models <EBL/EBL.rst>
 
    data format   <load_data/Jet_example_load_data.rst>
 

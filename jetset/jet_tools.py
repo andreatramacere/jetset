@@ -94,7 +94,7 @@ def DT_constraints(L_Disk):
     return 1E18 * (L_Disk / 1E45) ** 0.5
 
 
-def build_ExtFields_dic(EC_model_list, allowed_EC_components_list, ):
+def build_ExtFields_dic(EC_model_list,disk_type ):
     """
 
         """
@@ -106,23 +106,24 @@ def build_ExtFields_dic(EC_model_list, allowed_EC_components_list, ):
         # print('EC_model',EC_model)
         # if EC_model not in allowed_EC_components_list:
         #   raise RuntimeError("EC model %s not allowed"%EC_model,"please choose among ", allowed_EC_components_list)
-
+        #print('----->',EC_model_list)
         if 'Disk' in EC_model:
-            model_dic['L_Disk'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='erg/s')
-            # ['Disk',0,None,'erg/s']
-            model_dic['R_inner_Sw'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='Sw. radii')
-            # ['Disk',0,None,'Sw. radii']
-            model_dic['R_ext_Sw'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='Sw. radii')
-            # ['Disk',0,None,'Sw. radii']
-            model_dic['T_Disk'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='K')
-            # ['Disk',0,None,'K']
-            model_dic['accr_eff'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='')
-            # ['Disk',0,None,'']
             model_dic['disk_type'] = JetModelDictionaryPar(ptype='Disk', vmin=None, vmax=None, punit='', froz=True,
                                                            allowed_values=allowed_disk_type)
-            # ['Disk',None,None,'',True,False,allowed_disk_type]
-            model_dic['M_BH'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='M_sun')
-            # ['Disk', 0, None, 'M_sun']
+
+            model_dic['L_Disk'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='erg/s')
+            if disk_type == 'BB' or disk_type == 'Mono':
+
+                model_dic['T_Disk'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='K')
+
+            if disk_type == 'MultiBB':
+                model_dic['R_inner_Sw'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='Sw. radii')
+
+                model_dic['R_ext_Sw'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='Sw. radii')
+
+                model_dic['accr_eff'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='')
+
+                model_dic['M_BH'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='M_sun')
 
         if 'BLR' in EC_model:
             # r1_BLR_min, r2_BLR_min, r2_BLR_max = BLR_constraints(L_Disk)
@@ -141,5 +142,13 @@ def build_ExtFields_dic(EC_model_list, allowed_EC_components_list, ):
             model_dic['tau_DT'] = JetModelDictionaryPar(ptype='DT', vmin=0, vmax=1.0, punit='')
             # ['DT',0.0,1.0,'']
 
+        if 'Star' in EC_model:
+            model_dic['R_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='cm')
+            # ['DT',0.0,None,'K']
+            model_dic['T_Star_max'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='K')
+            # ['DT',0,None,'cm',True]
+            #model_dic['tau_DT'] = JetModelDictionaryPar(ptype='DT', vmin=0, vmax=1.0, punit='')
+            ## ['DT',0.0,1.0,'']
+    #print('----->', model_dic)
     return model_dic
 

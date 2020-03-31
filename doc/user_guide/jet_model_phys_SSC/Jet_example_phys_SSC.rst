@@ -1,13 +1,13 @@
 .. _jet_physical_guide:
 
+dsad
 
-
-physical setup
+Physical setup
 ==============
 
-In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the :class:`.Jet` class from the :mod:`.jet_model` module. to This class through a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compton fdsfsd processes.  
+In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the :class:`.Jet` class from the :mod:`.jet_model` module. to This class through a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compton processes.  
 
-basic setup
+Basic setup
 -----------
 
 A jet instance can be built using the  the :class:`.Jet` class, istanciating the object in the following way:
@@ -45,6 +45,8 @@ For a list of possible distribution you can run the command
 
 to view all the paramters:
 
+custom electron distributions can be created by the user as described in this section of the tutorial :ref:`custom_emitters_guide` 
+
 .. code:: ipython3
 
     my_jet.show_pars()
@@ -54,9 +56,9 @@ to view all the paramters:
 
           name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                   N    electron_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
                 gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
                 gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
@@ -78,13 +80,13 @@ Each parameter has default values. All the parameters listed are handled by :cla
 
 .. raw:: html
 
-    <i>Table masked=True length=11</i>
-    <table id="table47702569616" class="table-striped table-bordered table-condensed">
+    <i>Table length=11</i>
+    <table id="table4790717328" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <thead><tr><th>str16</th><th>str19</th><th>object</th><th>float64</th><th>float64</th><th>object</th><th>bool</th><th>bool</th></tr></thead>
-    <tr><td>N</td><td>electron_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <thead><tr><th>str16</th><th>str19</th><th>object</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bool</th></tr></thead>
     <tr><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
@@ -140,13 +142,13 @@ To get a full description of the model you can use the instruction
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-30
+    flux plot lower bound   :  1.000000e-120
     
           name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                   N    electron_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
                 gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
                 gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
@@ -158,17 +160,17 @@ To get a full description of the model you can use the instruction
     -------------------------------------------------------------------------------------------------------------------
 
 
-as you can notice, you can now access further information regarding the model, such as numerical configuration of the grida. These parameters will be discussed 
+as you can notice, you can now access further information regarding the model, such as numerical configuration of the grid. These parameters will be discussed 
 in the :ref:`jet_numerical_guide' section
 
-If you want to use a comoslogy model different from the dafault one please read the :ref:`cosmology` section.
+If you want to use a cosmology model different from the default one please read the :ref:`cosmology` section.
 
 .. warning::
     Starting from version 1.1.0, the `R` parameter as default is linear and not logarithmic, please update your old scripts
     setting `R` with linear values.   
    
 
-setting the parameters
+Setting the parameters
 ----------------------
 
 assume you want to change some of the parameters in your model, you can use two methods: 
@@ -191,8 +193,10 @@ assume you want to change some of the parameters in your model, you can use two 
     my_jet.parameters.B.val=0.2
     my_jet.parameters.r.val=0.4
 
-investigating the electron distribution
+Investigating the electron distribution
 ---------------------------------------
+
+for setting custom electron distributions can be created by the user as described in this section of the tutorial :ref:`custom_emitters_guide` 
 
 .. code:: ipython3
 
@@ -213,7 +217,7 @@ investigating the electron distribution
           name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
                    B      magnetic_field               G 2.000000e-01     0.000000e+00               -- False  False
-                   N    electron_density         1 / cm3 1.000000e+03     0.000000e+00               -- False  False
+                   N    emitters_density         1 / cm3 1.000000e+03     0.000000e+00               -- False  False
                    R         region_size              cm 1.000000e+15     1.000000e+03     1.000000e+30 False  False
                  R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
             beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
@@ -231,7 +235,34 @@ investigating the electron distribution
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_25_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_28_0.png
+
+
+.. code:: ipython3
+
+    p=my_jet.electron_distribution.plot3p(energy_unit='eV')
+
+
+
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_29_0.png
+
+
+.. code:: ipython3
+
+    p=my_jet.electron_distribution.plot2p(energy_unit='erg')
+
+
+
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_30_0.png
+
+
+.. code:: ipython3
+
+    p=my_jet.electron_distribution.plot(energy_unit='erg')
+
+
+
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_31_0.png
 
 
 .. code:: ipython3
@@ -247,10 +278,11 @@ investigating the electron distribution
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_26_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_32_0.png
 
 
-using log values for electron distribution parameters
+
+Using log values for electron distribution parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: ipython3
@@ -290,13 +322,13 @@ using log values for electron distribution parameters
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-30
+    flux plot lower bound   :  1.000000e-120
     
           name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                   N    electron_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
                 gmin  low-energy-cut-off lorentz-factor* 3.010300e-01     0.000000e+00     9.000000e+00  True  False
                 gmax high-energy-cut-off lorentz-factor* 6.000000e+00     0.000000e+00     1.500000e+01  True  False
+                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 4.000000e+00     0.000000e+00     9.000000e+00  True  False
@@ -308,7 +340,7 @@ using log values for electron distribution parameters
     -------------------------------------------------------------------------------------------------------------------
 
 
-evaluate and plot the model
+Evaluate and plot the model
 ---------------------------
 
 At this point we can evaluate the emission for this jet model using the
@@ -327,9 +359,9 @@ instruction
 
           name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                   N    electron_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
                 gmin  low-energy-cut-off lorentz-factor* 3.010300e-01     0.000000e+00     9.000000e+00  True  False
                 gmax high-energy-cut-off lorentz-factor* 6.000000e+00     0.000000e+00     1.500000e+01  True  False
+                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 4.000000e+00     0.000000e+00     9.000000e+00  True  False
@@ -351,7 +383,7 @@ and plot the corresponding SED:
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_34_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_41_0.png
 
 
 alternatively, you can call the ``plot_model`` method without passing a
@@ -364,10 +396,10 @@ alternatively, you can call the ``plot_model`` method without passing a
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_36_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_43_0.png
 
 
-If you want to have more points on the IC spectrum you can set the numerical  parameters for radiavite fields(see :ref:`jet_numerical_guide' section for more details):
+If you want to have more points on the IC spectrum you can set the numerical  parameters for radiative fields(see :ref:`jet_numerical_guide' section for more details):
 
 .. code:: ipython3
 
@@ -381,11 +413,11 @@ If you want to have more points on the IC spectrum you can set the numerical  pa
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_39_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_46_0.png
 
 
 you can access the same plot, but in the rest frame of the black hole,
-or accretion disk, hence plotting the istropic luminosity, by simply
+or accretion disk, hence plotting the isotropic luminosity, by simply
 passing the ``frame`` kw to ``src``
 
 .. code:: ipython3
@@ -395,7 +427,7 @@ passing the ``frame`` kw to ``src``
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_41_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_48_0.png
 
 
 the ``my_plot`` object returned will be built on the fly by the
@@ -423,7 +455,7 @@ if you wanto to have interacitve plot:
     from matplotlib import pylab as plt
     plt.ion()
 
-comparing models on the same plot
+Comparing models on the same plot
 ---------------------------------
 
 to compare the same model after changing a parameter
@@ -448,10 +480,10 @@ to compare the same model after changing a parameter
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_46_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_53_0.png
 
 
-saving a plot
+Saving a plot
 -------------
 
 to save the plot
@@ -460,30 +492,30 @@ to save the plot
 
     my_plot.save('jet1.png')
 
-saving and loading a model
+Saving and loading a model
 --------------------------
 
 .. warning::
-    starting from version 1.1.0 the saved model format has changed, if you have models saved vith version<1.1.0,  
-    plase update them the new models by loading the old models with the :meth:`.Jet.load_old_model`  
+    starting from version 1.1.0 the saved model format has changed, if you have models saved with version<1.1.0,  
+    please update them the new models by loading the old models with the :meth:`.Jet.load_old_model`  
     and then saving them again.
 
 .. code:: ipython3
 
-    my_jet.save_model('test_model.dat')
+    my_jet.save_model('test_model.pkl')
 
 .. code:: ipython3
 
-    my_jet_new=Jet.load_model('test_model.dat')
+    my_jet_new=Jet.load_model('test_model.pkl')
 
 
 .. parsed-literal::
 
           name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                   N    electron_density         1 / cm3 1.000000e+03     0.000000e+00               -- False  False
                 gmin  low-energy-cut-off lorentz-factor* 1.000000e+02     1.000000e+00     1.000000e+09 False  False
                 gmax high-energy-cut-off lorentz-factor* 1.000000e+08     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 1.000000e+03     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+05     1.000000e+00     1.000000e+09 False  False
@@ -494,7 +526,7 @@ saving and loading a model
               z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
 
 
-switching on/off the particle distribution normalization
+Switching on/off the particle distribution normalization
 --------------------------------------------------------
 
 As default the electron distributions are normalized, i.e. are multiplied by a constant ``N_0``, in such a way that :
@@ -541,7 +573,7 @@ OR
 
     my_jet.Norm_distr=1
 
-setting the particle density from observed Fluxes or Luminosities
+Setting the particle density from observed Fluxes or Luminosities
 -----------------------------------------------------------------
 
 It is possible to set the density of emitting particle starting from some observed luminosity or flux (see the method     :meth:`.Jet.set_N_from_nuFnu`, and  :meth:`.Jet.set_N_from_nuLnu`)
@@ -585,7 +617,7 @@ flux at the given frequency
 
 .. parsed-literal::
 
-    271.77338679726074
+    271.77338679726086
 
 
 
@@ -600,7 +632,7 @@ OR
 
 .. parsed-literal::
 
-    271.77338679726074
+    271.77338679726086
 
 
 
@@ -613,9 +645,9 @@ OR
 
           name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                   N    electron_density         1 / cm3 2.717734e+02     0.000000e+00               -- False  False
                 gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
                 gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 2.717734e+02     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
@@ -634,7 +666,7 @@ OR
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_77_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_84_0.png
 
 
 as you can see, the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1.
@@ -644,11 +676,11 @@ Alternatively, the value of N  can be obtained using the rest-frame luminosity a
 
     my_jet.set_N_from_nuLnu(nuLnu_src=1E43,nu_src=1E15)
 
-where ``L_0`` is the source rest-frame istropic luminosity in erg/s at the rest-frame frequency ``nu_0`` in Hz.
+where ``L_0`` is the source rest-frame isotropic luminosity in erg/s at the rest-frame frequency ``nu_0`` in Hz.
 
 
 
-setting the beaming factor and expression
+Setting the beaming factor and expression
 -----------------------------------------
 
 ## 
@@ -672,9 +704,9 @@ It is possible to set the beaming factor according to the relativistic BulkFacto
 
           name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                   N    electron_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
                 gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
                 gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
@@ -736,9 +768,9 @@ expression as in the default case
 
           name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                   N    electron_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
                 gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
                 gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
@@ -749,7 +781,7 @@ expression as in the default case
               z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
 
 
-accessing individual spectral components
+Accessing individual spectral components
 ----------------------------------------
 
 It is possible to access specific spectral components of our model
@@ -803,10 +835,10 @@ and from the ``SED`` object we can extract both the nu and nuFnu array
 
 .. parsed-literal::
 
-    [1.00000000e-120 1.00000000e-120 1.08448642e-022 1.71738565e-018
-     4.07807919e-016 1.63686337e-015 6.48484725e-015 2.46700674e-014
-     7.28812086e-014 1.24298363e-013 1.12162549e-013 1.42017250e-014
-     4.14261886e-028 1.00000000e-120 1.00000000e-120 1.00000000e-120
+    [1.00000000e-120 5.57619143e-116 1.19513550e-022 1.98653126e-018
+     4.19702144e-016 1.69462016e-015 6.75783575e-015 2.57876150e-014
+     7.52686486e-014 1.25457799e-013 1.08986752e-013 9.77921122e-015
+     6.56770273e-031 1.00000000e-120 1.00000000e-120 1.00000000e-120
      1.00000000e-120 1.00000000e-120 1.00000000e-120 1.00000000e-120] erg / (cm2 s)
 
 
@@ -824,10 +856,10 @@ or for the ``src`` rest frame (isotropic luminosity)
 
 .. parsed-literal::
 
-    [2.70118406e-65 2.70118406e-65 2.92939742e+33 4.63897473e+37
-     1.10156425e+40 4.42146923e+40 1.75167660e+41 6.66383927e+41
-     1.96865559e+42 3.35752756e+42 3.02971688e+42 3.83614730e+41
-     1.11899760e+28 2.70118406e-65 2.70118406e-65 2.70118406e-65
+    [2.70118406e-65 1.50623194e-60 3.22828095e+33 5.36598657e+37
+     1.13369274e+40 4.57748096e+40 1.82541582e+41 6.96570944e+41
+     2.03314474e+42 3.38884607e+42 2.94393276e+42 2.64154494e+41
+     1.77405739e+25 2.70118406e-65 2.70118406e-65 2.70118406e-65
      2.70118406e-65 2.70118406e-65 2.70118406e-65 2.70118406e-65] erg / s
 
 
@@ -848,30 +880,30 @@ Moreover, you can access the corresponding astropy table
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table103569354896" class="table-striped table-bordered table-condensed">
+    <table id="table4834491856" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
     <tr><td>1000000.0</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
-    <tr><td>15848931.924611142</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
-    <tr><td>251188643.1509582</td><td>1.0844864302391386e-22</td><td>1.0844864159585182e-22</td><td>1.4280620238888498e-30</td></tr>
-    <tr><td>3981071705.5349693</td><td>1.7173856696253947e-18</td><td>1.7173856494785146e-18</td><td>2.0146879965841637e-26</td></tr>
-    <tr><td>63095734448.019424</td><td>4.078079552134786e-16</td><td>4.0780791901432327e-16</td><td>3.6199155354751893e-23</td></tr>
-    <tr><td>1000000000000.0</td><td>1.6368645001464381e-15</td><td>1.6368633684904028e-15</td><td>1.1316560354507247e-21</td></tr>
-    <tr><td>15848931924611.11</td><td>6.484856227306914e-15</td><td>6.484847252386628e-15</td><td>8.974920286013819e-21</td></tr>
-    <tr><td>251188643150958.22</td><td>2.467012104235855e-14</td><td>2.4670067379508708e-14</td><td>5.366284984149398e-20</td></tr>
-    <tr><td>3981071705534969.5</td><td>7.288148974605722e-14</td><td>7.288120857008097e-14</td><td>2.8117597624218914e-19</td></tr>
-    <tr><td>6.309573444801943e+16</td><td>1.2429968684418058e-13</td><td>1.2429836269824645e-13</td><td>1.324145934137875e-18</td></tr>
-    <tr><td>1e+18</td><td>1.1216821849060403e-13</td><td>1.1216254873133542e-13</td><td>5.669759268605211e-18</td></tr>
-    <tr><td>1.5848931924611109e+19</td><td>1.422429794065211e-14</td><td>1.420172495040777e-14</td><td>2.2572990244339145e-17</td></tr>
-    <tr><td>2.5118864315095718e+20</td><td>8.198273815038918e-17</td><td>4.142618855201174e-28</td><td>8.198273814997492e-17</td></tr>
-    <tr><td>3.9810717055349854e+21</td><td>2.6806229698492253e-16</td><td>1e-120</td><td>2.6806229698492253e-16</td></tr>
-    <tr><td>6.309573444801943e+22</td><td>7.79329160185085e-16</td><td>1e-120</td><td>7.79329160185085e-16</td></tr>
-    <tr><td>1e+24</td><td>1.876892626829062e-15</td><td>1e-120</td><td>1.876892626829062e-15</td></tr>
-    <tr><td>1.584893192461111e+25</td><td>2.722149689253548e-15</td><td>1e-120</td><td>2.722149689253548e-15</td></tr>
-    <tr><td>2.511886431509572e+26</td><td>9.2717312629558e-16</td><td>1e-120</td><td>9.2717312629558e-16</td></tr>
-    <tr><td>3.9810717055349856e+27</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
-    <tr><td>6.309573444801943e+28</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
+    <tr><td>16070528.182616385</td><td>5.576191428817383e-116</td><td>5.576191428817383e-116</td><td>1e-120</td></tr>
+    <tr><td>258261876.06826746</td><td>1.195135512002044e-22</td><td>1.1951354961298763e-22</td><td>1.58672802592028e-30</td></tr>
+    <tr><td>4150404757.8504725</td><td>1.9865312839076317e-18</td><td>1.986531260738741e-18</td><td>2.3166636103266375e-26</td></tr>
+    <tr><td>66699196630.30115</td><td>4.1970218434442104e-16</td><td>4.19702144173068e-16</td><td>3.9801221901792325e-23</td></tr>
+    <tr><td>1071891319205.1265</td><td>1.6946213586281682e-15</td><td>1.6946201606592805e-15</td><td>1.1971272728883229e-21</td></tr>
+    <tr><td>17225859653987.84</td><td>6.757845256991403e-15</td><td>6.757835752672071e-15</td><td>9.5015570094613e-21</td></tr>
+    <tr><td>276828663039206.1</td><td>2.578767194222354e-14</td><td>2.578761495869709e-14</td><td>5.697083473691172e-20</td></tr>
+    <tr><td>4448782831127576.5</td><td>7.526894868696564e-14</td><td>7.526864861110227e-14</td><td>2.9984550627009144e-19</td></tr>
+    <tr><td>7.1494289865975624e+16</td><td>1.254592190978971e-13</td><td>1.2545779931301105e-13</td><td>1.4168474666127227e-18</td></tr>
+    <tr><td>1.1489510001873062e+18</td><td>1.0899286631883519e-13</td><td>1.0898675154805e-13</td><td>6.0849963181518424e-18</td></tr>
+    <tr><td>1.8464249428955386e+19</td><td>9.805471050781945e-15</td><td>9.77921122387461e-15</td><td>2.432147557861654e-17</td></tr>
+    <tr><td>2.96730240818886e+20</td><td>8.828804540046145e-17</td><td>6.56770272783107e-31</td><td>8.82880454002845e-17</td></tr>
+    <tr><td>4.768611697714455e+21</td><td>2.8835930827948307e-16</td><td>1e-120</td><td>2.8835930827948307e-16</td></tr>
+    <tr><td>7.663410868007432e+22</td><td>8.361583672257197e-16</td><td>1e-120</td><td>8.361583672257197e-16</td></tr>
+    <tr><td>1.2315506032928211e+24</td><td>1.971793193554589e-15</td><td>1e-120</td><td>1.971793193554589e-15</td></tr>
+    <tr><td>1.9791668678535492e+25</td><td>2.7085196438325807e-15</td><td>1e-120</td><td>2.7085196438325807e-15</td></tr>
+    <tr><td>3.180625692794106e+26</td><td>7.483394557563393e-16</td><td>1e-120</td><td>7.483394557563393e-16</td></tr>
+    <tr><td>5.111433483440145e+27</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
+    <tr><td>8.214343584919389e+28</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
     </table>
 
 
@@ -893,30 +925,30 @@ and also in the ``src`` restframe
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table103569357904" class="table-striped table-bordered table-condensed">
+    <table id="table4835444048" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / s</th><th>erg / s</th><th>erg / s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
     <tr><td>1100000.0</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
-    <tr><td>17433825.11707226</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
-    <tr><td>276307507.4660541</td><td>2.929397454400055e+33</td><td>2.929397415825471e+33</td><td>3.8574583700258197e+25</td></tr>
-    <tr><td>4379178876.088467</td><td>4.638974788937108e+37</td><td>4.638974734516677e+37</td><td>5.442043094354434e+29</td></tr>
-    <tr><td>69405307892.82137</td><td>1.1015643465663552e+40</td><td>1.101564248785774e+40</td><td>9.77805812879182e+32</td></tr>
-    <tr><td>1100000000000.0</td><td>4.421472289763414e+40</td><td>4.421469232952174e+40</td><td>3.056811239929309e+34</td></tr>
-    <tr><td>17433825117072.223</td><td>1.751679024719035e+41</td><td>1.7516766004278765e+41</td><td>2.424291158119413e+35</td></tr>
-    <tr><td>276307507466054.06</td><td>6.663853762125038e+41</td><td>6.663839266801599e+41</td><td>1.449532343958061e+36</td></tr>
-    <tr><td>4379178876088467.0</td><td>1.9686631808560795e+42</td><td>1.9686555857754397e+42</td><td>7.595080639789025e+36</td></tr>
-    <tr><td>6.9405307892821384e+16</td><td>3.3575633227957894e+42</td><td>3.3575275551769376e+42</td><td>3.5767618852200225e+37</td></tr>
-    <tr><td>1.1000000000000001e+18</td><td>3.029870033860255e+42</td><td>3.0297168832268734e+42</td><td>1.5315063338183771e+38</td></tr>
-    <tr><td>1.743382511707222e+19</td><td>3.842244680626013e+41</td><td>3.836147300491401e+41</td><td>6.0973801346120284e+38</td></tr>
-    <tr><td>2.7630750746605293e+20</td><td>2.2145046516583798e+39</td><td>1.118997600209717e+28</td><td>2.21450465164719e+39</td></tr>
-    <tr><td>4.3791788760884844e+21</td><td>7.240856026525909e+39</td><td>2.7011840560827467e-65</td><td>7.240856026525909e+39</td></tr>
-    <tr><td>6.940530789282138e+22</td><td>2.1051115019323087e+40</td><td>2.7011840560827467e-65</td><td>2.1051115019323087e+40</td></tr>
-    <tr><td>1.1e+24</td><td>5.069832438569926e+40</td><td>2.7011840560827467e-65</td><td>5.069832438569926e+40</td></tr>
-    <tr><td>1.7433825117072222e+25</td><td>7.353027338882288e+40</td><td>2.7011840560827467e-65</td><td>7.353027338882288e+40</td></tr>
-    <tr><td>2.7630750746605295e+26</td><td>2.5044652659780157e+40</td><td>2.7011840560827467e-65</td><td>2.5044652659780157e+40</td></tr>
-    <tr><td>4.379178876088485e+27</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
-    <tr><td>6.940530789282138e+28</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
+    <tr><td>17677581.000878025</td><td>1.5062319381186786e-60</td><td>1.5062319381186786e-60</td><td>2.7011840560827467e-65</td></tr>
+    <tr><td>284088063.67509425</td><td>3.2282809898782117e+33</td><td>3.228280947004565e+33</td><td>4.286044444955511e+25</td></tr>
+    <tr><td>4565445233.63552</td><td>5.365986631000883e+37</td><td>5.365986568417445e+37</td><td>6.257734807521406e+29</td></tr>
+    <tr><td>73369116293.33127</td><td>1.133692848654252e+40</td><td>1.1336927401440334e+40</td><td>1.0751042601373284e+33</td></tr>
+    <tr><td>1179080451125.6392</td><td>4.577484195023691e+40</td><td>4.577480959089232e+40</td><td>3.233661102627757e+34</td></tr>
+    <tr><td>18948445619386.625</td><td>1.825418386165959e+41</td><td>1.8254158188743746e+41</td><td>2.5665454301918126e+35</td></tr>
+    <tr><td>304511529343126.75</td><td>6.9657248293826625e+41</td><td>6.965709437083352e+41</td><td>1.5388871045307105e+36</td></tr>
+    <tr><td>4893661114240335.0</td><td>2.0331528411134198e+42</td><td>2.0331447355120422e+42</td><td>8.099379008248303e+36</td></tr>
+    <tr><td>7.86437188525732e+16</td><td>3.388884423158317e+42</td><td>3.3888460721553444e+42</td><td>3.827165786715518e+37</td></tr>
+    <tr><td>1.263846100206037e+18</td><td>2.944097927271958e+42</td><td>2.943932756058443e+42</td><td>1.6436695035913973e+38</td></tr>
+    <tr><td>2.031067437185093e+19</td><td>2.6486382064753125e+41</td><td>2.641544943899554e+41</td><td>6.56967820533649e+38</td></tr>
+    <tr><td>3.264032649007746e+20</td><td>2.3848226057843615e+39</td><td>1.774057389350845e+25</td><td>2.3848226057795817e+39</td></tr>
+    <tr><td>5.2454728674859e+21</td><td>7.789115659475893e+39</td><td>2.7011840560827467e-65</td><td>7.789115659475893e+39</td></tr>
+    <tr><td>8.429751954808175e+22</td><td>2.2586176499102964e+40</td><td>2.7011840560827467e-65</td><td>2.2586176499102964e+40</td></tr>
+    <tr><td>1.3547056636221034e+24</td><td>5.326176336322137e+40</td><td>2.7011840560827467e-65</td><td>5.326176336322137e+40</td></tr>
+    <tr><td>2.177083554638904e+25</td><td>7.316210077507487e+40</td><td>2.7011840560827467e-65</td><td>7.316210077507487e+40</td></tr>
+    <tr><td>3.498688262073517e+26</td><td>2.0214026064266637e+40</td><td>2.7011840560827467e-65</td><td>2.0214026064266637e+40</td></tr>
+    <tr><td>5.62257683178416e+27</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
+    <tr><td>9.035777943411329e+28</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
     </table>
 
 
@@ -933,7 +965,7 @@ units of the Synchrotron luminostity form erg/s to GeV/s
 
 .. math::
 
-    [1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.8283861 \times 10^{36},~2.8954203 \times 10^{40},~6.8754233 \times 10^{42},~2.759664 \times 10^{43},~1.0933105 \times 10^{44},~4.1592413 \times 10^{44},~1.2287382 \times 10^{45},~2.0956039 \times 10^{45},~1.8910005 \times 10^{45},~2.3943348 \times 10^{44},~6.9842337 \times 10^{30},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62}] \; \mathrm{\frac{GeV}{s}}
+    [1.6859465 \times 10^{-62},~9.4011603 \times 10^{-58},~2.0149345 \times 10^{36},~3.3491854 \times 10^{40},~7.0759535 \times 10^{42},~2.8570389 \times 10^{43},~1.1393349 \times 10^{44},~4.3476539 \times 10^{44},~1.2689891 \times 10^{45},~2.1151514 \times 10^{45},~1.8374583 \times 10^{45},~1.6487227 \times 10^{44},~1.1072795 \times 10^{28},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62}] \; \mathrm{\frac{GeV}{s}}
 
 
 
@@ -959,9 +991,9 @@ Energetic report
 ----------------
 
 It is possible to get an energetic report of the jet model (updated each
-time that you eval the model). This report gives energy densities
+time that you evaluate the model). This report gives energy densities
 (``U_``) (both in the blob end disk restframe), the luminosities of the
-emitted components in the blob resftrame (``L_``), and the luminosity
+emitted components in the blob restframe (``L_``), and the luminosity
 carried by the jet (``jet_L``) for the radiative components, the
 electrons, the magnetic fields, and for the cold protons in the jet.
 
@@ -980,7 +1012,7 @@ electrons, the magnetic fields, and for the cold protons in the jet.
           U_p_cold Energy dens. blob rest. frame erg / cm3 7.516095e+03
                U_B Energy dens. blob rest. frame erg / cm3 3.978874e-04
                U_p Energy dens. blob rest. frame erg / cm3 0.000000e+00
-        U_p_target Energy dens. blob rest. frame erg / cm3 0.000000e+00
+        U_p_target Energy dens. blob rest. frame erg / cm3 9.325225e-70
            U_Synch Energy dens. blob rest. frame erg / cm3 5.506770e-05
        U_Synch_DRF Energy dens. disk rest. frame erg / cm3 8.712292e+00
             U_Disk Energy dens. blob rest. frame erg / cm3 0.000000e+00
@@ -1030,13 +1062,13 @@ If you want to evaluate the energetic report in non verbose mode:
 
 .. parsed-literal::
 
-    {'U_e': 0.0017404342430246782,
-     'U_p_cold': 7516.095405557228,
+    {'U_e': 0.0017404342430246773,
+     'U_p_cold': 7516.095405557231,
      'U_B': 0.00039788735772973844,
      'U_p': 0.0,
-     'U_p_target': 2.1710845093e-314,
-     'U_Synch': 5.506769532122052e-05,
-     'U_Synch_DRF': 8.712292317747346,
+     'U_p_target': 9.325224912907575e-70,
+     'U_Synch': 5.50676953212205e-05,
+     'U_Synch_DRF': 8.712292317747343,
      'U_Disk': 0.0,
      'U_BLR': 0.0,
      'U_DT': 0.0,
@@ -1045,26 +1077,26 @@ If you want to evaluate the energetic report in non verbose mode:
      'U_BLR_DRF': 0.0,
      'U_DT_DRF': 0.0,
      'U_CMB_DRF': 0.0,
-     'L_Sync_rf': 1.728764352592126e+38,
-     'L_SSC_rf': 3.82887909757934e+36,
+     'L_Sync_rf': 1.7287643525921234e+38,
+     'L_SSC_rf': 3.8288790975793374e+36,
      'L_EC_Disk_rf': 0.0,
      'L_EC_BLR_rf': 0.0,
      'L_EC_DT_rf': 0.0,
      'L_EC_CMB_rf': 0.0,
      'L_pp_gamma_rf': 0.0,
-     'jet_L_Sync': 4.3219108814803147e+39,
-     'jet_L_SSC': 9.572197743948349e+37,
+     'jet_L_Sync': 4.3219108814803086e+39,
+     'jet_L_SSC': 9.572197743948343e+37,
      'jet_L_EC_Disk': 0.0,
      'jet_L_EC_BLR': 0.0,
      'jet_L_EC_DT': 0.0,
      'jet_L_EC_CMB': 0.0,
      'jet_L_pp_gamma': 0.0,
-     'jet_L_rad': 4.417632858919798e+39,
-     'jet_L_kin': 1.7697136148216973e+48,
-     'jet_L_tot': 1.76971361923933e+48,
-     'jet_L_e': 4.097964612089291e+41,
+     'jet_L_rad': 4.417632858919792e+39,
+     'jet_L_kin': 1.769713614821698e+48,
+     'jet_L_tot': 1.7697136192393307e+48,
+     'jet_L_e': 4.097964612089289e+41,
      'jet_L_B': 9.368514312500004e+40,
-     'jet_L_p_cold': 1.769713111340093e+48,
+     'jet_L_p_cold': 1.7697131113400937e+48,
      'jet_L_p': 0.0}
 
 
@@ -1078,15 +1110,15 @@ If you want to evaluate the energetic report in non verbose mode:
 
 .. raw:: html
 
-    <i>Table masked=True length=36</i>
-    <table id="table103569323024" class="table-striped table-bordered table-condensed">
+    <i>Table length=36</i>
+    <table id="table4835580048" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <thead><tr><th>str14</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.740434e-03</td></tr>
     <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>7.516095e+03</td></tr>
     <tr><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>3.978874e-04</td></tr>
     <tr><td>U_p</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_p_target</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>2.171085e-314</td></tr>
+    <tr><td>U_p_target</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>9.325225e-70</td></tr>
     <tr><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>5.506770e-05</td></tr>
     <tr><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.712292e+00</td></tr>
     <tr><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
@@ -1104,6 +1136,5 @@ If you want to evaluate the energetic report in non verbose mode:
     <tr><td>jet_L_p_cold</td><td>jet Lum.</td><td>erg / s</td><td>1.769713e+48</td></tr>
     <tr><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     </table>
-
 
 

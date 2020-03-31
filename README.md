@@ -172,7 +172,7 @@ The code is hosted here:
  - nbsphinx: "conda install -c conda-forge nbsphinx"
  - sphinx_rtd_theme: conda install -c anaconda sphinx_rtd_theme 
  - sphinx-bootstrap-theme: 'https://github.com/ryan-roemer/sphinx-bootstrap-theme'
- - sphinx automod: 'https://github.com/astropy/sphinx-automodapi'    
+ - sphinx-automod: 'https://github.com/astropy/sphinx-automodapi'    
  
  
  

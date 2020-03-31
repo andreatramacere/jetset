@@ -36,7 +36,7 @@ from  .plot_sedfit import PlotSED,plt
 
 from .cosmo_tools import Cosmo
 
-from .utils import safe_run,set_str_attr, old_model_warning, get_info
+from .utils import safe_run,set_str_attr, old_model_warning, get_info, clean_var_name
 
 from .jet_paramters import  *
 
@@ -110,7 +110,7 @@ class JetBase(Model):
         else:
             self.cosmo= Cosmo()
         #print('cosmo', self.cosmo)
-        self.name = name
+        self.name = clean_var_name(name)
 
         self.model_type='jet'
         self._emitters_type=emitters_type
@@ -133,13 +133,16 @@ class JetBase(Model):
                                           'DT',
                                           'EC_DT',
                                           'Star',
-                                          'EC_Start',
+                                          'EC_Star',
                                           'CMB',
                                           'EC_CMB',
                                           'Disk',
+                                          'Disk_MultiBB',
+                                          'Disk_Mono',
                                           'EC_Disk',
                                           'All']
 
+        self._allwed_disk_type =['BB', 'Mono', 'MultiBB']
         self.EC_components_list =[]
         self.spectral_components_list=[]
 
@@ -581,11 +584,9 @@ class JetBase(Model):
     def add_SSC_component(self,state='on'):
         self._add_spectral_component('SSC', var_name='do_SSC', state_dict=dict((('on', 1), ('off', 0))),state=state)
 
-    def del_EC_component(self,EC_components_list):
+    def del_EC_component(self,EC_components_list, disk_type='BB'):
         if isinstance(EC_components_list, six.string_types):
             EC_components_list = [EC_components_list]
-
-        #print(EC_components_list)
 
         if 'All' in EC_components_list:
             EC_components_list=self._allowed_EC_components_list[::]
@@ -648,13 +649,21 @@ class JetBase(Model):
                     self._del_spectral_component('EC_CMB', verbose=False)
                     self.EC_components_list.remove('EC_CMB')
 
+            if EC_component=='Star':
+                if self.get_spectral_component_by_name('Star', verbose=False) is not None:
+                    self._blob.do_star=0
+                    self._del_spectral_component('Star', verbose=False)
+                    self.EC_components_list.remove('Star')
+
+        self.del_par_from_dic(build_ExtFields_dic(EC_components_list,disk_type))
 
 
-        self.del_par_from_dic(build_ExtFields_dic(EC_components_list,self._allowed_EC_components_list))
+
+    def add_EC_component(self,EC_components_list,disk_type='BB'):
 
 
-
-    def add_EC_component(self,EC_components_list):
+        if disk_type not in self._allwed_disk_type:
+            raise RuntimeError('disk type',disk_type,'not in allwowed', self._allwed_disk_type)
 
         if isinstance(EC_components_list, six.string_types):
             EC_components_list=[EC_components_list]
@@ -689,7 +698,6 @@ class JetBase(Model):
                     self.EC_components_list.append('EC_BLR')
 
                 if self.get_spectral_component_by_name('Disk',verbose=False) is None:
-                    # TODO add state
                     self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('Disk')
 
@@ -700,9 +708,17 @@ class JetBase(Model):
                     self.EC_components_list.append('DT')
 
                 if self.get_spectral_component_by_name('Disk',verbose=False) is None:
-                    # TODO add state
                     self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('Disk')
+
+
+
+            if EC_component == 'Star':
+                if self.get_spectral_component_by_name('Star',verbose=False) is None:
+                    self._add_spectral_component('Star',var_name='do_Star', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('Star')
+
+
 
 
             if EC_component=='EC_DT':
@@ -711,13 +727,11 @@ class JetBase(Model):
                     self._add_spectral_component('EC_DT', var_name='do_EC_DT', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_DT')
 
-                #TODO add state
                 if self.get_spectral_component_by_name('DT',verbose=False) is None:
                     self._add_spectral_component('DT',var_name='do_DT', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('DT')
 
                 if self.get_spectral_component_by_name('Disk',verbose=False) is None:
-                    # TODO add state
                     self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('Disk')
 
@@ -727,9 +741,16 @@ class JetBase(Model):
                     self._add_spectral_component('EC_CMB', var_name='do_EC_CMB', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_CMB')
 
+        #IF disk_type is already a parameter it has to be updated here to make it effective
+        if self.parameters.get_par_by_name('disk_type') is not None and self.parameters.get_par_by_name('disk_type').val !=disk_type:
+
+            #remove the old disk type parameters
+            self.del_par_from_dic(build_ExtFields_dic(['Disk'],self.parameters.get_par_by_name('disk_type').val))
+            self.add_par_from_dic(build_ExtFields_dic(self.EC_components_list,disk_type))
+            self.parameters.disk_type.val = disk_type
 
 
-        self.add_par_from_dic(build_ExtFields_dic(self.EC_components_list,self._allowed_EC_components_list))
+        self.add_par_from_dic(build_ExtFields_dic(self.EC_components_list,disk_type))
 
 
 
@@ -747,28 +768,30 @@ class JetBase(Model):
 
 
 
-    def add_par_from_dic(self,model_dic,):
+    def add_par_from_dic(self,model_dic):
         """
         add the :class:`.JetParameter` object to the :class:`.ModelParameterArray`
         usign the dictionaries built by the :func:`build_emitting_region_dic`
         and :func:`build_electron_distribution_dic`
         """
+        #print('--->',model_dic)
         for key in model_dic.keys():
 
             pname=key
 
             p_test=self.parameters.get_par_by_name(pname)
 
+            #print('-->1', pname,p_test)
 
 
             if p_test is None:
-
-                if hasattr(self._blob,pname) and model_dic[key].is_in_blob is True :
+                #print('-->', pname, model_dic[key].is_in_blob, model_dic[key].val)
+                if hasattr(self._blob,pname) and model_dic[key].is_in_blob is True:
                     pval=getattr(self._blob,pname)
+                elif model_dic[key].val is not None:
+                    pval=model_dic[key].val
                 else:
-                    if model_dic[key].val is not None:
-                        pval=model_dic[key].val
-
+                    raise RuntimeError('par',pname,'not found in blob and model dict')
 
                 log=model_dic[key].log
 
@@ -1056,11 +1079,27 @@ class JetBase(Model):
         print(" normalization ", self.Norm_distr>0)
         print(" log-values ", self._emitters_distribution_log_values)
         print('')
+        if 'Disk' in self.EC_components_list:
+            print('accretion disk:')
+            BlazarSED.set_Disk(self._blob)
+            print(' disk Type: %s'%self.parameters.get_par_by_name('disk_type').val)
+            print(' L disk: %e (erg/s)'%self.parameters.get_par_by_name('L_Disk').val)
+            print(' T disk: %e (K)'%self._blob.T_Disk)
+            print(' nu peak disk: %e (Hz)'%BlazarSED.eval_nu_peak_Disk(self._blob.T_Disk))
+            if self.parameters.get_par_by_name('disk_type').val == 'MultiBB':
+                print(' Sw radius %e (cm)'%self._blob.R_Sw)
+                print(' L Edd. %e (erg/s)'%self._blob.L_Edd)
+                yr=86400*365
+                print(' accr_rate: %e (M_sun/yr)'%(yr*self._blob.accr_rate/BlazarSED.m_sun))
+                print(' accr_rate Edd.: %e (M_sun/yr)'%(yr*self._blob.accr_Edd/BlazarSED.m_sun))
+
+
+            print('')
         print('radiative fields:')
         print (" seed photons grid size: ", self.nu_seed_size)
         print (" IC emission grid size: ", self.get_IC_nu_size())
         print (' source emissivity lower bound :  %e' % self._blob.emiss_lim)
-        print(' spectral components:')
+        print (' spectral components:')
         for _s in self.spectral_components_list:
             print("   name:%s,"%_s.name, 'state:', _s.state)
         print('external fields transformation method:', self.get_external_field_transf())
@@ -1072,7 +1111,6 @@ class JetBase(Model):
         print('')
         print('flux plot lower bound   :  %e' % self.flux_plot_lim)
         print('')
-
         self.show_pars()
 
         print("-------------------------------------------------------------------------------------------------------------------")
@@ -1278,7 +1316,8 @@ class JetBase(Model):
                     par_type = 'jet Lum.'
                     units = 'erg/s'
                 else:
-                    warnings.warn('energetic name %s not understood'%_n)
+                    if _n !='thisown':
+                        warnings.warn('energetic name %s not understood'%_n)
 
                 if units == 'skip_this':
                     pass

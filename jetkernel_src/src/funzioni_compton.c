@@ -63,7 +63,7 @@ double rate_compton_GR(struct spettro *pt_GR) {
                     0);
         }
     }
-    //EC Diks
+    //EC Disk
     if (pt_GR->nu_1 < pt_GR->nu_stop_EC_Disk && pt_GR->ord_comp == 1) {
 		if (pt_GR->SSC == 0 && pt_GR->EC == 1) {
 

@@ -8,3 +8,5 @@ def plot():
    return input
 
 
+def test_foo(plot):
+   test_jet(plot)

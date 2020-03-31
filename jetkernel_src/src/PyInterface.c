@@ -263,7 +263,8 @@ struct spettro MakeBlob() {
     spettro_root.T_DT = 100;
     spettro_root.R_DT = 5.0e18;
     spettro_root.tau_DT = 1e-1;
-    //double test[1000];
+    spettro_root.R_Star = 1e10;
+    spettro_root.T_Star_max =1E5;
 
     spettro_root.gam=NULL;
     spettro_root.Ne=NULL;
@@ -561,11 +562,8 @@ void Run_SED(struct spettro *pt_base){
     // Evaluate EC Spectrum
     //==================================================
 	if (pt_base->do_IC) {
-		if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1
-				|| pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1
-				|| pt_base->do_EC_CMB == 1 
-				|| pt_base->do_Disk==1 || pt_base->do_DT==1) 
-                {
+		if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1 || pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1 || pt_base->do_EC_CMB == 1 || pt_base->do_Disk==1 || pt_base->do_DT==1 || pt_base->do_Star==1) 
+        {
                 spectra_External_Fields(1, pt_base);
                 if (pt_base->do_EC_Star == 1) {
                     //if (pt_base->verbose) {

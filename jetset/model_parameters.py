@@ -7,7 +7,9 @@ import  numpy as np
 import warnings
 from astropy.table import Table,vstack,MaskedColumn
 from astropy import  units as u
-from .utils import clean_var_name
+from .utils import clean_var_name, parameters_warning
+from functools import wraps
+import ast
 import  copy
 __all__=['ModelParameter','ModelParameterArray','Value','LinkedParameter']
 
@@ -481,6 +483,39 @@ class ModelLinkedParameter(object):
         self.paramters.add_par(p)
         self.paramters.model=self
 
+
+
+
+
+def compositr_parameter_setter(method):
+    @wraps(method)
+    def func_wrapper(self, model_name, *args, **kwargs):
+        print('--> model_name',args,kwargs)
+        try:
+            if isinstance(model_name,str):
+                pass
+            else:
+                model_name=model_name.name
+            print('--> model_name', model_name, args,kwargs)
+            return method(self, *args, **kwargs)
+        except Exception as e:
+           message = str(e)
+           message += '\n'
+           message += 'Starting from veriosn 1.2.0, FitModel is a CompositeModel, hence to set parameters ' \
+                      'you have to pass as first paramter the model name or model object of the corresponing parameter e.g. \n' \
+                      '''   
+                            fit_model.set_par('model-name',value) 
+                            OR 
+                            fit_model.set_par(jet,value) 
+                      '''
+
+
+
+
+           raise RuntimeError(message)
+
+    return func_wrapper
+
 class CompositeModelParameterArray(object):
 
     def __repr__(self):
@@ -491,9 +526,6 @@ class CompositeModelParameterArray(object):
         self.all_frozen = False
         self._parameters = []
         self._model_comp = []
-
-
-
 
     def link_par(self,par_name,model_name_list,root_model_name):
         #m_name=''
@@ -546,32 +578,38 @@ class CompositeModelParameterArray(object):
         else:
             warnings.warn('Model', model_name, 'not present')
 
-    #def del_model_parameter(self, model_name,par_name):
-    #    m, ID = self.get_model_by_name(model_name, get_idx=True)
-
-    #    p = m.get_par_by_name(par_name)
-
-    #    if len(self._parameters[ID].par_array)<1:
-    #        _ = self._model_comp.pop(ID)
-
-
 
     def get_model_by_name(self, model_name,get_idx=False):
-        selected_model = None
-        idx=None
-        for ID,m in enumerate(self._model_comp):
-            if m.name == model_name:
-                selected_model = m
-                idx=ID
+        try:
+            if isinstance(model_name, str):
+                pass
+            else:
+                model_name = model_name.name
+
+            selected_model = None
+            idx=None
+            for ID,m in enumerate(self._model_comp):
+                if m.name == model_name:
+                    selected_model = m
+                    idx=ID
 
 
-        if selected_model is None:
-            warnings.warn('Model',model_name,'not present')
-        if get_idx is False:
-            return selected_model
-        else:
-            return selected_model,idx
-
+            if selected_model is None:
+                warnings.warn('Model',model_name,'not present')
+            if get_idx is False:
+                return selected_model
+            else:
+                return selected_model,idx
+        except Exception as e:
+           message = str(e)
+           message += '\n'
+           message += 'Starting from veriosn 1.2.0, FitModel is a CompositeModel, hence to set parameters ' \
+                      'you have to pass as first paramter the model name or model object of the corresponing parameter e.g. \n' \
+                      '''   
+                            fit_model.set_par('model-name',value) 
+                            OR 
+                            fit_model.set_par(jet,value) 
+                      '''
     def get_par_by_name(self, model_name,par_name):
         p=None
         m=self.get_model_by_name(model_name)
@@ -589,7 +627,10 @@ class CompositeModelParameterArray(object):
         for ID, mc in enumerate(self._model_comp):
             self._parameters[ID]._build_par_table()
             if len(self._parameters[ID]._par_table) >= 1:
-                _l.append( self._parameters[ID]._par_table)
+                #t=copy.copy(self._parameters[ID]._par_table)
+                #for c in t.columns:
+                 #   t[c] = t[c].astype(np.object)
+                _l.append(self._parameters[ID]._par_table)
         #print('--> _l',_l)
         self._par_table=vstack(_l)
 
@@ -598,7 +639,10 @@ class CompositeModelParameterArray(object):
         for ID, mc in enumerate(self._model_comp):
             self._parameters[ID]._build_best_fit_par_table()
             if len(self._parameters[ID]._best_fit_par_table) >= 1:
-                _l.append( self._parameters[ID]._best_fit_par_table)
+                #t = copy.copy(self._parameters[ID]._best_fit_par_table)
+                #for c in t.columns:
+                #    t[c] = t[c].astype(np.object)
+                _l.append(self._parameters[ID]._best_fit_par_table)
         self._best_fit_par_table = vstack(_l)
 
     @property
@@ -637,12 +681,15 @@ class CompositeModelParameterArray(object):
         else:
             self._best_fit_par_table.pprint_all()
 
+    #@compositr_parameter_setter
     def freeze(self, model_name,par_name):
         self.set(model_name,par_name, 'frozen')
 
+    #@compositr_parameter_setter
     def free(self,model_name, par_name):
         self.set(model_name,par_name, 'free')
 
+    #@compositr_parameter_setter
     def set(self, model_name, par_name, *args, **kw):
         m=self.get_model_by_name(model_name)
         if m is not None:
@@ -650,6 +697,7 @@ class CompositeModelParameterArray(object):
         else:
             warnings.warn('Model', model_name, 'not present')
 
+    #@compositr_parameter_setter
     def set_par(self,model_name, par_name, val):
         m=self.get_model_by_name(model_name)
         if m is not None:
@@ -657,14 +705,18 @@ class CompositeModelParameterArray(object):
         else:
             warnings.warn('Model', model_name, 'not present')
 
-    def get(self, model_name,par_name, *args):
+    #@compositr_parameter_setter
+    def get(self, model_name,par_name, field_name, *args, **kw):
+        #print('-->', par_name, field_name)
         m = self.get_model_by_name(model_name)
         if m is not None:
             pass
         else:
             warnings.warn('Model', model_name, 'not present')
-        return m.parameters.get(par_name, *args)
+        #print('-->',par_name,field_name)
+        return m.parameters.get(par_name, field_name, *args, **kw )
 
+    #@compositr_parameter_setter
     def get_val(self, model_name,par_name):
         m = self.get_model_by_name(model_name)
         if m is not None:
@@ -767,6 +819,13 @@ class ModelParameterArray(object):
             else:
                 append = True
 
+            if type(par.val) is str:
+                try:
+                    ast.literal_eval(par.val)
+                except:
+                    append= False
+
+
             if append is True:
                 if self.model is not None:
                     _model_name.append(self.model.name)
@@ -788,6 +847,7 @@ class ModelParameterArray(object):
                         _p_name = par.name + '(R)'
                     else:
                         _p_name = par.name
+
                     _type.append(par.par_type)
                     _unit.append(par.units)
                     _val.append(par.val)
@@ -798,6 +858,7 @@ class ModelParameterArray(object):
 
                 _name.append(_p_name)
 
+        #_val = np.array(_val, dtype=np.object)
         t=Table(_fields,names=_names,masked=False)
 
         self._fromat_column_entry(t)
@@ -860,6 +921,12 @@ class ModelParameterArray(object):
             else:
                 append = True
 
+            if type(par.val_start) is str:
+                try:
+                    ast.literal_eval(par.val_start)
+                except:
+                    append= False
+
             if append:
                 if self.model is not None:
                     _model_name.append(self.model.name)
@@ -909,7 +976,8 @@ class ModelParameterArray(object):
                 _name.append(_p_name)
                 _frozen.append(par.frozen)
 
-
+        #_val_start = np.array(_val_start, dtype=np.object)
+        #_best_fit_val = np.array(_val_start, dtype=np.object)
 
         # set false to avoid string in hidden
         t = Table(_fields, names=_names, masked=False)

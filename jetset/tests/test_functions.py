@@ -1,13 +1,12 @@
 import pytest
 
-@pytest.fixture
-def plot():
-   input = False
-   return input
+#@pytest.fixture
+#def plot():
+#   input = False
+#   return input
 
 def custom_emitters(plot=True):
     from jetset.jet_model import Jet
-
 
     from jetset.jet_emitters import EmittersDistribution
     import numpy as np
@@ -106,7 +105,7 @@ def model_constr(my_shape, plot=True):
                               SEDShape=my_shape)
 
     prefit_jet = sed_obspar.constrain_SSC_model(electron_distribution_log_values=False)
-    prefit_jet.save_model('prefit_jet_gal_templ.dat')
+    prefit_jet.save_model('prefit_jet_gal_templ.pkl')
 
     return prefit_jet
 
@@ -115,27 +114,27 @@ def model_fit_lsb(sed_data,my_shape, plot=True):
     from jetset.model_manager import FitModel
     from jetset.jet_model import Jet
 
-    jet_lsb = Jet.load_model('prefit_jet_gal_templ.dat')
+    jet_lsb = Jet.load_model('prefit_jet_gal_templ.pkl')
     jet_lsb.set_gamma_grid_size(200)
 
     fit_model_lsb = FitModel(jet=jet_lsb, name='SSC-best-fit-lsb', template=my_shape.host_gal)
-    fit_model_lsb.freeze('z_cosm')
-    fit_model_lsb.freeze('R_H')
-    fit_model_lsb.parameters.beam_obj.fit_range = [5, 50]
-    fit_model_lsb.parameters.R.fit_range = [10 ** 15.5, 10 ** 17.5]
-    fit_model_lsb.parameters.gmax.fit_range = [1E4, 1E8]
-    fit_model_lsb.parameters.nuFnu_p_host.frozen = False
-    fit_model_lsb.parameters.nu_scale.frozen = True
+    fit_model_lsb.freeze('jet_leptonic','z_cosm')
+    fit_model_lsb.freeze('jet_leptonic','R_H')
+    fit_model_lsb.jet_leptonic.parameters.beam_obj.fit_range = [5, 50]
+    fit_model_lsb.jet_leptonic.parameters.R.fit_range = [10 ** 15.5, 10 ** 17.5]
+    fit_model_lsb.jet_leptonic.parameters.gmax.fit_range = [1E4, 1E8]
+    fit_model_lsb.host_galaxy.parameters.nuFnu_p_host.frozen = False
+    fit_model_lsb.host_galaxy.parameters.nu_scale.frozen = True
 
     model_minimizer_lsb, best_fit_lsb = fit_SED(fit_model_lsb, sed_data, 10.0 ** 11, 10 ** 29.0,
                                                 fitname='SSC-best-fit-lsb', minimizer='lsb')
 
     best_fit_lsb.save_report('best-fit-minuit-report.txt')
-    fit_model_lsb.save_model('fit_model_lsb.dat')
-    fit_model_lsb_new = FitModel.load_model('fit_model_lsb.dat')
+    fit_model_lsb.save_model('fit_model_lsb.pkl')
+    fit_model_lsb_new = FitModel.load_model('fit_model_lsb.pkl')
 
-    model_minimizer_lsb.save_model('model_minimizer_lsb.dat')
-    model_minimizer_lsb_new=ModelMinimizer.load_model('model_minimizer_lsb.dat')
+    model_minimizer_lsb.save_model('model_minimizer_lsb.pkl')
+    model_minimizer_lsb_new=ModelMinimizer.load_model('model_minimizer_lsb.pkl')
 
 
     return jet_lsb, model_minimizer_lsb_new, fit_model_lsb_new
@@ -146,22 +145,22 @@ def model_fit_minuit(sed_data,my_shape, plot=True):
     from jetset.model_manager import FitModel
     from jetset.jet_model import Jet
 
-    jet_minuit = Jet.load_model('prefit_jet_gal_templ.dat')
+    jet_minuit = Jet.load_model('prefit_jet_gal_templ.pkl')
     jet_minuit.set_gamma_grid_size(200)
 
     fit_model_minuit = FitModel(jet=jet_minuit, name='SSC-best-fit-minuit', template=my_shape.host_gal)
     fit_model_minuit.freeze('z_cosm')
     fit_model_minuit.freeze('R_H')
-    fit_model_minuit.parameters.beam_obj.fit_range = [5, 50]
-    fit_model_minuit.parameters.R.fit_range = [10 ** 15.5, 10 ** 17.5]
-    fit_model_minuit.parameters.nuFnu_p_host.frozen = False
-    fit_model_minuit.parameters.nu_scale.frozen = True
+    fit_model_minuit.jet_leptonic.parameters.beam_obj.fit_range = [5, 50]
+    fit_model_minuit.jet_leptonic.parameters.R.fit_range = [10 ** 15.5, 10 ** 17.5]
+    fit_model_minuit.host_galaxy.parameters.nuFnu_p_host.frozen = False
+    fit_model_minuit.host_galaxy.parameters.nu_scale.frozen = True
 
     model_minimizer_minuit, best_fit_minuit = fit_SED(fit_model_minuit, sed_data, 10.0 ** 11, 10 ** 29.0,
                                                       fitname='SSC-best-fit-minuit', minimizer='minuit')
 
     best_fit_minuit.save_report('best-fit-minuit-report.txt')
-    fit_model_minuit.save_model('fit_model_minuit.dat')
+    fit_model_minuit.save_model('fit_model_minuit.pkl')
 
     return jet_minuit,model_minimizer_minuit
 
@@ -179,6 +178,7 @@ def test_build_bessel():
 
 
 def test_jet(plot=True):
+    print('--------> plot',plot)
     from jetset.jet_model import Jet
     j=Jet()
     j.eval()
@@ -191,8 +191,8 @@ def test_jet(plot=True):
         j.emitters_distribution.plot3p()
         j.emitters_distribution.plot3p(energy_unit='eV')
         j.emitters_distribution.plot3p(energy_unit='erg')
-    j.save_model('test_jet.dat')
-    j_new=Jet.load_model('test_jet.dat')
+    j.save_model('test_jet.pkl')
+    j_new=Jet.load_model('test_jet.pkl')
 
 
 def test_full():
@@ -210,17 +210,20 @@ def test_full():
     jet_lsb, model_minimizer_lsb, fit_model_lsb =model_fit_lsb(sed_data,my_shape)
     jet_minuit,model_minimizer_minuit=model_fit_minuit(sed_data,my_shape)
 
-def test_short():
+def test_short(plot):
     from jetset.plot_sedfit import  plt
     plt.ioff()
     test_jet()
-    sed_data = data()
+    sed_data = data(plot)
     print('done')
-    my_shape = spectral_indices(sed_data)
+    my_shape = spectral_indices(sed_data,plot)
     print('done')
-    my_shape = sed_shaper(my_shape)
+    my_shape = sed_shaper(my_shape,plot)
     print('done')
-    prefit_jet = model_constr(my_shape)
+    prefit_jet = model_constr(my_shape,plot)
     print('done')
-    jet_lsb, model_minimizer_lsb,fit_model_lsb = model_fit_lsb(sed_data, my_shape)
-    test_emcee(jet_lsb,model_minimizer_lsb)
+    jet_lsb, model_minimizer_lsb,fit_model_lsb = model_fit_lsb(sed_data, my_shape,plot)
+
+@pytest.mark.users
+def test_users():
+    test_short(plot=False)

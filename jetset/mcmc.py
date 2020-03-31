@@ -114,7 +114,9 @@ class McmcSampler(object):
         comp_time = end - start
         print("mcmc run done, with %d threads took %2.2f seconds"%(threads,comp_time))
 
-        self.samples = self.sampler.chain[:, burnin:, :].reshape((-1, self.ndim))
+        #self.samples = self.sampler.chain[:, burnin:, :].reshape((-1, self.ndim))
+        self.samples = self.sampler.get_chain(flat=True,discard=burnin)
+        self.samples_log_prob  = self.sampler.get_log_prob(flat=True,discard=burnin)
         self.acceptance_fraction=np.mean(self.sampler.acceptance_fraction)
 
         self.reset_to_best_fit()
@@ -142,11 +144,19 @@ class McmcSampler(object):
         for par in self.par_array:
             if  bound_rel is False and par.best_fit_err is not None:
 
-                _min =  par.best_fit_val - par.best_fit_err * bound[0]
-                _max =  par.best_fit_val + par.best_fit_err * bound[1]
+                #_min =  par.best_fit_val - par.best_fit_err * bound[0]
+                #_max =  par.best_fit_val + par.best_fit_err * bound[1]
+                delta_p = par.best_fit_err * bound[1]
+                delta_m = par.best_fit_err * bound[0]
+
             else:
-                _min = par.best_fit_val * (1.0  - bound[0])
-                _max = par.best_fit_val * (1.0  + bound[1])
+                delta_p = np.fabs(par.best_fit_val)*bound[1]
+                delta_m = np.fabs(par.best_fit_val)*bound[0]
+                #_min = par.best_fit_val * (1.0  - bound[0])
+                #_max = par.best_fit_val * (1.0  + bound[1])
+
+            _min = par.best_fit_val - delta_m
+            _max = par.best_fit_val + delta_p
 
 
             if par.fit_range_min is not None:
@@ -182,7 +192,7 @@ class McmcSampler(object):
                           levels = levels)
 
         title = 'quantiles ='+str(quantiles)
-        f.suptitle(title)
+        f.suptitle(title,y=1.0)
         return f
 
     def get_par(self, p):
@@ -359,7 +369,7 @@ def log_prob(theta,fit_model,data,use_UL,counter,bounds,par_array,loglog):
     lp = log_prior(theta,bounds)
     counter.count += 1
     if not np.isfinite(lp):
-        pass
+        lp = -np.inf
     else:
         lp += emcee_log_like(theta,fit_model,data,use_UL,par_array,loglog)
     counter.count_OK += 1
@@ -371,25 +381,21 @@ def log_prob(theta,fit_model,data,use_UL,counter,bounds,par_array,loglog):
 def log_prior(theta,bounds):
     _r=0.
     #bounds = [(par.fit_range_min, par.fit_range_max) for par in model_minimizer.fit_par_free]
-    skip=False
+    #skip=False
     for pi in range(len(theta)):
 
         if bounds[pi][1] is not None:
             if theta[pi]>bounds[pi][1]:
-                skip=True
-            else:
-                pass
-                #_r = -np.inf
+                _r=-np.inf
+
         if bounds[pi][0] is not None:
             if theta[pi]<bounds[pi][0]:
-                skip=True
-            else:
-                pass
-                #_r=-np.inf
+                _r=-np.inf
 
-    if skip is True:
-        _r=-np.inf
 
+    #if skip is True:
+    #_r=-np.inf
+    #print(theta[pi],bounds)
     return _r
 
 

@@ -265,7 +265,7 @@ struct spettro {
 
     //Const
     int do_EC_Disk,do_EC_BLR,do_EC_DT,do_EC_Star,do_EC_CMB,EC_stat;
-    int do_Disk,do_DT;
+    int do_Disk,do_DT,do_Star;
     double nu_planck_min_factor;
     double nu_planck_max_factor;
     double mono_planck_min_factor;
@@ -961,7 +961,7 @@ double nu_blob_RF_to_nu_disk_RF(double nu_blob_RF, double Gamma, double beta, do
 /***  SPECTRAL/GEOMETRIC FUNCTIONS EC Star ****/
 void Build_I_nu_Star(struct spettro *pt_d);
 double eval_I_nu_Star_disk_RF(struct spettro *pt,double nu_Star_disk_RF);
-double eval_J_nu_Star_disk_RF(struct spettro *pt, double I_nu_Star_disk_RF);
+//double eval_J_nu_Star_disk_RF(struct spettro *pt, double I_nu_Star_disk_RF);
 double eval_I_nu_Star_blob_RF(struct spettro *pt, double nu_blob_RF);
 double integrand_I_nu_Star_blob_RF(struct spettro *pt, double mu);
 double eval_Star_L_nu(struct spettro *pt, double nu_Star_disk_RF);
