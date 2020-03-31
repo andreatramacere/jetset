@@ -1,5 +1,5 @@
-doc/* linguist-documentation
-notebooks/* linguist-documentation
-doc/* linguist-vendored
-notebooks/* linguist-vendored
+doc/* linguist-documentation=true
+notebooks/* linguist-documentation=true
+doc/* linguist-vendored=true
+notebooks/* linguist-vendored=true
 *.ipynb linguist-vendored
