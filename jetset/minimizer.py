@@ -354,7 +354,8 @@ class ModelMinimizer(object):
         self.data['UL'] = UL
         self.sed_data=sed_data
 
-    def fit(self,fit_Model,
+    def fit(self,
+            fit_Model,
             sed_data,
             nu_fit_start,
             nu_fit_stop,
@@ -528,13 +529,14 @@ class Minimizer(object):
 
         model = best_fit_SEDModel.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
 
+
         _res_sum, _res, _res_UL=_eval_res(data['y'], model, data['dy'], data['UL'], use_UL=use_UL)
 
         self._res_sum_chekc=_res_sum
         self._res_chekc = _res
         self._res_UL_chekc = _res_UL
         self._par_check=p
-
+        #print('--> model', model[0],_res_sum)
         self.calls +=1
 
         if silent==False:
@@ -573,7 +575,9 @@ class LSBMinimizer(Minimizer):
 
     def __init__(self, model):
         super(LSBMinimizer, self).__init__(model)
-
+        self.xtol=5.0E-8
+        self.ftol = 5.0E-8
+        self.factor=1.0
     def _fit(self, max_ev,):
         bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model.fit_par_free]
         max_nfev = 0 if (max_ev == 0 or max_ev == None) else max_ev
@@ -586,8 +590,9 @@ class LSBMinimizer(Minimizer):
                                                               False,
                                                               False,
                                                               self.silent),
-                                                        xtol=5.0E-8,
-                                                        ftol=5.0E-8,
+                                                        xtol=self.xtol,
+                                                        ftol=self.ftol,
+                                                        factor=self.factor,
                                                         full_output=1,
                                                         bounds=bounds,
                                                         maxfev=max_nfev)

@@ -1011,13 +1011,16 @@ class JetBase(Model):
     @nu_size.setter
     def nu_size(self, val):
         self._nu_size=val
-        #self.nu_size=val
-        if hasattr(self, '_blob'):
-            self._set_nu_grid_size_blob(val)
+
+        #!!!!!!!!!!This can't be changed the max size is 1000 in jetset!!!
+        #if hasattr(self, '_blob'):
+        #   self._set_nu_grid_size_blob(val)
 
     def _set_nu_grid_size_blob(self, val):
         if val < 100:
             val = 100
+        if val > self._nu_static_size:
+            raise RuntimeError('value can not exceed', self._nu_static_size)
         self._blob.nu_grid_size=val
 
     def _get_nu_grid_size_blob(self):

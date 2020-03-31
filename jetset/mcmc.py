@@ -68,7 +68,6 @@ class McmcSampler(object):
             self.par_array=[]
             self.labels_units=[]
             self.labels_start_val=[]
-            #TODO update for new model manager
             for model_name in use_labels_dict.keys():
                 for par_name in use_labels_dict[model_name]:
                     p= self.model.parameters.get_par_by_name(model_name,par_name)
