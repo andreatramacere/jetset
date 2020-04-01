@@ -244,7 +244,17 @@ class ModelMinimizer(object):
         except Exception as e:
             raise RuntimeError(e)
 
-    def _prepare_fit(self,fit_Model,sed_data,nu_fit_start,nu_fit_stop,fitname=None,fit_workplace=None,loglog=False,silent=False,get_conf_int=False,use_facke_err=False,use_UL=False):
+    def _prepare_fit(self,fit_Model,
+                     sed_data,
+                     nu_fit_start,
+                     nu_fit_stop,
+                     fitname=None,
+                     fit_workplace=None,
+                     loglog=False,
+                     silent=False,
+                     get_conf_int=False,
+                     use_facke_err=False,
+                     use_UL=False):
         #print('--> DEBUG WorkPlace.flag',WorkPlace.flag,fit_workplace)
 
         if fitname is None:
@@ -270,8 +280,7 @@ class ModelMinimizer(object):
         msk1 = sed_data.data['nu_data'] > nu_fit_start
         msk2 = sed_data.data['nu_data'] < nu_fit_stop
         msk_zero_error = sed_data.data['dnuFnu_data'] > 0.0
-        # msk = s.array([(el>nu_fit_start) and (el<nu_fit_stop) for el in SEDdata.data['nu_data']])
-        # print msk1.size,msk2.size,SEDdata.data['UL'].size
+
         if use_UL == True:
             msk = msk1 * msk2 * msk_zero_error
 
@@ -367,7 +376,8 @@ class ModelMinimizer(object):
             max_ev=0,
             use_facke_err=False,
             use_UL=False,
-            skip_minimizer=False):
+            skip_minimizer=False,
+            repeat=1):
 
         self.silent=silent
         #print('-->nu_fit_start', nu_fit_start)
@@ -375,16 +385,27 @@ class ModelMinimizer(object):
         self._prepare_fit( fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=fitname, fit_workplace=fit_workplace,
                      loglog=loglog, silent=silent, get_conf_int=get_conf_int, use_facke_err=use_facke_err,use_UL=use_UL)
 
+        fit_Model.set_nu_grid(nu_min=nu_fit_start*0.5, nu_max=nu_fit_stop*1.5)
 
-        if skip_minimizer == False:
-            self.minimizer.fit(self,max_ev=max_ev,silent=silent)
+        for i in range(repeat):
+            if skip_minimizer == False:
+                if repeat>1:
+                    print('fit run:',i)
+                self.minimizer.fit(self,max_ev=max_ev,silent=silent)
 
-            self.pout = self.minimizer.pout
-            self.errors = self.minimizer.errors
-            if  hasattr(self.minimizer,'asymm_errors'):
-                self.asymm_errors = self.minimizer.asymm_errors
-        else:
-            pass
+                self.pout = self.minimizer.pout
+                self.errors = self.minimizer.errors
+                if  hasattr(self.minimizer,'asymm_errors'):
+                    self.asymm_errors = self.minimizer.asymm_errors
+                if i<repeat-1:
+                    self.pinit = [par.val for par in self.fit_par_free]
+                    #self._prepare_fit(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=fitname,
+                    #                  fit_workplace=fit_workplace,
+                    #                  loglog=loglog, silent=silent, get_conf_int=get_conf_int, use_facke_err=use_facke_err,
+                    #                  use_UL=use_UL)
+                    print()
+            else:
+                pass
 
 
 
@@ -411,7 +432,7 @@ class ModelMinimizer(object):
         if silent == False:
             best_fit.show_report()
 
-        fit_Model.set_nu_grid(nu_min=nu_fit_start, nu_max=nu_fit_stop)
+        fit_Model.set_nu_grid(nu_min=nu_fit_start , nu_max=nu_fit_stop)
         fit_Model.eval(fill_SED=True, loglog=loglog, phys_output=True)
 
         res_bestfit = self.minimizer.residuals_Fit(self.minimizer.pout,
@@ -577,7 +598,7 @@ class LSBMinimizer(Minimizer):
         super(LSBMinimizer, self).__init__(model)
         self.xtol=5.0E-8
         self.ftol = 5.0E-8
-        self.factor=1.0
+        self.factor=100.
     def _fit(self, max_ev,):
         bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model.fit_par_free]
         max_nfev = 0 if (max_ev == 0 or max_ev == None) else max_ev

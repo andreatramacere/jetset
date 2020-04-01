@@ -115,8 +115,10 @@ class JetBase(Model):
         self.model_type='jet'
         self._emitters_type=emitters_type
         self._scale='lin-lin'
-        self._nu_static_size=1000
+
         self._blob = self.build_blob(verbose=verbose)
+        self._static_spec_arr_grid_size = BlazarSED.static_spec_arr_grid_size
+        self._nu_static_size = BlazarSED.static_spec_arr_size
         self.nu_size = nu_size
         if jet_workplace is None:
             jet_workplace=WorkPlace()
@@ -202,7 +204,7 @@ class JetBase(Model):
         self._external_field_transf = {}
         self._external_field_transf['blob'] = 0
         self._external_field_transf['disk'] = 1
-
+        self._jetkernel_interp='linear'
 
     def __getstate__(self):
         return  self._serialize_model()
@@ -387,7 +389,7 @@ class JetBase(Model):
         blob.nu_IC_size = 50
         blob.nu_seed_size = 100
 
-        blob.nu_grid_size=500
+        blob.nu_grid_size= 200
 
         blob.do_Sync = 2
 
@@ -1019,7 +1021,7 @@ class JetBase(Model):
     def _set_nu_grid_size_blob(self, val):
         if val < 100:
             val = 100
-        if val > self._nu_static_size:
+        if val > self._static_spec_arr_grid_size:
             raise RuntimeError('value can not exceed', self._nu_static_size)
         self._blob.nu_grid_size=val
 
@@ -1192,7 +1194,7 @@ class JetBase(Model):
             if update_emitters is True:
                 self.emitters_distribution.update()
 
-        nu_sed_sum, nuFnu_sed_sum = self.spectral_components.Sum.get_SED_points(lin_nu=lin_nu,log_log=False)
+        nu_sed_sum, nuFnu_sed_sum = self.spectral_components.Sum.get_SED_points(lin_nu=lin_nu,log_log=False,interp=self._jetkernel_interp)
         return nu_sed_sum, nuFnu_sed_sum
 
     def _eval_model(self, lin_nu, log_nu, init, loglog, phys_output=False, update_emitters=True):

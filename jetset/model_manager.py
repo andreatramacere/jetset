@@ -294,7 +294,7 @@ class FitModel(Model):
         return eval(self.composite_expr)
 
     def _eval_model(self, lin_nu, log_nu, loglog,fill_SED):
-        lin_model = np.ones(lin_nu.size) * self.flux_plot_lim
+        lin_model = np.zeros(lin_nu.size)
         log_model = None
         for model_comp in self.components._components_list:
             model_comp.cosmo=self.cosmo
@@ -312,6 +312,7 @@ class FitModel(Model):
         if self.composite_expr is not None:
             lin_model = self._eval_composite_func(loglog)
 
+        #lin_model[lin_model< self.flux_plot_lim]=self.flux_plot_lim
         if loglog is True:
             log_model=np.log10(lin_model)
 

@@ -152,7 +152,7 @@ class JetSpecComponent(object):
 
     def fill_SED(self,log_log=False,lin_nu=None):
 
-        x,y=self.get_SED_points( log_log=log_log,lin_nu=lin_nu)
+        x,y=self.get_SED_points( log_log=log_log,lin_nu=lin_nu,)
 
         self.SED.fill(nu=x,nuFnu=y,log_log=log_log)
         self.SED.fill_nuLnu(z=self.jet_obj.get_par_by_type('redshift').val,dl=self.jet_obj.get_DL_cm())
@@ -162,7 +162,7 @@ class JetSpecComponent(object):
 
 
 
-    def get_SED_points(self, log_log=False, lin_nu=None):
+    def get_SED_points(self, log_log=False, lin_nu=None,interp='linear'):
 
         size = self._blob_object.nu_grid_size
         x = zeros(size)
@@ -184,7 +184,7 @@ class JetSpecComponent(object):
 
         if lin_nu is not None:
             #f_interp=interpolate.Akima1DInterpolator(log10(x), log10(y))
-            f_interp = interpolate.interp1d(log10(x), log10(y), bounds_error=False, kind='linear')
+            f_interp = interpolate.interp1d(log10(x), log10(y), bounds_error=False, kind=interp)
             y = np.power(10., f_interp(log10(lin_nu)))
             x=lin_nu
             msk_nan = np.isnan(y)

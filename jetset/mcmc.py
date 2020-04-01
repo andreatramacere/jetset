@@ -324,8 +324,9 @@ class McmcSampler(object):
 
         self.reset_to_best_fit()
         self.model.eval(fill_SED=True)
-        p.add_model_plot(self.model, color='red',fit_range = np.log10(fit_range))
-        p.add_residual_plot(model = self.model, data = sed_data, fit_range = np.log10(fit_range), color='red')
+
+        p.add_model_plot(self.model, color='red',fit_range = fit_range)
+        p.add_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
 
         if frame == 'src' and sed_data is not None:
             sed_data.z = z_sed_data

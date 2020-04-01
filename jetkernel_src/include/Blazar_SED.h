@@ -49,6 +49,7 @@
 #define three_by_four 0.75 /* 4/3 */
 #define fake_nu_err 1.0
 #define fake_flux_err 1.0
+#define static_spec_arr_grid_size 10000 
 #define static_spec_arr_size 1000 /* num elementi dei vettori */
 #define static_bess_table_size 1000 /* num elementi tabelle di Bessel */
 #define Bessel_MAX 500.0
@@ -117,20 +118,20 @@ struct spettro {
     double nu_start_grid;
     double nu_stop_grid;
 
-    double nu_grid[static_spec_arr_size];
-    double nuFnu_sum_grid[static_spec_arr_size];
+    double nu_grid[static_spec_arr_grid_size];
+    double nuFnu_sum_grid[static_spec_arr_grid_size];
 
-    double nuFnu_Sync_grid[static_spec_arr_size];
-    double nuFnu_SSC_grid[static_spec_arr_size];
-    double nuFnu_Disk_grid[static_spec_arr_size];
-    double nuFnu_DT_grid[static_spec_arr_size];
-    double nuFnu_Star_grid[static_spec_arr_size];
-    double nuFnu_EC_CMB_grid[static_spec_arr_size];
-    double nuFnu_pp_grid[static_spec_arr_size];
-    double nuFnu_EC_BLR_grid[static_spec_arr_size];
-    double nuFnu_EC_DT_grid[static_spec_arr_size];
-    double nuFnu_EC_Disk_grid[static_spec_arr_size];
-    double nuFnu_EC_Star_grid[static_spec_arr_size];
+    double nuFnu_Sync_grid[static_spec_arr_grid_size];
+    double nuFnu_SSC_grid[static_spec_arr_grid_size];
+    double nuFnu_Disk_grid[static_spec_arr_grid_size];
+    double nuFnu_DT_grid[static_spec_arr_grid_size];
+    double nuFnu_Star_grid[static_spec_arr_grid_size];
+    double nuFnu_EC_CMB_grid[static_spec_arr_grid_size];
+    double nuFnu_pp_grid[static_spec_arr_grid_size];
+    double nuFnu_EC_BLR_grid[static_spec_arr_grid_size];
+    double nuFnu_EC_DT_grid[static_spec_arr_grid_size];
+    double nuFnu_EC_Disk_grid[static_spec_arr_grid_size];
+    double nuFnu_EC_Star_grid[static_spec_arr_grid_size];
 
     //-----------Sync --------------//
     //--- CONST
