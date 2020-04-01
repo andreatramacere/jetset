@@ -218,10 +218,6 @@ model
 Since as default, added components are summed together, so we need to
 define the correct multiplicative for for the composite model.
 
-This can be done just by writing the mathematical expression as a
-string, using the model names reported in the model description table,
-and that’s it!
-
 .. code:: ipython3
 
     composite_model.show_model_components()
@@ -242,6 +238,10 @@ and that’s it!
     -------------------------------------------------------------------------------------------------------------------
 
 
+This can be done just by writing the mathematical expression as a
+string, using the model names reported in the model description table,
+and that’s it!
+
 .. code:: ipython3
 
     composite_model.composite_expr='jet_leptonic*Franceschini_2008'
@@ -255,7 +255,7 @@ and that’s it!
 
 
 
-.. image:: EBL_files/EBL_29_0.png
+.. image:: EBL_files/EBL_30_0.png
 
 
 .. bibliography:: references.bib
