@@ -17,7 +17,7 @@ from scipy import double,logspace
 from numpy import polyfit,polyval
 
 
-import numpy as n
+import numpy as np
 
 from .frame_converter import convert_nu_to_blob
 
@@ -97,12 +97,12 @@ class ObsConstrain(object):
             self.indices=self.SEDShape.indices
            
             self.beta_S = -self.SEDShape.S_peak.curvature
-            self.nu_p_S_obs = n.power(10.,self.SEDShape.S_peak.nu_p_val)
-            self.nuFnu_p_S_obs = n.power(10.,self.SEDShape.S_peak.nuFnu_p_val)
-            self.S_nu_max=n.power(10.,self.SEDShape.S_nu_max)
+            self.nu_p_S_obs = np.power(10., self.SEDShape.S_peak.nu_p_val)
+            self.nuFnu_p_S_obs = np.power(10., self.SEDShape.S_peak.nuFnu_p_val)
+            self.S_nu_max=np.power(10., self.SEDShape.S_nu_max)
             self.S_LE_slope=self.SEDShape.S_LE_slope
-            self.nu_p_IC_obs  = n.power(10.,self.SEDShape.IC_peak.nu_p_val)
-            self.nuFnu_p_IC_obs = n.power(10.,self.SEDShape.IC_peak.nuFnu_p_val)
+            self.nu_p_IC_obs  = np.power(10., self.SEDShape.IC_peak.nu_p_val)
+            self.nuFnu_p_IC_obs = np.power(10., self.SEDShape.IC_peak.nuFnu_p_val)
             
            
             
@@ -177,7 +177,8 @@ class ObsConstrain(object):
                                jet_model=None,
                                EC_componets_list=['EC_BLR'],
                                params_grid_size=10,
-                               electron_distribution_log_values=False):
+                               electron_distribution_log_values=False,
+                               R_H=None):
         """
         constarin SSC model paramters
         """
@@ -193,7 +194,8 @@ class ObsConstrain(object):
                                         jet_model=jet_model,
                                         EC_componets_list=EC_componets_list,
                                         params_grid_size=params_grid_size,
-                                        electron_distribution_log_values=electron_distribution_log_values)
+                                        electron_distribution_log_values=electron_distribution_log_values,
+                                        R_H=R_H)
         
          
 
@@ -210,7 +212,8 @@ class ObsConstrain(object):
                              EC_componets_list=None,
                              params_grid_size=10,
                              electron_distribution_log_values=False,
-                             silent=False):
+                             silent=False,
+                             R_H=None):
         
         if name is None:
             name=self.distr_e
@@ -230,14 +233,33 @@ class ObsConstrain(object):
         else:
             self.distr_e=jet_model.get_electron_distribution_name()
 
-    
+        if R_H is not None:
+            jet_model.set_par('R_H',val=R_H)
+
+
+
         nu_p_EC_seed_field=None
         if EC_componets_list is not None:
             jet_model.add_EC_component(EC_componets_list)
-            jet_model.set_par('L_Disk',val=self.SEDShape.L_Disk)
-            jet_model.set_par('T_Disk',val=self.SEDShape.T_Disk)
+            if hasattr(jet_model.parameters, 'L_Disk'):
+                jet_model.set_par('L_Disk',val=self.SEDShape.L_Disk)
+                jet_model.set_par('T_Disk', val=self.SEDShape.T_Disk)
+                print('---> beaming set L_D ',jet_model.parameters.L_Disk.val)
+                print('---> beaming set T_D', jet_model.parameters.T_Disk.val)
+                if hasattr(jet_model.parameters, 'R_BLR_in'):
+                    R_BLR_in=1E17*np.sqrt(self.SEDShape.L_Disk/1E45)
+                    jet_model.set_par('R_BLR_in', val=R_BLR_in)
+                    jet_model.set_par('R_BLR_out', val=R_BLR_in*2)
+                    print('---> beaming set R_BLR_in', jet_model.parameters.R_BLR_in.val)
+                    print('---> beaming set R_BLR_out', jet_model.parameters.R_BLR_out.val)
+                if hasattr(jet_model.parameters, 'R_DT'):
+                    R_DT=2.5E18*np.sqrt(self.SEDShape.L_Disk/1E45)
+                    jet_model.set_par('R_DT', val = R_DT)
+                    print('---> beaming set R_DT', jet_model.parameters.R_DT.val)
             nu_p_EC_seed_field=self.SEDShape.nu_p_Disk
-     
+
+
+
         #setting the Jet object 
         path_initial=jet_model.get_path()
         flag_initial=jet_model.get_flag()
@@ -1151,7 +1173,7 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
     R_min=R_tvar/1000
     R_min=1E13
     R_max=R_tvar*2
-    R_grid=logspace(n.log10(R_min),n.log10(R_max),params_grid_size)
+    R_grid=logspace(np.log10(R_min), np.log10(R_max), params_grid_size)
     #f=open('%s/R_vs_CD.dat'%jet.get_path(),'w')
     for R in R_grid:
 
@@ -1178,19 +1200,19 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
         #print('--> 2', N_res, ratio, Lp_S,Lp_IC,nuFnu_p_S)
 
         CD=Lp_IC/Lp_S
-        CD_model_log.append(n.log10(CD))
+        CD_model_log.append(np.log10(CD))
 
         #print "     R=%e, CD_obs=%e, CD_model=%e"%(R,CD_obs,CD)
         #print(n.log10(R),n.log10(CD/CD_obs),file=f)
 
     #f.close()
 
-    R_grid_log=n.log10(R_grid)
+    R_grid_log=np.log10(R_grid)
     p=polyfit(CD_model_log,R_grid_log,2)
     #print "--> lll",CD_model_log,R_grid_log
-    best_R=polyval(p,n.log10(CD_obs))
+    best_R=polyval(p, np.log10(CD_obs))
     
-    Best_R=n.power(10.,best_R)
+    Best_R=np.power(10., best_R)
     Best_R,failed=check_boundaries(Best_R,R_min,R_max,'R',silent=silent)
     
     #jet.set_flag(flag_initial)
@@ -1251,20 +1273,20 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
         else:
              nu_p_model,nuFnu_p_model=jet.get_SED_peak(freq_range=[0.01*nu_p_IC,10*nu_p_IC])
         
-        nu_p_IC_model_log.append(n.log10(nu_p_model))
+        nu_p_IC_model_log.append(np.log10(nu_p_model))
 
         #print(n.log10(B),n.log10(nu_p_model),file=f)
         #print n.log10(B),n.log10(nu_p_model)
 
     #f.close()
     
-    B_grid_log=n.log10(B_grid)
+    B_grid_log=np.log10(B_grid)
     
      
     p=polyfit(nu_p_IC_model_log,B_grid_log,2)    
     
-    Best_B=polyval(p,n.log10(nu_p_IC))
-    Best_B = n.power(10., Best_B)
+    Best_B=polyval(p, np.log10(nu_p_IC))
+    Best_B = np.power(10., Best_B)
     Best_B,failed = check_boundaries(Best_B, B_min, B_max, 'B',silent=silent)
     
     
