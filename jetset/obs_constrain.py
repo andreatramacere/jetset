@@ -178,7 +178,8 @@ class ObsConstrain(object):
                                EC_componets_list=['EC_BLR'],
                                params_grid_size=10,
                                electron_distribution_log_values=False,
-                               R_H=None):
+                               R_H=None,
+                               silent=False):
         """
         constarin SSC model paramters
         """
@@ -195,6 +196,7 @@ class ObsConstrain(object):
                                         EC_componets_list=EC_componets_list,
                                         params_grid_size=params_grid_size,
                                         electron_distribution_log_values=electron_distribution_log_values,
+                                        silent=silent,
                                         R_H=R_H)
         
          
@@ -244,18 +246,21 @@ class ObsConstrain(object):
             if hasattr(jet_model.parameters, 'L_Disk'):
                 jet_model.set_par('L_Disk',val=self.SEDShape.L_Disk)
                 jet_model.set_par('T_Disk', val=self.SEDShape.T_Disk)
-                print('---> beaming set L_D ',jet_model.parameters.L_Disk.val)
-                print('---> beaming set T_D', jet_model.parameters.T_Disk.val)
+                if silent is False:
+                    print('---> beaming set L_D ',jet_model.parameters.L_Disk.val)
+                    print('---> beaming set T_D', jet_model.parameters.T_Disk.val)
                 if hasattr(jet_model.parameters, 'R_BLR_in'):
                     R_BLR_in=1E17*np.sqrt(self.SEDShape.L_Disk/1E45)
                     jet_model.set_par('R_BLR_in', val=R_BLR_in)
                     jet_model.set_par('R_BLR_out', val=R_BLR_in*2)
-                    print('---> beaming set R_BLR_in', jet_model.parameters.R_BLR_in.val)
-                    print('---> beaming set R_BLR_out', jet_model.parameters.R_BLR_out.val)
+                    if silent is False:
+                        print('---> beaming set R_BLR_in', jet_model.parameters.R_BLR_in.val)
+                        print('---> beaming set R_BLR_out', jet_model.parameters.R_BLR_out.val)
                 if hasattr(jet_model.parameters, 'R_DT'):
-                    R_DT=2.5E18*np.sqrt(self.SEDShape.L_Disk/1E45)
+                    R_DT=2.5E18*np.sqrt(self.SEDShape.L_Disk    /1E45)
                     jet_model.set_par('R_DT', val = R_DT)
-                    print('---> beaming set R_DT', jet_model.parameters.R_DT.val)
+                    if silent is False:
+                        print('---> beaming set R_DT', jet_model.parameters.R_DT.val)
             nu_p_EC_seed_field=self.SEDShape.nu_p_Disk
 
 
@@ -1130,12 +1135,16 @@ def check_boundaries(val,val_min,val_max,val_name,silent=False):
     failed=False
     if val<val_min or val>val_max:
         failed=True
-        print ("---> %s=%e, out of boundaries %e %e, rejected"%(val_name,val,val_min,val_max))
+        if silent is False:
+            print ("---> %s=%e, out of boundaries %e %e, rejected"%(val_name,val,val_min,val_max))
+
         if val<val_min:
             val=val_min
         elif val>val_max:
             val=val_max
-        print ("     Best %s not found, (temporary set to %e)"%(val_name,val))
+
+        if silent is False:
+            print ("     Best %s not found, (temporary set to %e)"%(val_name,val))
     else:
         if silent is False:
             print ("     Best %s=%e"%(val_name,val))

@@ -469,7 +469,7 @@ class SEDShape(object):
         self.index_models=[]
         
         for index in self.indices.idx_array:
-            do_fit=self.check_adapt_range_size(self.sed_data.data['nu_data_log'],index,3)
+            do_fit=self.check_adapt_range_size(self.sed_data.data['nu_data_log'],index,3,silent=silent)
             if do_fit==True:
                 loglog_poly=LogLinear()
                 loglog_pl=FitModel(cosmo=self.cosmo, name='%s'%index.name,loglog_poly=loglog_poly)
@@ -491,18 +491,17 @@ class SEDShape(object):
                 index.assign_val(val = par.best_fit_val, err =par.best_fit_err)
                 #index.assign_val_to_blob(par.best_fit_val, par.best_fit_err)
 
-
-                index.show_val()
+                if silent is False:
+                    index.show_val()
 
                 self.index_models.append(loglog_pl)
 
-                if show_fit_report==True:
+                if show_fit_report==True and silent is False:
                     best_fit.show_report()
                     print()
 
-
-
-            print()
+            if silent is False:
+                print()
 
         print (section_separator)
             
@@ -931,14 +930,15 @@ class SEDShape(object):
         return nu[msk].max()
         
         
-    def check_adapt_range_size(self,x,index,min_size):
+    def check_adapt_range_size(self,x,index,min_size,silent=False):
         do_fit=True
         x_range=[index.idx_range[0],index.idx_range[1]]
         msk = filter_interval(x,x_range)
         x1=x[msk]
         delta=0.1
         delta_tot=0
-        print("---> initial range for index %s  set to [%f,%f]" % (index.name, index.idx_range[0], index.idx_range[1]))
+        if silent is False:
+            print("---> initial range for index %s  set to [%f,%f]" % (index.name, index.idx_range[0], index.idx_range[1]))
         while len(x1)<min_size and delta_tot<1.0:
             delta_tot+=delta
             x_range[0]-=delta
@@ -949,10 +949,12 @@ class SEDShape(object):
         if len(x1)>=min_size:
             do_fit=True
             index.idx_range=x_range
-            print ("---> range for index %s updated  to [%f,%f]"%(index.name,index.idx_range[0],index.idx_range[1] ))
+            if silent is False:
+                print ("---> range for index %s updated  to [%f,%f]"%(index.name,index.idx_range[0],index.idx_range[1] ))
         else:
             do_fit=False
-            print("---> not enough data in range for index%s " % (index.name))
+            if silent is False:
+                print("---> not enough data in range for index%s " % (index.name))
 
         return  do_fit
     

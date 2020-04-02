@@ -48,7 +48,7 @@ class JetSeedPhotons(object):
 
         #try:
 
-        size=self._blob_object.nu_seed_size
+        size=self._blob_object.nu_grid_size
         x=zeros(size)
         y=zeros(size)
 

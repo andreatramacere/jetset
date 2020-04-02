@@ -749,26 +749,30 @@ class MinutiMinimizer(Minimizer):
         return self.chisq_func(*self.p)
 
     def minos_errors(self,par=None):
-        if par is not None:
-            par=self.minuit_par_name_dict[par]
-        self.calls = 0
-        self.minuit_fun.minos(var=par)
-        self.minuit_fun.print_param()
-        self.asymm_errors = [(self.minuit_fun.merrors[(k,1.0)],self.minuit_fun.merrors[(k,-1.0)]) for k in self.minuit_fun.errors.keys()]
-        self.model.reset_to_best_fit()
-
+        try:
+            if par is not None:
+                par=self.minuit_par_name_dict[par]
+            self.calls = 0
+            self.minuit_fun.minos(var=par)
+            self.minuit_fun.print_param()
+            self.asymm_errors = [(self.minuit_fun.merrors[(k,1.0)],self.minuit_fun.merrors[(k,-1.0)]) for k in self.minuit_fun.errors.keys()]
+            self.model.reset_to_best_fit()
+        except:
+            raise RuntimeWarning('Fit quality not sufficient to run Minos')
 
     def profile(self,par,bound=2,subtract_min=True):
-        self.calls = 0
-        bound=self._set_bounds(par,bound=bound)
+        try:
+            self.calls = 0
+            bound=self._set_bounds(par,bound=bound)
 
-        x, y =  self.minuit_fun.profile(self.minuit_par_name_dict[par],
-                                        bound=bound,
-                                        subtract_min=subtract_min)
+            x, y =  self.minuit_fun.profile(self.minuit_par_name_dict[par],
+                                            bound=bound,
+                                            subtract_min=subtract_min)
 
-        self.model.reset_to_best_fit()
-        return x,y
-
+            self.model.reset_to_best_fit()
+            return x,y
+        except:
+            raise RuntimeWarning('Fit quality not sufficient to run profile')
 
     def mnprofile(self,par,bound=2,subtract_min=True):
         """
@@ -783,15 +787,17 @@ class MinutiMinimizer(Minimizer):
         -------
 
         """
-        self.calls = 0
-        bound = self._set_bounds(par, bound=bound)
-        x, y,r =  self.minuit_fun.mnprofile(self.minuit_par_name_dict[par],
-                                          bound=bound,
-                                          subtract_min=subtract_min)
-        #print('-->r',r)
-        self.model.reset_to_best_fit()
-        return x,y,r
-
+        try:
+            self.calls = 0
+            bound = self._set_bounds(par, bound=bound)
+            x, y,r =  self.minuit_fun.mnprofile(self.minuit_par_name_dict[par],
+                                              bound=bound,
+                                              subtract_min=subtract_min)
+            #print('-->r',r)
+            self.model.reset_to_best_fit()
+            return x,y,r
+        except:
+            raise RuntimeWarning('Fit quality not sufficient to run mnprofile')
 
 
     def draw_mnprofile(self,par,bound=2):
@@ -806,20 +812,26 @@ class MinutiMinimizer(Minimizer):
         -------
 
         """
-        self.calls = 0
-        bound = self._set_bounds(par, bound=bound)
-        x,y,r=self.mnprofile(par,bound,subtract_min=True)
-        fig,ax = self._draw_profile(x, y, par)
-        self.model.reset_to_best_fit()
-        return x, y, fig,ax
+        try:
+            self.calls = 0
+            bound = self._set_bounds(par, bound=bound)
+            x,y,r=self.mnprofile(par,bound,subtract_min=True)
+            fig,ax = self._draw_profile(x, y, par)
+            self.model.reset_to_best_fit()
+            return x, y, fig,ax
+        except:
+            raise RuntimeWarning('Fit quality not sufficient to run draw_mnprofile')
 
     def draw_profile(self,par,bound=2):
-        self.calls = 0
-        bound = self._set_bounds(par, bound=bound)
-        x, y = self.profile(par, subtract_min=True, bound=bound)
-        fig,ax=self._draw_profile(x,y,par)
-        self.model.reset_to_best_fit()
-        return x,y,fig,ax
+        try:
+            self.calls = 0
+            bound = self._set_bounds(par, bound=bound)
+            x, y = self.profile(par, subtract_min=True, bound=bound)
+            fig,ax=self._draw_profile(x,y,par)
+            self.model.reset_to_best_fit()
+            return x,y,fig,ax
+        except:
+            raise RuntimeWarning('Fit quality not sufficient to run draw_profile')
 
     def _draw_profile(self,x,y,par):
         self.calls = 0
@@ -863,41 +875,88 @@ class MinutiMinimizer(Minimizer):
 
 
     def contour(self,par_1,par_2,bound=2,bins=20,subtract_min=True):
-        self.calls = 0
-        if np.shape(bound)==():
+        try:
+            self.calls = 0
+            if np.shape(bound)==():
 
-            bound_1 = self._set_bounds(par_1,bound)
-            bound_2 = self._set_bounds(par_2,bound)
+                bound_1 = self._set_bounds(par_1,bound)
+                bound_2 = self._set_bounds(par_2,bound)
 
-        elif np.shape(bound)==(2,) or np.shape(bound)==(2,2):
+            elif np.shape(bound)==(2,) or np.shape(bound)==(2,2):
 
-            bound_1 = self._set_bounds(par_1, bound[0])
-            bound_2 = self._set_bounds(par_2, bound[1])
-        else:
-            raise  RuntimeError('bound must be scalar or (2,) or (2,2)')
+                bound_1 = self._set_bounds(par_1, bound[0])
+                bound_2 = self._set_bounds(par_2, bound[1])
+            else:
+                raise  RuntimeError('bound must be scalar or (2,) or (2,2)')
 
-        bound = [bound_1, bound_2]
-        x, y, z= self.minuit_fun.contour(self.minuit_par_name_dict[par_1],
-                                         self.minuit_par_name_dict[par_2],
-                                         subtract_min=subtract_min,
-                                         bound=bound,
-                                         bins=bins)
-        self.model.reset_to_best_fit()
-        return x,y,z
-
+            bound = [bound_1, bound_2]
+            x, y, z= self.minuit_fun.contour(self.minuit_par_name_dict[par_1],
+                                             self.minuit_par_name_dict[par_2],
+                                             subtract_min=subtract_min,
+                                             bound=bound,
+                                             bins=bins)
+            self.model.reset_to_best_fit()
+            return x,y,z
+        except:
+            raise RuntimeWarning('Fit quality not sufficient to run contour')
 
 
     def draw_contour(self,par_1,par_2,bound=2,levels=np.arange(5)):
-        self.calls = 0
-        l=self.minuit_fun.errordef*levels
-        x,y,z=self.contour(par_1,par_2,bound=bound)
-        fig, ax = plt.subplots()
-        CS = ax.contour(x, y, z, levels,)
-        ax.clabel(CS, fontsize=9, inline=1)
-        ax.set_xlabel(par_1)
-        ax.set_ylabel(par_2)
-        self.model.reset_to_best_fit()
-        return x,y,z,fig,ax
+        try:
+            self.calls = 0
+            l=self.minuit_fun.errordef*levels
+            x,y,z=self.contour(par_1,par_2,bound=bound)
+            fig, ax = plt.subplots()
+            CS = ax.contour(x, y, z, levels,)
+            ax.clabel(CS, fontsize=9, inline=1)
+            ax.set_xlabel(par_1)
+            ax.set_ylabel(par_2)
+            self.model.reset_to_best_fit()
+            return x,y,z,fig,ax
+        except:
+            raise RuntimeWarning('Fit quality not sufficient to run draw_contour')
+
+    def mncontour(self,par_1,par_2,bound=2,bins=20,subtract_min=True):
+        try:
+            self.calls = 0
+            if np.shape(bound)==():
+
+                bound_1 = self._set_bounds(par_1,bound)
+                bound_2 = self._set_bounds(par_2,bound)
+
+            elif np.shape(bound)==(2,) or np.shape(bound)==(2,2):
+
+                bound_1 = self._set_bounds(par_1, bound[0])
+                bound_2 = self._set_bounds(par_2, bound[1])
+            else:
+                raise  RuntimeError('bound must be scalar or (2,) or (2,2)')
+
+            bound = [bound_1, bound_2]
+            x, y, z= self.minuit_fun.mncontour(self.minuit_par_name_dict[par_1],
+                                             self.minuit_par_name_dict[par_2],
+                                             subtract_min=subtract_min,
+                                             bound=bound,
+                                             bins=bins)
+            self.model.reset_to_best_fit()
+            return x,y,z
+        except:
+            raise RuntimeWarning('Fit quality not sufficient to run mcontour')
+
+
+    def draw_mncontour(self,par_1,par_2,bound=2,levels=np.arange(5)):
+        try:
+            self.calls = 0
+            l=self.minuit_fun.errordef*levels
+            x,y,z=self.mncontour(par_1,par_2,bound=bound)
+            fig, ax = plt.subplots()
+            CS = ax.contour(x, y, z, levels,)
+            ax.clabel(CS, fontsize=9, inline=1)
+            ax.set_xlabel(par_1)
+            ax.set_ylabel(par_2)
+            self.model.reset_to_best_fit()
+            return x,y,z,fig,ax
+        except:
+            raise RuntimeWarning('Fit quality not sufficient to run draw_mcontour')
 
     def _set_bounds(self,par,bound):
         p = self.par_dict[par]
