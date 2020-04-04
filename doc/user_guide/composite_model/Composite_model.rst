@@ -1,6 +1,5 @@
 .. _composite_models:
 
-
 Composite Models
 ================
 
@@ -114,13 +113,30 @@ the root parameter (flagged by the R in parenthesis), and the one
 belonging to the ``jet_flaring`` component is the linked one (flagged by
 the L in parenthesis).
 
+setting parameters
+------------------
+
+.. note::
+   with the new implementation of composite model  (`FitModel` class) to set parameters you have to specify the model component, this is different from versions<1.2.0
+
 These methods are alternative and equivalent ways to set a parameter in
-a composite model
+a composite model:
+
+a) accessing the model component member of the
+
+b) using ``set_par`` and passing as first argument the model component
+   name
+
+c) using ``set_par`` and passing as first argument the model component
+   object
 
 .. code:: ipython3
 
+    #a
     composite_model.jet_flaring.parameters.z_cosm.val=0.1
+    #b
     composite_model.set_par('jet_flaring','z_cosm',0.1)
+    #c
     composite_model.set_par(my_jet,'z_cosm',0.1)
 
 And now, we can define the functional form of the model composition,
@@ -160,7 +176,7 @@ names reported in the model description table, and that’s it!
 
 
 
-.. image:: Composite_model_files/Composite_model_22_0.png
+.. image:: Composite_model_files/Composite_model_24_0.png
 
 
 Sum two jets (steady and flaring) and apply the EBL to both (Multiplicative and additive)
@@ -259,5 +275,20 @@ component) and apply to both of them the EBL absorption.
 
 
 
-.. image:: Composite_model_files/Composite_model_31_0.png
+.. image:: Composite_model_files/Composite_model_33_0.png
+
+
+.. code:: ipython3
+
+    help(composite_model.get_par_by_name)
+
+
+.. parsed-literal::
+
+    Help on method get_par_by_name in module jetset.base_model:
+    
+    get_par_by_name(par_name) method of jetset.model_manager.FitModel instance
+        get parameter by type
+    
+
 

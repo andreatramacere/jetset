@@ -11,6 +11,7 @@ The data are treated using two classes from the module :mod:`.data_loader`
 The class :class:`jetset.data_loader.Data` is in charge of storing the data, giving access to the I/O functionalities, and provides an interface  to the astropy Table class (see the  `astropy table <https://docs.astropy.org/en/stable/table/>`_. documentation, for further information)
 
 The class :class:`jetset.data_loader.ObsData` uses the information stored in :class:`jetset.data_loader.Data`, and can perform several operations 
+This is the class to use for model fitting and in general in Jetset
  
  - rebinning (grouping) of the data
  - selection of time ranges
@@ -33,8 +34,8 @@ The class :class:`jetset.data_loader.ObsData` uses the information stored in :cl
     import matplotlib.pyplot as plt
     %matplotlib inline  
 
-data format
------------
+Data format for Data object
+---------------------------
 
 The SED data are internally stored as astropy tables, but it is very
 easy to import from
@@ -64,7 +65,7 @@ we can easily access the astropy table
 .. raw:: html
 
     <i>Table length=10</i>
-    <table id="table4867803984" class="table-striped table-bordered table-condensed">
+    <table id="table4697053776" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -116,7 +117,7 @@ we can easily access the astropy table
 
 
 
-columns with units are implemeted using the ``Units`` module of astropy
+columns with units are implemented using the ``Units`` module of astropy
 (https://docs.astropy.org/en/stable/units/).
 
 and we can easily access the metadata
@@ -150,10 +151,10 @@ and we can easily access the metadata
 .. note::
    starting from version 1.1.0 ``src`` to ``obs`` transformation is available
 
-loading from astropy table
---------------------------
+Loading from astropy table
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-you can use the defualt SEDs distributed with the package to get
+you can use the default SEDs distributed with the package to get
 familiar with data handling
 
 .. code:: ipython3
@@ -166,9 +167,9 @@ familiar with data handling
 
 .. parsed-literal::
 
-    ['/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_3C345.ecsv',
-     '/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.ecsv',
-     '/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk501.ecsv']
+    ['/Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/test_data/SEDs_data/SED_3C345.ecsv',
+     '/Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421_EBL_DEABS.ecsv',
+     '/Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_DEABS.ecsv']
 
 
 
@@ -192,7 +193,7 @@ As you can see there are three 3 files. We use in this example the file for Mrk 
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table4868147152" class="table-striped table-bordered table-condensed">
+    <table id="table4735015440" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>str13</th></tr></thead>
@@ -262,8 +263,8 @@ this is an extract of the  astropy table saved in the format ``ascii.ecsv``
    2639697000.0 0.0 1.793088e-14 3.231099e-26 0.0 0.0 False campaing-2009
    4799040000.0 0.0 2.3136e-14 2.4e-16 0.0 0.0 False campaing-2009
 
-saving to a file
-----------------
+Saving Data object to a file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: ipython3
 
@@ -285,7 +286,7 @@ the data can be loaded from the saved table
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table4874450896" class="table-striped table-bordered table-condensed">
+    <table id="table4734740880" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>str13</th></tr></thead>
@@ -315,8 +316,8 @@ the data can be loaded from the saved table
 
 .. _import:
 
-importing data from an arbitrary ascii file or numpy array
-----------------------------------------------------------
+Importing from an arbitrary ascii file or numpy array to Data object
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Assume that your data are stored in an ASCII file named
 ‘test-ascii.txt’, with - ``x`` in the first column with frequency in
@@ -359,7 +360,7 @@ of course this method applies if you have a generic 2-dim numpy array.
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table4874543568" class="table-striped table-bordered table-condensed">
+    <table id="table4734824016" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -387,12 +388,12 @@ of course this method applies if you have a generic 2-dim numpy array.
 
 
 
-importing data from a generic astropy table mapping columns
------------------------------------------------------------
+Importing to Data object from a generic astropy table mapping columns
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you want to use a ``TABLE`` whith arbitrary column names, you can use
+If you want to use a ``TABLE`` with arbitrary column names, you can use
 an import dictionary, mapping the input name to the target. E.g. assume
-that you column in the input table coloumn named ``freq`` that should
+that you column in the input table column named ``freq`` that should
 target the ``x`` column, and another named ``freq err`` associated to
 ``dx`` you can simply pass the dictionary to the ``from_file`` method:
 
@@ -400,8 +401,8 @@ target the ``x`` column, and another named ``freq err`` associated to
 
    data=Data.from_file(data_table='your-file',import_dictionary={'freq':'x','freq err':'dx'})
 
-importing data from the asi ssdc sedtool
-----------------------------------------
+Importing from the ASI ssdc sedtool to Data object
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To import data from a data file downloaded from the asi ssdc sedtool:
 https://tools.ssdc.asi.it/SED/
@@ -428,7 +429,7 @@ Assume that we downloaded the data for Mrk421, in observed fluxes and linear sca
 .. raw:: html
 
     <i>Table length=3550</i>
-    <table id="table4874527376" class="table-striped table-bordered table-condensed">
+    <table id="table4734823760" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -459,8 +460,8 @@ Assume that we downloaded the data for Mrk421, in observed fluxes and linear sca
 .. note::
    When importing data from the ``src`` frame, the Data constructor will not convert units, but will assume that input units are erg/s. If this is not the case an error message will be displayed
 
-Building the SED
-----------------
+Building the SED the ObsData object
+-----------------------------------
 
 Once we have a data table built with the class:`jetset.data_loader.Data`, following  one of the method described above, you can create  SED data using the  :class:`jetset.data_loader.ObsData` class.
 In the example we use one of the test SEDs provided by the package:
@@ -478,7 +479,7 @@ We start to loading  the SED of  Mrk 421, and we pass to ``ObsData`` directly th
     data_table=Data.from_file(test_SEDs[1])
     sed_data=ObsData(data_table=data_table)
 
-if you want to use a comoslogy model different from the dafault one please read the :ref:`cosmology` section
+if you want to use a cosmology model different from the default one please read the :ref:`cosmology` section
 
 As you can see all the meta-data have been properly sourced from the SED
 file header. You also get information on the length of the data, before
@@ -494,7 +495,7 @@ and after elimination of duplicated entries, and upper limits
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table4874307152" class="table-striped table-bordered table-condensed">
+    <table id="table4697169424" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu_data</th><th>dnu_data</th><th>nuFnu_data</th><th>dnuFnu_data</th><th>nu_data_log</th><th>dnu_data_log</th><th>nuFnu_data_log</th><th>dnuFnu_data_log</th><th>dnuFnu_facke</th><th>dnuFnu_facke_log</th><th>UL</th><th>zero_error</th><th>T_start</th><th>T_stop</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th></th><th></th><th></th><th>MJD</th><th>MJD</th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bool</th><th>float64</th><th>float64</th><th>str13</th></tr></thead>
@@ -536,8 +537,8 @@ and after elimination of duplicated entries, and upper limits
     UL_CL :  0.95
 
 
-Plotting data
--------------
+Plotting ObsData
+~~~~~~~~~~~~~~~~
 
 We can now plot our SED using the :class:`BlazarSEDFit.plot_sedfit.Plot` class 
 
@@ -590,7 +591,7 @@ plotting in the ``src`` restframe
 
 **to have interactive plot in jupyter**
 
-if you wanto to have interacitve plot in a jupyter notebook use:
+if you want to to have interacitve plot in a jupyter notebook use:
 
 .. code-block:: no
 
@@ -606,8 +607,8 @@ to have interactive plot in jupyter lab use:
 
    %matplotlib widget
 
-grouping data
--------------
+Grouping data
+~~~~~~~~~~~~~
 
 As you can see, due to the overlapping of different instruments and to
 different time snapshots, some points have multiple values. Although
@@ -639,8 +640,8 @@ this is not a problem for the fit process, you might want to rebin
 .. image:: Jet_example_load_data_files/Jet_example_load_data_71_1.png
 
 
-handling errors and systematics
--------------------------------
+Handling errors and systematics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Another important issue when dealing with fitting of data, is the proper
 handling of errors. Typically one might need to add systematics for
@@ -668,8 +669,8 @@ For these reasons the package offer the possibility to add systematics
 
 with this command we add 20% systematics for data between :math:`10^{6}<\nu<10^{29}` Hz
 
-filtering data sets
--------------------
+Filtering data sets
+~~~~~~~~~~~~~~~~~~~
 
 we use the ``show_data_sets()`` method to have know wich data sets are
 defined in our table
@@ -683,10 +684,7 @@ defined in our table
 .. parsed-literal::
 
     current datasets
-    dataset -1
-    dataset 0
-    dataset 1
-    dataset 2
+    dataset 0.0
 
 
 we use ``show_dataset=True`` to have the legend of all the datasets
@@ -807,9 +805,8 @@ we can also use ``filter_data_set`` to exclude *only* the datasets in
 .. image:: Jet_example_load_data_files/Jet_example_load_data_86_1.png
 
 
-.. code:: ipython3
-
-    we can revert `sed_data` to the original statwe
+we can revert ``sed_data`` to the original state with the
+``reset_data()`` method
 
 .. code:: ipython3
 
@@ -832,5 +829,27 @@ we can also use ``filter_data_set`` to exclude *only* the datasets in
 
 
 .. image:: Jet_example_load_data_files/Jet_example_load_data_89_1.png
+
+
+Saving sed_data and loading
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+you can save and relaod you sed_data
+
+.. code:: ipython3
+
+    sed_data.save('3C454_data.pkl')
+
+.. code:: ipython3
+
+    sed_data=ObsData.load('3C454_data.pkl')
+
+.. code:: ipython3
+
+    p=sed_data.plot_sed()
+
+
+
+.. image:: Jet_example_load_data_files/Jet_example_load_data_94_0.png
 
 

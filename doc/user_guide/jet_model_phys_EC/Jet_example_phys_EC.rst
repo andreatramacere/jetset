@@ -429,7 +429,7 @@ EC seed photon fields, in the Disk rest frame
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x11231ca10>
+    <matplotlib.legend.Legend at 0x11a979c10>
 
 
 
@@ -496,7 +496,7 @@ EC seed photon fields, in the Disk rest frame
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x115b77750>
+    <matplotlib.legend.Legend at 0x11a992150>
 
 
 
