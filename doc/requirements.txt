@@ -3,7 +3,7 @@ sphinx-automodapi
 sphinx_rtd_theme>=0.3.1
 sphinxcontrib-bibtex
 nbsphinx
-    numpydoc
+numpydoc
 setuptools
 scipy
 numpy

@@ -1,44 +1,55 @@
-What's new in version 1.1.1
+What's new in version 1.1.2
 ===========================
 
-This release fixes some minor bugs, and fixes a problem with swig for mac os mojave for the Jet.energetic_report method
-
-The QuickStart notebook has been improved.
+This release fixes a bug for the MCMC methiod and adds sevaral new features
 
 
-The conda-forge channel has ben removed becase was installing on mac os mojave a bugged version of matplotlib.
-
-In the following are listed the main new features common to 1.1.0 and 1.1.1
-
-
-#. Astropy Tables with units have been implemented for most of the products.
+In the following are listed the main new features common to 1.1.1 and 1.1.2
 
 
 
-#. Improved model serialization.
+#. EBL absorption
+
+   EBL models are implemented using a 2D interpolation where the x and y axes represent the redshift and the frequency, and the z axes represents the value of :math:`e^{-\tau}`
+   Included models are
+
+   * Franceschini 2008 :cite:`Franceschini2008`
+   * Finke 2010 :cite:`Finke2010`
+   * Dominguez 2011 :cite:`Dominguez2011`
 
 
 
-#. Improved External Compton implementation with possibility to use a double approach
+#. Composite models
 
-   * transformation of the external  fields to the blob rest frame :cite:`Dermer2000`
+   The `FitModel` is now able to handle additive and multiplicative models, giving to the user to define the composite model expression using a single instruction e.g.
 
-   *  transformation of the electron emitting distribution from the blob restframe to
-      disk/BH restframe :cite:`Dermer95` :cite:`GKM01`
+   .. code-block:: python
+
+       composite_model.composite_expr='(jet_flaring + steady_jet) * Franceschini_2008'
 
 
-#. Implementation of Broad Line Region radiative field using the approach of :cite:`Donea2003`
 
+
+#. Custom emitters distributions.
+
+   The user can difine custom distribution of emitting particles
+
+
+
+#. Improved fit interface
+
+   The new intefrace allows to repeat the fit for a desired numbers of time, in ordert to get a better convergence
+
+   .. code-block:: python
+
+      model_minimizer_lsb=ModelMinimizer('lsb')
+      best_fit_lsb=model_minimizer_lsb.fit(fit_model_lsb,sed_data,1E11,1E29,fitname='SSC-best-fit-minuit',repeat=3)
 
 
 .. important::
-    Starting from version 1.1.0, the `R` parameter of the :class:`.jet_model.Jet` class, as default *is linear and not logarithmic*, please update your old scripts
-    setting `R` with linear values (see :ref:`jet_physical_guide` for more details).
+    starting from version 1.1.2 the `FitModel` class has been improved to handle parameters from different models, allowing
+    to link parameters among different models, or to set the same parameter for different models see the :ref:`composite_models`
 
-.. important::
-    starting from version 1.1.0 the saved model format has changed, if you have models saved vith version<1.1.0,
-    plase update them the new models by loading the old models with the :meth:`.jet_model.Jet.load_old_model`
-    and then saving them again (see :ref:`jet_physical_guide` for more details).
 
 
 .. bibliography:: references.bib
