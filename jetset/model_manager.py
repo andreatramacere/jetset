@@ -242,6 +242,9 @@ class FitModel(Model):
     def get(self,model,par_name,*args):
         self.parameters.get(model,par_name,*args)
 
+    def get_par_by_name(self,model,par_name):
+        return self.parameters.get_par_by_name(model, par_name)
+
     def freeze(self,model,par_name):
         self.parameters.freeze(model,par_name)
 

@@ -17,27 +17,27 @@ Tutorial
 
    jet model physical setup  (basic features and SSC) <jet_model_phys_SSC/Jet_example_phys_SSC.rst>
 
-   jet model custom  emitters distributions   <custom_emitters_distr/custom_emitters.rst>
+   jet model custom  emitters distributions   *New (v1.1.2) Read it* <custom_emitters_distr/custom_emitters.rst>
 
-   jet model physical setup 2 (EC and Equipartition) <jet_model_phys_EC/Jet_example_phys_EC.rst>
+   jet model physical setup 2 (EC and Equipartition) *New Read it* <jet_model_phys_EC/Jet_example_phys_EC.rst>
 
    jet model numerical setup   <jet_model_num/Jet_example_num.rst>
 
-   composite models <composite_model/Composite_model.rst>
+   composite models  *New (v1.1.2) Read it* <composite_model/Composite_model.rst>
 
-   EBL models <EBL/EBL.rst>
+   EBL models *New (v1.1.2) Read it* <EBL/EBL.rst>
 
    data format   <load_data/Jet_example_load_data.rst>
 
    phenomenological model constraining  <phen_constr/Jet_example_phenom_constr.rst>
 
-   model fitting  1: SSC model fit and MCMC for Mrk 421 <model_fit_1/Jet_example_model_fit.rst>
+   model fitting  1: SSC model fit, minuit contours, and MCMC for Mrk 421  *New (v1.1.2) Read it* <model_fit_1/Jet_example_model_fit.rst>
 
-   model fitting  2: SSC and galaxy template model fit and MCMC for Mrk 501 <model_fit_2/Jet_example_model_fit_wiht_gal_template.rst>
+   model fitting  2: SSC (jet+galaxy template) model fit and MCMC for Mrk 501  *New (v1.1.2) Read it* <model_fit_2/Jet_example_model_fit_wiht_gal_template.rst>
 
-   model fitting  3: SSC and EC fit for 3C 454.3 <model_fit_3/Jet_example_model_fit_EC.rst>
+   model fitting  3: SSC and EC fit for 3C 454.3 *New (v1.1.2) Read it* <model_fit_3/Jet_example_model_fit_EC.rst>
 
-   model fitting  4: Only Synchroton and minuit contours for Mrk 421 <model_fit_4/Jet_example_only_synchrotron.rst>
+   model fitting  4: Only Synchroton for Mrk 421 fit, minuit contours, and MCMC *New (v1.1.2) Read it* <model_fit_4/Jet_example_only_synchrotron.rst>
 
    change cosmology model <cosmology/Jet_example_cosmo.rst>
 

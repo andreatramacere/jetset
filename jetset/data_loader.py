@@ -14,6 +14,7 @@ import copy
 from astropy.table  import  Table,Column
 from astropy import  units as u
 from astropy.units import cds
+import  pickle
 from .plot_sedfit import PlotSED, plt
 
 from .output import section_separator
@@ -432,6 +433,13 @@ class ObsData(object):
 
         return Table(rows=np.zeros((n_rows, len(sed_dt))), dtype=[d[1] for d in sed_dt],
                           names=[d[0] for d in sed_dt])
+
+    @staticmethod
+    def load(file_name,):
+        return pickle.load(open(file_name, "rb"))
+
+    def save(self, file_name):
+        pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
 
     @property

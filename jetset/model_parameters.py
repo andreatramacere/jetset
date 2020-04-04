@@ -542,20 +542,20 @@ class CompositeModelParameterArray(object):
                 m.parameters.del_par(p)
                 m.parameters.add_par(p_root)
             else:
-                warnings.warn('model with',m_name,'not found in composite model')
-            #print('del -->',m.name, p ,p.name)
-            #self.hide_model_parameter(m.name, p.name)
-            #p._linked = True
-            #print('m_name -->', m_name)
+                 self._handle_missing_component_error(m_name)
 
-        #m_name = m_name[:-1]
-        #print('m name. -->', m_name)
-        #p=LinkedParameter(p_name, m_list)
-        #p=copy.deepcopy(p)
-        #p._linked = False
-        #m=ModelLinkedParameter(m_name,p)
-        #self._model_comp.append(m)
-        #self._parameters.append(m.paramters)
+
+
+    def _handle_missing_component_error(self, model_name):
+
+        if hasattr(model_name, 'name'):
+            name = model_name.name
+        elif type(model_name) == str:
+            name = model_name
+        else:
+            name = 'passed'
+        s = 'Model component'+ name +' not present'
+        raise RuntimeError(s)
 
     def add_model_parameters(self, model):
         try:
@@ -576,7 +576,7 @@ class CompositeModelParameterArray(object):
             _p = self._model_comp.pop(ID)
             _p = self._parameters.pop(ID)
         else:
-            warnings.warn('Model', model_name, 'not present')
+             self._handle_missing_component_error(model_name)
 
 
     def get_model_by_name(self, model_name,get_idx=False):
@@ -595,7 +595,7 @@ class CompositeModelParameterArray(object):
 
 
             if selected_model is None:
-                warnings.warn('Model',model_name,'not present')
+                self._handle_missing_component_error(model_name)
             if get_idx is False:
                 return selected_model
             else:
@@ -615,7 +615,7 @@ class CompositeModelParameterArray(object):
         m=self.get_model_by_name(model_name)
 
         if m is None:
-            warnings.warn('Model', model_name, 'not present')
+            self._handle_missing_component_error(model_name)
         else:
             p=m.parameters.get_par_by_name(par_name)
 
@@ -695,7 +695,7 @@ class CompositeModelParameterArray(object):
         if m is not None:
             m.parameters.set(par_name, *args, **kw)
         else:
-            warnings.warn('Model', model_name, 'not present')
+            self._handle_missing_component_error(model_name)
 
     #@compositr_parameter_setter
     def set_par(self,model_name, par_name, val):
@@ -703,7 +703,7 @@ class CompositeModelParameterArray(object):
         if m is not None:
             m.parameters.set(par_name, val=val)
         else:
-            warnings.warn('Model', model_name, 'not present')
+            self._handle_missing_component_error(model_name)
 
     #@compositr_parameter_setter
     def get(self, model_name,par_name, field_name, *args, **kw):
@@ -712,7 +712,7 @@ class CompositeModelParameterArray(object):
         if m is not None:
             pass
         else:
-            warnings.warn('Model', model_name, 'not present')
+            self._handle_missing_component_error(model_name)
         #print('-->',par_name,field_name)
         return m.parameters.get(par_name, field_name, *args, **kw )
 
@@ -722,7 +722,7 @@ class CompositeModelParameterArray(object):
         if m is not None:
             pass
         else:
-            warnings.warn('Model', model_name, 'not present')
+            self._handle_missing_component_error(model_name)
 
         return m.parameters.get(par_name, 'val')
 

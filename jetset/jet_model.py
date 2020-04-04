@@ -661,7 +661,7 @@ class JetBase(Model):
 
 
 
-    def add_EC_component(self,EC_components_list,disk_type='BB'):
+    def add_EC_component(self,EC_components_list=[],disk_type='BB'):
 
 
         if disk_type not in self._allwed_disk_type:

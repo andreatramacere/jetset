@@ -1046,7 +1046,7 @@ def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices,silent=False):
 def find_s1(class_obj,indices):
     #print "---> !!! fake function, still to develop"
     val=3.5
-    print ("---> set s1 to %f"%val)
+    #print ("---> set s1 to %f"%val)
     return val
 
 def rescale_Ne(jet,Lp_S,rest_frame):
