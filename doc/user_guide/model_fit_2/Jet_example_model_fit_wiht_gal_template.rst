@@ -1,7 +1,7 @@
 .. _model_fitting_2:
 
-Model fitting
-=============
+Model fitting 2: SSC + galaxy template
+======================================
 
 .. code:: ipython3
 
@@ -31,7 +31,7 @@ Model fitting
 
 
 
-loading data
+Loading data
 ------------
 
 see the :ref:`data_format` user guide for further information about loading data 
@@ -70,12 +70,12 @@ see the :ref:`data_format` user guide for further information about loading data
 
     sed_data.save('Mrk_501.pkl')
 
-phenomenological model constraining
+Phenomenological model constraining
 -----------------------------------
 
 see the :ref:`phenom_constr` user guide for further information about loading data 
 
-spectral indices
+Spectral indices
 ~~~~~~~~~~~~~~~~
 
 .. code:: ipython3
@@ -100,7 +100,7 @@ spectral indices
 .. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_12_1.png
 
 
-sed shaper
+Sed shaper
 ~~~~~~~~~~
 
 .. code:: ipython3
@@ -229,10 +229,15 @@ ore least-square bound, as shown below
 Model fitting
 -------------
 
-We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer and the``lsb`` (least square bound scipy minimizer). Using ``minuit`` we notice that sometimes (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling.
+We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer and the ``lsb`` (least square bound scipy minimizer). Using ``minuit`` we notice that sometimes (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling.
 
-We freeze some parameters, and we also set some ``fit_range`` values, anyhow this is only to show these functionalities, you should try different solution and judge which is the best accordint to each application.
+We freeze some parameters, and we also set some `fit_range` values. Setting fit_range can speed-up the fit convergence but should be judged by the user each time according to the physics of the particular source.
 
+
+.. note::
+   With the new implementation of composite model  (`FitModel` class) to set parameters you have to specify the model component, this is different from versions<1.1.2,
+   and this holds also for the `freeze` method and for setting  `fit_range` intervals, and for the methods relate to parameters setting in general.
+   See the :ref:`composite_models` user guide for further information about the new implementation of `FitModel`, in particular for parameter setting
 
 Model fitting with LSB
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -351,8 +356,13 @@ see the :ref:`composite_models` user guide for further information about the new
 
 .. note::
    Since the `jet_leptonic to model` has to be summed to the `host_galaxy` model, we do not need to define the functional form for the composite model, because
-   the default one is the sum of all the components
-   see the :ref:`composite_models` user guide for further information about the new implementation of `FitModel`, in particular for parameter setting
+   the default compostion is the sum of all the components
+   (see the :ref:`composite_models` user guide for further information about the new implementation of `FitModel`, in particular for parameter setting).
+   Anyhow, we show here the definition of the model composition  for purpose of clarity
+
+.. code:: ipython3
+
+    fit_model_lsb.composite_expr='jet_leptonic + host_galaxy '
 
 .. code:: ipython3
 
@@ -415,7 +425,7 @@ see the :ref:`composite_models` user guide for further information about the new
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_30_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_32_0.png
 
 
 Model fitting with Minuit
@@ -982,7 +992,7 @@ https://iminuit.readthedocs.io/en/latest/
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_36_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_38_0.png
 
 
 .. code:: ipython3
@@ -1037,7 +1047,7 @@ https://iminuit.readthedocs.io/en/latest/
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_38_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_40_0.png
 
 
 Model fitting with a bkn pl
@@ -1092,7 +1102,7 @@ Model fitting with a bkn pl
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_41_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_43_0.png
 
 
 .. code:: ipython3
@@ -1235,7 +1245,7 @@ Model fitting with a bkn pl
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_43_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_45_0.png
 
 
 .. code:: ipython3
@@ -1344,7 +1354,7 @@ Model fitting with a bkn pl
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_45_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_47_0.png
 
 
 .. code:: ipython3
@@ -1373,7 +1383,7 @@ Model fitting with a bkn pl
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_46_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_48_0.png
 
 
 MCMC sampling
@@ -1435,7 +1445,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_51_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_53_0.png
 
 
 .. code:: ipython3
@@ -1444,7 +1454,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_52_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_54_0.png
 
 
 .. code:: ipython3
@@ -1453,7 +1463,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_53_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_55_0.png
 
 
 .. code:: ipython3
@@ -1477,7 +1487,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_55_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_57_0.png
 
 
 The posterior of the beaming factor is clearly truncated, so we should
@@ -1550,7 +1560,7 @@ rerun the fit changing the constrain on ``beam_obj`` parameter.
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_61_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_63_0.png
 
 
 .. code:: ipython3
@@ -1598,7 +1608,7 @@ rerun the fit changing the constrain on ``beam_obj`` parameter.
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_64_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_66_0.png
 
 
 saving MCMC and reusing it
@@ -1626,7 +1636,7 @@ saving MCMC and reusing it
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_68_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_70_0.png
 
 
 .. code:: ipython3
@@ -1636,7 +1646,7 @@ saving MCMC and reusing it
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_69_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_71_0.png
 
 
 .. code:: ipython3
@@ -1645,7 +1655,7 @@ saving MCMC and reusing it
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_70_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_72_0.png
 
 
 

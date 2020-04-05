@@ -1,7 +1,7 @@
 .. _model_fitting_1:
 
-Model fitting
-=============
+Model fitting 1: Only SSC
+=========================
 
 .. code:: ipython3
 
@@ -30,7 +30,7 @@ Model fitting
 
 
 
-loading data
+Loading data
 ------------
 
 see the :ref:`data_format` user guide for further information about loading data 
@@ -231,9 +231,9 @@ ore least-square bound, as shown below
 Model fitting procedure
 -----------------------
 
-We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer and the``lsb`` (least square bound scipy minimizer). Using ``minuit`` we notice that sometimes (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling
+We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer and the ``lsb`` (least square bound scipy minimizer). Using ``minuit`` we notice that sometimes (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling
 
-We freeze some parameters, and we also set some ``fit_range`` values, anyhow this is only to show these functionalities, you should try different solution and judge which is the best accordint to each application
+We freeze some parameters, and we also set some `fit_range` values. Setting fit_range can speed-up the fit convergence but should be judged by the user each time according to the physics of the particular source.
 
 Model fitting with LSB
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -311,15 +311,13 @@ anyhow, since we have only one component this step could be skipped
     fit_model_lsb.jet_leptonic.set_gamma_grid_size(200)
     fit_model_lsb.composite_expr='jet_leptonic'
 
-freezeing parameters and setting fit_range intervals
+Freezeing parameters and setting fit_range intervals
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note:: with the new implementation of composite model (``FitModel``
-class) to set parameters you have to specify the model component, this
-is different from versions<1.2.0, and this holds also for the ``freeze``
-method and for setting ``fit_range`` intervals see the
-:ref:``composite_models`` user guide for further information about the
-new implementation of ``FitModel``, in particular for parameter setting
+.. note::
+   With the new implementation of composite model  (`FitModel` class) to set parameters you have to specify the model component, this is different from versions<1.1.2,
+   and this holds also for the `freeze` method and for setting  `fit_range` intervals, and for the methods relate to parameters setting in general.
+   See the :ref:`composite_models` user guide for further information about the new implementation of `FitModel`, in particular for parameter setting
 
 These methods are alternative and equivalent ways to access a model
 component for setting parameters state and values
@@ -350,13 +348,18 @@ Building the ModelMinimizer object
 Now we build a ``lsb`` model minimizer and run the fit method
 
 .. note::
-   starting from version 1.2.0 the `fit` method allows to repeat the fit process, setting the parameter `repeat`. This will provide a better fit convergence.
-   setting `repeat=3` the fit process will be repeated 3 times
+   starting from version 1.1.2 the `fit` method allows to repeat the fit process, setting the parameter `repeat`. This will provide a better fit convergence.
+   Setting `repeat=3` the fit process will be repeated 3 times
 
 .. code:: ipython3
 
     model_minimizer_lsb=ModelMinimizer('lsb')
-    best_fit_lsb=model_minimizer_lsb.fit(fit_model_lsb,sed_data,1E11,1E29,fitname='SSC-best-fit-minuit',repeat=3)
+    best_fit_lsb=model_minimizer_lsb.fit(fit_model_lsb,
+                                         sed_data,
+                                         1E11,
+                                         1E29,
+                                         fitname='SSC-best-fit-minuit',
+                                         repeat=3)
 
 
 

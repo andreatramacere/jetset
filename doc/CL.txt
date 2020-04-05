@@ -11,12 +11,13 @@
 
 #update the docs
 cp -r ../../documentation_notebooks/user_guide/* user_guide/
-cp -r ../notebooks/QuickStart.ipynb  quickstart/
+
 
 #run notebooks and build rst file with script
 ./build_rst_files.ch -e #run all noteboks found in dirs
 OR
 ./build_rst_files.ch -e dir-name #runs only give directories
+
 ONLY BUILD RST
 ./build_rst_files.ch
 OR

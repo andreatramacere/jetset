@@ -1,7 +1,7 @@
 .. _model_fitting_3:
 
-Model fitting
-=============
+Model fitting 4: Only Synchrotron
+=================================
 
 .. code:: ipython3
 
@@ -31,7 +31,7 @@ Model fitting
 
 
 
-loading data
+Loading data
 ------------
 
 see the :ref:`data_format` user guide for further information about loading data 
@@ -77,12 +77,12 @@ see the :ref:`data_format` user guide for further information about loading data
 
     sed_data.save('Mrk_401.pkl')
 
-phenomenological model constraining
+Phenomenological model constraining
 -----------------------------------
 
 see the :ref:`phenom_constr` user guide for further information about loading data 
 
-spectral indices
+Spectral indices
 ~~~~~~~~~~~~~~~~
 
 .. code:: ipython3
@@ -107,7 +107,7 @@ spectral indices
 .. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_12_1.png
 
 
-sed shaper
+Sed shaper
 ~~~~~~~~~~
 
 .. code:: ipython3
@@ -171,7 +171,7 @@ sed shaper
 .. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_15_1.png
 
 
-model constraining
+Model constraining
 ~~~~~~~~~~~~~~~~~~
 
 .. code:: ipython3
@@ -228,6 +228,11 @@ model constraining
 
 Model fitting only Synchorotron component
 -----------------------------------------
+
+.. note::
+   With the new implementation of composite model  (`FitModel` class) to set parameters you have to specify the model component, this is different from versions<1.1.2,
+   and this holds also for the `freeze` method and for setting  `fit_range` intervals, and for the methods relate to parameters setting in general.
+   See the :ref:`composite_models` user guide for further information about the new implementation of `FitModel`, in particular for parameter setting
 
 Model fitting with Minuit
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -418,7 +423,7 @@ we switch off the IC component
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_26_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_27_0.png
 
 
 .. code:: ipython3
@@ -756,7 +761,7 @@ we switch off the IC component
     / minim function calls=400, chisq=300.390795 UL part=-0.000000
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_28_1.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_29_1.png
 
 
 .. code:: ipython3
@@ -769,7 +774,7 @@ we switch off the IC component
     \ minim function calls=100, chisq=60.061619 UL part=-0.000000
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_29_1.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_30_1.png
 
 
 .. code:: ipython3
@@ -837,7 +842,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_36_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_37_0.png
 
 
 f=mcmc.plot_chain(‘s’,log_plot=False)
@@ -848,7 +853,7 @@ f=mcmc.plot_chain(‘s’,log_plot=False)
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_38_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_39_0.png
 
 
 .. code:: ipython3
@@ -872,7 +877,7 @@ f=mcmc.plot_chain(‘s’,log_plot=False)
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_40_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_41_0.png
 
 
 .. code:: ipython3
@@ -881,7 +886,7 @@ f=mcmc.plot_chain(‘s’,log_plot=False)
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_41_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_42_0.png
 
 
 Save and resue MCMC
@@ -922,7 +927,7 @@ Save and resue MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_46_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_47_0.png
 
 
 .. code:: ipython3
@@ -932,7 +937,7 @@ Save and resue MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_47_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_48_0.png
 
 
 .. code:: ipython3
@@ -942,7 +947,7 @@ Save and resue MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_48_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_49_0.png
 
 
 .. code:: ipython3
@@ -951,7 +956,7 @@ Save and resue MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_49_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_50_0.png
 
 
 .. code:: ipython3
@@ -960,5 +965,5 @@ Save and resue MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_50_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_51_0.png
 

@@ -83,7 +83,7 @@ def sed_shaper(my_shape, plot=True):
     best_fit.show_report()
     best_fit.save_report('synch_shape_fit_rep.txt')
 
-    mm, best_fit= my_shape.IC_fit(fit_range=[23, 29], minimizer='minuit')
+    mm, best_fit= my_shape.IC_fit(fit_range=[23, 29], minimizer='minuit',silent=True)
 
     if plot is True:
         p = my_shape.plot_shape_fit()
@@ -104,7 +104,7 @@ def model_constr(my_shape, plot=True):
                               nu_cut_IR=1E11,
                               SEDShape=my_shape)
 
-    prefit_jet = sed_obspar.constrain_SSC_model(electron_distribution_log_values=False)
+    prefit_jet = sed_obspar.constrain_SSC_model(electron_distribution_log_values=False,silent=True)
     prefit_jet.save_model('prefit_jet_gal_templ.pkl')
 
     return prefit_jet
@@ -178,7 +178,7 @@ def test_build_bessel():
 
 
 def test_jet(plot=True):
-    print('--------> plot',plot)
+    #print('--------> plot',plot)
     from jetset.jet_model import Jet
     j=Jet()
     j.eval()
@@ -210,19 +210,23 @@ def test_full():
     jet_lsb, model_minimizer_lsb, fit_model_lsb =model_fit_lsb(sed_data,my_shape)
     jet_minuit,model_minimizer_minuit=model_fit_minuit(sed_data,my_shape)
 
-def test_short(plot):
+def test_short(plot=False):
     from jetset.plot_sedfit import  plt
-    plt.ioff()
-    test_jet()
-    sed_data = data(plot)
-    print('done')
-    my_shape = spectral_indices(sed_data,plot)
-    print('done')
-    my_shape = sed_shaper(my_shape,plot)
-    print('done')
-    prefit_jet = model_constr(my_shape,plot)
-    print('done')
-    jet_lsb, model_minimizer_lsb,fit_model_lsb = model_fit_lsb(sed_data, my_shape,plot)
+    try:
+        plt.ioff()
+        test_jet(plot)
+        sed_data = data(plot)
+        print('done')
+        my_shape = spectral_indices(sed_data,plot)
+        print('done')
+        my_shape = sed_shaper(my_shape,plot)
+        print('done')
+        prefit_jet = model_constr(my_shape,plot)
+        print('done')
+        jet_lsb, model_minimizer_lsb,fit_model_lsb = model_fit_lsb(sed_data, my_shape,plot)
+        print('TEST PASSED: OK')
+    except Exception as e:
+        return RuntimeError('test failed',e)
 
 @pytest.mark.users
 def test_users():

@@ -11,8 +11,8 @@ Composite Models
 
 
 Composite models allow to combine together different models, such as Jet, and templates, including additive or multiplicative models, and give to the user the possibility to define the functional form of the model composition using a very simple and intuitive form such as:
-
-`'jet1+jet2'*Franceschini_2008`
+.. code-block:: python
+   'jet1+jet2'*Franceschini_2008
 
 that sums two jet models SEDs, and apply to both of them the `Franceschini_2008` EBL absorption.
 
@@ -113,7 +113,7 @@ the root parameter (flagged by the R in parenthesis), and the one
 belonging to the ``jet_flaring`` component is the linked one (flagged by
 the L in parenthesis).
 
-setting parameters
+Setting parameters
 ------------------
 
 .. note::
@@ -179,8 +179,8 @@ names reported in the model description table, and that’s it!
 .. image:: Composite_model_files/Composite_model_24_0.png
 
 
-Sum two jets (steady and flaring) and apply the EBL to both (Multiplicative and additive)
------------------------------------------------------------------------------------------
+Sum of two jets (steady and flaring) and application of the EBL absorption to both (Multiplicative and additive)
+----------------------------------------------------------------------------------------------------------------
 
 Assume that now we want to sum to jet models (a steady and flaring
 component) and apply to both of them the EBL absorption.
@@ -265,7 +265,7 @@ component) and apply to both of them the EBL absorption.
 
 .. code:: ipython3
 
-    composite_model.composite_expr=composite_model.composite_expr='(jet_flaring + steady_jet) * Franceschini_2008'
+    composite_model.composite_expr='(jet_flaring + steady_jet) * Franceschini_2008'
 
 .. code:: ipython3
 
@@ -276,19 +276,4 @@ component) and apply to both of them the EBL absorption.
 
 
 .. image:: Composite_model_files/Composite_model_33_0.png
-
-
-.. code:: ipython3
-
-    help(composite_model.get_par_by_name)
-
-
-.. parsed-literal::
-
-    Help on method get_par_by_name in module jetset.base_model:
-    
-    get_par_by_name(par_name) method of jetset.model_manager.FitModel instance
-        get parameter by type
-    
-
 

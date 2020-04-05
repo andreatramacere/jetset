@@ -984,7 +984,7 @@ class MinutiMinimizer(Minimizer):
         return bound
 
 def fit_SED(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_workplace=None, loglog=False, silent=False,
-            get_conf_int=False, max_ev=0, use_facke_err=False, minimizer='lsb', use_UL=False):
+            get_conf_int=False, max_ev=0, use_facke_err=False, minimizer='lsb', use_UL=False,repeat=3):
 
     mm = ModelMinimizer(minimizer)
     return mm,mm.fit(fit_Model,
@@ -998,6 +998,7 @@ def fit_SED(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_wo
                   get_conf_int=get_conf_int,
                   max_ev=max_ev,
                   use_facke_err=use_facke_err,
-                  use_UL=use_UL)
+                  use_UL=use_UL,
+                  repeat=repeat)
 
 
