@@ -3,9 +3,9 @@ What's new in version 1.1.2
 
 In the following are listed the main new features common to 1.1.1 and 1.1.2
 
-Bugfix on MCMC
------------------
-This release fixes a bug for the MCMC method
+Bugfix on MCMC and moved to mcmc v3
+-----------------------------------
+This release fixes a bug for the MCMC method, and we have moved to emcee v3
 
 EBL absorption
 -----------------
