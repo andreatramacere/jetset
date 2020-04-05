@@ -10,7 +10,8 @@ python setup.py clean
 cd CICD/conda-pipeline/macosx
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PWD
-conda env remove --name jetset-cidc
+conda activate jetset-cidc
+conda remove jetset
 conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython>conda_env_build.log
 source $CONDA_PREFIX/etc/profile.d/conda.sh
 conda activate jetset-cidc
