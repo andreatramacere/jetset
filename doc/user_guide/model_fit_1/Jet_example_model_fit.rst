@@ -341,7 +341,6 @@ c) accessing the model component member of the composite model class
     fit_model_lsb.jet_leptonic.parameters.R.fit_range=[10**15.5,10**17.5]
     fit_model_lsb.jet_leptonic.parameters.beam_obj.fit_range=[5., 50.]
 
-
 Building the ModelMinimizer object
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -472,7 +471,7 @@ We can save all the fit products to be used later.
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_47_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_46_0.png
 
 
 Model fitting with Minuit
@@ -975,7 +974,7 @@ https://iminuit.readthedocs.io/en/latest/
     - minim function calls=100, chisq=128.585342 UL part=-0.000000
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_57_1.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_56_1.png
 
 
 .. code:: ipython3
@@ -994,7 +993,7 @@ https://iminuit.readthedocs.io/en/latest/
     - minim function calls=400, chisq=259.065554 UL part=-0.000000
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_58_1.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_57_1.png
 
 
 you can use also minos contour and profile, in this case the
@@ -1017,7 +1016,7 @@ computational time is longer:
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_61_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_60_0.png
 
 
 .. code:: ipython3
@@ -1038,7 +1037,7 @@ computational time is longer:
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_62_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_61_0.png
 
 
 MCMC sampling
@@ -1081,6 +1080,34 @@ MCMC sampling
 
     
 
+
+We have used a flat prior centered on the best fit value. Setting
+``bound=5.0`` and ``bound_rel=True`` means that the prior interval will
+be defined as
+
+``[best_fit_val - delta_m , best_fit_val + delta_p]``
+
+with ``delta_p``\ =\ ``delta_m``\ =\ ``best_fit_val*bound``
+
+If ``bound_rel=False`` then
+``delta_p``\ =\ ``delta_m``\ =\ ``best_fit_err*bound``
+
+It is possible to define asymmetric boundaries e.g.
+
+``bound=[2.0,5.0]`` meaning that , for ``bound_rel=True``
+
+``delta_p``\ =\ ``best_fit_val*bound[1]``
+
+``delta_m``\ =\ ``best_fit_val*bound[0]``
+
+or, for ``bound_rel=False``
+
+``delta_p``\ =\ ``best_fit_err*bound[1]``
+
+``delta_m``\ =\ ``best_fit_err*bound[0]``
+
+In the next release a more flexible prior interface will be added,
+including different type of priors
 
 .. code:: ipython3
 
@@ -1153,8 +1180,8 @@ MCMC sampling
 .. image:: Jet_example_model_fit_files/Jet_example_model_fit_72_0.png
 
 
-saving MCMC and reusing it
---------------------------
+Save and reuse MCMC
+-------------------
 
 .. code:: ipython3
 
@@ -1230,5 +1257,4 @@ saving MCMC and reusing it
 
 
 .. image:: Jet_example_model_fit_files/Jet_example_model_fit_81_0.png
-
 

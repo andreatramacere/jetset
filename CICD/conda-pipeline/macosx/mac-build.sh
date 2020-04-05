@@ -14,7 +14,7 @@ conda env remove --name jetset-cidc
 conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython>conda_env_build.log
 source $CONDA_PREFIX/etc/profile.d/conda.sh
 conda activate jetset-cidc
-conda install --yes  --file ../../../requirements.txt
+conda install --yes  --file -c astropy -c conda-forge ../../../requirements.txt
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> SET VERSION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'

@@ -603,6 +603,34 @@ MCMC
     
 
 
+We have used a flat prior centered on the best fit value. Setting
+``bound=5.0`` and ``bound_rel=True`` means that the prior interval will
+be defined as
+
+``[best_fit_val - delta_m , best_fit_val + delta_p]``
+
+with ``delta_p``\ =\ ``delta_m``\ =\ ``best_fit_val*bound``
+
+If ``bound_rel=False`` then
+``delta_p``\ =\ ``delta_m``\ =\ ``best_fit_err*bound``
+
+It is possible to define asymmetric boundaries e.g.
+
+``bound=[2.0,5.0]`` meaning that , for ``bound_rel=True``
+
+``delta_p``\ =\ ``best_fit_val*bound[1]``
+
+``delta_m``\ =\ ``best_fit_val*bound[0]``
+
+or, for ``bound_rel=False``
+
+``delta_p``\ =\ ``best_fit_err*bound[1]``
+
+``delta_m``\ =\ ``best_fit_err*bound[0]``
+
+In the next release a more flexible prior interface will be added,
+including different type of priors
+
 .. code:: ipython3
 
     print(mcmc.acceptance_fraction)
@@ -619,7 +647,7 @@ MCMC
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_36_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_37_0.png
 
 
 .. code:: ipython3
@@ -628,10 +656,10 @@ MCMC
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_37_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_38_0.png
 
 
-Save and resue MCMC
+Save and reuse MCMC
 -------------------
 
 .. code:: ipython3
@@ -658,7 +686,7 @@ Save and resue MCMC
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_41_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_42_0.png
 
 
 .. code:: ipython3
@@ -668,7 +696,7 @@ Save and resue MCMC
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_42_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_43_0.png
 
 
 .. code:: ipython3
@@ -677,6 +705,5 @@ Save and resue MCMC
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_43_0.png
-
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_44_0.png
 

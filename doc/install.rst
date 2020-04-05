@@ -32,15 +32,7 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
   .. code-block:: bash
 
-      conda install -c andreatramacere  jetset
-
-
-
-  if conda fails with dependencies you can try
-
-  .. code-block:: bash
-
-      conda install -c andreatramacere -c astropy jetset
+      conda install -c andreatramacere -c astropy -c conda-forge jetset
 
 
 
@@ -76,15 +68,10 @@ Installation from source using Anaconda
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 - Install requirements, run on the command line:
 
-  .. code-block:: bash
-
-    conda install --file requirements.txt
-
-  if conda fails with dependencies you can try
 
   .. code-block:: bash
 
-      conda install -c astropy --file requirements.txt
+      conda install -c astropy -c conda-forge--file requirements.txt
 
 
 -  run on the command line

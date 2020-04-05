@@ -1428,6 +1428,34 @@ MCMC sampling
     
 
 
+We have used a flat prior centered on the best fit value. Setting
+``bound=5.0`` and ``bound_rel=True`` means that the prior interval will
+be defined as
+
+``[best_fit_val - delta_m , best_fit_val + delta_p]``
+
+with ``delta_p``\ =\ ``delta_m``\ =\ ``best_fit_val*bound``
+
+If ``bound_rel=False`` then
+``delta_p``\ =\ ``delta_m``\ =\ ``best_fit_err*bound``
+
+It is possible to define asymmetric boundaries e.g.
+
+``bound=[2.0,5.0]`` meaning that , for ``bound_rel=True``
+
+``delta_p``\ =\ ``best_fit_val*bound[1]``
+
+``delta_m``\ =\ ``best_fit_val*bound[0]``
+
+or, for ``bound_rel=False``
+
+``delta_p``\ =\ ``best_fit_err*bound[1]``
+
+``delta_m``\ =\ ``best_fit_err*bound[0]``
+
+In the next release a more flexible prior interface will be added,
+including different type of priors
+
 .. code:: ipython3
 
     print(mcmc.acceptance_fraction)
@@ -1445,7 +1473,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_53_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_54_0.png
 
 
 .. code:: ipython3
@@ -1454,7 +1482,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_54_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_55_0.png
 
 
 .. code:: ipython3
@@ -1463,7 +1491,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_55_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_56_0.png
 
 
 .. code:: ipython3
@@ -1487,7 +1515,7 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_57_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_58_0.png
 
 
 The posterior of the beaming factor is clearly truncated, so we should
@@ -1560,7 +1588,7 @@ rerun the fit changing the constrain on ``beam_obj`` parameter.
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_63_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_64_0.png
 
 
 .. code:: ipython3
@@ -1608,11 +1636,11 @@ rerun the fit changing the constrain on ``beam_obj`` parameter.
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_66_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_67_0.png
 
 
-saving MCMC and reusing it
---------------------------
+Save and reuse MCMC
+-------------------
 
 .. code:: ipython3
 
@@ -1636,7 +1664,7 @@ saving MCMC and reusing it
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_70_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_71_0.png
 
 
 .. code:: ipython3
@@ -1646,7 +1674,7 @@ saving MCMC and reusing it
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_71_0.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_72_0.png
 
 
 .. code:: ipython3
@@ -1655,7 +1683,5 @@ saving MCMC and reusing it
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_72_0.png
-
-
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_73_0.png
 

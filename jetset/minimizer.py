@@ -390,7 +390,8 @@ class ModelMinimizer(object):
         for i in range(repeat):
             if skip_minimizer == False:
                 if repeat>1:
-                    print('fit run:',i)
+                    if silent is False:
+                        print('fit run:',i)
                 self.minimizer.fit(self,max_ev=max_ev,silent=silent)
 
                 self.pout = self.minimizer.pout
