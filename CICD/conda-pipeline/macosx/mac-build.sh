@@ -1,5 +1,5 @@
 #!/bin/bash
-source $CONDA_PREFIX/etc/profile.d/conda.sh
+source ~/anaconda3/etc/profile.d/conda.sh
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
@@ -10,8 +10,8 @@ cd integration/jetset
 
 conda activate root
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PWD
-conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython>conda_env_build.log
-conda activate jetset-cidc
+conda create --yes --name jetset-cicd python=3.7 ipython anaconda-client conda-build ipython>conda_env_build.log
+conda activate jetset-cicd
 conda install --yes   -c conda-forge emcee">=3.0.0"
 conda install --yes   -c astropy --file requirements.txt
 
