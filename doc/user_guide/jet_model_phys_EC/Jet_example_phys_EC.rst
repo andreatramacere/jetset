@@ -1,7 +1,5 @@
 .. _jet_physical_guide_EC:
 
-
-
 External Compton
 ----------------
 
@@ -13,15 +11,15 @@ The external Compton implementation  gives you the possibility to use a double a
 * transformation of the electron emitting distribution from the blob restframe to
   disk/BH restframe :cite:`Dermer95` :cite:`GKM01`
 
-Regading the single external radiavite fiels 
+The implemented external radiative fields are 
  
-* Implementation of Broad Line Region radiative field using the approach of :cite:`Donea2003` 
+* Broad Line Region radiative field using the approach of :cite:`Donea2003` 
 
 * Dusty torus implemented as a uniform BB field within `R_DT`
 
-* accretion disk can be set a single BB or a multitemperature BB
+* accretion disk (mono-energetic, single-temperature BB or a multi-temperature BB)
 
-* CMB 
+* Cosmic Microwave Background (CMB)
 
 Please read :ref:`jet_physical_guide_SSC` if you skipped it.
 
@@ -42,7 +40,15 @@ Broad Line Region
 
     from jetset.jet_model import Jet
     my_jet=Jet(name='BLR example',electron_distribution='bkn',beaming_expr='bulk_theta')
-    my_jet.add_EC_component(['EC_BLR','EC_Disk'])
+    my_jet.add_EC_component(['EC_BLR','EC_Disk'],disk_type='BB')
+
+
+The ``show_model`` method provides, among other information, information
+concerning the accretion disk, in this case we use a mono temperature
+black body ``BB``
+
+.. code:: ipython3
+
     my_jet.show_model()
 
 
@@ -52,15 +58,21 @@ Broad Line Region
     -------------------------------------------------------------------------------------------------------------------
     jet model description
     -------------------------------------------------------------------------------------------------------------------
-    name: BLR example  
+    name: BLRexample  
     
-    electron distribution:
+    electrons distribution:
      type: bkn  
-     electron energy grid size:  1001
+     gamma energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
      normalization  True
      log-values  False
+    
+    accretion disk:
+     disk Type: BB
+     L disk: 1.000000e+45 (erg/s)
+     T disk: 1.000000e+05 (K)
+     nu peak disk: 8.171810e+15 (Hz)
     
     radiative fields:
      seed photons grid size:  100
@@ -80,50 +92,48 @@ Broad Line Region
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-30
+    flux plot lower bound   :  1.000000e-120
     
-        name          par type           units             val         phys. bound. min  phys. bound. max   log  frozen
-    ----------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-              N    electron_density         1 / cm3              100.0                0               None False  False
-           gmin  low-energy-cut-off lorentz-factor*                2.0                1       1000000000.0 False  False
-           gmax high-energy-cut-off lorentz-factor*          1000000.0                1 1000000000000000.0 False  False
-              p   LE_spectral_slope                                2.0            -10.0               10.0 False  False
-            p_1   HE_spectral_slope                                3.0            -10.0               10.0 False  False
-    gamma_break    turn-over-energy lorentz-factor*            10000.0                1       1000000000.0 False  False
-              R         region_size              cm 5000000000000000.0           1000.0              1e+30 False  False
-            R_H     region_position              cm              1e+17                0               None False   True
-              B      magnetic_field               G                0.1                0               None False  False
-          theta   jet-viewing-angle             deg                0.1                0               None False  False
-     BulkFactor     jet-bulk-factor Lorentz-factor*               10.0              1.0               None False  False
-         z_cosm            redshift                                0.1                0               None False  False
-        tau_BLR                 BLR                                0.1                0                1.0 False  False
-       R_BLR_in                 BLR              cm              1e+18                0               None False   True
-      R_BLR_out                 BLR              cm              2e+18                0               None False   True
-         L_Disk                Disk         erg / s              1e+45                0               None False  False
-     R_inner_Sw                Disk      Sw. radii*                3.0                0               None False  False
-       R_ext_Sw                Disk      Sw. radii*              500.0                0               None False  False
-         T_Disk                Disk               K           100000.0                0               None False  False
-       accr_eff                Disk                               0.08                0               None False  False
-      disk_type                Disk                                 BB             None               None False   True
-           M_BH                Disk          M_sun*       1000000000.0                0               None False  False
+        name          par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ----------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+           gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
+           gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+              N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
+              p   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+            p_1   HE_spectral_slope                 3.000000e+00    -1.000000e+01     1.000000e+01 False  False
+    gamma_break    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
+              R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
+            R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+              B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+          theta   jet-viewing-angle             deg 1.000000e-01     0.000000e+00               -- False  False
+     BulkFactor     jet-bulk-factor Lorentz-factor* 1.000000e+01     1.000000e+00               -- False  False
+         z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
+        tau_BLR                 BLR                 1.000000e-01     0.000000e+00     1.000000e+00 False  False
+       R_BLR_in                 BLR              cm 1.000000e+18     0.000000e+00               -- False   True
+      R_BLR_out                 BLR              cm 2.000000e+18     0.000000e+00               -- False   True
+         L_Disk                Disk         erg / s 1.000000e+45     0.000000e+00               -- False  False
+         T_Disk                Disk               K 1.000000e+05     0.000000e+00               -- False  False
     -------------------------------------------------------------------------------------------------------------------
 
 
 change Disk type
 ~~~~~~~~~~~~~~~~
 
-the disk type can be set a mono temperature BB (as in the default case)
-or as a more realistic multi temperature BB
+the disk type can be set as a more realistic multi temperature black
+body (MultiBB). In this case the ``show_model`` method provides physical
+parameters regarding the multi temperature black body accretion disk:
+
+-  the Schwarzschild (Sw radius)
+
+-  the Eddington luminosity (L Edd.)
+
+-  the accretion rate (accr_rate)
+
+-  the Eddington accretion rate (accr_rate Edd.)
 
 .. code:: ipython3
 
-    my_jet.set_par('disk_type',val='MultiBB')
-
-
-now we set some parameter for the model
-
-.. code:: ipython3
-
+    my_jet.add_EC_component(['EC_BLR','EC_Disk'],disk_type='MultiBB')
     my_jet.set_par('L_Disk',val=1E46)
     my_jet.set_par('gmax',val=5E4)
     my_jet.set_par('gmin',val=2.)
@@ -139,16 +149,95 @@ now we set some parameter for the model
     my_jet.set_par('gamma_break',val=5E2)
     my_jet.set_N_from_nuLnu(nu_src=3E13,nuLnu_src=5E45)
     my_jet.set_IC_nu_size(100)
+    my_jet.show_model()
+
+
+.. parsed-literal::
+
+    
+    -------------------------------------------------------------------------------------------------------------------
+    jet model description
+    -------------------------------------------------------------------------------------------------------------------
+    name: BLRexample  
+    
+    electrons distribution:
+     type: bkn  
+     gamma energy grid size:  1001
+     gmin grid : 2.000000e+00
+     gmax grid : 5.000000e+04
+     normalization  True
+     log-values  False
+    
+    accretion disk:
+     disk Type: MultiBB
+     L disk: 1.000000e+46 (erg/s)
+     T disk: 5.015768e+04 (K)
+     nu peak disk: 4.098790e+15 (Hz)
+     Sw radius 2.953539e+14 (cm)
+     L Edd. 1.666723e+47 (erg/s)
+     accr_rate: 2.205171e+00 (M_sun/yr)
+     accr_rate Edd.: 3.675409e+01 (M_sun/yr)
+    
+    radiative fields:
+     seed photons grid size:  100
+     IC emission grid size:  100
+     source emissivity lower bound :  1.000000e-120
+     spectral components:
+       name:Sum, state: on
+       name:Sync, state: self-abs
+       name:SSC, state: on
+       name:EC_BLR, state: on
+       name:Disk, state: on
+       name:EC_Disk, state: on
+    external fields transformation method: blob
+    
+    SED info:
+     nu grid size :200
+     nu mix (Hz): 1.000000e+06
+     nu max (Hz): 1.000000e+30
+    
+    flux plot lower bound   :  1.000000e-120
+    
+        name          par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ----------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+           gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
+           gmax high-energy-cut-off lorentz-factor* 5.000000e+04     1.000000e+00     1.000000e+15 False  False
+              N    emitters_density         1 / cm3 4.174082e+03     0.000000e+00               -- False  False
+              p   LE_spectral_slope                 1.500000e+00    -1.000000e+01     1.000000e+01 False  False
+            p_1   HE_spectral_slope                 3.200000e+00    -1.000000e+01     1.000000e+01 False  False
+    gamma_break    turn-over-energy lorentz-factor* 5.000000e+02     1.000000e+00     1.000000e+09 False  False
+              R         region_size              cm 3.000000e+15     1.000000e+03     1.000000e+30 False  False
+            R_H     region_position              cm 3.000000e+17     0.000000e+00               -- False   True
+              B      magnetic_field               G 1.500000e+00     0.000000e+00               -- False  False
+          theta   jet-viewing-angle             deg 1.000000e+00     0.000000e+00               -- False  False
+     BulkFactor     jet-bulk-factor Lorentz-factor* 2.000000e+01     1.000000e+00               -- False  False
+         z_cosm            redshift                 6.000000e-01     0.000000e+00               -- False  False
+        tau_BLR                 BLR                 1.000000e-01     0.000000e+00     1.000000e+00 False  False
+       R_BLR_in                 BLR              cm 1.000000e+18     0.000000e+00               -- False   True
+      R_BLR_out                 BLR              cm 2.000000e+18     0.000000e+00               -- False   True
+         L_Disk                Disk         erg / s 1.000000e+46     0.000000e+00               -- False  False
+     R_inner_Sw                Disk      Sw. radii* 3.000000e+00     0.000000e+00               -- False  False
+       R_ext_Sw                Disk      Sw. radii* 5.000000e+02     0.000000e+00               -- False  False
+       accr_eff                Disk                 8.000000e-02     0.000000e+00               -- False  False
+           M_BH                Disk          M_sun* 1.000000e+09     0.000000e+00               -- False  False
+    -------------------------------------------------------------------------------------------------------------------
+
+
+now we set some parameter for the model
 
 .. code:: ipython3
 
     my_jet.eval()
+
+
+.. code:: ipython3
+
     p=my_jet.plot_model(frame='obs')
     p.rescale(y_min=-13.5,y_max=-9.5,x_min=9,x_max=27)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_12_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_14_0.png
 
 
 Dusty Torus
@@ -166,15 +255,21 @@ Dusty Torus
     -------------------------------------------------------------------------------------------------------------------
     jet model description
     -------------------------------------------------------------------------------------------------------------------
-    name: BLR example  
+    name: BLRexample  
     
-    electron distribution:
+    electrons distribution:
      type: bkn  
-     electron energy grid size:  1001
+     gamma energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 5.000000e+04
      normalization  True
      log-values  False
+    
+    accretion disk:
+     disk Type: BB
+     L disk: 1.000000e+46 (erg/s)
+     T disk: 5.015768e+04 (K)
+     nu peak disk: 4.098790e+15 (Hz)
     
     radiative fields:
      seed photons grid size:  100
@@ -195,59 +290,62 @@ Dusty Torus
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-30
+    flux plot lower bound   :  1.000000e-120
     
-        name          par type           units             val         phys. bound. min  phys. bound. max   log  frozen
-    ----------- ------------------- --------------- ------------------ ---------------- ------------------ ----- ------
-              N    electron_density         1 / cm3  4174.081522033596                0               None False  False
-           gmin  low-energy-cut-off lorentz-factor*                2.0                1       1000000000.0 False  False
-           gmax high-energy-cut-off lorentz-factor*            50000.0                1 1000000000000000.0 False  False
-              p   LE_spectral_slope                                1.5            -10.0               10.0 False  False
-            p_1   HE_spectral_slope                                3.2            -10.0               10.0 False  False
-    gamma_break    turn-over-energy lorentz-factor*              500.0                1       1000000000.0 False  False
-              R         region_size              cm 3000000000000000.0           1000.0              1e+30 False  False
-            R_H     region_position              cm              3e+17                0               None False   True
-              B      magnetic_field               G                1.5                0               None False  False
-          theta   jet-viewing-angle             deg                  1                0               None False  False
-     BulkFactor     jet-bulk-factor Lorentz-factor*                 20              1.0               None False  False
-         z_cosm            redshift                                0.6                0               None False  False
-        tau_BLR                 BLR                                0.1                0                1.0 False  False
-       R_BLR_in                 BLR              cm              1e+18                0               None False   True
-      R_BLR_out                 BLR              cm              2e+18                0               None False   True
-         L_Disk                Disk         erg / s              1e+46                0               None False  False
-     R_inner_Sw                Disk      Sw. radii*                3.0                0               None False  False
-       R_ext_Sw                Disk      Sw. radii*              500.0                0               None False  False
-         T_Disk                Disk               K           100000.0                0               None False  False
-       accr_eff                Disk                               0.08                0               None False  False
-      disk_type                Disk                            MultiBB             None               None False   True
-           M_BH                Disk          M_sun*       1000000000.0                0               None False  False
-           T_DT                  DT               K              100.0                0               None False  False
-           R_DT                  DT              cm              5e+18                0               None False  False
-         tau_DT                  DT                                0.1                0                1.0 False  False
+        name          par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ----------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+           gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
+           gmax high-energy-cut-off lorentz-factor* 5.000000e+04     1.000000e+00     1.000000e+15 False  False
+              N    emitters_density         1 / cm3 4.174082e+03     0.000000e+00               -- False  False
+              p   LE_spectral_slope                 1.500000e+00    -1.000000e+01     1.000000e+01 False  False
+            p_1   HE_spectral_slope                 3.200000e+00    -1.000000e+01     1.000000e+01 False  False
+    gamma_break    turn-over-energy lorentz-factor* 5.000000e+02     1.000000e+00     1.000000e+09 False  False
+              R         region_size              cm 3.000000e+15     1.000000e+03     1.000000e+30 False  False
+            R_H     region_position              cm 3.000000e+17     0.000000e+00               -- False   True
+              B      magnetic_field               G 1.500000e+00     0.000000e+00               -- False  False
+          theta   jet-viewing-angle             deg 1.000000e+00     0.000000e+00               -- False  False
+     BulkFactor     jet-bulk-factor Lorentz-factor* 2.000000e+01     1.000000e+00               -- False  False
+         z_cosm            redshift                 6.000000e-01     0.000000e+00               -- False  False
+        tau_BLR                 BLR                 1.000000e-01     0.000000e+00     1.000000e+00 False  False
+       R_BLR_in                 BLR              cm 1.000000e+18     0.000000e+00               -- False   True
+      R_BLR_out                 BLR              cm 2.000000e+18     0.000000e+00               -- False   True
+         L_Disk                Disk         erg / s 1.000000e+46     0.000000e+00               -- False  False
+         T_Disk                Disk               K 5.015768e+04     0.000000e+00               -- False  False
+           T_DT                  DT               K 1.000000e+02     0.000000e+00               -- False  False
+           R_DT                  DT              cm 5.000000e+18     0.000000e+00               -- False  False
+         tau_DT                  DT                 1.000000e-01     0.000000e+00     1.000000e+00 False  False
     -------------------------------------------------------------------------------------------------------------------
 
 
 .. code:: ipython3
 
     my_jet.eval()
+
+
+.. code:: ipython3
+
     p=my_jet.plot_model()
     p.rescale(y_min=-13.5,y_max=-9.5,x_min=9,x_max=27)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_15_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_18_0.png
 
 
 .. code:: ipython3
 
     my_jet.add_EC_component('EC_DT')
     my_jet.eval()
+
+
+.. code:: ipython3
+
     p=my_jet.plot_model()
     p.rescale(y_min=-13.5,y_max=-9.5,x_min=9,x_max=27)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_16_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_20_0.png
 
 
 Changing the external field transformation
@@ -331,12 +429,12 @@ EC seed photon fields, in the Disk rest frame
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x1826721390>
+    <matplotlib.legend.Legend at 0x11a979c10>
 
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_25_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_29_1.png
 
 
 .. code:: ipython3
@@ -398,12 +496,12 @@ EC seed photon fields, in the Disk rest frame
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x1825da1c10>
+    <matplotlib.legend.Legend at 0x11a992150>
 
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_26_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_30_1.png
 
 
 IC against the CMB
@@ -455,7 +553,7 @@ whitin the Dusty torus radius, and BLR radius, respectively
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_30_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_34_0.png
 
 
 Equipartition
@@ -475,8 +573,7 @@ points (``N_pts``)
     my_jet.show_pars()
     
     my_jet.eval()
-    p=my_jet.plot_model()
-    p.rescale(y_min=-16.5,y_max=-13.5,x_max=28)
+
 
 
 .. parsed-literal::
@@ -487,31 +584,37 @@ points (``N_pts``)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_33_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_37_1.png
 
 
 .. parsed-literal::
 
     setting B to  0.0001389495494373139
     setting N to  9.13927847193837e-06
-          name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-                   N    electron_density         1 / cm3  9.13927847193837e-06              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*                  50.0              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*             3000000.0              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                                  2.58            -10.0               10.0 False  False
-                   r  spectral_curvature                                  0.42            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*               35000.0              1.0       1000000000.0 False  False
-                   R         region_size              cm                 1e+21           1000.0              1e+30 False  False
-                 R_H     region_position              cm                 1e+17              0.0               None False   True
-                   B      magnetic_field               G 0.0001389495494373139              0.0               None False  False
-               theta   jet-viewing-angle             deg                  12.0              0.0               None False  False
-          BulkFactor     jet-bulk-factor Lorentz-factor*                   3.5              1.0               None False  False
-              z_cosm            redshift                                 0.651              0.0               None False  False
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                gmin  low-energy-cut-off lorentz-factor* 5.000000e+01     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 3.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 9.139278e-06     0.000000e+00               -- False  False
+                   s   LE_spectral_slope                 2.580000e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 4.200000e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 3.500000e+04     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 1.000000e+21     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.389495e-04     0.000000e+00               -- False  False
+               theta   jet-viewing-angle             deg 1.200000e+01     0.000000e+00               -- False  False
+          BulkFactor     jet-bulk-factor Lorentz-factor* 3.500000e+00     1.000000e+00               -- False  False
+              z_cosm            redshift                 6.510000e-01     0.000000e+00               -- False  False
+
+
+.. code:: ipython3
+
+    p=my_jet.plot_model()
+    p.rescale(y_min=-16.5,y_max=-13.5,x_max=28)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_33_3.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_38_0.png
 
 
 .. bibliography:: references.bib

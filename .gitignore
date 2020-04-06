@@ -1,5 +1,6 @@
 *.so
 *.py[cod]
+__pycache__/
 /doc/out.txt
 /doc/err.txt
 /doc/build/*
@@ -8,8 +9,10 @@
 *.egg-info
 *.egg
 *.xcodeproj
+*.pkl
 *.ipynb_checkpoints
 /.vscode
+/testing
 /build
 develop-eggs
 dist

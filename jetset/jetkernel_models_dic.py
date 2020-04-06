@@ -32,11 +32,12 @@ nuFnu_obs_dic['SSC']=['nuFnu_SSC_grid','nu_grid']
 nuFnu_obs_dic['EC_BLR']=['nuFnu_EC_BLR_grid','nu_grid']
 nuFnu_obs_dic['EC_DT']=['nuFnu_EC_DT_grid','nu_grid']
 nuFnu_obs_dic['DT']=['nuFnu_DT_grid','nu_grid']
+nuFnu_obs_dic['Star']=['nuFnu_Star_grid','nu_grid']
 nuFnu_obs_dic['EC_Disk']=['nuFnu_EC_Disk_grid','nu_grid']
 nuFnu_obs_dic['Disk']=['nuFnu_Disk_grid','nu_grid']
 nuFnu_obs_dic['EC_CMB']=['nuFnu_EC_CMB_grid','nu_grid']
-#nuFnu_obs_dic['EC_CMB_stat']=['nuFnu_EC_CMB_stat_grid','nu_grid']
-#nuFnu_obs_dic['CMB']=['nuF_nu_EC_CMB_obs','nu_grid']
+nuFnu_obs_dic['EC_CMB_stat']=['nuFnu_EC_CMB_stat_grid','nu_grid']
+nuFnu_obs_dic['PP_gamma']=['nuFnu_pp_grid','nu_grid']
 
 
 #seed-photon fields components
@@ -49,6 +50,7 @@ n_seed_dic['EC_BLR']=['n_BLR','nu_BLR']
 n_seed_dic['EC_CMB']=['n_CMB','nu_CMB']
 n_seed_dic['EC_S']=['n_CMB','nu_CMB']
 n_seed_dic['SSC']=['n_Sync','nu_Sync']
+n_seed_dic['Star']=['n_Star','nu_Sync']
 
 
 #nuLnu_dic={'SUM':['','nu_']}
@@ -64,7 +66,8 @@ n_seed_dic['SSC']=['n_Sync','nu_Sync']
 
 #Electron distributions
 
-gamma_dic={'electron_distr':['Ne','griglia_gamma_Ne_log']}
+gamma_dic_e={'electron_distr':['Ne','griglia_gamma_Ne_log']}
+gamma_dic_p={'proton_distr':['Np','griglia_gamma_Np_log']}
 
 s_dic={'pl':'p'}
 s_dic['lppl']='s'
@@ -100,6 +103,7 @@ available_N_distr_descr=['log-parabola',
                          'broken powerlaw and pileup']
 
 
+available_emitters_type=['electrons','protons']
 
 N_distr_descr={}
 for m,d in zip(available_N_distr,available_N_distr_descr):

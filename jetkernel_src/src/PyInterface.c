@@ -59,8 +59,8 @@ void show_blob(struct spettro pt ) {
     printf("do_EC_BLR=%d\n", pt.do_EC_BLR);
     printf("do_EC_DT=%d\n", pt.do_EC_DT);
     printf("disk type =%s\n", pt.disk_type);
-    printf("nu_start_EC_BLR\n", pt.nu_start_EC_BLR);
-    printf("nu_stop_EC_BLR\n", pt.nu_stop_EC_BLR);
+    printf("nu_start_EC_BLR %e\n", pt.nu_start_EC_BLR);
+    printf("nu_stop_EC_BLR %e\n", pt.nu_stop_EC_BLR);
     printf("Lum Diks %e\n", pt.L_Disk);
     printf("tau BLR %e\n", pt.tau_BLR);
     printf("R_inner_Sw %e (Rs)\n", pt.R_inner_Sw);
@@ -69,8 +69,8 @@ void show_blob(struct spettro pt ) {
     printf("T disk max (T max for MultiBB) %e\n", pt.T_Disk);
     printf("dist disk BLR (cm))%e\n", pt.R_BLR_in);
     printf("test array=%e\n", pt.nuF_nu_SSC_obs[0]);
-    printf("nu_start_EC_DT\n", pt.nu_start_EC_DT);
-    printf("nu_stop_EC_DT\n", pt.nu_stop_EC_DT);
+    printf("nu_start_EC_DT %e\n", pt.nu_start_EC_DT);
+    printf("nu_stop_EC_DT %e\n", pt.nu_stop_EC_DT);
     printf("T_DT (T Dusty Torus) %e\n", pt.T_DT);
     printf("dist disk DT (cm))%e\n", pt.R_DT);
     printf("tau DT %e\n", pt.tau_DT);
@@ -160,11 +160,12 @@ struct spettro MakeBlob() {
     sprintf(spettro_root.path, "./");
     sprintf(spettro_root.STEM, "TEST");
 
-    sprintf(spettro_root.PARTICLE, "leptons");
+    sprintf(spettro_root.PARTICLE, "electrons");
     spettro_root.do_Sync = 1;
     spettro_root.Sync_kernel=1;
     spettro_root.do_SSC = 1;
     spettro_root.do_IC=1;
+    spettro_root.do_pp_gamma=1;
     spettro_root.adaptive_e_binning =0;
     sprintf(spettro_root.MODE, "fast");
     //GRID SIZE FOR SEED
@@ -194,6 +195,7 @@ struct spettro MakeBlob() {
     spettro_root.NH_pp = 0.1;
     spettro_root.N = 10;
     spettro_root.Norm_distr = 1;
+    spettro_root.N0_e_pp_factor =1.0;
     //spettro_root.Norm_distr_L_e_Sync=-1.0;
     spettro_root.Distr_e_done = 0;
     sprintf(spettro_root.DISTR, "lp");
@@ -261,7 +263,8 @@ struct spettro MakeBlob() {
     spettro_root.T_DT = 100;
     spettro_root.R_DT = 5.0e18;
     spettro_root.tau_DT = 1e-1;
-    //double test[1000];
+    spettro_root.R_Star = 1e10;
+    spettro_root.T_Star_max =1E5;
 
     spettro_root.gam=NULL;
     spettro_root.Ne=NULL;
@@ -311,9 +314,9 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
     // otherwise the passed value is used
 
     //struct spettro *pt_base;
-    double (*pf) (struct spettro *, double);
-    double test, prova;
-    unsigned long i;
+    //double (*pf) (struct spettro *, double);
+    
+    unsigned int i;
     //char * ENV;
     pt_base->SYSPATH=getenv("BLAZARSED");
     set_seed_freq_start(pt_base);
@@ -424,7 +427,8 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
     //==================================
     //exit(1);
     if (pt_base->BESSEL_TABLE_DONE == 0){
-    	tabella_Bessel(pt_base);
+        printf("Bessel Functions\n");
+        tabella_Bessel(pt_base);
     }
     
     //========================================================
@@ -469,9 +473,9 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
         printf("Volume for Spherical Geom.=%e\n", pt_base->Vol_sphere);
     }
     
-    if (strcmp(pt_base->PARTICLE, "leptons") == 0) {
+    if (strcmp(pt_base->PARTICLE, "electrons") == 0) {
         InitNe(pt_base);
-        pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N;
+        pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N_e;
         FindNe_NpGp(pt_base);
         EvalU_e(pt_base);
         
@@ -479,7 +483,7 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
             printf("********************       Leptonic Scenario       ********************\n");
             printf("type of distr=%d\n", pt_base->TIPO_DISTR);
             printf("*******  Leptonic Energetic   **********\n");
-            printf("N_e=%e Ne/Ne_0=%e\n", pt_base->N, pt_base->N / pt_base->N_0e);
+            printf("N_e=%e Ne/Ne_0=%e\n", pt_base->N_e, pt_base->N / pt_base->N_0e);
             printf("Total number of electrons    =%e\n", pt_base->N_tot_e_Sferic);
             printf("Gamma_p of N(gamma)*gamma^2 = %e\n", pt_base->Gamma_p2);
             printf("Gamma_p of N(gamma)*gamma^3 = %e\n", pt_base->Gamma_p3);
@@ -491,10 +495,9 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
             printf("************************************************************************\n");
         }
 
-    } else if (strcmp(pt_base->PARTICLE, "hadrons") == 0) {
-        
-        Genera_Np_Ne_pp(pt_base);        
-        pt_base->N_tot_p_Sferic = pt_base->Vol_sphere * pt_base->N;             
+    } else if (strcmp(pt_base->PARTICLE, "protons") == 0) {
+        Init_Np_Ne_pp(pt_base);        
+        pt_base->N_tot_p_Sferic = pt_base->Vol_sphere * pt_base->N_p;             
         EvalU_p(pt_base);             
         pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N_e_pp;
         EvalU_e(pt_base);
@@ -525,7 +528,7 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
 
 }
 void Run_SED(struct spettro *pt_base){
-	unsigned long i;
+	unsigned int i;
     if (pt_base->verbose) {
         printf("STEM=%s\n", pt_base->STEM);
         printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> RUN      <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
@@ -533,7 +536,7 @@ void Run_SED(struct spettro *pt_base){
     //==================================================
     // Evaluate hadronic pp Spectrum
     //==================================================
-    if (strcmp(pt_base->PARTICLE, "hadrons") == 0) {
+    if ((strcmp(pt_base->PARTICLE, "protons") == 0) && pt_base->do_pp_gamma) {
 
         spettro_pp(1, pt_base);
     }
@@ -560,11 +563,8 @@ void Run_SED(struct spettro *pt_base){
     // Evaluate EC Spectrum
     //==================================================
 	if (pt_base->do_IC) {
-		if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1
-				|| pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1
-				|| pt_base->do_EC_CMB == 1 
-				|| pt_base->do_Disk==1 || pt_base->do_DT==1) 
-                {
+		if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1 || pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1 || pt_base->do_EC_CMB == 1 || pt_base->do_Disk==1 || pt_base->do_DT==1 || pt_base->do_Star==1) 
+        {
                 spectra_External_Fields(1, pt_base);
                 if (pt_base->do_EC_Star == 1) {
                     //if (pt_base->verbose) {
@@ -634,7 +634,7 @@ void Run_SED(struct spettro *pt_base){
 //==================================================
 //Funtions To access Ne and Spectral components form Python
 //==================================================
-double get_spectral_array(double * arr, struct spettro * pt, unsigned long id){
+double get_spectral_array(double * arr, struct spettro * pt, unsigned int id){
 	if ((id >=0) && (id <= pt->nu_grid_size)){
 		return arr[id];
 	}
@@ -645,7 +645,7 @@ double get_spectral_array(double * arr, struct spettro * pt, unsigned long id){
 }
 
 
-double get_elec_array(double * arr, struct spettro *pt, unsigned long id){
+double get_elec_array(double * arr, struct spettro *pt, unsigned int id){
 	if ((id>=0) && (id<=pt->gamma_grid_size)){
 		return arr[id];
 	}
@@ -655,7 +655,7 @@ double get_elec_array(double * arr, struct spettro *pt, unsigned long id){
 	}
 }
 
-double set_elec_array(double * arr,struct spettro *pt, double val, unsigned long id){
+void set_elec_array(double * arr,struct spettro *pt, double val, unsigned int id){
     if ((id>=0) && (id<=pt->gamma_grid_size)){
            arr[id]=val;
         }
@@ -665,7 +665,7 @@ double set_elec_array(double * arr,struct spettro *pt, double val, unsigned long
         }
 }
 
-double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned long id){
+void set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned int id){
     if ((id>=0) && (id<=pt->gamma_custom_grid_size)){
            arr[id]=val;
         }
@@ -673,6 +673,19 @@ double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsign
             printf("exceeded array size\n");
             exit(0);
         }
+}
+
+void set_bessel_table(double *arr, struct spettro *pt, double val, unsigned int id)
+{
+    if ((id >= 0) && (id <= static_bess_table_size))
+    {
+        arr[id] = val;
+    }
+    else
+    {
+        printf("exceeded array size\n");
+        exit(0);
+    }
 }
 
 //=========================================================================================

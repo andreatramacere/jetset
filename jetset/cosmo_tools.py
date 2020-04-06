@@ -64,7 +64,7 @@ class  Cosmo (object):
                 _d = _d.value*u(str(_d.unit))
                 _d = _d.to('cm').value
         else:
-            _d = self._DL_cm
+            _d = self._DL_cm.value
 
         return _d
     

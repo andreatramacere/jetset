@@ -21,27 +21,27 @@
 
 void spettro_sincrotrone(int Num_file, struct spettro * pt) {
     int stop;
-    unsigned long j_max, NU_INT, I_MAX;
-    double nu_obs, k, nu, nu_src,gmax;
-    double log_nu_start,nu_p_ext;
+    unsigned int NU_INT, I_MAX;
+    double nu_src,gmax;
+    double nu_p_ext;
 
     double suggested_nu_stop_Sync;
 
 
     //double N_tot_e_Sferic;
 
-    double tau_nu;
+    //double tau_nu;
 
     double F_nu_Sync_obs,S_nu;
     double L_nu_Sync, nuL_nu_Sync;
 
-    double (*pf_norm) (struct spettro *, double x);
+    //double (*pf_norm) (struct spettro *, double x);
 
 
-    char f_Synch[static_file_name_max_legth];
+    //char f_Synch[static_file_name_max_legth];
 
 
-    FILE *fp_Synch;
+    //FILE *fp_Synch;
     if (pt->Distr_e_done == 0) {
         printf("No electron distribution calculated \n ");
         exit(0);
@@ -55,7 +55,7 @@ void spettro_sincrotrone(int Num_file, struct spettro * pt) {
     // SCRITTURA NOME FILE ED APERTURA
     // SCRITTURA HEADER FILES
     //=======================================================
-   
+    /*
     if (pt->OUT_FILE==1 && pt->WRITE_TO_FILE) {
         sprintf(f_Synch, "%s%s-Sync.dat", pt->path, pt->STEM);
         fp_Synch = fopen(f_Synch, "w");
@@ -65,7 +65,7 @@ void spettro_sincrotrone(int Num_file, struct spettro * pt) {
         }
         flux_header(fp_Synch);
     }
-    
+    */
 
     //=================== FINE  SCRITTURA NOME FILE ED APERTURA =============
 
@@ -150,7 +150,7 @@ void spettro_sincrotrone(int Num_file, struct spettro * pt) {
         pt->j_Sync[NU_INT] = 0.0;
         pt->alfa_Sync[NU_INT] = 0.0;
 
-        // Synch is evaluated as long as  nu_start_Sync <nu<nu_stop_Sync
+        // Synch is evaluated as int as  nu_start_Sync <nu<nu_stop_Sync
         if ( pt->nu_Sync[NU_INT] <= pt->nu_stop_Sync &&  pt->nu_Sync[NU_INT] >= pt->nu_start_Sync && stop != 1) {
 
             /* erg*s^-1*cm^-3*Hz^-1*sterad^-1 */
@@ -200,6 +200,7 @@ void spettro_sincrotrone(int Num_file, struct spettro * pt) {
         //===========================================
         // FILES output nu dnu nuFnu dnuFnu
         //==========================================
+        /*
         if (pt->OUT_FILE && !stop && pt->WRITE_TO_FILE)
         {
             if (pt->nuF_nu_Sync_obs[NU_INT] > pt->emiss_lim) {
@@ -214,7 +215,7 @@ void spettro_sincrotrone(int Num_file, struct spettro * pt) {
                         pt->nu_Sync[NU_INT] * I_nu_to_L_nu_blob(pt->I_nu_Sync[NU_INT], pt->Surf_sphere));
             }
         }
-
+       */
     }
 
     //Se ancora non ha trovato nu_stop
@@ -247,11 +248,12 @@ void spettro_sincrotrone(int Num_file, struct spettro * pt) {
     //=========================
     //       chiusura file
     //=========================
+    /*
     if (pt->OUT_FILE && pt->WRITE_TO_FILE)
     {
         fclose(fp_Synch);
     }
-
+    */
     //===========================================
     //    trova nu peak e Flux peak
     //===========================================

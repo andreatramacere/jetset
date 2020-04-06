@@ -1,0 +1,63 @@
+
+**************************************************************************************************
+Fit report
+
+Model: SSC-best-fit-minuit
+ model name        name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+------------ ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+jet_leptonic             gmin  low-energy-cut-off lorentz-factor* 3.497624e+02     1.000000e+00     1.000000e+09 False  False
+jet_leptonic             gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False   True
+jet_leptonic                N    emitters_density         1 / cm3 5.692739e+00     0.000000e+00               -- False  False
+jet_leptonic                s   LE_spectral_slope                 1.902930e+00    -1.000000e+01     1.000000e+01 False  False
+jet_leptonic                r  spectral_curvature                 5.676336e-01    -1.500000e+01     1.500000e+01 False  False
+jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor* 1.644956e+04     1.000000e+00     1.000000e+09 False  False
+jet_leptonic                R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False   True
+jet_leptonic              R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+jet_leptonic                B      magnetic_field               G 4.059220e-02     0.000000e+00               -- False  False
+jet_leptonic         beam_obj             beaming Lorentz-factor* 2.377591e+01     1.000000e-04               -- False  False
+jet_leptonic           z_cosm            redshift                 3.080000e-02     0.000000e+00               -- False   True
+
+converged=True
+calls=229
+------------------------------------------------------------------
+| FCN = 1.343                   |     Ncalls=224 (228 total)     |
+| EDM = 0.0105 (Goal: 1E-05)    |            up = 1.0            |
+------------------------------------------------------------------
+|  Valid Min.   | Valid Param.  | Above EDM | Reached call limit |
+------------------------------------------------------------------
+|     False     |     True      |   True    |       False        |
+------------------------------------------------------------------
+| Hesse failed  |   Has cov.    | Accurate  | Pos. def. | Forced |
+------------------------------------------------------------------
+|     False     |     True      |   False   |   True    | False  |
+------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+|   | Name  |   Value   | Hesse Err | Minos Err- | Minos Err+ | Limit-  | Limit+  | Fixed |
+-------------------------------------------------------------------------------------------
+| 0 | par_0 |  0.350E3  |  0.000E3  |            |            |    1    |  1e+09  |       |
+| 1 | par_1 |    5.7    |    1.7    |            |            |    0    |         |       |
+| 2 | par_2 |   1.90    |   0.07    |            |            |   -10   |   10    |       |
+| 3 | par_3 |   0.57    |   0.08    |            |            |   -15   |   15    |       |
+| 4 | par_4 |   1.6E4   |   0.4E4   |            |            |    1    |  1e+09  |       |
+| 5 | par_5 |   0.041   |   0.005   |            |            |    0    |         |       |
+| 6 | par_6 |   23.8    |    2.1    |            |            |    5    |   50    |       |
+-------------------------------------------------------------------------------------------
+dof=6
+chisq=1.343319, chisq/red=0.223887 null hypothesis sig=0.969215
+
+best fit pars
+ model name        name       bestfit val     err +     err -  start val   fit range min fit range max frozen
+------------ ---------------- ------------ ------------ ----- ------------ ------------- ------------- ------
+jet_leptonic             gmin 3.497624e+02 1.357303e-03    -- 3.338231e+02  1.000000e+00  1.000000e+09  False
+jet_leptonic             gmax           --           --    -- 9.758134e+05  1.000000e+00  1.000000e+15   True
+jet_leptonic                N 5.692739e+00 1.659377e+00    -- 3.073134e+00  0.000000e+00            --  False
+jet_leptonic                s 1.902930e+00 7.023295e-02    -- 2.181578e+00 -1.000000e+01  1.000000e+01  False
+jet_leptonic                r 5.676336e-01 7.665014e-02    -- 7.726503e-01 -1.500000e+01  1.500000e+01  False
+jet_leptonic gamma0_log_parab 1.644956e+04 4.197899e+03    -- 2.265855e+04  1.000000e+00  1.000000e+09  False
+jet_leptonic                R           --           --    -- 1.649014e+16  3.162278e+15  3.162278e+17   True
+jet_leptonic              R_H           --           --    -- 1.000000e+17  0.000000e+00            --   True
+jet_leptonic                B 4.059220e-02 5.247971e-03    -- 1.000000e-01  0.000000e+00            --  False
+jet_leptonic         beam_obj 2.377591e+01 2.105295e+00    -- 2.500000e+01  5.000000e+00  5.000000e+01  False
+jet_leptonic           z_cosm           --           --    -- 3.080000e-02  0.000000e+00            --   True
+**************************************************************************************************
+

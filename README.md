@@ -59,13 +59,13 @@ run the notebook on binder:
   `conda install -c andreatramacere jetset`
   
   if conda fails with dependencies you can try
-  
-   - `conda install -c andreatramacere -c astropy jetset`
     
+   `conda install -c andreatramacere -c astropy  -c  conda-forge jetset`
+   
 
 - run the test
 ```bash
-python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
  ```  
 
 **run all the examples outside of the installation dir**
@@ -87,14 +87,10 @@ python -c 'from jetset.tests import test_functions; test_functions.test_short()'
 ### Installation from source using Anaconda 
  
  - Install requirements, run on the command line:
-    - `conda install --file requirements.txt`
-     
-     if conda fails with dependencies you can try
+    - `conda install --yes   -c conda-forge emcee">=3.0.0"`
+    - `conda install --yes   -c astropy --file requirements.txt`
   
-   - `conda install -c astropy  --file requirements.txt`
-    
-  
-  
+   
    if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
    
  - run on the command line: 
@@ -103,7 +99,7 @@ python -c 'from jetset.tests import test_functions; test_functions.test_short()'
 
  - run the test (**run all the examples outside of the installation dir**)
 ```bash
-python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
  ```  
 
 
@@ -122,7 +118,7 @@ python -c 'from jetset.tests import test_functions; test_functions.test_short()'
 
  - run the test (**run all the examples outside of the installation dir**)
 ```bash
-python -c 'from jetset.tests import test_functions; test_functions.test_short()'
+pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
  ```    
       
    
@@ -172,7 +168,7 @@ The code is hosted here:
  - nbsphinx: "conda install -c conda-forge nbsphinx"
  - sphinx_rtd_theme: conda install -c anaconda sphinx_rtd_theme 
  - sphinx-bootstrap-theme: 'https://github.com/ryan-roemer/sphinx-bootstrap-theme'
- - sphinx automod: 'https://github.com/astropy/sphinx-automodapi'    
+ - sphinx-automod: 'https://github.com/astropy/sphinx-automodapi'    
  
  
  

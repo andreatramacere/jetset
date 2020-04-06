@@ -1,3 +1,5 @@
+#!/bin/bash
+source $CONDA_PREFIX/etc/profile.d/conda.sh
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
@@ -7,15 +9,14 @@ export USE_PIP='FALSE'
 cd integration/jetset
 python setup.py clean
 
-cd CICD/conda-pipeline/macosx
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PWD
-conda env remove --name jetset-cidc
 conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython>conda_env_build.log
-source $CONDA_PREFIX/etc/profile.d/conda.sh
 conda activate jetset-cidc
-conda install --yes  --file ../../../requirements.txt
+conda install --yes   -c conda-forge emcee">=3.0.0"
+conda install --yes   -c astropy --file requirements.txt
 
+cd CICD/conda-pipeline/macosx
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> SET VERSION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 

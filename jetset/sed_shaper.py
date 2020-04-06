@@ -7,7 +7,7 @@ __author__ = "Andrea Tramacere"
 
 #from .cosmo_tools import Cosmo
 
-from .template_model import Template
+from .template_model import SpectralTemplateLogLog
 from .output import section_separator
 from .model_manager import FitModel
 from .loglog_poly_model import LogParabolaEp,LogCubic,find_max_cubic,LogLinear,LogParabolaPL
@@ -222,13 +222,15 @@ class peak_values(object):
             self.curvature_err=curv_err
 
             
-        def update(self,cubic_model):
+        def update(self,fit_model,fit_law_name):
             #!!CHANGE TO GET PAR BY TYPE
             """ the show() method returns the class members values """
-            Ep=cubic_model.parameters.get_par_by_name('Ep')
-            Sp=cubic_model.parameters.get_par_by_name('Sp')
-            curv=cubic_model.parameters.get_par_by_name('b')
-
+            #print('-->',fit_model,fit_law_name)
+            #print(fit_model.show_model())
+            Ep=fit_model.parameters.get_par_by_name(fit_law_name,'Ep')
+            Sp=fit_model.parameters.get_par_by_name(fit_law_name,'Sp')
+            curv=fit_model.parameters.get_par_by_name(fit_law_name,'b')
+            #print('-->',Ep,type(Ep),dir(Ep))
             self.nu_p_val=Ep.best_fit_val
             self.nu_p_err=Ep.best_fit_err
             self.nuFnu_p_val=Sp.best_fit_val
@@ -467,10 +469,10 @@ class SEDShape(object):
         self.index_models=[]
         
         for index in self.indices.idx_array:
-            do_fit=self.check_adapt_range_size(self.sed_data.data['nu_data_log'],index,3)
+            do_fit=self.check_adapt_range_size(self.sed_data.data['nu_data_log'],index,3,silent=silent)
             if do_fit==True:
-
-                loglog_pl=FitModel(cosmo=self.cosmo, name='%s'%index.name,loglog_poly=LogLinear())
+                loglog_poly=LogLinear()
+                loglog_pl=FitModel(cosmo=self.cosmo, name='%s'%index.name,loglog_poly=loglog_poly)
                 #print(10.**index.idx_range[0],10.**index.idx_range[1])
                 mm,best_fit=fit_SED(loglog_pl,
                                  self.sed_data,10.**index.idx_range[0],
@@ -484,23 +486,22 @@ class SEDShape(object):
 
 
 
-                par=loglog_pl.parameters.get_par_by_name('alpha')
+                par=loglog_pl.parameters.get_par_by_name(loglog_poly.name,'alpha')
 
+                index.assign_val(val = par.best_fit_val, err =par.best_fit_err)
+                #index.assign_val_to_blob(par.best_fit_val, par.best_fit_err)
 
-                index.assign_val(par.best_fit_val,par.best_fit_err)
-
-
-                index.show_val()
+                if silent is False:
+                    index.show_val()
 
                 self.index_models.append(loglog_pl)
 
-                if show_fit_report==True:
+                if show_fit_report==True and silent is False:
                     best_fit.show_report()
                     print()
 
-
-
-            print()
+            if silent is False:
+                print()
 
         print (section_separator)
             
@@ -590,23 +591,25 @@ class SEDShape(object):
             fit_law=LogCubic()
 
         self.sync_fit_model=FitModel(cosmo=self.cosmo, loglog_poly=fit_law,name='sync_model')
-        self.sync_fit_model.set('b',fit_range_max=0)
-        self.sync_fit_model.set('b',val_max=0)
-        self.sync_fit_model.set('b',fit_range_min=-10)
-        self.sync_fit_model.set('b',val_min=-10)
+        self.sync_fit_model.set(fit_law.name,'b',fit_range_max=0)
+        self.sync_fit_model.set(fit_law.name,'b',val_max=0)
+        self.sync_fit_model.set(fit_law.name,'b',fit_range_min=-10)
+        self.sync_fit_model.set(fit_law.name,'b',val_min=-10)
 
         if Ep_start is not None  :
-            self.sync_fit_model.set('Ep',val=Ep_start)
+            self.sync_fit_model.set(fit_law.name,'Ep',val=Ep_start)
 
-        mm, sync_best_fit=self.do_sync_fit(self.sync_fit_model,fit_range=fit_range,
-                         check_disk=check_disk,
-                         check_BBB=check_BBB_template,
-                         check_host=check_host_gal_template,
-                         #use_log_par=False,
-                         Ep_start=Ep_start,
-                         minimizer=minimizer,
-                         silent=silent,
-                         show_fit_report=show_fit_report)
+        mm, sync_best_fit = self.do_sync_fit(self.sync_fit_model,
+                                             fit_law.name,
+                                             fit_range=fit_range,
+                                             check_disk=check_disk,
+                                             check_BBB=check_BBB_template,
+                                             check_host=check_host_gal_template,
+                                             # use_log_par=False,
+                                             Ep_start=Ep_start,
+                                             minimizer=minimizer,
+                                             silent=silent,
+                                             show_fit_report=show_fit_report)
         #print "bbb", self.sync_fit_model.SED.nu
 
         #Ep=self.S_peak.nu_p_val
@@ -633,7 +636,9 @@ class SEDShape(object):
         self.sync_best_fit.save_report(name=name)
 
     
-    def do_sync_fit(self,fit_model,
+    def do_sync_fit(self,
+                    fit_model,
+                    fit_law_name,
                     fit_range=None,
                     check_disk=False,
                     check_BBB=False,
@@ -668,14 +673,14 @@ class SEDShape(object):
 
 
         #if use_log_par == False:
-        fit_model.set('Ep', val=Ep)
+        fit_model.set(fit_law_name,'Ep', val=Ep)
 
         #else:
         #    fit_model1.set('E0', val=Ep - 1)
 
         mm,best_fit=fit_SED(fit_model,self.sed_data,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=silent,fitname='sync-shape-fit',minimizer=minimizer)
 
-        self.S_peak.update(fit_model)
+        self.S_peak.update(fit_model,fit_law_name)
         self.find_class(self.S_peak.nu_p_val)
 
         refit=False
@@ -707,25 +712,25 @@ class SEDShape(object):
                 best_fit.show_report()
 
             #if use_log_par==False:
-            self.S_peak.update(fit_model)
+            self.S_peak.update(fit_model,fit_law_name)
 
             self.find_class(self.S_peak.nu_p_val)
 
-        fit_model.show_pars()
+
 
         print()
         print()
-
+        fit_model.show_best_fit_pars()
         self.S_peak.show()
 
         self.S_nu_max= self.get_nu_max(self.sed_data.data['nu_data_log'] ,s_fit_range)
         
         
-        self.set_S_LE_slope(fit_model,use_log_par=False)
+        self.set_S_LE_slope(fit_model,fit_law_name,use_log_par=False)
 
 
         if check_disk==True :
-            self.disk.set_disk_pars(fit_model)
+            self.disk.set_disk_pars(fit_model,'Disk')
             self.L_Disk=self.disk.L_Disk
             self.L_Disk_err=self.disk.L_Disk_err
             self.T_Disk=self.disk.T_Disk
@@ -735,10 +740,10 @@ class SEDShape(object):
 
 
         if check_host==True :
-            self.host_gal.set_host_pars(fit_model)
+            self.host_gal.set_host_pars(fit_model,'host_galaxy')
 
         if check_BBB==True :
-            self.BBB.set_BBB_pars(fit_model)
+            self.BBB.set_BBB_pars(fit_model,'BBB')
             self.L_Disk=self.BBB.nuLnu_p_BBB
             self.L_Disk_err=self.BBB.nuLnu_p_BBB_err
             self.T_Disk=self.BBB.T_Disk
@@ -753,13 +758,13 @@ class SEDShape(object):
     
     def add_disk(self,fit_model):
         
-        disk=Disk(cosmo=fit_model.cosmo, z=self.sed_data.z)
+        disk=Disk(cosmo=fit_model.cosmo, z=self.sed_data.z,name='Disk')
         
         fit_model.add_component(disk)
 
-        fit_model.set('nuFnu_p',val=(10**self.S_peak.nuFnu_p_val),fit_range=[10**(self.S_peak.nuFnu_p_val-2),10**(self.S_peak.nuFnu_p_val+2 )])
+        fit_model.set('Disk','nuFnu_p',val=(10**self.S_peak.nuFnu_p_val),fit_range=[10**(self.S_peak.nuFnu_p_val-2),10**(self.S_peak.nuFnu_p_val+2 )])
         
-        fit_model.set('T_Disk',val=1E4,fit_range=[5000,1E5])
+        fit_model.set('Disk','T_Disk',val=1E4,fit_range=[5000,1E5])
  
         self.disk=disk
  
@@ -769,13 +774,13 @@ class SEDShape(object):
     
     def   add_BBB_template(self,fit_model):
         
-        BBB_template=Template('BBB',cosmo=fit_model.cosmo,z=self.sed_data.z)
+        BBB_template=SpectralTemplateLogLog.template_factory('BBB', cosmo=fit_model.cosmo, z=self.sed_data.z, name='BBB')
         
         fit_model.add_component(BBB_template)
    
-        fit_model.set('nuFnu_p_BBB',val=(self.S_peak.nuFnu_p_val),fit_range=[self.S_peak.nuFnu_p_val-2,self.S_peak.nuFnu_p_val+2 ])
+        fit_model.set('BBB','nuFnu_p_BBB',val=(self.S_peak.nuFnu_p_val),fit_range=[self.S_peak.nuFnu_p_val-2,self.S_peak.nuFnu_p_val+2 ])
         
-        fit_model.set('nu_scale',val=0,fit_range=[-0.5,0.5])
+        fit_model.set('BBB','nu_scale',val=0,fit_range=[-0.5,0.5])
    
         self.BBB=BBB_template
     
@@ -788,25 +793,25 @@ class SEDShape(object):
 
     def add_host_template(self,fit_model):
         
-        host_gal=Template('host-galaxy',cosmo=fit_model.cosmo,z=self.sed_data.z)
+        host_gal=SpectralTemplateLogLog.template_factory('host_galaxy', cosmo=fit_model.cosmo, z=self.sed_data.z, name='host_galaxy')
                  
         fit_model.add_component(host_gal)
 
         #print('nuFnu_p_host',self.S_peak.nuFnu_p_val)
-        fit_model.set('nuFnu_p_host',val=(self.S_peak.nuFnu_p_val),fit_range=[self.S_peak.nuFnu_p_val-2,self.S_peak.nuFnu_p_val+2 ])
+        fit_model.set('host_galaxy','nuFnu_p_host',val=(self.S_peak.nuFnu_p_val),fit_range=[self.S_peak.nuFnu_p_val-2,self.S_peak.nuFnu_p_val+2 ])
         
-        fit_model.set('nu_scale',val=0,fit_range=[-0.5,0.5])
+        fit_model.set('host_galaxy','nu_scale',val=0,fit_range=[-0.5,0.5])
    
         self.host_gal=host_gal
     
     
     
     
-    def set_S_LE_slope(self,fit_func,use_log_par):
+    def set_S_LE_slope(self,fit_func,fit_law_name,use_log_par):
         if use_log_par==False:
             self.S_LE_slope=2.0
         else:
-            self.S_LE_slope=fit_func.parameters.get_par_by_name('alpha').best_fit_val
+            self.S_LE_slope=fit_func.parameters.get_par_by_name(fit_law_name,'alpha').best_fit_val
 
     
     
@@ -828,15 +833,7 @@ class SEDShape(object):
         
 
         
-        #Ep=find_max_cubic(self.SEDdata.data['nu_data_log'],self.SEDdata.data['nuFnu_data_log'] ,x_range=fit_range)
-        
-        #if Ep is not None  :
-        #    self.IC_fit_model.set('Ep',val=Ep)
-        #else:
-            #raise Warning('Ep not found')
-        #    self.IC_fit_model.set('Ep', val=0)
-        #
-        #self.IC_fit_model.show_pars()
+
 
         if Ep_start is None:
             Ep=find_max_cubic(self.sed_data.data['nu_data_log'],self.sed_data.data['nuFnu_data_log'] ,x_range=fit_range)
@@ -847,12 +844,13 @@ class SEDShape(object):
         if use_log_par==True:
             print("---> LogParabola fit")
             logpar_model = LogParabolaEp()
+            fit_law_name = logpar_model.name
             self.IC_fit_model = FitModel(cosmo=self.cosmo, loglog_poly=logpar_model, name='IC_log-par_model')
 
 
 
             if Ep is not None:
-                self.IC_fit_model.set('Ep', val=Ep)
+                self.IC_fit_model.set(fit_law_name,'Ep', val=Ep)
 
             if silent == False:
                 self.IC_fit_model.show_pars()
@@ -867,14 +865,15 @@ class SEDShape(object):
         else:
             print("---> LogCubic fit")
             cubic_model = LogCubic()
-            self.IC_fit_model = FitModel(cosmo=self.cosmo, loglog_poly=cubic_model, name='IC_cubic_model')
+            fit_law_name=cubic_model.name
+            self.IC_fit_model = FitModel(cosmo=self.cosmo, loglog_poly=cubic_model, name='IC_log-cubic_model')
 
-            self.IC_fit_model.set('b', fit_range_max=0)
-            self.IC_fit_model.set('b', val_max=0)
-            self.IC_fit_model.set('b', fit_range_min=-10)
-            self.IC_fit_model.set('b', val_min=-10)
+            self.IC_fit_model.set(fit_law_name,'b', fit_range_max=0)
+            self.IC_fit_model.set(fit_law_name,'b', val_max=0)
+            self.IC_fit_model.set(fit_law_name,'b', fit_range_min=-10)
+            self.IC_fit_model.set(fit_law_name,'b', val_min=-10)
             if Ep is not None:
-                self.IC_fit_model.set('Ep', val=Ep)
+                self.IC_fit_model.set(fit_law_name,'Ep', val=Ep)
 
             try:
                 mm,best_fit=fit_SED(self.IC_fit_model,self.sed_data,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit',minimizer=minimizer)
@@ -890,9 +889,10 @@ class SEDShape(object):
                 print ("---> LogCubic fit failed",e)
                 print ("---> try LogParabola ")
                 logpar_model=LogParabolaEp()
+                fit_law_name=logpar_model.name
                 self.IC_fit_model=FitModel(cosmo=self.cosmo, loglog_poly=logpar_model,name='IC_log-par_model')
                 if Ep is not None:
-                    self.IC_fit_model.set('Ep', val=Ep)
+                    self.IC_fit_model.set(fit_law_name,'Ep', val=Ep)
 
                 if silent == False:
                     self.IC_fit_model.show_pars()
@@ -908,11 +908,11 @@ class SEDShape(object):
             
         self.IC=best_fit_model
         
-        self.IC_peak.update(best_fit_model)
+        self.IC_peak.update(best_fit_model,fit_law_name)
 
         print()
         print()
-        self.IC_fit_model.show_pars()
+        self.IC_fit_model.show_best_fit_pars()
 
         self.IC_peak.show()
         
@@ -930,14 +930,15 @@ class SEDShape(object):
         return nu[msk].max()
         
         
-    def check_adapt_range_size(self,x,index,min_size):
+    def check_adapt_range_size(self,x,index,min_size,silent=False):
         do_fit=True
         x_range=[index.idx_range[0],index.idx_range[1]]
         msk = filter_interval(x,x_range)
         x1=x[msk]
         delta=0.1
         delta_tot=0
-        print("---> initial range for index %s  set to [%f,%f]" % (index.name, index.idx_range[0], index.idx_range[1]))
+        if silent is False:
+            print("---> initial range for index %s  set to [%f,%f]" % (index.name, index.idx_range[0], index.idx_range[1]))
         while len(x1)<min_size and delta_tot<1.0:
             delta_tot+=delta
             x_range[0]-=delta
@@ -948,10 +949,12 @@ class SEDShape(object):
         if len(x1)>=min_size:
             do_fit=True
             index.idx_range=x_range
-            print ("---> range for index %s updated  to [%f,%f]"%(index.name,index.idx_range[0],index.idx_range[1] ))
+            if silent is False:
+                print ("---> range for index %s updated  to [%f,%f]"%(index.name,index.idx_range[0],index.idx_range[1] ))
         else:
             do_fit=False
-            print("---> not enough data in range for index%s " % (index.name))
+            if silent is False:
+                print("---> not enough data in range for index%s " % (index.name))
 
         return  do_fit
     

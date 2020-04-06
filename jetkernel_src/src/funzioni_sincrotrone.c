@@ -39,7 +39,7 @@ double F_K_ave(struct spettro *pt, double x){
 //=========================================================================================
 // j_nu Sync integrands
 //=========================================================================================
-double F_int_fix(struct spettro * pt,unsigned long  ID){
+double F_int_fix(struct spettro * pt,unsigned int  ID){
     //PITCH ANGLE FIXED
     double a, y,g;
     g=pt->griglia_gamma_Ne_log[ID];
@@ -49,7 +49,7 @@ double F_int_fix(struct spettro * pt,unsigned long  ID){
     return a;
 }
 
-double F_int_ave(struct spettro * pt,unsigned long  ID){
+double F_int_ave(struct spettro * pt,unsigned int  ID){
     //PITCH ANGLE AVE
     double a, y,g;
     g=pt->griglia_gamma_Ne_log[ID];
@@ -69,8 +69,7 @@ double F_int_ave(struct spettro * pt,unsigned long  ID){
 //=========================================================================================
 //    integrand for alfa_nu_Sync
 //=========================================================================================
-double Sync_self_abs_int(struct spettro *pt,unsigned long  ID){
-	unsigned long i;
+double Sync_self_abs_int(struct spettro *pt,unsigned int  ID){
     double a,g, y, x1, x2, y1, y2, delta;
     
     
@@ -118,7 +117,7 @@ double Sync_self_abs_int(struct spettro *pt,unsigned long  ID){
 // Radiative transfer solution for sefl abs
 // see Kataoka Thesis, page 299
 // tau_nu in I_nu=alfa_nu*R, so we multiply by 0.5
-double solve_S_nu_Sync(struct spettro * pt, unsigned long  NU_INT){
+double solve_S_nu_Sync(struct spettro * pt, unsigned int  NU_INT){
 	double S_nu,tau_nu;
     pt->I_nu_Sync[NU_INT] = 0.0;
 
@@ -169,8 +168,7 @@ double solve_S_nu_Sync(struct spettro * pt, unsigned long  NU_INT){
 //=========================================================================================
 double j_nu_Sync(struct spettro * f){
     double a;
-    double gamma_sp;
-    double (*pf_fint) (struct spettro * ,unsigned long  ID);
+    double (*pf_fint) (struct spettro * ,unsigned int  ID);
     /*** segli in base al kernel ***/
     if (f->Sync_kernel==0){
 		pf_fint=&F_int_fix;
@@ -195,7 +193,7 @@ double j_nu_Sync(struct spettro * f){
 //=========================================================================================
 double alfa_nu_Sync(struct spettro * f){
     double a;
-    double (*pf_fint1) (struct spettro * ,unsigned long  ID);
+    double (*pf_fint1) (struct spettro * ,unsigned int  ID);
     pf_fint1=&Sync_self_abs_int;
     a=integrale_Sync(pf_fint1, f);
     return a*f->C3_Sync_K53*(f->B)/(f->nu*f->nu);
@@ -209,10 +207,10 @@ double alfa_nu_Sync(struct spettro * f){
 //=========================================================================================
 // Sync INTEGRATION WITH SIMPSON AND GRIGLIA EQUI-LOG
 //=========================================================================================
-double integrale_Sync(double (*pf) (struct spettro *, unsigned long  ID), struct spettro * pt ) {
-    double integr, y1, y2, y3, x1, x2, x3;
+double integrale_Sync(double (*pf) (struct spettro *, unsigned int  ID), struct spettro * pt ) {
+    double integr, y1, y2, y3, x1, x3;
     double delta;
-    unsigned long  ID;
+    unsigned int  ID;
     integr=0;
     x1=pt->griglia_gamma_Ne_log[0];
     y1=pf(pt,0);

@@ -1,8 +1,7 @@
 .. _model_fitting_1:
 
-
-Model fitting
-=============
+Model fitting 1: Only SSC
+=========================
 
 .. code:: ipython3
 
@@ -16,7 +15,6 @@ Model fitting
     from jetset.plot_sedfit import PlotSED
     from jetset.test_data_helper import  test_SEDs
 
-
 .. code:: ipython3
 
     test_SEDs
@@ -26,13 +24,13 @@ Model fitting
 
 .. parsed-literal::
 
-    ['/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_3C345.ecsv',
-     '/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.ecsv',
-     '/Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk501.ecsv']
+    ['/Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/test_data/SEDs_data/SED_3C345.ecsv',
+     '/Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421_EBL_DEABS.ecsv',
+     '/Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_DEABS.ecsv']
 
 
 
-loading data
+Loading data
 ------------
 
 see the :ref:`data_format` user guide for further information about loading data 
@@ -46,7 +44,7 @@ see the :ref:`data_format` user guide for further information about loading data
 
 .. parsed-literal::
 
-    /Users/orion/anaconda3/envs/develop/lib/python3.7/site-packages/jetset-1.1.0-py3.7-macosx-10.7-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421.ecsv
+    /Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421_EBL_DEABS.ecsv
 
 
 .. code:: ipython3
@@ -74,10 +72,14 @@ see the :ref:`data_format` user guide for further information about loading data
 .. image:: Jet_example_model_fit_files/Jet_example_model_fit_7_1.png
 
 
+.. code:: ipython3
+
+    sed_data.save('Mrk_401.pkl')
+
 phenomenological model constraining
 -----------------------------------
 
-see the :ref:`phenom_constr` user guide for further information about loading data 
+see the :ref:`phenom_constr` user guide for further information about phenomenological constraining 
 
 spectral indices
 ~~~~~~~~~~~~~~~~
@@ -86,7 +88,7 @@ spectral indices
 
     from jetset.sed_shaper import  SEDShape
     my_shape=SEDShape(sed_data)
-    my_shape.eval_indices(silent=True)
+    my_shape.eval_indices(minimizer='lsb',silent=True)
     p=my_shape.plot_indices()
     p.rescale(y_min=-15,y_max=-6)
 
@@ -96,52 +98,12 @@ spectral indices
     ===================================================================================================================
     
     *** evaluating spectral indices for data ***
-    ---> initial range for index radio  set to [6.000000,10.000000]
-    ---> range for index radio updated  to [6.000000,10.000000]
-    ---> name = radio            range=[6.000 ,10.000] log(Hz)  photon.val=-1.426527e+00, err=1.242337e-01 
-    
-    ---> initial range for index radio_mm  set to [10.000000,11.000000]
-    ---> range for index radio_mm updated  to [10.000000,11.000000]
-    ---> name = radio_mm         range=[10.000,11.000] log(Hz)  photon.val=-1.290348e+00, err=3.549105e-02 
-    
-    ---> initial range for index mm_IR  set to [11.000000,13.000000]
-    ---> range for index mm_IR updated  to [10.300000,13.700000]
-    ---> name = mm_IR            range=[10.300,13.700] log(Hz)  photon.val=-1.113008e+00, err=5.915490e-02 
-    
-    ---> initial range for index IR_Opt  set to [13.000000,14.000000]
-    ---> range for index IR_Opt updated  to [12.500000,14.500000]
-    ---> name = IR_Opt           range=[12.500,14.500] log(Hz)  photon.val=-1.783218e+00, err=9.834847e-02 
-    
-    ---> initial range for index Opt_UV  set to [14.000000,16.000000]
-    ---> range for index Opt_UV updated  to [14.000000,16.000000]
-    ---> name = Opt_UV           range=[14.000,16.000] log(Hz)  photon.val=-1.620555e+00, err=4.702747e-02 
-    
-    ---> initial range for index BBB  set to [15.000000,16.000000]
-    ---> range for index BBB updated  to [14.800000,16.200000]
-    ---> name = BBB              range=[14.800,16.200] log(Hz)  photon.val=-1.285305e+00, err=1.411368e-01 
-    
-    ---> initial range for index UV_X  set to [15.000000,17.500000]
-    ---> range for index UV_X updated  to [15.000000,17.500000]
-    ---> name = UV_X             range=[15.000,17.500] log(Hz)  photon.val=-1.847773e+00, err=2.092988e-02 
-    
-    ---> initial range for index X  set to [16.000000,19.000000]
-    ---> range for index X updated  to [16.000000,19.000000]
-    ---> name = X                range=[16.000,19.000] log(Hz)  photon.val=-2.397737e+00, err=6.837481e-02 
-    
-    ---> initial range for index Fermi  set to [22.380000,25.380000]
-    ---> range for index Fermi updated  to [22.380000,25.380000]
-    ---> name = Fermi            range=[22.380,25.380] log(Hz)  photon.val=-1.792256e+00, err=2.023988e-02 
-    
-    ---> initial range for index TeV  set to [25.000000,28.380000]
-    ---> range for index TeV updated  to [25.000000,28.380000]
-    ---> name = TeV              range=[25.000,28.380] log(Hz)  photon.val=-2.463457e+00, err=7.279736e-02 
-    
     ===================================================================================================================
     
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_11_1.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_12_1.png
 
 
 sed shaper
@@ -153,7 +115,7 @@ sed shaper
                       Ep_start=None,
                       minimizer='lsb',
                       silent=True,
-                      fit_range=[10,21])
+                      fit_range=[10.,21.])
 
 
 .. parsed-literal::
@@ -161,25 +123,25 @@ sed shaper
     ===================================================================================================================
     
     *** Log-Polynomial fitting of the synchrotron component ***
-    ---> first blind fit run,  fit range: [10, 21]
+    ---> first blind fit run,  fit range: [10.0, 21.0]
     ---> class:  HSP
     
-    name   par type       units              val          phys. bound. min phys. bound. max  log  frozen
-    ---- ------------ ------------- --------------------- ---------------- ---------------- ----- ------
-       b    curvature                -0.15453004839441498            -10.0              0.0 False  False
-       c third-degree               -0.010232447712917647            -10.0             10.0 False  False
-      Ep    peak freq            Hz    16.722672085915843              0.0             30.0  True  False
-      Sp    peak flux erg / (cm2 s)    -9.491658506170065            -30.0              0.0  True  False
     
     
-    ---> sync       nu_p=+1.672267e+01 (err=+4.139905e-02)  nuFnu_p=-9.491659e+00 (err=+2.515288e-02) curv.=-1.545300e-01 (err=+9.534752e-03)
+    model name name  bestfit val     err +     err -   start val   fit range min fit range max frozen
+    ---------- ---- ------------- ------------ ----- ------------- ------------- ------------- ------
+      LogCubic    b -1.545301e-01 9.534795e-03    -- -1.000000e+00 -1.000000e+01  0.000000e+00  False
+      LogCubic    c -1.023245e-02 1.433073e-03    -- -1.000000e+00 -1.000000e+01  1.000000e+01  False
+      LogCubic   Ep  1.672267e+01 4.139942e-02    --  1.667039e+01  0.000000e+00  3.000000e+01  False
+      LogCubic   Sp -9.491659e+00 2.515285e-02    -- -1.000000e+01 -3.000000e+01  0.000000e+00  False
+    ---> sync       nu_p=+1.672267e+01 (err=+4.139942e-02)  nuFnu_p=-9.491659e+00 (err=+2.515285e-02) curv.=-1.545301e-01 (err=+9.534795e-03)
     ===================================================================================================================
     
 
 
 .. code:: ipython3
 
-    my_shape.IC_fit(fit_range=[23,29],minimizer='minuit')
+    my_shape.IC_fit(fit_range=[23.,29.],minimizer='minuit',silent=True)
     p=my_shape.plot_shape_fit()
     p.rescale(y_min=-15)
 
@@ -189,79 +151,36 @@ sed shaper
     ===================================================================================================================
     
     *** Log-Polynomial fitting of the IC component ***
-    ---> fit range: [23, 29]
+    ---> fit range: [23.0, 29.0]
     ---> LogCubic fit
     
-    **************************************************************************************************
-    Fit report
     
-    Model: IC-shape-fit
-    name   par type       units             val          phys. bound. min phys. bound. max  log  frozen
-    ---- ------------ ------------- -------------------- ---------------- ---------------- ----- ------
-       b    curvature               -0.20979248257934202            -10.0              0.0 False  False
-       c third-degree               -0.04662648109652068            -10.0             10.0 False  False
-      Ep    peak freq            Hz   25.249320432055992              0.0             30.0  True  False
-      Sp    peak flux erg / (cm2 s)  -10.110940957544976            -30.0              0.0  True  False
-    
-    converged=True
-    calls=202
-    ------------------------------------------------------------------
-    | FCN = 5.911                   |     Ncalls=201 (201 total)     |
-    | EDM = 5.56E-05 (Goal: 1E-05)  |            up = 1.0            |
-    ------------------------------------------------------------------
-    |  Valid Min.   | Valid Param.  | Above EDM | Reached call limit |
-    ------------------------------------------------------------------
-    |     True      |     True      |   False   |       False        |
-    ------------------------------------------------------------------
-    | Hesse failed  |   Has cov.    | Accurate  | Pos. def. | Forced |
-    ------------------------------------------------------------------
-    |     False     |     True      |   True    |   True    | False  |
-    ------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------
-    |   | Name  |   Value   | Hesse Err | Minos Err- | Minos Err+ | Limit-  | Limit+  | Fixed |
-    -------------------------------------------------------------------------------------------
-    | 0 | par_0 |  -0.210   |   0.031   |            |            |   -10   |    0    |       |
-    | 1 | par_1 |  -0.047   |   0.022   |            |            |   -10   |   10    |       |
-    | 2 | par_2 |   25.25   |   0.11    |            |            |    0    |   30    |       |
-    | 3 | par_3 |  -10.11   |    0.03   |            |            |   -30   |    0    |       |
-    -------------------------------------------------------------------------------------------
-    dof=10
-    chisq=5.911131, chisq/red=0.591113 null hypothesis sig=0.822674
-    
-    best fit pars
-    name     bestfit val             err +         err -     start val      fit range min fit range max frozen
-    ---- -------------------- -------------------- ----- ------------------ ------------- ------------- ------
-       b -0.20979248257934202  0.03133727822906529  None               -1.0         -10.0           0.0  False
-       c -0.04662648109652068 0.021784447613785396  None               -1.0         -10.0          10.0  False
-      Ep   25.249320432055992  0.11478667865102388  None 25.294117118594023           0.0          30.0  False
-      Sp  -10.110940957544976  0.03498801209549285  None              -10.0         -30.0           0.0  False
-    **************************************************************************************************
-    
-    
-    
-    name   par type       units             val          phys. bound. min phys. bound. max  log  frozen
-    ---- ------------ ------------- -------------------- ---------------- ---------------- ----- ------
-       b    curvature               -0.20979248257934202            -10.0              0.0 False  False
-       c third-degree               -0.04662648109652068            -10.0             10.0 False  False
-      Ep    peak freq            Hz   25.249320432055992              0.0             30.0  True  False
-      Sp    peak flux erg / (cm2 s)  -10.110940957544976            -30.0              0.0  True  False
-    ---> IC         nu_p=+2.524932e+01 (err=+1.147867e-01)  nuFnu_p=-1.011094e+01 (err=+3.498801e-02) curv.=-2.097925e-01 (err=+3.133728e-02)
+    model name name  bestfit val     err +     err -   start val   fit range min fit range max frozen
+    ---------- ---- ------------- ------------ ----- ------------- ------------- ------------- ------
+      LogCubic    b -2.098186e-01 3.133100e-02    -- -1.000000e+00 -1.000000e+01  0.000000e+00  False
+      LogCubic    c -4.661867e-02 2.178436e-02    -- -1.000000e+00 -1.000000e+01  1.000000e+01  False
+      LogCubic   Ep  2.524926e+01 1.147802e-01    --  2.529412e+01  0.000000e+00  3.000000e+01  False
+      LogCubic   Sp -1.011085e+01 3.498963e-02    -- -1.000000e+01 -3.000000e+01  0.000000e+00  False
+    ---> IC         nu_p=+2.524926e+01 (err=+1.147802e-01)  nuFnu_p=-1.011085e+01 (err=+3.498963e-02) curv.=-2.098186e-01 (err=+3.133100e-02)
     ===================================================================================================================
     
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_14_1.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_15_1.png
 
 
-model constraining
+Model constraining
 ~~~~~~~~~~~~~~~~~~
+
+In this step we are not fitting the model, we are just obtaining the
+phenomenological ``pre_fit`` model, that will be fitted in using minuit
+ore least-square bound, as shown below
 
 .. code:: ipython3
 
     from jetset.obs_constrain import ObsConstrain
     from jetset.model_manager import  FitModel
-    from jetset.minimizer import fit_SED
     sed_obspar=ObsConstrain(beaming=25,
                             B_range=[0.001,0.1],
                             distr_e='lppl',
@@ -270,8 +189,8 @@ model constraining
                             SEDShape=my_shape)
     
     
-    prefit_jet=sed_obspar.constrain_SSC_model(electron_distribution_log_values=False)
-    prefit_jet.save_model('prefit_jet.dat')
+    prefit_jet=sed_obspar.constrain_SSC_model(electron_distribution_log_values=False,silent=True)
+    prefit_jet.save_model('prefit_jet.pkl')
 
 
 .. parsed-literal::
@@ -280,103 +199,19 @@ model constraining
     
     ***  constrains parameters from observable ***
     
-    ---> ***  emitting region parameters  ***
-    ---> name = beam_obj          type = beaming               units = Lorentz-factor*   val = +2.500000e+01  phys-bounds = [+1.000000e-04,No           ] islog = False  froze= False 
-    ---> setting par type redshift, corresponding to par z_cosm
-    --->  name = z_cosm            type = redshift              units =                   val = +3.080000e-02  phys-bounds = [+0.000000e+00,No           ] islog = False  froze= False 
-    
-    ---> setting par type magnetic_field, corresponding to par B
-    --->  name = B                 type = magnetic_field        units = G                 val = +5.050000e-02  phys-bounds = [+0.000000e+00,No           ] islog = False  froze= False 
-    
-    ---> setting par type region_size, corresponding to par R
-    --->  name = R                 type = region_size           units = cm                val = +1.884609e+17  phys-bounds = [+1.000000e+03,+1.000000e+30] islog = False  froze= False 
-    
-    
-    ---> *** electron distribution parameters ***
-    ---> distribution type:  lppl
-    ---> r elec. spec. curvature =7.726502e-01
-    ---> setting par type curvature, corresponding to par r
-    --->  name = r                 type = spectral_curvature    units =                   val = +7.726502e-01  phys-bounds = [-1.500000e+01,+1.500000e+01] islog = False  froze= False 
-    
-    ---> s_radio_mm -0.2903478685469203 1.5806957370938406
-    ---> s_X 3.7954735444730723
-    ---> s_Fermi 1.6676089042528561
-    ---> s_UV_X 2.6955461234094464
-    ---> s_Opt_UV -0.6205553174662093 2.2411106349324186
-    ---> s from synch log-log fit -1.0
-    ---> s from (s_Fermi + s_UV)/2
-    ---> power-law index s, class obj=HSP s chosen is 2.181578
-    ---> setting par type LE_spectral_slope, corresponding to par s
-    --->  name = s                 type = LE_spectral_slope     units =                   val = +2.181578e+00  phys-bounds = [-1.000000e+01,+1.000000e+01] islog = False  froze= False 
-    
-    ---> gamma_3p_Sync= 1.079460e+05, assuming B=5.050000e-02
-    ---> gamma_max=1.373160e+06 from nu_max_Sync= 8.544779e+18, using B=5.050000e-02
-    ---> setting par type high-energy-cut-off, corresponding to par gmax
-    --->  name = gmax              type = high-energy-cut-off   units = lorentz-factor*   val = +1.373160e+06  phys-bounds = [+1.000000e+00,+1.000000e+15] islog = False  froze= False 
-    
-    ---> setting par type low-energy-cut-off, corresponding to par gmin
-    --->  name = gmin              type = low-energy-cut-off    units = lorentz-factor*   val = +4.697542e+02  phys-bounds = [+1.000000e+00,+1.000000e+09] islog = False  froze= False 
-    
-    ---> setting par type turn-over energy, corresponding to par gamma0_log_parab
-    ---> using gamma_3p_Sync= 107946.03443166826
-    --->  name = gamma0_log_parab  type = turn-over-energy      units = lorentz-factor*   val = +3.188500e+04  phys-bounds = [+1.000000e+00,+1.000000e+09] islog = False  froze= False 
-    
-    nu_p_seed_blob 2177240915408355.5
-    COMP FACTOR 1.9021242559951368 24449.101847240385
-    ---> gamma_3p_SSCc= %e 163263.9921466799
-    ---> setting par type turn-over energy, corresponding to par gamma0_log_parab
-    ---> using gamma_3p_SSC= 163263.9921466799
-    --->  name = gamma0_log_parab  type = turn-over-energy      units = lorentz-factor*   val = +4.822477e+04  phys-bounds = [+1.000000e+00,+1.000000e+09] islog = False  froze= False 
-    
-    
-    ---> setting par type electron_density, corresponding to par N
-    ---> name = N                 type = electron_density      units = 1 / cm3           val = +2.913445e-03  phys-bounds = [+0.000000e+00,No           ] islog = False  froze= False 
-    ---> B from nu_p_S=2.207618e-02
-    ---> get B from best matching of nu_p_IC
-    ---> B=2.299785e-01, out of boundaries 1.000000e-03 1.000000e-01, rejected
-         Best B not found, (temporary set to 1.000000e-01)
-    ---> setting par type magnetic_field, corresponding to par B
-    --->  name = B                 type = magnetic_field        units = G                 val = +1.000000e-01  phys-bounds = [+0.000000e+00,No           ] islog = False  froze= False 
-    
-    ---> constrain failed, B set to:  name = B                 type = magnetic_field        units = G                 val = +1.000000e-01  phys-bounds = [+0.000000e+00,No           ] islog = False  froze= False 
-    
-    
-    ---> update pars for new B 
-    ---> setting par type low-energy-cut-off, corresponding to par gmin
-    --->  name = gmin              type = low-energy-cut-off    units = lorentz-factor*   val = +3.338231e+02  phys-bounds = [+1.000000e+00,+1.000000e+09] islog = False  froze= False 
-    
-    ---> setting par type low-energy-cut-off, corresponding to par gamma0_log_parab
-    ---> using gamma_3p_Sync= 76710.07043738826
-    --->  name = gamma0_log_parab  type = turn-over-energy      units = lorentz-factor*   val = +2.265855e+04  phys-bounds = [+1.000000e+00,+1.000000e+09] islog = False  froze= False 
-    
-    ---> gamma_max=9.758134e+05 from nu_max_Sync= 8.544779e+18, using B=1.000000e-01
-    ---> setting par type high-energy-cut-off, corresponding to par gmax
-    --->  name = gmax              type = high-energy-cut-off   units = lorentz-factor*   val = +9.758134e+05  phys-bounds = [+1.000000e+00,+1.000000e+15] islog = False  froze= False 
-    
-    ---> setting par type electron_density, corresponding to par N
-    ---> get R from Compoton Dominance (CD)
-         Best R=1.649188e+16
-    ---> setting par type region_size, corresponding to par R
-    --->  name = R                 type = region_size           units = cm                val = +1.649188e+16  phys-bounds = [+1.000000e+03,+1.000000e+30] islog = False  froze= False 
-    
-    ---> setting par type electron_density, corresponding to par N
-    ---> t_var (days) 0.2625246202253361
-    
-    show pars
-          name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-                   N    electron_density         1 / cm3     3.072163777115778              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*    333.82306366971983              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*     975813.3512932507              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                    2.1815775138311513            -10.0               10.0 False  False
-                   r  spectral_curvature                    0.7726502419720749            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*     22658.54895147617              1.0       1000000000.0 False  False
-                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False  False
-                 R_H     region_position              cm                 1e+17              0.0               None False   True
-                   B      magnetic_field               G                   0.1              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
-              z_cosm            redshift                                0.0308              0.0               None False  False
-    eval_model
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                gmin  low-energy-cut-off lorentz-factor* 3.338231e+02     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 3.073134e+00     0.000000e+00               -- False  False
+                   s   LE_spectral_slope                 2.181578e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 7.726503e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 2.265855e+04     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 3.080000e-02     0.000000e+00               -- False  False
     
     ===================================================================================================================
     
@@ -390,121 +225,205 @@ model constraining
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_17_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_19_0.png
 
 
-Model fitting
--------------
+Model fitting procedure
+-----------------------
 
-We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer and the``lsb`` (least square bound scipy minimizer). Using ``minuit`` we notice that sometimes (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling
+We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer and the ``lsb`` (least square bound scipy minimizer). Using ``minuit`` we notice that sometimes (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling
 
-We freeze some parameters, and we also set some ``fit_range`` values, indeed ``minuit`` works better if ``fit_range`` is set for some parameters that might impact significantly on the fit.
+We freeze some parameters, and we also set some `fit_range` values. Setting fit_range can speed-up the fit convergence but should be judged by the user each time according to the physics of the particular source.
 
 Model fitting with LSB
 ~~~~~~~~~~~~~~~~~~~~~~
 
+see the :ref:`composite_models` user guide for further information about the new implementation of `FitModel`, in particular for parameter setting
+
 .. code:: ipython3
 
+    from jetset.minimizer import fit_SED,ModelMinimizer
+    
     from jetset.model_manager import  FitModel
     from jetset.jet_model import Jet
-    
-    jet_lsb=Jet.load_model('prefit_jet.dat')
-    jet_lsb.set_gamma_grid_size(200)
-    
-    fit_model_lsb=FitModel( jet=jet_lsb, name='SSC-best-fit-lsb',template=None) 
-    fit_model_lsb.freeze('z_cosm')
-    fit_model_lsb.freeze('R_H')
-    fit_model_lsb.freeze('R')
-    fit_model_lsb.parameters.R.fit_range=[10**15.5,10**17.5]
-    fit_model_lsb.parameters.beam_obj.fit_range=[5,50]
-    
-    model_minimizer_lsb,best_fit_lsb=fit_SED(fit_model_lsb,sed_data,10.0**11,10**29.0,fitname='SSC-best-fit-lsb',minimizer='lsb')
+
+
+if you want to fit the ``prefit_model`` you can load the saved one (this
+allows you to save time) ad pass it to the ``FitModel`` class
+
+.. code:: ipython3
+
+    prefit_jet=Jet.load_model('prefit_jet.pkl')
+    fit_model_lsb=FitModel( jet=prefit_jet, name='SSC-best-fit-lsb',template=None) 
 
 
 
 .. parsed-literal::
 
-          name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False  False
-                 R_H     region_position              cm                 1e+17              0.0               None False   True
-                   B      magnetic_field               G                   0.1              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
-              z_cosm            redshift                                0.0308              0.0               None False  False
-                   N    electron_density         1 / cm3     3.072163777115778              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*    333.82306366971983              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*     975813.3512932507              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                    2.1815775138311513            -10.0               10.0 False  False
-                   r  spectral_curvature                    0.7726502419720749            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*     22658.54895147617              1.0       1000000000.0 False  False
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                gmin  low-energy-cut-off lorentz-factor* 3.338231e+02     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 3.073134e+00     0.000000e+00               -- False  False
+                   s   LE_spectral_slope                 2.181578e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 7.726503e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 2.265855e+04     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 3.080000e-02     0.000000e+00               -- False  False
+
+
+OR use the one generated above
+
+.. code:: ipython3
+
+    fit_model_lsb=FitModel( jet=prefit_jet, name='SSC-best-fit-lsb',template=None) 
+
+.. code:: ipython3
+
+    fit_model_lsb.show_model_components()
+
+
+.. parsed-literal::
+
+    
+    -------------------------------------------------------------------------------------------------------------------
+    Composite model description
+    -------------------------------------------------------------------------------------------------------------------
+    name: SSC-best-fit-lsb  
+    type: composite_model  
+    components models:
+     -model name: jet_leptonic model type: jet
+    
+    -------------------------------------------------------------------------------------------------------------------
+
+
+There is only one component, whit name ``jet_leptonic``, that refers to
+the ``prefit_jet`` model component
+
+We now set the gamma grid size to 200, ad we set ``composite_expr``,
+anyhow, since we have only one component this step could be skipped
+
+.. code:: ipython3
+
+    fit_model_lsb.jet_leptonic.set_gamma_grid_size(200)
+    fit_model_lsb.composite_expr='jet_leptonic'
+
+Freezeing parameters and setting fit_range intervals
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. note::
+   With the new implementation of composite model  (`FitModel` class) to set parameters you have to specify the model component, this is different from versions<1.1.2,
+   and this holds also for the `freeze` method and for setting  `fit_range` intervals, and for the methods relate to parameters setting in general.
+   See the :ref:`composite_models` user guide for further information about the new implementation of `FitModel`, in particular for parameter setting
+
+These methods are alternative and equivalent ways to access a model
+component for setting parameters state and values
+
+a) passing as first argument, of the method, the model component
+   ``name``
+
+b) passing as first argument, of the method, the model component
+   ``object``
+
+c) accessing the model component member of the composite model class
+
+.. code:: ipython3
+
+    #a
+    fit_model_lsb.freeze('jet_leptonic','z_cosm')
+    fit_model_lsb.freeze('jet_leptonic','R_H')
+    #b
+    fit_model_lsb.freeze(prefit_jet,'R')
+    #c
+    fit_model_lsb.jet_leptonic.parameters.R.fit_range=[10**15.5,10**17.5]
+    fit_model_lsb.jet_leptonic.parameters.beam_obj.fit_range=[5., 50.]
+
+Building the ModelMinimizer object
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Now we build a ``lsb`` model minimizer and run the fit method
+
+.. note::
+   starting from version 1.1.2 the `fit` method allows to repeat the fit process, setting the parameter `repeat`. This will provide a better fit convergence.
+   Setting `repeat=3` the fit process will be repeated 3 times
+
+.. code:: ipython3
+
+    model_minimizer_lsb=ModelMinimizer('lsb')
+    best_fit_lsb=model_minimizer_lsb.fit(fit_model_lsb,
+                                         sed_data,
+                                         1E11,
+                                         1E29,
+                                         fitname='SSC-best-fit-minuit',
+                                         repeat=3)
+
+
+
+.. parsed-literal::
+
     filtering data in fit range = [1.000000e+11,1.000000e+29]
     data length 35
     ===================================================================================================================
     
     *** start fit process ***
-    initial pars: 
-          name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False   True
-                 R_H     region_position              cm                 1e+17              0.0               None False   True
-                   B      magnetic_field               G                   0.1              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
-              z_cosm            redshift                                0.0308              0.0               None False   True
-                   N    electron_density         1 / cm3     3.072163777115778              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*    333.82306366971983              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*     975813.3512932507              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                    2.1815775138311513            -10.0               10.0 False  False
-                   r  spectral_curvature                    0.7726502419720749            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*     22658.54895147617              1.0       1000000000.0 False  False
     ----- 
-    / minim function calls=60, chisq=48.923269 UL part=-0.000000                                                                                                                                                                                                    
+    fit run: 0
+    | minim function calls=50, chisq=67.700653 UL part=-0.0000000
+    fit run: 1
+    / minim function calls=10, chisq=67.354632 UL part=-0.000000
+    fit run: 2
+    \ minim function calls=20, chisq=64.996504 UL part=-0.000000
     **************************************************************************************************
     Fit report
     
-    Model: SSC-best-fit-lsb
-          name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False   True
-                 R_H     region_position              cm                 1e+17              0.0               None False   True
-                   B      magnetic_field               G   0.06916225594979553              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*    27.552744125021306           0.0001               None False  False
-              z_cosm            redshift                                0.0308              0.0               None False   True
-                   N    electron_density         1 / cm3     2.418659878957038              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*    334.20946885003934              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*     813122.7921203407              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                    2.1056008787062837            -10.0               10.0 False  False
-                   r  spectral_curvature                    0.7022959568214855            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*     26110.25250121951              1.0       1000000000.0 False  False
+    Model: SSC-best-fit-minuit
+     model name        name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ------------ ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+    jet_leptonic             gmin  low-energy-cut-off lorentz-factor* 3.356628e+02     1.000000e+00     1.000000e+09 False  False
+    jet_leptonic             gmax high-energy-cut-off lorentz-factor* 9.629045e+05     1.000000e+00     1.000000e+15 False  False
+    jet_leptonic                N    emitters_density         1 / cm3 2.635771e+00     0.000000e+00               -- False  False
+    jet_leptonic                s   LE_spectral_slope                 2.136779e+00    -1.000000e+01     1.000000e+01 False  False
+    jet_leptonic                r  spectral_curvature                 8.257853e-01    -1.500000e+01     1.500000e+01 False  False
+    jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor* 3.086566e+04     1.000000e+00     1.000000e+09 False  False
+    jet_leptonic                R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False   True
+    jet_leptonic              R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+    jet_leptonic                B      magnetic_field               G 8.056890e-02     0.000000e+00               -- False  False
+    jet_leptonic         beam_obj             beaming Lorentz-factor* 2.575200e+01     1.000000e-04               -- False  False
+    jet_leptonic           z_cosm            redshift                 3.080000e-02     0.000000e+00               -- False   True
     
     converged=True
-    calls=60
+    calls=24
     The relative error between two consecutive iterates is at most 0.000000
     dof=27
-    chisq=48.230380, chisq/red=1.786310 null hypothesis sig=0.007236
+    chisq=64.996500, chisq/red=2.407278 null hypothesis sig=0.000056
     
     best fit pars
-          name           bestfit val            err +         err -       start val         fit range min        fit range max      frozen
-    ---------------- ------------------- -------------------- ----- --------------------- ------------------ ---------------------- ------
-                   R                None                 None  None 1.649187684856415e+16 3162277660168379.5 3.1622776601683795e+17   True
-                 R_H                None                 None  None                 1e+17                0.0                   None   True
-                   B 0.06916225594979553 0.014325604761837876  None                   0.1                0.0                   None  False
-            beam_obj  27.552744125021306   3.3740786683861543  None                  25.0                5.0                     50  False
-              z_cosm                None                 None  None                0.0308                0.0                   None   True
-                   N   2.418659878957038   0.6300436996936624  None     3.072163777115778                0.0                   None  False
-                gmin  334.20946885003934   1.8869219620853956  None    333.82306366971983                1.0           1000000000.0  False
-                gmax   813122.7921203407     98034.7733100579  None     975813.3512932507                1.0     1000000000000000.0  False
-                   s  2.1056008787062837  0.11094341853405444  None    2.1815775138311513              -10.0                   10.0  False
-                   r  0.7022959568214855   0.1455121490620552  None    0.7726502419720749              -15.0                   15.0  False
-    gamma0_log_parab   26110.25250121951   10412.937795892183  None     22658.54895147617                1.0           1000000000.0  False
+     model name        name       bestfit val     err +     err -  start val   fit range min fit range max frozen
+    ------------ ---------------- ------------ ------------ ----- ------------ ------------- ------------- ------
+    jet_leptonic             gmin 3.356628e+02 2.308852e+02    -- 3.338231e+02  1.000000e+00  1.000000e+09  False
+    jet_leptonic             gmax 9.629045e+05 2.161311e+04    -- 9.758134e+05  1.000000e+00  1.000000e+15  False
+    jet_leptonic                N 2.635771e+00 2.032613e+00    -- 3.073134e+00  0.000000e+00            --  False
+    jet_leptonic                s 2.136779e+00 1.362651e-01    -- 2.181578e+00 -1.000000e+01  1.000000e+01  False
+    jet_leptonic                r 8.257853e-01 2.291436e-01    -- 7.726503e-01 -1.500000e+01  1.500000e+01  False
+    jet_leptonic gamma0_log_parab 3.086566e+04 1.699546e+04    -- 2.265855e+04  1.000000e+00  1.000000e+09  False
+    jet_leptonic                R           --           --    -- 1.649014e+16  3.162278e+15  3.162278e+17   True
+    jet_leptonic              R_H           --           --    -- 1.000000e+17  0.000000e+00            --   True
+    jet_leptonic                B 8.056890e-02 2.328432e-02    -- 1.000000e-01  0.000000e+00            --  False
+    jet_leptonic         beam_obj 2.575200e+01 4.198739e+00    -- 2.500000e+01  5.000000e+00  5.000000e+01  False
+    jet_leptonic           z_cosm           --           --    -- 3.080000e-02  0.000000e+00            --   True
     **************************************************************************************************
     
     ===================================================================================================================
     
 
 
+we can obtain the best fit astropy table
+
 .. code:: ipython3
 
-    best_fit_lsb.save_report('SSC-best-fit-lsb.txt')
     best_fit_lsb.bestfit_table
 
 
@@ -513,23 +432,34 @@ Model fitting with LSB
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table112247741520" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>name</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <thead><tr><th>str16</th><th>object</th><th>object</th><th>object</th><th>float64</th><th>float64</th><th>object</th><th>bool</th></tr></thead>
-    <tr><td>R</td><td>None</td><td>None</td><td>None</td><td>1.649187684856415e+16</td><td>3162277660168379.5</td><td>3.1622776601683795e+17</td><td>True</td></tr>
-    <tr><td>R_H</td><td>None</td><td>None</td><td>None</td><td>1e+17</td><td>0.0</td><td>None</td><td>True</td></tr>
-    <tr><td>B</td><td>0.06916225594979553</td><td>0.014325604761837876</td><td>None</td><td>0.1</td><td>0.0</td><td>None</td><td>False</td></tr>
-    <tr><td>beam_obj</td><td>27.552744125021306</td><td>3.3740786683861543</td><td>None</td><td>25.0</td><td>5.0</td><td>50</td><td>False</td></tr>
-    <tr><td>z_cosm</td><td>None</td><td>None</td><td>None</td><td>0.0308</td><td>0.0</td><td>None</td><td>True</td></tr>
-    <tr><td>N</td><td>2.418659878957038</td><td>0.6300436996936624</td><td>None</td><td>3.072163777115778</td><td>0.0</td><td>None</td><td>False</td></tr>
-    <tr><td>gmin</td><td>334.20946885003934</td><td>1.8869219620853956</td><td>None</td><td>333.82306366971983</td><td>1.0</td><td>1000000000.0</td><td>False</td></tr>
-    <tr><td>gmax</td><td>813122.7921203407</td><td>98034.7733100579</td><td>None</td><td>975813.3512932507</td><td>1.0</td><td>1000000000000000.0</td><td>False</td></tr>
-    <tr><td>s</td><td>2.1056008787062837</td><td>0.11094341853405444</td><td>None</td><td>2.1815775138311513</td><td>-10.0</td><td>10.0</td><td>False</td></tr>
-    <tr><td>r</td><td>0.7022959568214855</td><td>0.1455121490620552</td><td>None</td><td>0.7726502419720749</td><td>-15.0</td><td>15.0</td><td>False</td></tr>
-    <tr><td>gamma0_log_parab</td><td>26110.25250121951</td><td>10412.937795892183</td><td>None</td><td>22658.54895147617</td><td>1.0</td><td>1000000000.0</td><td>False</td></tr>
+    <table id="table4737575888" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
+    <thead><tr><th>str12</th><th>str16</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>3.356628e+02</td><td>2.308852e+02</td><td>--</td><td>3.338231e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>9.629045e+05</td><td>2.161311e+04</td><td>--</td><td>9.758134e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>2.635771e+00</td><td>2.032613e+00</td><td>--</td><td>3.073134e+00</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>2.136779e+00</td><td>1.362651e-01</td><td>--</td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>8.257853e-01</td><td>2.291436e-01</td><td>--</td><td>7.726503e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>3.086566e+04</td><td>1.699546e+04</td><td>--</td><td>2.265855e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>--</td><td>--</td><td>--</td><td>1.649014e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>8.056890e-02</td><td>2.328432e-02</td><td>--</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>2.575200e+01</td><td>4.198739e+00</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>--</td><td>--</td><td>--</td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     </table>
 
 
+
+saving fit model, model minimizer
+---------------------------------
+
+We can save all the fit products to be used later.
+
+.. code:: ipython3
+
+    best_fit_lsb.save_report('SSC-best-fit-lsb.txt')
+    model_minimizer_lsb.save_model('model_minimizer_lsb.pkl')
+    fit_model_lsb.save_model('fit_model_lsb.pkl')
 
 .. code:: ipython3
 
@@ -541,88 +471,114 @@ Model fitting with LSB
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_23_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_46_0.png
 
 
 Model fitting with Minuit
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 .. code:: ipython3
 
-    jet_minuit=Jet.load_model('prefit_jet.dat')
+    from jetset.minimizer import fit_SED,ModelMinimizer
+    from jetset.model_manager import  FitModel
+    from jetset.jet_model import Jet
+    
+    jet_minuit=Jet.load_model('prefit_jet.pkl')
     jet_minuit.set_gamma_grid_size(200)
     
     fit_model_minuit=FitModel( jet=jet_minuit, name='SSC-best-fit-minuit',template=None) 
-    fit_model_minuit.freeze('z_cosm')
-    fit_model_minuit.freeze('R_H')
-    fit_model_minuit.freeze('R')
-    fit_model_minuit.freeze('gmax')
-    fit_model_minuit.parameters.R.fit_range=[10**15.5,10**17.5]
-    fit_model_minuit.parameters.beam_obj.fit_range=[5,50]
-    
-    model_minimizer_minuit,best_fit_minuit=fit_SED(fit_model_minuit,sed_data,10.0**11,10**29.0,fitname='SSC-best-fit-minuit',minimizer='minuit',max_ev=None)
-    best_fit_minuit.save_report('SSC-best-fit-minuit.txt')
 
 
 .. parsed-literal::
 
-          name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False  False
-                 R_H     region_position              cm                 1e+17              0.0               None False   True
-                   B      magnetic_field               G                   0.1              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
-              z_cosm            redshift                                0.0308              0.0               None False  False
-                   N    electron_density         1 / cm3     3.072163777115778              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*    333.82306366971983              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*     975813.3512932507              1.0 1000000000000000.0 False  False
-                   s   LE_spectral_slope                    2.1815775138311513            -10.0               10.0 False  False
-                   r  spectral_curvature                    0.7726502419720749            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*     22658.54895147617              1.0       1000000000.0 False  False
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                gmin  low-energy-cut-off lorentz-factor* 3.338231e+02     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 3.073134e+00     0.000000e+00               -- False  False
+                   s   LE_spectral_slope                 2.181578e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 7.726503e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 2.265855e+04     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 3.080000e-02     0.000000e+00               -- False  False
+
+
+.. code:: ipython3
+
+    fit_model_minuit.show_model_components()
+
+
+
+.. parsed-literal::
+
+    
+    -------------------------------------------------------------------------------------------------------------------
+    Composite model description
+    -------------------------------------------------------------------------------------------------------------------
+    name: SSC-best-fit-minuit  
+    type: composite_model  
+    components models:
+     -model name: jet_leptonic model type: jet
+    
+    -------------------------------------------------------------------------------------------------------------------
+
+
+.. code:: ipython3
+
+    
+    fit_model_minuit.freeze('jet_leptonic','z_cosm')
+    fit_model_minuit.freeze('jet_leptonic','R_H')
+    fit_model_minuit.freeze('jet_leptonic','R')
+    fit_model_minuit.freeze('jet_leptonic','gmax')
+    fit_model_minuit.jet_leptonic.parameters.R.fit_range=[10**15.5,10**17.5]
+    fit_model_minuit.jet_leptonic.parameters.beam_obj.fit_range=[5,50]
+
+.. code:: ipython3
+
+    model_minimizer_minuit=ModelMinimizer('minuit')
+    best_fit_minuit=model_minimizer_minuit.fit(fit_model_minuit,sed_data,10**11.,10**29.0,fitname='SSC-best-fit-minuit',repeat=3)
+
+
+.. parsed-literal::
+
     filtering data in fit range = [1.000000e+11,1.000000e+29]
     data length 35
     ===================================================================================================================
     
     *** start fit process ***
-    initial pars: 
-          name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False   True
-                 R_H     region_position              cm                 1e+17              0.0               None False   True
-                   B      magnetic_field               G                   0.1              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*                  25.0           0.0001               None False  False
-              z_cosm            redshift                                0.0308              0.0               None False   True
-                   N    electron_density         1 / cm3     3.072163777115778              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*    333.82306366971983              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*     975813.3512932507              1.0 1000000000000000.0 False   True
-                   s   LE_spectral_slope                    2.1815775138311513            -10.0               10.0 False  False
-                   r  spectral_curvature                    0.7726502419720749            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*     22658.54895147617              1.0       1000000000.0 False  False
     ----- 
-    - minim function calls=550, chisq=39.001442 UL part=-0.000000                                                                                                                                                                                                   
+    fit run: 0
+    \ minim function calls=400, chisq=53.606667 UL part=-0.00000000
+    fit run: 1
+    | minim function calls=90, chisq=50.469558 UL part=-0.000000
+    fit run: 2
+    / minim function calls=90, chisq=50.469558 UL part=-0.000000
     **************************************************************************************************
     Fit report
     
     Model: SSC-best-fit-minuit
-          name             par type           units               val          phys. bound. min  phys. bound. max   log  frozen
-    ---------------- ------------------- --------------- --------------------- ---------------- ------------------ ----- ------
-                   R         region_size              cm 1.649187684856415e+16           1000.0              1e+30 False   True
-                 R_H     region_position              cm                 1e+17              0.0               None False   True
-                   B      magnetic_field               G   0.06058352581334625              0.0               None False  False
-            beam_obj             beaming Lorentz-factor*    30.109626301151785           0.0001               None False  False
-              z_cosm            redshift                                0.0308              0.0               None False   True
-                   N    electron_density         1 / cm3    1.6248135468210165              0.0               None False  False
-                gmin  low-energy-cut-off lorentz-factor*    331.64776983302454              1.0       1000000000.0 False  False
-                gmax high-energy-cut-off lorentz-factor*     975813.3512932507              1.0 1000000000000000.0 False   True
-                   s   LE_spectral_slope                     1.973930840782213            -10.0               10.0 False  False
-                   r  spectral_curvature                    0.7553177382257097            -15.0               15.0 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor*     20314.12691347771              1.0       1000000000.0 False  False
+     model name        name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ------------ ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+    jet_leptonic             gmin  low-energy-cut-off lorentz-factor* 3.310408e+02     1.000000e+00     1.000000e+09 False  False
+    jet_leptonic             gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False   True
+    jet_leptonic                N    emitters_density         1 / cm3 2.026102e+00     0.000000e+00               -- False  False
+    jet_leptonic                s   LE_spectral_slope                 2.041077e+00    -1.000000e+01     1.000000e+01 False  False
+    jet_leptonic                r  spectral_curvature                 9.748096e-01    -1.500000e+01     1.500000e+01 False  False
+    jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor* 3.065668e+04     1.000000e+00     1.000000e+09 False  False
+    jet_leptonic                R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False   True
+    jet_leptonic              R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+    jet_leptonic                B      magnetic_field               G 8.688123e-02     0.000000e+00               -- False  False
+    jet_leptonic         beam_obj             beaming Lorentz-factor* 2.493567e+01     1.000000e-04               -- False  False
+    jet_leptonic           z_cosm            redshift                 3.080000e-02     0.000000e+00               -- False   True
     
     converged=True
-    calls=554
+    calls=96
     ------------------------------------------------------------------
-    | FCN = 38.37                   |     Ncalls=548 (553 total)     |
-    | EDM = 0.0855 (Goal: 1E-05)    |            up = 1.0            |
+    | FCN = 49.69                   |      Ncalls=84 (95 total)      |
+    | EDM = 3.59E+04 (Goal: 1E-05)  |            up = 1.0            |
     ------------------------------------------------------------------
     |  Valid Min.   | Valid Param.  | Above EDM | Reached call limit |
     ------------------------------------------------------------------
@@ -630,53 +586,40 @@ Model fitting with Minuit
     ------------------------------------------------------------------
     | Hesse failed  |   Has cov.    | Accurate  | Pos. def. | Forced |
     ------------------------------------------------------------------
-    |     False     |     True      |   False   |   True    | False  |
+    |     False     |     True      |   False   |   False   |  True  |
     ------------------------------------------------------------------
     -------------------------------------------------------------------------------------------
     |   | Name  |   Value   | Hesse Err | Minos Err- | Minos Err+ | Limit-  | Limit+  | Fixed |
     -------------------------------------------------------------------------------------------
-    | 0 | par_0 |   0.061   |   0.003   |            |            |    0    |         |       |
-    | 1 | par_1 |   30.1    |    0.8    |            |            |    5    |   50    |       |
-    | 2 | par_2 |   1.62    |   0.08    |            |            |    0    |         |       |
-    | 3 | par_3 |  331.65   |   0.20    |            |            |    1    |  1e+09  |       |
-    | 4 | par_4 |   1.974   |   0.016   |            |            |   -10   |   10    |       |
-    | 5 | par_5 |   0.76    |   0.05    |            |            |   -15   |   15    |       |
-    | 6 | par_6 |  2.03E4   |  0.19E4   |            |            |    1    |  1e+09  |       |
+    | 0 | par_0 |   331.0   |    0.5    |            |            |    1    |  1e+09  |       |
+    | 1 | par_1 |   2.03    |   0.20    |            |            |    0    |         |       |
+    | 2 | par_2 |   2.041   |   0.018   |            |            |   -10   |   10    |       |
+    | 3 | par_3 |   0.97    |   0.09    |            |            |   -15   |   15    |       |
+    | 4 | par_4 |   3.1E4   |   0.6E4   |            |            |    1    |  1e+09  |       |
+    | 5 | par_5 |   0.087   |   0.006   |            |            |    0    |         |       |
+    | 6 | par_6 |   24.9    |    0.4    |            |            |    5    |   50    |       |
     -------------------------------------------------------------------------------------------
     dof=28
-    chisq=39.025823, chisq/red=1.393779 null hypothesis sig=0.080508
+    chisq=49.690434, chisq/red=1.774658 null hypothesis sig=0.007001
     
     best fit pars
-          name           bestfit val             err +         err -       start val         fit range min        fit range max      frozen
-    ---------------- ------------------- --------------------- ----- --------------------- ------------------ ---------------------- ------
-                   R                None                  None  None 1.649187684856415e+16 3162277660168379.5 3.1622776601683795e+17   True
-                 R_H                None                  None  None                 1e+17                0.0                   None   True
-                   B 0.06058352581334625 0.0034225881909554223  None                   0.1                0.0                   None  False
-            beam_obj  30.109626301151785    0.7912679928816146  None                  25.0                5.0                     50  False
-              z_cosm                None                  None  None                0.0308                0.0                   None   True
-                   N  1.6248135468210165    0.0833986032427847  None     3.072163777115778                0.0                   None  False
-                gmin  331.64776983302454    0.1987910667421886  None    333.82306366971983                1.0           1000000000.0  False
-                gmax                None                  None  None     975813.3512932507                1.0     1000000000000000.0   True
-                   s   1.973930840782213   0.01598278864521685  None    2.1815775138311513              -10.0                   10.0  False
-                   r  0.7553177382257097  0.046975529202972766  None    0.7726502419720749              -15.0                   15.0  False
-    gamma0_log_parab   20314.12691347771    1920.7117363473099  None     22658.54895147617                1.0           1000000000.0  False
+     model name        name       bestfit val     err +     err -  start val   fit range min fit range max frozen
+    ------------ ---------------- ------------ ------------ ----- ------------ ------------- ------------- ------
+    jet_leptonic             gmin 3.310408e+02 5.393358e-01    -- 3.338231e+02  1.000000e+00  1.000000e+09  False
+    jet_leptonic             gmax           --           --    -- 9.758134e+05  1.000000e+00  1.000000e+15   True
+    jet_leptonic                N 2.026102e+00 1.973977e-01    -- 3.073134e+00  0.000000e+00            --  False
+    jet_leptonic                s 2.041077e+00 1.765315e-02    -- 2.181578e+00 -1.000000e+01  1.000000e+01  False
+    jet_leptonic                r 9.748096e-01 9.440913e-02    -- 7.726503e-01 -1.500000e+01  1.500000e+01  False
+    jet_leptonic gamma0_log_parab 3.065668e+04 5.849661e+03    -- 2.265855e+04  1.000000e+00  1.000000e+09  False
+    jet_leptonic                R           --           --    -- 1.649014e+16  3.162278e+15  3.162278e+17   True
+    jet_leptonic              R_H           --           --    -- 1.000000e+17  0.000000e+00            --   True
+    jet_leptonic                B 8.688123e-02 6.019300e-03    -- 1.000000e-01  0.000000e+00            --  False
+    jet_leptonic         beam_obj 2.493567e+01 3.523375e-01    -- 2.500000e+01  5.000000e+00  5.000000e+01  False
+    jet_leptonic           z_cosm           --           --    -- 3.080000e-02  0.000000e+00            --   True
     **************************************************************************************************
     
     ===================================================================================================================
     
-
-
-.. code:: ipython3
-
-    %matplotlib inline
-    fit_model_minuit.set_nu_grid(1E6,1E30,200)
-    fit_model_minuit.eval()
-    p2=fit_model_minuit.plot_model(sed_data=sed_data)
-    p2.rescale(y_min=-13,x_min=6,x_max=28.5)
-
-
-
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_26_0.png
 
 
 .. code:: ipython3
@@ -691,15 +634,15 @@ Model fitting with Minuit
     <table>
     <tr>
     <td colspan="2" title="Minimum value of function">
-    FCN = 38.37
+    FCN = 49.69
     </td>
     <td align="center" colspan="3" title="No. of calls in last algorithm and total number of calls">
-    Ncalls = 548 (553 total)
+    Ncalls = 84 (95 total)
     </td>
     </tr>
     <tr>
     <td colspan="2" title="Estimated distance to minimum and target threshold">
-    EDM = 0.0855 (Goal: 1E-05)
+    EDM = 3.59E+04 (Goal: 1E-05)
     </td>
     <td align="center" colspan="3" title="Increase in FCN which corresponds to 1 standard deviation">
     up = 1.0
@@ -760,11 +703,11 @@ Model fitting with Minuit
     <td align="center" style="background-color:#FF7878;">
     False
     </td>
-    <td align="center" style="background-color:#92CCA6;">
-    True
-    </td>
-    <td align="center" style="background-color:#92CCA6;">
+    <td align="center" style="background-color:#FF7878;">
     False
+    </td>
+    <td align="center" style="background-color:#FF7878;">
+    True
     </td>
     </tr>
     </table>
@@ -804,97 +747,10 @@ Model fitting with Minuit
     par_0
     </td>
     <td>
-    0.061
+    331.0
     </td>
     <td>
-    0.003
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    0
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#F4F4F4;">
-    <td>
-    1
-    </td>
-    <td>
-    par_1
-    </td>
-    <td>
-    30.1
-    </td>
-    <td>
-    0.8
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    5
-    </td>
-    <td>
-    50
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#FFFFFF;">
-    <td>
-    2
-    </td>
-    <td>
-    par_2
-    </td>
-    <td>
-    1.62
-    </td>
-    <td>
-    0.08
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    0
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#F4F4F4;">
-    <td>
-    3
-    </td>
-    <td>
-    par_3
-    </td>
-    <td>
-    331.65
-    </td>
-    <td>
-    0.20
+    0.5
     </td>
     <td>
     
@@ -912,18 +768,47 @@ Model fitting with Minuit
     
     </td>
     </tr>
+    <tr style="background-color:#F4F4F4;">
+    <td>
+    1
+    </td>
+    <td>
+    par_1
+    </td>
+    <td>
+    2.03
+    </td>
+    <td>
+    0.20
+    </td>
+    <td>
+    
+    </td>
+    <td>
+    
+    </td>
+    <td>
+    0
+    </td>
+    <td>
+    
+    </td>
+    <td>
+    
+    </td>
+    </tr>
     <tr style="background-color:#FFFFFF;">
     <td>
-    4
+    2
     </td>
     <td>
-    par_4
+    par_2
     </td>
     <td>
-    1.974
+    2.041
     </td>
     <td>
-    0.016
+    0.018
     </td>
     <td>
     
@@ -943,16 +828,16 @@ Model fitting with Minuit
     </tr>
     <tr style="background-color:#F4F4F4;">
     <td>
-    5
+    3
     </td>
     <td>
-    par_5
+    par_3
     </td>
     <td>
-    0.76
+    0.97
     </td>
     <td>
-    0.05
+    0.09
     </td>
     <td>
     
@@ -972,16 +857,16 @@ Model fitting with Minuit
     </tr>
     <tr style="background-color:#FFFFFF;">
     <td>
-    6
+    4
     </td>
     <td>
-    par_6
+    par_4
     </td>
     <td>
-    2.03E4
+    3.1E4
     </td>
     <td>
-    0.19E4
+    0.6E4
     </td>
     <td>
     
@@ -999,9 +884,139 @@ Model fitting with Minuit
     
     </td>
     </tr>
+    <tr style="background-color:#F4F4F4;">
+    <td>
+    5
+    </td>
+    <td>
+    par_5
+    </td>
+    <td>
+    0.087
+    </td>
+    <td>
+    0.006
+    </td>
+    <td>
+    
+    </td>
+    <td>
+    
+    </td>
+    <td>
+    0
+    </td>
+    <td>
+    
+    </td>
+    <td>
+    
+    </td>
+    </tr>
+    <tr style="background-color:#FFFFFF;">
+    <td>
+    6
+    </td>
+    <td>
+    par_6
+    </td>
+    <td>
+    24.9
+    </td>
+    <td>
+    0.4
+    </td>
+    <td>
+    
+    </td>
+    <td>
+    
+    </td>
+    <td>
+    5
+    </td>
+    <td>
+    50
+    </td>
+    <td>
+    
+    </td>
+    </tr>
     </table>
 
 
+
+
+you can save results collected so far
+
+.. code:: ipython3
+
+    best_fit_minuit.save_report('SSC-best-fit-minuit.txt')
+    model_minimizer_minuit.save_model('model_minimizer_minuit.pkl')
+    fit_model_minuit.save_model('fit_model_minuit.pkl')
+
+for further informatio regardin minuit please refer to
+https://iminuit.readthedocs.io/en/latest/
+
+.. code:: ipython3
+
+    #migrad profile
+    
+    #access the data
+    profile_migrad=model_minimizer_minuit.minimizer.profile('s')
+    
+    #make the plot(no need to run the previous command)
+    profile_plot_migrad=model_minimizer_minuit.minimizer.draw_profile('s')
+
+
+.. parsed-literal::
+
+    / minim function calls=100, chisq=99.129516 UL part=-0.000000
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_56_1.png
+
+
+.. code:: ipython3
+
+    #migrad contour
+    
+    #access the data
+    contour_migrad=model_minimizer_minuit.minimizer.contour('r','s')
+    
+    #make the plot(no need to run the previous command)
+    contour_plot_migrad=model_minimizer_minuit.minimizer.draw_contour('r','s')
+
+
+.. parsed-literal::
+
+    / minim function calls=400, chisq=225.610722 UL part=-0.000000
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_57_1.png
+
+
+you can use also minos contour and profile, in this case the
+computational time is longer:
+
+.. highlight:: python
+    
+   profile_migrad=model_minimizer_minuit.minimizer.mnprofile('s')
+   profile_plot_migrad=model_minimizer_minuit.minimizer.draw_mnprofile('s')
+    
+   contour_migrad=model_minimizer_minuit.minimizer.mncontour('r','s')
+   contour_plot_migrad=model_minimizer_minuit.minimizer.draw_mncontour('r','s')
+
+.. code:: ipython3
+
+    %matplotlib inline
+    fit_model_minuit.eval()
+    p2=fit_model_minuit.plot_model(sed_data=sed_data)
+    p2.rescale(y_min=-13,x_min=6,x_max=28.5)
+
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_60_0.png
 
 
 .. code:: ipython3
@@ -1009,18 +1024,20 @@ Model fitting with Minuit
     %matplotlib inline
     from jetset.plot_sedfit import PlotSED
     fit_model_minuit.set_nu_grid(1E6,1E30,200)
+    fit_model_lsb.set_nu_grid(1E6,1E30,500)
+    fit_model_lsb.eval()
     fit_model_minuit.eval()
     p2=PlotSED()
-    p2.add_data_plot(sed_data,fit_range=[ 11,29])
+    p2.add_data_plot(sed_data,fit_range=[ 11.,29.])
     p2.add_model_plot(fit_model_minuit,color='black')
-    p2.add_residual_plot(fit_model_minuit,sed_data,fit_range=[ 11,29],color='black')
+    p2.add_residual_plot(fit_model_minuit,sed_data,fit_range=[ 11.,29.],color='black')
     p2.add_model_plot(fit_model_lsb,color='red')
-    p2.add_residual_plot(fit_model_lsb,sed_data,fit_range=[ 11,29],color='red')
+    p2.add_residual_plot(fit_model_lsb,sed_data,fit_range=[ 11.,29.],color='red')
     p2.rescale(y_min=-13,x_min=6,x_max=28.5)
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_28_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_61_0.png
 
 
 MCMC sampling
@@ -1029,100 +1046,108 @@ MCMC sampling
 .. code:: ipython3
 
     from jetset.mcmc import McmcSampler
+    from jetset.minimizer import ModelMinimizer
 
 
-.. code:: ipython3
+We used a flat prior centered on the best fit value. Setting
+``bound=5.0`` and ``bound_rel=True`` means that:
 
-    jet_lsb.set_gamma_grid_size(100)
-    mcmc=McmcSampler(model_minimizer_lsb)
-    mcmc.run_sampler(nwalkers=150,burnin=10,threads=1,steps=50)
+::
 
+   1) the prior interval will be defined as  [best_fit_val - delta_m , best_fit_val + delta_p] 
 
-.. parsed-literal::
+   2) with delta_p=delta_m=best_fit_val*bound
 
-    \ progress=102.000% calls=7650 accepted=6349
+If we set ``bound_rel=False`` then
 
-.. code:: ipython3
+::
 
-    f=mcmc.corner_plot()
+   delta_p = delta_m = best_fit_err*bound
 
+It is possible to define asymmetric boundaries e.g. ``bound=[2.0,5.0]``
+meaning that
 
+::
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_32_0.png
+   1) for `bound_rel=True` 
 
+        delta_p = best_fit_val*bound[1]
 
-.. code:: ipython3
+        delta_m =b est_fit_val*bound[0]
 
-    mcmc.sampler_out.get_par('N')
+   2)  for `bound_rel=False` 
 
+       delta_p = best_fit_err*bound[1]
 
+       delta_m = best_fit_err*bound[0]
 
+In the next release a more flexible prior interface will be added,
+including different type of priors
 
-.. parsed-literal::
-
-    (array([2.38091458, 2.38091458, 2.38091458, ..., 4.28541072, 4.28541072,
-            4.28541072]), 2)
-
-
-
-.. code:: ipython3
-
-    f=mcmc.sampler_out.plot_par('beam_obj')
-
-
-
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_34_0.png
-
+Given the large parameter space, we select a sub sample of parameters
+using the ``use_labels_dict``. If we do not pass the ‘use_labels_dict’
+the full set of free parameters will be used
 
 .. code:: ipython3
 
-    mcmc.seve_run('test_run')
-
-.. code:: ipython3
-
-    from jetset.mcmc import SamplerOutput
-    s=SamplerOutput.from_file('test_run')
-
-.. code:: ipython3
-
-    f=s.plot_par('beam_obj',log_plot=False)
-
-
-
-
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_37_0.png
-
-
-.. code:: ipython3
-
-    f=s.plot_par('gmin',log_plot=True)
-
-
-
-
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_38_0.png
-
-
-.. code:: ipython3
-
-    f=s.plot_par('gamma0_log_parab',log_plot=True)
-
-
-
-
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_39_0.png
-
-
-.. code:: ipython3
-
-    jet_minuit.set_gamma_grid_size(100)
+    model_minimizer_minuit = ModelMinimizer.load_model('model_minimizer_minuit.pkl')
+    
     mcmc=McmcSampler(model_minimizer_minuit)
-    mcmc.run_sampler(nwalkers=150,burnin=10,threads=1,steps=50)
+    
+    labels=['N','B','beam_obj','s','gamma0_log_parab']
+    model_name='jet_leptonic'
+    use_labels_dict={model_name:labels}
+    
+    mcmc.run_sampler(nwalkers=128,burnin=10,steps=50,bound=5.0,bound_rel=True,threads=None,walker_start_bound=0.005,use_labels_dict=use_labels_dict)
 
 
 .. parsed-literal::
 
-    / progress=102.000% calls=7650 accepted=6300
+    mcmc run starting
+
+
+.. parsed-literal::
+
+    100%|██████████| 50/50 [06:15<00:00,  7.51s/it]
+
+.. parsed-literal::
+
+    mcmc run done, with 1 threads took 382.61 seconds
+
+
+.. parsed-literal::
+
+    
+
+
+.. code:: ipython3
+
+    print(mcmc.acceptance_fraction)
+
+
+.. parsed-literal::
+
+    0.5639062499999999
+
+
+.. code:: ipython3
+
+    p=mcmc.plot_model(sed_data=sed_data,fit_range=[11.,27.4],size=50)
+    p.rescale(y_min=-13,x_min=6,x_max=28.5)
+
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_67_0.png
+
+
+.. code:: ipython3
+
+    f=mcmc.plot_chain('s',log_plot=False)
+
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_68_0.png
+
 
 .. code:: ipython3
 
@@ -1130,16 +1155,117 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_41_0.png
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_69_0.png
 
 
 .. code:: ipython3
 
-    f=s.plot_par('beam_obj',log_plot=False)
+    mcmc.get_par('N')
 
 
 
 
-.. image:: Jet_example_model_fit_files/Jet_example_model_fit_42_0.png
+.. parsed-literal::
 
+    (array([2.03985989, 1.97347471, 1.88059101, ..., 2.17080728, 2.16236303,
+            1.91671546]),
+     0)
+
+
+
+.. code:: ipython3
+
+    f=mcmc.plot_par('beam_obj')
+
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_71_0.png
+
+
+.. code:: ipython3
+
+    f=mcmc.plot_par('gamma0_log_parab',log_plot=True)
+
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_72_0.png
+
+
+Save and reuse MCMC
+-------------------
+
+.. code:: ipython3
+
+    mcmc.save('mcmc_sampler.pkl')
+
+.. code:: ipython3
+
+    from jetset.mcmc import McmcSampler
+    from jetset.data_loader import ObsData
+    from jetset.plot_sedfit import PlotSED
+    from jetset.test_data_helper import  test_SEDs
+    
+    sed_data=ObsData.load('Mrk_401.pkl')
+    
+    ms=McmcSampler.load('mcmc_sampler.pkl')
+
+.. code:: ipython3
+
+    ms.model.name
+
+
+
+
+.. parsed-literal::
+
+    'SSC-best-fit-minuit'
+
+
+
+.. code:: ipython3
+
+    p=ms.plot_model(sed_data=sed_data,fit_range=[11., 27.4],size=50)
+    p.rescale(y_min=-13,x_min=6,x_max=28.5)
+
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_77_0.png
+
+
+.. code:: ipython3
+
+    f=ms.plot_par('beam_obj',log_plot=False)
+
+
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_78_0.png
+
+
+.. code:: ipython3
+
+    f=ms.plot_par('B',log_plot=True)
+
+
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_79_0.png
+
+
+.. code:: ipython3
+
+    f=ms.plot_chain('s',log_plot=False)
+
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_80_0.png
+
+
+.. code:: ipython3
+
+    f=ms.corner_plot()
+
+
+
+.. image:: Jet_example_model_fit_files/Jet_example_model_fit_81_0.png
 

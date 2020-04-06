@@ -23,7 +23,7 @@
         // if luminosity_distance is negative is evaluated internally
         // otherwise the passed value is used
 
-        unsigned long i, E_SIZE, E_N_SIZE, Gamma, T, TMP;
+        unsigned int i, E_SIZE, E_N_SIZE, Gamma, T, TMP;
         double Q_scalig_factor;
 
         double STEP_FILE, COUNT_FILE, OUT_FILE;

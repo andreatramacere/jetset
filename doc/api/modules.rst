@@ -14,9 +14,15 @@ In the following the package modules are listed.
    cosmo_tools    <cosmo_tools.rst>
    data_loader    <data_loader.rst>
    frame_converter    <frame_converter.rst>
+   jet_emitters    <jet_emitters.rst>
    jet_model    <jet_model.rst>
+   jet_paramters    <jet_paramters.rst>
+   jet_spectral_components    <jet_spectral_components.rst>
+   jet_timedep    <jet_timedep.rst>
+   jet_tools    <jet_tools.rst>
    jetkernel_models_dic    <jetkernel_models_dic.rst>
    loglog_poly_model    <loglog_poly_model.rst>
+   mathkernel_helper    <mathkernel_helper.rst>
    mcmc    <mcmc.rst>
    minimizer    <minimizer.rst>
    mock    <mock.rst>
@@ -28,6 +34,7 @@ In the following the package modules are listed.
    poly_fit    <poly_fit.rst>
    sed_shaper    <sed_shaper.rst>
    spectral_shapes    <spectral_shapes.rst>
+   template_2Dmodel    <template_2Dmodel.rst>
    template_model    <template_model.rst>
    test_data_helper    <test_data_helper.rst>
    utils    <utils.rst>

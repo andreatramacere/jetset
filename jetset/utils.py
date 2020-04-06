@@ -4,11 +4,17 @@ from __future__ import absolute_import, division, print_function
 from builtins import (bytes, str, open, super, range,
                       zip, round, input, int, pow, object, map, zip)
 
+import re
+import inspect
+import sys
+import warnings
+import os
+import json
+
+
 __author__ = "Andrea Tramacere"
 
 __all__=['check_frame','unexpetced_behaviour']
-import re
-
 
 
 
@@ -20,6 +26,7 @@ def check_frame(frame):
 
 def unexpetced_behaviour():
     raise RuntimeError('the code reached a condition that should never happen!')
+
 
 
 
@@ -36,3 +43,90 @@ def clean_var_name(s):
    s = re.sub('^[^a-zA-Z_]+', '', s)
 
    return s
+
+
+class NoTraceBackWithLineNumber(Exception):
+    def __init__(self, msg):
+        try:
+            ln = sys.exc_info()[-1].tb_lineno
+        except AttributeError:
+            ln = inspect.currentframe().f_back.f_lineno
+        self.args = "{0.__name__} (line {1}): {2}".format(type(self), ln, msg),
+        sys.exit(self)
+
+def new_version_warning():
+    m = '\n\n' + '*'*80 + '\n'
+    m+= 'Something wrong has happened. Please, look at the exception message. Note also that\n'
+    m+= 'starting from version 1.1.0, the R parameter as default is linear \nand not logarithmic, please update your scripts\n'
+    m+= 'Also the format of the jet_model has changed, now it is a binary file.\n'
+    m+= '*' * 80 + '\n'
+    warnings.warn(m)
+
+
+def parameters_warning():
+    pass
+
+
+def old_model_warning():
+    m = '\n\n' + '*'*80 + '\n'
+    m+= 'you are loading a model supported for version<1.1.0, starting from version 1.1.0 \n'
+    m+= 'the saved model has changed,  plase update to the new model the new format, \n'
+    m += 'by saving it with this version\n'
+    m+= '*' * 80 + '\n'
+    warnings.warn(m)
+
+class JetkerneltException(Exception):
+
+    def __init__(self, message='Jeset  exception', debug_message=''):
+        super(JetkerneltException, self).__init__(message)
+        self.message=message
+        self.debug_message=debug_message
+
+
+def str_hook(pairs):
+    new_pairs = []
+    for key, value in pairs:
+        if isinstance(value, unicode):
+            value = value.encode('utf-8')
+        if isinstance(key, unicode):
+            key = key.encode('utf-8')
+        new_pairs.append((key, value))
+    return dict(new_pairs)
+
+
+
+def safe_run(func):
+
+    def func_wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+           message =  'the jetkernel failed\n'
+           message += '\n exception message: '
+           message += '%s'%e
+           new_version_warning()
+
+           raise JetkerneltException(message=message)
+
+
+    return func_wrapper
+
+
+def set_str_attr(obj,name,val):
+    #print('set obj', obj,'name',name ,'to', val)
+    try:
+
+        try:
+            setattr(obj, name,val)
+        except:
+            setattr(obj, name, val.encode('ascii'))
+    except Exception as e:
+        raise RuntimeError('error setting attr',name,'execption:',e)
+
+
+
+def get_info():
+    with open(os.path.dirname(__file__) + '/pkg_info.json') as fp:
+        _info = json.load(fp)
+
+    return _info

@@ -48,10 +48,10 @@ class SED(object):
         self._loglog=log_log
 
         if z is not None and dl is not None:
+            # calling setter do not change
+            self.nu_src= (z)
 
-            self.nu_src= z
-
-            #print('1')
+            # calling setter do not change
             self.nuLnu_src = (z,dl)
 
         self.nu_residuals=nu_residuals
@@ -131,13 +131,10 @@ class SED(object):
         else:
             unexpetced_behaviour()
 
-        if log_log==True:
-
-            msk=y>0
-            
-            x=np.log10(x[msk])
-
-            y=np.log10(y[msk])
+        if log_log is True:
+            msk = y>0
+            x = np.log10(x[msk])
+            y = np.log10(y[msk])
         
         return x, y
 
@@ -173,8 +170,10 @@ class SED(object):
 
         if z is not None and dl is not None:
 
+            #calling setter do not change
             self.nu_src = (z)
 
+            # calling setter do not change
             self.nuLnu_src = (z,dl)
 
         if nuLnu_src_residuals is not None:

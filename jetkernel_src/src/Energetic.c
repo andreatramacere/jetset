@@ -81,7 +81,7 @@ void EvalU_p(struct spettro *pt) {
 
 
     if (pt->Distr_p_done == 0) {
-        printf("No electron distribution calculated \n ");
+        printf("No proton distribution calculated \n ");
         exit(0);
         //Genera_Ne(pt);
     }
@@ -121,7 +121,7 @@ double N_distr_U_e(struct spettro *pt_N, double Gamma) {
     //return N_distr(pt_N, Gamma) * Gamma;
     //!!!!!! ricordati di che si puo' usare N_distr
     // quando non usi i leptoni secondari
-    return N_distr_interp(pt_N, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne) * Gamma;
+    return N_distr_interp(pt_N->gamma_grid_size, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne) * Gamma;
 }
 
 double N_distr_U_p(struct spettro *pt_N, double Gamma) {
@@ -137,7 +137,7 @@ double N_distr_U_p(struct spettro *pt_N, double Gamma) {
     //return N_distr(pt_N, Gamma) * Gamma;
     //!!!!!! ricordati di che si puo' usare N_distr
     // quando non usi i leptoni secondari
-    return N_distr_interp(pt_N, Gamma, pt_N->griglia_gamma_Np_log, pt_N->Np) * Gamma;
+    return N_distr_interp(pt_N->gamma_grid_size, Gamma, pt_N->griglia_gamma_Np_log, pt_N->Np) * Gamma;
 }
 
 
@@ -152,14 +152,14 @@ double N_distr_U_p(struct spettro *pt_N, double Gamma) {
 // Find EsSp
 //=========================================================================================
 
-void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned long NU_INT_MAX, struct spettro * pt,
+void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned int NU_INT_MAX, struct spettro * pt,
         double * nu_peak_obs,
         double * nu_peak_src,
         double * nu_peak_blob,
         double * nuFnu_peak_obs,
         double * nuLnu_peak_src,
         double * nuLnu_peak_blob) {
-	unsigned long i;
+	unsigned int i;
     
     *nu_peak_obs=nu_blob_to_nu_obs(nu_blob[0], pt->beam_obj, pt->z_cosm);
     *nu_peak_blob=nu_blob[0];
@@ -189,7 +189,7 @@ void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned long NU_INT_MAX, st
 //=========================================================================================
 //Function to Integrate the Total Power of emitted photons in the blob rest frame
 
-double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu_blob, double *nuFnu, unsigned long NU_INT_STOP)
+double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu_blob, double *nuFnu, unsigned int NU_INT_STOP)
 {
     /**
      * \author Andrea Tramacere
@@ -199,7 +199,7 @@ double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu_blob, double 
      */
 
     double Ptot, P1, P2, nu1, nu2;
-    unsigned long i;
+    unsigned int i;
 
     Ptot = 0;
     nu1 = nu_blob[0];
@@ -217,7 +217,7 @@ double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu_blob, double 
     return Ptot * 0.5;
 }
 
-double PowerPhotons_blob_rest_frame(struct spettro *pt, double *nu_blob, double *nuFnu, unsigned long NU_INT_STOP)
+double PowerPhotons_blob_rest_frame(struct spettro *pt, double *nu_blob, double *nuFnu, unsigned int NU_INT_STOP)
 {
     /**
      * \author Andrea Tramacere
@@ -227,7 +227,7 @@ double PowerPhotons_blob_rest_frame(struct spettro *pt, double *nu_blob, double 
      */
 
     double Ptot, P1, P2, nu1, nu2;
-    unsigned long i;
+    unsigned int i;
 
     Ptot = 0;
     nu1 = nu_blob[0];
@@ -347,7 +347,7 @@ double Power_Sync_Electron(struct spettro *pt) {
 //==============================
 
 double Power_Sync_Electron_Integ(struct spettro *pt_N, double Gamma) {
-    return N_distr_interp(pt_N, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne)
+    return N_distr_interp(pt_N->gamma_grid_size, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne)
             * Gamma * Gamma;
     //(1.0 - (1.0 / (Gamma * Gamma)));
     //return N_distr(pt_N, Gamma) * Gamma * Gamma * (1.0 - (1.0 / (Gamma * Gamma)));
@@ -361,9 +361,9 @@ double Power_Sync_Electron_Integ(struct spettro *pt_N, double Gamma) {
 //Function to get the U_ph of a given photon field from I_nu 
 //U_ph= 4pi* Inu*dnu
 
-double I_nu_to_Uph(double * nu, double * I_nu, unsigned long NU_INT_STOP) {
+double I_nu_to_Uph(double * nu, double * I_nu, unsigned int NU_INT_STOP) {
     double Uph, n_nu1, n_nu2, nu1, nu2;
-    unsigned long i;
+    unsigned int i;
     Uph = 0;
     nu1 = nu[0];
     n_nu1 = I_nu_to_n(I_nu[0], nu1);
@@ -398,7 +398,8 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
 
     energetic.U_B= pt->UB;
     energetic.U_e= pt->U_e;
-    energetic.U_p=  pt->N * 0.1 * MPC2;
+   
+    
 
     energetic.U_Synch = Uph_Sync(pt);
     energetic.U_BLR = I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR);
@@ -429,16 +430,21 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
         energetic.jet_L_SSC=0;
     }
     
-    if (strcmp(pt->PARTICLE, "hadrons") == 0) {
-        energetic.L_PP_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_SSC, pt->nuF_nu_pp_obs, pt->NU_INT_STOP_PP);
+    if (strcmp(pt->PARTICLE, "protons") == 0) {
+        energetic.U_p_cold = pt->NH_pp  * MPC2;
+
+        energetic.U_p = pt->U_p;
+        energetic.L_pp_gamma_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_pp, pt->nuFnu_pp_obs, pt->NU_INT_STOP_PP);
      
-        energetic.jet_L_PP = energetic.L_PP_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
-        energetic.jet_L_rad += energetic.jet_L_PP;
+        energetic.jet_L_pp_gamma = energetic.L_pp_gamma_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
+        energetic.jet_L_rad += energetic.jet_L_pp_gamma;
     }
     else
     {
-        energetic.L_PP_rf=0;
-        energetic.jet_L_PP=0;
+        energetic.U_p_cold = pt->N_e * 0.1 * MPC2;
+        energetic.U_p = 0.;
+        energetic.L_pp_gamma_rf=0;
+        energetic.jet_L_pp_gamma=0;
     }
 
 
@@ -489,11 +495,13 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
     }
     lum_factor = pi * pt->R * pt->R * vluce_cm * pt->BulkFactor * pt->BulkFactor;
     energetic.jet_L_e = pt->U_e * lum_factor;
-    energetic.jet_L_p = lum_factor * pt->N * 0.1 * MPC2;
+    energetic.jet_L_p = lum_factor * energetic.U_p;
+    energetic.jet_L_p_cold = lum_factor * energetic.U_p_cold;
     energetic.jet_L_B = pt->UB * lum_factor;
-    energetic.jet_L_kin = energetic.jet_L_B + energetic.jet_L_e + energetic.jet_L_p;
+    energetic.jet_L_kin = energetic.jet_L_B + energetic.jet_L_e + energetic.jet_L_p_cold + energetic.jet_L_p;
     energetic.jet_L_tot = energetic.jet_L_kin + energetic.jet_L_rad;
 
+    /*
     if (pt->WRITE_TO_FILE == 1)
     {
 
@@ -516,7 +524,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
 
         fprintf(fp_Energetic, "N=%e N/N_0 %e\n", pt->N, pt->N / pt->N_0);
         fprintf(fp_Energetic, "Volume for Spherical Geom.  %e  (cm^3)\n", pt->Vol_sphere);
-        if (strcmp(pt->PARTICLE, "leptons") == 0) 
+        if (strcmp(pt->PARTICLE, "electrons") == 0) 
         {
             fprintf(fp_Energetic, "********************       Leptonic Scenario       ********************\n");
             fprintf(fp_Energetic, "Total number of electrons     %e\n", pt->N_tot_e_Sferic);
@@ -530,7 +538,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
             fprintf(fp_Energetic, "U_p   blob rest frame (1p+ each 10e-) %e erg/cm^3\n", pt->N * 0.1 * MPC2);
             fprintf(fp_Energetic, "U_e/U_B  %e\n", pt->U_e / pt->UB);
         } 
-        else if (strcmp(pt->PARTICLE, "hadrons") == 0) 
+        else if (strcmp(pt->PARTICLE, "protons") == 0) 
         {
             fprintf(fp_Energetic, "********************       Hadronic Scenario       ********************\n");
             //fprintf(fp_Energetic, "Total number of electrons     %e\n", pt->N_tot_e_Sferic);
@@ -601,10 +609,10 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
      
 
 
-        if (strcmp(pt->PARTICLE, "hadrons") == 0) {
+        if (strcmp(pt->PARTICLE, "protons") == 0) {
             
             if (write_file>0){
-                fprintf(fp_Energetic, "Lum_PP Photons rest frame =%e U_ph=%e\n", energetic.L_PP_rf, energetic.L_PP_rf / (pt->Surf_sphere * vluce_cm));
+                fprintf(fp_Energetic, "Lum_PP Photons rest frame =%e U_ph=%e\n", energetic.L_pp_gamma_rf, energetic.L_pp_gamma_rf / (pt->Surf_sphere * vluce_cm));
                 fprintf(fp_Energetic, "nu_PP_blob_peak %e\n", pt->nu_peak_PP_blob);
                 fprintf(fp_Energetic, "nu_PP_src_peak %e\n", pt->nu_peak_PP_src);
                 fprintf(fp_Energetic, "nu_PP_obs_peak %e\n", pt->nu_peak_PP_obs);
@@ -699,7 +707,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
         {
             fprintf(fp_Energetic, "L_e  %e  L_e/L_kin %e\n", energetic.jet_L_e, energetic.jet_L_e / energetic.jet_L_kin);
 
-            fprintf(fp_Energetic, "L_p  %e  L_p/L_kin %e\n", energetic.jet_L_p, energetic.jet_L_p / energetic.jet_L_kin);
+            fprintf(fp_Energetic, "L_p  %e  L_p/L_kin %e\n", energetic.jet_L_p_cold, energetic.jet_L_p_cold / energetic.jet_L_kin);
 
             fprintf(fp_Energetic, "L_B  %e  L_B/L_kin %e\n", energetic.jet_L_B, energetic.jet_L_B / energetic.jet_L_kin);
 
@@ -711,15 +719,16 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
             fclose(fp_Energetic);
         }
     }
+    */
     return energetic;
 }
 
 void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev) {
     unsigned int i,a;
     double Uph,IC_cr,S_cr ;
-    char f_cooling[static_file_name_max_legth];
-    FILE *fp_cooling;
-
+    //char f_cooling[static_file_name_max_legth];
+    //FILE *fp_cooling;
+    /*
     if (pt->WRITE_TO_FILE == 1)
     {
         sprintf(f_cooling, "%s%s-cooling-rates.dat", pt->path, pt->STEM);
@@ -751,6 +760,7 @@ void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev) {
         pt_ev->do_Compton_cooling = a;
         fclose(fp_cooling);
     }   
+    */
 }
 
 

@@ -7,16 +7,17 @@ cd integration/jetset
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
 export USE_PIP='FALSE'
-export JETSETBESSELBUILD='TRUE'
+#export JETSETBESSELBUILD='TRUE'
 
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD BESSESL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+conda install --yes   -c conda-forge emcee">=3.0.0"
 conda install --yes   -c astropy --file requirements.txt
-rm jetkernel/mathkernel/F_Sync.dat
+#rm jetkernel/mathkernel/F_Sync.dat
+#python setup.py clean
 python setup.py clean
 python setup.py install > install.log 2>install.err
-python setup.py clean
 
 #cd ..
 #python -c 'import jetkernel; import os;p=os.path.join(jetkernel.__path__[0],"mathkernel"); os.system("cp jetset/jetkernel/mathkernel/F_Sync.dat %s"%p)'
@@ -33,7 +34,7 @@ echo  $PKG_VERSION
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PKG_VERSION
 conda build purge
-conda build .  -c defaults -c astropy > build.log 2>build.err #for linux
+conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err #for linux
 export CONDABUILDJETSET=$(conda-build . --output)
 echo  $CONDABUILDJETSET
 
@@ -54,7 +55,7 @@ conda activate jetset-cidc
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$CONDABUILDJETSET
 #testing
-conda install --yes   -c astropy --file ../integration/jetset/requirements.txt
+conda install --yes -c astropy -c conda-forge --file ../integration/jetset/requirements.txt
 conda install  --yes --offline $CONDABUILDJETSET
 
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'

@@ -34,7 +34,7 @@ double rate_compton_GR(struct spettro *pt_GR) {
     double rate_comp=0;
     double (*pf_K) (struct spettro *, double x);
     double nu_1_original;
-    int i;
+
     pf_K = &f_compton_K1;
 
 
@@ -63,7 +63,7 @@ double rate_compton_GR(struct spettro *pt_GR) {
                     0);
         }
     }
-    //EC Diks
+    //EC Disk
     if (pt_GR->nu_1 < pt_GR->nu_stop_EC_Disk && pt_GR->ord_comp == 1) {
 		if (pt_GR->SSC == 0 && pt_GR->EC == 1) {
 
@@ -322,7 +322,7 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
      *
      * g = Gamma degli e-
      */
-    double cost, rate,a, c, k, nu_1_min, nu_1_max, Gamma, g2;
+    double cost, rate,a, c, k, nu_1_min, nu_1_max, g2;
     double epsilon_0, epsilon_1,Gamma_e;
     pt_K1->Gamma = g;
     g2 = g*g;
@@ -462,7 +462,7 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
     double nu1, nu2, integr_gamma, integr_nu;
     double g3, g1, y_g1, y_g2, y_g3, y_nu1, y_nu2, g;
     double delta_g, delta_nu;
-    unsigned long i;
+    unsigned int i;
     double (*pf_K1) (struct spettro *, double x);
 
     pf_K1 = &f_compton_K1;

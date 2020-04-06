@@ -58,7 +58,7 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
     //code structure
     //
     double gamma_p_min, Ee_TeV, Gamma_1, a1, a2;
-    unsigned long i_start, i;
+    unsigned int i_start;
     double (*pf_K) (double gamma_p, double nu_pp, struct spettro * pt);
 
     if (pt->set_pp_racc_elec == 0) {
@@ -83,7 +83,7 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
         a1 = pp_electron_kernel_delta(Ee_TeV, pt);
         pt->pp_racc_elec = a2 / a1;
         //printf("gamma_p_min=%e Ee_TeV=%e i_start=%d\n", gamma_p_min, Ee_TeV,i_start);
-        printf("e- >>>>>>>>>>%e %e %e \n", pt->pp_racc_elec, a1, a2);
+        //printf("e- >>>>>>>>>>%e %e %e \n", pt->pp_racc_elec, a1, a2);
         pt->Gamma = Gamma_1;
     }
 
@@ -121,7 +121,7 @@ double pp_electron_kernel_delta(double Ee_TeV, struct spettro *pt) {
     Ep_TeV = Ee_TeV / (Kpp_e) + MPC2_TeV;
     gamma_p = Ep_TeV / MPC2_TeV;
     qe = pt->pp_racc_elec / (Kpp_e) * sigma_pp_inel(Ep_TeV)*
-            N_distr_interp(pt, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
+            N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
     //        N_distr(pt,gamma_p);
     return qe;
 }
@@ -161,9 +161,9 @@ double F_electrons(double x, double Ep_TeV) {
 //
 //==================================================================
 
-double integrale_pp_electrons_rate(double (*pf_pp_electrons_kernel) (double gamma_p, double Gamma_e, struct spettro *pt), struct spettro * pt, unsigned long i_start) {
+double integrale_pp_electrons_rate(double (*pf_pp_electrons_kernel) (double gamma_p, double Gamma_e, struct spettro *pt), struct spettro * pt, unsigned int i_start) {
 
-    double integr, y1, y2, y3, x1, x2, x3;
+    double integr, y1, y2, y3, x1, x3;
     double delta;
     double Gamma_e;
 
@@ -228,7 +228,7 @@ double rate_gamma_pp(struct spettro *pt) {
     //code structure
     //
     double gamma_p_min, Emin_pi,Emax_pi, E_gamma, a1, a2, nu1;
-    unsigned long i_start, i;
+    unsigned int i_start;
     double (*pf_K) (double gamma_p, double nu_pp, struct spettro * pt);
     double (*pf_K1) (struct spettro *, double x);
 
@@ -265,7 +265,7 @@ double rate_gamma_pp(struct spettro *pt) {
 
         pt->pp_racc_gamma = a2 / a1;
         //printf("gamma_p_min=%e E_gamma=%e\n", gamma_p_min, E_gamma);
-        printf("gamma >>>>>>>>>>%e %e %en\n", pt->pp_racc_gamma, a1, a2);
+        //printf("gamma >>>>>>>>>>%e %e %e\n", pt->pp_racc_gamma, a1, a2);
         pt->nu_1 = nu1;
     }
 
@@ -311,9 +311,7 @@ double pp_gamma_kernel_delta(struct spettro *pt, double Epi_TeV) {
     double qpi,Ep_TeV, Gamma;
     Ep_TeV = Epi_TeV/Kpi +MPC2_TeV;
     Gamma=Ep_TeV/MPC2_TeV;
-    qpi = pt->pp_racc_gamma / (Kpi) * sigma_pp_inel(Ep_TeV) *
-                N_distr(pt, Gamma);
-               //N_distr_interp(pt, Gamma, pt->griglia_gamma_Np_log, pt->Np);
+    qpi = pt->pp_racc_gamma / (Kpi)*sigma_pp_inel(Ep_TeV) * N_distr_interp(pt->gamma_grid_size, Gamma, pt->griglia_gamma_Np_log, pt->Np);
     return 2.0 * qpi / sqrt(Epi_TeV * Epi_TeV - MPIC2_TeV * MPIC2_TeV);
 }
 
@@ -355,9 +353,9 @@ double F_gamma(double x, double Ep_TeV) {
 //
 //==================================================================
 
-double integrale_pp_gamma_rate(double (*pf_pp_gamma_kernel) (double gamma_p, double nu_pp, struct spettro *pt), struct spettro * pt, unsigned long i_start) {
+double integrale_pp_gamma_rate(double (*pf_pp_gamma_kernel) (double gamma_p, double nu_pp, struct spettro *pt), struct spettro * pt, unsigned int i_start) {
 
-    double integr, y1, y2, y3, x1, x2, x3;
+    double integr, y1, y2, y3, x1, x3;
     double delta;
     double nu_pp;
 
