@@ -14,7 +14,7 @@ future
 iminuit>=1.3.7
 corner
 six
-emcee>=3.0.0
+emcee
 pyyaml
 pyqt
 pytest
