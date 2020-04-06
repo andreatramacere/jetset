@@ -9,13 +9,13 @@ scipy
 numpy
 astropy>=4.0
 matplotlib>=3.1.0
-swig>3.0.0
+#swig>3.0.0
 future
 iminuit>=1.3.7
 corner
 six
-emcee>=3.0.0
+emcee
 pyyaml
-pyqt
+#pyqt
 pytest
 
