@@ -71,7 +71,8 @@ Installation from source using Anaconda
 
   .. code-block:: bash
 
-      conda install -c astropy -c conda-forge--file requirements.txt
+      conda install --yes   -c conda-forge emcee">=3.0.0"
+      conda install --yes   -c astropy --file requirements.txt
 
 
 -  run on the command line

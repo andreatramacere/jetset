@@ -87,14 +87,10 @@ pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
 ### Installation from source using Anaconda 
  
  - Install requirements, run on the command line:
-    - `conda install --file requirements.txt`
-     
-     if conda fails with dependencies you can try
+    - `conda install --yes   -c conda-forge emcee">=3.0.0"`
+    - `conda install --yes   -c astropy --file requirements.txt`
   
-   - `conda install -c astropy  --file requirements.txt`
-    
-  
-  
+   
    if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
    
  - run on the command line: 

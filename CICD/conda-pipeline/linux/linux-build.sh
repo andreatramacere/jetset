@@ -12,7 +12,8 @@ export USE_PIP='FALSE'
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD BESSESL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
-conda install --yes   -c astropy -c conda-forge --file requirements.txt
+conda install --yes   -c conda-forge emcee">=3.0.0"
+conda install --yes   -c astropy --file requirements.txt
 #rm jetkernel/mathkernel/F_Sync.dat
 #python setup.py clean
 python setup.py clean
