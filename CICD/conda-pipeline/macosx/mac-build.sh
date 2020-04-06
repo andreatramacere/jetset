@@ -1,3 +1,5 @@
+#!/bin/bash
+source ~/anaconda3/etc/profile.d/conda.sh
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
@@ -10,7 +12,6 @@ python setup.py clean
 cd CICD/conda-pipeline/macosx
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PWD
-source $CONDA_PREFIX/etc/profile.d/conda.sh
 conda activate jetset-cidc
 conda install --yes   -c astropy -c conda-forge --file ../../../requirements.txt
 
