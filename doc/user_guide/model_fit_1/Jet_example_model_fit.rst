@@ -1052,34 +1052,28 @@ MCMC sampling
 We used a flat prior centered on the best fit value. Setting
 ``bound=5.0`` and ``bound_rel=True`` means that:
 
-::
+1) the prior interval will be defined as [best_fit_val - delta_m ,
+   best_fit_val + delta_p]
 
-   1) the prior interval will be defined as  [best_fit_val - delta_m , best_fit_val + delta_p] 
+2) with delta_p=delta_m=best_fit_val*bound
 
-   2) with delta_p=delta_m=best_fit_val*bound
-
-If we set ``bound_rel=False`` then
-
-::
-
-   delta_p = delta_m = best_fit_err*bound
+If we set ``bound_rel=False`` then delta_p = delta_m =
+best_fit_err*bound
 
 It is possible to define asymmetric boundaries e.g. ``bound=[2.0,5.0]``
 meaning that
 
-::
+1) for ``bound_rel=True``
 
-   1) for `bound_rel=True` 
+   delta_p = best_fit_val*bound[1]
 
-        delta_p = best_fit_val*bound[1]
+   delta_m =b est_fit_val*bound[0]
 
-        delta_m =b est_fit_val*bound[0]
+2) for ``bound_rel=False``
 
-   2)  for `bound_rel=False` 
+   delta_p = best_fit_err*bound[1]
 
-       delta_p = best_fit_err*bound[1]
-
-       delta_m = best_fit_err*bound[0]
+   delta_m = best_fit_err*bound[0]
 
 In the next release a more flexible prior interface will be added,
 including different type of priors

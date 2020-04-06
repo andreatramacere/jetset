@@ -11,15 +11,15 @@ The external Compton implementation  gives you the possibility to use a double a
 * transformation of the electron emitting distribution from the blob restframe to
   disk/BH restframe :cite:`Dermer95` :cite:`GKM01`
 
-The implemented external radiative fields are 
+Regading the single external radiavite fiels 
  
-* Broad Line Region radiative field using the approach of :cite:`Donea2003` 
+* Implementation of Broad Line Region radiative field using the approach of :cite:`Donea2003` 
 
 * Dusty torus implemented as a uniform BB field within `R_DT`
 
-* accretion disk (mono-energetic, single-temperature BB or a multi-temperature BB)
+* accretion disk can be set a single BB or a multitemperature BB
 
-* Cosmic Microwave Background (CMB)
+* CMB 
 
 Please read :ref:`jet_physical_guide_SSC` if you skipped it.
 
