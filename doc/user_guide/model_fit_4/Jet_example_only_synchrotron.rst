@@ -1,7 +1,7 @@
 .. _model_fitting_3:
 
-Model fitting 4: Only Synchrotron
-=================================
+Model fitting
+=============
 
 .. code:: ipython3
 
@@ -31,7 +31,7 @@ Model fitting 4: Only Synchrotron
 
 
 
-Loading data
+loading data
 ------------
 
 see the :ref:`data_format` user guide for further information about loading data 
@@ -77,12 +77,12 @@ see the :ref:`data_format` user guide for further information about loading data
 
     sed_data.save('Mrk_401.pkl')
 
-Phenomenological model constraining
+phenomenological model constraining
 -----------------------------------
 
 see the :ref:`phenom_constr` user guide for further information about loading data 
 
-Spectral indices
+spectral indices
 ~~~~~~~~~~~~~~~~
 
 .. code:: ipython3
@@ -99,26 +99,6 @@ Spectral indices
     ===================================================================================================================
     
     *** evaluating spectral indices for data ***
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     ===================================================================================================================
     
 
@@ -127,7 +107,7 @@ Spectral indices
 .. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_12_1.png
 
 
-Sed shaper
+sed shaper
 ~~~~~~~~~~
 
 .. code:: ipython3
@@ -145,19 +125,17 @@ Sed shaper
     
     *** Log-Polynomial fitting of the synchrotron component ***
     ---> first blind fit run,  fit range: [10.0, 21.0]
-    
-    
     ---> class:  HSP
     
     
     
     model name name  bestfit val     err +     err -   start val   fit range min fit range max frozen
     ---------- ---- ------------- ------------ ----- ------------- ------------- ------------- ------
-      LogCubic    b -1.545301e-01 9.534795e-03    -- -1.000000e+00 -1.000000e+01  0.000000e+00  False
-      LogCubic    c -1.023245e-02 1.433073e-03    -- -1.000000e+00 -1.000000e+01  1.000000e+01  False
-      LogCubic   Ep  1.672267e+01 4.139942e-02    --  1.667039e+01  0.000000e+00  3.000000e+01  False
-      LogCubic   Sp -9.491659e+00 2.515285e-02    -- -1.000000e+01 -3.000000e+01  0.000000e+00  False
-    ---> sync       nu_p=+1.672267e+01 (err=+4.139942e-02)  nuFnu_p=-9.491659e+00 (err=+2.515285e-02) curv.=-1.545301e-01 (err=+9.534795e-03)
+      LogCubic    b -1.545301e-01 9.534756e-03    -- -1.000000e+00 -1.000000e+01  0.000000e+00  False
+      LogCubic    c -1.023245e-02 1.433074e-03    -- -1.000000e+00 -1.000000e+01  1.000000e+01  False
+      LogCubic   Ep  1.672267e+01 4.139904e-02    --  1.667039e+01  0.000000e+00  3.000000e+01  False
+      LogCubic   Sp -9.491658e+00 2.515289e-02    -- -1.000000e+01 -3.000000e+01  0.000000e+00  False
+    ---> sync       nu_p=+1.672267e+01 (err=+4.139904e-02)  nuFnu_p=-9.491658e+00 (err=+2.515289e-02) curv.=-1.545301e-01 (err=+9.534756e-03)
     ===================================================================================================================
     
 
@@ -178,15 +156,13 @@ Sed shaper
     ---> LogCubic fit
     
     
-    
-    
     model name name  bestfit val     err +     err -   start val   fit range min fit range max frozen
     ---------- ---- ------------- ------------ ----- ------------- ------------- ------------- ------
-      LogCubic    b -2.098186e-01 3.133100e-02    -- -1.000000e+00 -1.000000e+01  0.000000e+00  False
-      LogCubic    c -4.661867e-02 2.178436e-02    -- -1.000000e+00 -1.000000e+01  1.000000e+01  False
-      LogCubic   Ep  2.524926e+01 1.147802e-01    --  2.529412e+01  0.000000e+00  3.000000e+01  False
-      LogCubic   Sp -1.011085e+01 3.498963e-02    -- -1.000000e+01 -3.000000e+01  0.000000e+00  False
-    ---> IC         nu_p=+2.524926e+01 (err=+1.147802e-01)  nuFnu_p=-1.011085e+01 (err=+3.498963e-02) curv.=-2.098186e-01 (err=+3.133100e-02)
+      LogCubic    b -2.097925e-01 3.133727e-02    -- -1.000000e+00 -1.000000e+01  0.000000e+00  False
+      LogCubic    c -4.662648e-02 2.178444e-02    -- -1.000000e+00 -1.000000e+01  1.000000e+01  False
+      LogCubic   Ep  2.524932e+01 1.147866e-01    --  2.529412e+01  0.000000e+00  3.000000e+01  False
+      LogCubic   Sp -1.011094e+01 3.498801e-02    -- -1.000000e+01 -3.000000e+01  0.000000e+00  False
+    ---> IC         nu_p=+2.524932e+01 (err=+1.147866e-01)  nuFnu_p=-1.011094e+01 (err=+3.498801e-02) curv.=-2.097925e-01 (err=+3.133727e-02)
     ===================================================================================================================
     
 
@@ -195,7 +171,7 @@ Sed shaper
 .. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_15_1.png
 
 
-Model constraining
+model constraining
 ~~~~~~~~~~~~~~~~~~
 
 .. code:: ipython3
@@ -225,11 +201,11 @@ Model constraining
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
                 gmin  low-energy-cut-off lorentz-factor* 3.338231e+02     1.000000e+00     1.000000e+09 False  False
                 gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 3.073134e+00     0.000000e+00               -- False  False
+                   N    emitters_density         1 / cm3 3.072164e+00     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.181578e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 7.726503e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 2.265855e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False  False
+                   R         region_size              cm 1.649188e+16     1.000000e+03     1.000000e+30 False  False
                  R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
                    B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
             beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
@@ -253,11 +229,6 @@ Model constraining
 Model fitting only Synchorotron component
 -----------------------------------------
 
-.. note::
-   With the new implementation of composite model  (`FitModel` class) to set parameters you have to specify the model component, this is different from versions<1.1.2,
-   and this holds also for the `freeze` method and for setting  `fit_range` intervals, and for the methods relate to parameters setting in general.
-   See the :ref:`composite_models` user guide for further information about the new implementation of `FitModel`, in particular for parameter setting
-
 Model fitting with Minuit
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -274,11 +245,11 @@ Model fitting with Minuit
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
                 gmin  low-energy-cut-off lorentz-factor* 3.338231e+02     1.000000e+00     1.000000e+09 False  False
                 gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 3.073134e+00     0.000000e+00               -- False  False
+                   N    emitters_density         1 / cm3 3.072164e+00     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.181578e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 7.726503e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 2.265855e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False  False
+                   R         region_size              cm 1.649188e+16     1.000000e+03     1.000000e+30 False  False
                  R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
                    B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
             beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
@@ -331,11 +302,11 @@ we switch off the IC component
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
                 gmin  low-energy-cut-off lorentz-factor* 3.338231e+02     1.000000e+00     1.000000e+09 False  False
                 gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 3.073134e+00     0.000000e+00               -- False  False
+                   N    emitters_density         1 / cm3 3.072164e+00     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.181578e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 7.726503e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 2.265855e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False  False
+                   R         region_size              cm 1.649188e+16     1.000000e+03     1.000000e+30 False  False
                  R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
                    B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
             beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
@@ -359,7 +330,7 @@ we switch off the IC component
     from jetset.minimizer import fit_SED,ModelMinimizer
     
     model_minimizer_minuit=ModelMinimizer('minuit')
-    best_fit_minuit=model_minimizer_minuit.fit(fit_model_minuit,sed_data,10.0**15,10**20.0,fitname='SSC-best-fit-minuit',repeat=3)
+    best_fit_minuit=model_minimizer_minuit.fit(fit_model_minuit,sed_data,10.0**15,10**20.0,fitname='SSC-best-fit-minuit')
 
 
 .. parsed-literal::
@@ -370,35 +341,30 @@ we switch off the IC component
     
     *** start fit process ***
     ----- 
-    fit run: 0
-    | minim function calls=210, chisq=848.656969 UL part=-0.000000
-    fit run: 1
-    - minim function calls=420, chisq=1.472075 UL part=-0.000000
-    fit run: 2
-    | minim function calls=220, chisq=1.343271 UL part=-0.000000
+    / minim function calls=180, chisq=10.025227 UL part=-0.000000
     **************************************************************************************************
     Fit report
     
     Model: SSC-best-fit-minuit
      model name        name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
     ------------ ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-    jet_leptonic             gmin  low-energy-cut-off lorentz-factor* 3.497624e+02     1.000000e+00     1.000000e+09 False  False
+    jet_leptonic             gmin  low-energy-cut-off lorentz-factor* 3.316412e+02     1.000000e+00     1.000000e+09 False  False
     jet_leptonic             gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False   True
-    jet_leptonic                N    emitters_density         1 / cm3 5.692739e+00     0.000000e+00               -- False  False
-    jet_leptonic                s   LE_spectral_slope                 1.902930e+00    -1.000000e+01     1.000000e+01 False  False
-    jet_leptonic                r  spectral_curvature                 5.676336e-01    -1.500000e+01     1.500000e+01 False  False
-    jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor* 1.644956e+04     1.000000e+00     1.000000e+09 False  False
-    jet_leptonic                R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False   True
+    jet_leptonic                N    emitters_density         1 / cm3 3.056138e+00     0.000000e+00               -- False  False
+    jet_leptonic                s   LE_spectral_slope                 2.116389e+00    -1.000000e+01     1.000000e+01 False  False
+    jet_leptonic                r  spectral_curvature                 9.747794e-01    -1.500000e+01     1.500000e+01 False  False
+    jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor* 3.361531e+04     1.000000e+00     1.000000e+09 False  False
+    jet_leptonic                R         region_size              cm 1.649188e+16     1.000000e+03     1.000000e+30 False   True
     jet_leptonic              R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-    jet_leptonic                B      magnetic_field               G 4.059220e-02     0.000000e+00               -- False  False
-    jet_leptonic         beam_obj             beaming Lorentz-factor* 2.377591e+01     1.000000e-04               -- False  False
+    jet_leptonic                B      magnetic_field               G 8.722124e-02     0.000000e+00               -- False  False
+    jet_leptonic         beam_obj             beaming Lorentz-factor* 2.400658e+01     1.000000e-04               -- False  False
     jet_leptonic           z_cosm            redshift                 3.080000e-02     0.000000e+00               -- False   True
     
     converged=True
-    calls=229
+    calls=185
     ------------------------------------------------------------------
-    | FCN = 1.343                   |     Ncalls=224 (228 total)     |
-    | EDM = 0.0105 (Goal: 1E-05)    |            up = 1.0            |
+    | FCN = 9.883                   |     Ncalls=173 (184 total)     |
+    | EDM = 2.57E+04 (Goal: 1E-05)  |            up = 1.0            |
     ------------------------------------------------------------------
     |  Valid Min.   | Valid Param.  | Above EDM | Reached call limit |
     ------------------------------------------------------------------
@@ -406,35 +372,35 @@ we switch off the IC component
     ------------------------------------------------------------------
     | Hesse failed  |   Has cov.    | Accurate  | Pos. def. | Forced |
     ------------------------------------------------------------------
-    |     False     |     True      |   False   |   True    | False  |
+    |     False     |     True      |   False   |   False   |  True  |
     ------------------------------------------------------------------
     -------------------------------------------------------------------------------------------
     |   | Name  |   Value   | Hesse Err | Minos Err- | Minos Err+ | Limit-  | Limit+  | Fixed |
     -------------------------------------------------------------------------------------------
-    | 0 | par_0 |  0.350E3  |  0.000E3  |            |            |    1    |  1e+09  |       |
-    | 1 | par_1 |    5.7    |    1.7    |            |            |    0    |         |       |
-    | 2 | par_2 |   1.90    |   0.07    |            |            |   -10   |   10    |       |
-    | 3 | par_3 |   0.57    |   0.08    |            |            |   -15   |   15    |       |
-    | 4 | par_4 |   1.6E4   |   0.4E4   |            |            |    1    |  1e+09  |       |
-    | 5 | par_5 |   0.041   |   0.005   |            |            |    0    |         |       |
-    | 6 | par_6 |   23.8    |    2.1    |            |            |    5    |   50    |       |
+    | 0 | par_0 |   331.6   |    1.2    |            |            |    1    |  1e+09  |       |
+    | 1 | par_1 |    3.1    |    1.1    |            |            |    0    |         |       |
+    | 2 | par_2 |   2.12    |   0.06    |            |            |   -10   |   10    |       |
+    | 3 | par_3 |   0.97    |   0.09    |            |            |   -15   |   15    |       |
+    | 4 | par_4 |  0.34E5   |  0.06E5   |            |            |    1    |  1e+09  |       |
+    | 5 | par_5 |   0.087   |   0.014   |            |            |    0    |         |       |
+    | 6 | par_6 |   24.0    |    2.0    |            |            |    5    |   50    |       |
     -------------------------------------------------------------------------------------------
     dof=6
-    chisq=1.343319, chisq/red=0.223887 null hypothesis sig=0.969215
+    chisq=9.883327, chisq/red=1.647221 null hypothesis sig=0.129652
     
     best fit pars
      model name        name       bestfit val     err +     err -  start val   fit range min fit range max frozen
     ------------ ---------------- ------------ ------------ ----- ------------ ------------- ------------- ------
-    jet_leptonic             gmin 3.497624e+02 1.357303e-03    -- 3.338231e+02  1.000000e+00  1.000000e+09  False
+    jet_leptonic             gmin 3.316412e+02 1.191879e+00    -- 3.338231e+02  1.000000e+00  1.000000e+09  False
     jet_leptonic             gmax           --           --    -- 9.758134e+05  1.000000e+00  1.000000e+15   True
-    jet_leptonic                N 5.692739e+00 1.659377e+00    -- 3.073134e+00  0.000000e+00            --  False
-    jet_leptonic                s 1.902930e+00 7.023295e-02    -- 2.181578e+00 -1.000000e+01  1.000000e+01  False
-    jet_leptonic                r 5.676336e-01 7.665014e-02    -- 7.726503e-01 -1.500000e+01  1.500000e+01  False
-    jet_leptonic gamma0_log_parab 1.644956e+04 4.197899e+03    -- 2.265855e+04  1.000000e+00  1.000000e+09  False
-    jet_leptonic                R           --           --    -- 1.649014e+16  3.162278e+15  3.162278e+17   True
+    jet_leptonic                N 3.056138e+00 1.054492e+00    -- 3.072164e+00  0.000000e+00            --  False
+    jet_leptonic                s 2.116389e+00 6.417366e-02    -- 2.181578e+00 -1.000000e+01  1.000000e+01  False
+    jet_leptonic                r 9.747794e-01 9.201361e-02    -- 7.726503e-01 -1.500000e+01  1.500000e+01  False
+    jet_leptonic gamma0_log_parab 3.361531e+04 5.673704e+03    -- 2.265855e+04  1.000000e+00  1.000000e+09  False
+    jet_leptonic                R           --           --    -- 1.649188e+16  3.162278e+15  3.162278e+17   True
     jet_leptonic              R_H           --           --    -- 1.000000e+17  0.000000e+00            --   True
-    jet_leptonic                B 4.059220e-02 5.247971e-03    -- 1.000000e-01  0.000000e+00            --  False
-    jet_leptonic         beam_obj 2.377591e+01 2.105295e+00    -- 2.500000e+01  5.000000e+00  5.000000e+01  False
+    jet_leptonic                B 8.722124e-02 1.439927e-02    -- 1.000000e-01  0.000000e+00            --  False
+    jet_leptonic         beam_obj 2.400658e+01 1.964607e+00    -- 2.500000e+01  5.000000e+00  5.000000e+01  False
     jet_leptonic           z_cosm           --           --    -- 3.080000e-02  0.000000e+00            --   True
     **************************************************************************************************
     
@@ -452,7 +418,7 @@ we switch off the IC component
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_27_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_26_0.png
 
 
 .. code:: ipython3
@@ -467,15 +433,15 @@ we switch off the IC component
     <table>
     <tr>
     <td colspan="2" title="Minimum value of function">
-    FCN = 1.343
+    FCN = 9.883
     </td>
     <td align="center" colspan="3" title="No. of calls in last algorithm and total number of calls">
-    Ncalls = 224 (228 total)
+    Ncalls = 173 (184 total)
     </td>
     </tr>
     <tr>
     <td colspan="2" title="Estimated distance to minimum and target threshold">
-    EDM = 0.0105 (Goal: 1E-05)
+    EDM = 2.57E+04 (Goal: 1E-05)
     </td>
     <td align="center" colspan="3" title="Increase in FCN which corresponds to 1 standard deviation">
     up = 1.0
@@ -536,11 +502,11 @@ we switch off the IC component
     <td align="center" style="background-color:#FF7878;">
     False
     </td>
-    <td align="center" style="background-color:#92CCA6;">
-    True
-    </td>
-    <td align="center" style="background-color:#92CCA6;">
+    <td align="center" style="background-color:#FF7878;">
     False
+    </td>
+    <td align="center" style="background-color:#FF7878;">
+    True
     </td>
     </tr>
     </table>
@@ -580,10 +546,10 @@ we switch off the IC component
     par_0
     </td>
     <td>
-    0.350E3
+    331.6
     </td>
     <td>
-    0.000E3
+    1.2
     </td>
     <td>
     
@@ -609,10 +575,10 @@ we switch off the IC component
     par_1
     </td>
     <td>
-    5.7
+    3.1
     </td>
     <td>
-    1.7
+    1.1
     </td>
     <td>
     
@@ -638,10 +604,10 @@ we switch off the IC component
     par_2
     </td>
     <td>
-    1.90
+    2.12
     </td>
     <td>
-    0.07
+    0.06
     </td>
     <td>
     
@@ -667,10 +633,10 @@ we switch off the IC component
     par_3
     </td>
     <td>
-    0.57
+    0.97
     </td>
     <td>
-    0.08
+    0.09
     </td>
     <td>
     
@@ -696,10 +662,10 @@ we switch off the IC component
     par_4
     </td>
     <td>
-    1.6E4
+    0.34E5
     </td>
     <td>
-    0.4E4
+    0.06E5
     </td>
     <td>
     
@@ -725,10 +691,10 @@ we switch off the IC component
     par_5
     </td>
     <td>
-    0.041
+    0.087
     </td>
     <td>
-    0.005
+    0.014
     </td>
     <td>
     
@@ -754,10 +720,10 @@ we switch off the IC component
     par_6
     </td>
     <td>
-    23.8
+    24.0
     </td>
     <td>
-    2.1
+    2.0
     </td>
     <td>
     
@@ -787,10 +753,10 @@ we switch off the IC component
 
 .. parsed-literal::
 
-    / minim function calls=400, chisq=416.344002 UL part=-0.000000
+    / minim function calls=400, chisq=300.390795 UL part=-0.000000
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_29_1.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_28_1.png
 
 
 .. code:: ipython3
@@ -800,10 +766,10 @@ we switch off the IC component
 
 .. parsed-literal::
 
-    \ minim function calls=100, chisq=143.637504 UL part=-0.000000
+    \ minim function calls=100, chisq=60.061619 UL part=-0.000000
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_30_1.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_29_1.png
 
 
 .. code:: ipython3
@@ -820,45 +786,6 @@ MCMC sampling
     from jetset.mcmc import McmcSampler
     from jetset.minimizer import ModelMinimizer
 
-
-We used a flat prior centered on the best fit value. Setting
-``bound=5.0`` and ``bound_rel=True`` means that:
-
-::
-
-   1) the prior interval will be defined as  [best_fit_val - delta_m , best_fit_val + delta_p] 
-
-   2) with delta_p=delta_m=best_fit_val*bound
-
-If we set ``bound_rel=False`` then
-
-::
-
-   delta_p = delta_m = best_fit_err*bound
-
-It is possible to define asymmetric boundaries e.g. ``bound=[2.0,5.0]``
-meaning that
-
-::
-
-   1) for `bound_rel=True` 
-
-        delta_p = best_fit_val*bound[1]
-
-        delta_m =b est_fit_val*bound[0]
-
-   2)  for `bound_rel=False` 
-
-       delta_p = best_fit_err*bound[1]
-
-       delta_m = best_fit_err*bound[0]
-
-In the next release a more flexible prior interface will be added,
-including different type of priors
-
-Given the large parameter space, we select a sub sample of parameters
-using the ``use_labels_dict``. If we do not pass the ‘use_labels_dict’
-the full set of free parameters will be used
 
 .. code:: ipython3
 
@@ -880,11 +807,11 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    100%|██████████| 50/50 [04:36<00:00,  5.53s/it]
+    100%|██████████| 50/50 [04:28<00:00,  5.37s/it]
 
 .. parsed-literal::
 
-    mcmc run done, with 1 threads took 281.94 seconds
+    mcmc run done, with 1 threads took 274.22 seconds
 
 
 .. parsed-literal::
@@ -899,7 +826,8 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    0.54078125
+    0.5090625
+
 
 
 .. code:: ipython3
@@ -909,7 +837,7 @@ the full set of free parameters will be used
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_37_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_36_0.png
 
 
 f=mcmc.plot_chain(‘s’,log_plot=False)
@@ -920,7 +848,7 @@ f=mcmc.plot_chain(‘s’,log_plot=False)
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_39_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_38_0.png
 
 
 .. code:: ipython3
@@ -932,8 +860,8 @@ f=mcmc.plot_chain(‘s’,log_plot=False)
 
 .. parsed-literal::
 
-    (array([5.36917478, 5.50379473, 5.71725649, ..., 5.36886334, 5.8928331 ,
-            5.17344931]),
+    (array([3.12933366, 3.01311456, 3.02939386, ..., 2.62278947, 3.83006784,
+            3.75335437]),
      0)
 
 
@@ -944,7 +872,7 @@ f=mcmc.plot_chain(‘s’,log_plot=False)
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_41_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_40_0.png
 
 
 .. code:: ipython3
@@ -953,10 +881,10 @@ f=mcmc.plot_chain(‘s’,log_plot=False)
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_42_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_41_0.png
 
 
-Save and reuse MCMC
+Save and resue MCMC
 -------------------
 
 .. code:: ipython3
@@ -994,7 +922,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_47_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_46_0.png
 
 
 .. code:: ipython3
@@ -1004,7 +932,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_48_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_47_0.png
 
 
 .. code:: ipython3
@@ -1014,7 +942,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_49_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_48_0.png
 
 
 .. code:: ipython3
@@ -1023,7 +951,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_50_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_49_0.png
 
 
 .. code:: ipython3
@@ -1032,5 +960,5 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_51_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_50_0.png
 

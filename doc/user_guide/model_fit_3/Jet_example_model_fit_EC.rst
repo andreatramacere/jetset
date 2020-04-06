@@ -5,8 +5,8 @@
     import warnings
     warnings.filterwarnings('ignore')
 
-Model fitting 3: External Compton
-=================================
+Model fitting for External Compton
+==================================
 
 Loading data
 ------------
@@ -279,16 +279,10 @@ read the section :ref:`jet_physical_guide_EC`  for more information regarding th
 
 The prefit model should works well for the synchrotron component, but
 the EC one is a bit problematic. We can set as starting values a
-slightly harder value of ``p``, and a larger value of ``gamma_break``
-and ``gmax``. We freeze some parameters, and we also set some
-``fit_range`` values. Setting fit_range can speed-up the fit convergence
-but should be judged by the user each time according to the physics of
-the particular source
-
-.. note::
-   With the new implementation of composite model  (`FitModel` class) to set parameters you have to specify the model component, this is different from versions<1.1.2,
-   and this holds also for the `freeze` method and for setting  `fit_range` intervals, and for the methods relate to parameters setting in general.
-   See the :ref:`composite_models` user guide for further information about the new implementation of `FitModel`, in particular for parameter setting
+slightly hader value of ``p``, and a larger value of ``gamma_break`` and
+``gmax``. We freeze some parameters, and we also set some ``fit_range``
+values, indeed ``minuit`` works better if ``fit_range`` is set for some
+parameters that might impact significantly on the fit.
 
 EC model fit
 ------------
@@ -508,7 +502,7 @@ EC model fit
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_30_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_29_0.png
 
 
 .. code:: ipython3
@@ -570,45 +564,6 @@ MCMC
     from jetset.minimizer import ModelMinimizer
 
 
-We used a flat prior centered on the best fit value. Setting
-``bound=5.0`` and ``bound_rel=True`` means that:
-
-::
-
-   1) the prior interval will be defined as  [best_fit_val - delta_m , best_fit_val + delta_p] 
-
-   2) with delta_p=delta_m=best_fit_val*bound
-
-If we set ``bound_rel=False`` then
-
-::
-
-   delta_p = delta_m = best_fit_err*bound
-
-It is possible to define asymmetric boundaries e.g. ``bound=[2.0,5.0]``
-meaning that
-
-::
-
-   1) for `bound_rel=True` 
-
-        delta_p = best_fit_val*bound[1]
-
-        delta_m =b est_fit_val*bound[0]
-
-   2)  for `bound_rel=False` 
-
-       delta_p = best_fit_err*bound[1]
-
-       delta_m = best_fit_err*bound[0]
-
-In the next release a more flexible prior interface will be added,
-including different type of priors
-
-Given the large parameter space, we select a sub sample of parameters
-using the ``use_labels_dict``. If we do not pass the ‘use_labels_dict’
-the full set of free parameters will be used
-
 .. code:: ipython3
 
     model_minimizer_minuit = ModelMinimizer.load_model('EC_model_minimizer_minuit.pkl')
@@ -658,7 +613,7 @@ the full set of free parameters will be used
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_37_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_35_0.png
 
 
 .. code:: ipython3
@@ -667,10 +622,10 @@ the full set of free parameters will be used
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_38_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_36_0.png
 
 
-Save and reuse MCMC
+Save and resue MCMC
 -------------------
 
 .. code:: ipython3
@@ -697,7 +652,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_42_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_40_0.png
 
 
 .. code:: ipython3
@@ -707,7 +662,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_43_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_41_0.png
 
 
 .. code:: ipython3
@@ -716,5 +671,6 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_44_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_42_0.png
+
 
