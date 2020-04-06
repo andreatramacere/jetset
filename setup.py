@@ -160,7 +160,7 @@ setup(name='jetset',
       description="A framework for self-consistent modeling and fitting of  astrophysical relativistic jets SEDs",
       author_email='andrea.tramacere@gmail.com',
       packages=['jetset', 'leastsqbound', 'jetkernel','jetset.tests'],
-      package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*ecsv','./requirements.txt','ebl_data/*'],'jetkernel':['mathkernel/*dat']},
+      package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*ecsv','./requirements.txt','ebl_data/*','mathkernel/*dat'],'jetkernel':['mathkernel/*dat']},
       include_package_data = True,
       cmdclass=custom_cmdclass,
       #not to use with setup tools

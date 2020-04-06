@@ -427,7 +427,8 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
     //==================================
     //exit(1);
     if (pt_base->BESSEL_TABLE_DONE == 0){
-    	tabella_Bessel(pt_base);
+        printf("Bessel Functions\n");
+        tabella_Bessel(pt_base);
     }
     
     //========================================================
@@ -654,7 +655,7 @@ double get_elec_array(double * arr, struct spettro *pt, unsigned int id){
 	}
 }
 
-double set_elec_array(double * arr,struct spettro *pt, double val, unsigned int id){
+void set_elec_array(double * arr,struct spettro *pt, double val, unsigned int id){
     if ((id>=0) && (id<=pt->gamma_grid_size)){
            arr[id]=val;
         }
@@ -664,7 +665,7 @@ double set_elec_array(double * arr,struct spettro *pt, double val, unsigned int 
         }
 }
 
-double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned int id){
+void set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned int id){
     if ((id>=0) && (id<=pt->gamma_custom_grid_size)){
            arr[id]=val;
         }
@@ -672,6 +673,19 @@ double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsign
             printf("exceeded array size\n");
             exit(0);
         }
+}
+
+void set_bessel_table(double *arr, struct spettro *pt, double val, unsigned int id)
+{
+    if ((id >= 0) && (id <= static_bess_table_size))
+    {
+        arr[id] = val;
+    }
+    else
+    {
+        printf("exceeded array size\n");
+        exit(0);
+    }
 }
 
 //=========================================================================================

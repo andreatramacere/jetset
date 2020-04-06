@@ -73,7 +73,7 @@
 struct spettro {
     int verbose;
     int BESSEL_TABLE_DONE;
-
+    
     int CICCIO;
 
     char * SYSPATH;
@@ -703,7 +703,10 @@ void Run_SED(struct spettro *pt_base);
 void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev, double luminosity_distance);
 double get_spectral_array(double * arr, struct spettro *pt, unsigned int id);
 double get_elec_array(double * arr, struct spettro *pt, unsigned int id);
-double set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned int id);
+void set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned int id);
+void set_elec_array(double * arr,struct spettro *pt, double val, unsigned int id);
+void set_bessel_table(double *arr, struct spettro *pt, double val, unsigned int id);
+
 //===================================================================================
 
 

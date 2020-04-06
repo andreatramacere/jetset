@@ -44,6 +44,7 @@ from .jet_emitters import *
 
 from .jet_tools import  *
 
+from .mathkernel_helper import bessel_table_file_path
 
 __author__ = "Andrea Tramacere"
 
@@ -373,7 +374,63 @@ class JetBase(Model):
 
     def build_blob(self, verbose=None):
 
+
+
+
+
         blob = BlazarSED.MakeBlob()
+
+        blob.x_Bessel_min = 1E-17
+        blob.x_Bessel_max = 7.2E2
+
+        blob.x_ave_Bessel_min = 1E-16
+        blob.x_ave_Bessel_max = 3.5E2
+
+        blob.log_x_Bessel_min = np.log10( blob.x_Bessel_min)
+        blob.log_x_Bessel_max = np.log10( blob.x_Bessel_max)
+
+
+        blob.log_x_ave_Bessel_min = np.log10( blob.x_ave_Bessel_min)
+        blob.log_x_ave_Bessel_max = np.log10( blob.x_ave_Bessel_max)
+
+
+
+
+        F_Sync_x_ptr = getattr(blob, 'F_Sync_x')
+
+        F_Sync_y_ptr = getattr(blob,  'F_Sync_y')
+
+        F_ave_Sync_x_ptr = getattr(blob,  'F_ave_Sync_x')
+
+        F_ave_Sync_y_ptr = getattr(blob, 'F_ave_Sync_y')
+
+        log_F_Sync_x_ptr = getattr(blob, 'log_F_Sync_x')
+
+        log_F_Sync_y_ptr = getattr(blob, 'log_F_Sync_y')
+
+        log_F_ave_Sync_x_ptr = getattr(blob, 'log_F_ave_Sync_x')
+
+        log_F_ave_Sync_y_ptr = getattr(blob, 'log_F_ave_Sync_y')
+
+
+        d = np.genfromtxt(bessel_table_file_path)
+        log_F_Sync_x=np.log10(d[:,0])
+        log_F_Sync_y=np.log10(d[:,1])
+        log_F_ave_Sync_x=np.log10(d[:,2])
+        log_F_ave_Sync_y=np.log10(d[:,3])
+
+        for ID, l in enumerate(d):
+            BlazarSED.set_bessel_table(F_Sync_x_ptr,blob, l[0], ID)
+            BlazarSED.set_bessel_table(F_Sync_y_ptr, blob,  l[1], ID)
+            BlazarSED.set_bessel_table(F_ave_Sync_x_ptr, blob,  l[2], ID)
+            BlazarSED.set_bessel_table(F_ave_Sync_y_ptr, blob,  l[3], ID)
+
+            BlazarSED.set_bessel_table(log_F_Sync_x_ptr, blob, log_F_Sync_x[ID], ID)
+            BlazarSED.set_bessel_table(log_F_Sync_y_ptr, blob, log_F_Sync_y[ID], ID)
+            BlazarSED.set_bessel_table(log_F_ave_Sync_x_ptr, blob, log_F_ave_Sync_x[ID], ID)
+            BlazarSED.set_bessel_table(log_F_ave_Sync_y_ptr, blob, log_F_ave_Sync_y[ID], ID)
+
+        blob.BESSEL_TABLE_DONE=1
 
         if verbose is None:
             blob.verbose = 0
