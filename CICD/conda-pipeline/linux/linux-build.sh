@@ -15,8 +15,8 @@ echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD BESSESL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 conda install --yes   -c astropy -c conda-forge --file requirements.txt
 #rm jetkernel/mathkernel/F_Sync.dat
 #python setup.py clean
-#python setup.py install > install.log 2>install.err
 python setup.py clean
+python setup.py install > install.log 2>install.err
 
 #cd ..
 #python -c 'import jetkernel; import os;p=os.path.join(jetkernel.__path__[0],"mathkernel"); os.system("cp jetset/jetkernel/mathkernel/F_Sync.dat %s"%p)'
