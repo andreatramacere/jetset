@@ -40,8 +40,8 @@ ENV USER ${NB_USER}
 ENV NB_UID ${NB_UID}
 ENV HOME /home/${NB_USER}
 
-ADD notebooks/QuickStart.ipynb $HOME/notebooks/QuickStart_1.ipynb
-ADD notebooks/QuickStart.ipynb $HOME/notebooks/QuickStart_2.ipynb
+ADD notebooks/QuickStart_1.ipynb $HOME/notebooks/QuickStart_1.ipynb
+ADD notebooks/QuickStart_2.ipynb $HOME/notebooks/QuickStart_2.ipynb
 
 
 RUN adduser --disabled-password \
