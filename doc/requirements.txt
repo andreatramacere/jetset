@@ -16,6 +16,6 @@ corner
 six
 emcee
 pyyaml
-pyqt
+#pyqt
 pytest
 
