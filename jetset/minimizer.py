@@ -404,7 +404,8 @@ class ModelMinimizer(object):
                     #                  fit_workplace=fit_workplace,
                     #                  loglog=loglog, silent=silent, get_conf_int=get_conf_int, use_facke_err=use_facke_err,
                     #                  use_UL=use_UL)
-                    print()
+                    if silent is False:
+                        print()
             else:
                 pass
 

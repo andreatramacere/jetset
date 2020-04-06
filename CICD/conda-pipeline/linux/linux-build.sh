@@ -7,15 +7,15 @@ cd integration/jetset
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> prepoc <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 
 export USE_PIP='FALSE'
-export JETSETBESSELBUILD='TRUE'
+#export JETSETBESSELBUILD='TRUE'
 
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD BESSESL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 conda install --yes   -c astropy -c conda-forge --file requirements.txt
-rm jetkernel/mathkernel/F_Sync.dat
-python setup.py clean
-python setup.py install > install.log 2>install.err
+#rm jetkernel/mathkernel/F_Sync.dat
+#python setup.py clean
+#python setup.py install > install.log 2>install.err
 python setup.py clean
 
 #cd ..
