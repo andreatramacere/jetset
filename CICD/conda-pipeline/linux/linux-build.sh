@@ -11,7 +11,7 @@ export USE_PIP='FALSE'
 
 
 
-echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD BESSESL <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD Conda env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
 conda install --yes   -c conda-forge emcee">=3.0.0"
 conda install --yes   -c astropy --file requirements.txt
 #rm jetkernel/mathkernel/F_Sync.dat
@@ -33,7 +33,9 @@ echo  $PKG_VERSION
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PKG_VERSION
+echo '--> purge'
 conda build purge
+echo '--> build'
 conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err #for linux
 export CONDABUILDJETSET=$(conda-build . --output)
 echo  $CONDABUILDJETSET

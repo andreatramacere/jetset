@@ -7,7 +7,6 @@ export JETSETBESSELBUILD='FALSE'
 export USE_PIP='FALSE'
 
 cd integration/jetset
-python setup.py clean
 
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PWD
@@ -15,6 +14,9 @@ conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-b
 conda activate jetset-cidc
 conda install --yes   -c conda-forge emcee">=3.0.0"
 conda install --yes   -c astropy --file requirements.txt
+
+python setup.py clean
+python setup.py install > install.log 2>install.err
 
 cd CICD/conda-pipeline/macosx
 
@@ -30,7 +32,7 @@ echo  $PKG_VERSION
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PKG_VERSION
 
 conda build purge
-conda-build .  > build.log 2>build.err
+conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.er
 export CONDABUILDJETSET=$(conda-build . --output)
 echo  $CONDABUILDJETSET
 
