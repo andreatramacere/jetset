@@ -29,7 +29,8 @@ requirements:
   - iminuit>=1.3.7
   - corner
   - six
-  - emcee>=3.0.0
+  - emcee
+  #- emcee>=3.0.0
   - pyyaml
   - pyqt
   - pytest
