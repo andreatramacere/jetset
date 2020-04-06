@@ -48,7 +48,7 @@ Documentation
    installation <install.rst>
    what's new in jetset 1.1.2  <new_release.rst>
    user guide <user_guide/user_guide.rst>
-#   code documentation (API) <api/modules.rst>
+   code documentation (API) <api/modules.rst>
 
 
 Testers
