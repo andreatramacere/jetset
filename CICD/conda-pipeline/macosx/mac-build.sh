@@ -8,7 +8,7 @@ export USE_PIP='FALSE'
 
 cd integration/jetset
 
-
+conda activate root
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PWD
 conda create --yes --name jetset-cidc python=3.7 ipython anaconda-client conda-build ipython>conda_env_build.log
 conda activate jetset-cidc
@@ -31,10 +31,13 @@ echo  $PKG_VERSION
 
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> CONDA BUILD  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PKG_VERSION
 
+echo '---> purge'
 conda build purge
-conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.er
+echo '---> build'
+conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err
 export CONDABUILDJETSET=$(conda-build . --output)
 echo  $CONDABUILDJETSET
+echo '---> done'
 
 #testing
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> TESTING  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$CONDABUILDJETSET
