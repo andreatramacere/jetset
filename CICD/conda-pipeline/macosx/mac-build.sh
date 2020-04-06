@@ -8,10 +8,10 @@ export USE_PIP='FALSE'
 
 cd integration/jetset
 
-conda activate root
+#conda activate root
 echo  '>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD  jetset-cidc env <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',$PWD
-conda create --yes --name jetset-cicd python=3.7 ipython anaconda-client conda-build ipython>conda_env_build.log
-conda activate jetset-cicd
+#conda create --yes --name jetset-cicd python=3.7 ipython anaconda-client conda-build ipython>conda_env_build.log
+#conda activate jetset-cicd
 conda install --yes   -c conda-forge emcee">=3.0.0"
 conda install --yes   -c astropy --file requirements.txt
 
@@ -46,7 +46,7 @@ conda install --yes --offline $CONDABUILDJETSET
 cd ../../../../../test
 python -c 'import os;os.environ["MPLBACKEND"]="Agg"; from jetset.tests import test_functions; test_functions.test_short()'
 echo 'export CONDABUILDJETSET='$CONDABUILDJETSET>../deploy/CONDABUILD.sh
-conda deactivate
+#conda deactivate
 
 
 
