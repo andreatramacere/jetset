@@ -130,11 +130,11 @@ sed shaper
     
     model name name  bestfit val     err +     err -   start val   fit range min fit range max frozen
     ---------- ---- ------------- ------------ ----- ------------- ------------- ------------- ------
-      LogCubic    b -1.545301e-01 9.534756e-03    -- -1.000000e+00 -1.000000e+01  0.000000e+00  False
-      LogCubic    c -1.023245e-02 1.433074e-03    -- -1.000000e+00 -1.000000e+01  1.000000e+01  False
-      LogCubic   Ep  1.672267e+01 4.139904e-02    --  1.667039e+01  0.000000e+00  3.000000e+01  False
-      LogCubic   Sp -9.491658e+00 2.515289e-02    -- -1.000000e+01 -3.000000e+01  0.000000e+00  False
-    ---> sync       nu_p=+1.672267e+01 (err=+4.139904e-02)  nuFnu_p=-9.491658e+00 (err=+2.515289e-02) curv.=-1.545301e-01 (err=+9.534756e-03)
+      LogCubic    b -1.545301e-01 9.534795e-03    -- -1.000000e+00 -1.000000e+01  0.000000e+00  False
+      LogCubic    c -1.023245e-02 1.433073e-03    -- -1.000000e+00 -1.000000e+01  1.000000e+01  False
+      LogCubic   Ep  1.672267e+01 4.139942e-02    --  1.667039e+01  0.000000e+00  3.000000e+01  False
+      LogCubic   Sp -9.491659e+00 2.515285e-02    -- -1.000000e+01 -3.000000e+01  0.000000e+00  False
+    ---> sync       nu_p=+1.672267e+01 (err=+4.139942e-02)  nuFnu_p=-9.491659e+00 (err=+2.515285e-02) curv.=-1.545301e-01 (err=+9.534795e-03)
     ===================================================================================================================
     
 
@@ -157,11 +157,11 @@ sed shaper
     
     model name name  bestfit val     err +     err -   start val   fit range min fit range max frozen
     ---------- ---- ------------- ------------ ----- ------------- ------------- ------------- ------
-      LogCubic    b -2.097925e-01 3.133727e-02    -- -1.000000e+00 -1.000000e+01  0.000000e+00  False
-      LogCubic    c -4.662648e-02 2.178444e-02    -- -1.000000e+00 -1.000000e+01  1.000000e+01  False
-      LogCubic   Ep  2.524932e+01 1.147866e-01    --  2.529412e+01  0.000000e+00  3.000000e+01  False
-      LogCubic   Sp -1.011094e+01 3.498801e-02    -- -1.000000e+01 -3.000000e+01  0.000000e+00  False
-    ---> IC         nu_p=+2.524932e+01 (err=+1.147866e-01)  nuFnu_p=-1.011094e+01 (err=+3.498801e-02) curv.=-2.097925e-01 (err=+3.133727e-02)
+      LogCubic    b -2.098186e-01 3.133100e-02    -- -1.000000e+00 -1.000000e+01  0.000000e+00  False
+      LogCubic    c -4.661867e-02 2.178436e-02    -- -1.000000e+00 -1.000000e+01  1.000000e+01  False
+      LogCubic   Ep  2.524926e+01 1.147802e-01    --  2.529412e+01  0.000000e+00  3.000000e+01  False
+      LogCubic   Sp -1.011085e+01 3.498963e-02    -- -1.000000e+01 -3.000000e+01  0.000000e+00  False
+    ---> IC         nu_p=+2.524926e+01 (err=+1.147802e-01)  nuFnu_p=-1.011085e+01 (err=+3.498963e-02) curv.=-2.098186e-01 (err=+3.133100e-02)
     ===================================================================================================================
     
 
@@ -203,11 +203,11 @@ ore least-square bound, as shown below
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
                 gmin  low-energy-cut-off lorentz-factor* 3.338231e+02     1.000000e+00     1.000000e+09 False  False
                 gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 3.072164e+00     0.000000e+00               -- False  False
+                   N    emitters_density         1 / cm3 3.073134e+00     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.181578e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 7.726503e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 2.265855e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 1.649188e+16     1.000000e+03     1.000000e+30 False  False
+                   R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False  False
                  R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
                    B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
             beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
@@ -264,11 +264,11 @@ allows you to save time) ad pass it to the ``FitModel`` class
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
                 gmin  low-energy-cut-off lorentz-factor* 3.338231e+02     1.000000e+00     1.000000e+09 False  False
                 gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 3.072164e+00     0.000000e+00               -- False  False
+                   N    emitters_density         1 / cm3 3.073134e+00     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.181578e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 7.726503e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 2.265855e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 1.649188e+16     1.000000e+03     1.000000e+30 False  False
+                   R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False  False
                  R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
                    B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
             beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
@@ -371,48 +371,48 @@ Now we build a ``lsb`` model minimizer and run the fit method
     *** start fit process ***
     ----- 
     fit run: 0
-    | minim function calls=50, chisq=60.236800 UL part=-0.0000000
+    | minim function calls=50, chisq=67.700653 UL part=-0.0000000
     fit run: 1
-    / minim function calls=10, chisq=59.372279 UL part=-0.000000
+    / minim function calls=10, chisq=67.354632 UL part=-0.000000
     fit run: 2
-    - minim function calls=50, chisq=37.399329 UL part=-0.000000
+    \ minim function calls=20, chisq=64.996504 UL part=-0.000000
     **************************************************************************************************
     Fit report
     
     Model: SSC-best-fit-minuit
      model name        name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
     ------------ ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-    jet_leptonic             gmin  low-energy-cut-off lorentz-factor* 3.824083e+02     1.000000e+00     1.000000e+09 False  False
-    jet_leptonic             gmax high-energy-cut-off lorentz-factor* 7.352365e+05     1.000000e+00     1.000000e+15 False  False
-    jet_leptonic                N    emitters_density         1 / cm3 2.216538e+00     0.000000e+00               -- False  False
-    jet_leptonic                s   LE_spectral_slope                 2.154554e+00    -1.000000e+01     1.000000e+01 False  False
-    jet_leptonic                r  spectral_curvature                 7.497737e-01    -1.500000e+01     1.500000e+01 False  False
-    jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor* 3.129423e+04     1.000000e+00     1.000000e+09 False  False
-    jet_leptonic                R         region_size              cm 1.649188e+16     1.000000e+03     1.000000e+30 False   True
+    jet_leptonic             gmin  low-energy-cut-off lorentz-factor* 3.356628e+02     1.000000e+00     1.000000e+09 False  False
+    jet_leptonic             gmax high-energy-cut-off lorentz-factor* 9.629045e+05     1.000000e+00     1.000000e+15 False  False
+    jet_leptonic                N    emitters_density         1 / cm3 2.635771e+00     0.000000e+00               -- False  False
+    jet_leptonic                s   LE_spectral_slope                 2.136779e+00    -1.000000e+01     1.000000e+01 False  False
+    jet_leptonic                r  spectral_curvature                 8.257853e-01    -1.500000e+01     1.500000e+01 False  False
+    jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor* 3.086566e+04     1.000000e+00     1.000000e+09 False  False
+    jet_leptonic                R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False   True
     jet_leptonic              R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-    jet_leptonic                B      magnetic_field               G 6.532600e-02     0.000000e+00               -- False  False
-    jet_leptonic         beam_obj             beaming Lorentz-factor* 2.892133e+01     1.000000e-04               -- False  False
+    jet_leptonic                B      magnetic_field               G 8.056890e-02     0.000000e+00               -- False  False
+    jet_leptonic         beam_obj             beaming Lorentz-factor* 2.575200e+01     1.000000e-04               -- False  False
     jet_leptonic           z_cosm            redshift                 3.080000e-02     0.000000e+00               -- False   True
     
     converged=True
-    calls=50
+    calls=24
     The relative error between two consecutive iterates is at most 0.000000
     dof=27
-    chisq=37.399329, chisq/red=1.385160 null hypothesis sig=0.087852
+    chisq=64.996500, chisq/red=2.407278 null hypothesis sig=0.000056
     
     best fit pars
      model name        name       bestfit val     err +     err -  start val   fit range min fit range max frozen
     ------------ ---------------- ------------ ------------ ----- ------------ ------------- ------------- ------
-    jet_leptonic             gmin 3.824083e+02 2.925574e-01    -- 3.338231e+02  1.000000e+00  1.000000e+09  False
-    jet_leptonic             gmax 7.352365e+05 1.901627e+05    -- 9.758134e+05  1.000000e+00  1.000000e+15  False
-    jet_leptonic                N 2.216538e+00 1.291492e-01    -- 3.072164e+00  0.000000e+00            --  False
-    jet_leptonic                s 2.154554e+00 2.405798e-02    -- 2.181578e+00 -1.000000e+01  1.000000e+01  False
-    jet_leptonic                r 7.497737e-01 1.732048e-01    -- 7.726503e-01 -1.500000e+01  1.500000e+01  False
-    jet_leptonic gamma0_log_parab 3.129423e+04 8.219992e+03    -- 2.265855e+04  1.000000e+00  1.000000e+09  False
-    jet_leptonic                R           --           --    -- 1.649188e+16  3.162278e+15  3.162278e+17   True
+    jet_leptonic             gmin 3.356628e+02 2.308852e+02    -- 3.338231e+02  1.000000e+00  1.000000e+09  False
+    jet_leptonic             gmax 9.629045e+05 2.161311e+04    -- 9.758134e+05  1.000000e+00  1.000000e+15  False
+    jet_leptonic                N 2.635771e+00 2.032613e+00    -- 3.073134e+00  0.000000e+00            --  False
+    jet_leptonic                s 2.136779e+00 1.362651e-01    -- 2.181578e+00 -1.000000e+01  1.000000e+01  False
+    jet_leptonic                r 8.257853e-01 2.291436e-01    -- 7.726503e-01 -1.500000e+01  1.500000e+01  False
+    jet_leptonic gamma0_log_parab 3.086566e+04 1.699546e+04    -- 2.265855e+04  1.000000e+00  1.000000e+09  False
+    jet_leptonic                R           --           --    -- 1.649014e+16  3.162278e+15  3.162278e+17   True
     jet_leptonic              R_H           --           --    -- 1.000000e+17  0.000000e+00            --   True
-    jet_leptonic                B 6.532600e-02 1.274553e-02    -- 1.000000e-01  0.000000e+00            --  False
-    jet_leptonic         beam_obj 2.892133e+01 3.235241e+00    -- 2.500000e+01  5.000000e+00  5.000000e+01  False
+    jet_leptonic                B 8.056890e-02 2.328432e-02    -- 1.000000e-01  0.000000e+00            --  False
+    jet_leptonic         beam_obj 2.575200e+01 4.198739e+00    -- 2.500000e+01  5.000000e+00  5.000000e+01  False
     jet_leptonic           z_cosm           --           --    -- 3.080000e-02  0.000000e+00            --   True
     **************************************************************************************************
     
@@ -432,19 +432,19 @@ we can obtain the best fit astropy table
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table4710269392" class="table-striped table-bordered table-condensed">
+    <table id="table4737575888" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <thead><tr><th>str12</th><th>str16</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>3.824083e+02</td><td>2.925574e-01</td><td>--</td><td>3.338231e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>7.352365e+05</td><td>1.901627e+05</td><td>--</td><td>9.758134e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>2.216538e+00</td><td>1.291492e-01</td><td>--</td><td>3.072164e+00</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>2.154554e+00</td><td>2.405798e-02</td><td>--</td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>7.497737e-01</td><td>1.732048e-01</td><td>--</td><td>7.726503e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>3.129423e+04</td><td>8.219992e+03</td><td>--</td><td>2.265855e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>--</td><td>--</td><td>--</td><td>1.649188e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>3.356628e+02</td><td>2.308852e+02</td><td>--</td><td>3.338231e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>9.629045e+05</td><td>2.161311e+04</td><td>--</td><td>9.758134e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>2.635771e+00</td><td>2.032613e+00</td><td>--</td><td>3.073134e+00</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>2.136779e+00</td><td>1.362651e-01</td><td>--</td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>8.257853e-01</td><td>2.291436e-01</td><td>--</td><td>7.726503e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>3.086566e+04</td><td>1.699546e+04</td><td>--</td><td>2.265855e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>--</td><td>--</td><td>--</td><td>1.649014e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>6.532600e-02</td><td>1.274553e-02</td><td>--</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>2.892133e+01</td><td>3.235241e+00</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>8.056890e-02</td><td>2.328432e-02</td><td>--</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>2.575200e+01</td><td>4.198739e+00</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>--</td><td>--</td><td>--</td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     </table>
 
@@ -495,11 +495,11 @@ Model fitting with Minuit
     ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
                 gmin  low-energy-cut-off lorentz-factor* 3.338231e+02     1.000000e+00     1.000000e+09 False  False
                 gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 3.072164e+00     0.000000e+00               -- False  False
+                   N    emitters_density         1 / cm3 3.073134e+00     0.000000e+00               -- False  False
                    s   LE_spectral_slope                 2.181578e+00    -1.000000e+01     1.000000e+01 False  False
                    r  spectral_curvature                 7.726503e-01    -1.500000e+01     1.500000e+01 False  False
     gamma0_log_parab    turn-over-energy lorentz-factor* 2.265855e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 1.649188e+16     1.000000e+03     1.000000e+30 False  False
+                   R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False  False
                  R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
                    B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
             beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
@@ -551,34 +551,34 @@ Model fitting with Minuit
     *** start fit process ***
     ----- 
     fit run: 0
-    | minim function calls=610, chisq=37.942609 UL part=-0.000000
+    \ minim function calls=400, chisq=53.606667 UL part=-0.00000000
     fit run: 1
-    / minim function calls=90, chisq=38.500233 UL part=-0.000000
+    | minim function calls=90, chisq=50.469558 UL part=-0.000000
     fit run: 2
-    - minim function calls=90, chisq=38.500233 UL part=-0.000000
+    / minim function calls=90, chisq=50.469558 UL part=-0.000000
     **************************************************************************************************
     Fit report
     
     Model: SSC-best-fit-minuit
      model name        name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
     ------------ ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-    jet_leptonic             gmin  low-energy-cut-off lorentz-factor* 3.308197e+02     1.000000e+00     1.000000e+09 False  False
+    jet_leptonic             gmin  low-energy-cut-off lorentz-factor* 3.310408e+02     1.000000e+00     1.000000e+09 False  False
     jet_leptonic             gmax high-energy-cut-off lorentz-factor* 9.758134e+05     1.000000e+00     1.000000e+15 False   True
-    jet_leptonic                N    emitters_density         1 / cm3 1.629272e+00     0.000000e+00               -- False  False
-    jet_leptonic                s   LE_spectral_slope                 1.987495e+00    -1.000000e+01     1.000000e+01 False  False
-    jet_leptonic                r  spectral_curvature                 7.779554e-01    -1.500000e+01     1.500000e+01 False  False
-    jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor* 2.194963e+04     1.000000e+00     1.000000e+09 False  False
-    jet_leptonic                R         region_size              cm 1.649188e+16     1.000000e+03     1.000000e+30 False   True
+    jet_leptonic                N    emitters_density         1 / cm3 2.026102e+00     0.000000e+00               -- False  False
+    jet_leptonic                s   LE_spectral_slope                 2.041077e+00    -1.000000e+01     1.000000e+01 False  False
+    jet_leptonic                r  spectral_curvature                 9.748096e-01    -1.500000e+01     1.500000e+01 False  False
+    jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor* 3.065668e+04     1.000000e+00     1.000000e+09 False  False
+    jet_leptonic                R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False   True
     jet_leptonic              R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-    jet_leptonic                B      magnetic_field               G 5.872107e-02     0.000000e+00               -- False  False
-    jet_leptonic         beam_obj             beaming Lorentz-factor* 3.078082e+01     1.000000e-04               -- False  False
+    jet_leptonic                B      magnetic_field               G 8.688123e-02     0.000000e+00               -- False  False
+    jet_leptonic         beam_obj             beaming Lorentz-factor* 2.493567e+01     1.000000e-04               -- False  False
     jet_leptonic           z_cosm            redshift                 3.080000e-02     0.000000e+00               -- False   True
     
     converged=True
     calls=96
     ------------------------------------------------------------------
-    | FCN = 37.94                   |      Ncalls=84 (95 total)      |
-    | EDM = 7.01E+04 (Goal: 1E-05)  |            up = 1.0            |
+    | FCN = 49.69                   |      Ncalls=84 (95 total)      |
+    | EDM = 3.59E+04 (Goal: 1E-05)  |            up = 1.0            |
     ------------------------------------------------------------------
     |  Valid Min.   | Valid Param.  | Above EDM | Reached call limit |
     ------------------------------------------------------------------
@@ -591,30 +591,30 @@ Model fitting with Minuit
     -------------------------------------------------------------------------------------------
     |   | Name  |   Value   | Hesse Err | Minos Err- | Minos Err+ | Limit-  | Limit+  | Fixed |
     -------------------------------------------------------------------------------------------
-    | 0 | par_0 |   330.8   |    0.4    |            |            |    1    |  1e+09  |       |
-    | 1 | par_1 |   1.63    |   0.21    |            |            |    0    |         |       |
-    | 2 | par_2 |   1.987   |   0.023   |            |            |   -10   |   10    |       |
-    | 3 | par_3 |   0.78    |   0.06    |            |            |   -15   |   15    |       |
-    | 4 | par_4 |  2.19E4   |  0.21E4   |            |            |    1    |  1e+09  |       |
-    | 5 | par_5 |   0.059   |   0.004   |            |            |    0    |         |       |
-    | 6 | par_6 |   30.8    |    1.2    |            |            |    5    |   50    |       |
+    | 0 | par_0 |   331.0   |    0.5    |            |            |    1    |  1e+09  |       |
+    | 1 | par_1 |   2.03    |   0.20    |            |            |    0    |         |       |
+    | 2 | par_2 |   2.041   |   0.018   |            |            |   -10   |   10    |       |
+    | 3 | par_3 |   0.97    |   0.09    |            |            |   -15   |   15    |       |
+    | 4 | par_4 |   3.1E4   |   0.6E4   |            |            |    1    |  1e+09  |       |
+    | 5 | par_5 |   0.087   |   0.006   |            |            |    0    |         |       |
+    | 6 | par_6 |   24.9    |    0.4    |            |            |    5    |   50    |       |
     -------------------------------------------------------------------------------------------
     dof=28
-    chisq=37.942289, chisq/red=1.355082 null hypothesis sig=0.099496
+    chisq=49.690434, chisq/red=1.774658 null hypothesis sig=0.007001
     
     best fit pars
      model name        name       bestfit val     err +     err -  start val   fit range min fit range max frozen
     ------------ ---------------- ------------ ------------ ----- ------------ ------------- ------------- ------
-    jet_leptonic             gmin 3.308197e+02 4.183896e-01    -- 3.338231e+02  1.000000e+00  1.000000e+09  False
+    jet_leptonic             gmin 3.310408e+02 5.393358e-01    -- 3.338231e+02  1.000000e+00  1.000000e+09  False
     jet_leptonic             gmax           --           --    -- 9.758134e+05  1.000000e+00  1.000000e+15   True
-    jet_leptonic                N 1.629272e+00 2.064489e-01    -- 3.072164e+00  0.000000e+00            --  False
-    jet_leptonic                s 1.987495e+00 2.347635e-02    -- 2.181578e+00 -1.000000e+01  1.000000e+01  False
-    jet_leptonic                r 7.779554e-01 5.947998e-02    -- 7.726503e-01 -1.500000e+01  1.500000e+01  False
-    jet_leptonic gamma0_log_parab 2.194963e+04 2.068899e+03    -- 2.265855e+04  1.000000e+00  1.000000e+09  False
-    jet_leptonic                R           --           --    -- 1.649188e+16  3.162278e+15  3.162278e+17   True
+    jet_leptonic                N 2.026102e+00 1.973977e-01    -- 3.073134e+00  0.000000e+00            --  False
+    jet_leptonic                s 2.041077e+00 1.765315e-02    -- 2.181578e+00 -1.000000e+01  1.000000e+01  False
+    jet_leptonic                r 9.748096e-01 9.440913e-02    -- 7.726503e-01 -1.500000e+01  1.500000e+01  False
+    jet_leptonic gamma0_log_parab 3.065668e+04 5.849661e+03    -- 2.265855e+04  1.000000e+00  1.000000e+09  False
+    jet_leptonic                R           --           --    -- 1.649014e+16  3.162278e+15  3.162278e+17   True
     jet_leptonic              R_H           --           --    -- 1.000000e+17  0.000000e+00            --   True
-    jet_leptonic                B 5.872107e-02 3.834443e-03    -- 1.000000e-01  0.000000e+00            --  False
-    jet_leptonic         beam_obj 3.078082e+01 1.212767e+00    -- 2.500000e+01  5.000000e+00  5.000000e+01  False
+    jet_leptonic                B 8.688123e-02 6.019300e-03    -- 1.000000e-01  0.000000e+00            --  False
+    jet_leptonic         beam_obj 2.493567e+01 3.523375e-01    -- 2.500000e+01  5.000000e+00  5.000000e+01  False
     jet_leptonic           z_cosm           --           --    -- 3.080000e-02  0.000000e+00            --   True
     **************************************************************************************************
     
@@ -634,7 +634,7 @@ Model fitting with Minuit
     <table>
     <tr>
     <td colspan="2" title="Minimum value of function">
-    FCN = 37.94
+    FCN = 49.69
     </td>
     <td align="center" colspan="3" title="No. of calls in last algorithm and total number of calls">
     Ncalls = 84 (95 total)
@@ -642,7 +642,7 @@ Model fitting with Minuit
     </tr>
     <tr>
     <td colspan="2" title="Estimated distance to minimum and target threshold">
-    EDM = 7.01E+04 (Goal: 1E-05)
+    EDM = 3.59E+04 (Goal: 1E-05)
     </td>
     <td align="center" colspan="3" title="Increase in FCN which corresponds to 1 standard deviation">
     up = 1.0
@@ -747,10 +747,10 @@ Model fitting with Minuit
     par_0
     </td>
     <td>
-    330.8
+    331.0
     </td>
     <td>
-    0.4
+    0.5
     </td>
     <td>
     
@@ -776,10 +776,10 @@ Model fitting with Minuit
     par_1
     </td>
     <td>
-    1.63
+    2.03
     </td>
     <td>
-    0.21
+    0.20
     </td>
     <td>
     
@@ -805,10 +805,10 @@ Model fitting with Minuit
     par_2
     </td>
     <td>
-    1.987
+    2.041
     </td>
     <td>
-    0.023
+    0.018
     </td>
     <td>
     
@@ -834,10 +834,10 @@ Model fitting with Minuit
     par_3
     </td>
     <td>
-    0.78
+    0.97
     </td>
     <td>
-    0.06
+    0.09
     </td>
     <td>
     
@@ -863,10 +863,10 @@ Model fitting with Minuit
     par_4
     </td>
     <td>
-    2.19E4
+    3.1E4
     </td>
     <td>
-    0.21E4
+    0.6E4
     </td>
     <td>
     
@@ -892,10 +892,10 @@ Model fitting with Minuit
     par_5
     </td>
     <td>
-    0.059
+    0.087
     </td>
     <td>
-    0.004
+    0.006
     </td>
     <td>
     
@@ -921,10 +921,10 @@ Model fitting with Minuit
     par_6
     </td>
     <td>
-    30.8
+    24.9
     </td>
     <td>
-    1.2
+    0.4
     </td>
     <td>
     
@@ -971,7 +971,7 @@ https://iminuit.readthedocs.io/en/latest/
 
 .. parsed-literal::
 
-    - minim function calls=100, chisq=128.585342 UL part=-0.000000
+    / minim function calls=100, chisq=99.129516 UL part=-0.000000
 
 
 .. image:: Jet_example_model_fit_files/Jet_example_model_fit_56_1.png
@@ -990,7 +990,7 @@ https://iminuit.readthedocs.io/en/latest/
 
 .. parsed-literal::
 
-    - minim function calls=400, chisq=259.065554 UL part=-0.000000
+    / minim function calls=400, chisq=225.610722 UL part=-0.000000
 
 
 .. image:: Jet_example_model_fit_files/Jet_example_model_fit_57_1.png
@@ -1049,6 +1049,45 @@ MCMC sampling
     from jetset.minimizer import ModelMinimizer
 
 
+We used a flat prior centered on the best fit value. Setting
+``bound=5.0`` and ``bound_rel=True`` means that:
+
+::
+
+   1) the prior interval will be defined as  [best_fit_val - delta_m , best_fit_val + delta_p] 
+
+   2) with delta_p=delta_m=best_fit_val*bound
+
+If we set ``bound_rel=False`` then
+
+::
+
+   delta_p = delta_m = best_fit_err*bound
+
+It is possible to define asymmetric boundaries e.g. ``bound=[2.0,5.0]``
+meaning that
+
+::
+
+   1) for `bound_rel=True` 
+
+        delta_p = best_fit_val*bound[1]
+
+        delta_m =b est_fit_val*bound[0]
+
+   2)  for `bound_rel=False` 
+
+       delta_p = best_fit_err*bound[1]
+
+       delta_m = best_fit_err*bound[0]
+
+In the next release a more flexible prior interface will be added,
+including different type of priors
+
+Given the large parameter space, we select a sub sample of parameters
+using the ``use_labels_dict``. If we do not pass the ‘use_labels_dict’
+the full set of free parameters will be used
+
 .. code:: ipython3
 
     model_minimizer_minuit = ModelMinimizer.load_model('model_minimizer_minuit.pkl')
@@ -1069,45 +1108,17 @@ MCMC sampling
 
 .. parsed-literal::
 
-    100%|██████████| 50/50 [06:38<00:00,  7.97s/it]
+    100%|██████████| 50/50 [06:15<00:00,  7.51s/it]
 
 .. parsed-literal::
 
-    mcmc run done, with 1 threads took 405.81 seconds
+    mcmc run done, with 1 threads took 382.61 seconds
 
 
 .. parsed-literal::
 
     
 
-
-We have used a flat prior centered on the best fit value. Setting
-``bound=5.0`` and ``bound_rel=True`` means that the prior interval will
-be defined as
-
-``[best_fit_val - delta_m , best_fit_val + delta_p]``
-
-with ``delta_p``\ =\ ``delta_m``\ =\ ``best_fit_val*bound``
-
-If ``bound_rel=False`` then
-``delta_p``\ =\ ``delta_m``\ =\ ``best_fit_err*bound``
-
-It is possible to define asymmetric boundaries e.g.
-
-``bound=[2.0,5.0]`` meaning that , for ``bound_rel=True``
-
-``delta_p``\ =\ ``best_fit_val*bound[1]``
-
-``delta_m``\ =\ ``best_fit_val*bound[0]``
-
-or, for ``bound_rel=False``
-
-``delta_p``\ =\ ``best_fit_err*bound[1]``
-
-``delta_m``\ =\ ``best_fit_err*bound[0]``
-
-In the next release a more flexible prior interface will be added,
-including different type of priors
 
 .. code:: ipython3
 
@@ -1116,7 +1127,7 @@ including different type of priors
 
 .. parsed-literal::
 
-    0.56421875
+    0.5639062499999999
 
 
 .. code:: ipython3
@@ -1156,8 +1167,8 @@ including different type of priors
 
 .. parsed-literal::
 
-    (array([1.56182995, 1.65480475, 1.66846689, ..., 1.61882629, 1.73145682,
-            1.567721  ]),
+    (array([2.03985989, 1.97347471, 1.88059101, ..., 2.17080728, 2.16236303,
+            1.91671546]),
      0)
 
 

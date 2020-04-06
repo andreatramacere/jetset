@@ -7,13 +7,13 @@ Installation
     Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.6 is suggested, older python 3 versions (<3.6)  should work.
 
 
-Install  JetSeT from Anaconda (suggested for Linux and Mac OSX)
--------------------------------------------------------------------
+Windows 10 prerequisites
+------------------------
+Install the Windows Subsystem for Linux: https://docs.microsoft.com/en-us/windows/wsl/install-win10
 
 
-
-
-
+Install  JetSeT from Anaconda (suggested for Linux and Mac OSX and Windows 10)
+------------------------------------------------------------------------------
 I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
 - create a virtual environment (not necessary, but suggested):

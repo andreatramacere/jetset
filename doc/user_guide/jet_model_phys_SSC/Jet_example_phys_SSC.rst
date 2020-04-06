@@ -1,7 +1,5 @@
 .. _jet_physical_guide:
 
-dsad
-
 Physical setup
 ==============
 
@@ -81,7 +79,7 @@ Each parameter has default values. All the parameters listed are handled by :cla
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table4763797776" class="table-striped table-bordered table-condensed">
+    <table id="table4893862544" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <thead><tr><th>str16</th><th>str19</th><th>object</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bool</th></tr></thead>
     <tr><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
@@ -235,7 +233,7 @@ for setting custom electron distributions can be created by the user as describe
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_28_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_27_0.png
 
 
 .. code:: ipython3
@@ -244,7 +242,7 @@ for setting custom electron distributions can be created by the user as describe
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_29_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_28_0.png
 
 
 .. code:: ipython3
@@ -253,7 +251,7 @@ for setting custom electron distributions can be created by the user as describe
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_30_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_29_0.png
 
 
 .. code:: ipython3
@@ -262,7 +260,7 @@ for setting custom electron distributions can be created by the user as describe
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_31_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_30_0.png
 
 
 .. code:: ipython3
@@ -278,7 +276,7 @@ for setting custom electron distributions can be created by the user as describe
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_32_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_31_0.png
 
 
 
@@ -383,7 +381,7 @@ and plot the corresponding SED:
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_41_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_40_0.png
 
 
 alternatively, you can call the ``plot_model`` method without passing a
@@ -396,7 +394,7 @@ alternatively, you can call the ``plot_model`` method without passing a
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_43_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_42_0.png
 
 
 If you want to have more points on the IC spectrum you can set the numerical  parameters for radiative fields(see :ref:`jet_numerical_guide' section for more details):
@@ -413,7 +411,7 @@ If you want to have more points on the IC spectrum you can set the numerical  pa
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_46_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_45_0.png
 
 
 you can access the same plot, but in the rest frame of the black hole,
@@ -427,7 +425,7 @@ passing the ``frame`` kw to ``src``
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_48_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_47_0.png
 
 
 the ``my_plot`` object returned will be built on the fly by the
@@ -480,7 +478,7 @@ to compare the same model after changing a parameter
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_53_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_52_0.png
 
 
 Saving a plot
@@ -667,7 +665,7 @@ OR
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_85_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_84_0.png
 
 
 as you can see, the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1.
@@ -834,8 +832,7 @@ Switch ON/OFF Synchrotron sefl-absorption and IC emission
                    R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
                  R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
                    B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-               theta   jet-viewing-angle             deg 1.000000e-01     0.000000e+00               -- False  False
-          BulkFactor     jet-bulk-factor Lorentz-factor* 1.000000e+01     1.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
               z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
     -------------------------------------------------------------------------------------------------------------------
 
@@ -867,10 +864,11 @@ now the sate is ‘on’ with no ‘self-abs’
 
     my_jet.eval()
     p=my_jet.plot_model()
+    p.rescale(y_max=-13,y_min=-17.5,x_min=8)
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_108_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_107_0.png
 
 
 to re-enable
@@ -880,10 +878,11 @@ to re-enable
     my_jet.spectral_components.Sync.state='self-abs'
     my_jet.eval()
     p=my_jet.plot_model()
+    p.rescale(y_max=-13,y_min=-17.5,x_min=8)
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_110_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_109_0.png
 
 
 .. code:: ipython3
@@ -904,10 +903,11 @@ to re-enable
     my_jet.spectral_components.SSC.state='off'
     my_jet.eval()
     p=my_jet.plot_model()
+    p.rescale(y_max=-13,y_min=-17.5,x_min=8)
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_112_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_111_0.png
 
 
 to re-enable
@@ -917,10 +917,11 @@ to re-enable
     my_jet.spectral_components.SSC.state='on'
     my_jet.eval()
     p=my_jet.plot_model()
+    p.rescale(y_max=-13,y_min=-17.5,x_min=8)
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_114_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_113_0.png
 
 
 Accessing individual spectral components
@@ -1022,7 +1023,7 @@ Moreover, you can access the corresponding astropy table
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table4834766352" class="table-striped table-bordered table-condensed">
+    <table id="table4906129936" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -1067,7 +1068,7 @@ and also in the ``src`` restframe
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table4834765520" class="table-striped table-bordered table-condensed">
+    <table id="table4908583440" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / s</th><th>erg / s</th><th>erg / s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -1148,51 +1149,45 @@ electrons, the magnetic fields, and for the cold protons in the jet.
 
     -----------------------------------------------------------------------------------------
     jet eneregetic report:
-         name                   type               units        val      
-    -------------- ----------------------------- --------- --------------
-               U_e Energy dens. blob rest. frame erg / cm3   1.740434e-03
-          U_p_cold Energy dens. blob rest. frame erg / cm3   7.516095e+03
-               U_B Energy dens. blob rest. frame erg / cm3   3.978874e-04
-               U_p Energy dens. blob rest. frame erg / cm3   0.000000e+00
-        U_p_target Energy dens. blob rest. frame erg / cm3 -4.785190e+284
-           U_Synch Energy dens. blob rest. frame erg / cm3   5.506770e-05
-       U_Synch_DRF Energy dens. disk rest. frame erg / cm3   8.712292e+00
-            U_Disk Energy dens. blob rest. frame erg / cm3   0.000000e+00
-             U_BLR Energy dens. blob rest. frame erg / cm3   0.000000e+00
-              U_DT Energy dens. blob rest. frame erg / cm3   0.000000e+00
-             U_CMB Energy dens. blob rest. frame erg / cm3   0.000000e+00
-        U_Disk_DRF Energy dens. disk rest. frame erg / cm3   0.000000e+00
-         U_BLR_DRF Energy dens. disk rest. frame erg / cm3   0.000000e+00
-          U_DT_DRF Energy dens. disk rest. frame erg / cm3   0.000000e+00
-         U_CMB_DRF Energy dens. disk rest. frame erg / cm3   0.000000e+00
-         L_Sync_rf         Lum. blob rest. frme.   erg / s   1.728764e+38
-          L_SSC_rf         Lum. blob rest. frme.   erg / s   3.828879e+36
-      L_EC_Disk_rf         Lum. blob rest. frme.   erg / s   0.000000e+00
-       L_EC_BLR_rf         Lum. blob rest. frme.   erg / s   0.000000e+00
-        L_EC_DT_rf         Lum. blob rest. frme.   erg / s   0.000000e+00
-       L_EC_CMB_rf         Lum. blob rest. frme.   erg / s   0.000000e+00
-     L_pp_gamma_rf         Lum. blob rest. frme.   erg / s   0.000000e+00
-        jet_L_Sync                      jet Lum.   erg / s   4.321911e+39
-         jet_L_SSC                      jet Lum.   erg / s   9.572198e+37
-     jet_L_EC_Disk                      jet Lum.   erg / s   0.000000e+00
-      jet_L_EC_BLR                      jet Lum.   erg / s   0.000000e+00
-       jet_L_EC_DT                      jet Lum.   erg / s   0.000000e+00
-      jet_L_EC_CMB                      jet Lum.   erg / s   0.000000e+00
-    jet_L_pp_gamma                      jet Lum.   erg / s   0.000000e+00
-         jet_L_rad                      jet Lum.   erg / s   4.417633e+39
-         jet_L_kin                      jet Lum.   erg / s   1.769714e+48
-         jet_L_tot                      jet Lum.   erg / s   1.769714e+48
-           jet_L_e                      jet Lum.   erg / s   4.097965e+41
-           jet_L_B                      jet Lum.   erg / s   9.368514e+40
-      jet_L_p_cold                      jet Lum.   erg / s   1.769713e+48
-           jet_L_p                      jet Lum.   erg / s   0.000000e+00
+         name                   type               units        val     
+    -------------- ----------------------------- --------- -------------
+               U_e Energy dens. blob rest. frame erg / cm3  1.740434e-03
+          U_p_cold Energy dens. blob rest. frame erg / cm3  7.516095e+03
+               U_B Energy dens. blob rest. frame erg / cm3  3.978874e-04
+               U_p Energy dens. blob rest. frame erg / cm3  0.000000e+00
+        U_p_target Energy dens. blob rest. frame erg / cm3 2.649523e-154
+           U_Synch Energy dens. blob rest. frame erg / cm3  5.506770e-05
+       U_Synch_DRF Energy dens. disk rest. frame erg / cm3  8.712292e+00
+            U_Disk Energy dens. blob rest. frame erg / cm3  0.000000e+00
+             U_BLR Energy dens. blob rest. frame erg / cm3  0.000000e+00
+              U_DT Energy dens. blob rest. frame erg / cm3  0.000000e+00
+             U_CMB Energy dens. blob rest. frame erg / cm3  0.000000e+00
+        U_Disk_DRF Energy dens. disk rest. frame erg / cm3  0.000000e+00
+         U_BLR_DRF Energy dens. disk rest. frame erg / cm3  0.000000e+00
+          U_DT_DRF Energy dens. disk rest. frame erg / cm3  0.000000e+00
+         U_CMB_DRF Energy dens. disk rest. frame erg / cm3  0.000000e+00
+         L_Sync_rf         Lum. blob rest. frme.   erg / s  1.728764e+38
+          L_SSC_rf         Lum. blob rest. frme.   erg / s  3.828879e+36
+      L_EC_Disk_rf         Lum. blob rest. frme.   erg / s  0.000000e+00
+       L_EC_BLR_rf         Lum. blob rest. frme.   erg / s  0.000000e+00
+        L_EC_DT_rf         Lum. blob rest. frme.   erg / s  0.000000e+00
+       L_EC_CMB_rf         Lum. blob rest. frme.   erg / s  0.000000e+00
+     L_pp_gamma_rf         Lum. blob rest. frme.   erg / s  0.000000e+00
+        jet_L_Sync                      jet Lum.   erg / s  4.321911e+39
+         jet_L_SSC                      jet Lum.   erg / s  9.572198e+37
+     jet_L_EC_Disk                      jet Lum.   erg / s  0.000000e+00
+      jet_L_EC_BLR                      jet Lum.   erg / s  0.000000e+00
+       jet_L_EC_DT                      jet Lum.   erg / s  0.000000e+00
+      jet_L_EC_CMB                      jet Lum.   erg / s  0.000000e+00
+    jet_L_pp_gamma                      jet Lum.   erg / s  0.000000e+00
+         jet_L_rad                      jet Lum.   erg / s  4.417633e+39
+         jet_L_kin                      jet Lum.   erg / s  1.769714e+48
+         jet_L_tot                      jet Lum.   erg / s  1.769714e+48
+           jet_L_e                      jet Lum.   erg / s  4.097965e+41
+           jet_L_B                      jet Lum.   erg / s  9.368514e+40
+      jet_L_p_cold                      jet Lum.   erg / s  1.769713e+48
+           jet_L_p                      jet Lum.   erg / s  0.000000e+00
     -----------------------------------------------------------------------------------------
-
-
-.. parsed-literal::
-
-    /Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/jet_model.py:1281: UserWarning: energetic name thisown not understood
-      warnings.warn('energetic name %s not understood'%_n)
 
 
 If you want to evaluate the energetic report in non verbose mode:
@@ -1214,7 +1209,7 @@ If you want to evaluate the energetic report in non verbose mode:
      'U_p_cold': 7516.095405557231,
      'U_B': 0.00039788735772973844,
      'U_p': 0.0,
-     'U_p_target': -4.785189918780787e+284,
+     'U_p_target': 2.6495230052253823e-154,
      'U_Synch': 5.50676953212205e-05,
      'U_Synch_DRF': 8.712292317747343,
      'U_Disk': 0.0,
@@ -1259,14 +1254,14 @@ If you want to evaluate the energetic report in non verbose mode:
 .. raw:: html
 
     <i>Table length=36</i>
-    <table id="table4851781392" class="table-striped table-bordered table-condensed">
+    <table id="table4898650960" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <thead><tr><th>str14</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.740434e-03</td></tr>
     <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>7.516095e+03</td></tr>
     <tr><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>3.978874e-04</td></tr>
     <tr><td>U_p</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_p_target</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>-4.785190e+284</td></tr>
+    <tr><td>U_p_target</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>2.649523e-154</td></tr>
     <tr><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>5.506770e-05</td></tr>
     <tr><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.712292e+00</td></tr>
     <tr><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
@@ -1284,6 +1279,5 @@ If you want to evaluate the energetic report in non verbose mode:
     <tr><td>jet_L_p_cold</td><td>jet Lum.</td><td>erg / s</td><td>1.769713e+48</td></tr>
     <tr><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     </table>
-
 
 

@@ -59,9 +59,9 @@ run the notebook on binder:
   `conda install -c andreatramacere jetset`
   
   if conda fails with dependencies you can try
-  
-   - `conda install -c andreatramacere -c astropy jetset`
     
+   `conda install -c andreatramacere -c astropy  -c  conda-forge jetset`
+   
 
 - run the test
 ```bash

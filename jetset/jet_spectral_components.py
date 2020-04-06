@@ -10,11 +10,21 @@ __author__ = "Andrea Tramacere"
 
 
 import numpy as np
+import os
 from astropy.table import Table
 from numpy.core._multiarray_umath import zeros, log10
 from scipy import interpolate
 
-from jetkernel import jetkernel as BlazarSED
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+if on_rtd == True:
+    try:
+        from jetkernel import jetkernel as BlazarSED
+    except ImportError:
+        from .mock import jetkernel as BlazarSED
+else:
+    from jetkernel import jetkernel as BlazarSED
+
 from . import spectral_shapes
 from .jetkernel_models_dic import nuFnu_obs_dic, n_seed_dic
 from .plot_sedfit import PlotSpecComp,PlotSeedPhotons

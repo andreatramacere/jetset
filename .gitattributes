@@ -1,4 +1,4 @@
-doc/** linguist-vendored
-notebooks/** linguist-vendored
-quickstart/** linguist-vendored
+doc/* linguist-vendored
+notebooks/* linguist-vendored
+quickstart/* linguist-vendored
 *.ipynb linguist-vendored
