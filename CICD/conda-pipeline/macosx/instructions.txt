@@ -11,5 +11,6 @@ mkdir deploy
 git clone https://github.com/andreatramacere/jetset.git
 mv jetset integration
 integration/jetset/CICD/conda-pipeline/macosx/mac-update-git.sh
+integration/jetset/CICD/conda-pipeline/macosx/mac-build-conda-env.sh
 integration/jetset/CICD/conda-pipeline/macosx/mac-build.sh
 integration/jetset/CICD/conda-pipeline/macosx/mac-deploy.sh
