@@ -261,11 +261,13 @@ void InitNe(struct spettro *pt){
 	pt->Distr_e_done = 1;
 
     pt->N_0e = pt->N_0;
-    pt->N_e = integrale_trap_log_struct(pf_distr,
-                                        pt,
-                                        pt->gmin,
-                                        pt->gmax,
-                                        10000);
+    pt->N_e = N_tot(pt, N_distr_integranda);
+
+    //pt->N_e = integrale_trap_log_struct(pf_distr,
+    //                                    pt,
+    //                                    pt->gmin,
+    //                                    pt->gmax,
+    //                                    10000);
 
     //name = "distr-e.dat";
     //Scrivi_N_file(pt, name, pt->griglia_gamma_Ne_log, pt->Ne);

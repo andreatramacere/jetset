@@ -720,9 +720,9 @@ class JetBase(Model):
 
     def add_EC_component(self,EC_components_list=[],disk_type='BB'):
 
-
-        if disk_type not in self._allwed_disk_type:
-            raise RuntimeError('disk type',disk_type,'not in allwowed', self._allwed_disk_type)
+        if disk_type is not None:
+            if disk_type not in self._allwed_disk_type:
+                raise RuntimeError('disk type',disk_type,'not in allwowed', self._allwed_disk_type)
 
         if isinstance(EC_components_list, six.string_types):
             EC_components_list=[EC_components_list]
@@ -801,15 +801,21 @@ class JetBase(Model):
                     self.EC_components_list.append('EC_CMB')
 
         #IF disk_type is already a parameter it has to be updated here to make it effective
-        if self.parameters.get_par_by_name('disk_type') is not None and self.parameters.get_par_by_name('disk_type').val !=disk_type:
+        self.add_par_from_dic(build_ExtFields_dic(self.EC_components_list, disk_type))
+        #print('--> disk_type',disk_type)
+        if disk_type is not None:
 
             #remove the old disk type parameters
-            self.del_par_from_dic(build_ExtFields_dic(['Disk'],self.parameters.get_par_by_name('disk_type').val))
+            if  self.parameters.get_par_by_name('disk_type') is not None:
+                self.del_par_from_dic(build_ExtFields_dic(['Disk'],self.parameters.get_par_by_name('disk_type').val))
+            else:
+                self.EC_components_list.append('Disk')
             self.add_par_from_dic(build_ExtFields_dic(self.EC_components_list,disk_type))
             self.parameters.disk_type.val = disk_type
 
 
-        self.add_par_from_dic(build_ExtFields_dic(self.EC_components_list,disk_type))
+
+
 
 
 
