@@ -261,7 +261,7 @@ void InitNe(struct spettro *pt){
 	pt->Distr_e_done = 1;
 
     pt->N_0e = pt->N_0;
-    pt->N_e = N_tot(pt, N_distr_integranda);
+    pt->N_e  = N_tot(pt, N_distr_integranda);
 
     //pt->N_e = integrale_trap_log_struct(pf_distr,
     //                                    pt,

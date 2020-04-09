@@ -443,6 +443,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
     {
         energetic.U_p_cold = pt->N_e * 0.1 * MPC2;
         energetic.U_p = 0.;
+        energetic.U_p_target = 0.;
         energetic.L_pp_gamma_rf=0;
         energetic.jet_L_pp_gamma=0;
     }
