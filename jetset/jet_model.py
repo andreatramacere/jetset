@@ -137,7 +137,7 @@ class JetBase(Model):
                                           'EC_DT',
                                           'Star',
                                           'EC_Star',
-                                          'CMB',
+                                          #CMB',
                                           'EC_CMB',
                                           'Disk',
                                           'Disk_MultiBB',
@@ -282,7 +282,13 @@ class JetBase(Model):
             if c not in _model['basic_components_name']:
                 self.del_spectral_component(c)
 
-        self.add_EC_component(_model['EC_components_name'])
+        for k in _model['pars'].keys():
+            #print ('-->',k,_model['pars'][k])
+        if 'disk_type' in _model['pars'].keys():
+            disk_type=_model['pars']['disk_type']['val']
+        else:
+            disk_type=None
+        self.add_EC_component(_model['EC_components_name'],disk_type=disk_type)
 
         for ID, c in enumerate(_model['spectral_components_name']):
             comp = getattr(self.spectral_components, c)
@@ -336,6 +342,7 @@ class JetBase(Model):
         for c in jet.basic_components_list:
             if c not in _model['basic_components_name']:
                 jet.del_spectral_component(c)
+
 
         jet.add_EC_component(_model['EC_components_name'])
 

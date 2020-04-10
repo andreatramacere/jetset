@@ -55,7 +55,7 @@ Testers
 -------
 I would like to thanks the most active testers:
 
-Hubing Xiao, Cosimo Nigro, Vaidehi S. Paliya, Sara Buson
+Hubing Xiao, Cosimo Nigro, Vaidehi S. Paliya, Sara Buson, Sonal Patel
 
 
 License
