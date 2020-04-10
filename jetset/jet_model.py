@@ -282,7 +282,7 @@ class JetBase(Model):
             if c not in _model['basic_components_name']:
                 self.del_spectral_component(c)
 
-        for k in _model['pars'].keys():
+        #for k in _model['pars'].keys():
             #print ('-->',k,_model['pars'][k])
         if 'disk_type' in _model['pars'].keys():
             disk_type=_model['pars']['disk_type']['val']
@@ -725,11 +725,15 @@ class JetBase(Model):
 
 
 
-    def add_EC_component(self,EC_components_list=[],disk_type='BB'):
+    def add_EC_component(self,EC_components_list=[],disk_type=None):
 
         if disk_type is not None:
             if disk_type not in self._allwed_disk_type:
                 raise RuntimeError('disk type',disk_type,'not in allwowed', self._allwed_disk_type)
+        else:
+            if self.get_par_by_name('disk_type') is not None:
+                disk_type=self.get_par_by_name('disk_type').val
+
 
         if isinstance(EC_components_list, six.string_types):
             EC_components_list=[EC_components_list]
