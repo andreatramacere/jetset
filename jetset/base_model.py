@@ -10,6 +10,8 @@ from .model_parameters import ModelParameterArray, ModelParameter
 from .spectral_shapes import SED
 from .data_loader import  ObsData
 from .utils import  get_info
+from .plot_sedfit import  PlotSED
+
 import numpy as np
 import json
 import pickle
@@ -24,7 +26,7 @@ __all__=['Model']
 class Model(object):
     
     
-    def __init__(self,name='no-name',nu_size=200,model_type='base_model',scale='lin-lin',cosmo=None):
+    def __init__(self,name='no-name',nu_size=200,model_type='base_model',scale='lin-lin',cosmo=None,nu_min=None,nu_max=None):
         
         self.model_type=model_type
         
@@ -38,9 +40,9 @@ class Model(object):
         
         self.nu_size=nu_size
         
-        self.nu_min=None
+        self.nu_min=nu_min
         
-        self.nu_max=None
+        self.nu_max=nu_max
 
         self.flux_plot_lim = 1E-30
 
@@ -143,6 +145,44 @@ class Model(object):
 
         return out_model
 
+
+
+    def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None,line_style='-'):
+        if plot_obj is None:
+            plot_obj=PlotSED(sed_data = sed_data, frame = frame)
+
+        if frame == 'src' and sed_data is not None:
+            z_sed_data = sed_data.z
+            if self.get_par_by_type('redshift') is not None:
+
+                sed_data.z = self.get_par_by_type('redshift').val
+
+        if clean is True:
+            plot_obj.clean_model_lines()
+
+        if hasattr(self,'SED'):
+            plot_obj.add_model_plot(self.SED, line_style=line_style,label=self.name,flim=self.flux_plot_lim)
+
+        if skip_components is False:
+            if hasattr(self,'spectral_components_list'):
+                for c in self.spectral_components_list:
+                    #print('--> c name', c.name)
+                    comp_label = c.name
+                    line_style = '--'
+                    if comp_label!='Sum':
+                        if hasattr(c, 'SED'):
+                            plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim)
+
+        line_style = '-'
+        if label is None:
+            label=self.name
+
+        #plot_obj.add_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]) )
+
+        if frame == 'src' and sed_data is not None:
+            sed_data.z = z_sed_data
+
+        return plot_obj
 
     def set_nu_grid(self,nu_min=None,nu_max=None,nu_size=None):
         if nu_size is not None:
@@ -269,4 +309,4 @@ class MultiplicativeModel(Model):
         super(MultiplicativeModel, self).__init__(name=name, nu_size=nu_size, model_type=model_type,scale=scale)
         delattr(self,'SED')
 
-        #self.__call__ = self.eval
+

@@ -61,7 +61,7 @@ class  PlotSED (object):
                  plot_workplace=None,
                  title='Plot',
                  frame='obs',
-                 figsize=(12,8)):
+                     figsize=(12,8)):
 
         check_frame(frame)
 

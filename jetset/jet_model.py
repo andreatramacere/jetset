@@ -218,6 +218,7 @@ class JetBase(Model):
 
         _model = {}
         _model['version']=get_info()['version']
+        _model['name'] = self.name
         _model['emitters_distribution'] = self._emitters_distribution_name
         _model['emitters_distribution_log_values'] = self._emitters_distribution_log_values
         _model['emitters_type'] = self._emitters_type
@@ -253,7 +254,7 @@ class JetBase(Model):
 
         self.cosmo = _model['cosmo']
         self.model_type = 'jet'
-
+        self.name = _model['name'] 
         self.set_blob()
         self.parameters = ModelParameterArray()
 

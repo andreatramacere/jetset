@@ -170,13 +170,15 @@ class FitModel(Model):
         if analytical is not None:
             self.add_component(analytical)
 
-    def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None):
+    def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None,skip_sub_components=False):
         if plot_obj is None:
             plot_obj=PlotSED(sed_data = sed_data, frame = frame)
 
         if frame == 'src' and sed_data is not None:
             z_sed_data = sed_data.z
-            sed_data.z = self.get_par_by_type('redshift').val
+            if self.get_par_by_type('redshift') is not None:
+
+                sed_data.z = self.get_par_by_type('redshift').val
 
         if clean is True:
             plot_obj.clean_model_lines()
@@ -190,13 +192,14 @@ class FitModel(Model):
                     #print('--> m name',mc.name)
                     plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim)
 
-                if hasattr(mc,'spectral_components_list'):
-                    for c in mc.spectral_components_list:
-                        #print('--> c name', c.name)
-                        comp_label = c.name
-                        if comp_label!='Sum':
-                            if hasattr(c, 'SED'):
-                                plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim)
+                if skip_sub_components is False:
+                    if hasattr(mc,'spectral_components_list'):
+                        for c in mc.spectral_components_list:
+                            #print('--> c name', c.name)
+                            comp_label = c.name
+                            if comp_label!='Sum':
+                                if hasattr(c, 'SED'):
+                                    plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim)
 
         line_style = '-'
         if label is None:
@@ -205,8 +208,13 @@ class FitModel(Model):
         plot_obj.add_model_plot(self.SED, line_style=line_style, label=label, flim=self.flux_plot_lim,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit])  )
         plot_obj.add_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]) )
 
+        #if frame == 'src' and sed_data is not None:
+        #    sed_data.z = z_sed_data
+
         if frame == 'src' and sed_data is not None:
             sed_data.z = z_sed_data
+
+
 
         return plot_obj
 
