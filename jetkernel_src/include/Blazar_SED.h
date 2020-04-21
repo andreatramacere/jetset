@@ -873,6 +873,7 @@ double F_int_ave(struct spettro *, unsigned int  ID);
 double Sync_self_abs_int(struct spettro *, unsigned int ID);
 double j_nu_Sync(struct spettro *);
 double solve_S_nu_Sync(struct spettro *pt, unsigned int NU_INT);
+double eval_S_nu_Sync(struct spettro *pt, double j_nu, double alpha_nu);
 double alfa_nu_Sync(struct spettro *);
 double integrale_Sync(double (*pf)(struct spettro *, unsigned int ID), struct spettro *pt);
 double Sync_tcool(struct spettro * , double g);

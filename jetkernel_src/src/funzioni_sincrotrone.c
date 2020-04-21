@@ -129,16 +129,12 @@ double solve_S_nu_Sync(struct spettro * pt, unsigned int  NU_INT){
 					(pt->j_Sync[NU_INT] / pt->alfa_Sync[NU_INT])*
 					(1 - exp(-tau_nu*0.5));
 
-			S_nu =(pt->j_Sync[NU_INT] / pt->alfa_Sync[NU_INT])*
-					(1.0 - (2 / (tau_nu * tau_nu))*(1 - exp(-tau_nu)*(tau_nu + 1)));
-		} else {
+        } else {
 			pt->I_nu_Sync[NU_INT] =
 					(pt->j_Sync[NU_INT] / pt->alfa_Sync[NU_INT])*
 					( tau_nu*0.5 - (1.0 / 4.0) * tau_nu * tau_nu*0.5*0.5);
-			S_nu =(pt->j_Sync[NU_INT] / pt->alfa_Sync[NU_INT])*
-					((2.0 / 3.0) * tau_nu - (1.0 / 4.0) * tau_nu * tau_nu);
+			
 		}
-		//printf("ratio nu %e, %e\n",nu,(S_nu/pt->I_nu_Sync[NU_INT]));
 	}
 
 	//==========================
@@ -146,15 +142,47 @@ double solve_S_nu_Sync(struct spettro * pt, unsigned int  NU_INT){
 	//limit of S_nu,alfa->0=(4/3)*R
 	if (pt->do_Sync == 1) {
 		pt->I_nu_Sync[NU_INT]=pt->j_Sync[NU_INT] * pt->R;
-		S_nu = pt->j_Sync[NU_INT] * pt->R*four_by_three;
 	}
 	if (pt->verbose>1) {
 		printf("#-> nu=%e j=%e alfa=%e tau_nu=%e  I_nu=%e\n", pt->nu_Sync[NU_INT], pt->j_Sync[NU_INT],
 				pt->alfa_Sync[NU_INT], tau_nu, pt->I_nu_Sync[NU_INT]);
 	}
 
+    S_nu = eval_S_nu_Sync(pt, pt->j_Sync[NU_INT], pt->alfa_Sync[NU_INT]); 
+    return S_nu;
+}
 
-	return S_nu;
+double eval_S_nu_Sync(struct spettro *pt, double j_Sync, double alfa_Sync)
+{
+    double S_nu, tau_nu;
+
+    if (pt->do_Sync == 2)
+    {
+        tau_nu = 2 * pt->R *  alfa_Sync;
+        if (tau_nu > 1e-4)
+        {
+          
+            S_nu = ( j_Sync /  alfa_Sync) *
+                (1.0 - (2 / (tau_nu * tau_nu)) * (1 - exp(-tau_nu) * (tau_nu + 1)));
+        }
+        else
+        {
+           
+            S_nu = ( j_Sync /  alfa_Sync) *
+                ((2.0 / 3.0) * tau_nu - (1.0 / 4.0) * tau_nu * tau_nu);
+        }
+    }
+
+    //==========================
+    //Radiative solution for no self abs
+    //limit of S_nu,alfa->0=(4/3)*R
+    if (pt->do_Sync == 1)
+    {
+       
+        S_nu =  j_Sync * pt->R * four_by_three;
+    }
+    
+    return S_nu;
 }
 //=========================================================================================
 

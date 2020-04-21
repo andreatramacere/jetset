@@ -280,7 +280,7 @@ double	Lum_SSC_at_nu (struct spettro *pt , double nu_1) {
 
 
 double	Lum_Sync_at_nu (struct spettro *pt , double nu) {
-	double j_nu,S_nu,nuL_nu_Sync;
+    double j_nu, alpha_nu, S_nu, nuL_nu_Sync;
     /**
      * \author Andrea Tramacere
      * \date 19-09-2004 \n
@@ -294,11 +294,11 @@ double	Lum_Sync_at_nu (struct spettro *pt , double nu) {
         exit(0);
     }
 
-
-
     pt->nu=nu;
     j_nu= j_nu_Sync(pt);
-    S_nu = j_nu * pt->R*four_by_three;
+    alpha_nu = alfa_nu_Sync(pt);
+    S_nu = eval_S_nu_Sync(pt, j_nu, alpha_nu);
+
     nuL_nu_Sync = I_nu_to_L_nu_blob(S_nu, pt->Surf_sphere)*nu; /*erg s^-1  Hz^-1 */
 
     return nuL_nu_Sync;

@@ -254,7 +254,7 @@ class JetBase(Model):
 
         self.cosmo = _model['cosmo']
         self.model_type = 'jet'
-        self.name = _model['name'] 
+        self.name = _model['name']
         self.set_blob()
         self.parameters = ModelParameterArray()
 
