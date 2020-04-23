@@ -115,9 +115,9 @@ class SpectralTemplateLogLog(Model):
             return HostGalaxyTemplateLogLog(template_type, cosmo, z=z, nu_size=nu_size, name=name)
 
         else:
-            raise ValueError("Wrong template type=%s, allowed=" % (template_type, self.get_allowed_template_name()))
+            raise ValueError("Wrong template type=%s, allowed=" % (template_type, cls.get_allowed_template_name()))
 
-    def plot_model(self,plot_obj=None,clean=False,label=None,sed_data=None,color=None):
+    def plot_model(self,plot_obj=None,clean=False,label=None,sed_data=None,color=None, density=False):
         if plot_obj is None:
             plot_obj=PlotSED(sed_data=sed_data)
 
@@ -128,7 +128,7 @@ class SpectralTemplateLogLog(Model):
         if label is None:
             label=self.name
 
-        plot_obj.add_model_plot(self.SED, line_style='-', label=label, flim=self.flux_plot_lim,color=color)
+        plot_obj.add_model_plot(self.SED, line_style='-', label=label, flim=self.flux_plot_lim,color=color, density=density)
 
         return plot_obj
 

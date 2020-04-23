@@ -61,7 +61,8 @@ class  PlotSED (object):
                  plot_workplace=None,
                  title='Plot',
                  frame='obs',
-                     figsize=(12,8)):
+                 density=False,
+                 figsize=(12,8)):
 
         check_frame(frame)
 
@@ -131,7 +132,7 @@ class  PlotSED (object):
             pass
 
         if sed_data is not None :
-            self.add_data_plot(sed_data)
+            self.add_data_plot(sed_data,density=density)
 
         if model is not  None:
             self.add_model_plot(model)
@@ -224,16 +225,22 @@ class  PlotSED (object):
             self.update_plot()
             self.update_legend()
 
-    def set_plot_axis_labels(self):
+    def set_plot_axis_labels(self, density=False):
         self.lx = 'log($ \\nu $)  (Hz)'
 
         if self.frame == 'src':
 
-            self.ly = 'log($ \\nu L_{\\nu} $ )  (erg  s$^{-1}$)'
-            
-        elif self.frame == 'obs':
+            if density is False:
+                self.ly = 'log($ \\nu L_{\\nu} $ )  (erg  s$^{-1}$)'
+            else:
+                self.ly = 'log($   L_{\\nu} $ )  (erg  s$^{-1}$ Hz$^{-1}$)'
 
+        elif self.frame == 'obs':
+            if density is False:
                 self.ly = 'log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)'
+            else:
+                self.ly = 'log($   F{\\nu} $ )  (erg  s$^{-1}$ Hz$^{-1}$)'
+
         else:
             unexpetced_behaviour()
 
@@ -285,7 +292,7 @@ class  PlotSED (object):
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None):
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None,density=False):
 
         try:
             x, y = model.get_model_points(log_log=True, frame = self.frame)
@@ -297,6 +304,8 @@ class  PlotSED (object):
                 print("b", e)
                 raise RuntimeError (model, "!!! Error has no SED instance or something wrong in get_model_points()",e)
 
+        if density is True:
+            y=y-x
         if line_style is None:
             line_style = '-'
 
@@ -331,11 +340,11 @@ class  PlotSED (object):
 
         self.counter += 1
 
-    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=4,mew=0.5,fit_range=None):
+    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=4,mew=0.5,fit_range=None, density = False):
 
 
         try:
-            x,y,dx,dy,=sed_data.get_data_points(log_log=True,frame=self.frame)
+            x,y,dx,dy,=sed_data.get_data_points(log_log=True,frame=self.frame, density=density)
         except Exception as e:
             raise RuntimeError("!!! ERROR failed to get data points from", sed_data,e)
             

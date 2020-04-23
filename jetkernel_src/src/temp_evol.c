@@ -43,8 +43,9 @@
         //double dato;
         //int dato_i;
         char name[static_file_name_max_legth], old[static_file_name_max_legth], name1[static_file_name_max_legth];
+        char name_n_evol[static_file_name_max_legth];
         FILE *fp;
-
+        FILE *fp1;
         //For temp_ev we need to have boundaris of gamma grid
         //unbound from gmin and gmax
         grid_bounded_to_gamma = pt_spec->grid_bounded_to_gamma;
@@ -601,6 +602,15 @@
             strcpy(pt_spec->STEM, name);
             sprintf(name1, "distr-e-evol.dat");
 
+            sprintf(name_n_evol, "%s%s-distr-e-evol.dat", pt_ev->path, pt_ev->STEM);
+
+            fp1 = fopen(name_n_evol, "w");
+            if (fp1 == NULL)
+            {
+                printf("warning non riesco ad aprire %s\n", fp);
+                exit(1);
+            }
+
             EvalU_e(pt_spec);
             Run_SED(pt_spec);
 
@@ -610,6 +620,7 @@
             for (Gamma = 0; Gamma < E_SIZE; Gamma++) {
                 if (pt_spec->Ne[Gamma] != 0) {
                     fprintf(fp, "%e %e %e %e", t, log10(x[Gamma] + 1), log10(pt_spec->Ne[Gamma]), log10(pt_spec->Ne[Gamma]*(x[Gamma] + 1)*(x[Gamma] + 1)*(x[Gamma] + 1)));
+                    fprintf(fp1, " %e %e %e\n", log10(x[Gamma] + 1), log10(pt_spec->Ne[Gamma]), log10(pt_spec->Ne[Gamma] * (x[Gamma] + 1) * (x[Gamma] + 1) * (x[Gamma] + 1)));
                     //fprintf(fp,"%e %e",x[G]+1,pt->Ne[G]);
                     //fprintf(fp,"\n");
                     fprintf(fp, "\n");
@@ -621,7 +632,7 @@
                 fprintf(fp, "&&\n");
                 //fprintf(fp1,"&&\n");
             }
-
+            fclose(fp1);
             COUNT_FILE*=STEP_FILE;
 
         }

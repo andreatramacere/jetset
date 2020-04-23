@@ -170,9 +170,9 @@ class FitModel(Model):
         if analytical is not None:
             self.add_component(analytical)
 
-    def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None,skip_sub_components=False):
+    def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None,skip_sub_components=False, density=False):
         if plot_obj is None:
-            plot_obj=PlotSED(sed_data = sed_data, frame = frame)
+            plot_obj=PlotSED(sed_data = sed_data, frame = frame,density=density)
 
         if frame == 'src' and sed_data is not None:
             z_sed_data = sed_data.z
@@ -190,7 +190,7 @@ class FitModel(Model):
                 comp_label = mc.name
                 if hasattr(mc,'SED'):
                     #print('--> m name',mc.name)
-                    plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim)
+                    plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim, density=density)
 
                 if skip_sub_components is False:
                     if hasattr(mc,'spectral_components_list'):
@@ -199,13 +199,13 @@ class FitModel(Model):
                             comp_label = c.name
                             if comp_label!='Sum':
                                 if hasattr(c, 'SED'):
-                                    plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim)
+                                    plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim, density=density)
 
         line_style = '-'
         if label is None:
             label=self.name
 
-        plot_obj.add_model_plot(self.SED, line_style=line_style, label=label, flim=self.flux_plot_lim,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit])  )
+        plot_obj.add_model_plot(self.SED, line_style=line_style, label=label, flim=self.flux_plot_lim,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]), density=density  )
         plot_obj.add_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]) )
 
         #if frame == 'src' and sed_data is not None:

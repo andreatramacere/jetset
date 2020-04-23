@@ -1107,7 +1107,7 @@ class ObsData(object):
         self.data['dnuFnu_facke']= self.data['nuFnu_data'] * self.facke_error
         
     
-    def get_data_points(self,log_log=False,skip_UL=False,frame='obs'):
+    def get_data_points(self,log_log=False,skip_UL=False,frame='obs',density=False):
         """
         Gives data point
         """
@@ -1147,6 +1147,14 @@ class ObsData(object):
         else:
             unexpetced_behaviour()
 
+        if density is True:
+
+            if log_log is True:
+                _y = _y - _x
+            else:
+                _y = _y / _x
+                _dy=_dy/_x
+
         return _x ,_y, _dx, _dy
     
     def show_data_sets(self):
@@ -1168,17 +1176,17 @@ class ObsData(object):
 
 
 
-    def plot_sed(self,plot_obj=None,frame='obs',color=None,fmt='o',ms=4,mew=0.5,figsize=None,show_dataset=False):
+    def plot_sed(self,plot_obj=None,frame='obs',color=None,fmt='o',ms=4,mew=0.5,figsize=None,show_dataset=False, density=False):
         if plot_obj is None:
             plot_obj = PlotSED(frame=frame, figsize=figsize)
 
         if show_dataset is False:
 
-            plot_obj.add_data_plot(self, color=color, fmt=fmt, ms=ms, mew=mew)
+            plot_obj.add_data_plot(self, color=color, fmt=fmt, ms=ms, mew=mew, density=density)
         else:
             for ds in self.get_data_sets():
                 self.filter_data_set(filters=ds,silent=True,exclude=False)
-                plot_obj.add_data_plot(self, color=color, fmt=fmt, ms=ms, mew=mew ,label='dataset %s'%ds)
+                plot_obj.add_data_plot(self, color=color, fmt=fmt, ms=ms, mew=mew ,label='dataset %s'%ds, density=density)
                 self.reset_data()
             self.reset_data()
 

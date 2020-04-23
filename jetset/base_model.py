@@ -147,9 +147,9 @@ class Model(object):
 
 
 
-    def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None,line_style='-'):
+    def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None,line_style='-', density=False):
         if plot_obj is None:
-            plot_obj=PlotSED(sed_data = sed_data, frame = frame)
+            plot_obj=PlotSED(sed_data = sed_data, frame = frame, density=density)
 
         if frame == 'src' and sed_data is not None:
             z_sed_data = sed_data.z
@@ -161,7 +161,7 @@ class Model(object):
             plot_obj.clean_model_lines()
 
         if hasattr(self,'SED'):
-            plot_obj.add_model_plot(self.SED, line_style=line_style,label=self.name,flim=self.flux_plot_lim)
+            plot_obj.add_model_plot(self.SED, line_style=line_style,label=self.name,flim=self.flux_plot_lim,density=density)
 
         if skip_components is False:
             if hasattr(self,'spectral_components_list'):
@@ -171,7 +171,7 @@ class Model(object):
                     line_style = '--'
                     if comp_label!='Sum':
                         if hasattr(c, 'SED'):
-                            plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim)
+                            plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim, density=density)
 
         line_style = '-'
         if label is None:

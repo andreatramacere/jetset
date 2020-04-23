@@ -291,7 +291,7 @@ class McmcSampler(object):
         ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1)
         return f
 
-    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs'):
+    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False):
         #if labels is None:
         #    labels = self.labels
         if sed_data is None:
@@ -306,12 +306,15 @@ class McmcSampler(object):
             z_sed_data = sed_data.z
             sed_data.z = self.model.get_par_by_type('redshift').val
 
-        p.add_data_plot(sed_data)
+        p.add_data_plot(sed_data,density=density)
 
         self.reset_to_best_fit()
         self.model.eval(fill_SED=True)
 
         x, y = self.model.SED.get_model_points(log_log=True, frame=frame)
+        #if density is True:
+        #    y=y-x
+
         y = np.zeros((size,x.size))
 
         for ID,ID_rand in enumerate(np.random.randint(len(self.samples), size=size)):
@@ -322,6 +325,8 @@ class McmcSampler(object):
             self.model.eval(fill_SED=True)
             x, y[ID] = self.model.SED.get_model_points(log_log=True, frame=frame)
 
+        if density is True:
+            y=y-x
         y_min=np.amin(y, axis=0)
         y_max=np.amax(y, axis=0)
         p.sedplot.fill_between(x,y_max,y_min,color='gray',alpha=0.3,label='mcmc model range')
@@ -329,7 +334,7 @@ class McmcSampler(object):
         self.reset_to_best_fit()
         self.model.eval(fill_SED=True)
 
-        p.add_model_plot(self.model, color='red',fit_range = fit_range)
+        p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density)
         p.add_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
 
         if frame == 'src' and sed_data is not None:

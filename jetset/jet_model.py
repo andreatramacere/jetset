@@ -1195,9 +1195,10 @@ class JetBase(Model):
 
         print("-------------------------------------------------------------------------------------------------------------------")
 
-    def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-',frame='obs'):
+    def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-',frame='obs', density=False):
         if plot_obj is None:
-            plot_obj=PlotSED(sed_data=sed_data, frame= frame)
+            plot_obj=PlotSED(sed_data=sed_data, frame= frame, density=density)
+
 
         if frame == 'src' and sed_data is not None:
             z_sed_data = sed_data.z
@@ -1216,7 +1217,7 @@ class JetBase(Model):
             else:
                 comp_label=None
             if c.state!='off':
-                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label)
+                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label, density=density)
 
         else:
             for c in self.spectral_components_list:
@@ -1225,7 +1226,7 @@ class JetBase(Model):
                     comp_label=label
                 #print('comp label',comp_label)
                 if c.state != 'off' and c.name!='Sum':
-                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color)
+                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color, density=density)
 
             c=self.get_spectral_component_by_name('Sum')
             if label is not None:
@@ -1233,7 +1234,7 @@ class JetBase(Model):
             else:
                 comp_label='Sum'
 
-            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color)
+            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color, density=density)
 
         if frame == 'src' and sed_data is not None:
             sed_data.z = z_sed_data
