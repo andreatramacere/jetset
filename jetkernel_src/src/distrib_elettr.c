@@ -815,7 +815,8 @@ void alloc_N_distr(double ** pt,int size){
             //printf("freeing\n");
         }
 
-        *pt= malloc(size * sizeof (double));
+        *pt = calloc(size, sizeof (double));
+        //*pt= mallot(size * sizeof (double));
         //printf("post %p\n",*pt);
 
     }

@@ -155,7 +155,7 @@ class JetBase(Model):
         self.add_basic_components()
         self.SED=self.get_spectral_component_by_name('Sum').SED
 
-        self.parameters = ModelParameterArray()
+        self.parameters = JetModelParameterArray(model=self)
 
         self._emitting_region_dic = None
         self._electron_distribution_dic= None
@@ -177,13 +177,13 @@ class JetBase(Model):
 
         self.SED = self.get_spectral_component_by_name('Sum').SED
 
-        self.parameters = ModelParameterArray()
+        self.parameters = JetModelParameterArray(model=self)
 
         self._emitting_region_dic = None
         self._emitters_distribution_dic = None
         self._external_photon_fields_dic = None
 
-        self.set_emitters_distribution(emitters_distribution, emitters_distribution_log_values, emitters_type)
+        self.set_emitters_distribution(emitters_distribution, emitters_distribution_log_values, emitters_type,init=False)
 
 
         self._blob.adaptive_e_binning = 0
@@ -256,7 +256,7 @@ class JetBase(Model):
         self.model_type = 'jet'
         self.name = _model['name']
         self.set_blob()
-        self.parameters = ModelParameterArray()
+        self.parameters = JetModelParameterArray(model=self)
 
 
         if 'emitters_type' in _model.keys():
@@ -277,7 +277,8 @@ class JetBase(Model):
 
         self.set_emitters_distribution(name=str(_model['emitters_distribution']),
                                    log_values=_model['emitters_distribution_log_values'],
-                                   emitters_type=emitters_type)
+                                   emitters_type=emitters_type,
+                                   init=False)
 
         for c in self.basic_components_list:
             if c not in _model['basic_components_name']:
@@ -324,7 +325,7 @@ class JetBase(Model):
 
         jet.init_BlazarSED()
 
-        jet.parameters = ModelParameterArray()
+        jet.parameters = JetModelParameterArray(model=jet)
 
         if 'electron_distribution' in _model.keys():
             _v = _model['electron_distribution']
@@ -338,7 +339,8 @@ class JetBase(Model):
 
         jet.set_emitters_distribution(name=str(_model['emitters_distribution']),
                                        log_values=_model['emitters_distribution_log_values'],
-                                       emitters_type='electrons')
+                                       emitters_type='electrons',
+                                       init=False)
 
         for c in jet.basic_components_list:
             if c not in _model['basic_components_name']:
@@ -504,14 +506,14 @@ class JetBase(Model):
 
         self._emitting_region_dic=build_emitting_region_dic(beaming_expr=beaming_expr)
 
-        self.add_par_from_dic(self._emitting_region_dic)
+        self.parameters.add_par_from_dict(self._emitting_region_dic,self,'_blob',JetParameter)
 
 
     @staticmethod
     def available_emitters_distributions():
         JetkernelEmittersDistribution.available_distributions()
 
-    def set_emitters_distribution(self, name=None, log_values=False, emitters_type='electrons'):
+    def set_emitters_distribution(self, name=None, log_values=False, emitters_type='electrons',init=True):
 
 
         self._emitters_distribution_log_values = log_values
@@ -530,7 +532,7 @@ class JetBase(Model):
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
 
-            self.add_par_from_dic(self._emitters_distribution_dic)
+            self.parameters.add_par_from_dict(self._emitters_distribution_dic,self,'_blob',JetParameter)
 
 
         elif isinstance(name, EmittersDistribution):
@@ -552,9 +554,10 @@ class JetBase(Model):
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
 
-            self.add_par_from_dic(self._emitters_distribution_dic)
+            self.parameters.add_par_from_dict(self._emitters_distribution_dic,self,'_blob',JetParameter)
 
-
+        if init is True:
+            self.set_blob()
 
     def get_emitters_distribution_name(self):
         return self.emitters_distribution.name
@@ -813,7 +816,7 @@ class JetBase(Model):
                     self.EC_components_list.append('EC_CMB')
 
         #IF disk_type is already a parameter it has to be updated here to make it effective
-        self.add_par_from_dic(build_ExtFields_dic(self.EC_components_list, disk_type))
+        self.parameters.add_par_from_dict(build_ExtFields_dic(self.EC_components_list, disk_type),self,'_blob',JetParameter)
         #print('--> disk_type',disk_type)
         if disk_type is not None:
 
@@ -822,13 +825,8 @@ class JetBase(Model):
                 self.del_par_from_dic(build_ExtFields_dic(['Disk'],self.parameters.get_par_by_name('disk_type').val))
             else:
                 self.EC_components_list.append('Disk')
-            self.add_par_from_dic(build_ExtFields_dic(self.EC_components_list,disk_type))
+            self.parameters.add_par_from_dict(build_ExtFields_dic(self.EC_components_list, disk_type),self,'_blob',JetParameter)
             self.parameters.disk_type.val = disk_type
-
-
-
-
-
 
 
 
@@ -841,70 +839,6 @@ class JetBase(Model):
 
             if par is not None:
                 self.parameters.del_par(par)
-
-
-
-
-    def add_par_from_dic(self,model_dic):
-        """
-        add the :class:`.JetParameter` object to the :class:`.ModelParameterArray`
-        usign the dictionaries built by the :func:`build_emitting_region_dic`
-        and :func:`build_electron_distribution_dic`
-        """
-        #print('--->',model_dic)
-        for key in model_dic.keys():
-
-            pname=key
-
-            p_test=self.parameters.get_par_by_name(pname)
-
-            #print('-->1', pname,p_test)
-
-
-            if p_test is None:
-                #print('-->', pname, model_dic[key].is_in_blob, model_dic[key].val)
-                if hasattr(self._blob,pname) and model_dic[key].is_in_blob is True:
-                    pval=getattr(self._blob,pname)
-                elif model_dic[key].val is not None:
-                    pval=model_dic[key].val
-                else:
-                    raise RuntimeError('par',pname,'not found in blob and model dict')
-
-                log=model_dic[key].log
-
-
-                allowed_values=model_dic[key].allowed_values
-
-                #IMPORTANT
-                #This has to stay here, because the parameter, even if log, is stored as linear
-                if log is True:
-
-                    pval = np.log10(pval)
-
-
-                ptype=model_dic[key].ptype
-                vmin=model_dic[key].vmin
-                vmax=model_dic[key].vmax
-                punit=model_dic[key].punit
-
-
-                froz=model_dic[key].froz
-                is_in_blob=model_dic[key].is_in_blob
-
-                self.parameters.add_par(JetParameter(self,
-                                                     name=pname,
-                                                     par_type=ptype,
-                                                     val=pval,
-                                                     val_min=vmin,
-                                                     val_max=vmax,
-                                                     units=punit,
-                                                     frozen=froz,
-                                                     log=log,
-                                                     is_in_blob=is_in_blob,
-                                                     allowed_values=allowed_values))
-
-
-
 
 
 
@@ -1128,7 +1062,8 @@ class JetBase(Model):
         print('%s distribution:'%self._emitters_type)
         print(" type: %s  " % (self._emitters_distribution_name))
         print(" gamma energy grid size: ", self.gamma_grid_size)
-        print(" gmin grid : %e" % self._blob.gmin_griglia)
+        print(" gmin grid : %e" % self._blob.
+              gmin_griglia)
         print(" gmax grid : %e" % self._blob.gmax_griglia)
         print(" normalization ", self.Norm_distr>0)
         print(" log-values ", self._emitters_distribution_log_values)

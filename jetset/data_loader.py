@@ -927,11 +927,18 @@ class ObsData(object):
         elif N_bin is None and bin_width is None:
             print ("you must provide either N_bin or bin_width")
             raise ValueError
-        
+
+        #if nu_min is None:
         xmin= self.data['nu_data_log'].min() * 0.99
+        #else:
+        #   xmin= np.log10(nu_min)
+
+        #if nu_max is None:
         xmax= self.data['nu_data_log'].max() * 1.01
-        
-      
+        #else:
+        #xmin = np.log10(nu_max)
+
+
         if N_bin is None:
             N_bin=int((xmax-xmin)/bin_width)
 
@@ -1178,7 +1185,7 @@ class ObsData(object):
 
     def plot_sed(self,plot_obj=None,frame='obs',color=None,fmt='o',ms=4,mew=0.5,figsize=None,show_dataset=False, density=False):
         if plot_obj is None:
-            plot_obj = PlotSED(frame=frame, figsize=figsize)
+            plot_obj = PlotSED(frame=frame, figsize=figsize,density=density)
 
         if show_dataset is False:
 

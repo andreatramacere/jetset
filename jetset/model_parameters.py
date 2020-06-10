@@ -134,7 +134,7 @@ class ModelParameter(object):
         self.allowed_keywords['frozen']=False
         self.allowed_keywords['log']=False
         self.allowed_keywords['allowed_values'] = None
-      
+        self.allowed_keywords['jetkernel_par_name'] = None
 
 
         _v = None
@@ -264,8 +264,8 @@ class ModelParameter(object):
 
                     if self.allowed_par_types is not None:
 
-                        if  keywords['kw'] not in self.allowed_par_types:
-                            msg = "parameter%s the  type %s is not allowed" % (self.name,keywords['kw']) + "\n please choose among %s" % self.allowed_par_types
+                        if  keywords[kw] not in self.allowed_par_types:
+                            msg = "parameter %s the  type %s is not allowed" % (self.name,keywords[kw]) + "\n please choose among %s" % self.allowed_par_types
                             raise ValueError("%s" % msg)
                     setattr(self, kw, keywords[kw])
                 else:

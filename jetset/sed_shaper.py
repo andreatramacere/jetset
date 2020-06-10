@@ -489,7 +489,6 @@ class SEDShape(object):
                 par=loglog_pl.parameters.get_par_by_name(loglog_poly.name,'alpha')
 
                 index.assign_val(val = par.best_fit_val, err =par.best_fit_err)
-                #index.assign_val_to_blob(par.best_fit_val, par.best_fit_err)
 
                 if silent is False:
                     index.show_val()

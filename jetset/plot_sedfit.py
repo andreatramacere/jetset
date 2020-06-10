@@ -55,7 +55,8 @@ def set_mpl():
 
 
 class  PlotSED (object):
-    def __init__(self,sed_data=None,
+    def __init__(self,
+                 sed_data=None,
                  model=None,
                  interactive=False,
                  plot_workplace=None,
@@ -102,7 +103,7 @@ class  PlotSED (object):
         self.sedplot= self.fig.add_subplot(self.gs[0])
         self._add_res_plot()
         
-        self.set_plot_axis_labels()
+        self.set_plot_axis_labels(density=density)
         
         #if autoscale==True:
         self.sedplot.set_autoscalex_on(True)
@@ -239,7 +240,7 @@ class  PlotSED (object):
             if density is False:
                 self.ly = 'log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)'
             else:
-                self.ly = 'log($   F{\\nu} $ )  (erg  s$^{-1}$ Hz$^{-1}$)'
+                    self.ly = 'log($   F{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$ Hz$^{-1}$)'
 
         else:
             unexpetced_behaviour()
@@ -292,7 +293,7 @@ class  PlotSED (object):
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None,density=False):
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None,density=False, update=True):
 
         try:
             x, y = model.get_model_points(log_log=True, frame = self.frame)
@@ -335,8 +336,9 @@ class  PlotSED (object):
 
         self.lines_model_list.append(line)
 
-        self.update_legend()
-        self.update_plot()
+        if update is True:
+            self.update_legend()
+            self.update_plot()
 
         self.counter += 1
 
@@ -458,8 +460,8 @@ class  PlotSED (object):
 
 class BasePlot(object):
 
-    def __init__(self):
-        self.fig, self.ax = plt.subplots()
+    def __init__(self,figsize=(8,6),dpi=120):
+        self.fig, self.ax = plt.subplots(figsize=figsize,dpi=dpi)
 
     def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):
         self.ax.set_xlim(x_min, x_max)
@@ -468,6 +470,8 @@ class BasePlot(object):
     def update_plot(self):
         self.fig.canvas.draw()
         self.fig.tight_layout()
+
+
 
 class PlotSpectralMultipl(BasePlot):
     def __init__(self):
@@ -489,15 +493,14 @@ class PlotSpectralMultipl(BasePlot):
 
 
 
-
 class  PlotPdistr (BasePlot):
 
-    def __init__(self,):
-        super(PlotPdistr, self).__init__()
+    def __init__(self,figsize=(8,6),dpi=120,injection=False,loglog=True):
+        super(PlotPdistr, self).__init__(figsize=figsize,dpi=dpi)
+        self.loglog=loglog
+        self.injection = injection
 
-
-
-    def _set_variable(self,gamma,n_gamma,particle,energy_unit):
+    def _set_variable(self,gamma,n_gamma,particle,energy_unit,pow=None):
 
         energy_plot=False
         if energy_unit == 'gamma':
@@ -505,7 +508,7 @@ class  PlotPdistr (BasePlot):
             energy_units=''
         else:
             energy_name='E'
-            energy_units= '(%s)'%energy_unit
+            energy_units= '%s'%energy_unit
             energy_plot=True
 
         if  energy_plot is False:
@@ -524,45 +527,138 @@ class  PlotPdistr (BasePlot):
                 raise  RuntimeError('particle ',particle, 'not implemented')
 
         m = y > 0
+        x=np.copy(x)
+        y=np.copy(y)
 
+        if pow is not None:
+            y[m] = y[m]* np.power( x[m], pow)
+
+        if self.loglog is True:
+            x[m] = np.log10( x[m])
+            y[m] = np.log10(y[m])
 
         return x[m], y[m], energy_name,energy_units
 
 
+
+    def _set_xy_label(self,energy_name,energy_units):
+        if energy_units != '':
+            _e = '(%s)' % energy_units
+        else:
+            _e = ''
+
+        if self.loglog is True:
+            self.ax.set_xlabel(r'log($%s$)  %s' % (energy_name, _e))
+        else:
+            self.ax.set_xlabel(r'$%s$  %s' % (energy_name, _e))
+
+        if energy_units != '':
+            _e = '%s^{-1}' % energy_units
+        else:
+            _e = ''
+
+        if self.injection is False:
+
+            if self.loglog is True:
+                self.ax.set_ylabel(r'log(n($%s$))   ($cm^{-3} %s$) '%(energy_name,_e))
+            else:
+                self.ax.set_ylabel(r'n($%s$)   ($cm^{-3} %s$) ' % (energy_name,_e))
+        else:
+            if self.loglog is True:
+                self.ax.set_ylabel(r'log(Q$_{inj}$($%s$))   ($cm^{-3} s^{-1} %s$)' % (energy_name,_e))
+            else:
+                self.ax.set_ylabel(r'Q$_{inj}$($%s$)   ($cm^{-3} s^{-1} %s$)' % (energy_name,_e))
+
+    def _plot(self,x,y,c=None,lw=None,label=None):
+        if self.loglog is True:
+            self.ax.plot(x, y, c=c, lw=lw, label=label)
+        else:
+            self.ax.loglog(x, y,c=c, lw=lw, label=label)
+
     def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma'):
 
         x,y,energy_name,energy_units=self._set_variable(gamma,n_gamma,particle,energy_unit)
-        self.ax.plot(np.log10(x), np.log10(y))
 
-        self.ax.set_xlabel(r'log($%s$)  %s'%(energy_name,energy_units))
-        self.ax.set_ylabel(r'log(n($%s$))'%(energy_name))
+        self._plot(x,y)
+        self._set_xy_label(energy_name,energy_units)
+
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
         self.update_plot()
 
     def plot_distr2p(self, gamma, n_gamma, y_min=None, y_max=None, x_min=None, x_max=None,particle='electrons',energy_unit='gamma'):
 
-        x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit)
+        x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit,pow=2)
+        self._plot(x,y)
+        self._set_xy_label(energy_name, energy_units)
 
-        self.ax.plot(np.log10(x), np.log10(y * x *  x))
-
-        self.ax.set_xlabel(r'log($%s$)  %s'%(energy_name,energy_units))
-        self.ax.set_ylabel(r'log(n($%s$) $%s^2$)  '%(energy_name,energy_name))
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
         self.update_plot()
 
     def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma'):
 
-        x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit)
+        x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit, pow=3)
+        self._plot(x,y)
+        self._set_xy_label(energy_name, energy_units)
 
-        self.ax.plot(np.log10(x), np.log10(y * x * x * x))
-
-        self.ax.set_xlabel(r'log($%s$)  %s' % (energy_name, energy_units))
-        self.ax.set_ylabel(r'log(n($%s$) $%s^3$) ' % (energy_name, energy_name))
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
         self.update_plot()
+        self.update_plot()
+
+
+class  PlotTempEvEmitters (PlotPdistr):
+
+    def __init__(self,figsize=(8,6),dpi=120,loglog=True):
+        super(PlotTempEvEmitters, self).__init__(figsize=figsize,dpi=dpi,loglog=loglog,)
+
+
+    def _plot_distr(self,temp_ev,particle='electrons',energy_unit='gamma',pow=None,plot_Q_inj=True):
+        for ID in range(1, temp_ev.parameters.NUM_SET.val - 1):
+            x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[ID], particle, energy_unit, pow=pow)
+            self._plot(x,y,c='g',lw=0.1,label=None)
+
+        x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[0], particle, energy_unit, pow=pow)
+        self._plot(x, y, c='black', lw=2,label='Start')
+
+        x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[-1], particle, energy_unit, pow=pow)
+        self._plot(x, y, c='blue', lw=2,label='Stop')
+        self._set_xy_label(energy_name, energy_units)
+
+        y = temp_ev.Q_inj.n_array * temp_ev._temp_ev.deltat
+        x = temp_ev.Q_inj.e_array
+        if plot_Q_inj is True:
+            if pow is not None:
+                y=y*np.power(x,pow)
+
+            self._plot(x,y, c='red', lw=1, label='$Q_{inj}$ deltat')
+
+
+
+        self.ax.legend()
+
+    def plot_distr(self, temp_ev, energy_unit='gamma',plot_Q_inj=True,pow=None):
+        self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=pow,plot_Q_inj=plot_Q_inj)
+
+    def plot_distr2p(self, temp_ev, energy_unit='gamma',plot_Q_inj=True):
+        self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=2,plot_Q_inj=plot_Q_inj)
+
+    def plot_distr3p(self, temp_ev, energy_unit='gamma',plot_Q_inj=True):
+        self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=3,plot_Q_inj=plot_Q_inj)
+
+class  PlotTempEvDiagram (BasePlot):
+
+    def __init__(self,figsize=(8,6),dpi=120):
+        super(PlotTempEvDiagram, self).__init__(figsize=figsize,dpi=dpi)
+
+
+    def plot(self,duration,T_acc_start,T_acc_stop,T_inj_start,T_inj_stop):
+        self.ax.axhline(1, T_acc_start, T_acc_stop, label='Inj. start/stop', c='b')
+        self.ax.axhline(2, T_inj_start, T_inj_stop, label='Acc. start/stop', c='g')
+        self.ax.set_xlim(-0.5, duration)
+        self.ax.legend()
+
 
 
 class  PlotSpecComp (BasePlot):

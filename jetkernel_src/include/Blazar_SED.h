@@ -49,7 +49,8 @@
 #define three_by_four 0.75 /* 4/3 */
 #define fake_nu_err 1.0
 #define fake_flux_err 1.0
-#define static_spec_arr_grid_size 10000 
+#define static_spec_arr_grid_size 10000
+#define static_ev_arr_grid_size 1000
 #define static_spec_arr_size 1000 /* num elementi dei vettori */
 #define static_bess_table_size 1000 /* num elementi tabelle di Bessel */
 #define Bessel_MAX 500.0
@@ -631,11 +632,24 @@ struct temp_ev{
 	int do_SSC_cooling;
     int do_Compton_cooling;
 
+    double Q_scalig_factor;
 
+    double t_unit; //unit time in light crossing time
+    //double t_acc;
 
-	double t_unit; //unit time in light crossing time
-	//double t_acc;
-	double L_inj;
+    double *N_gamma;
+    double *gamma;
+    double *N_time;
+    double *Q_inj;
+    double gmin_griglia, gmax_griglia; 
+    unsigned int gamma_grid_size;
+    double g[static_ev_arr_grid_size];
+    double t_D[static_ev_arr_grid_size];
+    double t_DA[static_ev_arr_grid_size];
+    double t_A[static_ev_arr_grid_size];
+    double t_Sync_cool[static_ev_arr_grid_size];
+    double t_Esc[static_ev_arr_grid_size];
+    double L_inj;
 	double *T_esc;
 	double Diff_Coeff;
 	double Diff_coeff_CD;
@@ -644,21 +658,24 @@ struct temp_ev{
 	double Diff_Index;
 	double Acc_Index;
 	double T_esc_Coeff;
+    double T_esc_Coeff_R_by_c;
 	double Esc_Index;
 	double Lambda_max_Turb;
 	double Lambda_choer_Turb_factor;
 	double Gamma_Max_Turb_L_max;
 	double Gamma_Max_Turb_L_coher;
 	double gamma_eq_t_D,gamma_eq_t_A;
-	//double alfa_inj;
+
 	double TStart_Inj;
 	double TStop_Inj;
 	double TStart_Acc;
 	double TStop_Acc;
 	double Inj_temp_slope;
 	unsigned int NUM_SET;
+    unsigned int LOG_SET;
 	unsigned int T_SIZE;
 	double duration,t_D0,t_DA0,t_A0;
+    double deltat;
 
 };
 
@@ -677,16 +694,11 @@ double Inj_temp_prof (double t,struct temp_ev *);
 void Wm (double, double* ,double *);
 double Cooling(double,struct temp_ev *,struct spettro *);
 int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],unsigned int size);
+void free_tempe_ev(struct temp_ev *pt_ev);
 //===================================================================================
-
-
-
-
-
 
 // File Interface
 // void FileInput(int argc, char **argv, struct spettro *pt_spec,struct temp_ev *pt_temporal);
-
 
 //=======================================================================================
 /********************************     PyInterface    ************************************/
@@ -700,9 +712,17 @@ void InitNe(struct spettro *pt);
 //void alloc_photons(double ** pt,int size);
 void set_seed_freq_start(struct spettro *pt_base);
 void Run_SED(struct spettro *pt_base);
-void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev, double luminosity_distance);
+void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev);
+void Init_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev, double luminosity_distance);
+
 double get_spectral_array(double * arr, struct spettro *pt, unsigned int id);
 double get_elec_array(double * arr, struct spettro *pt, unsigned int id);
+double get_temp_ev_N_gamma_array(double *arr, struct temp_ev *pt_ev, unsigned int row, unsigned int col);
+double get_temp_ev_N_time_array(double *arr, struct temp_ev *pt_ev, unsigned int id);
+double get_temp_ev_gamma_array(double *arr, struct temp_ev *pt_ev, unsigned int id);
+double get_Q_inj_array(double *arr, struct temp_ev *pt_ev, unsigned int id);
+double get_temp_ev_array_static(double *arr, unsigned int id);
+
 void set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned int id);
 void set_elec_array(double * arr,struct spettro *pt, double val, unsigned int id);
 void set_bessel_table(double *arr, struct spettro *pt, double val, unsigned int id);

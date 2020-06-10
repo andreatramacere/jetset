@@ -14,7 +14,7 @@ import numpy as np
 
 import os
 
-import sys
+import copy
 
 from scipy.stats import chi2
 
@@ -345,7 +345,6 @@ class ModelMinimizer(object):
         self.pout=None
         self.free_pars=free_pars
         self.fit_par_free=fit_par_free
-
         self.fit_Model=fit_Model
         self.loglog=loglog
 
@@ -387,33 +386,40 @@ class ModelMinimizer(object):
 
         fit_Model.set_nu_grid(nu_min=nu_fit_start*0.5, nu_max=nu_fit_stop*1.5)
 
+
         for i in range(repeat):
             if skip_minimizer == False:
                 if repeat>1:
                     if silent is False:
                         print('fit run:',i)
-                self.minimizer.fit(self,max_ev=max_ev,silent=silent)
+                    if i>0:
+                        old_chisq = self.minimizer.chisq
 
-                self.pout = self.minimizer.pout
-                self.errors = self.minimizer.errors
-                if  hasattr(self.minimizer,'asymm_errors'):
-                    self.asymm_errors = self.minimizer.asymm_errors
+                self.minimizer.fit(self,max_ev=max_ev,silent=silent)
+                new_chisq = self.minimizer.chisq
+                if i==0:
+                    old_chisq = new_chisq
+
+                chisq_min = min(new_chisq, old_chisq)
+                if i==0 or new_chisq<=chisq_min:
+                    print('update par for chisq',chisq_min )
+                    self.pout = self.minimizer.pout
+                    self.errors = self.minimizer.errors
+                    if  hasattr(self.minimizer,'asymm_errors'):
+                        self.asymm_errors = self.minimizer.asymm_errors
+
                 if i<repeat-1:
                     self.pinit = [par.val for par in self.fit_par_free]
-                    #self._prepare_fit(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=fitname,
-                    #                  fit_workplace=fit_workplace,
-                    #                  loglog=loglog, silent=silent, get_conf_int=get_conf_int, use_facke_err=use_facke_err,
-                    #                  use_UL=use_UL)
                     if silent is False:
                         print()
             else:
                 pass
 
 
-
         return self.get_fit_results(fit_Model,nu_fit_start,nu_fit_stop,fitname,loglog=loglog,silent=silent)
 
     def get_fit_results(self, fit_Model, nu_fit_start, nu_fit_stop, fitname, silent=False, loglog=False):
+
         self.reset_to_best_fit()
         best_fit = FitResults(fitname,
                               self,
@@ -457,6 +463,8 @@ class ModelMinimizer(object):
         fit_Model.eval(fill_SED=True)
 
         return best_fit
+
+
 
     def reset_to_best_fit(self):
 

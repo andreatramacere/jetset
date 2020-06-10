@@ -57,8 +57,6 @@ class NoTraceBackWithLineNumber(Exception):
 def new_version_warning():
     m = '\n\n' + '*'*80 + '\n'
     m+= 'Something wrong has happened. Please, look at the exception message. Note also that\n'
-    m+= 'starting from version 1.1.0, the R parameter as default is linear \nand not logarithmic, please update your scripts\n'
-    m+= 'Also the format of the jet_model has changed, now it is a binary file.\n'
     m+= '*' * 80 + '\n'
     warnings.warn(m)
 

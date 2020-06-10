@@ -35,6 +35,8 @@ else:
 __all__=['JetkernelEmittersDistribution', 'EmittersDistribution', 'ArrayDistribution']
 
 
+
+
 class ArrayDistribution(object):
 
     def __init__(self, e_array, n_array, gamma_grid_size=None):
@@ -46,7 +48,7 @@ class ArrayDistribution(object):
             raise RuntimeError('e_array and n_array must have same size')
         self.size = _size
         if gamma_grid_size is None:
-            self.gamma_grid_size = _size * 2 + 1
+                self.gamma_grid_size = _size * 2 + 1
 
 
 class EmittersDistribution(object):
@@ -81,7 +83,7 @@ class EmittersDistribution(object):
             val = np.log10(val)
 
         if name not in self._parameters_dict.keys():
-            self._parameters_dict[name]=JetModelDictionaryPar(ptype=par_type, vmin=vmin, vmax=vmax, log=log, val=val, punit=unit, froz=frozen, is_in_blob=False)
+            self._parameters_dict[name]=JetModelDictionaryPar(ptype=par_type, vmin=vmin, vmax=vmax, log=log, val=val, punit=unit, froz=frozen, is_in_jetkernel=False)
         else:
             raise ValueError('par',name,'already assigned')
 
@@ -99,7 +101,7 @@ class EmittersDistribution(object):
         model_dict['gmin'].val = 2.0
         model_dict['gmax'].val = 1E6
         model_dict['N'].val = 100.
-        model_dict['N'].is_in_blob = False
+        model_dict['N'].is_in_jetkernel = False
         self._parameters_dict=model_dict
 
         for k,par in model_dict.items():
@@ -407,6 +409,9 @@ class JetkernelEmittersDistribution(EmittersDistribution):
         BlazarSED.build_Ne_custom(jet._blob, custom_Ne.size)
         Ne_custom_ptr = getattr(jet._blob, 'Ne_custom')
         gamma_custom_ptr = getattr(jet._blob, 'gamma_e_custom')
+        jet._blob.N=1.0
+        jet._blob.N_0 = 1.0
+        jet.Norm_distr=0
         for ID in range(custom_Ne.size):
             BlazarSED.set_elec_custom_array(gamma_custom_ptr, jet._blob, custom_Ne.e_array[ID], ID)
             BlazarSED.set_elec_custom_array(Ne_custom_ptr, jet._blob, custom_Ne.n_array[ID], ID)

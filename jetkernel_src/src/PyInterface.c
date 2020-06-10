@@ -90,7 +90,7 @@ void show_temp_ev(  struct temp_ev pt_ev){
     printf("L_inj %e (erg/s)\n", pt_ev.L_inj );
     printf("Diff_coeff %e (1/s), t_D=1/Diff_coeff %e (s)\n", pt_ev.Diff_Coeff, pt_ev.t_D0 );
     printf("Acc_coeff %e (1/s),  t_A=1/Acc_coeff %e (s)\n",  pt_ev.Acc_Coeff, pt_ev.t_A0 );
-    printf("T_esc_Coeff %e (R/c)\n", pt_ev.T_esc_Coeff );
+    printf("T_esc_Coeff %e (R/c)\n", pt_ev.T_esc_Coeff_R_by_c );
     printf("Esc_index %e\n", pt_ev.Esc_Index );
     printf("T_start_Acc %e (s)\n", pt_ev.TStart_Acc );
     printf("T_stop_Acc  %e (s)\n", pt_ev.TStop_Acc );
@@ -129,7 +129,7 @@ struct temp_ev MakeTempEv() {
     ev_root.Acc_Coeff=1.0/ev_root.t_A0;
     ev_root.Diff_Index=2.0;
     ev_root.Acc_Index=1.0;
-    ev_root.T_esc_Coeff=2.0;
+    ev_root.T_esc_Coeff_R_by_c=2.0;
     ev_root.Esc_Index=0.0;
     ev_root.TStart_Inj=0.0;
     ev_root.TStop_Inj=3e4;
@@ -140,10 +140,15 @@ struct temp_ev MakeTempEv() {
     ev_root.T_SIZE=1000;
     ev_root.duration=3e4;
 
-    ev_root.Lambda_max_Turb= 1e15;
+    ev_root.gmin_griglia = 1.0e1;
+    ev_root.gmax_griglia = 1.0e8;
+    ev_root.gamma_grid_size =1E4;
+
+        ev_root.Lambda_max_Turb = 1e15;
     ev_root.Lambda_choer_Turb_factor=0.1;
     ev_root.Gamma_Max_Turb_L_max=Larmor_radius_to_gamma(ev_root.Lambda_max_Turb,0.1, 1.0);
     ev_root.Gamma_Max_Turb_L_coher=Larmor_radius_to_gamma(ev_root.Lambda_max_Turb*ev_root.Lambda_choer_Turb_factor,0.1, 1.0);
+    ev_root.LOG_SET = 1;
     return ev_root;
 }
 
@@ -639,8 +644,8 @@ double get_spectral_array(double * arr, struct spettro * pt, unsigned int id){
 		return arr[id];
 	}
 	else{
-		printf("exceeded array size\n");
-		exit(0);
+        printf("exceeded array size in get_spectral_array\n");
+        exit(0);
 	}
 }
 
@@ -650,17 +655,69 @@ double get_elec_array(double * arr, struct spettro *pt, unsigned int id){
 		return arr[id];
 	}
 	else{
-		printf("exceeded array size\n");
-		exit(0);
+        printf("exceeded array size in get_elec_array\n");
+        exit(0);
 	}
 }
+
+double get_Q_inj_array(double *arr, struct temp_ev *pt_ev, unsigned int id)
+{
+    if ((id >= 0) && (id <= pt_ev->gamma_grid_size))
+    {
+        return arr[id];
+    }
+    else
+    {
+        printf("exceeded array size in get_Q_inj_array\n");
+        exit(0);
+    }
+}
+
+double get_temp_ev_N_gamma_array(double *arr, struct temp_ev *pt_ev, unsigned int row, unsigned int col)
+{
+    if (((col >= 0) && (col <= pt_ev->gamma_grid_size)) && ((row >= 0) && (row <= pt_ev->NUM_SET)))
+    {
+        return arr[row * pt_ev->gamma_grid_size + col];
+    }
+    else
+    {
+        printf("exceeded array size in get_temp_ev_N_gamma_array\n");
+        exit(0);
+    }
+}
+
+double get_temp_ev_N_time_array(double *arr, struct temp_ev *pt_ev, unsigned int id)
+{
+    if ((id >= 0) && (id <= pt_ev->NUM_SET))
+    {
+            return arr[id];
+        }
+        else
+        {
+            printf("exceeded array size in get_temp_ev_N_time_array\n");
+            exit(0);
+        }
+    }
+
+double get_temp_ev_gamma_array(double *arr, struct temp_ev *pt_ev, unsigned int id)
+    {
+        if ((id >= 0) && (id <= pt_ev->gamma_grid_size))
+        {
+            return arr[id];
+        }
+        else
+        {
+            printf("exceeded array size in get_temp_ev_gamma_array\n");
+            exit(0);
+        }
+    }
 
 void set_elec_array(double * arr,struct spettro *pt, double val, unsigned int id){
     if ((id>=0) && (id<=pt->gamma_grid_size)){
            arr[id]=val;
         }
         else{
-            printf("exceeded array size\n");
+            printf("exceeded array size in set_elec_array\n");
             exit(0);
         }
 }
@@ -670,7 +727,7 @@ void set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned
            arr[id]=val;
         }
         else{
-            printf("exceeded array size\n");
+            printf("exceeded array size in set_elec_custom_array\n");
             exit(0);
         }
 }
@@ -683,11 +740,22 @@ void set_bessel_table(double *arr, struct spettro *pt, double val, unsigned int 
     }
     else
     {
-        printf("exceeded array size\n");
+        printf("exceeded array size in set_bessel_table\n");
         exit(0);
     }
 }
 
+double get_temp_ev_array_static(double *arr, unsigned int id){
+    if ((id >= 0) && (id <= static_ev_arr_grid_size))
+    {
+        return arr[id];
+    }
+    else
+    {
+        printf("exceeded array size get_temp_ev_array_static\n");
+        exit(0);
+    }
+}
 //=========================================================================================
 void SetBeaming(struct spettro *pt){
 
