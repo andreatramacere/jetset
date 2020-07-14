@@ -209,7 +209,8 @@ class ObsConstrain(object):
      
      
     
-    def get_model_constraint(self,name=None,
+    def get_model_constraint(self,
+                             name=None,
                              jet_model=None,
                              EC_componets_list=None,
                              params_grid_size=10,
@@ -217,8 +218,8 @@ class ObsConstrain(object):
                              silent=False,
                              R_H=None):
         
-        if name is None:
-            name=self.distr_e
+        #if name is None:
+        #    name=self.distr_e
             
         out_dir='%s/obs_constrain_%s/'%(self.out_dir,name)
         makedir(out_dir)

@@ -218,6 +218,7 @@ class JetBase(Model):
 
         _model = {}
         _model['version']=get_info()['version']
+        _model['name'] = self.name
         _model['emitters_distribution'] = self._emitters_distribution_name
         _model['emitters_distribution_log_values'] = self._emitters_distribution_log_values
         _model['emitters_type'] = self._emitters_type
@@ -253,7 +254,7 @@ class JetBase(Model):
 
         self.cosmo = _model['cosmo']
         self.model_type = 'jet'
-
+        self.name = _model['name']
         self.set_blob()
         self.parameters = ModelParameterArray()
 
@@ -725,7 +726,7 @@ class JetBase(Model):
 
 
 
-    def add_EC_component(self,EC_components_list=[],disk_type=None):
+    def add_EC_component(self,EC_components_list=[],disk_type='BB'):
 
         if disk_type is not None:
             if disk_type not in self._allwed_disk_type:
@@ -1536,6 +1537,9 @@ class Jet(JetBase):
                  jet_workplace=None,
                  verbose=None,
                  clean_work_dir=True):
+
+        if name is None  or name=='':
+            name='jet_leptonic'
 
         super(Jet,self).__init__(cosmo=cosmo,
                                  name=name,
