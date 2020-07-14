@@ -402,7 +402,7 @@ class ModelMinimizer(object):
 
                 chisq_min = min(new_chisq, old_chisq)
                 if i==0 or new_chisq<=chisq_min:
-                    print('update par for chisq',chisq_min )
+                    #print('update par for chisq',chisq_min )
                     self.pout = self.minimizer.pout
                     self.errors = self.minimizer.errors
                     if  hasattr(self.minimizer,'asymm_errors'):

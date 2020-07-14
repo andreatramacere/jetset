@@ -98,12 +98,12 @@ class Disk(Model):
         
         self.L_Disk=self.get_L_D()
           
-        self.L_Disk_err=self.L_Disk*(fit_model.get(model_name,'nuFnu_p','best_fit_err')/
-                                     fit_model.get(model_name,'nuFnu_p','best_fit_val'))
+        self.L_Disk_err=self.L_Disk*(fit_model.parameters.get(model_name,'nuFnu_p','best_fit_err')/
+                                     fit_model.parameters.get(model_name,'nuFnu_p','best_fit_val'))
 
                         
-        self.T_Disk=fit_model.get(model_name,'T_Disk','best_fit_val')
-        self.T_Disk_err=fit_model.get(model_name,'T_Disk','best_fit_err')
+        self.T_Disk=fit_model.parameters.get(model_name,'T_Disk','best_fit_val')
+        self.T_Disk_err=fit_model.parameters.get(model_name,'T_Disk','best_fit_err')
 
         self.nu_p_Disk=self.get_nu_p()
         self.nu_p_Disk_err=self.nu_p_Disk*(self.T_Disk_err/self.T_Disk)
