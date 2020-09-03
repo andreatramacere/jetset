@@ -1473,6 +1473,9 @@ class Jet(JetBase):
                  verbose=None,
                  clean_work_dir=True):
 
+        if name is None or name == '':
+            name = 'jet_leptonic'
+
         super(Jet,self).__init__(cosmo=cosmo,
                                  name=name,
                                  emitters_type='electrons',

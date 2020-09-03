@@ -217,8 +217,8 @@ class ObsConstrain(object):
                              silent=False,
                              R_H=None):
         
-        if name is None:
-            name=self.distr_e
+        #if name is None:
+        #    name=self.distr_e
             
         out_dir='%s/obs_constrain_%s/'%(self.out_dir,name)
         makedir(out_dir)
