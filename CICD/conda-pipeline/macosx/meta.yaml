@@ -1,4 +1,4 @@
-package:
+  package:
   name: jetset
   version:  {{ os.environ.get('PKG_VERSION') }}
 
