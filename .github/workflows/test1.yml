@@ -32,4 +32,5 @@ jobs:
 
       - name: test
         run: |
-            pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
+          pytest --pyargs jetset.tests.test_functions::test_short
+
