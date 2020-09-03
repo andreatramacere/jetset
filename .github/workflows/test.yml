@@ -17,7 +17,6 @@ jobs:
           conda-channels: anaconda, conda-forge,astropy
       - run:
         conda --version
-        which python
       - name: Install dependencies
       run:
         conda install --yes   -c conda-forge emcee">=3.0.0"
