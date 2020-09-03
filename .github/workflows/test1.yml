@@ -17,10 +17,10 @@ jobs:
       - name: Clone Repository (Latest)
         uses: actions/checkout@v2
       - name: Clone Repository (Custom Ref)
-          uses: actions/checkout@v2
-          if: github.event.inputs.git-ref != ''
-          with:
-            ref: ${{ github.event.inputs.git-ref }}
+        uses: actions/checkout@v2
+        if: github.event.inputs.git-ref != ''
+        with:
+          ref: ${{ github.event.inputs.git-ref }}
 
       - name: Setup conda
         uses: s-weigand/setup-conda@v1
