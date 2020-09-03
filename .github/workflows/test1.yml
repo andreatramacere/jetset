@@ -1,6 +1,6 @@
 name: Test CI/CD jetset
 
-on: [push]
+on: [workflow_dispatch]
 
 jobs:
   build:
