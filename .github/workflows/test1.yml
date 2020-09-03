@@ -1,6 +1,6 @@
 name: Test CI/CD jetset
 
-on: [push]
+on: [workflow_dispatch]
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
           conda install --yes   -c conda-forge emcee">=3.0.0"
           conda install --yes   -c astropy --file requirements.txt
           conda install --yes pytest
-  
+
       - name: build
         run: |
           python setup.py clean
