@@ -1,0 +1,45 @@
+
+**************************************************************************************************
+Fit report
+
+Model: SSC-best-fit-lsb-lppl
+ model name        name             par type           units           val      phys. bound. min phys. bound. max  log  frozen
+------------ ---------------- ------------------- --------------- ------------- ---------------- ---------------- ----- ------
+jet_leptonic             gmin  low-energy-cut-off lorentz-factor*  1.010240e+02     1.000000e+00     1.000000e+09 False  False
+jet_leptonic             gmax high-energy-cut-off lorentz-factor*  1.642067e+06     1.000000e+00     1.000000e+15 False   True
+jet_leptonic                N    emitters_density         1 / cm3  4.507970e+01     0.000000e+00               -- False  False
+jet_leptonic                s   LE_spectral_slope                  2.080049e+00    -1.000000e+01     1.000000e+01 False  False
+jet_leptonic                r  spectral_curvature                  1.980588e-01    -1.500000e+01     1.500000e+01 False  False
+jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor*  1.613158e+03     1.000000e+00     1.000000e+09 False  False
+jet_leptonic                R         region_size              cm  6.954593e+15     1.000000e+03     1.000000e+30 False  False
+jet_leptonic              R_H     region_position              cm  1.000000e+17     0.000000e+00               -- False   True
+jet_leptonic                B      magnetic_field               G  1.295251e-02     0.000000e+00               -- False  False
+jet_leptonic         beam_obj             beaming Lorentz-factor*  6.253455e+01     1.000000e-04               -- False  False
+jet_leptonic           z_cosm            redshift                  3.360000e-02     0.000000e+00               -- False   True
+ host_galaxy     nuFnu_p_host         nuFnu-scale   erg / (cm2 s) -1.006556e+01    -2.000000e+01     2.000000e+01 False   True
+ host_galaxy         nu_scale            nu-scale              Hz  1.730750e-02    -2.000000e+00     2.000000e+00 False   True
+
+converged=True
+calls=33
+The relative error between two consecutive iterates is at most 0.000000
+dof=23
+chisq=7.900151, chisq/red=0.343485 null hypothesis sig=0.998527
+
+best fit pars
+ model name        name       bestfit val     err +     err -   start val   fit range min fit range max frozen
+------------ ---------------- ------------ ------------ ----- ------------- ------------- ------------- ------
+jet_leptonic             gmin 1.010240e+02 1.602130e-01    --  1.057074e+02  1.000000e+00  1.000000e+09  False
+jet_leptonic             gmax           --           --    --  1.642067e+06  1.000000e+00  1.000000e+15   True
+jet_leptonic                N 4.507970e+01 5.008018e+01    --  1.078494e+02  0.000000e+00            --  False
+jet_leptonic                s 2.080049e+00 1.725391e-01    --  2.248787e+00 -1.000000e+01  1.000000e+01  False
+jet_leptonic                r 1.980588e-01 3.302396e-02    --  3.205572e-01 -1.500000e+01  1.500000e+01  False
+jet_leptonic gamma0_log_parab 1.613158e+03 2.546008e+03    --  7.432066e+03  1.000000e+00  1.000000e+09  False
+jet_leptonic                R 6.954593e+15 6.306979e+15    --  5.485641e+15  3.162278e+15  3.162278e+17  False
+jet_leptonic              R_H           --           --    --  1.000000e+17  0.000000e+00            --   True
+jet_leptonic                B 1.295251e-02 4.472382e-03    --  1.000000e-01  0.000000e+00            --  False
+jet_leptonic         beam_obj 6.253455e+01 2.241931e+01    --  2.500000e+01  5.000000e+00  7.000000e+01  False
+jet_leptonic           z_cosm           --           --    --  3.360000e-02  0.000000e+00            --   True
+ host_galaxy     nuFnu_p_host           --           --    -- -1.006556e+01 -1.225412e+01 -8.254123e+00   True
+ host_galaxy         nu_scale           --           --    --  1.730750e-02 -5.000000e-01  5.000000e-01   True
+**************************************************************************************************
+
