@@ -32,5 +32,4 @@ jobs:
 
       - name: test
         run: |
-            python setup.py clean
-            python setup.py install > install.log 2>install.err
+            pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
