@@ -1,0 +1,35 @@
+# %ECSV 0.9
+# ---
+# datatype:
+# - {name: src_name, datatype: string}
+# - {name: radio, datatype: float64}
+# - {name: radio_err, datatype: float64}
+# - {name: radio_mm, datatype: float64}
+# - {name: radio_mm_err, datatype: float64}
+# - {name: mm_IR, datatype: float64}
+# - {name: mm_IR_err, datatype: float64}
+# - {name: IR_Opt, datatype: float64}
+# - {name: IR_Opt_err, datatype: float64}
+# - {name: Opt_UV, datatype: float64}
+# - {name: Opt_UV_err, datatype: float64}
+# - {name: BBB, datatype: float64}
+# - {name: BBB_err, datatype: float64}
+# - {name: UV_X, datatype: float64}
+# - {name: UV_X_err, datatype: float64}
+# - {name: X, datatype: float64}
+# - {name: X_err, datatype: float64}
+# - {name: Fermi, datatype: float64}
+# - {name: Fermi_err, datatype: float64}
+# - {name: TeV, datatype: float64}
+# - {name: TeV_err, datatype: float64}
+# - {name: nu_p_S, datatype: float64}
+# - {name: nu_p_S_err, datatype: float64}
+# - {name: nuFnu_p_S, datatype: float64}
+# - {name: nuFnu_p_S_err, datatype: float64}
+# - {name: nu_p_IC, datatype: float64}
+# - {name: nu_p_IC_err, datatype: float64}
+# - {name: nuFnu_p_IC, datatype: float64}
+# - {name: nuFnu_p_IC_err, datatype: float64}
+# schema: astropy-2.0
+src_name radio radio_err radio_mm radio_mm_err mm_IR mm_IR_err IR_Opt IR_Opt_err Opt_UV Opt_UV_err BBB BBB_err UV_X UV_X_err X X_err Fermi Fermi_err TeV TeV_err nu_p_S nu_p_S_err nuFnu_p_S nuFnu_p_S_err nu_p_IC nu_p_IC_err nuFnu_p_IC nuFnu_p_IC_err
+sed_shape_values.ecsv -1.29520669507556 0.13597515698769028 -1.4550181706846974 0.05280899815043665 -1.2962770321238928 0.037495872196962085 -2.087457906152814 0.5433985682818541 -2.6658904894303195 0.1419430277196395 -2.2821894198836485 0.5738887258567913 -1.873127638613667 0.007268886521220682 -2.1114901351665303 0.033646627335860074 -1.8445739157765182 0.015354281411715394 -2.3578542957304105 0.04850270509013027 17.037312032074716 0.09436687285377099 -10.300665715043678 0.01884174333881709 25.496031804101857 0.22354700815505169 -10.579448522894431 0.043329769978715404

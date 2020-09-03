@@ -12,6 +12,9 @@ ModelParameter
 
       ~ModelParameter.fit_range
       ~ModelParameter.islog
+      ~ModelParameter.linked
+      ~ModelParameter.root
+      ~ModelParameter.units
       ~ModelParameter.val
       ~ModelParameter.val_lin
       ~ModelParameter.val_log
@@ -35,6 +38,9 @@ ModelParameter
 
    .. autoattribute:: fit_range
    .. autoattribute:: islog
+   .. autoattribute:: linked
+   .. autoattribute:: root
+   .. autoattribute:: units
    .. autoattribute:: val
    .. autoattribute:: val_lin
    .. autoattribute:: val_log

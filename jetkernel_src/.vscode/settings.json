@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "ios": "cpp",
+        "array": "cpp",
+        "bitset": "cpp",
+        "iterator": "cpp",
+        "memory": "cpp",
+        "ratio": "cpp",
+        "utility": "cpp",
+        "*.tcc": "cpp",
+        "hashtable": "cpp",
+        "random": "cpp"
+    }
+}

@@ -159,10 +159,10 @@ void Wm(double wm, double *WP, double *WM){
 /************************************************************************/
 /* il puntatore punta la primo elemento di N_e_1                        */
 /************************************************************************/
-int solve_sys1(double A[],double B[],double C[],double R[],double u[],unsigned long SIZE){
+int solve_sys1(double A[],double B[],double C[],double R[],double u[],unsigned int SIZE){
 	//double gam[SIZE];
 	double bet,*gam;
-	unsigned long j;
+	unsigned int j;
 	gam=(double*)calloc(SIZE,sizeof(double));
 
 	for(j=1;j<SIZE-1;j++){

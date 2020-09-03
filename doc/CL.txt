@@ -1,2 +1,31 @@
-python make_apidoc_and_uml_graphs.py
-sphinx-build -b html ../doc build
+##############################################################################
+# To run and convert notebooks for doc:  jupyter nbconvert --execute notebook.ipynb --to rst
+#
+# python make_apidoc_and_uml_graphs.py
+# notebooks are built in the ../../documentation_notebooks/user_guide, update them before building doc!
+##############################################################################
+
+ !!!!!To avoid to import the jetkernel module otherwise the build will crash
+ export READTHEDOCS='True'
+ !!!!!!!!!!!!!!!!!!!!
+
+#update the docs
+cp -r ../../documentation_notebooks/user_guide/* user_guide/
+
+
+#run notebooks and build rst file with script
+./build_rst_files.ch -e #run all noteboks found in dirs
+OR
+./build_rst_files.ch -e dir-name #runs only give directories
+
+ONLY BUILD RST
+./build_rst_files.ch
+OR
+./build_rst_files.ch  dir-name
+
+
+#builds the docs
+sphinx-build -b html ./ build
+
+
+

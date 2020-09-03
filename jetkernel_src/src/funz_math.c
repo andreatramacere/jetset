@@ -85,18 +85,18 @@ double bessel_K_pitch_ave(struct spettro *pt, double x) {
 //===================================================
 
 void tabella_Bessel(struct spettro *pt_TB) {
-    double a, t_Bessel;
-    double ri, rip, rkp, K13, K43;
-    char in_x[80], in_y[80], in_ave_y[80], in_ave_x[80];
-    double x, x_c;
-    double (*pf) (struct spettro *, double x);
-    unsigned long i;
-    FILE *fp ;
-    char f_bessel_file[static_file_name_max_legth];
+    //double a, t_Bessel;
 
+    double (*pf) (struct spettro *, double x);
+    unsigned int i;
+    FILE *fp ;
+
+    char f_bessel_file[static_file_name_max_legth];
+    double _x,_y,_in_ave_y, _in_ave_x;
     /*** kernel Sync per alfa fisso e kernel delta ***/
-    if (pt_TB->verbose>0) {
-    	printf("Evaluation of Bessel Tables\n");
+        if (pt_TB->verbose > 0)
+    {
+        printf("Evaluation of Bessel Tables\n");
     }
 	//printf("start=%e\n", pt_TB->x_Bessel_min = (pt_TB->nu_start_Sync) /
 	//	((3.0 * pt_TB->nu_B * (pt_TB->gmax_griglia * pt_TB->gmax_griglia) / 2.0) * pt_TB->sin_psi));
@@ -170,7 +170,7 @@ void tabella_Bessel(struct spettro *pt_TB) {
             else{
             	pt_TB->log_F_ave_Sync_y[i]=-300.0;
             }
-            fprintf(fp, "%e\t%e\t%e\t%e\n",
+            fprintf(fp, "%e %e %e %e\n",
             		pt_TB->F_Sync_x[i] , pt_TB->F_Sync_y[i] , pt_TB->F_ave_Sync_x[i], pt_TB->F_ave_Sync_y[i]);
             
             //printf("i=%d i_max=%d x=%e F(x)=%e\n",i,elementi_tabelle,x,pt_TB->tabella_F[i][1]);
@@ -184,15 +184,26 @@ void tabella_Bessel(struct spettro *pt_TB) {
 
         }
         while (!feof(fp)) {
-            fscanf(fp, "%s %s %s %s\n", in_x, in_y,in_ave_x,in_ave_y);
-            pt_TB->F_Sync_x[i] = strtod(in_x, NULL);
-            pt_TB->F_Sync_y[i] = strtod(in_y, NULL);
+            //fscanf(fp, "%s %s %s %s\n", in_x, in_y,in_ave_x,in_ave_y);
+            //pt_TB->F_Sync_x[i] = strtod(in_x, &end);
+            //pt_TB->F_Sync_y[i] = strtod(in_y, NULL);
 
-            pt_TB->F_ave_Sync_x[i] = strtod(in_ave_x, NULL);
-            pt_TB->F_ave_Sync_y[i] = strtod(in_ave_y, NULL);
+            //pt_TB->F_ave_Sync_x[i] = strtod(in_ave_x, NULL);
+            //pt_TB->F_ave_Sync_y[i] = strtod(in_ave_y, NULL);
+
+
+
+            fscanf(fp, "%lf %lf %lf %lf\n", &_x, &_y, &_in_ave_x, &_in_ave_y);
+            
+
+            pt_TB->F_Sync_x[i] = _x;
+            pt_TB->F_Sync_y[i] = _y;
+
+            pt_TB->F_ave_Sync_x[i] = _in_ave_x;
+            pt_TB->F_ave_Sync_y[i] = _in_ave_y;
 
             pt_TB->log_F_Sync_x[i] = log10(pt_TB->F_Sync_x[i]);
-
+            
             if (pt_TB->F_Sync_y[i]>0.0){
             	pt_TB->log_F_Sync_y[i] = log10(pt_TB->F_Sync_y[i]);
             }
@@ -220,13 +231,22 @@ void tabella_Bessel(struct spettro *pt_TB) {
                 (pt_TB->F_Sync_x[0] != pt_TB->x_Bessel_min) ||
                 (pt_TB->F_Sync_x[static_bess_table_size - 1] != pt_TB->x_Bessel_max)
                 ) {
-        //    printf("i_max=%d elementi_tabelle=%d \n", i, elementi_tabelle);
+            printf("i_max=%d elementi_tabelle=%d \n", i, static_bess_table_size);
+            printf("F_Sync_x min=%e, %e\n", pt_TB->F_Sync_x[0], pt_TB->x_Bessel_min);
+            printf("F_Sync_x max=%e, %e\n", pt_TB->F_Sync_x[static_bess_table_size - 1], pt_TB->x_Bessel_max);
             printf("file %s not valid!!!!!!!!!!!!!!!!\n",f_bessel_file);
             printf("delete it and re-execute the code\n");
             exit(0);
         }
+       
     }
-    
+    if (pt_TB->verbose > 0)
+    {
+        printf("i_max=%d elementi_tabelle=%d \n", i, static_bess_table_size);
+        printf("F_Sync_x min=%e, %e\n", pt_TB->F_Sync_x[0], pt_TB->x_Bessel_min);
+        printf("F_Sync_x max=%e, %e\n", pt_TB->F_Sync_x[static_bess_table_size - 1], pt_TB->x_Bessel_max);
+        printf("F_Sync_y max=%e\n", pt_TB->F_Sync_y[static_bess_table_size - 1]);
+    }
     fclose(fp);
     pt_TB->BESSEL_TABLE_DONE=1;
 }
@@ -237,8 +257,8 @@ void tabella_Bessel(struct spettro *pt_TB) {
 //=====================================================================
 
 
-double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, double *  y_grid , unsigned long SIZE, double emiss_lim){
-	unsigned long ID;
+double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, double *  y_grid , unsigned int SIZE, double emiss_lim){
+	int ID;
 	double y1,y2,x1,x2,a_c;
 	ID=x_to_grid_index(x_grid,  x,   SIZE);
 
@@ -269,8 +289,8 @@ double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, do
 //=====================================================================
 //LOG-LOG INTERPOLATION
 //=====================================================================
-double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, double log_x_max, double *  log_y_grid , unsigned long SIZE, double emiss_lim){
-	unsigned long ID;
+double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, double log_x_max, double *  log_y_grid , unsigned int SIZE, double emiss_lim){
+    int ID;
 	double y1,y2,x1,x2,a_c;
 	ID=x_to_grid_index(log_x_grid,  log_x,   SIZE);
 
@@ -299,17 +319,50 @@ double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, doub
 //INTEGRAZIONE TRAPEZOIDALE CON INT APERTO E GRIGLIA  LINEARE
 //=====================================================================
 
-double trapzd(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned long n_intervalli) {
-    double x, sum, del;
-    double s;
-    unsigned long it, j;
-    del = (b - a) / (double) n_intervalli;
-    x = a + 0.5 * del;
-    for (sum = 0.0, j = 1; j <= n_intervalli; j++, x += del) sum += pf(pt, x);
-    s = del*sum;
-    s += (pf(pt, a) + pf(pt, b))*0.5 * del;
-    //printf("it=%d s=%e\n",it,s);
-    return s;
+double trapzd_array_linear_grid(double *x, double *y, unsigned int SIZE)
+{
+    double I, y1, y2, x1,delta_x;
+    unsigned int INDEX;
+    I = 0;
+    x1 = x[0];
+    y1 = y[0];
+    delta_x=x[1]-x[0];
+
+    for (INDEX = 1; INDEX <= SIZE; INDEX++)
+    {
+        y2 = y[INDEX];
+        I += (y1 + y2) * delta_x;        
+        y1 = y2;
+        //printf("%e %e %d\n",nu2, Ptot, i);
+    }
+    return I * 0.5;
+}
+
+double trapzd_array_arbritary_grid( double *x, double *y, unsigned int SIZE)
+{
+    /**
+     * \author Andrea Tramacere
+     * \date 19-09-2004 \n
+     * Distribuzioni energetiche degli elettroni nel caso statico
+     * per calcolare Ue
+     */
+
+    double I, y1, y2, x1, x2;
+    unsigned int INDEX;
+
+    I = 0;
+    x1 = x[0];
+    y1 =y[0];
+    for (INDEX = 1; INDEX <= SIZE; INDEX++)
+    {
+        x2 = x[INDEX];
+        y2 = y[INDEX];
+        I += (y1 + y2) * (x1 - x2);
+        x1 = x2;
+        y1 = y2;
+        //printf("%e %e %d\n",nu2, Ptot, i);
+    }
+    return I * 0.5;
 }
 //=========================================================================================
 
@@ -321,8 +374,8 @@ double trapzd(double (*pf) (struct spettro *, double x), struct spettro * pt, do
 // INTEGRAZIONE TRAPEZOIDALE CON INT CHIUSO E GRIGLIA  EQUI_LOG
 //============================================================================
 
-double integrale_trap_log_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned long n_intervalli) {
-    double integr, h, k, griglia, ordinata, ordinata1;
+double integrale_trap_log_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned int n_intervalli) {
+    double integr, k, griglia, ordinata, ordinata1;
     double delta;
     integr = 0.0;
     griglia = 0.0;
@@ -366,8 +419,8 @@ double integrale_trap_log_struct(double (*pf) (struct spettro *, double x), stru
 // INTEGRAZIONE ALLA SINPSON CON INT CHIUSO E GRIGLIA LIN                
 //=========================================================
 
-double integrale_simp(double (*pf) ( double x), double a, double b, unsigned long n_intervalli) {
-    double integr1, integr2, h, k, griglia;
+double integrale_simp(double (*pf) ( double x), double a, double b, unsigned int n_intervalli) {
+    double integr1, integr2, h, k;
     
     //CHECK on n_intervalli even
     if (n_intervalli % 2 != 0) {
@@ -397,8 +450,8 @@ double integrale_simp(double (*pf) ( double x), double a, double b, unsigned lon
 // INTEGRAZIONE ALLA SINPSON CON INT CHIUSO E GRIGLIA LIN                
 //=========================================================
 
-double integrale_simp_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned long n_intervalli) {
-    double integr1, integr2, h, k, griglia;
+double integrale_simp_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned int n_intervalli) {
+    double integr1, integr2, h, k;
     
     //CHECK on n_intervalli even
     if (n_intervalli % 2 != 0) {
@@ -648,6 +701,16 @@ double test_int1(double x) {
     // printf("f=%e, x=%e\n",x*x,x);
     return x*x;
 }
+
+double test_solid_anlge(struct spettro *pt,double theta)
+{
+	//double sin_theta;
+	//sin_theta = sqrt(1.0 - mu * mu);
+	return 2 * pi;
+}
+
+
+
 //=========================================================================================
 
 

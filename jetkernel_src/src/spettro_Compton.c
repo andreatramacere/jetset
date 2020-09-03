@@ -20,24 +20,28 @@
 void spettro_compton(int Num_file, struct spettro *pt){
     double nu_src,nu_peak;
     double L_nu_SSC, nuL_nu_SSC, F_nu_SSC_obs;
-    double log_nu, log_nu_start,gmax,numax_KN,numax_TH;
-    unsigned long l, NU_INT, i, I_MAX, stop,out;
-    char f_SSC[static_file_name_max_legth];
-    FILE *fp_SSC;
+    double gmax,numax_KN,numax_TH,nu_min_TH_1,nu_min_TH_2;
+    unsigned int NU_INT, I_MAX, stop,out;
+    //char f_SSC[static_file_name_max_legth];
+    //FILE *fp_SSC;
     
     //=================================
     // apre i files dove scrive i dati di SSC
     // HEADER FILES
     //=================================
-    sprintf(f_SSC, "%s%s-comp.dat",
-            pt->path, pt->STEM);
-    
-    fp_SSC = fopen(f_SSC, "w");
-    if (fp_SSC == NULL) {
-        printf("non posso aprire %s\n ", f_SSC);
-        exit(1);
+    /*
+    if (pt->WRITE_TO_FILE==1){
+        sprintf(f_SSC, "%s%s-comp.dat",
+                pt->path, pt->STEM);
+        
+        fp_SSC = fopen(f_SSC, "w");
+        if (fp_SSC == NULL) {
+            printf("non posso aprire %s\n ", f_SSC);
+            exit(1);
+        }
+        flux_header(fp_SSC);
     }
-    flux_header(fp_SSC);
+    */
     //==================================================================
     
     
@@ -68,7 +72,10 @@ void spettro_compton(int Num_file, struct spettro *pt){
 		nu_peak = (4.0 / 3.0) * pow(pt->Gamma_p3, 2) * pt->nu_peak_Sync_blob;
 	}
 
-    pt->nu_start_SSC=pt->nu_peak_Sync_blob;
+    nu_min_TH_1=pt->gmax*pt->gmax*pt->nu_start_Sync;
+    nu_min_TH_2=pt->gmin*pt->gmin*pt->nu_start_Sync;
+    pt->nu_start_SSC=min(nu_min_TH_1,nu_min_TH_2);
+    //pt->nu_start_SSC=min(1E13,pt->nu_peak_Sync_blob*0.01);
     
     pt->nu_start_SSC_obs =nu_blob_to_nu_obs(pt->nu_start_SSC, pt->beam_obj, pt->z_cosm);
     pt->nu_stop_SSC_obs = nu_blob_to_nu_obs(pt->nu_stop_SSC, pt->beam_obj, pt->z_cosm);
@@ -169,30 +176,25 @@ void spettro_compton(int Num_file, struct spettro *pt){
             //===========================================
             // FILES output nu dnu nuFnu dnuFnu
             //==========================================
-            if(!stop && out){
-                fprintf(fp_SSC, "%4.4e\t%4.4e\t%4.4e\t %4.4e\t%4.4e\t%4.4e\n",
-                        log10(pt->nu_SSC_obs[NU_INT]),
-                        log10(pt->nuF_nu_SSC_obs[NU_INT]),
-                        pt->nu_SSC_obs[NU_INT],
-                        pt->nuF_nu_SSC_obs[NU_INT],
-                        nu_src,
-                        nuL_nu_SSC);
+             /*
+            if (pt->WRITE_TO_FILE==1){
+                if(!stop && out){
+                    fprintf(fp_SSC, "%4.4e\t%4.4e\t%4.4e\t %4.4e\t%4.4e\t%4.4e\n",
+                            log10(pt->nu_SSC_obs[NU_INT]),
+                            log10(pt->nuF_nu_SSC_obs[NU_INT]),
+                            pt->nu_SSC_obs[NU_INT],
+                            pt->nuF_nu_SSC_obs[NU_INT],
+                            nu_src,
+                            nuL_nu_SSC);
+                }
             }
+            */
             if(pt->verbose>1){
                 printf("#-> ********************************\n\n");
             }
             //==========================  END of Loop ove frequencies ====================================
         }
-       // printf("%4.4e\t%4.4e\t%4.4e\t %4.4e\t%4.4e\t%4.4e\n",
-       //                 log10(nu_obs_1),
-       //                 log10(pt->nuF_nu_SSC_obs[NU_INT]),
-       //                 nu_obs_1,
-       //                 pt->nuF_nu_SSC_obs[NU_INT],
-       //                 nu_src,
-       //                 nuL_nu_SSC);
-
     }
-    
     //Se ancora non ha trovato nu_stop
     if (!stop){
         pt->nu_stop_SSC = pt->nu_SSC[NU_INT-1];
@@ -202,9 +204,11 @@ void spettro_compton(int Num_file, struct spettro *pt){
             printf("%e %d\n ", pt->nu_SSC[NU_INT-1], NU_INT-1);
         }
     }
-    fclose(fp_SSC);
-    
-    
+    /*
+    if (pt->WRITE_TO_FILE==1){
+        fclose(fp_SSC);
+    }
+    */
     
     //===========================================
     //    trova nu peak e Flux peak
@@ -229,10 +233,7 @@ void spettro_compton(int Num_file, struct spettro *pt){
         printf("nuLnu SSC  obs     peak=%e\n", pt->nuLnu_peak_SSC_blob);
     }
     
-    //for (NU_INT = 0; NU_INT <= I_MAX; NU_INT++) {
-    //	printf("nu_obs=%e nuFnu_obs=%e \n",pt->nu_SSC_obs[NU_INT],pt->nuF_nu_SSC_obs[NU_INT]);
-    //}
-
+   
     return ;
 }
 //=========================================================================================

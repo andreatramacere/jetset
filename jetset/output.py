@@ -50,11 +50,11 @@ class WorkPlace(object):
     Variables
     
     :ivar out_dir: directory name (default=./) 
-    :ivar flag: flag name (default=sed-fit-test)
+    :ivar flag: flag name (default=sed-fit-tests)
     
     
     """
-    def __init__(self,out_dir='./',flag='sed-fit-test',clean=False):
+    def __init__(self,out_dir='./jet_wd',flag='sed-fit-tests',clean=False):
         self.out_dir=out_dir
         self.flag=flag
 

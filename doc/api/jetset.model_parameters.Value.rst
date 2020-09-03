@@ -13,6 +13,7 @@ Value
       ~Value.islog
       ~Value.lin
       ~Value.log
+      ~Value.units
       ~Value.val
 
    .. rubric:: Attributes Documentation
@@ -20,4 +21,5 @@ Value
    .. autoattribute:: islog
    .. autoattribute:: lin
    .. autoattribute:: log
+   .. autoattribute:: units
    .. autoattribute:: val

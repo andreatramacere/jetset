@@ -1,0 +1,31 @@
+
+**************************************************************************************************
+Fit report
+
+Model: sync-shape-fit
+ model name     name       par type       units          val      phys. bound. min phys. bound. max  log  frozen
+----------- ------------ ------------ ------------- ------------- ---------------- ---------------- ----- ------
+   LogCubic            b    curvature               -6.411217e-02    -1.000000e+01     0.000000e+00 False  False
+   LogCubic            c third-degree               -1.751422e-03    -1.000000e+01     1.000000e+01 False  False
+   LogCubic           Ep    peak freq            Hz  1.703731e+01     0.000000e+00     3.000000e+01  True  False
+   LogCubic           Sp    peak flux erg / (cm2 s) -1.030067e+01    -3.000000e+01     0.000000e+00  True  False
+host_galaxy nuFnu_p_host  nuFnu-scale erg / (cm2 s) -1.006565e+01    -2.000000e+01     2.000000e+01 False  False
+host_galaxy     nu_scale     nu-scale            Hz  1.730764e-02    -2.000000e+00     2.000000e+00 False  False
+
+converged=True
+calls=36
+The relative error between two consecutive iterates is at most 0.000000
+dof=15
+chisq=15.371949, chisq/red=1.024797 null hypothesis sig=0.424972
+
+best fit pars
+ model name     name      bestfit val     err +     err -   start val   fit range min fit range max frozen
+----------- ------------ ------------- ------------ ----- ------------- ------------- ------------- ------
+   LogCubic            b -6.411217e-02 7.838546e-03    -- -4.778766e-02 -1.000000e+01  0.000000e+00  False
+   LogCubic            c -1.751422e-03 1.126990e-03    --  3.576198e-03 -1.000000e+01  1.000000e+01  False
+   LogCubic           Ep  1.703731e+01 9.436687e-02    --  1.626870e+01  0.000000e+00  3.000000e+01  False
+   LogCubic           Sp -1.030067e+01 1.884174e-02    -- -1.025412e+01 -3.000000e+01  0.000000e+00  False
+host_galaxy nuFnu_p_host -1.006565e+01 5.462928e-02    -- -1.025412e+01 -1.225412e+01 -8.254123e+00  False
+host_galaxy     nu_scale  1.730764e-02 3.695276e-03    --  0.000000e+00 -5.000000e-01  5.000000e-01  False
+**************************************************************************************************
+

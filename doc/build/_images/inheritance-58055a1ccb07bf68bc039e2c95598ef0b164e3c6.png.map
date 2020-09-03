@@ -1,6 +1,0 @@
-<map id="inheritance5be15aae6b" name="inheritance5be15aae6b">
-<area shape="rect" id="node1" href="jetset.base_model.Model.html#jetset.base_model.Model" target="_top" title="Model" alt="" coords="29,54,101,79"/>
-<area shape="rect" id="node3" href="jetset.template_model.Template.html#jetset.template_model.Template" target="_top" title="Class to handle spectral templates" alt="" coords="205,54,283,79"/>
-<area shape="rect" id="node2" href="jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter" target="_top" title="This class is the base class for models parameters. The following keywords " alt="" coords="5,5,125,30"/>
-<area shape="rect" id="node4" href="jetset.template_model.TemplateParameter.html#jetset.template_model.TemplateParameter" target="_top" title="This class is a subclass of the :class:`.ModelParameter` class," alt="" coords="174,5,314,30"/>
-</map>

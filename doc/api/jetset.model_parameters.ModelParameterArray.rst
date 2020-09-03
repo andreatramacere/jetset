@@ -6,6 +6,13 @@ ModelParameterArray
 .. autoclass:: ModelParameterArray
    :show-inheritance:
 
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~ModelParameterArray.best_fit_par_table
+      ~ModelParameterArray.par_table
+
    .. rubric:: Methods Summary
 
    .. autosummary::
@@ -16,9 +23,15 @@ ModelParameterArray
       ~ModelParameterArray.freeze_all
       ~ModelParameterArray.get
       ~ModelParameterArray.get_par_by_name
+      ~ModelParameterArray.get_par_by_type
       ~ModelParameterArray.set
       ~ModelParameterArray.show_best_fit_pars
       ~ModelParameterArray.show_pars
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: best_fit_par_table
+   .. autoattribute:: par_table
 
    .. rubric:: Methods Documentation
 
@@ -28,6 +41,7 @@ ModelParameterArray
    .. automethod:: freeze_all
    .. automethod:: get
    .. automethod:: get_par_by_name
+   .. automethod:: get_par_by_type
    .. automethod:: set
    .. automethod:: show_best_fit_pars
    .. automethod:: show_pars

@@ -28,11 +28,13 @@ ObsData
       ~ObsData.get_time_span
       ~ObsData.group_data
       ~ObsData.lin_to_log
+      ~ObsData.load
       ~ObsData.log_to_lin
       ~ObsData.plot_sed
       ~ObsData.plot_time_spans
       ~ObsData.remove_dupl_entries
       ~ObsData.reset_data
+      ~ObsData.save
       ~ObsData.set_UL
       ~ObsData.set_error
       ~ObsData.set_facke_error
@@ -58,11 +60,13 @@ ObsData
    .. automethod:: get_time_span
    .. automethod:: group_data
    .. automethod:: lin_to_log
+   .. automethod:: load
    .. automethod:: log_to_lin
    .. automethod:: plot_sed
    .. automethod:: plot_time_spans
    .. automethod:: remove_dupl_entries
    .. automethod:: reset_data
+   .. automethod:: save
    .. automethod:: set_UL
    .. automethod:: set_error
    .. automethod:: set_facke_error

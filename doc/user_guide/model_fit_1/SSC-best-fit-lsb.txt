@@ -1,0 +1,41 @@
+
+**************************************************************************************************
+Fit report
+
+Model: SSC-best-fit-minuit
+ model name        name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+------------ ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+jet_leptonic             gmin  low-energy-cut-off lorentz-factor* 3.356628e+02     1.000000e+00     1.000000e+09 False  False
+jet_leptonic             gmax high-energy-cut-off lorentz-factor* 9.629045e+05     1.000000e+00     1.000000e+15 False  False
+jet_leptonic                N    emitters_density         1 / cm3 2.635771e+00     0.000000e+00               -- False  False
+jet_leptonic                s   LE_spectral_slope                 2.136779e+00    -1.000000e+01     1.000000e+01 False  False
+jet_leptonic                r  spectral_curvature                 8.257853e-01    -1.500000e+01     1.500000e+01 False  False
+jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor* 3.086566e+04     1.000000e+00     1.000000e+09 False  False
+jet_leptonic                R         region_size              cm 1.649014e+16     1.000000e+03     1.000000e+30 False   True
+jet_leptonic              R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+jet_leptonic                B      magnetic_field               G 8.056890e-02     0.000000e+00               -- False  False
+jet_leptonic         beam_obj             beaming Lorentz-factor* 2.575200e+01     1.000000e-04               -- False  False
+jet_leptonic           z_cosm            redshift                 3.080000e-02     0.000000e+00               -- False   True
+
+converged=True
+calls=24
+The relative error between two consecutive iterates is at most 0.000000
+dof=27
+chisq=64.996500, chisq/red=2.407278 null hypothesis sig=0.000056
+
+best fit pars
+ model name        name       bestfit val     err +     err -  start val   fit range min fit range max frozen
+------------ ---------------- ------------ ------------ ----- ------------ ------------- ------------- ------
+jet_leptonic             gmin 3.356628e+02 2.308852e+02    -- 3.338231e+02  1.000000e+00  1.000000e+09  False
+jet_leptonic             gmax 9.629045e+05 2.161311e+04    -- 9.758134e+05  1.000000e+00  1.000000e+15  False
+jet_leptonic                N 2.635771e+00 2.032613e+00    -- 3.073134e+00  0.000000e+00            --  False
+jet_leptonic                s 2.136779e+00 1.362651e-01    -- 2.181578e+00 -1.000000e+01  1.000000e+01  False
+jet_leptonic                r 8.257853e-01 2.291436e-01    -- 7.726503e-01 -1.500000e+01  1.500000e+01  False
+jet_leptonic gamma0_log_parab 3.086566e+04 1.699546e+04    -- 2.265855e+04  1.000000e+00  1.000000e+09  False
+jet_leptonic                R           --           --    -- 1.649014e+16  3.162278e+15  3.162278e+17   True
+jet_leptonic              R_H           --           --    -- 1.000000e+17  0.000000e+00            --   True
+jet_leptonic                B 8.056890e-02 2.328432e-02    -- 1.000000e-01  0.000000e+00            --  False
+jet_leptonic         beam_obj 2.575200e+01 4.198739e+00    -- 2.500000e+01  5.000000e+00  5.000000e+01  False
+jet_leptonic           z_cosm           --           --    -- 3.080000e-02  0.000000e+00            --   True
+**************************************************************************************************
+

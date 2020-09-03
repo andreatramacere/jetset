@@ -26,49 +26,53 @@ void spettro_EC(int Num_file, struct spettro *pt) {
     double * freq_array, *freq_array_obs;
     double * nuFnu_obs_array;
     double * nu_start_EC, * nu_stop_EC, * nu_start_EC_obs, * nu_stop_EC_obs, nu_seed_max;
-    unsigned long * NU_INT_STOP_EC;
-    unsigned long l, NU_INT, I_MAX, stop,out;
-    char f_EC[static_file_name_max_legth];
-    FILE *fp_EC;
+    unsigned int * NU_INT_STOP_EC;
+    unsigned int NU_INT, I_MAX, stop,out;
+    //char f_EC[static_file_name_max_legth];
+    //FILE *fp_EC;
 
     //=================================
     // apre i files dove scrive i dati di SSC
     // HEADER FILES
     //=================================
-    if (pt->EC == 1) {
-    	sprintf(f_EC, "%s%s-EC-Diks.dat",
-    	                        pt->path, pt->STEM);
-    }
+    /*
+	if (pt->WRITE_TO_FILE==1){
 
-    if (pt->EC == 2) {
-        sprintf(f_EC, "%s%s-EC-BLR.dat",
-                pt->path, pt->STEM);
-    }
+		if (pt->EC == 1) {
+			sprintf(f_EC, "%s%s-EC-Diks.dat",
+									pt->path, pt->STEM);
+		}
 
-    if (pt->EC == 3) {
-        sprintf(f_EC, "%s%s-EC-DT.dat",
-                pt->path, pt->STEM);
-    }
-    if (pt->EC == 4) {
-    	sprintf(f_EC, "%s%s-EC-Star.dat",
-                    pt->path, pt->STEM);
-    }
-    if (pt->EC == 5) {
-        	sprintf(f_EC, "%s%s-EC-CMB.dat",
-                        pt->path, pt->STEM);
-        }
-    if (pt->EC == 6) {
-            sprintf(f_EC, "%s%s-EC-CMB-stat.dat",
-                        pt->path, pt->STEM);
-        }
-    fp_EC = fopen(f_EC, "w");
-    if (fp_EC == NULL) {
-        printf("non posso aprire %s\n ", f_EC);
-        exit(1);
-    }
+		if (pt->EC == 2) {
+			sprintf(f_EC, "%s%s-EC-BLR.dat",
+					pt->path, pt->STEM);
+		}
 
-    flux_header(fp_EC);
+		if (pt->EC == 3) {
+			sprintf(f_EC, "%s%s-EC-DT.dat",
+					pt->path, pt->STEM);
+		}
+		if (pt->EC == 4) {
+			sprintf(f_EC, "%s%s-EC-Star.dat",
+						pt->path, pt->STEM);
+		}
+		if (pt->EC == 5) {
+				sprintf(f_EC, "%s%s-EC-CMB.dat",
+							pt->path, pt->STEM);
+			}
+		if (pt->EC == 6) {
+				sprintf(f_EC, "%s%s-EC-CMB-stat.dat",
+							pt->path, pt->STEM);
+			}
+		fp_EC = fopen(f_EC, "w");
+		if (fp_EC == NULL) {
+			printf("non posso aprire %s\n ", f_EC);
+			exit(1);
+		}
 
+		flux_header(fp_EC);
+	}
+	*/
     //==================================================================
 
 
@@ -91,7 +95,9 @@ void spettro_EC(int Num_file, struct spettro *pt) {
         printf("-------------------------------------------------------------------\n");
 
     }
-    if (pt->EC == 1) {
+
+	//TODO check nu_seed_max for EC_stat=1
+	if (pt->EC == 1) {
 
     	freq_array_obs=pt->nu_EC_Disk_obs;
     	nuFnu_obs_array=pt->nuF_nu_EC_Disk_obs;
@@ -185,26 +191,26 @@ void spettro_EC(int Num_file, struct spettro *pt) {
     	}
 
     }
-    if (pt->EC == 6) {
-        freq_array_obs=pt->nu_EC_CMB_stat_obs;
-        nuFnu_obs_array=pt->nuF_nu_EC_CMB_stat_obs;
-        freq_array=pt->nu_EC_CMB_stat;
-        nu_seed_max =  pt->nu_stop_CMB_stat;
-        nu_start_EC = &(pt->nu_start_EC_CMB_stat);
-        nu_stop_EC = &(pt->nu_stop_EC_CMB_stat);
-        nu_start_EC_obs = &(pt->nu_start_EC_CMB_stat_obs);
-        nu_stop_EC_obs = &(pt->nu_stop_EC_CMB_stat_obs);
-        NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_CMB_stat);
-        if (pt->verbose>0) {
-            printf("nu_start_CMB=%e    nu_stop_CMB=%e\n",
-                    pt->nu_start_CMB_stat,
-                    pt->nu_stop_CMB_stat);
-            printf("these freq. are boosted from the DISK frame  into the BLOB frame\n");
-            printf("-----------------------------------------------------------------\n");
-        }
+    //if (pt->EC == 6) {
+    //    freq_array_obs=pt->nu_EC_CMB_stat_obs;
+    //    nuFnu_obs_array=pt->nuF_nu_EC_CMB_stat_obs;
+    //    freq_array=pt->nu_EC_CMB_stat;
+    //    nu_seed_max =  pt->nu_stop_CMB_stat;
+    //    nu_start_EC = &(pt->nu_start_EC_CMB_stat);
+    //    nu_stop_EC = &(pt->nu_stop_EC_CMB_stat);
+    //    nu_start_EC_obs = &(pt->nu_start_EC_CMB_stat_obs);
+    //    nu_stop_EC_obs = &(pt->nu_stop_EC_CMB_stat_obs);
+    //    NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_CMB_stat);
+    //    if (pt->verbose>0) {
+    //        printf("nu_start_CMB=%e    nu_stop_CMB=%e\n",
+    //               pt->nu_start_CMB_stat,
+    //                pt->nu_stop_CMB_stat);
+    //        printf("these freq. are boosted from the DISK frame  into the BLOB frame\n");
+    //        printf("-----------------------------------------------------------------\n");
+    //    }
 
 
-    }
+    //}
 
     gmax=Find_gmax(pt,pt->Ne,pt->griglia_gamma_Ne_log);
 	numax_KN = 1000 * gmax * MEC2 / HPLANCK;
@@ -253,8 +259,8 @@ void spettro_EC(int Num_file, struct spettro *pt) {
 		printf("SSC=%d EC=%d TOT=%d\n",
 				pt->SSC, pt->EC,
 				pt->TOT);
-
-   	}
+		printf("emiss limit=%e\n", pt->emiss_lim);
+	}
 
 	I_MAX = pt->nu_IC_size-1;
 	stop=0;
@@ -269,23 +275,23 @@ void spettro_EC(int Num_file, struct spettro *pt) {
         }
         if ((freq_array[NU_INT] >= *nu_start_EC) && (freq_array[NU_INT] <= *nu_stop_EC)) {
 			if (!stop) {
-
+				
 				pt->q_comp[NU_INT] = rate_compton_GR(pt);
-                if (pt->EC == 6){
-                    //in this case we have q_comp in the disk frame, so j_nu is in the disk rest frame
-                    //and we have to use also the scattered nu in the disk rest frame
-                    j_nu_disk=pt->q_comp[NU_INT]*HPLANCK*freq_array[NU_INT]*pt->beam_obj;
+				if (pt->EC_stat == 1){
+					//in this case we have q_comp in the disk frame, so j_nu is in the disk rest frame
+					//and we have to use also the scattered nu in the disk rest frame
+					j_nu_disk=pt->q_comp[NU_INT]*HPLANCK*freq_array[NU_INT]*pt->beam_obj;
 
-                    //now we go back to the blob
-                    //this is the j_nu in the blob frame at nu_blob
-                    //evaluated from j_disk at nu_disk
-                    pt->j_EC[NU_INT]=j_nu_disk/(pt->beam_obj*pt->beam_obj);
-
-                }
-                else{
-                    pt->j_EC[NU_INT] = pt->q_comp[NU_INT] *
-                    HPLANCK * freq_array[NU_INT];
-                }
+					//now we go back to the blob
+					//this is the j_nu in the blob frame at nu_blob
+					//evaluated from j_disk at nu_disk
+					pt->j_EC[NU_INT]=j_nu_disk;
+				
+				}
+				else{
+					pt->j_EC[NU_INT] = pt->q_comp[NU_INT] *
+									   HPLANCK * freq_array[NU_INT];
+				}
 
 
 
@@ -297,8 +303,15 @@ void spettro_EC(int Num_file, struct spettro *pt) {
 
 				nu_src = nu_blob_to_nu_src(freq_array[NU_INT], pt->beam_obj,
 						pt->z_cosm);
-				L_nu_EC = j_nu_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_sphere,
+				if (pt->EC_stat == 1)
+				{
+					L_nu_EC = j_nu_src_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_sphere,
+												   pt->beam_obj);
+				}
+				else{
+					L_nu_EC = j_nu_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_sphere,
 						pt->beam_obj);
+				}
 				nuL_nu_EC = L_nu_EC * nu_src;
 				F_nu_EC_obs = L_nu_src_to_F_nu(L_nu_EC, pt->beam_obj,
 						pt->z_cosm, pt->dist);
@@ -338,15 +351,19 @@ void spettro_EC(int Num_file, struct spettro *pt) {
             //===========================================
             // FILES output nu dnu nuFnu dnuFnu
             //===========================================
-            if (!stop && out) {
-                fprintf(fp_EC, "%4.4e\t%4.4e\t%4.4e\t %4.4e\t%4.4e\t%4.4e\n",
-                        log10(freq_array_obs[NU_INT]),
-                        log10(F_nu_EC_obs * freq_array_obs[NU_INT]),
-                        freq_array_obs[NU_INT],
-                        F_nu_EC_obs*freq_array_obs[NU_INT],
-                        nu_src,
-                        nuL_nu_EC);
-            }
+            /*
+			if (pt->WRITE_TO_FILE==1){
+				if (!stop && out) {
+					fprintf(fp_EC, "%4.4e\t%4.4e\t%4.4e\t %4.4e\t%4.4e\t%4.4e\n",
+							log10(freq_array_obs[NU_INT]),
+							log10(F_nu_EC_obs * freq_array_obs[NU_INT]),
+							freq_array_obs[NU_INT],
+							F_nu_EC_obs*freq_array_obs[NU_INT],
+							nu_src,
+							nuL_nu_EC);
+				}
+			}
+			*/
             if (pt->verbose>1) {
                 printf("#-> ********************************\n\n");
             }
@@ -384,49 +401,55 @@ void spettro_EC(int Num_file, struct spettro *pt) {
 
 				printf("nu_stop_EC_CMB=%e NU_INT_STOP_EC_CMB=%d\n", pt->nu_stop_EC_CMB, pt->NU_INT_STOP_EC_CMB);
 			}
-            if (pt->EC == 6) {
+            //if (pt->EC == 6) {
 
-                printf("nu_stop_EC_CMB_stat=%e NU_INT_STOP_EC_CMB_stat=%d\n", pt->nu_stop_EC_CMB_stat, pt->NU_INT_STOP_EC_CMB_stat);
-            }
+            //    printf("nu_stop_EC_CMB_stat=%e NU_INT_STOP_EC_CMB_stat=%d\n", pt->nu_stop_EC_CMB_stat, pt->NU_INT_STOP_EC_CMB_stat);
+            //}
     	}
     }
+	/*
+	if (pt->WRITE_TO_FILE == 1){
+		fclose(fp_EC);
+	}
+	*/
+	//===========================================
+	//    trova nu peak e Flux peak
+	//===========================================
+	if (pt->EC == 1)
+	{
+		FindEpSp(freq_array, nuFnu_obs_array, pt->NU_INT_STOP_EC_Disk, pt,
+					&(pt->nu_peak_EC_Disk_obs),
+					&(pt->nu_peak_EC_Disk_src),
+					&(pt->nu_peak_EC_Disk_blob),
+					&(pt->nuFnu_peak_EC_Disk_obs),
+					&(pt->nuLnu_peak_EC_Disk_src),
+					&(pt->nuLnu_peak_EC_Disk_blob));
 
-    fclose(fp_EC);
+		if (pt->verbose > 0)
+		{
+			printf("nu_stop_EC_Disk=%e NU_INT_STOP_EC_Disk=%d\n", pt->nu_stop_EC_Disk, pt->NU_INT_STOP_EC_Disk);
+			printf("EC Disk ");
+			printf("nu_EC_blob peak=%e\n", pt->nu_peak_EC_Disk_blob);
+			printf("nu_EC_src  peak=%e\n", pt->nu_peak_EC_Disk_src);
+			printf("nu_EC_obs  peak=%e\n", pt->nu_peak_EC_Disk_obs);
 
-    //===========================================
-    //    trova nu peak e Flux peak
-    //===========================================
-    if (pt->EC == 1) {
-    	FindEpSp(freq_array, nuFnu_obs_array, pt->NU_INT_STOP_EC_Disk, pt,
-                    &(pt->nu_peak_EC_Disk_obs),
-                    &(pt->nu_peak_EC_Disk_src),
-                    &(pt->nu_peak_EC_Disk_blob),
-                    &(pt->nuFnu_peak_EC_Disk_obs),
-                    &(pt->nuLnu_peak_EC_Disk_src),
-                    &(pt->nuLnu_peak_EC_Disk_blob));
+			printf("nuFnu EC  blob    peak=%e\n", pt->nuFnu_peak_EC_Disk_obs);
+			printf("nuLnu EC  src     peak=%e\n", pt->nuLnu_peak_EC_Disk_src);
+			printf("nuLnu EC  obs     peak=%e\n", pt->nuLnu_peak_EC_Disk_blob);
+		}
+	}
 
-    	if (pt->verbose>0) {
-            printf("nu_stop_EC_Disk=%e NU_INT_STOP_EC_Disk=%d\n", pt->nu_stop_EC_Disk, pt->NU_INT_STOP_EC_Disk);
-            printf("EC Disk ");
-            printf("nu_EC_blob peak=%e\n", pt->nu_peak_EC_Disk_blob);
-            printf("nu_EC_src  peak=%e\n", pt->nu_peak_EC_Disk_src);
-            printf("nu_EC_obs  peak=%e\n", pt->nu_peak_EC_Disk_obs);
-
-            printf("nuFnu EC  blob    peak=%e\n", pt->nuFnu_peak_EC_Disk_obs);
-            printf("nuLnu EC  src     peak=%e\n", pt->nuLnu_peak_EC_Disk_src);
-            printf("nuLnu EC  obs     peak=%e\n", pt->nuLnu_peak_EC_Disk_blob);
-        }
-    }
-
-    if (pt->EC == 2) {
-        FindEpSp(pt->nu_EC_BLR, nuFnu_obs_array, pt->NU_INT_STOP_EC_BLR, pt,
-                &(pt->nu_peak_EC_BLR_obs),
-                &(pt->nu_peak_EC_BLR_src),
-                &(pt->nu_peak_EC_BLR_blob),
-                &(pt->nuFnu_peak_EC_BLR_obs),
-                &(pt->nuLnu_peak_EC_BLR_src),
-                &(pt->nuLnu_peak_EC_BLR_blob));
-        if (pt->verbose>0) {
+	if (pt->EC == 2)
+	{
+		FindEpSp(pt->nu_EC_BLR, nuFnu_obs_array, pt->NU_INT_STOP_EC_BLR, pt,
+					&(pt->nu_peak_EC_BLR_obs),
+					&(pt->nu_peak_EC_BLR_src),
+					&(pt->nu_peak_EC_BLR_blob),
+					&(pt->nuFnu_peak_EC_BLR_obs),
+					&(pt->nuLnu_peak_EC_BLR_src),
+					&(pt->nuLnu_peak_EC_BLR_blob));
+		if (pt->verbose > 0)
+		{
 			printf("nu_stop_EC_BLR=%e NU_INT_STOP_EC_BLR=%d\n", pt->nu_stop_EC_BLR, pt->NU_INT_STOP_EC_BLR);
 			printf("EC BLR ");
 			printf("nu_EC_blob peak=%e\n", pt->nu_peak_EC_BLR_blob);
@@ -436,18 +459,20 @@ void spettro_EC(int Num_file, struct spettro *pt) {
 			printf("nuFnu EC  blob    peak=%e\n", pt->nuFnu_peak_EC_BLR_obs);
 			printf("nuLnu EC  src     peak=%e\n", pt->nuLnu_peak_EC_BLR_src);
 			printf("nuLnu EC  obs     peak=%e\n", pt->nuLnu_peak_EC_BLR_blob);
-        }
-    }
+		}
+	}
 
-    if (pt->EC == 3) {
-        FindEpSp(pt->nu_EC_DT, nuFnu_obs_array, pt->NU_INT_STOP_EC_DT, pt,
-                &(pt->nu_peak_EC_DT_obs),
-                &(pt->nu_peak_EC_DT_src),
-                &(pt->nu_peak_EC_DT_blob),
-                &(pt->nuFnu_peak_EC_DT_obs),
-                &(pt->nuLnu_peak_EC_DT_src),
-                &(pt->nuLnu_peak_EC_DT_blob));
-        if (pt->verbose>0) {
+	if (pt->EC == 3)
+	{
+		FindEpSp(pt->nu_EC_DT, nuFnu_obs_array, pt->NU_INT_STOP_EC_DT, pt,
+					&(pt->nu_peak_EC_DT_obs),
+					&(pt->nu_peak_EC_DT_src),
+					&(pt->nu_peak_EC_DT_blob),
+					&(pt->nuFnu_peak_EC_DT_obs),
+					&(pt->nuLnu_peak_EC_DT_src),
+					&(pt->nuLnu_peak_EC_DT_blob));
+		if (pt->verbose > 0)
+		{
 			printf("nu_stop_EC_DT=%e NU_INT_STOP_EC_DT=%d\n", pt->nu_stop_EC_DT, pt->NU_INT_STOP_EC_DT);
 			printf("EC DT ");
 			printf("nu_EC_blob peak=%e\n", pt->nu_peak_EC_DT_blob);
@@ -457,10 +482,11 @@ void spettro_EC(int Num_file, struct spettro *pt) {
 			printf("nuFnu EC  blob    peak=%e\n", pt->nuFnu_peak_EC_DT_obs);
 			printf("nuLnu EC  src     peak=%e\n", pt->nuLnu_peak_EC_DT_src);
 			printf("nuLnu EC  obs     peak=%e\n", pt->nuLnu_peak_EC_DT_blob);
-        }
-    }
+		}
+	}
 
-    return;
+	//printf("=>done\n");
+	return;
 }
 //=========================================================================================
 

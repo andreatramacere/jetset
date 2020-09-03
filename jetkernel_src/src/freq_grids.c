@@ -10,8 +10,8 @@
 //GRID FUNCTIONS
 //========================
 
-void build_log_grid(double nu_start, double nu_stop, unsigned long SIZE, double * nu_grid){
-	unsigned long I,I_MAX;
+void build_log_grid(double nu_start, double nu_stop, unsigned int SIZE, double * nu_grid){
+	unsigned int I,I_MAX;
 	double k,log_nu_start;
 	k = (log10(nu_stop) - log10(nu_start));
 	log_nu_start = log10(nu_start);
@@ -22,8 +22,8 @@ void build_log_grid(double nu_start, double nu_stop, unsigned long SIZE, double 
 
 }
 
-unsigned long x_to_grid_index(double * nu_grid, double nu, unsigned long SIZE){
-	unsigned long I=0;
+ int x_to_grid_index(double * nu_grid, double nu, unsigned int SIZE){
+	int I=0;
 	while (!(nu >= nu_grid[I] && nu <=nu_grid[I + 1] ) && (I<SIZE)){
 		I++;
 	}

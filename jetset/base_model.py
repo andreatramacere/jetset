@@ -9,15 +9,26 @@ __author__ = "Andrea Tramacere"
 from .model_parameters import ModelParameterArray, ModelParameter
 from .spectral_shapes import SED
 from .data_loader import  ObsData
+from .utils import  get_info
+from .plot_sedfit import  PlotSED
+
 import numpy as np
+import json
+import pickle
+import warnings
+from .cosmo_tools import  Cosmo
 
 __all__=['Model']
+
+
+
+
 class Model(object):
     
     
-    def __init__(self,name='no-name',nu_size=100):
+    def __init__(self,name='no-name',nu_size=200,model_type='base_model',scale='lin-lin',cosmo=None,nu_min=None,nu_max=None):
         
-        self.model_type=None
+        self.model_type=model_type
         
         self.name=name
 
@@ -25,81 +36,158 @@ class Model(object):
     
         self.parameters = ModelParameterArray()    
         
-        self._scale='lin-lin'
+        self._scale=scale
         
         self.nu_size=nu_size
         
-        self.nu_min=None
+        self.nu_min=nu_min
         
-        self.nu_max=None
+        self.nu_max=nu_max
+
+        self.flux_plot_lim = 1E-30
+
+        if cosmo is None:
+          self.cosmo=Cosmo()
+
+        self._set_version(v=None)
         
-        
-   
-    def eval(self,fill_SED=True,nu=None,get_model=False,loglog=False,label=None):
-        
+    @property
+    def version(self):
+        return self._version
+
+    def _set_version(self, v=None):
+        if v is None:
+            self._version = get_info()['version']
+        else:
+            self._version = v
+
+    def _prepare_nu_model(self,nu,loglog):
+
         if nu is None:
-            #print("--->", self.nu_min,self.nu_max,self.nu_size)
-            
-            x1=np.log10(self.nu_min)
-
-            x2=np.log10(self.nu_max)
-            
-            lin_nu=np.logspace(x1,x2,self.nu_size)
-            
-            model=np.zeros(lin_nu.size)
-            #print "x1",x1     
-            
-            
+            x1 = np.log10(self.nu_min)
+            x2 = np.log10(self.nu_max)
+            lin_nu = np.logspace(x1, x2, self.nu_size)
+            log_nu = np.log10(lin_nu)
         else:
-            
 
-            if np.shape(nu)==():
- 
-                nu=np.array([nu])
-            
-            
-            
-           
-            
-        if loglog==False:
-            log_nu=np.log10(nu)
-            
-            lin_nu=nu
-            
-            model=self.lin_func(lin_nu)
-        
-        else:
-            log_nu=nu
+            if np.shape(nu) == ():
+                nu = np.array([nu])
 
-            lin_nu=np.power(10.,log_nu)
-    
-            log_model= self.log_func(log_nu)
-            
-            model=np.power(10.,log_model)
-        
-        
-        if fill_SED==True:
-            #print "base model", self.model_type,self.nu_min,self.nu_max
-            #print lin_nu[0]
-            self.SED.fill(nu=lin_nu,nuFnu=model)
-        
-        
-        #print model[0]
-        
-
-        
-        if get_model==True:
-            if loglog==False:
-            
-                return model
+            if loglog is True:
+                lin_nu = np.power(10., nu)
+                log_nu = nu
             else:
-                
-                return log_model
-        else:
-            return None
-        
+                log_nu = np.log10(nu)
+                lin_nu = nu
 
-            
+        return lin_nu,log_nu
+
+    def _eval_model(self,lin_nu,log_nu,loglog):
+        log_model=None
+
+        if loglog is False:
+            lin_model = self.lin_func(lin_nu)
+        else:
+            if hasattr(self, 'log_func'):
+                log_model = self.log_func(log_nu)
+                lin_model = np.power(10., log_model)
+            else:
+                lin_model = self.lin_func(lin_nu)
+                lin_model[lin_model<0.]=self.flux_plot_lim
+                log_model = np.log10(lin_model)
+
+        return lin_model,log_model
+
+    def _fill(self, lin_nu, lin_model):
+
+        if hasattr(self,'SED'):
+            self.SED.fill(nu=lin_nu, nuFnu=lin_model)
+            z=self.get_par_by_type('redshift')
+
+            if z is not None:
+                z=z.val
+
+            if z is None and hasattr(self, 'get_redshift'):
+                z=self.get_redshift()
+                z = z
+
+            #print('--> fill z ',self.name,self.name,z)
+            if z is not None:
+                if hasattr(self,'get_DL_cm'):
+                    dl = self.get_DL_cm('redshift')
+                else:
+                    dl = self.cosmo.get_DL_cm(z)
+                self.SED.fill_nuLnu( z =z, dl = dl)
+        else:
+            warnings.warn('model',self.name,'of type',type(self),'has no SED member')
+
+        if hasattr(self, 'spectral_components_list'):
+            for i in range(len(self.spectral_components_list)):
+                self.spectral_components_list[i].fill_SED(lin_nu=lin_nu)
+
+    def eval(self, fill_SED=True, nu=None, get_model=False, loglog=False, label=None, **kwargs):
+
+        out_model = None
+        #print('--> base model 1', nu[0])
+        lin_nu,log_nu=self._prepare_nu_model(nu,loglog)
+        #print('--> base model 2', lin_nu[0], log_nu[0],'loglog',loglog)
+        lin_model,log_model  = self._eval_model(lin_nu,log_nu,loglog)
+
+        if fill_SED is True:
+            self._fill(lin_nu, lin_model)
+
+        if get_model is True:
+
+            if loglog is True:
+                out_model = log_model
+            else:
+                out_model = lin_model
+
+        return out_model
+
+
+
+    def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None,line_style='-', density=False):
+        if plot_obj is None:
+            plot_obj=PlotSED(sed_data = sed_data, frame = frame, density=density)
+
+        if frame == 'src' and sed_data is not None:
+            z_sed_data = sed_data.z
+            if self.get_par_by_type('redshift') is not None:
+
+                sed_data.z = self.get_par_by_type('redshift').val
+
+        if clean is True:
+            plot_obj.clean_model_lines()
+
+        if label is None:
+            label = self.name
+
+        if hasattr(self,'SED'):
+            plot_obj.add_model_plot(self.SED, line_style=line_style,label =label,flim=self.flux_plot_lim,density=density)
+
+
+
+        if skip_components is False:
+            if hasattr(self,'spectral_components_list'):
+                for c in self.spectral_components_list:
+                    #print('--> c name', c.name)
+                    comp_label = c.name
+                    line_style = '--'
+                    if comp_label!='Sum':
+                        if hasattr(c, 'SED'):
+                            plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim, density=density)
+
+        line_style = '-'
+
+
+        #plot_obj.add_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]) )
+
+        if frame == 'src' and sed_data is not None:
+            sed_data.z = z_sed_data
+
+        return plot_obj
+
     def set_nu_grid(self,nu_min=None,nu_max=None,nu_size=None):
         if nu_size is not None:
             self.nu_size=nu_size
@@ -109,12 +197,13 @@ class Model(object):
         
         if nu_max is not None:
             self.nu_max=nu_max
-    
-    def lin_func(self,nu):
-        pass   
+
+
+    def lin_func(self,lin_nu):
+        return np.ones(lin_nu.size) * self.flux_plot_lim
     
     def log_func(self,log_nu):
-        pass
+        return np.log10(self.lin_func(np.power(10,log_nu)))
 
 
 
@@ -124,7 +213,6 @@ class Model(object):
 
         model = self.eval(nu=data['nu_data'], fill_SED=False, get_model=True, loglog=False)
 
-        # print "loglog",loglog
         if filter_UL ==True:
             msk=data['UL']==False
         else:
@@ -139,3 +227,90 @@ class Model(object):
             return nu_residuals[msk], residuals[msk]
         else:
             return  np.log10(nu_residuals[msk]),  residuals[msk]
+
+    def save_model(self, file_name):
+
+        pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+
+
+    @classmethod
+    def load_model(cls, file_name):
+
+        try:
+            c = pickle.load(open(file_name, "rb"))
+            if isinstance(c, Model):
+                c.eval()
+                return c
+            else:
+                raise RuntimeError('The model you loaded is not valid please check the file name')
+
+        except Exception as e:
+            raise RuntimeError(e)
+
+    def show_model(self):
+        print("")
+        print("-------------------------------------------------------------------------------------------------------------------")
+
+        print("model description")
+        print(
+            "-------------------------------------------------------------------------------------------------------------------")
+        print("name: %s  " % (self.name))
+        print("type: %s  " % (self.model_type))
+
+        print('')
+
+        self.show_pars()
+
+        print("-------------------------------------------------------------------------------------------------------------------")
+
+    def show_pars(self, sort_key='par type'):
+        self.parameters.show_pars(sort_key=sort_key)
+
+    def show_best_fit_pars(self):
+        self.parameters.show_best_fit_pars()
+
+    def set_par(self,par_name,val):
+        """
+        shortcut to :class:`ModelParametersArray.set` method
+        set a parameter value
+
+        :param par_name: (srt), name of the parameter
+        :param val: parameter value
+
+        """
+
+        self.parameters.set(par_name, val=val)
+
+
+
+    def get_par_by_type(self,par_type):
+        """
+
+        get parameter by type
+
+        """
+        for param in self.parameters.par_array:
+            if param.par_type==par_type:
+                return param
+
+        return None
+
+    def get_par_by_name(self,par_name):
+        """
+
+        get parameter by type
+
+        """
+        for param in self.parameters.par_array:
+            if param.name==par_name:
+                return param
+
+        return None
+
+class MultiplicativeModel(Model):
+
+    def __init__(self, name='no-name', nu_size=100, model_type='multiplicative_model', scale='lin-lin'):
+        super(MultiplicativeModel, self).__init__(name=name, nu_size=nu_size, model_type=model_type,scale=scale)
+        delattr(self,'SED')
+
+

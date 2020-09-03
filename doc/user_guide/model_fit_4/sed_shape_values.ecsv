@@ -1,0 +1,35 @@
+# %ECSV 0.9
+# ---
+# datatype:
+# - {name: src_name, datatype: string}
+# - {name: radio, datatype: float64}
+# - {name: radio_err, datatype: float64}
+# - {name: radio_mm, datatype: float64}
+# - {name: radio_mm_err, datatype: float64}
+# - {name: mm_IR, datatype: float64}
+# - {name: mm_IR_err, datatype: float64}
+# - {name: IR_Opt, datatype: float64}
+# - {name: IR_Opt_err, datatype: float64}
+# - {name: Opt_UV, datatype: float64}
+# - {name: Opt_UV_err, datatype: float64}
+# - {name: BBB, datatype: float64}
+# - {name: BBB_err, datatype: float64}
+# - {name: UV_X, datatype: float64}
+# - {name: UV_X_err, datatype: float64}
+# - {name: X, datatype: float64}
+# - {name: X_err, datatype: float64}
+# - {name: Fermi, datatype: float64}
+# - {name: Fermi_err, datatype: float64}
+# - {name: TeV, datatype: float64}
+# - {name: TeV_err, datatype: float64}
+# - {name: nu_p_S, datatype: float64}
+# - {name: nu_p_S_err, datatype: float64}
+# - {name: nuFnu_p_S, datatype: float64}
+# - {name: nuFnu_p_S_err, datatype: float64}
+# - {name: nu_p_IC, datatype: float64}
+# - {name: nu_p_IC_err, datatype: float64}
+# - {name: nuFnu_p_IC, datatype: float64}
+# - {name: nuFnu_p_IC_err, datatype: float64}
+# schema: astropy-2.0
+src_name radio radio_err radio_mm radio_mm_err mm_IR mm_IR_err IR_Opt IR_Opt_err Opt_UV Opt_UV_err BBB BBB_err UV_X UV_X_err X X_err Fermi Fermi_err TeV TeV_err nu_p_S nu_p_S_err nuFnu_p_S nuFnu_p_S_err nu_p_IC nu_p_IC_err nuFnu_p_IC nuFnu_p_IC_err
+sed_shape_values.ecsv -1.295206708896428 0.1359752003581166 -1.4550181897119767 0.05280896701075442 -1.2962770340481455 0.037495878360974955 -2.0874554534845906 0.5433974553117511 -2.6658904880354974 0.14194299301829685 -2.282188757950653 0.573888823285923 -1.8731276383501427 0.007268872005402139 -2.1114901529750476 0.03364660108676527 -1.8445739042519307 0.015354307771149675 -2.35785428984461 0.048502640008110616 17.037469222984353 0.09437328470168334 -10.300678046626096 0.018841129417863287 25.496044142893776 0.22355592941345748 -10.579458692657571 0.04333060611105921

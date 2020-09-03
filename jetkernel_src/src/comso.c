@@ -56,7 +56,7 @@ double Distanza_Lum_analyt(double z){
    * ANALYTICAL FIT TO THE LUMINOSITY DISTANCE FOR FLAT COSMOLOGIES WITH A COSMOLOGICAL CONSTANT
    * author UE-LI PEN
    */
-  double a,s,eta,dl;
+  double dl;
   dl=vluce_km/(H_0)*(1+z)*(eta_Distanza_Lum_analyt(1,Omega_matter)
 			   -eta_Distanza_Lum_analyt((1/(1+z)),Omega_matter));
   return dl;

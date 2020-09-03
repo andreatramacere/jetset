@@ -5,72 +5,82 @@ from builtins import (bytes, str, open, super, range,
 
 __author__ = "Andrea Tramacere"
 
-NOPYLAB=True
+
+import matplotlib as mpl
+
 
 try:
-    
-    import  pylab as plt
-   
-    from matplotlib import pylab as pp
-    from matplotlib import  gridspec
-
+    from matplotlib import  pyplot as plt
 except:
+    try:
+        from matplotlib import pylab as plt
 
-    NOPYLAB=True
+    except:
+        try:
+           import  pylab as plt
+        except:
+            raise RuntimeError('Unable to import pylab/pyplot from matplotlib')
 
-    #print "pylab not found on this system"
-    #print "install package, and/or update pythonpath"
 
 
+from matplotlib import gridspec
+import numpy as np
+import  os
+from astropy.constants import m_e,m_p,c
 
 from collections import namedtuple
 
 from .output import section_separator,WorkPlace
 
-import numpy as np
+from .utils import *
+
+__all__=['PlotSED','BasePlot','PlotPdistr','PlotSpecComp','PlotSeedPhotons','PlotSpectralMultipl']
+
+def y_ev_transf(x):
+    return x - np.log10(2.417E14)
+
+def y_ev_transf_inv(x):
+    return x + np.log10(2.417E14)
 
 
-__all__=['PlotSED']
+
+def set_mpl():
+    mpl.rcParams['figure.figsize'] = [12.0, 8.0]
+    mpl.rcParams['figure.dpi'] = 80
+    mpl.rcParams['savefig.dpi'] = 100
+
+    mpl.rcParams['font.size'] = '14'
+    mpl.rcParams['legend.fontsize'] = 'medium'
+    mpl.rcParams['figure.titlesize'] = 'medium'
 
 
 class  PlotSED (object):
-    
-    
-    def __init__(self,sed_data=None,
+    def __init__(self,
+                 sed_data=None,
                  model=None,
-                 x_min=6.0,
-                 x_max=3.0,
-                 y_min=-20.0,
-                 y_max=-9.0,
                  interactive=False,
                  plot_workplace=None,
-                 title='Plot'):
-                 #autoscale=True):
-      
+                 title='Plot',
+                 frame='obs',
+                 density=False,
+                 figsize=(12,8)):
+
+        check_frame(frame)
+
+        self.frame=frame
+
         self.axis_kw=['x_min','x_max','y_min','y_max']
         self.interactive=interactive
 
         plot_workplace=plot_workplace
-        #self.line_tuple=namedtuple('line',['label','ref'])
         self.lines_data_list=[]
         self.lines_model_list=[]
         self.lines_res_list = []
 
-        #self.legend=[]
-     
-        
-
         if self.interactive==True:
-       
-            
             plt.ion()
             print ('running PyLab in interactive mode')
-        
 
-        #--------------------------------------------------------------
-
-        
-        #set workplace
         if plot_workplace is None:
             plot_workplace=WorkPlace()
             self.out_dir=plot_workplace.out_dir
@@ -82,22 +92,18 @@ class  PlotSED (object):
         
         
             self.title="%s_%s"%(title,self.flag)
-        
-        
-        #Build sedplot    
-      
-            
-        self.fig=plt.figure(figsize=(10,6))
-        
 
+        if figsize is None:
+            figsize=(10,8)
+
+        self.fig=plt.figure(figsize=figsize)
 
         self.gs = gridspec.GridSpec(2, 1, height_ratios=[4, 1])
-            
-        
+
         self.sedplot= self.fig.add_subplot(self.gs[0])
         self._add_res_plot()
         
-        self.set_plot_axis_labels(sed_data)
+        self.set_plot_axis_labels(density=density)
         
         #if autoscale==True:
         self.sedplot.set_autoscalex_on(True)
@@ -105,14 +111,20 @@ class  PlotSED (object):
         self.sedplot.set_autoscale_on(True)
         self.counter=0
 
+        self.sedplot.grid(True,alpha=0.5)
 
+        self.sedplot.set_xlim(6, 30)
+        if frame == 'obs':
+           self.sedplot.set_ylim(-20, -8)
 
-        self.sedplot.grid(True)   
-       
+        elif frame == 'src':
+            self.sedplot.set_ylim(38, 55)
+        else:
+            unexpetced_behaviour()
 
+        secaxy = self.sedplot.secondary_xaxis('top', functions=(y_ev_transf, y_ev_transf_inv))
+        secaxy.set_xlabel('log(E) (eV)')
 
-        self.sedplot.set_xlim(5, 30)
-        self.sedplot.set_ylim(-20, -8)
         self.resplot.set_ybound(-2,2)
         try:
             if hasattr(self.fig.canvas.manager,'toolbar'):
@@ -121,21 +133,14 @@ class  PlotSED (object):
             pass
 
         if sed_data is not None :
-            self.add_data_plot(sed_data)
+            self.add_data_plot(sed_data,density=density)
 
         if model is not  None:
             self.add_model_plot(model)
-
-
-            
         self.counter_res=0
 
 
     def _add_res_plot(self):
-
-
-
-
         self.resplot = self.fig.add_subplot(self.gs[1], sharex=self.sedplot)
 
         self.lx_res = 'log($ \\nu $)  (Hz)'
@@ -143,8 +148,6 @@ class  PlotSED (object):
 
         self.resplot.set_ylabel(self.ly_res)
         self.resplot.set_xlabel(self.lx_res)
-
-
 
         self.add_res_zeroline()
 
@@ -163,7 +166,6 @@ class  PlotSED (object):
             
             
     def list_lines(self):
-        
         if self.lines_data_list==[] and self.lines_model_list==[]:
             pass
         else:
@@ -171,23 +173,14 @@ class  PlotSED (object):
             for ID,plot_line in enumerate(self.lines_data_list):
                 print('data',ID, plot_line.get_label())
 
-
-
             for ID,plot_line in enumerate(self.lines_model_list):
                 print ('model',ID,  plot_line.get_label())
 
-
-
-
     def del_data_line(self,line_ID):
-        
         if self.lines_data_list==[]:
             print  ("no lines to delete ")
-        
         else:
-            
             print ("removing line: ",self.lines_data_list[line_ID])
-
             line = self.lines_data_list[line_ID]
 
             for item in line:
@@ -199,20 +192,12 @@ class  PlotSED (object):
                     for item1 in item:
                         item1.remove()
 
-                # self.sedplot.lines.remove(self.lines_list[line_ID].ref[0])
-
-            #self.legend.remove(self.lines_data_list[line_ID].label)
-
             del self.lines_data_list[line_ID]
-
             self.update_legend()
             self.update_plot()
 
-            #self.fig.canvas.draw()
-    
-    
     def del_model_line(self,line_ID):
-        
+
         if self.lines_model_list==[]:
             #print  "no lines to delete "
             pass
@@ -224,12 +209,10 @@ class  PlotSED (object):
 
             del self.lines_model_list[line_ID]
 
-
             self.update_plot()
             self.update_legend()
 
     def del_residuals_line(self, line_ID):
-
         if self.lines_res_list == []:
             # print  "no lines to delete "
             pass
@@ -243,157 +226,96 @@ class  PlotSED (object):
             self.update_plot()
             self.update_legend()
 
-    def set_plot_axis_labels(self,sed_data=None):
-        
-        if sed_data is not None :
-            self.lx='log($ \\nu $)  (Hz)'
-                
-            if sed_data.restframe=='src':
-                self.ly='log($ \\nu L_{\\nu} $ )  (erg  s$^{-1}$)' 
-            
-            elif sed_data.restframe=='obs':
-                self.ly='log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)' 
-        
+    def set_plot_axis_labels(self, density=False):
+        self.lx = 'log($ \\nu $)  (Hz)'
+
+        if self.frame == 'src':
+
+            if density is False:
+                self.ly = 'log($ \\nu L_{\\nu} $ )  (erg  s$^{-1}$)'
+            else:
+                self.ly = 'log($   L_{\\nu} $ )  (erg  s$^{-1}$ Hz$^{-1}$)'
+
+        elif self.frame == 'obs':
+            if density is False:
+                self.ly = 'log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)'
+            else:
+                    self.ly = 'log($   F{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$ Hz$^{-1}$)'
+
         else:
-            self.lx='log($ \\nu $)  (Hz)'
-            self.ly='log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)'
-            
+            unexpetced_behaviour()
+
         self.sedplot.set_ylabel(self.ly)
         self.sedplot.set_xlabel(self.lx)
-        
-        #self.sedplot.set_xlim(self.x_min,self.x_max)
-        #self.sedplot.set_ylim(self.y_min,self.y_max)
-        
+
+
     
     def add_res_zeroline(self):
-
-
-        y0=np.zeros(2)
-        x0=[0,30]
-
+        y0 = np.zeros(2)
+        x0 = [0,30]
         self.resplot.plot(x0,y0,'--',color='black')
         self.update_plot()
 
-        
-        
-     
-     
-     
-     
     def rescale(self,x_min=None,x_max=None,y_min=None,y_max=None):
-
-
-            
         self.sedplot.set_xlim(x_min,x_max)
         self.sedplot.set_ylim(y_min,y_max)
 
-
-    
-    #def autoscale(self):
-
-        
-        #self.sedplot.autoscale_view(tight=True)
-    #    for l in self.sedplot.lines:
-
-    #        x_min,x_max=self.sedplot.get_xlim()
-
-    #        y_min,y_max=self.sedplot.get_ylim()
-        
-    #    self.sedplot.set_xticks(np.arange(int(x_min)-2,int(x_max)+2,1.0))
-        
-    #    self.sedplot.set_xlim(x_min-1,x_max+1)
-        
-    #    self.sedplot.set_ylim(y_min-1,y_max+1)
-        
-        
-        
-      #  if self.resplot is not None  :
-            
-            #self.resplot.autoscale_view(tight=True)
-            
-            #self.x_min_res=self.x_min-1
-            #self.x_max_res=self.x_max+1
-
-        #    y_min_res,y_max_res=self.resplot.get_ylim()
-        #    x_min_res,x_max_res=self.resplot.get_xlim()
-
-            
-        #    self.resplot.set_xticks(np.arange(int(x_min_res)-2,int(x_max_res)+2,1.0))
-            
-        #    self.resplot.set_xlim(x_min_res,x_max_res)
-        #    self.resplot.set_ylim(y_min_res,y_max_res)
-            
-            
-            
-        #self.update_plot()
-        
-        #self.sedplot.set_autoscale_on(False)
-   
-   
-    
     def rescale_res(self,x_min=None,x_max=None,y_min=None,y_max=None):
-
         self.resplot.set_xlim(x_min,x_max)
         self.resplot.set_ylim(y_min,y_max)
-        
         self.update_plot()
     
     def update_plot(self):
         self.fig.canvas.draw()
+        self.fig.tight_layout()
 
     def update_legend(self,label=None):
-        
 
         _handles=[]
-        _labels=[]
+
         if self.lines_data_list!=[] and self.lines_data_list is not None:
             _handles.extend(self.lines_data_list)
 
         if self.lines_model_list!=[] and self.lines_model_list is not None:
             _handles.extend(self.lines_model_list)
 
+        for h in _handles[:]:
+            if h._label is  None:
+                _handles.remove(h)
+            elif h._label.startswith('_line'):
+                _handles.remove(h)
+            else:
+                 pass
 
-        if _handles==[]:
-            _handles=None
-
-        if _handles is None:
-            _labels=[]
-        else:
-            _labels=None
-
-        #print('_handles', _handles, _labels)
-        self.sedplot.legend(handles=_handles,labels=_labels,loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=3, prop={'size':12})
+        self.sedplot.legend(handles=_handles,loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1, prop={'size':10})
         self.update_plot()
 
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None):
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None,density=False, update=True):
+
         try:
-            # print "a"
-            x, y = model.get_model_points(log_log=True)
-        except:
+            x, y = model.get_model_points(log_log=True, frame = self.frame)
+        except Exception as e:
+            #print("a",e)
             try:
-                # print "b"
-                x, y = model.SED.get_model_points(log_log=True)
+                x, y = model.SED.get_model_points(log_log=True, frame = self.frame)
             except Exception as e:
+                print("b", e)
+                raise RuntimeError (model, "!!! Error has no SED instance or something wrong in get_model_points()",e)
 
-                print(model, "!!! Error has no SED instance or something wrong in get_model_points()")
-                print(e)
-                return
-
-
-        if color is None:
-            color = self.counter
-
+        if density is True:
+            y=y-x
         if line_style is None:
             line_style = '-'
 
-        if label is None:
+        if label is None and auto_label is True:
             if model.name is not None:
                 label = model.name
             else:
                 label = 'line %d' % self.counter
+
         if flim is not None:
 
             msk=y>np.log10(flim)
@@ -402,60 +324,62 @@ class  PlotSED (object):
         else:
             pass
 
-        line, = self.sedplot.plot(x, y, line_style, label=label)
+        if fit_range is not None:
+            msk1 = x < fit_range[1]
+            msk2 = x > fit_range[0]
+
+            x = x[msk1 * msk2]
+            y = y[msk1 * msk2]
+
+        line, = self.sedplot.plot(x, y, line_style, label=label,color=color,linewidth=1.0)
 
 
         self.lines_model_list.append(line)
 
-        self.update_legend()
-        self.update_plot()
+        if update is True:
+            self.update_legend()
+            self.update_plot()
 
         self.counter += 1
 
-    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=None,mew=None):
-
+    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=4,mew=0.5,fit_range=None, density = False):
 
 
         try:
-            x,y,dx,dy,=sed_data.get_data_points(log_log=True)
-        except:
-            print ("!!! ERROR failed to get data points from", sed_data)
-            print
-            raise RuntimeError
+            x,y,dx,dy,=sed_data.get_data_points(log_log=True,frame=self.frame, density=density)
+        except Exception as e:
+            raise RuntimeError("!!! ERROR failed to get data points from", sed_data,e)
             
-         
-       
-        # get x,y,dx,dy from SEDdata
+
         if dx is None:
             dx=np.zeros(len(sed_data.data['nu_data']))
         
 
         if dy is None:
             dy=np.zeros(len(sed_data.data['nu_data']))
-        
-        
-          
-        # set color
-        if color is None:
-            color=self.counter
 
-                
+        UL = sed_data.data['UL']
+
         if label is None:
             if sed_data.obj_name is not None  :
                 label=sed_data.obj_name
             else:
                 label='line %d'%self.counter
 
+        if fit_range is not None:
+            msk1 = x < fit_range[1]
+            msk2 = x > fit_range[0]
+
+            x = x[msk1 * msk2]
+            y = y[msk1 * msk2]
+            dx= dx[msk1 * msk2]
+            dy = dy[msk1 * msk2]
+            UL=UL[msk1 * msk2]
+
         line = self.sedplot.errorbar(x, y, xerr=dx, yerr=dy, fmt=fmt
-                                     , uplims=sed_data.data['UL'],label=label,ms=ms,mew=mew)
-
-
-        
-
+                                     , uplims=UL,label=label,ms=ms,mew=mew,color=color)
 
         self.lines_data_list.append(line)
-
-
 
         self.counter+=1
         self.update_legend()
@@ -464,12 +388,6 @@ class  PlotSED (object):
 
     def add_xy_plot(self,x,y,label=None,color=None,line_style=None,autoscale=False):
 
-        #color setting  
-        if color is None:
-            color=self.counter
-       
-    
-        
         if line_style is None:
             line_style='-'
            
@@ -479,21 +397,13 @@ class  PlotSED (object):
 
         line, = self.sedplot.plot(x, y, line_style,label=label)
 
-        
-
         self.lines_model_list.append(line)
-
 
         self.counter+=1
 
         self.update_legend()
         self.update_plot()
 
-
-
-       
-                
-        
 
     def add_residual_plot(self,model,data,label=None,color=None,filter_UL=True,fit_range=None):
 
@@ -517,25 +427,12 @@ class  PlotSED (object):
         else:
             pass
 
-
-
-
-        
-
-
-
-
         self.update_plot()
-
-
-
-
 
 
     def add_text(self,lines):
         self.PLT.focus(0,0)
         x_min, x_max = self.sedplot.get_xlim()
-
         y_min, y_max = self.sedplot.get_ylim()
         t=''
         for line in lines:
@@ -544,10 +441,16 @@ class  PlotSED (object):
         self.PLT.redraw()
 
 
-    def save(self,filename):
-        outfile=self.out_dir+'/'+filename
-        self.fig.savefig(outfile)
+    def save(self,filename=None):
+        if filename is None:
+            wd=self.out_dir
+            filename = 'jetset_fig.png'
 
+        else:
+            wd=''
+
+        outname = os.path.join(wd,filename)
+        self.fig.savefig(outname)
 
     def show(self):
         self.fig.show()
@@ -555,38 +458,213 @@ class  PlotSED (object):
 
 
 
-class  PlotPdistr (object):
+class BasePlot(object):
 
-    def __init__(self):
-        self.fig, self.ax = plt.subplots()
+    def __init__(self,figsize=(8,6),dpi=120):
+        self.fig, self.ax = plt.subplots(figsize=figsize,dpi=dpi)
 
-    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None):
-
-        self.ax.plot(np.log10(gamma), np.log10(n_gamma))
-        self.ax.set_xlabel(r'log($\gamma$)')
-        self.ax.set_ylabel(r'log(n($\gamma$))')
-        self.ax.set_ylim(y_min, y_max)
+    def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):
         self.ax.set_xlim(x_min, x_max)
-        self.update_plot()
-
-    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None):
-
-        self.ax.plot(np.log10(gamma), np.log10(n_gamma *  gamma * gamma *  gamma))
-        self.ax.set_xlabel(r'log($\gamma$)')
-        self.ax.set_ylabel(r'log(n($\gamma$) \gamma^3)')
         self.ax.set_ylim(y_min, y_max)
-        self.ax.set_xlim(x_min, x_max)
-        self.update_plot()
 
     def update_plot(self):
         self.fig.canvas.draw()
+        self.fig.tight_layout()
 
 
-class  PlotSpecComp (object):
+
+class PlotSpectralMultipl(BasePlot):
+    def __init__(self):
+        super(PlotSpectralMultipl, self).__init__()
+
+        secaxy = self.ax.secondary_xaxis('top', functions=(y_ev_transf, y_ev_transf_inv))
+        secaxy.set_xlabel('log(E) (eV)')
+
+
+    def plot(self,nu,y,y_label,y_min=None,y_max=None,label=None,line_style=None,color=None):
+
+        self.ax.plot(np.log10(nu), np.log10(y),label=label,ls=line_style,color=color)
+        self.ax.set_xlabel(r'log($ \nu $)  (Hz)')
+        self.ax.set_ylabel(y_label)
+        self.ax.set_ylim(y_min, y_max)
+        self.ax.legend()
+        self.update_plot()
+
+
+
+
+class  PlotPdistr (BasePlot):
+
+    def __init__(self,figsize=(8,6),dpi=120,injection=False,loglog=True):
+        super(PlotPdistr, self).__init__(figsize=figsize,dpi=dpi)
+        self.loglog=loglog
+        self.injection = injection
+
+    def _set_variable(self,gamma,n_gamma,particle,energy_unit,pow=None):
+
+        energy_plot=False
+        if energy_unit == 'gamma':
+            energy_name = '\gamma'
+            energy_units=''
+        else:
+            energy_name='E'
+            energy_units= '%s'%energy_unit
+            energy_plot=True
+
+        if  energy_plot is False:
+            x=gamma
+            y=n_gamma
+
+        else:
+
+            if particle=='electrons':
+                x = gamma*(m_e*c*c).to(energy_unit).value
+                y = n_gamma * 1.0/(m_e*c*c).to(energy_unit).value
+            elif particle=='protons':
+                x = gamma * (m_p * c * c).to(energy_unit).value
+                y = n_gamma * 1.0 / (m_p * c * c).to(energy_unit).value
+            else:
+                raise  RuntimeError('particle ',particle, 'not implemented')
+
+        m = y > 0
+        x=np.copy(x)
+        y=np.copy(y)
+
+        if pow is not None:
+            y[m] = y[m]* np.power( x[m], pow)
+
+        if self.loglog is True:
+            x[m] = np.log10( x[m])
+            y[m] = np.log10(y[m])
+
+        return x[m], y[m], energy_name,energy_units
+
+
+
+    def _set_xy_label(self,energy_name,energy_units):
+        if energy_units != '':
+            _e = '(%s)' % energy_units
+        else:
+            _e = ''
+
+        if self.loglog is True:
+            self.ax.set_xlabel(r'log($%s$)  %s' % (energy_name, _e))
+        else:
+            self.ax.set_xlabel(r'$%s$  %s' % (energy_name, _e))
+
+        if energy_units != '':
+            _e = '%s^{-1}' % energy_units
+        else:
+            _e = ''
+
+        if self.injection is False:
+
+            if self.loglog is True:
+                self.ax.set_ylabel(r'log(n($%s$))   ($cm^{-3} %s$) '%(energy_name,_e))
+            else:
+                self.ax.set_ylabel(r'n($%s$)   ($cm^{-3} %s$) ' % (energy_name,_e))
+        else:
+            if self.loglog is True:
+                self.ax.set_ylabel(r'log(Q$_{inj}$($%s$))   ($cm^{-3} s^{-1} %s$)' % (energy_name,_e))
+            else:
+                self.ax.set_ylabel(r'Q$_{inj}$($%s$)   ($cm^{-3} s^{-1} %s$)' % (energy_name,_e))
+
+    def _plot(self,x,y,c=None,lw=None,label=None):
+        if self.loglog is True:
+            self.ax.plot(x, y, c=c, lw=lw, label=label)
+        else:
+            self.ax.loglog(x, y,c=c, lw=lw, label=label)
+
+    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma'):
+
+        x,y,energy_name,energy_units=self._set_variable(gamma,n_gamma,particle,energy_unit)
+
+        self._plot(x,y)
+        self._set_xy_label(energy_name,energy_units)
+
+        self.ax.set_ylim(y_min, y_max)
+        self.ax.set_xlim(x_min, x_max)
+        self.update_plot()
+
+    def plot_distr2p(self, gamma, n_gamma, y_min=None, y_max=None, x_min=None, x_max=None,particle='electrons',energy_unit='gamma'):
+
+        x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit,pow=2)
+        self._plot(x,y)
+        self._set_xy_label(energy_name, energy_units)
+
+        self.ax.set_ylim(y_min, y_max)
+        self.ax.set_xlim(x_min, x_max)
+        self.update_plot()
+
+    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma'):
+
+        x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit, pow=3)
+        self._plot(x,y)
+        self._set_xy_label(energy_name, energy_units)
+
+        self.ax.set_ylim(y_min, y_max)
+        self.ax.set_xlim(x_min, x_max)
+        self.update_plot()
+        self.update_plot()
+
+
+class  PlotTempEvEmitters (PlotPdistr):
+
+    def __init__(self,figsize=(8,6),dpi=120,loglog=True):
+        super(PlotTempEvEmitters, self).__init__(figsize=figsize,dpi=dpi,loglog=loglog,)
+
+
+    def _plot_distr(self,temp_ev,particle='electrons',energy_unit='gamma',pow=None,plot_Q_inj=True):
+        for ID in range(1, temp_ev.parameters.NUM_SET.val - 1):
+            x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[ID], particle, energy_unit, pow=pow)
+            self._plot(x,y,c='g',lw=0.1,label=None)
+
+        x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[0], particle, energy_unit, pow=pow)
+        self._plot(x, y, c='black', lw=2,label='Start')
+
+        x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[-1], particle, energy_unit, pow=pow)
+        self._plot(x, y, c='blue', lw=2,label='Stop')
+        self._set_xy_label(energy_name, energy_units)
+
+        y = temp_ev.Q_inj.n_array * temp_ev._temp_ev.deltat
+        x = temp_ev.Q_inj.e_array
+        if plot_Q_inj is True:
+            if pow is not None:
+                y=y*np.power(x,pow)
+
+            self._plot(x,y, c='red', lw=1, label='$Q_{inj}$ deltat')
+
+
+
+        self.ax.legend()
+
+    def plot_distr(self, temp_ev, energy_unit='gamma',plot_Q_inj=True,pow=None):
+        self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=pow,plot_Q_inj=plot_Q_inj)
+
+    def plot_distr2p(self, temp_ev, energy_unit='gamma',plot_Q_inj=True):
+        self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=2,plot_Q_inj=plot_Q_inj)
+
+    def plot_distr3p(self, temp_ev, energy_unit='gamma',plot_Q_inj=True):
+        self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=3,plot_Q_inj=plot_Q_inj)
+
+class  PlotTempEvDiagram (BasePlot):
+
+    def __init__(self,figsize=(8,6),dpi=120):
+        super(PlotTempEvDiagram, self).__init__(figsize=figsize,dpi=dpi)
+
+
+    def plot(self,duration,T_acc_start,T_acc_stop,T_inj_start,T_inj_stop):
+        self.ax.axhline(1, T_acc_start, T_acc_stop, label='Inj. start/stop', c='b')
+        self.ax.axhline(2, T_inj_start, T_inj_stop, label='Acc. start/stop', c='g')
+        self.ax.set_xlim(-0.5, duration)
+        self.ax.legend()
+
+
+
+class  PlotSpecComp (BasePlot):
 
     def __init__(self):
-        self.fig, self.ax = plt.subplots()
-
+        super(PlotSpecComp, self).__init__()
 
     def plot(self,nu,nuFnu,y_min=None,y_max=None):
 
@@ -597,5 +675,16 @@ class  PlotSpecComp (object):
         self.update_plot()
 
 
-    def update_plot(self):
-        self.fig.canvas.draw()
+
+class  PlotSeedPhotons (BasePlot):
+
+    def __init__(self):
+        super(PlotSeedPhotons, self).__init__()
+
+    def plot(self,nu,nuFnu,y_min=None,y_max=None):
+
+        self.ax.plot(np.log10(nu), np.log10(nuFnu))
+        self.ax.set_xlabel(r'log($ \nu $)  (Hz)')
+        self.ax.set_ylabel(r'log(n )  (photons cm$^{-3}$  Hz$^{-1}$  ster$^{-1}$)')
+        self.ax.set_ylim(y_min, y_max)
+        self.update_plot()

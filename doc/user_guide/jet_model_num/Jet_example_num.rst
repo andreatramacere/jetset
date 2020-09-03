@@ -1,4 +1,3 @@
-
 .. _jet_numerical_guide:
 
 Numerical setup
@@ -22,11 +21,13 @@ Changing the grid size for the electron distribution
     -------------------------------------------------------------------------------------------------------------------
     name: test  
     
-    electron distribution:
+    electrons distribution:
      type: lppl  
-     electron energy grid size:  1001
+     gamma energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
+     normalization  True
+     log-values  False
     
     radiative fields:
      seed photons grid size:  100
@@ -36,34 +37,33 @@ Changing the grid size for the electron distribution
        name:Sum, state: on
        name:Sync, state: self-abs
        name:SSC, state: on
+    external fields transformation method: blob
     
     SED info:
      nu grid size :200
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-30
+    flux plot lower bound   :  1.000000e-120
     
-    -------------------------------------------------------------------------------------------------------------------
-    model parameters:
-     Name             | Type                 | Units            | value         | phys. boundaries              | log
-    -------------------------------------------------------------------------------------------------------------------
-     B                | magnetic_field       | G                | +1.000000e-01 | [+0.000000e+00,No           ] | False 
-     N                | electron_density     | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ] | False 
-     R                | region_size          | cm               | +1.569897e+01 | [+0.000000e+00,+3.000000e+01] | True 
-     beam_obj         | beaming              |                  | +1.000000e+01 | [+1.000000e+00,No           ] | False 
-     gamma0_log_parab | turn-over-energy     | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,+1.000000e+08] | False 
-     gmax             | high-energy-cut-off  | Lorentz-factor   | +1.000000e+06 | [+1.000000e+00,+1.000000e+15] | False 
-     gmin             | low-energy-cut-off   | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,+1.000000e+05] | False 
-     r                | spectral_curvature   |                  | +4.000000e-01 | [-1.500000e+01,+1.500000e+01] | False 
-     s                | LE_spectral_slope    |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01] | False 
-     z_cosm           | redshift             |                  | +1.000000e-01 | [+0.000000e+00,No           ] | False 
-    -------------------------------------------------------------------------------------------------------------------
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
+                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
     -------------------------------------------------------------------------------------------------------------------
 
 
 It is possible to change the size of the grid for the electron
-distribution. It is worth noting that at lower values of the grid size
+distributions. It is worth noting that at lower values of the grid size
 the speed will increase, **but it is not recommended to go below 100**.
 
 The actual value of the grid size is returned by the :meth:`.Jet.gamma_grid_size`
@@ -116,18 +116,6 @@ and this value can be changed using the method :meth:`.Jet.set_gamma_grid_size`.
 .. image:: Jet_example_num_files/Jet_example_num_10_0.png
 
 
-.. code:: ipython3
-
-    my_jet.set_gamma_grid_size(10000)
-    my_jet.eval()
-    sed_plot=my_jet.plot_model()
-    sed_plot.rescale(x_min=8,y_min=-20,y_max=-12)
-
-
-
-.. image:: Jet_example_num_files/Jet_example_num_11_0.png
-
-
 Changing the grid size for the seed photons
 -------------------------------------------
 
@@ -145,11 +133,13 @@ Changing the grid size for the seed photons
     -------------------------------------------------------------------------------------------------------------------
     name: test  
     
-    electron distribution:
+    electrons distribution:
      type: lppl  
-     electron energy grid size:  1001
+     gamma energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
+     normalization  True
+     log-values  False
     
     radiative fields:
      seed photons grid size:  100
@@ -159,29 +149,28 @@ Changing the grid size for the seed photons
        name:Sum, state: on
        name:Sync, state: self-abs
        name:SSC, state: on
+    external fields transformation method: blob
     
     SED info:
      nu grid size :200
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-30
+    flux plot lower bound   :  1.000000e-120
     
-    -------------------------------------------------------------------------------------------------------------------
-    model parameters:
-     Name             | Type                 | Units            | value         | phys. boundaries              | log
-    -------------------------------------------------------------------------------------------------------------------
-     B                | magnetic_field       | G                | +1.000000e-01 | [+0.000000e+00,No           ] | False 
-     N                | electron_density     | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ] | False 
-     R                | region_size          | cm               | +1.569897e+01 | [+0.000000e+00,+3.000000e+01] | True 
-     beam_obj         | beaming              |                  | +1.000000e+01 | [+1.000000e+00,No           ] | False 
-     gamma0_log_parab | turn-over-energy     | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,+1.000000e+08] | False 
-     gmax             | high-energy-cut-off  | Lorentz-factor   | +1.000000e+06 | [+1.000000e+00,+1.000000e+15] | False 
-     gmin             | low-energy-cut-off   | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,+1.000000e+05] | False 
-     r                | spectral_curvature   |                  | +4.000000e-01 | [-1.500000e+01,+1.500000e+01] | False 
-     s                | LE_spectral_slope    |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01] | False 
-     z_cosm           | redshift             |                  | +1.000000e-01 | [+0.000000e+00,No           ] | False 
-    -------------------------------------------------------------------------------------------------------------------
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
+                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
     -------------------------------------------------------------------------------------------------------------------
 
 
@@ -210,13 +199,13 @@ and this value can be changed using the method :meth:`.Jet.set_seed_nu_size`. In
 
 
 
-.. image:: Jet_example_num_files/Jet_example_num_18_0.png
+.. image:: Jet_example_num_files/Jet_example_num_17_0.png
 
 
 Changing the grid size for the IC process spectra
 -------------------------------------------------
 
-**in the current version there is lit of the size to 1000**
+**in the current version there is a limit of the size to 1000**
 
 .. code:: ipython3
 
@@ -232,11 +221,13 @@ Changing the grid size for the IC process spectra
     -------------------------------------------------------------------------------------------------------------------
     name: test  
     
-    electron distribution:
+    electrons distribution:
      type: lppl  
-     electron energy grid size:  1001
+     gamma energy grid size:  1001
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
+     normalization  True
+     log-values  False
     
     radiative fields:
      seed photons grid size:  100
@@ -246,29 +237,28 @@ Changing the grid size for the IC process spectra
        name:Sum, state: on
        name:Sync, state: self-abs
        name:SSC, state: on
+    external fields transformation method: blob
     
     SED info:
      nu grid size :200
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-30
+    flux plot lower bound   :  1.000000e-120
     
-    -------------------------------------------------------------------------------------------------------------------
-    model parameters:
-     Name             | Type                 | Units            | value         | phys. boundaries              | log
-    -------------------------------------------------------------------------------------------------------------------
-     B                | magnetic_field       | G                | +1.000000e-01 | [+0.000000e+00,No           ] | False 
-     N                | electron_density     | cm^-3            | +1.000000e+02 | [+0.000000e+00,No           ] | False 
-     R                | region_size          | cm               | +1.569897e+01 | [+0.000000e+00,+3.000000e+01] | True 
-     beam_obj         | beaming              |                  | +1.000000e+01 | [+1.000000e+00,No           ] | False 
-     gamma0_log_parab | turn-over-energy     | Lorentz-factor   | +1.000000e+04 | [+1.000000e+00,+1.000000e+08] | False 
-     gmax             | high-energy-cut-off  | Lorentz-factor   | +1.000000e+06 | [+1.000000e+00,+1.000000e+15] | False 
-     gmin             | low-energy-cut-off   | Lorentz-factor   | +2.000000e+00 | [+1.000000e+00,+1.000000e+05] | False 
-     r                | spectral_curvature   |                  | +4.000000e-01 | [-1.500000e+01,+1.500000e+01] | False 
-     s                | LE_spectral_slope    |                  | +2.000000e+00 | [-1.000000e+01,+1.000000e+01] | False 
-     z_cosm           | redshift             |                  | +1.000000e-01 | [+0.000000e+00,No           ] | False 
-    -------------------------------------------------------------------------------------------------------------------
+          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
+    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
+                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
+                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
+                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
+                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
+                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
+    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
+                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
+                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
+                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
+            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
+              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
     -------------------------------------------------------------------------------------------------------------------
 
 
@@ -284,14 +274,14 @@ Changing the grid size for the IC process spectra
 
 .. code:: ipython3
 
-    my_jet.IC_nu_size=10
+    my_jet.IC_nu_size=20
     my_jet.eval()
     sed_plot=my_jet.plot_model()
     sed_plot.rescale(x_min=8,y_min=-20,y_max=-12)
 
 
 
-.. image:: Jet_example_num_files/Jet_example_num_23_0.png
+.. image:: Jet_example_num_files/Jet_example_num_22_0.png
 
 
 .. code:: ipython3
@@ -303,7 +293,5 @@ Changing the grid size for the IC process spectra
 
 
 
-.. image:: Jet_example_num_files/Jet_example_num_24_0.png
-
-
+.. image:: Jet_example_num_files/Jet_example_num_23_0.png
 

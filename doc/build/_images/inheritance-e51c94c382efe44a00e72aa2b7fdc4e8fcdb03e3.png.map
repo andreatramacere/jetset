@@ -1,6 +1,0 @@
-<map id="inheritance9f70be68e3" name="inheritance9f70be68e3">
-<area shape="rect" id="node1" href="jetset.analytical_model.AnalyticalParameter.html#jetset.analytical_model.AnalyticalParameter" target="_top" title="This class is a subclass of the :class:`.ModelParameter` class," alt="" coords="173,54,315,79"/>
-<area shape="rect" id="node2" href="jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter" target="_top" title="This class is the base class for models parameters. The following keywords " alt="" coords="5,54,125,79"/>
-<area shape="rect" id="node3" href="jetset.analytical_model.Disk.html#jetset.analytical_model.Disk" target="_top" title="Disk" alt="" coords="208,5,280,30"/>
-<area shape="rect" id="node4" href="jetset.base_model.Model.html#jetset.base_model.Model" target="_top" title="Model" alt="" coords="29,5,101,30"/>
-</map>
