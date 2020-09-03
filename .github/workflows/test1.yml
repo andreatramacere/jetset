@@ -1,7 +1,11 @@
 name: Test CI/CD jetset
 
-on: [workflow_dispatch]
-
+on:
+  workflow_dispatch:
+    inputs:
+      git-ref:
+        description: Git Ref (Optional)
+        required: false
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -10,8 +14,14 @@ jobs:
         os: [ubuntu-latest, macos-10.15]
         python-version: [3.7]
     steps:
+      - name: Clone Repository (Latest)
+        uses: actions/checkout@v2
+      - name: Clone Repository (Custom Ref)
+        uses: actions/checkout@v2
+        if: github.event.inputs.git-ref != ''
+        with:
+          ref: ${{ github.event.inputs.git-ref }}
 
-      - uses: actions/checkout@v2
       - name: Setup conda
         uses: s-weigand/setup-conda@v1
         with:
@@ -32,5 +42,5 @@ jobs:
 
       - name: test
         run: |
-          pytest --pyargs jetset.tests.test_functions::test_short
+            pytest --pyargs jetset.tests.test_functions::test_short
 
