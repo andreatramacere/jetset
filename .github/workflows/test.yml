@@ -1,16 +1,12 @@
 name: Test CI/CD jetset
-
 on: [workflow_dispatch]
-
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-10.13]
         python-version: [3.7]
-
     steps:
       - uses: actions/checkout@v2
       - name: Setup conda
