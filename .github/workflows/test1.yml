@@ -24,10 +24,10 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - name: Set env_TEST
+      - name: Set env
         run: echo "::set-env name=TEST::$(cat test.txt)"
 
-      - name: Print env_TEST
+      - name: Print env
         run: |
           echo "TEST=${TEST}"
           printenv
@@ -57,10 +57,10 @@ jobs:
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
 
-      - name: Set env PKG_VERSION
+      - name: Set env
         run: echo "::set-env name=PKG_VERSION:$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
 
-      - name: Print env_PKG_VERSION
+      - name: Print env
         run: |
           echo "PKG_VERSION=${PKG_VERSION}"
           printenv
@@ -69,7 +69,7 @@ jobs:
         env:
           JETSETBESSELBUILD: "FALSE"
 
-      - name: Print env_JETSETBESSELBUILD
+      - name: Print env 
         run: |
           echo "JETSETBESSELBUILD=${JETSETBESSELBUILD}"
           printenv
