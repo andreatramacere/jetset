@@ -58,7 +58,7 @@ jobs:
       #    pytest --pyargs jetset.tests.test_functions::test_short
 
       - name: Set env
-        run: echo "::set-env name=PKG_VERSION:$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
+        run: echo "::set-env name=PKG_VERSION::$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
 
       - name: Print env
         run: |
