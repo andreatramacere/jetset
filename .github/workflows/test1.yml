@@ -57,10 +57,10 @@ jobs:
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
 
-      - name: Set env
+      - name: Set env PKG_VERSION
         run: echo "::set-env name=PKG_VERSION::$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
 
-      - name: Print env
+      - name: Print env PKG_VERSION
         run: |
           echo "PKG_VERSION=${PKG_VERSION}"
           printenv
@@ -83,10 +83,11 @@ jobs:
           conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err
           conda-build . --output > ./CONDABUILDJETSET.txt
 
-      - name: Set env
+      - name: Set env CONDABUILDJETSET
+        working-directory: ./CICD/conda-pipeline/linux/
         run:  echo "::set-env name=CONDABUILDJETSET::$(cat CONDABUILDJETSET.txt)"
 
-      - name: Printenv
+      - name: Printenv CONDABUILDJETSET
         run: |
           echo "CONDABUILDJETSET=${CONDABUILDJETSET}"
           printenv
