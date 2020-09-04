@@ -15,7 +15,6 @@ jobs:
         python-version: [3.7]
 
     steps:
-
       - name: Clone Repository (Latest)
         uses: actions/checkout@v2
 
