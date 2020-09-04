@@ -52,9 +52,12 @@ jobs:
         run: |
           echo 'pwd' $PWD
           conda config --set anaconda_upload no
-          conda build conda-pipeline --python=artifact
           conda build purge
           conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err
+          export CONDABUILDJETSET=$(conda-build . --output)
+          echo  '$CONDABUILDJETSET' $CONDABUILDJETSET
+          echo '---> done'
+
       #- name: echo build
       #  shell: bash
       #  run: |
@@ -64,5 +67,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
             name: artifact
-            path: artifact
+            path: $CONDABUILDJETSET
 
