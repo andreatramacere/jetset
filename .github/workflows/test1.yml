@@ -13,18 +13,19 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-10.15]
         python-version: [3.7]
-    steps:
 
+    steps:
 
       - name: Clone Repository (Latest)
         uses: actions/checkout@v2
+
       - name: Clone Repository (Custom Ref)
         uses: actions/checkout@v2
         if: github.event.inputs.git-ref != ''
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - name: Set env TEST
+      - name: Set env_TEST
         run: echo "::set-env name=TEST::$(cat test.txt)"
 
       - name: Print env TEST
@@ -60,7 +61,7 @@ jobs:
       - name: Set env PKG_VERSION
         run: echo "::set-env name=PKG_VERSION:$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
 
-      - name: Print env PKG_VERSION
+      - name: Print env_PKG_VERSION
         run: |
           echo "PKG_VERSION=${PKG_VERSION}"
           printenv
@@ -69,7 +70,7 @@ jobs:
         env:
           JETSETBESSELBUILD: "FALSE"
 
-      - name: Print env JETSETBESSELBUILD
+      - name: Print env_JETSETBESSELBUILD
         run: |
           echo "JETSETBESSELBUILD=${JETSETBESSELBUILD}"
           printenv
