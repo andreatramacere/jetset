@@ -25,13 +25,17 @@ jobs:
           ref: ${{ github.event.inputs.git-ref }}
 
       - name: Set env TEST
-        run: echo "::set-env name=TEST::$(cat test.txt)"
+        run: echo "::set-env name=TEST::$(cat test-path.txt)"
 
       - name: Print env TEST
         run: |
           echo "TEST=${TEST}"
           printenv
 
+      - uses: actions/upload-artifact@v2
+        with:
+          name: test-package
+          path: ${{ TEST }}
 
       - name: Setup conda
         uses: s-weigand/setup-conda@v1
@@ -96,5 +100,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: conda-package
-          path: ${CONDABUILDJETSET}
+          path: ${{ CONDABUILDJETSET }}
 
