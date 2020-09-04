@@ -50,7 +50,7 @@ jobs:
       - name: conda build
         working-directory: ./CICD/conda-pipeline/linux/
         run: |
-#          echo 'pwd' $PWD
+#         echo 'pwd' $PWD
           conda config --set anaconda_upload no
           conda build purge
           conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err
@@ -71,9 +71,9 @@ jobs:
 
 
       - name: Printenv
-          run: |
-            echo "CONDABUILDJETSET=${CONDABUILDJETSET}"
-            printenv
+        run: |
+          echo "CONDABUILDJETSET=${CONDABUILDJETSET}"
+          printenv
 
       - uses: actions/upload-artifact@v2
         with:
