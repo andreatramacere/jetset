@@ -34,7 +34,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.RUNNER_OS }}
+          name: ${{ matrix.os }}-${{ TEST }}
           path: ${{ env.TEST }}
 
       - name: Setup conda
@@ -99,6 +99,6 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.RUNNER_OS }}
+          name: ${{ matrix.os }}-${{ env.PKG_VERSION }}-package
           path: ${{ env.CONDABUILDJETSET }}
 
