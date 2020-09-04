@@ -96,5 +96,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: conda-package
-          path: $CONDABUILDJETSET
+          path: ${CONDABUILDJETSET}
 
