@@ -50,19 +50,30 @@ jobs:
       - name: conda build
         working-directory: ./CICD/conda-pipeline/linux/
         run: |
-          echo 'pwd' $PWD
+#          echo 'pwd' $PWD
           conda config --set anaconda_upload no
           conda build purge
           conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err
-          export CONDABUILDJETSET=$(conda-build . --output)
-#          #echo  'CONDABUILDJETSET' $CONDABUILDJETSET
-#          #echo '---> done'
+#         export CONDABUILDJETSET=$(conda-build . --output)
+#         #echo  'CONDABUILDJETSET' $CONDABUILDJETSET
+#         #echo '---> done'
 
       #- name: echo build
       #  shell: bash
       #  run: |
       #    export CONDABUILDJETSET=$(conda-build . --output)
       #    echo  $CONDABUILDJETSET
+
+      - name: set environment variables
+        uses: allenevans/set-env@v1.0.0
+          with:
+            CONDABUILDJETSET: conda-build . --output
+
+
+      - name: Printenv
+          run: |
+            echo "CONDABUILDJETSET=${CONDABUILDJETSET}"
+            printenv
 
       - uses: actions/upload-artifact@v2
         with:
