@@ -24,11 +24,10 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - name: Set env
+      - name: Set env TEST
         run: echo "::set-env name=TEST::$(cat test.txt)"
 
-
-      - name: Print env
+      - name: Print env TEST
         run: |
           echo "TEST=${TEST}"
           printenv
@@ -57,6 +56,23 @@ jobs:
       #- name: test
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
+
+      - name: Set env PKG_VERSION
+        run: echo "::set-env name=PKG_VERSION:$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
+
+      - name: Print env PKG_VERSION
+        run: |
+          echo "PKG_VERSION=${PKG_VERSION}"
+          printenv
+
+      - name: Set env JETSETBESSELBUILD
+        env:
+          JETSETBESSELBUILD: "FALSE"
+
+      - name: Print env JETSETBESSELBUILD
+        run: |
+          echo "JETSETBESSELBUILD=${JETSETBESSELBUILD}"
+          printenv
 
       - name: conda build
         working-directory: ./CICD/conda-pipeline/linux/
