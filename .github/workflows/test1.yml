@@ -31,9 +31,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          conda install --yes   -c conda-forge emcee">=3.0.0"
-          conda install --yes   -c astropy --file requirements.txt
-          conda install --yes pytest
+          conda config --set always_yes yes
+          conda install conda-build
+          conda install -c conda-forge emcee">=3.0.0"
+          conda install -c astropy --file requirements.txt
+          conda install  pytest
   
       - name: build
         run: |
@@ -47,17 +49,19 @@ jobs:
 
       - name: conda build
         run: |
+          cd CICD/conda-pipeline/linux/
+          conda config --set anaconda_upload no
+          conda build conda-pipeline --python=artifact
           conda build purge
           conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err
-      - name: echo build
-        shell: bash
-        run: |
-          export CONDABUILDJETSET=$(conda-build . --output)
-          echo  $CONDABUILDJETSET
+      #- name: echo build
+      #  shell: bash
+      #  run: |
+      #    export CONDABUILDJETSET=$(conda-build . --output)
+      #    echo  $CONDABUILDJETSET
 
-      #- name: uplaod package
-      #  uses: actions/upload-artifact@v2
-      #    with:
-      #      name: test-upload
-      #      path: math-homework.txt
+      - uses: actions/upload-artifact@v2
+        with:
+            name: artifact
+            path: artifact
 
