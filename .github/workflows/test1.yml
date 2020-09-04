@@ -34,7 +34,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.os }}-${{ TEST }}
+          name: ${{ matrix.os }}-TEST
           path: ${{ env.TEST }}
 
       - name: Setup conda
