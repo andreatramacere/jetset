@@ -55,8 +55,8 @@ jobs:
           conda build purge
           conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err
           export CONDABUILDJETSET=$(conda-build . --output)
-          echo  '$CONDABUILDJETSET' $CONDABUILDJETSET
-          echo '---> done'
+#          #echo  'CONDABUILDJETSET' $CONDABUILDJETSET
+#          #echo '---> done'
 
       #- name: echo build
       #  shell: bash
