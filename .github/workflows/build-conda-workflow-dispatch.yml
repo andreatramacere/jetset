@@ -80,7 +80,7 @@ jobs:
           printenv
 
       - name: conda build
-        working-directory: ./CICD/conda-pipeline/linux/
+        working-directory: ./CICD/conda-pipeline/github/
         run: |
           conda config --set anaconda_upload no
           conda build purge
@@ -88,7 +88,7 @@ jobs:
           conda-build . --output > ./CONDABUILDJETSET.txt
 
       - name: Set env CONDABUILDJETSET
-        working-directory: ./CICD/conda-pipeline/linux/
+        working-directory: ./CICD/conda-pipeline/github/
         run:  echo "::set-env name=CONDABUILDJETSET::$(cat CONDABUILDJETSET.txt)"
 
       - name: Printenv CONDABUILDJETSET
