@@ -27,7 +27,7 @@ jobs:
       - name: Set env_TEST
         run: echo "::set-env name=TEST::$(cat test.txt)"
 
-      - name: Print env TEST
+      - name: Print env_TEST
         run: |
           echo "TEST=${TEST}"
           printenv
