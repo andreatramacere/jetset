@@ -1,0 +1,75 @@
+https://packaging.python.org/tutorials/packaging-projects/
+https://github.com/pySTEPS/pysteps/blob/master/doc/source/developer_guide/pypi.rst
+
+
+conda deactivate
+
+#ON DOCKER
+docker run -it --rm -v $PWD:/workdir -w /workdir continuumio/miniconda3 bash
+apt-get update
+apt-get install -y swig gcc
+
+docker run -it --rm -v $PWD:/workdir -w /workdir quay.io/pypa/manylinux2010_x86_64 bash
+#yum -y install rh-python36
+#yum -y install python-pip
+yum -y install swig
+python3->/opt/python/cp36-cp36m/bin/python
+
+
+(docker stop $(docker ps -a -q))
+
+#build pip virtual env: https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+
+sudo python get-pip.py
+pip install --upgrade pip
+
+python3 -m pip install --user virtualenv
+python3 -m pip install --user --upgrade twine
+python3 -m pip install --user --upgrade setuptools wheel
+
+local installation is in: Users/orion/Library/Python/3.7
+
+working dir: /Users/orion/astro/Programmi/Projects/Active/JetSeT/JetSeT_CICD/PIP
+
+python3 -m venv jetset_pip
+
+#dactivate conda
+source jetset_pip/bin/activate
+
+#INTEGRATION
+mkdir integration
+cd integration
+
+
+
+
+#set pip_build envvar
+export USE_PIP='TRUE'
+
+#build
+git clone git@github.com:andreatramacere/jetset.git
+
+cd jetset
+git checkout develop
+git pull origin-github develop
+
+python3 setup.py clean
+python3 setup.py sdist bdist_wheel
+python3 -m twine  check dist/*
+auditwheel repair dist/mylibrary*whl -w /output
+
+#set pip_build envvar
+export USE_PIP='FALSE'
+
+#DEPLOYMENT
+
+#tests deploy to twine
+python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+#tests pip install
+python3 -m pip install --no-cache-dir --index-url https://test.pypi.org/simple/  --extra-index-url=https://pypi.org/simple/ jetset
+
+
+#tests deploy to Pypi
+python3 -m twine upload  dist/*

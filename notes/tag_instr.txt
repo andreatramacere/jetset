@@ -1,0 +1,4 @@
+git tag -d stable  
+git push --delete origin stable
+git tag -a stable -m'stable'
+git push --tags
