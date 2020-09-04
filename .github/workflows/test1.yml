@@ -57,19 +57,19 @@ jobs:
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
 
-      - name: Set env
-        run: echo "::set-env name=PKG_VERSION:$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
+      #- name: Set env
+      #  run: echo "::set-env name=PKG_VERSION:$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
 
-      - name: Print env
-        run: |
-          echo "PKG_VERSION=${PKG_VERSION}"
-          printenv
+      #- name: Print env
+      #  run: |
+      #    echo "PKG_VERSION=${PKG_VERSION}"
+      #    printenv
 
       - name: Set env JETSETBESSELBUILD
         env:
           JETSETBESSELBUILD: "FALSE"
 
-      - name: Print env 
+      - name: Print env
         run: |
           echo "JETSETBESSELBUILD=${JETSETBESSELBUILD}"
           printenv
