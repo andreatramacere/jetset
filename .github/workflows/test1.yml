@@ -46,7 +46,6 @@ jobs:
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
 
-
       - name: conda build
         working-directory: ./CICD/conda-pipeline/linux/
         run: |
@@ -67,8 +66,7 @@ jobs:
       - name: set environment variables
         uses: allenevans/set-env@v1.0.0
         with:
-            CONDABUILDJETSET: conda-build . --output
-
+         CONDABUILDJETSET: conda-build . --output
 
       - name: Printenv
         run: |
@@ -77,6 +75,6 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-            name: artifact
-            path: $CONDABUILDJETSET
+          name: artifact
+          path: $CONDABUILDJETSET
 
