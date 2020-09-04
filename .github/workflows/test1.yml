@@ -56,6 +56,14 @@ jobs:
       #- name: test
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
+      - name: Set env JETSETBESSELBUILD
+        env:
+          JETSETBESSELBUILD: "FALSE"
+
+      - name: Print env
+        run: |
+          echo "JETSETBESSELBUILD=${JETSETBESSELBUILD}"
+          printenv
 
       - name: conda build
         working-directory: ./CICD/conda-pipeline/linux/
