@@ -25,12 +25,14 @@ jobs:
           ref: ${{ github.event.inputs.git-ref }}
 
       - name: Set env
-        run: echo ::set-env name=CONDABUILDJETSET::$(cat ./test.txt)
+        run: echo "::set-env name=CONDABUILDJETSET::$(cat test.txt)"
+
 
       - name: Print env
         run: |
-          echo CONDABUILDJETSET
+          echo "CONDABUILDJETSET=${CONDABUILDJETSET}"
           printenv
+
 
       - name: Setup conda
         uses: s-weigand/setup-conda@v1
@@ -62,16 +64,21 @@ jobs:
           conda config --set anaconda_upload no
           conda build purge
           conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err
+          conda-build . --output > ./CONDABUILDJETSET.txt
+      #- name: set environment variables
+      #  uses: allenevans/set-env@v1.0.0
+      #  with:
+      #   CONDABUILDJETSET: conda-build . --output
 
-      - name: set environment variables
-        uses: allenevans/set-env@v1.0.0
-        with:
-         CONDABUILDJETSET: conda-build . --output
+      - name: Set env
+        run:  echo "::set-env name=CONDABUILDJETSET::$(cat CONDABUILDJETSET.txt)"
 
       - name: Printenv
         run: |
           echo "CONDABUILDJETSET=${CONDABUILDJETSET}"
           printenv
+
+
 
       - uses: actions/upload-artifact@v2
         with:
