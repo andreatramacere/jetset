@@ -32,10 +32,10 @@ jobs:
           echo "TEST=${TEST}"
           printenv
 
-      #- uses: actions/upload-artifact@v2
-      #  with:
-      #    name: test-package
-      #    path: ${{ env.TEST }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: test-package-${{ env.RUNNER_OS }}
+          path: ${{ env.TEST }}
 
       - name: Setup conda
         uses: s-weigand/setup-conda@v1
@@ -99,6 +99,6 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: conda-package
+          name: conda-package-${{ env.RUNNER_OS }}
           path: ${{ env.CONDABUILDJETSET }}
 
