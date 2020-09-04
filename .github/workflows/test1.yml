@@ -48,9 +48,9 @@ jobs:
 
 
       - name: conda build
+        working-directory: ./CICD/conda-pipeline/linux/
         run: |
           echo 'pwd' $PWD
-          cd ./CICD/conda-pipeline/linux/
           conda config --set anaconda_upload no
           conda build conda-pipeline --python=artifact
           conda build purge
