@@ -25,12 +25,11 @@ jobs:
           ref: ${{ github.event.inputs.git-ref }}
 
       - name: Set env
-        run: echo "::set-env name=CONDABUILDJETSET::$(cat test.txt)"
-
+        run: echo "::set-env name=TEST::$(cat test.txt)"
 
       - name: Print env
         run: |
-          echo "CONDABUILDJETSET=${CONDABUILDJETSET}"
+          echo "TEST=${TEST}"
           printenv
 
 
