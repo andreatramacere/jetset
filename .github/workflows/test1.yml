@@ -14,6 +14,14 @@ jobs:
         os: [ubuntu-latest, macos-10.15]
         python-version: [3.7]
     steps:
+      - name: Set env
+        run: echo ::set-env name=CONDABUILDJETSET::$(cat ./test.txt)
+
+      - name: Print env
+        run: |
+          echo CONDABUILDJETSET
+          printenv
+
       - name: Clone Repository (Latest)
         uses: actions/checkout@v2
       - name: Clone Repository (Custom Ref)
@@ -49,19 +57,9 @@ jobs:
       - name: conda build
         working-directory: ./CICD/conda-pipeline/linux/
         run: |
-#         echo 'pwd' $PWD
           conda config --set anaconda_upload no
           conda build purge
           conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err
-#         export CONDABUILDJETSET=$(conda-build . --output)
-#         #echo  'CONDABUILDJETSET' $CONDABUILDJETSET
-#         #echo '---> done'
-
-      #- name: echo build
-      #  shell: bash
-      #  run: |
-      #    export CONDABUILDJETSET=$(conda-build . --output)
-      #    echo  $CONDABUILDJETSET
 
       - name: set environment variables
         uses: allenevans/set-env@v1.0.0
