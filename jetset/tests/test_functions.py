@@ -149,8 +149,8 @@ def model_fit_minuit(sed_data,my_shape, plot=True):
     jet_minuit.set_gamma_grid_size(200)
 
     fit_model_minuit = FitModel(jet=jet_minuit, name='SSC-best-fit-minuit', template=my_shape.host_gal)
-    fit_model_minuit.freeze('z_cosm')
-    fit_model_minuit.freeze('R_H')
+    fit_model_minuit.freeze('jet_leptonic', 'z_cosm')
+    fit_model_minuit.freeze('jet_leptonic', 'R_H')
     fit_model_minuit.jet_leptonic.parameters.beam_obj.fit_range = [5, 50]
     fit_model_minuit.jet_leptonic.parameters.R.fit_range = [10 ** 15.5, 10 ** 17.5]
     fit_model_minuit.host_galaxy.parameters.nuFnu_p_host.frozen = False
