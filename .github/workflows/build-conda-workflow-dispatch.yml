@@ -96,8 +96,6 @@ jobs:
           echo "CONDABUILDJETSET=${CONDABUILDJETSET}"
           printenv
 
-      - name: rename file
-        run: mv ${{ env.CONDABUILDJETSET }} ${{ env.CONDABUILDJETSET }}-${{ matrix.os }}
 
       - uses: actions/upload-artifact@v2
         with:
