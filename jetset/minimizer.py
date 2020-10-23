@@ -280,7 +280,7 @@ class ModelMinimizer(object):
         msk1 = sed_data.data['nu_data'] > nu_fit_start
         msk2 = sed_data.data['nu_data'] < nu_fit_stop
         msk_zero_error = sed_data.data['dnuFnu_data'] > 0.0
-
+        self.use_UL=use_UL
         if use_UL == True:
             msk = msk1 * msk2 * msk_zero_error
 
@@ -395,7 +395,7 @@ class ModelMinimizer(object):
                     if i>0:
                         old_chisq = self.minimizer.chisq
 
-                self.minimizer.fit(self,max_ev=max_ev,silent=silent)
+                self.minimizer.fit(self,max_ev=max_ev,silent=silent,use_UL=use_UL)
                 new_chisq = self.minimizer.chisq
                 if i==0:
                     old_chisq = new_chisq
@@ -447,7 +447,8 @@ class ModelMinimizer(object):
                                                  self.fit_par_free,
                                                  self.data,
                                                  self.fit_Model,
-                                                 self.loglog)
+                                                 self.loglog,
+                                                 use_UL=self.use_UL)
 
 
 
@@ -486,7 +487,10 @@ class Minimizer(object):
         self._progress_iter = cycle(['|', '/', '-', '\\'])
 
 
-    def fit(self,model,max_ev=None,use_UL=False,silent=False):
+    def fit(self,model,
+            max_ev=None,
+            use_UL=False,
+            silent=False):
         self.use_UL = use_UL
         self.calls=0
         self.res_check=None
@@ -583,13 +587,29 @@ class Minimizer(object):
         return res
 
 
+    def get_chisq(self):
+        model = self.model.fit_Model.eval(nu=self.model.data['x'],
+                                fill_SED=False,
+                                get_model=True,
+                                loglog=self.model.loglog)
+
+        _res_sum, _res, _res_UL = _eval_res(self.model.data['y'],
+                                            model,
+                                            self.model.data['dy'],
+                                            self.model.data['UL'],
+                                            use_UL=self.use_UL)
+        return  _res_sum
+
 def _eval_res(data, model, data_error, UL, use_UL=False):
 
     res_no_UL = (data[~UL] - model[~UL]) / (data_error[~UL])
     res = (data - model) / (data_error)
     res_UL = [0]
-    if UL.sum() > 0 and use_UL == True:
+    #print('UL.sum() ',UL.sum(),use_UL)
+    if UL.sum() > 0 and use_UL is True:
+
         res_UL = _eval_res_UL(data[UL], model[UL], data_error[UL])
+        #print('ress_UL', res_UL)
 
     res_sum=np.sum(res_no_UL * res_no_UL) - 2.0*np.sum(res_UL)
     return res_sum,res,res_UL
@@ -597,7 +617,7 @@ def _eval_res(data, model, data_error, UL, use_UL=False):
 def _eval_res_UL(y_UL,y_model,y_err):
     y = (y_UL - y_model) / (np.sqrt(2) *y_err)
     x=0.5*(1.0+sp.special.erf(y))
-    x[x==0]=1E-200
+    x[x<1E-200]=1E-200
     return  np.log(x)
 
 
@@ -619,8 +639,8 @@ class LSBMinimizer(Minimizer):
                                                               self.model.fit_Model,
                                                               self.model.loglog,
                                                               False,
-                                                              False,
-                                                              self.silent),
+                                                              self.use_UL,
+                                                              self.silent,),
                                                         xtol=self.xtol,
                                                         ftol=self.ftol,
                                                         factor=self.factor,
@@ -630,12 +650,12 @@ class LSBMinimizer(Minimizer):
 
         self.mesg = mesg
         self.covar = covar
-        self.chisq =  sum(info["fvec"] * info["fvec"])
+        #self.chisq =  sum(info["fvec"] * info["fvec"])
 
         self.pout = pout
 
-    def get_chisq(self):
-        return self.chisq
+    #def get_chisq(self):
+    #    return self.chisq
 
 
 class LSMinimizer(Minimizer):
@@ -673,8 +693,8 @@ class LSMinimizer(Minimizer):
         self.mesg = fit.message
         self.pout = fit.x
 
-    def get_chisq(self):
-        return self.chisq
+    #def get_chisq(self):
+    #    return self.chisq
 
 
 
@@ -754,9 +774,9 @@ class MinutiMinimizer(Minimizer):
 
 
 
-    def get_chisq(self):
-        #print ('p',self.p)
-        return self.chisq_func(*self.p)
+    #def get_chisq(self):
+    #    #print ('p',self.p)
+    #    return self.chisq_func(*self.p)
 
     def minos_errors(self,par=None):
         try:
