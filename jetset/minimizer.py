@@ -617,7 +617,7 @@ def _eval_res(data, model, data_error, UL, use_UL=False):
 def _eval_res_UL(y_UL,y_model,y_err):
     y = (y_UL - y_model) / (np.sqrt(2) *y_err)
     x=0.5*(1.0+sp.special.erf(y))
-    x[x<1E-200]=1E-200
+    x[x<1E-300]=1E-300
     return  np.log(x)
 
 
