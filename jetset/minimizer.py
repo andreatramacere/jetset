@@ -396,22 +396,37 @@ class ModelMinimizer(object):
                         old_chisq = self.minimizer.chisq
 
                 self.minimizer.fit(self,max_ev=max_ev,silent=silent,use_UL=use_UL)
+
+                self.pout = self.minimizer.pout
+                self.errors = self.minimizer.errors
+                if hasattr(self.minimizer, 'asymm_errors'):
+                    self.asymm_errors = self.minimizer.asymm_errors
+
+                self.reset_to_best_fit()
+                self.minimizer._fit_stats()
+                print()
+                print('- best chisq=%5.5e'%(self.minimizer.chisq))
+
                 new_chisq = self.minimizer.chisq
                 if i==0:
                     old_chisq = new_chisq
 
                 chisq_min = min(new_chisq, old_chisq)
-                if i==0 or new_chisq<=chisq_min:
-                    #print('update par for chisq',chisq_min )
-                    self.pout = self.minimizer.pout
-                    self.errors = self.minimizer.errors
-                    if  hasattr(self.minimizer,'asymm_errors'):
-                        self.asymm_errors = self.minimizer.asymm_errors
+                #if i==0 or new_chisq<=chisq_min:
+                #    self.pout = self.minimizer.pout
+                #    self.errors = self.minimizer.errors
+                #    if  hasattr(self.minimizer,'asymm_errors'):
+                #        self.asymm_errors = self.minimizer.asymm_errors
+                #elif new_chisq>=chisq_min:
+                #    self.pout = self.minimizer.pout
+                #    self.errors = self.minimizer.errors
+                #    if hasattr(self.minimizer, 'asymm_errors'):
+                #        self.asymm_errors = self.minimizer.asymm_errors
 
                 if i<repeat-1:
                     self.pinit = [par.val for par in self.fit_par_free]
-                    if silent is False:
-                        print()
+                #    if silent is False:
+                #        print()
             else:
                 pass
 
@@ -421,6 +436,7 @@ class ModelMinimizer(object):
     def get_fit_results(self, fit_Model, nu_fit_start, nu_fit_stop, fitname, silent=False, loglog=False):
 
         self.reset_to_best_fit()
+        self.minimizer._fit_stats()
         best_fit = FitResults(fitname,
                               self,
                               fit_Model.parameters,
@@ -535,7 +551,7 @@ class Minimizer(object):
         if np.mod(self.calls, 10) == 0 and self.calls != 0:
             #_c= ' ' * 256
             #print("\r%s"%_c,end="")
-            print("\r%s minim function calls=%d, chisq=%f UL part=%f" % (next(self._progress_iter),self.calls, _res_sum, -2.0*np.sum(res_UL)), end="")
+            print("\r%s minim function calls=%d, chisq=%5.5e UL part=%f" % (next(self._progress_iter),self.calls, _res_sum, -2.0*np.sum(res_UL)), end="")
 
 
     def residuals_Fit(self,
