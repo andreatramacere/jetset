@@ -393,6 +393,9 @@ class ModelMinimizer(object):
                     if silent is False:
                         print('fit run:',i)
                     if i>0:
+                        self.pinit = [v for v in self.minimizer.pout]
+                        if silent is False:
+                            print('- old chisq=%5.5e' % (self.minimizer.chisq))
                         old_chisq = self.minimizer.chisq
 
                 self.minimizer.fit(self,max_ev=max_ev,silent=silent,use_UL=use_UL)
@@ -402,10 +405,12 @@ class ModelMinimizer(object):
                 if hasattr(self.minimizer, 'asymm_errors'):
                     self.asymm_errors = self.minimizer.asymm_errors
 
+
                 self.reset_to_best_fit()
                 self.minimizer._fit_stats()
-                print()
-                print('- best chisq=%5.5e'%(self.minimizer.chisq))
+                if silent is False:
+                    print()
+                    print('- best chisq=%5.5e'%(self.minimizer.chisq))
 
                 new_chisq = self.minimizer.chisq
                 if i==0:
@@ -423,8 +428,8 @@ class ModelMinimizer(object):
                 #    if hasattr(self.minimizer, 'asymm_errors'):
                 #        self.asymm_errors = self.minimizer.asymm_errors
 
-                if i<repeat-1:
-                    self.pinit = [par.val for par in self.fit_par_free]
+                #if i<repeat-1:
+                #    self.pinit = [par.val for par in self.fit_par_free]
                 #    if silent is False:
                 #        print()
             else:
@@ -547,11 +552,14 @@ class Minimizer(object):
             self.errors = [np.sqrt(np.fabs(self.covar[pi, pi]) * self.chisq_red) for pi in range(len(self.model.fit_par_free))]
 
 
-    def _progess_bar(self, _res_sum, res_UL):
-        if np.mod(self.calls, 10) == 0 and self.calls != 0:
+    def _progess_bar(self, _res_sum, res_sum_UL):
+        #if self.calls==1:
+        #    print("minim function calls=%d, chisq=%5.5e UL part=%f" %(self.calls, _res_sum, -2.0*np.sum(res_UL)))
+        #    print()
+        if (np.mod(self.calls, 10) == 0 and self.calls != 0)  :
             #_c= ' ' * 256
             #print("\r%s"%_c,end="")
-            print("\r%s minim function calls=%d, chisq=%5.5e UL part=%f" % (next(self._progress_iter),self.calls, _res_sum, -2.0*np.sum(res_UL)), end="")
+            print("\r%s minim function calls=%d, chisq=%5.5e UL part=%f" % (next(self._progress_iter),self.calls, _res_sum, res_sum_UL), end="")
 
 
     def residuals_Fit(self,
@@ -581,17 +589,17 @@ class Minimizer(object):
         model = best_fit_SEDModel.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
 
 
-        _res_sum, _res, _res_UL=_eval_res(data['y'], model, data['dy'], data['UL'], use_UL=use_UL)
+        _res_sum, _res, _res_sum_UL=_eval_res(data['y'], model, data['dy'], data['UL'], use_UL=use_UL)
 
         self._res_sum_chekc=_res_sum
         self._res_chekc = _res
-        self._res_UL_chekc = _res_UL
+        self._res_UL_chekc = _res_sum_UL
         self._par_check=p
         #print('--> model', model[0],_res_sum)
         self.calls +=1
 
         if silent==False:
-            self._progess_bar(_res_sum, _res_UL)
+            self._progess_bar(_res_sum, _res_sum_UL)
             print("\r", end="")
 
         if chisq==True:
@@ -609,7 +617,7 @@ class Minimizer(object):
                                 get_model=True,
                                 loglog=self.model.loglog)
 
-        _res_sum, _res, _res_UL = _eval_res(self.model.data['y'],
+        _res_sum, _res, _res_sum_UL = _eval_res(self.model.data['y'],
                                             model,
                                             self.model.data['dy'],
                                             self.model.data['UL'],
@@ -627,8 +635,9 @@ def _eval_res(data, model, data_error, UL, use_UL=False):
         res_UL = _eval_res_UL(data[UL], model[UL], data_error[UL])
         #print('ress_UL', res_UL)
 
-    res_sum=np.sum(res_no_UL * res_no_UL) - 2.0*np.sum(res_UL)
-    return res_sum,res,res_UL
+    res_sum_UL= -2.0*np.sum(res_UL)
+    res_sum=np.sum(res_no_UL * res_no_UL) +res_sum_UL
+    return res_sum,res,res_sum_UL
 
 def _eval_res_UL(y_UL,y_model,y_err):
     y = (y_UL - y_model) / (np.sqrt(2) *y_err)
