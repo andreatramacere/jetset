@@ -135,13 +135,35 @@ class ModelParameter(object):
         self.allowed_keywords['frozen']=False
         self.allowed_keywords['log']=False
         self.allowed_keywords['allowed_values'] = None
-        self.allowed_keywords['jetkernel_par_name'] = None
+        self.allowed_keywords['_is_dependent'] = False
+        self.allowed_keywords['_depending_par'] = None
+        self.allowed_keywords['_func'] = None
+        self.allowed_keywords['_master_par'] = None
 
 
         _v = None
         _l = False
         _units= None
-        
+        if '_is_dependent' in keywords.keys():
+            self._is_dependent =  keywords['_is_dependent']
+        else:
+            self._is_dependent = self.allowed_keywords['_is_dependent']
+
+        if '_depending_par' in keywords.keys():
+            self._depending_par = keywords['_depending_par']
+        else:
+            self._depending_par = self.allowed_keywords['_depending_par']
+
+        if '_func' in keywords.keys():
+            self._func = keywords['_func']
+        else:
+            self._func = self.allowed_keywords['_func']
+
+        if '_master_par' in keywords.keys():
+            self._master_par = keywords['_master_par']
+        else:
+            self._master_par = self.allowed_keywords['_master_par']
+
         if 'val' in keywords.keys():
             _v = keywords['val']
 
@@ -169,6 +191,7 @@ class ModelParameter(object):
         self._linked_models = []
         self._linked_root_model = None
         self._root = False
+
         self.set(**keywords)
 
     @property
@@ -241,9 +264,15 @@ class ModelParameter(object):
         """
 
         keys = keywords.keys()
+        if self._is_dependent is False:
+            pass
+        else:
+            warnings.warn('\n\n *** you are trying to set a dependent paramter:%s *** \n'%self.name)
+            return
+
 
         for kw in keys:
-            
+
             if kw in  self.allowed_keywords.keys() :
                 if kw == 'val':
 
@@ -253,6 +282,10 @@ class ModelParameter(object):
                             raise RuntimeError('parameter  %s' %(self.name), 'the value', keywords[kw] , 'is not in the allowed list',self.allowed_values)
 
                     self._val.val = keywords[kw]
+                    #print('=>',self.name,self._depending_par)
+                    if self._depending_par is not None:
+                        self._depending_par._val.val=self._depending_par._func(self._val.val)
+                        #print('=>', self._depending_par._val.val,self._depending_par._func(self._val.val))
 
                 elif kw == 'log':
                     self._val.islog = keywords[kw]
@@ -323,8 +356,21 @@ class ModelParameter(object):
                 raise ValueError
             
     
-    
-    
+
+    @property
+    def frozen(self):
+        return self._frozen
+
+    @frozen.setter
+    def frozen(self,v):
+        if self._is_dependent is not True:
+            if v not in [True,False]:
+                raise RuntimeError('only True or False are allowed')
+            else:
+                self._frozen = v
+        else:
+            warnings.warn('\n\n *** you are trying to change the frozen state of a dependent paramter:%s ***\n'%self.name)
+
     def freeze(self):
         """
         freezes a paramter 
@@ -407,7 +453,13 @@ class ModelParameter(object):
             
         return descr
     
-    
+    def make_dependent(self,par,func):
+        self._is_dependent=True
+        self._func=func
+        self._master_par=par
+        par._depending_par=self
+
+
     def get_bestfit_description(self,nofields=False):
         """
         gives the value of each member of the  :class:`ModelParameter` objects, suited for  the best-fit values
@@ -857,6 +909,10 @@ class ModelParameterArray(object):
                     _islog.append(par.islog)
                     _frozen.append(par.frozen)
 
+
+                if par._is_dependent is True:
+                    _p_name = '*'+ par.name + '(D,%s)' % par._master_par.name
+
                 _name.append(_p_name)
 
         #_val = np.array(_val, dtype=np.object)
@@ -974,6 +1030,8 @@ class ModelParameterArray(object):
                     _fit_range_min.append(par.fit_range_min)
                     _fit_range_max.append(par.fit_range_max)
 
+                if par._is_dependent is True:
+                    _p_name = '*' + par.name + '(D,%s)' % par._master_par.name
                 _name.append(_p_name)
                 _frozen.append(par.frozen)
 
