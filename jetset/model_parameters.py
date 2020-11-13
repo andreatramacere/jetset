@@ -370,7 +370,7 @@ class ModelParameter(object):
                 self._frozen = v
         else:
             warnings.warn('\n\n *** you are trying to change the frozen state of a dependent paramter:%s ***\n'%self.name)
-
+            #raise RuntimeError()
     def freeze(self):
         """
         freezes a paramter 
@@ -454,7 +454,6 @@ class ModelParameter(object):
         return descr
     
     def make_dependent(self,par,func):
-        self.frozen = True
         self._is_dependent=True
         self._func=func
         self._master_par=par
