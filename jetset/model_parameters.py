@@ -963,8 +963,9 @@ class ModelParameterArray(object):
         _fit_range_min=[]
         _fit_range_max=[]
         _frozen=[]
-        _fields=[_model_name,_name,_best_fit_val,_best_fit_err_p,_best_fit_err_m,_val_start,_fit_range_min,_fit_range_max,_frozen]
-        _names=['model name','name','bestfit val','err +','err -','start val','fit range min','fit range max','frozen']
+        _val=[]
+        _fields=[_model_name,_name,_val,_best_fit_val,_best_fit_err_p,_best_fit_err_m,_val_start,_fit_range_min,_fit_range_max,_frozen]
+        _names=['model name','name','val','bestfit val','err +','err -','start val','fit range min','fit range max','frozen']
 
         if self.model is None:
            _fields.pop(0)
@@ -1032,11 +1033,13 @@ class ModelParameterArray(object):
                     _fit_range_min.append(par.fit_range_min)
                     _fit_range_max.append(par.fit_range_max)
 
-                if par._is_dependent is True:
+                if par._is_dependent is True :
                     _p_name = '*' + par.name + '(D,%s)' % par._master_par.name
+
                 _name.append(_p_name)
                 _frozen.append(par.frozen)
-
+                _val.append(par.val)
+                
         #_val_start = np.array(_val_start, dtype=np.object)
         #_best_fit_val = np.array(_val_start, dtype=np.object)
 
