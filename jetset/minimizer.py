@@ -650,11 +650,14 @@ def _eval_res_UL(y_UL,y_model,y_err):
 class LSBMinimizer(Minimizer):
 
     def __init__(self, model):
+
         super(LSBMinimizer, self).__init__(model)
         self.xtol=5.0E-8
         self.ftol = 5.0E-8
         self.factor=100.
     def _fit(self, max_ev,):
+        if self.use_UL is True:
+            raise  RuntimeError('lsb minimizer currently is not supporting UL')
         bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model.fit_par_free]
         max_nfev = 0 if (max_ev == 0 or max_ev == None) else max_ev
         pout, covar, info, mesg, success = leastsqbound(self.residuals_Fit,
