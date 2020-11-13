@@ -458,7 +458,8 @@ class ModelParameter(object):
         self._func=func
         self._master_par=par
         par._depending_par=self
-
+        #print('> setting',par.name,self._func(self._master_par.val))
+        self._val.val=self._func(self._master_par.val)
 
 
     def get_bestfit_description(self,nofields=False):
