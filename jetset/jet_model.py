@@ -566,19 +566,31 @@ class JetBase(Model):
 
             for par in self.emitters_distribution.parameters.par_array[::]:
                 #print('del >',par.name)
+                par1= self.parameters.get_par_by_name(par.name)
+                par1._frozen = par._frozen
                 self.emitters_distribution.parameters.del_par(par)
-                a=[par1.name for par1 in self.emitters_distribution.parameters.par_array]
+                #a=[par1.name for par1 in self.emitters_distribution.parameters.par_array]
                 #print('a',a)
             #for par in self.emitters_distribution.parameters.par_array:
             #    print('after del >',par.name)
             #print('keys',  self._emitters_distribution_dic.keys())
             for k in self._emitters_distribution_dic.keys():
-                #print('get par >', k)
                 par=self.parameters.get_par_by_name(k)
-                #print('add par >', par.name)
+                #print('get par >', k)
+                #if par._depending_par is not None:
+                #    print('dep par name', par._depending_par.name)
+                #print('')
                 self.emitters_distribution.parameters.add_par(par)
-            self.emitters_distribution.update()
 
+            for k in self._emitters_distribution_dic.keys():
+                #print('check par >', k,par.frozen)
+                if par._depending_par is not None:
+                    #print('par',par.name, 'dep par name', par._depending_par.name)
+                    dep_par=self.parameters.get_par_by_name(par._depending_par.name)
+                    par._depending_par=dep_par
+                    #print('>par',dep_par,dep_par.name,'func',dep_par._func)
+                #print('')
+            self.emitters_distribution.update()
         else:
             self.emitters_distribution = JetkernelEmittersDistribution(name, self, log_values=log_values,
                                                                        emitters_type=emitters_type)

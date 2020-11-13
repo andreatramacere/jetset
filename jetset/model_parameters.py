@@ -454,10 +454,12 @@ class ModelParameter(object):
         return descr
     
     def make_dependent(self,par,func):
+        self.frozen = True
         self._is_dependent=True
         self._func=func
         self._master_par=par
         par._depending_par=self
+
 
 
     def get_bestfit_description(self,nofields=False):

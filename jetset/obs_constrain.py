@@ -218,11 +218,11 @@ class ObsConstrain(object):
                              silent=False,
                              R_H=None):
         
-        if name is None and jet_model is  None:
-            if isinstance(self.distr_e,str):
-                name=self.distr_e
-            else:
-                name = self.distr_e.name
+        #if name is None and jet_model is  None:
+        #    if isinstance(self.distr_e,str):
+        #        name=self.distr_e
+        #    else:
+        #        name = self.distr_e.name
 
         out_dir='%s/obs_constrain_%s/'%(self.out_dir,name)
         makedir(out_dir)
