@@ -566,8 +566,6 @@ class JetBase(Model):
 
             for par in self.emitters_distribution.parameters.par_array[::]:
                 #print('del >',par.name)
-                par1= self.parameters.get_par_by_name(par.name)
-                par1._frozen = par._frozen
                 self.emitters_distribution.parameters.del_par(par)
                 #a=[par1.name for par1 in self.emitters_distribution.parameters.par_array]
                 #print('a',a)
@@ -583,7 +581,8 @@ class JetBase(Model):
                 self.emitters_distribution.parameters.add_par(par)
 
             for k in self._emitters_distribution_dic.keys():
-                #print('check par >', k,par.frozen)
+                #print('check par >', k)
+                par = self.parameters.get_par_by_name(k)
                 if par._depending_par is not None:
                     #print('par',par.name, 'dep par name', par._depending_par.name)
                     dep_par=self.parameters.get_par_by_name(par._depending_par.name)
