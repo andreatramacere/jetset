@@ -628,22 +628,27 @@ def _eval_res(data, model, data_error, UL, use_UL=False):
 
     res_no_UL = (data[~UL] - model[~UL]) / (data_error[~UL])
     res = (data - model) / (data_error)
-    res_UL = [0]
+    res_UL_log = [0]
     #print('UL.sum() ',UL.sum(),use_UL)
     if UL.sum() > 0 and use_UL is True:
 
-        res_UL = _eval_res_UL(data[UL], model[UL], data_error[UL])
+        res_UL_log, res_UL = _eval_res_UL(data[UL], model[UL], data_error[UL])
         #print('ress_UL', res_UL)
+        res[UL]=res_UL
 
-    res_sum_UL= -2.0*np.sum(res_UL)
-    res_sum=np.sum(res_no_UL * res_no_UL) +res_sum_UL
+    res_sum_UL= -2.0*np.sum(res_UL_log)
+    res_sum=np.sum(res_no_UL * res_no_UL) + res_sum_UL
     return res_sum,res,res_sum_UL
 
 def _eval_res_UL(y_UL,y_model,y_err):
     y = (y_UL - y_model) / (np.sqrt(2) *y_err)
-    x=0.5*(1.0+sp.special.erf(y))
-    x[x<1E-300]=1E-300
-    return  np.log(x)
+    res_ul_chi2 = 0.5 * (1.0 + sp.special.erf(y))
+    res_ul_chi2[res_ul_chi2 < 1E-300] = 1E-300
+
+    res_ul = np.copy(y)
+    res_ul[y > 0] = 0
+
+    return  np.log(res_ul_chi2), res_ul
 
 
 
@@ -656,8 +661,9 @@ class LSBMinimizer(Minimizer):
         self.ftol = 5.0E-8
         self.factor=100.
     def _fit(self, max_ev,):
-        if self.use_UL is True:
-            raise  RuntimeError('lsb minimizer currently is not supporting UL')
+        #if self.use_UL is True:
+        #    raise  RuntimeError('lsb minimizer currently is not supporting UL')
+
         bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model.fit_par_free]
         max_nfev = 0 if (max_ev == 0 or max_ev == None) else max_ev
         pout, covar, info, mesg, success = leastsqbound(self.residuals_Fit,

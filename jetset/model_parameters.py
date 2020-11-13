@@ -1039,7 +1039,7 @@ class ModelParameterArray(object):
                 _name.append(_p_name)
                 _frozen.append(par.frozen)
                 _val.append(par.val)
-                
+
         #_val_start = np.array(_val_start, dtype=np.object)
         #_best_fit_val = np.array(_val_start, dtype=np.object)
 
