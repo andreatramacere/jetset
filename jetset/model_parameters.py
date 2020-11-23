@@ -255,7 +255,7 @@ class ModelParameter(object):
 
 
 
-    def set(self, *args, **keywords):
+    def set(self, *args, ski_dep_par_warning=False, **keywords):
         """
         sets a parameter value checking for physical boundaries
         
@@ -264,7 +264,7 @@ class ModelParameter(object):
         """
 
         keys = keywords.keys()
-        if self._is_dependent is False:
+        if self._is_dependent is False or ski_dep_par_warning is True:
             pass
         else:
             warnings.warn('\n\n *** you are trying to set a dependent paramter:%s *** \n'%self.name)
@@ -284,7 +284,8 @@ class ModelParameter(object):
                     self._val.val = keywords[kw]
                     #print('=>',self.name,self._depending_par)
                     if self._depending_par is not None:
-                        self._depending_par._val.val=self._depending_par._func(self._val.val)
+                        #self._depending_par._val.val=self._depending_par._func(self._val.val)
+                        self._depending_par.set(val=self._depending_par._func(self._val.val),ski_dep_par_warning=True)
                         #print('=>', self._depending_par._val.val,self._depending_par._func(self._val.val))
 
                 elif kw == 'log':
@@ -459,8 +460,8 @@ class ModelParameter(object):
         self._master_par=par
         par._depending_par=self
         #print('> setting',par.name,self._func(self._master_par.val))
-        self._val.val=self._func(self._master_par.val)
-
+        #self._val.val=self._func(self._master_par.val)
+        self.set(val=self._func(self._master_par.val), ski_dep_par_warning=True)
 
     def get_bestfit_description(self,nofields=False):
         """
