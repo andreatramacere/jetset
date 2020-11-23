@@ -25,7 +25,7 @@ allowing to fit the numerical models to observed data. The main features of this
 ## Acknowledgements
 
 If you use this code in any kind of scientific publication please cite the following papers:
-
+* `Tramacere A. 2020`  https://ui.adsabs.harvard.edu/abs/2020ascl.soft09001T/abstract
 * `Tramacere A. et al. 2011` http://adsabs.harvard.edu/abs/2011ApJ...739...66T
 * `Tramacere A. et al. 2009` http://adsabs.harvard.edu/abs/2009A%26A...501..879T
 * `Massaro E. et. al 2006`   http://adsabs.harvard.edu/abs/2006A%26A...448..861M
