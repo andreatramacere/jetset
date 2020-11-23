@@ -1,7 +1,7 @@
-from __future__ import absolute_import, division, print_function
+#from __future__ import absolute_import, division, print_function
 
-from builtins import (bytes, str, open, super, range,
-                      zip, round, input, int, pow, object, map, zip)
+#from builtins import (bytes, str, open, super, range,
+#                      zip, round, input, int, pow, object, map, zip)
 
 
 
@@ -53,19 +53,54 @@ class ArrayDistribution(object):
 
 class EmittersDistribution(object):
 
-    def __init__(self, name, jet=None, gamma_grid_size=1000, log_values=False, emitters_type='electrons',normalize=False):
+    def __init__(self,
+                 name,
+                 spectral_type,
+                 jet=None,
+                 gamma_grid_size=1000,
+                 log_values=False,
+                 emitters_type='electrons',
+                 normalize=False,
+                 skip_build=False):
 
+        self._spectral_type = None
+        self._allowed_spectral_types=['bkn','plc','lp','lppl','pl']
         self._set_emitters_type(emitters_type)
+        self._set_spectral_type(spectral_type)
+        if skip_build is False:
+            self._build(jet,name,log_values, gamma_grid_size,normalize)
 
+    def _copy_from_jet(self, jet):
+        self._name = jet.emitters_distribution._name
+        self._log_values = jet.emitters_distribution._log_values
+        self._gamma_grid_size = jet.emitters_distribution._log_values
+        self._gamma_grid_size = jet.emitters_distribution._gamma_grid_size
+        self.normalize = jet.emitters_distribution.normalize
+
+        for par in self.parameters.par_array:
+            p = jet.emitters_distribution.parameters.get_par_by_name(par.name)
+            par.val = p.val
+
+    def _build(self,jet,name,log_values, gamma_grid_size,normalize):
         self._user_defined=True
         self._name = name
         self._log_values = log_values
-
         self._gamma_grid_size=gamma_grid_size
         self.parameters = ModelParameterArray()
         self.set_parameters_dict()
         self.normalize = normalize
+
         self.set_jet(jet)
+
+    def _set_spectral_type(self,spectral_type):
+        if spectral_type not in self._allowed_spectral_types:
+            raise RuntimeError('spectral_type=',spectral_type,' not in allowed',self._allowed_spectral_types)
+        else:
+            self._spectral_type = spectral_type
+
+    @property
+    def spectral_type(self):
+        return self._spectral_type
 
     def _update_parameters_dict(self):
         for par in self.parameters.par_array:
@@ -74,16 +109,27 @@ class EmittersDistribution(object):
             self._parameters_dict[par.name].vmax = par.val_max
             self._parameters_dict[par.name].log = par.islog
             self._parameters_dict[par.name].punit = par.units
+            #self._parameters_dict[par.name].is_in_jetkernel = par.is_in_jetkernel
+            #self._parameters_dict[par.name].allowed_values = par.allowed_values
 
-
-
+            self._parameters_dict[par.name]._is_dependent = par._is_dependent
+            self._parameters_dict[par.name]._depending_par = par._depending_par
+            self._parameters_dict[par.name]._func = par._func
+            self._parameters_dict[par.name]._master_par = par._master_par
 
     def add_par(self, name, par_type, val, vmax, vmin, unit='', log=False, frozen=False):
         if log is True:
             val = np.log10(val)
 
         if name not in self._parameters_dict.keys():
-            self._parameters_dict[name]=JetModelDictionaryPar(ptype=par_type, vmin=vmin, vmax=vmax, log=log, val=val, punit=unit, froz=frozen, is_in_jetkernel=False)
+            self._parameters_dict[name]=JetModelDictionaryPar(ptype=par_type,
+                                                              vmin=vmin,
+                                                              vmax=vmax,
+                                                              log=log,
+                                                              val=val,
+                                                              punit=unit,
+                                                              froz=frozen,
+                                                              is_in_jetkernel=False)
         else:
             raise ValueError('par',name,'already assigned')
 
@@ -101,7 +147,10 @@ class EmittersDistribution(object):
         model_dict['gmin'].val = 2.0
         model_dict['gmax'].val = 1E6
         model_dict['N'].val = 100.
-        model_dict['N'].is_in_jetkernel = False
+        model_dict['N'].is_in_jetkernel = True
+        model_dict['gmax'].is_in_jetkernel =True
+        model_dict['gmin'].is_in_jetkernel = True
+
         self._parameters_dict=model_dict
 
         for k,par in model_dict.items():
@@ -212,6 +261,14 @@ class EmittersDistribution(object):
             pass
 
     def update(self):
+        self._set_blob()
+        self._fill()
+
+    def set_grid_size(self,gamma_grid_size):
+        if gamma_grid_size is not None:
+            if self._jet is not  None:
+               setattr(self._jet._blob,'gamma_grid_size' ,gamma_grid_size)
+
         self._set_blob()
         self._fill()
 
@@ -353,14 +410,17 @@ class JetkernelEmittersDistribution(EmittersDistribution):
 
     def __init__(self,name,jet,gamma_grid_size=None,log_values=False,emitters_type='electrons'):
 
-        self._set_emitters_type(emitters_type)
+        super(JetkernelEmittersDistribution, self).__init__(name,
+                                                            spectral_type=name,
+                                                            skip_build=True,
+                                                            emitters_type=emitters_type)
+        self._build( jet, name, log_values, gamma_grid_size,emitters_type)
+
+    def _build(self, jet, name, log_values, gamma_grid_size,emitters_type):
         self._set_N_distr_name(name)
-
         self._user_defined = False
-
         self._name = name
         self._log_values = log_values
-
         self._set_jet(jet, name,log_values=log_values, emitters_type=emitters_type)
         self.set_grid_size(gamma_grid_size)
 

@@ -147,7 +147,7 @@ else:
 with open("proj_descr.md", "r") as f:
     long_description = f.read()
 
-print(__version__)
+print('->', __version__,install_req)
 
 
 

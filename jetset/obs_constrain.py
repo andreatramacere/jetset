@@ -1,7 +1,7 @@
-from __future__ import absolute_import, division, print_function
+#from __future__ import absolute_import, division, print_function
 
-from builtins import (bytes, str, open, super, range,
-                      zip, round, input, int, pow, object, map, zip)
+#from builtins import (bytes, str, open, super, range,
+#                      zip, round, input, int, pow, object, map, zip)
 
 __author__ = "Andrea Tramacere"
 
@@ -209,7 +209,8 @@ class ObsConstrain(object):
      
      
     
-    def get_model_constraint(self,name=None,
+    def get_model_constraint(self,
+                             name=None,
                              jet_model=None,
                              EC_componets_list=None,
                              params_grid_size=10,
@@ -217,9 +218,12 @@ class ObsConstrain(object):
                              silent=False,
                              R_H=None):
         
-        #if name is None:
-        #    name=self.distr_e
-            
+        #if name is None and jet_model is  None:
+        #    if isinstance(self.distr_e,str):
+        #        name=self.distr_e
+        #    else:
+        #        name = self.distr_e.name
+
         out_dir='%s/obs_constrain_%s/'%(self.out_dir,name)
         makedir(out_dir)
         
@@ -231,14 +235,18 @@ class ObsConstrain(object):
             
             else:
                 raise RuntimeError('''wrong beaming_expr value=%s, allowed 'delta' or 'bulk_theta' '''%self.beaming_expr)
-        
-        else:
-            self.distr_e=jet_model.get_electron_distribution_name()
+
+        #else:
+        #    self.distr_e=jet_model.get_electron_distribution_name()
+
+        #jet_model.eval()
+
+
 
         if R_H is not None:
             jet_model.set_par('R_H',val=R_H)
 
-
+        self.emitters_distr_spectral_type=jet_model.emitters_distribution.spectral_type
 
         nu_p_EC_seed_field=None
         if EC_componets_list is not None:
@@ -350,9 +358,9 @@ class ObsConstrain(object):
             print()
         
             print ("---> *** electron distribution parameters ***")
-        
-            #elec distr law
-            print ("---> distribution type: ",jet_model.get_electron_distribution_name())
+
+            print('emitters distribution spectral type', jet_model.emitters_distribution.spectral_type)
+            print('emitters distribution name', jet_model.emitters_distribution.name)
         
        
         
@@ -401,7 +409,7 @@ class ObsConstrain(object):
         
         
         #gmax start
-        gmax=find_HE_cut_off(self.distr_e,self.S_nu_max,self.rest_frame,B_par.val,self.beaming,z_par.val)
+        gmax=find_HE_cut_off(self.emitters_distr_spectral_type,self.S_nu_max,self.rest_frame,B_par.val,self.beaming,z_par.val)
         if silent is False:
             print ("---> gamma_max=%e from nu_max_Sync= %e, using B=%e"%(gmax,self.S_nu_max,B_par.val))
 
@@ -427,7 +435,7 @@ class ObsConstrain(object):
         #turn-over-energy from gamma_3p_Sync
         turn_over_par=jet_model.get_par_by_type('turn-over-energy')
         if turn_over_par is not None:
-            _t=find_turn_over(jet_model,self.distr_e,gamma_3p_Sync)
+            _t=find_turn_over(jet_model,self.emitters_distr_spectral_type,gamma_3p_Sync)
             turn_over_par.set(val=set_lin_log_val(turn_over_par,_t))
 
             if silent is False:
@@ -444,7 +452,7 @@ class ObsConstrain(object):
             print ("---> gamma_3p_SSCc= %e",gamma_3p_SSC)
        
         if turn_over_par is not None:
-            _t=find_turn_over(jet_model,self.distr_e,gamma_3p_SSC)
+            _t=find_turn_over(jet_model,self.emitters_distr_spectral_type,gamma_3p_SSC)
             turn_over_par.set(val=set_lin_log_val(turn_over_par,_t))
 
             if silent is False:
@@ -514,7 +522,7 @@ class ObsConstrain(object):
             #update gamma_3p and gamma_cut from new B
             gamma_3p_Sync=find_gamma_Synch(self.nu_p_S_obs,self.rest_frame,B_par.val,self.beaming,z_par.val)
             if turn_over_par is not None:
-                _t=find_turn_over(jet_model,self.distr_e,gamma_3p_Sync)
+                _t=find_turn_over(jet_model,self.emitters_distr_spectral_type,gamma_3p_Sync)
                 turn_over_par.set(val=set_lin_log_val(turn_over_par,_t))
 
                 if silent is False:
@@ -525,7 +533,7 @@ class ObsConstrain(object):
                 
             
             #update gmax for New B
-            gmax=find_HE_cut_off(self.distr_e,self.S_nu_max,self.rest_frame,B_par.val,self.beaming,z_par.val)
+            gmax=find_HE_cut_off(self.emitters_distr_spectral_type,self.S_nu_max,self.rest_frame,B_par.val,self.beaming,z_par.val)
             if silent is False:
                 print ("---> gamma_max=%e from nu_max_Sync= %e, using B=%e"%(gmax,self.S_nu_max,B_par.val))
 
@@ -764,7 +772,8 @@ def find_HE_cut_off(distr_e,nu_S_max,rest_frame,B,beaming,z):
     
     elif  distr_e=='bkn' or distr_e=='plc' or distr_e=='pl':
         return gamma_max_Sync/1.5
-    
+    print('no gmax found!',distr_e)
+
 
 def find_gamma0(r,s,gamma_3p):
     """returns the value of gamma_0  for

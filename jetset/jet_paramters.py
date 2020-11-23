@@ -1,7 +1,7 @@
-from __future__ import absolute_import, division, print_function
+#from __future__ import absolute_import, division, print_function
 
-from builtins import (bytes, str, open, super, range,
-                      zip, round, input, int, pow, object, map, zip)
+#from builtins import (bytes, str, open, super, range,
+#                      zip, round, input, int, pow, object, map, zip)
 
 
 
@@ -109,6 +109,8 @@ class JetParameter(ModelParameter):
         if 'val' in keywords.keys():
             self.assign_val_to_jetkernel(self.name,keywords['val'])
 
+            if self._depending_par is not None:
+                self._depending_par.set(val = self._depending_par._func(self._val.val))
 
 
     def assign_val_to_jetkernel(self, name, val):
@@ -149,11 +151,13 @@ class JetModelParameterArray(ModelParameterArray):
 
 
 
-    def add_par_from_dict(self, model_dic, model ,struct_name, parameter_class):
+    def add_par_from_dict(self,
+                          model_dic,
+                          model ,
+                          struct_name,
+                          parameter_class):
         """
-        add the :class:`.JetParameter` object to the :class:`.ModelParameterArray`
-        usign the dictionaries built by the :func:`build_emitting_region_dic`
-        and :func:`build_electron_distribution_dic`
+
         """
         #print('--->',model_dic)
         for key in model_dic.keys():
@@ -161,7 +165,6 @@ class JetModelParameterArray(ModelParameterArray):
             pname = key
 
             jetkernel_par_name = model_dic[key].jetkernel_par_name
-
             if jetkernel_par_name is  None:
                 jetkernel_par_name=pname
 
@@ -170,7 +173,7 @@ class JetModelParameterArray(ModelParameterArray):
 
             #_jetkernel=getattr(model,jetkernel_attr)
             _jetkernel_struct=getattr(model,struct_name)
-
+            #print('>', key, jetkernel_par_name,p_test,_jetkernel_struct)
             if p_test is None:
                 # print('-->', pname, model_dic[key].is_in_blob, model_dic[key].val)
                 if hasattr(_jetkernel_struct, jetkernel_par_name) and model_dic[key].is_in_jetkernel is True:
@@ -197,6 +200,26 @@ class JetModelParameterArray(ModelParameterArray):
                 froz = model_dic[key].froz
                 is_in_jetkernel = model_dic[key].is_in_jetkernel
 
+                if (hasattr(model_dic[key],'_is_dependent')):
+                    _is_dependent=model_dic[key]._is_dependent
+                else:
+                    _is_dependent=False
+
+                if (hasattr(model_dic[key],'_depending_par')):
+                    _depending_par=model_dic[key]._depending_par
+                else:
+                    _depending_par=None
+
+                if (hasattr(model_dic[key],'_func')):
+                    _func=model_dic[key]._func
+                else:
+                    _func=None
+
+                if (hasattr(model_dic[key],'_master_par')):
+                    _master_par=model_dic[key]._master_par
+                else:
+                    _master_par=None
+
                 self.add_par(parameter_class(model,
                                              struct_name,
                                              jetkernel_par_name,
@@ -209,4 +232,8 @@ class JetModelParameterArray(ModelParameterArray):
                                              frozen=froz,
                                              log=log,
                                              is_in_jetkernel=is_in_jetkernel,
-                                             allowed_values=allowed_values))
+                                             allowed_values=model_dic[key].allowed_values,
+                                             _is_dependent=_is_dependent,
+                                             _depending_par= _depending_par,
+                                             _func=_func,
+                                             _master_par=_master_par))

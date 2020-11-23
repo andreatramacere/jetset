@@ -1,7 +1,7 @@
-from __future__ import absolute_import, division, print_function
+#from __future__ import absolute_import, division, print_function
 
-from builtins import (str, open, super, range,
-                      object, map)
+#from builtins import (str, open, super, range,
+#                      object, map)
 
 
 import os
@@ -11,6 +11,7 @@ import six
 
 import numpy as np
 
+import  copy
 
 import warnings
 
@@ -160,7 +161,7 @@ class JetBase(Model):
         self._emitting_region_dic = None
         self._electron_distribution_dic= None
         self._external_photon_fields_dic= None
-
+        self._original_emitters_distr = None
 
 
 
@@ -219,9 +220,17 @@ class JetBase(Model):
         _model = {}
         _model['version']=get_info()['version']
         _model['name'] = self.name
-        _model['emitters_distribution'] = self._emitters_distribution_name
-        _model['emitters_distribution_log_values'] = self._emitters_distribution_log_values
-        _model['emitters_type'] = self._emitters_type
+        if isinstance(self.emitters_distribution,JetkernelEmittersDistribution):
+            _model['emitters_distribution'] = self._emitters_distribution_name
+            _model['emitters_distribution_log_values'] = self._emitters_distribution_log_values
+            _model['emitters_type'] = self._emitters_type
+            _model['emitters_distribution_class']='JetkernelEmittersDistribution'
+        elif isinstance(self.emitters_distribution,EmittersDistribution):
+            self._original_emitters_distr._copy_from_jet(self)
+            _model['custom_emitters_distribution'] =self._original_emitters_distr
+            _model['emitters_distribution_class'] = 'EmittersDistribution'
+        else:
+            raise  RuntimeError('emitters distribuion type not valid',type(self._emitters_distribution))
         _model['beaming_expr'] = self._beaming_expr
         _model['spectral_components_name'] = self.get_spectral_component_names_list()
         _model['spectral_components_state'] = [c.state for c in self.spectral_components_list]
@@ -274,11 +283,15 @@ class JetBase(Model):
             del(_model['electron_distribution_log_values'])
             _model['emitters_distribution_log_values']=_v
 
-
-        self.set_emitters_distribution(name=str(_model['emitters_distribution']),
-                                   log_values=_model['emitters_distribution_log_values'],
-                                   emitters_type=emitters_type,
-                                   init=False)
+        if _model['emitters_distribution_class'] == 'JetkernelEmittersDistribution':
+            self.set_emitters_distribution(name=_model['emitters_distribution'],
+                                       log_values=_model['emitters_distribution_log_values'],
+                                       emitters_type=emitters_type,
+                                       init=False)
+        elif _model['emitters_distribution_class'] == 'EmittersDistribution':
+            self.set_emitters_distribution(name=_model['custom_emitters_distribution'],init=False)
+        else:
+            raise RuntimeError('emitters distribuion type not valid', type(self._emitters_distribution))
 
         for c in self.basic_components_list:
             if c not in _model['basic_components_name']:
@@ -537,6 +550,8 @@ class JetBase(Model):
 
         elif isinstance(name, EmittersDistribution):
             #print('--> EmittersDistribution')
+            name=copy.deepcopy(name)
+            self._original_emitters_distr = copy.deepcopy(name)
             self.emitters_distribution = name
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
@@ -544,9 +559,37 @@ class JetBase(Model):
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
 
-            for par in self.emitters_distribution.parameters.par_array:
-                self.parameters.add_par(par)
+            #for par in self.emitters_distribution.parameters.par_array:
+            #    print('del >', par.name)
+            self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
+            #print('>',self._emitters_distribution_dic)
 
+            for par in self.emitters_distribution.parameters.par_array[::]:
+                #print('del >',par.name)
+                self.emitters_distribution.parameters.del_par(par)
+                #a=[par1.name for par1 in self.emitters_distribution.parameters.par_array]
+                #print('a',a)
+            #for par in self.emitters_distribution.parameters.par_array:
+            #    print('after del >',par.name)
+            #print('keys',  self._emitters_distribution_dic.keys())
+            for k in self._emitters_distribution_dic.keys():
+                par=self.parameters.get_par_by_name(k)
+                #print('get par >', k)
+                #if par._depending_par is not None:
+                #    print('dep par name', par._depending_par.name)
+                #print('')
+                self.emitters_distribution.parameters.add_par(par)
+
+            for k in self._emitters_distribution_dic.keys():
+                #print('check par >', k)
+                par = self.parameters.get_par_by_name(k)
+                if par._depending_par is not None:
+                    #print('par',par.name, 'dep par name', par._depending_par.name)
+                    dep_par=self.parameters.get_par_by_name(par._depending_par.name)
+                    par._depending_par=dep_par
+                    #print('>par',dep_par,dep_par.name,'func',dep_par._func)
+                #print('')
+            self.emitters_distribution.update()
         else:
             self.emitters_distribution = JetkernelEmittersDistribution(name, self, log_values=log_values,
                                                                        emitters_type=emitters_type)

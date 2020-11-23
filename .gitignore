@@ -11,6 +11,7 @@ __pycache__/
 *.xcodeproj
 *.pkl
 *.ipynb_checkpoints
+/.DS_Store
 /.vscode
 /testing
 /build
