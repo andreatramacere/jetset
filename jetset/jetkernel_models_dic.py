@@ -37,7 +37,8 @@ nuFnu_obs_dic['EC_Disk']=['nuFnu_EC_Disk_grid','nu_grid']
 nuFnu_obs_dic['Disk']=['nuFnu_Disk_grid','nu_grid']
 nuFnu_obs_dic['EC_CMB']=['nuFnu_EC_CMB_grid','nu_grid']
 nuFnu_obs_dic['EC_CMB_stat']=['nuFnu_EC_CMB_stat_grid','nu_grid']
-nuFnu_obs_dic['PP_gamma']=['nuFnu_pp_grid','nu_grid']
+nuFnu_obs_dic['PP_gamma']=['nuFnu_pp_gamma_grid','nu_grid']
+nuFnu_obs_dic['PP_neutrino']=['nuFnu_pp_gamma_grid','nu_grid']
 
 
 #seed-photon fields components
@@ -68,6 +69,7 @@ n_seed_dic['Star']=['n_Star','nu_Sync']
 
 gamma_dic_e={'electron_distr':['Ne','griglia_gamma_Ne_log']}
 gamma_dic_p={'proton_distr':['Np','griglia_gamma_Np_log']}
+gamma_dic_pp_e_second={'e_second_inj':['Q_inj_e_second','griglia_gamma_Ne_log']}
 
 s_dic={'pl':'p'}
 s_dic['lppl']='s'

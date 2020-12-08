@@ -366,7 +366,7 @@ class ModelParameter(object):
     def frozen(self,v):
         if self._is_dependent is not True:
             if v not in [True,False]:
-                raise RuntimeError('only True or False are allowed')
+                raise RuntimeError('par',self.name,'only True or False are allowed')
             else:
                 self._frozen = v
         else:

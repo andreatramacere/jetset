@@ -1221,10 +1221,12 @@ class JetBase(Model):
 
     @safe_run
     def set_blob(self):
+        print('==>Init set_blob')
         BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.parameters.z_cosm.val))
 
     @safe_run
     def set_external_fields(self):
+        print('==>Init set external fields')
         BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.parameters.z_cosm.val))
         BlazarSED.spectra_External_Fields(1,self._blob)
 
@@ -1235,6 +1237,13 @@ class JetBase(Model):
         if init is True:
             if self.emitters_distribution._user_defined is True:
                 self.emitters_distribution.update()
+            print('==>Init lin_fun')
+            if hasattr(self,'T_esc_e_second'):
+                if self.T_esc_e_second is None:
+                    self._blob.T_esc_e_second=self.parameters.R.val/BlazarSED.vluce_cm
+                else:
+                    self._blob.T_esc_e_second = self.T_esc_e_second
+                print('==> T_esc_e_second',self._blob.T_esc_e_second)
             BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.parameters.z_cosm.val) )
             self._update_spectral_components()
 
@@ -1245,7 +1254,11 @@ class JetBase(Model):
 
         if self.emitters_distribution._user_defined is False:
             if update_emitters is True:
+                print('==>update lin_fun')
                 self.emitters_distribution.update()
+            else:
+                print('==>fill lin_fun')
+                self.emitters_distribution._fill()
 
         nu_sed_sum, nuFnu_sed_sum = self.spectral_components.Sum.get_SED_points(lin_nu=lin_nu,log_log=False,interp=self._jetkernel_interp)
         return nu_sed_sum, nuFnu_sed_sum
@@ -1290,7 +1303,8 @@ class JetBase(Model):
 
         out_model = None
         lin_nu, log_nu = self._prepare_nu_model(nu, loglog)
-        lin_model, log_model= self._eval_model( lin_nu, log_nu ,init, loglog, phys_output=phys_output)
+        lin_model, log_model= self._eval_model(lin_nu, log_nu ,init, loglog, phys_output=phys_output,
+                                                update_emitters=update_emitters)
         #print('-->',lin_nu.min(),lin_nu.max())
         if fill_SED is True:
             self._fill(lin_nu,lin_model)
@@ -1472,7 +1486,8 @@ class Jetpp(JetBase):
                  beaming_expr='delta',
                  jet_workplace=None,
                  verbose=None,
-                 clean_work_dir=True):
+                 clean_work_dir=True,
+                 T_esc_e_second=None):
 
         super(Jetpp,self).__init__(cosmo=cosmo,
                                  name=name,
@@ -1484,6 +1499,7 @@ class Jetpp(JetBase):
                                  verbose=verbose,
                                  clean_work_dir=clean_work_dir)
 
+        self.T_esc_e_second=T_esc_e_second
         self.proton_distribution = self.emitters_distribution
 
         self.add_pp_gamma_component()

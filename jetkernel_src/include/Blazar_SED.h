@@ -28,9 +28,11 @@
 #define Kpp_e          0.095//fraction of e- energy expressed as a fraction of Kpi
 #define MEC2        8.187111e-07// erg  (me*c^2)
 #define MPC2        1.5032764261e-3// erg  (mp*c^2)
+#define MEMUC2_TeV    0.00010565// TeV  (me*c^2)
 #define MEC2_TeV    0.000000510998910// TeV  (me*c^2)
 #define MPC2_TeV    0.000938272013// TeV  (mp*c^2)
-#define MPIC2_TeV   0.0001349766//TeV  (mpi*c^2)
+#define MPI0C2_TeV   0.0001349766//TeV  (mpi*c^2)
+#define MPICC2_TeV   0.00013957018//TeV  (mpi*c^2)
 #define one_by_MEC2     1.221432045436937E6 // erg  (me*c^2)
 #define me_g		9.109389754e-28 //massa di e- in  gr
 #define mp_by_me 1836.15 // m_protne / m_elettrone
@@ -128,7 +130,7 @@ struct spettro {
     double nuFnu_DT_grid[static_spec_arr_grid_size];
     double nuFnu_Star_grid[static_spec_arr_grid_size];
     double nuFnu_EC_CMB_grid[static_spec_arr_grid_size];
-    double nuFnu_pp_grid[static_spec_arr_grid_size];
+    double nuFnu_pp_gamma_grid[static_spec_arr_grid_size];
     double nuFnu_EC_BLR_grid[static_spec_arr_grid_size];
     double nuFnu_EC_DT_grid[static_spec_arr_grid_size];
     double nuFnu_EC_Disk_grid[static_spec_arr_grid_size];
@@ -191,31 +193,54 @@ struct spettro {
     double NH_pp;
 
     //--- FREQ BOUNDARIES
-    double nu_stop_pp_pred,nu_stop_pp;
-    double nu_start_pp;
-    double nu_start_pp_obs;
-    double nu_stop_pp_obs;
-    unsigned int NU_INT_STOP_PP;
+    double nu_stop_pp_gamma_pred,nu_stop_pp_gamma;
+    double nu_start_pp_gamma;
+    double nu_start_pp_gamma_obs;
+    double nu_stop_pp_gamma_obs;
+    unsigned int NU_INT_STOP_PP_GAMMA;
+
+    double nu_stop_pp_neutrino_pred,nu_stop_pp_neutrino;
+    double nu_start_pp_neutrino;
+    double nu_start_pp_neutrino_obs;
+    double nu_stop_pp_neutrino_obs;
+    unsigned int NU_INT_STOP_PP_NUETRINO;
+                 
 
     //
     int do_pp_gamma;
-    int set_pp_racc_gamma, set_pp_racc_elec;
-    double pp_racc_gamma, pp_racc_elec;
+    int do_pp_nueturino;
+    int set_pp_racc_gamma, set_pp_racc_elec, set_pp_racc_nu_mu;
+    double pp_racc_gamma, pp_racc_elec, pp_racc_nu_mu;
 
     //--- FREQ/FLUX scalars
-    double nu_peak_PP_blob;
-    double nuLnu_peak_PP_blob;
-    double nu_peak_PP_src;
-    double nuLnu_peak_PP_src;
-    double nu_peak_PP_obs;
-    double nuFnu_peak_PP_obs;
+    double nu_peak_PP_gamma_blob;
+    double nuLnu_peak_PP_gamma_blob;
+    double nu_peak_PP_gamma_src;
+    double nuLnu_peak_PP_gamma_src;
+    double nu_peak_PP_gamma_obs;
+    double nuFnu_peak_PP_gamma_obs;
+
+    double nu_peak_PP_neutrino_blob;
+    double nuLnu_peak_PP_neutrino_blob;
+    double nu_peak_PP_neutrino_src;
+    double nuLnu_peak_PP_neutrino_src;
+    double nu_peak_PP_neutrino_obs;
+    double nuFnu_peak_PP_neutrino_obs;
+
+
 
     //--- FREQ/FLUX array
-    double j_pp[static_spec_arr_size];
-    double nu_pp[static_spec_arr_size];
-    double nu_pp_obs[static_spec_arr_size];
-    double nuFnu_pp_obs[static_spec_arr_size];
-   
+    
+    double j_pp_gamma[static_spec_arr_size];
+    double nu_pp_gamma[static_spec_arr_size];
+    double nu_pp_gamma_obs[static_spec_arr_size];
+    double nuFnu_pp_gamma_obs[static_spec_arr_size];
+
+    double j_pp_neutrino[static_spec_arr_size];
+    double nu_pp_neutrino[static_spec_arr_size];
+    double nu_pp_neutrino_obs[static_spec_arr_size];
+    double nuFnu_pp_neutrino_obs[static_spec_arr_size];
+        
 
     //--------------------------------//
 
@@ -524,8 +549,7 @@ struct spettro {
     double beaming_EC;
 
     
-    
-    
+   
 
     //----------- INTEGRATION MESH--------------//
     unsigned int nu_seed_size;
@@ -550,12 +574,16 @@ struct spettro {
     double *Ne_IC;
     double *Ne_stat;
     double *Np;
+    double *Q_inj_e_second;
+    double *Q_inj_e;
+    
+
     unsigned int gamma_grid_size;
     double * griglia_gamma_Ne_log;
     double * griglia_gamma_Ne_log_IC;
     double * griglia_gamma_Ne_log_stat;
     double * griglia_gamma_Np_log;
-   
+    double T_esc_e_second;
     //double *griglia_gamma_log_IC;
     //double *N_IC;
 
@@ -565,9 +593,9 @@ struct spettro {
     double N;
     double N_e_pp, N_p, N_e;
     double N_0,N_0p,N_0e; /* costante di normalizzazione per distrib elettr staz */
-    double N0_e_pp_factor; /*scaling factor to transform secondary rate to density*/
     double gmin;
     double gmax;
+    double gamma_cooling_eq;
     int grid_bounded_to_gamma;
     //unsigned int pt_griglia_max;
     double gmin_griglia;
@@ -695,6 +723,9 @@ void Wm (double, double* ,double *);
 double Cooling(double,struct temp_ev *,struct spettro *);
 int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],unsigned int size);
 void free_tempe_ev(struct temp_ev *pt_ev);
+void CooolingEquilibrium(struct spettro * pt, double T_esc);
+double IntegrateCooolingEquilibrium(double * Ne, double * gamma1, unsigned int grid_size, double gamma_b, double gamma, double T_esc);
+double IntegrandCooolingEquilibrium(double * Ne, double *gamma1, unsigned int ID, double gamma_b, double one_by_gamma, double gamma);
 //===================================================================================
 
 // File Interface
@@ -905,19 +936,43 @@ double Sync_cool(struct spettro * , double g);
 
 
 //===========================================================================================
-/****************** FUNZION pp-gamma-emssion ************************************************/
-void spettro_pp(int Num_file, struct spettro *pt);
+/****************** FUNZION pp-gamma-e-mu ************************************************/
+void spettro_pp_gamma(int Num_file, struct spettro *pt);
+void spettro_pp_neutrino(int Num_file, struct spettro *pt);
+
 double F_gamma(double x, double Ep_TeV);
 double F_electrons(double x, double Ep_TeV);
+double F_nu_mu(double x, double Ep_TeV);
+
 double sigma_pp_inel(double Ep_TeV);
+
+
 double rate_gamma_pp(struct spettro *pt);
 double rate_electrons_pp(struct spettro *pt, double Gamma);
-double pp_gamma_kernel(double gamma_p, double nu_pp,struct spettro * pt);
-double pp_gamma_kernel_delta(struct spettro *pt, double Epi_TeV);
-double pp_electron_kernel_delta(double Ee_TeV, struct spettro *pt);
-double pp_electrons_kernel(double gamma_p, double Gamma_e, struct spettro *pt);
-double integrale_pp_gamma_rate(double (*pf_pp_gamma_kernel)(double gamma_p, double nu_pp, struct spettro *pt), struct spettro *pt, unsigned int i_start);
-double integrale_pp_electrons_rate(double (*pf_pp_gamma_kernel)(double gamma_p, double Gamma_e, struct spettro *pt), struct spettro *pt, unsigned int i_start);
+double rate_nu_mu_pp(struct spettro *pt, double nu_nu_mu);
+
+double pp_gamma_kernel(double gamma_p, double E_out_TeV,struct spettro * pt);
+double pp_gamma_kernel_delta(struct spettro *pt, double E_out_TeV);
+
+double pp_electron_kernel_delta(double E_out_TeV, struct spettro *pt);
+double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct spettro *pt);
+
+double pp_nu_mu_kernel(double gamma_p, double E_out_TeV, struct spettro *pt);
+double pp_nu_mu_kernel_delta(double E_out_TeV, struct spettro *pt);
+
+double integrale_pp_second_rate(double (*pf_pp_kernel) (double gamma_p, double E_out_TeV, struct spettro *pt), double E_out_TeV, struct spettro * pt, unsigned int i_start);
+
+//double integrale_pp_electrons_rate(double (*pf_pp_electrons_kernel)(double gamma_p, double Gamma_e, struct spettro *pt), struct spettro *pt, unsigned int i_start);
+//double integrale_pp_nu_mu_rate(double (*pf_pp_mu_nu_kernel) (double gamma_p, double nu_mu_TeV, struct spettro *pt), struct spettro * pt, unsigned int i_start);
+
+unsigned int E_min_p_grid_even(double * gamma_p_grid, double E_start_TeV, unsigned int i_start , unsigned int  gamma_grid_size );
+
+double E_min_e_pp(double E_e);
+double E_max_e_pp(struct spettro *pt);
+double E_min_nu_mu_pp(double E_mu);
+double E_max_nu_mu_pp(struct spettro *pt);
+double E_min_gamma_pp(double E_gamma);
+double E_max_gamma_pp(struct spettro *pt);
 //===========================================================================================
 
 

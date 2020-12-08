@@ -107,9 +107,9 @@ void spettro_somma_Sync_ic(int Num_file, struct spettro * pt) {
 		{
 			pt->nuFnu_EC_CMB_grid[i] = pt->emiss_lim;
 		}
-		if (pt->nuFnu_pp_grid[i] == 0)
+		if (pt->nuFnu_pp_gamma_grid[i] == 0)
 		{
-			pt->nuFnu_pp_grid[i] = pt->emiss_lim;
+			pt->nuFnu_pp_gamma_grid[i] = pt->emiss_lim;
 		}
 		
 	}
@@ -221,15 +221,15 @@ void interpola_somma(struct spettro *pt_j, double nu_obs, unsigned int i)
 	//nuFnu_pp_grid
 	if (pt_j->do_pp_gamma == 1)
 	{
-		interp_flux = log_lin_interp(nu_obs, pt_j->nu_pp_obs, pt_j->nu_start_pp_obs, pt_j->nu_stop_pp_obs, pt_j->nuFnu_pp_obs, pt_j->nu_IC_size, pt_j->emiss_lim);
+		interp_flux = log_lin_interp(nu_obs, pt_j->nu_pp_gamma_obs, pt_j->nu_start_pp_gamma_obs, pt_j->nu_stop_pp_gamma_obs, pt_j->nuFnu_pp_gamma_obs, pt_j->nu_IC_size, pt_j->emiss_lim);
 
 		if (interp_flux > pt_j->emiss_lim) {
-			pt_j->nuFnu_pp_grid[i] = interp_flux;
+			pt_j->nuFnu_pp_gamma_grid[i] = interp_flux;
 		}
 		else {
-			pt_j->nuFnu_pp_grid[i] = 0;
+			pt_j->nuFnu_pp_gamma_grid[i] = 0;
 		}
-		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_pp_grid[i];
+		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_pp_gamma_grid[i];
 	} 
 
 	//Disk

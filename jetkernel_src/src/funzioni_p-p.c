@@ -29,26 +29,50 @@ double sigma_pp_inel(double Ep_TeV) {
     //PHYSICAL REVIEW D 74, 034018 (2006)
     //L=ln(E_p/1TeV)
     //
+    double a;
     double k, L;
     k = E_th_pp / Ep_TeV;
     L = log(Ep_TeV);
     if (Ep_TeV < E_th_pp) {
-        return 0;
+        a=0;
     } else {
-        return (34.3 + 1.88 * L + 0.25 * L * L)*(1 - k * k * k * k)*(1 - k * k * k * k);
-        //return 34;
+        a=34.3 + 1.88 * L + 0.25 * L * L;
+        if (Ep_TeV<=0.1){
+            a =  a*(1 - k * k * k * k)*(1 - k * k * k * k);
+        }
+        
+        
     }
+    return a;
 }
 //=========================================================================================
 
+unsigned int E_min_p_grid_even(double * gamma_p_grid, double E_start_TeV, unsigned int i_start, unsigned int gamma_p_grid_size ){
 
+    double  gamma_p_min;
+    gamma_p_min = E_start_TeV / MPC2_TeV;
+    while ((gamma_p_grid[i_start] < gamma_p_min) && (i_start < gamma_p_grid_size)) {
+        i_start++;
+    }
+    //!!!!!!!
+    //i_start deve essere pari !!!
+    //!!!!!!!
+    if (i_start % 2 != 0) {
+        i_start++;
+    }
+
+    if (i_start>= gamma_p_grid_size) {
+        i_start== gamma_p_grid_size;
+    }
+
+    return i_start;
+}
 
 
 //=========================================================================================
 // PP -> e- production
 //
 //=========================================================================================
-
 double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
     //From Eq.71 and 78 in Kelner et al. 2006
     //astro-ph.06066058v1
@@ -57,82 +81,97 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
     //to gamma_p that is more conveninet to the
     //code structure
     //
-    double gamma_p_min, Ee_TeV, Gamma_1, a1, a2;
+    double  Ee_TeV, a1, a2, Emin_pi,Emax_pi;
     unsigned int i_start;
     double (*pf_K) (double gamma_p, double nu_pp, struct spettro * pt);
+    double (*pf_K1) (struct spettro *, double x);
 
     if (pt->set_pp_racc_elec == 0) {
         pt->set_pp_racc_elec = 1;
         Ee_TeV = 0.1;
-        Gamma_1 = pt->Gamma;
-        pt->Gamma = Ee_TeV / MEC2_TeV;
-        gamma_p_min = Ee_TeV / MPC2_TeV;
-        i_start = 0;
-        while (pt->griglia_gamma_Np_log[i_start] < gamma_p_min) {
-            i_start++;
-        }
-        //!!!!!!!
-        //i_start deve essere pari !!!
-        //!!!!!!!
-        if (i_start % 2 != 0) {
-            i_start++;
-        }
+        //Gamma_1 = pt->Gamma;
+        //pt->Gamma = Ee_TeV / MEC2_TeV;
+        i_start = E_min_p_grid_even(pt->griglia_gamma_Np_log,Ee_TeV, 0, pt->gamma_grid_size );
+        //Eq. 71
         pf_K = &pp_electrons_kernel;
-        a2 = integrale_pp_electrons_rate(pf_K, pt, i_start);
+        a2 = integrale_pp_second_rate(pf_K, Ee_TeV, pt, i_start);
 
-        a1 = pp_electron_kernel_delta(Ee_TeV, pt);
+
+        pf_K1 = &pp_electron_kernel_delta;
+        Emin_pi = E_min_e_pp(Ee_TeV);
+        Emax_pi = E_max_e_pp(pt);
+        a1=integrale_trap_log_struct(pf_K1,
+            pt,
+            Emin_pi,
+            Emax_pi,
+            1000);
+        //a1 = pp_electron_kernel_delta(Ee_TeV, pt);
         pt->pp_racc_elec = a2 / a1;
         //printf("gamma_p_min=%e Ee_TeV=%e i_start=%d\n", gamma_p_min, Ee_TeV,i_start);
         //printf("e- >>>>>>>>>>%e %e %e \n", pt->pp_racc_elec, a1, a2);
-        pt->Gamma = Gamma_1;
+        //pt->Gamma = Gamma_1;
     }
 
 
     Ee_TeV = Gamma_e * MEC2_TeV;
     //Eq. 71
     if (Ee_TeV > 0.1) {
-        gamma_p_min = Ee_TeV / MPC2_TeV;
-        i_start = 0;
-        while (pt->griglia_gamma_Np_log[i_start] < gamma_p_min) {
-            i_start++;
-        }
-        //!!!!!!!
-        //i_start deve essere pari !!!
-        //!!!!!!!
-        if (i_start % 2 != 0) {
-            i_start++;
-        }
+        i_start = E_min_p_grid_even(pt->griglia_gamma_Np_log,Ee_TeV, 0, pt->gamma_grid_size );
         //printf("i_start=%d gamma_p_min=%e Ee=%e\n", i_start, gamma_p_min, Ee_TeV);
         pf_K = &pp_electrons_kernel;
         //printf("i_start=%d gamma_p_min=%e\n", i_start, gamma_p_min);
-        return integrale_pp_electrons_rate(pf_K, pt, i_start);
+        return integrale_pp_second_rate(pf_K, Ee_TeV, pt, i_start);
     } else {
-
-        //Eq. 77
-        return pp_electron_kernel_delta(Ee_TeV, pt);
+        
+        //Eq. 78
+        pf_K1 = &pp_electron_kernel_delta;
+        Emin_pi = E_min_e_pp(Ee_TeV);
+        Emax_pi = E_max_e_pp(pt);
+        //return pp_electron_kernel_delta(Ee_TeV, pt);
+        return integrale_trap_log_struct(pf_K1,
+            pt,
+            Emin_pi,
+            Emax_pi,
+            1000);
+        
     }
 
-
-
+    return 0.;
 }
 
-double pp_electron_kernel_delta(double Ee_TeV, struct spettro *pt) {
-    double qe, Ep_TeV, gamma_p;
-    Ep_TeV = Ee_TeV / (Kpp_e) + MPC2_TeV;
-    gamma_p = Ep_TeV / MPC2_TeV;
-    qe = pt->pp_racc_elec / (Kpp_e) * sigma_pp_inel(Ep_TeV)*
+double E_min_e_pp(double E_e){
+    double psida;
+    psida=  1.0 - (MEMUC2_TeV*MEMUC2_TeV)/(MPICC2_TeV*MPICC2_TeV);
+    return (E_e/psida)+(MPICC2_TeV * MPICC2_TeV)*psida/ (4 * E_e);
+}
+double E_max_e_pp(struct spettro *pt){
+    return (pt->gmax*MPC2_TeV - MPC2_TeV);
+}
+
+
+double pp_electron_kernel_delta(double E_out_TeV, struct spettro *pt) {
+    double qe, Ep0_TeV, gamma_p;
+    Ep0_TeV = E_out_TeV / (Kpi) + MPC2_TeV;
+    gamma_p = Ep0_TeV / MPC2_TeV;
+    if ((gamma_p<=pt->gmin) || (gamma_p>pt->gmax)){
+        return 0.;
+    }
+    else{
+        qe = pt->pp_racc_elec / (Kpi) * sigma_pp_inel(Ep0_TeV)*
             N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
-    //        N_distr(pt,gamma_p);
-    return qe;
+        return 2.0 * qe / sqrt(E_out_TeV * E_out_TeV - MPI0C2_TeV * MPI0C2_TeV);
+    }
 }
 
-double pp_electrons_kernel(double gamma_p, double Gamma_e, struct spettro *pt) {
-    //printf("gamma_p=%e Ep_TeV=%e Eg_TeV=%e\n", gamma_p, gamma_p * MPC2_TeV, nu_pp * HPLANCK_TeV);
+double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct spettro *pt) {
     double Ep_TeV;
     Ep_TeV = gamma_p*MPC2_TeV;
+    if ((gamma_p<pt->gmin) || (gamma_p>pt->gmax)){
+        return 0.;
+    }
     return sigma_pp_inel(Ep_TeV) *
             pt->Np[pt->i_griglia_gamma] *
-            F_electrons((Gamma_e * MEC2_TeV / Ep_TeV), Ep_TeV) / pt->griglia_gamma_Np_log[pt->i_griglia_gamma];
+            F_electrons((E_out_TeV / Ep_TeV), Ep_TeV) / pt->griglia_gamma_Np_log[pt->i_griglia_gamma];
 }
 
 double F_electrons(double x, double Ep_TeV) {
@@ -156,61 +195,146 @@ double F_electrons(double x, double Ep_TeV) {
     return B * (a * a * a) / (x * (1 + 0.3 / xb)) * (-lx)*(lx)*(lx)*(lx)*(lx);
 }
 
-//==================================================================
-// INTEGRAZIONE PER PP->electrons  CON METODO DI SIMPSON E GRIGLIA EQUI-LOG
-//
-//==================================================================
 
-double integrale_pp_electrons_rate(double (*pf_pp_electrons_kernel) (double gamma_p, double Gamma_e, struct spettro *pt), struct spettro * pt, unsigned int i_start) {
-
-    double integr, y1, y2, y3, x1, x3;
-    double delta;
-    double Gamma_e;
-
-    integr = 0;
-
-    //define i_start
-    //this the i_th element to which corresponds
-    //the gamma_pp tresh hold enegy
-    //it is replacing E_gamma in Eq. 71
-
-
-    Gamma_e = pt->Gamma;
-    //printf("Gamma_e=%e\n",Gamma_e);
-    pt->i_griglia_gamma = i_start;
-    x1 = pt->griglia_gamma_Np_log[i_start];
-    y1 = pf_pp_electrons_kernel(x1, Gamma_e, pt);
-
-    //CON QUESTO LOOP L'EVENTUALE PUNTO IN ECCESSO
-    //CON INDICE DISPARI VIENE SALTATO
-    for (pt->i_griglia_gamma = i_start + 1; pt->i_griglia_gamma < pt->gamma_grid_size - 1; pt->i_griglia_gamma++) {
-        //printf("i=%d\n",pt->i_griglia_gamma);
-
-        y2 = pf_pp_electrons_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], Gamma_e, pt);
-        pt->i_griglia_gamma++;
-        x3 = pt->griglia_gamma_Np_log[pt->i_griglia_gamma];
-        y3 = pf_pp_electrons_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], Gamma_e, pt);
-
-        //printf("i=%d x1=%e x2=%e  x3=%e ",
-        //pt->i_griglia_gamma-1,x1,pt->griglia_gamma_Ne_log[pt->i_griglia_gamma-1],x3);
-
-        //QUESTO DELTA RIMANE QUI
-        //PERCHE' LA GRIGLIA NON E' EQUISPACED
-        //NON PUO ANDARE FUORI DAL LOOP
-        delta = (x3 - x1);
-        integr += (y1 + 4.0 * y2 + y3) * delta;
-        y1 = y3;
-        x1 = x3;
-        //printf("y1,2,3=%e,%e,%e\n",y1,y2,y3);
-        //printf("delta=%e y1=%e y2=%e y3=%e\n",delta,y1,y2,y3);
-        //printf("integr=%e\n",integr);
-    }
-    if (pt->verbose) {
-        printf("Integr=%e\n", integr);
-    }
-    return integr * (0.5 / 3.0);
-}
 //=========================================================================================
+// PP -> nu_mu production
+//
+//=========================================================================================
+
+double rate_nu_mu_pp(struct spettro *pt, double nu_nu_mu) {
+    //From Eq.71 and 78 in Kelner et al. 2006
+    //astro-ph.06066058v1
+    //PHYSICAL REVIEW D 74, 034018 (2006)
+    //I change the integratio variable from Ep
+    //to gamma_p that is more conveninet to the
+    //code structure
+    //
+    double  Emu_TeV, a1, a2, Emin_pi,Emax_pi;
+    unsigned int i_start;
+    double (*pf_K) (double gamma_p, double nu_mu_nu, struct spettro * pt);
+    double (*pf_K1) (struct spettro *, double x);
+
+    if (pt->set_pp_racc_nu_mu == 0) {
+        pt->set_pp_racc_nu_mu = 1;
+        Emu_TeV = 0.1;
+        //Gamma_1 = pt->Gamma;
+        //pt->Gamma = Emu_TeV / MEC2_TeV;
+        i_start = E_min_p_grid_even(pt->griglia_gamma_Np_log,Emu_TeV, 0, pt->gamma_grid_size );
+        
+        //Eq. 71
+        pf_K = &pp_nu_mu_kernel;
+        a2 = integrale_pp_second_rate(pf_K,Emu_TeV, pt, i_start);
+        
+        //Eq. 78
+        //a1 = pp_nu_mu_kernel_delta(Emu_TeV, pt);
+        pf_K1 = &pp_nu_mu_kernel_delta;
+        Emin_pi = E_min_nu_mu_pp(Emu_TeV);
+        Emax_pi = E_max_nu_mu_pp(pt);
+        a1=integrale_trap_log_struct(pf_K1,
+            pt,
+            Emin_pi,
+            Emax_pi,
+            1000);
+        pt->pp_racc_nu_mu = a2 / a1;
+        
+        //pt->Gamma = Gamma_1;
+    }
+
+
+    Emu_TeV =nu_nu_mu*HPLANCK;
+    //Eq. 71
+    if (Emu_TeV > 0.1) {
+        i_start = E_min_p_grid_even(pt->griglia_gamma_Np_log,Emu_TeV, 0, pt->gamma_grid_size );
+        //printf("i_start=%d gamma_p_min=%e Ee=%e\n", i_start, gamma_p_min, Ee_TeV);
+        pf_K = &pp_nu_mu_kernel;
+        //printf("i_start=%d gamma_p_min=%e\n", i_start, gamma_p_min);
+        return integrale_pp_second_rate(pf_K,Emu_TeV, pt, i_start);
+    } else {
+
+        //Eq. 78
+        pf_K1 = &pp_nu_mu_kernel_delta;
+        Emin_pi = E_min_nu_mu_pp(Emu_TeV);
+        Emax_pi = E_max_nu_mu_pp(pt);
+        return integrale_trap_log_struct(pf_K1,
+            pt,
+            Emin_pi,
+            Emax_pi,
+            1000);
+
+        //return pp_nu_mu_kernel_delta(Emu_TeV, pt);
+    }
+
+    return 0.;
+
+}
+
+double E_min_nu_mu_pp(double E_mu){
+    double psida;
+    psida=  1.0 - (MEMUC2_TeV*MEMUC2_TeV)/(MPICC2_TeV*MPICC2_TeV);
+    return (E_mu/psida)+(MPICC2_TeV * MPICC2_TeV) / (4 * E_mu)*psida;
+}
+double E_max_nu_mu_pp(struct spettro *pt){
+    return (pt->gmax*MPC2_TeV - MPC2_TeV);
+}
+
+
+double pp_nu_mu_kernel_delta(double E_out_TeV, struct spettro *pt) {
+    double qmu, Ep0_TeV, gamma_p;
+    Ep0_TeV = E_out_TeV / (Kpi) + MPC2_TeV;
+    gamma_p = Ep0_TeV / MPC2_TeV;
+     if ((gamma_p<pt->gmin) || (gamma_p>pt->gmax)){
+        return 0.;
+    }
+    qmu = pt->pp_racc_nu_mu / (Kpi) * sigma_pp_inel(Ep0_TeV)*
+            N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
+    //        N_distr(pt,gamma_p);
+    return 2.0 * qmu / sqrt(E_out_TeV * E_out_TeV - MPI0C2_TeV * MPI0C2_TeV);
+}
+
+double pp_nu_mu_kernel(double gamma_p, double E_out_TeV, struct spettro *pt) {
+    double Ep_TeV;
+    Ep_TeV = gamma_p*MPC2_TeV;
+     if ((gamma_p<pt->gmin) || (gamma_p>pt->gmax)){
+        return 0.;
+    }
+    return sigma_pp_inel(Ep_TeV) *
+            pt->Np[pt->i_griglia_gamma] *
+            F_nu_mu((E_out_TeV / Ep_TeV), Ep_TeV) / pt->griglia_gamma_Np_log[pt->i_griglia_gamma];
+}
+
+double F_nu_mu(double x, double Ep_TeV) {
+    //From Eq.66 in Kelner et al. 2006
+    //astro-ph.06066058v1
+    //PHYSICAL REVIEW D 74, 034018 (2006)
+    //x=E_nu_mu/E_p
+    //L=ln(E_p/1TeV)
+    double B, beta, k, ly, y, yb, L;
+    double a1, a2, a3, a4, a5;
+
+
+    y=x/0.427;
+    ly = log(y);
+    L = log(Ep_TeV);
+
+    B = 1.75 + 0.204*L + 0.010*L*L;
+    beta = 1.0 /  (1.67 + 0.111 * L + 0.0038 * L * L) ;
+    k = 1.07 -0.086*L + 0.002*L*L;
+    yb = pow(x, beta);
+
+    a1=B*ly/y;
+
+    a2=(1-yb)/(1 + k*yb *(1-yb));
+    
+    a3=1/ly;
+
+    a4=-(4*beta*yb)/(1-yb);
+
+    a5=-(4*k*beta*yb*(1-2*yb))/(1+k*yb*(1-yb));
+   
+    return a1*(a2*a2*a2*a2)*(a3+a4+a5);
+}
+
+
 
 
 
@@ -218,6 +342,7 @@ double integrale_pp_electrons_rate(double (*pf_pp_electrons_kernel) (double gamm
 // PP -> gamma production
 //
 //=========================================================================================
+
 
 double rate_gamma_pp(struct spettro *pt) {
     //From Eq.71 and 78 in Kelner et al. 2006
@@ -227,34 +352,29 @@ double rate_gamma_pp(struct spettro *pt) {
     //to gamma_p that is more conveninet to the
     //code structure
     //
-    double gamma_p_min, Emin_pi,Emax_pi, E_gamma, a1, a2, nu1;
-    unsigned int i_start;
+    double  Emin_pi,Emax_pi, E_gamma, a1, a2;
     double (*pf_K) (double gamma_p, double nu_pp, struct spettro * pt);
     double (*pf_K1) (struct spettro *, double x);
-
+    unsigned int i_start;
+    //Here we find the n~ (reported in the paper)
+    //to find the connection between the standard kernel and the delta-approx
+    // At 100 GeV
+    //set_pp_racc_gamma=0 means you have to evaluate the connection factor
     if (pt->set_pp_racc_gamma == 0) {
         pt->set_pp_racc_gamma = 1;
         E_gamma = 0.1;
-        nu1 = pt->nu_1;
-        pt->nu_1 = E_gamma / HPLANCK_TeV;
-        gamma_p_min = E_gamma / MPC2_TeV;
-        i_start = 0;
-        while (pt->griglia_gamma_Np_log[i_start] < gamma_p_min) {
-            i_start++;
-        }
-        //!!!!!!!
-        //i_start deve essere pari !!!
-        //!!!!!!!
-        if (i_start % 2 != 0) {
-            i_start++;
-        }
+        //nu1 = pt->nu_1;
+        //pt->nu_1 = E_gamma / HPLANCK_TeV;
+        i_start = E_min_p_grid_even(pt->griglia_gamma_Np_log,E_gamma, 0, pt->gamma_grid_size );
+        //Eq. 71
         pf_K = &pp_gamma_kernel;
-        a2 = integrale_pp_gamma_rate(pf_K, pt, i_start);
+        a2 = integrale_pp_second_rate(pf_K, E_gamma, pt, i_start);
 
-     
+        //Eq. 78
         pf_K1 = &pp_gamma_kernel_delta;
-        Emin_pi = (E_gamma)+(MPIC2_TeV * MPIC2_TeV) / (4 * E_gamma);
-        Emax_pi = (pt->gmax*MPC2_TeV - MPC2_TeV)*Kpi;
+        Emin_pi = E_min_gamma_pp(E_gamma);
+        Emax_pi = E_max_gamma_pp(pt);
+        //Emax_pi=1E10;
         a1=integrale_trap_log_struct(pf_K1,
             pt,
             Emin_pi,
@@ -266,7 +386,7 @@ double rate_gamma_pp(struct spettro *pt) {
         pt->pp_racc_gamma = a2 / a1;
         //printf("gamma_p_min=%e E_gamma=%e\n", gamma_p_min, E_gamma);
         //printf("gamma >>>>>>>>>>%e %e %e\n", pt->pp_racc_gamma, a1, a2);
-        pt->nu_1 = nu1;
+        //pt->nu_1 = nu1;
     }
 
 
@@ -275,53 +395,61 @@ double rate_gamma_pp(struct spettro *pt) {
 
     //Eq. 71
     if (E_gamma > 0.1) {
-        gamma_p_min = E_gamma / MPC2_TeV;
+        //gamma_p_min = E_gamma / MPC2_TeV;
         pf_K = &pp_gamma_kernel;
-        i_start = 0;
-        while (pt->griglia_gamma_Np_log[i_start] < gamma_p_min) {
-            i_start++;
-        }
-        //!!!!!!!
-        //i_start deve essere pari !!!
-        //!!!!!!!
-        if (i_start % 2 != 0) {
-            i_start++;
-        }
+        i_start = E_min_p_grid_even(pt->griglia_gamma_Np_log,E_gamma, 0, pt->gamma_grid_size );
         //printf("i_start=%d gamma_p_min=%e E_gamma=%e\n", i_start, gamma_p_min, E_gamma);
-        return integrale_pp_gamma_rate(pf_K, pt, i_start);
+        return integrale_pp_second_rate(pf_K, E_gamma, pt, i_start);
 
     } else {
         //Eq. 78
         //Emin pi
 
-        Emin_pi = (E_gamma)+(MPIC2_TeV * MPIC2_TeV) / (4 * E_gamma);
-        Emax_pi = (pt->gmax*MPC2_TeV - MPC2_TeV)*Kpi;
+        Emin_pi = E_min_gamma_pp(E_gamma);
+        Emax_pi = E_max_gamma_pp(pt);
+        //Emax_pi=1E10;
         //printf("gamma_p_min=%e E_gamma=%e\n",gamma_p_min,E_gamma);
         pf_K1 = &pp_gamma_kernel_delta;
         return integrale_trap_log_struct(pf_K1,
             pt,
             Emin_pi,
             Emax_pi,
-            10000);
+            1000);
     }
+
+    return 0;
 }
 
-
-double pp_gamma_kernel_delta(struct spettro *pt, double Epi_TeV) {
-    double qpi,Ep_TeV, Gamma;
-    Ep_TeV = Epi_TeV/Kpi +MPC2_TeV;
-    Gamma=Ep_TeV/MPC2_TeV;
-    qpi = pt->pp_racc_gamma / (Kpi)*sigma_pp_inel(Ep_TeV) * N_distr_interp(pt->gamma_grid_size, Gamma, pt->griglia_gamma_Np_log, pt->Np);
-    return 2.0 * qpi / sqrt(Epi_TeV * Epi_TeV - MPIC2_TeV * MPIC2_TeV);
+double E_min_gamma_pp(double E_gamma){
+    return (E_gamma)+(MPICC2_TeV * MPICC2_TeV) / (4 * E_gamma);
+}
+double E_max_gamma_pp(struct spettro *pt){
+    return (pt->gmax*MPC2_TeV - MPC2_TeV);
 }
 
-double pp_gamma_kernel(double gamma_p, double nu_pp, struct spettro *pt) {
+double pp_gamma_kernel_delta(struct spettro *pt, double E_out_TeV) {
+    double qpi,Ep0_TeV, gamma_p;
+    Ep0_TeV = MPC2_TeV+ E_out_TeV/Kpi;
+    gamma_p=Ep0_TeV/MPC2_TeV;
+    if ((gamma_p<pt->gmin) || (gamma_p>pt->gmax)){
+        return 0.;
+    }
+    else{ 
+        qpi = pt->pp_racc_gamma / (Kpi)*sigma_pp_inel(Ep0_TeV) * N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
+        return 2.0 * qpi / sqrt(E_out_TeV * E_out_TeV - MPI0C2_TeV * MPI0C2_TeV);
+    }   
+}
+
+double pp_gamma_kernel(double gamma_p, double E_out_TeV, struct spettro *pt) {
     //printf("gamma_p=%e Ep_TeV=%e Eg_TeV=%e\n", gamma_p, gamma_p * MPC2_TeV, nu_pp * HPLANCK_TeV);
     double Ep_TeV;
     Ep_TeV = gamma_p*MPC2_TeV;
+     if ((gamma_p<pt->gmin) || (gamma_p>pt->gmax)){
+        return 0.;
+    }
     return sigma_pp_inel(Ep_TeV) *
             pt->Np[pt->i_griglia_gamma] *
-            F_gamma((nu_pp * HPLANCK_TeV / Ep_TeV), Ep_TeV) / pt->griglia_gamma_Np_log[pt->i_griglia_gamma];
+            F_gamma((E_out_TeV / Ep_TeV), Ep_TeV) / pt->griglia_gamma_Np_log[pt->i_griglia_gamma];
 }
 
 double F_gamma(double x, double Ep_TeV) {
@@ -349,15 +477,18 @@ double F_gamma(double x, double Ep_TeV) {
 }
 
 //==================================================================
-// INTEGRAZIONE PER PP->gamma  CON METODO DI SIMPSON E GRIGLIA EQUI-LOG
+// INTEGRAZIONE PER PP->secondaries  CON METODO DI SIMPSON E GRIGLIA EQUI-LOG
 //
 //==================================================================
 
-double integrale_pp_gamma_rate(double (*pf_pp_gamma_kernel) (double gamma_p, double nu_pp, struct spettro *pt), struct spettro * pt, unsigned int i_start) {
+double integrale_pp_second_rate(double (*pf_pp_kernel) (double gamma_p, double E, struct spettro *pt),
+                              double E_out_TeV,
+                              struct spettro * pt, 
+                              unsigned int i_start) {
 
     double integr, y1, y2, y3, x1, x3;
     double delta;
-    double nu_pp;
+    //double nu_pp;
 
     integr = 0;
 
@@ -367,33 +498,35 @@ double integrale_pp_gamma_rate(double (*pf_pp_gamma_kernel) (double gamma_p, dou
     //it is replacing E_gamma in Eq. 71
 
   
-    nu_pp = pt->nu_1;
-    pt->i_griglia_gamma = i_start;
-    x1 = pt->griglia_gamma_Np_log[i_start];
-    y1 = pf_pp_gamma_kernel(x1, nu_pp, pt);
-    //CON QUESTO LOOP L'EVENTUALE PUNTO IN ECCESSO
-    //CON INDICE DISPARI VIENE SALTATO
-    for (pt->i_griglia_gamma = i_start + 1; pt->i_griglia_gamma < pt->gamma_grid_size - 1; pt->i_griglia_gamma++) {
-        //printf("i=%d\n",pt->i_griglia_gamma);
+    //nu_pp = pt->nu_1;
+    if (i_start<pt->gamma_grid_size -1){
+        pt->i_griglia_gamma = i_start;
+        x1 = pt->griglia_gamma_Np_log[i_start];
+        y1 = pf_pp_kernel(x1, E_out_TeV, pt);
+        //CON QUESTO LOOP L'EVENTUALE PUNTO IN ECCESSO
+        //CON INDICE DISPARI VIENE SALTATO
+        for (pt->i_griglia_gamma = i_start + 1; pt->i_griglia_gamma < pt->gamma_grid_size - 1; pt->i_griglia_gamma++) {
+            //printf("i=%d\n",pt->i_griglia_gamma);
 
-        y2 = pf_pp_gamma_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], nu_pp, pt);
-        pt->i_griglia_gamma++;
-        x3 = pt->griglia_gamma_Np_log[pt->i_griglia_gamma];
-        y3 = pf_pp_gamma_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], nu_pp, pt);
+            y2 = pf_pp_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], E_out_TeV, pt);
+            pt->i_griglia_gamma++;
+            x3 = pt->griglia_gamma_Np_log[pt->i_griglia_gamma];
+            y3 = pf_pp_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], E_out_TeV, pt);
 
-        //printf("i=%d x1=%e x2=%e  x3=%e ",
-        //pt->i_griglia_gamma-1,x1,pt->griglia_gamma_Ne_log[pt->i_griglia_gamma-1],x3);
+            //printf("i=%d x1=%e x2=%e  x3=%e ",
+            //pt->i_griglia_gamma-1,x1,pt->griglia_gamma_Ne_log[pt->i_griglia_gamma-1],x3);
 
-        //QUESTO DELTA RIMANE QUI
-        //PERCHE' LA GRIGLIA NON E' EQUISPACED
-        //NON PUO ANDARE FUORI DAL LOOP
-        delta = (x3 - x1);
-        integr += (y1 + 4.0 * y2 + y3) * delta;
-        y1 = y3;
-        x1 = x3;
-        //printf("y1,2,3=%e,%e,%e\n",y1,y2,y3);
-        //printf("delta=%e y1=%e y2=%e y3=%e\n",delta,y1,y2,y3);
-        //printf("integr=%e\n",integr);
+            //QUESTO DELTA RIMANE QUI
+            //PERCHE' LA GRIGLIA NON E' EQUISPACED
+            //NON PUO ANDARE FUORI DAL LOOP
+            delta = (x3 - x1);
+            integr += (y1 + 4.0 * y2 + y3) * delta;
+            y1 = y3;
+            x1 = x3;
+            //printf("y1,2,3=%e,%e,%e\n",y1,y2,y3);
+            //printf("delta=%e y1=%e y2=%e y3=%e\n",delta,y1,y2,y3);
+            //printf("integr=%e\n",integr);
+        }
     }
     if (pt->verbose) {
         printf("Integr=%e\n", integr);

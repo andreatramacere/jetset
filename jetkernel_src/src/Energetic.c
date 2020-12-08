@@ -434,7 +434,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
         energetic.U_p_cold = pt->NH_pp  * MPC2;
 
         energetic.U_p = pt->U_p;
-        energetic.L_pp_gamma_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_pp, pt->nuFnu_pp_obs, pt->NU_INT_STOP_PP);
+        energetic.L_pp_gamma_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_pp_gamma, pt->nuFnu_pp_gamma_obs, pt->NU_INT_STOP_PP_GAMMA);
      
         energetic.jet_L_pp_gamma = energetic.L_pp_gamma_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
         energetic.jet_L_rad += energetic.jet_L_pp_gamma;

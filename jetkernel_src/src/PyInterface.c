@@ -200,7 +200,6 @@ struct spettro MakeBlob() {
     spettro_root.NH_pp = 0.1;
     spettro_root.N = 10;
     spettro_root.Norm_distr = 1;
-    spettro_root.N0_e_pp_factor =1.0;
     //spettro_root.Norm_distr_L_e_Sync=-1.0;
     spettro_root.Distr_e_done = 0;
     sprintf(spettro_root.DISTR, "lp");
@@ -224,7 +223,7 @@ struct spettro MakeBlob() {
     spettro_root.gamma_pile_up=1E5;
     spettro_root.gamma_pile_up_cut=5E5;
     spettro_root.alpha_pile_up=1;
-    //spettro_root.ratio_pile_up=1E-3;
+    spettro_root.gamma_cooling_eq=0;
 
     spettro_root.EC_stat=0; 
     spettro_root.do_EC_Disk = 0;
@@ -361,26 +360,28 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
     for (i = 0; i < static_spec_arr_size; i++) {
         pt_base->q_comp[i] = 0.0;
         pt_base->j_Sync[i] = 0.0;
+        pt_base->j_comp[i] = 0.0;
+        pt_base->j_EC[i] = 0.0;
         pt_base->alfa_Sync[i] = 0.0;
         pt_base->I_nu_Sync[i] = 0.0;
-        pt_base->nuF_nu_Sync_obs[i]=0.0;
-
+        pt_base->j_pp_neutrino[i]=0.0;
+        pt_base->j_pp_gamma[i]=0.0;
 
     }
 
     for (i = 0; i < static_spec_arr_size; i++){
-
+        pt_base->nuF_nu_Sync_obs[i]=0.0;
         pt_base->nuF_nu_SSC_obs[i]=0.0;
         pt_base->nuF_nu_EC_Disk_obs[i]=0;
         pt_base->nuF_nu_EC_BLR_obs[i]=0;
         pt_base->nuF_nu_EC_DT_obs[i]=0;
         pt_base->nuF_nu_EC_Star_obs[i]=0;
         pt_base->nuF_nu_EC_CMB_obs[i]=0;
-        //pt_base->nuF_nu_EC_CMB_stat_obs[i]=0;
         pt_base->nuF_nu_Disk_obs[i]=0;
         pt_base->nuF_nu_DT_obs[i]=0;
         pt_base->nuF_nu_Star_obs[i]=0;
-
+        pt_base->nuFnu_pp_gamma_obs[i]=0;
+        pt_base->nuFnu_pp_neutrino_obs[i]=0;
     }
 
 
@@ -448,9 +449,10 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
     //========================================================
     pt_base->set_pp_racc_elec = 0;
     pt_base->set_pp_racc_gamma = 0;
+    pt_base->set_pp_racc_nu_mu = 0;
     pt_base->pp_racc_elec = 1.0;
     pt_base->pp_racc_gamma = 1.0;
-
+    pt_base->pp_racc_nu_mu = 1.0;
 
     //========================================================
 
@@ -507,7 +509,6 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
         pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N_e_pp;
         EvalU_e(pt_base);
         FindNe_NpGp(pt_base);
-             
         if (pt_base->verbose) {
 
             printf("***********************       Hadronic Scenario           ********************\n");
@@ -532,6 +533,7 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
     }
 
 }
+ 
 void Run_SED(struct spettro *pt_base){
 	unsigned int i;
     if (pt_base->verbose) {
@@ -543,7 +545,8 @@ void Run_SED(struct spettro *pt_base){
     //==================================================
     if ((strcmp(pt_base->PARTICLE, "protons") == 0) && pt_base->do_pp_gamma) {
 
-        spettro_pp(1, pt_base);
+        spettro_pp_gamma(1, pt_base);
+        spettro_pp_neutrino(1,pt_base);
     }
 
 

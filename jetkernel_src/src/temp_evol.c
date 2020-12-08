@@ -585,3 +585,101 @@ void free_tempe_ev(struct temp_ev *pt_ev)
     free(pt_ev->N_gamma);
     free(pt_ev->N_time);
 }
+
+double IntegrandCooolingEquilibrium(double * Ne, double *gamma1, unsigned int ID, double gamma_b, double one_by_gamma, double gamma){
+    //using Eq. 2.26 in Inoue&Takahara
+    //http://adsabs.harvard.edu/doi/10.1086/177270
+    //printf("Ne[ID]=%e   gammma[ID]%e\n",Ne[ID],gamma[ID]);
+    double a;
+    a=0;
+    if (gamma1[ID]>=gamma){
+        a= Ne[ID]*exp(gamma_b*(1/gamma1[ID]-one_by_gamma));
+    }
+    return a;
+    
+}
+
+
+
+
+double IntegrateCooolingEquilibrium(double * Ne, double * gamma1, unsigned int grid_size, double gamma_b, double gamma, double T_esc){
+    //using Eq. 2.26 in Inoue&Takahara
+    //http://adsabs.harvard.edu/doi/10.1086/177270
+    double y1, y2, y3, x1, x3, integr, delta, k;
+    unsigned int  ID;
+    double one_by_gamma;
+    one_by_gamma=1.0/gamma;
+
+    integr=0;
+    x1=gamma1[0];
+    y1=IntegrandCooolingEquilibrium(Ne,gamma1,ID,gamma_b,one_by_gamma,gamma);
+    for (ID = 1; ID < grid_size - 1; ID++){
+        y2=IntegrandCooolingEquilibrium(Ne,gamma1,ID,gamma_b,one_by_gamma,gamma);
+        ID++;
+        x3=gamma1[ID];
+        y3=IntegrandCooolingEquilibrium(Ne,gamma1,ID,gamma_b,one_by_gamma,gamma);
+               
+        //QUESTO DELTA RIMANE QUI
+        //PERCHE' LA GRIGLIA NON E' EQUISPACED
+        //NON PUO ANDARE FUORI DAL LOOP
+        delta=(x3-x1);
+        integr+=(y1+4.0*y2+y3)*delta;
+        y1=y3;
+        x1=x3;
+    }
+    k = gamma_b*T_esc/(gamma*gamma);
+    //printf("k=%e integr=%e  gamma_b=%e gamma=%e T_esc=%e\n",k,integr,gamma_b,gamma,T_esc);
+    return integr*(0.5/3.0)*k;
+}
+
+
+void CooolingEquilibrium(struct spettro * pt, double T_esc){
+    //using Eq. 2.26 in Inoue&Takahara
+    //http://adsabs.harvard.edu/doi/10.1086/177270
+
+    double  delta_t_cool, delta_t_cool_old, t_cool_sync;
+    unsigned int ID;
+    //double *N_e_tmp;
+
+
+    //N_e_tmp = (double *)calloc(pt->gamma_grid_size,sizeof (double));
+
+    //evalueate gamma_b and fille N_gamma_tmp
+    for (ID = 0; ID < pt->gamma_grid_size ; ID++){
+        t_cool_sync= Sync_tcool(pt, pt->griglia_gamma_Ne_log[ID]);
+        delta_t_cool = t_cool_sync - T_esc;
+        if (delta_t_cool<=0 && delta_t_cool_old >=0 && ID>0){
+            pt->gamma_cooling_eq=pt->griglia_gamma_Ne_log[ID];
+        }
+        else if (ID==0)
+        {
+           if (t_cool_sync<T_esc){
+               pt->gamma_cooling_eq=pt->griglia_gamma_Ne_log[ID];
+           }
+           
+        }
+        else if (ID==pt->gamma_grid_size-1)
+        {
+           if (t_cool_sync>T_esc){
+               pt->gamma_cooling_eq=pt->griglia_gamma_Ne_log[ID];
+           } 
+        }
+        
+        delta_t_cool_old=delta_t_cool;
+        //N_e_tmp[ID]=pt->Ne[ID];
+    }
+    //printf("gamma_cool_eq=%e",pt->gamma_cooling_eq);
+    for (ID = 0; ID < pt->gamma_grid_size ; ID++){
+        
+        pt->Ne[ID]=IntegrateCooolingEquilibrium(pt->Q_inj_e_second, 
+                                                pt->griglia_gamma_Ne_log, 
+                                                pt->gamma_grid_size, 
+                                                pt->gamma_cooling_eq, 
+                                                pt->griglia_gamma_Ne_log[ID], 
+                                                T_esc);
+        //printf("gamma =%e Ne=%e \n",pt->griglia_gamma_Ne_log[ID],pt->Ne[ID]);
+    }
+
+    //free(N_e_tmp);
+
+}

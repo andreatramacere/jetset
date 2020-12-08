@@ -15,7 +15,7 @@ import numpy as np
 from numpy import log10,array,zeros,power,shape
 from inspect import signature
 
-from .jetkernel_models_dic import gamma_dic_e ,gamma_dic_p, available_N_distr, N_distr_descr, available_emitters_type
+from .jetkernel_models_dic import gamma_dic_e ,gamma_dic_p, gamma_dic_pp_e_second, available_N_distr, N_distr_descr, available_emitters_type
 from .plot_sedfit import PlotPdistr
 from .jet_paramters import *
 from .utils import set_str_attr
@@ -205,7 +205,7 @@ class EmittersDistribution(object):
 
         elif self.emitters_type =='protons':
             model_dic['N'] = JetModelDictionaryPar(ptype='emitters_density', vmin=0, vmax=None, punit='cm^-3')
-            model_dic['NH_pp'] = JetModelDictionaryPar(ptype='target_density', vmin=0, vmax=None, punit='cm^-3',froz ='False')
+            model_dic['NH_pp'] = JetModelDictionaryPar(ptype='target_density', vmin=0, vmax=None, punit='cm^-3',froz =False)
 
         return model_dic, a_h, b_h, a_l, b_l, a_t, b_t
 
@@ -484,19 +484,27 @@ class JetkernelEmittersDistribution(EmittersDistribution):
     def _set_blob(self):
 
         if self.emitters_type=='electrons':
+            print('==> _set_blob InitNe')
             BlazarSED.InitNe(self._jet._blob)
             self._Ne_name, self._gammae_name = gamma_dic_e['electron_distr']
             self.Ne_ptr = getattr(self._jet._blob, self._Ne_name)
             self.e_gamma_ptr = getattr(self._jet._blob, self._gammae_name)
 
         elif self.emitters_type=='protons':
+            print('==> _set_blob Init_Np_Ne_pp')
             BlazarSED.Init_Np_Ne_pp(self._jet._blob)
             self._Ne_name, self._gammae_name = gamma_dic_e['electron_distr']
             self._Np_name, self._gammap_name = gamma_dic_p['proton_distr']
+            self._Q_inj_e_second_name, self._gammae_inj_sec_name = gamma_dic_pp_e_second['e_second_inj']
+
             self.Np_ptr = getattr(self._jet._blob, self._Np_name)
             self.p_gamma_ptr = getattr(self._jet._blob, self._gammap_name)
             self.Ne_ptr = getattr(self._jet._blob, self._Ne_name)
             self.e_gamma_ptr = getattr(self._jet._blob, self._gammae_name)
+
+
+            self._Q_inj_e_second_ptr = getattr(self._jet._blob, self._Q_inj_e_second_name)
+            self.e_inj_second_gamma_ptr = getattr(self._jet._blob, self._gammae_inj_sec_name)
         else:
             raise RuntimeError('')
 
@@ -506,7 +514,8 @@ class JetkernelEmittersDistribution(EmittersDistribution):
         self.n_gamma_e = zeros(size)
         self.gamma_p = zeros(size)
         self.n_gamma_p = zeros(size)
-
+        self.gamma_e_second_inj = zeros(size)
+        self.n_gamma_e_second_inj = zeros(size)
 
         for ID in range(size):
             self.gamma_e[ID] = BlazarSED.get_elec_array(self.e_gamma_ptr, self._jet._blob, ID)
@@ -518,8 +527,15 @@ class JetkernelEmittersDistribution(EmittersDistribution):
                 self.gamma_p[ID] = BlazarSED.get_elec_array(self.p_gamma_ptr, self._jet._blob, ID)
                 self.n_gamma_p[ID] = BlazarSED.get_elec_array(self.Np_ptr, self._jet._blob, ID)
 
+            for ID in range(size):
+                self.gamma_e_second_inj[ID] = BlazarSED.get_elec_array(self.e_inj_second_gamma_ptr, self._jet._blob, ID)
+                self.n_gamma_e_second_inj[ID] = BlazarSED.get_elec_array(self._Q_inj_e_second_ptr, self._jet._blob, ID)
 
+        self.n_gamma_p[np.isnan(self.n_gamma_p)]=0
+        self.n_gamma_p[np.isinf(self.n_gamma_p)]=0
 
+        self.n_gamma_e[np.isnan(self.n_gamma_e)] = 0
+        self.n_gamma_e[np.isinf(self.n_gamma_e)] = 0
 
 
 

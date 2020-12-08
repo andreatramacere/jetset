@@ -169,11 +169,11 @@ void build_Ne(struct spettro *pt) {
     alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->gamma_grid_size);
     alloc_N_distr(&(pt->Ne_IC),pt->gamma_grid_size);
 
-
-
 }
 
-
+void build_Q_inj_e_second(struct spettro *pt) {
+    alloc_N_distr(&(pt->Q_inj_e_second),pt->gamma_grid_size);
+}
 
 void build_Np(struct spettro *pt)
 {
@@ -315,10 +315,11 @@ void Init_Np_Ne_pp(struct spettro *pt)
 
     //Set N to e- from pp
     sprintf(pt->PARTICLE, "secondaries_el");
+    build_Q_inj_e_second(pt);
     build_Ne(pt);
     SetDistr(pt);
-    Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Ne);
-    
+    Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Q_inj_e_second);
+    CooolingEquilibrium(pt,pt->T_esc_e_second);
     pt->Distr_e_done = 1;
     pt->N_0e = pt->N_0;
     
@@ -328,13 +329,13 @@ void Init_Np_Ne_pp(struct spettro *pt)
     //printf("-->\n");
     pt->N_e_pp = N_tot(pt, N_distr_integranda);
 
-    if (pt->verbose > 1)
-    {
-        printf("****** secondary leptons *****\n");
-        printf("set array for secondary Ne\n");
-        printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
-        printf("N_e_pp =%e\n", pt->N_e_pp);
-    }
+    //if (pt->verbose > 1)
+    //{
+    //    printf("****** secondary leptons *****\n");
+    //    printf("set array for secondary Ne\n");
+    //    printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
+    //    printf("N_e_pp =%e\n", pt->N_e_pp);
+    //}
 
     //name = "distr-e-from-pp.dat";
     //Scrivi_N_file(pt, name, pt->griglia_gamma_Ne_log, pt->Ne);
@@ -342,6 +343,7 @@ void Init_Np_Ne_pp(struct spettro *pt)
     //set back pt->N_0 to the proton value and particle name
     pt->N_0 = pt->N_0p;
     sprintf(pt->PARTICLE, "protons");
+    SetDistr(pt);
 }
 
 
@@ -473,11 +475,13 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
         }
     }
 
-    //if distr is e- from pp no normalization to compute
+    //if distr is e- from pp te
+    // the distribution is filled with the injection
+    // here we set to 0
     else if (pt->TIPO_DISTR == -1){
         for (i = 0; i < pt->gamma_grid_size; i++)
         {
-            N[i] = N_distr(pt, griglia_gamma_N_log[i])*pt->N0_e_pp_factor;
+            N[i] = N_distr(pt, griglia_gamma_N_log[i]);
         }
     }
     else {
@@ -644,7 +648,7 @@ double N_distr(struct spettro *pt_N, double Gamma) {
 
     a=0.;
 
-    if (Gamma >= pt_N->gmin && Gamma <= pt_N->gmax && pt_N->TIPO_DISTR == -1) {
+    if (Gamma >= pt_N->gmin_griglia && Gamma <= pt_N->gmax_griglia && pt_N->TIPO_DISTR == -1) {
         pt_N->Gamma = Gamma;
         a= vluce_cm * pt_N->NH_pp * MEC2_TeV * bn_to_cm2 * rate_electrons_pp(pt_N, Gamma);
     }else{
