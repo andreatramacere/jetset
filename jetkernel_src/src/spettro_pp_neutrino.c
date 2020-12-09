@@ -90,7 +90,6 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
                 
                 j_neutrino_tot=j_neutrino_mu_1+j_neutrino_mu_2+j_neutrino_e;
                 
-               
                 pt->j_pp_neutrino[NU_INT]=j_neutrino_tot;
 
                 //printf("==> gamma_e=%e, Ne=%e q_neutrino_mu_1=%e,q_neutrino_mu_2=%e, q_neutrino_e=%e, q_neutrino_tot=%e\n",gamma_e,N_distr_interp(pt->gamma_grid_size, gamma_e, pt->griglia_gamma_Ne_log, pt->Q_inj_e_second),q_neutrino_mu_1,q_neutrino_mu_2,q_neutrino_e,q_neutrino_tot);

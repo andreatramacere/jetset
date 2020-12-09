@@ -724,8 +724,8 @@ double Cooling(double,struct temp_ev *,struct spettro *);
 int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],unsigned int size);
 void free_tempe_ev(struct temp_ev *pt_ev);
 void CooolingEquilibrium(struct spettro * pt, double T_esc);
-double IntegrateCooolingEquilibrium(double * Ne, double * gamma1, unsigned int grid_size, double gamma_b, double gamma, double T_esc);
-double IntegrandCooolingEquilibrium(double * Ne, double *gamma1, unsigned int ID, double gamma_b, double one_by_gamma, double gamma);
+double IntegrateCooolingEquilibrium( struct spettro *pt,double gamma, double T_esc );
+double IntegrandCooolingEquilibrium( struct spettro *pt, double gamma_1);
 //===================================================================================
 
 // File Interface
