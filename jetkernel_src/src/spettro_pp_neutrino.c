@@ -23,7 +23,7 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
     double L_nu_pp, nuL_nu_pp, F_nu_pp_obs;
     double log_nu_start;
     unsigned int NU_INT, i, I_MAX, stop;
-    
+    double gamma_e, j_neutrino_e,j_neutrino_mu_1,j_neutrino_mu_2,j_neutrino_tot;
     stop = 0;
 
 
@@ -73,10 +73,28 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
                 //you have to multiply by (c*NH_pp) to get dN/dEg (TeV^-1 cm^-3 s^-1)
                 //then you have to multipli by HPLANCK_TeV*nu*HPLANCK_TeV*nu*Tev_to_erg/HPLANCK
                 //to get erg/(erg cm^3 Hz) that is our units
-                pt->j_pp_neutrino[NU_INT] = vluce_cm * pt->NH_pp * bn_to_cm2 *
-                        (HPLANCK_TeV * Tev_to_erg)* (HPLANCK_TeV * nu_1) *
-                        rate_nu_mu_pp(pt,nu_1);
-                if (1) {
+
+                //contribution from Eq. 66 neutirno_mu_1 Kenler 2006
+                j_neutrino_mu_1 = rate_neutrino_mu_1_pp(pt,nu_1)*vluce_cm * pt->NH_pp * bn_to_cm2 *
+                        (HPLANCK_TeV * Tev_to_erg)* (HPLANCK_TeV * nu_1);
+                        
+                //contribution from Eq. 62  neutirno_mu_2 and neutirno_2 Kenler 2006
+                //assuminf F_neutrino_e = F_e and F_neutirno_mu_2~F_neutrino_e
+
+                //F_neutrino_e  is obteined from  injetcted e-
+                gamma_e=nu_1*HPLANCK/MEC2;
+                j_neutrino_e= (MEC2/nu_1)*gamma_e*gamma_e*N_distr_interp(pt->gamma_grid_size, gamma_e, pt->griglia_gamma_Ne_log, pt->Q_inj_e_second);
+                
+                // F_neutirno_mu_2~F_neutrino_e
+                j_neutrino_mu_2=j_neutrino_e;
+                
+                j_neutrino_tot=j_neutrino_mu_1+j_neutrino_mu_2+j_neutrino_e;
+                
+               
+                pt->j_pp_neutrino[NU_INT]=j_neutrino_tot;
+
+                //printf("==> gamma_e=%e, Ne=%e q_neutrino_mu_1=%e,q_neutrino_mu_2=%e, q_neutrino_e=%e, q_neutrino_tot=%e\n",gamma_e,N_distr_interp(pt->gamma_grid_size, gamma_e, pt->griglia_gamma_Ne_log, pt->Q_inj_e_second),q_neutrino_mu_1,q_neutrino_mu_2,q_neutrino_e,q_neutrino_tot);
+                if (pt->verbose) {
                     printf("#-> NU_INT=%d j[NU_INT]=%e nu_1=%e i=%d \n",
                             NU_INT,
                             pt->j_pp_neutrino[NU_INT],

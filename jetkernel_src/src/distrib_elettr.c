@@ -476,8 +476,8 @@ void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
     }
 
     //if distr is e- from pp te
-    // the distribution is filled with the injection
-    // here we set to 0
+    //the distribution is filled with the injection
+    //by the function N_distr
     else if (pt->TIPO_DISTR == -1){
         for (i = 0; i < pt->gamma_grid_size; i++)
         {

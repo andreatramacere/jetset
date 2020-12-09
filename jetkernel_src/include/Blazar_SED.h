@@ -575,7 +575,7 @@ struct spettro {
     double *Ne_stat;
     double *Np;
     double *Q_inj_e_second;
-    double *Q_inj_e;
+    //double *Q_inj_e;
     
 
     unsigned int gamma_grid_size;
@@ -942,35 +942,38 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt);
 
 double F_gamma(double x, double Ep_TeV);
 double F_electrons(double x, double Ep_TeV);
-double F_nu_mu(double x, double Ep_TeV);
+double F_neutrino_mu_1(double x, double Ep_TeV);
 
 double sigma_pp_inel(double Ep_TeV);
 
 
 double rate_gamma_pp(struct spettro *pt);
 double rate_electrons_pp(struct spettro *pt, double Gamma);
-double rate_nu_mu_pp(struct spettro *pt, double nu_nu_mu);
+double rate_neutrino_mu_1_pp(struct spettro *pt, double nu_nu_mu);
 
 double pp_gamma_kernel(double gamma_p, double E_out_TeV,struct spettro * pt);
-double pp_gamma_kernel_delta(struct spettro *pt, double E_out_TeV);
+double pp_gamma_kernel_delta(struct spettro *pt, double E_pi);
 
-double pp_electron_kernel_delta(double E_out_TeV, struct spettro *pt);
+double pp_electron_kernel_delta(double E_pi, struct spettro *pt);
 double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct spettro *pt);
 
-double pp_nu_mu_kernel(double gamma_p, double E_out_TeV, struct spettro *pt);
-double pp_nu_mu_kernel_delta(double E_out_TeV, struct spettro *pt);
+double pp_neturino_mu_1_kernel(double gamma_p, double E_out_TeV, struct spettro *pt);
+double pp_neutrino_mu_1_kernel_delta(double E_pi, struct spettro *pt);
 
-double integrale_pp_second_rate(double (*pf_pp_kernel) (double gamma_p, double E_out_TeV, struct spettro *pt), double E_out_TeV, struct spettro * pt, unsigned int i_start);
+double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, double E_out_TeV, struct spettro *pt), double E_out_TeV, struct spettro * pt, unsigned int i_start);
+double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) (double gamma_p, double E, struct spettro *pt),
+                              double (*E_min_pi) (double gamma_p),
+                              double (*E_max_pi) (struct spettro *pt),  
+                              double E_out_TeV,
+                              struct spettro * pt);
 
-//double integrale_pp_electrons_rate(double (*pf_pp_electrons_kernel)(double gamma_p, double Gamma_e, struct spettro *pt), struct spettro *pt, unsigned int i_start);
-//double integrale_pp_nu_mu_rate(double (*pf_pp_mu_nu_kernel) (double gamma_p, double nu_mu_TeV, struct spettro *pt), struct spettro * pt, unsigned int i_start);
 
 unsigned int E_min_p_grid_even(double * gamma_p_grid, double E_start_TeV, unsigned int i_start , unsigned int  gamma_grid_size );
 
 double E_min_e_pp(double E_e);
 double E_max_e_pp(struct spettro *pt);
-double E_min_nu_mu_pp(double E_mu);
-double E_max_nu_mu_pp(struct spettro *pt);
+double E_min_neutrino_mu_1_pp(double E_mu);
+double E_max_neutrino_mu_1_pp(struct spettro *pt);
 double E_min_gamma_pp(double E_gamma);
 double E_max_gamma_pp(struct spettro *pt);
 //===========================================================================================
