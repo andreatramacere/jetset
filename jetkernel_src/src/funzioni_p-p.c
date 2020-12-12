@@ -48,7 +48,7 @@ double sigma_pp_inel(double Ep_TeV) {
 //=========================================================================================
 
 unsigned int E_min_p_grid_even(double * gamma_p_grid, double E_start_TeV, unsigned int i_start, unsigned int gamma_p_grid_size ){
-
+    //return the startin grid even index
     double  gamma_p_min;
     gamma_p_min = E_start_TeV / MPC2_TeV;
     while ((gamma_p_grid[i_start] < gamma_p_min) && (i_start < gamma_p_grid_size)) {
@@ -62,7 +62,7 @@ unsigned int E_min_p_grid_even(double * gamma_p_grid, double E_start_TeV, unsign
     }
 
     if (i_start>= gamma_p_grid_size) {
-        i_start== gamma_p_grid_size;
+        i_start= gamma_p_grid_size;
     }
 
     return i_start;
@@ -81,14 +81,14 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
     double  Ee_TeV, a1, a2, Emin_pi,Emax_pi;
     unsigned int i_start;
     double (*pf_K) (double gamma_p, double nu_pp, struct spettro * pt);
-    double (*pf_K1) (struct spettro * pt, double x);
-    double (*pf_K2) (double gamma_p);
-    double (*pf_K3) (struct spettro * pt);
+    double (*pf_K_delta) (struct spettro * pt, double x);
+    double (*pf_E_min) (double gamma_p);
+    double (*pf_E_max) (struct spettro * pt);
 
-    pf_K = &pp_electrons_kernel;
-    pf_K1 = &pp_electron_kernel_delta;
-    pf_K2 = &E_min_e_pp;
-    pf_K3 = &E_max_e_pp;
+    pf_K= &pp_electrons_kernel;
+    pf_K_delta = &pp_electron_kernel_delta;
+    pf_E_min = &E_min_e_pp;
+    pf_E_max = &E_max_e_pp;
 
     if (pt->set_pp_racc_elec == 0) {
         pt->set_pp_racc_elec = 1;
@@ -98,7 +98,7 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
         //Eq. 71
         a2 = integrale_pp_second_high_en_rate(pf_K, Ee_TeV, pt, i_start);
         //Eq. 78
-        a1= integrale_pp_second_low_en_rate(pf_K1,pf_K2,pf_K3,Ee_TeV,pt);
+        a1= integrale_pp_second_low_en_rate(pf_K_delta,pf_E_min,pf_E_max,Ee_TeV,pt);
 
         pt->pp_racc_elec = a2 / a1;
         
@@ -111,7 +111,7 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
         return integrale_pp_second_high_en_rate(pf_K, Ee_TeV, pt, i_start);
     } else {        
         //Eq. 78
-        return integrale_pp_second_low_en_rate(pf_K1,pf_K2,pf_K3,Ee_TeV,pt);
+        return integrale_pp_second_low_en_rate(pf_K_delta,pf_E_min,pf_E_max,Ee_TeV,pt);
         
     }
 
@@ -124,11 +124,11 @@ double E_min_e_pp(double E_e){
     return (E_e/psida)+(MPICC2_TeV * MPICC2_TeV)*psida/ (4 * E_e);
 }
 double E_max_e_pp(struct spettro *pt){
-    return (pt->gmax*MPC2_TeV - MPC2_TeV);
+    return (pt->gmax_secondaries*MPC2_TeV - MPC2_TeV);
 }
 
 
-double pp_electron_kernel_delta(double E_pi, struct spettro *pt) {
+double pp_electron_kernel_delta(struct spettro *pt,double E_pi) {
     double qe, Ep0_TeV, gamma_p;
     Ep0_TeV = E_pi / (Kpi) + MPC2_TeV;
     gamma_p = Ep0_TeV / MPC2_TeV;
@@ -183,13 +183,13 @@ double rate_neutrino_mu_1_pp(struct spettro *pt, double nu_nu_mu) {
     double  Emu_TeV, a1, a2, Emin_pi,Emax_pi;
     unsigned int i_start;
     double (*pf_K) (double gamma_p, double nu_mu_nu, struct spettro * pt);
-    double (*pf_K1) (struct spettro * pt, double x);
-    double (*pf_K2) (double gamma_p);
-    double (*pf_K3) (struct spettro * pt);
+    double (*pf_K_delta) (struct spettro * pt, double x);
+    double (*pf_E_min) (double gamma_p);
+    double (*pf_E_max) (struct spettro * pt);
     pf_K = &pp_neturino_mu_1_kernel;
-    pf_K1 = &pp_neutrino_mu_1_kernel_delta;
-    pf_K2 = &E_min_neutrino_mu_1_pp;
-    pf_K3 = &E_max_neutrino_mu_1_pp;
+    pf_K_delta = &pp_neutrino_mu_1_kernel_delta;
+    pf_E_min = &E_min_neutrino_mu_1_pp;
+    pf_E_max = &E_max_neutrino_mu_1_pp;
 
     if (pt->set_pp_racc_nu_mu == 0) {
         pt->set_pp_racc_nu_mu = 1;
@@ -201,7 +201,7 @@ double rate_neutrino_mu_1_pp(struct spettro *pt, double nu_nu_mu) {
         a2 = integrale_pp_second_high_en_rate(pf_K,Emu_TeV, pt, i_start);
         
         //Eq. 78
-        a1=integrale_pp_second_low_en_rate(pf_K1,pf_K2,pf_K3,Emu_TeV,pt);
+        a1=integrale_pp_second_low_en_rate(pf_K_delta,pf_E_min,pf_E_max,Emu_TeV,pt);
         pt->pp_racc_nu_mu = a2 / a1;
  
     }
@@ -215,7 +215,7 @@ double rate_neutrino_mu_1_pp(struct spettro *pt, double nu_nu_mu) {
         //printf("i_start=%d gamma_p_min=%e\n", i_start, gamma_p_min);
     } else {
         //Eq. 78
-        return integrale_pp_second_low_en_rate(pf_K1,pf_K2,pf_K3,Emu_TeV,pt);
+        return integrale_pp_second_low_en_rate(pf_K_delta,pf_E_min,pf_E_max,Emu_TeV,pt);
     }
 
     return 0.;
@@ -228,11 +228,12 @@ double E_min_neutrino_mu_1_pp(double E_mu){
     return (E_mu/psida)+(MPICC2_TeV * MPICC2_TeV) / (4 * E_mu)*psida;
 }
 double E_max_neutrino_mu_1_pp(struct spettro *pt){
-    return (pt->gmax*MPC2_TeV - MPC2_TeV);
+    //gamma of leptons is m_p_e larger than gmamma of protons
+    return (pt->gmax*MPC2_TeV*1836.15 - MPC2_TeV);
 }
 
 
-double pp_neutrino_mu_1_kernel_delta(double E_pi, struct spettro *pt) {
+double pp_neutrino_mu_1_kernel_delta(struct spettro *pt,double E_pi ) {
     double q_nu_mu, Ep0_TeV, gamma_p;
     Ep0_TeV = E_pi / (Kpi) + MPC2_TeV;
     gamma_p = Ep0_TeV / MPC2_TeV;
@@ -262,13 +263,15 @@ double F_neutrino_mu_1(double x, double Ep_TeV) {
     //L=ln(E_p/1TeV)
     double B, beta, k, ly, y, yb, L;
     double a1, a2, a3, a4, a5, res;
-
     
     y=x/0.427;
+
+    
     if (y>1.){
         res =0.;
     }
     else{
+    
         ly = log(y);
         L = log(Ep_TeV);
 
@@ -286,7 +289,7 @@ double F_neutrino_mu_1(double x, double Ep_TeV) {
         a4=-(4*beta*yb)/(1-yb);
 
         a5=-(4*k*beta*yb*(1-2*yb))/(1+k*yb*(1-yb));
-    
+
         res= a1*(a2*a2*a2*a2)*(a3+a4+a5);
     }
     
@@ -315,15 +318,15 @@ double rate_gamma_pp(struct spettro *pt) {
     //
     double  Emin_pi,Emax_pi, E_gamma_TeV, a1, a2;
     double (*pf_K) (double gamma_p, double nu_pp, struct spettro * pt);
-    double (*pf_K1) (struct spettro * pt, double x);
-    double (*pf_K2) (double gamma_p);
-    double (*pf_K3) (struct spettro * pt);
+    double (*pf_K_delta) (struct spettro * pt, double x);
+    double (*pf_E_min) (double gamma_p);
+    double (*pf_E_max) (struct spettro * pt);
     unsigned int i_start;
 
     pf_K = &pp_gamma_kernel;
-    pf_K1 = &pp_gamma_kernel_delta;
-    pf_K2 = &E_min_gamma_pp;
-    pf_K3 = &E_max_gamma_pp;
+    pf_K_delta = &pp_gamma_kernel_delta;
+    pf_E_min = &E_min_gamma_pp;
+    pf_E_max = &E_max_gamma_pp;
 
     //Here we find the n~ (reported in the paper)
     //to find the connection between the standard kernel and the delta-approx
@@ -339,7 +342,7 @@ double rate_gamma_pp(struct spettro *pt) {
         a2 = integrale_pp_second_high_en_rate(pf_K, E_gamma_TeV, pt, i_start);
 
         //Eq. 78
-        a1= integrale_pp_second_low_en_rate(pf_K1,pf_K2,pf_K3,E_gamma_TeV,pt);
+        a1= integrale_pp_second_low_en_rate(pf_K_delta,pf_E_min,pf_E_max,E_gamma_TeV,pt);
 
         pt->pp_racc_gamma = a2 / a1;
        
@@ -355,7 +358,7 @@ double rate_gamma_pp(struct spettro *pt) {
 
     } else {
         //Eq. 78
-        return integrale_pp_second_low_en_rate(pf_K1,pf_K2,pf_K3,E_gamma_TeV,pt);
+        return integrale_pp_second_low_en_rate(pf_K_delta,pf_E_min,pf_E_max,E_gamma_TeV,pt);
 
     }
 
@@ -414,7 +417,7 @@ double F_gamma(double x, double Ep_TeV) {
 // INTEGRAZIONE PER PP->secondaries  CON METODO TRAPZ E GRIGLIA EQUI-LOG
 //
 //==================================================================
-double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) (double gamma_p, double E, struct spettro *pt),
+double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) (struct spettro *pt, double E),
                               double (*E_min_pi) (double gamma_p),
                               double (*E_max_pi) (struct spettro *pt),  
                               double E_out_TeV,

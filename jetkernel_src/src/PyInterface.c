@@ -218,6 +218,8 @@ struct spettro MakeBlob() {
     spettro_root.gamma_inj = 1.0e3;
     spettro_root.gmin = 1.0e1;
     spettro_root.gmax = 1.0e5;
+    spettro_root.gmin_secondaries=spettro_root.gmin;
+    spettro_root.gmax_secondaries=spettro_root.gmax*mp_by_me;
     spettro_root.gmin_griglia = -1.0;
     spettro_root.gmax_griglia = -1.0;
     spettro_root.gamma_pile_up=1E5;
@@ -289,9 +291,9 @@ struct spettro MakeBlob() {
 }
 
 
-void MakeNe(struct spettro *pt_base){
-    build_Ne(pt_base);
-}
+//void MakeNe(struct spettro *pt_base){
+//   build_Ne(pt_base);
+//}
 
 //=========================================================================================
 void set_seed_freq_start(struct spettro *pt_base){
@@ -364,7 +366,8 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
         pt_base->j_EC[i] = 0.0;
         pt_base->alfa_Sync[i] = 0.0;
         pt_base->I_nu_Sync[i] = 0.0;
-        pt_base->j_pp_neutrino[i]=0.0;
+        pt_base->j_pp_neutrino_tot[i]=0.0;
+        pt_base->j_pp_neutrino_mu[i]=0.0;
         pt_base->j_pp_gamma[i]=0.0;
 
     }
@@ -381,7 +384,9 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
         pt_base->nuF_nu_DT_obs[i]=0;
         pt_base->nuF_nu_Star_obs[i]=0;
         pt_base->nuFnu_pp_gamma_obs[i]=0;
-        pt_base->nuFnu_pp_neutrino_obs[i]=0;
+        pt_base->nuFnu_pp_neutrino_tot_obs[i]=0;
+        pt_base->nuFnu_pp_neutrino_mu_obs[i]=0;
+
     }
 
 

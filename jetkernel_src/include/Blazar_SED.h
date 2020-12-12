@@ -236,11 +236,16 @@ struct spettro {
     double nu_pp_gamma_obs[static_spec_arr_size];
     double nuFnu_pp_gamma_obs[static_spec_arr_size];
 
-    double j_pp_neutrino[static_spec_arr_size];
-    double nu_pp_neutrino[static_spec_arr_size];
-    double nu_pp_neutrino_obs[static_spec_arr_size];
-    double nuFnu_pp_neutrino_obs[static_spec_arr_size];
-        
+    double j_pp_neutrino_tot[static_spec_arr_size];
+    double j_pp_neutrino_mu[static_spec_arr_size];
+
+    double nu_pp_neutrino_tot[static_spec_arr_size];
+    double nu_pp_neutrino_tot_obs[static_spec_arr_size];
+    double nu_pp_neutrino_mu[static_spec_arr_size];
+    double nu_pp_neutrino_mu_obs[static_spec_arr_size];
+    double nuFnu_pp_neutrino_tot_obs[static_spec_arr_size];
+    double nuFnu_pp_neutrino_mu_obs[static_spec_arr_size];
+
 
     //--------------------------------//
 
@@ -595,11 +600,15 @@ struct spettro {
     double N_0,N_0p,N_0e; /* costante di normalizzazione per distrib elettr staz */
     double gmin;
     double gmax;
+    double gmin_secondaries;
+    double gmax_secondaries;
     double gamma_cooling_eq;
     int grid_bounded_to_gamma;
     //unsigned int pt_griglia_max;
     double gmin_griglia;
     double gmax_griglia;
+    double gmin_griglia_secondaries;
+    double gmax_griglia_secondaries;
     double U_e, E_tot_e;
     double U_p, E_tot_p;
     double Gamma_p2; //gamma peak of N(gamma)*gamma^2
@@ -734,9 +743,9 @@ double IntegrandCooolingEquilibrium( struct spettro *pt, double gamma_1);
 //=======================================================================================
 /********************************     PyInterface    ************************************/
 // PyInterface
-struct spettro MakeBlob();
-void MakeNe(struct spettro *pt_base);
-struct temp_ev MakeTempEv();
+struct spettro MakeBlob( void );
+//void MakeNe(struct spettro *pt_base);
+struct temp_ev MakeTempEv( void);
 void Init(struct spettro *pt, double luminosity_distance);
 void InitNe(struct spettro *pt);
 //void build_photons(struct spettro *pt_base);
@@ -777,7 +786,6 @@ void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev);
 
 //===================================================================================
 /************************************ FUNZIONI Distr N *****************************/
-//void Genera_griglia_gamma_e_log(struct spettro *pt, double *griglia);
 void alloc_N_distr(double ** pt,int size);
 void setNgrid(struct spettro *pt); 
 void Fill_N(struct spettro *pt, double *griglia_gamma_N_log, double *N);
@@ -814,7 +822,7 @@ double N_tot(struct spettro *pt, double (*pf_distr)(struct spettro *, double x))
 
 //===================================================================================
 /************************************ FUNZIONI VARIE *******************************/
-void messaggio_errore();
+void messaggio_errore( void);
 //void manpage();
 void flux_header(FILE *fp);
 void flux_DISK_header(FILE *fp);
@@ -954,14 +962,14 @@ double rate_neutrino_mu_1_pp(struct spettro *pt, double nu_nu_mu);
 double pp_gamma_kernel(double gamma_p, double E_out_TeV,struct spettro * pt);
 double pp_gamma_kernel_delta(struct spettro *pt, double E_pi);
 
-double pp_electron_kernel_delta(double E_pi, struct spettro *pt);
+double pp_electron_kernel_delta(struct spettro *pt,double E_pi);
 double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct spettro *pt);
 
 double pp_neturino_mu_1_kernel(double gamma_p, double E_out_TeV, struct spettro *pt);
-double pp_neutrino_mu_1_kernel_delta(double E_pi, struct spettro *pt);
+double pp_neutrino_mu_1_kernel_delta(struct spettro *pt, double E_pi);
 
 double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, double E_out_TeV, struct spettro *pt), double E_out_TeV, struct spettro * pt, unsigned int i_start);
-double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) (double gamma_p, double E, struct spettro *pt),
+double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) ( struct spettro *pt,double E),
                               double (*E_min_pi) (double gamma_p),
                               double (*E_max_pi) (struct spettro *pt),  
                               double E_out_TeV,

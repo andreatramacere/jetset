@@ -23,37 +23,7 @@ void spettro_pp_gamma(int Num_file, struct spettro *pt) {
     double L_nu_pp, nuL_nu_pp, F_nu_pp_obs;
     double log_nu_start;
     unsigned int NU_INT, i, I_MAX, stop;
-    //char f_pp[static_file_name_max_legth], f_pp_energy[static_file_name_max_legth];
-    //FILE *fp_pp, *fp_pp_energy;
-
-    //=================================
-    // apre i files dove scrive i dati di SSC
-    // HEADER FILES
-    //=================================
-    /*
-    if (pt->WRITE_TO_FILE==1){
-        sprintf(f_pp, "%s%s-pp-gamma.dat",
-                pt->path, pt->STEM);
-
-        sprintf(f_pp_energy, "%s%s-pp-gamma-energy.dat",
-                pt->path, pt->STEM);
-
-        fp_pp = fopen(f_pp, "w");
-        if (fp_pp == NULL) {
-            printf("non posso aprire %s\n ", f_pp);
-            exit(1);
-        }
-        fp_pp_energy = fopen(f_pp_energy, "w");
-        if (fp_pp == NULL) {
-            printf("non posso aprire %s\n ", f_pp);
-            exit(1);
-        }
-        flux_header(fp_pp);
-    }
-    */
-    //==================================================================
-
-
+    
     //============================================================
     //         inizio  loop sulle freq per spettro  pp
     //============================================================
@@ -140,29 +110,6 @@ void spettro_pp_gamma(int Num_file, struct spettro *pt) {
                 }
             }
 
-            //printf("#-> nu_obs=%e  i=%e\n", pt->nu_pp_obs[NU_INT], pt->nuFnu_pp_obs[NU_INT]);
-
-            //===========================================
-            // FILES output nu dnu nuFnu dnuFnu
-            //==========================================
-            /*
-            if (pt->WRITE_TO_FILE==1){
-                if (!stop) {
-                    fprintf(fp_pp, "%4.4e\t%4.4e\t%4.4e\t %4.4e\t%4.4e\t%4.4e\n",
-                            log10(pt->nu_pp_obs[NU_INT]),
-                            log10(pt->nuFnu_pp_obs[NU_INT]),
-                            pt->nu_pp_obs[NU_INT],
-                            pt->nuFnu_pp_obs[NU_INT],
-                            nu_src,
-                            nuL_nu_pp);
-
-                    fprintf(fp_pp_energy, "%4.4e\t%4.4e\n",
-                            nu_1*HPLANCK_TeV,
-                            pt->j_pp[NU_INT] * nu_1 * erg_to_TeV);
-                    // nuL_nu_pp);
-                }
-            }
-            */
             if (pt->verbose) {
                 printf("#-> ********************************\n\n");
             }
@@ -177,12 +124,7 @@ void spettro_pp_gamma(int Num_file, struct spettro *pt) {
     }
     //printf("nu_stop_pp=%e NU_INT_STOP_PP=%d\n", pt->nu_stop_pp, pt->NU_INT_STOP_PP);
     pt->nu_stop_pp_gamma_obs = nu_blob_to_nu_obs(pt->nu_stop_pp_gamma, pt->beam_obj, pt->z_cosm);
-    /*
-    if (pt->WRITE_TO_FILE==1){
-        fclose(fp_pp);
-        fclose(fp_pp_energy);
-    }
-    */
+    
     //===========================================
     //    trova nu peak e Flux peak
     //===========================================

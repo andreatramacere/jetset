@@ -27,7 +27,7 @@
 // dente pari ed il successivo pari
 //==============================================================
 
-void Genera_griglia_gamma_N_log(struct spettro *pt, double * griglia_gamma_N_log) {
+void Genera_griglia_gamma_N_log(struct spettro *pt, double * griglia_gamma_N_log, double gmin_griglia, double gmax_griglia) {
 	unsigned int i;
     double delta_log;
     double log_a, log_b;
@@ -36,8 +36,8 @@ void Genera_griglia_gamma_N_log(struct spettro *pt, double * griglia_gamma_N_log
         printf("size is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
     }
     
-    log_a = log10(pt->gmin_griglia);
-    log_b = log10(pt->gmax_griglia);
+    log_a = log10(gmin_griglia);
+    log_b = log10(gmax_griglia);
     delta_log = (log_b - log_a) / ((double) pt->gamma_grid_size - 1);
     //PUNTI CON INDICE PARI LOG
     for (i = 0; i < pt->gamma_grid_size; i += 2) {
@@ -57,27 +57,47 @@ void setNgrid(struct spettro *pt)
     //==========================================
     //Numerical Integration precision Setup
     //==========================================
+
+    double  *gmin, *gmax , *gmin_griglia, *gmax_griglia;
+    unsigned int *gamma_grid_size;
+    
+    if (strcmp(pt->PARTICLE, "secondaries_el") == 0)
+    {
+      gamma_grid_size = &(pt->gamma_grid_size);
+      gmax = &(pt->gmax_secondaries);
+      gmin = &(pt->gmin_secondaries);
+      gmax_griglia = &(pt->gmax_griglia_secondaries);
+      gmin_griglia = &(pt->gmin_griglia_secondaries);
+    }
+    else{
+        gamma_grid_size = &(pt->gamma_grid_size);
+        gmax = &(pt->gmax);
+        gmin = &(pt->gmin);
+        gmax_griglia = &(pt->gmax_griglia);
+        gmin_griglia = &(pt->gmin_griglia);
+
+    }
     if (strcmp(pt->MODE, "accurate") == 0)
     {
-        pt->gamma_grid_size = 10000;
+        *gamma_grid_size = 10000;
         if (pt->verbose)
         {
-            printf("gamma mesh set to value=%d for accurate integration \n", pt->gamma_grid_size);
+            printf("gamma mesh set to value=%d for accurate integration \n", *gamma_grid_size);
         }
     }
     else if (strcmp(pt->MODE, "fast") == 0)
     {
-        pt->gamma_grid_size = 1000;
+        *gamma_grid_size = 1000;
         if (pt->verbose)
         {
-            printf("gamma mesh set to value=%d for fast integration, \n", pt->gamma_grid_size);
+            printf("gamma mesh set to value=%d for fast integration, \n", *gamma_grid_size);
         }
     }
     else if (strcmp(pt->MODE, "custom") == 0)
     {
         if (pt->verbose)
         {
-            printf("gamma mesh set to custom value=%d  \n", pt->gamma_grid_size);
+            printf("gamma mesh set to custom value=%d  \n", *gamma_grid_size);
         }
     }
     else
@@ -89,13 +109,13 @@ void setNgrid(struct spettro *pt)
         }
     }
 
-    if (fmod((double)pt->gamma_grid_size, 2.0) == 0)
+    if ( (int)(*gamma_grid_size)%2 == 0)
     {
-        pt->gamma_grid_size++;
+        (*gamma_grid_size) ++;
         if (pt->verbose)
         {
             printf("!! gamma_grid_size has to be odd\n");
-            printf("!! pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
+            printf("!! pt->gamma_grid_size=%d\n", (*gamma_grid_size));
         }
     }
 
@@ -103,7 +123,7 @@ void setNgrid(struct spettro *pt)
     // check on gamma grid
     //=========================================
     // gamma min griglia
-    if (pt->gmin_griglia < 0.0 || pt->gmin < pt->gmin_griglia)
+    if (*gmin_griglia < 0.0 || *gmin < *gmin_griglia)
     {
         //		if(pt->gmin>2.0){
         //			pt->gmin_griglia=pt->gmin/2.0;
@@ -111,20 +131,20 @@ void setNgrid(struct spettro *pt)
         //		else{
         //		   pt->gmin_griglia=1.0;
         //		}
-        pt->gmin_griglia = pt->gmin;
+        *gmin_griglia = *gmin;
     }
 
-    if (pt->gmax_griglia < 0.0 || pt->gmax > pt->gmax_griglia)
+    if (*gmax_griglia < 0.0 || *gmax > *gmax_griglia)
     {
-        pt->gmax_griglia = pt->gmax;
+        *gmax_griglia = *gmax;
     }
 
-    if (pt->gmin < pt->gmin_griglia)
+    if (*gmin < *gmin_griglia)
     {
         printf("gmin < gmin_griglia, it must be the oppsosite");
         exit(1);
     }
-    if (pt->gmax > pt->gmax_griglia)
+    if (*gmax > *gmax_griglia)
     {
         printf("gmax > gmax_griglia, it must be the oppsosite");
         exit(1);
@@ -133,13 +153,13 @@ void setNgrid(struct spettro *pt)
     if (pt->verbose > 1)
     {
         printf("Set array per Ne \n");
-        printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
+        printf("elements number is pt->gamma_grid_size=%d\n", *gamma_grid_size);
     }
 
     if (pt->grid_bounded_to_gamma == 1)
     {
-        pt->gmax_griglia = pt->gmax;
-        pt->gmin_griglia = pt->gmin;
+        *gmax_griglia = *gmax;
+        *gmin_griglia = *gmin;
         //if (pt->gmin_griglia<1.0){
         //    pt->gmin_griglia=1.0;
         // }
@@ -155,7 +175,28 @@ void build_Ne(struct spettro *pt) {
 
     //printf("Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Ne_log),pt->gamma_grid_size);
-    Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log);
+    Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log, pt->gmin_griglia, pt->gmax_griglia);
+    alloc_N_distr(&(pt->Ne),pt->gamma_grid_size);
+
+    //stationary frame
+    alloc_N_distr(&(pt->griglia_gamma_Ne_log_stat),pt->gamma_grid_size);
+    alloc_N_distr(&(pt->Ne_stat),pt->gamma_grid_size);
+    if (pt->verbose>1) {
+        printf("DONE \n");
+    }
+
+    //N for IC
+    alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->gamma_grid_size);
+    alloc_N_distr(&(pt->Ne_IC),pt->gamma_grid_size);
+
+}
+
+void build_Ne_secondaries(struct spettro *pt) {
+   
+
+    //printf("Set array per Ne %s \n",pt->DISTR);
+    alloc_N_distr(&(pt->griglia_gamma_Ne_log),pt->gamma_grid_size);
+    Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log,pt->gmin_griglia_secondaries, pt->gmax_griglia_secondaries);
     alloc_N_distr(&(pt->Ne),pt->gamma_grid_size);
 
     //stationary frame
@@ -180,7 +221,7 @@ void build_Np(struct spettro *pt)
     
     
     alloc_N_distr(&(pt->griglia_gamma_Np_log), pt->gamma_grid_size);
-    Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Np_log);
+    Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Np_log,pt->gmin_griglia, pt->gmax_griglia);
     alloc_N_distr(&(pt->Np), pt->gamma_grid_size);
 
 
@@ -193,7 +234,13 @@ void Fill_Ne_IC(struct spettro *pt, double gmin, int stat_frame) {
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
     }
     //printf("Set array per Ne %s \n",pt->DISTR);
-    Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC);
+    
+    if (strcmp(pt->PARTICLE, "protons") == 0) {
+        Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,pt->gmin_griglia_secondaries, pt->gmax_griglia_secondaries);
+    }
+    else{
+        Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,pt->gmin_griglia, pt->gmax_griglia);
+    }
     SetDistr(pt);
     for (i = 0; i < pt->gamma_grid_size; i++) {
         if (pt->griglia_gamma_Ne_log_IC[i]>=gmin){
@@ -285,6 +332,9 @@ void Init_Np_Ne_pp(struct spettro *pt)
     double (*pf_distr) (struct spettro *, double x);
     pf_distr = &N_distr_integranda;
 
+    pt->gmin_secondaries=pt->gmin;
+    pt->gmax_secondaries=pt->gmax*mp_by_me;
+
     setNgrid(pt);
     build_Np(pt);
     SetDistr(pt);
@@ -315,8 +365,9 @@ void Init_Np_Ne_pp(struct spettro *pt)
 
     //Set N to e- from pp
     sprintf(pt->PARTICLE, "secondaries_el");
+    setNgrid(pt);
+    build_Ne_secondaries(pt);
     build_Q_inj_e_second(pt);
-    build_Ne(pt);
     SetDistr(pt);
     Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Q_inj_e_second);
     CooolingEquilibrium(pt,pt->T_esc_e_second);
@@ -612,17 +663,17 @@ double bkn_pile_up_func(double Gamma,double gamma_inj, double p, double p_1,doub
 double spit_func(double Gamma,double gamma_th,double temp, double index){
     double a,b,c,f=0.;
     if (Gamma < gamma_th) {
-            a=(Gamma*Gamma)/(2.0*temp*temp*temp);
-            b=exp(-(Gamma,temp));
+        a=(Gamma*Gamma)/(2.0*temp*temp*temp);
+        b=exp(-(Gamma,temp));
 
-            f= a*b;
-        } else {
-            a=( gamma_th* gamma_th)/(2.0* temp* temp* temp);
-            b=exp(-( gamma_th/ temp));
-            c= pow((Gamma/ gamma_th), -index);
-            f= a*b*c;
+        f= a*b;
+    } else {
+        a=( gamma_th* gamma_th)/(2.0* temp* temp* temp);
+        b=exp(-( gamma_th/ temp));
+        c= pow((Gamma/ gamma_th), -index);
+        f= a*b*c;
 
-        }
+    }
 
     return f;
 }
@@ -648,7 +699,7 @@ double N_distr(struct spettro *pt_N, double Gamma) {
 
     a=0.;
 
-    if (Gamma >= pt_N->gmin_griglia && Gamma <= pt_N->gmax_griglia && pt_N->TIPO_DISTR == -1) {
+    if (Gamma >= pt_N->gmin_griglia_secondaries && Gamma <= pt_N->gmax_griglia_secondaries && pt_N->TIPO_DISTR == -1) {
         pt_N->Gamma = Gamma;
         a= vluce_cm * pt_N->NH_pp * MEC2_TeV * bn_to_cm2 * rate_electrons_pp(pt_N, Gamma);
     }else{
@@ -668,7 +719,7 @@ double N_tot(struct spettro *pt, double (*pf_distr)(struct spettro *, double x))
     /**
      * \author Andrea Tramacere
      * \date 19-09-2004 \n
-     * questa funzione restituisce il numero tototale di particelle                      \n
+     * questa funzione restituisce il numero tototale di particelle \n
      *
      */
 

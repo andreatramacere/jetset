@@ -23,7 +23,7 @@ void build_log_grid(double nu_start, double nu_stop, unsigned int SIZE, double *
 }
 
  int x_to_grid_index(double * nu_grid, double nu, unsigned int SIZE){
-	int I=0;
+	unsigned I=0;
 	while (!(nu >= nu_grid[I] && nu <=nu_grid[I + 1] ) && (I<SIZE)){
 		I++;
 	}
