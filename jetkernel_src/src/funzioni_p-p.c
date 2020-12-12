@@ -82,14 +82,15 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
     unsigned int i_start;
     double (*pf_K) (double gamma_p, double nu_pp, struct spettro * pt);
     double (*pf_K_delta) (struct spettro * pt, double x);
-    double (*pf_E_min) (double gamma_p);
+    double (*pf_E_min) (double gamma_p, struct spettro * pt);
     double (*pf_E_max) (struct spettro * pt);
 
     pf_K= &pp_electrons_kernel;
     pf_K_delta = &pp_electron_kernel_delta;
     pf_E_min = &E_min_e_pp;
     pf_E_max = &E_max_e_pp;
-
+    pt->MPI_kernel_delta=MPI0C2_TeV;
+    pt->MPI_kernel_delta_Emin=MPICC2_TeV;
     if (pt->set_pp_racc_elec == 0) {
         pt->set_pp_racc_elec = 1;
         Ee_TeV = 0.1;
@@ -118,10 +119,10 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
     return 0.;
 }
 
-double E_min_e_pp(double E_e){
+double E_min_e_pp(double E_e, struct spettro *pt){
     double psida;
-    psida=  1.0 - (MEMUC2_TeV*MEMUC2_TeV)/(MPICC2_TeV*MPICC2_TeV);
-    return (E_e/psida)+(MPICC2_TeV * MPICC2_TeV)*psida/ (4 * E_e);
+    psida=  1.0 - (MEMUC2_TeV*MEMUC2_TeV)/(pt->MPI_kernel_delta_Emin*pt->MPI_kernel_delta_Emin)*0.5;
+    return (E_e/psida)+(pt->MPI_kernel_delta_Emin * pt->MPI_kernel_delta_Emin)*psida/ (4 * E_e);
 }
 double E_max_e_pp(struct spettro *pt){
     return (pt->gmax_secondaries*MPC2_TeV - MPC2_TeV);
@@ -135,7 +136,7 @@ double pp_electron_kernel_delta(struct spettro *pt,double E_pi) {
   
     qe = pt->pp_racc_elec / (Kpi) * sigma_pp_inel(Ep0_TeV)*
         N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
-    return 2.0 * qe / sqrt(E_pi * E_pi - MPI0C2_TeV * MPI0C2_TeV);
+    return 2.0 * qe / sqrt(E_pi * E_pi - pt->MPI_kernel_delta * pt->MPI_kernel_delta);
     
 }
 
@@ -184,13 +185,15 @@ double rate_neutrino_mu_1_pp(struct spettro *pt, double nu_nu_mu) {
     unsigned int i_start;
     double (*pf_K) (double gamma_p, double nu_mu_nu, struct spettro * pt);
     double (*pf_K_delta) (struct spettro * pt, double x);
-    double (*pf_E_min) (double gamma_p);
+    double (*pf_E_min) (double gamma_p, struct spettro * pt);
     double (*pf_E_max) (struct spettro * pt);
     pf_K = &pp_neturino_mu_1_kernel;
     pf_K_delta = &pp_neutrino_mu_1_kernel_delta;
     pf_E_min = &E_min_neutrino_mu_1_pp;
     pf_E_max = &E_max_neutrino_mu_1_pp;
 
+    pt->MPI_kernel_delta=MPI0C2_TeV;
+    pt->MPI_kernel_delta_Emin=MPI0C2_TeV;
     if (pt->set_pp_racc_nu_mu == 0) {
         pt->set_pp_racc_nu_mu = 1;
         Emu_TeV = 0.1;
@@ -207,9 +210,9 @@ double rate_neutrino_mu_1_pp(struct spettro *pt, double nu_nu_mu) {
     }
 
 
-    Emu_TeV =nu_nu_mu*HPLANCK;
-    //Eq. 71
+    Emu_TeV =nu_nu_mu*HPLANCK;    
     if (Emu_TeV > 0.1) {
+        //Eq. 71
         i_start = E_min_p_grid_even(pt->griglia_gamma_Np_log,Emu_TeV, 0, pt->gamma_grid_size );
         return integrale_pp_second_high_en_rate(pf_K,Emu_TeV, pt, i_start);
         //printf("i_start=%d gamma_p_min=%e\n", i_start, gamma_p_min);
@@ -222,14 +225,13 @@ double rate_neutrino_mu_1_pp(struct spettro *pt, double nu_nu_mu) {
 
 }
 
-double E_min_neutrino_mu_1_pp(double E_mu){
+double E_min_neutrino_mu_1_pp(double E_mu, struct spettro * pt){
     double psida;
-    psida=  1.0 - (MEMUC2_TeV*MEMUC2_TeV)/(MPICC2_TeV*MPICC2_TeV);
-    return (E_mu/psida)+(MPICC2_TeV * MPICC2_TeV) / (4 * E_mu)*psida;
+    psida=  1.0 - (MEMUC2_TeV*MEMUC2_TeV)/(pt->MPI_kernel_delta_Emin*pt->MPI_kernel_delta_Emin);
+    return (E_mu/psida)+(pt->MPI_kernel_delta_Emin * MPICC2_TeV) / (4 * E_mu)*psida;
 }
 double E_max_neutrino_mu_1_pp(struct spettro *pt){
-    //gamma of leptons is m_p_e larger than gmamma of protons
-    return (pt->gmax*MPC2_TeV*1836.15 - MPC2_TeV);
+    return (pt->gmax*MPC2_TeV - MPC2_TeV);
 }
 
 
@@ -240,7 +242,7 @@ double pp_neutrino_mu_1_kernel_delta(struct spettro *pt,double E_pi ) {
    
     q_nu_mu = pt->pp_racc_nu_mu / (Kpi) * sigma_pp_inel(Ep0_TeV)*
             N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
-    q_nu_mu = 2.0 * q_nu_mu / sqrt(E_pi * E_pi - MPICC2_TeV * MPICC2_TeV);
+    q_nu_mu = 2.0 * q_nu_mu / sqrt(E_pi * E_pi - pt->MPI_kernel_delta * pt->MPI_kernel_delta);
 
     return q_nu_mu;
 }
@@ -319,7 +321,7 @@ double rate_gamma_pp(struct spettro *pt) {
     double  Emin_pi,Emax_pi, E_gamma_TeV, a1, a2;
     double (*pf_K) (double gamma_p, double nu_pp, struct spettro * pt);
     double (*pf_K_delta) (struct spettro * pt, double x);
-    double (*pf_E_min) (double gamma_p);
+    double (*pf_E_min) (double gamma_p, struct spettro * pt);
     double (*pf_E_max) (struct spettro * pt);
     unsigned int i_start;
 
@@ -327,6 +329,8 @@ double rate_gamma_pp(struct spettro *pt) {
     pf_K_delta = &pp_gamma_kernel_delta;
     pf_E_min = &E_min_gamma_pp;
     pf_E_max = &E_max_gamma_pp;
+    pt->MPI_kernel_delta=MPI0C2_TeV;
+    pt->MPI_kernel_delta_Emin=MPI0C2_TeV;
 
     //Here we find the n~ (reported in the paper)
     //to find the connection between the standard kernel and the delta-approx
@@ -365,8 +369,8 @@ double rate_gamma_pp(struct spettro *pt) {
     return 0;
 }
 
-double E_min_gamma_pp(double E_gamma){
-    return (E_gamma)+(MPI0C2_TeV * MPI0C2_TeV) / (4 * E_gamma);
+double E_min_gamma_pp(double E_gamma, struct spettro *pt){
+    return (E_gamma)+(pt->MPI_kernel_delta_Emin * pt->MPI_kernel_delta_Emin) / (4 * E_gamma);
 }
 double E_max_gamma_pp(struct spettro *pt){
     return (pt->gmax*MPC2_TeV - MPC2_TeV);
@@ -378,7 +382,7 @@ double pp_gamma_kernel_delta(struct spettro *pt, double E_pi) {
     gamma_p=Ep0_TeV/MPC2_TeV;
   
     qpi = pt->pp_racc_gamma / (Kpi)*sigma_pp_inel(Ep0_TeV) * N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
-    return 2.0 * qpi / sqrt(E_pi * E_pi - MPI0C2_TeV * MPI0C2_TeV);
+    return 2.0 * qpi / sqrt(E_pi * E_pi - pt->MPI_kernel_delta * pt->MPI_kernel_delta);
     
 }
 
@@ -418,7 +422,7 @@ double F_gamma(double x, double Ep_TeV) {
 //
 //==================================================================
 double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) (struct spettro *pt, double E),
-                              double (*E_min_pi) (double gamma_p),
+                              double (*E_min_pi) (double gamma_p, struct spettro *pt),
                               double (*E_max_pi) (struct spettro *pt),  
                               double E_out_TeV,
                               struct spettro * pt) {
@@ -427,8 +431,8 @@ double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) (struct spet
     //and avoid the spike
     double Emin_pi,E_mid,Emax_pi, a1 ,a2;
 
-    Emin_pi = E_min_pi(E_out_TeV);
-    E_mid=Emin_pi*2.5;
+    Emin_pi = E_min_pi(E_out_TeV,pt);
+    E_mid=Emin_pi*1.1;
     Emax_pi = E_max_pi(pt);
     
     a1=0;
@@ -439,7 +443,7 @@ double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) (struct spet
             pt,
             E_mid,
             Emax_pi,
-            1000);
+            500);
     }
     else{
         E_mid=Emax_pi;

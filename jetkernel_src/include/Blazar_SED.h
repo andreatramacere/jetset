@@ -191,6 +191,8 @@ struct spettro {
     //-----------pp-gamma-emission---//
     //--- CONST
     double NH_pp;
+    double MPI_kernel_delta;
+    double MPI_kernel_delta_Emin;
 
     //--- FREQ BOUNDARIES
     double nu_stop_pp_gamma_pred,nu_stop_pp_gamma;
@@ -945,6 +947,7 @@ double Sync_cool(struct spettro * , double g);
 
 //===========================================================================================
 /****************** FUNZION pp-gamma-e-mu ************************************************/
+
 void spettro_pp_gamma(int Num_file, struct spettro *pt);
 void spettro_pp_neutrino(int Num_file, struct spettro *pt);
 
@@ -970,7 +973,7 @@ double pp_neutrino_mu_1_kernel_delta(struct spettro *pt, double E_pi);
 
 double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, double E_out_TeV, struct spettro *pt), double E_out_TeV, struct spettro * pt, unsigned int i_start);
 double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) ( struct spettro *pt,double E),
-                              double (*E_min_pi) (double gamma_p),
+                              double (*E_min_pi) (double gamma_p, struct spettro *pt),
                               double (*E_max_pi) (struct spettro *pt),  
                               double E_out_TeV,
                               struct spettro * pt);
@@ -978,11 +981,11 @@ double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) ( struct spe
 
 unsigned int E_min_p_grid_even(double * gamma_p_grid, double E_start_TeV, unsigned int i_start , unsigned int  gamma_grid_size );
 
-double E_min_e_pp(double E_e);
+double E_min_e_pp(double E_e, struct spettro *pt);
 double E_max_e_pp(struct spettro *pt);
-double E_min_neutrino_mu_1_pp(double E_mu);
+double E_min_neutrino_mu_1_pp(double E_mu, struct spettro *pt);
 double E_max_neutrino_mu_1_pp(struct spettro *pt);
-double E_min_gamma_pp(double E_gamma);
+double E_min_gamma_pp(double E_gamma, struct spettro *pt);
 double E_max_gamma_pp(struct spettro *pt);
 //===========================================================================================
 
