@@ -23,7 +23,7 @@
 #define erg_to_TeV      0.6241512//
 #define bn_to_cm2       1E-24//
 #define SIGTH		6.652461618e-25 // cm^2 (sez. d'urto di thomson)
-#define E_th_pp         1.2205E-3// TeV (th energy for pp Eq. 79 in Kelner et al. 2006, astro-ph.06066058v1, PHYSICAL REVIEW D 74, 034018 (2006))
+#define E_th_pp         0.2797E-3// Th energy pi production from pp (Kafexhiu, E., Aharonian, F., Taylor, A. M., & Vila, G. S. 2014, Physical Review D, 90, 123014, doi: 10.1103/PhysRevD.90.123014)
 #define Kpi            0.17//constant in Eq. 77 in Kelner et al. 2006, astro-ph.06066058v1, PHYSICAL REVIEW D 74, 034018 (2006))
 #define Kpp_e          0.095//fraction of e- energy expressed as a fraction of Kpi
 #define MEC2        8.187111e-07// erg  (me*c^2)
@@ -213,6 +213,7 @@ struct spettro {
     int do_pp_nueturino;
     int set_pp_racc_gamma, set_pp_racc_elec, set_pp_racc_nu_mu;
     double pp_racc_gamma, pp_racc_elec, pp_racc_nu_mu;
+    double E_th_pp_delta_approx,E_pp_x_delta_approx;
 
     //--- FREQ/FLUX scalars
     double nu_peak_PP_gamma_blob;
@@ -956,6 +957,7 @@ double F_electrons(double x, double Ep_TeV);
 double F_neutrino_mu_1(double x, double Ep_TeV);
 
 double sigma_pp_inel(double Ep_TeV);
+double  check_pp_kernel(double res,struct spettro *pt,double E_p_TeV, double x );
 
 
 double rate_gamma_pp(struct spettro *pt);
@@ -979,7 +981,7 @@ double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) ( struct spe
                               struct spettro * pt);
 
 
-unsigned int E_min_p_grid_even(double * gamma_p_grid, double E_start_TeV, unsigned int i_start , unsigned int  gamma_grid_size );
+unsigned int E_min_p_grid_even(struct spettro *pt, double * gamma_p_grid, double E_start_TeV, unsigned int i_start, unsigned int gamma_p_grid_size );
 
 double E_min_e_pp(double E_e, struct spettro *pt);
 double E_max_e_pp(struct spettro *pt);

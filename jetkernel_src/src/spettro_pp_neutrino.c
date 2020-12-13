@@ -115,7 +115,7 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
                 nuL_nu_pp = L_nu_pp*nu_src;
                 F_nu_pp_obs = L_nu_src_to_F_nu(L_nu_pp, pt->beam_obj, pt->z_cosm, pt->dist);
 
-                pt->nuFnu_pp_neutrino_mu_obs[NU_INT] = F_nu_pp_obs * pt->nu_pp_neutrino_tot[NU_INT];
+                pt->nuFnu_pp_neutrino_mu_obs[NU_INT] = F_nu_pp_obs * pt->nu_pp_neutrino_mu[NU_INT];
 
 
                 pt->nu_stop_pp_neutrino = nu_1;
