@@ -369,6 +369,7 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
         pt_base->I_nu_Sync[i] = 0.0;
         pt_base->j_pp_neutrino_tot[i]=0.0;
         pt_base->j_pp_neutrino_mu[i]=0.0;
+        pt_base->j_pp_neutrino_e[i]=0.0;
         pt_base->j_pp_gamma[i]=0.0;
 
     }
@@ -387,7 +388,7 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
         pt_base->nuFnu_pp_gamma_obs[i]=0;
         pt_base->nuFnu_pp_neutrino_tot_obs[i]=0;
         pt_base->nuFnu_pp_neutrino_mu_obs[i]=0;
-
+        pt_base->nuFnu_pp_neutrino_e_obs[i]=0;
     }
 
 
@@ -555,6 +556,9 @@ void Run_SED(struct spettro *pt_base){
         spettro_pp_neutrino(1,pt_base);
     }
 
+    if ((strcmp(pt_base->PARTICLE, "protons") == 0) && pt_base->do_pp_neutrino) {
+        spettro_pp_neutrino(1,pt_base);
+    }
 
     //graph_integranda_j_nu_Sync(pt_base);
     //==================================================

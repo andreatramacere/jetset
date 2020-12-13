@@ -38,7 +38,9 @@ nuFnu_obs_dic['Disk']=['nuFnu_Disk_grid','nu_grid']
 nuFnu_obs_dic['EC_CMB']=['nuFnu_EC_CMB_grid','nu_grid']
 nuFnu_obs_dic['EC_CMB_stat']=['nuFnu_EC_CMB_stat_grid','nu_grid']
 nuFnu_obs_dic['PP_gamma']=['nuFnu_pp_gamma_grid','nu_grid']
-nuFnu_obs_dic['PP_neutrino']=['nuFnu_pp_gamma_grid','nu_grid']
+nuFnu_obs_dic['PP_neutrino_tot']=['nuFnu_pp_neutrino_tot_grid','nu_grid']
+nuFnu_obs_dic['PP_neutrino_e']=['nuFnu_pp_neutrino_e_grid','nu_grid']
+nuFnu_obs_dic['PP_neutrino_mu']=['nuFnu_pp_neutrino_mu_grid','nu_grid']
 
 
 #seed-photon fields components

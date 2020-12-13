@@ -131,6 +131,9 @@ struct spettro {
     double nuFnu_Star_grid[static_spec_arr_grid_size];
     double nuFnu_EC_CMB_grid[static_spec_arr_grid_size];
     double nuFnu_pp_gamma_grid[static_spec_arr_grid_size];
+    double nuFnu_pp_neutrino_tot_grid[static_spec_arr_grid_size];
+    double nuFnu_pp_neutrino_mu_grid[static_spec_arr_grid_size];
+    double nuFnu_pp_neutrino_e_grid[static_spec_arr_grid_size];
     double nuFnu_EC_BLR_grid[static_spec_arr_grid_size];
     double nuFnu_EC_DT_grid[static_spec_arr_grid_size];
     double nuFnu_EC_Disk_grid[static_spec_arr_grid_size];
@@ -210,7 +213,7 @@ struct spettro {
 
     //
     int do_pp_gamma;
-    int do_pp_nueturino;
+    int do_pp_neutrino;
     int set_pp_racc_gamma, set_pp_racc_elec, set_pp_racc_nu_mu;
     double pp_racc_gamma, pp_racc_elec, pp_racc_nu_mu;
     double E_th_pp_delta_approx,E_pp_x_delta_approx;
@@ -241,14 +244,19 @@ struct spettro {
 
     double j_pp_neutrino_tot[static_spec_arr_size];
     double j_pp_neutrino_mu[static_spec_arr_size];
+    double j_pp_neutrino_e[static_spec_arr_size];
 
     double nu_pp_neutrino_tot[static_spec_arr_size];
-    double nu_pp_neutrino_tot_obs[static_spec_arr_size];
     double nu_pp_neutrino_mu[static_spec_arr_size];
+    double nu_pp_neutrino_e[static_spec_arr_size];
+
     double nu_pp_neutrino_mu_obs[static_spec_arr_size];
+    double nu_pp_neutrino_e_obs[static_spec_arr_size];
+    double nu_pp_neutrino_tot_obs[static_spec_arr_size];
+
     double nuFnu_pp_neutrino_tot_obs[static_spec_arr_size];
     double nuFnu_pp_neutrino_mu_obs[static_spec_arr_size];
-
+    double nuFnu_pp_neutrino_e_obs[static_spec_arr_size];
 
     //--------------------------------//
 

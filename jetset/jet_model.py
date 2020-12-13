@@ -1503,6 +1503,7 @@ class Jetpp(JetBase):
         self.proton_distribution = self.emitters_distribution
 
         self.add_pp_gamma_component()
+        self.add_pp_neutrino_component()
 
     @staticmethod
     def available_proton_distributions():
@@ -1513,6 +1514,11 @@ class Jetpp(JetBase):
 
     def add_pp_gamma_component(self):
         self._add_spectral_component('PP_gamma',var_name='do_pp_gamma',state_dict=dict((('on', 1), ('off', 0))))
+
+    def add_pp_neutrino_component(self):
+        self._add_spectral_component('PP_neutrino_tot', var_name='do_pp_neutrino', state_dict=dict((('on', 1), ('off', 0))))
+        self._add_spectral_component('PP_neutrino_mu', var_name='do_pp_neutrino', state_dict=dict((('on', 1), ('off', 0))))
+        self._add_spectral_component('PP_neutrino_e', var_name='do_pp_neutrino', state_dict=dict((('on', 1), ('off', 0))))
 
     def show_proton_distribution(self):
         self.show_emitters_distribution()

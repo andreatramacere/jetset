@@ -23,7 +23,7 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
     double L_nu_pp, nuL_nu_pp, F_nu_pp_obs;
     double log_nu_start;
     unsigned int NU_INT, i, I_MAX, stop;
-    double gamma_e, j_neutrino_e,j_neutrino_mu_1,j_neutrino_mu_2,j_neutrino_tot;
+    double gamma_e,j_neutrino_mu_1,j_neutrino_mu_2,j_neutrino_tot;
     stop = 0;
 
 
@@ -65,9 +65,11 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
         //pt->nu_1 = nu_1;
         pt->nu_pp_neutrino_tot[NU_INT]=nu_1;
         pt->nu_pp_neutrino_mu[NU_INT]=nu_1;
+        pt->nu_pp_neutrino_e[NU_INT]=nu_1;
 
         pt->nu_pp_neutrino_tot_obs[NU_INT] = nu_blob_to_nu_obs(nu_1, pt->beam_obj, pt->z_cosm);
-        pt->nu_pp_neutrino_mu[NU_INT] = nu_blob_to_nu_obs(nu_1, pt->beam_obj, pt->z_cosm);
+        pt->nu_pp_neutrino_mu_obs[NU_INT] = nu_blob_to_nu_obs(nu_1, pt->beam_obj, pt->z_cosm);
+        pt->nu_pp_neutrino_mu_obs[NU_INT] = nu_blob_to_nu_obs(nu_1, pt->beam_obj, pt->z_cosm);
         
         if ((nu_1 >= pt->nu_start_pp_neutrino) && (nu_1 <= pt->nu_stop_pp_neutrino_pred)) {
             //printf("hi\n");
@@ -86,12 +88,12 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
 
                 //F_neutrino_e  is obteined from  injetcted e-
                 gamma_e=nu_1*HPLANCK/MEC2;
-                j_neutrino_e= (MEC2/nu_1)*gamma_e*gamma_e*N_distr_interp(pt->gamma_grid_size, gamma_e, pt->griglia_gamma_Ne_log, pt->Q_inj_e_second);
+                pt->j_pp_neutrino_e[NU_INT]= (MEC2/nu_1)*gamma_e*gamma_e*N_distr_interp(pt->gamma_grid_size, gamma_e, pt->griglia_gamma_Ne_log, pt->Q_inj_e_second);
                 
                 // F_neutirno_mu_2~F_neutrino_e
-                j_neutrino_mu_2=j_neutrino_e;
+                j_neutrino_mu_2=pt->j_pp_neutrino_e[NU_INT];
                 
-                j_neutrino_tot=j_neutrino_mu_1+j_neutrino_mu_2+j_neutrino_e;
+                j_neutrino_tot=j_neutrino_mu_1+j_neutrino_mu_2+pt->j_pp_neutrino_e[NU_INT];
                 
                 pt->j_pp_neutrino_tot[NU_INT]=j_neutrino_tot;
                 pt->j_pp_neutrino_mu[NU_INT]=j_neutrino_mu_1+j_neutrino_mu_2;
@@ -103,6 +105,7 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
                             pt->j_pp_neutrino_tot[NU_INT],
                             nu_1, i);
                 }
+                //tot
                 nu_src = nu_blob_to_nu_src(nu_1, pt->beam_obj, pt->z_cosm);
                 L_nu_pp = j_nu_to_L_nu_src(pt->j_pp_neutrino_tot[NU_INT], pt->Vol_sphere, pt->beam_obj);
                 nuL_nu_pp = L_nu_pp*nu_src;
@@ -110,12 +113,19 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
                 
                 pt->nuFnu_pp_neutrino_tot_obs[NU_INT] = F_nu_pp_obs * pt->nu_pp_neutrino_tot[NU_INT];
                 
-                
+                //mu
                 L_nu_pp = j_nu_to_L_nu_src(pt->j_pp_neutrino_mu[NU_INT], pt->Vol_sphere, pt->beam_obj);
                 nuL_nu_pp = L_nu_pp*nu_src;
                 F_nu_pp_obs = L_nu_src_to_F_nu(L_nu_pp, pt->beam_obj, pt->z_cosm, pt->dist);
 
                 pt->nuFnu_pp_neutrino_mu_obs[NU_INT] = F_nu_pp_obs * pt->nu_pp_neutrino_mu[NU_INT];
+
+                //e
+                L_nu_pp = j_nu_to_L_nu_src(pt->j_pp_neutrino_e[NU_INT], pt->Vol_sphere, pt->beam_obj);
+                nuL_nu_pp = L_nu_pp*nu_src;
+                F_nu_pp_obs = L_nu_src_to_F_nu(L_nu_pp, pt->beam_obj, pt->z_cosm, pt->dist);
+
+                pt->nuFnu_pp_neutrino_e_obs[NU_INT] = F_nu_pp_obs * pt->nu_pp_neutrino_e[NU_INT];
 
 
                 pt->nu_stop_pp_neutrino = nu_1;
@@ -134,7 +144,12 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
 
                 pt->j_pp_neutrino_mu[NU_INT] = 1.0e-60;
                 pt->nuFnu_pp_neutrino_mu_obs[NU_INT] = 1.0e-60;
+
+                pt->j_pp_neutrino_e[NU_INT] = 1.0e-60;
+                pt->nuFnu_pp_neutrino_e_obs[NU_INT] = 1.0e-60;
+
                 F_nu_pp_obs = 1.0e-60;
+                
                 if (pt->verbose) {
                     printf("%e %d\n ", nu_1, NU_INT);
                 }

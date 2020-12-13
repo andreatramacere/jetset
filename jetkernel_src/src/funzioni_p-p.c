@@ -416,7 +416,8 @@ double pp_gamma_kernel_delta(struct spettro *pt, double E_pi) {
 
 double pp_gamma_kernel(double gamma_p, double E_out_TeV, struct spettro *pt) {
     double Ep_TeV,x,res;
-    Ep_TeV = gamma_p*MPC2_TeV;  
+    Ep_TeV = gamma_p*MPC2_TeV;
+    x=E_out_TeV / Ep_TeV;  
     res= sigma_pp_inel(Ep_TeV) *
             pt->Np[pt->i_griglia_gamma] *
             F_gamma((E_out_TeV / Ep_TeV), Ep_TeV) / pt->griglia_gamma_Np_log[pt->i_griglia_gamma];
