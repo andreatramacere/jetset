@@ -69,7 +69,7 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
 
         pt->nu_pp_neutrino_tot_obs[NU_INT] = nu_blob_to_nu_obs(nu_1, pt->beam_obj, pt->z_cosm);
         pt->nu_pp_neutrino_mu_obs[NU_INT] = nu_blob_to_nu_obs(nu_1, pt->beam_obj, pt->z_cosm);
-        pt->nu_pp_neutrino_mu_obs[NU_INT] = nu_blob_to_nu_obs(nu_1, pt->beam_obj, pt->z_cosm);
+        pt->nu_pp_neutrino_e_obs[NU_INT] = nu_blob_to_nu_obs(nu_1, pt->beam_obj, pt->z_cosm);
         
         if ((nu_1 >= pt->nu_start_pp_neutrino) && (nu_1 <= pt->nu_stop_pp_neutrino_pred)) {
             //printf("hi\n");
@@ -120,7 +120,7 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
 
                 pt->nuFnu_pp_neutrino_mu_obs[NU_INT] = F_nu_pp_obs * pt->nu_pp_neutrino_mu[NU_INT];
 
-                //e
+                //e-
                 L_nu_pp = j_nu_to_L_nu_src(pt->j_pp_neutrino_e[NU_INT], pt->Vol_sphere, pt->beam_obj);
                 nuL_nu_pp = L_nu_pp*nu_src;
                 F_nu_pp_obs = L_nu_src_to_F_nu(L_nu_pp, pt->beam_obj, pt->z_cosm, pt->dist);

@@ -171,6 +171,13 @@ struct spettro MakeBlob() {
     spettro_root.do_SSC = 1;
     spettro_root.do_IC=1;
     spettro_root.do_pp_gamma=1;
+    spettro_root.set_pp_racc_elec = 0;
+    spettro_root.set_pp_racc_gamma = 0;
+    spettro_root.set_pp_racc_nu_mu = 0;
+    spettro_root.pp_racc_elec = 1.0;
+    spettro_root.pp_racc_gamma = 1.0;
+    spettro_root.pp_racc_nu_mu = 1.0;
+
     spettro_root.adaptive_e_binning =0;
     sprintf(spettro_root.MODE, "fast");
     //GRID SIZE FOR SEED

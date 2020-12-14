@@ -475,6 +475,14 @@ double integrale_simp_struct(double (*pf) (struct spettro *, double x), struct s
 }
 //=========================================================================================
 
+double theta_heaviside(double x){
+    if (x>0.){
+        return 1.0;
+    }   else{
+        return 0.;
+    }
+}
+
 double V_sphere(double R) {
     return four_by_three_pi * R * R*R;
 }

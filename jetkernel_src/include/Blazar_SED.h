@@ -25,7 +25,6 @@
 #define SIGTH		6.652461618e-25 // cm^2 (sez. d'urto di thomson)
 #define E_th_pp         0.2797E-3// Th energy pi production from pp (Kafexhiu, E., Aharonian, F., Taylor, A. M., & Vila, G. S. 2014, Physical Review D, 90, 123014, doi: 10.1103/PhysRevD.90.123014)
 #define Kpi            0.17//constant in Eq. 77 in Kelner et al. 2006, astro-ph.06066058v1, PHYSICAL REVIEW D 74, 034018 (2006))
-#define Kpp_e          0.095//fraction of e- energy expressed as a fraction of Kpi
 #define MEC2        8.187111e-07// erg  (me*c^2)
 #define MPC2        1.5032764261e-3// erg  (mp*c^2)
 #define MEMUC2_TeV    0.00010565// TeV  (me*c^2)
@@ -217,6 +216,7 @@ struct spettro {
     int set_pp_racc_gamma, set_pp_racc_elec, set_pp_racc_nu_mu;
     double pp_racc_gamma, pp_racc_elec, pp_racc_nu_mu;
     double E_th_pp_delta_approx,E_pp_x_delta_approx;
+    double E_out_e_TeV_pp;
 
     //--- FREQ/FLUX scalars
     double nu_peak_PP_gamma_blob;
@@ -991,6 +991,12 @@ double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) ( struct spe
 
 unsigned int E_min_p_grid_even(struct spettro *pt, double * gamma_p_grid, double E_start_TeV, unsigned int i_start, unsigned int gamma_p_grid_size );
 
+double f_mu_2_pp(double x, double r);
+double g_mu_pp(double x, double r);
+double h_mu_1_pp(double x, double r);
+double h_mu_2_pp(double x, double r);
+
+
 double E_min_e_pp(double E_e, struct spettro *pt);
 double E_max_e_pp(struct spettro *pt);
 double E_min_neutrino_mu_1_pp(double E_mu, struct spettro *pt);
@@ -1145,6 +1151,7 @@ double bessel_K_53(struct spettro *, double x);
 double bessel_K_pitch_ave(struct spettro *pt, double x);
 void tabella_Bessel(struct spettro *);
 double derivata(double (*pf) (struct spettro *, double x), struct spettro *pt, double x);
+double theta_heaviside(double x);
 double integrale_trap_log_struct(double (*pf)(struct spettro *, double x),
                                  struct spettro *pt, double a, double b, unsigned int intervalli);
 double integrale_simp_struct(double (*pf)(struct spettro *, double x),

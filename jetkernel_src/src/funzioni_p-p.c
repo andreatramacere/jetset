@@ -107,22 +107,28 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
     pf_K_delta = &pp_electron_kernel_delta;
     pf_E_min = &E_min_e_pp;
     pf_E_max = &E_max_e_pp;
-    pt->MPI_kernel_delta=MPI0C2_TeV;
+    //!!!! MPICC2_TeV RO MPI0C2_TeV
+    pt->MPI_kernel_delta=MPICC2_TeV;
     pt->MPI_kernel_delta_Emin=MPICC2_TeV;
+
+
     if (pt->set_pp_racc_elec == 0) {
         pt->set_pp_racc_elec = 1;
         Ee_TeV =  pt->E_th_pp_delta_approx;
-        
+        pt->E_out_e_TeV_pp=Ee_TeV;
+        //printf("==>1 pp_racc_elec=%e\n",pt->pp_racc_elec);
         i_start = E_min_p_grid_even(pt,pt->griglia_gamma_Np_log,Ee_TeV, 0, pt->gamma_grid_size );
         //Eq. 71
         a2 = integrale_pp_second_high_en_rate(pf_K, Ee_TeV, pt, i_start);
         //Eq. 78
         a1= integrale_pp_second_low_en_rate(pf_K_delta,pf_E_min,pf_E_max,Ee_TeV,pt);
-
+        //printf("==>a1=%e, pt->a2=%e\n",a1,a2);
         pt->pp_racc_elec = a2 / a1;
-        
+        //printf("==>2 pp_racc_elec=%e\n",pt->pp_racc_elec);
+        //exit(0);
     }
     Ee_TeV = Gamma_e * MEC2_TeV;
+    pt->E_out_e_TeV_pp=Ee_TeV;
     //Eq. 71
     if (Ee_TeV > pt->E_th_pp_delta_approx) {
         i_start = E_min_p_grid_even(pt,pt->griglia_gamma_Np_log,E_min_e_pp(Ee_TeV,pt), 0, pt->gamma_grid_size );
@@ -133,28 +139,62 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
         res= integrale_pp_second_low_en_rate(pf_K_delta,pf_E_min,pf_E_max,Ee_TeV,pt);
         
     }
-    
+    //printf("==>Gamma_e=%e, pt->E_out_e_TeV_pp=%e pt->pp_racc_elec=%e\n",Gamma_e,pt->E_out_e_TeV_pp,pt->pp_racc_elec);
     return res;
 }
 
 double E_min_e_pp(double E_e, struct spettro *pt){
     double psida;
-    psida=  1.0 - (MEMUC2_TeV*MEMUC2_TeV)/(pt->MPI_kernel_delta_Emin*pt->MPI_kernel_delta_Emin)*0.5;
+    psida=  1.0 ;
     return (E_e/psida)+(pt->MPI_kernel_delta_Emin * pt->MPI_kernel_delta_Emin)*psida/ (4 * E_e);
 }
 double E_max_e_pp(struct spettro *pt){
     return (pt->gmax*MPC2_TeV - MPC2_TeV);
 }
 
+double f_mu_2_pp(double x, double r){
+    double a,b;
+    a=g_mu_pp(x,r)*theta_heaviside(x-r);
+    b=(h_mu_1_pp(x,r) + h_mu_2_pp(x,r))*theta_heaviside(r-x);
+    //printf("==> g=%e,h1=%e,h2=%e (x-r)=%e, (r-x)=%e r=%e x=%e a=%e b=%e\n",g_mu_pp(x,r),h_mu_1_pp(x,r),h_mu_2_pp(x,r),(x-r),(r-x),r,x,a,b);
+    return a+b;
+}
+
+
+double g_mu_pp(double x, double r){
+    double a,b;
+    a=(3.-2.*r)/(9.*(1. - r)*(1 - r));
+    b=(9.* x*x -6.*log(x) -4.0*x*x*x -5.0 );    
+    return a*b;
+}
+
+double h_mu_1_pp(double x, double r){
+    double a,b;
+    a=(3.-2.*r)/(9.*(1. - r)*(1 - r));
+    b=(9.* r*r -6.*log(r) -4.0*r*r*r -5.0 );    
+    return a*b;
+}
+
+double h_mu_2_pp(double x, double r){
+    double a,b;
+    a=(1. + 2.*r)*(r -x)/(9.*r*r);
+    b=(9.*(r+x) -4.*((r*r) +r*x +(x*x)));  
+    return a*b;
+}
 
 double pp_electron_kernel_delta(struct spettro *pt,double E_pi) {
-    double qe, Ep0_TeV, gamma_p;
+    double qe, Ep0_TeV, gamma_p,res,f;
     Ep0_TeV = E_pi / (Kpi) + MPC2_TeV;
     gamma_p = Ep0_TeV / MPC2_TeV;
     
     qe = pt->pp_racc_elec / (Kpi) * sigma_pp_inel(Ep0_TeV)*
         N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
-    return 2.0 * qe / sqrt(E_pi * E_pi - pt->MPI_kernel_delta * pt->MPI_kernel_delta);
+    f=f_mu_2_pp(( pt->E_out_e_TeV_pp/E_pi),0.573);
+    res =2.0*qe*f/E_pi;
+    //printf("==>gamma_p=%e f=%e q=%e E_pi=%e pt->pp_racc_elec=%e, sigma_pp_inel(Ep0_TeV)=%e N_distr=%e\n",gamma_p,f,qe,E_pi,pt->pp_racc_elec,sigma_pp_inel(Ep0_TeV),N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np));
+    //return 2.0 * qe / sqrt(E_pi * E_pi - pt->MPI_kernel_delta * pt->MPI_kernel_delta);
+    //printf("==>gamma_p=%e E_out_e_TeV=%e, qe=%e, res=%e  sigma_pp_inel(Ep0_TeV)=%e, N_distr_interp=%e\n",gamma_p,pt->E_out_e_TeV_pp,qe,res,sigma_pp_inel(Ep0_TeV), N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np));
+    return res;
 }
 
 double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct spettro *pt) {
