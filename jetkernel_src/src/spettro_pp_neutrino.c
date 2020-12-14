@@ -76,19 +76,20 @@ void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
             if (!stop) {
                 //rate_neutrino_pp is (dN/dEg)/(c*NH_pp)   TeV^-1 cm^-3 s^-1/(c*NH_pp)
                 //you have to multiply by (c*NH_pp) to get dN/dEg (TeV^-1 cm^-3 s^-1)
-                //then you have to multipli by HPLANCK_TeV*nu*HPLANCK_TeV*nu*Tev_to_erg/HPLANCK
-                //to get erg/(erg cm^3 Hz) that is our units
+                //then you have to multipli by HPLANCK_TeV*nu->TeV*(TeV^-1 cm^-3 s^-1)
+                //the you multiply by HPLANCK in  to get erg/( cm^3 Hz s) that is our units
 
                 //contribution from Eq. 66 neutirno_mu_1 Kenler 2006
                 j_neutrino_mu_1 = rate_neutrino_mu_1_pp(pt,nu_1)*vluce_cm * pt->NH_pp * bn_to_cm2 *
-                        (HPLANCK_TeV * Tev_to_erg)* (HPLANCK_TeV * nu_1);
+                        (HPLANCK)* (HPLANCK_TeV * nu_1);
                         
                 //contribution from Eq. 62  neutirno_mu_2 and neutirno_2 Kenler 2006
                 //assuminf F_neutrino_e = F_e and F_neutirno_mu_2~F_neutrino_e
 
                 //F_neutrino_e  is obteined from  injetcted e-
+                //vluce_cm * pt->NH_pp * bn_to_cm2 alredy done in N_distr
                 gamma_e=nu_1*HPLANCK/MEC2;
-                pt->j_pp_neutrino_e[NU_INT]= (MEC2/nu_1)*gamma_e*gamma_e*N_distr_interp(pt->gamma_grid_size, gamma_e, pt->griglia_gamma_Ne_log, pt->Q_inj_e_second);
+                pt->j_pp_neutrino_e[NU_INT]= HPLANCK*gamma_e*N_distr_interp(pt->gamma_grid_size, gamma_e, pt->griglia_gamma_Ne_log, pt->Q_inj_e_second);
                 
                 // F_neutirno_mu_2~F_neutrino_e
                 j_neutrino_mu_2=pt->j_pp_neutrino_e[NU_INT];

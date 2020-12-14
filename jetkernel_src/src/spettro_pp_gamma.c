@@ -74,10 +74,10 @@ void spettro_pp_gamma(int Num_file, struct spettro *pt) {
             if (!stop) {
                 //rate_gamma_pp is (dN/dEg)/(c*NH_pp)   TeV^-1 cm^-3 s^-1/(c*NH_pp)
                 //you have to multiply by (c*NH_pp) to get dN/dEg (TeV^-1 cm^-3 s^-1)
-                //then you have to multipli by HPLANCK_TeV*nu*HPLANCK_TeV*nu*Tev_to_erg/HPLANCK
-                //to get erg/(erg cm^3 Hz) that is our units
+                //then you have to multipli by HPLANCK_TeV*nu->TeV*(TeV^-1 cm^-3 s^-1)
+                //the you multiply by HPLANCK in  to get erg/( cm^3 Hz s) that is our units
                 pt->j_pp_gamma[NU_INT] = vluce_cm * pt->NH_pp * bn_to_cm2 *
-                        (HPLANCK_TeV * Tev_to_erg)* (HPLANCK_TeV * pt->nu_1) *
+                        (HPLANCK)* (HPLANCK_TeV * pt->nu_1) *
                         rate_gamma_pp(pt);
                 if (pt->verbose) {
                     printf("#-> NU_INT=%d j[NU_INT]=%e nu_1=%e i=%d \n",

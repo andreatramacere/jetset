@@ -91,9 +91,10 @@ double  check_pp_kernel(double res,struct spettro *pt,double E_p_TeV, double x )
 //
 //=========================================================================================
 double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
-    //From Eq.71 and 78 in Kelner et al. 2006
+    //From Eq.71 and in Kelner et al. 2006
     //astro-ph.06066058v1
     //PHYSICAL REVIEW D 74, 034018 (2006)
+    //AND Eq 48 from https://arxiv.org/abs/2005.01276
     //e- from mu->e +mu_nu +mu_e 
     double  Ee_TeV, a1, a2, Emin_pi,Emax_pi;
     unsigned int i_start;
@@ -134,7 +135,7 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
         //i_start=0;
         res= integrale_pp_second_high_en_rate(pf_K, Ee_TeV, pt, i_start);
     } else {        
-        //Eq. 78
+        //Eq. 48
         res= integrale_pp_second_low_en_rate(pf_K_delta,pf_E_min,pf_E_max,Ee_TeV,pt);
         
     }
@@ -151,6 +152,9 @@ double E_max_e_pp(struct spettro *pt){
 }
 
 double f_mu_2_pp(double x, double r){
+    //From Eq.36 in Kelner et al. 2006
+    //astro-ph.06066058v1
+    //PHYSICAL REVIEW D 74, 034018 (2006)
     double a,b;
     a=g_mu_pp(x,r)*theta_heaviside(x-r);
     b=(h_mu_1_pp(x,r) + h_mu_2_pp(x,r))*theta_heaviside(r-x);
@@ -159,6 +163,10 @@ double f_mu_2_pp(double x, double r){
 
 
 double g_mu_pp(double x, double r){
+    //From Eq.37 in Kelner et al. 2006
+    //astro-ph.06066058v1
+    //PHYSICAL REVIEW D 74, 034018 (2006)
+    
     double a,b;
     a=(3.-2.*r)/(9.*(1. - r)*(1 - r));
     b=(9.* x*x -6.*log(x) -4.0*x*x*x -5.0 );    
@@ -166,6 +174,9 @@ double g_mu_pp(double x, double r){
 }
 
 double h_mu_1_pp(double x, double r){
+     //From Eq.38 in Kelner et al. 2006
+    //astro-ph.06066058v1
+    //PHYSICAL REVIEW D 74, 034018 (2006)
     double a,b;
     a=(3.-2.*r)/(9.*(1. - r)*(1 - r));
     b=(9.* r*r -6.*log(r) -4.0*r*r*r -5.0 );    
@@ -173,6 +184,9 @@ double h_mu_1_pp(double x, double r){
 }
 
 double h_mu_2_pp(double x, double r){
+     //From Eq.39 in Kelner et al. 2006
+    //astro-ph.06066058v1
+    //PHYSICAL REVIEW D 74, 034018 (2006)
     double a,b;
     a=(1. + 2.*r)*(r -x)/(9.*r*r);
     b=(9.*(r+x) -4.*((r*r) +r*x +(x*x)));  
@@ -180,10 +194,12 @@ double h_mu_2_pp(double x, double r){
 }
 
 double pp_electron_kernel_delta(struct spettro *pt,double E_pi) {
+    //Eq 48 from https://arxiv.org/abs/2005.01276
+    //e- from mu->e +mu_nu +mu_e 
     double qe, Ep0_TeV, gamma_p,res,f;
     Ep0_TeV = E_pi / (Kpi) + MPC2_TeV;
     gamma_p = Ep0_TeV / MPC2_TeV;
-    
+    //0.573 from Kelner et al. 2006, after Eq. 36
     qe = pt->pp_racc_elec / (Kpi) * sigma_pp_inel(Ep0_TeV)*
         N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
     f=f_mu_2_pp(( pt->E_out_e_TeV_pp/E_pi),0.573);
@@ -192,6 +208,9 @@ double pp_electron_kernel_delta(struct spettro *pt,double E_pi) {
 }
 
 double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct spettro *pt) {
+    //From Eq. 72 Kelner et al. 2006
+    //astro-ph.06066058v1
+    //PHYSICAL REVIEW D 74, 034018 (2006)
     double Ep_TeV,x,res;
     Ep_TeV = gamma_p*MPC2_TeV;
     x=E_out_TeV / Ep_TeV;
@@ -286,8 +305,10 @@ double rate_neutrino_mu_1_pp(struct spettro *pt, double nu_nu_mu) {
 }
 
 double E_min_neutrino_mu_1_pp(double E_mu, struct spettro * pt){
+    //psida from pag. 6 http://dx.doi.org/10.3847/1538-4357/aaba74
     double psida;
     psida=  1.0 - (MEMUC2_TeV*MEMUC2_TeV)/(pt->MPI_kernel_delta_Emin*pt->MPI_kernel_delta_Emin)*0.5;
+    //psida= 1.0;
     return (E_mu/psida)+(pt->MPI_kernel_delta_Emin * pt->MPI_kernel_delta_Emin) / (4 * E_mu)*psida;
 }
 double E_max_neutrino_mu_1_pp(struct spettro *pt){
@@ -296,6 +317,9 @@ double E_max_neutrino_mu_1_pp(struct spettro *pt){
 
 
 double pp_neutrino_mu_1_kernel_delta(struct spettro *pt,double E_pi ) {
+    //From Eq. 77 Kelner et al. 2006
+    //astro-ph.06066058v1
+    //PHYSICAL REVIEW D 74, 034018 (2006)
     double q_nu_mu, Ep0_TeV, gamma_p;
     Ep0_TeV = E_pi / (Kpi) + MPC2_TeV;
     gamma_p = Ep0_TeV / MPC2_TeV;
@@ -308,6 +332,9 @@ double pp_neutrino_mu_1_kernel_delta(struct spettro *pt,double E_pi ) {
 }
 
 double pp_neturino_mu_1_kernel(double gamma_p, double E_out_TeV, struct spettro *pt) {
+    //From Eq. 72 Kelner et al. 2006
+    //astro-ph.06066058v1
+    //PHYSICAL REVIEW D 74, 034018 (2006)
     double Ep_TeV,res,x;
     Ep_TeV = gamma_p*MPC2_TeV;
     x=E_out_TeV / Ep_TeV;
@@ -438,6 +465,9 @@ double E_max_gamma_pp(struct spettro *pt){
 }
 
 double pp_gamma_kernel_delta(struct spettro *pt, double E_pi) {
+    //From Eq. 77 Kelner et al. 2006
+    //astro-ph.06066058v1
+    //PHYSICAL REVIEW D 74, 034018 (2006)
     double qpi,Ep0_TeV, gamma_p;
     Ep0_TeV = MPC2_TeV+ E_pi/Kpi;
     gamma_p=Ep0_TeV/MPC2_TeV;
@@ -448,6 +478,9 @@ double pp_gamma_kernel_delta(struct spettro *pt, double E_pi) {
 }
 
 double pp_gamma_kernel(double gamma_p, double E_out_TeV, struct spettro *pt) {
+    //From Eq. 72 Kelner et al. 2006
+    //astro-ph.06066058v1
+    //PHYSICAL REVIEW D 74, 034018 (2006)
     double Ep_TeV,x,res;
     Ep_TeV = gamma_p*MPC2_TeV;
     x=E_out_TeV / Ep_TeV;  
@@ -501,7 +534,7 @@ double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) (struct spet
     double Emin_pi,E_mid,Emax_pi, a1 ,a2;
 
     Emin_pi = E_min_pi(E_out_TeV,pt);
-    E_mid=Emin_pi*1.1;
+    E_mid=Emin_pi*2;
     Emax_pi = E_max_pi(pt);
     
     a1=0;
