@@ -528,7 +528,8 @@ class JetBase(Model):
 
     def set_emitters_distribution(self, name=None, log_values=False, emitters_type='electrons',init=True):
 
-
+        if init is True:
+            self.set_blob()
         self._emitters_distribution_log_values = log_values
 
         if self._emitters_distribution_dic is not None:
@@ -599,8 +600,7 @@ class JetBase(Model):
 
             self.parameters.add_par_from_dict(self._emitters_distribution_dic,self,'_blob',JetParameter)
 
-        if init is True:
-            self.set_blob()
+
 
     def get_emitters_distribution_name(self):
         return self.emitters_distribution.name
@@ -1650,7 +1650,7 @@ class Jet(JetBase):
 
     def set_B_eq(self, nuFnu_obs, nu_obs, B_min=1E-9,B_max=1.0,N_pts=20,plot=False):
         """
-        returns equipartiont B
+        returns equipartition B
         """
         # print B_min
 

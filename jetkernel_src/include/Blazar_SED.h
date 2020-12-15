@@ -1176,7 +1176,6 @@ double log_log_interp(double log_x, double *log_x_grid, double log_x_min, double
 /**********************         FUNZIONI DI TEST                     ************************/
 double test_lunghezza_vettore(double mesh, double a, double b, int Max_elem);
 double test_solid_anlge(struct spettro *pt, double mu);
-
 #endif
 
 
