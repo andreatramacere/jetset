@@ -460,15 +460,16 @@ void set_N_distr_for_Compton(struct spettro * pt, double nu_in, double nu_out, i
 //=========================================================================================
 double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, int stat_frame) {
     double nu1, nu2, integr_gamma, integr_nu;
-    double g3, g1, y_g1, y_g2, y_g3, y_nu1, y_nu2, g;
-    double delta_g, delta_nu;
-    unsigned int i;
+    //double g3, g1, y_g1, y_g2, y_g3,delta_g;
+    double g, y_nu1, y_nu2;
+    double  delta_nu;
+    unsigned int ID,ID_gamma;
     double (*pf_K1) (struct spettro *, double x);
 
     pf_K1 = &f_compton_K1;
     integr_gamma = 0.0;
     integr_nu = 0.0;
-    i = 0;
+    ID = 0;
 
    
     
@@ -478,87 +479,75 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
     //value for enay nu_seed in the range (a,b)
     set_N_distr_for_Compton(pt, b, pt->nu_1, stat_frame);
 
-    while (pt->nu_seed[i] < a && i<pt->nu_seed_size) {
-        i++;
+    while (pt->nu_seed[ID] < a && ID<pt->nu_seed_size) {
+        ID++;
     }
 
     if (pt->verbose>1) {
         printf("***** Integrale  IC ******\n");
-        printf("i=%d\n", i);
-        printf("nu=%e a=%e b=%e  g_min_grid=%e g_max_grid=%e\n", pt->nu_seed[i], a, b, pt->griglia_gamma_Ne_log_IC[0], pt->griglia_gamma_Ne_log_IC[pt->gamma_grid_size - 1]);
+        printf("i=%d\n", ID);
+        printf("nu=%e a=%e b=%e  g_min_grid=%e g_max_grid=%e\n", pt->nu_seed[ID], a, b, pt->griglia_gamma_Ne_log_IC[0], pt->griglia_gamma_Ne_log_IC[pt->gamma_grid_size - 1]);
     }
 
     nu1=0.;
     y_nu1=0.;
 
-    if (i<pt->nu_seed_size){
-        nu1 = pt->nu_seed[i];
-        y_nu1 = pt->n_seed[i];
+    if (ID<pt->nu_seed_size){
+        nu1 = pt->nu_seed[ID];
+        y_nu1 = pt->n_seed[ID];
     }
 
+    //Integration ove freq
+    while (pt->nu_seed[ID + 1] <= b && pt->nu_seed[ID + 1] >= a && ID<pt->nu_seed_size-1) {
 
-    while (pt->nu_seed[i + 1] <= b && pt->nu_seed[i + 1] >= a && i<pt->nu_seed_size-1) {
+        //integr_gamma = 0.0;
+        //g1 = pt->griglia_gamma_Ne_log_IC[0];
+      
+        pt->nu_compton_0 = pt->nu_seed[ID];
 
-
-        integr_gamma = 0.0;
-
-        g1 = pt->griglia_gamma_Ne_log_IC[0];
-        pt->nu_compton_0 = pt->nu_seed[i];
-
+          //Integration ove gamma
         if (pt->adaptive_e_binning ==1){
             //wit this choice gmin is set to its lowest valeu
             //the actual nu_seed value
             set_N_distr_for_Compton(pt, pt->nu_compton_0, pt->nu_1, stat_frame);
         }
-        
-        y_g1 = f_compton_K1(pt, g1) * pt->Ne_IC[0];
-
-
-
-        for (pt->i_griglia_gamma = 1; pt->i_griglia_gamma < pt->gamma_grid_size - 1; pt->i_griglia_gamma++) {
-
-
-
-            y_g2 = f_compton_K1(pt, pt->griglia_gamma_Ne_log_IC[pt->i_griglia_gamma]) * pt->Ne_IC[pt->i_griglia_gamma];
-
-            pt->i_griglia_gamma++;
-            g3 = pt->griglia_gamma_Ne_log_IC[pt->i_griglia_gamma];
-            y_g3 = f_compton_K1(pt, g3) * pt->Ne_IC[pt->i_griglia_gamma];
-
-            delta_g = (g3 - g1);
-            integr_gamma += (delta_g)*(y_g1 + 4.0 * y_g2 + y_g3);
-
-            y_g1 = y_g3;
-            g1 = g3;
-
+        for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
+            pt->Integrand_over_gamma_grid[ID_gamma] =f_compton_K1(pt, pt->griglia_gamma_Ne_log_IC[ID_gamma]) * pt->Ne_IC[ID_gamma];
 
         }
+        integr_gamma= integr_simp_gird_equilog(pt->griglia_gamma_Ne_log_IC, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
 
+        //y_g1 = f_compton_K1(pt, g1) * pt->Ne_IC[0];
+        //for (pt->i_griglia_gamma = 1; pt->i_griglia_gamma < pt->gamma_grid_size - 1; pt->i_griglia_gamma++) {
+        //   y_g2 = f_compton_K1(pt, pt->griglia_gamma_Ne_log_IC[pt->i_griglia_gamma]) * pt->Ne_IC[pt->i_griglia_gamma];
+        //    pt->i_griglia_gamma++;
+        //    g3 = pt->griglia_gamma_Ne_log_IC[pt->i_griglia_gamma];
+        //    y_g3 = f_compton_K1(pt, g3) * pt->Ne_IC[pt->i_griglia_gamma];
+        //    delta_g = (g3 - g1);
+        //    integr_gamma += (delta_g)*(y_g1 + 4.0 * y_g2 + y_g3);
+        //    y_g1 = y_g3;
+        //    g1 = g3;
+        //}
 
-        nu2 = pt->nu_seed[i + 1];
-        y_nu2 = pt->n_seed[i + 1];
+        nu2 = pt->nu_seed[ID + 1];
+        y_nu2 = pt->n_seed[ID + 1];
         delta_nu = nu2 - nu1;
 
         integr_nu += (y_nu2 + y_nu1) * delta_nu * (integr_gamma);
         nu1 = nu2;
         y_nu1 = y_nu2;
-        i++;
-
+        ID++;
     }
 
-
     pt->gmin_griglia=g;
-
-
 
     //============================================================
     //0.75 fattore di correzione di GOULD
     //has been moved to spetto_sincrotrone.c
 
-    //0.5/3.0 viene dall'int simpson in gamma
     //lo 0.5 viene dalla regola del trapezio dell'integrale in nu
     //============================================================
-    return (integr_nu * 0.5)*(0.5 / 3.0);
+    return (integr_nu * 0.5);
 }
 //=========================================================================================
 

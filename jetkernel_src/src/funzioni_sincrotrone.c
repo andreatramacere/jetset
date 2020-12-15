@@ -236,37 +236,47 @@ double alfa_nu_Sync(struct spettro * f){
 // Sync INTEGRATION WITH SIMPSON AND GRIGLIA EQUI-LOG
 //=========================================================================================
 double integrale_Sync(double (*pf) (struct spettro *, unsigned int  ID), struct spettro * pt ) {
-    double integr, y1, y2, y3, x1, x3;
-    double delta;
+
     unsigned int  ID;
-    integr=0;
-    x1=pt->griglia_gamma_Ne_log[0];
-    y1=pf(pt,0);
-    //printf("x1=%e, y1=%e\n", x1,y1);
+    double test;
+    for (ID = 0; ID < pt->gamma_grid_size ; ID++){
+        pt->Integrand_over_gamma_grid[ID] =pf(pt,ID);
+    }
 
-    for (ID = 1; ID < pt->gamma_grid_size - 1; ID++)
-    {
+    return integr_simp_gird_equilog(pt->griglia_gamma_Ne_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
+}
+    //OLD IMPLEMENTATION
+    // double integr, y1, y2, y3, x1, x3;
+    // double delta;
+    // integr=0;
+    // x1=pt->griglia_gamma_Ne_log[0];
+    // y1=pf(pt,0);
+   
+    // for (ID = 1; ID < pt->gamma_grid_size - 1; ID++)
+    // {
 
-        y2=pf(pt,ID);
-        ID++;
-        x3=pt->griglia_gamma_Ne_log[ID];
-        y3=pf(pt,ID);
+    //     y2=pf(pt,ID);
+    //     ID++;
+    //     x3=pt->griglia_gamma_Ne_log[ID];
+    //     y3=pf(pt,ID);
                
 
-        //QUESTO DELTA RIMANE QUI
-        //PERCHE' LA GRIGLIA NON E' EQUISPACED
-        //NON PUO ANDARE FUORI DAL LOOP
-        delta=(x3-x1);
-        integr+=(y1+4.0*y2+y3)*delta;
-        y1=y3;
-        x1=x3;
-        //printf("ID=%d, delta=%e, integr=%e\n",ID,delta,integr);
-    }
-    if(pt->verbose>2){
-        printf("Synch Integr=%e\n", integr);
-    }
-    return integr*(0.5/3.0);
-}
+    //     //QUESTO DELTA RIMANE QUI
+    //     //PERCHE' LA GRIGLIA NON E' EQUISPACED
+    //     //NON PUO ANDARE FUORI DAL LOOP
+    //     delta=(x3-x1);
+    //     integr+=(y1+4.0*y2+y3)*delta;
+    //     y1=y3;
+    //     x1=x3;
+    //     //printf("ID=%d, delta=%e, integr=%e\n",ID,delta,integr);
+    // }
+    // if(pt->verbose>2){
+    //     printf("Synch Integr=%e\n", integr);
+    // }
+    // integr= integr*(0.5/3.0);
+    // printf("r=%e\n", test/integr);
+
+    // return integr*(0.5/3.0);
 //=========================================================================================
 
 

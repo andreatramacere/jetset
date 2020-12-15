@@ -316,7 +316,7 @@ double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, doub
 
 
 //=====================================================================
-//INTEGRAZIONE TRAPEZOIDALE CON INT APERTO E GRIGLIA  LINEARE
+//INTEGRAZIONE TRAPEZOIDALE CON INT APERTO E GRIGLIA  LINEARE CON ARRAYS
 //=====================================================================
 
 double trapzd_array_linear_grid(double *x, double *y, unsigned int SIZE)
@@ -366,7 +366,37 @@ double trapzd_array_arbritary_grid( double *x, double *y, unsigned int SIZE)
 }
 //=========================================================================================
 
+//=========================================================
+// INTEGRAZIONE ALLA SINPSON CON ARRAYS  E GRIGLIA EQUILOG CON MIDPOINT                
+//=========================================================
+double integr_simp_gird_equilog(double * x, double *y, unsigned int size) {
+    double integr, delta;
+    unsigned int ID;
 
+    integr=0.;
+    
+    if (size % 2 == 0) {
+         printf('grid size must be even');
+         exit(0);
+    }
+
+    //this is necessary because you skip the mid point
+    //in the loop when the grid is equilog spaced with midpoint
+    for (ID = 1; ID < size - 1; ID=ID+2)
+    {
+       
+        //QUESTO DELTA RIMANE QUI
+        //PERCHE' LA GRIGLIA NON E' EQUISPACED
+        //NON PUO ANDARE FUORI DAL LOOP
+        delta=(x[ID+1]-x[ID-1]);
+        integr+=(y[ID-1]+4.0*y[ID]+y[ID+1])*delta;
+        //printf("%d ID=%d\n",ID);
+       
+    }
+    
+    return integr/6.0;
+
+}
 
 
 
@@ -443,6 +473,8 @@ double integrale_simp(double (*pf) ( double x), double a, double b, unsigned int
     return h * (integr1 + integr2 + ((pf((a)) + pf((b))))) / 3.0;
 }
 //=========================================================================================
+
+
 
 
 

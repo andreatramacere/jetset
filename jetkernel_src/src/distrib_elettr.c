@@ -185,9 +185,10 @@ void build_Ne(struct spettro *pt) {
         printf("DONE \n");
     }
 
-    //N for IC
+    //N for IC and simpson equilog integration over N_grid
     alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->gamma_grid_size);
     alloc_N_distr(&(pt->Ne_IC),pt->gamma_grid_size);
+    alloc_N_distr(&(pt->Integrand_over_gamma_grid),pt->gamma_grid_size);
 
 }
 
@@ -206,9 +207,10 @@ void build_Ne_secondaries(struct spettro *pt) {
         printf("DONE \n");
     }
 
-    //N for IC
+    //N for IC and simpson equilog integration over N_grid
     alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->gamma_grid_size);
     alloc_N_distr(&(pt->Ne_IC),pt->gamma_grid_size);
+    alloc_N_distr(&(pt->Integrand_over_gamma_grid),pt->gamma_grid_size);
 
 }
 

@@ -591,6 +591,7 @@ struct spettro {
     double *Ne_stat;
     double *Np;
     double *Q_inj_e_second;
+    double *Integrand_over_gamma_grid;
     //double *Q_inj_e;
     
 
@@ -1157,6 +1158,7 @@ double integrale_trap_log_struct(double (*pf)(struct spettro *, double x),
 double integrale_simp_struct(double (*pf)(struct spettro *, double x),
                              struct spettro *pt, double a, double b, unsigned int intervalli);
 double integrale_simp(double (*pf)(double x), double a, double b, unsigned int n_intervalli);
+double integr_simp_gird_equilog(double * x, double *y, unsigned int size);
 double trapzd_array_linear_grid(double *x, double *y, unsigned int SIZE);
 double trapzd_array_arbritary_grid(double *x, double *y, unsigned int SIZE);
 double test_int(struct spettro *, double x);

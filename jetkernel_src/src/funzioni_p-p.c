@@ -570,7 +570,7 @@ double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, 
 
     double integr, y1, y2, y3, x1, x3;
     double delta;
-    //double nu_pp;
+    unsigned int ID_gamma;
 
     integr = 0;
 
@@ -579,42 +579,58 @@ double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, 
     //the gamma_pp tresh hold enegy
     //it is replacing E_gamma in Eq. 71
 
-  
-    //nu_pp = pt->nu_1;
-    if (i_start<pt->gamma_grid_size -1){
-        pt->i_griglia_gamma = i_start;
-        x1 = pt->griglia_gamma_Np_log[i_start];
-        y1 = pf_pp_kernel(x1, E_out_TeV, pt);
-        //CON QUESTO LOOP L'EVENTUALE PUNTO IN ECCESSO
-        //CON INDICE DISPARI VIENE SALTATO
-        for (pt->i_griglia_gamma = i_start + 1; pt->i_griglia_gamma < pt->gamma_grid_size - 1; pt->i_griglia_gamma++) {
-            //printf("i=%d\n",pt->i_griglia_gamma);
-
-            y2 = pf_pp_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], E_out_TeV, pt);
-            pt->i_griglia_gamma++;
-            x3 = pt->griglia_gamma_Np_log[pt->i_griglia_gamma];
-            y3 = pf_pp_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], E_out_TeV, pt);
-
-            //printf("i=%d x1=%e x2=%e  x3=%e ",
-            //pt->i_griglia_gamma-1,x1,pt->griglia_gamma_Ne_log[pt->i_griglia_gamma-1],x3);
-
-            //QUESTO DELTA RIMANE QUI
-            //PERCHE' LA GRIGLIA NON E' EQUISPACED
-            //NON PUO ANDARE FUORI DAL LOOP
-            delta = (x3 - x1);
-            integr += (y1 + 4.0 * y2 + y3) * delta;
-            y1 = y3;
-            x1 = x3;
-            //printf("y1,2,3=%e,%e,%e\n",y1,y2,y3);
-            //printf("delta=%e y1=%e y2=%e y3=%e\n",delta,y1,y2,y3);
-            //printf("integr=%e\n",integr);
+    //i_start has to be even to get the proper starting point
+    //on the equilog grid with midpoint
+    if (i_start % 2 != 0) {
+        i_start = max(0,i_start-1);
+    }
+    if (i_start<=pt->gamma_grid_size -2){
+        //sets to zero everything before i_start
+        for (ID_gamma = 0; ID_gamma < i_start ; ID_gamma++){
+            pt->Integrand_over_gamma_grid[ID_gamma]=0;
         }
+        for (ID_gamma = i_start; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
+                pt->i_griglia_gamma=ID_gamma;
+                pt->Integrand_over_gamma_grid[ID_gamma] =pf_pp_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], E_out_TeV, pt);
+        }
+        integr= integr_simp_gird_equilog(pt->griglia_gamma_Np_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
+        
     }
-    if (pt->verbose) {
-        printf("Integr=%e\n", integr);
-    }
-    //printf("i_start=%d integr=%e\n",i_start,integr);
-    return integr * (0.5 / 3.0);
+    return integr;
+    // if (i_start<pt->gamma_grid_size -1){
+    //     pt->i_griglia_gamma = i_start;
+    //     x1 = pt->griglia_gamma_Np_log[i_start];
+    //     y1 = pf_pp_kernel(x1, E_out_TeV, pt);
+    //     //CON QUESTO LOOP L'EVENTUALE PUNTO IN ECCESSO
+    //     //CON INDICE DISPARI VIENE SALTATO
+    //     for (pt->i_griglia_gamma = i_start + 1; pt->i_griglia_gamma < pt->gamma_grid_size - 1; pt->i_griglia_gamma++) {
+    //         //printf("i=%d\n",pt->i_griglia_gamma);
+
+    //         y2 = pf_pp_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], E_out_TeV, pt);
+    //         pt->i_griglia_gamma++;
+    //         x3 = pt->griglia_gamma_Np_log[pt->i_griglia_gamma];
+    //         y3 = pf_pp_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], E_out_TeV, pt);
+
+    //         //printf("i=%d x1=%e x2=%e  x3=%e ",
+    //         //pt->i_griglia_gamma-1,x1,pt->griglia_gamma_Ne_log[pt->i_griglia_gamma-1],x3);
+
+    //         //QUESTO DELTA RIMANE QUI
+    //         //PERCHE' LA GRIGLIA NON E' EQUISPACED
+    //         //NON PUO ANDARE FUORI DAL LOOP
+    //         delta = (x3 - x1);
+    //         integr += (y1 + 4.0 * y2 + y3) * delta;
+    //         y1 = y3;
+    //         x1 = x3;
+    //         //printf("y1,2,3=%e,%e,%e\n",y1,y2,y3);
+    //         //printf("delta=%e y1=%e y2=%e y3=%e\n",delta,y1,y2,y3);
+    //         //printf("integr=%e\n",integr);
+    //     }
+    // }
+    // if (pt->verbose) {
+    //     printf("Integr=%e\n", integr);
+    // }
+    // //printf("i_start=%d integr=%e\n",i_start,integr);
+    // return integr * (0.5 / 3.0);
 }
 //==================================================================
 
