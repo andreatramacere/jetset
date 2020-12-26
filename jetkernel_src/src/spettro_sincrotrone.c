@@ -19,7 +19,7 @@
  *
  */
 
-void spettro_sincrotrone(int Num_file, struct spettro * pt) {
+void spettro_sincrotrone(int Num_file, struct blob * pt) {
     int stop;
     unsigned int NU_INT, I_MAX;
     double nu_src,gmax;

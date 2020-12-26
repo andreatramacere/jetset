@@ -18,7 +18,7 @@
  */
 
 
-void spettro_EC(int Num_file, struct spettro *pt) {
+void spettro_EC(int Num_file, struct blob *pt) {
     double  nu_src;
     double L_nu_EC, nuL_nu_EC, F_nu_EC_obs,nu_peak;
     double  gmax,numax_KN,numax_TH;

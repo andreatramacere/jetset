@@ -18,7 +18,7 @@
  */
 
 
-void spettro_pp_neutrino(int Num_file, struct spettro *pt) {
+void spettro_pp_neutrino(int Num_file, struct blob *pt) {
     double  k, nu_1, nu_src;
     double L_nu_pp, nuL_nu_pp, F_nu_pp_obs;
     double log_nu_start;

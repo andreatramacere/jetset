@@ -66,7 +66,7 @@ double f_Tesc(double x, struct temp_ev *pt){
 
 
 //---------------------------------------------------------------------
-double Cooling(double x,struct temp_ev *pt, struct spettro *pt_spec){
+double Cooling(double x,struct temp_ev *pt, struct blob *pt_spec){
 	double cooling;
 	//gamma-1=x
 	//gamma=x+1
@@ -112,7 +112,7 @@ double f_Acc(double x, struct temp_ev *pt){
 
 //---------------------------------------------------------------------
 //Termine Sistematico + Cooling
-double Bfp(double x, struct temp_ev *pt, struct spettro *pt_spec){
+double Bfp(double x, struct temp_ev *pt, struct blob *pt_spec){
 	return -f_Acc(x,pt) + Cooling(x,pt,pt_spec);
 }
 

@@ -58,14 +58,14 @@ double st_gamma(double z)
 // UTILIZZA ROUTINES NUM. RECIPES.
 //=====================================================
 
-double bessel_K_53(struct spettro *pt, double x) {
+double bessel_K_53(struct blob *pt, double x) {
     double ri, rip, rkp, ord, a;
     ord = 5.0 / 3.0;
     bessik(x, ord, &ri, &a, &rip, &rkp);
     return a;
 }
 
-double bessel_K_pitch_ave(struct spettro *pt, double x) {
+double bessel_K_pitch_ave(struct blob *pt, double x) {
     double ri, rip, rkp, ord, a, K_43,K_13;
     ord = 4.0 / 3.0;
     bessik(x, ord, &ri, &K_43, &rip, &rkp);
@@ -84,10 +84,10 @@ double bessel_K_pitch_ave(struct spettro *pt, double x) {
 // funzione che costruisce la tabelle delle funz. di Bessel
 //===================================================
 
-void tabella_Bessel(struct spettro *pt_TB) {
+void tabella_Bessel(struct blob *pt_TB) {
     //double a, t_Bessel;
 
-    double (*pf) (struct spettro *, double x);
+    double (*pf) (struct blob *, double x);
     unsigned int i;
     FILE *fp ;
 
@@ -404,7 +404,7 @@ double integr_simp_gird_equilog(double * x, double *y, unsigned int size) {
 // INTEGRAZIONE TRAPEZOIDALE CON INT CHIUSO E GRIGLIA  EQUI_LOG
 //============================================================================
 
-double integrale_trap_log_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned int n_intervalli) {
+double integrale_trap_log_struct(double (*pf) (struct blob *, double x), struct blob * pt, double a, double b, unsigned int n_intervalli) {
     double integr, k, griglia, ordinata, ordinata1;
     double delta;
     integr = 0.0;
@@ -482,7 +482,7 @@ double integrale_simp(double (*pf) ( double x), double a, double b, unsigned int
 // INTEGRAZIONE ALLA SINPSON CON INT CHIUSO E GRIGLIA LIN                
 //=========================================================
 
-double integrale_simp_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned int n_intervalli) {
+double integrale_simp_struct(double (*pf) (struct blob *, double x), struct blob * pt, double a, double b, unsigned int n_intervalli) {
     double integr1, integr2, h, k;
     
     //CHECK on n_intervalli even
@@ -548,7 +548,7 @@ double get_beaming(double BulkFactor, double theta) {
 // h ~(machine_precision)^1/3*x
 //==============================================================
 
-double derivata(double (*pf) (struct spettro *, double x), struct spettro *pt_d, double x) {
+double derivata(double (*pf) (struct blob *, double x), struct blob *pt_d, double x) {
     double h;
     h = x * 1e-7;
     if ((x - h) < pt_d->gmin) return (pf(pt_d, x + h) - pf(pt_d, x)) / (h);
@@ -732,7 +732,7 @@ double test_lunghezza_vettore(double mesh, double a, double b, int Max_elem) {
     return mesh;
 }
 
-double test_int(struct spettro *pt_d, double x) {
+double test_int(struct blob *pt_d, double x) {
     //  printf("f=%e, x=%e\n",x*x,x);
     return x*x;
 }
@@ -742,7 +742,7 @@ double test_int1(double x) {
     return x*x;
 }
 
-double test_solid_anlge(struct spettro *pt,double theta)
+double test_solid_anlge(struct blob *pt,double theta)
 {
 	//double sin_theta;
 	//sin_theta = sqrt(1.0 - mu * mu);

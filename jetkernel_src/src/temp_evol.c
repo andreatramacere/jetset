@@ -17,7 +17,7 @@
  *
  */
 
-void Init_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev, double luminosity_distance)
+void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double luminosity_distance)
 {
     int grid_bounded_to_gamma;
 
@@ -166,7 +166,7 @@ void Init_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev, double 
     
 }
 
-void Run_temp_evolution(struct spettro *pt_spec, struct temp_ev *pt_ev) {
+void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
 
         // if luminosity_distance is negative is evaluated internally
         // otherwise the passed value is used
@@ -588,14 +588,14 @@ void free_tempe_ev(struct temp_ev *pt_ev)
 
 
 
-double IntegrandCooolingEquilibrium( struct spettro *pt, double gamma_1){
+double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1){
     return N_distr_interp(pt->gamma_grid_size,gamma_1,pt->griglia_gamma_Ne_log,pt->Q_inj_e_second)*exp(pt->gamma_cooling_eq*(1/gamma_1-(1.0/pt->Gamma)));
 }
 
 
-double IntegrateCooolingEquilibrium( struct spettro *pt, double gamma, double T_esc ){
+double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc ){
 
-    double (*pf_K1) (struct spettro * pt, double x);
+    double (*pf_K1) (struct blob * pt, double x);
     double a,b,res,delta;
     unsigned int integ_size;
     pf_K1 = &IntegrandCooolingEquilibrium;
@@ -613,7 +613,7 @@ double IntegrateCooolingEquilibrium( struct spettro *pt, double gamma, double T_
 }
 
 
-void CooolingEquilibrium(struct spettro * pt, double T_esc){
+void CooolingEquilibrium(struct blob * pt, double T_esc){
     //using Eq. 2.26 in Inoue&Takahara
     //http://adsabs.harvard.edu/doi/10.1086/177270
     

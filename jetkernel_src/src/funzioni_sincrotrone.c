@@ -24,12 +24,12 @@
 //=========================================================================================
 // Sync F(X) log-log interpolation
 //=========================================================================================
-double F_K_53(struct spettro * pt, double x){
+double F_K_53(struct blob * pt, double x){
     return log_log_interp(log10(x), pt->log_F_Sync_x, pt->log_x_Bessel_min, pt->log_x_Bessel_max, pt->log_F_Sync_y,static_bess_table_size,0  );
 }
 
 
-double F_K_ave(struct spettro *pt, double x){
+double F_K_ave(struct blob *pt, double x){
     return log_log_interp(log10(x), pt->log_F_ave_Sync_x, pt->log_x_ave_Bessel_min, pt->log_x_ave_Bessel_max, pt->log_F_ave_Sync_y,static_bess_table_size,0  );
 
 }
@@ -39,7 +39,7 @@ double F_K_ave(struct spettro *pt, double x){
 //=========================================================================================
 // j_nu Sync integrands
 //=========================================================================================
-double F_int_fix(struct spettro * pt,unsigned int  ID){
+double F_int_fix(struct blob * pt,unsigned int  ID){
     //PITCH ANGLE FIXED
     double a, y,g;
     g=pt->griglia_gamma_Ne_log[ID];
@@ -49,7 +49,7 @@ double F_int_fix(struct spettro * pt,unsigned int  ID){
     return a;
 }
 
-double F_int_ave(struct spettro * pt,unsigned int  ID){
+double F_int_ave(struct blob * pt,unsigned int  ID){
     //PITCH ANGLE AVE
     double a, y,g;
     g=pt->griglia_gamma_Ne_log[ID];
@@ -69,7 +69,7 @@ double F_int_ave(struct spettro * pt,unsigned int  ID){
 //=========================================================================================
 //    integrand for alfa_nu_Sync
 //=========================================================================================
-double Sync_self_abs_int(struct spettro *pt,unsigned int  ID){
+double Sync_self_abs_int(struct blob *pt,unsigned int  ID){
     double a,g, y, x1, x2, y1, y2, delta;
     
     
@@ -117,7 +117,7 @@ double Sync_self_abs_int(struct spettro *pt,unsigned int  ID){
 // Radiative transfer solution for sefl abs
 // see Kataoka Thesis, page 299
 // tau_nu in I_nu=alfa_nu*R, so we multiply by 0.5
-double solve_S_nu_Sync(struct spettro * pt, unsigned int  NU_INT){
+double solve_S_nu_Sync(struct blob * pt, unsigned int  NU_INT){
 	double S_nu,tau_nu;
     pt->I_nu_Sync[NU_INT] = 0.0;
 
@@ -152,7 +152,7 @@ double solve_S_nu_Sync(struct spettro * pt, unsigned int  NU_INT){
     return S_nu;
 }
 
-double eval_S_nu_Sync(struct spettro *pt, double j_Sync, double alfa_Sync)
+double eval_S_nu_Sync(struct blob *pt, double j_Sync, double alfa_Sync)
 {
     double S_nu, tau_nu;
 
@@ -194,9 +194,9 @@ double eval_S_nu_Sync(struct spettro *pt, double j_Sync, double alfa_Sync)
 //=========================================================================================
 //  Synchrotron emissivity j_nu_Sync
 //=========================================================================================
-double j_nu_Sync(struct spettro * f){
+double j_nu_Sync(struct blob * f){
     double a;
-    double (*pf_fint) (struct spettro * ,unsigned int  ID);
+    double (*pf_fint) (struct blob * ,unsigned int  ID);
     /*** segli in base al kernel ***/
     if (f->Sync_kernel==0){
 		pf_fint=&F_int_fix;
@@ -219,9 +219,9 @@ double j_nu_Sync(struct spettro * f){
 //=========================================================================================
 // Synch self abs alfa_nu_Sync
 //=========================================================================================
-double alfa_nu_Sync(struct spettro * f){
+double alfa_nu_Sync(struct blob * f){
     double a;
-    double (*pf_fint1) (struct spettro * ,unsigned int  ID);
+    double (*pf_fint1) (struct blob * ,unsigned int  ID);
     pf_fint1=&Sync_self_abs_int;
     a=integrale_Sync(pf_fint1, f);
     return a*f->C3_Sync_K53*(f->B)/(f->nu*f->nu);
@@ -235,7 +235,7 @@ double alfa_nu_Sync(struct spettro * f){
 //=========================================================================================
 // Sync INTEGRATION WITH SIMPSON AND GRIGLIA EQUI-LOG
 //=========================================================================================
-double integrale_Sync(double (*pf) (struct spettro *, unsigned int  ID), struct spettro * pt ) {
+double integrale_Sync(double (*pf) (struct blob *, unsigned int  ID), struct blob * pt ) {
 
     unsigned int  ID;
     double test;
@@ -283,7 +283,7 @@ double integrale_Sync(double (*pf) (struct spettro *, unsigned int  ID), struct 
 
 
 //=========================================================================================
-double Sync_tcool(struct spettro * pt, double g){
+double Sync_tcool(struct blob * pt, double g){
     	return g/Sync_cool(pt,g);
 }
 //=========================================================================================
@@ -292,7 +292,7 @@ double Sync_tcool(struct spettro * pt, double g){
 
 
 //=========================================================================================
-double Sync_cool(struct spettro * pt, double g){
+double Sync_cool(struct blob * pt, double g){
 	double beta_gamma,c;
 	beta_gamma=eval_beta_gamma(g);
     if (pt->Sync_kernel==0){

@@ -27,7 +27,7 @@
 // dente pari ed il successivo pari
 //==============================================================
 
-void Genera_griglia_gamma_N_log(struct spettro *pt, double * griglia_gamma_N_log, double gmin_griglia, double gmax_griglia) {
+void Genera_griglia_gamma_N_log(struct blob *pt, double * griglia_gamma_N_log, double gmin_griglia, double gmax_griglia) {
 	unsigned int i;
     double delta_log;
     double log_a, log_b;
@@ -52,7 +52,7 @@ void Genera_griglia_gamma_N_log(struct spettro *pt, double * griglia_gamma_N_log
     }
 }
 
-void setNgrid(struct spettro *pt)
+void setNgrid(struct blob *pt)
 {
     //==========================================
     //Numerical Integration precision Setup
@@ -170,7 +170,7 @@ void setNgrid(struct spettro *pt)
 // Genera la  N[i] per e-
 //========================================
 
-void build_Ne(struct spettro *pt) {
+void build_Ne(struct blob *pt) {
    
 
     //printf("Set array per Ne %s \n",pt->DISTR);
@@ -192,7 +192,7 @@ void build_Ne(struct spettro *pt) {
 
 }
 
-void build_Ne_secondaries(struct spettro *pt) {
+void build_Ne_secondaries(struct blob *pt) {
    
 
     //printf("Set array per Ne %s \n",pt->DISTR);
@@ -214,11 +214,11 @@ void build_Ne_secondaries(struct spettro *pt) {
 
 }
 
-void build_Q_inj_e_second(struct spettro *pt) {
+void build_Q_inj_e_second(struct blob *pt) {
     alloc_N_distr(&(pt->Q_inj_e_second),pt->gamma_grid_size);
 }
 
-void build_Np(struct spettro *pt)
+void build_Np(struct blob *pt)
 {
     
     
@@ -229,7 +229,7 @@ void build_Np(struct spettro *pt)
 
 }
 
-void Fill_Ne_IC(struct spettro *pt, double gmin, int stat_frame) {
+void Fill_Ne_IC(struct blob *pt, double gmin, int stat_frame) {
     unsigned int i;
     if (pt->verbose>1) {
         printf("Set array per Ne IC\n");
@@ -269,7 +269,7 @@ void Fill_Ne_IC(struct spettro *pt, double gmin, int stat_frame) {
 
 
 
-void build_Ne_custom(struct spettro *pt,  unsigned int size) {
+void build_Ne_custom(struct blob *pt,  unsigned int size) {
     pt->gamma_custom_grid_size=size;
     if (pt->verbose>1) {
         printf("Set array for Ne for from_array mode \n");
@@ -282,8 +282,8 @@ void build_Ne_custom(struct spettro *pt,  unsigned int size) {
 }
 
 
-void InitNe(struct spettro *pt){
-    double (*pf_distr)(struct spettro *, double x);
+void InitNe(struct blob *pt){
+    double (*pf_distr)(struct blob *, double x);
     pf_distr = &N_distr_integranda;
 
     setNgrid(pt);
@@ -328,10 +328,10 @@ void InitNe(struct spettro *pt){
 // Genera la  N[i] per pp ed e- secondari
 //========================================
 
-void Init_Np_Ne_pp(struct spettro *pt)
+void Init_Np_Ne_pp(struct blob *pt)
 {
     //char *name;
-    double (*pf_distr) (struct spettro *, double x);
+    double (*pf_distr) (struct blob *, double x);
     pf_distr = &N_distr_integranda;
 
     pt->gmin_secondaries=pt->gmin;
@@ -407,7 +407,7 @@ void Init_Np_Ne_pp(struct spettro *pt)
 // Sricve il file con  N[i]
 //========================================
 
-void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
+void Scrivi_N_file(struct blob *pt, char *name, double *g, double *N) {
     double mass;
     //char f_distr[static_file_name_max_legth];
     //FILE *fp_distr;
@@ -465,7 +465,7 @@ void Scrivi_N_file(struct spettro *pt, char *name, double *g, double *N) {
 // Trova il gmax da N[i]>o
 //========================================
 
-double Find_gmax(struct spettro *pt, double *N, double *g) {
+double Find_gmax(struct blob *pt, double *N, double *g) {
 	unsigned int i;
     double gmax;
     gmax = g[0];
@@ -489,10 +489,10 @@ double Find_gmax(struct spettro *pt, double *N, double *g) {
 // RIEMPIE IL VETTORE  N[i]
 //========================================
 
-void Fill_N(struct spettro *pt, double * griglia_gamma_N_log, double * N) {
+void Fill_N(struct blob *pt, double * griglia_gamma_N_log, double * N) {
 	unsigned int i;
     //integranda Disre e
-    double (*pf_norm) (struct spettro *, double x);
+    double (*pf_norm) (struct blob *, double x);
 
     pt->N_0 = 1.0;
     //=========================================
@@ -686,7 +686,7 @@ double spit_func(double Gamma,double gamma_th,double temp, double index){
 // N_distr
 //==============================================================
 
-double N_distr(struct spettro *pt_N, double Gamma) {
+double N_distr(struct blob *pt_N, double Gamma) {
     /**
      * \author Andrea Tramacere
      * \date 19-09-2004 \n
@@ -716,7 +716,7 @@ double N_distr(struct spettro *pt_N, double Gamma) {
 
 }
 
-double N_tot(struct spettro *pt, double (*pf_distr)(struct spettro *, double x))
+double N_tot(struct blob *pt, double (*pf_distr)(struct blob *, double x))
 {
     /**
      * \author Andrea Tramacere
@@ -748,7 +748,7 @@ double N_tot(struct spettro *pt, double (*pf_distr)(struct spettro *, double x))
 //    per calcolare il coeff di norm
 //==============================================================
 
-double N_distr_integranda(struct spettro *pt_N, double Gamma) {
+double N_distr_integranda(struct blob *pt_N, double Gamma) {
     /**
      * \author Andrea Tramacere
      * \date 19-09-2004 \n
@@ -880,7 +880,7 @@ void alloc_N_distr(double ** pt,int size){
 
 //=========================================================================================
 
-void SetDistr(struct spettro *pt) {
+void SetDistr(struct blob *pt) {
     //-1 is for secondary e- coming from pp
 
     /*** Associo ad ogni distribuzione di elettroni ***/

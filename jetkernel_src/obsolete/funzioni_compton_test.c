@@ -23,7 +23,7 @@
 //=========================================================================================
 // helper function for IC emission
 //=========================================================================================
-double rate_compton_GR(struct spettro *pt_GR) {
+double rate_compton_GR(struct blob *pt_GR) {
     /**
      * \author Andrea Tramacere
      * \date 27-04-2004
@@ -31,7 +31,7 @@ double rate_compton_GR(struct spettro *pt_GR) {
      * 
      */
     double rate_comp=0;
-    double (*pf_K) (struct spettro *, double x);
+    double (*pf_K) (struct blob *, double x);
     double nu_1_original;
     int i;
     pf_K = &f_compton_K1;
@@ -228,7 +228,7 @@ double rate_compton_GR(struct spettro *pt_GR) {
 // nu'=nu_compton_0
 // nu=nu_1
 //=========================================================================================
-double f_compton_K1(struct spettro *pt_K1, double g) {
+double f_compton_K1(struct blob *pt_K1, double g) {
     /**
      * \fucntion f_compton_K1
      * \author Andrea Tramacere
@@ -354,13 +354,13 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
 // I_nu_Sync=>I_nu_seed
 // a,b: boundaries for photon integration
 //=========================================================================================
-double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, int stat_frame) {
+double integrale_IC(double (*pf) (struct blob *, double x), struct blob * pt, double a, double b, int stat_frame) {
     double nu1, nu2, integr_gamma, integr_nu;
     double g3, g1, y_g1, y_g2, y_g3, y_nu1, y_nu2;
     double delta_g, delta_nu;
     unsigned long i, start_BG,g;
     double g_min_BG,epsilon_0,epsilon_1;
-    double (*pf_K1) (struct spettro *, double x);
+    double (*pf_K1) (struct blob *, double x);
 
     pf_K1 = &f_compton_K1;
     integr_gamma = 0.0;
@@ -461,7 +461,7 @@ double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * 
 //=========================================================================================
 // Cooling Compton
 //=========================================================================================
-double compton_cooling(struct spettro *pt_spec, struct temp_ev *pt_ev, double gamma) {
+double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma) {
     /**
      * \author Andrea Tramacere
      * \date 27-04-2004
@@ -595,7 +595,7 @@ double compton_cooling(struct spettro *pt_spec, struct temp_ev *pt_ev, double ga
 //=========================================================================================
 // INTEGRAZIONE DEL COMPTON COOLING CON METODO TRAPEZIO
 //=========================================================================================
-double integrale_IC_cooling(struct spettro * pt, double a, double b, double gamma) {
+double integrale_IC_cooling(struct blob * pt, double a, double b, double gamma) {
     double nu1, nu2, integr_nu;
     double y_nu1, y_nu2;
     double delta_nu,b_kn;

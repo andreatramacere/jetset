@@ -16,7 +16,7 @@
  *
  */
 
-void spettro_somma_Sync_ic(int Num_file, struct spettro * pt) {
+void spettro_somma_Sync_ic(int Num_file, struct blob * pt) {
 	double nu_obs, nu_min, nu_max;
 	//char somma_obs_log_log[static_file_name_max_legth];
 	//char somma_obs[static_file_name_max_legth],somma_obs_src[static_file_name_max_legth];
@@ -129,7 +129,7 @@ void spettro_somma_Sync_ic(int Num_file, struct spettro * pt) {
 	return;
 }
 
-void interpola_somma(struct spettro *pt_j, double nu_obs, unsigned int i)
+void interpola_somma(struct blob *pt_j, double nu_obs, unsigned int i)
 {
 	double interp_flux;
 

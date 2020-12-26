@@ -17,7 +17,7 @@
  */
 
 
-void spettro_compton(int Num_file, struct spettro *pt){
+void spettro_compton(int Num_file, struct blob *pt){
     double nu_src,nu_peak;
     double L_nu_SSC, nuL_nu_SSC, F_nu_SSC_obs;
     double gmax,numax_KN,numax_TH,nu_min_TH_1,nu_min_TH_2;

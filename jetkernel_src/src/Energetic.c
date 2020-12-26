@@ -23,7 +23,7 @@
 // Eval N(gamma) peaks
 //=========================================================================================
 
-void FindNe_NpGp(struct spettro *pt) {
+void FindNe_NpGp(struct blob *pt) {
     unsigned int i;
     double N2, N3;
 
@@ -56,8 +56,8 @@ void FindNe_NpGp(struct spettro *pt) {
 // Ue and Up Functions
 //=========================================================================================
 
-void EvalU_e(struct spettro *pt) {
-    double (*pf_norm) (struct spettro *, double x);
+void EvalU_e(struct blob *pt) {
+    double (*pf_norm) (struct blob *, double x);
 
 
     if (pt->Distr_e_done == 0) {
@@ -76,8 +76,8 @@ void EvalU_e(struct spettro *pt) {
     pt->E_tot_e = pt->U_e * pt->Vol_sphere;
 }
 
-void EvalU_p(struct spettro *pt) {
-    double (*pf_norm) (struct spettro *, double x);
+void EvalU_p(struct blob *pt) {
+    double (*pf_norm) (struct blob *, double x);
 
 
     if (pt->Distr_p_done == 0) {
@@ -96,11 +96,11 @@ void EvalU_p(struct spettro *pt) {
     pt->E_tot_p = pt->U_p * pt->Vol_sphere;
 }
 
-double GetU_e(struct spettro *pt) {
+double GetU_e(struct blob *pt) {
     return pt->U_e;
 }
 
-double GetE_tot(struct spettro *pt) {
+double GetE_tot(struct blob *pt) {
     return pt->E_tot_e;
 }
 
@@ -108,7 +108,7 @@ double GetE_tot(struct spettro *pt) {
 //N(gamma) Integrand
 //=================================================
 
-double N_distr_U_e(struct spettro *pt_N, double Gamma) {
+double N_distr_U_e(struct blob *pt_N, double Gamma) {
     /**
      * \author Andrea Tramacere
      * \date 19-09-2004 \n
@@ -124,7 +124,7 @@ double N_distr_U_e(struct spettro *pt_N, double Gamma) {
     return N_distr_interp(pt_N->gamma_grid_size, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne) * Gamma;
 }
 
-double N_distr_U_p(struct spettro *pt_N, double Gamma) {
+double N_distr_U_p(struct blob *pt_N, double Gamma) {
     /**
      * \author Andrea Tramacere
      * \date 19-09-2004 \n
@@ -152,7 +152,7 @@ double N_distr_U_p(struct spettro *pt_N, double Gamma) {
 // Find EsSp
 //=========================================================================================
 
-void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned int NU_INT_MAX, struct spettro * pt,
+void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned int NU_INT_MAX, struct blob * pt,
         double * nu_peak_obs,
         double * nu_peak_src,
         double * nu_peak_blob,
@@ -189,7 +189,7 @@ void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned int NU_INT_MAX, str
 //=========================================================================================
 //Function to Integrate the Total Power of emitted photons in the blob rest frame
 
-double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu_blob, double *nuFnu, unsigned int NU_INT_STOP)
+double PowerPhotons_disk_rest_frame(struct blob *pt, double *nu_blob, double *nuFnu, unsigned int NU_INT_STOP)
 {
     /**
      * \author Andrea Tramacere
@@ -217,7 +217,7 @@ double PowerPhotons_disk_rest_frame(struct spettro *pt, double *nu_blob, double 
     return Ptot * 0.5;
 }
 
-double PowerPhotons_blob_rest_frame(struct spettro *pt, double *nu_blob, double *nuFnu, unsigned int NU_INT_STOP)
+double PowerPhotons_blob_rest_frame(struct blob *pt, double *nu_blob, double *nuFnu, unsigned int NU_INT_STOP)
 {
     /**
      * \author Andrea Tramacere
@@ -248,7 +248,7 @@ double PowerPhotons_blob_rest_frame(struct spettro *pt, double *nu_blob, double 
 //====================================================
 //IC Lum at a given freq in the blob rest frame
 //====================================================
-double	Lum_SSC_at_nu (struct spettro *pt , double nu_1) {
+double	Lum_SSC_at_nu (struct blob *pt , double nu_1) {
 	double j_comp,q_comp,nuL_nu_comp;
     /**
      * \author Andrea Tramacere
@@ -279,7 +279,7 @@ double	Lum_SSC_at_nu (struct spettro *pt , double nu_1) {
 //====================================================
 
 
-double	Lum_Sync_at_nu (struct spettro *pt , double nu) {
+double	Lum_Sync_at_nu (struct blob *pt , double nu) {
     double j_nu, alpha_nu, S_nu, nuL_nu_Sync;
     /**
      * \author Andrea Tramacere
@@ -305,13 +305,13 @@ double	Lum_Sync_at_nu (struct spettro *pt , double nu) {
 }
 
 
-double Uph_Sync(struct spettro *pt) {
+double Uph_Sync(struct blob *pt) {
 	return I_nu_to_Uph(pt->nu_Sync, pt->I_nu_Sync, pt->NU_INT_STOP_Sync_SSC);
 }
 
 
 
-double Power_Sync_Electron(struct spettro *pt) {
+double Power_Sync_Electron(struct blob *pt) {
     /**
      * \author Andrea Tramacere
      * \date 19-09-2004 \n
@@ -328,7 +328,7 @@ double Power_Sync_Electron(struct spettro *pt) {
 
 
 
-    double (*pf_N) (struct spettro *, double x);
+    double (*pf_N) (struct blob *, double x);
     double a;
     pf_N = &Power_Sync_Electron_Integ;
     a = integrale_trap_log_struct(pf_N,
@@ -346,7 +346,7 @@ double Power_Sync_Electron(struct spettro *pt) {
 //Power Sync Integrand
 //==============================
 
-double Power_Sync_Electron_Integ(struct spettro *pt_N, double Gamma) {
+double Power_Sync_Electron_Integ(struct blob *pt_N, double Gamma) {
     return N_distr_interp(pt_N->gamma_grid_size, Gamma, pt_N->griglia_gamma_Ne_log, pt_N->Ne)
             * Gamma * Gamma;
     //(1.0 - (1.0 / (Gamma * Gamma)));
@@ -387,7 +387,7 @@ double I_nu_to_Uph(double * nu, double * I_nu, unsigned int NU_INT_STOP) {
 // Energetic output
 //=========================================================================================
 
-struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
+struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
     double lum_factor;
     //double L_rad, L_Sync, L_SSC, L_EC_Disk,L_EC_BLR, L_EC_DT, L_PP;
     //double L_kin, L_tot, L_e, L_B, L_p;
@@ -724,7 +724,7 @@ struct jet_energetic EnergeticOutput(struct spettro * pt,int write_file) {
     return energetic;
 }
 
-void CoolingRates(struct spettro * pt, struct temp_ev *pt_ev) {
+void CoolingRates(struct blob * pt, struct temp_ev *pt_ev) {
     unsigned int i,a;
     double Uph,IC_cr,S_cr ;
     //char f_cooling[static_file_name_max_legth];

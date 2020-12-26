@@ -18,7 +18,7 @@
  */
 
 
-void spettro_bremss_ep(int Num_file, struct spettro *pt) {
+void spettro_bremss_ep(int Num_file, struct blob *pt) {
     double  k, nu_1, nu_src;
     double L_nu_ep_brem, nuL_nu_ep_brem, F_ep_brem_obs;
     double log_nu_start;

@@ -16,7 +16,7 @@
 
 //=========================================================================================
 
-void show_blob(struct spettro pt ) {
+void show_blob(struct blob pt ) {
     printf("verbose=%d\n", pt.verbose);
     printf("path=%s\n", pt.path);
     printf("STEM=%s\n", pt.STEM);
@@ -154,9 +154,9 @@ struct temp_ev MakeTempEv() {
 
 
 
-struct spettro MakeBlob() {
+struct blob MakeBlob() {
 
-    struct spettro spettro_root;
+    struct blob spettro_root;
     spettro_root.spec_array_size=static_spec_arr_size;
 
     spettro_root.WRITE_TO_FILE=0;
@@ -304,7 +304,7 @@ struct spettro MakeBlob() {
 //}
 
 //=========================================================================================
-void set_seed_freq_start(struct spettro *pt_base){
+void set_seed_freq_start(struct blob *pt_base){
     pt_base->nu_start_Sync = 1e6;
     pt_base->nu_stop_Sync = 1e20;
     pt_base->nu_start_SSC = 1e14;
@@ -323,7 +323,7 @@ void set_seed_freq_start(struct spettro *pt_base){
 
 //=========================================================================================
 
-void Init(struct spettro *pt_base, double luminosity_distance) {
+void Init(struct blob *pt_base, double luminosity_distance) {
     // if luminosity_distance is negative is evaluated internally
     // otherwise the passed value is used
 
@@ -548,7 +548,7 @@ void Init(struct spettro *pt_base, double luminosity_distance) {
 
 }
  
-void Run_SED(struct spettro *pt_base){
+void Run_SED(struct blob *pt_base){
 	unsigned int i;
     if (pt_base->verbose) {
         printf("STEM=%s\n", pt_base->STEM);
@@ -659,7 +659,7 @@ void Run_SED(struct spettro *pt_base){
 //==================================================
 //Funtions To access Ne and Spectral components form Python
 //==================================================
-double get_spectral_array(double * arr, struct spettro * pt, unsigned int id){
+double get_spectral_array(double * arr, struct blob * pt, unsigned int id){
 	if ((id >=0) && (id <= pt->nu_grid_size)){
 		return arr[id];
 	}
@@ -670,7 +670,7 @@ double get_spectral_array(double * arr, struct spettro * pt, unsigned int id){
 }
 
 
-double get_elec_array(double * arr, struct spettro *pt, unsigned int id){
+double get_elec_array(double * arr, struct blob *pt, unsigned int id){
 	if ((id>=0) && (id<=pt->gamma_grid_size)){
 		return arr[id];
 	}
@@ -732,7 +732,7 @@ double get_temp_ev_gamma_array(double *arr, struct temp_ev *pt_ev, unsigned int 
         }
     }
 
-void set_elec_array(double * arr,struct spettro *pt, double val, unsigned int id){
+void set_elec_array(double * arr,struct blob *pt, double val, unsigned int id){
     if ((id>=0) && (id<=pt->gamma_grid_size)){
            arr[id]=val;
         }
@@ -742,7 +742,7 @@ void set_elec_array(double * arr,struct spettro *pt, double val, unsigned int id
         }
 }
 
-void set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned int id){
+void set_elec_custom_array(double * arr, struct blob *pt,double val, unsigned int id){
     if ((id>=0) && (id<=pt->gamma_custom_grid_size)){
            arr[id]=val;
         }
@@ -752,7 +752,7 @@ void set_elec_custom_array(double * arr, struct spettro *pt,double val, unsigned
         }
 }
 
-void set_bessel_table(double *arr, struct spettro *pt, double val, unsigned int id)
+void set_bessel_table(double *arr, struct blob *pt, double val, unsigned int id)
 {
     if ((id >= 0) && (id <= static_bess_table_size))
     {
@@ -777,7 +777,7 @@ double get_temp_ev_array_static(double *arr, unsigned int id){
     }
 }
 //=========================================================================================
-void SetBeaming(struct spettro *pt){
+void SetBeaming(struct blob *pt){
 
 	if (strcmp(pt->BEAMING_EXPR, "delta") == 0) {
 	        pt->beam_obj = pt->beam_obj;

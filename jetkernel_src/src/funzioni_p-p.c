@@ -42,7 +42,7 @@ double sigma_pp_inel(double Ep_TeV) {
 }
 //=========================================================================================
 
-unsigned int E_min_p_grid_even(struct spettro *pt, double * gamma_p_grid, double E_start_TeV, unsigned int i_start, unsigned int gamma_p_grid_size ){
+unsigned int E_min_p_grid_even(struct blob *pt, double * gamma_p_grid, double E_start_TeV, unsigned int i_start, unsigned int gamma_p_grid_size ){
     //return the startin grid even index
     double  gamma_p_min;
     unsigned i_start_out;
@@ -68,7 +68,7 @@ unsigned int E_min_p_grid_even(struct spettro *pt, double * gamma_p_grid, double
     return i_start_out;
 }
 
-double  check_pp_kernel(double res,struct spettro *pt,double E_p_TeV, double x ){
+double  check_pp_kernel(double res,struct blob *pt,double E_p_TeV, double x ){
     double res_out;
     res_out=res;
     if (E_p_TeV<pt->E_th_pp_delta_approx){
@@ -87,7 +87,7 @@ double  check_pp_kernel(double res,struct spettro *pt,double E_p_TeV, double x )
 // PP -> e- production
 //
 //=========================================================================================
-double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
+double rate_electrons_pp(struct blob *pt, double Gamma_e) {
     //From Eq.71 and in Kelner et al. 2006
     //astro-ph.06066058v1
     //PHYSICAL REVIEW D 74, 034018 (2006)
@@ -95,10 +95,10 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
     //e- from mu->e +mu_nu +mu_e 
     double  Ee_TeV, a1, a2, Emin_pi,Emax_pi;
     unsigned int i_start;
-    double (*pf_K) (double gamma_p, double nu_pp, struct spettro * pt);
-    double (*pf_K_delta) (struct spettro * pt, double x);
-    double (*pf_E_min) (double gamma_p, struct spettro * pt);
-    double (*pf_E_max) (struct spettro * pt);
+    double (*pf_K) (double gamma_p, double nu_pp, struct blob * pt);
+    double (*pf_K_delta) (struct blob * pt, double x);
+    double (*pf_E_min) (double gamma_p, struct blob * pt);
+    double (*pf_E_max) (struct blob * pt);
     double res;
 
     pf_K= &pp_electrons_kernel;
@@ -139,12 +139,12 @@ double rate_electrons_pp(struct spettro *pt, double Gamma_e) {
     return res;
 }
 
-double E_min_e_pp(double E_e, struct spettro *pt){
+double E_min_e_pp(double E_e, struct blob *pt){
     double psida;
     psida=  1.0 ;
     return (E_e/psida)+(pt->MPI_kernel_delta_Emin * pt->MPI_kernel_delta_Emin)*psida/ (4 * E_e);
 }
-double E_max_e_pp(struct spettro *pt){
+double E_max_e_pp(struct blob *pt){
     return (pt->gmax*MPC2_TeV - MPC2_TeV);
 }
 
@@ -190,7 +190,7 @@ double h_mu_2_pp(double x, double r){
     return a*b;
 }
 
-double pp_electron_kernel_delta(struct spettro *pt,double E_pi) {
+double pp_electron_kernel_delta(struct blob *pt,double E_pi) {
     //Eq 48 from https://arxiv.org/abs/2005.01276
     //e- from mu->e +mu_nu +mu_e 
     double qe, Ep0_TeV, gamma_p,res,f;
@@ -204,7 +204,7 @@ double pp_electron_kernel_delta(struct spettro *pt,double E_pi) {
     return res;
 }
 
-double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct spettro *pt) {
+double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct blob *pt) {
     //From Eq. 72 Kelner et al. 2006
     //astro-ph.06066058v1
     //PHYSICAL REVIEW D 74, 034018 (2006)
@@ -250,17 +250,17 @@ double F_electrons(double x, double Ep_TeV) {
 //
 //=========================================================================================
 
-double rate_neutrino_mu_1_pp(struct spettro *pt, double nu_nu_mu) {
+double rate_neutrino_mu_1_pp(struct blob *pt, double nu_nu_mu) {
     //From Eq.71 and 78 in Kelner et al. 2006
     //astro-ph.06066058v1
     //PHYSICAL REVIEW D 74, 034018 (2006)
     //For pi->mu+nu_mu
     double  Emu_TeV, a1, a2, Emin_pi,Emax_pi;
     unsigned int i_start;
-    double (*pf_K) (double gamma_p, double nu_mu_nu, struct spettro * pt);
-    double (*pf_K_delta) (struct spettro * pt, double x);
-    double (*pf_E_min) (double gamma_p, struct spettro * pt);
-    double (*pf_E_max) (struct spettro * pt);
+    double (*pf_K) (double gamma_p, double nu_mu_nu, struct blob * pt);
+    double (*pf_K_delta) (struct blob * pt, double x);
+    double (*pf_E_min) (double gamma_p, struct blob * pt);
+    double (*pf_E_max) (struct blob * pt);
     pf_K = &pp_neturino_mu_1_kernel;
     pf_K_delta = &pp_neutrino_mu_1_kernel_delta;
     pf_E_min = &E_min_neutrino_mu_1_pp;
@@ -301,19 +301,19 @@ double rate_neutrino_mu_1_pp(struct spettro *pt, double nu_nu_mu) {
 
 }
 
-double E_min_neutrino_mu_1_pp(double E_mu, struct spettro * pt){
+double E_min_neutrino_mu_1_pp(double E_mu, struct blob * pt){
     //psida from pag. 6 http://dx.doi.org/10.3847/1538-4357/aaba74
     double psida;
     psida=  1.0 - (MEMUC2_TeV*MEMUC2_TeV)/(pt->MPI_kernel_delta_Emin*pt->MPI_kernel_delta_Emin)*0.5;
     //psida= 1.0;
     return (E_mu/psida)+(pt->MPI_kernel_delta_Emin * pt->MPI_kernel_delta_Emin) / (4 * E_mu)*psida;
 }
-double E_max_neutrino_mu_1_pp(struct spettro *pt){
+double E_max_neutrino_mu_1_pp(struct blob *pt){
     return (pt->gmax*MPC2_TeV - MPC2_TeV);
 }
 
 
-double pp_neutrino_mu_1_kernel_delta(struct spettro *pt,double E_pi ) {
+double pp_neutrino_mu_1_kernel_delta(struct blob *pt,double E_pi ) {
     //From Eq. 77 Kelner et al. 2006
     //astro-ph.06066058v1
     //PHYSICAL REVIEW D 74, 034018 (2006)
@@ -328,7 +328,7 @@ double pp_neutrino_mu_1_kernel_delta(struct spettro *pt,double E_pi ) {
     return q_nu_mu;
 }
 
-double pp_neturino_mu_1_kernel(double gamma_p, double E_out_TeV, struct spettro *pt) {
+double pp_neturino_mu_1_kernel(double gamma_p, double E_out_TeV, struct blob *pt) {
     //From Eq. 72 Kelner et al. 2006
     //astro-ph.06066058v1
     //PHYSICAL REVIEW D 74, 034018 (2006)
@@ -394,7 +394,7 @@ double F_neutrino_mu_1(double x, double Ep_TeV) {
 //=========================================================================================
 
 
-double rate_gamma_pp(struct spettro *pt) {
+double rate_gamma_pp(struct blob *pt) {
     //From Eq.71 and 78 in Kelner et al. 2006
     //astro-ph.06066058v1
     //PHYSICAL REVIEW D 74, 034018 (2006)
@@ -403,10 +403,10 @@ double rate_gamma_pp(struct spettro *pt) {
     //code structure
     //
     double  Emin_pi,Emax_pi, E_gamma_TeV, a1, a2;
-    double (*pf_K) (double gamma_p, double nu_pp, struct spettro * pt);
-    double (*pf_K_delta) (struct spettro * pt, double x);
-    double (*pf_E_min) (double gamma_p, struct spettro * pt);
-    double (*pf_E_max) (struct spettro * pt);
+    double (*pf_K) (double gamma_p, double nu_pp, struct blob * pt);
+    double (*pf_K_delta) (struct blob * pt, double x);
+    double (*pf_E_min) (double gamma_p, struct blob * pt);
+    double (*pf_E_max) (struct blob * pt);
     unsigned int i_start;
 
     pf_K = &pp_gamma_kernel;
@@ -454,14 +454,14 @@ double rate_gamma_pp(struct spettro *pt) {
     return 0;
 }
 
-double E_min_gamma_pp(double E_gamma, struct spettro *pt){
+double E_min_gamma_pp(double E_gamma, struct blob *pt){
     return (E_gamma)+(pt->MPI_kernel_delta_Emin * pt->MPI_kernel_delta_Emin) / (4 * E_gamma);
 }
-double E_max_gamma_pp(struct spettro *pt){
+double E_max_gamma_pp(struct blob *pt){
     return (pt->gmax*MPC2_TeV - MPC2_TeV);
 }
 
-double pp_gamma_kernel_delta(struct spettro *pt, double E_pi) {
+double pp_gamma_kernel_delta(struct blob *pt, double E_pi) {
     //From Eq. 77 Kelner et al. 2006
     //astro-ph.06066058v1
     //PHYSICAL REVIEW D 74, 034018 (2006)
@@ -474,7 +474,7 @@ double pp_gamma_kernel_delta(struct spettro *pt, double E_pi) {
     
 }
 
-double pp_gamma_kernel(double gamma_p, double E_out_TeV, struct spettro *pt) {
+double pp_gamma_kernel(double gamma_p, double E_out_TeV, struct blob *pt) {
     //From Eq. 72 Kelner et al. 2006
     //astro-ph.06066058v1
     //PHYSICAL REVIEW D 74, 034018 (2006)
@@ -520,11 +520,11 @@ double F_gamma(double x, double Ep_TeV) {
 // INTEGRAZIONE PER PP->secondaries  CON METODO TRAPZ E GRIGLIA EQUI-LOG
 //
 //==================================================================
-double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) (struct spettro *pt, double E),
-                              double (*E_min_pi) (double gamma_p, struct spettro *pt),
-                              double (*E_max_pi) (struct spettro *pt),  
+double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) (struct blob *pt, double E),
+                              double (*E_min_pi) (double gamma_p, struct blob *pt),
+                              double (*E_max_pi) (struct blob *pt),  
                               double E_out_TeV,
-                              struct spettro * pt) {
+                              struct blob * pt) {
     //we split in two the integration gdrid
     //to have a better sampling at low E
     //and avoid the spike
@@ -560,9 +560,9 @@ double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) (struct spet
                               
 
 
-double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, double E, struct spettro *pt),
+double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, double E, struct blob *pt),
                               double E_out_TeV,
-                              struct spettro * pt, 
+                              struct blob * pt, 
                               unsigned int i_start) {
 
     double integr, y1, y2, y3, x1, x3;
