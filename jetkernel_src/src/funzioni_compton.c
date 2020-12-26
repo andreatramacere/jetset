@@ -324,7 +324,7 @@ double f_compton_K1(struct spettro *pt_K1, double g) {
      */
     double cost, rate,a, c, k, nu_1_min, nu_1_max, g2;
     double epsilon_0, epsilon_1,Gamma_e;
-    pt_K1->Gamma = g;
+    //pt_K1->Gamma = g;
     g2 = g*g;
     epsilon_0 = HPLANCK * pt_K1->nu_compton_0*one_by_MEC2;
     epsilon_1 = HPLANCK * pt_K1->nu_1*one_by_MEC2;
@@ -457,6 +457,8 @@ void set_N_distr_for_Compton(struct spettro * pt, double nu_in, double nu_out, i
 // nu_Sync=>nu_seed
 // I_nu_Sync=>I_nu_seed
 // a,b: boundaries for photon integration
+// returns [emitted photons, cm-3, s-1, Hz-1, sterad-1]
+// the [sterad-1] comes from n_seed
 //=========================================================================================
 double integrale_IC(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, int stat_frame) {
     double nu1, nu2, integr_gamma, integr_nu;

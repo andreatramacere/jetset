@@ -10,5 +10,6 @@
         "*.tcc": "cpp",
         "hashtable": "cpp",
         "random": "cpp"
-    }
+    },
+    "python.pythonPath": "/Users/orion/anaconda3/envs/jetset/bin/python"
 }

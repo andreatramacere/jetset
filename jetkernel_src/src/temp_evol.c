@@ -586,9 +586,12 @@ void free_tempe_ev(struct temp_ev *pt_ev)
     free(pt_ev->N_time);
 }
 
+
+
 double IntegrandCooolingEquilibrium( struct spettro *pt, double gamma_1){
     return N_distr_interp(pt->gamma_grid_size,gamma_1,pt->griglia_gamma_Ne_log,pt->Q_inj_e_second)*exp(pt->gamma_cooling_eq*(1/gamma_1-(1.0/pt->Gamma)));
 }
+
 
 double IntegrateCooolingEquilibrium( struct spettro *pt, double gamma, double T_esc ){
 
@@ -616,22 +619,15 @@ void CooolingEquilibrium(struct spettro * pt, double T_esc){
     
     double  delta_t_cool, delta_t_cool_old, t_cool_sync;
     unsigned int ID;
-    //double *N_e_tmp;
-
     
-    //N_e_tmp = (double *)calloc(pt->gamma_grid_size,sizeof (double));
     pt->gamma_cooling_eq=(10/Sync_cool(pt,10))/T_esc;
-    //evalueate gamma_b and fille N_gamma_tmp
     
-    //printf("gamma_cool_eq=%e",pt->gamma_cooling_eq);
     for (ID = 0; ID < pt->gamma_grid_size ; ID++){
         
         pt->Ne[ID]=IntegrateCooolingEquilibrium(pt,
                                                 pt->griglia_gamma_Ne_log[ID], 
                                                 T_esc);
-        //printf("gamma =%e Ne=%e \n",pt->griglia_gamma_Ne_log[ID],pt->Ne[ID]);
     }
 
-    //free(N_e_tmp);
 
 }

@@ -28,15 +28,18 @@
 #define MEC2        8.187111e-07// erg  (me*c^2)
 #define MPC2        1.5032764261e-3// erg  (mp*c^2)
 #define MEMUC2_TeV    0.00010565// TeV  (me*c^2)
+#define MEC2_MeV    0.510998910// TeV  (me*c^2)
 #define MEC2_TeV    0.000000510998910// TeV  (me*c^2)
 #define MPC2_TeV    0.000938272013// TeV  (mp*c^2)
 #define MPI0C2_TeV   0.0001349766//TeV  (mpi*c^2)
 #define MPICC2_TeV   0.00013957018//TeV  (mpi*c^2)
 #define one_by_MEC2     1.221432045436937E6 // erg  (me*c^2)
+#define brem_ee_th  2// MeV threshold for rel/non rel Bremsstrahlung
 #define me_g		9.109389754e-28 //massa di e- in  gr
 #define mp_by_me 1836.15 // m_protne / m_elettrone
 #define me 0.51/* massa a riposo di e- in MeV/c^2 */
 #define m_sun 1.988992E33 //solar mass in gr
+#define one_by_alpha 137.035999206 //Fine-structure constant
 #define e_raggio 2.817940285e-13 /* raggio class. e- cm */
 #define K_boltz 1.3806503e-16 /*costante di Boltzman espressa in erg/K */
 #define sigma_steph_boltz 5.670400e-5 /* sigma Stephan_Boltzmann in erg*s^-1*cm^-2*K^-4*/
@@ -1006,6 +1009,19 @@ double E_min_gamma_pp(double E_gamma, struct spettro *pt);
 double E_max_gamma_pp(struct spettro *pt);
 //===========================================================================================
 
+//===========================================================================================
+/****************** FUNZION bremsstrahlung ************************************************/
+double j_nu_ee_brem(struct spettro * pt, double nu_out);
+double j_nu_ep_brem(struct spettro * pt, double nu_out);
+double b_ep_sigma(double gamma_e, double epsilon_gamma);
+double b_ee_sigma(double gamma_e, double epsilon_gamma);
+double b_ee_sigma_rel(double gamma_e, double epsilon_gamma);
+double b_ee_sigma_non_rel(double gamma_e, double epsilon_gamma);
+double ee_brem_F(double gamma_e, double x);
+double b_ee_A_term(double gamma_e, double epsilon_gamma);
+double b_ee_sigma_1(double gamma_e, double epsilon_gamma);
+double b_ee_sigma_2(double gamma_e, double epsilon_gamma);
+//===========================================================================================
 
 
 

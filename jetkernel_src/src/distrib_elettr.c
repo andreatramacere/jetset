@@ -702,7 +702,7 @@ double N_distr(struct spettro *pt_N, double Gamma) {
     a=0.;
 
     if (Gamma >= pt_N->gmin_griglia_secondaries && Gamma <= pt_N->gmax_griglia_secondaries && pt_N->TIPO_DISTR == -1) {
-        pt_N->Gamma = Gamma;
+        //pt_N->Gamma = Gamma;
         a= vluce_cm * pt_N->NH_pp * MEC2_TeV * bn_to_cm2 * rate_electrons_pp(pt_N, Gamma);
     }else{
 

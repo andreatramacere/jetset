@@ -24,11 +24,8 @@
 //=========================================================================================
 
 double sigma_pp_inel(double Ep_TeV) {
-    //From Eq.79 in Kelner et al. 2006
-    //astro-ph.06066058v1
-    //PHYSICAL REVIEW D 74, 034018 (2006)
-    //L=ln(E_p/1TeV)
-    //
+    //From Kafexhiu, E., Aharonian, F., Taylor, A. M., & Vila, G. S. 2014, 
+    //Physical Review D, 90, 123014, doi: 10.1103/PhysRevD.90.123014
     double a,b,c;
     double k, L;
     if (Ep_TeV<E_th_pp){
