@@ -17,7 +17,7 @@
 //   https://iopscience.iop.org/article/10.1086/306829/pdf
 //=======================================================================
 
-double j_nu_ee_brem(struct blob * pt, double nu_out) {
+double j_nu_bremss_ee(struct blob * pt, double nu_out) {
     double integr;
     unsigned int ID_gamma;
     for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
@@ -26,7 +26,7 @@ double j_nu_ee_brem(struct blob * pt, double nu_out) {
     return vluce_cm*one_by_four_pi*one_by_MEC2*HPLANCK*HPLANCK*nu_out*integr_simp_gird_equilog(pt->griglia_gamma_Ne_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
 }
 
-double j_nu_ep_brem(struct blob * pt, double nu_out) {
+double j_nu_bremss_ep(struct blob *pt, double nu_out) {
     double integr;
     unsigned int ID_gamma;
     for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){

@@ -378,7 +378,7 @@ void Init(struct blob *pt_base, double luminosity_distance) {
         pt_base->j_pp_neutrino_mu[i]=0.0;
         pt_base->j_pp_neutrino_e[i]=0.0;
         pt_base->j_pp_gamma[i]=0.0;
-
+        pt_base->j_bremss_ep[i]=0.0;
     }
 
     for (i = 0; i < static_spec_arr_size; i++){
@@ -396,6 +396,7 @@ void Init(struct blob *pt_base, double luminosity_distance) {
         pt_base->nuFnu_pp_neutrino_tot_obs[i]=0;
         pt_base->nuFnu_pp_neutrino_mu_obs[i]=0;
         pt_base->nuFnu_pp_neutrino_e_obs[i]=0;
+        pt_base->nuFnu_bremss_ep_obs[i]=0;
     }
 
 

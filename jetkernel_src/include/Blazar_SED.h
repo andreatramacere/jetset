@@ -75,14 +75,31 @@
 /************ ENV VARIBLE *************************/
 
 /********************************     STRUTTURA BASE    ************************************/
-struct spectrum {
-    double j_nu[static_spec_arr_size];
-    double I_nu[static_spec_arr_size];
-    double nuFnu_obs[static_spec_arr_size];
-    double nu[static_spec_arr_size];
-    double nu_obs[static_spec_arr_size];
-}
+// struct spectrum {
+//     double nu_min, nu_max;
+//     unsigned int NU_INT_MAX;
+//     double j_nu[static_spec_arr_size];
+//     double I_nu[static_spec_arr_size];
+//     double n_nu[static_spec_arr_size];
+//     double nuFnu_obs[static_spec_arr_size];
+//     double nu[static_spec_arr_size];
+//     double nu_obs[static_spec_arr_size];
+//     double nuFnu_grid[static_spec_arr_grid_size];
+// };
 
+// struct spectrum_external{
+//     double nu_min, nu_max;
+//     unsigned int NU_INT_MAX;
+//     double j_nu[static_spec_arr_size];
+//     double I_nu[static_spec_arr_size];
+//     double I_nu_DRF[static_spec_arr_size];
+//     double n_nu[static_spec_arr_size];
+//     double n_nu_DRF[static_spec_arr_size];
+//     double nuFnu_obs[static_spec_arr_size];
+//     double nu[static_spec_arr_size];
+//     double nu_obs[static_spec_arr_size];
+//     double nuFnu_grid[static_spec_arr_grid_size];
+// };
 
 
 struct blob {
@@ -272,6 +289,35 @@ struct blob {
     double nuFnu_pp_neutrino_mu_obs[static_spec_arr_size];
     double nuFnu_pp_neutrino_e_obs[static_spec_arr_size];
 
+    //--------------------------------//
+
+    //-----------pp-bremss_ep-emission---//
+    //--- CONST
+
+
+    //--- FREQ BOUNDARIES
+    double nu_stop_bremss_ep_pred,nu_stop_bremss_ep;
+    double nu_start_bremss_ep;
+    double nu_start_bremss_ep_obs;
+    double nu_stop_bremss_ep_obs;    
+    unsigned int NU_INT_STOP_BREMSS_EP;
+
+    //
+    int do_bremss_ep;
+   
+    //--- FREQ/FLUX scalars
+    double nu_peak_bremss_ep_blob;
+    double nuLnu_peak_bremss_ep_blob;
+    double nu_peak_bremss_ep_src;
+    double nuLnu_peak_bremss_ep_src;
+    double nu_peak_bremss_ep_obs;
+    double nuFnu_peak_bremss_ep_obs;
+
+    //--- FREQ/FLUX array
+    double j_bremss_ep[static_spec_arr_size];
+    double nu_bremss_ep[static_spec_arr_size];
+    double nu_bremss_ep_obs[static_spec_arr_size];
+    double nuFnu_bremss_ep_obs[static_spec_arr_size];
     //--------------------------------//
 
 
@@ -1022,8 +1068,8 @@ double E_max_gamma_pp(struct blob *pt);
 
 //===========================================================================================
 /****************** FUNZION bremsstrahlung ************************************************/
-double j_nu_ee_brem(struct blob * pt, double nu_out);
-double j_nu_ep_brem(struct blob * pt, double nu_out);
+double j_nu_bremss_ee(struct blob * pt, double nu_out);
+double j_nu_bremss_ep(struct blob * pt, double nu_out);
 double b_ep_sigma(double gamma_e, double epsilon_gamma);
 double b_ee_sigma(double gamma_e, double epsilon_gamma);
 double b_ee_sigma_rel(double gamma_e, double epsilon_gamma);
