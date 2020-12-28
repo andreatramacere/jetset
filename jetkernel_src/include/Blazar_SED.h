@@ -163,7 +163,7 @@ struct blob {
     double nuFnu_pp_neutrino_tot_grid[static_spec_arr_grid_size];
     double nuFnu_pp_neutrino_mu_grid[static_spec_arr_grid_size];
     double nuFnu_pp_neutrino_e_grid[static_spec_arr_grid_size];
-    double nuFnu_ep_brem_e_grid[static_spec_arr_grid_size];
+    double nuFnu_bremss_ep_grid[static_spec_arr_grid_size];
     double nuFnu_EC_BLR_grid[static_spec_arr_grid_size];
     double nuFnu_EC_DT_grid[static_spec_arr_grid_size];
     double nuFnu_EC_Disk_grid[static_spec_arr_grid_size];
@@ -907,7 +907,7 @@ void somma_header(FILE *fp);
 //===================================================================================
 /************************************ SUMMED SPECTRA *******************************/
 void interpola_somma(struct blob *pt_j, double nu, unsigned int i);
-void spettro_somma_Sync_ic(int num_file, struct blob *);
+void common_grid_spectra(int num_file, struct blob *);
 //===================================================================================
 
 
@@ -1068,6 +1068,7 @@ double E_max_gamma_pp(struct blob *pt);
 
 //===========================================================================================
 /****************** FUNZION bremsstrahlung ************************************************/
+void spettro_bremss_ep(int Num_file, struct blob *pt);
 double j_nu_bremss_ee(struct blob * pt, double nu_out);
 double j_nu_bremss_ep(struct blob * pt, double nu_out);
 double b_ep_sigma(double gamma_e, double epsilon_gamma);
@@ -1076,8 +1077,8 @@ double b_ee_sigma_rel(double gamma_e, double epsilon_gamma);
 double b_ee_sigma_non_rel(double gamma_e, double epsilon_gamma);
 double ee_brem_F(double gamma_e, double x);
 double b_ee_A_term(double gamma_e, double epsilon_gamma);
-double b_ee_sigma_1(double gamma_e, double epsilon_gamma);
-double b_ee_sigma_2(double gamma_e, double epsilon_gamma);
+double bremss_sigma_1(double gamma_e, double epsilon_gamma);
+double bremss_sigma_2(double gamma_e, double epsilon_gamma);
 //===========================================================================================
 
 

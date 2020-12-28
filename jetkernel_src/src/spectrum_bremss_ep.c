@@ -18,8 +18,8 @@
  */
 
 
-void spettro_bremss_ep(int Num_file, struct blob *pt, struct specturm *pts) {
-    double  k, nu_1, nu_src;
+void spettro_bremss_ep(int Num_file, struct blob *pt) {
+    double  k, nu_1, nu_src, nu_check;
     double L_nu_bremss_ep, nuL_nu_ep_brem, F_nu_bremss_ep_obs;
     double log_nu_start;
     unsigned int NU_INT, i, I_MAX, stop;
@@ -32,11 +32,11 @@ void spettro_bremss_ep(int Num_file, struct blob *pt, struct specturm *pts) {
 
 
     // massima e minima freq bremss
-    pt->nu_stop_bremss_ep_pred = pt->gmax * MPC2 / HPLANCK * 100;
-    pt->nu_start_bremss_ep = E_th_pp * 1E12 * ev_to_erg / HPLANCK / 100;
+    pt->nu_stop_bremss_ep_pred = pt->gmax_griglia*MEC2/HPLANCK*10;
+    pt->nu_start_bremss_ep = pt->gmin_griglia*MEC2/HPLANCK/100;
     pt->nu_start_bremss_ep_obs = nu_blob_to_nu_obs(pt->nu_start_bremss_ep, pt->beam_obj, pt->z_cosm);
     pt->nu_stop_bremss_ep_obs = nu_blob_to_nu_obs(pt->nu_stop_bremss_ep_pred, pt->beam_obj, pt->z_cosm);
-   
+    nu_check=(pt->nu_start_bremss_ep)*0.5;
     NU_INT = 0;
     k = (log10(pt->nu_stop_bremss_ep_pred) - log10(pt->nu_start_bremss_ep));
     I_MAX = pt->nu_IC_size;
@@ -75,7 +75,7 @@ void spettro_bremss_ep(int Num_file, struct blob *pt, struct specturm *pts) {
                 //the you multiply by HPLANCK in  to get erg/( cm^3 Hz s) 
                 //and then you divide by 4pi to get erg/( cm^3 Hz s setard) that are j_nu units 
 
-                pt->j_bremss_ep[NU_INT] = j_nu_bremss_ep(pt,pt->nu_bremss_ep[NU_INT]);
+                pt->j_bremss_ep[NU_INT] = pt->NH_pp*j_nu_bremss_ep(pt,pt->nu_bremss_ep[NU_INT]);
                 if (pt->verbose) {
                     printf("#-> NU_INT=%d j[NU_INT]=%e nu_1=%e i=%d \n",
                             NU_INT,
@@ -98,10 +98,13 @@ void spettro_bremss_ep(int Num_file, struct blob *pt, struct specturm *pts) {
                 }
             }
             if (pt->j_bremss_ep[NU_INT] < 1.0e-60) {
-                stop = 1;
                 pt->j_bremss_ep[NU_INT] = 1.0e-60;
                 pt->nuFnu_bremss_ep_obs[NU_INT] = 1.0e-60;
-                F_nu_bremss_ep_obs = 1.0e-60;
+                if (nu_1>nu_check){
+                    stop = 1;
+
+                    F_nu_bremss_ep_obs = 1.0e-60;
+                }
                 if (pt->verbose) {
                     printf("%e %d\n ", nu_1, NU_INT);
                 }

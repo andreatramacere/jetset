@@ -1504,6 +1504,7 @@ class Jetpp(JetBase):
 
         self.add_pp_gamma_component()
         self.add_pp_neutrino_component()
+        self.add_bremss_ep_component()
 
     @staticmethod
     def available_proton_distributions():
@@ -1511,6 +1512,9 @@ class Jetpp(JetBase):
 
     def get_proton_distribution_name(self):
         return self.get_emitters_distribution_name()
+
+    def add_bremss_ep_component(self):
+        self._add_spectral_component('Bremss_ep',var_name='do_bremss_ep',state_dict=dict((('on', 1), ('off', 0))))
 
     def add_pp_gamma_component(self):
         self._add_spectral_component('PP_gamma',var_name='do_pp_gamma',state_dict=dict((('on', 1), ('off', 0))))
@@ -1560,6 +1564,8 @@ class Jet(JetBase):
     def get_electron_distribution_name(self):
         return self.get_emitters_distribution_name()
 
+    def add_bremss_ep_component(self):
+        self._add_spectral_component('Bremss_ep',var_name='do_bremss_ep',state_dict=dict((('on', 1), ('off', 0))))
 
 
     def show_electron_distribution(self):

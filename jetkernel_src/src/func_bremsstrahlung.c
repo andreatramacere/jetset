@@ -36,10 +36,10 @@ double j_nu_bremss_ep(struct blob *pt, double nu_out) {
 }
 
 double b_ep_sigma(double gamma_e, double epsilon_gamma){
-    //ep valid only for Eout>10MeV
-    if  (epsilon_gamma>10/MEC2_MeV){
-        return b_ee_sigma_1(gamma_e,epsilon_gamma);
-    }
+    ////ep valid only for Eout>10MeV
+    //if  (epsilon_gamma>10/MEC2_MeV){
+    return bremss_sigma_1(gamma_e,epsilon_gamma);
+    //}
     return 0.;
 }
 
@@ -59,7 +59,7 @@ double b_ee_sigma_rel(double gamma_e, double epsilon_gamma){
     //https://iopscience.iop.org/article/10.1086/306829/pdf
     double res;
 
-    return b_ee_A_term(gamma_e,epsilon_gamma)*(b_ee_sigma_1(gamma_e,epsilon_gamma)+b_ee_sigma_2(gamma_e,epsilon_gamma));
+    return b_ee_A_term(gamma_e,epsilon_gamma)*(bremss_sigma_1(gamma_e,epsilon_gamma)+bremss_sigma_2(gamma_e,epsilon_gamma));
 }
 
 double b_ee_sigma_non_rel(double gamma_e, double epsilon_gamma){
@@ -100,7 +100,7 @@ double b_ee_A_term(double gamma_e, double epsilon_gamma){
     return 1 -((8/3)*pow((gamma_e-1),0.2)/(gamma_e+1)*pow((epsilon_gamma/gamma_e),1/3));
 }
 
-double b_ee_sigma_1(double gamma_e, double epsilon_gamma){
+double bremss_sigma_1(double gamma_e, double epsilon_gamma){
     //Eq A2 
     //https://iopscience.iop.org/article/10.1086/306829/pdf
     double a,a1,a2,a3,x,res;
@@ -119,7 +119,7 @@ double b_ee_sigma_1(double gamma_e, double epsilon_gamma){
     return res;
 }
 
-double b_ee_sigma_2(double gamma_e, double epsilon_gamma){
+double bremss_sigma_2(double gamma_e, double epsilon_gamma){
     //Eq A3 
     //https://iopscience.iop.org/article/10.1086/306829/pdf
     double res,a,a1,a2,a3,one_by_eps;

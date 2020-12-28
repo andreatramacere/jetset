@@ -144,7 +144,7 @@ struct temp_ev MakeTempEv() {
     ev_root.gmax_griglia = 1.0e8;
     ev_root.gamma_grid_size =1E4;
 
-        ev_root.Lambda_max_Turb = 1e15;
+    ev_root.Lambda_max_Turb = 1e15;
     ev_root.Lambda_choer_Turb_factor=0.1;
     ev_root.Gamma_Max_Turb_L_max=Larmor_radius_to_gamma(ev_root.Lambda_max_Turb,0.1, 1.0);
     ev_root.Gamma_Max_Turb_L_coher=Larmor_radius_to_gamma(ev_root.Lambda_max_Turb*ev_root.Lambda_choer_Turb_factor,0.1, 1.0);
@@ -171,6 +171,7 @@ struct blob MakeBlob() {
     spettro_root.do_SSC = 1;
     spettro_root.do_IC=1;
     spettro_root.do_pp_gamma=1;
+    spettro_root.do_bremss_ep=1;
     spettro_root.set_pp_racc_elec = 0;
     spettro_root.set_pp_racc_gamma = 0;
     spettro_root.set_pp_racc_nu_mu = 0;
@@ -568,13 +569,21 @@ void Run_SED(struct blob *pt_base){
         spettro_pp_neutrino(1,pt_base);
     }
 
-    //graph_integranda_j_nu_Sync(pt_base);
+    //==================================================
+    // Evaluate Bremms sp Spectrum
+    //==================================================
+    if (pt_base->do_bremss_ep) {
+        spettro_bremss_ep(1, pt_base);
+    }
+
+
     //==================================================
     // Evaluate Synchrotron Spectrum
     //==================================================
     if (pt_base->do_Sync != 0) {
         spettro_sincrotrone(1, pt_base);
     }
+
 
 
     //==================================================
@@ -641,7 +650,7 @@ void Run_SED(struct blob *pt_base){
     //==================================================
     //Sum Up all the Spectral Components
     //==================================================
-    spettro_somma_Sync_ic(1, pt_base);
+    common_grid_spectra(1, pt_base);
 
     //==================================================
     // Energetic
