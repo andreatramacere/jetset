@@ -170,8 +170,8 @@ struct blob MakeBlob() {
     spettro_root.Sync_kernel=1;
     spettro_root.do_SSC = 1;
     spettro_root.do_IC=1;
-    spettro_root.do_pp_gamma=1;
-    spettro_root.do_bremss_ep=1;
+    spettro_root.do_pp_gamma=0;
+    spettro_root.do_bremss_ep=0;
     spettro_root.set_pp_racc_elec = 0;
     spettro_root.set_pp_racc_gamma = 0;
     spettro_root.set_pp_racc_nu_mu = 0;
@@ -669,6 +669,18 @@ void Run_SED(struct blob *pt_base){
 //==================================================
 //Funtions To access Ne and Spectral components form Python
 //==================================================
+double get_array(double * arr, unsigned int id, unsigned int size){
+	if ((id >=0) && (id <= size)){
+		return arr[id];
+	}
+	else{
+        printf("exceeded array size in get_spectral_array\n");
+        exit(0);
+	}
+}
+
+
+
 double get_spectral_array(double * arr, struct blob * pt, unsigned int id){
 	if ((id >=0) && (id <= pt->nu_grid_size)){
 		return arr[id];

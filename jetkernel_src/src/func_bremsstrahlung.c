@@ -40,7 +40,7 @@ double b_ep_sigma(double gamma_e, double epsilon_gamma){
     //if  (epsilon_gamma>10/MEC2_MeV){
     return bremss_sigma_1(gamma_e,epsilon_gamma);
     //}
-    return 0.;
+    //return 0.;
 }
 
 double b_ee_sigma(double gamma_e, double epsilon_gamma){

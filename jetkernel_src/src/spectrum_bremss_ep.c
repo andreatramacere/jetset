@@ -21,7 +21,7 @@
 void spettro_bremss_ep(int Num_file, struct blob *pt) {
     double  k, nu_1, nu_src, nu_check;
     double L_nu_bremss_ep, nuL_nu_ep_brem, F_nu_bremss_ep_obs;
-    double log_nu_start;
+    double log_nu_start,gmax;
     unsigned int NU_INT, i, I_MAX, stop;
     
     //============================================================
@@ -32,7 +32,8 @@ void spettro_bremss_ep(int Num_file, struct blob *pt) {
 
 
     // massima e minima freq bremss
-    pt->nu_stop_bremss_ep_pred = pt->gmax_griglia*MEC2/HPLANCK*10;
+    gmax=Find_gmax(pt,pt->Ne,pt->griglia_gamma_Ne_log);
+    pt->nu_stop_bremss_ep_pred = pt->gmax*MEC2/HPLANCK*10;
     pt->nu_start_bremss_ep = pt->gmin_griglia*MEC2/HPLANCK/100;
     pt->nu_start_bremss_ep_obs = nu_blob_to_nu_obs(pt->nu_start_bremss_ep, pt->beam_obj, pt->z_cosm);
     pt->nu_stop_bremss_ep_obs = nu_blob_to_nu_obs(pt->nu_stop_bremss_ep_pred, pt->beam_obj, pt->z_cosm);
@@ -97,13 +98,13 @@ void spettro_bremss_ep(int Num_file, struct blob *pt) {
                             NU_INT);
                 }
             }
-            if (pt->j_bremss_ep[NU_INT] < 1.0e-60) {
-                pt->j_bremss_ep[NU_INT] = 1.0e-60;
-                pt->nuFnu_bremss_ep_obs[NU_INT] = 1.0e-60;
+            if (pt->j_bremss_ep[NU_INT] < pt->emiss_lim) {
+                pt->j_bremss_ep[NU_INT] = pt->emiss_lim;
+                pt->nuFnu_bremss_ep_obs[NU_INT] = pt->emiss_lim;
                 if (nu_1>nu_check){
                     stop = 1;
 
-                    F_nu_bremss_ep_obs = 1.0e-60;
+                    F_nu_bremss_ep_obs = pt->emiss_lim;
                 }
                 if (pt->verbose) {
                     printf("%e %d\n ", nu_1, NU_INT);

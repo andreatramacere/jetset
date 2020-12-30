@@ -507,10 +507,9 @@ double integrale_IC(double (*pf) (struct blob *, double x), struct blob * pt, do
       
         pt->nu_compton_0 = pt->nu_seed[ID];
 
-          //Integration ove gamma
+        //Integration over electron Lorentz factor
         if (pt->adaptive_e_binning ==1){
-            //wit this choice gmin is set to its lowest valeu
-            //the actual nu_seed value
+            //wit this choice gmin is set to its the actual nu_seed value
             set_N_distr_for_Compton(pt, pt->nu_compton_0, pt->nu_1, stat_frame);
         }
         for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
@@ -519,18 +518,8 @@ double integrale_IC(double (*pf) (struct blob *, double x), struct blob * pt, do
         }
         integr_gamma= integr_simp_gird_equilog(pt->griglia_gamma_Ne_log_IC, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
 
-        //y_g1 = f_compton_K1(pt, g1) * pt->Ne_IC[0];
-        //for (pt->i_griglia_gamma = 1; pt->i_griglia_gamma < pt->gamma_grid_size - 1; pt->i_griglia_gamma++) {
-        //   y_g2 = f_compton_K1(pt, pt->griglia_gamma_Ne_log_IC[pt->i_griglia_gamma]) * pt->Ne_IC[pt->i_griglia_gamma];
-        //    pt->i_griglia_gamma++;
-        //    g3 = pt->griglia_gamma_Ne_log_IC[pt->i_griglia_gamma];
-        //    y_g3 = f_compton_K1(pt, g3) * pt->Ne_IC[pt->i_griglia_gamma];
-        //    delta_g = (g3 - g1);
-        //    integr_gamma += (delta_g)*(y_g1 + 4.0 * y_g2 + y_g3);
-        //    y_g1 = y_g3;
-        //    g1 = g3;
-        //}
-
+       
+        //Integration over seed phtons number density
         nu2 = pt->nu_seed[ID + 1];
         y_nu2 = pt->n_seed[ID + 1];
         delta_nu = nu2 - nu1;

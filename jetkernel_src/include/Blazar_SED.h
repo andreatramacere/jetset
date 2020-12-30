@@ -828,6 +828,7 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev);
 void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double luminosity_distance);
 
 double get_spectral_array(double * arr, struct blob *pt, unsigned int id);
+double get_array(double * arr, unsigned int id, unsigned int size);
 double get_elec_array(double * arr, struct blob *pt, unsigned int id);
 double get_temp_ev_N_gamma_array(double *arr, struct temp_ev *pt_ev, unsigned int row, unsigned int col);
 double get_temp_ev_N_time_array(double *arr, struct temp_ev *pt_ev, unsigned int id);
@@ -1238,8 +1239,8 @@ double trapzd_array_arbritary_grid(double *x, double *y, unsigned int SIZE);
 double test_int(struct blob *, double x);
 double test_int1(double x);
 double log_lin_interp(double nu, double *nu_grid, double nu_min, double nu_max, double *flux_grid, unsigned int SIZE, double emiss_lim);
+double log_quad_interp(double x,  double * x_grid, double x_min, double x_max, double *  y_grid , unsigned int SIZE, double emiss_lim);
 double log_log_interp(double log_x, double *log_x_grid, double log_x_min, double log_x_max, double *log_y_grid, unsigned int SIZE, double emiss_lim);
-
 //===========================================================================================
 
 

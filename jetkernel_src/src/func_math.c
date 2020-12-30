@@ -269,7 +269,11 @@ double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, do
 	else if (x<x_min || x>x_max){
 		return emiss_lim;
 	}
-
+    else if(y_grid[ID]<= emiss_lim || y_grid[ID+1]<= emiss_lim)
+    {
+        return emiss_lim;
+    }
+    
 	else{
 		y1 = log10(y_grid[ID]);
 		y2 = log10(y_grid[ID + 1]);
@@ -284,6 +288,52 @@ double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, do
 }
 //=========================================================================================
 
+//=====================================================================
+//LOG-LINEAR INTERPOLATION
+//=====================================================================
+//Lagrange Interpolation formula
+//
+double log_quad_interp(double x,  double * x_grid, double x_min, double x_max, double *  y_grid , unsigned int SIZE, double emiss_lim){
+	unsigned int ID;
+	double y1,y2,y3,x1,x2,x3;
+	double a,b,c,f;
+    ID=x_to_grid_index(x_grid,  x,   SIZE);
+
+	if (ID<0 || ID>SIZE-2){
+		return emiss_lim;
+	}
+
+	else if (x<x_min || x>x_max){
+		return emiss_lim;
+	}
+    
+    
+	else{
+        if (ID == SIZE-2){
+            ID=ID-1;
+        }
+        if (y_grid[ID+2]<= emiss_lim && y_grid[ID+1]> emiss_lim){
+            ID=ID-1;
+        }
+        if (y_grid[ID+2]<= emiss_lim && y_grid[ID+1]<=  emiss_lim){
+            ID=ID;
+        }
+		y1 = log10(y_grid[ID]);
+		y2 = log10(y_grid[ID + 1]);
+        y3 = log10(y_grid[ID + 2]);
+		x1 = log10(x_grid[ID]);
+		x2 = log10(x_grid[ID + 1]);
+        x3 = log10(x_grid[ID + 2]);
+        x=log10(x); 
+		a=(x - x2)*(x - x3)/((x1 - x2)*(x1 - x3));
+        b=(x - x1)*(x - x3)/((x2 - x1)*(x2 - x3));
+        c=(x - x1)*(x - x2)/((x3 - x1)*(x3 - x2));
+        f = y1*a +y2*b +y3*c;
+        //printf("ID=%lu SIZE=%d x=%e x1=%e x2=%e x3=%e y1=%e y2=%e y3=%e \n",ID,SIZE,x,x1,x2,x3,y1,y2,y3);
+		return pow(10,f);
+	}
+}
+//=========================================================================================
 
 
 //=====================================================================

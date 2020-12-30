@@ -19,7 +19,7 @@
 
 
 void spettro_pp_neutrino(int Num_file, struct blob *pt) {
-    double  k, nu_1, nu_src;
+    double  k, nu_1, nu_src, gmax;
     double L_nu_pp, nuL_nu_pp, F_nu_pp_obs;
     double log_nu_start;
     unsigned int NU_INT, i, I_MAX, stop;
@@ -32,7 +32,8 @@ void spettro_pp_neutrino(int Num_file, struct blob *pt) {
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     // massima e minima freq pp
-    pt->nu_stop_pp_neutrino_pred = pt->gmax * MPC2 / HPLANCK * 100;
+    gmax=Find_gmax(pt,pt->Np,pt->griglia_gamma_Np_log);
+    pt->nu_stop_pp_neutrino_pred = gmax * MPC2 / HPLANCK * 100;
     pt->nu_start_pp_neutrino = E_th_pp * 1E12 * ev_to_erg / HPLANCK / 100;
     pt->nu_start_pp_neutrino_obs = nu_blob_to_nu_obs(pt->nu_start_pp_neutrino, pt->beam_obj, pt->z_cosm);
     pt->nu_stop_pp_neutrino_obs = nu_blob_to_nu_obs(pt->nu_stop_pp_neutrino_pred, pt->beam_obj, pt->z_cosm);
@@ -139,18 +140,18 @@ void spettro_pp_neutrino(int Num_file, struct blob *pt) {
                             NU_INT);
                 }
             }
-            if (pt->j_pp_neutrino_tot[NU_INT] < 1.0e-60) {
+            if (pt->j_pp_neutrino_tot[NU_INT] <pt->emiss_lim) {
                 stop = 1;
-                pt->j_pp_neutrino_tot[NU_INT] = 1.0e-60;
-                pt->nuFnu_pp_neutrino_tot_obs[NU_INT] = 1.0e-60;
+                pt->j_pp_neutrino_tot[NU_INT] = pt->emiss_lim;
+                pt->nuFnu_pp_neutrino_tot_obs[NU_INT] = pt->emiss_lim;
 
-                pt->j_pp_neutrino_mu[NU_INT] = 1.0e-60;
-                pt->nuFnu_pp_neutrino_mu_obs[NU_INT] = 1.0e-60;
+                pt->j_pp_neutrino_mu[NU_INT] = pt->emiss_lim;
+                pt->nuFnu_pp_neutrino_mu_obs[NU_INT] = pt->emiss_lim;
 
-                pt->j_pp_neutrino_e[NU_INT] = 1.0e-60;
-                pt->nuFnu_pp_neutrino_e_obs[NU_INT] = 1.0e-60;
+                pt->j_pp_neutrino_e[NU_INT] = pt->emiss_lim;
+                pt->nuFnu_pp_neutrino_e_obs[NU_INT] = pt->emiss_lim;
 
-                F_nu_pp_obs = 1.0e-60;
+                F_nu_pp_obs = pt->emiss_lim;
                 
                 if (pt->verbose) {
                     printf("%e %d\n ", nu_1, NU_INT);

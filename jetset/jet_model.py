@@ -122,6 +122,7 @@ class JetBase(Model):
         self._static_spec_arr_grid_size = BlazarSED.static_spec_arr_grid_size
         self._nu_static_size = BlazarSED.static_spec_arr_size
         self.nu_size = nu_size
+        self.nu_grid_size=self._blob.nu_grid_size
         if jet_workplace is None:
             jet_workplace=WorkPlace()
             out_dir= jet_workplace.out_dir + '/' + self.name + '_jet_prod/'
@@ -191,9 +192,7 @@ class JetBase(Model):
 
         self.set_emitting_region(beaming_expr)
 
-        self._blob.adaptive_e_binning=0
 
-        self.set_emitting_region(beaming_expr)
 
 
         self.flux_plot_lim=1E-120
@@ -466,10 +465,10 @@ class JetBase(Model):
 
         blob.gamma_grid_size = 1000
 
-        blob.nu_IC_size = 50
+        blob.nu_IC_size = 100
         blob.nu_seed_size = 100
 
-        blob.nu_grid_size= 200
+        blob.nu_grid_size= 1000
 
         blob.do_Sync = 2
 
@@ -487,7 +486,7 @@ class JetBase(Model):
         blob.N = 100
 
 
-        blob.NH_pp = 1E10
+        blob.NH_pp = 1
 
         blob.L_Disk = 1E45
 
@@ -1054,21 +1053,27 @@ class JetBase(Model):
     def _get_nu_max_grid(self):
         return  self._blob.nu_stop_grid
 
-    def set_nu_grid_size(self,size):
-        self.nu_size=size
-
     @property
     def nu_size(self):
-        return self._nu_size
-        #return self._get_nu_grid_size()
+        return  self._nu_size
 
     @nu_size.setter
-    def nu_size(self, val):
-        self._nu_size=val
+    def nu_size(self, size):
+        self._nu_size = size
 
-        #!!!!!!!!!!This can't be changed the max size is 1000 in jetset!!!
-        #if hasattr(self, '_blob'):
-        #   self._set_nu_grid_size_blob(val)
+    @property
+    def nu_grid_size(self):
+        return self._get_nu_grid_size_blob
+        #return self._get_nu_grid_size()
+
+    @nu_grid_size.setter
+    def nu_grid_size(self, val):
+        self._set_nu_grid_size_blob(val)
+        #self._nu_size=val
+
+    #    #!!!!!!!!!!This can't be changed the max size is 1000 in jetset!!!
+    #    #if hasattr(self, '_blob'):
+    #    #   self._set_nu_grid_size_blob(val)
 
     def _set_nu_grid_size_blob(self, val):
         if val < 100:

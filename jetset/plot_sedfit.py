@@ -267,6 +267,8 @@ class  PlotSED (object):
     
     def update_plot(self):
         self.fig.canvas.draw()
+        self.sedplot.relim()
+        self.sedplot.autoscale(axis='y')
         self.fig.tight_layout()
 
     def update_legend(self,label=None):
@@ -302,7 +304,7 @@ class  PlotSED (object):
             try:
                 x, y = model.SED.get_model_points(log_log=True, frame = self.frame)
             except Exception as e:
-                print("b", e)
+                print("SED missing", e)
                 raise RuntimeError (model, "!!! Error has no SED instance or something wrong in get_model_points()",e)
 
         if density is True:
@@ -469,6 +471,8 @@ class BasePlot(object):
 
     def update_plot(self):
         self.fig.canvas.draw()
+        self.ax.relim()
+        self.ax.autoscale(axis='y')
         self.fig.tight_layout()
 
 
