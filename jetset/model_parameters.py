@@ -807,7 +807,7 @@ class ModelParameterArray(object):
     """   
 
     def __repr__(self):
-        str(self.show_pars())
+        return str(self.show_pars())
 
     #def __str__(self):
     #    return str(self.show_pars())

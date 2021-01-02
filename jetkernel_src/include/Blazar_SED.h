@@ -644,6 +644,8 @@ struct blob {
     int TIPO_DISTR;
     double *Ne_custom;
     double *gamma_e_custom;
+    double *Np_custom;
+    double *gamma_p_custom;
     unsigned int gamma_custom_grid_size;
     double *gam;
     double *Ne;
@@ -819,7 +821,8 @@ struct blob MakeBlob( void );
 //void MakeNe(struct spettro *pt_base);
 struct temp_ev MakeTempEv( void);
 void Init(struct blob *pt, double luminosity_distance);
-void InitNe(struct blob *pt);
+
+
 //void build_photons(struct spettro *pt_base);
 //void alloc_photons(double ** pt,int size);
 void set_seed_freq_start(struct blob *pt_base);
@@ -863,10 +866,15 @@ void alloc_N_distr(double ** pt,int size);
 void setNgrid(struct blob *pt); 
 void Fill_N(struct blob *pt, double *griglia_gamma_N_log, double *N);
 void build_Ne_custom(struct blob *pt,  unsigned int size);
+void build_Np_custom(struct blob *pt,  unsigned int size);
+
 void build_Ne(struct blob *pt);
 void build_Np(struct blob *pt);
 void Fill_Ne_IC(struct blob *pt, double gmin, int stat_frame);
+void InitNe(struct blob *pt);
+void InitNe_extern(struct blob *pt);
 void Init_Np_Ne_pp(struct blob *pt);
+void Init_Np_extern(struct blob *pt);
 double N_distr(struct blob *, double Gamma);
 double N_distr_U_e(struct blob *, double Gamma);
 double N_distr_U_p(struct blob *, double Gamma);
@@ -1099,7 +1107,7 @@ int x_to_grid_index(double *nu_grid, double nu, unsigned int SIZE);
 double f_compton_K1(struct blob *, double Gamma);
 void set_N_distr_for_Compton(struct blob *, double nu_in, double nu_out, int stat_frame);
 double rate_compton_GR(struct blob *);
-double integrale_IC(double (*pf) (struct blob *, double x), struct blob * pt, double a, double b,int stat_frame);
+double integrale_IC(struct blob * pt, double a, double b,int stat_frame);
 double integrale_IC_cooling(struct blob * pt, double a, double b, double gamma);
 double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma);
 double f_compton_cooling(double b);

@@ -12,3 +12,4 @@ emcee>=3.0.0
 pyyaml
 pyqt
 pytest
+numba

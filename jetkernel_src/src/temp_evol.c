@@ -617,10 +617,10 @@ void CooolingEquilibrium(struct blob * pt, double T_esc){
     //using Eq. 2.26 in Inoue&Takahara
     //http://adsabs.harvard.edu/doi/10.1086/177270
     
-    double  delta_t_cool, delta_t_cool_old, t_cool_sync;
+    double  a;
     unsigned int ID;
-    
-    pt->gamma_cooling_eq=(10/Sync_cool(pt,10))/T_esc;
+    a=3.0*MEC2/(4.0*vluce_cm*(pt->UB)*SIGTH);
+    pt->gamma_cooling_eq=a/T_esc;
     
     for (ID = 0; ID < pt->gamma_grid_size ; ID++){
         

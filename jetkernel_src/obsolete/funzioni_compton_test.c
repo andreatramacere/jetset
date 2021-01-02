@@ -55,8 +55,7 @@ double rate_compton_GR(struct blob *pt_GR) {
             pt_GR->n_seed = pt_GR->n_Sync;
             //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
             //pt_GR->N_IC=pt_GR->Ne;
-            rate_comp = integrale_IC(pf_K,
-                    pt_GR,
+            rate_comp = integrale_IC(pt_GR,
                     pt_GR->nu_start_Sync,
                     pt_GR->nu_stop_Sync_ssc,
                     0);
@@ -75,8 +74,7 @@ double rate_compton_GR(struct blob *pt_GR) {
 			pt_GR->n_seed = pt_GR->n_Disk;
             //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
             //pt_GR->N_IC=pt_GR->Ne;
-			rate_comp = integrale_IC(pf_K,
-					pt_GR,
+			rate_comp = integrale_IC(pt_GR,
 					pt_GR->nu_start_Disk,
 					pt_GR->nu_stop_Disk,
 					0);
@@ -96,8 +94,7 @@ double rate_compton_GR(struct blob *pt_GR) {
             pt_GR->n_seed = pt_GR->n_BLR;
             //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
             //pt_GR->N_IC=pt_GR->Ne;
-            rate_comp = integrale_IC(pf_K,
-                    pt_GR,
+            rate_comp = integrale_IC(pt_GR,
                     pt_GR->nu_start_BLR,
                     pt_GR->nu_stop_BLR,
                     0);
@@ -117,8 +114,7 @@ double rate_compton_GR(struct blob *pt_GR) {
             pt_GR->n_seed = pt_GR->n_DT;
             //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
             //pt_GR->N_IC=pt_GR->Ne;
-            rate_comp = integrale_IC(pf_K,
-                    pt_GR,
+            rate_comp = integrale_IC(pt_GR,
                     pt_GR->nu_start_DT,
                     pt_GR->nu_stop_DT,
                     0);
@@ -139,8 +135,7 @@ double rate_compton_GR(struct blob *pt_GR) {
 		   pt_GR->n_seed = pt_GR->n_Star;
            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
            //pt_GR->N_IC=pt_GR->Ne;
-		   rate_comp = integrale_IC(pf_K,
-				   pt_GR,
+		   rate_comp = integrale_IC(pt_GR,
 				   pt_GR->nu_start_Star,
 				   pt_GR->nu_stop_Star,
 				   0);
@@ -162,8 +157,7 @@ double rate_compton_GR(struct blob *pt_GR) {
     		pt_GR->n_seed = pt_GR->n_CMB;
             //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
             //pt_GR->N_IC=pt_GR->Ne;
-    		rate_comp = integrale_IC(pf_K,
-    				pt_GR,
+    		rate_comp = integrale_IC(pt_GR,
     				pt_GR->nu_start_CMB,
     				pt_GR->nu_stop_CMB,
     				0);
@@ -195,8 +189,7 @@ double rate_compton_GR(struct blob *pt_GR) {
 
             //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log_stat;
             //pt_GR->N_IC=pt_GR->Ne_stat;
-            rate_comp = integrale_IC(pf_K,
-                    pt_GR,
+            rate_comp = integrale_IC(pt_GR,
                     pt_GR->nu_start_CMB_stat,
                     pt_GR->nu_stop_CMB_stat,
                     1);
@@ -354,7 +347,7 @@ double f_compton_K1(struct blob *pt_K1, double g) {
 // I_nu_Sync=>I_nu_seed
 // a,b: boundaries for photon integration
 //=========================================================================================
-double integrale_IC(double (*pf) (struct blob *, double x), struct blob * pt, double a, double b, int stat_frame) {
+double integrale_IC( struct blob * pt, double a, double b, int stat_frame) {
     double nu1, nu2, integr_gamma, integr_nu;
     double g3, g1, y_g1, y_g2, y_g3, y_nu1, y_nu2;
     double delta_g, delta_nu;

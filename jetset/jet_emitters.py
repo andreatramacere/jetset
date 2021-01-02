@@ -67,6 +67,7 @@ class EmittersDistribution(object):
         self._allowed_spectral_types=['bkn','plc','lp','lppl','pl']
         self._set_emitters_type(emitters_type)
         self._set_spectral_type(spectral_type)
+        self._Norm=1.0
         if skip_build is False:
             self._build(jet,name,log_values, gamma_grid_size,normalize)
 
@@ -144,19 +145,27 @@ class EmittersDistribution(object):
 
     def set_parameters_dict(self,):
         model_dict, a_h, b_h, a_l, b_l, a_t, b_t = self._get_base_dict_and_bounds()
+
         model_dict['gmin'].val = 2.0
+        model_dict['gmin'].is_in_jetkernel = True
+
         model_dict['gmax'].val = 1E6
+        model_dict['gmax'].is_in_jetkernel = True
+
         model_dict['N'].val = 100.
         model_dict['N'].is_in_jetkernel = True
-        model_dict['gmax'].is_in_jetkernel =True
-        model_dict['gmin'].is_in_jetkernel = True
+
+        if 'NH_pp' in model_dict.keys():
+            model_dict['NH_pp'].val = 1.
+            model_dict['NH_pp'].is_in_jetkernel = True
+
 
         self._parameters_dict=model_dict
 
         for k,par in model_dict.items():
-
+            #print('==> k',k,'par',par)
             if self._log_values is True:
-                val = np.log10(val)
+                val = np.log10(par.val)
             else:
                 val = par.val
 
@@ -209,15 +218,15 @@ class EmittersDistribution(object):
 
         return model_dic, a_h, b_h, a_l, b_l, a_t, b_t
 
-    def set_jet(self,jet, emitters_type='electrons'):
+    def set_jet(self,jet):
         if jet is not None:
             name = 'from_array'
-            if emitters_type != 'electrons':
-                raise RuntimeError('not implemented yet for', emitters_type, 'only for electrons')
+            #if emitters_type != 'electrons':
+            #    raise RuntimeError('not implemented yet for', emitters_type, 'only for electrons')
 
             self._jet = jet
             set_str_attr(jet._blob, 'DISTR', name)
-            set_str_attr(jet._blob, 'PARTICLE', emitters_type)
+            set_str_attr(jet._blob, 'PARTICLE', self.emitters_type)
 
 
             p = self._jet.get_par_by_name('gmin')
@@ -235,14 +244,20 @@ class EmittersDistribution(object):
                 p = self.parameters.get_par_by_name('gmax')
             setattr(jet._blob, 'gmax', p.val_lin)
 
-            BlazarSED.build_Ne_custom(jet._blob, self._gamma_grid_size)
+            if self.emitters_type == 'electrons':
+                BlazarSED.build_Ne_custom(jet._blob, self._gamma_grid_size)
+            elif self.emitters_type == 'protons':
+                BlazarSED.build_Ne_custom(jet._blob, self._gamma_grid_size)
+                BlazarSED.build_Np_custom(jet._blob, self._gamma_grid_size)
+            else:
+                raise RuntimeError('emitters type',self.emitters_type,'not among valid: electrons,protons')
         else:
             self._jet=jet
 
     def _eval_func(self,gamma):
         p_dict = {}
-        _skip=['gmin','gmax','N']
-        for  par in self.parameters.par_array:
+        _skip=['gmin','gmax','N','NH_pp']
+        for par in self.parameters.par_array:
             if par.name not in _skip:
                 p_dict[par.name] = par.val
         p_dict['gamma']=gamma
@@ -261,15 +276,13 @@ class EmittersDistribution(object):
             pass
 
     def update(self):
-        self._set_blob()
         self._fill()
 
     def set_grid_size(self,gamma_grid_size):
         if gamma_grid_size is not None:
             if self._jet is not  None:
-               setattr(self._jet._blob,'gamma_grid_size' ,gamma_grid_size)
+              setattr(self._jet._blob,'gamma_grid_size' ,gamma_grid_size)
 
-        self._set_blob()
         self._fill()
 
     def set_grid(self):
@@ -279,43 +292,122 @@ class EmittersDistribution(object):
 
         self._gamma_grid = np.logspace(np.log10(gmin), np.log10(gmax), self._gamma_grid_size)
 
+    def eval_N_tot(self):
+        if self.emitters_type=='electrons':
+            return np.trapz(self.n_gamma_e,self.gamma_e)
+        elif self.emitters_type=='protons':
+            return np.trapz(self.n_gamma_p, self.gamma_p)
+        else:
+            raise  RuntimeError('emitters type',self.emitters_type, 'not valid')
+
     def _fill(self,normalize=False):
         self.set_grid()
 
-        f=self._eval_func(gamma=self._gamma_grid)
-        Norm=1.0
+
+
+        self.f=self._eval_func(gamma=self._gamma_grid)
+        self._Norm=1.0
 
         if self.normalize is True:
-            Norm=1.0/np.trapz(f,self._gamma_grid)
+            self._Norm=1.0/np.trapz(self.f,self._gamma_grid)
 
-        f = f*Norm*self.parameters.get_par_by_name('N').val
+        self.f = self.f*self._Norm*self.parameters.get_par_by_name('N').val
+
         if self.emitters_type == 'electrons':
+            self.gamma_e = zeros(self._gamma_grid_size)
+            self.n_gamma_e = zeros(self._gamma_grid_size)
             self.gamma_e = self._gamma_grid
-            self.n_gamma_e = f
+            self.n_gamma_e = self.f
+
+            self.n_gamma_e[np.isnan(self.n_gamma_e)] = 0
+            self.n_gamma_e[np.isinf(self.n_gamma_e)] = 0
 
         if self.emitters_type == 'protons':
+            self.gamma_p = zeros(self._gamma_grid_size)
+            self.n_gamma_p = zeros(self._gamma_grid_size)
+            self.gamma_e_second_inj = zeros(self._gamma_grid_size)
+            self.n_gamma_e_second_inj = zeros(self._gamma_grid_size)
+
             self.gamma_p = self._gamma_grid
-            self.n_gamma_p = f
+            self.n_gamma_p = self.f
+
+            self.n_gamma_p[np.isnan(self.n_gamma_p)] = 0
+            self.n_gamma_p[np.isinf(self.n_gamma_p)] = 0
+
+            self.n_gamma_e_second_inj[np.isnan(self.n_gamma_e_second_inj)] = 0
+            self.n_gamma_e_second_inj[np.isinf(self.n_gamma_e_second_inj)] = 0
 
         if self._jet is not None:
-            size = self._gamma_grid_size
-            Ne_custom_ptr = getattr(self._jet._blob, 'Ne_custom')
-            gamma_custom_ptr = getattr(self._jet._blob, 'gamma_e_custom')
 
-            for ID in range(size):
-                BlazarSED.set_elec_custom_array(gamma_custom_ptr, self._jet._blob, self._gamma_grid[ID], ID)
-                BlazarSED.set_elec_custom_array(Ne_custom_ptr, self._jet._blob, f[ID], ID)
+            if self.emitters_type == 'electrons':
+                # this is not the size used in jetkernel, because it is the python array without the simpson grid
+                size = self._gamma_grid_size
+                Ne_custom_ptr = getattr(self._jet._blob, 'Ne_custom')
+                gamma_custom_ptr = getattr(self._jet._blob, 'gamma_e_custom')
 
-            size = self._jet._blob.gamma_grid_size
+                for ID in range(size):
+                    BlazarSED.set_elec_custom_array(gamma_custom_ptr, self._jet._blob, self._gamma_grid[ID], ID)
+                    BlazarSED.set_elec_custom_array(Ne_custom_ptr, self._jet._blob, self.f[ID], ID)
+
 
             if self.emitters_type == 'protons':
+
+                #this is not the size used in jetkernel, because it is the python array without the simpson grid
+                size = self._gamma_grid_size
+
+                Np_custom_ptr = getattr(self._jet._blob, 'Np_custom')
+                gamma_custom_ptr = getattr(self._jet._blob, 'gamma_p_custom')
                 for ID in range(size):
-                    self.gamma_e[ID] = BlazarSED.get_elec_array(self.e_gamma_ptr, self._jet._blob, ID)
-                    self.n_gamma_e[ID] = BlazarSED.get_elec_array(self.Ne_ptr, self._jet._blob, ID)
+                    BlazarSED.set_elec_custom_array(gamma_custom_ptr, self._jet._blob, self._gamma_grid[ID], ID)
+                    BlazarSED.set_elec_custom_array(Np_custom_ptr, self._jet._blob, self.f[ID], ID)
+
+
 
 
     def _set_blob(self):
-        pass
+        if self.emitters_type == 'electrons':
+
+            self._Ne_name, self._gammae_name = gamma_dic_e['electron_distr']
+            self.Ne_ptr = getattr(self._jet._blob, self._Ne_name)
+            self.e_gamma_ptr = getattr(self._jet._blob, self._gammae_name)
+
+        elif self.emitters_type == 'protons':
+            self._Ne_name, self._gammae_name = gamma_dic_e['electron_distr']
+            self._Np_name, self._gammap_name = gamma_dic_p['proton_distr']
+            self._Q_inj_e_second_name, self._gammae_inj_sec_name = gamma_dic_pp_e_second['e_second_inj']
+
+            self.Np_ptr = getattr(self._jet._blob, self._Np_name)
+            self.p_gamma_ptr = getattr(self._jet._blob, self._gammap_name)
+            self.Ne_ptr = getattr(self._jet._blob, self._Ne_name)
+            self.e_gamma_ptr = getattr(self._jet._blob, self._gammae_name)
+
+            self._Q_inj_e_second_ptr = getattr(self._jet._blob, self._Q_inj_e_second_name)
+            self.e_inj_second_gamma_ptr = getattr(self._jet._blob, self._gammae_inj_sec_name)
+
+        size = self._jet._blob.gamma_grid_size
+        self.gamma_e = zeros(size)
+        self.n_gamma_e = zeros(size)
+        self.gamma_p = zeros(size)
+        self.n_gamma_p = zeros(size)
+        self.gamma_e_second_inj = zeros(size)
+        self.n_gamma_e_second_inj = zeros(size)
+        self.gamma_e_second_inj = zeros(size)
+        self.q_gamma_e_second_inj = zeros(size)
+
+        for ID in range(size):
+            self.gamma_e[ID] = BlazarSED.get_elec_array(self.e_gamma_ptr, self._jet._blob, ID)
+            self.n_gamma_e[ID] = BlazarSED.get_elec_array(self.Ne_ptr, self._jet._blob, ID)
+
+        if self.emitters_type == 'protons':
+            for ID in range(size):
+                self.gamma_p[ID] = BlazarSED.get_elec_array(self.p_gamma_ptr, self._jet._blob, ID)
+                self.n_gamma_p[ID] = BlazarSED.get_elec_array(self.Np_ptr, self._jet._blob, ID)
+
+            for ID in range(size):
+                self.gamma_e_second_inj[ID] = BlazarSED.get_elec_array(self.e_inj_second_gamma_ptr, self._jet._blob, ID)
+                self.n_gamma_e_second_inj[ID] = BlazarSED.get_elec_array(self._Q_inj_e_second_ptr, self._jet._blob, ID)
+
+
 
     def set_bounds(self,a,b,log_val=False):
         if log_val == False:
@@ -327,17 +419,20 @@ class EmittersDistribution(object):
     def plot(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma'):
 
         self.update()
+        if self._jet is not None:
+            self._set_blob()
+
         if p is None:
             p = PlotPdistr()
-
-        p.plot_distr(self.gamma_e,
-                     self.n_gamma_e,
-                     y_min=y_min,
-                     y_max=y_max,
-                     x_min=x_min,
-                     x_max=x_max,
-                     particle='electrons',
-                     energy_unit=energy_unit)
+        if self.emitters_type == 'electrons':
+            p.plot_distr(self.gamma_e,
+                         self.n_gamma_e,
+                         y_min=y_min,
+                         y_max=y_max,
+                         x_min=x_min,
+                         x_max=x_max,
+                         particle='electrons',
+                         energy_unit=energy_unit)
 
         if self.emitters_type == 'protons':
             p.plot_distr(self.gamma_p,
@@ -349,10 +444,21 @@ class EmittersDistribution(object):
                          particle='protons',
                          energy_unit=energy_unit)
 
+            p.plot_distr(self.gamma_e_second_inj,
+                         self.n_gamma_e_second_inj,
+                         y_min=y_min,
+                         y_max=y_max,
+                         x_min=x_min,
+                         x_max=x_max,
+                         particle='electrons',
+                         energy_unit=energy_unit)
+
         return p
 
     def plot2p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma'):
         self.update()
+        if self._jet is not None:
+            self._set_blob()
 
         if p is None:
             p = PlotPdistr()
@@ -367,19 +473,30 @@ class EmittersDistribution(object):
                        energy_unit=energy_unit)
 
         if self.emitters_type == 'protons':
-            p.plot_distr2p(self.gamma_p,
-                           self.n_gamma_p,
-                           y_min=y_min,
-                           y_max=y_max,
-                           x_min=x_min,
-                           x_max=x_max,
-                           particle='protons',
-                           energy_unit=energy_unit)
+            p.plot_distr(self.gamma_p,
+                         self.n_gamma_p,
+                         y_min=y_min,
+                         y_max=y_max,
+                         x_min=x_min,
+                         x_max=x_max,
+                         particle='protons',
+                         energy_unit=energy_unit)
+
+            p.plot_distr(self.gamma_e_second_inj,
+                         self.n_gamma_e_second_inj,
+                         y_min=y_min,
+                         y_max=y_max,
+                         x_min=x_min,
+                         x_max=x_max,
+                         particle='electrons',
+                         energy_unit=energy_unit)
 
         return p
 
     def plot3p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma'):
         self.update()
+        if self._jet is not None:
+            self._set_blob()
 
         if p is None:
             p = PlotPdistr()
@@ -394,14 +511,23 @@ class EmittersDistribution(object):
                        energy_unit=energy_unit)
 
         if self.emitters_type == 'protons':
-            p.plot_distr3p(self.gamma_p,
-                           self.n_gamma_p,
-                           y_min=y_min,
-                           y_max=y_max,
-                           x_min=x_min,
-                           x_max=x_max,
-                           particle='protons',
-                           energy_unit=energy_unit)
+            p.plot_distr(self.gamma_p,
+                         self.n_gamma_p,
+                         y_min=y_min,
+                         y_max=y_max,
+                         x_min=x_min,
+                         x_max=x_max,
+                         particle='protons',
+                         energy_unit=energy_unit)
+
+            p.plot_distr(self.gamma_e_second_inj,
+                         self.n_gamma_e_second_inj,
+                         y_min=y_min,
+                         y_max=y_max,
+                         x_min=x_min,
+                         x_max=x_max,
+                         particle='electrons',
+                         energy_unit=energy_unit)
 
         return p
 
@@ -484,14 +610,12 @@ class JetkernelEmittersDistribution(EmittersDistribution):
     def _set_blob(self):
 
         if self.emitters_type=='electrons':
-            print('==> _set_blob InitNe')
             BlazarSED.InitNe(self._jet._blob)
             self._Ne_name, self._gammae_name = gamma_dic_e['electron_distr']
             self.Ne_ptr = getattr(self._jet._blob, self._Ne_name)
             self.e_gamma_ptr = getattr(self._jet._blob, self._gammae_name)
 
         elif self.emitters_type=='protons':
-            print('==> _set_blob Init_Np_Ne_pp')
             BlazarSED.Init_Np_Ne_pp(self._jet._blob)
             self._Ne_name, self._gammae_name = gamma_dic_e['electron_distr']
             self._Np_name, self._gammap_name = gamma_dic_p['proton_distr']
@@ -501,7 +625,6 @@ class JetkernelEmittersDistribution(EmittersDistribution):
             self.p_gamma_ptr = getattr(self._jet._blob, self._gammap_name)
             self.Ne_ptr = getattr(self._jet._blob, self._Ne_name)
             self.e_gamma_ptr = getattr(self._jet._blob, self._gammae_name)
-
 
             self._Q_inj_e_second_ptr = getattr(self._jet._blob, self._Q_inj_e_second_name)
             self.e_inj_second_gamma_ptr = getattr(self._jet._blob, self._gammae_inj_sec_name)
@@ -521,7 +644,6 @@ class JetkernelEmittersDistribution(EmittersDistribution):
             self.gamma_e[ID] = BlazarSED.get_elec_array(self.e_gamma_ptr, self._jet._blob, ID)
             self.n_gamma_e[ID] = BlazarSED.get_elec_array(self.Ne_ptr, self._jet._blob, ID)
 
-
         if self.emitters_type=='protons':
             for ID in range(size):
                 self.gamma_p[ID] = BlazarSED.get_elec_array(self.p_gamma_ptr, self._jet._blob, ID)
@@ -536,7 +658,6 @@ class JetkernelEmittersDistribution(EmittersDistribution):
 
         self.n_gamma_e[np.isnan(self.n_gamma_e)] = 0
         self.n_gamma_e[np.isinf(self.n_gamma_e)] = 0
-
 
 
     def _build_emitters_distribution_dict(self, distribution_name, emitters_type='electrons'):
@@ -591,8 +712,6 @@ class JetkernelEmittersDistribution(EmittersDistribution):
         """
 
         model_dic, a_h, b_h, a_l, b_l, a_t, b_t= self._get_base_dict_and_bounds()
-
-
 
         a_h,b_h=self.set_bounds(1,1E15,log_val=self._log_values)
         a_l, b_l = self.set_bounds(1, 1E9, log_val=self._log_values)

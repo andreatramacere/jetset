@@ -281,6 +281,26 @@ void build_Ne_custom(struct blob *pt,  unsigned int size) {
 
 }
 
+void build_Np_custom(struct blob *pt,  unsigned int size) {
+    pt->gamma_custom_grid_size=size;
+    if (pt->verbose>1) {
+        printf("Set array for Ne for from_array mode \n");
+        printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
+    }
+    //printf("Set array per Ne %s \n",pt->DISTR);
+    alloc_N_distr(&(pt->gamma_p_custom),size);
+    alloc_N_distr(&(pt->Np_custom),size);
+
+}
+
+void InitNe_extern(struct blob *pt){
+    double (*pf_distr)(struct blob *, double x);
+    pf_distr = &N_distr_integranda;
+
+    setNgrid(pt);
+    build_Ne(pt);
+    SetDistr(pt);
+}
 
 void InitNe(struct blob *pt){
     double (*pf_distr)(struct blob *, double x);
@@ -291,35 +311,12 @@ void InitNe(struct blob *pt){
     SetDistr(pt);
     Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Ne);
 
-    //This transformation is correct
-    //the grid is shifted by a factor of delta, hence the integration
-    //boundaries are properly updated but the value of N[i] is still the
-    //value of N(gamma') as in the formula 6.133 in Dermer&Menon
-    //for (i = 0; i < pt->gamma_grid_size; i++) {
-    //	pt->griglia_gamma_Ne_log_stat[i]=pt->griglia_gamma_Ne_log[i]*pt->beam_obj;
-    //}
-
-    //the delta^2 in Ne_stat is also correct because we use electron density
-    //so the relativistic invariant is
-    //N/(V*gamma^2)=N'/(V'gamma'2^)
-    //for (i = 0; i < pt->gamma_grid_size; i ++) {
-    //  pt->Ne_stat[i]=pt->Ne[i]*pt->beam_obj*pt->beam_obj;
-    //}
 
 	//This flag is set to 1 to know that
 	pt->Distr_e_done = 1;
 
     pt->N_0e = pt->N_0;
     pt->N_e  = N_tot(pt, N_distr_integranda);
-
-    //pt->N_e = integrale_trap_log_struct(pf_distr,
-    //                                    pt,
-    //                                    pt->gmin,
-    //                                    pt->gmax,
-    //                                    10000);
-
-    //name = "distr-e.dat";
-    //Scrivi_N_file(pt, name, pt->griglia_gamma_Ne_log, pt->Ne);
 
 }
 
@@ -328,15 +325,32 @@ void InitNe(struct blob *pt){
 // Genera la  N[i] per pp ed e- secondari
 //========================================
 
-void Init_Np_Ne_pp(struct blob *pt)
-{
-    //char *name;
+void Init_Np_extern(struct blob *pt){
     double (*pf_distr) (struct blob *, double x);
     pf_distr = &N_distr_integranda;
 
     pt->gmin_secondaries=pt->gmin;
     pt->gmax_secondaries=pt->gmax*mp_by_me;
 
+    setNgrid(pt);
+    build_Np(pt);
+
+    sprintf(pt->PARTICLE, "secondaries_el");
+    setNgrid(pt);
+    build_Ne_secondaries(pt);
+    build_Q_inj_e_second(pt);
+    sprintf(pt->PARTICLE, "protons");
+}
+
+void Init_Np_Ne_pp(struct blob *pt)
+{
+    
+    //char *name;
+    double (*pf_distr) (struct blob *, double x);
+    pf_distr = &N_distr_integranda;
+
+    pt->gmin_secondaries=pt->gmin;
+    pt->gmax_secondaries=pt->gmax*mp_by_me;
     setNgrid(pt);
     build_Np(pt);
     SetDistr(pt);
@@ -359,7 +373,6 @@ void Init_Np_Ne_pp(struct blob *pt)
     //printf("--> N0e %e N0 %e N0p %e\n", pt->N_0e, pt->N_0, pt->N_0p);
     
     pt->N_p = N_tot(pt, N_distr_integranda);
-
     //name = "distr-p.dat";
     //Scrivi_N_file(pt, name, pt->griglia_gamma_Np_log, pt->Np);
 
@@ -496,20 +509,33 @@ void Fill_N(struct blob *pt, double * griglia_gamma_N_log, double * N) {
 
     pt->N_0 = 1.0;
     //=========================================
-    // interpolate custom Ne
+    // interpolate custom Ne/p
     //=========================================
     if (pt->TIPO_DISTR == 0)
-    {
-        for (i = 0; i < pt->gamma_grid_size; i++)
-        {
-            N[i] = N_distr_interp(pt->gamma_custom_grid_size,
-                                  griglia_gamma_N_log[i],
-                                  pt->gamma_e_custom,
-                                  pt->Ne_custom);
+    {   
+        if (strcmp(pt->PARTICLE, "protons") == 0){
+            for (i = 0; i < pt->gamma_grid_size; i++)
+            
+            {
+                N[i] = N_distr_interp(pt->gamma_custom_grid_size,
+                                    griglia_gamma_N_log[i],
+                                    pt->gamma_p_custom,
+                                    pt->Np_custom);
+            }
+        }else{
+            for (i = 0; i < pt->gamma_grid_size; i++)
+            
+            {
+                N[i] = N_distr_interp(pt->gamma_custom_grid_size,
+                                    griglia_gamma_N_log[i],
+                                    pt->gamma_e_custom,
+                                    pt->Ne_custom);
+            }
         }
+
     }
     //=========================================
-    // fill defined Ne
+    // fill defined Ne/p
     //=========================================
     else if (pt->TIPO_DISTR != -1){
 
@@ -940,6 +966,12 @@ void SetDistr(struct blob *pt) {
         {
             pt->TIPO_DISTR = 9;
         }
+
+        if (strcmp(pt->DISTR, "extern") == 0)
+        {
+            pt->TIPO_DISTR = 10;
+        }
+
     }
     
 

@@ -56,8 +56,7 @@ double rate_compton_GR(struct blob *pt_GR) {
             pt_GR->n_seed = pt_GR->n_Sync;
             //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
             //pt_GR->N_IC=pt_GR->Ne;
-            rate_comp = integrale_IC(pf_K,
-                    pt_GR,
+            rate_comp = integrale_IC(pt_GR,
                     pt_GR->nu_start_Sync,
                     pt_GR->nu_stop_Sync_ssc,
                     0);
@@ -76,8 +75,7 @@ double rate_compton_GR(struct blob *pt_GR) {
             {
                 pt_GR->nu_seed = pt_GR->nu_Disk;
                 pt_GR->n_seed = pt_GR->n_Disk;
-                rate_comp = integrale_IC(pf_K,
-                                         pt_GR,
+                rate_comp = integrale_IC(pt_GR,
                                          pt_GR->nu_start_Disk,
                                          pt_GR->nu_stop_Disk,
                                          pt_GR->EC_stat);
@@ -88,8 +86,7 @@ double rate_compton_GR(struct blob *pt_GR) {
 
                 pt_GR->nu_seed = pt_GR->nu_Disk_disk_RF;
                 pt_GR->n_seed = pt_GR->n_Disk_DRF;
-                rate_comp = integrale_IC(pf_K,
-                                         pt_GR,
+                rate_comp = integrale_IC(pt_GR,
                                          pt_GR->nu_start_Disk_DRF,
                                          pt_GR->nu_stop_Disk_DRF,
                                          pt_GR->EC_stat);
@@ -113,8 +110,7 @@ double rate_compton_GR(struct blob *pt_GR) {
             {
                 pt_GR->nu_seed = pt_GR->nu_BLR;
                 pt_GR->n_seed = pt_GR->n_BLR;
-                rate_comp = integrale_IC(pf_K,
-                                         pt_GR,
+                rate_comp = integrale_IC(pt_GR,
                                          pt_GR->nu_start_BLR,
                                          pt_GR->nu_stop_BLR,
                                          pt_GR->EC_stat);
@@ -126,8 +122,7 @@ double rate_compton_GR(struct blob *pt_GR) {
                 
                 pt_GR->nu_seed = pt_GR->nu_BLR_disk_RF;
                 pt_GR->n_seed = pt_GR->n_BLR_DRF;
-                rate_comp = integrale_IC(pf_K,
-                                         pt_GR,
+                rate_comp = integrale_IC(pt_GR,
                                          pt_GR->nu_start_BLR_disk_RF,
                                          pt_GR->nu_stop_BLR_disk_RF,
                                          pt_GR->EC_stat);
@@ -149,8 +144,7 @@ double rate_compton_GR(struct blob *pt_GR) {
             {
                 pt_GR->nu_seed = pt_GR->nu_DT;
                 pt_GR->n_seed = pt_GR->n_DT;
-                rate_comp = integrale_IC(pf_K,
-                                         pt_GR,
+                rate_comp = integrale_IC(pt_GR,
                                          pt_GR->nu_start_DT,
                                          pt_GR->nu_stop_DT,
                                          pt_GR->EC_stat);
@@ -162,8 +156,7 @@ double rate_compton_GR(struct blob *pt_GR) {
 
                 pt_GR->nu_seed = pt_GR->nu_DT_disk_RF;
                 pt_GR->n_seed = pt_GR->n_DT_DRF;
-                rate_comp = integrale_IC(pf_K,
-                                         pt_GR,
+                rate_comp = integrale_IC(pt_GR,
                                          pt_GR->nu_stop_DT_DRF,
                                          pt_GR->nu_stop_DT_DRF,
                                          pt_GR->EC_stat);
@@ -195,8 +188,7 @@ double rate_compton_GR(struct blob *pt_GR) {
            {
                pt_GR->nu_seed = pt_GR->nu_Star;
                pt_GR->n_seed = pt_GR->n_Star;
-               rate_comp = integrale_IC(pf_K,
-                                        pt_GR,
+               rate_comp = integrale_IC(pt_GR,
                                         pt_GR->nu_start_Star,
                                         pt_GR->nu_stop_Star,
                                         pt_GR->EC_stat);
@@ -208,8 +200,7 @@ double rate_compton_GR(struct blob *pt_GR) {
 
                pt_GR->nu_seed = pt_GR->nu_Star_disk_RF;
                pt_GR->n_seed = pt_GR->n_Star_DRF;
-               rate_comp = integrale_IC(pf_K,
-                                        pt_GR,
+               rate_comp = integrale_IC(pt_GR,
                                         pt_GR->nu_start_Star_DRF,
                                         pt_GR->nu_stop_Star_DRF,
                                         pt_GR->EC_stat);
@@ -232,8 +223,7 @@ double rate_compton_GR(struct blob *pt_GR) {
             {
                 pt_GR->nu_seed = pt_GR->nu_CMB;
                 pt_GR->n_seed = pt_GR->n_CMB;
-                rate_comp = integrale_IC(pf_K,
-                                         pt_GR,
+                rate_comp = integrale_IC(pt_GR,
                                          pt_GR->nu_start_CMB,
                                          pt_GR->nu_stop_CMB,
                                          pt_GR->EC_stat);
@@ -245,8 +235,7 @@ double rate_compton_GR(struct blob *pt_GR) {
                 
                 pt_GR->nu_seed = pt_GR->nu_CMB_disk_RF;
                 pt_GR->n_seed = pt_GR->n_CMB_DRF;
-                rate_comp = integrale_IC(pf_K,
-                                         pt_GR,
+                rate_comp = integrale_IC(pt_GR,
                                          pt_GR->nu_start_CMB_DRF,
                                          pt_GR->nu_stop_CMB_DRF,
                                          pt_GR->EC_stat);
@@ -460,7 +449,7 @@ void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int 
 // returns [emitted photons, cm-3, s-1, Hz-1, sterad-1]
 // the [sterad-1] comes from n_seed
 //=========================================================================================
-double integrale_IC(double (*pf) (struct blob *, double x), struct blob * pt, double a, double b, int stat_frame) {
+double integrale_IC( struct blob * pt, double a, double b, int stat_frame) {
     double nu1, nu2, integr_gamma, integr_nu;
     //double g3, g1, y_g1, y_g2, y_g3,delta_g;
     double g, y_nu1, y_nu2;
