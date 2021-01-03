@@ -193,8 +193,6 @@ void build_Ne(struct blob *pt) {
 }
 
 void build_Ne_secondaries(struct blob *pt) {
-   
-
     //printf("Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Ne_log),pt->gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log,pt->gmin_griglia_secondaries, pt->gmax_griglia_secondaries);
@@ -225,14 +223,12 @@ void build_Np(struct blob *pt)
     alloc_N_distr(&(pt->Np), pt->gamma_grid_size);
 }
 
-
 void build_Np_jetset(struct blob *pt) {
     alloc_N_distr(&(pt->griglia_gamma_jetset_Np_log), pt->gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_jetset_Np_log,pt->gmin_griglia, pt->gmax_griglia);
     alloc_N_distr(&(pt->Np_jetset), pt->gamma_grid_size);
 
 }
-
 
 void build_Ne_jetset(struct blob *pt) {
     alloc_N_distr(&(pt->griglia_gamma_jetset_Ne_log),pt->gamma_grid_size);
@@ -241,7 +237,7 @@ void build_Ne_jetset(struct blob *pt) {
 }
 
 
-void Fill_Ne_IC(struct blob *pt, double gmin, int stat_frame) {
+void Fill_Ne_IC(struct blob *pt, double g_min_BG, int stat_frame) {
     unsigned int i;
     if (pt->verbose>1) {
         printf("Set array per Ne IC\n");
@@ -250,16 +246,32 @@ void Fill_Ne_IC(struct blob *pt, double gmin, int stat_frame) {
     //printf("Set array per Ne %s \n",pt->DISTR);
     
     if (strcmp(pt->PARTICLE, "protons") == 0) {
-        Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,pt->gmin_griglia_secondaries, pt->gmax_griglia_secondaries);
+        
+        if(pt->adaptive_e_binning ==1){
+            Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,g_min_BG, pt->gmax_griglia_secondaries);
+        }else{
+            Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,pt->gmin_griglia_secondaries, pt->gmax_griglia_secondaries);
+        }
+        
     }
     else{
-        Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,pt->gmin_griglia, pt->gmax_griglia);
+        if(pt->adaptive_e_binning ==1){
+            Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,g_min_BG, pt->gmax_griglia);
+        }else{
+            Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,pt->gmin_griglia, pt->gmax_griglia);
+        }
     }
     SetDistr(pt);
     for (i = 0; i < pt->gamma_grid_size; i++) {
-        if (pt->griglia_gamma_Ne_log_IC[i]>=gmin){
-            pt->Ne_IC[i] = pt->Ne[i]; 
-            //N_distr(pt, pt->griglia_gamma_Ne_log_IC[i]);
+        if (pt->griglia_gamma_Ne_log_IC[i]>=g_min_BG){
+            if(pt->adaptive_e_binning ==1){
+             pt->Ne_IC[i] = N_distr_interp(pt->gamma_grid_size,
+                                    pt->griglia_gamma_Ne_log_IC[i],
+                                    pt->griglia_gamma_Ne_log,
+                                    pt->Ne);
+            }else{
+                pt->Ne_IC[i] = pt->Ne[i]; 
+            }
         }else{
             pt->Ne_IC[i]=0;
         }

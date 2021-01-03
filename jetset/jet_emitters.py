@@ -279,7 +279,6 @@ class EmittersDistribution(object):
             gmax = self.parameters.get_par_by_name('gmax').val_lin
             self._gamma_grid = np.logspace(np.log10(gmin), np.log10(gmax), self._gamma_grid_size)
         else:
-            print("==>self._jet._blob",self._jet._blob)
             BlazarSED.setNgrid(self._jet._blob)
             if self.emitters_type == 'electrons':
                 BlazarSED.build_Ne_jetset(self._jet._blob)

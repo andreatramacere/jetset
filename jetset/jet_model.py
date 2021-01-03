@@ -184,7 +184,7 @@ class JetBase(Model):
 
         self.set_emitters_distribution(emitters_distribution, emitters_distribution_log_values, emitters_type,init=False)
 
-        self._blob.adaptive_e_binning = 0
+        self._blob.adaptive_e_binning = 1
 
         self.set_emitting_region(beaming_expr)
 
@@ -464,7 +464,7 @@ class JetBase(Model):
 
         set_str_attr(blob, 'MODE', 'custom')
 
-        blob.gamma_grid_size = 1000
+        blob.gamma_grid_size = 200
 
         blob.nu_IC_size = 100
         blob.nu_seed_size = 100

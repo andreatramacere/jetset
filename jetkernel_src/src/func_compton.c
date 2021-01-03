@@ -497,10 +497,11 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame) {
         pt->nu_compton_0 = pt->nu_seed[ID];
 
         //Integration over electron Lorentz factor
-        if (pt->adaptive_e_binning ==1){
-            //wit this choice gmin is set to its the actual nu_seed value
-            set_N_distr_for_Compton(pt, pt->nu_compton_0, pt->nu_1, stat_frame);
-        }
+        
+        //if (pt->adaptive_e_binning ==1){
+        //    //wit this choice gmin is set to its the actual nu_seed value
+        //    set_N_distr_for_Compton(pt, pt->nu_compton_0, pt->nu_1, stat_frame);
+        //}
         for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
             pt->Integrand_over_gamma_grid[ID_gamma] =f_compton_K1(pt, pt->griglia_gamma_Ne_log_IC[ID_gamma]) * pt->Ne_IC[ID_gamma];
 
