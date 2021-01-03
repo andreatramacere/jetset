@@ -220,14 +220,26 @@ void build_Q_inj_e_second(struct blob *pt) {
 
 void build_Np(struct blob *pt)
 {
-    
-    
     alloc_N_distr(&(pt->griglia_gamma_Np_log), pt->gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Np_log,pt->gmin_griglia, pt->gmax_griglia);
     alloc_N_distr(&(pt->Np), pt->gamma_grid_size);
+}
 
+
+void build_Np_jetset(struct blob *pt) {
+    alloc_N_distr(&(pt->griglia_gamma_jetset_Np_log), pt->gamma_grid_size);
+    Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_jetset_Np_log,pt->gmin_griglia, pt->gmax_griglia);
+    alloc_N_distr(&(pt->Np_jetset), pt->gamma_grid_size);
 
 }
+
+
+void build_Ne_jetset(struct blob *pt) {
+    alloc_N_distr(&(pt->griglia_gamma_jetset_Ne_log),pt->gamma_grid_size);
+    Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_jetset_Ne_log, pt->gmin_griglia, pt->gmax_griglia);
+    alloc_N_distr(&(pt->Ne_jetset),pt->gamma_grid_size);
+}
+
 
 void Fill_Ne_IC(struct blob *pt, double gmin, int stat_frame) {
     unsigned int i;
@@ -284,7 +296,7 @@ void build_Ne_custom(struct blob *pt,  unsigned int size) {
 void build_Np_custom(struct blob *pt,  unsigned int size) {
     pt->gamma_custom_grid_size=size;
     if (pt->verbose>1) {
-        printf("Set array for Ne for from_array mode \n");
+        printf("Set array for Np for from_array mode \n");
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
     }
     //printf("Set array per Ne %s \n",pt->DISTR);
@@ -293,14 +305,7 @@ void build_Np_custom(struct blob *pt,  unsigned int size) {
 
 }
 
-void InitNe_extern(struct blob *pt){
-    double (*pf_distr)(struct blob *, double x);
-    pf_distr = &N_distr_integranda;
 
-    setNgrid(pt);
-    build_Ne(pt);
-    SetDistr(pt);
-}
 
 void InitNe(struct blob *pt){
     double (*pf_distr)(struct blob *, double x);
@@ -325,22 +330,6 @@ void InitNe(struct blob *pt){
 // Genera la  N[i] per pp ed e- secondari
 //========================================
 
-void Init_Np_extern(struct blob *pt){
-    double (*pf_distr) (struct blob *, double x);
-    pf_distr = &N_distr_integranda;
-
-    pt->gmin_secondaries=pt->gmin;
-    pt->gmax_secondaries=pt->gmax*mp_by_me;
-
-    setNgrid(pt);
-    build_Np(pt);
-
-    sprintf(pt->PARTICLE, "secondaries_el");
-    setNgrid(pt);
-    build_Ne_secondaries(pt);
-    build_Q_inj_e_second(pt);
-    sprintf(pt->PARTICLE, "protons");
-}
 
 void Init_Np_Ne_pp(struct blob *pt)
 {
@@ -534,6 +523,23 @@ void Fill_N(struct blob *pt, double * griglia_gamma_N_log, double * N) {
         }
 
     }
+    else if (pt->TIPO_DISTR==10){
+        if (strcmp(pt->PARTICLE, "protons") == 0){
+            for (i = 0; i < pt->gamma_grid_size; i++)
+            
+            {
+                N[i] = pt->Np_jetset[i];
+            }
+        }else{
+            for (i = 0; i < pt->gamma_grid_size; i++)
+            
+            {
+                N[i] = pt->Ne_jetset[i];
+            }
+        }
+
+    }
+
     //=========================================
     // fill defined Ne/p
     //=========================================
@@ -967,7 +973,7 @@ void SetDistr(struct blob *pt) {
             pt->TIPO_DISTR = 9;
         }
 
-        if (strcmp(pt->DISTR, "extern") == 0)
+        if (strcmp(pt->DISTR, "jetset") == 0)
         {
             pt->TIPO_DISTR = 10;
         }

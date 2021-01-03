@@ -178,7 +178,9 @@ struct blob MakeBlob() {
     spettro_root.pp_racc_elec = 1.0;
     spettro_root.pp_racc_gamma = 1.0;
     spettro_root.pp_racc_nu_mu = 1.0;
-
+    spettro_root.E_th_pp_delta_approx=0.1;
+    spettro_root.E_pp_x_delta_approx=0.001;
+    
     spettro_root.adaptive_e_binning =0;
     sprintf(spettro_root.MODE, "fast");
     //GRID SIZE FOR SEED
@@ -281,22 +283,28 @@ struct blob MakeBlob() {
     spettro_root.T_Star_max =1E5;
 
     spettro_root.gam=NULL;
+
     spettro_root.Ne=NULL;
-    spettro_root.Ne_stat=NULL;
-    spettro_root.griglia_gamma_Ne_log=NULL;
-    spettro_root.griglia_gamma_Ne_log_stat=NULL;
-    spettro_root.griglia_gamma_Np_log=NULL;
-    spettro_root.griglia_gamma_Ne_log_IC=NULL;
-    spettro_root.Ne_IC=NULL;
-    spettro_root.Np=NULL;
-    spettro_root.E_th_pp_delta_approx=0.1;
-    spettro_root.E_pp_x_delta_approx=0.001;
     spettro_root.Ne_custom=NULL;
+    spettro_root.Ne_IC=NULL;
+    spettro_root.Ne_jetset=NULL;
+    spettro_root.Ne_stat=NULL;
+    
+    spettro_root.griglia_gamma_Ne_log=NULL;
     spettro_root.gamma_e_custom=NULL;
+    spettro_root.griglia_gamma_Ne_log_stat=NULL;
+    spettro_root.griglia_gamma_Ne_log_IC=NULL;
+    spettro_root.griglia_gamma_jetset_Ne_log=NULL;
+
+    spettro_root.Np=NULL;
+    spettro_root.Np_jetset=NULL;
     spettro_root.Np_custom=NULL;
+     
+    spettro_root.griglia_gamma_Np_log=NULL;
+    spettro_root.griglia_gamma_jetset_Np_log=NULL;
     spettro_root.gamma_p_custom=NULL;
 
-
+    
 //    build_photons(&spettro_root);
     return spettro_root;
 }

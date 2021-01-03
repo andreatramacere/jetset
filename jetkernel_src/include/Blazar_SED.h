@@ -649,9 +649,11 @@ struct blob {
     unsigned int gamma_custom_grid_size;
     double *gam;
     double *Ne;
+    double *Ne_jetset;
     double *Ne_IC;
     double *Ne_stat;
     double *Np;
+    double *Np_jetset;
     double *Q_inj_e_second;
     double *Integrand_over_gamma_grid;
     //double *Q_inj_e;
@@ -659,9 +661,14 @@ struct blob {
 
     unsigned int gamma_grid_size;
     double * griglia_gamma_Ne_log;
+    double * griglia_gamma_jetset_Ne_log;
+    
     double * griglia_gamma_Ne_log_IC;
     double * griglia_gamma_Ne_log_stat;
+
     double * griglia_gamma_Np_log;
+    double * griglia_gamma_jetset_Np_log;
+
     double T_esc_e_second;
     //double *griglia_gamma_log_IC;
     //double *N_IC;
@@ -870,11 +877,11 @@ void build_Np_custom(struct blob *pt,  unsigned int size);
 
 void build_Ne(struct blob *pt);
 void build_Np(struct blob *pt);
+void build_Ne_jetset(struct blob *pt);
+void build_Np_jetset(struct blob *pt);
 void Fill_Ne_IC(struct blob *pt, double gmin, int stat_frame);
 void InitNe(struct blob *pt);
-void InitNe_extern(struct blob *pt);
 void Init_Np_Ne_pp(struct blob *pt);
-void Init_Np_extern(struct blob *pt);
 double N_distr(struct blob *, double Gamma);
 double N_distr_U_e(struct blob *, double Gamma);
 double N_distr_U_p(struct blob *, double Gamma);
