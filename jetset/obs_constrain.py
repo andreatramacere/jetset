@@ -169,7 +169,10 @@ class ObsConstrain(object):
                                params_grid_size=10,
                                electron_distribution_log_values=False,
                                R_H=None,
-                               silent=False):
+                               silent=False,
+                               disk_type='MultiBB',
+                               R_H_within_BLR=False,
+                               R_H_within_DT=False):
         """
         constarin SSC model paramters
         """
@@ -187,7 +190,10 @@ class ObsConstrain(object):
                                         params_grid_size=params_grid_size,
                                         electron_distribution_log_values=electron_distribution_log_values,
                                         silent=silent,
-                                        R_H=R_H)
+                                        R_H=R_H,
+                                        disk_type=disk_type,
+                                        R_H_within_BLR=R_H_within_BLR,
+                                        R_H_within_DT=R_H_within_DT)
         
          
 
@@ -206,12 +212,19 @@ class ObsConstrain(object):
                              params_grid_size=10,
                              electron_distribution_log_values=False,
                              silent=False,
-                             R_H=None):
+                             R_H=None,
+                             disk_type='MultiBB',
+                             R_H_within_BLR=False,
+                             R_H_within_DT=False):
         
 
 
         #out_dir='%s/obs_constrain_%s/'%(self.out_dir,name)
         #makedir(out_dir)
+
+        if silent is False:
+            print(section_separator)
+            print("---> ***  emitting region parameters  ***")
 
         if jet_model is None:
             if self.beaming_expr=='delta':
@@ -229,29 +242,40 @@ class ObsConstrain(object):
         nu_p_EC_seed_field=None
         if EC_componets_list is not None:
             jet_model.add_EC_component(EC_componets_list)
+            jet_model.parameters.disk_type.val=disk_type
             if hasattr(jet_model.parameters, 'L_Disk'):
                 jet_model.set_par('L_Disk',val=self.SEDShape.L_Disk)
                 jet_model.set_par('T_Disk', val=self.SEDShape.T_Disk)
                 if silent is False:
-                    print('---> beaming set L_D ',jet_model.parameters.L_Disk.val)
-                    print('---> beaming set T_D', jet_model.parameters.T_Disk.val)
+                    print('---> EC set L_D ',jet_model.parameters.L_Disk.val)
+                    print('---> EC set T_D', jet_model.parameters.T_Disk.val)
                 if hasattr(jet_model.parameters, 'R_BLR_in'):
                     R_BLR_in=1E17*np.sqrt(self.SEDShape.L_Disk/1E45)
                     jet_model.set_par('R_BLR_in', val=R_BLR_in)
                     jet_model.set_par('R_BLR_out', val=R_BLR_in*2)
+
                     if silent is False:
-                        print('---> beaming set R_BLR_in', jet_model.parameters.R_BLR_in.val)
-                        print('---> beaming set R_BLR_out', jet_model.parameters.R_BLR_out.val)
+                        print('---> EC set R_BLR_in', jet_model.parameters.R_BLR_in.val)
+                        print('---> EC set R_BLR_out', jet_model.parameters.R_BLR_out.val)
+                    if jet_model.parameters.R_H.val > R_BLR_in and R_H_within_BLR is True:
+                        jet_model.parameters.R_H.val = R_BLR_in * 0.8
+                        if silent is False:
+                            print('---> moved R_H within BLR to R_H=%e'%jet_model.parameters.R_H.val)
                 if hasattr(jet_model.parameters, 'R_DT'):
-                    R_DT=2.5E18*np.sqrt(self.SEDShape.L_Disk    /1E45)
+                    R_DT=2.5E18*np.sqrt(self.SEDShape.L_Disk/1E45)
                     jet_model.set_par('R_DT', val = R_DT)
                     if silent is False:
-                        print('---> beaming set R_DT', jet_model.parameters.R_DT.val)
+                        print('---> EC set R_DT', jet_model.parameters.R_DT.val)
+                    if jet_model.parameters.R_H.val > R_DT and R_H_within_DT is True:
+                        jet_model.parameters.R_H.val = R_DT * 0.8
+                        if silent is False:
+                            print('---> moved R_H within DT to R_H=%e'%jet_model.parameters.R_H.val)
+
+
             nu_p_EC_seed_field=self.SEDShape.nu_p_Disk
 
         if silent is False:
-            print(section_separator)
-
+            print()
         #setting the Jet object 
         #path_initial=jet_model.get_path()
         #flag_initial=jet_model.get_flag()
@@ -269,8 +293,7 @@ class ObsConstrain(object):
         #jet_model.show_pars()
         
         #beaming
-        if silent is False:
-            print("---> ***  emitting region parameters  ***")
+
        
        
         #SEtting emetting_region parameters
@@ -457,15 +480,16 @@ class ObsConstrain(object):
             completed=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.nu_p_S_obs,self.rest_frame)
             if silent is False:
                 print("---> setting par type emitters_density, corresponding to par %s"%(N_par.name))
+                print("---> to N=%e" % (N_par.val))
                 print("---> task completed",completed)
             if silent is False:
                 #print('--->',N_par.get_description())
                 print()
 
-        B,completed=find_B_from_nu_p_S(self.nu_p_S_obs,gamma_3p_SSC,self.rest_frame,self.beaming,z_par.val)
+        B,B=find_B_from_nu_p_S(self.nu_p_S_obs,gamma_3p_SSC,self.rest_frame,self.beaming,z_par.val)
         if silent is False:
-            print("---> setting B from nu_p_S=%e"%B)
-            print("---> task completed", completed)
+            print("---> setting B from nu_p_S to B=%e"%B)
+            print("---> to B=%e" %B)
 
         if silent is False:
             print("---> setting B from best matching of nu_p_IC")
@@ -540,7 +564,8 @@ class ObsConstrain(object):
             if N_par is not None:
                 completed = rescale_Ne(jet_model, self.nuFnu_p_S_obs, self.nu_p_S_obs, self.rest_frame)
                 if silent is False:
-                    print("---> setting par type emitters_density, corresponding to par %s"%(N_par.name),'to',N_par.val)
+                    print("---> setting par type emitters_density, corresponding to par %s"%(N_par.name))
+                    print("---> to N=%e" % (N_par.val))
                     print("---> task completed",completed)
                     print()
                 #N_par.set(val=N)
@@ -682,10 +707,10 @@ def find_HE_cut_off(distr_e,nu_S_max,rest_frame,B,beaming,z):
     gamma_max_Sync,completed=find_gamma_Synch(nu_S_max,rest_frame,B ,beaming,z)
     
     if distr_e=='lppl' or distr_e=='lp' or distr_e=='lpep':
-        return gamma_max_Sync
+        return gamma_max_Sync*10
     
     elif  distr_e=='bkn' or distr_e=='plc' or distr_e=='pl':
-        return gamma_max_Sync/1.5
+        return gamma_max_Sync*10
     raise RuntimeError ('no gmax found!',distr_e)
 
 @run_task

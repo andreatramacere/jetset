@@ -1483,11 +1483,11 @@ class Jet(JetBase):
             emitters_distribution= electron_distribution
             emitters_distribution_log_values = electron_distribution_log_values
 
-        if name is None or name == '':
-            name = 'jet'
+
+
 
         super(Jet,self).__init__(cosmo=cosmo,
-                                 name=name,
+                                 name='jet',
                                  emitters_type=emitters_type,
                                  emitters_distribution=emitters_distribution,
                                  emitters_distribution_log_values=emitters_distribution_log_values,
@@ -1495,6 +1495,16 @@ class Jet(JetBase):
                                  jet_workplace=jet_workplace,
                                  verbose=verbose,
                                  clean_work_dir=clean_work_dir)
+
+        if name is None or name == '':
+            if self.emitters_distribution.emitters_type == 'electrons':
+                name = 'jet_leptonic'
+            elif self.emitters_distribution.emitters_type == 'protons':
+                name = 'jet_hadronic_pp'
+            else:
+                name = 'jet'
+
+        self.name = clean_var_name(name)
 
         if self.emitters_distribution.emitters_type == 'protons':
             self.T_esc_e_second=T_esc_e_second

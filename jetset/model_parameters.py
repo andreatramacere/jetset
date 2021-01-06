@@ -252,8 +252,10 @@ class ModelParameter(object):
         #self._fit_range = fit_range
         self.fit_range_min=fit_range[0]
         self.fit_range_max=fit_range[1]
-
-
+        if fit_range[0] is not None and self.val<fit_range[0]:
+            raise RuntimeError('par',self.name, 'value',self.val,'< fit range min',fit_range[0])
+        if fit_range[1] is not None and self.val>fit_range[1]:
+            raise RuntimeError('par',self.name, 'value',self.val,'> fit range max',fit_range[1])
 
     def set(self, *args, ski_dep_par_warning=False, **keywords):
         """
