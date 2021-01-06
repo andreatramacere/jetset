@@ -174,32 +174,43 @@ void build_Ne(struct blob *pt) {
    
 
     //printf("Set array per Ne %s \n",pt->DISTR);
+    //printf("build_Ne Set array per Ne 1 %s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Ne_log),pt->gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log, pt->gmin_griglia, pt->gmax_griglia);
+    //printf("build_Ne Set array per Ne 2%s \n",pt->DISTR);
     alloc_N_distr(&(pt->Ne),pt->gamma_grid_size);
 
     //stationary frame
+    //printf("build_Ne Set array per Ne 3%s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Ne_log_stat),pt->gamma_grid_size);
+    //printf("build_Ne Set array per Ne 4%s \n",pt->DISTR);
     alloc_N_distr(&(pt->Ne_stat),pt->gamma_grid_size);
     if (pt->verbose>1) {
         printf("DONE \n");
     }
 
     //N for IC and simpson equilog integration over N_grid
+    //printf("build_Ne Set array per Ne 5%s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->gamma_grid_size);
+    //printf("build_Ne Set array per Ne 6%s \n",pt->DISTR);
     alloc_N_distr(&(pt->Ne_IC),pt->gamma_grid_size);
+    //printf("build_Ne Set array per Ne 7%s \n",pt->DISTR);
     alloc_N_distr(&(pt->Integrand_over_gamma_grid),pt->gamma_grid_size);
 
 }
 
 void build_Ne_secondaries(struct blob *pt) {
     //printf("Set array per Ne %s \n",pt->DISTR);
+    //printf("build_Ne_secondaries Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Ne_log),pt->gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log,pt->gmin_griglia_secondaries, pt->gmax_griglia_secondaries);
+    //printf("build_Ne_secondaries Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->Ne),pt->gamma_grid_size);
 
     //stationary frame
+    //printf("build_Ne_secondaries Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Ne_log_stat),pt->gamma_grid_size);
+    //printf("build_Ne_secondaries Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->Ne_stat),pt->gamma_grid_size);
     if (pt->verbose>1) {
         printf("DONE \n");
@@ -213,26 +224,33 @@ void build_Ne_secondaries(struct blob *pt) {
 }
 
 void build_Q_inj_e_second(struct blob *pt) {
+    //printf("build_Q_inj_e_second Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->Q_inj_e_second),pt->gamma_grid_size);
 }
 
 void build_Np(struct blob *pt)
 {
+    //printf("build_Np Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Np_log), pt->gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Np_log,pt->gmin_griglia, pt->gmax_griglia);
+    //printf("build_Np Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->Np), pt->gamma_grid_size);
 }
 
 void build_Np_jetset(struct blob *pt) {
+    //printf("build_Np_jetset Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_jetset_Np_log), pt->gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_jetset_Np_log,pt->gmin_griglia, pt->gmax_griglia);
+    //printf("build_Np_jetset Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->Np_jetset), pt->gamma_grid_size);
 
 }
 
 void build_Ne_jetset(struct blob *pt) {
+    //printf("build_Ne_jetset Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_jetset_Ne_log),pt->gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_jetset_Ne_log, pt->gmin_griglia, pt->gmax_griglia);
+    //printf("build_Ne_jetset Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->Ne_jetset),pt->gamma_grid_size);
 }
 
@@ -299,7 +317,7 @@ void build_Ne_custom(struct blob *pt,  unsigned int size) {
         printf("Set array for Ne for from_array mode \n");
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
     }
-    //printf("Set array per Ne %s \n",pt->DISTR);
+    //printf("build_Ne_custom Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->gamma_e_custom),size);
     alloc_N_distr(&(pt->Ne_custom),size);
 
@@ -311,7 +329,7 @@ void build_Np_custom(struct blob *pt,  unsigned int size) {
         printf("Set array for Np for from_array mode \n");
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
     }
-    //printf("Set array per Ne %s \n",pt->DISTR);
+    //printf("build_Np_custom Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->gamma_p_custom),size);
     alloc_N_distr(&(pt->Np_custom),size);
 
@@ -909,16 +927,16 @@ double N_distr_interp(unsigned int size, double Gamma, double *griglia_gamma, do
 
 
 void alloc_N_distr(double ** pt,int size){
-        //printf("pre %p\n",*pt);
-        //printf("alloc n\n");
+        printf("pre %p\n",*pt);
+        printf("alloc n\n");
         if (*pt){
             free(*pt);
-            //printf("freeing\n");
+            printf("freeing\n");
         }
 
         *pt = calloc(size, sizeof (double));
         //*pt= mallot(size * sizeof (double));
-        //printf("post %p\n",*pt);
+        printf("post %p\n",*pt);
 
     }
 

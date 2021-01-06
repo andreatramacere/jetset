@@ -84,7 +84,7 @@ class JetBase(Model):
                  beaming_expr='delta',
                  jet_workplace=None,
                  verbose=None,
-                 nu_size=200,
+                 nu_size=500,
                  clean_work_dir=True,
                  **keywords):
 
@@ -122,7 +122,7 @@ class JetBase(Model):
         self._static_spec_arr_grid_size = BlazarSED.static_spec_arr_grid_size
         self._nu_static_size = BlazarSED.static_spec_arr_size
         self.nu_size = nu_size
-        self.nu_grid_size=self._blob.nu_grid_size
+        self.nu_grid_size=self._get_nu_grid_size_blob()
         if jet_workplace is None:
             jet_workplace=WorkPlace()
             out_dir= jet_workplace.out_dir + '/' + self.name + '_jet_prod/'
@@ -1038,21 +1038,21 @@ class JetBase(Model):
 
     @property
     def nu_size(self):
-        return  self._nu_size
+        return self._nu_size
 
     @nu_size.setter
     def nu_size(self, size):
         self._nu_size = size
 
-    @property
-    def nu_grid_size(self):
-        return self._get_nu_grid_size_blob
-        #return self._get_nu_grid_size()
+    #@property
+    #def nu_grid_size(self):
+    #    return self._get_nu_grid_size_blob
+    #    #return self._get_nu_grid_size()
 
-    @nu_grid_size.setter
-    def nu_grid_size(self, val):
-        self._set_nu_grid_size_blob(val)
-        #self._nu_size=val
+    #@nu_grid_size.setter
+    #def nu_grid_size(self, val):
+    #    self._set_nu_grid_size_blob(val)
+    #    #self._nu_size=val
 
     #    #!!!!!!!!!!This can't be changed the max size is 1000 in jetset!!!
     #    #if hasattr(self, '_blob'):
@@ -1151,7 +1151,8 @@ class JetBase(Model):
         print('external fields transformation method:', self.get_external_field_transf())
         print ('')
         print ('SED info:')
-        print (' nu grid size :%d' % self.nu_size)
+        print (' nu grid size jetkernel: %d' % self.nu_grid_size)
+        print (' nu grid size: %d' % self.nu_size)
         print (' nu mix (Hz): %e' % self._get_nu_min_grid())
         print (' nu max (Hz): %e' % self._get_nu_max_grid())
         print('')
@@ -1183,7 +1184,7 @@ class JetBase(Model):
             else:
                 comp_label=None
             if c.state!='off':
-                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label, density=density)
+                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label, density=density,update=False)
 
         else:
             for c in self.spectral_components_list:
@@ -1192,7 +1193,7 @@ class JetBase(Model):
                     comp_label=label
                 #print('comp label',comp_label)
                 if c.state != 'off' and c.name!='Sum':
-                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color, density=density)
+                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color, density=density,update=False)
 
             c=self.get_spectral_component_by_name('Sum')
             if label is not None:
@@ -1200,11 +1201,11 @@ class JetBase(Model):
             else:
                 comp_label='Sum'
 
-            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color, density=density)
+            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color, density=density,update=False)
 
         if frame == 'src' and sed_data is not None:
             sed_data.z = z_sed_data
-
+        plot_obj.update_plot()
         return plot_obj
 
     @safe_run
@@ -1473,7 +1474,14 @@ class Jet(JetBase):
                  T_esc_e_second=None,
                  jet_workplace=None,
                  verbose=None,
-                 clean_work_dir=True):
+                 clean_work_dir=True,
+                 electron_distribution='plc',
+                 electron_distribution_log_values=False):
+
+        if emitters_distribution is not None:
+            emitters_type = 'electrons'
+            emitters_distribution= electron_distribution
+            emitters_distribution_log_values = electron_distribution_log_values
 
         if name is None or name == '':
             name = 'jet'

@@ -76,7 +76,7 @@ def build_emitting_region_dic(beaming_expr='delta'):
     else:
         raise RuntimeError('''wrong beaming_expr="%s" value, allowed 'delta' or 'bulk_theta' ''' % (beaming_expr))
 
-    model_dic['z_cosm'] = JetModelDictionaryPar(ptype='redshift', vmin=0, vmax=None, punit='')
+    model_dic['z_cosm'] = JetModelDictionaryPar(ptype='redshift', vmin=1E-10, vmax=None, punit='')
     # ['redshift',0,None,'']
 
     return model_dic

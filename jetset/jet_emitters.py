@@ -57,7 +57,7 @@ class EmittersDistribution(object):
                  name,
                  spectral_type,
                  jet=None,
-                 gamma_grid_size=1000,
+                 gamma_grid_size=200,
                  log_values=False,
                  emitters_type='electrons',
                  normalize=False,
@@ -281,8 +281,10 @@ class EmittersDistribution(object):
         else:
             BlazarSED.setNgrid(self._jet._blob)
             if self.emitters_type == 'electrons':
+                #print('==> Build Ne start')
                 BlazarSED.build_Ne_jetset(self._jet._blob)
                 gamma_ptr = getattr(self._jet._blob, 'griglia_gamma_jetset_Ne_log')
+                #print('==> Build Ne done')
             elif self.emitters_type == 'protons':
                 BlazarSED.build_Np_jetset(self._jet._blob)
                 gamma_ptr = getattr(self._jet._blob, 'griglia_gamma_jetset_Np_log')

@@ -242,7 +242,7 @@ struct blob MakeBlob() {
     spettro_root.do_EC_BLR = 0;
     spettro_root.do_EC_DT = 0;
     spettro_root.do_EC_CMB=0;
-    //spettro_root.do_EC_CMB_stat=0;
+
     spettro_root.do_EC_Star=0;
     spettro_root.do_Disk=0;
     spettro_root.do_DT=0;
@@ -254,7 +254,7 @@ struct blob MakeBlob() {
     sprintf(spettro_root.disk_type, "BB");
     spettro_root.R_H=1E17;
     spettro_root.M_BH = 1E9;
-    //spettro_root.EC_field_interp_factor = 5;
+
     spettro_root.theta_n_int=50;
     spettro_root.l_n_int=50;
     spettro_root.nu_start_EC_Disk = 1e13;
@@ -283,6 +283,7 @@ struct blob MakeBlob() {
     spettro_root.T_Star_max =1E5;
 
     spettro_root.gam=NULL;
+    spettro_root.Q_inj_e_second=NULL;
 
     spettro_root.Ne=NULL;
     spettro_root.Ne_custom=NULL;
@@ -303,9 +304,8 @@ struct blob MakeBlob() {
     spettro_root.griglia_gamma_Np_log=NULL;
     spettro_root.griglia_gamma_jetset_Np_log=NULL;
     spettro_root.gamma_p_custom=NULL;
-
+    spettro_root.Integrand_over_gamma_grid=NULL;
     
-//    build_photons(&spettro_root);
     return spettro_root;
 }
 
