@@ -1475,14 +1475,20 @@ class Jet(JetBase):
                  jet_workplace=None,
                  verbose=None,
                  clean_work_dir=True,
-                 electron_distribution='plc',
-                 electron_distribution_log_values=False):
+                 electron_distribution=None,
+                 proton_distribution=None,
+                 electron_distribution_log_values=False,
+                 proton_distribution_log_values=False):
 
-        if emitters_distribution is not None:
+        if electron_distribution is not None:
             emitters_type = 'electrons'
             emitters_distribution= electron_distribution
             emitters_distribution_log_values = electron_distribution_log_values
 
+        if proton_distribution is not None:
+            emitters_type = 'protons'
+            emitters_distribution= proton_distribution
+            emitters_distribution_log_values = proton_distribution_log_values
 
 
 

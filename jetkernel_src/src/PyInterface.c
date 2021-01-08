@@ -529,8 +529,6 @@ void Init(struct blob *pt_base, double luminosity_distance) {
         }
 
     } else if (strcmp(pt_base->PARTICLE, "protons") == 0) {
-        printf("***********************       Hadronic Scenario           ********************\n");
-        printf("****** Generate Np and Ne form secondaries **************\n");
         Init_Np_Ne_pp(pt_base);        
         pt_base->N_tot_p_Sferic = pt_base->Vol_sphere * pt_base->N_p;             
         EvalU_p(pt_base);             
@@ -538,7 +536,8 @@ void Init(struct blob *pt_base, double luminosity_distance) {
         EvalU_e(pt_base);
         FindNe_NpGp(pt_base);
         if (pt_base->verbose) {
-
+            printf("***********************       Hadronic Scenario           ********************\n");
+            printf("****** Generate Np and Ne form secondaries **************\n");
           
             printf("******************      Hadronic Energetic    **********\n");
             printf("N_p=%e N_p/N_0p=%e\n", pt_base->N, pt_base->N / pt_base->N_0p);

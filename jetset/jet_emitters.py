@@ -398,9 +398,10 @@ class EmittersDistribution(object):
                 self.n_gamma_p[ID] = BlazarSED.get_elec_array(self.Np_ptr, self._jet._blob, ID)
 
             for ID in range(size):
+
                 self.gamma_e_second_inj[ID] = BlazarSED.get_elec_array(self.e_inj_second_gamma_ptr, self._jet._blob, ID)
                 self.n_gamma_e_second_inj[ID] = BlazarSED.get_elec_array(self._Q_inj_e_second_ptr, self._jet._blob, ID)
-
+            print('==> Ciccio',self.n_gamma_e_second_inj)
 
 
     def set_bounds(self,a,b,log_val=False):

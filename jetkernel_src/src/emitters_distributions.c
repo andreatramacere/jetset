@@ -927,16 +927,16 @@ double N_distr_interp(unsigned int size, double Gamma, double *griglia_gamma, do
 
 
 void alloc_N_distr(double ** pt,int size){
-        printf("pre %p\n",*pt);
-        printf("alloc n\n");
+        //printf("pre %p\n",*pt);
+        //printf("alloc n\n");
         if (*pt){
             free(*pt);
-            printf("freeing\n");
+            //printf("freeing\n");
         }
 
         *pt = calloc(size, sizeof (double));
         //*pt= mallot(size * sizeof (double));
-        printf("post %p\n",*pt);
+        //printf("post %p\n",*pt);
 
     }
 
