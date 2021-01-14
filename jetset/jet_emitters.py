@@ -408,11 +408,9 @@ class EmittersDistribution(object):
 
 
     def _plot(self,m, p, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None):
-
         self.update()
         if self._jet is not None:
             self._set_blob()
-
         if self.emitters_type == 'electrons':
             if label is None:
                 label = 'electrons'
@@ -425,7 +423,6 @@ class EmittersDistribution(object):
                          particle='electrons',
                          energy_unit=energy_unit,
                          label=label)
-
         if self.emitters_type == 'protons':
             if label is None:
                 label = 'protons'

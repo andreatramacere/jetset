@@ -167,7 +167,7 @@ class JetBase(Model):
         self._emitters_distribution_dic = None
         self._external_photon_fields_dic = None
 
-        self.set_emitters_distribution(emitters_distribution, emitters_distribution_log_values, emitters_type,init=False)
+
 
         self._blob.adaptive_e_binning = 1
 
@@ -184,7 +184,8 @@ class JetBase(Model):
         self._external_field_transf['blob'] = 0
         self._external_field_transf['disk'] = 1
         self._jetkernel_interp='linear'
-
+        self.set_emitters_distribution(emitters_distribution, emitters_distribution_log_values, emitters_type,
+                                       init=False)
     @classmethod
     def clone_blob(cls,jet,emitters):
         _jet=cls(emitters_distribution=emitters)
@@ -556,8 +557,9 @@ class JetBase(Model):
                 if par._depending_par is not None:
                     dep_par=self.parameters.get_par_by_name(par._depending_par.name)
                     par._depending_par=dep_par
-
+            self.set_blob()
             self.emitters_distribution.update()
+
         else:
             nf=EmittersFactory()
             #self._original_emitters_distr = name
@@ -582,7 +584,7 @@ class JetBase(Model):
                 if par._depending_par is not None:
                     dep_par = self.parameters.get_par_by_name(par._depending_par.name)
                     par._depending_par = dep_par
-
+            self.set_blob()
             self.emitters_distribution.update()
 
 
@@ -1468,7 +1470,7 @@ class Jet(JetBase):
 
     def __init__(self,
                  cosmo=None,
-                 name='jet',
+                 name='',
                  emitters_type='electrons',
                  emitters_distribution='plc',
                  emitters_distribution_log_values=False,
@@ -1497,7 +1499,7 @@ class Jet(JetBase):
 
 
         super(Jet,self).__init__(cosmo=cosmo,
-                                 name='jet',
+                                 name=name,
                                  emitters_type=emitters_type,
                                  emitters_distribution=emitters_distribution,
                                  emitters_distribution_log_values=emitters_distribution_log_values,
