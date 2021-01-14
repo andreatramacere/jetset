@@ -503,6 +503,7 @@ class BasePlot(object):
         self.fig.canvas.draw()
         self.ax.relim()
         self.ax.autoscale(axis='y')
+        self.ax.legend()
         self.fig.tight_layout()
 
 
@@ -609,37 +610,49 @@ class  PlotPdistr (BasePlot):
         else:
             self.ax.loglog(x, y,c=c, lw=lw, label=label)
 
-    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma'):
+    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma',label=None):
 
         x,y,energy_name,energy_units=self._set_variable(gamma,n_gamma,particle,energy_unit)
 
-        self._plot(x,y)
+        if label is None:
+            label=particle
+        self._plot(x,y,label=label)
         self._set_xy_label(energy_name,energy_units)
-
+        self.update_plot()
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
-        self.update_plot()
 
-    def plot_distr2p(self, gamma, n_gamma, y_min=None, y_max=None, x_min=None, x_max=None,particle='electrons',energy_unit='gamma'):
+
+    def plot_distr2p(self, gamma, n_gamma, y_min=None, y_max=None, x_min=None, x_max=None,particle='electrons',energy_unit='gamma',label=None):
+        if label is None:
+            label=particle
 
         x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit,pow=2)
-        self._plot(x,y)
+        self._plot(x,y,label=label)
         self._set_xy_label(energy_name, energy_units)
-
+        self.update_plot()
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
-        self.update_plot()
 
-    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma'):
+    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma', label=None):
+        if label is None:
+            label = particle
 
         x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit, pow=3)
-        self._plot(x,y)
+        self._plot(x,y,label=label)
         self._set_xy_label(energy_name, energy_units)
-
+        self.update_plot()
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
-        self.update_plot()
-        self.update_plot()
+
+
+    def update_plot(self):
+        self.fig.canvas.draw()
+        self.ax.relim()
+        self.ax.autoscale(axis='y')
+        self.ax.autoscale(axis='x')
+        self.ax.legend()
+        self.fig.tight_layout()
 
 
 class  PlotTempEvEmitters (PlotPdistr):

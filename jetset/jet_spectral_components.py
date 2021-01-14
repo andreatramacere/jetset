@@ -26,9 +26,11 @@ else:
     from jetkernel import jetkernel as BlazarSED
 
 from . import spectral_shapes
-from .jetkernel_models_dic import nuFnu_obs_dic, n_seed_dic
+from .jetkernel_models_dic import nuFnu_obs_dict, n_seed_dic
+#nu_src_start_stop_dict
 from .plot_sedfit import PlotSpecComp,PlotSeedPhotons
 from .utils import check_frame, unexpetced_behaviour
+#from .frame_converter import convert_nu_to_src,convert_nu_to_blob
 
 __all__=['JetSeedPhotons','JetSpecComponent','SpecCompList']
 
@@ -125,7 +127,7 @@ class JetSpecComponent(object):
         self.jet_obj=jet_obj
 
         self._blob_object=blob_object
-        self._nuFnu_name, self._nu_name=nuFnu_obs_dic[self.name]
+        self._nuFnu_name, self._nu_name=nuFnu_obs_dict[self.name]
 
         self.nuFnu_ptr=getattr(blob_object,self._nuFnu_name)
 
@@ -133,6 +135,16 @@ class JetSpecComponent(object):
 
         self.SED=spectral_shapes.SED(name=self.name)
         self.seed_field=None
+
+        # self._nu_start_src_name, self._nu_stop_src_name = nu_src_start_stop_dict[self.name]
+        #
+        # self.nu_ptr_start = getattr(blob_object, self._nu_name)
+        # self.nu_ptr_stop = getattr(blob_object, self._nu_name)
+        #
+        # self._nu_start_src = 'auto'
+        # self._nu_stop_src = 'auto'
+        # self._nu_start_obs = 'auto'
+        # self._nu_stop_obs = 'auto'
 
         if name in n_seed_dic.keys():
             self.seed_field=JetSeedPhotons(name,blob_object)
@@ -155,6 +167,24 @@ class JetSpecComponent(object):
 
         if state is not None and self._state_dict != {}:
             self.state=state
+
+    # @property
+    # def nu_boundaries(self,frame='obs'):
+    #     check_frame(frame)
+    #     if frame == 'src':
+    #         return self._nu_start_src, self._nu_stop_src
+    #     else:
+    #         return self._nu_start_obs, self._nu_stop_obs
+    #
+    # @nu_boundaries.setter
+    # def nu_boundaries(self,nu_start=None,nu_stop=None, frame='obs'):
+    #     check_frame(frame)
+    #     if frame == 'obs':
+    #         self._nu_start_obs = nu
+    #         self._nu_start_src = convert_nu_to_src(nu,self.jet_obj.get_par_by_type('redshift').val,'obs')
+    #     else:
+    #         self._nu_start_src = nu
+    #         self._nu_start_obs = convert_nu_to_src(nu, self.jet_obj.get_par_by_type('redshift').val, 'obs')
 
     def get_emiss_lim(self,seed=False):
         return self._blob_object.emiss_lim
@@ -221,9 +251,11 @@ class JetSpecComponent(object):
 
 
     def show(self):
-        print('name     :',self.name)
-        print('var name :',self._var_name)
-        print('state    :',self._state)
+        print('name                :',self.name)
+        print('var name            :',self._var_name)
+        print('state               :',self._state)
+        print('nu_start (src frame):', self._nu_start_src)
+        print('nu_stop  (src frame):', self._nu_stop_src)
         if self._state_dict is not None:
             print('allowed states :',[k for k in self._state_dict.keys()])
 

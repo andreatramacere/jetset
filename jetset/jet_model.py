@@ -1,25 +1,29 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (str, open, super, range,
-#                      object, map)
-
-
 import os
 import json
 import pickle
 import six
-
 import numpy as np
-
-import  copy
-
+import copy
 import warnings
 
 from .jet_spectral_components import JetSpecComponent, SpecCompList
 
+from .model_parameters import ModelParameterArray, ModelParameter
+from .base_model import Model
+from .output import makedir,WorkPlace
+from  .plot_sedfit import PlotSED,plt
+from .cosmo_tools import Cosmo
+from .utils import safe_run,set_str_attr, old_model_warning, get_info, clean_var_name
+from .jet_paramters import *
+from .jet_emitters import *
+from .jet_emitters_factory import EmittersFactory
+from .jet_tools import *
+from .mathkernel_helper import bessel_table_file_path
+
+
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
-if on_rtd == True:
+if on_rtd is True:
     try:
         from jetkernel import jetkernel as BlazarSED
     except ImportError:
@@ -27,25 +31,6 @@ if on_rtd == True:
 else:
     from jetkernel import jetkernel as BlazarSED
 
-from .model_parameters import ModelParameterArray, ModelParameter
-from .base_model import  Model
-
-from .output import makedir,WorkPlace
-
-
-from  .plot_sedfit import PlotSED,plt
-
-from .cosmo_tools import Cosmo
-
-from .utils import safe_run,set_str_attr, old_model_warning, get_info, clean_var_name
-
-from .jet_paramters import  *
-
-from .jet_emitters import *
-
-from .jet_tools import  *
-
-from .mathkernel_helper import bessel_table_file_path
 
 __author__ = "Andrea Tramacere"
 
@@ -524,7 +509,7 @@ class JetBase(Model):
 
     @staticmethod
     def available_emitters_distributions():
-        JetkernelEmittersDistribution.available_distributions()
+        EmittersFactory.available_distributions()
 
     def set_emitters_distribution(self, name=None, log_values=False, emitters_type='electrons',init=True):
 
@@ -574,14 +559,31 @@ class JetBase(Model):
 
             self.emitters_distribution.update()
         else:
-            self.emitters_distribution = JetkernelEmittersDistribution(name, self, log_values=log_values,
-                                                                       emitters_type=emitters_type)
+            nf=EmittersFactory()
+            #self._original_emitters_distr = name
+            self.emitters_distribution = nf.create_emitters(name,log_values=log_values,emitters_type=emitters_type)
+            self.emitters_distribution.set_jet(self)
+            self.emitters_distribution._update_parameters_dict()
 
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
 
-            self.parameters.add_par_from_dict(self._emitters_distribution_dic,self,'_blob',JetParameter)
+            self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
 
+            for par in self.emitters_distribution.parameters.par_array[::]:
+                self.emitters_distribution.parameters.del_par(par)
+
+            for k in self._emitters_distribution_dic.keys():
+                par = self.parameters.get_par_by_name(k)
+                self.emitters_distribution.parameters.add_par(par)
+
+            for k in self._emitters_distribution_dic.keys():
+                par = self.parameters.get_par_by_name(k)
+                if par._depending_par is not None:
+                    dep_par = self.parameters.get_par_by_name(par._depending_par.name)
+                    par._depending_par = dep_par
+
+            self.emitters_distribution.update()
 
 
     def get_emitters_distribution_name(self):
@@ -1477,17 +1479,19 @@ class Jet(JetBase):
                  clean_work_dir=True,
                  electron_distribution=None,
                  proton_distribution=None,
-                 electron_distribution_log_values=False,
-                 proton_distribution_log_values=False):
+                 electron_distribution_log_values=None,
+                 proton_distribution_log_values=None):
 
         if electron_distribution is not None:
             emitters_type = 'electrons'
             emitters_distribution= electron_distribution
+        if electron_distribution_log_values is not None:
             emitters_distribution_log_values = electron_distribution_log_values
 
         if proton_distribution is not None:
             emitters_type = 'protons'
             emitters_distribution= proton_distribution
+        if proton_distribution_log_values is not None:
             emitters_distribution_log_values = proton_distribution_log_values
 
 
@@ -1519,12 +1523,12 @@ class Jet(JetBase):
             self.add_bremss_ep_component()
 
     @staticmethod
-    def available_electron_distributions(cls):
-        cls.available_distributions()
+    def available_electron_distributions():
+        JetBase.available_emitters_distributions()
 
     @staticmethod
-    def available_proton_distributions(cls):
-        cls.available_distributions()
+    def available_proton_distributions():
+        JetBase.available_emitters_distributions()
 
     def get_proton_distribution_name(self):
         return self.get_emitters_distribution_name()
@@ -1551,6 +1555,8 @@ class Jet(JetBase):
                                      state_dict=dict((('on', 1), ('off', 0))))
         self._add_spectral_component('PP_neutrino_e', var_name='do_pp_neutrino',
                                      state_dict=dict((('on', 1), ('off', 0))))
+
+
 
     def set_N_from_Up(self, U_p):
         if self.emitters_distribution.emitters_type!='protons':

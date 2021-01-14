@@ -24,7 +24,7 @@ else:
     from jetkernel import jetkernel as BlazarSED
 
 
-from .jetkernel_models_dic import available_N_distr,N_distr_descr,n_seed_dic,allowed_disk_type
+from .jetkernel_models_dic import allowed_disk_type
 
 from .jet_paramters import  *
 
