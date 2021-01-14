@@ -1496,6 +1496,8 @@ class Jet(JetBase):
             emitters_distribution_log_values = proton_distribution_log_values
 
 
+        if name is None:
+            name=''
 
         super(Jet,self).__init__(cosmo=cosmo,
                                  name=name,
