@@ -877,7 +877,7 @@ class JetBase(Model):
         if eval is True:
             self.set_blob()
 
-        return self._blob.dist
+        return self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
 
 
     @safe_run
@@ -907,12 +907,12 @@ class JetBase(Model):
 
 
 
-    def set_IC_mode(self,val):
+    #def set_IC_mode(self,val):
 
-        if val not in self._IC_states.keys():
-            raise RuntimeError('val',val,'not in allowed values',self._IC_states.keys())
+    #    if val not in self._IC_states.keys():
+    #        raise RuntimeError('val',val,'not in allowed values',self._IC_states.keys())
 
-        self._blob.do_IC=self._IC_states[val]
+    #    self._blob.do_IC=self._IC_states[val]
 
     def get_IC_mode(self):
         return dict(map(reversed, self._IC_states.items()))[self._blob.do_IC]
@@ -1608,8 +1608,7 @@ class Jet(JetBase):
 
 
     def set_N_from_F_sync(self, F_sync):
-        self.set_blob()
-        DL = self._blob.dist
+        DL = self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
         L = F_sync * DL * DL * 4.0 * np.pi
         self.set_N_from_L_sync(L)
 
@@ -1626,6 +1625,7 @@ class Jet(JetBase):
         L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
         N_out = nuLnu_src / L_out
         self.emitters_distribution.set_grid_size(gamma_grid_size)
+        print('==>N_out', N_out)
         self.set_par('N', val=N_out)
 
 
@@ -1633,8 +1633,10 @@ class Jet(JetBase):
         """
         sets the normalization of N to match the observed flux nuFnu_obs at a given frequency nu_obs
         """
-        DL = self._blob.dist
+        self.set_blob()
+        DL =  self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
         L = nuFnu_obs * DL * DL * 4.0 * np.pi
+        print('==>self._blob.z_cosm',self._blob.z_cosm)
         nu_rest = nu_obs * (1 + self._blob.z_cosm)
         self.set_N_from_nuLnu( L, nu_rest)
 
