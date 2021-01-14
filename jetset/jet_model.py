@@ -186,6 +186,7 @@ class JetBase(Model):
         self._jetkernel_interp='linear'
         self.set_emitters_distribution(emitters_distribution, emitters_distribution_log_values, emitters_type,
                                        init=False)
+        self.set_blob()
     @classmethod
     def clone_blob(cls,jet,emitters):
         _jet=cls(emitters_distribution=emitters)
@@ -557,13 +558,13 @@ class JetBase(Model):
                 if par._depending_par is not None:
                     dep_par=self.parameters.get_par_by_name(par._depending_par.name)
                     par._depending_par=dep_par
-            self.set_blob()
+            #self.set_blob()
             self.emitters_distribution.update()
 
         else:
             nf=EmittersFactory()
-            #self._original_emitters_distr = name
             self.emitters_distribution = nf.create_emitters(name,log_values=log_values,emitters_type=emitters_type)
+            self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
 
@@ -584,7 +585,7 @@ class JetBase(Model):
                 if par._depending_par is not None:
                     dep_par = self.parameters.get_par_by_name(par._depending_par.name)
                     par._depending_par = dep_par
-            self.set_blob()
+            #self.set_blob()
             self.emitters_distribution.update()
 
 
@@ -1100,7 +1101,7 @@ class JetBase(Model):
         print(" gmin grid : %e" % self._blob.
               gmin_griglia)
         print(" gmax grid : %e" % self._blob.gmax_griglia)
-        print(" normalization ", self.Norm_distr>0)
+        print(" normalization ", self.Norm_distr)
         print(" log-values ", self._emitters_distribution_log_values)
         print('')
         self.parameters.par_array.sort(key=lambda x: x.name, reverse=False)
@@ -1126,7 +1127,7 @@ class JetBase(Model):
         print (" gamma energy grid size: ",self.gamma_grid_size)
         print (" gmin grid : %e"%self._blob.gmin_griglia)
         print (" gmax grid : %e"%self._blob.gmax_griglia)
-        print(" normalization ", self.Norm_distr>0)
+        print(" normalization ", self.Norm_distr)
         print(" log-values ", self._emitters_distribution_log_values)
         print('')
         if 'Disk' in self.EC_components_list:
@@ -1523,6 +1524,12 @@ class Jet(JetBase):
             self.add_pp_gamma_component()
             self.add_pp_neutrino_component()
             self.add_bremss_ep_component()
+
+        if self.emitters_distribution.emitters_type == 'electrons':
+            self.electron_distribution=self.emitters_distribution
+
+        if self.emitters_distribution.emitters_type == 'protons':
+            self.protons_distribution=self.emitters_distribution
 
     @staticmethod
     def available_electron_distributions():
