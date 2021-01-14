@@ -1049,19 +1049,14 @@ class JetBase(Model):
     def nu_size(self, size):
         self._nu_size = size
 
-    #@property
-    #def nu_grid_size(self):
-    #    return self._get_nu_grid_size_blob
-    #    #return self._get_nu_grid_size()
+    @property
+    def nu_grid_size(self):
+        return self._get_nu_grid_size_blob()
 
-    #@nu_grid_size.setter
-    #def nu_grid_size(self, val):
-    #    self._set_nu_grid_size_blob(val)
-    #    #self._nu_size=val
+    @nu_grid_size.setter
+    def nu_grid_size(self, val):
+        self._set_nu_grid_size_blob(val)
 
-    #    #!!!!!!!!!!This can't be changed the max size is 1000 in jetset!!!
-    #    #if hasattr(self, '_blob'):
-    #    #   self._set_nu_grid_size_blob(val)
 
     def _set_nu_grid_size_blob(self, val):
         if val < 100:
@@ -1570,9 +1565,6 @@ class Jet(JetBase):
     def set_N_from_Up(self, U_p):
         if self.emitters_distribution.emitters_type!='protons':
             raise  RuntimeError('set_N_from_Up can be used only with protons emitters')
-
-        #N = 1.0
-        #setattr(self._blob, 'N', N)
         N=self.parameters.N.val
         gamma_grid_size = self._blob.gamma_grid_size
         self.emitters_distribution.set_grid_size(100)
@@ -1583,8 +1575,6 @@ class Jet(JetBase):
         self.set_par('N', val= N* ratio)
 
     def set_N_from_Ue(self,U_e):
-        #N = 1.0
-        #setattr(self._blob, 'N', N)
         N = self.parameters.N.val
         gamma_grid_size = self._blob.gamma_grid_size
         self.emitters_distribution.set_grid_size(100)
@@ -1607,18 +1597,14 @@ class Jet(JetBase):
 
 
     def set_N_from_L_sync(self,L_sync):
-
-        N = 1.0
-        setattr(self._blob, 'N', N)
+        self.set_par('N', val=1.0)
         gamma_grid_size = self._blob.gamma_grid_size
         self.emitters_distribution.set_grid_size(100)
         self.set_blob()
         delta = self._blob.beam_obj
-        ratio = (BlazarSED.Power_Sync_Electron(self._blob)* delta ** 4)/L_sync
+        ratio = L_sync/(BlazarSED.Power_Sync_Electron(self._blob)* delta ** 4)
         self.emitters_distribution.set_grid_size(gamma_grid_size)
-
-        # print 'N',N/ratio
-        self.set_par('N', val=N / ratio)
+        self.set_par('N', val=ratio)
 
 
     def set_N_from_F_sync(self, F_sync):
@@ -1629,42 +1615,27 @@ class Jet(JetBase):
 
     def set_N_from_nuLnu(self,nuLnu_src, nu_src):
         """
-        sets the normalization of N to match the rest frame luminosity L_0, at a given frequency nu_0
+        sets the normalization of N to match the rest frame luminosity nuLnu_src, at a given frequency nu_src
         """
-        N = 1.0
-        setattr(self._blob, 'N', N)
+        self.set_par('N',val=1.0)
         gamma_grid_size = self._blob.gamma_grid_size
         self.emitters_distribution.set_grid_size(100)
-
-
-
         self.set_blob()
-
         delta = self._blob.beam_obj
         nu_blob = nu_src / delta
-
         L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
-
-
-        ratio = (L_out / nuLnu_src)
+        N_out = nuLnu_src / L_out
         self.emitters_distribution.set_grid_size(gamma_grid_size)
-
-        #print 'N',N/ratio
-        self.set_par('N', val=N/ratio)
+        self.set_par('N', val=N_out)
 
 
     def set_N_from_nuFnu(self, nuFnu_obs, nu_obs):
         """
-        sets the normalization of N to match the observed flux nu0F_nu0 at a given frequency nu_0
+        sets the normalization of N to match the observed flux nuFnu_obs at a given frequency nu_obs
         """
-
-        self.set_blob()
         DL = self._blob.dist
-
         L = nuFnu_obs * DL * DL * 4.0 * np.pi
-
         nu_rest = nu_obs * (1 + self._blob.z_cosm)
-
         self.set_N_from_nuLnu( L, nu_rest)
 
 
