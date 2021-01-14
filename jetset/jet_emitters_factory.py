@@ -53,11 +53,11 @@ class EmittersFactory:
     @staticmethod
     def _create_bkn(gamma_grid_size,log_values,normalize,skip_build,emitters_type):
         @nb.njit(fastmath=True, cache=True)
-        def distr_func_bkn(gamma_break, gamma, s1, s2):
+        def distr_func_bkn(gamma_break, gamma, p, p_1):
             f = np.zeros(gamma.shape)
             m = gamma < gamma_break
-            f[m] = np.power(gamma[m], -s1)
-            f[~m] = np.power(gamma_break, -(s1 - s2)) * np.power(gamma[~m], -s2)
+            f[m] = np.power(gamma[m], -p_1)
+            f[~m] = np.power(gamma_break, -(p - p_1)) * np.power(gamma[~m], -p_1)
             return f
 
         n_e_bkn = EmittersDistribution(name='bkn',
@@ -71,8 +71,8 @@ class EmittersFactory:
         a_t, b_t = n_e_bkn.set_bounds(1, 1E9, log_val=n_e_bkn._log_values)
 
         n_e_bkn.add_par('gamma_break', par_type='turn-over-energy', val=1E4, vmin=a_t, vmax=b_t, unit='lorentz-factor')
-        n_e_bkn.add_par('s1', par_type='LE_spectral_slope', val=2.5, vmin=-10., vmax=10, unit='')
-        n_e_bkn.add_par('s2', par_type='HE_spectral_slope', val=3.5, vmin=-10., vmax=10, unit='')
+        n_e_bkn.add_par('p', par_type='LE_spectral_slope', val=2.5, vmin=-10., vmax=10, unit='')
+        n_e_bkn.add_par('p_1', par_type='HE_spectral_slope', val=3.5, vmin=-10., vmax=10, unit='')
         n_e_bkn.set_distr_func(distr_func_bkn)
         return n_e_bkn
 
