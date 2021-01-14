@@ -1048,6 +1048,9 @@ class JetBase(Model):
     @nu_size.setter
     def nu_size(self, size):
         self._nu_size = size
+    
+    def set_nu_grid_size(self, val):
+        self._set_nu_grid_size_blob(val)
 
     @property
     def nu_grid_size(self):
