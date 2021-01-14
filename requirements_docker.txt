@@ -11,4 +11,6 @@ emcee>3.0.0
 pyyaml
 pytest
 tqdm
+numba
+
 
