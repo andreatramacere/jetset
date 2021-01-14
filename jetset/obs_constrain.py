@@ -336,13 +336,11 @@ class ObsConstrain(object):
             #    print()
         #B
         B_par=jet_model.get_par_by_type('magnetic_field')
+        B_par.set(val=self.B_start)
         if B_par is not None:
             if silent is False:
-                print("---> setting par type magnetic_field, corresponding to par %s"%(B_par.name))
+                print("---> setting par type magnetic_field, corresponding to par %s=%e"%(B_par.name,B_par.val))
                 print()
-            B_par.set(val=self.B_start)
-            #if silent is False:
-            #    print("---> ",B_par.get_description())
 
 
 
@@ -350,15 +348,14 @@ class ObsConstrain(object):
         R_tvar,completed=get_R_tvar(self.beaming,self.t_var_sec,+self.z)
 
         R_par=jet_model.get_par_by_type('region_size')
+        R_par.set(val=set_lin_log_val(R_par, R_tvar))
         if R_par is not None and completed is True:
             if silent is False:
-                print("---> setting par type region_size, corresponding to par %s"%(R_par.name))
+
+                print("---> setting par type region_size, corresponding to par %s=%e"%(R_par.name,R_par.val))
                 print("---> completed", completed)
                 print()
-                R_par.set(val=set_lin_log_val(R_par,R_tvar))
-            #if silent is False:
-            #    if completed is True:
-            #        print("---> region size set to",R_par.get_description())
+
 
 
         if silent is False:
@@ -423,7 +420,7 @@ class ObsConstrain(object):
         if HE_cut_off_par is not None:
             HE_cut_off_par.set(val=set_lin_log_val(HE_cut_off_par,gmax))
             if silent is False:
-                print("---> setting par type high-energy-cut-off, corresponding to par %s"%(HE_cut_off_par.name))
+                print("---> setting par type high-energy-cut-off, corresponding to par %s=%e"%(HE_cut_off_par.name,HE_cut_off_par.val))
                 #print("---> ",HE_cut_off_par.get_description())
                 print()
         
@@ -433,7 +430,7 @@ class ObsConstrain(object):
         if par_LE_cut_off_par is not None:
             par_LE_cut_off_par.set(val=set_lin_log_val(par_LE_cut_off_par,gmin))
             if silent is False:
-                print("---> setting par type low-energy-cut-off, corresponding to par %s"%(par_LE_cut_off_par.name))
+                print("---> setting par type low-energy-cut-off, corresponding to par %s=%e"%(par_LE_cut_off_par.name,par_LE_cut_off_par.val))
                 print("---> task completed", completed)
                 #print("---> ",par_LE_cut_off_par.get_description())
                 print()
@@ -445,7 +442,7 @@ class ObsConstrain(object):
             turn_over_par.set(val=set_lin_log_val(turn_over_par,_t))
 
             if silent is False:
-                print("---> setting par type turn-over energy, corresponding to par %s"%(turn_over_par.name))
+                print("---> setting par type turn-over energy, corresponding to par %s=%e"%(turn_over_par.name,turn_over_par.val))
                 print("---> task completed", completed)
                 print("---> using gamma_3p_Sync=",gamma_3p_Sync)
                 #print("---> ",turn_over_par.get_description())
@@ -463,7 +460,7 @@ class ObsConstrain(object):
             turn_over_par.set(val=set_lin_log_val(turn_over_par,_t))
 
             if silent is False:
-                print("---> setting par type turn-over energy, corresponding to par %s"%(turn_over_par.name))
+                print("---> setting par type turn-over energy, corresponding to par %s=%e"%(turn_over_par.name,turn_over_par.val))
                 print("---> task completed", completed)
                 print("---> using gamma_3p_SSC=%e"%gamma_3p_SSC)
                 #print("---> ",turn_over_par.get_description())
@@ -511,10 +508,10 @@ class ObsConstrain(object):
 
             if failed is False and completed is True:
                 if silent is False:
-                    print ("---> best B found: ",B_par.val)
+                    print ("---> best B found: %e"%B_par.val)
             else:
                 if silent is False:
-                    print("---> constrain failed, B set to: ",B_par.val)
+                    print("---> constrain failed, B set to: %e"%B_par.val)
                     print()
 
             if silent is False:
@@ -529,7 +526,7 @@ class ObsConstrain(object):
                 if silent is False:
                     print("---> setting par type low-energy-cut-off, corresponding to par %s"%(par_LE_cut_off_par.name))
                     print("---> task completed", completed)
-                    print("---> set to ",par_LE_cut_off_par.val)
+                    print("---> set to %e"%par_LE_cut_off_par.val)
                     print()
 
             #update gamma_3p and gamma_cut from new B
@@ -543,7 +540,7 @@ class ObsConstrain(object):
                     print("---> task completed", completed)
                     print("---> task completed ", completed)
                     print("---> using gamma_3p_Sync=",gamma_3p_Sync)
-                    print("---> to ",turn_over_par.val)
+                    print("---> to %e"%turn_over_par.val)
                     print()
                 
             
@@ -557,7 +554,7 @@ class ObsConstrain(object):
 
                 if silent is False:
                     print("---> setting par type high-energy-cut-off, corresponding to par %s"%(HE_cut_off_par.name))
-                    print("---> set to",HE_cut_off_par.val)
+                    print("---> set to %e"%HE_cut_off_par.val)
                     print()
             
             #update N for New B
@@ -586,7 +583,7 @@ class ObsConstrain(object):
                 R_par.set(val=set_lin_log_val(R_par,R_from_CD))
                 if silent is False:
                     print("---> setting par type region_size, corresponding to par %s"%(R_par.name))
-                    print("---> set to", R_par.val)
+                    print("---> set to %e"%R_par.val)
 
                 #if silent is False:
                 #    print("---> ",R_par.get_description())
@@ -596,14 +593,14 @@ class ObsConstrain(object):
                     completed=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.nu_p_S_obs,self.rest_frame)
                     if silent is False:
                         print("---> updating setting par type emitters_density, corresponding to par %s"%(N_par.name))
-                        print("---> set to", N_par.val)
+                        print("---> set to %e"%N_par.val)
                         print("---> task completed", completed)
         else:
             R_par.set(val=set_lin_log_val(R_par,R_start))
 
             if silent is False:
                 print("---> constrain failed, R unchanged: ")
-                print("---> set to", R_par.val)
+                print("---> set to %e"%R_par.val)
                 print()
             
          
@@ -707,10 +704,10 @@ def find_HE_cut_off(distr_e,nu_S_max,rest_frame,B,beaming,z):
     gamma_max_Sync,completed=find_gamma_Synch(nu_S_max,rest_frame,B ,beaming,z)
     
     if distr_e=='lppl' or distr_e=='lp' or distr_e=='lpep':
-        return gamma_max_Sync*10
+        return gamma_max_Sync
     
     elif  distr_e=='bkn' or distr_e=='plc' or distr_e=='pl':
-        return gamma_max_Sync*10
+        return gamma_max_Sync
     raise RuntimeError ('no gmax found!',distr_e)
 
 @run_task
@@ -817,12 +814,12 @@ def find_gamma_3p_SSC(nu_p_S,nu_p_IC,rest_frame,gamma_3p_Sync,beaming,z,nu_p_EC_
     #print"--> comp_fac,gamma_TH", comp_factor,g_TH,
     comp_factor,completed=get_Comp_factor(gamma_3p_Sync,nu_p_seed_blob)
     if silent is False:
-        print ("---> nu_p_seed_blob",nu_p_seed_blob)
+        print ("---> nu_p_seed_blob=%e"%nu_p_seed_blob)
 
     gamma_3p_SSC_TH=g_TH
     #print "--> gamma_3p_SSC_TH",gamma_3p_SSC_TH,g_TH
     if silent is False:
-        print ("---> COMPTON FACTOR",comp_factor,gamma_3p_SSC_TH)
+        print ("---> COMPTON FACTOR=%e"%comp_factor,gamma_3p_SSC_TH)
     
     if comp_factor>0.01:
         #print "--> correction", 0.2*pow(comp_factor,-0.45)
