@@ -1625,7 +1625,6 @@ class Jet(JetBase):
         L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
         N_out = nuLnu_src / L_out
         self.emitters_distribution.set_grid_size(gamma_grid_size)
-        print('==>N_out', N_out)
         self.set_par('N', val=N_out)
 
 
@@ -1636,7 +1635,6 @@ class Jet(JetBase):
         self.set_blob()
         DL =  self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
         L = nuFnu_obs * DL * DL * 4.0 * np.pi
-        print('==>self._blob.z_cosm',self._blob.z_cosm)
         nu_rest = nu_obs * (1 + self._blob.z_cosm)
         self.set_N_from_nuLnu( L, nu_rest)
 
