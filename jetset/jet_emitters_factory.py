@@ -56,7 +56,7 @@ class EmittersFactory:
         def distr_func_bkn(gamma_break, gamma, p, p_1):
             f = np.zeros(gamma.shape)
             m = gamma < gamma_break
-            f[m] = np.power(gamma[m], -p_1)
+            f[m] = np.power(gamma[m], -p)
             f[~m] = np.power(gamma_break, -(p - p_1)) * np.power(gamma[~m], -p_1)
             return f
 
