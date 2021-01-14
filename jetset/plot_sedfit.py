@@ -280,7 +280,7 @@ class  PlotSED (object):
 
             for l in self.sedplot.lines:
                 y_s.append(np.max(l.get_ydata()))
-            if len(y_s) > 1:
+            if len(y_s) > 0:
                 y_min = min(y_s) - 3
                 y_max = max(y_s) + 1
             else:
@@ -289,7 +289,7 @@ class  PlotSED (object):
                 self.sedplot.set_ylim(y_min, y_max)
                 for l in self.sedplot.lines:
                     x=np.array(l.get_xdata())[np.array(l.get_ydata()) >= y_min]
-                    if len(x)>1:
+                    if len(x)>0:
                         x_min.append(np.min(x))
                         x_max.append(np.max(x))
                 if len(x_min)>0  and  len(x_max)>0:
