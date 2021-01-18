@@ -425,7 +425,7 @@ double integr_simp_gird_equilog(double * x, double *y, unsigned int size) {
     integr=0.;
     
     if (size % 2 == 0) {
-         printf('grid size must be even');
+         printf("grid size must be even");
          exit(0);
     }
     //this is necessary because you skip the mid point
