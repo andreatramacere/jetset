@@ -393,8 +393,7 @@ double trapzd_array_arbritary_grid( double *x, double *y, unsigned int SIZE)
     /**
      * \author Andrea Tramacere
      * \date 19-09-2004 \n
-     * Distribuzioni energetiche degli elettroni nel caso statico
-     * per calcolare Ue
+
      */
 
     double I, y1, y2, x1, x2;
@@ -407,7 +406,7 @@ double trapzd_array_arbritary_grid( double *x, double *y, unsigned int SIZE)
     {
         x2 = x[INDEX];
         y2 = y[INDEX];
-        I += (y1 + y2) * (x1 - x2);
+        I += (y1 + y2) * (x2 - x1);
         x1 = x2;
         y1 = y2;
         //printf("%e %e %d\n",nu2, Ptot, i);
@@ -429,7 +428,6 @@ double integr_simp_gird_equilog(double * x, double *y, unsigned int size) {
          printf('grid size must be even');
          exit(0);
     }
-
     //this is necessary because you skip the mid point
     //in the loop when the grid is equilog spaced with midpoint
     for (ID = 1; ID < size - 1; ID=ID+2)
@@ -443,7 +441,9 @@ double integr_simp_gird_equilog(double * x, double *y, unsigned int size) {
         //printf("%d ID=%d\n",ID);
        
     }
-    
+    //if (integr==0){
+    //    printf("ID=%d size=%d \n",ID,size);
+    //}
     return integr/6.0;
 
 }

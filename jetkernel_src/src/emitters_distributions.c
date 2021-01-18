@@ -255,8 +255,18 @@ void build_Ne_jetset(struct blob *pt) {
 }
 
 
-void Fill_Ne_IC(struct blob *pt, double g_min_BG, int stat_frame) {
-    unsigned int i;
+void Fill_Ne_IC(struct blob *pt, double g_min_IC, int stat_frame) {
+    unsigned int i,i_start;
+    double gmin_grid;
+    i_start=0;
+    while (pt->griglia_gamma_Ne_log[i] < g_min_IC && i < pt->gamma_grid_size) {
+        i_start++;
+    }
+    if (i_start % 2 != 0) {
+        i_start = max(0,i_start-1);
+    }
+    g_min_IC=pt->griglia_gamma_Ne_log[i];
+    
     if (pt->verbose>1) {
         printf("Set array per Ne IC\n");
         printf("elements number is pt->gamma_grid_size=%d\n", pt->gamma_grid_size);
@@ -265,35 +275,35 @@ void Fill_Ne_IC(struct blob *pt, double g_min_BG, int stat_frame) {
     
     if (strcmp(pt->PARTICLE, "protons") == 0) {
         
-        if(pt->adaptive_e_binning ==1){
-            Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,g_min_BG, pt->gmax_griglia_secondaries);
+        if(pt->IC_adaptive_e_binning ==1){
+            Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,g_min_IC, pt->gmax_griglia_secondaries);
         }else{
             Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,pt->gmin_griglia_secondaries, pt->gmax_griglia_secondaries);
         }
         
     }
     else{
-        if(pt->adaptive_e_binning ==1){
-            Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,g_min_BG, pt->gmax_griglia);
+        if(pt->IC_adaptive_e_binning ==1){
+            //gmin_grid=max(pt->gmin_griglia,g_min_IC/10);
+            Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,g_min_IC, pt->gmax_griglia);
         }else{
             Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,pt->gmin_griglia, pt->gmax_griglia);
         }
     }
     SetDistr(pt);
     for (i = 0; i < pt->gamma_grid_size; i++) {
-        if (pt->griglia_gamma_Ne_log_IC[i]>=g_min_BG){
-            if(pt->adaptive_e_binning ==1){
+        if(pt->IC_adaptive_e_binning ==1){
+            if (pt->griglia_gamma_Ne_log_IC[i]>=g_min_IC){
              pt->Ne_IC[i] = N_distr_interp(pt->gamma_grid_size,
                                     pt->griglia_gamma_Ne_log_IC[i],
                                     pt->griglia_gamma_Ne_log,
                                     pt->Ne);
             }else{
-                pt->Ne_IC[i] = pt->Ne[i]; 
-            }
+                 pt->Ne_IC[i]=0;
+                }
         }else{
-            pt->Ne_IC[i]=0;
-        }
-
+            pt->Ne_IC[i] = pt->Ne[i]; 
+        }                 
         if (stat_frame==1){
             //the delta^2 in Ne_stat is also correct because we use electron density
             //so the relativistic invariant is
@@ -908,7 +918,7 @@ double N_distr_interp(unsigned int size, double Gamma, double *griglia_gamma, do
     while (griglia_gamma[i] < Gamma && i < size) {
         i++;
     }
-
+    //i--;
     //printf("G=%e G_file=%e\n",pt->griglia_gamma_Ne_log[i],G_File[count]);
     if (i > 0 && i < size && N[i] > 0 && N[i - 1] > 0) {
         gamma_piu = log10(griglia_gamma[i]);

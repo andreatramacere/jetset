@@ -169,7 +169,8 @@ class JetBase(Model):
 
 
 
-        self._blob.adaptive_e_binning = 0
+        self._blob.IC_adaptive_e_binning = 0
+        self._blob.do_IC_down_scattering = 0
 
         self.set_emitting_region(beaming_expr)
 

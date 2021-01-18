@@ -318,14 +318,10 @@ double f_compton_K1(struct blob *pt_K1, double g) {
     epsilon_0 = HPLANCK * pt_K1->nu_compton_0*one_by_MEC2;
     epsilon_1 = HPLANCK * pt_K1->nu_1*one_by_MEC2;
     nu_1_min = pt_K1->nu_compton_0/(4.0*g2);
-    nu_1_max = 4.0 * pt_K1->nu_compton_0 * (g2) / (1.0 + 4.0*g*epsilon_0);
-
+    nu_1_max = 4.0 * pt_K1->nu_compton_0 * g2 / (1.0 + 4.0*g*epsilon_0);
+  
 
     //=================================================
-    //Se la frequenza del fotone prodotto per IC
-    //fuori dal range derivato dalla cinamatica
-    //allora il contributo 0 ed esco
-
     rate=0.0;
 
     if (pt_K1->nu_1 > nu_1_max || pt_K1->nu_1 < nu_1_min ) {
@@ -333,106 +329,69 @@ double f_compton_K1(struct blob *pt_K1, double g) {
     }
     if (pt_K1->nu_1 >=  nu_1_min &&  pt_K1->nu_1 < pt_K1->nu_compton_0) {
 
+        if (pt_K1->do_IC_down_scattering==1){
         //------------------------------------------
-        //Eq 8 Jones 1968
-        //This should become optional
-        //cost = pt_K1->COST_IC_K1 / (4.0*(g2*g2) * pt_K1->nu_compton_0);
-        //k=4.0*g2*pt_K1->nu_1/pt_K1->nu_compton_0 ;
-        //rate=k-1;
-        //rate *= cost;
-
-        //This I don't remember where it is coming from
-        //rate = (k-1)*(1.0+2.0/q)-2.0*log(k);
-
-
-        rate=0.;
-        //printf("1\n");
-        //printf("nu_1=%e nu_min=%e nu_max=%e gamma=%e, k1=%e\n",pt_K1->nu_1,nu_1_min,nu_1_max,g,k);
+        //Eq 8 Jones 1968 
+        //Eq IV.I  Band & Grindlay 1985 ApJ 298
+        //This is the down-scattering and is optional
+        cost = pt_K1->COST_IC_K1 / (4.0*(g2*g2) * pt_K1->nu_compton_0);
+        k=4.0*g2*pt_K1->nu_1/pt_K1->nu_compton_0 ;
+        rate=k-1;
+        rate *= cost;
+        }else{
+            rate=0;
+        }
     }
 
     if (pt_K1->nu_1 >= pt_K1->nu_compton_0 && pt_K1->nu_1 <= nu_1_max) {
-
-
-        k = pt_K1->nu_1 / (pt_K1->nu_compton_0 * 4.0 * ( g2 - g*epsilon_1));
-        if (k>1.0/(4*g2) && k<=1){
+        //-----------------------
+        //Eq 44 Jones 1968
+        //Eq IV.I  Band & Grindlay 1985 ApJ 298
+        k=pt_K1->nu_1 / (pt_K1->nu_compton_0 * 4.0 *( g2 - epsilon_1*g));
+        //this condition is superfluous!!!
+        //if (k>1.0/(4*g2) && k<=1){
             //printf("nu_1=%e nu_min=%e nu_max=%e gamma=%e, k2=%e 1/(4g^2)=%e\n",pt_K1->nu_1,nu_1_min,nu_1_max,g,k,(1.0/(4*g2)));
 
-            Gamma_e=4.0*g*epsilon_0;
+        Gamma_e=4.0*g*epsilon_0;
 
-            cost = pt_K1->COST_IC_K1 / ((g2) * pt_K1->nu_compton_0);
+        cost = pt_K1->COST_IC_K1 / ((g2) * pt_K1->nu_compton_0);
 
-            a = 2.0 * k * log(k) ;
+        a = 2.0 * k * log(k) ;
 
-            a = a + (1+2*k)*(1-k);
+        a = a + (1+2*k)*(1-k);
 
+        c = 0.5*(1-k)*(Gamma_e*k)*(Gamma_e*k)/(1+4.0*k*Gamma_e);
 
-            c = 0.5*(1-k)*(Gamma_e*k)*(Gamma_e*k)/(1+4.0*k*Gamma_e);
-
-
-
-
-            rate = a+c;
-            rate *= cost;
+        rate = a+c;
+        rate *= cost;
             //printf("2\n");
-        }
-        else{
-         rate=0;
+        //}
+        //else{
+        // rate=0;
          //printf("3\n");
-        }
+        //}
     }
-
-
-    //==========================================
-    //CHI is q in Eq 4.1
-    //q=  nu_1/((4*g^2*nu_compton_0)*(1-h*nu_1/(h*mec^2*g))
-    //CHI=nu_1/((nu_compton_0)*(4*g*g - 4*g*h*nu_1/(h*mec^2))
-    //CHI=nu_1/(nu_compton_0*(4*g*g-k_epsilon_1))
-    //==========================================
-    //CHI = pt_K1->nu_1 / (pt_K1->nu_compton_0 * (4.0 * g2 - k_epsilon_1));
-    //cost = pt_K1->COST_IC_K1 / ((g2) * pt_K1->nu_compton_0);
-
-    //=========================================
-    //bracket term in Eq. 4.1
-    //braket term=
-    //2*q*ln(q)+(1+2*q)*(1-q)+0.5*(1-q)*(k_epsilon_0*q)^2/(1+k_epsilon_0*q)
-    //a=2*CHI*ln(CHI)+(1+2*CHI)*(1-CHI)=2*CHI*ln(CHI)+(1+CHI-2*CHI^2)
-    //c=CHI*k_epsilon_0
-    //b=c^2/(1+c)
-    //
-    //braket term=a+b*0.5*(1-CHI)
-    //==========================================
-    //This piece of Eq. 4.1 :
-    //2.0*CHI*log(CHI)+(1.0+CHI-2.0*CHI*CHI);
-    //can be sub by a 4th polinomial regression
-    //a= 0.81847 - 2.5358 * CHI + 5.1355 * CHI*CHI - 5.0344 * CHI*CHI*CHI + 1.62 * CHI*CHI*CHI*CHI;
-    
-    //==========================================
-    //a = 2.0 * CHI * log(CHI)+(1.0 + CHI - 2.0 * CHI * CHI);
-    //c = (CHI * k_epsilon_0);
-    //b = (c * c) / (1.0 + c);
-    //a += b * 0.5 * (1.0 - CHI);
-    //a *= cost;
-
     return rate;
 }
 //=========================================================================================
 
 void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int stat_frame)
 {
-    double epsilon_0, epsilon_1, g_min_BG;
+    double epsilon_0, epsilon_1, g_min_IC;
     epsilon_0 = HPLANCK * nu_in * one_by_MEC2;
     epsilon_1 = HPLANCK * nu_out * one_by_MEC2;
     
-    g_min_BG = 0.5 * epsilon_1 *(1 + sqrt(1.0 + (1.0 / (epsilon_1 * epsilon_0))));
-
+    //Eq 7.111 Dermer&Menon 2009
+    pt->g_min_IC = 0.5 * epsilon_1 *(1 + sqrt(1.0 + (1.0 / (epsilon_1 * epsilon_0))));
+    
     
     if (pt->EC_stat == 1)
     {
-        g_min_BG = g_min_BG / pt->beam_obj;
+        pt->g_min_IC = pt->g_min_IC / pt->beam_obj;
     }
-    if (g_min_BG > pt->gmin_griglia)
+    if (pt->g_min_IC > pt->gmin_griglia)
     {
-        Fill_Ne_IC(pt, g_min_BG, stat_frame);
+        Fill_Ne_IC(pt, pt->g_min_IC, stat_frame);
     }
     else
     {
@@ -451,8 +410,10 @@ void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int 
 //=========================================================================================
 double integrale_IC( struct blob * pt, double a, double b, int stat_frame) {
     double nu1, nu2, integr_gamma, integr_nu;
-    //double g3, g1, y_g1, y_g2, y_g3,delta_g;
-    double g, y_nu1, y_nu2;
+    //double test,test1,test2,N,N_IC,N_IC_1;
+    //int negative;
+    //double g2, g1, y_g1, y_g2, y_g3,delta_g;
+    double y_nu1, y_nu2;
     double  delta_nu;
     unsigned int ID,ID_gamma;
     double (*pf_K1) (struct blob *, double x);
@@ -464,10 +425,12 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame) {
 
    
     
-    g = pt->gmin_griglia;
+    //g = pt->gmin_griglia;
 
+    //if IC_adaptive_e_binning==1
     //wit this choice gmin is set to its lowest possible
-    //value for enay nu_seed in the range (a,b)
+    //value for any nu_seed in the range (a,b)
+    //this must stay even if adaptive binning is set to 0!
     set_N_distr_for_Compton(pt, b, pt->nu_1, stat_frame);
 
     while (pt->nu_seed[ID] < a && ID<pt->nu_seed_size) {
@@ -482,34 +445,24 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame) {
 
     nu1=0.;
     y_nu1=0.;
-
     if (ID<pt->nu_seed_size){
         nu1 = pt->nu_seed[ID];
         y_nu1 = pt->n_seed[ID];
     }
-
+    
     //Integration ove freq
     while (pt->nu_seed[ID + 1] <= b && pt->nu_seed[ID + 1] >= a && ID<pt->nu_seed_size-1) {
-
-        //integr_gamma = 0.0;
-        //g1 = pt->griglia_gamma_Ne_log_IC[0];
       
         pt->nu_compton_0 = pt->nu_seed[ID];
 
-        //Integration over electron Lorentz factor
-        
-        //if (pt->adaptive_e_binning ==1){
-        //    //wit this choice gmin is set to its the actual nu_seed value
-        //    set_N_distr_for_Compton(pt, pt->nu_compton_0, pt->nu_1, stat_frame);
-        //}
+        //Integration over electron Lorentz factor       
         for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
             pt->Integrand_over_gamma_grid[ID_gamma] =f_compton_K1(pt, pt->griglia_gamma_Ne_log_IC[ID_gamma]) * pt->Ne_IC[ID_gamma];
-
         }
         integr_gamma= integr_simp_gird_equilog(pt->griglia_gamma_Ne_log_IC, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
+        //integr_gamma= trapzd_array_arbritary_grid(pt->griglia_gamma_Ne_log_IC, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
 
-       
-        //Integration over seed phtons number density
+        //Integration over seed photons number density
         nu2 = pt->nu_seed[ID + 1];
         y_nu2 = pt->n_seed[ID + 1];
         delta_nu = nu2 - nu1;
@@ -520,7 +473,7 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame) {
         ID++;
     }
 
-    pt->gmin_griglia=g;
+    //pt->gmin_griglia=g;
 
     //============================================================
     //0.75 fattore di correzione di GOULD

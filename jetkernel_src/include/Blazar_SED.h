@@ -325,7 +325,8 @@ struct blob {
     //-----------SSC-IC--------------//
     //--- CONST
     int ord_comp;
-    int adaptive_e_binning;
+    int IC_adaptive_e_binning;
+    int do_IC_down_scattering; 
     double COST_IC_K1,COST_IC_COOLING ;
 
     //--- FREQ BOUNDARIES
@@ -345,6 +346,7 @@ struct blob {
     double nu_compton_0; /* freq campo fot Sync per spettro IC */
     double * nu_seed;
     double * n_seed;
+    double g_min_IC;
 
     //--- FREQ/FLUX array
     double q_comp[static_spec_arr_size];
