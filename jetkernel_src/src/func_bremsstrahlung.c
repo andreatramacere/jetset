@@ -123,7 +123,7 @@ double bremss_sigma_2(double gamma_e, double epsilon_gamma){
     //Eq A3 
     //https://iopscience.iop.org/article/10.1086/306829/pdf
     double res,a,a1,a2,a3,one_by_eps;
-    
+    a2=0;  
     one_by_eps=1.0/epsilon_gamma;
 
     if (epsilon_gamma<=0.5){

@@ -64,7 +64,7 @@ unsigned int E_min_p_grid_even(struct blob *pt, double * gamma_p_grid, double E_
     if (i_start_out>= gamma_p_grid_size) {
         i_start_out= gamma_p_grid_size;
     }
-    if (E_start_TeV)
+    //if (E_start_TeV)
     return i_start_out;
 }
 

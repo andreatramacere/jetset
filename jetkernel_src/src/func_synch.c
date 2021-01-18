@@ -155,7 +155,7 @@ double solve_S_nu_Sync(struct blob * pt, unsigned int  NU_INT){
 double eval_S_nu_Sync(struct blob *pt, double j_Sync, double alfa_Sync)
 {
     double S_nu, tau_nu;
-
+    S_nu=0;
     if (pt->do_Sync == 2)
     {
         tau_nu = 2 * pt->R *  alfa_Sync;
