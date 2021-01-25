@@ -107,10 +107,13 @@ class JetParameter(ModelParameter):
         super(JetParameter,self).set(**keywords )
 
         if 'val' in keywords.keys():
+            #print('val',keywords['val'],'to',(self.name))
             self.assign_val_to_jetkernel(self.name,keywords['val'])
 
-            if self._depending_par is not None:
-                self._depending_par.set(val = self._depending_par._func(self._val.val))
+            #This instruction is not requested since it is performed in
+            #parent class
+            #if self._depending_par is not None:
+            #    self._depending_par.set(val = self._depending_par._func(self._val.val))
 
 
     def assign_val_to_jetkernel(self, name, val):

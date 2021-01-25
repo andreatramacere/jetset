@@ -814,6 +814,7 @@ void SetBeaming(struct blob *pt){
 
 	if (strcmp(pt->BEAMING_EXPR, "delta") == 0) {
 	        pt->beam_obj = pt->beam_obj;
+            pt->BulkFactor = pt->beam_obj;
     }
 
 	else if (strcmp(pt->BEAMING_EXPR, "bulk_theta") == 0) {

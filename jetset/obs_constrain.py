@@ -316,7 +316,8 @@ class ObsConstrain(object):
             #if silent is False:
             #    print("--->",theta_par.get_description())
             #    print("--->",bulk_factor_par.get_description())
-            self.beaming=jet_model.get_beaming(theta=self.theta,bulk_factor=self.bulk_factor,beaming=-1.0)
+            #self.beaming=jet_model.get_beaming(theta=self.theta,bulk_factor=self.bulk_factor,beaming=-1.0)
+            self.beaming = jet_model.get_beaming()
             if silent is False:
                 print("---> setting beaming  to",self.beaming)
                 print()

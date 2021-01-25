@@ -168,10 +168,10 @@ class EmittersFactory:
     @staticmethod
     def _create_lpep(gamma_grid_size, log_values, normalize, skip_build, emitters_type):
         @nb.njit(fastmath=True, cache=True)
-        def distr_func_lp_ep(gamma, gamma_p, r):
-            return np.power(10., (-r * np.power(np.log10(gamma /gamma_p), 2)))
+        def distr_func_lep(gamma, gamma_p, r):
+            return np.power(10., (-r * np.power(np.log10(gamma / gamma_p), 2)))
 
-        n_lpep = EmittersDistribution(name='lpep',
+        n_lep = EmittersDistribution(name='lpep',
                                     spectral_type='lp',
                                     normalize=normalize,
                                     emitters_type=emitters_type,
@@ -179,18 +179,18 @@ class EmittersFactory:
                                     skip_build=skip_build,
                                     gamma_grid_size=gamma_grid_size)
 
-        a_t, b_t = n_lpep.set_bounds(1, 1E9, log_val=n_lpep._log_values)
-        n_lpep.add_par('gamma_p', par_type='turn-over-energy', val=1E4, vmin=a_t, vmax=b_t,
+        a_t, b_t = n_lep.set_bounds(1, 1E9, log_val=n_lep._log_values)
+        n_lep.add_par('gamma_p', par_type='turn-over-energy', val=1E4, vmin=a_t, vmax=b_t,
                      unit='lorentz-factor',log=log_values)
-        n_lpep.add_par('r', par_type='spectral_curvature', val=1.0, vmin=-15., vmax=15., unit='')
-        n_lpep.set_distr_func(distr_func_lp_ep)
+        n_lep.add_par('r', par_type='spectral_curvature', val=1.0, vmin=-15., vmax=15., unit='')
+        n_lep.set_distr_func(distr_func_lep)
 
-        return n_lpep
+        return n_lep
 
     @staticmethod
     def _create_lppl(gamma_grid_size, log_values, normalize, skip_build, emitters_type):
         @nb.njit(fastmath=True, cache=True)
-        def distr_func_lp(gamma, gamma0_log_parab, r, s):
+        def distr_func_lppl(gamma, gamma0_log_parab, r, s):
             f = np.zeros(gamma.shape)
             m = gamma < gamma0_log_parab
             f[m] = np.power(gamma[m]/gamma0_log_parab, -s)
@@ -212,7 +212,7 @@ class EmittersFactory:
         n_lppl.add_par('s', par_type='LE_spectral_slope', val=2.0, vmin=-10., vmax=10, unit='')
         n_lppl.add_par('r', par_type='spectral_curvature', val=1.0, vmin=-15., vmax=15., unit='')
 
-        n_lppl.set_distr_func(distr_func_lp)
+        n_lppl.set_distr_func(distr_func_lppl)
 
         return n_lppl
 

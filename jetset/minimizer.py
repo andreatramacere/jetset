@@ -35,7 +35,7 @@ from scipy.optimize import least_squares,curve_fit
 from leastsqbound.leastsqbound import  leastsqbound
 
 from .output import section_separator,WorkPlace,makedir
-from .data_loader import ObsData
+from .utils import JetkerneltException
 import pickle
 
 
@@ -361,6 +361,10 @@ class ModelMinimizer(object):
         self.data['dy'] = err_nuFnu_fit
         self.data['UL'] = UL
         self.sed_data=sed_data
+
+        if len(fit_par_free)>len(nu_fit) and isinstance(self.minimizer,LSBMinimizer):
+            m='number of data points: %d is lower than number of free pars: %d'%(len(nu_fit), len(fit_par_free))
+            raise  JetkerneltException(message=m)
 
     def fit(self,
             fit_Model,

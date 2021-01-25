@@ -576,7 +576,7 @@ class  PlotPdistr (BasePlot):
 
 
 
-    def _set_xy_label(self,energy_name,energy_units):
+    def _set_xy_label(self,energy_name,energy_units,pow):
         if energy_units != '':
             _e = '(%s)' % energy_units
         else:
@@ -592,12 +592,15 @@ class  PlotPdistr (BasePlot):
         else:
             _e = ''
 
+        n_str = 'n($%s$)'%energy_name
+        if pow is not None:
+            n_str = 'n($%s$) $%s^{%d}$' % (energy_name,energy_name,pow)
         if self.injection is False:
 
             if self.loglog is True:
-                self.ax.set_ylabel(r'log(n($%s$))   ($cm^{-3} %s$) '%(energy_name,_e))
+                self.ax.set_ylabel(r'log(%s)   ($cm^{-3} %s$) ' % (n_str, _e))
             else:
-                self.ax.set_ylabel(r'n($%s$)   ($cm^{-3} %s$) ' % (energy_name,_e))
+                self.ax.set_ylabel(r'%s   ($cm^{-3} %s$) ' % (n_str, _e))
         else:
             if self.loglog is True:
                 self.ax.set_ylabel(r'log(Q$_{inj}$($%s$))   ($cm^{-3} s^{-1} %s$)' % (energy_name,_e))
@@ -617,7 +620,7 @@ class  PlotPdistr (BasePlot):
         if label is None:
             label=particle
         self._plot(x,y,label=label)
-        self._set_xy_label(energy_name,energy_units)
+        self._set_xy_label(energy_name,energy_units,pow=None)
         self.update_plot()
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
@@ -629,7 +632,7 @@ class  PlotPdistr (BasePlot):
 
         x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit,pow=2)
         self._plot(x,y,label=label)
-        self._set_xy_label(energy_name, energy_units)
+        self._set_xy_label(energy_name, energy_units,pow=2)
         self.update_plot()
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
@@ -640,7 +643,7 @@ class  PlotPdistr (BasePlot):
 
         x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit, pow=3)
         self._plot(x,y,label=label)
-        self._set_xy_label(energy_name, energy_units)
+        self._set_xy_label(energy_name, energy_units,pow=3)
         self.update_plot()
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)

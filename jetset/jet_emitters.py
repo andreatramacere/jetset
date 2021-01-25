@@ -57,7 +57,7 @@ class EmittersDistribution(object):
                  skip_build=False):
 
         self._spectral_type = None
-        self._allowed_spectral_types=['bkn','plc','lp','lppl','pl','lpep']
+        self._allowed_spectral_types=['bkn','plc','lp','lppl','pl','lpep','array']
         self._set_emitters_type(emitters_type)
         self._set_spectral_type(spectral_type)
         self._Norm=1.0

@@ -460,7 +460,6 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame) {
             pt->Integrand_over_gamma_grid[ID_gamma] =f_compton_K1(pt, pt->griglia_gamma_Ne_log_IC[ID_gamma]) * pt->Ne_IC[ID_gamma];
         }
         integr_gamma= integr_simp_gird_equilog(pt->griglia_gamma_Ne_log_IC, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
-        //integr_gamma= trapzd_array_arbritary_grid(pt->griglia_gamma_Ne_log_IC, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
 
         //Integration over seed photons number density
         nu2 = pt->nu_seed[ID + 1];

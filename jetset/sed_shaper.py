@@ -480,7 +480,8 @@ class SEDShape(object):
                                  loglog=True,
                                  silent=silent,
                                  fitname='spectral-indices-best-fit',
-                                 minimizer=minimizer)
+                                 minimizer=minimizer,
+                                 use_UL=True)
                 #val,err=do_linear_fit(self.SEDdata.nu_data_log,self.SEDdata.nuFnu_data_log,dy=self.SEDdata.dnuFnu_data_log,x_range=index.idx_range)
 
 
@@ -677,7 +678,7 @@ class SEDShape(object):
         #else:
         #    fit_model1.set('E0', val=Ep - 1)
 
-        mm,best_fit=fit_SED(fit_model,self.sed_data,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=silent,fitname='sync-shape-fit',minimizer=minimizer)
+        mm,best_fit=fit_SED(fit_model,self.sed_data,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=silent,fitname='sync-shape-fit',minimizer=minimizer,use_UL=True)
 
         self.S_peak.update(fit_model,fit_law_name)
         self.find_class(self.S_peak.nu_p_val)
@@ -705,7 +706,7 @@ class SEDShape(object):
             if fit_range is None:
                 s_fit_range = sync_fit_range(self.obj_class, self.indices)
 
-            mm,best_fit=fit_SED(fit_model,self.sed_data,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit',minimizer=minimizer)
+            mm,best_fit=fit_SED(fit_model,self.sed_data,10.**s_fit_range[0],10.**s_fit_range[1],loglog=True,silent=True,fitname='sync-shape-fit',minimizer=minimizer,use_UL=True)
 
             if silent == False:
                 best_fit.show_report()
@@ -855,7 +856,7 @@ class SEDShape(object):
                 self.IC_fit_model.show_pars()
 
             mm,best_fit = fit_SED(self.IC_fit_model, self.sed_data, 10. ** fit_range[0], 10. ** fit_range[1], loglog=True,
-                               silent=True, fitname='IC-shape-fit', minimizer=minimizer)
+                               silent=True, fitname='IC-shape-fit', minimizer=minimizer,use_UL=True)
 
             if silent == False:
                 best_fit.show_report()
@@ -875,7 +876,7 @@ class SEDShape(object):
                 self.IC_fit_model.set(fit_law_name,'Ep', val=Ep)
 
             try:
-                mm,best_fit=fit_SED(self.IC_fit_model,self.sed_data,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit',minimizer=minimizer)
+                mm,best_fit=fit_SED(self.IC_fit_model,self.sed_data,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit',minimizer=minimizer,use_UL=True)
 
                 if silent == False:
                     best_fit.show_report()
@@ -896,7 +897,7 @@ class SEDShape(object):
                 if silent == False:
                     self.IC_fit_model.show_pars()
 
-                mm,best_fit=fit_SED(self.IC_fit_model,self.sed_data,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit',minimizer=minimizer)
+                mm,best_fit=fit_SED(self.IC_fit_model,self.sed_data,10.**fit_range[0],10.**fit_range[1],loglog=True,silent=True,fitname='IC-shape-fit',minimizer=minimizer,use_UL=True)
 
                 if silent == False:
                     best_fit.show_report()
