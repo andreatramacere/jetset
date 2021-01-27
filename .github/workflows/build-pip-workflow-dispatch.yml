@@ -15,10 +15,6 @@ jobs:
         python-version: [3.8]
 
     steps:
-      - name: set JETSETBESSELBUILD
-        run: |
-          echo "JETSETBESSELBUILD=FALSE" >> $GITHUB_ENV
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
       - name: Clone Repository (Latest)
         uses: actions/checkout@v2
@@ -69,6 +65,8 @@ jobs:
 
       - name: pip build
         run: |
+          echo "JETSETBESSELBUILD='FALSE'" >> $GITHUB_ENV
+          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
           python setup.py clean
           python setup.py sdist bdist_wheel
           python setup.py install
@@ -78,16 +76,11 @@ jobs:
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
 
-      - name: Set env PKG_VERSION
-        run: echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
-
-      - name: Print env PKG_VERSION
-        run: |
-          echo "PKG_VERSION=${{env.PKG_VERSION}}"
-          printenv
-
       - uses: actions/upload-artifact@v2
         with:
+          run: |
+           echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
+           echo "PKG_VERSION=${{env.PKG_VERSION}}"
           name: ${{ matrix.os }}-${{ env.PKG_VERSION }}-package
           path: dist/*
           #path: ${{ env.CONDABUILDJETSET }}
