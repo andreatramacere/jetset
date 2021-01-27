@@ -59,9 +59,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Setup pip
+      - name: adapt req
         run: |
-          python3 adapt_reqirements_to_git_action.py
+          python3 .github/workflows/adapt_reqirements_to_git_action.py
 
       - name: Install dependencies
         run: |
@@ -92,11 +92,12 @@ jobs:
       - name: upload .whl
         uses: actions/upload-artifact@v2
         with:
-          name: $jetset-{{ matrix.os }}-${{ env.PKG_VERSION }}-pip-binary
+          name: $jetset-${{ matrix.os }}-${{ env.PKG_VERSION }}-pip-binary
           path: dist/*.whl
+
       - name: upload sdist
         uses: actions/upload-artifact@v2
         with:
-          name: $jetset-{{ matrix.os }}-${{ env.PKG_VERSION }}-pip-src
+          name: $jetset-${{ matrix.os }}-${{ env.PKG_VERSION }}-pip-src
           path: dist/*.tar.gz
 
