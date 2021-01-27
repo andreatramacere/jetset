@@ -69,7 +69,7 @@ jobs:
 
 
       - name: conda build
-        working-directory: ./CICD/conda-pipeline/github/
+        #working-directory: ./CICD/conda-pipeline/github/
         run: |
           conda config --set anaconda_upload no
           conda build purge
