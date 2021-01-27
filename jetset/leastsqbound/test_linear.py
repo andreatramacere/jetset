@@ -2,7 +2,7 @@
 
 import numpy as np
 from scipy.optimize import leastsq
-from leastsqbound import leastsqbound
+from .leastsqbound import leastsqbound
 
 def func(p,x):
     """model data as y = m*x+b """

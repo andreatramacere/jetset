@@ -25,11 +25,11 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if on_rtd is True:
     try:
-        from jetkernel import jetkernel as BlazarSED
+        from .jetkernel import jetkernel as BlazarSED
     except ImportError:
         from .mock import jetkernel as BlazarSED
 else:
-    from jetkernel import jetkernel as BlazarSED
+    from .jetkernel import jetkernel as BlazarSED
 
 
 __author__ = "Andrea Tramacere"
