@@ -69,7 +69,7 @@ jobs:
 
 
       - name: conda build
-        #working-directory: ./CICD/conda-pipeline/github/
+        working-directory: .github/conda-pipeline/github/
         run: |
           conda config --set anaconda_upload no
           conda build purge
@@ -77,7 +77,7 @@ jobs:
           conda-build . --output > ./CONDABUILDJETSET.txt
 
       - name: set env CONDABUILDJETSET
-        working-directory: ./CICD/conda-pipeline/github/
+        working-directory: .github/conda-pipeline/github/
         run:  echo "CONDABUILDJETSET=$(cat CONDABUILDJETSET.txt)"  >> $GITHUB_ENV
 
       - name: set pkg version
