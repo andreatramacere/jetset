@@ -152,7 +152,7 @@ with open("proj_descr.md", "r") as f:
 if 'conda' in 'conda' in sys.version:
     install_req=None
 else:
-    install_req=[r for r in req if 'swig' not in r]
+    install_req=req
 
 print('->', __version__,install_req)
 
