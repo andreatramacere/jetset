@@ -89,7 +89,7 @@ jobs:
           echo "PKG_VERSION=${{env.PKG_VERSION}}"
 
       - name: upload conda pkg
-      - uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2
         with:
           name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-conda-binary
           path: ${{ env.CONDABUILDJETSET }}
