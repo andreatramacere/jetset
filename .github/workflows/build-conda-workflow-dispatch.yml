@@ -74,7 +74,7 @@ jobs:
           conda config --set anaconda_upload no
           conda build purge
           conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err
-          conda-build . --output > ./CONDABUILDJETSET.txt
+          conda build . --output > ./CONDABUILDJETSET.txt
 
       - name: set env CONDABUILDJETSET
         working-directory: .github/conda-pipeline/github/
