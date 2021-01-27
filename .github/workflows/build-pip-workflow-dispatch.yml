@@ -25,8 +25,11 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-     # - name: Set env TEST
-     #   run: echo "::set-env name=TEST::$(cat test-path.txt)"
+      - name: Set env TEST
+        run: |
+          echo "FALSE">JETSETBESSELBUILD
+          echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
+          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
      # - name: Print env TEST
      #   run: |
@@ -59,13 +62,10 @@ jobs:
           pip install pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: echo JETSETBESSELBUILD
-        run: |
-           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
-
       - name: pip build
         run: |
-          echo "JETSETBESSELBUILD='FALSE'" >> $GITHUB_ENV
+          echo "FALSE">JETSETBESSELBUILD
+          echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
           python setup.py clean
           python setup.py sdist bdist_wheel
@@ -76,11 +76,12 @@ jobs:
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
 
-      - uses: actions/upload-artifact@v2
+      - name: upload artifacts
+        uses: actions/upload-artifact@v2
+        run: |
+          echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
+          echo "PKG_VERSION=${{env.PKG_VERSION}}"
         with:
-          run: |
-           echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
-           echo "PKG_VERSION=${{env.PKG_VERSION}}"
           name: ${{ matrix.os }}-${{ env.PKG_VERSION }}-package
           path: dist/*
           #path: ${{ env.CONDABUILDJETSET }}
