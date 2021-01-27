@@ -61,17 +61,17 @@ jobs:
       - name: Set env JETSETBESSELBUILD
         env:
           JETSETBESSELBUILD: FALSE
-      - name: Print env JETSETBESSELBUILD
         run: |
           echo "JETSETBESSELBUILD=${JETSETBESSELBUILD}"
-          printenv
+          #printenv
 
       - name: pip build
         run: |
           python setup.py clean
           python setup.py sdist bdist_wheel
           python setup.py install
-
+           echo "JETSETBESSELBUILD=${JETSETBESSELBUILD}"
+          
       #- name: test
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
