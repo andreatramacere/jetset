@@ -23,6 +23,8 @@ import json
 import sys
 
 
+
+
 class CustomBuild(build):
     def run(self):
         print('----> custom build')
@@ -120,10 +122,10 @@ req=f.readlines()
 f.close()
 req=[n.strip() for n in req]
 
-if  os.getenv('USE_PIP')=='TRUE':
-    install_req=req
-else:
-    install_req=None
+#if  os.getenv('USE_PIP')=='TRUE':
+#    install_req=req
+#else:
+#    install_req=None
 
 src_files=['jetset/jetkernel/jetkernel.i']
 src_files.extend(glob.glob ('jetkernel_src/src/*.c'))
@@ -146,14 +148,14 @@ else:
 with open("proj_descr.md", "r") as f:
     long_description = f.read()
 
-print('->', __version__,install_req)
 
 if 'conda' in 'conda' in sys.version:
     install_req=None
 else:
-    install_req=req
+    install_req=[r for r in req if 'swig' not in r]
 
-print('--> req',req)
+print('->', __version__,install_req)
+
 setup(name='jetset',
       version=__version__,
       author='Andrea Tramacere',

@@ -36,6 +36,8 @@ jobs:
      #   with:
      #     name: ${{ matrix.os }}-TEST
      #     path: ${{ env.TEST }}
+      - name: Install swig
+        run: apt-get install swig
 
       - name: Setup pip
         uses: actions/setup-python@v2
