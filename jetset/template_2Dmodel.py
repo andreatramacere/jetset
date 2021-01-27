@@ -12,7 +12,7 @@ from .data_loader import log_to_lin, lin_to_log
 
 from scipy.interpolate import interp1d
 
-from scipy import log10,array,power,interpolate,shape,ones
+from scipy import interpolate
 
 import numpy as np
 
@@ -138,8 +138,8 @@ class TemplateTable2D(Model):
 
     def _func(self,x,y):
 
-        if shape(x)==():
-                x=array([x])
+        if np.shape(x)==():
+                x=np.array([x])
 
         if self._log_log_interp is True:
             x=np.log10(x)
