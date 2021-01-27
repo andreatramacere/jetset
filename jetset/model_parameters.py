@@ -188,7 +188,7 @@ class ModelParameter(object):
                 setattr(self,kw,self.allowed_keywords[kw])
 
         self._linked = False
-        self._linked_models = []
+        #self._linked_models = []
         self._linked_root_model = None
         self.set(**keywords)
 
@@ -256,22 +256,21 @@ class ModelParameter(object):
 
     def reset_dependencies(self):
         self._linked = False
-        self._linked_models = []
+        #self._linked_models = []
         self._linked_root_model = None
         self._func=None
         self._is_dependent = False
         self._master_par=None
 
     def make_dependent(self, master_par, func, root_model=None):
-        #if par._is_dependent is True:
-        #    raise RuntimeError("You can't set a depending parameter ", par.name,
-        #                       " as master parameter, in the current version ")
+
         if self == master_par:
             raise RuntimeError(" root and linked parameter can't be the same")
         self._is_dependent = True
         self._func = func
         self._master_par = master_par
         master_par._depending_par = self
+
         self.freeze()
         if root_model is not None:
             self._linked_root_model = root_model
@@ -288,7 +287,7 @@ class ModelParameter(object):
         if self._is_dependent is False or skip_dep_par_warning is True:
             pass
         else:
-            warnings.warn('\n\n *** you are trying to set a dependent parameter:%s *** \n'%self.name)
+            #warnings.warn('\n\n *** you are trying to set a dependent parameter:%s *** \n'%self.name)
             raise RuntimeError('\n\n *** you are trying to set a dependent parameter:%s *** \n'%self.name)
             #return
 
@@ -384,8 +383,8 @@ class ModelParameter(object):
         else:
             self._frozen = v
         #else:
-        #    warnings.warn('\n\n *** you are trying to change the frozen state of a dependent parameter:%s ***\n'%self.name)
-        #    #raise RuntimeError()
+        #    raise RuntimeError('\n\n *** you are trying to change the frozen state of a dependent parameter:%s ***\n'%self.name)
+
 
     def freeze(self):
         """
@@ -609,7 +608,7 @@ class CompositeModelParameterArray(object):
                 print('==> root and linked par', self, p_root, )
                 if p_root == p_dep:
                     raise RuntimeError(" root and linked parameter can't be the same")
-                p_root._linked_models.append(m)
+                #p_root._linked_models.append(m)
                 p_dep.make_dependent(p_root, func_dep_identity,root_model=m_root)
                 p_dep._linked = True
             else:

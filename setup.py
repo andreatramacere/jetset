@@ -43,10 +43,10 @@ class CustomInstall(install):
         #else:
         #    self.do_egg_install()
 
-        try:
-            self.do_egg_install()
-        except:
-            install.run(self)
+        #try:
+        #    self.do_egg_install()
+        #except:
+        install.run(self)
 
         print ('JETSETBESSELBUILD',os.getenv('JETSETBESSELBUILD') == 'TRUE')
         if os.getenv('JETSETBESSELBUILD') == 'TRUE':
