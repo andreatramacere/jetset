@@ -17,14 +17,14 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if on_rtd == True:
     try:
-        from jetkernel import jetkernel as BlazarSED
+        from .jetkernel import jetkernel as BlazarSED
     except ImportError:
         from .mock import jetkernel as BlazarSED
 else:
-    from jetkernel import jetkernel as BlazarSED
+    from .jetkernel import jetkernel as BlazarSED
 
 
-from .jetkernel_models_dic import available_N_distr,N_distr_descr,n_seed_dic,allowed_disk_type
+from .jetkernel_models_dic import allowed_disk_type
 
 from .jet_paramters import  *
 
@@ -76,7 +76,7 @@ def build_emitting_region_dic(beaming_expr='delta'):
     else:
         raise RuntimeError('''wrong beaming_expr="%s" value, allowed 'delta' or 'bulk_theta' ''' % (beaming_expr))
 
-    model_dic['z_cosm'] = JetModelDictionaryPar(ptype='redshift', vmin=0, vmax=None, punit='')
+    model_dic['z_cosm'] = JetModelDictionaryPar(ptype='redshift', vmin=1E-10, vmax=None, punit='')
     # ['redshift',0,None,'']
 
     return model_dic

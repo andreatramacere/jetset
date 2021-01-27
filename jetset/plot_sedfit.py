@@ -27,6 +27,7 @@ from matplotlib import gridspec
 import numpy as np
 import  os
 from astropy.constants import m_e,m_p,c
+import matplotlib.ticker as ticker
 
 from collections import namedtuple
 
@@ -77,7 +78,7 @@ class  PlotSED (object):
         self.lines_model_list=[]
         self.lines_res_list = []
 
-        if self.interactive==True:
+        if self.interactive is True:
             plt.ion()
             print ('running PyLab in interactive mode')
 
@@ -122,8 +123,8 @@ class  PlotSED (object):
         else:
             unexpetced_behaviour()
 
-        secaxy = self.sedplot.secondary_xaxis('top', functions=(y_ev_transf, y_ev_transf_inv))
-        secaxy.set_xlabel('log(E) (eV)')
+        self.secaxy = self.sedplot.secondary_xaxis('top', functions=(y_ev_transf, y_ev_transf_inv))
+        self.secaxy.set_xlabel('log(E) (eV)')
 
         self.resplot.set_ybound(-2,2)
         try:
@@ -193,7 +194,7 @@ class  PlotSED (object):
                         item1.remove()
 
             del self.lines_data_list[line_ID]
-            self.update_legend()
+            #self.update_legend()
             self.update_plot()
 
     def del_model_line(self,line_ID):
@@ -210,7 +211,7 @@ class  PlotSED (object):
             del self.lines_model_list[line_ID]
 
             self.update_plot()
-            self.update_legend()
+            #self.update_legend()
 
     def del_residuals_line(self, line_ID):
         if self.lines_res_list == []:
@@ -224,7 +225,7 @@ class  PlotSED (object):
             del self.lines_res_list[line_ID]
 
             self.update_plot()
-            self.update_legend()
+            #self.update_legend()
 
     def set_plot_axis_labels(self, density=False):
         self.lx = 'log($ \\nu $)  (Hz)'
@@ -267,6 +268,38 @@ class  PlotSED (object):
     
     def update_plot(self):
         self.fig.canvas.draw()
+        #self.sedplot.relim()
+        #self.sedplot.autoscale(axis='y')
+        #self.sedplot.autoscale(axis='x')
+        y_s = []
+        x_min = []
+        x_max = []
+        y_min = None
+        y_max = None
+        if len(self.sedplot.lines)>0:
+
+            for l in self.sedplot.lines:
+                y_s.append(np.max(l.get_ydata()))
+            if len(y_s) > 0:
+                y_min = min(y_s) - 3
+                y_max = max(y_s) + 1
+            else:
+                self.sedplot.autoscale(axis='y')
+            if y_min is not None and y_max is not None:
+                self.sedplot.set_ylim(y_min, y_max)
+                for l in self.sedplot.lines:
+                    x=np.array(l.get_xdata())[np.array(l.get_ydata()) >= y_min]
+                    if len(x)>0:
+                        x_min.append(np.min(x))
+                        x_max.append(np.max(x))
+                if len(x_min)>0  and  len(x_max)>0:
+                    self.sedplot.set_xlim(min(x_min) - 1, max(x_max) + 1)
+        else:
+            self.sedplot.relim()
+            self.sedplot.autoscale(axis='y')
+            self.sedplot.autoscale(axis='x')
+        self.sedplot.xaxis.set_major_locator(ticker.MultipleLocator(2))
+        self.update_legend()
         self.fig.tight_layout()
 
     def update_legend(self,label=None):
@@ -288,7 +321,6 @@ class  PlotSED (object):
                  pass
 
         self.sedplot.legend(handles=_handles,loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1, prop={'size':10})
-        self.update_plot()
 
 
 
@@ -302,7 +334,7 @@ class  PlotSED (object):
             try:
                 x, y = model.SED.get_model_points(log_log=True, frame = self.frame)
             except Exception as e:
-                print("b", e)
+                print("SED missing", e)
                 raise RuntimeError (model, "!!! Error has no SED instance or something wrong in get_model_points()",e)
 
         if density is True:
@@ -337,7 +369,7 @@ class  PlotSED (object):
         self.lines_model_list.append(line)
 
         if update is True:
-            self.update_legend()
+            #self.update_legend()
             self.update_plot()
 
         self.counter += 1
@@ -382,7 +414,7 @@ class  PlotSED (object):
         self.lines_data_list.append(line)
 
         self.counter+=1
-        self.update_legend()
+        #self.update_legend()
         self.update_plot()
         
 
@@ -401,7 +433,7 @@ class  PlotSED (object):
 
         self.counter+=1
 
-        self.update_legend()
+        #self.update_legend()
         self.update_plot()
 
 
@@ -469,6 +501,9 @@ class BasePlot(object):
 
     def update_plot(self):
         self.fig.canvas.draw()
+        self.ax.relim()
+        self.ax.autoscale(axis='y')
+        self.ax.legend()
         self.fig.tight_layout()
 
 
@@ -477,8 +512,8 @@ class PlotSpectralMultipl(BasePlot):
     def __init__(self):
         super(PlotSpectralMultipl, self).__init__()
 
-        secaxy = self.ax.secondary_xaxis('top', functions=(y_ev_transf, y_ev_transf_inv))
-        secaxy.set_xlabel('log(E) (eV)')
+        secax = self.ax.secondary_xaxis('top', functions=(y_ev_transf, y_ev_transf_inv))
+        secax.set_xlabel('log(E) (eV)')
 
 
     def plot(self,nu,y,y_label,y_min=None,y_max=None,label=None,line_style=None,color=None):
@@ -541,7 +576,7 @@ class  PlotPdistr (BasePlot):
 
 
 
-    def _set_xy_label(self,energy_name,energy_units):
+    def _set_xy_label(self,energy_name,energy_units,pow):
         if energy_units != '':
             _e = '(%s)' % energy_units
         else:
@@ -557,12 +592,15 @@ class  PlotPdistr (BasePlot):
         else:
             _e = ''
 
+        n_str = 'n($%s$)'%energy_name
+        if pow is not None:
+            n_str = 'n($%s$) $%s^{%d}$' % (energy_name,energy_name,pow)
         if self.injection is False:
 
             if self.loglog is True:
-                self.ax.set_ylabel(r'log(n($%s$))   ($cm^{-3} %s$) '%(energy_name,_e))
+                self.ax.set_ylabel(r'log(%s)   ($cm^{-3} %s$) ' % (n_str, _e))
             else:
-                self.ax.set_ylabel(r'n($%s$)   ($cm^{-3} %s$) ' % (energy_name,_e))
+                self.ax.set_ylabel(r'%s   ($cm^{-3} %s$) ' % (n_str, _e))
         else:
             if self.loglog is True:
                 self.ax.set_ylabel(r'log(Q$_{inj}$($%s$))   ($cm^{-3} s^{-1} %s$)' % (energy_name,_e))
@@ -575,37 +613,49 @@ class  PlotPdistr (BasePlot):
         else:
             self.ax.loglog(x, y,c=c, lw=lw, label=label)
 
-    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma'):
+    def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma',label=None):
 
         x,y,energy_name,energy_units=self._set_variable(gamma,n_gamma,particle,energy_unit)
 
-        self._plot(x,y)
-        self._set_xy_label(energy_name,energy_units)
-
+        if label is None:
+            label=particle
+        self._plot(x,y,label=label)
+        self._set_xy_label(energy_name,energy_units,pow=None)
+        self.update_plot()
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
-        self.update_plot()
 
-    def plot_distr2p(self, gamma, n_gamma, y_min=None, y_max=None, x_min=None, x_max=None,particle='electrons',energy_unit='gamma'):
+
+    def plot_distr2p(self, gamma, n_gamma, y_min=None, y_max=None, x_min=None, x_max=None,particle='electrons',energy_unit='gamma',label=None):
+        if label is None:
+            label=particle
 
         x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit,pow=2)
-        self._plot(x,y)
-        self._set_xy_label(energy_name, energy_units)
-
+        self._plot(x,y,label=label)
+        self._set_xy_label(energy_name, energy_units,pow=2)
+        self.update_plot()
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
-        self.update_plot()
 
-    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma'):
+    def plot_distr3p(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma', label=None):
+        if label is None:
+            label = particle
 
         x, y, energy_name, energy_units = self._set_variable(gamma, n_gamma, particle, energy_unit, pow=3)
-        self._plot(x,y)
-        self._set_xy_label(energy_name, energy_units)
-
+        self._plot(x,y,label=label)
+        self._set_xy_label(energy_name, energy_units,pow=3)
+        self.update_plot()
         self.ax.set_ylim(y_min, y_max)
         self.ax.set_xlim(x_min, x_max)
-        self.update_plot()
-        self.update_plot()
+
+
+    def update_plot(self):
+        self.fig.canvas.draw()
+        self.ax.relim()
+        self.ax.autoscale(axis='y')
+        self.ax.autoscale(axis='x')
+        self.ax.legend()
+        self.fig.tight_layout()
 
 
 class  PlotTempEvEmitters (PlotPdistr):

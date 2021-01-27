@@ -58,14 +58,14 @@ double st_gamma(double z)
 // UTILIZZA ROUTINES NUM. RECIPES.
 //=====================================================
 
-double bessel_K_53(struct spettro *pt, double x) {
+double bessel_K_53(struct blob *pt, double x) {
     double ri, rip, rkp, ord, a;
     ord = 5.0 / 3.0;
     bessik(x, ord, &ri, &a, &rip, &rkp);
     return a;
 }
 
-double bessel_K_pitch_ave(struct spettro *pt, double x) {
+double bessel_K_pitch_ave(struct blob *pt, double x) {
     double ri, rip, rkp, ord, a, K_43,K_13;
     ord = 4.0 / 3.0;
     bessik(x, ord, &ri, &K_43, &rip, &rkp);
@@ -84,10 +84,10 @@ double bessel_K_pitch_ave(struct spettro *pt, double x) {
 // funzione che costruisce la tabelle delle funz. di Bessel
 //===================================================
 
-void tabella_Bessel(struct spettro *pt_TB) {
+void tabella_Bessel(struct blob *pt_TB) {
     //double a, t_Bessel;
 
-    double (*pf) (struct spettro *, double x);
+    double (*pf) (struct blob *, double x);
     unsigned int i;
     FILE *fp ;
 
@@ -258,7 +258,7 @@ void tabella_Bessel(struct spettro *pt_TB) {
 
 
 double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, double *  y_grid , unsigned int SIZE, double emiss_lim){
-	int ID;
+	unsigned int ID;
 	double y1,y2,x1,x2,a_c;
 	ID=x_to_grid_index(x_grid,  x,   SIZE);
 
@@ -269,7 +269,11 @@ double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, do
 	else if (x<x_min || x>x_max){
 		return emiss_lim;
 	}
-
+    else if(y_grid[ID]<= emiss_lim || y_grid[ID+1]<= emiss_lim)
+    {
+        return emiss_lim;
+    }
+    
 	else{
 		y1 = log10(y_grid[ID]);
 		y2 = log10(y_grid[ID + 1]);
@@ -284,13 +288,59 @@ double log_lin_interp(double x,  double * x_grid, double x_min, double x_max, do
 }
 //=========================================================================================
 
+//=====================================================================
+//LOG-LINEAR INTERPOLATION
+//=====================================================================
+//Lagrange Interpolation formula
+//
+double log_quad_interp(double x,  double * x_grid, double x_min, double x_max, double *  y_grid , unsigned int SIZE, double emiss_lim){
+	unsigned int ID;
+	double y1,y2,y3,x1,x2,x3;
+	double a,b,c,f;
+    ID=x_to_grid_index(x_grid,  x,   SIZE);
+
+	if (ID<0 || ID>SIZE-2){
+		return emiss_lim;
+	}
+
+	else if (x<x_min || x>x_max){
+		return emiss_lim;
+	}
+    
+    
+	else{
+        if (ID == SIZE-2){
+            ID=ID-1;
+        }
+        if (y_grid[ID+2]<= emiss_lim && y_grid[ID+1]> emiss_lim){
+            ID=ID-1;
+        }
+        if (y_grid[ID+2]<= emiss_lim && y_grid[ID+1]<=  emiss_lim){
+            ID=ID;
+        }
+		y1 = log10(y_grid[ID]);
+		y2 = log10(y_grid[ID + 1]);
+        y3 = log10(y_grid[ID + 2]);
+		x1 = log10(x_grid[ID]);
+		x2 = log10(x_grid[ID + 1]);
+        x3 = log10(x_grid[ID + 2]);
+        x=log10(x); 
+		a=(x - x2)*(x - x3)/((x1 - x2)*(x1 - x3));
+        b=(x - x1)*(x - x3)/((x2 - x1)*(x2 - x3));
+        c=(x - x1)*(x - x2)/((x3 - x1)*(x3 - x2));
+        f = y1*a +y2*b +y3*c;
+        //printf("ID=%lu SIZE=%d x=%e x1=%e x2=%e x3=%e y1=%e y2=%e y3=%e \n",ID,SIZE,x,x1,x2,x3,y1,y2,y3);
+		return pow(10,f);
+	}
+}
+//=========================================================================================
 
 
 //=====================================================================
 //LOG-LOG INTERPOLATION
 //=====================================================================
 double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, double log_x_max, double *  log_y_grid , unsigned int SIZE, double emiss_lim){
-    int ID;
+    unsigned int ID;
 	double y1,y2,x1,x2,a_c;
 	ID=x_to_grid_index(log_x_grid,  log_x,   SIZE);
 
@@ -316,7 +366,7 @@ double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, doub
 
 
 //=====================================================================
-//INTEGRAZIONE TRAPEZOIDALE CON INT APERTO E GRIGLIA  LINEARE
+//INTEGRAZIONE TRAPEZOIDALE CON INT APERTO E GRIGLIA  LINEARE CON ARRAYS
 //=====================================================================
 
 double trapzd_array_linear_grid(double *x, double *y, unsigned int SIZE)
@@ -343,8 +393,7 @@ double trapzd_array_arbritary_grid( double *x, double *y, unsigned int SIZE)
     /**
      * \author Andrea Tramacere
      * \date 19-09-2004 \n
-     * Distribuzioni energetiche degli elettroni nel caso statico
-     * per calcolare Ue
+
      */
 
     double I, y1, y2, x1, x2;
@@ -357,7 +406,7 @@ double trapzd_array_arbritary_grid( double *x, double *y, unsigned int SIZE)
     {
         x2 = x[INDEX];
         y2 = y[INDEX];
-        I += (y1 + y2) * (x1 - x2);
+        I += (y1 + y2) * (x2 - x1);
         x1 = x2;
         y1 = y2;
         //printf("%e %e %d\n",nu2, Ptot, i);
@@ -366,7 +415,38 @@ double trapzd_array_arbritary_grid( double *x, double *y, unsigned int SIZE)
 }
 //=========================================================================================
 
+//=========================================================
+// INTEGRAZIONE ALLA SINPSON CON ARRAYS  E GRIGLIA EQUILOG CON MIDPOINT                
+//=========================================================
+double integr_simp_gird_equilog(double * x, double *y, unsigned int size) {
+    double integr, delta;
+    unsigned int ID;
 
+    integr=0.;
+    
+    if (size % 2 == 0) {
+         printf("grid size must be even");
+         exit(0);
+    }
+    //this is necessary because you skip the mid point
+    //in the loop when the grid is equilog spaced with midpoint
+    for (ID = 1; ID < size - 1; ID=ID+2)
+    {
+       
+        //QUESTO DELTA RIMANE QUI
+        //PERCHE' LA GRIGLIA NON E' EQUISPACED
+        //NON PUO ANDARE FUORI DAL LOOP
+        delta=(x[ID+1]-x[ID-1]);
+        integr+=(y[ID-1]+4.0*y[ID]+y[ID+1])*delta;
+        //printf("%d ID=%d\n",ID);
+       
+    }
+    //if (integr==0){
+    //    printf("ID=%d size=%d \n",ID,size);
+    //}
+    return integr/6.0;
+
+}
 
 
 
@@ -374,7 +454,7 @@ double trapzd_array_arbritary_grid( double *x, double *y, unsigned int SIZE)
 // INTEGRAZIONE TRAPEZOIDALE CON INT CHIUSO E GRIGLIA  EQUI_LOG
 //============================================================================
 
-double integrale_trap_log_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned int n_intervalli) {
+double integrale_trap_log_struct(double (*pf) (struct blob *, double x), struct blob * pt, double a, double b, unsigned int n_intervalli) {
     double integr, k, griglia, ordinata, ordinata1;
     double delta;
     integr = 0.0;
@@ -446,11 +526,13 @@ double integrale_simp(double (*pf) ( double x), double a, double b, unsigned int
 
 
 
+
+
 //=========================================================
 // INTEGRAZIONE ALLA SINPSON CON INT CHIUSO E GRIGLIA LIN                
 //=========================================================
 
-double integrale_simp_struct(double (*pf) (struct spettro *, double x), struct spettro * pt, double a, double b, unsigned int n_intervalli) {
+double integrale_simp_struct(double (*pf) (struct blob *, double x), struct blob * pt, double a, double b, unsigned int n_intervalli) {
     double integr1, integr2, h, k;
     
     //CHECK on n_intervalli even
@@ -474,6 +556,14 @@ double integrale_simp_struct(double (*pf) (struct spettro *, double x), struct s
     return h * (integr1 + integr2 + ((pf(pt, (a)) + pf(pt, (b))))) / 3.0;
 }
 //=========================================================================================
+
+double theta_heaviside(double x){
+    if (x>0.){
+        return 1.0;
+    }   else{
+        return 0.;
+    }
+}
 
 double V_sphere(double R) {
     return four_by_three_pi * R * R*R;
@@ -508,7 +598,7 @@ double get_beaming(double BulkFactor, double theta) {
 // h ~(machine_precision)^1/3*x
 //==============================================================
 
-double derivata(double (*pf) (struct spettro *, double x), struct spettro *pt_d, double x) {
+double derivata(double (*pf) (struct blob *, double x), struct blob *pt_d, double x) {
     double h;
     h = x * 1e-7;
     if ((x - h) < pt_d->gmin) return (pf(pt_d, x + h) - pf(pt_d, x)) / (h);
@@ -692,7 +782,7 @@ double test_lunghezza_vettore(double mesh, double a, double b, int Max_elem) {
     return mesh;
 }
 
-double test_int(struct spettro *pt_d, double x) {
+double test_int(struct blob *pt_d, double x) {
     //  printf("f=%e, x=%e\n",x*x,x);
     return x*x;
 }
@@ -702,7 +792,7 @@ double test_int1(double x) {
     return x*x;
 }
 
-double test_solid_anlge(struct spettro *pt,double theta)
+double test_solid_anlge(struct blob *pt,double theta)
 {
 	//double sin_theta;
 	//sin_theta = sqrt(1.0 - mu * mu);

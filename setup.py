@@ -43,10 +43,10 @@ class CustomInstall(install):
         #else:
         #    self.do_egg_install()
 
-        try:
-            self.do_egg_install()
-        except:
-            install.run(self)
+        #try:
+        #self.do_egg_install()
+        #except:
+        install.run(self)
 
         print ('JETSETBESSELBUILD',os.getenv('JETSETBESSELBUILD') == 'TRUE')
         if os.getenv('JETSETBESSELBUILD') == 'TRUE':
@@ -75,15 +75,15 @@ class CustomClean(install):
         except:
             pass
         try:
-            os.remove('jetkernel/jetkernel.py')
+            os.remove('jetset/jetkernel/jetkernel.py')
         except:
             pass
         try:
-            os.remove('jetkernel/jetkernel_wrap.c')
+            os.remove('jetset/jetkernel/jetkernel_wrap.c')
         except:
             pass
         try:
-            shutil.rmtree('jetkernel/__pycache__')
+            shutil.rmtree('jetset/jetkernel/__pycache__')
         except:
             pass
 
@@ -125,15 +125,14 @@ if  os.getenv('USE_PIP')=='TRUE':
 else:
     install_req=None
 
-src_files=['jetkernel/jetkernel.i']
+src_files=['jetset/jetkernel/jetkernel.i']
 src_files.extend(glob.glob ('jetkernel_src/src/*.c'))
-_module=Extension('jetkernel/_jetkernel',
+_module=Extension('jetset.jetkernel/_jetkernel',
                   sources=src_files,
                   #extra_compile_options='-fPIC  -v  -c -m64 -I',
                   #extra_link_options='-suppress',
                   swig_opts=['-v',],
                   include_dirs=['jetkernel_src/include'])
-
 
 
 #'jetkernel/mathkernel/*dat'
@@ -149,8 +148,12 @@ with open("proj_descr.md", "r") as f:
 
 print('->', __version__,install_req)
 
+if 'conda' in 'conda' in sys.version:
+    install_req=None
+else:
+    install_req=req
 
-
+print('--> req',req)
 setup(name='jetset',
       version=__version__,
       author='Andrea Tramacere',
@@ -159,7 +162,7 @@ setup(name='jetset',
       long_description_content_type='text/markdown',
       description="A framework for self-consistent modeling and fitting of  astrophysical relativistic jets SEDs",
       author_email='andrea.tramacere@gmail.com',
-      packages=['jetset', 'leastsqbound', 'jetkernel','jetset.tests'],
+      packages=['jetset', 'jetset.leastsqbound', 'jetset.jetkernel','jetset.tests'],
       package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*ecsv','./requirements.txt','ebl_data/*','mathkernel/*dat'],'jetkernel':['mathkernel/*dat']},
       include_package_data = True,
       cmdclass=custom_cmdclass,
@@ -167,7 +170,7 @@ setup(name='jetset',
       #requires=req,
       ext_modules = [_module],
       install_requires=install_req,
-      py_modules=['jetkernel/jetkernel'],
+      py_modules=['jetset.jetkernel/jetkernel'],
       python_requires='>=3.5',
       test_suite =_test_suite,
-      zip_safe=False)
+      zip_safe=True)

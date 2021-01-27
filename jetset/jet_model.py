@@ -1,51 +1,36 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (str, open, super, range,
-#                      object, map)
-
-
 import os
 import json
 import pickle
 import six
-
 import numpy as np
-
-import  copy
-
+import copy
 import warnings
 
 from .jet_spectral_components import JetSpecComponent, SpecCompList
 
+from .model_parameters import ModelParameterArray, ModelParameter
+from .base_model import Model
+from .output import makedir,WorkPlace
+from  .plot_sedfit import PlotSED,plt
+from .cosmo_tools import Cosmo
+from .utils import safe_run,set_str_attr, old_model_warning, get_info, clean_var_name
+from .jet_paramters import *
+from .jet_emitters import *
+from .jet_emitters_factory import EmittersFactory
+from .jet_tools import *
+from .mathkernel_helper import bessel_table_file_path
+
+
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
-if on_rtd == True:
+if on_rtd is True:
     try:
-        from jetkernel import jetkernel as BlazarSED
+        from .jetkernel import jetkernel as BlazarSED
     except ImportError:
         from .mock import jetkernel as BlazarSED
 else:
-    from jetkernel import jetkernel as BlazarSED
+    from .jetkernel import jetkernel as BlazarSED
 
-from .model_parameters import ModelParameterArray, ModelParameter
-from .base_model import  Model
-
-from .output import makedir,WorkPlace
-
-
-from  .plot_sedfit import PlotSED,plt
-
-from .cosmo_tools import Cosmo
-
-from .utils import safe_run,set_str_attr, old_model_warning, get_info, clean_var_name
-
-from .jet_paramters import  *
-
-from .jet_emitters import *
-
-from .jet_tools import  *
-
-from .mathkernel_helper import bessel_table_file_path
 
 __author__ = "Andrea Tramacere"
 
@@ -84,7 +69,7 @@ class JetBase(Model):
                  beaming_expr='delta',
                  jet_workplace=None,
                  verbose=None,
-                 nu_size=200,
+                 nu_size=500,
                  clean_work_dir=True,
                  **keywords):
 
@@ -122,6 +107,7 @@ class JetBase(Model):
         self._static_spec_arr_grid_size = BlazarSED.static_spec_arr_grid_size
         self._nu_static_size = BlazarSED.static_spec_arr_size
         self.nu_size = nu_size
+        self.nu_grid_size=self._get_nu_grid_size_blob()
         if jet_workplace is None:
             jet_workplace=WorkPlace()
             out_dir= jet_workplace.out_dir + '/' + self.name + '_jet_prod/'
@@ -163,10 +149,7 @@ class JetBase(Model):
         self._external_photon_fields_dic= None
         self._original_emitters_distr = None
 
-
-
         self._setup(emitters_distribution,emitters_distribution_log_values,beaming_expr,emitters_type)
-
 
 
     def _setup(self, emitters_distribution, emitters_distribution_log_values, beaming_expr, emitters_type):
@@ -184,17 +167,12 @@ class JetBase(Model):
         self._emitters_distribution_dic = None
         self._external_photon_fields_dic = None
 
-        self.set_emitters_distribution(emitters_distribution, emitters_distribution_log_values, emitters_type,init=False)
 
 
-        self._blob.adaptive_e_binning = 0
-
-        self.set_emitting_region(beaming_expr)
-
-        self._blob.adaptive_e_binning=0
+        self._blob.IC_adaptive_e_binning = 0
+        self._blob.do_IC_down_scattering = 0
 
         self.set_emitting_region(beaming_expr)
-
 
         self.flux_plot_lim=1E-120
         self.set_emiss_lim(1E-120)
@@ -207,6 +185,16 @@ class JetBase(Model):
         self._external_field_transf['blob'] = 0
         self._external_field_transf['disk'] = 1
         self._jetkernel_interp='linear'
+        self.set_emitters_distribution(emitters_distribution, emitters_distribution_log_values, emitters_type,
+                                       init=False)
+        self.set_blob()
+    @classmethod
+    def clone_blob(cls,jet,emitters):
+        _jet=cls(emitters_distribution=emitters)
+        for p in _jet.parameters.par_array:
+            if p not in jet.emitters_distribution.parameters.par_array:
+                p.val=jet.get_par_by_name(p.name).val
+        return _jet
 
     def __getstate__(self):
         return  self._serialize_model()
@@ -464,12 +452,12 @@ class JetBase(Model):
 
         set_str_attr(blob, 'MODE', 'custom')
 
-        blob.gamma_grid_size = 1000
+        blob.gamma_grid_size = 200
 
-        blob.nu_IC_size = 50
+        blob.nu_IC_size = 100
         blob.nu_seed_size = 100
 
-        blob.nu_grid_size= 200
+        blob.nu_grid_size= 1000
 
         blob.do_Sync = 2
 
@@ -487,7 +475,7 @@ class JetBase(Model):
         blob.N = 100
 
 
-        blob.NH_pp = 1E10
+        blob.NH_pp = 1
 
         blob.L_Disk = 1E45
 
@@ -524,11 +512,12 @@ class JetBase(Model):
 
     @staticmethod
     def available_emitters_distributions():
-        JetkernelEmittersDistribution.available_distributions()
+        EmittersFactory.available_distributions()
 
     def set_emitters_distribution(self, name=None, log_values=False, emitters_type='electrons',init=True):
 
-
+        if init is True:
+            self.set_blob()
         self._emitters_distribution_log_values = log_values
 
         if self._emitters_distribution_dic is not None:
@@ -539,7 +528,6 @@ class JetBase(Model):
             self.emitters_distribution = JetkernelEmittersDistribution.from_array(self, name, emitters_type=emitters_type)
 
         elif isinstance(name, JetkernelEmittersDistribution):
-            #print('--> JetkernelEmittersDistribution')
             self.emitters_distribution = name
 
             self._emitters_distribution_name = self.emitters_distribution.name
@@ -549,58 +537,58 @@ class JetBase(Model):
 
 
         elif isinstance(name, EmittersDistribution):
-            #print('--> EmittersDistribution')
-            name=copy.deepcopy(name)
-            self._original_emitters_distr = copy.deepcopy(name)
-            self.emitters_distribution = name
+            self._original_emitters_distr = name
+            self.emitters_distribution = copy.deepcopy(name)
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
 
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
 
-            #for par in self.emitters_distribution.parameters.par_array:
-            #    print('del >', par.name)
             self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
-            #print('>',self._emitters_distribution_dic)
 
             for par in self.emitters_distribution.parameters.par_array[::]:
-                #print('del >',par.name)
                 self.emitters_distribution.parameters.del_par(par)
-                #a=[par1.name for par1 in self.emitters_distribution.parameters.par_array]
-                #print('a',a)
-            #for par in self.emitters_distribution.parameters.par_array:
-            #    print('after del >',par.name)
-            #print('keys',  self._emitters_distribution_dic.keys())
+
             for k in self._emitters_distribution_dic.keys():
                 par=self.parameters.get_par_by_name(k)
-                #print('get par >', k)
-                #if par._depending_par is not None:
-                #    print('dep par name', par._depending_par.name)
-                #print('')
                 self.emitters_distribution.parameters.add_par(par)
 
             for k in self._emitters_distribution_dic.keys():
-                #print('check par >', k)
                 par = self.parameters.get_par_by_name(k)
                 if par._depending_par is not None:
-                    #print('par',par.name, 'dep par name', par._depending_par.name)
                     dep_par=self.parameters.get_par_by_name(par._depending_par.name)
                     par._depending_par=dep_par
-                    #print('>par',dep_par,dep_par.name,'func',dep_par._func)
-                #print('')
+            #self.set_blob()
             self.emitters_distribution.update()
+
         else:
-            self.emitters_distribution = JetkernelEmittersDistribution(name, self, log_values=log_values,
-                                                                       emitters_type=emitters_type)
+            nf=EmittersFactory()
+            self.emitters_distribution = nf.create_emitters(name,log_values=log_values,emitters_type=emitters_type)
+            self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
+            self.emitters_distribution.set_jet(self)
+            self.emitters_distribution._update_parameters_dict()
 
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
 
-            self.parameters.add_par_from_dict(self._emitters_distribution_dic,self,'_blob',JetParameter)
+            self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
 
-        if init is True:
-            self.set_blob()
+            for par in self.emitters_distribution.parameters.par_array[::]:
+                self.emitters_distribution.parameters.del_par(par)
+
+            for k in self._emitters_distribution_dic.keys():
+                par = self.parameters.get_par_by_name(k)
+                self.emitters_distribution.parameters.add_par(par)
+
+            for k in self._emitters_distribution_dic.keys():
+                par = self.parameters.get_par_by_name(k)
+                if par._depending_par is not None:
+                    dep_par = self.parameters.get_par_by_name(par._depending_par.name)
+                    par._depending_par = dep_par
+            #self.set_blob()
+            self.emitters_distribution.update()
+
 
     def get_emitters_distribution_name(self):
         return self.emitters_distribution.name
@@ -890,7 +878,7 @@ class JetBase(Model):
         if eval is True:
             self.set_blob()
 
-        return self._blob.dist
+        return self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
 
 
     @safe_run
@@ -920,12 +908,12 @@ class JetBase(Model):
 
 
 
-    def set_IC_mode(self,val):
+    #def set_IC_mode(self,val):
 
-        if val not in self._IC_states.keys():
-            raise RuntimeError('val',val,'not in allowed values',self._IC_states.keys())
+    #    if val not in self._IC_states.keys():
+    #        raise RuntimeError('val',val,'not in allowed values',self._IC_states.keys())
 
-        self._blob.do_IC=self._IC_states[val]
+    #    self._blob.do_IC=self._IC_states[val]
 
     def get_IC_mode(self):
         return dict(map(reversed, self._IC_states.items()))[self._blob.do_IC]
@@ -1054,21 +1042,25 @@ class JetBase(Model):
     def _get_nu_max_grid(self):
         return  self._blob.nu_stop_grid
 
-    def set_nu_grid_size(self,size):
-        self.nu_size=size
-
     @property
     def nu_size(self):
         return self._nu_size
-        #return self._get_nu_grid_size()
 
     @nu_size.setter
-    def nu_size(self, val):
-        self._nu_size=val
+    def nu_size(self, size):
+        self._nu_size = size
 
-        #!!!!!!!!!!This can't be changed the max size is 1000 in jetset!!!
-        #if hasattr(self, '_blob'):
-        #   self._set_nu_grid_size_blob(val)
+    def set_nu_grid_size(self, val):
+        self._set_nu_grid_size_blob(val)
+
+    @property
+    def nu_grid_size(self):
+        return self._get_nu_grid_size_blob()
+
+    @nu_grid_size.setter
+    def nu_grid_size(self, val):
+        self._set_nu_grid_size_blob(val)
+
 
     def _set_nu_grid_size_blob(self, val):
         if val < 100:
@@ -1108,7 +1100,7 @@ class JetBase(Model):
         print(" gmin grid : %e" % self._blob.
               gmin_griglia)
         print(" gmax grid : %e" % self._blob.gmax_griglia)
-        print(" normalization ", self.Norm_distr>0)
+        print(" normalization ", self.Norm_distr)
         print(" log-values ", self._emitters_distribution_log_values)
         print('')
         self.parameters.par_array.sort(key=lambda x: x.name, reverse=False)
@@ -1134,7 +1126,7 @@ class JetBase(Model):
         print (" gamma energy grid size: ",self.gamma_grid_size)
         print (" gmin grid : %e"%self._blob.gmin_griglia)
         print (" gmax grid : %e"%self._blob.gmax_griglia)
-        print(" normalization ", self.Norm_distr>0)
+        print(" normalization ", self.Norm_distr)
         print(" log-values ", self._emitters_distribution_log_values)
         print('')
         if 'Disk' in self.EC_components_list:
@@ -1163,7 +1155,8 @@ class JetBase(Model):
         print('external fields transformation method:', self.get_external_field_transf())
         print ('')
         print ('SED info:')
-        print (' nu grid size :%d' % self.nu_size)
+        print (' nu grid size jetkernel: %d' % self.nu_grid_size)
+        print (' nu grid size: %d' % self.nu_size)
         print (' nu mix (Hz): %e' % self._get_nu_min_grid())
         print (' nu max (Hz): %e' % self._get_nu_max_grid())
         print('')
@@ -1195,7 +1188,7 @@ class JetBase(Model):
             else:
                 comp_label=None
             if c.state!='off':
-                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label, density=density)
+                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label, density=density,update=False)
 
         else:
             for c in self.spectral_components_list:
@@ -1204,7 +1197,7 @@ class JetBase(Model):
                     comp_label=label
                 #print('comp label',comp_label)
                 if c.state != 'off' and c.name!='Sum':
-                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color, density=density)
+                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color, density=density,update=False)
 
             c=self.get_spectral_component_by_name('Sum')
             if label is not None:
@@ -1212,20 +1205,30 @@ class JetBase(Model):
             else:
                 comp_label='Sum'
 
-            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color, density=density)
+            plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color, density=density,update=False)
 
         if frame == 'src' and sed_data is not None:
             sed_data.z = z_sed_data
-
+        plot_obj.update_plot()
         return plot_obj
 
     @safe_run
     def set_blob(self):
-        BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.parameters.z_cosm.val))
+        if hasattr(self, 'T_esc_e_second'):
+            if self.T_esc_e_second is None:
+                self._blob.T_esc_e_second = self.parameters.R.val / BlazarSED.vluce_cm
+            else:
+                self._blob.T_esc_e_second = self.T_esc_e_second
+        if self.emitters_distribution._user_defined is True:
+            self.emitters_distribution._fill()
+        BlazarSED.Init(self._blob, self.cosmo.get_DL_cm(self.parameters.z_cosm.val))
+        if self.emitters_distribution._user_defined is True:
+            self.emitters_distribution._set_blob()
+
 
     @safe_run
     def set_external_fields(self):
-        BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.parameters.z_cosm.val))
+        self.set_blob()
         BlazarSED.spectra_External_Fields(1,self._blob)
 
     def lin_func(self, lin_nu, init, phys_output=False, update_emitters=True):
@@ -1233,11 +1236,8 @@ class JetBase(Model):
             raise RuntimeError('emitters distribution not defined')
 
         if init is True:
-            if self.emitters_distribution._user_defined is True:
-                self.emitters_distribution.update()
-            BlazarSED.Init(self._blob,self.cosmo.get_DL_cm(self.parameters.z_cosm.val) )
+            self.set_blob()
             self._update_spectral_components()
-
         BlazarSED.Run_SED(self._blob)
 
         if phys_output==True:
@@ -1246,6 +1246,8 @@ class JetBase(Model):
         if self.emitters_distribution._user_defined is False:
             if update_emitters is True:
                 self.emitters_distribution.update()
+            else:
+                self.emitters_distribution._fill()
 
         nu_sed_sum, nuFnu_sed_sum = self.spectral_components.Sum.get_SED_points(lin_nu=lin_nu,log_log=False,interp=self._jetkernel_interp)
         return nu_sed_sum, nuFnu_sed_sum
@@ -1287,10 +1289,11 @@ class JetBase(Model):
              label=None,
              phys_output=False,
              update_emitters=True):
-
         out_model = None
         lin_nu, log_nu = self._prepare_nu_model(nu, loglog)
-        lin_model, log_model= self._eval_model( lin_nu, log_nu ,init, loglog, phys_output=phys_output)
+
+        lin_model, log_model= self._eval_model(lin_nu, log_nu ,init, loglog, phys_output=phys_output,
+                                                update_emitters=update_emitters)
         #print('-->',lin_nu.min(),lin_nu.max())
         if fill_SED is True:
             self._fill(lin_nu,lin_model)
@@ -1459,176 +1462,193 @@ class JetBase(Model):
 
 
 
-class Jetpp(JetBase):
+
+class Jet(JetBase):
     """
-    Hadroinc  Jet pp process
+    Jet class
     """
 
     def __init__(self,
                  cosmo=None,
-                 name='tests',
-                 proton_distribution='pl',
-                 proton_distribution_log_values=False,
+                 name='',
+                 emitters_type='electrons',
+                 emitters_distribution='plc',
+                 emitters_distribution_log_values=False,
                  beaming_expr='delta',
+                 T_esc_e_second=None,
                  jet_workplace=None,
                  verbose=None,
-                 clean_work_dir=True):
+                 clean_work_dir=True,
+                 electron_distribution=None,
+                 proton_distribution=None,
+                 electron_distribution_log_values=None,
+                 proton_distribution_log_values=None):
 
-        super(Jetpp,self).__init__(cosmo=cosmo,
+        if electron_distribution is not None:
+            emitters_type = 'electrons'
+            emitters_distribution= electron_distribution
+        if electron_distribution_log_values is not None:
+            emitters_distribution_log_values = electron_distribution_log_values
+
+        if proton_distribution is not None:
+            emitters_type = 'protons'
+            emitters_distribution= proton_distribution
+        if proton_distribution_log_values is not None:
+            emitters_distribution_log_values = proton_distribution_log_values
+
+
+        if name is None:
+            name=''
+
+        super(Jet,self).__init__(cosmo=cosmo,
                                  name=name,
-                                 emitters_type='protons',
-                                 emitters_distribution=proton_distribution,
-                                 emitters_distribution_log_values=proton_distribution_log_values,
+                                 emitters_type=emitters_type,
+                                 emitters_distribution=emitters_distribution,
+                                 emitters_distribution_log_values=emitters_distribution_log_values,
                                  beaming_expr=beaming_expr,
                                  jet_workplace=jet_workplace,
                                  verbose=verbose,
                                  clean_work_dir=clean_work_dir)
 
-        self.proton_distribution = self.emitters_distribution
+        if name is None or name == '':
+            if self.emitters_distribution.emitters_type == 'electrons':
+                name = 'jet_leptonic'
+            elif self.emitters_distribution.emitters_type == 'protons':
+                name = 'jet_hadronic_pp'
+            else:
+                name = 'jet'
 
-        self.add_pp_gamma_component()
+        self.name = clean_var_name(name)
+
+        if self.emitters_distribution.emitters_type == 'protons':
+            self.T_esc_e_second=T_esc_e_second
+            self.add_pp_gamma_component()
+            self.add_pp_neutrino_component()
+            self.add_bremss_ep_component()
+
+        if self.emitters_distribution.emitters_type == 'electrons':
+            self.electron_distribution=self.emitters_distribution
+
+        if self.emitters_distribution.emitters_type == 'protons':
+            self.protons_distribution=self.emitters_distribution
+
+    @staticmethod
+    def available_electron_distributions():
+        JetBase.available_emitters_distributions()
 
     @staticmethod
     def available_proton_distributions():
-        JetkernelEmittersDistribution.available_distributions()
+        JetBase.available_emitters_distributions()
 
     def get_proton_distribution_name(self):
         return self.get_emitters_distribution_name()
 
-    def add_pp_gamma_component(self):
-        self._add_spectral_component('PP_gamma',var_name='do_pp_gamma',state_dict=dict((('on', 1), ('off', 0))))
+    def get_electron_distribution_name(self):
+        return self.get_emitters_distribution_name()
 
     def show_proton_distribution(self):
         self.show_emitters_distribution()
 
-class Jet(JetBase):
-    """
-    Leptonic Jet
-    """
-
-    def __init__(self,
-                 cosmo=None,
-                 name='jet_leptonic',
-                 electron_distribution='pl',
-                 electron_distribution_log_values=False,
-                 beaming_expr='delta',
-                 jet_workplace=None,
-                 verbose=None,
-                 clean_work_dir=True):
-
-        if name is None or name == '':
-            name = 'jet_leptonic'
-
-        super(Jet,self).__init__(cosmo=cosmo,
-                                 name=name,
-                                 emitters_type='electrons',
-                                 emitters_distribution=electron_distribution,
-                                 emitters_distribution_log_values=electron_distribution_log_values,
-                                 beaming_expr=beaming_expr,
-                                 jet_workplace=jet_workplace,
-                                 verbose=verbose,
-                                 clean_work_dir=clean_work_dir)
-
-        self.electron_distribution = self.emitters_distribution
-
-    @staticmethod
-    def available_electron_distributions():
-        JetkernelEmittersDistribution.available_distributions()
-
-    def get_electron_distribution_name(self):
-        return self.get_emitters_distribution_name()
-
-
-
     def show_electron_distribution(self):
         self.show_emitters_distribution()
 
-    def set_N_from_Ue(self,U_e):
-        N = 1.0
-        setattr(self._blob, 'N', N)
+    def add_bremss_ep_component(self):
+        self._add_spectral_component('Bremss_ep', var_name='do_bremss_ep', state_dict=dict((('on', 1), ('off', 0))))
+
+    def add_pp_gamma_component(self):
+        self._add_spectral_component('PP_gamma', var_name='do_pp_gamma', state_dict=dict((('on', 1), ('off', 0))))
+
+    def add_pp_neutrino_component(self):
+        self._add_spectral_component('PP_neutrino_tot', var_name='do_pp_neutrino',
+                                     state_dict=dict((('on', 1), ('off', 0))))
+        self._add_spectral_component('PP_neutrino_mu', var_name='do_pp_neutrino',
+                                     state_dict=dict((('on', 1), ('off', 0))))
+        self._add_spectral_component('PP_neutrino_e', var_name='do_pp_neutrino',
+                                     state_dict=dict((('on', 1), ('off', 0))))
+
+
+
+    def set_N_from_Up(self, U_p):
+        if self.emitters_distribution.emitters_type!='protons':
+            raise  RuntimeError('set_N_from_Up can be used only with protons emitters')
+        N=self.parameters.N.val
         gamma_grid_size = self._blob.gamma_grid_size
         self.emitters_distribution.set_grid_size(100)
         self.set_blob()
-        BlazarSED.EvalU_e(self._blob)
-        ratio = self._blob.U_e/ U_e
+        BlazarSED.EvalU_p(self._blob)
+        ratio = U_p/self._blob.U_p
         self.emitters_distribution.set_grid_size(gamma_grid_size)
-        self.set_par('N', val=N / ratio)
+        self.set_par('N', val= N* ratio)
+
+    def set_N_from_Ue(self,U_e):
+        N = self.parameters.N.val
+        gamma_grid_size = self._blob.gamma_grid_size
+        self.emitters_distribution.set_grid_size(100)
+        self.emitters_distribution._fill()
+        self.set_blob()
+        BlazarSED.EvalU_e(self._blob)
+        ratio = U_e/self._blob.U_e
+        self.emitters_distribution.set_grid_size(gamma_grid_size)
+        self.emitters_distribution._fill()
+        self.set_par('N', val=N *ratio)
+        self.set_blob()
 
     def set_N_from_Le(self,L_e):
         gamma_grid_size = self._blob.gamma_grid_size
         self.emitters_distribution.set_grid_size(100)
         self.set_blob()
-        U_e=L_e/    self._blob.Vol_sphere
+        U_e=L_e/ self._blob.Vol_sphere
         self.emitters_distribution.set_grid_size(gamma_grid_size)
         self.set_N_from_Ue(U_e)
 
 
     def set_N_from_L_sync(self,L_sync):
-
-        N = 1.0
-        setattr(self._blob, 'N', N)
+        self.set_par('N', val=1.0)
         gamma_grid_size = self._blob.gamma_grid_size
         self.emitters_distribution.set_grid_size(100)
         self.set_blob()
         delta = self._blob.beam_obj
-        ratio = (BlazarSED.Power_Sync_Electron(self._blob)* delta ** 4)/L_sync
+        ratio = L_sync/(BlazarSED.Power_Sync_Electron(self._blob)* delta ** 4)
         self.emitters_distribution.set_grid_size(gamma_grid_size)
-
-        # print 'N',N/ratio
-        self.set_par('N', val=N / ratio)
+        self.set_par('N', val=ratio)
 
 
     def set_N_from_F_sync(self, F_sync):
-        self.set_blob()
-        DL = self._blob.dist
+        DL = self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
         L = F_sync * DL * DL * 4.0 * np.pi
         self.set_N_from_L_sync(L)
 
     def set_N_from_nuLnu(self,nuLnu_src, nu_src):
         """
-        sets the normalization of N to match the rest frame luminosity L_0, at a given frequency nu_0
+        sets the normalization of N to match the rest frame luminosity nuLnu_src, at a given frequency nu_src
         """
-        N = 1.0
-        setattr(self._blob, 'N', N)
+        self.set_par('N',val=1.0)
         gamma_grid_size = self._blob.gamma_grid_size
         self.emitters_distribution.set_grid_size(100)
-
-
-
         self.set_blob()
-
         delta = self._blob.beam_obj
         nu_blob = nu_src / delta
-
         L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
-
-
-        ratio = (L_out / nuLnu_src)
+        N_out = nuLnu_src / L_out
         self.emitters_distribution.set_grid_size(gamma_grid_size)
-
-        #print 'N',N/ratio
-        self.set_par('N', val=N/ratio)
+        self.set_par('N', val=N_out)
 
 
     def set_N_from_nuFnu(self, nuFnu_obs, nu_obs):
         """
-        sets the normalization of N to match the observed flux nu0F_nu0 at a given frequency nu_0
+        sets the normalization of N to match the observed flux nuFnu_obs at a given frequency nu_obs
         """
-
         self.set_blob()
-        DL = self._blob.dist
-
+        DL =  self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
         L = nuFnu_obs * DL * DL * 4.0 * np.pi
-
         nu_rest = nu_obs * (1 + self._blob.z_cosm)
-
         self.set_N_from_nuLnu( L, nu_rest)
 
 
 
     def set_B_eq(self, nuFnu_obs, nu_obs, B_min=1E-9,B_max=1.0,N_pts=20,plot=False):
         """
-        returns equipartiont B
+        returns equipartition B
         """
         # print B_min
 

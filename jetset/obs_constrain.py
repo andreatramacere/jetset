@@ -12,7 +12,6 @@ import scipy as sp
 
 import os
 
-from scipy import double,logspace
 
 from numpy import polyfit,polyval
 
@@ -27,11 +26,11 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if on_rtd == True:
     try:
-        from jetkernel import jetkernel as BlazarSED
+        from .jetkernel import jetkernel as BlazarSED
     except ImportError:
         from .mock import jetkernel as BlazarSED
 else:
-    from jetkernel import jetkernel as BlazarSED
+    from .jetkernel import jetkernel as BlazarSED
 
 from .jet_model import Jet
 
@@ -41,19 +40,18 @@ from .output import section_separator,WorkPlace,makedir
 
 from .utils import *
 
-__all__=['ObsConstrain','check_boundaries','check_gamma_tansp','check_t_var',
+__all__=['ObsConstrain','check_boundaries', 'check_t_var',
          'constr_B_from_nu_peaks','constr_R_from_CD','find_B_from_nu_p_S','find_gamma0',
          'find_gamma_3p_SSC','find_gamma_Synch','find_HE_cut_off','find_s','find_s1',
          'find_turn_over','get_Comp_factor','get_R_tvar','get_U_Sync_from_Ph',
          'rescale_Ne','set_gmin_from_nu_cut_IR']
 
+
+
 class ObsConstrain(object):
     """
     doc
     """
-   
-    
-    
     def __init__(self,B_range=None,
                  distr_e=None,
                  t_var_sec=None,
@@ -67,14 +65,14 @@ class ObsConstrain(object):
                  obspar_workplace=None,
                  **keywords):
 
-        if  'SEDShape' not in keywords :  
+        if 'SEDShape' not in keywords :
 
             self.indices=index_array()
             
             keys = sorted(keywords.keys())
             for kw in keys:
-                print ("kw",kw)
-                if kw=='indices':
+                print("kw",kw)
+                if kw =='indices':
                     self.indices=keywords[kw]
                     
             for index in self.indices.idx_array:
@@ -90,7 +88,6 @@ class ObsConstrain(object):
             self.z=z
             self.class_obj=obj_class
 
-            
         else:
             
             self.SEDShape=keywords['SEDShape']
@@ -103,15 +100,14 @@ class ObsConstrain(object):
             self.S_LE_slope=self.SEDShape.S_LE_slope
             self.nu_p_IC_obs  = np.power(10., self.SEDShape.IC_peak.nu_p_val)
             self.nuFnu_p_IC_obs = np.power(10., self.SEDShape.IC_peak.nuFnu_p_val)
-            
-           
-            
-            self.class_obj=self.SEDShape.obj_class
+
+            self.class_obj = self.SEDShape.obj_class
             self.z=self.SEDShape.sed_data.z
             self.rest_frame='obs'
             check_frame(self.rest_frame)
-           
 
+        if self.z<0.:
+            raise  RuntimeError('redshift value must be>0, please check z in sed_data or z in class constructor parameter')
         
         
             
@@ -136,8 +132,7 @@ class ObsConstrain(object):
         self.distr_e=distr_e
         
         self.nu_cut_IR=nu_cut_IR
-                        
-            
+
         if obspar_workplace is None:
             obspar_workplace=WorkPlace()
             self.out_dir=obspar_workplace.out_dir
@@ -145,28 +140,23 @@ class ObsConstrain(object):
         else:
             self.out_dir=obspar_workplace.out_dir
             self.flag=obspar_workplace.flag
-    
+
     def constrain_SSC_model(self,name=None,jet_model=None,params_grid_size=10,electron_distribution_log_values=False,silent=False):
+
         """
         constarin SSC model paramters
         """
-        
-         
-        
-        print  (section_separator)
-        print ("***  constrains parameters from observable ***")
+        print(section_separator)
+        print("***  constrains parameters from observable ***")
         print()
-        
-        
+
         model=self.get_model_constraint(name=name,
                                         jet_model=jet_model,
                                         params_grid_size=params_grid_size,
                                         electron_distribution_log_values=electron_distribution_log_values,
                                         silent=silent)
-         
-        
         print()
-        print  (section_separator)
+        print(section_separator)
 
         return model
     
@@ -179,15 +169,18 @@ class ObsConstrain(object):
                                params_grid_size=10,
                                electron_distribution_log_values=False,
                                R_H=None,
-                               silent=False):
+                               silent=False,
+                               disk_type='MultiBB',
+                               R_H_within_BLR=False,
+                               R_H_within_DT=False):
         """
         constarin SSC model paramters
         """
         
          
         
-        print  (section_separator)
-        print  ("***  constrains parameters from observable ***")
+        print(section_separator)
+        print ("***  constrains parameters from observable ***")
         print()
         
         
@@ -197,12 +190,15 @@ class ObsConstrain(object):
                                         params_grid_size=params_grid_size,
                                         electron_distribution_log_values=electron_distribution_log_values,
                                         silent=silent,
-                                        R_H=R_H)
+                                        R_H=R_H,
+                                        disk_type=disk_type,
+                                        R_H_within_BLR=R_H_within_BLR,
+                                        R_H_within_DT=R_H_within_DT)
         
          
 
         print()
-        print  (section_separator)
+        print (section_separator)
 
         return model
      
@@ -216,95 +212,100 @@ class ObsConstrain(object):
                              params_grid_size=10,
                              electron_distribution_log_values=False,
                              silent=False,
-                             R_H=None):
+                             R_H=None,
+                             disk_type='MultiBB',
+                             R_H_within_BLR=False,
+                             R_H_within_DT=False):
         
-        #if name is None and jet_model is  None:
-        #    if isinstance(self.distr_e,str):
-        #        name=self.distr_e
-        #    else:
-        #        name = self.distr_e.name
 
-        out_dir='%s/obs_constrain_%s/'%(self.out_dir,name)
-        makedir(out_dir)
-        
+
+        #out_dir='%s/obs_constrain_%s/'%(self.out_dir,name)
+        #makedir(out_dir)
+
+        if silent is False:
+            print(section_separator)
+            print("---> ***  emitting region parameters  ***")
+
         if jet_model is None:
             if self.beaming_expr=='delta':
                 jet_model=Jet(name=name, electron_distribution=self.distr_e,electron_distribution_log_values=electron_distribution_log_values)
-            elif self.beaming_expr=='bulk_theta': 
+            elif self.beaming_expr=='bulk_theta':
                 jet_model=Jet(name=name, electron_distribution=self.distr_e,beaming_expr='bulk_theta',electron_distribution_log_values=electron_distribution_log_values)
-            
+
             else:
                 raise RuntimeError('''wrong beaming_expr value=%s, allowed 'delta' or 'bulk_theta' '''%self.beaming_expr)
 
-        #else:
-        #    self.distr_e=jet_model.get_electron_distribution_name()
-
-        #jet_model.eval()
-
-
-
         if R_H is not None:
             jet_model.set_par('R_H',val=R_H)
-
         self.emitters_distr_spectral_type=jet_model.emitters_distribution.spectral_type
 
         nu_p_EC_seed_field=None
         if EC_componets_list is not None:
             jet_model.add_EC_component(EC_componets_list)
+            jet_model.parameters.disk_type.val=disk_type
             if hasattr(jet_model.parameters, 'L_Disk'):
                 jet_model.set_par('L_Disk',val=self.SEDShape.L_Disk)
                 jet_model.set_par('T_Disk', val=self.SEDShape.T_Disk)
                 if silent is False:
-                    print('---> beaming set L_D ',jet_model.parameters.L_Disk.val)
-                    print('---> beaming set T_D', jet_model.parameters.T_Disk.val)
+                    print('---> EC set L_D ',jet_model.parameters.L_Disk.val)
+                    print('---> EC set T_D', jet_model.parameters.T_Disk.val)
                 if hasattr(jet_model.parameters, 'R_BLR_in'):
                     R_BLR_in=1E17*np.sqrt(self.SEDShape.L_Disk/1E45)
                     jet_model.set_par('R_BLR_in', val=R_BLR_in)
                     jet_model.set_par('R_BLR_out', val=R_BLR_in*2)
+
                     if silent is False:
-                        print('---> beaming set R_BLR_in', jet_model.parameters.R_BLR_in.val)
-                        print('---> beaming set R_BLR_out', jet_model.parameters.R_BLR_out.val)
+                        print('---> EC set R_BLR_in', jet_model.parameters.R_BLR_in.val)
+                        print('---> EC set R_BLR_out', jet_model.parameters.R_BLR_out.val)
+                    if jet_model.parameters.R_H.val > R_BLR_in and R_H_within_BLR is True:
+                        jet_model.parameters.R_H.val = R_BLR_in * 0.8
+                        if silent is False:
+                            print('---> moved R_H within BLR to R_H=%e'%jet_model.parameters.R_H.val)
                 if hasattr(jet_model.parameters, 'R_DT'):
-                    R_DT=2.5E18*np.sqrt(self.SEDShape.L_Disk    /1E45)
+                    R_DT=2.5E18*np.sqrt(self.SEDShape.L_Disk/1E45)
                     jet_model.set_par('R_DT', val = R_DT)
                     if silent is False:
-                        print('---> beaming set R_DT', jet_model.parameters.R_DT.val)
+                        print('---> EC set R_DT', jet_model.parameters.R_DT.val)
+                    if jet_model.parameters.R_H.val > R_DT and R_H_within_DT is True:
+                        jet_model.parameters.R_H.val = R_DT * 0.8
+                        if silent is False:
+                            print('---> moved R_H within DT to R_H=%e'%jet_model.parameters.R_H.val)
+
+
             nu_p_EC_seed_field=self.SEDShape.nu_p_Disk
 
-
-
+        if silent is False:
+            print()
         #setting the Jet object 
-        path_initial=jet_model.get_path()
-        flag_initial=jet_model.get_flag()
+        #path_initial=jet_model.get_path()
+        #flag_initial=jet_model.get_flag()
         
-        jet_model.set_path(out_dir)
-        jet_model.set_flag(name)
-        
-        
+        #jet_model.set_path(out_dir)
+        #jet_model.set_flag(name)
+
         IC_nu_size_initial=jet_model.get_IC_nu_size()
         nu_seed_size_initial=jet_model.get_seed_nu_size()
-        
+
+
         jet_model.set_IC_nu_size(50)
         jet_model.set_seed_nu_size(50)
-
 
         #jet_model.show_pars()
         
         #beaming
-        if silent is False:
-            print ("---> ***  emitting region parameters  ***")
+
        
        
         #SEtting emetting_region parameters
         
         #!!Controlla beaming max
         #beaming
-        
+
         if self.beaming_expr=='delta':
             beaming_par=jet_model.get_par_by_type('beaming')
             beaming_par.set(val=self.beaming)
-            if silent is False:
-                print ("--->",beaming_par.get_description())
+            #if silent is False:
+            #    print("--->",beaming_par.get_description())
             
            
         elif self.beaming_expr=='bulk_theta': 
@@ -312,12 +313,14 @@ class ObsConstrain(object):
             theta_par=jet_model.get_par_by_type('jet-viewing-angle')
             theta_par.set(val=self.theta)
             bulk_factor_par.set(val=self.bulk_factor)
+            #if silent is False:
+            #    print("--->",theta_par.get_description())
+            #    print("--->",bulk_factor_par.get_description())
+            #self.beaming=jet_model.get_beaming(theta=self.theta,bulk_factor=self.bulk_factor,beaming=-1.0)
+            self.beaming = jet_model.get_beaming()
             if silent is False:
-                print ("--->",theta_par.get_description())
-                print ("--->",bulk_factor_par.get_description())
-            self.beaming=jet_model.get_beaming(theta=self.theta,bulk_factor=self.bulk_factor,beaming=-1.0)
-            if silent is False:
-                print ("---> beaming set to",self.beaming)
+                print("---> setting beaming  to",self.beaming)
+                print()
         else:
             raise RuntimeError('''wrong beaming_expr value=%s, allowed 'delta' or 'bulk_theta' '''%self.beaming_expr)
         
@@ -327,43 +330,42 @@ class ObsConstrain(object):
         if z_par is not None:
             if silent is False:
                 print ("---> setting par type redshift, corresponding to par %s"%(z_par.name))
-            z_par.set(val=self.z)
-            if silent is False:
-                print ("---> ",z_par.get_description())
                 print()
+            z_par.set(val=self.z)
+            #if silent is False:
+            #    print("---> ",z_par.get_description())
+            #    print()
         #B
         B_par=jet_model.get_par_by_type('magnetic_field')
+        B_par.set(val=self.B_start)
         if B_par is not None:
             if silent is False:
-                print ("---> setting par type magnetic_field, corresponding to par %s"%(B_par.name))
-            B_par.set(val=self.B_start)
-            if silent is False:
-                print ("---> ",B_par.get_description())
+                print("---> setting par type magnetic_field, corresponding to par %s=%e"%(B_par.name,B_par.val))
                 print()
+
 
 
         #R
-        R_tvar=get_R_tvar(self.beaming,self.t_var_sec,+self.z)
-        R_par=jet_model.get_par_by_type('region_size')
-        if R_par is not None:
-            if silent is False:
-                print ("---> setting par type region_size, corresponding to par %s"%(R_par.name))
+        R_tvar,completed=get_R_tvar(self.beaming,self.t_var_sec,+self.z)
 
-            R_par.set(val=set_lin_log_val(R_par,R_tvar))
+        R_par=jet_model.get_par_by_type('region_size')
+        R_par.set(val=set_lin_log_val(R_par, R_tvar))
+        if R_par is not None and completed is True:
             if silent is False:
-                print ("---> ",R_par.get_description())
+
+                print("---> setting par type region_size, corresponding to par %s=%e"%(R_par.name,R_par.val))
+                print("---> completed", completed)
                 print()
+
+
 
         if silent is False:
             print()
-        
-            print ("---> *** electron distribution parameters ***")
+            print("---> *** electron distribution parameters ***")
+            print('---> emitters distribution spectral type', jet_model.emitters_distribution.spectral_type)
+            print('---> emitters distribution name', jet_model.emitters_distribution.name)
+            print()
 
-            print('emitters distribution spectral type', jet_model.emitters_distribution.spectral_type)
-            print('emitters distribution name', jet_model.emitters_distribution.name)
-        
-       
-        
         #r
         curvature_par=jet_model.get_par_by_type('spectral_curvature')
         if curvature_par is not None:
@@ -371,95 +373,99 @@ class ObsConstrain(object):
             if self.beta_S is not None:
                 curvature_par.set(val=self.beta_S*5.0)
                 if silent is False:
-                    print ("---> r elec. spec. curvature =%e"%curvature_par.val)
+                    print("---> r elec. spec. curvature =%e"%curvature_par.val)
             else:
                 curvature_par.set(val=0.4*5.0)
                 if silent is False:
-                    print ("---> beta Sync not provided, using 0.4, corresponding to r=2.0")
+                    print("---> beta Sync not provided, using 0.4, corresponding to r=2.0")
             if silent is False:
-                print ("---> setting par type curvature, corresponding to par %s"%(curvature_par.name))
-                print ("---> ",curvature_par.get_description())
+                print("---> setting par type curvature, corresponding to par %s"%(curvature_par.name))
+                #print("---> ",curvature_par.get_description())
                 print()
         
         #s
         LE_spectral_slope_par=jet_model.get_par_by_type('LE_spectral_slope')
         if LE_spectral_slope_par is not None:
-            s_Plank,s_X,s_Fermi,index_s=find_s(self.class_obj,self.nu_p_S_obs,self.S_LE_slope,self.indices,silent=silent)
+            (s_Plank,s_X,s_Fermi,index_s),completed=find_s(self.class_obj,self.nu_p_S_obs,self.S_LE_slope,self.indices,silent=silent)
             LE_spectral_slope_par.set(val=index_s)
             if silent is False:
-                print ("---> setting par type LE_spectral_slope, corresponding to par %s"%(LE_spectral_slope_par.name))
-                print ("---> ",LE_spectral_slope_par.get_description())
+                print("---> setting par type LE_spectral_slope, corresponding to par %s"%(LE_spectral_slope_par.name))
+                print("---> task completed",completed)
+                #print("---> ",LE_spectral_slope_par.get_description())
                 print()
 
 
         #s1
         HE_spectral_slope_par=jet_model.get_par_by_type('HE_spectral_slope')
         if HE_spectral_slope_par is not None:
-            index_s1=find_s1(self.class_obj,self.indices) 
+            index_s1,completed=find_s1(self.class_obj,self.indices)
             HE_spectral_slope_par.set(val=index_s1)
             if silent is False:
-                print ("---> setting par type LE_spectral_slope, corresponding to par %s"%(HE_spectral_slope_par.name))
-                print ("---> ",HE_spectral_slope_par.get_description())
+                print("---> setting par type LE_spectral_slope, corresponding to par %s"%(HE_spectral_slope_par.name))
+                print("---> task completed", completed)
+                #print("---> ",HE_spectral_slope_par.get_description())
                 print()
 
-        gamma_3p_Sync=find_gamma_Synch(self.nu_p_S_obs,self.rest_frame,B_par.val,self.beaming,z_par.val)
+        gamma_3p_Sync,completed=find_gamma_Synch(self.nu_p_S_obs,self.rest_frame,B_par.val,self.beaming,z_par.val)
         if silent is False:
-            print ("---> gamma_3p_Sync= %e, assuming B=%e"%(gamma_3p_Sync,B_par.val))
-
-        
+            print ("---> setting gamma_3p_Sync= %e, assuming B=%e"%(gamma_3p_Sync,B_par.val))
+            print ("---> task completed",completed)
+            print()
         
         #gmax start
-        gmax=find_HE_cut_off(self.emitters_distr_spectral_type,self.S_nu_max,self.rest_frame,B_par.val,self.beaming,z_par.val)
+        gmax, completed=find_HE_cut_off(self.emitters_distr_spectral_type,self.S_nu_max,self.rest_frame,B_par.val,self.beaming,z_par.val)
         if silent is False:
-            print ("---> gamma_max=%e from nu_max_Sync= %e, using B=%e"%(gmax,self.S_nu_max,B_par.val))
-
+            print("---> gamma_max=%e from nu_max_Sync= %e, using B=%e"%(gmax,self.S_nu_max,B_par.val))
+            print("---> task completed", completed)
         HE_cut_off_par=jet_model.get_par_by_type('high-energy-cut-off')
         if HE_cut_off_par is not None:
             HE_cut_off_par.set(val=set_lin_log_val(HE_cut_off_par,gmax))
             if silent is False:
-                print ("---> setting par type high-energy-cut-off, corresponding to par %s"%(HE_cut_off_par.name))
-                print ("---> ",HE_cut_off_par.get_description())
-                print ()
+                print("---> setting par type high-energy-cut-off, corresponding to par %s=%e"%(HE_cut_off_par.name,HE_cut_off_par.val))
+                #print("---> ",HE_cut_off_par.get_description())
+                print()
         
         #gmin start
-        gmin= set_gmin_from_nu_cut_IR(self.nu_cut_IR,self.rest_frame,B_par.val,self.beaming,z_par.val)  
+        gmin,completed= set_gmin_from_nu_cut_IR(self.nu_cut_IR,self.rest_frame,B_par.val,self.beaming,z_par.val)
         par_LE_cut_off_par=jet_model.get_par_by_type('low-energy-cut-off')
         if par_LE_cut_off_par is not None:
             par_LE_cut_off_par.set(val=set_lin_log_val(par_LE_cut_off_par,gmin))
             if silent is False:
-                print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(par_LE_cut_off_par.name))
-                print ("---> ",par_LE_cut_off_par.get_description())
-                print ()
-        
-        
+                print("---> setting par type low-energy-cut-off, corresponding to par %s=%e"%(par_LE_cut_off_par.name,par_LE_cut_off_par.val))
+                print("---> task completed", completed)
+                #print("---> ",par_LE_cut_off_par.get_description())
+                print()
+
         #turn-over-energy from gamma_3p_Sync
         turn_over_par=jet_model.get_par_by_type('turn-over-energy')
         if turn_over_par is not None:
-            _t=find_turn_over(jet_model,self.emitters_distr_spectral_type,gamma_3p_Sync)
+            _t,completed=find_turn_over(jet_model,self.emitters_distr_spectral_type,gamma_3p_Sync)
             turn_over_par.set(val=set_lin_log_val(turn_over_par,_t))
 
             if silent is False:
-                print ("---> setting par type turn-over energy, corresponding to par %s"%(turn_over_par.name))
-                print ("---> using gamma_3p_Sync=",gamma_3p_Sync)
-                print ("---> ",turn_over_par.get_description())
-                print ()
-         
-   
-        
+                print("---> setting par type turn-over energy, corresponding to par %s=%e"%(turn_over_par.name,turn_over_par.val))
+                print("---> task completed", completed)
+                print("---> using gamma_3p_Sync=",gamma_3p_Sync)
+                #print("---> ",turn_over_par.get_description())
+                print()
+
         #turn-over-energy from gamma_3p_SSC
-        gamma_3p_SSC= find_gamma_3p_SSC(self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,gamma_3p_Sync,self.beaming,z_par.val,nu_p_EC_seed_field=nu_p_EC_seed_field,silent=silent)
+        gamma_3p_SSC,completed= find_gamma_3p_SSC(self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,gamma_3p_Sync,self.beaming,z_par.val,nu_p_EC_seed_field=nu_p_EC_seed_field,silent=silent)
         if silent is False:
-            print ("---> gamma_3p_SSCc= %e",gamma_3p_SSC)
+            print("---> determine gamma_3p_SSCc= %e"%gamma_3p_SSC)
+            print("---> task completed", completed)
+            print()
        
         if turn_over_par is not None:
-            _t=find_turn_over(jet_model,self.emitters_distr_spectral_type,gamma_3p_SSC)
+            _t,completed=find_turn_over(jet_model,self.emitters_distr_spectral_type,gamma_3p_SSC)
             turn_over_par.set(val=set_lin_log_val(turn_over_par,_t))
 
             if silent is False:
-                print ("---> setting par type turn-over energy, corresponding to par %s"%(turn_over_par.name))
-                print ("---> using gamma_3p_SSC=",gamma_3p_SSC)
-                print ("---> ",turn_over_par.get_description())
-                print ()
+                print("---> setting par type turn-over energy, corresponding to par %s=%e"%(turn_over_par.name,turn_over_par.val))
+                print("---> task completed", completed)
+                print("---> using gamma_3p_SSC=%e"%gamma_3p_SSC)
+                #print("---> ",turn_over_par.get_description())
+                print()
 
         if silent is False:
             print ()
@@ -469,144 +475,148 @@ class ObsConstrain(object):
         #N
         N_par=jet_model.get_par_by_type('emitters_density')
         if N_par is not None:
-            N,ratio=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.rest_frame)
+            completed=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.nu_p_S_obs,self.rest_frame)
             if silent is False:
-                print ("---> setting par type emitters_density, corresponding to par %s"%(N_par.name))
-            N_par.set(val=N)
+                print("---> setting par type emitters_density, corresponding to par %s"%(N_par.name))
+                print("---> to N=%e" % (N_par.val))
+                print("---> task completed",completed)
             if silent is False:
-               print('--->',N_par.get_description())
-        #find B
-        #print "estimate B from nu_p_S, and gamma_3p_SSC"
-        B=find_B_from_nu_p_S(self.nu_p_S_obs,gamma_3p_SSC,self.rest_frame,self.beaming,z_par.val)
+                #print('--->',N_par.get_description())
+                print()
+
+        B,B=find_B_from_nu_p_S(self.nu_p_S_obs,gamma_3p_SSC,self.rest_frame,self.beaming,z_par.val)
         if silent is False:
-            print ("---> B from nu_p_S=%e"%B)
+            print("---> setting B from nu_p_S to B=%e"%B)
+            print("---> to B=%e" %B)
 
         if silent is False:
-            print ("---> get B from best matching of nu_p_IC")
+            print("---> setting B from best matching of nu_p_IC")
+            print()
 
         if B_par is not None:
             if EC_componets_list is None:
-                B_from_nu_peaks,failed=constr_B_from_nu_peaks (jet_model,self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,self.B_min,self.B_max,self.beaming,params_grid_size,silent=silent)
+                (B_from_nu_peaks, failed), completed = constr_B_from_nu_peaks (jet_model,self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,self.B_min,self.B_max,self.beaming,params_grid_size,silent=silent)
             else:
-                B_from_nu_peaks,failed=constr_B_from_nu_peaks (jet_model,self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,self.B_min,self.B_max,self.beaming,params_grid_size,EC=True,silent=silent)
+                (B_from_nu_peaks, failed), completed = constr_B_from_nu_peaks (jet_model,self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,self.B_min,self.B_max,self.beaming,params_grid_size,EC=True,silent=silent)
 
-            B_par.set(val=B_from_nu_peaks)
-            if silent is False:
-                print ("---> setting par type magnetic_field, corresponding to par %s"%(B_par.name))
-                print ("---> ",B_par.get_description())
-                print ()
-
-            if failed==False:
-                if silent is False:
-                    print ("---> best B found: ",B_par.get_description())
-            else:
-                if silent is False:
-
-                    print ("---> constrain failed, B set to: ",B_par.get_description())
-                    print ()
+            if completed is True and failed is False:
+                B_par.set(val=B_from_nu_peaks)
 
             if silent is False:
-                print ()
-                print ("---> update pars for new B ")
+                print("---> setting par type magnetic_field, corresponding to par %s"%(B_par.name))
+                #print("---> ",B_par.get_description())
+                print("---> task completed ",completed)
+
+            if failed is False and completed is True:
+                if silent is False:
+                    print ("---> best B found: %e"%B_par.val)
+            else:
+                if silent is False:
+                    print("---> constrain failed, B set to: %e"%B_par.val)
+                    print()
+
+            if silent is False:
+                print()
+                print("---> update pars for new B ")
             
             #update gmin from new B
-            gmin= set_gmin_from_nu_cut_IR(self.nu_cut_IR,self.rest_frame,B_par.val,self.beaming,z_par.val)  
+            gmin,completed= set_gmin_from_nu_cut_IR(self.nu_cut_IR,self.rest_frame,B_par.val,self.beaming,z_par.val)
             if par_LE_cut_off_par is not None:
                 par_LE_cut_off_par.set(val=set_lin_log_val(par_LE_cut_off_par,gmin))
 
                 if silent is False:
-                    print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(par_LE_cut_off_par.name))
-                    print ("---> ",par_LE_cut_off_par.get_description())
-                    print ()
+                    print("---> setting par type low-energy-cut-off, corresponding to par %s"%(par_LE_cut_off_par.name))
+                    print("---> task completed", completed)
+                    print("---> set to %e"%par_LE_cut_off_par.val)
+                    print()
 
             #update gamma_3p and gamma_cut from new B
-            gamma_3p_Sync=find_gamma_Synch(self.nu_p_S_obs,self.rest_frame,B_par.val,self.beaming,z_par.val)
+            gamma_3p_Sync,completed=find_gamma_Synch(self.nu_p_S_obs,self.rest_frame,B_par.val,self.beaming,z_par.val)
             if turn_over_par is not None:
-                _t=find_turn_over(jet_model,self.emitters_distr_spectral_type,gamma_3p_Sync)
+                _t,completed=find_turn_over(jet_model,self.emitters_distr_spectral_type,gamma_3p_Sync)
                 turn_over_par.set(val=set_lin_log_val(turn_over_par,_t))
 
                 if silent is False:
-                    print ("---> setting par type low-energy-cut-off, corresponding to par %s"%(turn_over_par.name))
-                    print ("---> using gamma_3p_Sync=",gamma_3p_Sync)
-                    print ("---> ",turn_over_par.get_description())
+                    print("---> setting par type low-energy-cut-off, corresponding to par %s"%(turn_over_par.name))
+                    print("---> task completed", completed)
+                    print("---> task completed ", completed)
+                    print("---> using gamma_3p_Sync=",gamma_3p_Sync)
+                    print("---> to %e"%turn_over_par.val)
                     print()
                 
             
             #update gmax for New B
-            gmax=find_HE_cut_off(self.emitters_distr_spectral_type,self.S_nu_max,self.rest_frame,B_par.val,self.beaming,z_par.val)
+            gmax,completed=find_HE_cut_off(self.emitters_distr_spectral_type,self.S_nu_max,self.rest_frame,B_par.val,self.beaming,z_par.val)
             if silent is False:
-                print ("---> gamma_max=%e from nu_max_Sync= %e, using B=%e"%(gmax,self.S_nu_max,B_par.val))
-
+                print("---> gamma_max=%e from nu_max_Sync= %e, using B=%e"%(gmax,self.S_nu_max,B_par.val))
+                print("---> task completed", completed)
             if HE_cut_off_par is not None:
                 HE_cut_off_par.set(val=set_lin_log_val(HE_cut_off_par,gmax))
 
                 if silent is False:
-                    print ("---> setting par type high-energy-cut-off, corresponding to par %s"%(HE_cut_off_par.name))
-                    print ("---> ",HE_cut_off_par.get_description())
-                    print ()
+                    print("---> setting par type high-energy-cut-off, corresponding to par %s"%(HE_cut_off_par.name))
+                    print("---> set to %e"%HE_cut_off_par.val)
+                    print()
             
             #update N for New B
             if N_par is not None:
-                N,ratio=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.rest_frame)
+                completed = rescale_Ne(jet_model, self.nuFnu_p_S_obs, self.nu_p_S_obs, self.rest_frame)
                 if silent is False:
-                    print ("---> setting par type emitters_density, corresponding to par %s"%(N_par.name))
+                    print("---> setting par type emitters_density, corresponding to par %s"%(N_par.name))
+                    print("---> to N=%e" % (N_par.val))
+                    print("---> task completed",completed)
+                    print()
+                #N_par.set(val=N)
 
-                N_par.set(val=N)
-                
-            
-                
-        
-        
         #Improve R according to CD
         if silent is False:
-            print ("---> get R from Compoton Dominance (CD)")
+            print ("---> setting R from Compton Dominance (CD)")
 
         R_start=R_tvar
         if EC_componets_list  is None:
-            R_from_CD,failed=constr_R_from_CD(jet_model,self.nuFnu_p_S_obs,self.nuFnu_p_IC_obs,self.nu_p_IC_obs,self.rest_frame,R_tvar,params_grid_size,silent=silent)
+            (R_from_CD,failed),completed=constr_R_from_CD(jet_model,self.nuFnu_p_S_obs,self.nu_p_S_obs,self.nuFnu_p_IC_obs,self.nu_p_IC_obs,self.rest_frame,R_tvar,params_grid_size,silent=silent)
         else:
-            R_from_CD,failed=constr_R_from_CD(jet_model,self.nuFnu_p_S_obs,self.nuFnu_p_IC_obs,self.nu_p_IC_obs,self.rest_frame,R_tvar,params_grid_size,EC=True,silent=silent)
+            (R_from_CD,failed),completed=constr_R_from_CD(jet_model,self.nuFnu_p_S_obs,self.nu_p_S_obs,self.nuFnu_p_IC_obs,self.nu_p_IC_obs,self.rest_frame,R_tvar,params_grid_size,EC=True,silent=silent)
 
-        if failed==False:
-            
-
+        if failed is False and completed is True:
+            print("---> task completed",completed)
             if R_par is not None:
-                if silent is False:
-                    print ("---> setting par type region_size, corresponding to par %s"%(R_par.name))
                 R_par.set(val=set_lin_log_val(R_par,R_from_CD))
-
                 if silent is False:
-                    print ("---> ",R_par.get_description())
-                    print ()
+                    print("---> setting par type region_size, corresponding to par %s"%(R_par.name))
+                    print("---> set to %e"%R_par.val)
 
+                #if silent is False:
+                #    print("---> ",R_par.get_description())
+                #    print()
 
                 if N_par is not None:
-                    N,ratio=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.rest_frame)
-
+                    completed=rescale_Ne(jet_model,self.nuFnu_p_S_obs,self.nu_p_S_obs,self.rest_frame)
                     if silent is False:
-                        print ("---> setting par type emitters_density, corresponding to par %s"%(N_par.name))
-                    N_par.set(val=N)
+                        print("---> updating setting par type emitters_density, corresponding to par %s"%(N_par.name))
+                        print("---> set to %e"%N_par.val)
+                        print("---> task completed", completed)
         else:
             R_par.set(val=set_lin_log_val(R_par,R_start))
 
             if silent is False:
-                print ("---> constrain failed, R unchanged: ")
-                print ("---> ",R_par.get_description())
-                print ()
+                print("---> constrain failed, R unchanged: ")
+                print("---> set to %e"%R_par.val)
+                print()
             
          
         #Check tau_gamma_gamma and t_var
         #check_gamma_tansp(jet_model,self.beaming,sp.logspace(21,28,10),self.rest_frame)
         if silent is False:
-            print ("---> t_var (days)", check_t_var(R_par.val_lin,self.beaming,z_par.val)/86400.)
+            print("---> t_var (days)", check_t_var(R_par.val_lin,self.beaming,z_par.val)/86400.)
     
                 
-        jet_model.set_flag('obs_constrain_final')
+        #jet_model.set_flag('obs_constrain_final')
 
         if silent is False:
-            print ()
+            print()
         
-            print ("show pars")
+            print("show pars")
 
         jet_model.show_pars()
         
@@ -617,12 +627,12 @@ class ObsConstrain(object):
         jet_model.set_seed_nu_size(nu_seed_size_initial)
 
         if silent is False:
-           print ("eval_model")
+           print("eval_model")
 
         jet_model.eval(fill_SED=True)
         
-        jet_model.set_flag(flag_initial)
-        jet_model.set_path(path_initial)
+        #jet_model.set_flag(flag_initial)
+        #jet_model.set_path(path_initial)
         
         
 #        if self.SEDShape.L_host!=None:
@@ -636,103 +646,30 @@ class ObsConstrain(object):
             
         return jet_model
         
-    
 
+def run_task(func):
 
+    def func_wrapper(*args, **kwargs):
+        completed=True
 
+        try:
+            return func(*args, **kwargs),completed
+        except Exception as e:
+            print('Exception',e)
+            return None, completed
+        print("-" * 20)
+
+    return func_wrapper
 
 
 def check_t_var(R,beaming,z):
     return R*(1+z)/(BlazarSED.vluce_cm*beaming)
 
-
-
-
-def check_gamma_tansp(jet,beaming_val,nu_IC_data,rest_frame):
-    """retrun tau_gamma_gamma for a given  IC frequency 
-    
-    Args:
-        blob:
-        temap_ev:
-        nu_IC_data: data freq of the IC component to check fro tau_gamma_gamma
-        
-    Returns:
-        tau_gamma_gamma
-        
-    """
-    #################################
-    # This function must not        #
-    # change jet.blob attributes    #
-    # all the changed values must   #
-    # be set back to their original #
-    # values                        #
-    #################################
-    
-    flag_initial=jet.get_flag()
-    
-    jet.set_flag('tau_gamma_gamma')
-
-    IC_initial=jet.get_IC_mode()
-
-    jet.set_IC_mode('off')
-    
-    
-    #nu_IC_blob=convert_nu_to_blob(nu_IC_data,rest_frame,blob.beam_obj,blob.z_cosm)
-    #target_nu_blob = SED.MEC2 * SED.MEC2 / (SED.HPLANCK * SED.HPLANCK * nu_IC_blob)
-    target_nu_obs=BlazarSED.MEC2 * BlazarSED.MEC2 / (BlazarSED.HPLANCK * BlazarSED.HPLANCK * nu_IC_data)
-    #print nu_IC_blob,target_nu,target_nu*nu_IC_blob
-
-   
-    jet.eval()
-    
-    
-    #nu_obs=sp.array([])
-    #nuFnu_obs=sp.array([])
-    nu_obs,nuFnu_obs=jet.spectral_components.Sync.get_SED_points(log_log=True,name='Sync')
-   
-    #for i in range(BlazarSED.GetNuIntMaxSynch()):
-    #    
-    #     if BlazarSED.GetSEDSynch(i)>0:
-    #         nu_obs=sp.append(nu_obs,sp.log10(BlazarSED.GetNuObsSynch(i)))
-    #        nuFnu_obs = sp.append(nuFnu_obs, sp.log10(BlazarSED.GetSEDSynch(i)))
-
-     
-    nuFnu_target = sp.power(10.0,sp.interp(sp.log10(target_nu_obs),nu_obs,nuFnu_obs))
-
-    if sp.shape(target_nu_obs)==():
-        target_nu_obs=sp.array([target_nu_obs])
-        
-        nuFnu_target=sp.array([nuFnu_target])
-        
-        nu_IC_data=sp.array([nu_IC_data ])
-        
-    for i in range(len(target_nu_obs)):
-        #print nuFnu_target,blob.beam_obj,blob.z_cosm,blob.dist
-        
-        
-        
-        z_val=jet.get_par_by_type('redshift').val
-        
-        DL_cm_val=jet.get_DL_cm()
-        
-        nuLnu_target_blob= BlazarSED.nuFnu_obs_to_nuLnu_blob(nuFnu_target[i],beaming_val,z_val,DL_cm_val)
-        
-        R_val=jet.get_par_by_type('region_size').val_lin
-        
-        tau_gamma_gamma=BlazarSED.SIGTH/5*nuLnu_target_blob/(4*sp.pi * BlazarSED.vluce_cm * R_val * BlazarSED.MEC2 )
-        
-        print ("     -->target comoving freq=%e"%target_nu_obs[i], "observed freq=%e"%nu_IC_data[i], "tau_gamma=%e"%(tau_gamma_gamma))
-    
-    
-    jet.set_IC_mode(IC_initial)
-    jet.set_flag(flag_initial)
-
-
-
+@run_task
 def set_gmin_from_nu_cut_IR(nu_cut_IR,rest_frame,B,beaming,z):
         if nu_cut_IR is not None:
-            return find_gamma_Synch (nu_cut_IR,rest_frame,B,beaming,z)
-            
+            _v, completed= find_gamma_Synch (nu_cut_IR,rest_frame,B,beaming,z)
+            return _v
         else:
             print ("--> !! No nu_cut_IR provided set gmin to 1")
             return 1
@@ -740,14 +677,14 @@ def set_gmin_from_nu_cut_IR(nu_cut_IR,rest_frame,B,beaming,z):
         
         
         
-
+@run_task
 def find_turn_over(jet,distr_e,gamma_3p):
     
     if distr_e=='lppl' or distr_e=='lp':
         r=jet.get_par_by_type('spectral_curvature').val
         s=jet.get_par_by_type('LE_spectral_slope').val
-        return find_gamma0(r,s,gamma_3p)
-        
+        _v, completed =find_gamma0(r,s,gamma_3p)
+        return _v
 
     elif distr_e=='lpep':
         r=jet.get_par_by_type('spectral_curvature').val
@@ -763,18 +700,18 @@ def find_turn_over(jet,distr_e,gamma_3p):
         return gamma_3p
 
 
-
+@run_task
 def find_HE_cut_off(distr_e,nu_S_max,rest_frame,B,beaming,z):
-    gamma_max_Sync=find_gamma_Synch(nu_S_max,rest_frame,B ,beaming,z)
+    gamma_max_Sync,completed=find_gamma_Synch(nu_S_max,rest_frame,B ,beaming,z)
     
     if distr_e=='lppl' or distr_e=='lp' or distr_e=='lpep':
         return gamma_max_Sync
     
     elif  distr_e=='bkn' or distr_e=='plc' or distr_e=='pl':
-        return gamma_max_Sync/1.5
-    print('no gmax found!',distr_e)
+        return gamma_max_Sync
+    raise RuntimeError ('no gmax found!',distr_e)
 
-
+@run_task
 def find_gamma0(r,s,gamma_3p):
     """returns the value of gamma_0  for
     a log_par+pl distribution
@@ -801,7 +738,7 @@ def find_gamma0(r,s,gamma_3p):
 
 
 
-
+@run_task
 def find_B_from_nu_p_S(nu_p_S,gamma_3p,rest_frame,beaming,z):
     """returns B according to Ep_S and gamma_3p
 
@@ -823,7 +760,7 @@ def find_B_from_nu_p_S(nu_p_S,gamma_3p,rest_frame,beaming,z):
     
     return B    
     
-
+@run_task
 def  find_gamma_Synch (nu_S,rest_frame,B,beaming,z):
     """returns the value of gamma corresponding to the  Synch freq
     
@@ -844,7 +781,7 @@ def  find_gamma_Synch (nu_S,rest_frame,B,beaming,z):
     return m.sqrt(nu_S_blob/(3.7E6*B))
 
 
-
+@run_task
 def find_gamma_3p_SSC(nu_p_S,nu_p_IC,rest_frame,gamma_3p_Sync,beaming,z,nu_p_EC_seed_field=None,silent=False):
     """returns the value of gamma_3p from nu_p_S/nu_p_IC
 
@@ -876,14 +813,14 @@ def find_gamma_3p_SSC(nu_p_S,nu_p_IC,rest_frame,gamma_3p_Sync,beaming,z,nu_p_EC_
         nu_p_seed_blob=nu_p_EC_seed_field/(1+z)*beaming
         g_TH=(4./3)*m.sqrt(nu_p_IC/nu_p_seed_blob)
     #print"--> comp_fac,gamma_TH", comp_factor,g_TH,
-    comp_factor=get_Comp_factor(gamma_3p_Sync,nu_p_seed_blob)
+    comp_factor,completed=get_Comp_factor(gamma_3p_Sync,nu_p_seed_blob)
     if silent is False:
-        print ("nu_p_seed_blob",nu_p_seed_blob)
+        print ("---> nu_p_seed_blob=%e"%nu_p_seed_blob)
 
     gamma_3p_SSC_TH=g_TH
     #print "--> gamma_3p_SSC_TH",gamma_3p_SSC_TH,g_TH
     if silent is False:
-        print ("COMP FACTOR",comp_factor,gamma_3p_SSC_TH)
+        print ("---> COMPTON FACTOR=%e"%comp_factor,gamma_3p_SSC_TH)
     
     if comp_factor>0.01:
         #print "--> correction", 0.2*pow(comp_factor,-0.45)
@@ -895,7 +832,7 @@ def find_gamma_3p_SSC(nu_p_S,nu_p_IC,rest_frame,gamma_3p_Sync,beaming,z,nu_p_EC_
     return gamma_3p_SSC
 
 
-
+@run_task
 def get_Comp_factor(gamma,nu_p_S_blob):
     """returns the compton factor = nu_blob_seed_Synch*hplanck/(mec2)
         
@@ -912,7 +849,7 @@ def get_Comp_factor(gamma,nu_p_S_blob):
 
 
 
-
+@run_task
 def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices,silent=False):
     """Find the index of the low-energy PL branch of n(gamma), from PL fit over various instrument bands
 
@@ -998,15 +935,7 @@ def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices,silent=False):
                     print ("---> s from radio_mm_index")
             else:   
                 s=2.0
-        
-#        if class_obj=='ISP':
-#            if s_Planck!=None:
-#                s=s_Planck
-#            elif s_X!=None:
-#                s=s_X
-#            else:
-#                s=2.0   
-        
+
         s_SED_shape_photon=S_LE_slope-2.0
         s_SED_shape=-2.0*s_SED_shape_photon-1.0
         if silent is False:
@@ -1047,78 +976,31 @@ def find_s(class_obj,nu_p_S_obs,S_LE_slope,indices,silent=False):
                 s=2.0
     if silent is False:
         print ("---> power-law index s, class obj=%s s chosen is %f"%(class_obj,s))
+    res = (s_radio_mm, s_X, s_Fermi,s)
+    return res
 
-    return s_radio_mm, s_X, s_Fermi, s
 
-
-
+@run_task
 def find_s1(class_obj,indices):
     #print "---> !!! fake function, still to develop"
     val=3.5
     #print ("---> set s1 to %f"%val)
     return val
 
-def rescale_Ne(jet,Lp_S,rest_frame):
+@run_task
+def rescale_Ne(jet,S_p,nu_p,rest_frame):
     """Rescales N.blob to get the wanted Lp_S_blob
-
-
-        Args:
-            blob: SED module class
-            temp_ev: SED module class
-            Lp_S_obs_blob: peak luminosity of the Synch component 
-            rest_frame: rest_frame of the observed data
-            
-
-
-        Returns:
-            Lp_S_blob/Lp_S_model_blob
     """
-    #################################
-    # This function must not        #
-    # change jet.blob attributes    #
-    # all the changed values must   #
-    # be set back to their original #
-    # values                        #
-    #################################
 
-    #blob.STEM='constr_rescale_Ne-pre'
-    flag_initial=jet.get_flag()
-    
-    N_initial=jet.get_par_by_name('N').val
-    #print('-->3',N_initial)
-    jet.set_flag('constr_R')
-    
-    
-    IC_initial=jet.get_IC_mode()
+    if rest_frame=='obs':
+        jet.set_N_from_nuFnu(nuFnu_obs=S_p,nu_obs=nu_p)
+    else:
+        jet.set_N_from_nuLnu(nuLnu_src=S_p, nu_src=nu_p)
 
-    jet.set_IC_mode('off')
-    
-    jet.set_flag('constr_rescale_Ne')
-
-    jet.eval()
-    
-    Lp_S_model=jet.get_SED_peak( Model_dic.Sync_nuFnu_p_dic[rest_frame])
-
-    #print('-->3', Lp_S_model)
-    N_new=N_initial*Lp_S/Lp_S_model
-
-    jet.set_par('N',val=N_new)
-
-    
-    
-    jet.eval()
-    
-    #reset old values
-    jet.set_IC_mode(IC_initial)
-    jet.set_par('N',val=N_initial)
-    jet.set_flag(flag_initial)
-    
-    Lp_S_model=jet.get_SED_peak( Model_dic.Sync_nuFnu_p_dic[rest_frame])
-    
-    return N_new, Lp_S/Lp_S_model
+    return
 
 
-
+@run_task
 def get_U_Sync_from_Ph(jet,re_eval_sync=False):
     """returns U_synch by integrating Synch photon spectrum
 
@@ -1138,7 +1020,6 @@ def get_U_Sync_from_Ph(jet,re_eval_sync=False):
         jet.blob.do_SSC=comp_old
     
     return BlazarSED.Uph_Sync(jet.blob)
-
 
 def check_boundaries(val,val_min,val_max,val_name,silent=False):
     failed=False
@@ -1160,16 +1041,17 @@ def check_boundaries(val,val_min,val_max,val_name,silent=False):
 
     return val,failed
 
+@run_task
 def get_R_tvar(beaming,t_var_sec,z):
     return BlazarSED.vluce_cm*beaming*t_var_sec/(1+z)
 
 def set_lin_log_val(p,v):
     if p.islog is True:
         v = m.log10(v)
-
     return v
 
-def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_grid_size,EC=False,silent=False):
+@run_task
+def constr_R_from_CD(jet,nuFnu_p_S,nu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_grid_size,EC=False,silent=False):
     #################################
     # This function must not        #
     # change jet.blob attributes    #
@@ -1177,35 +1059,20 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
     # be set back to their original #
     # values                        #
     #################################
-    
-    #flag_initial=jet.get_flag()
-
-    
     R_initial=jet.get_par_by_name('R').val_lin
     N_initial=jet.get_par_by_name('N').val
 
-    #jet.set_flag('constr_R')
-    
     CD_model_log=[]
     CD_obs=nuFnu_p_IC/nuFnu_p_S
     R_min=R_tvar/1000
     R_min=1E13
     R_max=R_tvar*2
-    R_grid=logspace(np.log10(R_min), np.log10(R_max), params_grid_size)
-    #f=open('%s/R_vs_CD.dat'%jet.get_path(),'w')
+    R_grid=np.logspace(np.log10(R_min), np.log10(R_max), params_grid_size)
     for R in R_grid:
 
         jet.set_par('R',val=set_lin_log_val(jet.get_par_by_name('R'),R))
-        #print('--> 1',jet.get_par_by_name('R').val)
 
-
-        N_res,ratio=rescale_Ne(jet,nuFnu_p_S,rest_frame)
-
-
-        if N_res>0.:
-            jet.set_par('N',val=N_res)
-        else:
-            print('N_res was negative', N_res)
+        completed = rescale_Ne(jet, nuFnu_p_S, nu_p_S, rest_frame)
 
         jet.eval()
 
@@ -1214,34 +1081,24 @@ def constr_R_from_CD(jet,nuFnu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,params_g
             Lp_IC=jet.get_SED_peak(Model_dic.SSC_nuFnu_p_dic[rest_frame])
         else:
             nu_p_IC,Lp_IC=jet.get_SED_peak(freq_range=[0.01*nu_p_IC,10*nu_p_IC])
-
-        #print('--> 2', N_res, ratio, Lp_S,Lp_IC,nuFnu_p_S)
-
         CD=Lp_IC/Lp_S
         CD_model_log.append(np.log10(CD))
 
-        #print "     R=%e, CD_obs=%e, CD_model=%e"%(R,CD_obs,CD)
-        #print(n.log10(R),n.log10(CD/CD_obs),file=f)
-
-    #f.close()
 
     R_grid_log=np.log10(R_grid)
     p=polyfit(CD_model_log,R_grid_log,2)
-    #print "--> lll",CD_model_log,R_grid_log
     best_R=polyval(p, np.log10(CD_obs))
-    
     Best_R=np.power(10., best_R)
     Best_R,failed=check_boundaries(Best_R,R_min,R_max,'R',silent=silent)
     
-    #jet.set_flag(flag_initial)
 
     jet.set_par('R',val=set_lin_log_val(jet.get_par_by_name('R'),R_initial))
     jet.set_par('N',val=N_initial)
-    
-    return  Best_R,failed
+    res = (Best_R,failed)
+    return res
 
 
-
+@run_task
 def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,params_grid_size,EC=False,silent=False):
     #################################
     # This function must not        #
@@ -1259,7 +1116,7 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
  
     nu_p_IC_model_log=[]
     
-    B_grid=logspace(sp.log10(B_min),sp.log10(B_max),params_grid_size)
+    B_grid=np.logspace(sp.log10(B_min),sp.log10(B_max),params_grid_size)
     
     #f=open('%s/B_vs_nu_p_IC.dat'%jet.get_path(),'w')
     
@@ -1277,7 +1134,7 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
         jet.set_par('B',val=B)
         
         
-        gamma_3p=find_gamma_Synch(nu_p_S,rest_frame,B,beaming,z)
+        gamma_3p,completed=find_gamma_Synch(nu_p_S,rest_frame,B,beaming,z)
 
         #upda-turn-over variable
         if turn_over_energy is not None :
@@ -1305,7 +1162,7 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
     
     Best_B=polyval(p, np.log10(nu_p_IC))
     Best_B = np.power(10., Best_B)
-    Best_B,failed = check_boundaries(Best_B, B_min, B_max, 'B',silent=silent)
+    Best_B,failed  = check_boundaries(Best_B, B_min, B_max, 'B',silent=silent)
     
     
     #REST CHANGED VALUES
@@ -1315,5 +1172,84 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
     if turn_over_energy is not None :
         turn_over_energy.set(val=set_lin_log_val(turn_over_energy,turn_over_energy_initial))
 
-        
-    return  Best_B,failed
+    res= (Best_B,failed)
+    return res
+
+#def check_gamma_transp(jet, beaming_val, nu_IC_data, rest_frame):
+#     """retrun tau_gamma_gamma for a given  IC frequency
+#
+#     Args:
+#         blob:
+#         temap_ev:
+#         nu_IC_data: data freq of the IC component to check fro tau_gamma_gamma
+#
+#     Returns:
+#         tau_gamma_gamma
+#
+#     """
+#     #################################
+#     # This function must not        #
+#     # change jet.blob attributes    #
+#     # all the changed values must   #
+#     # be set back to their original #
+#     # values                        #
+#     #################################
+#
+#     flag_initial=jet.get_flag()
+#
+#     jet.set_flag('tau_gamma_gamma')
+#
+#     IC_initial=jet.get_IC_mode()
+#
+#     jet.set_IC_mode('off')
+#
+#
+#     #nu_IC_blob=convert_nu_to_blob(nu_IC_data,rest_frame,blob.beam_obj,blob.z_cosm)
+#     #target_nu_blob = SED.MEC2 * SED.MEC2 / (SED.HPLANCK * SED.HPLANCK * nu_IC_blob)
+#     target_nu_obs=BlazarSED.MEC2 * BlazarSED.MEC2 / (BlazarSED.HPLANCK * BlazarSED.HPLANCK * nu_IC_data)
+#     #print nu_IC_blob,target_nu,target_nu*nu_IC_blob
+#
+#
+#     jet.eval()
+#
+#
+#     #nu_obs=sp.array([])
+#     #nuFnu_obs=sp.array([])
+#     nu_obs,nuFnu_obs=jet.spectral_components.Sync.get_SED_points(log_log=True,name='Sync')
+#
+#     #for i in range(BlazarSED.GetNuIntMaxSynch()):
+#     #
+#     #     if BlazarSED.GetSEDSynch(i)>0:
+#     #         nu_obs=sp.append(nu_obs,sp.log10(BlazarSED.GetNuObsSynch(i)))
+#     #        nuFnu_obs = sp.append(nuFnu_obs, sp.log10(BlazarSED.GetSEDSynch(i)))
+#
+#
+#     nuFnu_target = sp.power(10.0,sp.interp(sp.log10(target_nu_obs),nu_obs,nuFnu_obs))
+#
+#     if sp.shape(target_nu_obs)==():
+#         target_nu_obs=sp.array([target_nu_obs])
+#
+#         nuFnu_target=sp.array([nuFnu_target])
+#
+#         nu_IC_data=sp.array([nu_IC_data ])
+#
+#     for i in range(len(target_nu_obs)):
+#         #print nuFnu_target,blob.beam_obj,blob.z_cosm,blob.dist
+#
+#
+#
+#         z_val=jet.get_par_by_type('redshift').val
+#
+#         DL_cm_val=jet.get_DL_cm()
+#
+#         nuLnu_target_blob= BlazarSED.nuFnu_obs_to_nuLnu_blob(nuFnu_target[i],beaming_val,z_val,DL_cm_val)
+#
+#         R_val=jet.get_par_by_type('region_size').val_lin
+#
+#         tau_gamma_gamma=BlazarSED.SIGTH/5*nuLnu_target_blob/(4*sp.pi * BlazarSED.vluce_cm * R_val * BlazarSED.MEC2 )
+#
+#         print ("     -->target comoving freq=%e"%target_nu_obs[i], "observed freq=%e"%nu_IC_data[i], "tau_gamma=%e"%(tau_gamma_gamma))
+#
+#
+#     jet.set_IC_mode(IC_initial)
+#     jet.set_flag(flag_initial)

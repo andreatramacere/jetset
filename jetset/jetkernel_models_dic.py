@@ -20,24 +20,45 @@ SSC_nu_p_dic={'obs':'nu_peak_SSC_obs'}
 SSC_nu_p_dic['src']='nu_peak_SSC_src'
 SSC_nu_p_dic['blob']='nu_peak_SSC_blob'
 
+# nu_src_start_stop_dict={'Sync':['nu_start_Sync', 'nu_start_Sync']}
+# nu_src_start_stop_dict['SSC']=['nu_start_SSC', 'nu_stop_SSC']
+# nu_src_start_stop_dict['EC_BLR']=['', '']
+# nu_src_start_stop_dict['EC_DT']=['', '']
+# nu_src_start_stop_dict['EC_Disk']=['', '']
+# nu_src_start_stop_dict['EC_CMB']=['', '']
+# nu_src_start_stop_dict['EC_CMB_stat']=['', '']
+# nu_src_start_stop_dict['Bremss_ep']=['', '']
+# nu_src_start_stop_dict['PP_gamma']=['', '']
+# nu_src_start_stop_dict['PP_neutrino_tot']=['', '']
+# nu_src_start_stop_dict['PP_neutrino_e']=['', '']
+# nu_src_start_stop_dict['PP_neutrino_mu']=['', '']
+
 
 
 
 
 
 #Spectral components
-nuFnu_obs_dic={'Sum':['nuFnu_sum_grid','nu_grid']}
-nuFnu_obs_dic['Sync']=['nuFnu_Sync_grid','nu_grid']
-nuFnu_obs_dic['SSC']=['nuFnu_SSC_grid','nu_grid']
-nuFnu_obs_dic['EC_BLR']=['nuFnu_EC_BLR_grid','nu_grid']
-nuFnu_obs_dic['EC_DT']=['nuFnu_EC_DT_grid','nu_grid']
-nuFnu_obs_dic['DT']=['nuFnu_DT_grid','nu_grid']
-nuFnu_obs_dic['Star']=['nuFnu_Star_grid','nu_grid']
-nuFnu_obs_dic['EC_Disk']=['nuFnu_EC_Disk_grid','nu_grid']
-nuFnu_obs_dic['Disk']=['nuFnu_Disk_grid','nu_grid']
-nuFnu_obs_dic['EC_CMB']=['nuFnu_EC_CMB_grid','nu_grid']
-nuFnu_obs_dic['EC_CMB_stat']=['nuFnu_EC_CMB_stat_grid','nu_grid']
-nuFnu_obs_dic['PP_gamma']=['nuFnu_pp_grid','nu_grid']
+nuFnu_obs_dict={'Sum':['nuFnu_sum_grid', 'nu_grid']}
+nuFnu_obs_dict['Sync']=['nuFnu_Sync_grid', 'nu_grid']
+nuFnu_obs_dict['SSC']=['nuFnu_SSC_grid', 'nu_grid']
+nuFnu_obs_dict['EC_BLR']=['nuFnu_EC_BLR_grid', 'nu_grid']
+nuFnu_obs_dict['EC_DT']=['nuFnu_EC_DT_grid', 'nu_grid']
+nuFnu_obs_dict['DT']=['nuFnu_DT_grid', 'nu_grid']
+nuFnu_obs_dict['Star']=['nuFnu_Star_grid', 'nu_grid']
+nuFnu_obs_dict['EC_Disk']=['nuFnu_EC_Disk_grid', 'nu_grid']
+nuFnu_obs_dict['Disk']=['nuFnu_Disk_grid', 'nu_grid']
+nuFnu_obs_dict['EC_CMB']=['nuFnu_EC_CMB_grid', 'nu_grid']
+nuFnu_obs_dict['EC_CMB_stat']=['nuFnu_EC_CMB_stat_grid', 'nu_grid']
+nuFnu_obs_dict['Bremss_ep']=['nuFnu_bremss_ep_grid', 'nu_grid']
+nuFnu_obs_dict['PP_gamma']=['nuFnu_pp_gamma_grid', 'nu_grid']
+nuFnu_obs_dict['PP_neutrino_tot']=['nuFnu_pp_neutrino_tot_grid', 'nu_grid']
+nuFnu_obs_dict['PP_neutrino_e']=['nuFnu_pp_neutrino_e_grid', 'nu_grid']
+nuFnu_obs_dict['PP_neutrino_mu']=['nuFnu_pp_neutrino_mu_grid', 'nu_grid']
+
+
+
+
 
 
 #seed-photon fields components
@@ -68,6 +89,7 @@ n_seed_dic['Star']=['n_Star','nu_Sync']
 
 gamma_dic_e={'electron_distr':['Ne','griglia_gamma_Ne_log']}
 gamma_dic_p={'proton_distr':['Np','griglia_gamma_Np_log']}
+gamma_dic_pp_e_second={'e_second_inj':['Q_inj_e_second','griglia_gamma_Ne_log']}
 
 s_dic={'pl':'p'}
 s_dic['lppl']='s'

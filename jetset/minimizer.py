@@ -13,7 +13,7 @@ import scipy as sp
 import numpy as np
 
 import os
-
+import warnings
 import copy
 
 from scipy.stats import chi2
@@ -35,7 +35,7 @@ from scipy.optimize import least_squares,curve_fit
 from leastsqbound.leastsqbound import  leastsqbound
 
 from .output import section_separator,WorkPlace,makedir
-from .data_loader import ObsData
+from .utils import JetkerneltException
 import pickle
 
 
@@ -362,6 +362,10 @@ class ModelMinimizer(object):
         self.data['UL'] = UL
         self.sed_data=sed_data
 
+        if len(fit_par_free)>len(nu_fit) and isinstance(self.minimizer,LSBMinimizer):
+            m='number of data points: %d is lower than number of free pars: %d'%(len(nu_fit), len(fit_par_free))
+            raise  JetkerneltException(message=m)
+
     def fit(self,
             fit_Model,
             sed_data,
@@ -483,9 +487,13 @@ class ModelMinimizer(object):
             print(section_separator)
 
         fit_Model.eval(fill_SED=True)
+        if self.minimizer._post_fit_warnings!='':
+                print('there are  fit warnings messages, use  the .show_fit_warnings() or access the member .minimizer._post_fit_warnings')
 
         return best_fit
 
+    def show_fit_warnings(self):
+        print(self.minimizer._post_fit_warnings)
 
 
     def reset_to_best_fit(self):
@@ -506,7 +514,7 @@ class Minimizer(object):
     def __init__(self,model):
         self.model=model
         self._progress_iter = cycle(['|', '/', '-', '\\'])
-
+        self._post_fit_warnings=''
 
     def fit(self,model,
             max_ev=None,
@@ -544,6 +552,7 @@ class Minimizer(object):
         self.status = 1
 
 
+
     def _set_fit_errors(self):
         if self.covar is None:
             print("!Warning, no covariance matrix produced")
@@ -574,16 +583,20 @@ class Minimizer(object):
 
         _warn=False
         for pi in range(len(fit_par)):
+            _old_v=fit_par[pi].val
             fit_par[pi].set(val=p[pi])
             if np.isnan(p[pi]):
                 _warn=True
-                print('warning nan for par',pi,' old paramter value was',self._par_check[pi])
-
-        if _warn==True:
-            best_fit_SEDModel.show_pars()
-            print('res_sum',self._res_sum_chekc)
-            print('res_chekc', self._res_chekc)
-            print('res_UL_chekc', self._res_UL_chekc)
+                s1 = str('warning nan for par %s' % fit_par[pi].name)
+                s2 = ', old parameter value was %s' % str(fit_par[pi].val)
+                s =s1 + s2
+                warnings.warn(s)
+                self._post_fit_warnings+=s+'\n'
+        #if _warn==True:
+        #    best_fit_SEDModel.show_pars()
+        #    print('res_sum',self._res_sum_chekc)
+        #    print('res_chekc', self._res_chekc)
+        #    print('res_UL_chekc', self._res_UL_chekc)
 
 
         model = best_fit_SEDModel.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
@@ -594,7 +607,7 @@ class Minimizer(object):
         self._res_sum_chekc=_res_sum
         self._res_chekc = _res
         self._res_UL_chekc = _res_sum_UL
-        self._par_check=p
+        #self._par_check=p
         #print('--> model', model[0],_res_sum)
         self.calls +=1
 

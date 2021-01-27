@@ -143,8 +143,11 @@ class Data(object):
                 if self._table[_cn].unit is not None and self._units[ID] is not None:
                     try:
                         self._table[_cn]=self._table[_cn].to(self._units[ID])
-                    except:
-                        raise RuntimeError ('Unit conversion problem for ',self._table[_cn].unit,'to',self._units[ID])
+                    except Exception as e:
+                        try:
+                            self._table[_cn] = self._table[_cn].to(self._units[ID], equivalencies=u.spectral())
+                        except Exception as e:
+                            raise RuntimeError('Unit conversion problem for ',self._table[_cn].unit,'to',self._units[ID],repr(e))
 
 
     def set_meta_data(self,m,v):

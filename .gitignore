@@ -4,7 +4,7 @@ __pycache__/
 /doc/out.txt
 /doc/err.txt
 /doc/build/*
-/.idea
+.idea
 /.DS_Store
 *.egg-info
 *.egg
@@ -12,7 +12,7 @@ __pycache__/
 *.pkl
 *.ipynb_checkpoints
 /.DS_Store
-/.vscode
+.vscode
 /testing
 /build
 develop-eggs
