@@ -7,3 +7,5 @@ include jetset/pkg_info.json
 include jetkernel/mathkernel/F_Sync.dat
 include jetset/Spectral_Templates_Repo/*.dat
 include test_data/SEDs_data/*ecsv
+
+prune doc

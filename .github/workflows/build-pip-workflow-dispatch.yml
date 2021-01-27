@@ -15,6 +15,7 @@ jobs:
         python-version: [3.8]
 
     steps:
+
       - name: Clone Repository (Latest)
         uses: actions/checkout@v2
 
@@ -24,8 +25,14 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-     # - name: Set env TEST
-     #   run: echo "::set-env name=TEST::$(cat test-path.txt)"
+      - name: set env JETSETBESSELBUILD
+        run: |
+          echo "FALSE">JETSETBESSELBUILD
+          echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
+
+      - name: echo env TEST
+        run: |
+          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
      # - name: Print env TEST
      #   run: |
@@ -36,6 +43,16 @@ jobs:
      #   with:
      #     name: ${{ matrix.os }}-TEST
      #     path: ${{ env.TEST }}
+      - name: Install swig
+        run: |
+             if [ "$RUNNER_OS" == "Linux" ]; then
+                  sudo apt-get update; sudo apt-get install swig
+             elif [ "$RUNNER_OS" == "macOS" ]; then
+                  brew install swig
+             else
+                  echo "$RUNNER_OS not supported"
+                  exit 1
+             fi
 
       - name: Setup pip
         uses: actions/setup-python@v2
@@ -48,34 +65,30 @@ jobs:
           pip install pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Set env JETSETBESSELBUILD
-        run: |
-          echo "::set-env name=JETSETBESSELBUILD::FALSE"
-
-      - name: Print env JETSETBESSELBUILD
-        run: |
-          echo "JETSETBESSELBUILD=${JETSETBESSELBUILD}"
-          printenv
-
       - name: pip build
         run: |
+          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
           python setup.py clean
           python setup.py sdist bdist_wheel
+          python setup.py install
+          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
       #- name: test
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
 
-      - name: Set env PKG_VERSION
-        run: echo "::set-env name=PKG_VERSION::$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
-
-      - name: Print env PKG_VERSION
+      - name: set pkg version
         run: |
-          echo "PKG_VERSION=${PKG_VERSION}"
-          printenv
+          echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
 
-      - uses: actions/upload-artifact@v2
+      - name: echo pkg version
+        run: |
+          echo "PKG_VERSION=${{env.PKG_VERSION}}"
+
+      - name: upload artifacts
+        uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-${{ env.PKG_VERSION }}-package
-          path: ${{ env.CONDABUILDJETSET }}
+          path: dist/*
+          #path: ${{ env.CONDABUILDJETSET }}
 
