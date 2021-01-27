@@ -55,6 +55,10 @@ jobs:
           python setup.py clean
           python setup.py install > install.log 2>install.err
 
+      - name: set pkg version
+        run: |
+         echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
+
       #- name: test
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
@@ -66,7 +70,6 @@ jobs:
       - name: echo pkg version
         run: |
            echo "PKG_VERSION=${{env.PKG_VERSION}}"
-
 
       - name: conda build
         working-directory: .github/conda-pipeline/github/
@@ -80,9 +83,9 @@ jobs:
         working-directory: .github/conda-pipeline/github/
         run:  echo "CONDABUILDJETSET=$(cat CONDABUILDJETSET.txt)"  >> $GITHUB_ENV
 
-      - name: set pkg version
-        run: |
-          echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
+      - name: echo env CONDABUILDJETSET
+        working-directory: .github/conda-pipeline/github/
+        run: echo "CONDABUILDJETSET=${{env.CONDABUILDJETSET}}"
 
       - name: echo pkg version
         run: |

@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/andreatramacere/jetset.svg?branch=py23)](https://travis-ci.org/andreatramacere/jetset)
+![example workflow file path](https://github.com/andreatramacere/jetset/blob/master/.github/workflows/build-conda-workflow-dispatch.yml/badge.svg)
+)
+
 
 
 ![img](./logo/logo_git.png)
