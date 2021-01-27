@@ -60,7 +60,7 @@ jobs:
 
       - name: Set env JETSETBESSELBUILD
         run: |
-          echo 'FALSE' >> $JETSETBESSELBUILD
+          echo "FALSE" >> $JETSETBESSELBUILD
       - name: Print env JETSETBESSELBUILD
         run: |
           echo "JETSETBESSELBUILD=${JETSETBESSELBUILD}"
