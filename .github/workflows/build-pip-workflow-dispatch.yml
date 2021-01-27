@@ -7,7 +7,7 @@ on:
         description: Git Ref (Optional)
         required: false
 jobs:
-  clone:
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -24,26 +24,29 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
+     # - name: Set env TEST
+     #   run: echo "::set-env name=TEST::$(cat test-path.txt)"
 
-  swig-linux:
-    runs-on: ubuntu-latest
-    needs: clone
-    steps:
-     - run: |
-          sudo apt-get update
-          sudo apt-get install swig
+     # - name: Print env TEST
+     #   run: |
+     #     echo "TEST=${TEST}"
+     #     printenv
 
-  swig-mac:
-    runs-on: macos-10.15
-    needs: clone
-    steps:
-      - run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install swig
+     # - uses: actions/upload-artifact@v2
+     #   with:
+     #     name: ${{ matrix.os }}-TEST
+     #     path: ${{ env.TEST }}
+      - name: Install swig
+        run: |
+             if [ "$RUNNER_OS" == "Linux" ]; then
+                  sudo apt-get update; sudo apt-get install swig
+             elif [ "$RUNNER_OS" == "macOS" ]; then
+                  brew install swig
+             else
+                  echo "$RUNNER_OS not supported"
+                  exit 1
+             fi
 
-  buildpip:
-    runs-on: ${{ matrix.os }}
-    steps:
       - name: Setup pip
         uses: actions/setup-python@v2
         with:
@@ -51,8 +54,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install pytest
+          python -m pip install --upgrade pip
+          pip install pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Set env JETSETBESSELBUILD
@@ -66,15 +69,15 @@ jobs:
 
       - name: pip build
         run: |
-          python3 setup.py clean
-          python3 setup.py sdist bdist_wheel
+          python setup.py clean
+          python setup.py sdist bdist_wheel
 
       #- name: test
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
 
       - name: Set env PKG_VERSION
-        run: echo "$(cd ../../ && python3 -c "import jetset;print(jetset.__version__)")">>PKG_VERSION
+        run: echo "$(cd ../../ && python -c "import jetset;print(jetset.__version__)")">>PKG_VERSION
 
       - name: Print env PKG_VERSION
         run: |
