@@ -10,6 +10,6 @@ corner
 six
 emcee>=3.0.0
 pyyaml
-pyqt
+#pyqt
 pytest
 numba
