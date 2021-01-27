@@ -55,7 +55,6 @@ jobs:
       - name: Set env JETSETBESSELBUILD
         run: |
           echo 'FALSE' >> JETSETBESSELBUILD
-          #echo "::set-env name=JETSETBESSELBUILD::FALSE"
 
       - name: Print env JETSETBESSELBUILD
         run: |
@@ -73,7 +72,6 @@ jobs:
 
       - name: Set env PKG_VERSION
         run: echo "$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
-        #run: echo "::set-env name=PKG_VERSION::$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
 
       - name: Print env PKG_VERSION
         run: |
