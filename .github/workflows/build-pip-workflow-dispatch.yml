@@ -59,8 +59,8 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Set env JETSETBESSELBUILD
-        run: |
-          echo "FALSE" >> $JETSETBESSELBUILD
+        env:
+          JETSETBESSELBUILD: FALSE
       - name: Print env JETSETBESSELBUILD
         run: |
           echo "JETSETBESSELBUILD=${JETSETBESSELBUILD}"
@@ -77,7 +77,7 @@ jobs:
       #    pytest --pyargs jetset.tests.test_functions::test_short
 
       - name: Set env PKG_VERSION
-        run: echo "$(cd ../../ && python -c "import jetset;print(jetset.__version__)")">>$  PKG_VERSION
+        run: echo "$(cd ../../ && python -c "import jetset;print(jetset.__version__)")">>$PKG_VERSION
 
       - name: Print env PKG_VERSION
         run: |
