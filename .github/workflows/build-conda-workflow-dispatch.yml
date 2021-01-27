@@ -1,4 +1,4 @@
-name: Conda build-test
+name: conda build-test
 
 on:
   workflow_dispatch:
@@ -24,20 +24,18 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-     # - name: Set env TEST
-     #   run: echo "::set-env name=TEST::$(cat test-path.txt)"
+      - name: set env JETSETBESSELBUILD
+        run: |
+          echo "FALSE">JETSETBESSELBUILD
+          echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
 
-     # - name: Print env TEST
-     #   run: |
-     #     echo "TEST=${TEST}"
-     #     printenv
 
-     # - uses: actions/upload-artifact@v2
-     #   with:
-     #     name: ${{ matrix.os }}-TEST
-     #     path: ${{ env.TEST }}
+      - name: echo env TEST
+        run: |
+          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
-      - name: Setup conda
+
+      - name: setup conda
         uses: s-weigand/setup-conda@v1
         with:
           update-conda: true
@@ -61,23 +59,14 @@ jobs:
       #  run: |
       #    pytest --pyargs jetset.tests.test_functions::test_short
 
-      - name: Set env PKG_VERSION
-        run: echo "::set-env name=PKG_VERSION::$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
-
-      - name: Print env PKG_VERSION
+      - name: set pkg version
         run: |
-          echo "PKG_VERSION=${PKG_VERSION}"
-          printenv
+          echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
 
-      - name: Set env JETSETBESSELBUILD
-        run:
-          echo "::set-env name=JETSETBESSELBUILD::FALSE"
-
-
-      - name: Print env JETSETBESSELBUILD
+      - name: echo pkg version
         run: |
-          echo "JETSETBESSELBUILD=${JETSETBESSELBUILD}"
-          printenv
+           echo "PKG_VERSION=${{env.PKG_VERSION}}"
+
 
       - name: conda build
         working-directory: ./CICD/conda-pipeline/github/
@@ -87,18 +76,21 @@ jobs:
           conda build .  -c defaults -c astropy -c conda-forge > build.log 2>build.err
           conda-build . --output > ./CONDABUILDJETSET.txt
 
-      - name: Set env CONDABUILDJETSET
+      - name: set env CONDABUILDJETSET
         working-directory: ./CICD/conda-pipeline/github/
-        run:  echo "::set-env name=CONDABUILDJETSET::$(cat CONDABUILDJETSET.txt)"
+        run:  echo "CONDABUILDJETSET=$(cat CONDABUILDJETSET.txt)"  >> $GITHUB_ENV
 
-      - name: Printenv CONDABUILDJETSET
+      - name: set pkg version
         run: |
-          echo "CONDABUILDJETSET=${CONDABUILDJETSET}"
-          printenv
+          echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
 
+      - name: echo pkg version
+        run: |
+          echo "PKG_VERSION=${{env.PKG_VERSION}}"
 
+      - name: upload conda pkg
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.os }}-${{ env.PKG_VERSION }}-package
+          name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-conda-binary
           path: ${{ env.CONDABUILDJETSET }}
 
