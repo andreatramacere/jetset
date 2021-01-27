@@ -63,7 +63,7 @@ jobs:
           echo 'FALSE' >> $JETSETBESSELBUILD
       - name: Print env JETSETBESSELBUILD
         run: |
-          echo "JETSETBESSELBUILD=${{JETSETBESSELBUILD}}"
+          echo "JETSETBESSELBUILD=${JETSETBESSELBUILD}"
           printenv
 
       - name: pip build
