@@ -28,4 +28,4 @@ notebooks/*
 !notebooks/images
 !notebooks/*.md
 !notebooks/QuickStart_files
-
+requirements_action.txt
