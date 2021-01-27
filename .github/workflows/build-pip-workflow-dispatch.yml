@@ -1,4 +1,4 @@
-name: Test CI/CD jetset
+name: pip build-test
 
 on:
   workflow_dispatch:

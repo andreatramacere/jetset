@@ -1,4 +1,4 @@
-name: Test CI/CD jetset
+name: Conda build-test
 
 on:
   workflow_dispatch:
