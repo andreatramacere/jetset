@@ -85,10 +85,14 @@ jobs:
         run: |
           echo "PKG_VERSION=${{env.PKG_VERSION}}"
 
-      - name: upload artifacts
+      - name: upload .whl
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.os }}-${{ env.PKG_VERSION }}-package
-          path: dist/*
-          #path: ${{ env.CONDABUILDJETSET }}
+          name: $jetset-{{ matrix.os }}-${{ env.PKG_VERSION }}-binary
+          path: dist/*.whl
+      - name: upload sdist
+        uses: actions/upload-artifact@v2
+        with:
+          name: $jetset-{{ matrix.os }}-${{ env.PKG_VERSION }}-src
+          path: dist/*.tar.gz
 
