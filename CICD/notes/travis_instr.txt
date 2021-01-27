@@ -1,8 +1,0 @@
-Info from here:
-https://stackoverflow.com/questions/12343452/how-to-publish-artifacts-in-travis-ci
-I follow solution 6 reported in the link above
-for deploying:
-1) get a token: https://github.com/settings/tokens
-2) add the token to travis setting of jetset,  going to the setting of
-   the project and add the api_key env variable, putting as value the github generated tocken
-
