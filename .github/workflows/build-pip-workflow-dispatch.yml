@@ -38,8 +38,8 @@ jobs:
      #     path: ${{ env.TEST }}
       - name: Install swig
         run: |
-
-          apt-get install swig
+          sudo apt-get update
+          sudo apt-get install swig
 
       - name: Setup pip
         uses: actions/setup-python@v2
