@@ -54,7 +54,8 @@ jobs:
 
       - name: Set env JETSETBESSELBUILD
         run: |
-          echo "::set-env name=JETSETBESSELBUILD::FALSE"
+          echo 'FALSE' >> JETSETBESSELBUILD
+          #echo "::set-env name=JETSETBESSELBUILD::FALSE"
 
       - name: Print env JETSETBESSELBUILD
         run: |
@@ -71,7 +72,8 @@ jobs:
       #    pytest --pyargs jetset.tests.test_functions::test_short
 
       - name: Set env PKG_VERSION
-        run: echo "::set-env name=PKG_VERSION::$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
+        run: echo "$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
+        #run: echo "::set-env name=PKG_VERSION::$(cd ../../ && python -c "import jetset;print(jetset.__version__)")"
 
       - name: Print env PKG_VERSION
         run: |
@@ -81,5 +83,6 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-${{ env.PKG_VERSION }}-package
-          path: ${{ env.CONDABUILDJETSET }}
+          path: dist/*
+          #path: ${{ env.CONDABUILDJETSET }}
 
