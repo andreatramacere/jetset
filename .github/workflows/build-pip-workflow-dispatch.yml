@@ -59,11 +59,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: adapt req
+        run: |
+          python3 .github/workflows/adapt_reqirements_to_git_action.py
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pytest
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements_action.txt ]; then pip install -r requirements_action.txt; fi
 
       - name: pip build
         run: |
@@ -85,10 +89,15 @@ jobs:
         run: |
           echo "PKG_VERSION=${{env.PKG_VERSION}}"
 
-      - name: upload artifacts
+      - name: upload .whl
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.os }}-${{ env.PKG_VERSION }}-package
-          path: dist/*
-          #path: ${{ env.CONDABUILDJETSET }}
+          name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-pip-binary
+          path: dist/*.whl
+
+      - name: upload sdist
+        uses: actions/upload-artifact@v2
+        with:
+          name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-src
+          path: dist/*.tar.gz
 
