@@ -88,11 +88,11 @@ jobs:
       - name: upload .whl
         uses: actions/upload-artifact@v2
         with:
-          name: $jetset-{{ matrix.os }}-${{ env.PKG_VERSION }}-binary
+          name: $jetset-{{ matrix.os }}-${{ env.PKG_VERSION }}-pip-binary
           path: dist/*.whl
       - name: upload sdist
         uses: actions/upload-artifact@v2
         with:
-          name: $jetset-{{ matrix.os }}-${{ env.PKG_VERSION }}-src
+          name: $jetset-{{ matrix.os }}-${{ env.PKG_VERSION }}-pip-src
           path: dist/*.tar.gz
 
