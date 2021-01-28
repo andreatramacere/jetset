@@ -1,4 +1,4 @@
-![example workflow file path](https://github.com/andreatramacere/jetset/workflows/.github/workflows/build-conda-workflow-dispatch.yml/badge.svg)
+![example workflow file path](https://github.com/andreatramacere/jetset/workflows/.github/workflows/conda%20build-test/badge.svg)
 )
 
 
