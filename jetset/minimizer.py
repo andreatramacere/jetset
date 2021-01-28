@@ -791,7 +791,7 @@ class MinutiMinimizer(Minimizer):
             self.par_dict[par.name]=par
 
         self.minuit_fun = iminuit.Minuit(fcn=self.chisq_func,
-            forced_parameters=p_names,
+            name=p_names,
             pedantic=False,
             errordef=1,
             **kwdarg)
