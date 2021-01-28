@@ -77,7 +77,7 @@ jobs:
 
       - name: set pkg version
         run: |
-          echo "PKG_VERSION=${{fromJson(jetset.pkg_inf.json).version}}" >> $GITHUB_ENV
+          echo "PKG_VERSION=${{fromJson('jetset.pkg_inf.json').version}}" >> $GITHUB_ENV
 
       - name: echo pkg version
         run: |
