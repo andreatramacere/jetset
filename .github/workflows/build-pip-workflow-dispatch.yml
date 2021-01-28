@@ -34,15 +34,7 @@ jobs:
         run: |
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
-     # - name: Print env TEST
-     #   run: |
-     #     echo "TEST=${TEST}"
-     #     printenv
 
-     # - uses: actions/upload-artifact@v2
-     #   with:
-     #     name: ${{ matrix.os }}-TEST
-     #     path: ${{ env.TEST }}
       - name: Install swig
         run: |
              if [ "$RUNNER_OS" == "Linux" ]; then

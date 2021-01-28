@@ -1,5 +1,5 @@
-from jetset.jet_model import  Jetpp
-j=Jetpp(proton_distribution='plc')
+from jetset.jet_model import  Jet
+j=Jet(proton_distribution='plc')
 j.set_verbosity(0)
 j.parameters.gmin.val=2
 j.parameters.gmax.val=1E8
