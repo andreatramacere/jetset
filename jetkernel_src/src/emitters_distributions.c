@@ -259,13 +259,13 @@ void Fill_Ne_IC(struct blob *pt, double g_min_IC, int stat_frame) {
     unsigned int i,i_start;
     double gmin_grid;
     i_start=0;
-    while (pt->griglia_gamma_Ne_log[i] < g_min_IC && i < pt->gamma_grid_size) {
+    while (pt->griglia_gamma_Ne_log[i_start] < g_min_IC && i_start < pt->gamma_grid_size) {
         i_start++;
     }
     if (i_start % 2 != 0) {
         i_start = max(0,i_start-1);
     }
-    g_min_IC=pt->griglia_gamma_Ne_log[i];
+    g_min_IC=pt->griglia_gamma_Ne_log[i_start];
     
     if (pt->verbose>1) {
         printf("Set array per Ne IC\n");

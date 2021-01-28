@@ -25,7 +25,7 @@ def distr_func_bkn(gamma_break, gamma, p, p_1):
 
 
 @nb.njit(fastmath=True, cache=True)
-def distr_func_super_exp(gamma, p, ):
+def distr_func_super_pl(gamma, p, ):
     return np.power(gamma, -p)
 
 
