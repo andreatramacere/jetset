@@ -29,6 +29,7 @@ requirements:
   - pyyaml
   - pyqt
   - pytest
+  - numba
 
 
 
