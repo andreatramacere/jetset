@@ -66,12 +66,14 @@ jobs:
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
           python setup.py clean
           python setup.py sdist bdist_wheel
-          pip install dist/*.whl
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
+      - name: pip install
+        run: |
+          pip install dist/*.whl
 
       - name: test
-        working-directory: .github/testing
+        #working-directory: .github/testing
         run: |
           pytest --pyargs jetset.tests.test_functions::test_short
 
