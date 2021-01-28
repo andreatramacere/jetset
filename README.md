@@ -1,7 +1,5 @@
-![example workflow file path](https://github.com/andreatramacere/jetset/workflows/conda%20build-test/badge.svg)
-
-![example workflow file path](https://github.com/andreatramacere/jetset/workflows/pip%20build-test/badge.svg)
-
+![conda build-test](https://github.com/andreatramacere/jetset/workflows/conda%20build-test/badge.svg)
+![pip build-test](https://github.com/andreatramacere/jetset/workflows/pip%20build-test/badge.svg)
 
 
 
