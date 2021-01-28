@@ -226,8 +226,8 @@ def test_full(plot=False):
     jet_minuit,model_minimizer_minuit=model_fit_minuit(sed_data,my_shape)
 
 def test_short(plot=False):
-    from jetset.plot_sedfit import  plt
-    plt.ioff()
+    #from jetset.plot_sedfit import  plt
+    #plt.ioff()
     test_jet(plot)
     sed_data = data(plot)
     print('done')
