@@ -73,7 +73,7 @@ jobs:
           pip install dist/*.whl
 
       - name: test
-        working-directory: .github/action_testing/
+        working-directory: .github/action_test/
         run: |
           pytest --pyargs jetset.tests.test_functions::test_short
 
