@@ -74,7 +74,7 @@ jobs:
 
       - name: test
         run: |
-          pytest --pyargs jetset.tests.test_functions::test_jet
+          pytest -sv --pyargs jetset.tests.test_functions::test_short
 
       - name: set pkg version
         run: |

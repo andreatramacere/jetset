@@ -141,9 +141,10 @@ def model_fit_lsb(sed_data,my_shape, plot=True):
     fit_model_lsb.host_galaxy.parameters.nu_scale.frozen = True
 
     model_minimizer_lsb, best_fit_lsb = fit_SED(fit_model_lsb, sed_data, 10.0 ** 11, 10 ** 29.0,
-                                                fitname='SSC-best-fit-lsb', minimizer='lsb')
+                                                fitname='SSC-best-fit-lsb', minimizer='lsb',silent=True)
 
     best_fit_lsb.save_report('best-fit-minuit-report.txt')
+    best_fit_lsb.show_report()
     fit_model_lsb.save_model('fit_model_lsb.pkl')
     fit_model_lsb_new = FitModel.load_model('fit_model_lsb.pkl')
 
@@ -171,8 +172,8 @@ def model_fit_minuit(sed_data,my_shape, plot=True):
     fit_model_minuit.host_galaxy.parameters.nu_scale.frozen = True
 
     model_minimizer_minuit, best_fit_minuit = fit_SED(fit_model_minuit, sed_data, 10.0 ** 11, 10 ** 29.0,
-                                                      fitname='SSC-best-fit-minuit', minimizer='minuit')
-
+                                                      fitname='SSC-best-fit-minuit', minimizer='minuit',silent=True)
+    best_fit_minuit.show_report()
     best_fit_minuit.save_report('best-fit-minuit-report.txt')
     fit_model_minuit.save_model('fit_model_minuit.pkl')
 
