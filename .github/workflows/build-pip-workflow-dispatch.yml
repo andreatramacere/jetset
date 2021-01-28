@@ -80,7 +80,7 @@ jobs:
       - name: test
         working-directory: .github/action_test/
         run: |
-          pytest -sv  test_functions.py::test_jet
+          pytest -vv  test_functions.py::test_jet
 
       - name: set pkg version
         run: |

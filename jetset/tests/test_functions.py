@@ -191,7 +191,7 @@ def test_build_bessel():
     from jetset.jet_model import Jet
     Jet().eval()
 
-
+@pytest.mark.users
 def test_jet(plot=True):
     print('--------> test_jet',plot)
     from jetset.jet_model import Jet
