@@ -11,7 +11,6 @@ from .data_loader import log_to_lin, lin_to_log
 
 from scipy.interpolate import interp1d
 
-from scipy import loadtxt,log10,array,power,linspace,shape,zeros,ones
 
 import numpy as np
 
@@ -76,7 +75,7 @@ class SpectralTemplateLogLog(Model):
         
         if z is not None  :
             self.z=z
-            self.z_scale=log10(1+z)
+            self.z_scale=np.log10(1+z)
         else:
             self.z=0.0
             self.z_scale=0.0
@@ -149,7 +148,7 @@ class SpectralTemplateLogLog(Model):
         """
         Loads a template from a file
         """
-        xy = loadtxt(file_path, usecols=(0, 1), unpack=False, dtype=float)
+        xy = np.loadtxt(file_path, usecols=(0, 1), unpack=False, dtype=float)
         xy = xy[np.argsort(xy[:, 0])]
         self.nu_template = xy[:, 0]
         self.nuFnu_template = xy[:, 1]
@@ -159,13 +158,13 @@ class SpectralTemplateLogLog(Model):
         
         x_shift=getattr(self,self.x_scale)
         y_shift=getattr(self,self.y_scale)
-        if shape(nu_log)==():
-                nu=array([nu_log])
+        if np.shape(nu_log)==():
+                nu=np.array([nu_log])
         
         
         x_log=nu_log-x_shift
 
-        model=ones(x_log.size)+np.log10(self.flux_plot_lim)
+        model=np.ones(x_log.size)+np.log10(self.flux_plot_lim)
             
         msk = x_log >self.nu_template.min() 
         msk*= x_log <self.nu_template.max()
@@ -187,18 +186,18 @@ class SpectralTemplateLogLog(Model):
 
 
         if loglog is False:
-            log_nu=log10(nu)
+            log_nu=np.log10(nu)
 
             lin_nu=nu
         else:
             log_nu=nu
 
-            lin_nu=power(10.,log_nu)
+            lin_nu=np.power(10.,log_nu)
         
         
         log_model= self.log_func(log_nu)
         
-        model=power(10.,log_model)
+        model=np.power(10.,log_model)
 
         if fill_SED is True:
             self._fill(lin_nu = lin_nu, lin_model = model)
@@ -342,7 +341,7 @@ class HostGalaxyTemplateLogLog(SpectralTemplateLogLog):
         """
         Loads a template from a file
         """
-        xy = loadtxt(file_path, usecols=(0, 1), unpack=False, dtype=float)
+        xy = np.loadtxt(file_path, usecols=(0, 1), unpack=False, dtype=float)
         xy = xy[np.argsort(xy[:, 0])]
         self.nu_template = xy[:, 0]
         self.nuFnu_template = xy[:, 1]

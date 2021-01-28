@@ -50,18 +50,19 @@ jobs:
           conda install -c astropy --file requirements.txt
           conda install  pytest
 
-      - name: build
-        run: |
-          python setup.py clean
-          python setup.py install > install.log 2>install.err
+      #- name: build
+      #  run: |
+      #    python setup.py clean
+      #    python setup.py install > install.log 2>install.err
 
       - name: set pkg version
         run: |
-         echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
+        echo "PKG_VERSION=${{fromJson(jetset.pkg_inf.json).version}}" >> $GITHUB_ENV
 
-      #- name: test
-      #  run: |
-      #    pytest --pyargs jetset.tests.test_functions::test_short
+      - name: test
+        working-directory: .github/testing
+        run: |
+          pytest --pyargs jetset.tests.test_functions::test_full
 
       - name: set pkg version
         run: |

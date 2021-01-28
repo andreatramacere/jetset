@@ -1,7 +1,3 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
 
 __author__ = "Andrea Tramacere"
 
@@ -21,28 +17,20 @@ from scipy.stats import chi2
 try:
     import iminuit
     minuit_installed=True
-
 except:
     minuit_installed=False
-#from iminuit.frontends import ConsoleFrontend
-#from iminuit.frontends import console
-from .plot_sedfit import plt
 
-from scipy.optimize import leastsq
+from .plot_sedfit import plt
 
 from scipy.optimize import least_squares,curve_fit
 
-from leastsqbound.leastsqbound import  leastsqbound
+from .leastsqbound.leastsqbound import leastsqbound
 
 from .output import section_separator,WorkPlace,makedir
 from .utils import JetkerneltException
 import pickle
 
-
-
-__all__=['FitResults','fit_SED','Minimizer','LSMinimizer','LSBMinimizer','MinutiMinimizer','ModelMinimizer']
-
-
+__all__ = ['FitResults','fit_SED','Minimizer','LSMinimizer','LSBMinimizer','MinutiMinimizer','ModelMinimizer']
 
 
 

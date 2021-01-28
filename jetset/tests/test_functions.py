@@ -5,6 +5,24 @@ import pytest
 #   input = False
 #   return input
 
+
+def hadroinc_model(plot=True):
+    from jetset.jet_model import Jet
+    j = Jet(proton_distribution='plc')
+    j.parameters.gmin.val = 2
+    j.parameters.gmax.val = 1E8
+    j.parameters.NH_pp.val = 1E10
+    j.parameters.N.val = 1E1
+    j.parameters.B.val = 80
+
+    j.parameters.p.val = 2.5
+    j.eval()
+    j.show_model()
+    if plot is True:
+        j.plot_model()
+
+
+
 def custom_emitters(plot=True):
     from jetset.jet_model import Jet
 
@@ -13,7 +31,7 @@ def custom_emitters(plot=True):
     def distr_func_bkn(gamma_break, gamma, s1, s2):
         return np.power(gamma, -s1) * (1. + (gamma / gamma_break)) ** (-(s2 - s1))
 
-    n_e = EmittersDistribution('bkn')
+    n_e = EmittersDistribution('custom_bkn',spectral_type='bkn')
     n_e.add_par('gamma_break', par_type='turn-over-energy', val=1E3, vmin=1., vmax=None, unit='lorentz-factor')
     n_e.add_par('s1', par_type='LE_spectral_slope', val=2.5, vmin=-10., vmax=10, unit='')
     n_e.add_par('s2', par_type='LE_spectral_slope', val=3.2, vmin=-10., vmax=10, unit='')
@@ -59,10 +77,6 @@ def data(plot=True):
 
 def spectral_indices(sed_data,plot=True):
     from jetset.sed_shaper import SEDShape
-
-
-
-
 
     my_shape = SEDShape(sed_data)
     my_shape.eval_indices(silent=True)
@@ -195,10 +209,11 @@ def test_jet(plot=True):
     j_new=Jet.load_model('test_jet.pkl')
 
 
-def test_full():
+def test_full(plot=False):
     from jetset.plot_sedfit import plt
     plt.ioff()
-    test_jet()
+    test_jet(plot)
+    hadroinc_model(plot)
     sed_data=data()
     print('done')
     my_shape=spectral_indices(sed_data)
@@ -212,21 +227,19 @@ def test_full():
 
 def test_short(plot=False):
     from jetset.plot_sedfit import  plt
-    try:
-        plt.ioff()
-        test_jet(plot)
-        sed_data = data(plot)
-        print('done')
-        my_shape = spectral_indices(sed_data,plot)
-        print('done')
-        my_shape = sed_shaper(my_shape,plot)
-        print('done')
-        prefit_jet = model_constr(my_shape,plot)
-        print('done')
-        jet_lsb, model_minimizer_lsb,fit_model_lsb = model_fit_lsb(sed_data, my_shape,plot)
-        print('TEST PASSED: OK')
-    except Exception as e:
-        return RuntimeError('test failed',e)
+    plt.ioff()
+    test_jet(plot)
+    sed_data = data(plot)
+    print('done')
+    my_shape = spectral_indices(sed_data,plot)
+    print('done')
+    my_shape = sed_shaper(my_shape,plot)
+    print('done')
+    prefit_jet = model_constr(my_shape,plot)
+    print('done')
+    jet_lsb, model_minimizer_lsb,fit_model_lsb = model_fit_lsb(sed_data, my_shape,plot)
+    print('TEST PASSED: OK')
+
 
 @pytest.mark.users
 def test_users():

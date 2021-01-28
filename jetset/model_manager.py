@@ -37,7 +37,7 @@ from .cosmo_tools import  Cosmo
 import copy
 
 import  pickle
-from collections import Iterable
+from collections.abc import Iterable
 
 __all__=['FitModel']
 

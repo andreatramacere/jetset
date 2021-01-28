@@ -1116,7 +1116,7 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
  
     nu_p_IC_model_log=[]
     
-    B_grid=np.logspace(sp.log10(B_min),sp.log10(B_max),params_grid_size)
+    B_grid=np.logspace(np.log10(B_min),np.log10(B_max),params_grid_size)
     
     #f=open('%s/B_vs_nu_p_IC.dat'%jet.get_path(),'w')
     
