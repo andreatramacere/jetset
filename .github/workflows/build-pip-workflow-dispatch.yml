@@ -75,7 +75,7 @@ jobs:
       - name: test
         working-directory: /tmp
         run: |
-          pytest --pyargs jetset.tests.test_functions::test_short
+          pytest -sv --pyargs jetset.tests.test_functions::test_short
 
       - name: set pkg version
         run: |
