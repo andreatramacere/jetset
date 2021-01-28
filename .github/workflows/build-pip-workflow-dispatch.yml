@@ -72,10 +72,15 @@ jobs:
         run: |
           pip install dist/*.whl
 
+      - name: make test env
+        run: |
+          cp -r jetset/tests/test*.py  .github/action_test/
+
+
       - name: test
         working-directory: .github/action_test/
         run: |
-          pytest -sv --pyargs jetset.tests.test_functions::test_jet
+          pytest -sv --pyargs test_functions::test_jet
 
       - name: set pkg version
         run: |
