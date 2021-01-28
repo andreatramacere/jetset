@@ -73,8 +73,9 @@ jobs:
           pip install dist/*.whl
 
       - name: test
+        working-directory: .github/action_test/
         run: |
-          pytest -sv --pyargs jetset.tests.test_functions::test_short
+          pytest -sv --pyargs jetset.tests.test_functions::test_jet
 
       - name: set pkg version
         run: |
