@@ -192,7 +192,7 @@ def test_build_bessel():
 
 
 def test_jet(plot=True):
-    #print('--------> plot',plot)
+    print('--------> test_jet',plot)
     from jetset.jet_model import Jet
     j=Jet()
     j.eval()
