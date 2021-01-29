@@ -15,16 +15,16 @@ jobs:
     if: github.event.inputs.tags != null
     runs-on: ubuntu-latest
     steps:
-    - name: Clone Repository (Latest)
+    - name: 'Clone Repository (Latest)'
       uses: actions/checkout@v2
 
-    - name: Clone Repository (Custom Ref)
+    - name: 'Clone Repository (Custom Ref)'
       uses: actions/checkout@v2
       if: github.event.inputs.git-ref != ''
       with:
         ref: ${{ github.event.inputs.git-ref }}
 
-    - name: Create Release
+    - name: 'Create Release'
       id: create_release
       uses: actions/create-release@v1
       env:
@@ -35,10 +35,10 @@ jobs:
         draft: false
         prerelease: false
 
-    - name: Output Release URL File
+    - name: 'Output Release URL File'
       run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
 
-    - name: Save Release URL File for publish
+    - name: 'Save Release URL File for publish'
       uses: actions/upload-artifact@v1
       with:
         name: release_url
@@ -54,26 +54,26 @@ jobs:
         python-version: [3.8]
 
     steps:
-      - name: Clone Repository (Latest)
+      - name: 'Clone Repository (Latest)'
         uses: actions/checkout@v2
 
-      - name: Clone Repository (Custom Ref)
+      - name: 'Clone Repository (Custom Ref)'
         uses: actions/checkout@v2
         if: github.event.inputs.git-ref != ''
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - name: set env JETSETBESSELBUILD
+      - name: 'set env JETSETBESSELBUILD'
         run: |
           echo "FALSE">JETSETBESSELBUILD
           echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
 
-      - name: echo env TEST
+      - name: 'echo env TEST'
         run: |
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
 
-      - name: Install swig
+      - name: 'Install swig'
         run: |
            if [ "$RUNNER_OS" == "Linux" ]; then
                 sudo apt-get update; sudo apt-get install swig
@@ -84,16 +84,16 @@ jobs:
                 exit 1
            fi
 
-      - name: Setup pip
+      - name: 'Setup pip'
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: adapt req
+      - name: 'adapt req'
         run: |
           python .github/workflows/adapt_reqirements_to_git_action.py
 
-      - name: Install dependencies
+      - name: 'Install dependencies'
         run: |
           python -m pip install --upgrade pip
           pip install pytest
@@ -106,7 +106,7 @@ jobs:
           python setup.py sdist bdist_wheel
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
-      - name: pip install
+      - name: 'pip install'
         run: |
           pip install dist/*.whl
 
@@ -141,7 +141,7 @@ jobs:
           path: dist/*.tar.gz
 
       - name: 'Tar files'
-        run: tar -cvf pip-packages-${{ matrix.os }}.tar ./dist/*
+        run: tar -cvfz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz -C ./dist/* .
 
       - name: Load Release URL File from release job
         uses: actions/download-artifact@v1
@@ -163,6 +163,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./pip-packages-${{ matrix.os }}.tar
-          asset_name: pip-packages-${{ matrix.os }}.tar
-          asset_content_type: application/tar
+          asset_path: ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz
+          asset_name: pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz
+          asset_content_type: application/tar+gzip
