@@ -139,28 +139,19 @@ jobs:
           name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-src.tar.gz
           path: dist/*.tar.gz
 
-  publish_pip:
-    if: github.event.inputs.tags != null
-    needs: [ build_pip ]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, macos-10.15 ]
-        python-version: [ 3.8 ]
-
-    steps:
       - name: 'rename dir'
         run : mv dist pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
       - name: 'Tar files'
         run: tar -cvfz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
 
       - name: 'Load Release URL File from release job'
-
+        if: github.event.inputs.tags != null
         uses: actions/download-artifact@v1
         with:
           name: release_url
 
       - name: 'Get Release File Name & Upload URL'
+        if: github.event.inputs.tags != null
         id: get_release_info
         run: |
           echo "upload_url=$(cat release_url/release_url.txt)" >> $GITHUB_ENV

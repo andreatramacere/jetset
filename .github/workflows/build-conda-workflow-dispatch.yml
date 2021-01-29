@@ -128,29 +128,18 @@ jobs:
           path: conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz
 
 
-
-  publish_conda:
-    if: github.event.inputs.tags != null
-    needs: [ build_conda ]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, macos-10.15 ]
-        python-version: [ 3.8 ]
-
-    steps:
-      #- name: 'Tar files'
-      #  run: tar -cvfz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz -C ./dist .
-
       - name: 'Load Release URL File from release job'
+        if: github.event.inputs.tags != null
         uses: actions/download-artifact@v1
         with:
           name: release_url
 
       - name: 'Get Release File Name & Upload URL'
+        if: github.event.inputs.tags != null
         id: get_release_info
         run: |
           echo "upload_url=$(cat release_url/release_url.txt)" >> $GITHUB_ENV
+
 
       - name: 'Upload Release Asset'
         id: upload-release-asset
