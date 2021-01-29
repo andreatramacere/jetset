@@ -127,15 +127,15 @@ jobs:
 
       - name: 'rename conda files'
         run: |
-          mv ${{ env.CONDABUILDJETSET }} ./
           mkdir  conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          mv ${{ env.CONDABUILDJETSET }} ./conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
           tar -cvf conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
 
       - name: 'upload conda artifcats'
         uses: actions/upload-artifact@v2
         with:
           name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-conda-binary
-          path: conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz
+          path: conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
 
 
       - name: 'Load Release URL File from release job'
