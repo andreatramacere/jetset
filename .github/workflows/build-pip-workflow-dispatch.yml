@@ -9,7 +9,7 @@ on:
       tags:
         description: tag
         required: false
-      - '*'
+      
 jobs:
   build:
     runs-on: ${{ matrix.os }}
