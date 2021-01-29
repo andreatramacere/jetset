@@ -142,7 +142,7 @@ jobs:
       - name: 'rename dir'
         run : mv dist pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
       - name: 'Tar files'
-        run: tar -cvfz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
+        run: tar -cvfz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
 
       - name: 'Load Release URL File from release job'
         if: github.event.inputs.tags != null
