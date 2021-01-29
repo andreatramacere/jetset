@@ -120,5 +120,6 @@ jobs:
       - name: Upload Assets
         uses: AButler/upload-release-assets@v2.0
         with:
+          upload_url: ${{ github.event.release.upload_url }}
           files: 'dist/*'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
