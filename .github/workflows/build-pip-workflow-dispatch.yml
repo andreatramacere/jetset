@@ -149,7 +149,7 @@ jobs:
         python-version: [ 3.8 ]
 
     steps:
-      - name 'rename dir'
+      - name: 'rename dir'
         run : mv dist pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
       - name: 'Tar files'
         run: tar -cvfz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
