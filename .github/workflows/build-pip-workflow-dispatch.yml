@@ -106,6 +106,9 @@ jobs:
           name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-src.tar.gz
           path: dist/*.tar.gz
 
+      - name: 'Tar files'
+        run: tar -cvf dist.tar ./dist
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -117,9 +120,13 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Assets
-        uses: AButler/upload-release-assets@v2.0
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          files: 'dist/*'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./dist.tar
+          asset_name: dist.tar
+          asset_content_type: application/tar
