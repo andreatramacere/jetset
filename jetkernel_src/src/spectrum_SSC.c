@@ -18,10 +18,10 @@
 
 
 void spettro_compton(int Num_file, struct blob *pt){
-    double nu_src,nu_peak;
-    double L_nu_SSC, nuL_nu_SSC, F_nu_SSC_obs;
+    double nu_peak;
+    double L_nu_SSC, F_nu_SSC_obs;
     double gmax,numax_KN,numax_TH,nu_min_TH_1,nu_min_TH_2;
-    unsigned int NU_INT, I_MAX, stop,out;
+    unsigned int NU_INT, I_MAX, stop;
    
     
     
@@ -107,11 +107,11 @@ void spettro_compton(int Num_file, struct blob *pt){
 							pt->q_comp[NU_INT], NU_INT, pt->j_comp[NU_INT],
 							pt->nu_SSC[NU_INT]);
 				}
-				nu_src = nu_blob_to_nu_src(pt->nu_SSC[NU_INT], pt->beam_obj,
-						pt->z_cosm);
+				//nu_src = nu_blob_to_nu_src(pt->nu_SSC[NU_INT], pt->beam_obj,
+				//		pt->z_cosm);
 				L_nu_SSC = j_nu_to_L_nu_src(pt->j_comp[NU_INT], pt->Vol_sphere,
 						pt->beam_obj);
-				nuL_nu_SSC = L_nu_SSC * nu_src;
+				//nuL_nu_SSC = L_nu_SSC * nu_src;
 				F_nu_SSC_obs = L_nu_src_to_F_nu(L_nu_SSC, pt->beam_obj,
 						pt->z_cosm, pt->dist);
 				pt->nuF_nu_SSC_obs[NU_INT] = F_nu_SSC_obs

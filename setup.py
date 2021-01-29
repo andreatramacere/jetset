@@ -6,12 +6,10 @@ from __future__ import division, absolute_import, print_function
 __author__ = 'andrea tramacere'
 
 
-
-
 from setuptools import setup, find_packages,Extension
-from setuptools.command.install import install
-#from distutils.extension import Extension
-import distutils.command.install as orig
+# from setuptools.command.install import install
+# from distutils.extension import Extension
+# import distutils.command.install as orig
 from distutils.command.build import build
 from setuptools.command.install import install
 from distutils.sysconfig import get_python_lib
@@ -23,33 +21,43 @@ import json
 import sys
 
 
+def check_swig():
+    command = 'swig'
+    if shutil.which(command) is None:
+        _mess = """ 
+         ***********************************************************************************************************
+         ***  you need to install swig v>=3.0.0 to install from source                                           ***
+         ***                                                                                                     ***
+         ***  - on linux Ubuntu: sudo apt-get install swig                                                       ***
+         ***                                                                                                     ***
+         ***  - on linux Debian: sudo aptitude install swig                                                      ***
+         ***                                                                                                     ***
+         ***  - on linux Fedora: sudo yum install swig                                                           ***
+         ***                                                                                                     ***
+         ***  - on mac:                                                                                          ***
+         ***   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"   ***
+         ***   brew install swig                                                                                 ***
+         ***                                                                                                     ***
+         ***   visit: http://www.swig.org/  for more info                                                        ***
+         ***********************************************************************************************************
+        """
 
+        raise RuntimeError(_mess)
 
 class CustomBuild(build):
     def run(self):
-        print('----> custom build')
-
+        print('-> custom build')
+        check_swig()
         self.run_command('build_ext')
         build.run(self)
 
 
 class CustomInstall(install):
     def run(self):
-        print('----> custom install',self.get_command_name())
-
-
+        print('-> custom install',self.get_command_name())
+        check_swig()
         self.run_command('build_ext')
-
-        #if 'pip' in __file__:
-        #    install.run(self)
-        #else:
-        #    self.do_egg_install()
-
-        #try:
-        #self.do_egg_install()
-        #except:
         install.run(self)
-
         print ('JETSETBESSELBUILD',os.getenv('JETSETBESSELBUILD') == 'TRUE')
         if os.getenv('JETSETBESSELBUILD') == 'TRUE':
             self.run_command('test')
@@ -61,9 +69,6 @@ class CustomInstall(install):
 
 class CustomClean(install):
     def run(self):
-
-
-
         try:
             shutil.rmtree('dist')
         except:
@@ -89,10 +94,9 @@ class CustomClean(install):
         except:
             pass
 
-        #to remove files installed by old versions
+        # to remove files installed by old versions
         site_p=get_python_lib()
-        #print('path',site_p)
-        #print(site_p, glob.glob(site_p + '/*_jetkernel*'))
+
         for f in glob.glob(site_p+'/*_jetkernel*'):
             print ('found .so object:', f)
             print ('removing it')
@@ -102,13 +106,9 @@ class CustomClean(install):
                 pass
 
 
-
 custom_cmdclass = {'build': CustomBuild,
                    'install': CustomInstall,
                    'clean':CustomClean}
-
-
-
 
 
 with open('jetset/pkg_info.json') as fp:
@@ -120,12 +120,8 @@ __version__ = _info['version']
 f = open("./requirements.txt",'r')
 req=f.readlines()
 f.close()
-req=[n.strip() for n in req]
+req=[n.strip() for n in req  if n.startswith('#') is False]
 
-#if  os.getenv('USE_PIP')=='TRUE':
-#    install_req=req
-#else:
-#    install_req=None
 
 src_files=['jetset/jetkernel/jetkernel.i']
 src_files.extend(glob.glob ('jetkernel_src/src/*.c'))
@@ -137,9 +133,6 @@ _module=Extension('jetset.jetkernel/_jetkernel',
                   include_dirs=['jetkernel_src/include'])
 
 
-#'jetkernel/mathkernel/*dat'
-
-
 if os.getenv('JETSETBESSELBUILD') == 'TRUE':
     _test_suite = 'jetset.tests.test_build_functions'
 else:
@@ -149,12 +142,15 @@ with open("proj_descr.md", "r") as f:
     long_description = f.read()
 
 
-if 'conda' in 'conda' in sys.version:
+# this to skip that pip install packages when installing src from conda
+is_conda = os.path.exists(os.path.join(sys.prefix, 'conda-meta'))
+
+if is_conda:
     install_req=None
 else:
     install_req=req
 
-print('->', __version__,install_req)
+print('-> version', __version__, install_req)
 
 setup(name='jetset',
       version=__version__,
@@ -168,8 +164,6 @@ setup(name='jetset',
       package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*ecsv','./requirements.txt','ebl_data/*','mathkernel/*dat'],'jetkernel':['mathkernel/*dat']},
       include_package_data = True,
       cmdclass=custom_cmdclass,
-      #not to use with setup tools
-      #requires=req,
       ext_modules = [_module],
       install_requires=install_req,
       py_modules=['jetset.jetkernel/jetkernel'],

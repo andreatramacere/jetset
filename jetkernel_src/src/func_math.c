@@ -315,9 +315,9 @@ double log_quad_interp(double x,  double * x_grid, double x_min, double x_max, d
         if (y_grid[ID+2]<= emiss_lim && y_grid[ID+1]> emiss_lim){
             ID=ID-1;
         }
-        if (y_grid[ID+2]<= emiss_lim && y_grid[ID+1]<=  emiss_lim){
-            ID=ID;
-        }
+        //if (y_grid[ID+2]<= emiss_lim && y_grid[ID+1]<=  emiss_lim){
+        //    ID=ID;
+        //}
 		y1 = log10(y_grid[ID]);
 		y2 = log10(y_grid[ID + 1]);
         y3 = log10(y_grid[ID + 2]);
@@ -371,10 +371,10 @@ double log_log_interp(double log_x,  double * log_x_grid, double log_x_min, doub
 
 double trapzd_array_linear_grid(double *x, double *y, unsigned int SIZE)
 {
-    double I, y1, y2, x1,delta_x;
+    double I, y1, y2,delta_x;
     unsigned int INDEX;
     I = 0;
-    x1 = x[0];
+    //x1 = x[0];
     y1 = y[0];
     delta_x=x[1]-x[0];
 

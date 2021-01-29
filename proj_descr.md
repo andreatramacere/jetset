@@ -17,128 +17,22 @@ allowing to fit the numerical models to observed data. The main features of this
 
 
 
-# Acknowledgements
+## Acknowledgements
 
 If you use this code in any kind of scientific publication please cite the following papers:
 
+* `Tramacere A. 2020`  https://ui.adsabs.harvard.edu/abs/2020ascl.soft09001T/abstract
 * `Tramacere A. et al. 2011` http://adsabs.harvard.edu/abs/2011ApJ...739...66T
 * `Tramacere A. et al. 2009` http://adsabs.harvard.edu/abs/2009A%26A...501..879T
 * `Massaro E. et. al 2006`   http://adsabs.harvard.edu/abs/2006A%26A...448..861M
 
+## Licence
+
+JetSeT is released under a 3-clause BSD  license,  for deatils see
+[License](https://github.com/andreatramacere/jetset/blob/master/LICENSE.txt) file 
+
+
 # Documentation
 visit: https://jetset.readthedocs.io/en/latest/
 
-
-# Install  JetSeT from Anaconda  (suggested for OSX and Linux)
- - I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
- 
- - create a virtual environment (not necessary, but suggested): 
- 
-    `conda create --name jetset python=3.7 ipython jupyter`
-    
-     `conda activate jetset`
-     
-- install the code:
-   
-   - on Mac  
- 
-     `conda install -c andreatramacere jetset`
-  
-  - on linxu
-   
-    `conda install -c andreatramacere -c astropy jetset`
-
-
-
-
-# Install the JetSeT from source 
-
-
-
-## Download the code
-   - Get the source code from: 
-
-     - https://github.com/andreatramacere/jetset/archive/stable.tar.gz
-
-   - Uncompress the  archive  `jetset-stable.tar.gz`
-   
-   - cd to  the dir `jetset-stable` 
-
-## Installation from source using Anaconda 
- 
- - Install requirements, run on the command line:
-    - `conda install --file requirements.txt`
-
-        if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
-   
- - run on the command line: 
-     * `python setup.py clean`
-     * `python setup.py install`
-
-
-**run all the examples outside of the installation dir**
-
-
-## Installation from source using PIP 
- 
- - Install requirements, run on the command line:
-    - `pip install -r requirements.txt`
-    
-   if pip fails to install swig, you can try one of the following alternative [methods](swig.md)
-  
-  - run on the command line: 
-    * `python setup.py clean`
-    * `python setup.py install`
-
-**run all the examples outside of the installation dir**
-
-##  Requirements
-The following python packages are required:
-
-        python 2.7 or >=3.6 (python 3 is suggested, python 2 should work still fine)
-        setuptools
-        scipy
-        numpy
-        astropy
-        matplotlib
-        swig
-        future
-        iminuit
-        corner
-        six
-        emcee
-        pyyaml
-         
-
-
-A C compiler is also necessary, plus the SWIG wrapper generator.
-
-All the dependencies are installed following the Anaconda method 
- **OR** the pip method, as described above.
-
-
-# jetset code repoistory
-
-The code is hosted here: 
- -  https://github.com/andreatramacere/jetset
- 
-
-
-
-
-# Build documentation
-
- requires: 
-    
- - sphinx
- - pylint
- - sphinx-pyreverse: "https://github.com/alendit/sphinx-pyreverse"
- - nbsphinx: "conda install -c conda-forge nbsphinx"
- - sphinx_rtd_theme: conda install -c anaconda sphinx_rtd_theme 
- - sphinx-bootstrap-theme: 'https://github.com/ryan-roemer/sphinx-bootstrap-theme'
- - sphinx automod: 'https://github.com/astropy/sphinx-automodapi'    
- 
- 
- 
-
-
+visit: https://github.com/andreatramacere/jetset

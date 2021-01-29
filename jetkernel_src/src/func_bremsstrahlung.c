@@ -18,7 +18,7 @@
 //=======================================================================
 
 double j_nu_bremss_ee(struct blob * pt, double nu_out) {
-    double integr;
+    //double integr;
     unsigned int ID_gamma;
     for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
             pt->Integrand_over_gamma_grid[ID_gamma] =b_ee_sigma(pt->griglia_gamma_Ne_log[ID_gamma],nu_out*HPLANCK*one_by_MEC2)*pt->Ne[ID_gamma];
@@ -27,7 +27,7 @@ double j_nu_bremss_ee(struct blob * pt, double nu_out) {
 }
 
 double j_nu_bremss_ep(struct blob *pt, double nu_out) {
-    double integr;
+    //double integr;
     unsigned int ID_gamma;
     for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
             pt->Integrand_over_gamma_grid[ID_gamma] =b_ep_sigma(pt->griglia_gamma_Ne_log[ID_gamma],nu_out*HPLANCK*one_by_MEC2)*pt->Ne[ID_gamma];
@@ -57,7 +57,7 @@ double b_ee_sigma_rel(double gamma_e, double epsilon_gamma){
     //Eq A1
     //For gamma_e*MEC2_MeV>=2
     //https://iopscience.iop.org/article/10.1086/306829/pdf
-    double res;
+    //double res;
 
     return b_ee_A_term(gamma_e,epsilon_gamma)*(bremss_sigma_1(gamma_e,epsilon_gamma)+bremss_sigma_2(gamma_e,epsilon_gamma));
 }
@@ -79,7 +79,7 @@ double b_ee_sigma_non_rel(double gamma_e, double epsilon_gamma){
 double ee_brem_F(double gamma_e, double x){
     //Eq A6
     //https://iopscience.iop.org/article/10.1086/306829/pdf
-    double beta_e,f_B,f_C,beta,a1,a2,a3;
+    double beta_e,f_B,f_C,a1,a2,a3;
     beta_e= sqrt(1 - (gamma_e*gamma_e));
     
     f_B = 1 + 0.5*((gamma_e*gamma_e) - 1);
@@ -103,7 +103,7 @@ double b_ee_A_term(double gamma_e, double epsilon_gamma){
 double bremss_sigma_1(double gamma_e, double epsilon_gamma){
     //Eq A2 
     //https://iopscience.iop.org/article/10.1086/306829/pdf
-    double a,a1,a2,a3,x,res;
+    double a,a1,a2,x,res;
     if((gamma_e-epsilon_gamma)<0){
         res =0.;
     

@@ -1,14 +1,17 @@
-//#include <stdlib.h>
-//#include <stdio.h>
-//#include <math.h>
-//#include <string.h>
-//#include <unistd.h>
-////#include "libmia.h"
-//#include "Blazar_SED.h"
-//#define grad(x,t) (x>t) ? 0:1;
-//#define ngrad(x,t) (x>t) ? 1:0;
-//
-///**
+
+
+
+// #include <stdlib.h>
+// #include <stdio.h>
+// #include <math.h>
+// #include <string.h>
+// #include <unistd.h>
+// //#include "libmia.h"
+// #include "Blazar_SED.h"
+// #define grad(x,t) (x>t) ? 0:1;
+// #define ngrad(x,t) (x>t) ? 1:0;
+
+// /**
 // * \file Blazar_SED.c
 // * \author Andrea Tramacere
 // * \date 27-04-2004
@@ -16,9 +19,9 @@
 // * chimata sotto funzioni
 // *
 // */
-//
-//int main(int argc, char **argv) {
-//
+
+// int main(int argc, char **argv) {
+
 //    char help[] = "-h";
 //    char help1[] = "-help";
 //    char help2[] = "--help";
@@ -27,15 +30,15 @@
 //    char file[] = "file";
 //    char make_log[] = "make_log";
 //    char EVOLVE[] = "Evolve";
-//
+
 //    struct spettro spettro_root;
 //    struct temp_ev temporal_root;
 //    struct spettro *pt_spec;
 //    struct temp_ev *pt_temporal;
-//
+
 //    pt_spec = &spettro_root;
 //    pt_temporal = &temporal_root;
-//
+
 //    SYSPATH = getenv("BLAZARSED");
 //    if (SYSPATH == NULL) {
 //        printf("!!!Warning Blazar SED env variable not set\n");
@@ -43,7 +46,7 @@
 //        exit(0);
 //    }
 //    printf("BLAZARSED=%s\n", SYSPATH);
-//
+
 //    //================================================
 //    //                 man page
 //    //================================================
@@ -55,25 +58,25 @@
 //        manpage();
 //        return 0;
 //    }
-//
+
 //    printf("******************************************************************************\n");
 //    printf("*         Blazar_SED_NEW               Version 3.1                             *\n");
 //    printf("******************************************************************************\n\n");
-//
+
 //    printf("command lines args %d:\n", argc);
 //    int i;
 //    for (i = 0; i < argc; i++) {
 //        printf("%s ", argv[i]);
 //    }
 //    printf("\n");
-//
+
 //    if (strcmp(argv[1], tastiera) == 0) {
 //        printf("opzione non piu' supportata \n");
 //        return 0;
 //    }
-//
-//
-//
+
+
+
 //    if (strcmp(argv[1], file) == 0) {
 //        printf("******************************************************************************\n");
 //        printf("Source Parameters from File \n");
@@ -81,7 +84,7 @@
 //        FileInput(argc, argv, pt_spec, pt_temporal);
 //        printf("******************************************************************************\n");
 //        printf("\n");
-//
+
 //        if (strcmp(argv[2], make_log) != 0) {
 //            printf("******************************************************************************\n");
 //            printf("Paramters Resume \n");
@@ -90,17 +93,17 @@
 //            show_temp_ev(temporal_root);
 //            printf("******************************************************************************\n");
 //            printf("\n");
-//
+
 //            printf("******************************************************************************\n");
 //            if (argc == 5 && strcmp(argv[4], verbose) == 0) {
 //                printf("verbose mode \n");
 //                spettro_root.verbose = 1;
-//
+
 //            } else {
 //                spettro_root.verbose = 0;
 //            }
-//
-//
+
+
 //            if (argc <=5) {
 //                printf("******************************************************************************\n");
 //            printf("Run SED computation \n");
@@ -108,13 +111,13 @@
 //                Init(pt_spec);
 //                Run_SED(pt_spec);
 //            }
-//
-//
-//
-//
-//
-//
-//
+
+
+
+
+
+
+
 //            if (argc > 5) {
 //                if (strcmp(argv[5], EVOLVE) == 0) {
 //                    pt_spec->Norm_distr = 0;
@@ -128,32 +131,32 @@
 //        }
 //    }
 //    return 0;
-//}
-////=========================================================================================
-//
-//
-//
-//
-//
-//
-//
-////======================================
-//// Input from File
-////======================================
-//
-//void FileInput(int argc, char **argv, struct spettro *pt_spec, struct temp_ev *pt_temporal) {
+// }
+// //=========================================================================================
+
+
+
+
+
+
+
+// //======================================
+// // Input from File
+// //======================================
+
+// void FileInput(int argc, char **argv, struct spettro *pt_spec, struct temp_ev *pt_temporal) {
 //    FILE *fp_log, *fp_beaming_factor, *fp_PID_FILE, *fp_temporal;
 //    double dato;
 //    //struct spettro spettro_root;
-//
+
 //    char TIPO_DISTR[80];
 //    char MODE[80], EV[80];
-//
+
 //    char stringa[80];
 //    char stringa1[80];
 //    char PID_FILE[100];
 //    char make_log[] = "make_log";
-//
+
 //    // SECTIONS
 //    char PROCESSES_AND_OUT_FILES[] = "PROCESSES_AND_OUT_FILES";
 //    char SPECTRAL_AND_PHYSICAL_PARAMETERS[] = "SPECTRAL_AND_PHYSICAL_PARAMETERS";
@@ -164,8 +167,8 @@
 //    int out_log;
 //    double test, prova;
 //    double (*pf) (struct spettro *, double);
-//
-//
+
+
 //    if (strcmp(argv[2], make_log) != 0) {
 //        sprintf(pt_spec->path, argv[2]);
 //        sprintf(pt_spec->STEM, argv[3]);
@@ -190,7 +193,7 @@
 //            }
 //        }
 //    }
-//
+
 //    if (strcmp(argv[2], make_log) == 0) {
 //        printf("make ev input file\n");
 //        fp_temporal = fopen(argv[4], "w");
@@ -198,16 +201,16 @@
 //        printf("test %s\n", argv[4]);
 //        //fclose(fp_temporal);
 //    }
-//
+
 //    if (argc > 5) {
 //        strcpy(EV, argv[5]);
 //    }
 //    if ((strcmp(EV, EVOLVE) == 0) || (out_log == 1)) {
 //        //---------------Lettura Parametri da FIle---------------------------
 //        printf(" Reading Temp Ev parameters\n");
-//
-//
-//
+
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf %s\n", &dato, stringa);
 //            pt_spec->attesa_Sync_cooling = (int) dato;
@@ -217,7 +220,7 @@
 //            fprintf(fp_temporal, "0/1    attesa_Sync_cooling\n");
 //        }
 //        printf("test\n");
-//
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf %s\n", &dato, stringa);
 //            pt_spec->attesa_compton_cooling = (int) dato;
@@ -226,8 +229,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "0/1    attesa_compton_cooling\n");
 //        }
-//
-//
+
+
 //        //if (out_log == 0) {
 //        //    fscanf(fp_temporal, "%lf %s\n", &dato, stringa);
 //        //    pt_spec->attesa_EC_cooling = (int) dato;
@@ -236,8 +239,8 @@
 //        //if (out_log == 1) {
 //        //    fprintf(fp_temporal, "0/1    attesa_EC_cooling\n");
 //        //}
-//
-//
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->NUM_SET = (int) dato;
@@ -246,8 +249,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "int   NUM_SET(num_of_outfile)\n");
 //        }
-//
-//
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->T_SIZE = (int) dato;
@@ -256,8 +259,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "int   T_SIZE(T_grid_size)\n");
 //        }
-//
-//
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf %s\n", &dato, stringa);
 //            pt_temporal->L_inj = dato;
@@ -266,8 +269,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "double    L_inj(erg/s)\n");
 //        }
-//
-//
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->duration = dato;
@@ -276,11 +279,11 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "double    duration(R/C)\n");
 //        }
-//
+
 //        //fscanf(fp,"%lf  %s",&dato,stringa);
 //        //c2=dato;
 //        //printf("T_ACC(R/C)=%e\n",c2);
-//
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->t_D0 = dato;
@@ -290,8 +293,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "double    t_D=1/Diff_Coeff(s)\n");
 //        }
-//
-//
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->Diff_Index = dato;
@@ -300,8 +303,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "double    Diff_Index\n");
 //        }
-//
-//
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->t_A0 = dato;
@@ -311,8 +314,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "double    1/Acc_Coeff(s)\n");
 //        }
-//
-//
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->Acc_Index = dato;
@@ -321,8 +324,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "double    Acc_Index\n");
 //        }
-//
-//
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->T_esc_Coeff = dato;
@@ -331,8 +334,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "double    T_ESC_COEFF(R/c)\n");
 //        }
-//
-//
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->Esc_Index = dato;
@@ -341,8 +344,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "double    ESC_index\n");
 //        }
-//
-//
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->TStart_Inj = dato;
@@ -351,9 +354,9 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "double    T_Start_Inj(s)\n");
 //        }
-//
-//
-//
+
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->TStop_Inj = dato;
@@ -362,8 +365,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "double    T_Stop_Inj(s)\n");
 //        }
-//
-//
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->TStart_Acc = dato;
@@ -372,47 +375,47 @@
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "double    T_Start_Acc(s)\n");
 //        }
-//
-//
+
+
 //        if (out_log == 0) {
 //            fscanf(fp_temporal, "%lf  %s", &dato, stringa);
 //            pt_temporal->TStop_Acc = dato;
 //            printf("T_Stop_Acc(s)_DOUB =%e\n", pt_temporal->TStop_Acc);
-//
+
 //            fclose(fp_temporal);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_temporal, "double    T_Stop_Acc(s)\n");
 //            fclose(fp_temporal);
 //        }
-//
-//
+
+
 //    }
-//
-//
-//
-//
-//
+
+
+
+
+
 //    if (strcmp(argv[2], make_log) == 0) {
 //        printf("make spec input file\n");
 //        fp_log = fopen(argv[3], "w");
 //        out_log = 1;
 //    }
-//
+
 //    if (out_log == 0) {
 //        printf("******************************************************************************\n");
 //        printf("*         Lettura dei parametri dal file di inizializzazione                 *\n");
 //        printf("******************************************************************************\n");
 //    }
-//
+
 //    if (out_log == 1) {
 //        printf("******************************************************************************\n");
 //        printf("*         Scrivo il modello del file di inizializzazione                     *\n");
 //        printf("******************************************************************************\n");
 //    }
-//
+
 //    while (feof(fp_log) != 1 || (out_log == 1)) {
-//
+
 //        // SECTION PROCESSES_AND_OUT_FILES
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%s %s\n", stringa1, stringa);
@@ -421,7 +424,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "**************SECTION    %s\n", PROCESSES_AND_OUT_FILES);
 //        }
-//
+
 //        // Particles
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%s %s\n", stringa, stringa1);
@@ -431,8 +434,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "leptons \t\t\t PARTICLES(leptons,hadrons)\n");
 //        }
-//
-//
+
+
 //        // Synch
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -442,7 +445,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1 \t\t\t do_Sync(0=no/1=yes/2=self_abs)\n");
 //        }
-//
+
 //        // compton
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -452,7 +455,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1 \t\t\t do_SSC(0=no/1=si)\n");
 //        }
-//
+
 //        // mode
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%s %s\n", MODE, stringa);
@@ -462,7 +465,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "fast \t\t\t mode(fast/accurare)\n");
 //        }
-//
+
 //        // SECTION SPECTRAL_AND_PHYSICAL_PARAMETERS
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%s %s\n", stringa1, stringa);
@@ -471,9 +474,9 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "**************SECTION    %s\n", SPECTRAL_AND_PHYSICAL_PARAMETERS);
 //        }
-//
-//
-//
+
+
+
 //        // gamma min griglia
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -483,7 +486,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1 \t\t\t gmin_griglia(double)\n");
 //        }
-//
+
 //        // gamma min griglia
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -493,8 +496,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1e5 \t\t\t gmax_griglia(double)\n");
 //        }
-//
-//
+
+
 //        // nu_seed_size
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -504,7 +507,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "100 \t\t\t mesh_spettro_Sync(int)\n");
 //        }
-//
+
 //        // mesh_spettro_comp
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -514,7 +517,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "200 \t\t\t mesh_spettro_comp(int)\n");
 //        }
-//
+
 //        // nu_start_Sync
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -524,7 +527,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e12 \t\t\t nu_start_Sync(double)\n");
 //        }
-//
+
 //        // nu_stop_Sync
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -534,7 +537,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e20 \t\t\t nu_stop_Sync(double)\n");
 //        }
-//
+
 //        // nu_start_comp
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -544,7 +547,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e18 \t\t\t nu_start_compton(double)\n");
 //        }
-//
+
 //        // nu_stop_comp
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -554,8 +557,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e27 \t\t\t nu_stop_compton(double)\n");
 //        }
-//
-//
+
+
 //        // grid somma mesh
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -565,7 +568,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "200 \t\t\t mesh_spettro_somma(int)\n");
 //        }
-//
+
 //        //nu_start_grid
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -575,7 +578,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e9 \t\t\t nu_start_grid(double)\n");
 //        }
-//
+
 //        //nu_stop_grid
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -585,7 +588,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e20 \t\t\t nu_stop_grid(double)\n");
 //        }
-//
+
 //        // B campo mag
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -595,7 +598,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "0.1 \t\t\t B_campo_mag_in_Gauss(double)\n");
 //        }
-//
+
 //        // R raggio blob
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -605,7 +608,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "15 \t\t\t log10(R_blob(cm,double))\n");
 //        }
-//
+
 //        // ALTRI DATI
 //        // fattore di beaming
 //        if (out_log == 0) {
@@ -616,8 +619,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "10 \t\t\t Gamma(BulkFactor,double)\n");
 //        }
-//
-//
+
+
 //        // viewing angle
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -627,9 +630,9 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0 \t\t\t viewing_angle\n");
 //        }
-//
-//
-//
+
+
+
 //        // red shifht
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -639,8 +642,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "0.1 \t\t\t z(red_shift,double)\n");
 //        }
-//
-//
+
+
 //        // NH_pp
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -650,8 +653,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0 \t\t\t  NH_pp(#cm^-3,double)\n");
 //        }
-//
-//
+
+
 //        // Norm Distr
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -661,9 +664,9 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1  \t\t\t 1=Distribution_Normalized,0=Not\n");
 //        }
-//
-//
-//
+
+
+
 //        // N elettroni
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -673,7 +676,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "10 \t\t\t N_e-_#e-/cm^3(double)\n");
 //        }
-//
+
 //        // Tipo di distribuzione Stazionaria
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%s %s\n", TIPO_DISTR, stringa);
@@ -683,7 +686,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "pl \t\t\t TIPO_DISTR_STAZ:pl;plc;bkn;lp;lpEp;lppl\n");
 //        }
-//
+
 //        // p indice_pl
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -693,7 +696,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "2.0 \t\t\t p(indice_pl,double)\n");
 //        }
-//
+
 //        // p_1 indice per broken pl
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -703,7 +706,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "3.0 \t\t\t p1(indice_pl_broken,double)\n");
 //        }
-//
+
 //        // gamma_break
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -713,7 +716,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "4.0 \t\t\t log10(gamma_breack_distr_e-(double))\n");
 //        }
-//
+
 //        // gamma cut off distr e- static
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -723,8 +726,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "4.0 \t\t\t log10(gamma_cut_off_distr_e-(double))\n");
 //        }
-//
-//
+
+
 //        //Spitkovsky
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -734,7 +737,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "2.4 \t\t\t spit_index\n");
 //        }
-//
+
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
 //            pt_spec->spit_ratio = dato;
@@ -743,7 +746,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "2.4 \t\t\t spit_ratio\n");
 //        }
-//
+
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
 //            pt_spec->spit_cut = pow(10.0, dato);
@@ -752,7 +755,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "4 \t\t\t lgo10(spit_cut)\n");
 //        }
-//
+
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
 //            pt_spec->spit_cut1 = pow(10.0, dato);
@@ -761,7 +764,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "6 \t\t\t lgo10(spit_cut1)\n");
 //        }
-//
+
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
 //            pt_spec->spit_cut2 = pow(10.0, dato);
@@ -770,12 +773,12 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "6.5 \t\t\t lgo10(spit_cut2)\n");
 //        }
-//
-//
-//
-//
+
+
+
+
 //        // indice r,s distribuzioni Log par
-//
+
 //        // r   indice r log par LP+LPPL
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -785,7 +788,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.5 \t\t\t r(indice_log_par,double)\n");
 //        }
-//
+
 //        // s   indice s log par LPPL
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -795,7 +798,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "2.0 \t\t\t s(indice_log_par,double)\n");
 //        }
-//
+
 //        // indice Gamma_0 distribuzioni Log par
 //        // gamma_0   indice gamma_0 log par statica LP+LPPL
 //        if (out_log == 0) {
@@ -806,7 +809,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "4.0 \t\t\t log10(gamma0_log_par(indice_gamma0_log_pa-LP-LPPL,double))\n");
 //        }
-//
+
 //        // indice Gammap distribuzioni Log par
 //        // gamma_p   indice gamma_p log par statica LPEP
 //        if (out_log == 0) {
@@ -817,9 +820,9 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "4.0 \t\t\t log10(gammap_log_par(indice_gammap_log_par-LPEP,double))\n");
 //        }
-//
+
 //        // Parametri Gamma griglia
-//
+
 //        // gamma min distr e- statico/inj
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -829,7 +832,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0 \t\t\t log10(gamma_min_distr_e-(double))\n");
 //        }
-//
+
 //        // gamma max distr e- statico/inj*
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -839,7 +842,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "6.0 \t\t\t log10(gamma_max_distr_e-(double))\n");
 //        }
-//
+
 //        // SECTION EXTERNAL COMPTON
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%s %s\n", stringa1, stringa);
@@ -848,7 +851,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "**************SECTION    %s\n", EXTERNAL_COMPTON);
 //        }
-//
+
 //        // EC Disk
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -858,26 +861,26 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1 \t\t\t do_EC_Disk(0/1)\n");
 //        }
-//
+
 //        // EC BLR
-//		if (out_log == 0) {
-//			fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//			pt_spec->do_EC_BLR = (int) dato;
-//			printf("do_EC_BLR %d\n", pt_spec->do_EC_BLR);
-//		}
-//		if (out_log == 1) {
-//			fprintf(fp_log, "1 \t\t\t do_EC_BLR(0/1)\n");
-//		}
-//		 // EC DT
-//		if (out_log == 0) {
-//			fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//			pt_spec->do_EC_DT = (int) dato;
-//			printf("do_EC_DT %d\n", pt_spec->do_EC_DT);
-//		}
-//		if (out_log == 1) {
-//			fprintf(fp_log, "1 \t\t\t do_EC_DT(0/1)\n");
-//		}
-//
+// 		if (out_log == 0) {
+// 			fscanf(fp_log, "%lf %s\n", &dato, stringa);
+// 			pt_spec->do_EC_BLR = (int) dato;
+// 			printf("do_EC_BLR %d\n", pt_spec->do_EC_BLR);
+// 		}
+// 		if (out_log == 1) {
+// 			fprintf(fp_log, "1 \t\t\t do_EC_BLR(0/1)\n");
+// 		}
+// 		 // EC DT
+// 		if (out_log == 0) {
+// 			fscanf(fp_log, "%lf %s\n", &dato, stringa);
+// 			pt_spec->do_EC_DT = (int) dato;
+// 			printf("do_EC_DT %d\n", pt_spec->do_EC_DT);
+// 		}
+// 		if (out_log == 1) {
+// 			fprintf(fp_log, "1 \t\t\t do_EC_DT(0/1)\n");
+// 		}
+
 //        // Diks Type
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%s %s\n", TIPO_DISTR, stringa);
@@ -887,7 +890,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "BB \t\t\t Disk_Type(BB,MultiBB,Mono)\n");
 //        }
-//
+
 //        // nu_start_EC_BLR
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -897,7 +900,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e18 \t\t\t nu_start_BLR_EC(double)\n");
 //        }
-//
+
 //        // nu_stop_BLR_EC
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -907,7 +910,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e27 \t\t\t nu_stop_EC_BLR(double)\n");
 //        }
-//
+
 //        // R_inner
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -917,7 +920,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "3.0 \t\t\t R_inner_Sw(Rs)\n");
 //        }
-//
+
 //        // R_ext
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -927,7 +930,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "500.0 \t\t\t R_ext_Sw(Rs)\n");
 //        }
-//
+
 //        // Lum Disk
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -937,7 +940,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "48 \t\t\t log10(L_Disk)\n");
 //        }
-//
+
 //        // accr eff
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -947,8 +950,8 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "0.1 \t\t\t log10(accr_eff)\n");
 //        }
-//
-//
+
+
 //        // tau BLR
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -958,7 +961,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1e-3 \t\t\t tau_BLR\n");
 //        }
-//
+
 //        // T disk
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -969,7 +972,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1e5 \t\t\t T_Disk(K)(T_max_for_MultiBB)\n");
 //        }
-//
+
 //        // Dist disk BLR
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -980,7 +983,7 @@
 //            fprintf(fp_log, "18 \t\t\t log10(R_BLR_in)(cm)\n");
 //            //return spettro_root;
 //        }
-//
+
 //        // nu_start_DT_EC
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -990,7 +993,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e13 \t\t\t nu_start_EC_DT(double)\n");
 //        }
-//
+
 //        // nu_stop_EC_DT
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -1000,7 +1003,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e27 \t\t\t nu_stop_EC_DT(double)\n");
 //        }
-//
+
 //        // T Dusty Torus
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -1011,7 +1014,7 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1e2 \t\t\t T_DT(K)(T_Dusty_Torus)\n");
 //        }
-//
+
 //        // Dist disk DT
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -1022,7 +1025,7 @@
 //            fprintf(fp_log, "18.5 \t\t\t log10(R_DT)(cm)\n");
 //            //return spettro_root;
 //        }
-//
+
 //        // tau DT
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
@@ -1034,25 +1037,25 @@
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1e-3 \t\t\t tau_DT\n");
 //            fclose(fp_log);
-//
+
 //            return;
 //        }
-//
-//
+
+
 //    }
 //    return;
 //    printf("******************************************************************************\n");
 //    printf("******************************************************************************\n\n");
-//
-//}
-//
-//
-//
-////======================================
-//// Man page
-////======================================
-//
-//void manpage() {
+
+// }
+
+
+
+// //======================================
+// // Man page
+// //======================================
+
+// void manpage() {
 //    char help[] = "\n\
 //    Blazar_SED man page:\n\n\
 //    -to run:\n\
@@ -1072,5 +1075,5 @@
 //    \n\n\n";
 //    printf("%s", help);
 //    return;
-//}
-//
+// }
+

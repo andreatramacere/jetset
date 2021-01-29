@@ -13,3 +13,4 @@ pyyaml
 #pyqt
 pytest
 numba
+pytest

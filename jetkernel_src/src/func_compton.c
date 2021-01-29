@@ -32,10 +32,10 @@ double rate_compton_GR(struct blob *pt_GR) {
      *  CALCOLO DEL RATE COMPTON GENERALE metodo GRINDLAY 1985
      */
     double rate_comp=0;
-    double (*pf_K) (struct blob *, double x);
+    //double (*pf_K) (struct blob *, double x);
     double nu_1_original;
 
-    pf_K = &f_compton_K1;
+    //pf_K = &f_compton_K1;
 
 
 
@@ -377,7 +377,7 @@ double f_compton_K1(struct blob *pt_K1, double g) {
 
 void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int stat_frame)
 {
-    double epsilon_0, epsilon_1, g_min_IC;
+    double epsilon_0, epsilon_1;
     epsilon_0 = HPLANCK * nu_in * one_by_MEC2;
     epsilon_1 = HPLANCK * nu_out * one_by_MEC2;
     
@@ -416,9 +416,10 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame) {
     double y_nu1, y_nu2;
     double  delta_nu;
     unsigned int ID,ID_gamma;
-    double (*pf_K1) (struct blob *, double x);
+    //double (*pf_K1) (struct blob *, double x);
 
-    pf_K1 = &f_compton_K1;
+    //pf_K1 = &f_compton_K1;
+    
     integr_gamma = 0.0;
     integr_nu = 0.0;
     ID = 0;

@@ -10,7 +10,7 @@
 #include <unistd.h>
 //#include "libmia.h"
 #include "Blazar_SED.h"
-#include "nrutil.h"
+//#include "nrutil.h"
 
 /**
  * \file funz_math.c

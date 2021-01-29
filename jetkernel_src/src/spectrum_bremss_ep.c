@@ -19,8 +19,8 @@
 
 
 void spettro_bremss_ep(int Num_file, struct blob *pt) {
-    double  k, nu_1, nu_src, nu_check;
-    double L_nu_bremss_ep, nuL_nu_ep_brem, F_nu_bremss_ep_obs;
+    double  k, nu_1, nu_check;
+    double L_nu_bremss_ep, F_nu_bremss_ep_obs;
     double log_nu_start,gmax;
     unsigned int NU_INT, i, I_MAX, stop;
     
@@ -33,7 +33,7 @@ void spettro_bremss_ep(int Num_file, struct blob *pt) {
 
     // massima e minima freq bremss
     gmax=Find_gmax(pt,pt->Ne,pt->griglia_gamma_Ne_log);
-    pt->nu_stop_bremss_ep_pred = pt->gmax*MEC2/HPLANCK*10;
+    pt->nu_stop_bremss_ep_pred = gmax*MEC2/HPLANCK*10;
     pt->nu_start_bremss_ep = pt->gmin_griglia*MEC2/HPLANCK/100;
     pt->nu_start_bremss_ep_obs = nu_blob_to_nu_obs(pt->nu_start_bremss_ep, pt->beam_obj, pt->z_cosm);
     pt->nu_stop_bremss_ep_obs = nu_blob_to_nu_obs(pt->nu_stop_bremss_ep_pred, pt->beam_obj, pt->z_cosm);
@@ -83,9 +83,9 @@ void spettro_bremss_ep(int Num_file, struct blob *pt) {
                             pt->j_bremss_ep[NU_INT],
                             nu_1, i);
                 }
-                nu_src = nu_blob_to_nu_src(nu_1, pt->beam_obj, pt->z_cosm);
+                //nu_src = nu_blob_to_nu_src(nu_1, pt->beam_obj, pt->z_cosm);
                 L_nu_bremss_ep = j_nu_to_L_nu_src(pt->j_bremss_ep[NU_INT], pt->Vol_sphere, pt->beam_obj);
-                nuL_nu_ep_brem = L_nu_bremss_ep*nu_src;
+                //nuL_nu_ep_brem = L_nu_bremss_ep*nu_src;
                 F_nu_bremss_ep_obs = L_nu_src_to_F_nu(L_nu_bremss_ep, pt->beam_obj, pt->z_cosm, pt->dist);
                 pt->nuFnu_bremss_ep_obs[NU_INT] = F_nu_bremss_ep_obs * pt->nu_bremss_ep_obs[NU_INT];
 

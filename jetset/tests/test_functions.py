@@ -6,7 +6,7 @@ import pytest
 #   return input
 
 
-def hadroinc_model(plot=True):
+def hadronic_model(plot=True):
     from jetset.jet_model import Jet
     j = Jet(proton_distribution='plc')
     j.parameters.gmin.val = 2
