@@ -145,7 +145,7 @@ jobs:
       - name: 'rename dir'
         run: mv dist pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
       - name: 'Tar files'
-        run: tar -cvfz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
+        run: tar -cvf pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
 
       - name: 'Load Release URL File from release job'
         if: github.event.inputs.tags != null
@@ -168,9 +168,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz
-          asset_name: pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz
-          asset_content_type: application/tar+gzip
+          asset_path: ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+          asset_name: pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+          asset_content_type: application/tar
 
 
   build_conda:
@@ -237,8 +237,8 @@ jobs:
           conda install --yes --offline $CONDABUILDJETSET
 
      - name: 'make test env'
-      run: |
-        cp -r jetset/tests/test*.py  .github/action_test/
+       run: |
+         cp -r jetset/tests/test*.py  .github/action_test/
 
     - name: 'test'
       working-directory: .github/action_test/
