@@ -11,7 +11,41 @@ on:
         required: false
 
 jobs:
+  create_relase:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone Repository (Latest)
+      uses: actions/checkout@v2
+
+    - name: Clone Repository (Custom Ref)
+      uses: actions/checkout@v2
+      if: github.event.inputs.git-ref != ''
+      with:
+        ref: ${{ github.event.inputs.git-ref }}
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.event.inputs.tags }}
+        release_name: Release ${{ github.event.inputs.tags }}
+        draft: false
+        prerelease: false
+
+    - name: Output Release URL File
+      run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
+
+    - name: Save Release URL File for publish
+      uses: actions/upload-artifact@v1
+      with:
+        name: release_url
+        path: release_url.txt
+
+
   build:
+    needs: [create_release]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -19,7 +53,6 @@ jobs:
         python-version: [3.8]
 
     steps:
-
       - name: Clone Repository (Latest)
         uses: actions/checkout@v2
 
@@ -107,18 +140,18 @@ jobs:
           path: dist/*.tar.gz
 
       - name: 'Tar files'
-        run: tar -cvf dist.tar ./dist
+        run: tar -cvf packages-${{ matrix.os }}.tar ./dist
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Load Release URL File from release job
+        uses: actions/download-artifact@v1
         with:
-          tag_name: ${{ github.event.inputs.tags }}
-          release_name: Release ${{ github.event.inputs.tags }}
-          draft: false
-          prerelease: false
+          name: release_url
+
+      - name: Get Release File Name & Upload URL
+        id: get_release_info
+        run: |
+          echo "upload_url=$(cat release_url/release_url.txt)" >> $GITHUB_ENV
+
 
       - name: Upload Release Asset
         id: upload-release-asset
@@ -126,7 +159,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./dist.tar
-          asset_name: dist.tar
+          upload_url: ${{ env.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./packages-${{ matrix.os }}.tar
+          asset_name: packages-${{ matrix.os }}.tar
           asset_content_type: application/tar
