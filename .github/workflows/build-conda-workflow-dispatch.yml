@@ -117,9 +117,19 @@ jobs:
         run: |
           pytest --pyargs jetset.tests.test_functions::test_jet
 
+      - name: 'set pkg version'
+        run: |
+          echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
+
+      - name: 'echo pkg version'
+        run: |
+          echo "PKG_VERSION=${{env.PKG_VERSION}}"
+
       - name: 'rename conda files'
         run: |
-          mv ${{ env.CONDABUILDJETSET }} ./conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz
+          mv ${{ env.CONDABUILDJETSET }} ./
+          mkdir  conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          mv tar -cvf conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
 
       - name: 'upload conda artifcats'
         uses: actions/upload-artifact@v2
@@ -148,6 +158,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz
-          asset_name: conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz
+          asset_path: ./conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+          asset_name: conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
           asset_content_type: application/tar+gzip
