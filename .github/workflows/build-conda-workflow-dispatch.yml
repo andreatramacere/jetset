@@ -116,7 +116,7 @@ jobs:
         working-directory: .github/conda-pipeline/github/
         run: |
           echo $(cat CONDABUILDJETSET.txt)
-          echo "CONDABUILDJETSET=$(cat CONDABUILDJETSET.txt)"  >> $GITHUB_ENV
+          echo "CONDABUILDJETSET=$(tail -1 CONDABUILDJETSET.txt)"  >> $GITHUB_ENV
 
       - name: 'echo env CONDABUILDJETSET'
         working-directory: .github/conda-pipeline/github/
