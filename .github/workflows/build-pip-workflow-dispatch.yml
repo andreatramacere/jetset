@@ -9,7 +9,7 @@ on:
       tags:
         description: tag
         required: false
-      
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -106,10 +106,9 @@ jobs:
           name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-src
           path: dist/*.tar.gz
 
-     release:
-        - uses: actions/checkout@v1
-        - uses: ncipollo/release-action@v1
-          with:
+      - name: release
+        uses: ncipollo/release-action@v1
+        with:
             replacesArtifacts: true
             #artifacts: "release.tar.gz,foo/*.txt"
             token: ${{ secrets.GITHUB_TOKEN }}
