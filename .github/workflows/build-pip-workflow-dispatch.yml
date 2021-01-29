@@ -11,7 +11,7 @@ on:
         required: false
 
 jobs:
-  create_relase:
+  create_release:
     runs-on: ubuntu-latest
     steps:
     - name: Clone Repository (Latest)
