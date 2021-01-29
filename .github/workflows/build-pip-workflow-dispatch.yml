@@ -97,18 +97,33 @@ jobs:
       - name: upload .whl
         uses: actions/upload-artifact@v2
         with:
-          name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-pip-binary
+          name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-pip-binary.tar.gz
           path: dist/*.whl
 
       - name: upload sdist
         uses: actions/upload-artifact@v2
         with:
-          name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-src
+          name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-src.tar.gz
           path: dist/*.tar.gz
 
-      - name: release
-        uses: ncipollo/release-action@v1
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-            replacesArtifacts: true
-            #artifacts: "release.tar.gz,foo/*.txt"
-            token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.event.inputs }}
+          release_name: Release ${{ github.event.inputs }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-src.tar.gz
+          asset_name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-src.tar.gz
+          asset_content_type: application/tar+gzip
