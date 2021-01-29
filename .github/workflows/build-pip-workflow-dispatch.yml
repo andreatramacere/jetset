@@ -112,7 +112,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.inputs }}
+          tag_name: ${{ github.event.inputs.tags }}
           release_name: Release ${{ github.event.inputs.tags }}
           draft: false
           prerelease: false
