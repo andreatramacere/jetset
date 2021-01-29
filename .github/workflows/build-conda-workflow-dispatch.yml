@@ -63,15 +63,6 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - name: 'set env JETSETBESSELBUILD'
-        run: |
-          echo "FALSE">JETSETBESSELBUILD
-          echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
-
-      - name: 'echo env TEST'
-        run: |
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
-
       - name: 'setup conda'
         uses: s-weigand/setup-conda@v1
         with:
@@ -87,6 +78,31 @@ jobs:
           conda install -c conda-forge emcee">=3.0.0"
           conda install -c astropy --file requirements.txt
           conda install  pytest
+
+      - name: 'set env JETSETBESSELBUILD'
+        run: |
+          echo "FALSE">JETSETBESSELBUILD
+          echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
+
+      - name: 'echo env TEST'
+        run: |
+          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
+
+      - name: 'build '
+        run: |
+          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
+          python setup.py clean
+          python setup.py install
+          python setup.py clean
+          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
+
+      - name: 'set pkg version'
+        run: |
+         echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
+
+      - name: 'echo pkg version'
+        run: |
+          echo "PKG_VERSION=${{env.PKG_VERSION}}"
 
       - name: 'conda build'
         working-directory: .github/conda-pipeline/github/
@@ -117,13 +133,6 @@ jobs:
         run: |
           pytest --pyargs jetset.tests.test_functions::test_jet
 
-      - name: 'set pkg version'
-        run: |
-          echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
-
-      - name: 'echo pkg version'
-        run: |
-          echo "PKG_VERSION=${{env.PKG_VERSION}}"
 
       - name: 'rename conda files'
         run: |
