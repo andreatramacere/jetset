@@ -149,8 +149,10 @@ jobs:
         python-version: [ 3.8 ]
 
     steps:
+      - name 'rename dir'
+        run : mv dist pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
       - name: 'Tar files'
-        run: tar -cvfz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz -C ./dist .
+        run: tar -cvfz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar.gz pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
 
       - name: 'Load Release URL File from release job'
 
