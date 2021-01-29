@@ -1,6 +1,6 @@
 package:
   name: jetset
-  version:  {{ os.environ.get('PKG_VERSION') }}
+  version:  {{ os.environ.get('env.PKG_VERSION') }}
 
 source:
   path: ../../../
