@@ -13,6 +13,51 @@ _available_dict = {'lp': 'log-parabola',
                                 'plc': 'powerlaw with cut-off',
                                 'bkn': 'broken powerlaw',
                                 'superexp':'powerlaw with super-exp cut-off'}
+
+
+@nb.njit(fastmath=True, cache=True)
+def distr_func_bkn(gamma_break, gamma, p, p_1):
+    f = np.zeros(gamma.shape)
+    m = gamma < gamma_break
+    f[m] = np.power(gamma[m], -p)
+    f[~m] = np.power(gamma_break, -(p - p_1)) * np.power(gamma[~m], -p_1)
+    return f
+
+
+@nb.njit(fastmath=True, cache=True)
+def distr_func_super_pl(gamma, p, ):
+    return np.power(gamma, -p)
+
+
+@nb.njit(fastmath=True, cache=True)
+def distr_func_plc(gamma, gamma_cut, p,):
+    return np.power(gamma, -p) * np.exp(-(gamma / gamma_cut) )
+
+
+@nb.njit(fastmath=True, cache=True)
+def distr_func_super_exp(gamma, gamma_cut, p, a):
+    return np.power(gamma, -p) * np.exp(-(1 / a) * (gamma / gamma_cut) ** a)
+
+
+@nb.njit(fastmath=True, cache=True)
+def distr_func_lp(gamma, gamma0_log_parab, r, s):
+    return np.power((gamma / gamma0_log_parab), (-s - r * np.log10(gamma / gamma0_log_parab)))
+
+
+@nb.njit(fastmath=True, cache=True)
+def distr_func_lep(gamma, gamma_p, r):
+    return np.power(10., (-r * np.power(np.log10(gamma / gamma_p), 2)))
+
+
+@nb.njit(fastmath=True, cache=True)
+def distr_func_lppl(gamma, gamma0_log_parab, r, s):
+    f = np.zeros(gamma.shape)
+    m = gamma < gamma0_log_parab
+    f[m] = np.power(gamma[m]/gamma0_log_parab, -s)
+    f[~m] = np.power(gamma[~m]/gamma0_log_parab, (-s -r*np.log10(gamma[~m] / gamma0_log_parab )))
+    return f
+
+
 class EmittersFactory:
     def __repr__(self):
         return str(pprint.pprint(self._available_dict))
@@ -52,13 +97,6 @@ class EmittersFactory:
 
     @staticmethod
     def _create_bkn(gamma_grid_size,log_values,normalize,skip_build,emitters_type):
-        @nb.njit(fastmath=True, cache=True)
-        def distr_func_bkn(gamma_break, gamma, p, p_1):
-            f = np.zeros(gamma.shape)
-            m = gamma < gamma_break
-            f[m] = np.power(gamma[m], -p)
-            f[~m] = np.power(gamma_break, -(p - p_1)) * np.power(gamma[~m], -p_1)
-            return f
 
         n_e_bkn = EmittersDistribution(name='bkn',
                                        spectral_type='bkn',
@@ -78,9 +116,6 @@ class EmittersFactory:
 
     @staticmethod
     def _create_pl(gamma_grid_size, log_values, normalize, skip_build, emitters_type):
-        @nb.njit(fastmath=True, cache=True)
-        def distr_func_super_exp(gamma, p, ):
-            return np.power(gamma, -p)
 
         n_e_pl = EmittersDistribution(name='pl',
                                        spectral_type='pl',
@@ -99,9 +134,6 @@ class EmittersFactory:
 
     @staticmethod
     def _create_plc(gamma_grid_size,log_values,normalize,skip_build,emitters_type):
-        @nb.njit(fastmath=True, cache=True)
-        def distr_func_plc(gamma, gamma_cut, p,):
-            return np.power(gamma, -p) * np.exp(-(gamma / gamma_cut) )
 
         n_e_plc = EmittersDistribution(name='plc',
                                              spectral_type='plc',
@@ -120,9 +152,6 @@ class EmittersFactory:
 
     @staticmethod
     def _create_super_exp(gamma_grid_size, log_values, normalize, skip_build, emitters_type):
-        @nb.njit(fastmath=True, cache=True)
-        def distr_func_super_exp(gamma, gamma_cut, p, a):
-            return np.power(gamma, -p) * np.exp(-(1 / a) * (gamma / gamma_cut) ** a)
 
         n_e_super_exp = EmittersDistribution(name='plc',
                                              spectral_type='plc',
@@ -143,9 +172,6 @@ class EmittersFactory:
 
     @staticmethod
     def _create_lp(gamma_grid_size,log_values,normalize,skip_build,emitters_type):
-        @nb.njit(fastmath=True, cache=True)
-        def distr_func_lp(gamma, gamma0_log_parab, r, s):
-            return np.power((gamma / gamma0_log_parab), (-s - r * np.log10(gamma / gamma0_log_parab)))
 
         n_lp = EmittersDistribution(name='lp',
                                     spectral_type='lp',
@@ -167,9 +193,6 @@ class EmittersFactory:
 
     @staticmethod
     def _create_lpep(gamma_grid_size, log_values, normalize, skip_build, emitters_type):
-        @nb.njit(fastmath=True, cache=True)
-        def distr_func_lep(gamma, gamma_p, r):
-            return np.power(10., (-r * np.power(np.log10(gamma / gamma_p), 2)))
 
         n_lep = EmittersDistribution(name='lpep',
                                     spectral_type='lp',
@@ -189,13 +212,6 @@ class EmittersFactory:
 
     @staticmethod
     def _create_lppl(gamma_grid_size, log_values, normalize, skip_build, emitters_type):
-        @nb.njit(fastmath=True, cache=True)
-        def distr_func_lppl(gamma, gamma0_log_parab, r, s):
-            f = np.zeros(gamma.shape)
-            m = gamma < gamma0_log_parab
-            f[m] = np.power(gamma[m]/gamma0_log_parab, -s)
-            f[~m] = np.power(gamma[~m]/gamma0_log_parab, (-s -r*np.log10(gamma[~m] / gamma0_log_parab )))
-            return f
 
         n_lppl = EmittersDistribution(name='lppl',
                                     spectral_type='lp',
@@ -213,34 +229,5 @@ class EmittersFactory:
         n_lppl.add_par('r', par_type='spectral_curvature', val=1.0, vmin=-15., vmax=15., unit='')
 
         n_lppl.set_distr_func(distr_func_lppl)
-
-        return n_lppl
-
-    @staticmethod
-    def _create_lppl(gamma_grid_size, log_values, normalize, skip_build, emitters_type):
-        @nb.njit(fastmath=True, cache=True)
-        def distr_func_lp(gamma, gamma0_log_parab, r, s):
-            f = np.zeros(gamma.shape)
-            m = gamma < gamma0_log_parab
-            f[m] = np.power(gamma[m] / gamma0_log_parab, -s)
-            f[~m] = np.power(gamma[~m] / gamma0_log_parab, (-s - r * np.log10(gamma[~m] / gamma0_log_parab)))
-            return f
-
-        n_lppl = EmittersDistribution(name='lppl',
-                                      spectral_type='lp',
-                                      normalize=normalize,
-                                      emitters_type=emitters_type,
-                                      log_values=log_values,
-                                      skip_build=skip_build,
-                                      gamma_grid_size=gamma_grid_size)
-
-        a_t, b_t = n_lppl.set_bounds(1, 1E9, log_val=n_lppl._log_values)
-
-        n_lppl.add_par('gamma0_log_parab', par_type='turn-over-energy', val=1E4, vmin=a_t, vmax=b_t,
-                       unit='lorentz-factor',log=log_values)
-        n_lppl.add_par('s', par_type='LE_spectral_slope', val=2.0, vmin=-10., vmax=10, unit='')
-        n_lppl.add_par('r', par_type='spectral_curvature', val=1.0, vmin=-15., vmax=15., unit='')
-
-        n_lppl.set_distr_func(distr_func_lp)
 
         return n_lppl

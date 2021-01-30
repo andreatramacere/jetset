@@ -93,7 +93,7 @@ double rate_electrons_pp(struct blob *pt, double Gamma_e) {
     //PHYSICAL REVIEW D 74, 034018 (2006)
     //AND Eq 48 from https://arxiv.org/abs/2005.01276
     //e- from mu->e +mu_nu +mu_e 
-    double  Ee_TeV, a1, a2, Emin_pi,Emax_pi;
+    double  Ee_TeV, a1, a2;
     unsigned int i_start;
     double (*pf_K) (double gamma_p, double nu_pp, struct blob * pt);
     double (*pf_K_delta) (struct blob * pt, double x);
@@ -255,7 +255,7 @@ double rate_neutrino_mu_1_pp(struct blob *pt, double nu_nu_mu) {
     //astro-ph.06066058v1
     //PHYSICAL REVIEW D 74, 034018 (2006)
     //For pi->mu+nu_mu
-    double  Emu_TeV, a1, a2, Emin_pi,Emax_pi;
+    double  Emu_TeV, a1, a2;
     unsigned int i_start;
     double (*pf_K) (double gamma_p, double nu_mu_nu, struct blob * pt);
     double (*pf_K_delta) (struct blob * pt, double x);
@@ -402,7 +402,7 @@ double rate_gamma_pp(struct blob *pt) {
     //to gamma_p that is more conveninet to the
     //code structure
     //
-    double  Emin_pi,Emax_pi, E_gamma_TeV, a1, a2;
+    double  E_gamma_TeV, a1, a2;
     double (*pf_K) (double gamma_p, double nu_pp, struct blob * pt);
     double (*pf_K_delta) (struct blob * pt, double x);
     double (*pf_E_min) (double gamma_p, struct blob * pt);
@@ -565,8 +565,7 @@ double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, 
                               struct blob * pt, 
                               unsigned int i_start) {
 
-    double integr, y1, y2, y3, x1, x3;
-    double delta;
+    double integr;
     unsigned int ID_gamma;
 
     integr = 0;
@@ -594,40 +593,7 @@ double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, 
         
     }
     return integr;
-    // if (i_start<pt->gamma_grid_size -1){
-    //     pt->i_griglia_gamma = i_start;
-    //     x1 = pt->griglia_gamma_Np_log[i_start];
-    //     y1 = pf_pp_kernel(x1, E_out_TeV, pt);
-    //     //CON QUESTO LOOP L'EVENTUALE PUNTO IN ECCESSO
-    //     //CON INDICE DISPARI VIENE SALTATO
-    //     for (pt->i_griglia_gamma = i_start + 1; pt->i_griglia_gamma < pt->gamma_grid_size - 1; pt->i_griglia_gamma++) {
-    //         //printf("i=%d\n",pt->i_griglia_gamma);
-
-    //         y2 = pf_pp_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], E_out_TeV, pt);
-    //         pt->i_griglia_gamma++;
-    //         x3 = pt->griglia_gamma_Np_log[pt->i_griglia_gamma];
-    //         y3 = pf_pp_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], E_out_TeV, pt);
-
-    //         //printf("i=%d x1=%e x2=%e  x3=%e ",
-    //         //pt->i_griglia_gamma-1,x1,pt->griglia_gamma_Ne_log[pt->i_griglia_gamma-1],x3);
-
-    //         //QUESTO DELTA RIMANE QUI
-    //         //PERCHE' LA GRIGLIA NON E' EQUISPACED
-    //         //NON PUO ANDARE FUORI DAL LOOP
-    //         delta = (x3 - x1);
-    //         integr += (y1 + 4.0 * y2 + y3) * delta;
-    //         y1 = y3;
-    //         x1 = x3;
-    //         //printf("y1,2,3=%e,%e,%e\n",y1,y2,y3);
-    //         //printf("delta=%e y1=%e y2=%e y3=%e\n",delta,y1,y2,y3);
-    //         //printf("integr=%e\n",integr);
-    //     }
-    // }
-    // if (pt->verbose) {
-    //     printf("Integr=%e\n", integr);
-    // }
-    // //printf("i_start=%d integr=%e\n",i_start,integr);
-    // return integr * (0.5 / 3.0);
+    
 }
 //==================================================================
 

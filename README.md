@@ -1,9 +1,5 @@
-![example workflow file path](https://github.com/andreatramacere/jetset/workflows/conda%20build-test/badge.svg)
-
-![example workflow file path](https://github.com/andreatramacere/jetset/workflows/pip%20build-test/badge.svg)
-
-
-
+![pip build-test](https://github.com/andreatramacere/jetset/workflows/pip%20build-test/badge.svg?branch=develop)
+![conda build-test](https://github.com/andreatramacere/jetset/workflows/conda%20build-test/badge.svg)
 
 ![img](./logo/logo_git.png)
 
@@ -55,7 +51,7 @@ run the notebook on binder:
  
  - create a virtual environment (not necessary, but suggested): 
  
-    `conda create --name jetset python=3.7 ipython jupyter`
+    `conda create --name jetset python=3.8 ipython jupyter`
     
      `conda activate jetset`
      
@@ -92,11 +88,13 @@ pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
 ### Installation from source using Anaconda 
  
  - Install requirements, run on the command line:
+    - `conda install --yes  swig">=3.0.0"`
     - `conda install --yes   -c conda-forge emcee">=3.0.0"`
     - `conda install --yes   -c astropy --file requirements.txt`
   
    
-   if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
+if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
+
    
  - run on the command line: 
      * `python setup.py clean`
@@ -112,7 +110,8 @@ pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
 
 ### Installation from source using PIP 
  
- - Install requirements, run on the command line: 
+ - Install requirements, run on the command line:
+   * `pip install swig>=3.0.0 `
    * `pip install -r requirements.txt `
     
    if pip fails to install swig, you can try one of the following alternative [methods](swig.md)
@@ -146,12 +145,13 @@ The following python packages are required:
         six
         emcee
         pyyaml
+        numba
          
 
 
 A C compiler is also necessary, plus the SWIG wrapper generator.
 
-All the dependencies are be installed following the Anaconda method 
+All the dependencies are installed following the Anaconda method 
  **OR** the pip method, as described above.
 
 # jetset code repoistory

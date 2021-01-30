@@ -562,7 +562,7 @@ void Init(struct blob *pt_base, double luminosity_distance) {
 }
  
 void Run_SED(struct blob *pt_base){
-	unsigned int i;
+	//unsigned int i;
     if (pt_base->verbose) {
         printf("STEM=%s\n", pt_base->STEM);
         printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> RUN      <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");

@@ -305,8 +305,8 @@ void set_Star_geometry(struct blob *pt){
 
 //=========================================================================================
 void Build_I_nu_CMB(struct blob *pt){
-	double T_CMB_z,T_CMB_0;
-	double nu_peak_CMB_z,nu_peak_CMB_0;
+	double T_CMB_z;
+	double nu_peak_CMB_z;
 	unsigned int NU_INT,NU_INT_MAX;
 	double nu_start_disk_RF;
 	double nu_stop_disk_RF;
@@ -315,10 +315,10 @@ void Build_I_nu_CMB(struct blob *pt){
 	pt->CMB_mu_2=1.0;
 
 	T_CMB_z=eval_T_CMB_z(pt->z_cosm,pt->T_CMB_0);
-	T_CMB_0=pt->T_CMB_0;
+	//T_CMB_0=pt->T_CMB_0;
 
 	nu_peak_CMB_z=eval_nu_peak_planck(T_CMB_z);
-	nu_peak_CMB_0=eval_nu_peak_planck(T_CMB_0);
+	//nu_peak_CMB_0=eval_nu_peak_planck(T_CMB_0);
 
 	nu_start_disk_RF = nu_peak_CMB_z*pt->nu_planck_min_factor;
 	nu_stop_disk_RF  = nu_peak_CMB_z*pt->nu_planck_max_factor;
@@ -349,54 +349,7 @@ void Build_I_nu_CMB(struct blob *pt){
 	
 }
 
-/* void Build_I_nu_CMB_stat(struct spettro *pt){
-	double T_CMB_z,T_CMB_0;
-	double nu_peak_CMB_z,nu_peak_CMB_0;
-	unsigned int NU_INT,NU_INT_MAX;
-	double nu_start_disk_RF;
-	double nu_stop_disk_RF;
 
-	pt->CMB_mu_1=-1.0;
-	pt->CMB_mu_2=1.0;
-
-	T_CMB_z=eval_T_CMB_z(pt->z_cosm,pt->T_CMB_0);
-	T_CMB_0=pt->T_CMB_0;
-
-	nu_peak_CMB_z=eval_nu_peak_planck(T_CMB_z);
-	nu_peak_CMB_0=eval_nu_peak_planck(T_CMB_0);
-
-	nu_start_disk_RF = nu_peak_CMB_z*pt->nu_planck_min_factor;
-	nu_stop_disk_RF  = nu_peak_CMB_z*pt->nu_planck_max_factor;
-
-	pt->nu_start_CMB_stat = nu_start_disk_RF;
-	pt->nu_stop_CMB_stat  = nu_stop_disk_RF;
-
-    //printf("AZZo nu_star_CMB=%e    nu_stop_CMB=%e\n",
-    //                pt->nu_start_CMB_stat,
-    //                pt->nu_stop_CMB_stat);
-
-	//pt->nu_start_CMB_obs=nu_peak_CMB_0*pt->nu_planck_min_factor;
-	//pt->nu_stop_CMB_obs=nu_peak_CMB_0*pt->nu_planck_max_factor;
-
-	NU_INT_MAX=pt->nu_seed_size-1;
-	pt->NU_INT_MAX_CMB = NU_INT_MAX;
-
-	build_log_grid( nu_start_disk_RF,  nu_stop_disk_RF, pt->nu_seed_size, pt->nu_CMB_disk_RF);
-	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
-			//printf("AZZo nu_CMB_disk_RF=%e\n",pt->nu_CMB_disk_RF[NU_INT]);
-			pt->I_nu_CMB_disk_RF[NU_INT]=eval_I_nu_CMB_disk_RF(T_CMB_z, pt->nu_CMB_disk_RF[NU_INT]);
-	}
-
-	build_log_grid( pt->nu_start_CMB_stat,  pt->nu_stop_CMB_stat, pt->nu_seed_size, pt->nu_CMB_stat);
-	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
-		//printf("AZZo nu_CMB_stat=%e\n",pt->nu_CMB_stat[NU_INT]);
-		pt->I_nu_CMB_stat[NU_INT]=pt->I_nu_CMB_disk_RF[NU_INT];
-		pt->n_CMB_stat[NU_INT] =I_nu_to_n(pt->I_nu_CMB_stat[NU_INT], pt->nu_CMB_stat[NU_INT]);
-
-	}
- 
-}
-*/
 
 double eval_T_CMB_z(double z, double T_CMB_0){
 		return T_CMB_0*(1+z);

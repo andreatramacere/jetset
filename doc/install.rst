@@ -1,4 +1,4 @@
-.. install file
+.. _install_file:
 
 Installation
 ============
@@ -12,7 +12,7 @@ Windows 10 prerequisites
 Install the Windows Subsystem for Linux: https://docs.microsoft.com/en-us/windows/wsl/install-win10
 
 
-Install  JetSeT from Anaconda (suggested for Linux and Mac OSX and Windows 10)
+Install  JetSeT from Anaconda
 ------------------------------------------------------------------------------
 I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
@@ -20,7 +20,7 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
 
   .. code-block:: bash
 
-      conda create --name jetset python=3.7 ipython jupyter
+      conda create --name jetset python=3.8 ipython jupyter
 
 
 
@@ -43,6 +43,36 @@ I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
       pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
 
 
+Install  JetSeT from pip
+------------------------------------------------------------------------------
+
+- create a virtual environment (not necessary, but suggested):
+
+  .. code-block:: bash
+
+    pip install virtualenv
+
+    virtualenv -p python3.8 jetset
+
+    source jetset/bin/activate
+
+    pip install ipython jupyter
+
+
+
+- install the code
+
+  .. code-block:: bash
+
+     pip install jetset
+
+
+
+- run the test
+
+  .. code-block:: bash
+
+      pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
 
 
 
@@ -71,9 +101,13 @@ Installation from source using Anaconda
 
   .. code-block:: bash
 
+      conda install --yes   swig">=3.0.0"
+
       conda install --yes   -c conda-forge emcee">=3.0.0"
+
       conda install --yes   -c astropy --file requirements.txt
 
+if anaconda fails to install swig, you can try one of the following alternative :ref:`swig`
 
 -  run on the command line
 
@@ -88,7 +122,9 @@ Installation from source using Anaconda
   .. code-block:: bash
 
      cd ~/
+
      mkdir test_jetset
+
      cd test_jetset
 
      pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
@@ -103,7 +139,11 @@ Installation from source using PIP
 
   .. code-block:: bash
 
-    pip install -r requirements.txt `
+    pip install swig>=3.0.0
+
+    pip install -r requirements.txt
+
+if pip fails to install swig, you can try one of the following alternative :ref:`swig`
 
 
 - Install JetSeT: run on the command line:
@@ -143,6 +183,7 @@ The following python packages are required:
  - six
  - emcee
  - pyyaml
+ - numba
 
 A C compiler is also necessary, plus the SWIG wrapper generator.
 

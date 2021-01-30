@@ -1,6 +1,9 @@
+{% set data = load_setup_py_data(setup_file='../../../setup.py', from_recipe_dir=True) %}
+{% set version = data.get('version')  %}
+
 package:
   name: jetset
-  version:  {{ os.environ.get('PKG_VERSION') }}
+  version:  {{ version }}
 
 source:
   path: ../../../
@@ -29,6 +32,7 @@ requirements:
   - pyyaml
   - pyqt
   - pytest
+  - numba
 
 
 

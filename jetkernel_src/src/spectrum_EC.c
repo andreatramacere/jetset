@@ -19,62 +19,15 @@
 
 
 void spettro_EC(int Num_file, struct blob *pt) {
-    double  nu_src;
-    double L_nu_EC, nuL_nu_EC, F_nu_EC_obs,nu_peak;
+    double L_nu_EC, F_nu_EC_obs,nu_peak;
     double  gmax,numax_KN,numax_TH;
     double j_nu_disk;
     double * freq_array, *freq_array_obs;
     double * nuFnu_obs_array;
     double * nu_start_EC, * nu_stop_EC, * nu_start_EC_obs, * nu_stop_EC_obs, nu_seed_max;
     unsigned int * NU_INT_STOP_EC;
-    unsigned int NU_INT, I_MAX, stop,out;
-    //char f_EC[static_file_name_max_legth];
-    //FILE *fp_EC;
-
-    //=================================
-    // apre i files dove scrive i dati di SSC
-    // HEADER FILES
-    //=================================
-    /*
-	if (pt->WRITE_TO_FILE==1){
-
-		if (pt->EC == 1) {
-			sprintf(f_EC, "%s%s-EC-Diks.dat",
-									pt->path, pt->STEM);
-		}
-
-		if (pt->EC == 2) {
-			sprintf(f_EC, "%s%s-EC-BLR.dat",
-					pt->path, pt->STEM);
-		}
-
-		if (pt->EC == 3) {
-			sprintf(f_EC, "%s%s-EC-DT.dat",
-					pt->path, pt->STEM);
-		}
-		if (pt->EC == 4) {
-			sprintf(f_EC, "%s%s-EC-Star.dat",
-						pt->path, pt->STEM);
-		}
-		if (pt->EC == 5) {
-				sprintf(f_EC, "%s%s-EC-CMB.dat",
-							pt->path, pt->STEM);
-			}
-		if (pt->EC == 6) {
-				sprintf(f_EC, "%s%s-EC-CMB-stat.dat",
-							pt->path, pt->STEM);
-			}
-		fp_EC = fopen(f_EC, "w");
-		if (fp_EC == NULL) {
-			printf("non posso aprire %s\n ", f_EC);
-			exit(1);
-		}
-
-		flux_header(fp_EC);
-	}
-	*/
-    //==================================================================
-
+    unsigned int NU_INT, I_MAX, stop;
+    
 
     //============================================================
     //         inizio  loop sulle freq per spettro  compton
@@ -115,8 +68,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
     		printf("these freq. are boosted from the DISK frame  into the BLOB frame\n");
     		printf("-----------------------------------------------------------------\n");
     	}
-    }
-    if (pt->EC == 2) {
+    }else if (pt->EC == 2) {
     	freq_array_obs=pt->nu_EC_BLR_obs;
     	nuFnu_obs_array=pt->nuF_nu_EC_BLR_obs;
     	freq_array=pt->nu_EC_BLR;
@@ -134,7 +86,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
 			printf("-----------------------------------------------------------------\n");
     	}
     }
-    if (pt->EC == 3) {
+    else if (pt->EC == 3) {
     	freq_array_obs=pt->nu_EC_DT_obs;
     	nuFnu_obs_array=pt->nuF_nu_EC_DT_obs;
     	freq_array=pt->nu_EC_DT;
@@ -153,7 +105,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
     	}
 
     }
-    if (pt->EC == 4) {
+    else if (pt->EC == 4) {
     	freq_array_obs=pt->nu_EC_Star_obs;
     	nuFnu_obs_array=pt->nuF_nu_EC_Star_obs;
     	freq_array=pt->nu_EC_Star;
@@ -172,7 +124,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
     	}
 
     }
-    if (pt->EC == 5) {
+    else if (pt->EC == 5) {
     	freq_array_obs=pt->nu_EC_CMB_obs;
     	nuFnu_obs_array=pt->nuF_nu_EC_CMB_obs;
     	freq_array=pt->nu_EC_CMB;
@@ -190,7 +142,10 @@ void spettro_EC(int Num_file, struct blob *pt) {
     		printf("-----------------------------------------------------------------\n");
     	}
 
-    }
+    }else{
+		printf("wrong EC \n ");
+        exit(0);
+	}
     //if (pt->EC == 6) {
     //    freq_array_obs=pt->nu_EC_CMB_stat_obs;
     //    nuFnu_obs_array=pt->nuF_nu_EC_CMB_stat_obs;
@@ -301,8 +256,8 @@ void spettro_EC(int Num_file, struct blob *pt) {
 							freq_array[NU_INT]);
 				}
 
-				nu_src = nu_blob_to_nu_src(freq_array[NU_INT], pt->beam_obj,
-						pt->z_cosm);
+				//nu_src = nu_blob_to_nu_src(freq_array[NU_INT], pt->beam_obj,
+				//		pt->z_cosm);
 				if (pt->EC_stat == 1)
 				{
 					L_nu_EC = j_nu_src_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_sphere,
@@ -312,7 +267,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
 					L_nu_EC = j_nu_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_sphere,
 						pt->beam_obj);
 				}
-				nuL_nu_EC = L_nu_EC * nu_src;
+				//nuL_nu_EC = L_nu_EC * nu_src;
 				F_nu_EC_obs = L_nu_src_to_F_nu(L_nu_EC, pt->beam_obj,
 						pt->z_cosm, pt->dist);
                 
@@ -320,7 +275,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
                 
 
 				if (pt->j_EC[NU_INT] < pt->emiss_lim) {
-					out=0;
+					//out=0;
 					if (freq_array[NU_INT] > numax_TH) {
 						stop = 1;
 					}
@@ -328,9 +283,9 @@ void spettro_EC(int Num_file, struct blob *pt) {
 					pt->j_EC[NU_INT] = pt->emiss_lim;
 					pt->q_comp[NU_INT] = pt->emiss_lim;
 				}
-				else{
-					out=1;
-				}
+				//else{
+				//	out=1;
+				//}
 
 				if (stop == 1 && freq_array[NU_INT] > numax_TH) {
 

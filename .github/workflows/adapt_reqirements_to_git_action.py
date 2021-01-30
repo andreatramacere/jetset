@@ -11,7 +11,7 @@ for r in req[:]:
         if s in r:
             req.remove(r)
 
-f = open("./requirements_action.txt",'w')
+f = open("./requirements.txt",'w')
 for r in req:
     print(r,file=f)
 f.close()

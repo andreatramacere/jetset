@@ -752,7 +752,7 @@ struct temp_ev{
 	int do_SSC_cooling;
     int do_Compton_cooling;
 
-    double Q_scalig_factor;
+    double Q_scaling_factor;
 
     double t_unit; //unit time in light crossing time
     //double t_acc;
@@ -864,7 +864,7 @@ void set_bessel_table(double *arr, struct blob *pt, double val, unsigned int id)
 //ENERGETIC
 double GetU_e(struct blob *pt);
 double GetE_tot(struct blob *pt);
-void CoolingRates(struct blob * pt, struct temp_ev *pt_ev);
+//void CoolingRates(struct blob * pt, struct temp_ev *pt_ev);
 //===================================================================================
 
 
@@ -888,7 +888,7 @@ double N_distr(struct blob *, double Gamma);
 double N_distr_U_e(struct blob *, double Gamma);
 double N_distr_U_p(struct blob *, double Gamma);
 double N_distr_integranda(struct blob *, double Gamma);
-void Scrivi_N_file(struct blob *pt, char *name, double *g, double *N);
+//void Scrivi_N_file(struct blob *pt, char *name, double *g, double *N);
 void FindNe_NpGp(struct blob *pt);
 double N_distr_interp(unsigned int size, double Gamma, double *griglia_gamma, double *N);
 double Find_gmax(struct blob *pt, double *g, double *N);

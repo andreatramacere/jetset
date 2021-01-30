@@ -131,7 +131,7 @@ void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double lum
     //-----Injection and Escape Terms-------
     Init(pt_spec, luminosity_distance);
     EvalU_e(pt_spec);
-    pt_ev->Q_scalig_factor = pt_ev->L_inj * pt_ev->deltat / pt_spec->E_tot_e;
+    pt_ev->Q_scaling_factor = pt_ev->L_inj * pt_ev->deltat / pt_spec->E_tot_e;
     
     
 
@@ -158,7 +158,7 @@ void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double lum
     {
         //The injection term is the N_electron
         //passed from the SED computation at first step
-        pt_ev->Q_inj[TMP] = pt_spec->Ne[TMP] * pt_ev->Q_scalig_factor;
+        pt_ev->Q_inj[TMP] = pt_spec->Ne[TMP] * pt_ev->Q_scaling_factor;
     }
 
     pt_spec->grid_bounded_to_gamma=grid_bounded_to_gamma;
@@ -172,7 +172,7 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
         // otherwise the passed value is used
 
         unsigned int i, E_SIZE, E_N_SIZE, Gamma, T, TMP,NUM_OUT;
-        double Q_scalig_factor;
+        //double Q_scalig_factor;
 
         double STEP_FILE, COUNT_FILE, OUT_FILE;
         double *x, *N1;

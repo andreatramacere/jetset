@@ -257,15 +257,15 @@ void build_Ne_jetset(struct blob *pt) {
 
 void Fill_Ne_IC(struct blob *pt, double g_min_IC, int stat_frame) {
     unsigned int i,i_start;
-    double gmin_grid;
+    //double gmin_grid;
     i_start=0;
-    while (pt->griglia_gamma_Ne_log[i] < g_min_IC && i < pt->gamma_grid_size) {
+    while (pt->griglia_gamma_Ne_log[i_start] < g_min_IC && i_start < pt->gamma_grid_size) {
         i_start++;
     }
     if (i_start % 2 != 0) {
         i_start = max(0,i_start-1);
     }
-    g_min_IC=pt->griglia_gamma_Ne_log[i];
+    g_min_IC=pt->griglia_gamma_Ne_log[i_start];
     
     if (pt->verbose>1) {
         printf("Set array per Ne IC\n");
@@ -348,8 +348,8 @@ void build_Np_custom(struct blob *pt,  unsigned int size) {
 
 
 void InitNe(struct blob *pt){
-    double (*pf_distr)(struct blob *, double x);
-    pf_distr = &N_distr_integranda;
+    //double (*pf_distr)(struct blob *, double x);
+    //pf_distr = &N_distr_integranda;
 
     setNgrid(pt);
     build_Ne(pt);
@@ -369,14 +369,11 @@ void InitNe(struct blob *pt){
 //========================================
 // Genera la  N[i] per pp ed e- secondari
 //========================================
-
-
 void Init_Np_Ne_pp(struct blob *pt)
 {
-    
     //char *name;
-    double (*pf_distr) (struct blob *, double x);
-    pf_distr = &N_distr_integranda;
+    //double (*pf_distr) (struct blob *, double x);
+    //pf_distr = &N_distr_integranda;
 
     pt->gmin_secondaries=pt->gmin;
     pt->gmax_secondaries=pt->gmax*mp_by_me;
@@ -440,64 +437,6 @@ void Init_Np_Ne_pp(struct blob *pt)
     sprintf(pt->PARTICLE, "protons");
     SetDistr(pt);
 }
-
-
-
-
-
-//========================================
-// Sricve il file con  N[i]
-//========================================
-
-void Scrivi_N_file(struct blob *pt, char *name, double *g, double *N) {
-    double mass;
-    //char f_distr[static_file_name_max_legth];
-    //FILE *fp_distr;
-    //sprintf(f_distr, "%s%s-%s", pt->path, pt->STEM, name);
-    unsigned int i;
-    
-    /*
-    if (pt->WRITE_TO_FILE==1){
-            fp_distr = fopen(f_distr, "w");
-            if (fp_distr == NULL) {
-                printf("warning non riesco ad aprire %s\n", f_distr);
-                exit(1);
-            }
-            distr_e_header(fp_distr);
-        
-        if (pt->TIPO_DISTR != 0) {
-            if (pt->TIPO_DISTR == -1 && strcmp(pt->PARTICLE, "protons") == 0) {
-                mass = MEC2_TeV;
-            }
-            if (pt->TIPO_DISTR != -1 && strcmp(pt->PARTICLE, "protons") == 0)
-            {
-                mass = MPC2_TeV;
-            }
-            if (strcmp(pt->PARTICLE, "electrons") == 0) {
-                mass = MEC2_TeV;
-            }
-
-
-            for (i = 0; i < pt->gamma_grid_size; i++) {
-                if (N[i] <= 0.0) {
-                    N[i]=1E-200;
-                }
-                    fprintf(fp_distr, "%e\t%e\t%e\t%e\t%e\t%e\n",
-                            log10(g[i]),
-                            log10(N[i]),
-                            g[i],
-                            N[i],
-                            g[i] * mass,
-                            N[i] / mass);
-                //}
-            }
-        }
-        fclose(fp_distr);
-    }
-*/
-}
-
-//=====================================================
 
 
 
@@ -738,7 +677,7 @@ double spit_func(double Gamma,double gamma_th,double temp, double index){
     double a,b,c,f=0.;
     if (Gamma < gamma_th) {
         a=(Gamma*Gamma)/(2.0*temp*temp*temp);
-        b=exp(-(Gamma,temp));
+        b=exp(-(Gamma/temp));
 
         f= a*b;
     } else {

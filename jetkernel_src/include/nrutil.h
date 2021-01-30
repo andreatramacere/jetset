@@ -7,7 +7,7 @@
 
 #ifndef _NR_UTILS_H_
 #define _NR_UTILS_H_
-
+/*
 static float sqrarg;
 #define SQR(a) ((sqrarg=(a)) == 0.0 ? 0.0 : sqrarg*sqrarg)
 
@@ -45,6 +45,7 @@ static int imaxarg1,imaxarg2;
 static int iminarg1,iminarg2;
 #define IMIN(a,b) (iminarg1=(a),iminarg2=(b),(iminarg1) < (iminarg2) ?\
         (iminarg1) : (iminarg2))
+ */
 
 #define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 

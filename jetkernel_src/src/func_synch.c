@@ -238,7 +238,7 @@ double alfa_nu_Sync(struct blob * f){
 double integrale_Sync(double (*pf) (struct blob *, unsigned int  ID), struct blob * pt ) {
 
     unsigned int  ID;
-    double test;
+    //double test;
     for (ID = 0; ID < pt->gamma_grid_size ; ID++){
         pt->Integrand_over_gamma_grid[ID] =pf(pt,ID);
     }

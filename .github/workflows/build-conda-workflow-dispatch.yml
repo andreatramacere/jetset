@@ -6,72 +6,109 @@ on:
       git-ref:
         description: Git Ref (Optional)
         required: false
+      tags:
+        description: tag
+        required: false
+
 jobs:
-  build:
+  create_release:
+    if: github.event.inputs.tags != null
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Clone Repository (Latest)'
+      uses: actions/checkout@v2
+
+    - name: 'Clone Repository (Custom Ref)'
+      uses: actions/checkout@v2
+      if: github.event.inputs.git-ref != ''
+      with:
+        ref: ${{ github.event.inputs.git-ref }}
+
+    - name: 'Create release'
+      if: github.event.inputs.tags != null
+      uses: softprops/action-gh-release@v1
+      id: create_release
+      #if: startsWith(github.ref, 'refs/tags/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: Release  ${{ github.event.inputs.tags }}
+        tag_name: ${{ github.event.inputs.tags }}
+
+    #- name: 'Output Release URL File'
+    #  run: |
+    #    echo "${{ steps.create_release.outputs.url }}" > release_url.txt
+    #    #this works with uses: actions/create-release@v1
+    #    #echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
+    #    echo "release url=${{ steps.create_release.outputs.url }}"
+
+    #- name: 'Save Release URL File for publish'
+    #  uses: actions/upload-artifact@v1
+    #  with:
+    #    name: release_url
+    #    path: release_url.txt
+
+
+  build_conda:
+    needs: [ create_release ]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-10.15]
-        python-version: [3.8]
+        os: [ ubuntu-latest, macos-10.15 ]
+        python-version: [ 3.8 ]
 
     steps:
-      - name: Clone Repository (Latest)
+      - name: 'Clone Repository (Latest)'
         uses: actions/checkout@v2
 
-      - name: Clone Repository (Custom Ref)
+      - name: 'Clone Repository (Custom Ref)'
         uses: actions/checkout@v2
         if: github.event.inputs.git-ref != ''
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - name: set env JETSETBESSELBUILD
-        run: |
-          echo "FALSE">JETSETBESSELBUILD
-          echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
-
-
-      - name: echo env TEST
-        run: |
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
-
-
-      - name: setup conda
+      - name: 'setup conda'
         uses: s-weigand/setup-conda@v1
         with:
           update-conda: true
           python-version: ${{ matrix.python-version }}
           conda-channels: anaconda, conda-forge,astropy
 
-      - name: Install dependencies
+      - name: 'Install dependencies'
         run: |
           conda config --set always_yes yes
           conda install conda-build
+          conda install -c conda-forge swig">=3.0.0"
           conda install -c conda-forge emcee">=3.0.0"
           conda install -c astropy --file requirements.txt
           conda install  pytest
 
-      - name: build
+      - name: 'set env JETSETBESSELBUILD'
         run: |
-          python setup.py clean
-          python setup.py install > install.log 2>install.err
+          echo "FALSE">JETSETBESSELBUILD
+          echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
 
-      - name: set pkg version
+      - name: 'echo env TEST'
+        run: |
+          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
+
+      - name: 'build '
+        run: |
+          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
+          python setup.py clean
+          python setup.py install
+          python setup.py clean
+          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
+
+      - name: 'set pkg version'
         run: |
          echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
 
-      #- name: test
-      #  run: |
-      #    pytest --pyargs jetset.tests.test_functions::test_short
-
-      - name: set pkg version
+      - name: 'echo pkg version'
         run: |
-          echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
+          echo "PKG_VERSION=${{env.PKG_VERSION}}"
 
-      - name: echo pkg version
-        run: |
-           echo "PKG_VERSION=${{env.PKG_VERSION}}"
-
-      - name: conda build
+      - name: 'conda build'
         working-directory: .github/conda-pipeline/github/
         run: |
           conda config --set anaconda_upload no
@@ -79,21 +116,42 @@ jobs:
           conda build .  -c defaults -c astropy -c conda-forge
           conda build . --output > ./CONDABUILDJETSET.txt
 
-      - name: set env CONDABUILDJETSET
+      - name: 'set env CONDABUILDJETSET'
         working-directory: .github/conda-pipeline/github/
-        run:  echo "CONDABUILDJETSET=$(cat CONDABUILDJETSET.txt)"  >> $GITHUB_ENV
+        run: |
+          echo $(cat CONDABUILDJETSET.txt)
+          echo "CONDABUILDJETSET=$(tail -1 CONDABUILDJETSET.txt)"  >> $GITHUB_ENV
 
-      - name: echo env CONDABUILDJETSET
+      - name: 'echo env CONDABUILDJETSET'
         working-directory: .github/conda-pipeline/github/
         run: echo "CONDABUILDJETSET=${{env.CONDABUILDJETSET}}"
 
-      - name: echo pkg version
+      - name: 'conda install'
         run: |
-          echo "PKG_VERSION=${{env.PKG_VERSION}}"
+          conda install --yes --offline $CONDABUILDJETSET
 
-      - name: upload conda pkg
-        uses: actions/upload-artifact@v2
+      - name: 'make test env'
+        run: |
+          cp -r jetset/tests/test*.py  .github/action_test/
+
+      - name: 'test'
+        working-directory: .github/action_test/
+        run: |
+          pytest --pyargs jetset.tests.test_functions::test_jet
+
+
+      - name: 'prepare asset'
+        run: |
+          mkdir  conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          mv ${{ env.CONDABUILDJETSET }} ./conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          tar -cvf conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
+
+      - name: 'Upload Release Asset'
+        uses: softprops/action-gh-release@v1
         with:
-          name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-conda-binary
-          path: ${{ env.CONDABUILDJETSET }}
-
+          name: Release  ${{ github.event.inputs.tags }}
+          tag_name: ${{ github.event.inputs.tags }}
+          files: |
+            conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
