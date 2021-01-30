@@ -26,8 +26,7 @@ jobs:
 
     - name: 'Create Release'
       id: create_release
-      #uses: actions/create-release@v1
-      uses: softprops/action-gh-release@v1
+      uses: actions/create-release@v1
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -38,9 +37,7 @@ jobs:
 
     - name: 'Output Release URL File'
       run: |
-        echo "${{ steps.create_release.outputs.url }}" > release_url.txt
-        #this works with uses: actions/create-release@v1
-        #echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
+        echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
         echo "release url=${{ steps.create_release.outputs.url }}"
 
     - name: 'Save Release URL File for publish'
@@ -159,32 +156,32 @@ jobs:
         if: github.event.inputs.tags != null
         id: get_release_info
         run: |
-          echo "url=$(cat release_url/release_url.txt)" >> $GITHUB_ENV
+          echo "upload_url=$(cat release_url/release_url.txt)" >> $GITHUB_ENV
           #echo "url=$(cat release_url/release_url.txt)" >> ${{ steps.get_release_info.outputs.url }}
-          echo "steps.get_release_info.outputs.url=${{ steps.get_release_info.outputs.url }}"
-          echo "env.url=${{ env.url }}"
+          #echo "steps.get_release_info.outputs.url=${{ steps.get_release_info.outputs.url }}"
+          #echo "env.url=${{ env.url }}"
 
       - name: 'Echo Release File Name & Upload URL'
         if: github.event.inputs.tags != null
+        #uses: softprops/action-gh-release@v1
         id: get_release_info_test
         run: |
-          echo "steps.get_release_info_test.outputs.url=${{ steps.get_release_info_test.outputs.url }}"
+          #echo "steps.get_release_info_test.outputs.url=${{ steps.get_release_info_test.outputs.url }}"
           echo "env.url=${{ env.url }}"
 
       - name: 'Upload Release Asset'
         id: upload-release-asset
-        #uses: actions/upload-release-asset@v1
-        uses: softprops/action-gh-release@v1
+        uses: actions/upload-release-asset@v1
+        #uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: |
-            pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
-
-          #upload_url: ${{ env.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          #asset_path: ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
-          #asset_name: pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
-          #asset_content_type: application/tar
+          #files: |
+          #  pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+          upload_url: ${{ env.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+          asset_name: pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+          asset_content_type: application/tar
 
 
 
