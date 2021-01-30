@@ -167,7 +167,7 @@ jobs:
         id: get_release_info
         run: |
           echo "upload_url=$(cat release_url/release_url.txt)" >> $GITHUB_ENV
-         "
+        
 
       - name: 'Echo Release File Name & Upload URL'
         if: github.event.inputs.tags != null
