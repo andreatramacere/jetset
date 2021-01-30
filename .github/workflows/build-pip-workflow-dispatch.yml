@@ -166,9 +166,9 @@ jobs:
 
       - name: 'Echo Release File Name & Upload URL'
         if: github.event.inputs.tags != null
-        id: get_release_info
+        id: get_release_info_test
         run: |
-          echo "steps.get_release_info.outputs.url=${{ steps.get_release_info.outputs.url }}"
+          echo "steps.get_release_info_test.outputs.url=${{ steps.get_release_info_test.outputs.url }}"
           echo "env.url=${{ env.url }}"
 
 
