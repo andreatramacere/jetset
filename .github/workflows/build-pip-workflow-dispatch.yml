@@ -166,7 +166,6 @@ jobs:
 
       - name: 'Echo Release File Name & Upload URL'
         if: github.event.inputs.tags != null
-        uses: softprops/action-gh-release@v1
         id: get_release_info
         run: |
           echo "steps.get_release_info.outputs.url=${{ steps.get_release_info.outputs.url }}"
