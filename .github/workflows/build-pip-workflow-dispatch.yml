@@ -44,7 +44,7 @@ jobs:
       with:
         name: Release  ${{ github.event.inputs.tags }}
         tag_name: ${{ github.event.inputs.tags }}
-        
+
     - name: 'Output Release URL File'
       run: |
         echo "${{ steps.create_release.outputs.url }}" > release_url.txt
@@ -176,8 +176,7 @@ jobs:
         #uses: softprops/action-gh-release@v1
         id: get_release_info_test
         run: |
-          #echo "steps.get_release_info_test.outputs.url=${{ steps.get_release_info_test.outputs.url }}"
-          echo "env.url=${{ env.url }}"
+          echo "upload_url.url=${{ upload_url.url }}"
 
       - name: 'Upload Release Asset'
         id: upload-release-asset
