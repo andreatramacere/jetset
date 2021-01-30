@@ -24,18 +24,8 @@ jobs:
       with:
         ref: ${{ github.event.inputs.git-ref }}
 
-    #- name: 'Create Release'
-    #  id: create_release
-    #  uses: actions/create-release@v1
-    #  env:
-    #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #  with:
-    #    tag_name: ${{ github.event.inputs.tags }}
-    #    release_name: Release  ${{ github.event.inputs.tags }}
-    #    draft: false
-    #    prerelease: false
 
-    - name: 'Release'
+    - name: 'Create release'
       if: github.event.inputs.tags != null
       uses: softprops/action-gh-release@v1
       id : create_release
@@ -46,16 +36,16 @@ jobs:
         name: Release  ${{ github.event.inputs.tags }}
         tag_name: ${{ github.event.inputs.tags }}
 
-    - name: 'Output Release URL File'
-      run: |
-        echo "${{ steps.create_release.outputs.url }}" > release_url.txt
-        echo "release url=${{ steps.create_release.outputs.url }}"
+    #- name: 'Output Release URL File'
+    #  run: |
+    #    echo "${{ steps.create_release.outputs.url }}" > release_url.txt
+    #    echo "release url=${{ steps.create_release.outputs.url }}"
 
-    - name: 'Save Release URL File for publish'
-      uses: actions/upload-artifact@v1
-      with:
-        name: release_url
-        path: release_url.txt
+    #- name: 'Save Release URL File for publish'
+    #  uses: actions/upload-artifact@v1
+    #  with:
+    #    name: release_url
+    #    path: release_url.txt
 
 
   build_pip:
@@ -152,11 +142,14 @@ jobs:
       #    name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-src.tar.gz
       #    path: dist/*.tar.gz
 
-      - name: 'prepare asset'
+      - name: 'prepare asset pip'
         run: |
           mv dist pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
           tar -cvf pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.whl
-          tar -cvf pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
+
+      - name: 'prepare asset src'
+        run: |
+        tar -cvf src-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
 
 
       - name: 'Upload Release Asset'
@@ -166,7 +159,7 @@ jobs:
           tag_name: ${{ github.event.inputs.tags }}
           files: |
             pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
-            pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+            src-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
