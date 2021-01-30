@@ -41,7 +41,7 @@ jobs:
         echo "${{ steps.create_release.outputs.url }}" > release_url.txt
         #this works with uses: actions/create-release@v1
         #echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
-        echo "release url=${{ steps.create_release.outputs.upload_url }}"
+        echo "release url=${{ steps.create_release.outputs.url }}"
 
     - name: 'Save Release URL File for publish'
       uses: actions/upload-artifact@v1
