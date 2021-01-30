@@ -34,7 +34,7 @@ jobs:
     #    release_name: Release  ${{ github.event.inputs.tags }}
     #    draft: false
     #    prerelease: false
-    -
+    
     - name: 'Release'
       uses: softprops/action-gh-release@v1
       id : create_release
