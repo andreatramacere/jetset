@@ -160,7 +160,7 @@ jobs:
         id: get_release_info
         run: |
           echo "url=$(cat release_url/release_url.txt)" >> $GITHUB_ENV
-          echo "url=$(cat release_url/release_url.txt)" >> ${{ steps.get_release_info.outputs.url }}
+          #echo "url=$(cat release_url/release_url.txt)" >> ${{ steps.get_release_info.outputs.url }}
           echo "steps.get_release_info.outputs.url=${{ steps.get_release_info.outputs.url }}"
           echo "env.url=${{ env.url }}"
 
@@ -170,7 +170,6 @@ jobs:
         run: |
           echo "steps.get_release_info_test.outputs.url=${{ steps.get_release_info_test.outputs.url }}"
           echo "env.url=${{ env.url }}"
-
 
       - name: 'Upload Release Asset'
         id: upload-release-asset
