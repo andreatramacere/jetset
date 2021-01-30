@@ -161,13 +161,14 @@ jobs:
       #  uses: actions/download-artifact@v1
       #  with:
       #    name: release_url
-       - name: 'Upload Release Asset'
-         uses: softprops/action-gh-release@v1
+
+      - name: 'Upload Release Asset'
+        uses: softprops/action-gh-release@v1
          #if: startsWith(github.ref, 'refs/tags/')
-         with:
+        with:
           files: |
             pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
-         env:
+        env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       #- name: 'Get Release File Name & Upload URL'
