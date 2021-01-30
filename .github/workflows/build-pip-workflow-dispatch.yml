@@ -149,7 +149,7 @@ jobs:
 
       - name: 'prepare asset src'
         run: |
-        tar -cvf src-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
+          tar -cvf src-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
 
       - name: 'Upload Release Asset'
         uses: softprops/action-gh-release@v1
