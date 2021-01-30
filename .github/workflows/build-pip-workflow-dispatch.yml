@@ -43,7 +43,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         name: Release  ${{ github.event.inputs.tags }}
-
+        tag_name: ${{ github.event.inputs.tags }}
+        
     - name: 'Output Release URL File'
       run: |
         echo "${{ steps.create_release.outputs.url }}" > release_url.txt
