@@ -131,7 +131,7 @@ jobs:
           echo ${{ env.CONDABUILDJETSET }}
           ls ${{ env.CONDABUILDJETSET }}
           mkdir  conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}
-          mv ${{ env.CONDABUILDJETSET }}/ ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          mv ${{ env.CONDABUILDJETSET }} ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}
           tar -cvf conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}/*
 
       - name: 'Upload Release Asset'
