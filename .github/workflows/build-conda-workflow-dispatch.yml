@@ -128,9 +128,11 @@ jobs:
 
       - name: 'prepare asset'
         run: |
+          echo ${{ env.CONDABUILDJETSET }}
+          ls ${{ env.CONDABUILDJETSET }}
           mkdir  conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}
           mv ${{ env.CONDABUILDJETSET }} ./conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
-          tar -cvf conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          tar -cvf conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}/*
 
       - name: 'Upload Release Asset'
         uses: softprops/action-gh-release@v1
