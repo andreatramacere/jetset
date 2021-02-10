@@ -76,11 +76,11 @@ class Value(object):
                 print('units not valid for astropy units ',p_unit)
 
             if hasattr(self,'_units'):
-                if '(a)' not in str(self._units):
-                    self._units = p_unit + '(a)'
+                if '*' not in str(self._units):
+                    self._units = p_unit + '*'
             else:
-                if 'a' not in p_unit:
-                    self._units = p_unit + '(a)'
+                if '*' not in p_unit:
+                    self._units = p_unit + '*'
                 else:
                     self._units = p_unit
 
