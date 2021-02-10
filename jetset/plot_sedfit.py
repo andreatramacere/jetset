@@ -668,14 +668,14 @@ class  PlotTempEvEmitters (PlotPdistr):
         for ID in range(1, temp_ev.parameters.NUM_SET.val - 1):
             x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[ID], particle, energy_unit, pow=pow)
             self._plot(x,y,c='g',lw=0.1,label=None)
-
+        #print('==> a')
         x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[0], particle, energy_unit, pow=pow)
         self._plot(x, y, c='black', lw=2,label='Start')
-
+        #print('==> b')
         x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[-1], particle, energy_unit, pow=pow)
         self._plot(x, y, c='blue', lw=2,label='Stop')
-        self._set_xy_label(energy_name, energy_units)
-
+        self._set_xy_label(energy_name, energy_units,pow=pow)
+        #print('==> c')
         y = temp_ev.Q_inj.n_array * temp_ev._temp_ev.deltat
         x = temp_ev.Q_inj.e_array
         if plot_Q_inj is True:
@@ -683,8 +683,7 @@ class  PlotTempEvEmitters (PlotPdistr):
                 y=y*np.power(x,pow)
 
             self._plot(x,y, c='red', lw=1, label='$Q_{inj}$ deltat')
-
-
+        #print('==> d')
 
         self.ax.legend()
 
@@ -704,9 +703,11 @@ class  PlotTempEvDiagram (BasePlot):
 
 
     def plot(self,duration,T_acc_start,T_acc_stop,T_inj_start,T_inj_stop):
-        self.ax.axhline(1, T_acc_start, T_acc_stop, label='Inj. start/stop', c='b')
-        self.ax.axhline(2, T_inj_start, T_inj_stop, label='Acc. start/stop', c='g')
+        self.ax.hlines(1, T_acc_start, T_acc_stop, label='Inj. start/stop', colors='b')
+        self.ax.hlines(2, T_inj_start, T_inj_stop, label='Acc. start/stop', colors='g')
+        self.ax.hlines(0, 0, duration, label='duration', colors='black')
         self.ax.set_xlim(-0.5, duration)
+        self.ax.set_ylim(-0.5,3)
         self.ax.legend()
 
 

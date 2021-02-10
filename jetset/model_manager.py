@@ -275,10 +275,10 @@ class FitModel(Model):
     def composite_expr(self):
         return self._composite_expr
 
-    def link_par(self,par_name,model_name_list,root_model_name):
-        if isinstance(model_name_list, Iterable) is False:
-            model_name_list = [model_name_list]
-        self.parameters.link_par(par_name,model_name_list, root_model_name)
+    def link_par(self,par_name,from_model,to_model):
+        if isinstance(from_model, list) is False:
+            from_model = [from_model]
+        self.parameters.link_par(par_name,from_model, to_model)
 
     @composite_expr.setter
     def composite_expr(self,expr_string):

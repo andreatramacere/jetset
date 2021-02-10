@@ -33,9 +33,8 @@ from astropy.table import  Table
 
 from .utils import safe_run,set_str_attr, old_model_warning
 
-from .jet_emitters import ArrayDistribution
 from .jet_paramters import JetModelDictionaryPar,JetParameter,JetModelParameterArray
-from .jet_emitters import  EmittersDistribution,JetkernelEmittersDistribution,ArrayDistribution
+from .jet_emitters import  ArrayDistribution, EmittersArrayDistribution
 
 from .plot_sedfit import  BasePlot,PlotPdistr,PlotTempEvDiagram,PlotTempEvEmitters
 
@@ -55,20 +54,23 @@ class JetTimeEvol(object):
 
     def __init__(self,
                  jet,
-                 flag='tests',
+                 #flag='tests',
                  name='jet_time_ev'):
+                 #inplace=True):
 
         self._temp_ev = BlazarSED.MakeTempEv()
-
+        #if inplace is True:
+        #self.jet=jet.clone(jet)
+        #else:
         self.jet=jet
+
 
         self.name=name
 
-
-
         self.parameters = JetModelParameterArray(model=self)
         self.parameters.add_par_from_dict(self._build_par_dict(),self,'_temp_ev',JetParameter)
-        self.init_TempEv()
+        self.Q_inj=None
+        #self.init_TempEv()
 
     def _build_par_dict(self):
 
@@ -127,14 +129,6 @@ class JetTimeEvol(object):
 
         model_dic['LOG_SET'] = JetModelDictionaryPar(ptype='time_ev_output', vmin=0, vmax=None, punit='', froz=True, log=False, val=50,allowed_values=[0,1])
 
-
-
-
-
-
-
-
-
         model_dic['L_inj'] = JetModelDictionaryPar(ptype='inj_luminosity', vmin=0, vmax=None,
                                                         punit='erg/s',
                                                         froz=True,
@@ -147,16 +141,59 @@ class JetTimeEvol(object):
     def show_pars(self, sort_key='par type'):
         self.parameters.show_pars(sort_key=sort_key)
 
-    def init_TempEv(self,jet=None):
-        if jet is None:
-            jet=self.jet
-
-        BlazarSED.Init_temp_evolution(jet._blob, self._temp_ev, jet.get_DL_cm())
+    def init_TempEv(self, skip_jet=False):
+        #if jet is None:
+        #    jet=self.jet
+        self.jet.set_blob()
+        print("--> self.jet._blob.E_tot_e ",self.jet._blob.E_tot_e,self._temp_ev.Q_scaling_factor)
+        BlazarSED.Init_temp_evolution(self.jet._blob, self._temp_ev, self.jet.get_DL_cm())
+        print("--> self.jet._blob.E_tot_e ", self.jet._blob.E_tot_e,self._temp_ev.Q_scaling_factor)
         self._fill_temp_ev_array_pre_run()
-        self._build_tempev_table(jet)
-        self.Q_inj=ArrayDistribution(self.gamma, self._Q_inj )
+        print("--> self.jet._blob.E_tot_e ", self.jet._blob.E_tot_e,self._temp_ev.Q_scaling_factor)
+        self._build_tempev_table(self.jet)
+        print("--> self.jet._blob.E_tot_e ", self.jet._blob.E_tot_e,self._temp_ev.Q_scaling_factor,self._temp_ev.deltat)
+        print("--> self._Q_inj.max() ",self._Q_inj.max())
+        #self.Q_inj = ArrayDistribution(np.copy(self.jet.emitters_distribution.gamma_e),
+        #                               np.copy(self.jet.emitters_distribution.n_gamma_e))
+        self.Q_inj = ArrayDistribution(self.gamma, self._Q_inj)
+        if skip_jet is False:
+            ed = EmittersArrayDistribution(name='time_dep',
+                                           gamma_array=np.copy(self.Q_inj.e_array),
+                                           n_gamma_array=np.copy(self.Q_inj.n_array))
+            ed._fill()
+            self.jet.set_emitters_distribution(ed)
+            self.jet.eval()
+        print("--> self._Q_inj.max() ", self._Q_inj.max())
+    def run(self):
+        #self.init_TempEv(skip_jet=True)
+        #self.set_path(path,clean_work_dir=clean_work_dir)
+        #self.set_flag(flag)
+        BlazarSED.Run_temp_evolution(self.jet._blob, self._temp_ev)
+        self._fill_temp_ev_array_post_run()
 
+    def _fill_temp_ev_array_pre_run(self):
+        size = BlazarSED.static_ev_arr_grid_size
+        self.gamma_pre_run=np.zeros(size)
+        self.t_Sync_cool_pre_run = np.zeros(size)
+        self.t_D_pre_run = np.zeros(size)
+        self.t_DA_pre_run = np.zeros(size)
+        self.t_A_pre_run = np.zeros(size)
+        self.t_Esc_pre_run = np.zeros(size)
+        gamma_size = self._temp_ev.gamma_grid_size
+        self.gamma = np.zeros(gamma_size)
+        self._Q_inj = np.zeros(gamma_size)
 
+        for i in range(size):
+            self.gamma_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.g, i)
+            self.t_Sync_cool_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_Sync_cool, i)
+            self.t_D_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_D, i)
+            self.t_DA_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_DA, i)
+            self.t_A_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_A, i)
+            self.t_Esc_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_Esc, i)
+
+        for j in range(gamma_size):
+            self.gamma[j] = BlazarSED.get_Q_inj_array(self._temp_ev.gamma, self._temp_ev, j)
+            self._Q_inj[j] = BlazarSED.get_Q_inj_array(self._temp_ev.Q_inj, self._temp_ev, j)
 
     def show_model(self,jet=None,getstring=False,names_list=None,sort_key=None):
         if jet is None:
@@ -222,7 +259,7 @@ class JetTimeEvol(object):
 
 
         rows.append(self._build_row_dict('L inj', 'injected lum.', 'erg/s', val=self._temp_ev.L_inj, islog=False))
-        rows.append(self._build_row_dict('E_tot (electrons)/(delta t)', '', 'erg/s', val=jet._blob.E_tot_e*self._temp_ev.Q_scalig_factor / self._temp_ev.deltat, islog=False))
+        rows.append(self._build_row_dict('E_tot (electrons)/(delta t)', '', 'erg/s', val=jet._blob.E_tot_e*self._temp_ev.Q_scaling_factor / self._temp_ev.deltat, islog=False))
 
 
         self._tempev_table = Table(rows=rows, names=_names, masked=False)
@@ -247,11 +284,9 @@ class JetTimeEvol(object):
 
 
 
-    def set_time(self,t=None,T_step=None,jet=None):
-        if jet is None:
-            jet=self.jet
-        jet.set_emitters_distribution(name= ArrayDistribution(self.gamma,self.N_gamma[T_step].flatten()))
-
+    def set_time(self,t=None,T_step=None):
+        self.jet.emitters_distribution._array_gamma = self.gamma
+        self.jet.emitters_distribution._array_n_gamma = self.N_gamma[T_step].flatten()
 
 
 
@@ -269,29 +304,7 @@ class JetTimeEvol(object):
             self._inj_t_prof=user_defined_arry
 
 
-    def _fill_temp_ev_array_pre_run(self):
-        size = BlazarSED.static_ev_arr_grid_size
-        self.gamma_pre_run=np.zeros(size)
-        self.t_Sync_cool_pre_run = np.zeros(size)
-        self.t_D_pre_run = np.zeros(size)
-        self.t_DA_pre_run = np.zeros(size)
-        self.t_A_pre_run = np.zeros(size)
-        self.t_Esc_pre_run = np.zeros(size)
-        gamma_size = self._temp_ev.gamma_grid_size
-        self.gamma = np.zeros(gamma_size)
-        self._Q_inj = np.zeros(gamma_size)
 
-        for i in range(size):
-            self.gamma_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.g, i)
-            self.t_Sync_cool_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_Sync_cool, i)
-            self.t_D_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_D, i)
-            self.t_DA_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_DA, i)
-            self.t_A_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_A, i)
-            self.t_Esc_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_Esc, i)
-
-        for j in range(gamma_size):
-            self.gamma[j] = BlazarSED.get_Q_inj_array(self._temp_ev.gamma, self._temp_ev, j)
-            self._Q_inj[j] = BlazarSED.get_Q_inj_array(self._temp_ev.Q_inj, self._temp_ev, j)
 
     def _fill_temp_ev_array_post_run(self):
         gamma_size = self._temp_ev.gamma_grid_size
@@ -367,10 +380,4 @@ class JetTimeEvol(object):
         p.ax.legend()
         return p
 
-    def run(self,jet,flag=None,path=None,clean_work_dir=True):
-        self.init_TempEv(jet)
-        #self.set_path(path,clean_work_dir=clean_work_dir)
-        #self.set_flag(flag)
-        BlazarSED.Run_temp_evolution(jet._blob, self._temp_ev)
-        self._fill_temp_ev_array_post_run()
-        BlazarSED.free_tempe_ev(self._temp_ev)
+

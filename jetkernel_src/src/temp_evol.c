@@ -19,9 +19,9 @@
 
 void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double luminosity_distance)
 {
-    int grid_bounded_to_gamma;
+    //int grid_bounded_to_gamma;
 
-    unsigned int  gamma_grid_size;
+    //unsigned int  gamma_grid_size;
 
     unsigned int i, TMP;
 
@@ -35,7 +35,7 @@ void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double lum
 
    
 
-    build_Ne(pt_spec);
+    //build_Ne(pt_spec);
 
     pt_ev->t_unit = (pt_spec->R / vluce_cm);
 
@@ -129,40 +129,47 @@ void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double lum
     
 
     //-----Injection and Escape Terms-------
-    Init(pt_spec, luminosity_distance);
+    //Init(pt_spec, luminosity_distance);
     EvalU_e(pt_spec);
     pt_ev->Q_scaling_factor = pt_ev->L_inj * pt_ev->deltat / pt_spec->E_tot_e;
     
     
 
-    grid_bounded_to_gamma = pt_spec->grid_bounded_to_gamma;
-    pt_spec->grid_bounded_to_gamma = 0;
+    //grid_bounded_to_gamma = pt_spec->grid_bounded_to_gamma;
+    //pt_spec->grid_bounded_to_gamma = 0;
 
-    pt_spec->gmin_griglia = pt_ev->gmin_griglia;
-    pt_spec->gmax_griglia = pt_ev->gmax_griglia;
-    gamma_grid_size=pt_spec->gamma_grid_size;
+    //pt_spec->gmin_griglia = pt_ev->gmin_griglia;
+    //pt_spec->gmax_griglia = pt_ev->gmax_griglia;
+    //gamma_grid_size=pt_spec->gamma_grid_size;
 
-    pt_spec->gamma_grid_size = pt_ev->gamma_grid_size;
+    //pt_spec->gamma_grid_size = pt_ev->gamma_grid_size;
 
-    Init(pt_spec, luminosity_distance);
+    //Init(pt_spec, luminosity_distance);
 
-    pt_ev->Q_inj = (double *)calloc(pt_ev->gamma_grid_size, sizeof(double));
-    pt_ev->gamma = (double *)calloc(pt_ev->gamma_grid_size, sizeof(double));
+    //pt_ev->Q_inj = (double *)calloc(pt_ev->gamma_grid_size, sizeof(double));
+    //pt_ev->gamma = (double *)calloc(pt_ev->gamma_grid_size, sizeof(double));
     
-    for (i = 0; i < pt_ev->gamma_grid_size; i++)
-    {
-        pt_ev->gamma[i] = pt_spec->griglia_gamma_Ne_log[i];
-    }
+    printf("alloc init start \n");
+    alloc_temp_ev_array(&(pt_ev->Q_inj), pt_ev->gamma_grid_size);
+    alloc_temp_ev_array(&(pt_ev->gamma), pt_ev->gamma_grid_size);
+    printf("alloc init stop\n");
 
+    log_a = log10(pt_ev->gmin_griglia);
+    log_b = log10(pt_ev->gmax_griglia);
+    delta_log = (log_b - log_a) / ((double)pt_ev->gamma_grid_size - 1);
+    delta_log = (log_b - log_a) / ((double)pt_ev->gamma_grid_size - 1);
+    for (TMP = 0; TMP < pt_ev->gamma_grid_size; TMP++) {
+        pt_ev->gamma[TMP] = pow(10, (log_a + delta_log * (double) (TMP)));
+    }
     for (TMP = 0; TMP < pt_ev->gamma_grid_size; TMP++)
     {
         //The injection term is the N_electron
         //passed from the SED computation at first step
-        pt_ev->Q_inj[TMP] = pt_spec->Ne[TMP] * pt_ev->Q_scaling_factor;
+        pt_ev->Q_inj[TMP] =  N_distr_interp(pt_spec->gamma_grid_size,pt_ev->gamma[TMP],pt_spec->griglia_gamma_Ne_log,pt_spec->Ne)*pt_ev->Q_scaling_factor;
     }
 
-    pt_spec->grid_bounded_to_gamma=grid_bounded_to_gamma;
-    pt_spec->gamma_grid_size = gamma_grid_size;
+    //pt_spec->grid_bounded_to_gamma=grid_bounded_to_gamma;
+    //pt_spec->gamma_grid_size = gamma_grid_size;
     
 }
 
@@ -175,7 +182,7 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
         //double Q_scalig_factor;
 
         double STEP_FILE, COUNT_FILE, OUT_FILE;
-        double *x, *N1;
+        double *x, *N1, *N;
         double  t;
         //double g, t_D, t_DA, t_A, t_Sync_cool;
         double *xm_p, *xm_m;
@@ -183,8 +190,8 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
         double K, Cp, Cm, wm_p, wm_m;
         double WP_pm, WM_mm, WP_mm, WM_pm;
         double *A, *B, *C, *R, *T_inj;
-        int grid_bounded_to_gamma;
-        unsigned int gamma_grid_size;
+        //int grid_bounded_to_gamma;
+        //unsigned int gamma_grid_size;
 
         
     
@@ -229,17 +236,17 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
         }
     }
 
-    //For temp_ev we need to have boundaris of gamma grid
+    //For temp_ev we need to have boundaries of gamma grid
     //unbound from gmin and gmax
-    //and to change the grid buoundaries and size
-    grid_bounded_to_gamma = pt_spec->grid_bounded_to_gamma;
-    pt_spec->grid_bounded_to_gamma = 0;
+    //and to change the grid boundaries and size
+    //grid_bounded_to_gamma = pt_spec->grid_bounded_to_gamma;
+    //pt_spec->grid_bounded_to_gamma = 0;
 
-    pt_spec->gmin_griglia = pt_ev->gmin_griglia;
-    pt_spec->gmax_griglia = pt_ev->gmax_griglia;
-    gamma_grid_size=pt_spec->gamma_grid_size;
+    //pt_spec->gmin_griglia = pt_ev->gmin_griglia;
+    //pt_spec->gmax_griglia = pt_ev->gmax_griglia;
+    //gamma_grid_size=pt_spec->gamma_grid_size;
 
-    pt_spec->gamma_grid_size = pt_ev->gamma_grid_size;
+    //pt_spec->gamma_grid_size = pt_ev->gamma_grid_size;
 
     //--------------ALLOCATION OF DYNAMICAL ARRAYS-----------------------
     //--------------SIZE DEFINITION------------------
@@ -249,12 +256,21 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
     E_SIZE = pt_ev->gamma_grid_size;
     E_N_SIZE = pt_ev->gamma_grid_size - 1;
     //------ALLOCATION-------------------------------
-    pt_ev->N_gamma = (double *)calloc(pt_ev->NUM_SET * E_SIZE, sizeof(double));
-    pt_ev->N_time = (double *)calloc(pt_ev->T_SIZE, sizeof(double));
+    
+    printf("alloc run1 start \n");
+
+    alloc_temp_ev_array(&(pt_ev->N_gamma), pt_ev->NUM_SET * E_SIZE);
+    alloc_temp_ev_array(&(pt_ev->N_time), pt_ev->T_SIZE);
+    alloc_temp_ev_array(&(pt_ev->T_esc),E_SIZE);
+    printf("alloc run1 start \n");
+
+    //pt_ev->T_esc = (double *) calloc(E_SIZE, sizeof (double));
+    //pt_ev->N_gamma = (double *)calloc(pt_ev->NUM_SET * E_SIZE, sizeof(double));
+    //pt_ev->N_time = (double *)calloc(pt_ev->T_SIZE, sizeof(double));
     x = (double *)calloc(E_SIZE, sizeof(double));
     //--------Gamma energia normalizzata-------------
     N1 = (double *) calloc(E_SIZE, sizeof (double));
-    
+    N = (double *) calloc(E_SIZE, sizeof (double));
     A = (double *) calloc(E_SIZE, sizeof (double));
     B = (double *) calloc(E_SIZE, sizeof (double));
     C = (double *) calloc(E_SIZE, sizeof (double));
@@ -262,7 +278,7 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
     
     T_inj = (double *) calloc(pt_ev->T_SIZE, sizeof (double));
 
-    pt_ev->T_esc = (double *) calloc(E_SIZE, sizeof (double));
+   
 
     xm_p = (double *) calloc(E_SIZE, sizeof (double));
     xm_m = (double *) calloc(E_SIZE, sizeof (double));
@@ -277,8 +293,8 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
     //x=gamma-1
     //griglia(x,1e-2,5e8,SIZE);
     for (i = 0; i <= E_SIZE - 1; i++) {
-        x[i] = pt_spec->griglia_gamma_Ne_log[i] - 1;
-        //printf("Gamma[%d]=%e\n",i,x[i]);
+        x[i] = pt_ev->gamma[i] - 1;
+        //printf("x[%d]=%e\n",i,x[i]);
     }
 
     for (i = 1; i < E_N_SIZE; i++) {
@@ -320,6 +336,7 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
         t = t + pt_ev->deltat;
         //printf("T=%d\n",T);
         T_inj[T] = Inj_temp_prof(t, pt_ev);
+        printf("t=%e,T_inj=%e\n",t,T_inj[T]);
         //fprintf(fp, "%e %e \n",t,T_inj[T]);
     }
     //fclose(fp);
@@ -331,15 +348,24 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
         pt_ev->T_esc[TMP] = f_Tesc(x[TMP], pt_ev);
     }
 
-  
+    
+    for (TMP = 0; TMP < E_SIZE; TMP++) {
+            N[TMP] =0;
+    }
+
     //--------------Loop over Gamma------------------------------------------
     t = 0;
     NUM_OUT=0;
     for (T = 0; T < pt_ev->T_SIZE; T++) {
         //printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>  temporal evolution step=%d,%e,%e <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n", T, OUT_FILE,COUNT_FILE);
+        //pt_ev->T_EVALUATED=T;
         if (pt_ev->do_Compton_cooling == 1) {
+            //!!!! CHANGE N TO INTERP!!!!
             printf(">>>>>>>>>>>>>>>> Eval Sync \n");
             //Run_SED(pt_spec, pt_ev);
+            for (TMP = 0; TMP < pt_spec->gamma_grid_size; TMP++) {
+                pt_spec->Ne[TMP]=N_distr_interp(E_SIZE,pt_spec->griglia_gamma_Ne_log[TMP],pt_ev->gamma,N1);
+            }   
             spettro_sincrotrone(1, pt_spec);
         }
         t = t + pt_ev->deltat;
@@ -375,7 +401,7 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
             B[0] = 1 + K * Cp * WM_pm + pt_ev->deltat / (pt_ev->T_esc[0]);
 
             //-------R[0]----------
-            R[0] = pt_ev->deltat * pt_ev->Q_inj[0] * T_inj[T] + pt_spec->Ne[0];
+            R[0] = pt_ev->deltat * pt_ev->Q_inj[0] * T_inj[T] + N[0];
             //printf("K=%e wm_p=%e Wm_p=%e WP_pm=%e\n",K,wm_p,Wm_p,WP_pm);
             //printf("A=%e B=%e C=%e R=%e\n",A[0],B[0],C[0],R[0]);
             //---------------------------------------
@@ -385,7 +411,7 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
             A[0] = 0;
             B[0] = 1 + K * Cooling(xm_m[0], pt_ev, pt_spec) + pt_ev->deltat / (pt_ev->T_esc[0]);
             C[0] = -1 * K * Cooling(xm_p[0], pt_ev, pt_spec);
-            R[0] = pt_ev->deltat * pt_ev->Q_inj[0] * T_inj[T] + pt_spec->Ne[0];
+            R[0] = pt_ev->deltat * pt_ev->Q_inj[0] * T_inj[T] + N[0];
         }
         for (Gamma = 1; Gamma < E_N_SIZE; Gamma++) {
             //--------COOLING + ACC--------------
@@ -428,13 +454,13 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
                 A[Gamma] = -1 * (K * Cm * WM_mm);
                 C[Gamma] = -1 * (K * Cp * WP_pm);
                 B[Gamma] = 1 + K * (Cm * WP_mm + Cp * WM_pm) + pt_ev->deltat / (pt_ev->T_esc[Gamma]);
-                R[Gamma] = pt_ev->deltat * pt_ev->Q_inj[Gamma] * T_inj[T] + pt_spec->Ne[Gamma];
+                R[Gamma] = pt_ev->deltat * pt_ev->Q_inj[Gamma] * T_inj[T] + N[Gamma];
             }//-----ONLY COOLING-----------------
             else {
                 A[Gamma] = 0;
                 B[Gamma] = 1 + pt_ev->deltat / (pt_ev->T_esc[Gamma]) + K * Cooling(xm_m[Gamma], pt_ev, pt_spec);
                 C[Gamma] = -1 * K * Cooling(xm_p[Gamma], pt_ev, pt_spec);
-                R[Gamma] = pt_ev->deltat * pt_ev->Q_inj[Gamma] * T_inj[T] + pt_spec->Ne[Gamma];
+                R[Gamma] = pt_ev->deltat * pt_ev->Q_inj[Gamma] * T_inj[T] + N[Gamma];
             }
 
             //printf("A=%e B=%e C=%e R=%e\n",-A[G],B[G],-C[G],R[G]);
@@ -459,13 +485,13 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
             //--------B[N_SIZE]------------
             B[E_N_SIZE] = 1 + K * Cm * WP_mm + pt_ev->deltat / (pt_ev->T_esc[E_N_SIZE]);
             //--------R[N_SIZE]------------
-            R[E_N_SIZE] = pt_ev->deltat * pt_ev->Q_inj[E_N_SIZE] * T_inj[T] + pt_spec->Ne[E_N_SIZE];
+            R[E_N_SIZE] = pt_ev->deltat * pt_ev->Q_inj[E_N_SIZE] * T_inj[T]+ N[E_N_SIZE];
             //printf("A=%e B=%e C=%e R=%e\n",A[N_SIZE],B[N_SIZE],C[N_SIZE],R[N_SIZE]);
         } else {
             A[E_N_SIZE] = 0;
             B[E_N_SIZE] = 1 + pt_ev->deltat / (pt_ev->T_esc[E_N_SIZE]) + K * Cooling(xm_m[E_N_SIZE], pt_ev, pt_spec);
             C[E_N_SIZE] = 0;
-            R[E_N_SIZE] = pt_ev->deltat * pt_ev->Q_inj[E_N_SIZE] * T_inj[T] + pt_spec->Ne[E_N_SIZE];
+            R[E_N_SIZE] = pt_ev->deltat * pt_ev->Q_inj[E_N_SIZE] * T_inj[T]+ N[E_N_SIZE];
         }
 
 
@@ -477,7 +503,7 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
         //--------------TRIDIAG SYSTEM SOLVING--------------------
         //printf("********prima di sys****************\n");
         for (TMP = 0; TMP < E_SIZE; TMP++) {
-            N1[TMP] = pt_spec->Ne[TMP];
+            N1[TMP] = N[TMP];
             //printf("N=%e T=%d G=%d\n",N1[TMP],T,TMP);
         }
         if (solve_sys1(A, B, C, R, N1, E_SIZE) > 0) {
@@ -486,9 +512,13 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
         }
         //printf("********dopo sys********************\n");
         for (TMP = 0; TMP < E_SIZE; TMP++) {
-            pt_spec->Ne[TMP] = N1[TMP];
-            //printf("N=%e T=%d G=%d\n",N1[TMP],T,TMP);
+            pt_spec->Ne[TMP]=N_distr_interp(E_SIZE,pt_spec->griglia_gamma_Ne_log[TMP],pt_ev->gamma,N1);
+            N[TMP] = N1[TMP];
+           //N_distr_interp(pt_spec->gamma_grid_size,pt_ev->gamma[TMP],pt_spec->griglia_gamma_Ne_log,pt_spec->Ne)*pt_ev->Q_scaling_factor;
         }
+            //pt_spec->Ne[TMP] = N1[TMP];
+            //printf("N=%e T=%d G=%d\n",N1[TMP],T,TMP);
+        //}
         //--------------------------------------------------------
 
 
@@ -497,27 +527,7 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
 
 
         if ((OUT_FILE >= 0) || (T==pt_ev->T_SIZE-1)) {
-            //printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>  temporal evolution step=%d, t_sim frac=%e, t_sim=%e <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n", T, t/pt_ev->duration,t);
-            //strcpy(old, pt_ev->STEM);
-            //sprintf(name, "%s-TSTEP=%6.6d", pt_ev->STEM, T);
-            //strcpy(pt_ev->STEM, name);
-            //strcpy(pt_spec->STEM, name);
-            //sprintf(name1, "distr-e-evol.dat");
-
-            //sprintf(name_n_evol, "%s%s-distr-e-evol.dat", pt_ev->path, pt_ev->STEM);
-
-            //fp1 = fopen(name_n_evol, "w");
-            //if (fp1 == NULL)
-            //{
-            //    printf("warning non riesco ad aprire %s\n", fp);
-            //    exit(1);
-            //}
-
-            //EvalU_e(pt_spec);
-            //Run_SED(pt_spec);
-
-            //Scrivi_N_file(pt_spec, name1, pt_spec->griglia_gamma_Ne_log, pt_spec->Ne);
-            //strcpy(pt_ev->STEM, old);
+            
 
             printf("-> NUM_OUT=%d T_SIZE=%d T=%d\n",NUM_OUT,pt_ev->T_SIZE,T);
 
@@ -530,21 +540,9 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
                     
                 }
                 
-                //if (pt_spec->Ne[Gamma] != 0) {
-                    //fprintf(fp, "%e %e %e %e", t, log10(x[Gamma] + 1), log10(pt_spec->Ne[Gamma]), log10(pt_spec->Ne[Gamma]*(x[Gamma] + 1)*(x[Gamma] + 1)*(x[Gamma] + 1)));
-                    //fprintf(fp1, " %e %e %e\n", log10(x[Gamma] + 1), log10(pt_spec->Ne[Gamma]), log10(pt_spec->Ne[Gamma] * (x[Gamma] + 1) * (x[Gamma] + 1) * (x[Gamma] + 1)));
-                    //fprintf(fp,"%e %e",x[G]+1,pt->Ne[G]);
-                    //fprintf(fp,"\n");
-                    //fprintf(fp, "\n");
-                //}
+                
             }
-            //fprintf(fp, "&&\n");
-            ////fprintf(fp1,"&&\n");
-            //if (T > 1) {
-            //    fprintf(fp, "&&\n");
-            //    //fprintf(fp1,"&&\n");
-            //}
-            //fclose(fp1);
+           
             
             if (pt_ev->LOG_SET >=1){
                 COUNT_FILE*=STEP_FILE;
@@ -561,31 +559,40 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev) {
 
     //fclose(fp);
 
-    pt_spec->grid_bounded_to_gamma=grid_bounded_to_gamma;
-    pt_spec->gamma_grid_size = gamma_grid_size;
+    //pt_spec->grid_bounded_to_gamma=grid_bounded_to_gamma;
+    //pt_spec->gamma_grid_size = gamma_grid_size;
     
+    //freeing local dynamic arrays
+    free(x);
     free(xm_p);
     free(xm_m);
     free(dxm_p);
+    free(dxm_m);
     free(dxm);
     free(A);
     free(B);
     free(C);
     free(R);
-    
-
+    free(N1);
+    free(N);
     free(T_inj);
+    
     return;
 }
 
-void free_tempe_ev(struct temp_ev *pt_ev)
-{
-    free(pt_ev->Q_inj);
-    free(pt_ev->gamma);
-    free(pt_ev->N_gamma);
-    free(pt_ev->N_time);
-}
 
+void alloc_temp_ev_array(double ** pt,int size){
+        //free if already allocated
+        printf("temp ev pre %p\n",*pt);
+        //printf("alloc n\n");
+        if (*pt){
+            free(*pt);
+            //printf("freeing\n");
+        }
+
+        *pt = calloc(size, sizeof (double));
+        printf("post %p\n",*pt);
+    }
 
 
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1){

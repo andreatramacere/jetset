@@ -176,7 +176,7 @@ class JetModelParameterArray(ModelParameterArray):
 
             #_jetkernel=getattr(model,jetkernel_attr)
             _jetkernel_struct=getattr(model,struct_name)
-            #print('>', key, jetkernel_par_name,p_test,_jetkernel_struct)
+            #print('>', key, jetkernel_par_name,p_test,_jetkernel_struct,)
             if p_test is None:
                 # print('-->', pname, model_dic[key].is_in_blob, model_dic[key].val)
                 if hasattr(_jetkernel_struct, jetkernel_par_name) and model_dic[key].is_in_jetkernel is True:
@@ -208,20 +208,20 @@ class JetModelParameterArray(ModelParameterArray):
                 else:
                     _is_dependent=False
 
-                if (hasattr(model_dic[key],'_depending_par')):
-                    _depending_par=model_dic[key]._depending_par
+                if (hasattr(model_dic[key],'_depending_pars')):
+                    _depending_pars=model_dic[key]._depending_pars
                 else:
-                    _depending_par=None
+                    _depending_pars=[]
 
                 if (hasattr(model_dic[key],'_func')):
                     _func=model_dic[key]._func
                 else:
                     _func=None
 
-                if (hasattr(model_dic[key],'_master_par')):
-                    _master_par=model_dic[key]._master_par
+                if (hasattr(model_dic[key],'_master_pars')):
+                    _master_pars=model_dic[key]._master_pars
                 else:
-                    _master_par=None
+                    _master_pars=None
 
                 self.add_par(parameter_class(model,
                                              struct_name,
@@ -237,6 +237,6 @@ class JetModelParameterArray(ModelParameterArray):
                                              is_in_jetkernel=is_in_jetkernel,
                                              allowed_values=model_dic[key].allowed_values,
                                              _is_dependent=_is_dependent,
-                                             _depending_par= _depending_par,
+                                             _depending_pars= _depending_pars,
                                              _func=_func,
-                                             _master_par=_master_par))
+                                             _master_pars=_master_pars))

@@ -25,7 +25,7 @@ def distr_func_bkn(gamma_break, gamma, p, p_1):
 
 
 @nb.njit(fastmath=True, cache=True)
-def distr_func_super_pl(gamma, p, ):
+def distr_func_pl(gamma, p, ):
     return np.power(gamma, -p)
 
 
@@ -128,7 +128,7 @@ class EmittersFactory:
         a_t, b_t = n_e_pl.set_bounds(1, 1E9, log_val=n_e_pl._log_values)
 
         n_e_pl.add_par('p', par_type='LE_spectral_slope', val=2.0, vmin=-10., vmax=10, unit='')
-        n_e_pl.set_distr_func(distr_func_super_exp)
+        n_e_pl.set_distr_func(distr_func_pl)
 
         return n_e_pl
 

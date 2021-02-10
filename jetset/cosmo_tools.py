@@ -20,7 +20,7 @@ class  Cosmo (object):
         _c = None
 
         if DL_cm is not None and astropy_cosmo is not None:
-            raise  RuntimeError('Either you provide an astropy comsology objet, or luminosity distance in cm, or nothing')
+            raise  RuntimeError('Either you provide an astropy cosmology objet, or luminosity distance in cm, or nothing')
 
         elif astropy_cosmo is None and DL_cm is None:
             from astropy.cosmology import Planck13 as cosmo
@@ -34,6 +34,8 @@ class  Cosmo (object):
         elif astropy_cosmo is None and DL_cm is not None:
 
             _c=None
+            print("using cosmo without z and only DL, should be used only for galactic objects!!")
+            print("z will be fixed to zero")
         else:
             raise RuntimeError('Either you provide an astropy comsology objet, or luminosity distance in cm, or nothing')
 

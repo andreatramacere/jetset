@@ -71,10 +71,13 @@ class McmcSampler(object):
             for model_name in use_labels_dict.keys():
                 for par_name in use_labels_dict[model_name]:
                     p= self.model.parameters.get_par_by_name(model_name,par_name)
-                    self.par_array.append(p)
-                    self.labels.append( p.name)
-                    self.labels_units.append(p.units)
-                    self.labels_start_val.append(p.best_fit_val)
+                    if p is not None:
+                        self.par_array.append(p)
+                        self.labels.append( p.name)
+                        self.labels_units.append(p.units)
+                        self.labels_start_val.append(p.best_fit_val)
+                    else:
+                        warnings.warn('par %s'%par_name+' not present in model, will be sckipped')
 
         self.par_array_best_fit=copy.deepcopy(self.par_array)
         self.ndim = len(self.labels)

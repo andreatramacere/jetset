@@ -794,6 +794,7 @@ struct temp_ev{
 	unsigned int NUM_SET;
     unsigned int LOG_SET;
 	unsigned int T_SIZE;
+    //unsigned int T_EVALUATED;
 	double duration,t_D0,t_DA0,t_A0;
     double deltat;
 
@@ -814,7 +815,8 @@ double Inj_temp_prof (double t,struct temp_ev *);
 void Wm (double, double* ,double *);
 double Cooling(double,struct temp_ev *,struct blob *);
 int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],unsigned int size);
-void free_tempe_ev(struct temp_ev *pt_ev);
+//void free_tempe_ev(struct temp_ev *pt_ev);
+void alloc_temp_ev_array(double ** pt,int size);
 void CooolingEquilibrium(struct blob * pt, double T_esc);
 double IntegrateCooolingEquilibrium( struct blob *pt,double gamma, double T_esc );
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1);

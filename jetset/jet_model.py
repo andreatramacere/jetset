@@ -188,13 +188,11 @@ class JetBase(Model):
         self.set_emitters_distribution(emitters_distribution, emitters_distribution_log_values, emitters_type,
                                        init=False)
         self.set_blob()
-    @classmethod
-    def clone_blob(cls,jet,emitters):
-        _jet=cls(emitters_distribution=emitters)
-        for p in _jet.parameters.par_array:
-            if p not in jet.emitters_distribution.parameters.par_array:
-                p.val=jet.get_par_by_name(p.name).val
-        return _jet
+
+
+    def clone(self):
+        return  pickle.loads(pickle.dumps(self))
+
 
     def __getstate__(self):
         return  self._serialize_model()
@@ -505,7 +503,7 @@ class JetBase(Model):
 
         set_str_attr(self._blob,'BEAMING_EXPR',beaming_expr)
 
-        self._emitting_region_dic=build_emitting_region_dic(beaming_expr=beaming_expr)
+        self._emitting_region_dic=build_emitting_region_dic(self.cosmo,beaming_expr=beaming_expr)
 
         self.parameters.add_par_from_dict(self._emitting_region_dic,self,'_blob',JetParameter)
 
@@ -556,9 +554,10 @@ class JetBase(Model):
 
             for k in self._emitters_distribution_dic.keys():
                 par = self.parameters.get_par_by_name(k)
-                if par._depending_par is not None:
-                    dep_par=self.parameters.get_par_by_name(par._depending_par.name)
-                    par._depending_par=dep_par
+                if par._depending_pars is not []:
+                    for p in par._depending_pars:
+                        dep_par=self.parameters.get_par_by_name(par._depending_pars.name)
+                        par._add_depending_par(dep_par)
             #self.set_blob()
             self.emitters_distribution.update()
 
@@ -583,9 +582,10 @@ class JetBase(Model):
 
             for k in self._emitters_distribution_dic.keys():
                 par = self.parameters.get_par_by_name(k)
-                if par._depending_par is not None:
-                    dep_par = self.parameters.get_par_by_name(par._depending_par.name)
-                    par._depending_par = dep_par
+                if par._depending_pars is not []:
+                    for p in par._depending_pars:
+                        dep_par = self.parameters.get_par_by_name(par._depending_pars.name)
+                        par._add_depending_par(dep_par)
             #self.set_blob()
             self.emitters_distribution.update()
 
@@ -878,7 +878,10 @@ class JetBase(Model):
         if eval is True:
             self.set_blob()
 
-        return self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
+        if self.cosmo._c is not None:
+            return self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
+        else:
+            return self.cosmo.get_DL_cm()
 
 
     @safe_run
@@ -1221,7 +1224,7 @@ class JetBase(Model):
                 self._blob.T_esc_e_second = self.T_esc_e_second
         if self.emitters_distribution._user_defined is True:
             self.emitters_distribution._fill()
-        BlazarSED.Init(self._blob, self.cosmo.get_DL_cm(self.parameters.z_cosm.val))
+        BlazarSED.Init(self._blob, self.get_DL_cm())
         if self.emitters_distribution._user_defined is True:
             self.emitters_distribution._set_blob()
 
@@ -1614,7 +1617,7 @@ class Jet(JetBase):
 
 
     def set_N_from_F_sync(self, F_sync):
-        DL = self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
+        DL = self.get_DL_cm()
         L = F_sync * DL * DL * 4.0 * np.pi
         self.set_N_from_L_sync(L)
 
@@ -1639,9 +1642,9 @@ class Jet(JetBase):
         sets the normalization of N to match the observed flux nuFnu_obs at a given frequency nu_obs
         """
         self.set_blob()
-        DL =  self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
+        DL =  self.get_DL_cm()
         L = nuFnu_obs * DL * DL * 4.0 * np.pi
-        nu_rest = nu_obs * (1 + self._blob.z_cosm)
+        nu_rest = nu_obs * (1 + self.parameters.z_cosm.val)
         self.set_N_from_nuLnu( L, nu_rest)
 
 

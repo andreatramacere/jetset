@@ -851,7 +851,8 @@ double N_distr_integranda(struct blob *pt_N, double Gamma) {
 }
 
 double N_distr_interp(unsigned int size, double Gamma, double *griglia_gamma, double *N) {
-	unsigned int i;
+	//Interpolates *N  with *grilia_gamma and size at gamma=Gamma
+    unsigned int i;
     double gamma_piu, gamma_meno, Npiu, Nmeno, g, a;
     i = 0;
     while (griglia_gamma[i] < Gamma && i < size) {

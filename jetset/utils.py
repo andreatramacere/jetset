@@ -56,7 +56,7 @@ class NoTraceBackWithLineNumber(Exception):
 
 def new_version_warning():
     m = '\n\n' + '*'*80 + '\n'
-    m+= 'Something wrong has happened. Please, look at the exception message. Note also that\n'
+    m+= 'Something wrong has happened. Please, look at the exception message.\n'
     m+= '*' * 80 + '\n'
     warnings.warn(m)
 

@@ -9,7 +9,7 @@ import os
 import numpy as np
 from inspect import signature
 from astropy.constants import m_e,m_p,c
-
+from scipy import interpolate
 from .jetkernel_models_dic import gamma_dic_e ,gamma_dic_p, gamma_dic_pp_e_second, available_N_distr, N_distr_descr, available_emitters_type
 from .plot_sedfit import PlotPdistr
 from .jet_paramters import *
@@ -28,8 +28,6 @@ else:
 __all__=['JetkernelEmittersDistribution', 'EmittersDistribution', 'ArrayDistribution']
 
 
-
-
 class ArrayDistribution(object):
 
     def __init__(self, e_array, n_array, gamma_grid_size=None):
@@ -42,6 +40,8 @@ class ArrayDistribution(object):
         self.size = _size
         if gamma_grid_size is None:
                 self.gamma_grid_size = _size * 2 + 1
+
+
 
 
 class EmittersDistribution(object):
@@ -61,8 +61,13 @@ class EmittersDistribution(object):
         self._set_emitters_type(emitters_type)
         self._set_spectral_type(spectral_type)
         self._Norm=1.0
-        if skip_build is False:
-            self._build(jet,name,log_values, gamma_grid_size,normalize)
+
+        if isinstance(self,EmittersArrayDistribution):
+            self._array_gamma = None
+            self._array_n_gamma = None
+        else:
+            if skip_build is False:
+                self._build(jet,name,log_values, gamma_grid_size,normalize)
 
     def _copy_from_jet(self, jet):
         self._name = jet.emitters_distribution._name
@@ -93,6 +98,7 @@ class EmittersDistribution(object):
         else:
             self._spectral_type = spectral_type
 
+
     @property
     def spectral_type(self):
         return self._spectral_type
@@ -105,9 +111,9 @@ class EmittersDistribution(object):
             self._parameters_dict[par.name].log = par.islog
             self._parameters_dict[par.name].punit = par.units
             self._parameters_dict[par.name]._is_dependent = par._is_dependent
-            self._parameters_dict[par.name]._depending_par = par._depending_par
+            self._parameters_dict[par.name]._depending_pars = par._depending_pars
             self._parameters_dict[par.name]._func = par._func
-            self._parameters_dict[par.name]._master_par = par._master_par
+            self._parameters_dict[par.name]._master_pars = par._master_pars
 
     def add_par(self, name, par_type, val, vmax, vmin, unit='', log=False, frozen=False):
         if log is True:
@@ -184,6 +190,7 @@ class EmittersDistribution(object):
             raise RuntimeError('gamma not present in distr_func signature')
 
 
+
     def _set_emitters_type(self,emitters_type):
         self.available_emitters_type = available_emitters_type
         self._check_emitters_type(emitters_type)
@@ -210,9 +217,10 @@ class EmittersDistribution(object):
 
     def set_jet(self, jet):
         if jet is not None:
+
+            #name passed to the C code
+            #do not change
             name = 'jetset'
-            #if emitters_type != 'electrons':
-            #    raise RuntimeError('not implemented yet for', emitters_type, 'only for electrons')
 
             self._jet = jet
             set_str_attr(jet._blob, 'DISTR', name)
@@ -490,6 +498,46 @@ class EmittersDistribution(object):
         self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label)
         return p
 
+
+class EmittersArrayDistribution(EmittersDistribution):
+    def __init__(self,
+                 name,
+                 jet=None,
+                 emitters_type='electrons',
+                 normalize=False,
+                 skip_build=False,
+                 gamma_array=None,
+                 n_gamma_array=None):
+
+        super(EmittersArrayDistribution, self).__init__(name,
+                                                        spectral_type='array',
+                                                        emitters_type=emitters_type)
+
+        if gamma_array is not None and n_gamma_array is not None:
+            if self._spectral_type != 'array':
+                raise RuntimeError('you can pass  gamma_array and n_gamma_array only for array distribution')
+            _ids = np.argsort(gamma_array)
+            self._array_gamma = gamma_array[_ids]
+            self._array_n_gamma = n_gamma_array[_ids]
+        elif (gamma_array is not None) and (n_gamma_array is not None) is False:
+            raise RuntimeError('you have to pass both gamma_array and n_gamma_array for array distribution')
+
+        gamma_grid_size=gamma_array.size
+        if skip_build is False:
+            self._build(jet, name, False, gamma_grid_size, normalize)
+        self.parameters.gmin.val=self._array_gamma[0]
+        self.parameters.gmax.val = self._array_gamma[-1]
+        self.parameters.N.val=1
+        self.set_distr_func(self._array_func)
+
+    def _array_func(self,gamma):
+        msk_nan=self._array_n_gamma>0
+        f_interp = interpolate.interp1d(np.log10(self._array_gamma[msk_nan]), np.log10(self._array_n_gamma[msk_nan]), bounds_error=False, kind='linear')
+        y = np.power(10., f_interp(np.log10(gamma)))
+        msk_nan = np.isnan(y)
+        y[msk_nan] = 0
+
+        return y
 
 class JetkernelEmittersDistribution(EmittersDistribution):
 

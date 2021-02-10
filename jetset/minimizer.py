@@ -20,6 +20,11 @@ try:
 except:
     minuit_installed=False
 
+
+from tqdm.autonotebook import tqdm
+
+import  sys
+
 from .plot_sedfit import plt
 
 from scipy.optimize import least_squares,curve_fit
@@ -503,11 +508,15 @@ class Minimizer(object):
         self.model=model
         self._progress_iter = cycle(['|', '/', '-', '\\'])
         self._post_fit_warnings=''
+        self.pbar=None
+            #self._progess_bar(pbar, _res_sum, _res_sum_UL)
 
     def fit(self,model,
             max_ev=None,
             use_UL=False,
             silent=False):
+        if silent is False:
+            self.pbar = tqdm(total=None)
         self.use_UL = use_UL
         self.calls=0
         self.res_check=None
@@ -556,8 +565,11 @@ class Minimizer(object):
         if (np.mod(self.calls, 10) == 0 and self.calls != 0)  :
             #_c= ' ' * 256
             #print("\r%s"%_c,end="")
-            print("\r%s minim function calls=%d, chisq=%5.5e UL part=%f" % (next(self._progress_iter),self.calls, _res_sum, res_sum_UL), end="")
-
+            #print("\r%s minim function calls=%d, chisq=%5.5e UL part=%f" % (next(self._progress_iter),self.calls, _res_sum, res_sum_UL), end="")
+            m="minim. function calls=%d, chisq=%5.5e UL part=%f" %(self.calls, _res_sum, res_sum_UL)
+            self.pbar.n=self.calls
+            self.pbar.set_description(m)
+            self.pbar.update(1)
 
     def residuals_Fit(self,
                       p,
@@ -600,8 +612,10 @@ class Minimizer(object):
         self.calls +=1
 
         if silent==False:
-            self._progess_bar(_res_sum, _res_sum_UL)
-            print("\r", end="")
+            #with tqdm(total=None, file=sys.stdout) as pbar:
+            if self.pbar is not None:
+                self._progess_bar(_res_sum, _res_sum_UL)
+            #print("\r", end="")
 
         if chisq==True:
             res=_res_sum
