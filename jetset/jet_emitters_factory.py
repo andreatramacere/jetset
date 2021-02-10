@@ -7,12 +7,12 @@ from jetset.jet_emitters import EmittersDistribution
 __all__=['EmittersFactory']
 
 _available_dict = {'lp': 'log-parabola',
-                                'pl': 'powerlaw',
-                                'lppl': 'log-parabola with low-energy powerlaw branch',
-                                'lpep': 'log-parabola defined by peak energy',
-                                'plc': 'powerlaw with cut-off',
-                                'bkn': 'broken powerlaw',
-                                'superexp':'powerlaw with super-exp cut-off'}
+                   'pl': 'powerlaw',
+                   'lppl': 'log-parabola with low-energy powerlaw branch',
+                   'lpep': 'log-parabola defined by peak energy',
+                   'plc': 'powerlaw with cut-off',
+                   'bkn': 'broken powerlaw',
+                   'superexp': 'powerlaw with super-exp cut-off'}
 
 
 @nb.njit(fastmath=True, cache=True)
@@ -65,14 +65,13 @@ class EmittersFactory:
     def __init__(self):
         self._available_dict=_available_dict
 
-
         self._func_dict = {'pl': self._create_pl,
                            'bkn': self._create_bkn,
                            'plc': self._create_plc,
                            'lp': self._create_lp,
                            'lppl': self._create_lppl,
                            'lpep': self._create_lpep,
-                           'sperexp': self._create_super_exp}
+                           'superexp': self._create_super_exp}
 
     @staticmethod
     def available_distributions():
@@ -153,7 +152,7 @@ class EmittersFactory:
     @staticmethod
     def _create_super_exp(gamma_grid_size, log_values, normalize, skip_build, emitters_type):
 
-        n_e_super_exp = EmittersDistribution(name='plc',
+        n_e_super_exp = EmittersDistribution(name='super_exp',
                                              spectral_type='plc',
                                              normalize=normalize,
                                              emitters_type=emitters_type,
