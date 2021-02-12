@@ -14,7 +14,7 @@ from .plot_sedfit import  PlotSED
 
 import numpy as np
 import json
-import pickle
+import dill as pickle
 import warnings
 from .cosmo_tools import  Cosmo
 
@@ -235,7 +235,6 @@ class Model(object):
 
     @classmethod
     def load_model(cls, file_name):
-
         try:
             c = pickle.load(open(file_name, "rb"))
             if isinstance(c, Model):
@@ -259,12 +258,13 @@ class Model(object):
 
         print('')
 
-        self.show_pars()
+        print("-------------------------------------------------------------------------------------------------------------------")
+        self.parameters.show_pars()
 
         print("-------------------------------------------------------------------------------------------------------------------")
 
     def show_pars(self, sort_key='par type'):
-        self.parameters.show_pars(sort_key=sort_key)
+        return self.parameters.show_pars(sort_key=sort_key)
 
     def show_best_fit_pars(self):
         self.parameters.show_best_fit_pars()

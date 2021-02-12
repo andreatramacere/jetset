@@ -103,9 +103,9 @@ class CompositeModelContainer(object):
 
     def show_model(self):
         for c in self._components_list:
-            print()
+            #print()
             c.show_model()
-            print()
+            #print()
 
 
 

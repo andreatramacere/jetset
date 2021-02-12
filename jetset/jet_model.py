@@ -1,6 +1,6 @@
 import os
 import json
-import pickle
+import dill as pickle
 import six
 import numpy as np
 import copy
@@ -217,6 +217,10 @@ class JetBase(Model):
             _model['emitters_distribution_class'] = 'EmittersDistribution'
         else:
             raise  RuntimeError('emitters distribuion type not valid',type(self._emitters_distribution))
+
+        if hasattr(self,'T_esc_e_second'):
+            _model['T_esc_e_second']=self.T_esc_e_second
+
         _model['beaming_expr'] = self._beaming_expr
         _model['spectral_components_name'] = self.get_spectral_component_names_list()
         _model['spectral_components_state'] = [c.state for c in self.spectral_components_list]
@@ -239,6 +243,21 @@ class JetBase(Model):
 
     def save_model(self,file_name):
         pickle.dump(self._serialize_model(), open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+
+    @classmethod
+    @safe_run
+    def load_model(cls, file_name):
+        try:
+            _model = pickle.load(open(file_name, "rb"))
+            jet = cls()
+            jet._decode_model(_model)
+            jet.show_pars()
+            jet.eval()
+            return jet
+
+        except Exception as e:
+
+            raise RuntimeError('The model you loaded is not valid please check the file name', e)
 
     def _decode_model(self,_model):
 
@@ -282,6 +301,13 @@ class JetBase(Model):
         for c in self.basic_components_list:
             if c not in _model['basic_components_name']:
                 self.del_spectral_component(c)
+
+        if self.emitters_distribution.emitters_type == 'protons':
+
+            self.add_pp_gamma_component()
+            self.add_pp_neutrino_component()
+            self.add_bremss_ep_component()
+            self.T_esc_e_second=_model['T_esc_e_second']
 
         #for k in _model['pars'].keys():
             #print ('-->',k,_model['pars'][k])
@@ -366,20 +392,7 @@ class JetBase(Model):
         jet.eval()
         return jet
 
-    @classmethod
-    @safe_run
-    def load_model(cls,file_name):
-        try:
-            _model=pickle.load( open(file_name, "rb" ) )
-            jet = cls()
-            jet._decode_model(_model)
-            jet.show_pars()
-            jet.eval()
-            return jet
 
-        except Exception as e:
-
-            raise RuntimeError('The model you loaded is not valid please check the file name',e)
 
     def build_blob(self, verbose=None):
 
@@ -663,10 +676,6 @@ class JetBase(Model):
         for ID,s in enumerate(self.spectral_components_list):
             self.spectral_components_list[ID]= JetSpecComponent(self, s.name, self._blob, var_name=s._var_name, state_dict=s._state_dict, state=s.state)
             setattr(self.spectral_components, self.spectral_components_list[ID].name, self.spectral_components_list[ID])
-
-
-
-
 
 
     def add_basic_components(self):
@@ -1400,16 +1409,6 @@ class JetBase(Model):
 
         self._energetic_report = self.energetic_report_table.pformat_all()
 
-        if  verbose is True:
-            print("-----------------------------------------------------------------------------------------")
-            print("jet eneregetic report:")
-            self.energetic_report_table.pprint_all()
-            print("-----------------------------------------------------------------------------------------")
-
-
-
-
-
         if write_file==True:
 
             if wd is None:
@@ -1426,6 +1425,18 @@ class JetBase(Model):
                 print(text, file=outfile)
 
             outfile.close()
+
+        if  verbose is True:
+            print("-----------------------------------------------------------------------------------------")
+            print("jet eneregetic report:")
+            #self.energetic_report_table.pprint_all()
+            #print("-----------------------------------------------------------------------------------------")
+            return self.energetic_report_table
+
+
+
+
+
 
 
 

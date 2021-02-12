@@ -33,7 +33,7 @@ from .leastsqbound.leastsqbound import leastsqbound
 
 from .output import section_separator,WorkPlace,makedir
 from .utils import JetkerneltException
-import pickle
+import dill as pickle
 
 __all__ = ['FitResults','fit_SED','Minimizer','LSMinimizer','LSBMinimizer','MinutiMinimizer','ModelMinimizer']
 
@@ -93,54 +93,51 @@ class FitResults(object):
         self.chisq_red_no_UL = chisq_red_no_UL
         self.null_hyp_sig_no_UL = null_hyp_sig_no_UL
 
-        self.fit_report=self.get_report()
+        self.update_report()
         self.wd=wd
          
 
-    def get_report(self):
-        out=[]
-        out.append("")        
-        out.append("**************************************************************************************************")
-        out.append("Fit report")
-        out.append("")
-        out.append("Model: %s"%self.name)
-        #pars_rep=self.parameters.show_pars(getstring=True)
-        #for string in pars_rep:
-        #    out.append(string)
-        self.parameters._build_par_table()
-        self.model_table=self.parameters._par_table
+    def update_report(self):
+        # self.model_table=self.parameters._par_table
         self.parameters._build_best_fit_par_table()
-        self.bestfit_table = self.parameters._best_fit_par_table
-        for _l in self.model_table.pformat_all():
-            out.append(_l)
-        out.append("")
-        out.append("converged=%s"%self.success)
-        out.append("calls=%d"%self.calls)
-        try:
-            out.append("mesg=",self.mesg)
-        except:
-            out.append(self.mesg)
-        out.append("dof=%d"%self.dof)
-        out.append("chisq=%f, chisq/red=%f null hypothesis sig=%f"%(self.chisq,self.chisq_red,self.null_hyp_sig))
-        if self.dof_no_UL is not None:
-            out.append("")
-            out.append("stats without the UL")
-            out.append("dof  UL=%d" % self.dof_no_UL)
-            out.append(
-                "chisq=%f, chisq/red=%f null hypothesis sig=%f" % (self.chisq_no_UL, self.chisq_red_no_UL, self.null_hyp_sig_no_UL))
-            out.append("")
-        out.append("")
-        out.append("best fit pars")
-        for _l in self.bestfit_table.pformat_all():
-            out.append(_l)
-        #pars_rep=self.parameters.show_best_fit_pars(getstring=True)
-        #for string in pars_rep:
-        #    out.append(string)
-            
+        self.parameters._build_par_table()
 
-        out.append("**************************************************************************************************")    
-        out.append("")
-        return out
+    def _show_report(self,):
+        self.update_report()
+
+        print('-------------------------------------------------------------------------')
+        print("Fit report")
+        print("")
+        print("Model: %s"%self.name)
+
+        self.parameters.show_pars()
+        print("")
+        print("converged=%s"%self.success)
+        print("calls=%d"%self.calls)
+        print("mesg=")
+        if hasattr(self,'mesg'):
+            try:
+                from IPython.display import display
+                display(self.mesg)
+            except:
+                print(self.mesg)
+
+        print("dof=%d"%self.dof)
+        print("chisq=%f, chisq/red=%f null hypothesis sig=%f"%(self.chisq,self.chisq_red,self.null_hyp_sig))
+        if self.dof_no_UL is not None:
+            print("")
+            print("stats without the UL")
+            print("dof  UL=%d" % self.dof_no_UL)
+            print(
+                "chisq=%f, chisq/red=%f null hypothesis sig=%f" % (self.chisq_no_UL, self.chisq_red_no_UL, self.null_hyp_sig_no_UL))
+            print("")
+        print("")
+        print("best fit pars")
+        self.parameters.show_best_fit_pars()
+
+        print('-------------------------------------------------------------------------')
+        print("")
+
         
     def _update_asymm_errors(self):
         for pi in range(len(self.mm.fit_par_free)):
@@ -149,38 +146,23 @@ class FitResults(object):
                 self.mm.fit_par_free[pi].err_m=self.mm.minimizer.asymm_errors[pi][1]
 
     def show_report(self):
-        self.fit_report=self.get_report()
-        for text in self.fit_report:
-            try:
-                print (text)
-            except:
-                print('problem in formatting text for report')
-            #except Exception as e:
-            #    raise(RuntimeWarning,'problem in formatting text for report',e)
+        try:
+            self._show_report()
+        except:
+            print('problem in formatting text for report')
+        #except Exception as e:
+        #    raise(RuntimeWarning,'problem in formatting text for report',e)
 
-    
+    @classmethod
+    def load_report(cls,file_name):
+        c = pickle.load(open(file_name, "rb"))
+        return c
+
     def save_report(self,name=None):
-
         if name is None:
-            wd=self.wd
-            name = 'best_fit_report_%s' % self.name + '.txt'
+            name = 'best_fit_report.pkl'
+        pickle.dump(self, open(name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
-        else:
-            wd=''
-
-
-
-
-        outname = os.path.join(wd,name)
-
-        outfile=open(outname,'w')
-    
-        
-        for text in self.fit_report:
-        
-            print(text,file=outfile)
-            
-        outfile.close()
 
 
 

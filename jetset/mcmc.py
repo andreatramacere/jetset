@@ -15,7 +15,7 @@ import scipy as sp
 from scipy import stats
 from .plot_sedfit import  plt, PlotSED, set_mpl
 import corner
-import pickle
+import dill as pickle
 from multiprocessing import cpu_count, Pool
 import warnings
 import  time

@@ -25,7 +25,7 @@ if on_rtd is True:
 else:
     from .jetkernel import jetkernel as BlazarSED
 
-__all__=['JetkernelEmittersDistribution', 'EmittersDistribution', 'ArrayDistribution']
+__all__=['JetkernelEmittersDistribution', 'EmittersDistribution', 'ArrayDistribution','EmittersArrayDistribution']
 
 
 class ArrayDistribution(object):

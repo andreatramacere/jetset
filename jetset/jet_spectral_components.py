@@ -254,8 +254,8 @@ class JetSpecComponent(object):
         print('name                :',self.name)
         print('var name            :',self._var_name)
         print('state               :',self._state)
-        print('nu_start (src frame):', self._nu_start_src)
-        print('nu_stop  (src frame):', self._nu_stop_src)
+        #print('nu_start (src frame):', self._nu_start_src)
+        #print('nu_stop  (src frame):', self._nu_stop_src)
         if self._state_dict is not None:
             print('allowed states :',[k for k in self._state_dict.keys()])
 

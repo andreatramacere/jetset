@@ -205,7 +205,7 @@ class JetTimeEvol(object):
         print(" ")
         print("physical  setup: ")
         print("")
-        self._tempev_table.pprint_all()
+        print(self._tempev_table)#.pprint_all()
 
 
         print("")

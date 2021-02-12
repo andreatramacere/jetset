@@ -15,8 +15,12 @@ import  inspect
 __all__=['ModelParameter','ModelParameterArray','Value','LinkedParameter']
 
 
-
-
+def _show_table(t):
+    try:
+        from IPython.display import display
+        display(t)
+    except:
+        t.pprint_all()
 
 class Value(object):
 
@@ -315,7 +319,7 @@ class ModelParameter(object):
     def make_dependent(self, par_func):
         _p_dict = self.get_default_args(par_func)
         for k, v in _p_dict.items():
-            print('self',self.name,'master',v.name,k)
+            #print('self',self.name,'master',v.name,k)
             if self == v:
                 raise RuntimeError("master:",self.name,"and depending parameter:",v.name, ", can't be the same")
         self.freeze()
@@ -439,7 +443,7 @@ class ModelParameter(object):
     @frozen.setter
     def frozen(self,v):
         if self.immutable is True:
-            raise RuntimeError('state of linked/dependent parameters can not be changed')
+            raise RuntimeError('frozen state of linked/dependent parameter:',self.name , 'can not be changed, please update your script')
 
         if v not in [True,False]:
             raise RuntimeError('par',self.name,'only True or False are allowed')
@@ -663,6 +667,9 @@ class CompositeModelParameterArray(object):
         for p in self.par_array:
             p.reset_dependencies()
 
+
+
+
     def link_par(self,par_name,model_name_list,root_model_name):
         m_root=self.get_model_by_name(root_model_name)
         p_root=m_root.get_par_by_name(par_name)
@@ -805,7 +812,6 @@ class CompositeModelParameterArray(object):
         return self._best_fit_par_table
 
     def show_pars(self, getstring=False, sort_key=None):
-
         self._build_par_table()
         if sort_key is not None:
             self.par_table.sort(sort_key)
@@ -813,14 +819,17 @@ class CompositeModelParameterArray(object):
         if getstring == True:
             return self.par_table.pformat_all()
         else:
-            self.par_table.pprint_all()
+            #self.par_table.pprint_all()
+            _show_table(self.par_table)
 
     def show_best_fit_pars(self, getstring=False):
         self._build_best_fit_par_table()
         if getstring == True:
             return self._best_fit_par_table.pformat_all()
         else:
-            self._best_fit_par_table.pprint_all()
+            #return self._best_fit_par_table
+            #.pprint_all()
+            _show_table(self._best_fit_par_table)
 
     #@compositr_parameter_setter
     def freeze(self, model_name,par_name):
@@ -1217,7 +1226,9 @@ class ModelParameterArray(object):
         if getstring==True:
             return self.par_table.pformat_all()
         else:
-            self.par_table.pprint_all()
+            _show_table(self.par_table)
+            #return self.par_table
+            #.pprint_all()
         
     
     
@@ -1225,9 +1236,10 @@ class ModelParameterArray(object):
 
         self._build_best_fit_par_table()
         if getstring == True:
-            return self._best_fit_par_table.pformat_all()
+            return self.best_fit_par_table.pformat_all()
         else:
-            self._best_fit_par_table.pprint_all()
+            return self.best_fit_par_table
+            #.pprint_all()
 
 
     def set(self,par_name,*args, **keywords):
