@@ -704,9 +704,13 @@ class  PlotTempEvDiagram (BasePlot):
 
     def plot(self,duration,T_acc_start,T_acc_stop,T_inj_start,T_inj_stop):
         self.ax.hlines(1, T_acc_start, T_acc_stop, label='Inj. start/stop', colors='b')
+        self.ax.axvline(T_acc_start,0,1,ls='--',color='b')
+        self.ax.axvline(T_acc_stop,0, 1,ls='--',color='b')
         self.ax.hlines(2, T_inj_start, T_inj_stop, label='Acc. start/stop', colors='g')
+        self.ax.axvline(T_inj_start, 0, 2, ls='--', color='g')
+        self.ax.axvline(T_inj_stop, 0, 2, ls='--', color='g')
         self.ax.hlines(0, 0, duration, label='duration', colors='black')
-        self.ax.set_xlim(-0.5, duration)
+        self.ax.set_xlim(0-duration*.05, duration*1.05)
         self.ax.set_ylim(-0.5,3)
         self.ax.legend()
 
