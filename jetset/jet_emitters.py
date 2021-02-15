@@ -604,9 +604,7 @@ class EmittersArrayDistribution(EmittersDistribution):
         if gamma_array is not None and n_gamma_array is not None:
             if self._spectral_type != 'array':
                 raise RuntimeError('you can pass  gamma_array and n_gamma_array only for array distribution')
-            _ids = np.argsort(gamma_array)
-            self._array_gamma = gamma_array[_ids]
-            self._array_n_gamma = n_gamma_array[_ids]
+            self._set_arrays(gamma_array,n_gamma_array)
         elif (gamma_array is not None) and (n_gamma_array is not None) is False:
             raise RuntimeError('you have to pass both gamma_array and n_gamma_array for array distribution')
 
@@ -618,6 +616,11 @@ class EmittersArrayDistribution(EmittersDistribution):
         self.parameters.gmax.val = self._array_gamma[-1]
         self.parameters.N.val=1
         self.set_distr_func(self._array_func)
+
+    def _set_arrays(self,gamma_array,n_gamma_array):
+        _ids = np.argsort(gamma_array)
+        self._array_gamma = gamma_array[_ids]
+        self._array_n_gamma = n_gamma_array[_ids]
 
     def _array_func(self,gamma):
         msk_nan=self._array_n_gamma>0

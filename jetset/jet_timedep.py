@@ -88,7 +88,8 @@ class JetTimeEvol(object):
                  Q_inj=None,
                  #flag='tests',
                  name='jet_time_ev',
-                 inplace=True):
+                 inplace=True,
+                 jet_gamma_grid_size=200):
 
         self._temp_ev = BlazarSED.MakeTempEv()
         if inplace is True:
@@ -101,7 +102,9 @@ class JetTimeEvol(object):
 
         self.parameters = JetModelParameterArray(model=self)
         self.parameters.add_par_from_dict(self._build_par_dict(),self,'_temp_ev',JetParameter)
-        #self.init_TempEv()
+        self.jet_gamma_grid_size = jet_gamma_grid_size
+
+
 
     def _build_par_dict(self):
 
@@ -194,6 +197,18 @@ class JetTimeEvol(object):
         self._fill_temp_ev_array_post_run()
         print('temporal evolution completed')
 
+        self._set_jet_post_run()
+
+    def _set_jet_post_run(self):
+        self._jet_emitters_distr = EmittersArrayDistribution(name='time_dep',
+                                                             gamma_array=np.copy(self.gamma),
+                                                             n_gamma_array=np.copy(self.N_gamma[-1]),
+                                                             gamma_grid_size=self.jet_gamma_grid_size,
+                                                             normalize=False)
+        self._jet_emitters_distr._fill()
+        self.jet.set_emitters_distribution(self._jet_emitters_distr)
+
+
     def _init_temp_ev(self):
         setattr(self._temp_ev,'Q_inj_jetset_gamma_grid_size',self.Q_inj._gamma_grid_size)
         BlazarSED.Init_Q_inj(self._temp_ev)
@@ -225,91 +240,6 @@ class JetTimeEvol(object):
             self.t_Esc_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_Esc, i)
 
 
-    def show_model(self,jet=None,getstring=False,names_list=None,sort_key=None):
-        if jet is None:
-            jet=self.jet
-        print("-------------------------------------------------------------------------------------------------------------------")
-        print("JetTimeEvol model description")
-        print("-------------------------------------------------------------------------------------------------------------------")
-        self._build_tempev_table(jet)
-        print(" ")
-        print("physical setup: ")
-        print("")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
-        _show_table(self._tempev_table)
-        print("")
-        print("model parameters: ")
-        print("")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
-        self.show_pars()
-
-    def _build_row_dict(self, name, type='', unit='', val='', val_by=None, islog=False,unit1=''):
-        row_dict = {}
-        row_dict['name'] = name
-        row_dict['par type'] = type
-        row_dict['units'] = unit
-        row_dict['val'] =  val
-        if val_by is not None:
-            val_by= val/val_by
-        row_dict['val*'] = val_by
-        row_dict['units*'] = unit1
-        row_dict['log'] = islog
-        return  row_dict
-
-    def _build_tempev_table(self, jet):
-
-        _names = ['name', 'par type', 'val','units', 'val*', 'units*' ,'log',]
-
-        rows=[]
-        rows.append(self._build_row_dict('delta t', 'time', 's', val=self._temp_ev.deltat, val_by=self._temp_ev.t_unit,unit1='R/c', islog=False))
-        rows.append(self._build_row_dict('R/c', 'time', 's', val=self._temp_ev.t_unit, val_by=self._temp_ev.t_unit,unit1='R/c', islog=False))
-        rows.append(self._build_row_dict('Diff coeff', '', 's-1', val=self._temp_ev.Diff_Coeff, islog=False))
-        rows.append(self._build_row_dict('Acc coeff', '', 's-1', val=self._temp_ev.Acc_Coeff, islog=False))
-
-        rows.append(self._build_row_dict('Diff index', '', '', val=self._temp_ev.Diff_Index, islog=False))
-        rows.append(self._build_row_dict('Acc index', '', 's-1', val=self._temp_ev.Acc_Index, islog=False))
-
-        rows.append(self._build_row_dict('Tesc', 'time', 's', val=self._temp_ev.T_esc_Coeff, val_by=self._temp_ev.t_unit,unit1='R/c', islog=False))
-        rows.append(self._build_row_dict('T_A0=1/ACC_COEFF', 'time', 's', val=self._temp_ev.t_A0, val_by=self._temp_ev.t_unit,unit1='R/c', islog=False))
-        rows.append(self._build_row_dict('T_D0=1/DIFF_COEFF', 'time', 's', val=self._temp_ev.t_D0, val_by=self._temp_ev.t_unit,unit1='R/c', islog=False))
-        rows.append(self._build_row_dict('T_DA0=1/(2*DIFF_COEFF)', 'time', 's', val=self._temp_ev.t_DA0, val_by=self._temp_ev.t_unit,unit1='R/c', islog=False))
-
-        rows.append(self._build_row_dict('gamma Lambda Turb.  max', '', '', val=self._temp_ev.Gamma_Max_Turb_L_max, islog=False))
-        rows.append(self._build_row_dict('gamma Lambda Coher. max', '', '', val=self._temp_ev.Gamma_Max_Turb_L_coher, islog=False))
-
-        rows.append(self._build_row_dict('gamma eq Syst. Acc (synch. cool)', '', '', val=self._temp_ev.gamma_eq_t_A, islog=False))
-        rows.append(self._build_row_dict('gamma eq Diff. Acc (synch. cool)', '', '', val=self._temp_ev.gamma_eq_t_D, islog=False))
-
-        t = BlazarSED.Sync_tcool(jet._blob, self._temp_ev.gamma_eq_t_D)
-        rows.append(self._build_row_dict('T cooling(gamma_eq=gamma_eq_Diff)', '', 's', val=t, islog=False))
-        t = BlazarSED.Sync_tcool(jet._blob, self._temp_ev.gamma_eq_t_A)
-        rows.append(self._build_row_dict('T cooling(gamma_eq=gamma_eq_Sys)', '', 's', val=t, islog=False))
-        t = BlazarSED.Sync_tcool(jet._blob, self._temp_ev.gamma_eq_t_A)
-        rows.append(self._build_row_dict('T min. synch. cooling', '', 's', val=self.t_Sync_cool_pre_run.min(), islog=False))
-
-        if self.Q_inj is not None:
-            rows.append(self._build_row_dict('L inj (electrons)', 'injected lum.', 'erg/s', val=self.eval_L_tot_inj(), islog=False))
-            rows.append(self._build_row_dict('E_inj (electrons)', '', 'erg', val=self.eval_E_tot_inj(), islog=False))
-
-        self._tempev_table = Table(rows=rows, names=_names, masked=False)
-
-        self._fromat_column_entry(self._tempev_table)
-
-    def _fromat_column_entry(self, t):
-
-        for n in t.colnames:
-
-            for ID, v in enumerate(t[n].data):
-                try:
-                    c = ast.literal_eval(t[n].data[ID])
-                    if type(c) == int:
-                        t[n].data[ID] = '%d' % c
-                    else:
-                        t[n].data[ID] = '%e' % c
-                except:
-                    pass
 
     def eval_E_tot_inj(self):
         if self.Q_inj is not None and self.jet is not None:
@@ -319,9 +249,9 @@ class JetTimeEvol(object):
         if self.Q_inj is not None and self.jet is not None:
             return self.Q_inj._eval_U()*BlazarSED.V_sphere(self.jet.parameters.R.val)/self._temp_ev.deltat
 
-    def set_time(self,t=None,T_step=None):
-        self.jet.emitters_distribution._array_gamma = self.gamma
-        self.jet.emitters_distribution._array_n_gamma = self.N_gamma[T_step].flatten()
+    def set_time(self,T_step=None):
+        self.jet.emitters_distribution._set_arrays(self.gamma, self.N_gamma[T_step].flatten())
+        self.jet.emitters_distribution._fill()
 
     def inj_time_profile(self,user_defined_arry=None):
         if user_defined_arry is None:
@@ -377,25 +307,17 @@ class JetTimeEvol(object):
         return p
 
 
-class TempEvLightCurve(object):
-
-    def __init__(self, temp_ev, gamma_grid_size=200):
-        self.time_array = None
-        self.flux_array = None
-        self.jet = temp_ev.jet.clone()
-        self.temp_ev = temp_ev
-        self.gamma_grid_size = gamma_grid_size
-
     def make_lc(self, t1, t2, nu1, nu2, comp='Sum'):
         self.t_array = np.linspace(t1, t2, dtype=np.int)
         self.flux_array = np.zeros(self.t_array.size)
         for ID, T in enumerate(self.t_array):
-            ed = EmittersArrayDistribution(name='time_dep',
-                                           gamma_array=np.copy(self.temp_ev.gamma),
-                                           n_gamma_array=np.copy(self.temp_ev.N_gamma[T]),
-                                           gamma_grid_size=self.gamma_grid_size)
-            ed._fill()
-            self.jet.set_emitters_distribution(ed)
+            #ed = EmittersArrayDistribution(name='time_dep',
+            #                               gamma_array=np.copy(self.temp_ev.gamma),
+            #                               n_gamma_array=np.copy(self.temp_ev.N_gamma[T]),
+            #                               gamma_grid_size=self.gamma_grid_size)
+            #ed._fill()
+            #self.jet.set_emitters_distribution(ed)
+            self.set_time(T)
             self.jet.eval()
             s = getattr(self.jet.spectral_components, comp)
             msk = s.SED.nu.value >= nu1
@@ -404,31 +326,23 @@ class TempEvLightCurve(object):
             y = s.SED.nuFnu[msk] / x
             self.flux_array[ID] = np.trapz(y.value, x.value)
 
-        self.time_array = self.temp_ev.N_time[self.t_array] * self.temp_ev._temp_ev.deltat
+        self.time_array = self.N_time[self.t_array] * self.temp_ev.deltat
         return np.copy(self.time_array), np.copy(self.flux_array)
 
-
-class TempEvSEDs(object):
-
-    def __init__(self,temp_ev,gamma_grid_size=200):
-        self.time_array=None
-        self.flux_array=None
-        self.jet=temp_ev.jet.clone()
-        self.temp_ev=temp_ev
-        self.gamma_grid_size=gamma_grid_size
-    def plot(self, T1, T2, step,p=None):
+    def plot_model(self, T1, T2, step,p=None):
         t_array = np.linspace(T1, T2, step, dtype=np.int)
         for ID, T in enumerate(t_array):
-            ed = EmittersArrayDistribution(name='time_dep',
-                                           gamma_array=np.copy(self.temp_ev.gamma),
-                                           n_gamma_array=np.copy(self.temp_ev.N_gamma[T]),
-                                           gamma_grid_size=self.gamma_grid_size)
-            ed._fill()
-            self.jet.set_emitters_distribution(ed)
+            #ed = EmittersArrayDistribution(name='time_dep',
+            #                               gamma_array=np.copy(self.temp_ev.gamma),
+            #                               n_gamma_array=np.copy(self.temp_ev.N_gamma[T]),
+            #                               gamma_grid_size=self.gamma_grid_size)
+            #ed._fill()
+            #self.jet.set_emitters_distribution(ed)
+            self.set_time(T)
             self.jet.eval()
             label = None
             ls = '-'
-            if self.temp_ev.N_time[T] > self.temp_ev.parameters.TStop_Acc.val:
+            if self.N_time[T] > self.parameters.TStop_Acc.val:
                 color = 'g'
                 ls = '--'
             else:
@@ -444,3 +358,107 @@ class TempEvSEDs(object):
                 label = 'stop'
 
             p = self.jet.plot_model(plot_obj=p, comp='Sum', auto_label=False, label=label, line_style=ls, color=color)
+
+    def show_model(self, jet=None, getstring=False, names_list=None, sort_key=None):
+        if jet is None:
+            jet = self.jet
+        print(
+            "-------------------------------------------------------------------------------------------------------------------")
+        print("JetTimeEvol model description")
+        print(
+            "-------------------------------------------------------------------------------------------------------------------")
+        self._build_tempev_table(jet)
+        print(" ")
+        print("physical setup: ")
+        print("")
+        print(
+            "-------------------------------------------------------------------------------------------------------------------")
+        _show_table(self._tempev_table)
+        print("")
+        print("model parameters: ")
+        print("")
+        print(
+            "-------------------------------------------------------------------------------------------------------------------")
+        self.show_pars()
+
+    def _build_row_dict(self, name, type='', unit='', val='', val_by=None, islog=False, unit1=''):
+        row_dict = {}
+        row_dict['name'] = name
+        row_dict['par type'] = type
+        row_dict['units'] = unit
+        row_dict['val'] = val
+        if val_by is not None:
+            val_by = val / val_by
+        row_dict['val*'] = val_by
+        row_dict['units*'] = unit1
+        row_dict['log'] = islog
+        return row_dict
+
+    def _build_tempev_table(self, jet):
+
+        _names = ['name', 'par type', 'val', 'units', 'val*', 'units*', 'log', ]
+
+        rows = []
+        rows.append(self._build_row_dict('delta t', 'time', 's', val=self._temp_ev.deltat, val_by=self._temp_ev.t_unit,
+                                         unit1='R/c', islog=False))
+        rows.append(
+            self._build_row_dict('R/c', 'time', 's', val=self._temp_ev.t_unit, val_by=self._temp_ev.t_unit, unit1='R/c',
+                                 islog=False))
+        rows.append(self._build_row_dict('Diff coeff', '', 's-1', val=self._temp_ev.Diff_Coeff, islog=False))
+        rows.append(self._build_row_dict('Acc coeff', '', 's-1', val=self._temp_ev.Acc_Coeff, islog=False))
+
+        rows.append(self._build_row_dict('Diff index', '', '', val=self._temp_ev.Diff_Index, islog=False))
+        rows.append(self._build_row_dict('Acc index', '', 's-1', val=self._temp_ev.Acc_Index, islog=False))
+
+        rows.append(
+            self._build_row_dict('Tesc', 'time', 's', val=self._temp_ev.T_esc_Coeff, val_by=self._temp_ev.t_unit,
+                                 unit1='R/c', islog=False))
+        rows.append(
+            self._build_row_dict('T_A0=1/ACC_COEFF', 'time', 's', val=self._temp_ev.t_A0, val_by=self._temp_ev.t_unit,
+                                 unit1='R/c', islog=False))
+        rows.append(
+            self._build_row_dict('T_D0=1/DIFF_COEFF', 'time', 's', val=self._temp_ev.t_D0, val_by=self._temp_ev.t_unit,
+                                 unit1='R/c', islog=False))
+        rows.append(self._build_row_dict('T_DA0=1/(2*DIFF_COEFF)', 'time', 's', val=self._temp_ev.t_DA0,
+                                         val_by=self._temp_ev.t_unit, unit1='R/c', islog=False))
+
+        rows.append(self._build_row_dict('gamma Lambda Turb.  max', '', '', val=self._temp_ev.Gamma_Max_Turb_L_max,
+                                         islog=False))
+        rows.append(self._build_row_dict('gamma Lambda Coher. max', '', '', val=self._temp_ev.Gamma_Max_Turb_L_coher,
+                                         islog=False))
+
+        rows.append(self._build_row_dict('gamma eq Syst. Acc (synch. cool)', '', '', val=self._temp_ev.gamma_eq_t_A,
+                                         islog=False))
+        rows.append(self._build_row_dict('gamma eq Diff. Acc (synch. cool)', '', '', val=self._temp_ev.gamma_eq_t_D,
+                                         islog=False))
+
+        t = BlazarSED.Sync_tcool(jet._blob, self._temp_ev.gamma_eq_t_D)
+        rows.append(self._build_row_dict('T cooling(gamma_eq=gamma_eq_Diff)', '', 's', val=t, islog=False))
+        t = BlazarSED.Sync_tcool(jet._blob, self._temp_ev.gamma_eq_t_A)
+        rows.append(self._build_row_dict('T cooling(gamma_eq=gamma_eq_Sys)', '', 's', val=t, islog=False))
+        t = BlazarSED.Sync_tcool(jet._blob, self._temp_ev.gamma_eq_t_A)
+        rows.append(
+            self._build_row_dict('T min. synch. cooling', '', 's', val=self.t_Sync_cool_pre_run.min(), islog=False))
+
+        if self.Q_inj is not None:
+            rows.append(self._build_row_dict('L inj (electrons)', 'injected lum.', 'erg/s', val=self.eval_L_tot_inj(),
+                                             islog=False))
+            rows.append(self._build_row_dict('E_inj (electrons)', '', 'erg', val=self.eval_E_tot_inj(), islog=False))
+
+        self._tempev_table = Table(rows=rows, names=_names, masked=False)
+
+        self._fromat_column_entry(self._tempev_table)
+
+    def _fromat_column_entry(self, t):
+
+        for n in t.colnames:
+
+            for ID, v in enumerate(t[n].data):
+                try:
+                    c = ast.literal_eval(t[n].data[ID])
+                    if type(c) == int:
+                        t[n].data[ID] = '%d' % c
+                    else:
+                        t[n].data[ID] = '%e' % c
+                except:
+                    pass
