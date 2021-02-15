@@ -54,7 +54,7 @@ class ProgressBar(object):
 
     def __init__(self, target_class,N):
         self.target_class = target_class
-        self.N = N -1
+        self.N = N
         self.pbar = tqdm(total=self.N)
 
 
@@ -62,7 +62,7 @@ class ProgressBar(object):
         self.pbar.n=0
 
     def update(self):
-        step_tqdm = self.target_class.temp_ev.T_COUNTER - self.pbar.n
+        step_tqdm = self.target_class.temp_ev.T_COUNTER +1 - self.pbar.n
         self.pbar.update(step_tqdm)
 
     def finalzie(self,max_try=10):
