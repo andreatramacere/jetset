@@ -116,7 +116,7 @@ struct temp_ev MakeTempEv() {
     ev_root.do_EC_cooling_Star = 0;
     ev_root.do_EC_cooling_CMB  = 0;
 
-
+    ev_root.T_COUNTER=0;
 
 
 
@@ -143,6 +143,7 @@ struct temp_ev MakeTempEv() {
     ev_root.gmin_griglia = 1.0e1;
     ev_root.gmax_griglia = 1.0e8;
     ev_root.gamma_grid_size =1E4;
+    ev_root.Q_inj_jetset_gamma_grid_size=1E2;
 
     ev_root.Lambda_max_Turb = 1e15;
     ev_root.Lambda_choer_Turb_factor=0.1;
@@ -151,9 +152,12 @@ struct temp_ev MakeTempEv() {
     ev_root.LOG_SET = 1;
     ev_root.Q_inj=NULL;
     ev_root.gamma=NULL;
+    ev_root.Q_inj_jetset=NULL;
+    ev_root.gamma_inj_jetset=NULL;
     ev_root.N_gamma=NULL;
     ev_root.N_time=NULL;
     ev_root.T_esc=NULL;
+    
     return ev_root;
 }
 
@@ -779,6 +783,17 @@ void set_elec_array(double * arr,struct blob *pt, double val, unsigned int id){
             exit(0);
         }
 }
+
+void set_q_inj_user_array(double * arr,struct temp_ev *pt, double val, unsigned int id){
+    if ((id>=0) && (id<=pt->Q_inj_jetset_gamma_grid_size)){
+           arr[id]=val;
+        }
+        else{
+            printf("exceeded array size in set_elec_array\n");
+            exit(0);
+        }
+}
+
 
 void set_elec_custom_array(double * arr, struct blob *pt,double val, unsigned int id){
     if ((id>=0) && (id<=pt->gamma_custom_grid_size)){

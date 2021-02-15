@@ -181,20 +181,21 @@ void build_Ne(struct blob *pt) {
     alloc_N_distr(&(pt->Ne),pt->gamma_grid_size);
 
     //stationary frame
-    //printf("build_Ne Set array per Ne 3%s \n",pt->DISTR);
+    //printf("stationary build_Ne Set array per Ne 3%s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Ne_log_stat),pt->gamma_grid_size);
-    //printf("build_Ne Set array per Ne 4%s \n",pt->DISTR);
+    //printf("stationarybuild_Ne Set array per Ne 4%s \n",pt->DISTR);
     alloc_N_distr(&(pt->Ne_stat),pt->gamma_grid_size);
-    if (pt->verbose>1) {
-        printf("DONE \n");
-    }
+    
+    //if (pt->verbose>1) {
+    //    printf("DONE \n");
+    //}
 
     //N for IC and simpson equilog integration over N_grid
-    //printf("build_Ne Set array per Ne 5%s \n",pt->DISTR);
+    //printf("N for IC and simpson build_Ne Set array per Ne 5%s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->gamma_grid_size);
-    //printf("build_Ne Set array per Ne 6%s \n",pt->DISTR);
+    //printf("N for IC and simpson build_Ne Set array per Ne 6%s \n",pt->DISTR);
     alloc_N_distr(&(pt->Ne_IC),pt->gamma_grid_size);
-    //printf("build_Ne Set array per Ne 7%s \n",pt->DISTR);
+    //printf("N for IC and simpson build_Ne Set array per Ne 7%s \n",pt->DISTR);
     alloc_N_distr(&(pt->Integrand_over_gamma_grid),pt->gamma_grid_size);
 
 }
@@ -212,9 +213,9 @@ void build_Ne_secondaries(struct blob *pt) {
     alloc_N_distr(&(pt->griglia_gamma_Ne_log_stat),pt->gamma_grid_size);
     //printf("build_Ne_secondaries Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->Ne_stat),pt->gamma_grid_size);
-    if (pt->verbose>1) {
-        printf("DONE \n");
-    }
+    //if (pt->verbose>1) {
+    //    printf("DONE \n");
+    //}
 
     //N for IC and simpson equilog integration over N_grid
     alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->gamma_grid_size);
@@ -351,9 +352,14 @@ void InitNe(struct blob *pt){
     //double (*pf_distr)(struct blob *, double x);
     //pf_distr = &N_distr_integranda;
 
+    //printf("==> InitNe start\n");
+    //printf("==> setNgrid\n");
     setNgrid(pt);
+    //printf("==> build_Ne\n");
     build_Ne(pt);
+    //printf("==> SetDistr\n");
     SetDistr(pt);
+    //printf("==> SetDistr\n");
     Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Ne);
 
 
@@ -361,8 +367,9 @@ void InitNe(struct blob *pt){
 	pt->Distr_e_done = 1;
 
     pt->N_0e = pt->N_0;
+    //printf("==> N_tot\n");
     pt->N_e  = N_tot(pt, N_distr_integranda);
-
+    //printf("==> InitNe stop\n");
 }
 
 
@@ -851,7 +858,10 @@ double N_distr_integranda(struct blob *pt_N, double Gamma) {
 }
 
 double N_distr_interp(unsigned int size, double Gamma, double *griglia_gamma, double *N) {
-	//Interpolates *N  with *grilia_gamma and size at gamma=Gamma
+	//size: input grid size
+    //Gamme: output  gamma
+    //griglia_gamma: input gamma_grid
+    //N: input N
     unsigned int i;
     double gamma_piu, gamma_meno, Npiu, Nmeno, g, a;
     i = 0;
@@ -879,9 +889,14 @@ double N_distr_interp(unsigned int size, double Gamma, double *griglia_gamma, do
 void alloc_N_distr(double ** pt,int size){
         //printf("pre %p\n",*pt);
         //printf("alloc n\n");
+        //if (*pt==NULL){
+        //   printf("is  NULL\n");
+        //}
         if (*pt){
-            free(*pt);
             //printf("freeing\n");
+            //printf("%e\n",pt[0]);
+            free(*pt);
+            //printf("free\n");
         }
 
         *pt = calloc(size, sizeof (double));

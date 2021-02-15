@@ -289,12 +289,12 @@ class JetBase(Model):
             _model['emitters_distribution_log_values']=_v
 
         if _model['emitters_distribution_class'] == 'JetkernelEmittersDistribution':
-            self.set_emitters_distribution(name=_model['emitters_distribution'],
-                                       log_values=_model['emitters_distribution_log_values'],
-                                       emitters_type=emitters_type,
-                                       init=False)
+            self.set_emitters_distribution(distr=_model['emitters_distribution'],
+                                           log_values=_model['emitters_distribution_log_values'],
+                                           emitters_type=emitters_type,
+                                           init=False)
         elif _model['emitters_distribution_class'] == 'EmittersDistribution':
-            self.set_emitters_distribution(name=_model['custom_emitters_distribution'],init=False)
+            self.set_emitters_distribution(distr=_model['custom_emitters_distribution'], init=False)
         else:
             raise RuntimeError('emitters distribuion type not valid', type(self._emitters_distribution))
 
@@ -525,7 +525,7 @@ class JetBase(Model):
     def available_emitters_distributions():
         EmittersFactory.available_distributions()
 
-    def set_emitters_distribution(self, name=None, log_values=False, emitters_type='electrons',init=True):
+    def set_emitters_distribution(self, distr=None, log_values=False, emitters_type='electrons', init=True):
 
         if init is True:
             self.set_blob()
@@ -534,12 +534,12 @@ class JetBase(Model):
         if self._emitters_distribution_dic is not None:
             self.del_par_from_dic(self._emitters_distribution_dic)
 
-        if isinstance(name, ArrayDistribution):
+        if isinstance(distr, ArrayDistribution):
             self._emitters_distribution_name = 'from_array'
-            self.emitters_distribution = JetkernelEmittersDistribution.from_array(self, name, emitters_type=emitters_type)
+            self.emitters_distribution = JetkernelEmittersDistribution.from_array(self, distr, emitters_type=emitters_type)
 
-        elif isinstance(name, JetkernelEmittersDistribution):
-            self.emitters_distribution = name
+        elif isinstance(distr, JetkernelEmittersDistribution):
+            self.emitters_distribution = distr
 
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
@@ -547,9 +547,9 @@ class JetBase(Model):
             self.parameters.add_par_from_dict(self._emitters_distribution_dic,self,'_blob',JetParameter)
 
 
-        elif isinstance(name, EmittersDistribution):
-            self._original_emitters_distr = name
-            self.emitters_distribution = copy.deepcopy(name)
+        elif isinstance(distr, EmittersDistribution):
+            self._original_emitters_distr = distr
+            self.emitters_distribution = copy.deepcopy(distr)
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
 
@@ -571,12 +571,11 @@ class JetBase(Model):
                     for p in par._depending_pars:
                         dep_par=self.parameters.get_par_by_name(par._depending_pars.name)
                         par._add_depending_par(dep_par)
-            #self.set_blob()
             self.emitters_distribution.update()
 
-        else:
+        elif isinstance(distr, str):
             nf=EmittersFactory()
-            self.emitters_distribution = nf.create_emitters(name,log_values=log_values,emitters_type=emitters_type)
+            self.emitters_distribution = nf.create_emitters(distr, log_values=log_values, emitters_type=emitters_type)
             self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
@@ -599,9 +598,9 @@ class JetBase(Model):
                     for p in par._depending_pars:
                         dep_par = self.parameters.get_par_by_name(par._depending_pars.name)
                         par._add_depending_par(dep_par)
-            #self.set_blob()
             self.emitters_distribution.update()
-
+        else:
+            raise RuntimeError('distr',type(distr),'not valid should be a string or an',type(EmittersDistribution),'instance')
 
     def get_emitters_distribution_name(self):
         return self.emitters_distribution.name
@@ -1174,8 +1173,9 @@ class JetBase(Model):
         print('')
         print('flux plot lower bound   :  %e' % self.flux_plot_lim)
         print('')
+        print(
+            "-------------------------------------------------------------------------------------------------------------------")
         self.show_pars()
-
         print("-------------------------------------------------------------------------------------------------------------------")
 
     def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-',frame='obs', density=False):

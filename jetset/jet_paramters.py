@@ -59,7 +59,7 @@ class JetParameter(ModelParameter):
         self._model = model
         #self._jetkernel_attr_name = jetkernel_attr_name
         self._jetkernel_parameter_name=  jetkernel_parameter_name
-        self._jetkernel_struct_name =    jetkernel_struct_name
+        self._jetkernel_struct_name =   jetkernel_struct_name
 
         _allowed_par_types = ['acceleration_time',
                               'cooling_time',

@@ -676,8 +676,8 @@ class  PlotTempEvEmitters (PlotPdistr):
         self._plot(x, y, c='blue', lw=2,label='Stop')
         self._set_xy_label(energy_name, energy_units,pow=pow)
         #print('==> c')
-        y = temp_ev.Q_inj.n_array * temp_ev._temp_ev.deltat
-        x = temp_ev.Q_inj.e_array
+        y = temp_ev.Q_inj.n_gamma_e * temp_ev._temp_ev.deltat
+        x = temp_ev.Q_inj.gamma_e
         if plot_Q_inj is True:
             if pow is not None:
                 y=y*np.power(x,pow)

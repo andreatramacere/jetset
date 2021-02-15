@@ -129,7 +129,7 @@ _module=Extension('jetset.jetkernel/_jetkernel',
                   sources=src_files,
                   #extra_compile_options='-fPIC  -v  -c -m64 -I',
                   #extra_link_options='-suppress',
-                  swig_opts=['-v',],
+                  swig_opts=['-v','-threads'],
                   include_dirs=['jetkernel_src/include'])
 
 

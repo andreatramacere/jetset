@@ -24,29 +24,60 @@ else:
 
 
 import numpy as np
+import time
+import  ast
 
-from .model_parameters import ModelParameterArray, ModelParameter
+#import copy
 
-from .output import makedir,WorkPlace
+from tqdm.autonotebook import tqdm
+
+import threading
+
+from .model_parameters import _show_table
+
+#from .output import makedir,WorkPlace
 
 from astropy.table import  Table
 
-from .utils import safe_run,set_str_attr, old_model_warning
+#from .utils import safe_run,set_str_attr, old_model_warning
 
 from .jet_paramters import JetModelDictionaryPar,JetParameter,JetModelParameterArray
 from .jet_emitters import  ArrayDistribution, EmittersArrayDistribution
 
 from .plot_sedfit import  BasePlot,PlotPdistr,PlotTempEvDiagram,PlotTempEvEmitters
 
-import  ast
-
-import copy
-
 
 __all__=['JetTimeEvol']
 
 
+class ProgressBar(object):
 
+    def __init__(self, target_class,N):
+        self.target_class = target_class
+        self.N = N -1
+        self.pbar = tqdm(total=self.N)
+
+
+        self.stop = False
+        self.pbar.n=0
+
+    def update(self):
+        step_tqdm = self.target_class.temp_ev.T_COUNTER - self.pbar.n
+        self.pbar.update(step_tqdm)
+
+    def finalzie(self,max_try=10):
+        n_try=1
+        while (self.pbar.n<self.N and n_try<max_try):
+            time.sleep(.1)
+            n_try += 1
+            self.update()
+
+
+    def run(self):
+        self.pbar.n = 0
+        while (self.stop is False):
+            self.update()
+            time.sleep(.1)
 
 
 
@@ -54,22 +85,22 @@ class JetTimeEvol(object):
 
     def __init__(self,
                  jet,
+                 Q_inj=None,
                  #flag='tests',
-                 name='jet_time_ev'):
-                 #inplace=True):
+                 name='jet_time_ev',
+                 inplace=True):
 
         self._temp_ev = BlazarSED.MakeTempEv()
-        #if inplace is True:
-        #self.jet=jet.clone(jet)
-        #else:
-        self.jet=jet
+        if inplace is True:
+            self.jet=jet.clone()
+        else:
+            self.jet=jet
 
-
+        self.Q_inj=Q_inj
         self.name=name
 
         self.parameters = JetModelParameterArray(model=self)
         self.parameters.add_par_from_dict(self._build_par_dict(),self,'_temp_ev',JetParameter)
-        self.Q_inj=None
         #self.init_TempEv()
 
     def _build_par_dict(self):
@@ -137,39 +168,41 @@ class JetTimeEvol(object):
 
         return model_dic
 
+    @property
+    def temp_ev(self):
+        return self._temp_ev
 
     def show_pars(self, sort_key='par type'):
         self.parameters.show_pars(sort_key=sort_key)
 
-    def init_TempEv(self, skip_jet=False):
-        #if jet is None:
-        #    jet=self.jet
-        self.jet.set_blob()
-        print("--> self.jet._blob.E_tot_e ",self.jet._blob.E_tot_e,self._temp_ev.Q_scaling_factor)
-        BlazarSED.Init_temp_evolution(self.jet._blob, self._temp_ev, self.jet.get_DL_cm())
-        print("--> self.jet._blob.E_tot_e ", self.jet._blob.E_tot_e,self._temp_ev.Q_scaling_factor)
+    def init_TempEv(self):
+        BlazarSED.Init(self.jet._blob, self.jet.get_DL_cm())
+        self._init_temp_ev()
         self._fill_temp_ev_array_pre_run()
-        print("--> self.jet._blob.E_tot_e ", self.jet._blob.E_tot_e,self._temp_ev.Q_scaling_factor)
         self._build_tempev_table(self.jet)
-        print("--> self.jet._blob.E_tot_e ", self.jet._blob.E_tot_e,self._temp_ev.Q_scaling_factor,self._temp_ev.deltat)
-        print("--> self._Q_inj.max() ",self._Q_inj.max())
-        #self.Q_inj = ArrayDistribution(np.copy(self.jet.emitters_distribution.gamma_e),
-        #                               np.copy(self.jet.emitters_distribution.n_gamma_e))
-        self.Q_inj = ArrayDistribution(self.gamma, self._Q_inj)
-        if skip_jet is False:
-            ed = EmittersArrayDistribution(name='time_dep',
-                                           gamma_array=np.copy(self.Q_inj.e_array),
-                                           n_gamma_array=np.copy(self.Q_inj.n_array))
-            ed._fill()
-            self.jet.set_emitters_distribution(ed)
-            self.jet.eval()
-        print("--> self._Q_inj.max() ", self._Q_inj.max())
-    def run(self):
-        #self.init_TempEv(skip_jet=True)
-        #self.set_path(path,clean_work_dir=clean_work_dir)
-        #self.set_flag(flag)
-        BlazarSED.Run_temp_evolution(self.jet._blob, self._temp_ev)
+
+
+    def run(self,only_injection=True):
+        self.init_TempEv()
+        pbar=ProgressBar(target_class=self,N=self.parameters.T_SIZE.val)
+        t1 = threading.Thread(target=pbar.run)
+        t1.start()
+        BlazarSED.Run_temp_evolution(self.jet._blob, self._temp_ev, int(only_injection))
+        pbar.stop = True
+        pbar.finalzie()
         self._fill_temp_ev_array_post_run()
+
+    def _init_temp_ev(self):
+        setattr(self._temp_ev,'Q_inj_jetset_gamma_grid_size',self.Q_inj._gamma_grid_size)
+        BlazarSED.Init_Q_inj(self._temp_ev)
+        BlazarSED.Init_temp_evolution(self.jet._blob, self._temp_ev, self.jet.get_DL_cm())
+        if self.Q_inj is not None:
+            self.Q_inj._set_L_inj(self.parameters.L_inj.val,BlazarSED.V_sphere(self.jet.parameters.R.val),self._temp_ev.deltat)
+            Ne_custom_ptr = getattr(self._temp_ev, 'Q_inj_jetset')
+            gamma_custom_ptr = getattr(self._temp_ev, 'gamma_inj_jetset')
+            for ID in range(self.Q_inj._gamma_grid_size):
+                BlazarSED.set_q_inj_user_array(gamma_custom_ptr, self._temp_ev, self.Q_inj.gamma_e[ID], ID)
+                BlazarSED.set_q_inj_user_array(Ne_custom_ptr, self._temp_ev, self.Q_inj.n_gamma_e[ID], ID)
 
     def _fill_temp_ev_array_pre_run(self):
         size = BlazarSED.static_ev_arr_grid_size
@@ -179,9 +212,7 @@ class JetTimeEvol(object):
         self.t_DA_pre_run = np.zeros(size)
         self.t_A_pre_run = np.zeros(size)
         self.t_Esc_pre_run = np.zeros(size)
-        gamma_size = self._temp_ev.gamma_grid_size
-        self.gamma = np.zeros(gamma_size)
-        self._Q_inj = np.zeros(gamma_size)
+
 
         for i in range(size):
             self.gamma_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.g, i)
@@ -191,9 +222,6 @@ class JetTimeEvol(object):
             self.t_A_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_A, i)
             self.t_Esc_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_Esc, i)
 
-        for j in range(gamma_size):
-            self.gamma[j] = BlazarSED.get_Q_inj_array(self._temp_ev.gamma, self._temp_ev, j)
-            self._Q_inj[j] = BlazarSED.get_Q_inj_array(self._temp_ev.Q_inj, self._temp_ev, j)
 
     def show_model(self,jet=None,getstring=False,names_list=None,sort_key=None):
         if jet is None:
@@ -203,14 +231,16 @@ class JetTimeEvol(object):
         print("-------------------------------------------------------------------------------------------------------------------")
         self._build_tempev_table(jet)
         print(" ")
-        print("physical  setup: ")
+        print("physical setup: ")
         print("")
-        print(self._tempev_table)#.pprint_all()
-
-
+        print(
+            "-------------------------------------------------------------------------------------------------------------------")
+        _show_table(self._tempev_table)
         print("")
         print("model parameters: ")
         print("")
+        print(
+            "-------------------------------------------------------------------------------------------------------------------")
         self.show_pars()
 
     def _build_row_dict(self, name, type='', unit='', val='', val_by=None, islog=False,unit1=''):
@@ -257,10 +287,9 @@ class JetTimeEvol(object):
         t = BlazarSED.Sync_tcool(jet._blob, self._temp_ev.gamma_eq_t_A)
         rows.append(self._build_row_dict('T min. synch. cooling', '', 's', val=self.t_Sync_cool_pre_run.min(), islog=False))
 
-
-        rows.append(self._build_row_dict('L inj', 'injected lum.', 'erg/s', val=self._temp_ev.L_inj, islog=False))
-        rows.append(self._build_row_dict('E_tot (electrons)/(delta t)', '', 'erg/s', val=jet._blob.E_tot_e*self._temp_ev.Q_scaling_factor / self._temp_ev.deltat, islog=False))
-
+        if self.Q_inj is not None:
+            rows.append(self._build_row_dict('L inj (electrons)', 'injected lum.', 'erg/s', val=self.eval_L_tot_inj(), islog=False))
+            rows.append(self._build_row_dict('E_inj (electrons)', '', 'erg', val=self.eval_E_tot_inj(), islog=False))
 
         self._tempev_table = Table(rows=rows, names=_names, masked=False)
 
@@ -280,16 +309,17 @@ class JetTimeEvol(object):
                 except:
                     pass
 
+    def eval_E_tot_inj(self):
+        if self.Q_inj is not None and self.jet is not None:
+            return self.Q_inj._eval_U()*BlazarSED.V_sphere(self.jet.parameters.R.val)*self._temp_ev.deltat
 
-
-
+    def eval_L_tot_inj(self):
+        if self.Q_inj is not None and self.jet is not None:
+            return self.Q_inj._eval_U()*BlazarSED.V_sphere(self.jet.parameters.R.val)/self._temp_ev.deltat
 
     def set_time(self,t=None,T_step=None):
         self.jet.emitters_distribution._array_gamma = self.gamma
         self.jet.emitters_distribution._array_n_gamma = self.N_gamma[T_step].flatten()
-
-
-
 
     def inj_time_profile(self,user_defined_arry=None):
         if user_defined_arry is None:
@@ -303,20 +333,17 @@ class JetTimeEvol(object):
                 raise  RuntimeError('inj_time_profile must match T_SIZE',self._temp_ev.T_SIZE)
             self._inj_t_prof=user_defined_arry
 
-
-
-
     def _fill_temp_ev_array_post_run(self):
         gamma_size = self._temp_ev.gamma_grid_size
         time_size = self._temp_ev.NUM_SET
-        self.N_time  = np.zeros(time_size)
+        self.N_time = np.zeros(time_size)
+        self.gamma = np.zeros(gamma_size)
         self.N_gamma = np.zeros((time_size,(gamma_size)))
         for i in range(time_size):
             self.N_time[i]=BlazarSED.get_temp_ev_N_time_array(self._temp_ev.N_time, self._temp_ev, i)
             for j in range(gamma_size):
                 self.gamma[j] = BlazarSED.get_temp_ev_gamma_array(self._temp_ev.gamma, self._temp_ev, j)
                 self.N_gamma[i,j] = BlazarSED.get_temp_ev_N_gamma_array(self._temp_ev.N_gamma, self._temp_ev,i,j)
-
 
     def plot_Inj_profile(self,figsize=(8,8),dpi=120):
         p=PlotTempEvDiagram(figsize=figsize,dpi=dpi)
@@ -327,44 +354,11 @@ class JetTimeEvol(object):
                self.parameters.TStop_Acc.val,)
         return p
 
-
     def plot_TempEv_emitters(self,figsize=(8,8),dpi=120,energy_unit='gamma',loglog=True,plot_Q_inj=True,pow=None):
         p=PlotTempEvEmitters(figsize=figsize,dpi=dpi,loglog=loglog)
         p.plot_distr(self,energy_unit=energy_unit,plot_Q_inj=plot_Q_inj,pow=pow)
 
         return p
-
-    def plot_Q_inj(self,p=None,figsize=(8,6),dpi=120, energy_unit='gamma',loglog=True):
-        if p is None:
-            p = PlotPdistr(figsize=figsize,dpi=dpi,injection=True,loglog=loglog)
-
-        p.plot_distr(self.Q_inj.e_array,
-                     self.Q_inj.n_array,
-                     particle='electrons',
-                     energy_unit=energy_unit)
-
-
-        return p
-
-    # def set_path(self, path, clean_work_dir=True):
-    #     if path is None:
-    #         path=self.path
-    #
-    #     if path.endswith('/'):
-    #         pass
-    #     else:
-    #         path += '/'
-    #
-    #     set_str_attr(self._temp_ev, 'path', path)
-    #     makedir(path, clean_work_dir=clean_work_dir)
-
-
-
-    # def set_flag(self,flag=None):
-    #     if flag is None:
-    #         flag=self.flag
-    #
-    #     self._temp_ev.STEM=flag
 
 
     def plot_pre_run_plot(self,figsize=(8,6),dpi=120):
@@ -381,3 +375,70 @@ class JetTimeEvol(object):
         return p
 
 
+class TempEvLightCurve(object):
+
+    def __init__(self, temp_ev, gamma_grid_size=200):
+        self.time_array = None
+        self.flux_array = None
+        self.jet = temp_ev.jet.clone()
+        self.temp_ev = temp_ev
+        self.gamma_grid_size = gamma_grid_size
+
+    def make_lc(self, t1, t2, nu1, nu2, comp='Sum'):
+        self.t_array = np.linspace(t1, t2, dtype=np.int)
+        self.flux_array = np.zeros(self.t_array.size)
+        for ID, T in enumerate(self.t_array):
+            ed = EmittersArrayDistribution(name='time_dep',
+                                           gamma_array=np.copy(self.temp_ev.gamma),
+                                           n_gamma_array=np.copy(self.temp_ev.N_gamma[T]),
+                                           gamma_grid_size=self.gamma_grid_size)
+            ed._fill()
+            self.jet.set_emitters_distribution(ed)
+            self.jet.eval()
+            s = getattr(self.jet.spectral_components, comp)
+            msk = s.SED.nu.value >= nu1
+            msk *= s.SED.nu.value <= nu2
+            x = s.SED.nu[msk]
+            y = s.SED.nuFnu[msk] / x
+            self.flux_array[ID] = np.trapz(y.value, x.value)
+
+        self.time_array = self.temp_ev.N_time[self.t_array] * self.temp_ev._temp_ev.deltat
+        return np.copy(self.time_array), np.copy(self.flux_array)
+
+
+class TempEvSEDs(object):
+
+    def __init__(self,temp_ev,gamma_grid_size=200):
+        self.time_array=None
+        self.flux_array=None
+        self.jet=temp_ev.jet.clone()
+        self.temp_ev=temp_ev
+        self.gamma_grid_size=gamma_grid_size
+    def plot(self, T1, T2, step,p=None):
+        t_array = np.linspace(T1, T2, step, dtype=np.int)
+        for ID, T in enumerate(t_array):
+            ed = EmittersArrayDistribution(name='time_dep',
+                                           gamma_array=np.copy(self.temp_ev.gamma),
+                                           n_gamma_array=np.copy(self.temp_ev.N_gamma[T]),
+                                           gamma_grid_size=self.gamma_grid_size)
+            ed._fill()
+            self.jet.set_emitters_distribution(ed)
+            self.jet.eval()
+            label = None
+            ls = '-'
+            if self.temp_ev.N_time[T] > self.temp_ev.parameters.TStop_Acc.val:
+                color = 'g'
+                ls = '--'
+            else:
+                color = 'b'
+                ls = '-'
+
+            if ID == 0:
+                ls = '.'
+                label = 'start'
+                color = 'black'
+            if ID == t_array.size - 1:
+                ls = '*-'
+                label = 'stop'
+
+            p = self.jet.plot_model(plot_obj=p, comp='Sum', auto_label=False, label=label, line_style=ls, color=color)

@@ -23,9 +23,9 @@ def test_custom_emitters(plot=True):
     my_jet.Norm_distr = True
     my_jet.parameters.N.val = 5E4
     my_jet.eval()
-    np.testing.assert_allclose(my_jet.emitters_distribution.eval_N_tot(),my_jet.parameters.N.val, rtol=1E-5)
-    print(my_jet.emitters_distribution.eval_N_tot(),my_jet.parameters.N.val)
-    print(n_e.eval_N_tot(), my_jet.parameters.N.val)
+    np.testing.assert_allclose(my_jet.emitters_distribution.eval_N(), my_jet.parameters.N.val, rtol=1E-5)
+    print(my_jet.emitters_distribution.eval_N(), my_jet.parameters.N.val)
+    print(n_e.eval_N(), my_jet.parameters.N.val)
     assert (my_jet.emitters_distribution.emitters_type=='electrons')
     my_jet.save_model('test_jet_custom_emitters.pkl')
     my_jet = Jet.load_model('test_jet_custom_emitters.pkl')
@@ -64,7 +64,7 @@ def test_custom_emitters_array(plot=True):
 
     np.testing.assert_allclose(N1, N2, rtol=1E-5)
     np.testing.assert_allclose(N1, N3, rtol=1E-2)
-    np.testing.assert_allclose(N1, j.emitters_distribution.eval_N_tot(), rtol=1E-2)
+    np.testing.assert_allclose(N1, j.emitters_distribution.eval_N(), rtol=1E-2)
     assert (j.emitters_distribution.emitters_type == 'protons')
 
     j.eval()

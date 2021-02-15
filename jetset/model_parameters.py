@@ -18,9 +18,13 @@ __all__=['ModelParameter','ModelParameterArray','Value','LinkedParameter']
 def _show_table(t):
     try:
         from IPython.display import display
-        display(t)
+        display(t.show_in_notebook(show_row_index=False,))
     except:
-        t.pprint_all()
+        try:
+            from IPython.display import display
+            display(t)
+        except:
+            t.pprint_all()
 
 class Value(object):
 
@@ -943,6 +947,9 @@ class ModelParameterArray(object):
         setattr(self,clean_var_name(par.name), par)
         self.properties[par.name]=par
 
+    @property
+    def names(self):
+        return [p.name for p in self.par_array]
 
     def _build_par_table(self,names_list=None):
         #, skip_hidden = False):
