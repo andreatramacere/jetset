@@ -188,10 +188,12 @@ class JetTimeEvol(object):
         t1 = threading.Thread(target=pbar.run)
         t1.start()
         BlazarSED.Run_temp_evolution(self.jet._blob, self._temp_ev, int(only_injection))
+        print('temporal evolution running')
         pbar.stop = True
         pbar.finalzie()
         self._fill_temp_ev_array_post_run()
-
+        print('temporal evolution completed')
+        
     def _init_temp_ev(self):
         setattr(self._temp_ev,'Q_inj_jetset_gamma_grid_size',self.Q_inj._gamma_grid_size)
         BlazarSED.Init_Q_inj(self._temp_ev)
