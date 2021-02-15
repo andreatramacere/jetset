@@ -552,55 +552,47 @@ class JetBase(Model):
             self.emitters_distribution = copy.deepcopy(distr)
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
-
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
-
             self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
-
-            for par in self.emitters_distribution.parameters.par_array[::]:
-                self.emitters_distribution.parameters.del_par(par)
-
-            for k in self._emitters_distribution_dic.keys():
-                par=self.parameters.get_par_by_name(k)
-                self.emitters_distribution.parameters.add_par(par)
-
-            for k in self._emitters_distribution_dic.keys():
-                par = self.parameters.get_par_by_name(k)
-                if par._depending_pars is not []:
-                    for p in par._depending_pars:
-                        dep_par=self.parameters.get_par_by_name(par._depending_pars.name)
-                        par._add_depending_par(dep_par)
+            self._attach_pars_to_jet(preserve_value_emitters=True)
+            self._update_emitters_pars_dependence()
             self.emitters_distribution.update()
-
         elif isinstance(distr, str):
             nf=EmittersFactory()
             self.emitters_distribution = nf.create_emitters(distr, log_values=log_values, emitters_type=emitters_type)
             self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
-
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
-
             self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
-
-            for par in self.emitters_distribution.parameters.par_array[::]:
-                self.emitters_distribution.parameters.del_par(par)
-
-            for k in self._emitters_distribution_dic.keys():
-                par = self.parameters.get_par_by_name(k)
-                self.emitters_distribution.parameters.add_par(par)
-
-            for k in self._emitters_distribution_dic.keys():
-                par = self.parameters.get_par_by_name(k)
-                if par._depending_pars is not []:
-                    for p in par._depending_pars:
-                        dep_par = self.parameters.get_par_by_name(par._depending_pars.name)
-                        par._add_depending_par(dep_par)
+            self._attach_pars_to_jet()
+            self._update_emitters_pars_dependence()
             self.emitters_distribution.update()
         else:
             raise RuntimeError('distr',type(distr),'not valid should be a string or an',type(EmittersDistribution),'instance')
+
+    def _attach_pars_to_jet(self, preserve_value_emitters=False):
+
+        v_dict={}
+        for par in self.emitters_distribution.parameters.par_array[::]:
+            self.emitters_distribution.parameters.del_par(par)
+            v_dict[par.name]=par.val
+        for k in self._emitters_distribution_dic.keys():
+            par = self.parameters.get_par_by_name(k)
+            if preserve_value_emitters is True:
+                par.val=v_dict[k]
+            self.emitters_distribution.parameters.add_par(par)
+
+
+    def _update_emitters_pars_dependence(self):
+        for k in self._emitters_distribution_dic.keys():
+            par = self.parameters.get_par_by_name(k)
+            if par._depending_pars is not []:
+                for p in par._depending_pars:
+                    dep_par = self.parameters.get_par_by_name(par._depending_pars.name)
+                    par._add_depending_par(dep_par)
 
     def get_emitters_distribution_name(self):
         return self.emitters_distribution.name
@@ -1319,52 +1311,7 @@ class JetBase(Model):
 
         return out_model
 
-    # @safe_run
-    # def get_SED_points(self,log_log=False,name='Sum'):
-    #     try:
-    #         spec_comp=self.get_spectral_component_by_name(name)
-    #
-    #         nuFnu_ptr=spec_comp.nuFnu_ptr
-    #         nu_ptr=spec_comp.nu_ptr
-    #
-    #         size=self._blob.nu_grid_size
-    #         x=np.zeros(size)
-    #         y=np.zeros(size)
-    #
-    #         for i in range(size):
-    #             x[i]=BlazarSED.get_spectral_array(nu_ptr,self._blob,i)
-    #             y[i]=BlazarSED.get_spectral_array(nuFnu_ptr,self._blob,i)
-    #
-    #
-    #         msk_nan=np.isnan(x)
-    #         msk_nan+=np.isnan(y)
-    #
-    #         x[msk_nan]=0.
-    #         y[msk_nan]=self.get_emiss_lim()
-    #
-    #         msk=y<self.get_emiss_lim()
-    #
-    #
-    #         y[msk]=self.get_emiss_lim()
-    #
-    #
-    #
-    #         if log_log==True:
-    #             msk = y <= 0.
-    #             y[msk] = self.get_emiss_lim()
-    #
-    #
-    #             x=np.log10(x)
-    #             y=np.log10(y)
-    #
-    #
-    #
-    #         return x,y
-    #
-    #     except:
-    #         raise RuntimeError ('model evaluation failed in get_SED_points')
 
-    #@safe_run
     def energetic_report(self,write_file=False,getstring=True,wd=None,name=None,verbose=True):
         self.energetic_dict={}
 
@@ -1523,7 +1470,6 @@ class Jet(JetBase):
                                  jet_workplace=jet_workplace,
                                  verbose=verbose,
                                  clean_work_dir=clean_work_dir)
-
         if name is None or name == '':
             if self.emitters_distribution.emitters_type == 'electrons':
                 name = 'jet_leptonic'

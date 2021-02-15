@@ -106,70 +106,6 @@ class JetTimeEvol(object):
 
 
 
-    def _build_par_dict(self):
-
-        model_dic = {}
-
-        model_dic['duration'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None, punit='s', froz=True, log=False,val=1E5)
-
-        model_dic['gmin_grid'] = JetModelDictionaryPar(ptype='gamma_grid', vmin=0, vmax=None, punit='', froz=True, log=False, val=1E1,jetkernel_par_name='gmin_griglia')
-
-        model_dic['gmax_grid'] = JetModelDictionaryPar(ptype='gamma_grid', vmin=0, vmax=None, punit='', froz=True, log=False, val=1E8,jetkernel_par_name='gmax_griglia')
-
-        model_dic['gamma_grid_size'] = JetModelDictionaryPar(ptype='gamma_grid', vmin=0, vmax=None, punit='', froz=True, log=False, val=5000,jetkernel_par_name='gamma_grid_size')
-
-        model_dic['TStart_Acc'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None, punit='s', froz=True,
-                                                         log=False,val=0)
-
-        model_dic['TStop_Acc'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None, punit='s', froz=True,
-                                                         log=False,val=1E5)
-
-        model_dic['TStart_Inj'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None, punit='s', froz=True,
-                                                         log=False,val=0)
-
-        model_dic['TStop_Inj'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None, punit='s', froz=True,
-                                                         log=False,val=1E5)
-
-        model_dic['T_esc'] = JetModelDictionaryPar(ptype='escape_time', vmin=None, vmax=None, punit='(R/c)', froz=True,
-                                                         log=False,val=2.0,jetkernel_par_name='T_esc_Coeff_R_by_c')
-
-        model_dic['Esc_Index'] = JetModelDictionaryPar(ptype='fp_coeff_index', vmin=None, vmax=None, punit='', froz=True,
-                                                            log=False,val=0.0)
-
-        model_dic['t_D0'] = JetModelDictionaryPar(ptype='acceleration_time', vmin=0, vmax=None, punit='s', froz=True,
-                                                            log=False,val=1E4)
-
-        model_dic['t_A0'] = JetModelDictionaryPar(ptype='acceleration_time', vmin=0, vmax=None, punit='s', froz=True,
-                                                            log=False,val=1E3)
-
-        model_dic['Diff_Index'] = JetModelDictionaryPar(ptype='fp_coeff_index', vmin=0, vmax=None, punit='s', froz=True,
-                                                     log=False,val=2)
-
-        model_dic['Acc_Index'] = JetModelDictionaryPar(ptype='fp_coeff_index', vmin=None, vmax=None, punit='', froz=True,
-                                                     log=False,val=1)
-
-        model_dic['Lambda_max_Turb'] = JetModelDictionaryPar(ptype='turbulence_scale', vmin=0, vmax=None, punit='cm', froz=True,
-                                                          log=False,val=1E15)
-
-        model_dic['Lambda_choer_Turb_factor'] = JetModelDictionaryPar(ptype='turbulence_scale', vmin=0, vmax=None, punit='cm',
-                                                                froz=True,log=False, val=0.1)
-
-        model_dic['T_SIZE'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None,
-                                                                         punit='',
-                                                                         froz=True,
-                                                                         log=False,val=1000)
-
-        model_dic['NUM_SET'] = JetModelDictionaryPar(ptype='time_ev_output', vmin=0, vmax=None, punit='', froz=True, log=False, val=50)
-
-        model_dic['LOG_SET'] = JetModelDictionaryPar(ptype='time_ev_output', vmin=0, vmax=None, punit='', froz=True, log=False, val=50,allowed_values=[0,1])
-
-        model_dic['L_inj'] = JetModelDictionaryPar(ptype='inj_luminosity', vmin=0, vmax=None,
-                                                        punit='erg/s',
-                                                        froz=True,
-                                                        log=False,
-                                                        val=1E39)
-
-        return model_dic
 
     @property
     def temp_ev(self):
@@ -205,6 +141,7 @@ class JetTimeEvol(object):
                                                              n_gamma_array=np.copy(self.N_gamma[-1]),
                                                              gamma_grid_size=self.jet_gamma_grid_size,
                                                              normalize=False)
+        self._jet_emitters_distr._fill()
         self._jet_emitters_distr._fill()
         self.jet.set_emitters_distribution(self._jet_emitters_distr)
 
@@ -462,3 +399,68 @@ class JetTimeEvol(object):
                         t[n].data[ID] = '%e' % c
                 except:
                     pass
+
+    def _build_par_dict(self):
+
+        model_dic = {}
+
+        model_dic['duration'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None, punit='s', froz=True, log=False,val=1E5)
+
+        model_dic['gmin_grid'] = JetModelDictionaryPar(ptype='gamma_grid', vmin=0, vmax=None, punit='', froz=True, log=False, val=1E1,jetkernel_par_name='gmin_griglia')
+
+        model_dic['gmax_grid'] = JetModelDictionaryPar(ptype='gamma_grid', vmin=0, vmax=None, punit='', froz=True, log=False, val=1E8,jetkernel_par_name='gmax_griglia')
+
+        model_dic['gamma_grid_size'] = JetModelDictionaryPar(ptype='gamma_grid', vmin=0, vmax=None, punit='', froz=True, log=False, val=5000,jetkernel_par_name='gamma_grid_size')
+
+        model_dic['TStart_Acc'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None, punit='s', froz=True,
+                                                         log=False,val=0)
+
+        model_dic['TStop_Acc'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None, punit='s', froz=True,
+                                                         log=False,val=1E5)
+
+        model_dic['TStart_Inj'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None, punit='s', froz=True,
+                                                         log=False,val=0)
+
+        model_dic['TStop_Inj'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None, punit='s', froz=True,
+                                                         log=False,val=1E5)
+
+        model_dic['T_esc'] = JetModelDictionaryPar(ptype='escape_time', vmin=None, vmax=None, punit='(R/c)', froz=True,
+                                                         log=False,val=2.0,jetkernel_par_name='T_esc_Coeff_R_by_c')
+
+        model_dic['Esc_Index'] = JetModelDictionaryPar(ptype='fp_coeff_index', vmin=None, vmax=None, punit='', froz=True,
+                                                            log=False,val=0.0)
+
+        model_dic['t_D0'] = JetModelDictionaryPar(ptype='acceleration_time', vmin=0, vmax=None, punit='s', froz=True,
+                                                            log=False,val=1E4)
+
+        model_dic['t_A0'] = JetModelDictionaryPar(ptype='acceleration_time', vmin=0, vmax=None, punit='s', froz=True,
+                                                            log=False,val=1E3)
+
+        model_dic['Diff_Index'] = JetModelDictionaryPar(ptype='fp_coeff_index', vmin=0, vmax=None, punit='s', froz=True,
+                                                     log=False,val=2)
+
+        model_dic['Acc_Index'] = JetModelDictionaryPar(ptype='fp_coeff_index', vmin=None, vmax=None, punit='', froz=True,
+                                                     log=False,val=1)
+
+        model_dic['Lambda_max_Turb'] = JetModelDictionaryPar(ptype='turbulence_scale', vmin=0, vmax=None, punit='cm', froz=True,
+                                                          log=False,val=1E15)
+
+        model_dic['Lambda_choer_Turb_factor'] = JetModelDictionaryPar(ptype='turbulence_scale', vmin=0, vmax=None, punit='cm',
+                                                                froz=True,log=False, val=0.1)
+
+        model_dic['T_SIZE'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None,
+                                                                         punit='',
+                                                                         froz=True,
+                                                                         log=False,val=1000)
+
+        model_dic['NUM_SET'] = JetModelDictionaryPar(ptype='time_ev_output', vmin=0, vmax=None, punit='', froz=True, log=False, val=50)
+
+        model_dic['LOG_SET'] = JetModelDictionaryPar(ptype='time_ev_output', vmin=0, vmax=None, punit='', froz=True, log=False, val=50,allowed_values=[0,1])
+
+        model_dic['L_inj'] = JetModelDictionaryPar(ptype='inj_luminosity', vmin=0, vmax=None,
+                                                        punit='erg/s',
+                                                        froz=True,
+                                                        log=False,
+                                                        val=1E39)
+
+        return model_dic

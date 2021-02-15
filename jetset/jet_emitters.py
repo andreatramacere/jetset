@@ -408,8 +408,10 @@ class EmittersDistribution(BaseEmittersDistribution):
 
         model_dict['gmax'].val = 1E6
         model_dict['gmax'].is_in_jetkernel = True
-
-        model_dict['N'].val = 100.
+        if isinstance(self,EmittersArrayDistribution):
+            model_dict['N'].val = 1.0
+        else:
+            model_dict['N'].val = 100.
         model_dict['N'].is_in_jetkernel = True
 
         if 'NH_pp' in model_dict.keys():
@@ -447,13 +449,13 @@ class EmittersDistribution(BaseEmittersDistribution):
         model_dic['gmax'] = JetModelDictionaryPar(ptype='high-energy-cut-off', vmin=a_h, vmax=b_h,
                                                   punit='lorentz-factor', log=self._log_values)
 
-        if self.emitters_type =='electrons':
-            model_dic['N'] = JetModelDictionaryPar(ptype='emitters_density',vmin=0,vmax=None,punit='cm^-3')
+        model_dic['N'] = JetModelDictionaryPar(ptype='emitters_density', vmin=0, vmax=None, punit='cm^-3')
 
-        elif self.emitters_type =='protons':
-            model_dic['N'] = JetModelDictionaryPar(ptype='emitters_density', vmin=0, vmax=None, punit='cm^-3')
+        if self.emitters_type =='protons':
             model_dic['NH_pp'] = JetModelDictionaryPar(ptype='target_density', vmin=0, vmax=None, punit='cm^-3',froz =False)
 
+        if isinstance(self, EmittersArrayDistribution):
+            model_dic['N'] = JetModelDictionaryPar(ptype='scaling_factor', vmin=0, vmax=None, punit='')
         return model_dic, a_h, b_h, a_l, b_l, a_t, b_t
 
     def set_jet(self, jet):
