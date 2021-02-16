@@ -13,4 +13,6 @@ pytest
 tqdm
 numba
 pytest
+dill
+
 

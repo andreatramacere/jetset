@@ -147,7 +147,8 @@ class JetTimeEvol(object):
 
 
     def _init_temp_ev(self):
-        setattr(self._temp_ev,'Q_inj_jetset_gamma_grid_size',self.Q_inj._gamma_grid_size)
+        if self.Q_inj is not None:
+            setattr(self._temp_ev,'Q_inj_jetset_gamma_grid_size',self.Q_inj._gamma_grid_size)
         BlazarSED.Init_Q_inj(self._temp_ev)
         BlazarSED.Init_temp_evolution(self.jet._blob, self._temp_ev, self.jet.get_DL_cm())
         if self.Q_inj is not None:
@@ -214,7 +215,7 @@ class JetTimeEvol(object):
                 self.gamma[j] = BlazarSED.get_temp_ev_gamma_array(self._temp_ev.gamma, self._temp_ev, j)
                 self.N_gamma[i,j] = BlazarSED.get_temp_ev_N_gamma_array(self._temp_ev.N_gamma, self._temp_ev,i,j)
 
-    def plot_Inj_profile(self,figsize=(8,8),dpi=120):
+    def plot_time_profile(self,figsize=(8,8),dpi=120):
         p=PlotTempEvDiagram(figsize=figsize,dpi=dpi)
         p.plot(self.parameters.duration.val,
                self.parameters.TStart_Inj.val,
