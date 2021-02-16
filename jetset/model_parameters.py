@@ -18,7 +18,7 @@ __all__=['ModelParameter','ModelParameterArray','Value','LinkedParameter']
 def _show_table(t):
     try:
         from IPython.display import display
-        display(t.show_in_notebook(show_row_index=False,))
+        display(t.show_in_notebook(show_row_index=False, display_length=100))
     except:
         try:
             from IPython.display import display

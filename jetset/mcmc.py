@@ -88,24 +88,24 @@ class McmcSampler(object):
 
         self._build_bounds(bound=bound,bound_rel=bound_rel)
         if emcee.__version__ < "3":
-            raise RuntimeError('Please update to emcee v>3.0.0')
+            raise RuntimeError('Please update to emcee v>=3.0.0')
 
         print('mcmc run starting')
         start = time.time()
         if threads is not None and threads>1:
-            #if threads > cpu_count():
-            #    threads = cpu_count()
-            #    warnings.warn('number of threads has been reduced to cpu_count=%d'%cpu_count())
-
-            #with Pool(processes=threads) as pool:
-
-            #    self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob, threads=threads,
-            #                                         args=(self.model, self.data, use_UL, counter,self._bounds, self.par_array, loglog),pool=pool)
-            #    self.sampler.run_mcmc(pos, steps, progress=True)
+            # if threads > cpu_count():
+            #     threads = cpu_count()
+            #     warnings.warn('number of threads has been reduced to cpu_count=%d'%cpu_count())
+            #
+            # with Pool(processes=threads) as pool:
+            #
+            #     self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob, threads=threads,
+            #                                          args=(self.model, self.data, use_UL, counter,self._bounds, self.par_array, loglog),pool=pool)
+            #     self.sampler.run_mcmc(pos, steps, progress=True)
 
             print('')
             threads = 1
-            warnings.warn('threading  function not active yet')
+            warnings.warn('threading  functionality not active yet')
 
             self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self.par_array, loglog))
             self.sampler.run_mcmc(pos, steps, progress=True)

@@ -8,7 +8,7 @@ import warnings
 
 from .jet_spectral_components import JetSpecComponent, SpecCompList
 
-from .model_parameters import ModelParameterArray, ModelParameter
+from .model_parameters import ModelParameterArray, ModelParameter, _show_table
 from .base_model import Model
 from .output import makedir,WorkPlace
 from  .plot_sedfit import PlotSED,plt
@@ -1311,8 +1311,12 @@ class JetBase(Model):
 
         return out_model
 
+    @property
+    def energetic_report(self):
+        self._build_energetic_report()
+        _show_table(self.energetic_report_table)
 
-    def energetic_report(self,write_file=False,getstring=True,wd=None,name=None,verbose=True):
+    def _build_energetic_report(self,):
         self.energetic_dict={}
 
         _energetic = BlazarSED.EnergeticOutput(self._blob,0)
@@ -1353,33 +1357,6 @@ class JetBase(Model):
         except Exception as e:
             print('_energetic',_energetic)
             raise RuntimeError('energetic_report failed',e)
-
-        self._energetic_report = self.energetic_report_table.pformat_all()
-
-        if write_file==True:
-
-            if wd is None:
-                wd = self.wd
-
-            if name is None:
-                name = 'energetic_report_%s' % self.name + '.txt'
-
-            outname = '%s/%s' % (wd, name)
-
-            outfile = open(outname, 'w')
-
-            for text in self._energetic_report:
-                print(text, file=outfile)
-
-            outfile.close()
-
-        if  verbose is True:
-            print("-----------------------------------------------------------------------------------------")
-            print("jet eneregetic report:")
-            #self.energetic_report_table.pprint_all()
-            #print("-----------------------------------------------------------------------------------------")
-            return self.energetic_report_table
-
 
 
 

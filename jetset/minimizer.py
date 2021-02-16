@@ -138,7 +138,10 @@ class FitResults(object):
         print('-------------------------------------------------------------------------')
         print("")
 
-        
+    @property
+    def bestfit_table(self):
+        return self.parameters.best_fit_par_table
+
     def _update_asymm_errors(self):
         for pi in range(len(self.mm.fit_par_free)):
             if  hasattr(self.mm.minimizer,'asymm_errors'):
@@ -161,6 +164,8 @@ class FitResults(object):
     def save_report(self,name=None):
         if name is None:
             name = 'best_fit_report.pkl'
+        if hasattr(self.mm.minimizer,'pbar'):
+            self.mm.minimizer.pbar=None
         pickle.dump(self, open(name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
 
