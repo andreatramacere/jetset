@@ -378,41 +378,34 @@ class FitModel(Model):
 
     def show_model_components(self):
         print("")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 
         print("Composite model description")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         print("name: %s  " % (self.name))
         print("type: %s  " % (self.model_type))
         print("components models:")
         for m in self.components._components_list:
             print(' -model name:', m.name, 'model type:', m.model_type)
         print('')
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 
     def show_model(self):
         print("")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 
         print("Composite model description")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         print("name: %s  " % (self.name))
         print("type: %s  " % (self.model_type))
         print("components models:")
         for m in self.components._components_list:
             print(' -model name:',m.name,'model type:', m.model_type)
         print('')
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 
         print("individual component description")
 
         self.components.show_model()
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 

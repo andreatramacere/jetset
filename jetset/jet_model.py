@@ -1091,8 +1091,7 @@ class JetBase(Model):
 
 
     def show_emitters_distribution(self):
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         print('%s distribution:'%self._emitters_type)
         print(" type: %s  " % (self._emitters_distribution_name))
         print(" gamma energy grid size: ", self.gamma_grid_size)
@@ -1113,11 +1112,10 @@ class JetBase(Model):
 
         """
         print("")
-        print("-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 
         print ("jet model description")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         print("name: %s  " % (self.name))
         print('')
         print('%s distribution:'%self._emitters_type)
@@ -1161,10 +1159,9 @@ class JetBase(Model):
         print('')
         print('flux plot lower bound   :  %e' % self.flux_plot_lim)
         print('')
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         self.show_pars()
-        print("-------------------------------------------------------------------------------------------------------------------")
+        print('-' * 80)
 
     def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-',frame='obs', density=False):
         if plot_obj is None:

@@ -300,23 +300,19 @@ class JetTimeEvol(object):
     def show_model(self, jet=None, getstring=False, names_list=None, sort_key=None):
         if jet is None:
             jet = self.jet
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         print("JetTimeEvol model description")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         self._build_tempev_table(jet)
         print(" ")
         print("physical setup: ")
         print("")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         _show_table(self._tempev_table)
         print("")
         print("model parameters: ")
         print("")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         self.show_pars()
 
     def _build_row_dict(self, name, type='', unit='', val='', val_by=None, islog=False, unit1=''):

@@ -388,7 +388,7 @@ class ModelParameter(object):
                     self._val.val = keywords[kw]
                     if self._depending_pars is not []:
                         for p in self._depending_pars:
-                            #print("==> setting dep par",p.name, 'to',p._func(),'p=',p,'master',self,'name',self.name)
+                            # print("==> setting dep par",p.name, 'to',p._func(),'p=',p,'master',self,'name',self.name)
                             p.set(val=p._func(),skip_dep_par_warning=True)
 
                 elif kw == 'log':
@@ -711,6 +711,8 @@ class CompositeModelParameterArray(object):
                         raise RuntimeError(" root and linked parameter can't be the same")
                     if dep_par._linked is True:
                         raise RuntimeError(" this parameter is already linked ")
+                    if m_root==dep_par.model:
+                        raise RuntimeError(" linked and root model must be different")
                     #p_root._linked_models.append(dep_model)
                     exec(dep_par.name+'= dep_par')
                     #identity_func=lambda p_root=p_root: p_root.val_lin
