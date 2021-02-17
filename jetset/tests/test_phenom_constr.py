@@ -1,10 +1,10 @@
 import  pytest
 
-def test_spectral_indices(sed_data=None,plot=True):
+def test_spectral_indices(sed_data=None,plot=True,sed_number=None):
     from jetset.sed_shaper import SEDShape
     if sed_data is None:
         from .test_data import test_data_loader
-        sed_data=test_data_loader()
+        sed_data=test_data_loader(sed_number=sed_number)
 
     my_shape = SEDShape(sed_data)
     my_shape.eval_indices(silent=True)
@@ -14,11 +14,11 @@ def test_spectral_indices(sed_data=None,plot=True):
 
     return my_shape
 
-def test_sed_shaper(my_shape=None, plot=True):
+def test_sed_shaper(my_shape=None, plot=True, sed_number=None,sed_data=None,check_host_gal_template=False):
     if my_shape is None:
-        my_shape=test_spectral_indices(plot=plot)
+        my_shape=test_spectral_indices(plot=plot,sed_number=sed_number,sed_data=sed_data)
 
-    mm, best_fit = my_shape.sync_fit(check_host_gal_template=True,
+    mm, best_fit = my_shape.sync_fit(check_host_gal_template=check_host_gal_template,
                                      Ep_start=None,
                                      minimizer='lsb',
                                      silent=True,
@@ -39,11 +39,11 @@ def test_sed_shaper(my_shape=None, plot=True):
     my_shape.save_values('sed_shape_values.ecsv')
     return my_shape
 
-def test_model_constr(my_shape=None, plot=True):
+def test_model_constr(my_shape=None, plot=True,sed_number=None,sed_data=None,check_host_gal_template=False):
     from jetset.obs_constrain import ObsConstrain
 
     if my_shape is None:
-        my_shape=test_sed_shaper(plot=plot)
+        my_shape=test_sed_shaper(plot=plot,sed_number=sed_number,sed_data=sed_data,check_host_gal_template=check_host_gal_template)
 
     sed_obspar = ObsConstrain(beaming=25,
                               B_range=[0.001, 0.1],
@@ -53,7 +53,7 @@ def test_model_constr(my_shape=None, plot=True):
                               SEDShape=my_shape)
 
     prefit_jet = sed_obspar.constrain_SSC_model(electron_distribution_log_values=False,silent=True)
-    prefit_jet.save_model('prefit_jet_gal_templ.pkl')
+    prefit_jet.save_model('prefit_jet.pkl')
 
     return prefit_jet, my_shape
 

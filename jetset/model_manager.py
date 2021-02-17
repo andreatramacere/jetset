@@ -348,6 +348,34 @@ class FitModel(Model):
 
         return out_model
 
+    @classmethod
+    def load_model(cls, file_name):
+        try:
+            c = pickle.load(open(file_name, "rb"))
+            ml=c.components.components_list[::]
+            for m in ml:
+                try:
+                    c.del_component(m.name)
+                except:
+                    pass
+            for m in ml:
+                c.add_component(m)
+            for p in c.parameters.par_array:
+                if p._linked is True:
+                    p._linked = False
+                    #print(p.name,p._root_par,[p.model],p._linked_root_model)
+                    c.parameters.link_par(p._root_par.name,[p.model.name],p._linked_root_model.name)
+
+            if isinstance(c, Model):
+                c.eval()
+                return c
+            else:
+                raise RuntimeError('The model you loaded is not valid please check the file name')
+
+        except Exception as e:
+            raise RuntimeError(e)
+
+
     def show_model_components(self):
         print("")
         print(

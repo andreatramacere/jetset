@@ -349,7 +349,7 @@ class EmittersDistribution(BaseEmittersDistribution):
 
         for par in self.parameters.par_array:
             p = jet.emitters_distribution.parameters.get_par_by_name(par.name)
-            par.val = p.val
+            par.set(val=p.val, skip_dep_par_warning=True)
 
     def _build(self,jet,name,log_values, gamma_grid_size,normalize):
         self._user_defined=True

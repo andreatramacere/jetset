@@ -546,13 +546,14 @@ class JetBase(Model):
         elif isinstance(distr, EmittersDistribution):
             self._original_emitters_distr = distr
             self.emitters_distribution = copy.deepcopy(distr)
+            self._update_emitters_pars_dependence()
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
             self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
             self._attach_pars_to_jet(preserve_value_emitters=True)
-            self._update_emitters_pars_dependence()
+
             self.emitters_distribution.update()
         elif isinstance(distr, str):
             nf=EmittersFactory()
@@ -578,17 +579,16 @@ class JetBase(Model):
         for k in self._emitters_distribution_dic.keys():
             par = self.parameters.get_par_by_name(k)
             if preserve_value_emitters is True:
-                par.val=v_dict[k]
+                par.set(val=v_dict[k],skip_dep_par_warning=True)
             self.emitters_distribution.parameters.add_par(par)
 
 
     def _update_emitters_pars_dependence(self):
-        for k in self._emitters_distribution_dic.keys():
-            par = self.parameters.get_par_by_name(k)
-            if par._depending_pars is not []:
-                for p in par._depending_pars:
-                    dep_par = self.parameters.get_par_by_name(par._depending_pars.name)
-                    par._add_depending_par(dep_par)
+        for par in self.emitters_distribution.parameters.par_array:
+            if par.immutable is True:
+                warnings.warn('parameter dependence has to be reassigned after emitters distribution is assigned to a jet, now will be reset no dep')
+                self.emitters_distribution.parameters.reset_dependencies()
+                break
 
     def get_emitters_distribution_name(self):
         return self.emitters_distribution.name
@@ -1307,7 +1307,7 @@ class JetBase(Model):
 
         return out_model
 
-    @property
+
     def energetic_report(self):
         self._build_energetic_report()
         _show_table(self.energetic_report_table)

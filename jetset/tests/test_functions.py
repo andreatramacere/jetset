@@ -6,37 +6,30 @@ from .test_data import *
 from .test_phenom_constr import *
 from .test_model_fit import *
 from .test_emitters import *
+from .test_ebl import *
+from .test_mcmc import test_emcee
 
 def test_full(plot=False):
     from jetset.plot_sedfit import plt
     plt.ioff()
-    test_jet(plot)
-    test_hadronic_model(plot)
-    sed_data=test_data_loader()
-    print('done')
-    my_shape=test_spectral_indices(sed_data)
-    print('done')
-    my_shape=test_sed_shaper(my_shape)
-    print('done')
-    prefit_jet, my_shape = test_model_constr(my_shape)
-    print('done')
-    jet_lsb, model_minimizer_lsb, fit_model_lsb = test_model_fit_lsb(sed_data,my_shape)
-    jet_minuit,model_minimizer_minuit = test_model_fit_minuit(sed_data,my_shape)
+    test_jet(plot=plot)
+    test_hadronic_jet(plot=plot)
+    fit_model, model_minimizer,data = test_model_fit (minimizer='lsb', sed_number=1)
+    fit_model, model_minimizer,data = test_model_fit(minimizer='minuit', sed_number=1)
+    fit_model, model_minimizer,data = test_model_fit(minimizer='lsb', sed_number=2)
+    test_ebl(plot=plot)
+    test_ebl_jet(plot=plot)
+    test_ebl_jet_fit(plot=plot)
+    test_emcee(plot=plot)
 
 def test_short(plot=False):
     test_jet(plot)
-    sed_data = test_data_loader(plot)
-    print('done')
-    my_shape = test_spectral_indices(sed_data,plot)
-    print('done')
-    prefit_jet, my_shape = test_sed_shaper(my_shape,plot)
-    print('done')
-    prefit_jet = test_model_constr(my_shape,plot)
-    print('done')
-    jet_lsb, model_minimizer_lsb,fit_model_lsb = test_model_fit_lsb(sed_data, my_shape,plot)
+    jet_lsb, model_minimizer_lsb,sed_data = test_model_fit (minimizer='lsb', sed_number=1)
     print('TEST PASSED: OK')
 
 
+
+
 @pytest.mark.users
-def test_users():
+def test_custom():
     test_short(plot=False)

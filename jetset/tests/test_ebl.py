@@ -100,9 +100,12 @@ def test_ebl_jet(plot=True,):
     if plot is True:
         composite_model.plot_model()
 
-    composite_model.save('ebl_jet.pkl')
-    my_jet=composite_model.load('ebl_jet.pkl')
-    my_jet.eval()
+    composite_model.save_model('ebl_jet.pkl')
+    new_composite_model=FitModel.load_model('ebl_jet.pkl')
+    v=2.0
+    new_composite_model.jet_flaring.parameters.z_cosm.val=v
+    assert (new_composite_model.Franceschini_2008.parameters.z_cosm.val == v)
+    assert (new_composite_model.Franceschini_2008.parameters.z_cosm.linked == True)
 
 def test_ebl_jet_fit(plot=True):
     from .test_phenom_constr import test_model_constr

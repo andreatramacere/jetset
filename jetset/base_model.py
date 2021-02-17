@@ -246,6 +246,12 @@ class Model(object):
         except Exception as e:
             raise RuntimeError(e)
 
+
+
+    #def _set_pars_dep(self):
+    #    for p in self.parameters.par_array:
+    #        if
+
     def clone(self):
         return  pickle.loads(pickle.dumps(self))
 
