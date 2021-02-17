@@ -15,16 +15,30 @@ import  inspect
 __all__=['ModelParameter','ModelParameterArray','Value','LinkedParameter']
 
 
-def _show_table(t):
+def is_notebook():
     try:
-        from IPython.display import display
-        display(t.show_in_notebook(show_row_index=False, display_length=100))
+        from IPython import get_ipython
+        if "IPKernelApp" not in get_ipython().config:  # pragma: no cover
+            raise ImportError("console")
+            return False
     except:
+        return False
+    else:  # pragma: no cover
+        return True
+
+def _show_table(t):
+    if is_notebook():
         try:
             from IPython.display import display
-            display(t)
+            display(t.show_in_notebook(show_row_index=False, display_length=100))
         except:
-            t.pprint_all()
+            try:
+                from IPython.display import display
+                display(t)
+            except:
+                t.pprint_all()
+    else:
+        t.pprint_all()
 
 class Value(object):
 

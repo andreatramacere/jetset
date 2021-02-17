@@ -10,6 +10,7 @@ from .minimizer import  _eval_res
 import emcee
 from itertools import cycle
 
+
 import numpy as np
 import scipy as sp
 from scipy import stats
@@ -17,9 +18,11 @@ from .plot_sedfit import  plt, PlotSED, set_mpl
 import corner
 import dill as pickle
 from multiprocessing import cpu_count, Pool
+import multiprocessing as mp
 import warnings
 import  time
 import copy
+import threading
 
 __all__=['McmcSampler']
 
@@ -33,6 +36,16 @@ class Counter(object):
         self.count_OK = 0
         self.count_tot = count_tot
         self._progress_iter = cycle(['|', '/', '-', '\\'])
+
+
+class RunThread(object):
+    def __init__(self, target_class):
+        self.target_class = target_class
+
+    def run(self):
+        self.target_class.model=self.target_class.model.clone()
+        self.target_class.sampler.run_mcmc(self.target_class._pos, self.target_class._npernode, rstate0=np.random.get_state(), progress=True,store = True)
+
 
 class McmcSampler(object):
 
@@ -97,6 +110,8 @@ class McmcSampler(object):
             #     threads = cpu_count()
             #     warnings.warn('number of threads has been reduced to cpu_count=%d'%cpu_count())
             #
+
+
             # with Pool(processes=threads) as pool:
             #
             #     self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob, threads=threads,
@@ -104,12 +119,11 @@ class McmcSampler(object):
             #     self.sampler.run_mcmc(pos, steps, progress=True)
 
             print('')
-            threads = 1
-            warnings.warn('threading  functionality not active yet')
 
+            warnings.warn('multithreadign not implemented yet')
+            threads=1
             self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self.par_array, loglog))
             self.sampler.run_mcmc(pos, steps, progress=True)
-
         else:
             threads=1
             self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob,args=(self.model, self.data, use_UL, counter,self._bounds, self.par_array, loglog))
@@ -127,6 +141,8 @@ class McmcSampler(object):
         self.acceptance_fraction=np.mean(self.sampler.acceptance_fraction)
 
         self.reset_to_best_fit()
+
+
 
     def get_par_quantiles(self,p,quantiles=(0.16,0.5,0.84)):
         _d, idx=self.get_par(p)

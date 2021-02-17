@@ -190,10 +190,6 @@ class JetBase(Model):
         self.set_blob()
 
 
-    def clone(self):
-        return  pickle.loads(pickle.dumps(self))
-
-
     def __getstate__(self):
         return  self._serialize_model()
 

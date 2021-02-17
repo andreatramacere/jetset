@@ -164,8 +164,7 @@ class FitResults(object):
     def save_report(self,name=None):
         if name is None:
             name = 'best_fit_report.pkl'
-        if hasattr(self.mm.minimizer,'pbar'):
-            self.mm.minimizer.pbar=None
+        self.mm=None
         pickle.dump(self, open(name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
 

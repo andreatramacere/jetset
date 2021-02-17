@@ -246,6 +246,9 @@ class Model(object):
         except Exception as e:
             raise RuntimeError(e)
 
+    def clone(self):
+        return  pickle.loads(pickle.dumps(self))
+
     def show_model(self):
         print("")
         print("-------------------------------------------------------------------------------------------------------------------")

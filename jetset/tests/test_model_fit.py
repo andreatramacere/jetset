@@ -1,15 +1,15 @@
 
 def test_model_fit_minuit(sed_data=None, prefit_jet=None, plot=True):
-    from jetset.minimizer import fit_SED
+    from jetset.minimizer import fit_SED,ModelMinimizer
     from jetset.model_manager import FitModel
     from jetset.jet_model import Jet
 
     if sed_data is None:
-        from test_data import   test_data_loader
+        from .test_data import   test_data_loader
         sed_data=test_data_loader(plot=plot)
 
     if prefit_jet is None:
-        from test_phenom_constr import test_model_constr
+        from .test_phenom_constr import test_model_constr
         prefit_jet, my_shape = test_model_constr()
 
     jet_minuit = Jet.load_model('prefit_jet_gal_templ.pkl')
@@ -27,6 +27,10 @@ def test_model_fit_minuit(sed_data=None, prefit_jet=None, plot=True):
                                                       fitname='SSC-best-fit-minuit', minimizer='minuit',silent=True)
     best_fit_minuit.show_report()
     best_fit_minuit.save_report('best-fit-minuit-report.pkl')
+    best_fit_minuit.bestfit_table.write('best-fit-minuit-report.ecsv')
+    model_minimizer_minuit.save_model('model_minimizer_minuit.pkl')
+
+    model_minimizer_minuit = ModelMinimizer.load_model('model_minimizer_lsb.pkl')
     fit_model_minuit.save_model('fit_model_minuit.pkl')
 
     return jet_minuit,model_minimizer_minuit
@@ -38,11 +42,11 @@ def test_model_fit_lsb(sed_data=None, prefit_jet=None, plot=True):
     from jetset.jet_model import Jet
 
     if sed_data is None:
-        from test_data import test_data_loader
+        from .test_data import test_data_loader
         sed_data = test_data_loader(plot=plot)
 
     if prefit_jet is None:
-        from test_phenom_constr import test_model_constr
+        from .test_phenom_constr import test_model_constr
         prefit_jet, my_shape= test_model_constr()
 
     jet_lsb = Jet.load_model('prefit_jet_gal_templ.pkl')
@@ -64,6 +68,7 @@ def test_model_fit_lsb(sed_data=None, prefit_jet=None, plot=True):
     best_fit_lsb.show_report()
     fit_model_lsb.save_model('fit_model_lsb.pkl')
     fit_model_lsb_new = FitModel.load_model('fit_model_lsb.pkl')
+
 
     model_minimizer_lsb.save_model('model_minimizer_lsb.pkl')
     model_minimizer_lsb_new=ModelMinimizer.load_model('model_minimizer_lsb.pkl')
