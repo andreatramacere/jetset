@@ -93,7 +93,7 @@ def test_ebl_jet(plot=True,):
     my_jet.parameters.z_cosm.val = v
     assert (composite_model.Franceschini_2008.parameters.z_cosm.val==v)
     assert (composite_model.Franceschini_2008.parameters.z_cosm.linked==True)
-
+    assert (composite_model.Franceschini_2008.parameters.z_cosm.val == composite_model.jet_flaring.parameters.z_cosm.val)
     composite_model.composite_expr = '%s*%s'%(my_jet.name,ebl_franceschini.name)
     composite_model.eval()
 
@@ -107,25 +107,27 @@ def test_ebl_jet(plot=True,):
     assert (new_composite_model.Franceschini_2008.parameters.z_cosm.val == v)
     assert (new_composite_model.Franceschini_2008.parameters.z_cosm.linked == True)
 
-def test_ebl_jet_fit(plot=True):
-    from .test_phenom_constr import test_model_constr
+def test_ebl_jet_fit(plot=True,sed_number=2,minimizer='lsb'):
+    from .test_model_fit import test_prepare_fit
 
-    prefit_jet, my_shape = test_model_constr()
-    prefit_jet.show_model()
+    template, jet,sed_data = test_prepare_fit(sed_number=sed_number)
 
     from jetset.template_2Dmodel import EBLAbsorptionTemplate
     ebl_franceschini = EBLAbsorptionTemplate.from_name('Franceschini_2008')
     ebl_franceschini.show_model()
 
     from jetset.model_manager import FitModel
-    composite_model = FitModel(nu_size=500, name='EBL corrected', template=my_shape.host_gal)
-    composite_model.add_component(prefit_jet)
+    composite_model = FitModel(nu_size=500, name='EBL corrected', template=template)
+    composite_model.add_component(jet)
     composite_model.add_component(ebl_franceschini)
-    composite_model.link_par(par_name='z_cosm', from_model='Franceschini_2008', to_model=prefit_jet.name)
+    composite_model.link_par(par_name='z_cosm', from_model='Franceschini_2008', to_model=jet.name)
 
-    composite_model.composite_expr = '(%s+host_galaxy)*Franceschini_2008'%prefit_jet.name
+    if template is not None:
+        composite_model.composite_expr = '(%s+host_galaxy)*Franceschini_2008'%jet.name
+    else:
+        composite_model.composite_expr = '(%s)*Franceschini_2008' % jet.name
 
-    assert (composite_model.Franceschini_2008.parameters.z_cosm.val == prefit_jet.parameters.z_cosm.val)
+    assert (composite_model.Franceschini_2008.parameters.z_cosm.val == composite_model.jet_leptonic.parameters.z_cosm.val)
     assert (composite_model.Franceschini_2008.parameters.z_cosm.linked is True)
 
     composite_model.show_model()
@@ -136,18 +138,32 @@ def test_ebl_jet_fit(plot=True):
 
     from jetset.minimizer import ModelMinimizer
 
+    composite_model.freeze(jet, 'R_H')
+    composite_model.freeze(jet, 'z_cosm')
 
-    composite_model.freeze(prefit_jet, 'R_H')
-    composite_model.freeze(prefit_jet, 'z_cosm')
+    if minimizer == 'minuit':
+        composite_model.jet_leptonic.parameters.gmin.fit_range = [2, 200]
+        composite_model.jet_leptonic.parameters.gmax.fit_range = [1E5, 1E7]
+
+    if template is not None:
+        composite_model.host_galaxy.parameters.nuFnu_p_host.frozen = False
+        composite_model.host_galaxy.parameters.nu_scale.frozen = True
+
     composite_model.jet_leptonic.parameters.beam_obj.fit_range = [5, 50]
     composite_model.jet_leptonic.parameters.R.fit_range = [10 ** 15.5, 10 ** 17.5]
     composite_model.jet_leptonic.parameters.gmax.fit_range = [1E4, 1E8]
 
-    composite_model.host_galaxy.parameters.nuFnu_p_host.frozen = False
-    composite_model.host_galaxy.parameters.nu_scale.frozen = True
+
     composite_model.jet_leptonic.nu_size = 200
     composite_model.jet_leptonic.IC_nu_size = 100
-    model_minimizer_lsb = ModelMinimizer('lsb')
-    best_fit_lsb = model_minimizer_lsb.fit(composite_model, my_shape.sed_data, 1E11, 1E29, fitname='SSC-best-fit-lsb', repeat=1)
-    best_fit_lsb.save_report('best-fit-minuit-report.pkl')
-    best_fit_lsb.save_model('fit_model_minuit.pkl')
+
+    model_minimizer = ModelMinimizer(minimizer)
+    best_fit = model_minimizer.fit(composite_model, sed_data, 10 ** 11., 10 ** 29.0,
+                                   fitname='SSC-best-fit-minuit', repeat=1)
+    best_fit.show_report()
+    best_fit.save_report('best-fit-%s-report.pkl' % minimizer)
+    best_fit.bestfit_table.write('best-fit-%s-report.ecsv' % minimizer)
+    model_minimizer.save_model('model_minimizer_%s.pkl' % minimizer)
+
+    model_minimizer = ModelMinimizer.load_model('model_minimizer_%s.pkl' % minimizer)
+    composite_model.save_model('fit_model_%s.pkl' % minimizer)

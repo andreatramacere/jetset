@@ -727,6 +727,7 @@ class CompositeModelParameterArray(object):
                     dep_par._add_master_par(p_root)
                     p_root._add_depending_par(dep_par)
                     dep_par.freeze()
+                    p_root.val=p_root.val
             else:
                  self._handle_missing_component_error(m_name)
 
