@@ -124,7 +124,7 @@ jobs:
       - name: 'test'
         working-directory: .github/action_test/
         run: |
-          pytest --pyargs jetset.tests.test_functions::test_jet
+          pytest --pyargs jetset.tests.test_functions::test_custom
 
       - name: 'prepare asset'
         run: |
