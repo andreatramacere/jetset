@@ -9,6 +9,9 @@ on:
       tags:
         description: tag
         required: false
+      skip_test:
+        description: skip test
+        required: false
 
 jobs:
   create_release:
@@ -122,6 +125,7 @@ jobs:
           cp -r jetset/tests/test*.py  .github/action_test/
 
       - name: 'test'
+        if: github.event.inputs.skip_test != 'yes'
         working-directory: .github/action_test/
         run: |
           pytest --pyargs jetset.tests.test_functions::test_custom
