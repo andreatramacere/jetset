@@ -336,6 +336,14 @@ class Model(object):
                 raise RuntimeError('argument', k, 'is not valid, should be a model parameter name')
         return d
 
+    def _test_par_expr(self,master_par_list,par_expr):
+        for p_name in master_par_list:
+            exec(p_name + '= 1')
+        try:
+            eval(par_expr)
+            pass
+        except:
+            raise RuntimeError('the parameter expression is not valid')
 
     def make_dependent_par(self, par, depends_on, par_expr):
         master_par_list = depends_on
@@ -344,14 +352,8 @@ class Model(object):
 
         if dep_par.name in master_par_list:
             raise RuntimeError("depending parameter:", dep_par.name, "can't be in master par list",master_par_list)
-        for p_name in master_par_list:
-            #print('==> p',p_name)
-            p = self.get_par_by_name(p_name)
-            exec(p.name + '= 1')
-        try:
-            eval(par_expr)
-        except:
-            raise RuntimeError('the parameter expression is not valid')
+
+        self._test_par_expr(master_par_list,par_expr)
 
         dep_par.freeze()
         dep_par._is_dependent = True

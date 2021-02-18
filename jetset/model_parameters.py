@@ -350,9 +350,9 @@ class ModelParameter(object):
 
     def _eval_par_func(self):
         #transform par name and value into a local var
-        for p in self._master_pars:
-            v = p.val_lin
-            exec(p.name + '=v')
+        for _user_par_ in self._master_pars:
+            _par_value = _user_par_.val_lin
+            exec(_user_par_.name + '=_par_value')
         res = eval(self._depending_par_expr)
 
         if self.islog is True:
