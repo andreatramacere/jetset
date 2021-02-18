@@ -222,7 +222,7 @@ class JetModelParameterArray(ModelParameterArray):
                 if (hasattr(model_dic[key],'_master_pars')):
                     _master_pars=model_dic[key]._master_pars
                 else:
-                    _master_pars=None
+                    _master_pars=[]
 
                 self.add_par(parameter_class(model,
                                              struct_name,

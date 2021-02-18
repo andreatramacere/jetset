@@ -1,7 +1,7 @@
 import pytest
 
 
-def test_dep_par_distr(plot=False):
+def test_dep_par(plot=False):
     from jetset.jet_emitters import EmittersDistribution
     import numpy as np
 
@@ -19,26 +19,23 @@ def test_dep_par_distr(plot=False):
     n_e_bkn.update()
     n_e_bkn.parameters.show_pars()
 
-    def par_func(s1=n_e_bkn.parameters.s1):
-        return s1.val + 1
-
-    n_e_bkn.parameters.s2.make_dependent(par_func)
-
-    np.testing.assert_allclose(n_e_bkn.parameters.s2.val , n_e_bkn.parameters.s1.val+1)
-
     from jetset.jet_model import Jet
 
     j = Jet(emitters_distribution=n_e_bkn)
 
-    def par_func(s1=j.parameters.s1):
-        return s1.val + 1
-
-    j.parameters.s2.make_dependent(par_func)
-    j.parameters.s1.val=3
+    # def par_func(s1):
+    #    return s1+1
+    j.make_dependent_par(par='s2', depends_on=['s1'], par_expr='s1+1')
+    print('here')
+    j.parameters.s1.val = 3
+    print('done')
     np.testing.assert_allclose(j.parameters.s2.val, j.parameters.s1.val + 1)
     j.save_model('jet.pkl')
-    j_new=Jet.load_model('jet.pkl')
-    j_new.parameters.s1.val = 2
-    np.testing.assert_allclose(j_new.parameters.s2.val, j_new.parameters.s1.val + 1)
-    j_new.eval()
-    j_new.show_model()
+    new_jet = Jet.load_model('jet.pkl')
+    print('here')
+    new_jet.parameters.s1.val = 2
+    print('done')
+
+    np.testing.assert_allclose(new_jet.parameters.s2.val, new_jet.parameters.s1.val + 1)
+    j.eval()
+    new_jet.show_model()

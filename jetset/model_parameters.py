@@ -173,9 +173,9 @@ class ModelParameter(object):
         self.allowed_keywords['_root_par'] = None
         self.allowed_keywords['_linked'] = False
         self.allowed_keywords['_linked_root_model'] = None
-
+        self.allowed_keywords['_master_par_list'] = []
+        self.allowed_keywords['_depending_par_expr'] = None
         self._linked = False
-        # self._linked_models = []
         self._linked_root_model = None
         self._root_par = None
         _v = None
@@ -313,7 +313,7 @@ class ModelParameter(object):
         if par not in self._master_pars:
             self._master_pars.append(par)
 
-    #def make_dependent(self, master_par, func, root_model=None):
+    #def make_dependent_par(self, master_par, func, root_model=None):
 
     #    if self == master_par:
     #        raise RuntimeError(" root and linked parameter can't be the same")
@@ -327,36 +327,38 @@ class ModelParameter(object):
     #        self._linked_root_model = root_model
     #    self.set(val=self._func(self._master_par.val), skip_dep_par_warning=True)
 
-    @staticmethod
-    def get_default_args(func):
-        signature = inspect.signature(func)
-        d={}
-        for k, v in signature.parameters.items():
-            if isinstance(v.default,ModelParameter):
-                d[k]=v.default
-            else:
-                raise RuntimeError('argument',k,'is not valid, should be a model parameter')
-        return d
 
-    def make_dependent(self, par_func):
-        _p_dict = self.get_default_args(par_func)
-        for k, v in _p_dict.items():
-            #print('self',self.name,'master',v.name,k)
-            if self == v:
-                raise RuntimeError("master:",self.name,"and depending parameter:",v.name, ", can't be the same")
-        self.freeze()
-        self._is_dependent = True
-
-        self._func = par_func
-        for k, v in _p_dict.items():
-            self._add_master_par(v)
-            v._add_depending_par(self)
+    # def get_default_args(self, par_expr):
+    #     #signature = inspect.signature(func)
+    #     #d={}
+    #     #for k, v in signature.parameters.items():
+    #     #    if isinstance(v.default,ModelParameter):
+    #     #        d[k]=v.default
+    #     #    else:
+    #     #        raise RuntimeError('argument',k,'is not valid, should be a model parameter')
+    #     #return d
+    #     pass
 
 
-        #if root_model is not None:
-        #    self._linked_root_model = root_model
+    @property
+    def par_expr(self):
+        return self._depending_par_expr
 
-        self.set(val=self._func(), skip_dep_par_warning=True)
+    @par_expr.setter
+    def par_expr(self, expr_string):
+        self._depending_par_expr = expr_string
+
+    def _eval_par_func(self):
+        #transform par name and value into a local var
+        for p in self._master_pars:
+            v = p.val_lin
+            exec(p.name + '=v')
+        res = eval(self._depending_par_expr)
+
+        if self.islog is True:
+            res=np.log10(res)
+
+        return eval(self.par_expr)
 
 
     def set(self, *args, skip_dep_par_warning=False, **keywords):
@@ -388,7 +390,7 @@ class ModelParameter(object):
                     self._val.val = keywords[kw]
                     if self._depending_pars is not []:
                         for p in self._depending_pars:
-                            # print("==> setting dep par",p.name, 'to',p._func(),'p=',p,'master',self,'name',self.name)
+                            #print("==> setting dep par",p.name, 'to',p._func(),'p=',p,'master',self,'name',self.name)
                             p.set(val=p._func(),skip_dep_par_warning=True)
 
                 elif kw == 'log':
@@ -709,15 +711,15 @@ class CompositeModelParameterArray(object):
                     print('==> par:',dep_par.name, 'from model:',  dep_model.name, 'linked to same parameter in model', m_root.name )
                     if p_root == dep_par:
                         raise RuntimeError(" root and linked parameter can't be the same")
-                    if dep_par._linked is True:
-                        raise RuntimeError(" this parameter is already linked ")
+                    if dep_par.immutable is True:
+                        raise RuntimeError(" this parameter is already linked or dependent ")
                     if m_root==dep_par.model:
                         raise RuntimeError(" linked and root model must be different")
                     #p_root._linked_models.append(dep_model)
-                    exec(dep_par.name+'= dep_par')
+                    #exec(dep_par.name+'= dep_par')
                     #identity_func=lambda p_root=p_root: p_root.val_lin
                     dep_par._root_par = p_root
-                    #dep_par.make_dependent(dep_par.identity_func)
+                    #dep_par.make_dependent_par(dep_par.identity_func)
                     dep_par._func=dep_par.identity_func
                     dep_par._linked = True
                     dep_par._is_dependent = True
@@ -1390,11 +1392,10 @@ class ModelParameterArray(object):
             self.par_array[pi].free()
         
 
-
     def _serialize_pars(self):
         _par_keys=['val','val_min','val_max','val_start','val_last_call','fit_range_min','fit_range_max','best_fit_val',
                    'best_fit_err','frozen','allowed_values','_linked','_is_dependent','_func','_master_pars',
-                   '_linked_root_model','_depending_pars','_root_par']
+                   '_linked_root_model','_depending_pars','_root_par','','_master_par_list','_depending_par_expr','units','par_type']
         _par_dict = {}
         for par in self.par_array:
             _val_dict={}

@@ -247,6 +247,7 @@ class JetBase(Model):
             _model = pickle.load(open(file_name, "rb"))
             jet = cls()
             jet._decode_model(_model)
+            jet._fix_par_dep_on_load()
             jet.show_pars()
             jet.eval()
             return jet
@@ -324,7 +325,19 @@ class JetBase(Model):
         #self.set_electron_distribution(str(_model['electron_distribution']))
 
         _par_dict = _model['pars']
-        self.parameters._decode_pars(_par_dict)
+        _non_user_dict={}
+        _user_dict={}
+        for k, v in _model['pars'].items():
+            if v['par_type'] == 'user_defined':
+                _user_dict[k]=v
+            else:
+                _non_user_dict[k]=v
+        self.parameters._decode_pars(_non_user_dict)
+
+        for k, v in _user_dict.items():
+            #print('==>',v)
+            v['name']=k
+            self.parameters.add_par(ModelParameter(**v))
 
         _par_dict = _model['internal_pars']
         for k in _par_dict.keys():
@@ -391,10 +404,6 @@ class JetBase(Model):
 
 
     def build_blob(self, verbose=None):
-
-
-
-
 
         blob = BlazarSED.MakeBlob()
 
