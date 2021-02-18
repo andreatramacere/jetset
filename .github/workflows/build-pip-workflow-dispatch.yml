@@ -144,12 +144,12 @@ jobs:
 
       - name: 'prepare asset pip'
         run: |
-          mv dist pip-bianary-${{ env.PKG_VERSION }}-${{ matrix.os }}
-          tar -cvf pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-bianary-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.whl
+          mv dist pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          tar -cvf pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.whl
 
       - name: 'prepare asset src'
         run: |
-          mv pip-bianary-${{ env.PKG_VERSION }}-${{ matrix.os }} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          mv pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
           tar -cvf pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
 
       - name: 'Upload Release Asset'
