@@ -254,7 +254,7 @@ class Model(object):
         for p in self.parameters.par_array:
             if p._is_dependent is True:
                 self._is_dependent = False
-                print("==>", p.name, p._master_par_list, p._depending_par_expr)
+                #print("==>", p.name, p._master_par_list, p._depending_par_expr)
                 self.make_dependent_par(p.name, p._master_par_list, p._depending_par_expr)
 
     #def _set_pars_dep(self):
@@ -328,7 +328,7 @@ class Model(object):
         signature = inspect.signature(par_func)
         d = []
         for k, v in signature.parameters.items():
-            print('==> par',k,v)
+            #print('==> par',k,v)
             p = self.get_par_by_name(k)
             if p is not None:
                 d.append(k)
@@ -345,7 +345,7 @@ class Model(object):
         if dep_par.name in master_par_list:
             raise RuntimeError("depending parameter:", dep_par.name, "can't be in master par list",master_par_list)
         for p_name in master_par_list:
-            print('==> p_name',p_name)
+            print('==> p',p_name)
             p = self.get_par_by_name(p_name)
             exec(p.name + '= 1')
         try:
@@ -362,10 +362,13 @@ class Model(object):
             m = self.parameters.get_par_by_name(p)
             dep_par._add_master_par(m)
             m._add_depending_par(dep_par)
-            m.val=m.val
 
+        for p in master_par_list:
+            m = self.parameters.get_par_by_name(p)
+            m.val=m.val
+        print('==> par', dep_par.name, 'is now depending on', master_par_list, 'according to expr', par_expr)
     def add_user_par(self,name,val,units='',val_min=None,val_max=None):
-        self.parameters.add_par(ModelParameter(name=name,units=units,val=val,val_min=val_min,val_max=val_max))
+        self.parameters.add_par(ModelParameter(name=name,units=units,val=val,val_min=val_min,val_max=val_max,par_type='user_defined'))
 
 
 class MultiplicativeModel(Model):

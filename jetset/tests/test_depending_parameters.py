@@ -39,3 +39,18 @@ def test_dep_par(plot=False):
     np.testing.assert_allclose(new_jet.parameters.s2.val, new_jet.parameters.s1.val + 1)
     j.eval()
     new_jet.show_model()
+
+
+def test_dep_par_jet(plot=False):
+    import numpy as np
+
+    from jetset.jet_model import Jet
+    j = Jet(emitters_distribution='plc')
+    j.add_user_par(name='B0',units='G',val=1E-5,val_min=0,val_max=None)
+    j.make_dependent_par(par='B',depends_on=['B0'],par_expr='B0*5')
+    np.testing.assert_allclose(j.parameters.B.val, j.parameters.B0.val*5)
+
+    j.save_model('test.pkl')
+    new_j=Jet.load_model('test.pkl')
+    new_j.parameters.B0.val=1
+    np.testing.assert_allclose(new_j.parameters.B.val, new_j.parameters.B0.val*5)
