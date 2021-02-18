@@ -79,7 +79,6 @@ def test_model_fit_dep_pars(sed_data=None, prefit_jet=None, plot=True,sed_number
     if minimizer == 'minuit':
         fit_model.jet_leptonic.parameters.gmin.fit_range = [2, 200]
         fit_model.jet_leptonic.parameters.gmax.fit_range = [1E5, 1E7]
-        fit_model.jet_leptonic.parameters.B.fit_range = [1E-3,2]
 
     if template is not None:
         fit_model.host_galaxy.parameters.nuFnu_p_host.frozen = False

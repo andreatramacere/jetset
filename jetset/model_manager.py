@@ -364,13 +364,12 @@ class FitModel(Model):
             for p in c.parameters.par_array:
                 if p._linked is True:
                     p._linked = False
-                    #print(p.name,p._root_par,[p.model],p._linked_root_model)
+                    p._is_dependent = False
+                    #print(p.name,p._root_par,[p.model],p._linked_root_model,p.immutable)
                     c.parameters.link_par(p._root_par.name,[p.model.name],p._linked_root_model.name)
 
             for m in c.components.components_list:
-                #print('==>',m.name,type(m))
                 if isinstance(m,Jet):
-                    #print('==> updating')
                     m._fix_par_dep_on_load()
             if isinstance(c, Model):
                 c.eval()
