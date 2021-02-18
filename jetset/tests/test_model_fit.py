@@ -64,13 +64,18 @@ def test_model_fit_dep_pars(sed_data=None, prefit_jet=None, plot=True,sed_number
 
     fit_model = FitModel(jet=jet, name='SSC-best-fit-minuit', template=template)
     fit_model.freeze('jet_leptonic','z_cosm')
-    #fit_model.freeze('jet_leptonic','R_H')
     fit_model.jet_leptonic.parameters.beam_obj.fit_range = [5, 50]
-    fit_model.jet_leptonic.parameters.R_H.fit_range = [1E15, 1E17]
+    fit_model.jet_leptonic.parameters.R_H.val = 5E17
+    fit_model.jet_leptonic.parameters.R_H.frozen = False
+    fit_model.jet_leptonic.parameters.R_H.fit_range = [1E15, 1E19]
     fit_model.jet_leptonic.parameters.R.fit_range = [10 ** 15.5, 10 ** 17.5]
-    fit_model.jet_leptonic.add_user_par(name='B0',units='G',val=1E5,val_min=0,val_max=None)
-    fit_model.jet_leptonic.add_user_par(name='R0', units='cm', val=1E13, val_min=0, val_max=None)
-    fit_model.jet_leptonic.make_dependent_par(par='B',depends_on=['B0','R0','R_H'],par_expr='B0*(R_H/R)')
+    fit_model.jet_leptonic.add_user_par(name='B0', units='G', val=1E3, val_min=0, val_max=None)
+    fit_model.jet_leptonic.add_user_par(name='R0', units='cm', val=5E13, val_min=0, val_max=None)
+    fit_model.jet_leptonic.parameters.R0.frozen = True
+    fit_model.jet_leptonic.parameters.B0.frozen = True
+
+    fit_model.jet_leptonic.make_dependent_par(par='B', depends_on=['B0', 'R0', 'R_H'], par_expr='B0*(R0/R_H)')
+
     if minimizer == 'minuit':
         fit_model.jet_leptonic.parameters.gmin.fit_range = [2, 200]
         fit_model.jet_leptonic.parameters.gmax.fit_range = [1E5, 1E7]

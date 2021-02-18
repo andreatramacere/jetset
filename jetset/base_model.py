@@ -345,7 +345,7 @@ class Model(object):
         if dep_par.name in master_par_list:
             raise RuntimeError("depending parameter:", dep_par.name, "can't be in master par list",master_par_list)
         for p_name in master_par_list:
-            print('==> p',p_name)
+            #print('==> p',p_name)
             p = self.get_par_by_name(p_name)
             exec(p.name + '= 1')
         try:
