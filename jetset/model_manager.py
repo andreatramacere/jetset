@@ -360,11 +360,14 @@ class FitModel(Model):
                     pass
             for m in ml:
                 c.add_component(m)
+                if isinstance(m,Jet):
+                        m._fix_par_dep_on_load()
             for p in c.parameters.par_array:
                 if p._linked is True:
                     p._linked = False
                     #print(p.name,p._root_par,[p.model],p._linked_root_model)
                     c.parameters.link_par(p._root_par.name,[p.model.name],p._linked_root_model.name)
+
 
             if isinstance(c, Model):
                 c.eval()
