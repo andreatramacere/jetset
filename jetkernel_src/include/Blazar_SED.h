@@ -746,23 +746,26 @@ struct temp_ev{
 	int do_EC_cooling_Star;
 	int do_EC_cooling_CMB;
 	int do_EC_cooling_DT;
-
+    unsigned int T_COUNTER;
 
 	int do_Sync_cooling;
 	int do_SSC_cooling;
     int do_Compton_cooling;
 
-    double Q_scaling_factor;
+    //double Q_scaling_factor;
 
     double t_unit; //unit time in light crossing time
     //double t_acc;
 
     double *N_gamma;
     double *gamma;
+    double *gamma_inj_jetset;
     double *N_time;
     double *Q_inj;
+    double *Q_inj_jetset;
     double gmin_griglia, gmax_griglia; 
     unsigned int gamma_grid_size;
+    unsigned int Q_inj_jetset_gamma_grid_size;
     double g[static_ev_arr_grid_size];
     double t_D[static_ev_arr_grid_size];
     double t_DA[static_ev_arr_grid_size];
@@ -794,6 +797,7 @@ struct temp_ev{
 	unsigned int NUM_SET;
     unsigned int LOG_SET;
 	unsigned int T_SIZE;
+    //unsigned int T_EVALUATED;
 	double duration,t_D0,t_DA0,t_A0;
     double deltat;
 
@@ -810,11 +814,13 @@ double f_A(double gamma,struct temp_ev *pt);
 double f_Acc(double x, struct temp_ev *);
 double f_Tesc(double,struct temp_ev *);
 double Inj_temp_prof (double t,struct temp_ev *);
+void Init_Q_inj(struct temp_ev *pt_ev );
 //double f_Inj(double x,struct temp_ev *);
 void Wm (double, double* ,double *);
 double Cooling(double,struct temp_ev *,struct blob *);
 int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],unsigned int size);
-void free_tempe_ev(struct temp_ev *pt_ev);
+//void free_tempe_ev(struct temp_ev *pt_ev);
+void alloc_temp_ev_array(double ** pt,int size);
 void CooolingEquilibrium(struct blob * pt, double T_esc);
 double IntegrateCooolingEquilibrium( struct blob *pt,double gamma, double T_esc );
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1);
@@ -836,7 +842,7 @@ void Init(struct blob *pt, double luminosity_distance);
 //void alloc_photons(double ** pt,int size);
 void set_seed_freq_start(struct blob *pt_base);
 void Run_SED(struct blob *pt_base);
-void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev);
+void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_injection);
 void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double luminosity_distance);
 
 double get_spectral_array(double * arr, struct blob *pt, unsigned int id);
@@ -848,6 +854,7 @@ double get_temp_ev_gamma_array(double *arr, struct temp_ev *pt_ev, unsigned int 
 double get_Q_inj_array(double *arr, struct temp_ev *pt_ev, unsigned int id);
 double get_temp_ev_array_static(double *arr, unsigned int id);
 
+void set_q_inj_user_array(double * arr,struct temp_ev *pt, double val, unsigned int id);
 void set_elec_custom_array(double * arr, struct blob *pt,double val, unsigned int id);
 void set_elec_array(double * arr,struct blob *pt, double val, unsigned int id);
 void set_bessel_table(double *arr, struct blob *pt, double val, unsigned int id);

@@ -35,19 +35,6 @@ jobs:
         name: Release  ${{ github.event.inputs.tags }}
         tag_name: ${{ github.event.inputs.tags }}
 
-    #- name: 'Output Release URL File'
-    #  run: |
-    #    echo "${{ steps.create_release.outputs.url }}" > release_url.txt
-    #    #this works with uses: actions/create-release@v1
-    #    #echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
-    #    echo "release url=${{ steps.create_release.outputs.url }}"
-
-    #- name: 'Save Release URL File for publish'
-    #  uses: actions/upload-artifact@v1
-    #  with:
-    #    name: release_url
-    #    path: release_url.txt
-
 
   build_conda:
     needs: [ create_release ]
@@ -137,14 +124,15 @@ jobs:
       - name: 'test'
         working-directory: .github/action_test/
         run: |
-          pytest --pyargs jetset.tests.test_functions::test_jet
-
+          pytest --pyargs jetset.tests.test_functions::test_custom
 
       - name: 'prepare asset'
         run: |
-          mkdir  conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
-          mv ${{ env.CONDABUILDJETSET }} ./conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
-          tar -cvf conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          echo ${{ env.CONDABUILDJETSET }}
+          ls ${{ env.CONDABUILDJETSET }}
+          mkdir  conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          mv ${{ env.CONDABUILDJETSET }} ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          tar -cvf conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}/*
 
       - name: 'Upload Release Asset'
         uses: softprops/action-gh-release@v1
@@ -152,6 +140,6 @@ jobs:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
           files: |
-            conda-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+            conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

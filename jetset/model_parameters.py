@@ -11,12 +11,34 @@ from astropy import  units as u
 from .utils import clean_var_name, parameters_warning
 from functools import wraps
 import ast
-import  copy
+import  inspect
 __all__=['ModelParameter','ModelParameterArray','Value','LinkedParameter']
 
 
+def is_notebook():
+    try:
+        from IPython import get_ipython
+        if "IPKernelApp" not in get_ipython().config:  # pragma: no cover
+            raise ImportError("console")
+            return False
+    except:
+        return False
+    else:  # pragma: no cover
+        return True
 
-
+def _show_table(t):
+    if is_notebook():
+        try:
+            from IPython.display import display
+            display(t.show_in_notebook(show_row_index=False, display_length=100))
+        except:
+            try:
+                from IPython.display import display
+                display(t)
+            except:
+                t.pprint_all()
+    else:
+        t.pprint_all()
 
 class Value(object):
 
@@ -67,13 +89,22 @@ class Value(object):
         return self._units
 
     @units.setter
-    def units(self, units):
+    def units(self, p_unit,verbose=False):
         try:
-            self._units = u.Unit(units)
+            self._units = u.Unit(p_unit)
             #print(units,type(self._units))
         except Exception as e:
-            #print('*',units)
-            self._units = units + '*'
+            if verbose is True:
+                print('units not valid for astropy units ',p_unit)
+
+            if hasattr(self,'_units'):
+                if '*' not in str(self._units):
+                    self._units = p_unit + '*'
+            else:
+                if '*' not in p_unit:
+                    self._units = p_unit + '*'
+                else:
+                    self._units = p_unit
 
 
 class ModelParameter(object):
@@ -136,33 +167,41 @@ class ModelParameter(object):
         self.allowed_keywords['log']=False
         self.allowed_keywords['allowed_values'] = None
         self.allowed_keywords['_is_dependent'] = False
-        self.allowed_keywords['_depending_par'] = None
+        self.allowed_keywords['_depending_pars'] = []
         self.allowed_keywords['_func'] = None
-        self.allowed_keywords['_master_par'] = None
-
-
+        self.allowed_keywords['_master_pars'] = []
+        self.allowed_keywords['_root_par'] = None
+        self.allowed_keywords['_linked'] = False
+        self.allowed_keywords['_linked_root_model'] = None
+        self.allowed_keywords['_master_par_list'] = []
+        self.allowed_keywords['_depending_par_expr'] = None
+        self._linked = False
+        self._linked_root_model = None
+        self._root_par = None
         _v = None
         _l = False
         _units= None
+        self.par_type=None
+
         if '_is_dependent' in keywords.keys():
             self._is_dependent =  keywords['_is_dependent']
         else:
             self._is_dependent = self.allowed_keywords['_is_dependent']
 
-        if '_depending_par' in keywords.keys():
-            self._depending_par = keywords['_depending_par']
+        if '_depending_pars' in keywords.keys():
+            self._depending_pars = keywords['_depending_pars']
         else:
-            self._depending_par = self.allowed_keywords['_depending_par']
+            self._depending_pars = self.allowed_keywords['_depending_pars']
 
         if '_func' in keywords.keys():
             self._func = keywords['_func']
         else:
             self._func = self.allowed_keywords['_func']
 
-        if '_master_par' in keywords.keys():
-            self._master_par = keywords['_master_par']
+        if '_master_pars' in keywords.keys():
+            self._master_pars = keywords['_master_pars']
         else:
-            self._master_par = self.allowed_keywords['_master_par']
+            self._master_pars = self.allowed_keywords['_master_pars']
 
         if 'val' in keywords.keys():
             _v = keywords['val']
@@ -187,9 +226,7 @@ class ModelParameter(object):
             else:
                 setattr(self,kw,self.allowed_keywords[kw])
 
-        self._linked = False
-        #self._linked_models = []
-        self._linked_root_model = None
+
         self.set(**keywords)
 
 
@@ -227,7 +264,12 @@ class ModelParameter(object):
     def units(self,val):
         self._val.units=val
 
-
+    def to(self, units):
+        if isinstance(self.units,u.Unit):
+            return self.val*self.units.to(units)
+        else:
+            message='the units of this parameter:'+self.units+', are not convertible'
+            warnings.warn(message)
     @property
     def fit_range(self):
 
@@ -256,25 +298,68 @@ class ModelParameter(object):
 
     def reset_dependencies(self):
         self._linked = False
-        #self._linked_models = []
         self._linked_root_model = None
         self._func=None
         self._is_dependent = False
-        self._master_par=None
+        self._master_pars=[]
+        self._depending_pars=[]
 
-    def make_dependent(self, master_par, func, root_model=None):
 
-        if self == master_par:
-            raise RuntimeError(" root and linked parameter can't be the same")
-        self._is_dependent = True
-        self._func = func
-        self._master_par = master_par
-        master_par._depending_par = self
+    def _add_depending_par(self,par):
+        if par not in self._depending_pars:
+            self._depending_pars.append(par)
 
-        self.freeze()
-        if root_model is not None:
-            self._linked_root_model = root_model
-        self.set(val=self._func(self._master_par.val), skip_dep_par_warning=True)
+    def _add_master_par(self,par):
+        if par not in self._master_pars:
+            self._master_pars.append(par)
+
+    #def make_dependent_par(self, master_par, func, root_model=None):
+
+    #    if self == master_par:
+    #        raise RuntimeError(" root and linked parameter can't be the same")
+    #    self._is_dependent = True
+    #    self._func = func
+    #    self._master_pars = master_pars
+    #    master_par._add_depending_par(self)
+
+    #    self.freeze()
+    #    if root_model is not None:
+    #        self._linked_root_model = root_model
+    #    self.set(val=self._func(self._master_par.val), skip_dep_par_warning=True)
+
+
+    # def get_default_args(self, par_expr):
+    #     #signature = inspect.signature(func)
+    #     #d={}
+    #     #for k, v in signature.parameters.items():
+    #     #    if isinstance(v.default,ModelParameter):
+    #     #        d[k]=v.default
+    #     #    else:
+    #     #        raise RuntimeError('argument',k,'is not valid, should be a model parameter')
+    #     #return d
+    #     pass
+
+
+    @property
+    def par_expr(self):
+        return self._depending_par_expr
+
+    @par_expr.setter
+    def par_expr(self, expr_string):
+        self._depending_par_expr = expr_string
+
+    def _eval_par_func(self):
+        #transform par name and value into a local var
+        for p in self._master_pars:
+            v = p.val_lin
+            exec(p.name + '=v')
+        res = eval(self._depending_par_expr)
+
+        if self.islog is True:
+            res=np.log10(res)
+
+        return eval(self.par_expr)
+
 
     def set(self, *args, skip_dep_par_warning=False, **keywords):
         """
@@ -284,7 +369,7 @@ class ModelParameter(object):
          
         """
         keys = keywords.keys()
-        if self._is_dependent is False or skip_dep_par_warning is True:
+        if self.immutable is False or skip_dep_par_warning is True:
             pass
         else:
             #warnings.warn('\n\n *** you are trying to set a dependent parameter:%s *** \n'%self.name)
@@ -303,8 +388,10 @@ class ModelParameter(object):
                             raise RuntimeError('parameter  %s' %(self.name), 'the value', keywords[kw] , 'is not in the allowed list',self.allowed_values)
 
                     self._val.val = keywords[kw]
-                    if self._depending_par is not None:
-                        self._depending_par.set(val=self._depending_par._func(self._val.val),skip_dep_par_warning=True)
+                    if self._depending_pars is not []:
+                        for p in self._depending_pars:
+                            #print("==> setting dep par",p.name, 'to',p._func(),'p=',p,'master',self,'name',self.name)
+                            p.set(val=p._func(),skip_dep_par_warning=True)
 
                 elif kw == 'log':
                     self._val.islog = keywords[kw]
@@ -368,22 +455,25 @@ class ModelParameter(object):
                 print ("wrong arg=%s, not in%s "%(arg, self.allowed_keywords.keys()))
                 
                 raise ValueError
-            
-    
+
+    @property
+    def immutable(self):
+        return self._is_dependent or self._linked
 
     @property
     def frozen(self):
         return self._frozen
 
     @frozen.setter
-    def frozen(self,v):
-        #if self._is_dependent is not True:
+    def frozen(self,v,skip_dep_par_warning=False):
+        if self.immutable is True and skip_dep_par_warning is True:
+            raise RuntimeError('frozen state of linked/dependent parameter:',self.name , 'can not be changed, please update your script')
+
         if v not in [True,False]:
             raise RuntimeError('par',self.name,'only True or False are allowed')
         else:
             self._frozen = v
-        #else:
-        #    raise RuntimeError('\n\n *** you are trying to change the frozen state of a dependent parameter:%s ***\n'%self.name)
+
 
 
     def freeze(self):
@@ -396,7 +486,7 @@ class ModelParameter(object):
         
     def free(self):
         """
-        make a paraemter free
+        make a parameter free
         """ 
         self.frozen=False
 
@@ -460,7 +550,7 @@ class ModelParameter(object):
             val=str("%+e"%self.val)
         
         if nofields==False:
-            descr= "name = %-16s  type = %-20s  units = %-16s  val = %s  phys-bounds = [%-13s,%-13s] islog = %s  froze= %s "%(self.name, self.par_type ,
+            descr= "name = %-16s  type = %-20s  units = %-16s  val = %s  phys-bounds = [%-13s,%-13s] islog = %s  frozen= %s "%(self.name, self.par_type ,
                                                                                    self.units, val, val_min, val_max,self.islog,self.frozen)
         else:
             descr= " %-16s | %-20s | %-16s | %s | [%-13s,%-13s] | %s | %s"%(self.name, self.par_type ,
@@ -521,29 +611,33 @@ class ModelParameter(object):
 
         return descr
 
-class LinkedParameter(ModelParameter):
+    def identity_func(self):
+        return self._root_par.val
 
-    def __init__(self,p_name,m_list):
-        super(LinkedParameter,self).__init__()
-        self.m_list = m_list
-        self.name = p_name
 
-    #def set_par(self, par_name, val):
-    #    for model in self.m_list:
-
-    #        pm = model.get_par_by_name(self.name)
-    #        pm.set(par_name, val = val)
-
-    #def set(self, *args, **kw):
-    #    self.set_par(*args, **kw)
-
-class ModelLinkedParameter(object):
-    def __init__(self,name,p):
-
-        self.name = name
-        self.paramters = ModelParameterArray()
-        self.paramters.add_par(p)
-        self.paramters.model=self
+# class LinkedParameter(ModelParameter):
+#
+#     def __init__(self,p_name,m_list):
+#         super(LinkedParameter,self).__init__()
+#         self.m_list = m_list
+#         self.name = p_name
+#
+#     #def set_par(self, par_name, val):
+#     #    for model in self.m_list:
+#
+#     #        pm = model.get_par_by_name(self.name)
+#     #        pm.set(par_name, val = val)
+#
+#     #def set(self, *args, **kw):
+#     #    self.set_par(*args, **kw)
+#
+# class ModelLinkedParameter(object):
+#     def __init__(self,name,p):
+#
+#         self.name = name
+#         self.parameters = ModelParameterArray()
+#         self.paramters.add_par(p)
+#         self.paramters.model=self
 
 
 
@@ -578,8 +672,13 @@ def compositr_parameter_setter(method):
 
     return func_wrapper
 
-def func_dep_identity(a):
-    return a
+def create_a_function( **kwargs):
+
+    def function_template(**kwargs):
+        return
+
+    return function_template
+
 
 class CompositeModelParameterArray(object):
 
@@ -596,21 +695,39 @@ class CompositeModelParameterArray(object):
         for p in self.par_array:
             p.reset_dependencies()
 
+
+
+
     def link_par(self,par_name,model_name_list,root_model_name):
         m_root=self.get_model_by_name(root_model_name)
         p_root=m_root.get_par_by_name(par_name)
 
         for m_name in model_name_list:
-            m=self.get_model_by_name(m_name)
+            dep_model=self.get_model_by_name(m_name)
 
-            if m is not None:
-                p_dep = m.get_par_by_name(par_name)
-                print('==> root and linked par', self, p_root, )
-                if p_root == p_dep:
-                    raise RuntimeError(" root and linked parameter can't be the same")
-                #p_root._linked_models.append(m)
-                p_dep.make_dependent(p_root, func_dep_identity,root_model=m_root)
-                p_dep._linked = True
+            if dep_model is not None:
+                dep_par = dep_model.get_par_by_name(par_name)
+                if dep_par is not None:
+                    print('==> par:',dep_par.name, 'from model:',  dep_model.name, 'linked to same parameter in model', m_root.name )
+                    if p_root == dep_par:
+                        raise RuntimeError(" root and linked parameter can't be the same")
+                    if dep_par.immutable is True:
+                        raise RuntimeError(" this parameter is already linked or dependent ")
+                    if m_root==dep_par.model:
+                        raise RuntimeError(" linked and root model must be different")
+                    #p_root._linked_models.append(dep_model)
+                    #exec(dep_par.name+'= dep_par')
+                    #identity_func=lambda p_root=p_root: p_root.val_lin
+                    dep_par._root_par = p_root
+                    #dep_par.make_dependent_par(dep_par.identity_func)
+                    dep_par._func=dep_par.identity_func
+                    dep_par._linked = True
+                    dep_par._is_dependent = True
+                    dep_par._linked_root_model=m_root
+                    dep_par._add_master_par(p_root)
+                    p_root._add_depending_par(dep_par)
+                    dep_par.freeze()
+                    p_root.val=p_root.val
             else:
                  self._handle_missing_component_error(m_name)
 
@@ -635,6 +752,8 @@ class CompositeModelParameterArray(object):
 
 
         model.parameters.model=model
+        for p in model.parameters.par_array:
+            p.model=model
 
         self._parameters.append(model.parameters)
         self._model_comp.append(model)
@@ -734,7 +853,6 @@ class CompositeModelParameterArray(object):
         return self._best_fit_par_table
 
     def show_pars(self, getstring=False, sort_key=None):
-
         self._build_par_table()
         if sort_key is not None:
             self.par_table.sort(sort_key)
@@ -742,14 +860,17 @@ class CompositeModelParameterArray(object):
         if getstring == True:
             return self.par_table.pformat_all()
         else:
-            self.par_table.pprint_all()
+            #self.par_table.pprint_all()
+            _show_table(self.par_table)
 
     def show_best_fit_pars(self, getstring=False):
         self._build_best_fit_par_table()
         if getstring == True:
             return self._best_fit_par_table.pformat_all()
         else:
-            self._best_fit_par_table.pprint_all()
+            #return self._best_fit_par_table
+            #.pprint_all()
+            _show_table(self._best_fit_par_table)
 
     #@compositr_parameter_setter
     def freeze(self, model_name,par_name):
@@ -851,18 +972,22 @@ class ModelParameterArray(object):
         try:
             assert (isinstance(par,ModelParameter))
         except:
-            raise RuntimeError('parameter is not an istance of',type(ModelParameter))
+            raise RuntimeError('parameter is not an instance of',type(ModelParameter))
 
         try:
             assert (par.name not in [p.name for p in self.par_array])
         except:
             raise RuntimeError('parameter name:',par.name,'already assigned')
 
+        par.model = self.model
         self.par_array.append(par)
 
         setattr(self,clean_var_name(par.name), par)
         self.properties[par.name]=par
-
+        par.model=self.model
+    @property
+    def names(self):
+        return [p.name for p in self.par_array]
 
     def _build_par_table(self,names_list=None):
         #, skip_hidden = False):
@@ -917,8 +1042,8 @@ class ModelParameterArray(object):
                     _islog.append(par.islog)
                     _frozen.append(par.frozen)
                 else:
-                    if par._linked is False and par._depending_par!=None:
-                        _p_name = par.name + '(R)'
+                    if par._linked is False and par._depending_pars!=[]:
+                        _p_name = par.name + '(M)'
                     else:
                         _p_name = par.name
 
@@ -931,10 +1056,11 @@ class ModelParameterArray(object):
                     _frozen.append(par.frozen)
 
                 if par._is_dependent is True and par._linked is False:
-                    _p_name = '*'+ par.name + '(D,%s)' % par._master_par.name
+                    for p in par._master_pars:
+                        _p_name = '*'+ par.name + '(D,%s)' % p.name
                     if par._linked_root_model is not None:
                         if par._linked_root_model != self.model:
-                            _p_name = '*' + par.name + '(D,%s,%s)' % (par._master_par.name, par._linked_root_model.name)
+                            _p_name +=  par._linked_root_model.name
 
                 _name.append(_p_name)
 
@@ -1026,8 +1152,8 @@ class ModelParameterArray(object):
                     _fit_range_max.append(par.fit_range_max)
 
                 else:
-                    if par._linked is False and par._depending_par!=None:
-                        _p_name = par.name + '(R)'
+                    if par._linked is False and par._depending_pars!=[]:
+                        _p_name = par.name + '(M)'
                     else:
                         _p_name = par.name
                     if par.frozen == True:
@@ -1055,10 +1181,11 @@ class ModelParameterArray(object):
                     _fit_range_max.append(par.fit_range_max)
 
                 if par._is_dependent is True and par._linked is False:
-                    _p_name = '*' + par.name + '(D,%s)' % par._master_par.name
+                    for p in par._master_pars:
+                        _p_name = '*' + par.name + '(D,%s)' % p.name
                     if par._linked_root_model is not None:
                         if par._linked_root_model != self.model:
-                            _p_name = '*' + par.name + '(D,%s,%s)' % (par._master_par.name, par._linked_root_model.name)
+                            _p_name += par._linked_root_model.name
 
                 _name.append(_p_name)
                 _frozen.append(par.frozen)
@@ -1144,7 +1271,9 @@ class ModelParameterArray(object):
         if getstring==True:
             return self.par_table.pformat_all()
         else:
-            self.par_table.pprint_all()
+            _show_table(self.par_table)
+            #return self.par_table
+            #.pprint_all()
         
     
     
@@ -1152,9 +1281,10 @@ class ModelParameterArray(object):
 
         self._build_best_fit_par_table()
         if getstring == True:
-            return self._best_fit_par_table.pformat_all()
+            return self.best_fit_par_table.pformat_all()
         else:
-            self._best_fit_par_table.pprint_all()
+            return self.best_fit_par_table
+            #.pprint_all()
 
 
     def set(self,par_name,*args, **keywords):
@@ -1263,9 +1393,10 @@ class ModelParameterArray(object):
             self.par_array[pi].free()
         
 
-
     def _serialize_pars(self):
-        _par_keys=['val','val_min','val_max','val_start','val_last_call','fit_range_min','fit_range_max','best_fit_val','best_fit_err','frozen','allowed_values']
+        _par_keys=['val','val_min','val_max','val_start','val_last_call','fit_range_min','fit_range_max','best_fit_val',
+                   'best_fit_err','frozen','allowed_values','_linked','_is_dependent','_func','_master_pars',
+                   '_linked_root_model','_depending_pars','_root_par','','_master_par_list','_depending_par_expr','units','par_type']
         _par_dict = {}
         for par in self.par_array:
             _val_dict={}
@@ -1281,3 +1412,4 @@ class ModelParameterArray(object):
     def _decode_pars(self,_par_dict):
         for p_name in _par_dict.keys():
             self.set(p_name,**_par_dict[p_name])
+

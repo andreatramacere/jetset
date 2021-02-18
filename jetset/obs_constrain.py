@@ -579,13 +579,13 @@ class ObsConstrain(object):
             (R_from_CD,failed),completed=constr_R_from_CD(jet_model,self.nuFnu_p_S_obs,self.nu_p_S_obs,self.nuFnu_p_IC_obs,self.nu_p_IC_obs,self.rest_frame,R_tvar,params_grid_size,EC=True,silent=silent)
 
         if failed is False and completed is True:
-            print("---> task completed",completed)
+            #
             if R_par is not None:
                 R_par.set(val=set_lin_log_val(R_par,R_from_CD))
                 if silent is False:
                     print("---> setting par type region_size, corresponding to par %s"%(R_par.name))
                     print("---> set to %e"%R_par.val)
-
+                    print("---> task completed", completed)
                 #if silent is False:
                 #    print("---> ",R_par.get_description())
                 #    print()

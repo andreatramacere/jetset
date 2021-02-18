@@ -103,9 +103,9 @@ class CompositeModelContainer(object):
 
     def show_model(self):
         for c in self._components_list:
-            print()
+            #print()
             c.show_model()
-            print()
+            #print()
 
 
 
@@ -275,10 +275,10 @@ class FitModel(Model):
     def composite_expr(self):
         return self._composite_expr
 
-    def link_par(self,par_name,model_name_list,root_model_name):
-        if isinstance(model_name_list, Iterable) is False:
-            model_name_list = [model_name_list]
-        self.parameters.link_par(par_name,model_name_list, root_model_name)
+    def link_par(self,par_name,from_model,to_model):
+        if isinstance(from_model, list) is False:
+            from_model = [from_model]
+        self.parameters.link_par(par_name,from_model, to_model)
 
     @composite_expr.setter
     def composite_expr(self,expr_string):
@@ -348,43 +348,69 @@ class FitModel(Model):
 
         return out_model
 
+    @classmethod
+    def load_model(cls, file_name):
+        try:
+            c = pickle.load(open(file_name, "rb"))
+            ml=c.components.components_list[::]
+            for m in ml:
+                try:
+                    c.del_component(m.name)
+                except:
+                    pass
+            for m in ml:
+                c.add_component(m)
+
+            for p in c.parameters.par_array:
+                if p._linked is True:
+                    p._linked = False
+                    p._is_dependent = False
+                    #print(p.name,p._root_par,[p.model],p._linked_root_model,p.immutable)
+                    c.parameters.link_par(p._root_par.name,[p.model.name],p._linked_root_model.name)
+
+            for m in c.components.components_list:
+                if isinstance(m,Jet):
+                    m._fix_par_dep_on_load()
+            if isinstance(c, Model):
+                c.eval()
+                return c
+            else:
+                raise RuntimeError('The model you loaded is not valid please check the file name')
+
+        except Exception as e:
+            raise RuntimeError(e)
+
+
     def show_model_components(self):
         print("")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 
         print("Composite model description")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         print("name: %s  " % (self.name))
         print("type: %s  " % (self.model_type))
         print("components models:")
         for m in self.components._components_list:
             print(' -model name:', m.name, 'model type:', m.model_type)
         print('')
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 
     def show_model(self):
         print("")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 
         print("Composite model description")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         print("name: %s  " % (self.name))
         print("type: %s  " % (self.model_type))
         print("components models:")
         for m in self.components._components_list:
             print(' -model name:',m.name,'model type:', m.model_type)
         print('')
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 
         print("individual component description")
 
         self.components.show_model()
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 

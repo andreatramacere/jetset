@@ -33,8 +33,10 @@ requirements:
   - pyqt
   - pytest
   - numba
-
-
+  - jupyter
+  - ipython
+  - tqdm
+  - dill
 
 
 

@@ -1,6 +1,6 @@
 import os
 import json
-import pickle
+import dill as pickle
 import six
 import numpy as np
 import copy
@@ -8,7 +8,7 @@ import warnings
 
 from .jet_spectral_components import JetSpecComponent, SpecCompList
 
-from .model_parameters import ModelParameterArray, ModelParameter
+from .model_parameters import ModelParameterArray, ModelParameter, _show_table
 from .base_model import Model
 from .output import makedir,WorkPlace
 from  .plot_sedfit import PlotSED,plt
@@ -188,13 +188,7 @@ class JetBase(Model):
         self.set_emitters_distribution(emitters_distribution, emitters_distribution_log_values, emitters_type,
                                        init=False)
         self.set_blob()
-    @classmethod
-    def clone_blob(cls,jet,emitters):
-        _jet=cls(emitters_distribution=emitters)
-        for p in _jet.parameters.par_array:
-            if p not in jet.emitters_distribution.parameters.par_array:
-                p.val=jet.get_par_by_name(p.name).val
-        return _jet
+
 
     def __getstate__(self):
         return  self._serialize_model()
@@ -219,6 +213,10 @@ class JetBase(Model):
             _model['emitters_distribution_class'] = 'EmittersDistribution'
         else:
             raise  RuntimeError('emitters distribuion type not valid',type(self._emitters_distribution))
+
+        if hasattr(self,'T_esc_e_second'):
+            _model['T_esc_e_second']=self.T_esc_e_second
+
         _model['beaming_expr'] = self._beaming_expr
         _model['spectral_components_name'] = self.get_spectral_component_names_list()
         _model['spectral_components_state'] = [c.state for c in self.spectral_components_list]
@@ -241,6 +239,22 @@ class JetBase(Model):
 
     def save_model(self,file_name):
         pickle.dump(self._serialize_model(), open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+
+    @classmethod
+    @safe_run
+    def load_model(cls, file_name):
+        try:
+            _model = pickle.load(open(file_name, "rb"))
+            jet = cls()
+            jet._decode_model(_model)
+            jet._fix_par_dep_on_load()
+            jet.show_pars()
+            jet.eval()
+            return jet
+
+        except Exception as e:
+
+            raise RuntimeError('The model you loaded is not valid please check the file name', e)
 
     def _decode_model(self,_model):
 
@@ -272,18 +286,25 @@ class JetBase(Model):
             _model['emitters_distribution_log_values']=_v
 
         if _model['emitters_distribution_class'] == 'JetkernelEmittersDistribution':
-            self.set_emitters_distribution(name=_model['emitters_distribution'],
-                                       log_values=_model['emitters_distribution_log_values'],
-                                       emitters_type=emitters_type,
-                                       init=False)
+            self.set_emitters_distribution(distr=_model['emitters_distribution'],
+                                           log_values=_model['emitters_distribution_log_values'],
+                                           emitters_type=emitters_type,
+                                           init=False)
         elif _model['emitters_distribution_class'] == 'EmittersDistribution':
-            self.set_emitters_distribution(name=_model['custom_emitters_distribution'],init=False)
+            self.set_emitters_distribution(distr=_model['custom_emitters_distribution'], init=False)
         else:
             raise RuntimeError('emitters distribuion type not valid', type(self._emitters_distribution))
 
         for c in self.basic_components_list:
             if c not in _model['basic_components_name']:
                 self.del_spectral_component(c)
+
+        if self.emitters_distribution.emitters_type == 'protons':
+
+            self.add_pp_gamma_component()
+            self.add_pp_neutrino_component()
+            self.add_bremss_ep_component()
+            self.T_esc_e_second=_model['T_esc_e_second']
 
         #for k in _model['pars'].keys():
             #print ('-->',k,_model['pars'][k])
@@ -304,7 +325,19 @@ class JetBase(Model):
         #self.set_electron_distribution(str(_model['electron_distribution']))
 
         _par_dict = _model['pars']
-        self.parameters._decode_pars(_par_dict)
+        _non_user_dict={}
+        _user_dict={}
+        for k, v in _model['pars'].items():
+            if v['par_type'] == 'user_defined':
+                _user_dict[k]=v
+            else:
+                _non_user_dict[k]=v
+        self.parameters._decode_pars(_non_user_dict)
+
+        for k, v in _user_dict.items():
+            #print('==>',v)
+            v['name']=k
+            self.parameters.add_par(ModelParameter(**v))
 
         _par_dict = _model['internal_pars']
         for k in _par_dict.keys():
@@ -368,26 +401,9 @@ class JetBase(Model):
         jet.eval()
         return jet
 
-    @classmethod
-    @safe_run
-    def load_model(cls,file_name):
-        try:
-            _model=pickle.load( open(file_name, "rb" ) )
-            jet = cls()
-            jet._decode_model(_model)
-            jet.show_pars()
-            jet.eval()
-            return jet
 
-        except Exception as e:
-
-            raise RuntimeError('The model you loaded is not valid please check the file name',e)
 
     def build_blob(self, verbose=None):
-
-
-
-
 
         blob = BlazarSED.MakeBlob()
 
@@ -505,7 +521,7 @@ class JetBase(Model):
 
         set_str_attr(self._blob,'BEAMING_EXPR',beaming_expr)
 
-        self._emitting_region_dic=build_emitting_region_dic(beaming_expr=beaming_expr)
+        self._emitting_region_dic=build_emitting_region_dic(self.cosmo,beaming_expr=beaming_expr)
 
         self.parameters.add_par_from_dict(self._emitting_region_dic,self,'_blob',JetParameter)
 
@@ -514,7 +530,7 @@ class JetBase(Model):
     def available_emitters_distributions():
         EmittersFactory.available_distributions()
 
-    def set_emitters_distribution(self, name=None, log_values=False, emitters_type='electrons',init=True):
+    def set_emitters_distribution(self, distr=None, log_values=False, emitters_type='electrons', init=True):
 
         if init is True:
             self.set_blob()
@@ -523,12 +539,12 @@ class JetBase(Model):
         if self._emitters_distribution_dic is not None:
             self.del_par_from_dic(self._emitters_distribution_dic)
 
-        if isinstance(name, ArrayDistribution):
+        if isinstance(distr, ArrayDistribution):
             self._emitters_distribution_name = 'from_array'
-            self.emitters_distribution = JetkernelEmittersDistribution.from_array(self, name, emitters_type=emitters_type)
+            self.emitters_distribution = JetkernelEmittersDistribution.from_array(self, distr, emitters_type=emitters_type)
 
-        elif isinstance(name, JetkernelEmittersDistribution):
-            self.emitters_distribution = name
+        elif isinstance(distr, JetkernelEmittersDistribution):
+            self.emitters_distribution = distr
 
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
@@ -536,59 +552,52 @@ class JetBase(Model):
             self.parameters.add_par_from_dict(self._emitters_distribution_dic,self,'_blob',JetParameter)
 
 
-        elif isinstance(name, EmittersDistribution):
-            self._original_emitters_distr = name
-            self.emitters_distribution = copy.deepcopy(name)
+        elif isinstance(distr, EmittersDistribution):
+            self._original_emitters_distr = distr
+            self.emitters_distribution = copy.deepcopy(distr)
+            self._update_emitters_pars_dependence()
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
-
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
-
             self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
+            self._attach_pars_to_jet(preserve_value_emitters=True)
 
-            for par in self.emitters_distribution.parameters.par_array[::]:
-                self.emitters_distribution.parameters.del_par(par)
-
-            for k in self._emitters_distribution_dic.keys():
-                par=self.parameters.get_par_by_name(k)
-                self.emitters_distribution.parameters.add_par(par)
-
-            for k in self._emitters_distribution_dic.keys():
-                par = self.parameters.get_par_by_name(k)
-                if par._depending_par is not None:
-                    dep_par=self.parameters.get_par_by_name(par._depending_par.name)
-                    par._depending_par=dep_par
-            #self.set_blob()
             self.emitters_distribution.update()
-
-        else:
+        elif isinstance(distr, str):
             nf=EmittersFactory()
-            self.emitters_distribution = nf.create_emitters(name,log_values=log_values,emitters_type=emitters_type)
+            self.emitters_distribution = nf.create_emitters(distr, log_values=log_values, emitters_type=emitters_type)
             self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
-
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
-
             self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
-
-            for par in self.emitters_distribution.parameters.par_array[::]:
-                self.emitters_distribution.parameters.del_par(par)
-
-            for k in self._emitters_distribution_dic.keys():
-                par = self.parameters.get_par_by_name(k)
-                self.emitters_distribution.parameters.add_par(par)
-
-            for k in self._emitters_distribution_dic.keys():
-                par = self.parameters.get_par_by_name(k)
-                if par._depending_par is not None:
-                    dep_par = self.parameters.get_par_by_name(par._depending_par.name)
-                    par._depending_par = dep_par
-            #self.set_blob()
+            self._attach_pars_to_jet()
+            self._update_emitters_pars_dependence()
             self.emitters_distribution.update()
+        else:
+            raise RuntimeError('distr',type(distr),'not valid should be a string or an',type(EmittersDistribution),'instance')
 
+    def _attach_pars_to_jet(self, preserve_value_emitters=False):
+
+        v_dict={}
+        for par in self.emitters_distribution.parameters.par_array[::]:
+            self.emitters_distribution.parameters.del_par(par)
+            v_dict[par.name]=par.val
+        for k in self._emitters_distribution_dic.keys():
+            par = self.parameters.get_par_by_name(k)
+            if preserve_value_emitters is True:
+                par.set(val=v_dict[k],skip_dep_par_warning=True)
+            self.emitters_distribution.parameters.add_par(par)
+
+
+    def _update_emitters_pars_dependence(self):
+        for par in self.emitters_distribution.parameters.par_array:
+            if par.immutable is True:
+                warnings.warn('parameter dependence has to be reassigned after emitters distribution is assigned to a jet, now will be reset no dep')
+                self.emitters_distribution.parameters.reset_dependencies()
+                break
 
     def get_emitters_distribution_name(self):
         return self.emitters_distribution.name
@@ -663,10 +672,6 @@ class JetBase(Model):
         for ID,s in enumerate(self.spectral_components_list):
             self.spectral_components_list[ID]= JetSpecComponent(self, s.name, self._blob, var_name=s._var_name, state_dict=s._state_dict, state=s.state)
             setattr(self.spectral_components, self.spectral_components_list[ID].name, self.spectral_components_list[ID])
-
-
-
-
 
 
     def add_basic_components(self):
@@ -878,7 +883,10 @@ class JetBase(Model):
         if eval is True:
             self.set_blob()
 
-        return self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
+        if self.cosmo._c is not None:
+            return self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
+        else:
+            return self.cosmo.get_DL_cm()
 
 
     @safe_run
@@ -1092,8 +1100,7 @@ class JetBase(Model):
 
 
     def show_emitters_distribution(self):
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         print('%s distribution:'%self._emitters_type)
         print(" type: %s  " % (self._emitters_distribution_name))
         print(" gamma energy grid size: ", self.gamma_grid_size)
@@ -1114,11 +1121,10 @@ class JetBase(Model):
 
         """
         print("")
-        print("-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 
         print ("jet model description")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
         print("name: %s  " % (self.name))
         print('')
         print('%s distribution:'%self._emitters_type)
@@ -1162,9 +1168,9 @@ class JetBase(Model):
         print('')
         print('flux plot lower bound   :  %e' % self.flux_plot_lim)
         print('')
+        print('-'*80)
         self.show_pars()
-
-        print("-------------------------------------------------------------------------------------------------------------------")
+        print('-' * 80)
 
     def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-',frame='obs', density=False):
         if plot_obj is None:
@@ -1221,7 +1227,7 @@ class JetBase(Model):
                 self._blob.T_esc_e_second = self.T_esc_e_second
         if self.emitters_distribution._user_defined is True:
             self.emitters_distribution._fill()
-        BlazarSED.Init(self._blob, self.cosmo.get_DL_cm(self.parameters.z_cosm.val))
+        BlazarSED.Init(self._blob, self.get_DL_cm())
         if self.emitters_distribution._user_defined is True:
             self.emitters_distribution._set_blob()
 
@@ -1307,53 +1313,12 @@ class JetBase(Model):
 
         return out_model
 
-    # @safe_run
-    # def get_SED_points(self,log_log=False,name='Sum'):
-    #     try:
-    #         spec_comp=self.get_spectral_component_by_name(name)
-    #
-    #         nuFnu_ptr=spec_comp.nuFnu_ptr
-    #         nu_ptr=spec_comp.nu_ptr
-    #
-    #         size=self._blob.nu_grid_size
-    #         x=np.zeros(size)
-    #         y=np.zeros(size)
-    #
-    #         for i in range(size):
-    #             x[i]=BlazarSED.get_spectral_array(nu_ptr,self._blob,i)
-    #             y[i]=BlazarSED.get_spectral_array(nuFnu_ptr,self._blob,i)
-    #
-    #
-    #         msk_nan=np.isnan(x)
-    #         msk_nan+=np.isnan(y)
-    #
-    #         x[msk_nan]=0.
-    #         y[msk_nan]=self.get_emiss_lim()
-    #
-    #         msk=y<self.get_emiss_lim()
-    #
-    #
-    #         y[msk]=self.get_emiss_lim()
-    #
-    #
-    #
-    #         if log_log==True:
-    #             msk = y <= 0.
-    #             y[msk] = self.get_emiss_lim()
-    #
-    #
-    #             x=np.log10(x)
-    #             y=np.log10(y)
-    #
-    #
-    #
-    #         return x,y
-    #
-    #     except:
-    #         raise RuntimeError ('model evaluation failed in get_SED_points')
 
-    #@safe_run
-    def energetic_report(self,write_file=False,getstring=True,wd=None,name=None,verbose=True):
+    def energetic_report(self):
+        self._build_energetic_report()
+        _show_table(self.energetic_report_table)
+
+    def _build_energetic_report(self,):
         self.energetic_dict={}
 
         _energetic = BlazarSED.EnergeticOutput(self._blob,0)
@@ -1395,34 +1360,9 @@ class JetBase(Model):
             print('_energetic',_energetic)
             raise RuntimeError('energetic_report failed',e)
 
-        self._energetic_report = self.energetic_report_table.pformat_all()
-
-        if  verbose is True:
-            print("-----------------------------------------------------------------------------------------")
-            print("jet eneregetic report:")
-            self.energetic_report_table.pprint_all()
-            print("-----------------------------------------------------------------------------------------")
 
 
 
-
-
-        if write_file==True:
-
-            if wd is None:
-                wd = self.wd
-
-            if name is None:
-                name = 'energetic_report_%s' % self.name + '.txt'
-
-            outname = '%s/%s' % (wd, name)
-
-            outfile = open(outname, 'w')
-
-            for text in self._energetic_report:
-                print(text, file=outfile)
-
-            outfile.close()
 
 
 
@@ -1509,7 +1449,6 @@ class Jet(JetBase):
                                  jet_workplace=jet_workplace,
                                  verbose=verbose,
                                  clean_work_dir=clean_work_dir)
-
         if name is None or name == '':
             if self.emitters_distribution.emitters_type == 'electrons':
                 name = 'jet_leptonic'
@@ -1614,7 +1553,7 @@ class Jet(JetBase):
 
 
     def set_N_from_F_sync(self, F_sync):
-        DL = self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
+        DL = self.get_DL_cm()
         L = F_sync * DL * DL * 4.0 * np.pi
         self.set_N_from_L_sync(L)
 
@@ -1639,9 +1578,9 @@ class Jet(JetBase):
         sets the normalization of N to match the observed flux nuFnu_obs at a given frequency nu_obs
         """
         self.set_blob()
-        DL =  self.cosmo.get_DL_cm(self.parameters.z_cosm.val)
+        DL =  self.get_DL_cm()
         L = nuFnu_obs * DL * DL * 4.0 * np.pi
-        nu_rest = nu_obs * (1 + self._blob.z_cosm)
+        nu_rest = nu_obs * (1 + self.parameters.z_cosm.val)
         self.set_N_from_nuLnu( L, nu_rest)
 
 

@@ -120,7 +120,7 @@ jobs:
       - name: 'test'
         working-directory: .github/action_test/
         run: |
-          pytest --pyargs jetset.tests.test_functions::test_jet
+          pytest --pyargs jetset.tests.test_functions::test_custom
 
       - name: 'set pkg version'
         run: |
@@ -144,12 +144,13 @@ jobs:
 
       - name: 'prepare asset pip'
         run: |
-          mv dist pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}
-          tar -cvf pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.whl
+          mv dist pip-bianary-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          tar -cvf pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-bianary-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.whl
 
       - name: 'prepare asset src'
         run: |
-          tar -cvf src-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
+          mv pip-bianary-${{ env.PKG_VERSION }}-${{ matrix.os }} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          tar -cvf pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
 
       - name: 'Upload Release Asset'
         uses: softprops/action-gh-release@v1
@@ -157,8 +158,8 @@ jobs:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
           files: |
-            pip-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
-            src-packages-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+            pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+            pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

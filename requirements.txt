@@ -14,3 +14,7 @@ pyyaml
 pytest
 numba
 pytest
+tqdm
+jupyter
+ipython
+dill

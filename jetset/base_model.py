@@ -6,16 +6,19 @@
 __author__ = "Andrea Tramacere"
 
 
+import numpy as np
+import json
+import dill as pickle
+import warnings
+import inspect
+
 from .model_parameters import ModelParameterArray, ModelParameter
 from .spectral_shapes import SED
 from .data_loader import  ObsData
 from .utils import  get_info
 from .plot_sedfit import  PlotSED
 
-import numpy as np
-import json
-import pickle
-import warnings
+
 from .cosmo_tools import  Cosmo
 
 __all__=['Model']
@@ -235,9 +238,9 @@ class Model(object):
 
     @classmethod
     def load_model(cls, file_name):
-
         try:
             c = pickle.load(open(file_name, "rb"))
+            c._fix_par_dep_on_load()
             if isinstance(c, Model):
                 c.eval()
                 return c
@@ -247,24 +250,38 @@ class Model(object):
         except Exception as e:
             raise RuntimeError(e)
 
+    def _fix_par_dep_on_load(self,):
+        for p in self.parameters.par_array:
+            if p._is_dependent is True:
+                self._is_dependent = False
+                #print("==>", p.name, p._master_par_list, p._depending_par_expr)
+                self.make_dependent_par(p.name, p._master_par_list, p._depending_par_expr)
+
+    #def _set_pars_dep(self):
+    #    for p in self.parameters.par_array:
+    #        if
+
+    def clone(self):
+        return  pickle.loads(pickle.dumps(self))
+
     def show_model(self):
         print("")
-        print("-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 
         print("model description")
-        print(
-            "-------------------------------------------------------------------------------------------------------------------")
+        print('-' * 80)
         print("name: %s  " % (self.name))
         print("type: %s  " % (self.model_type))
 
         print('')
 
-        self.show_pars()
+        print('-'*80)
+        self.parameters.show_pars()
 
-        print("-------------------------------------------------------------------------------------------------------------------")
+        print('-'*80)
 
     def show_pars(self, sort_key='par type'):
-        self.parameters.show_pars(sort_key=sort_key)
+        return self.parameters.show_pars(sort_key=sort_key)
 
     def show_best_fit_pars(self):
         self.parameters.show_best_fit_pars()
@@ -306,6 +323,53 @@ class Model(object):
                 return param
 
         return None
+
+    def dep_func_get_default_args(self, par_func):
+        signature = inspect.signature(par_func)
+        d = []
+        for k, v in signature.parameters.items():
+            #print('==> par',k,v)
+            p = self.get_par_by_name(k)
+            if p is not None:
+                d.append(k)
+            else:
+                raise RuntimeError('argument', k, 'is not valid, should be a model parameter name')
+        return d
+
+
+    def make_dependent_par(self, par, depends_on, par_expr):
+        master_par_list = depends_on
+
+        dep_par=self.parameters.get_par_by_name(par)
+
+        if dep_par.name in master_par_list:
+            raise RuntimeError("depending parameter:", dep_par.name, "can't be in master par list",master_par_list)
+        for p_name in master_par_list:
+            #print('==> p',p_name)
+            p = self.get_par_by_name(p_name)
+            exec(p.name + '= 1')
+        try:
+            eval(par_expr)
+        except:
+            raise RuntimeError('the parameter expression is not valid')
+
+        dep_par.freeze()
+        dep_par._is_dependent = True
+        dep_par.par_expr = par_expr
+        dep_par._func = dep_par._eval_par_func
+        dep_par._master_par_list=master_par_list
+        for p in master_par_list:
+            m = self.parameters.get_par_by_name(p)
+            dep_par._add_master_par(m)
+            m._add_depending_par(dep_par)
+
+        for p in master_par_list:
+            m = self.parameters.get_par_by_name(p)
+            m.val=m.val
+        print('==> par', dep_par.name, 'is now depending on', master_par_list, 'according to expr', par_expr)
+    def add_user_par(self,name,val,units='',val_min=None,val_max=None):
+        self.parameters.add_par(ModelParameter(name=name,units=units,val=val,val_min=val_min,val_max=val_max,par_type='user_defined'))
+
 
 class MultiplicativeModel(Model):
 
