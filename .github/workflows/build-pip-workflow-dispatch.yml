@@ -153,7 +153,7 @@ jobs:
 
       - name: 'prepare asset src'
         run: |
-          mv pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          mv pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
           tar -cvf pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
 
       - name: 'Upload Release Asset'
