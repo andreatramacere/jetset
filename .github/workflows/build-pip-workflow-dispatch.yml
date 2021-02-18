@@ -148,8 +148,8 @@ jobs:
 
       - name: 'prepare asset pip'
         run: |
-          mv dist pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{-matrix.python-version }}
-          tar -cvf pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{-matrix.python-version }}.tar ./pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{-matrix.python-version }}/*.whl
+          mv dist pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}
+          tar -cvf pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}.tar ./pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}/*.whl
 
       - name: 'prepare asset src'
         run: |
@@ -162,7 +162,7 @@ jobs:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
           files: |
-            pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{-matrix.python-version }}.tar
+            pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}.tar
             pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
