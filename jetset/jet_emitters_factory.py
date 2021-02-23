@@ -78,6 +78,10 @@ class EmittersFactory:
         for k in _available_dict.keys():
             print('%s: %s' % (k, _available_dict[k]))
 
+    @staticmethod
+    def available_distributions_list():
+        return  _available_dict.keys()
+
     def create_emitters(self,
                         name,
                         gamma_grid_size=200,
@@ -106,8 +110,8 @@ class EmittersFactory:
                                        gamma_grid_size=gamma_grid_size)
 
         a_t, b_t = n_e_bkn.set_bounds(1, 1E9, log_val=n_e_bkn._log_values)
-
-        n_e_bkn.add_par('gamma_break', par_type='turn-over-energy', val=1E4, vmin=a_t, vmax=b_t, unit='lorentz-factor')
+        gamma_break_val = n_e_bkn._set_log_val(1E4,log_val=log_values)
+        n_e_bkn.add_par('gamma_break', par_type='turn-over-energy', val=gamma_break_val, vmin=a_t, vmax=b_t, unit='lorentz-factor',log=log_values)
         n_e_bkn.add_par('p', par_type='LE_spectral_slope', val=2.5, vmin=-10., vmax=10, unit='')
         n_e_bkn.add_par('p_1', par_type='HE_spectral_slope', val=3.5, vmin=-10., vmax=10, unit='')
         n_e_bkn.set_distr_func(distr_func_bkn)
@@ -143,7 +147,8 @@ class EmittersFactory:
                                              gamma_grid_size=gamma_grid_size)
 
         a_t, b_t = n_e_plc.set_bounds(1, 1E9, log_val=n_e_plc._log_values)
-        n_e_plc.add_par('gamma_cut', par_type='turn-over-energy', val=1E4, vmin=a_t, vmax=b_t,
+        gamma_cut_val = n_e_plc._set_log_val(1E4,log_val=log_values)
+        n_e_plc.add_par('gamma_cut', par_type='turn-over-energy', val=gamma_cut_val, vmin=a_t, vmax=b_t,
                               unit='lorentz-factor',log=log_values)
         n_e_plc.add_par('p', par_type='LE_spectral_slope', val=2.0, vmin=-10., vmax=10, unit='')
         n_e_plc.set_distr_func(distr_func_plc)
@@ -161,7 +166,8 @@ class EmittersFactory:
                                              gamma_grid_size=gamma_grid_size)
 
         a_t, b_t = n_e_super_exp.set_bounds(1, 1E9, log_val=n_e_super_exp._log_values)
-        n_e_super_exp.add_par('gamma_cut', par_type='turn-over-energy', val=1E4, vmin=a_t, vmax=b_t,
+        gamma_cut_val = n_e_super_exp._set_log_val(1E4,log_val=log_values)
+        n_e_super_exp.add_par('gamma_cut', par_type='turn-over-energy', val=gamma_cut_val, vmin=a_t, vmax=b_t,
                               unit='lorentz-factor',log=log_values)
         n_e_super_exp.add_par('p', par_type='LE_spectral_slope', val=2.0, vmin=-10., vmax=10, unit='')
         n_e_super_exp.add_par('a', par_type='spectral_curvature', val=1.0, vmin=0., vmax=100., unit='')
@@ -181,7 +187,8 @@ class EmittersFactory:
                                     gamma_grid_size=gamma_grid_size)
 
         a_t, b_t = n_lp.set_bounds(1, 1E9, log_val=n_lp._log_values)
-        n_lp.add_par('gamma0_log_parab', par_type='turn-over-energy', val=1E4, vmin=a_t, vmax=b_t,
+        gamma0_log_parab_val = n_lp._set_log_val(1E4,log_val=log_values)
+        n_lp.add_par('gamma0_log_parab', par_type='turn-over-energy', val=gamma0_log_parab_val, vmin=a_t, vmax=b_t,
                               unit='lorentz-factor',log=log_values)
         n_lp.add_par('s', par_type='LE_spectral_slope', val=2.0, vmin=-10., vmax=10, unit='')
         n_lp.add_par('r', par_type='spectral_curvature', val=0.4, vmin=-15., vmax=15., unit='')
@@ -202,7 +209,8 @@ class EmittersFactory:
                                     gamma_grid_size=gamma_grid_size)
 
         a_t, b_t = n_lep.set_bounds(1, 1E9, log_val=n_lep._log_values)
-        n_lep.add_par('gamma_p', par_type='turn-over-energy', val=1E4, vmin=a_t, vmax=b_t,
+        gamma_p_val = n_lep._set_log_val(1E4,log_val=log_values)
+        n_lep.add_par('gamma_p', par_type='turn-over-energy', val=gamma_p_val, vmin=a_t, vmax=b_t,
                      unit='lorentz-factor',log=log_values)
         n_lep.add_par('r', par_type='spectral_curvature', val=0.4, vmin=-15., vmax=15., unit='')
         n_lep.set_distr_func(distr_func_lep)
@@ -221,8 +229,9 @@ class EmittersFactory:
                                     gamma_grid_size=gamma_grid_size)
 
         a_t, b_t = n_lppl.set_bounds(1, 1E9, log_val=n_lppl._log_values)
+        gamma0_log_parab_val = n_lppl._set_log_val(1E4,log_val=log_values)
 
-        n_lppl.add_par('gamma0_log_parab', par_type='turn-over-energy', val=1E4, vmin=a_t, vmax=b_t,
+        n_lppl.add_par('gamma0_log_parab', par_type='turn-over-energy', val=gamma0_log_parab_val, vmin=a_t, vmax=b_t,
                      unit='lorentz-factor',log=log_values)
         n_lppl.add_par('s', par_type='LE_spectral_slope', val=2.0, vmin=-10., vmax=10, unit='')
         n_lppl.add_par('r', par_type='spectral_curvature', val=0.4, vmin=-15., vmax=15., unit='')

@@ -91,9 +91,9 @@ class BaseEmittersDistribution(object):
 
     @check_par_name
     def add_par(self, name, par_type, val, vmax, vmin, unit='', log=False, frozen=False):
-        #print('==> adding',name)
-        if log is True:
-            val = np.log10(val)
+        #print('==> adding',name,val)
+        #if log is True:
+        #    val = np.log10(val)
 
         self.parameters.add_par(ModelParameter(name=name,
                                                par_type=par_type,
@@ -144,6 +144,13 @@ class BaseEmittersDistribution(object):
 
         else:
             return np.log10([a,b])
+
+    def _set_log_val(self,a,log_val=False):
+        if log_val == False:
+            return a
+
+        else:
+            return np.log10(a)
 
 
     def _eval_func(self,gamma):
@@ -378,8 +385,8 @@ class EmittersDistribution(BaseEmittersDistribution):
             self._parameters_dict[par.name]._master_pars = par._master_pars
 
     def add_par(self, name, par_type, val, vmax, vmin, unit='', log=False, frozen=False):
-        if log is True:
-            val = np.log10(val)
+        #if log is True:
+        #    val = np.log10(val)
 
         if name not in self._parameters_dict.keys():
             self._parameters_dict[name]=JetModelDictionaryPar(ptype=par_type,
@@ -393,6 +400,7 @@ class EmittersDistribution(BaseEmittersDistribution):
         else:
             raise ValueError('par',name,'already assigned')
 
+        print('==> add par',name,val,log)
         self.parameters.add_par(ModelParameter(name=name,
                                                par_type=par_type,
                                                val=val,
@@ -422,12 +430,12 @@ class EmittersDistribution(BaseEmittersDistribution):
         self._parameters_dict=model_dict
 
         for k,par in model_dict.items():
-        #    #print('==> k',k,'par',par)
-            if self._log_values is True:
+            # print('==> k',k,'par',par,par.val,par.log)
+            if par.log is True:
                 val = np.log10(par.val)
             else:
                 val = par.val
-
+            # print('==> k', k, 'par', par, val, par.log)
             self.parameters.add_par(ModelParameter(name=k,
                                                    par_type=par.ptype,
                                                    val=val,

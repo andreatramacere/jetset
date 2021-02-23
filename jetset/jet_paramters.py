@@ -217,6 +217,7 @@ class JetModelParameterArray(ModelParameterArray):
                 else:
                     _master_pars=[]
 
+                #print('==>, p',pname,'log_val',log,pval)
                 self.add_par(parameter_class(model,
                                              struct_name,
                                              jetkernel_par_name,
