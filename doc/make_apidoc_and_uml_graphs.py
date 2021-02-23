@@ -1,9 +1,4 @@
-from __future__ import absolute_import, division, print_function,unicode_literals
-
-from builtins import (bytes, str, open, super, range,
-                      zip, round, input, int, pow, object, map, zip)
-
-
+#!/usr/bin/env python
 import sys,os
 
 
@@ -60,7 +55,7 @@ In the following the package modules are listed.
     
     for modname in mod_list:
         print("   %s    <%s.rst>"%(modname,modname),file=f)
-        
+
         f1=open('../doc/api/%s.rst'%modname,'w')
 
         under_title="-"*len(modname)
@@ -88,11 +83,9 @@ def main():
     #mod_list=['jet_model']
     make_apidoc(mod_list)
     
-    for modname in mod_list:
-            
-            
-            #make_module_uml(modname)
-            pass
+    # for modname in mod_list:
+    #        #make_module_uml(modname)
+    #        pass
 
 
 if __name__ == "__main__":

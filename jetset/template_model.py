@@ -1,8 +1,3 @@
-
-#from __future__ import absolute_import, division, print_function
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
-
 __author__ = "Andrea Tramacere"
 
 
@@ -17,7 +12,7 @@ import numpy as np
 import os
 
 from .spectral_shapes import SED
-from  .plot_sedfit import PlotSED,PlotSpecComp
+from .plot_sedfit import PlotSED,PlotSpecComp
 
 from .model_parameters import ModelParameter,ModelParameterArray
 from .base_model import  Model

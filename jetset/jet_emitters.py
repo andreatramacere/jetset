@@ -1,6 +1,5 @@
 __author__ = "Andrea Tramacere"
 
-import os
 import numpy as np
 from inspect import signature
 from astropy.constants import m_e,m_p,c
@@ -11,16 +10,17 @@ from .jet_paramters import *
 from .utils import set_str_attr
 from .model_parameters import ModelParameterArray, ModelParameter
 
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-if on_rtd is True:
-    try:
-        from .jetkernel import jetkernel as BlazarSED
-    except ImportError:
-        from .mock import jetkernel as BlazarSED
-else:
-    from .jetkernel import jetkernel as BlazarSED
+# on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+# if on_rtd is True:
+#     try:
+#         from .jetkernel import jetkernel as BlazarSED
+#     except ImportError:
+#         from .mock import jetkernel as BlazarSED
+# else:
 
-__all__=['JetkernelEmittersDistribution', 'EmittersDistribution', 'ArrayDistribution','EmittersArrayDistribution']
+from .jetkernel import jetkernel as BlazarSED
+
+__all__=['EmittersDistribution','BaseEmittersDistribution', 'ArrayDistribution','EmittersArrayDistribution','InjEmittersDistribution','JetkernelEmittersDistribution']
 
 
 class ArrayDistribution(object):
@@ -229,10 +229,11 @@ class BaseEmittersDistribution(object):
 
 
     def _plot(self,m, p, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None):
-        self.update()
+
         if hasattr(self,'_jet'):
             if self._jet is not None:
                 self._set_blob()
+        self.update()
         if self.emitters_type == 'electrons':
             if label is None:
                 label = 'electrons'

@@ -1,18 +1,14 @@
-#from __future__ import absolute_import, division, print_function
+__author__ = "Andrea Tramacere"
 
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
-
-import ast
 import  numpy as np
 import warnings
 from astropy.table import Table,vstack,MaskedColumn
 from astropy import  units as u
-from .utils import clean_var_name, parameters_warning
+from .utils import clean_var_name
 from functools import wraps
 import ast
-import  inspect
-__all__=['ModelParameter','ModelParameterArray','Value','LinkedParameter']
+
+__all__=['ModelParameter','ModelParameterArray','Value']
 
 
 def is_notebook():
@@ -350,9 +346,10 @@ class ModelParameter(object):
 
     def _eval_par_func(self):
         #transform par name and value into a local var
-        for _user_par_ in self._master_pars:
-            _par_value = _user_par_.val_lin
-            exec(_user_par_.name + '=_par_value')
+        _par_values= [None]*len(self._master_pars)
+        for ID, _user_par_ in enumerate(self._master_pars):
+            _par_values[ID] = _user_par_.val_lin
+            exec(_user_par_.name + '=_par_values[ID]')
         res = eval(self._depending_par_expr)
 
         if self.islog is True:

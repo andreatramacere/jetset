@@ -26,6 +26,7 @@ FitModel
       ~FitModel.get
       ~FitModel.get_par_by_name
       ~FitModel.link_par
+      ~FitModel.load_model
       ~FitModel.plot_model
       ~FitModel.set
       ~FitModel.set_nu_grid
@@ -49,6 +50,7 @@ FitModel
    .. automethod:: get
    .. automethod:: get_par_by_name
    .. automethod:: link_par
+   .. automethod:: load_model
    .. automethod:: plot_model
    .. automethod:: set
    .. automethod:: set_nu_grid

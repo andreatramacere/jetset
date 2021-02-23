@@ -32,19 +32,14 @@ allowing to fit the numerical models to observed data. The main features of this
     * `Tramacere A. 2020 <https://ui.adsabs.harvard.edu/abs/2020ascl.soft09001T/abstract>`_
     * `Tramacere A. et al. 2011 <http://adsabs.harvard.edu/abs/2011ApJ...739...66T>`_
     * `Tramacere A. et al. 2009 <http://adsabs.harvard.edu/abs/2009A%26A...501..879T>`_
-    * `Massaro E. et. al 2006 <http://adsabs.harvard.edu/abs/2006A%26A...448..861M>`_
 
 
 
 .. _user-docs:
 
-
-Documentation
--------------
-
-
 .. toctree::
    :maxdepth: 1
+   :caption: Documentation:
 
    installation <install.rst>
    what's new in jetset 1.1.2  <new_release.rst>
@@ -52,15 +47,22 @@ Documentation
    code documentation (API) <api/modules.rst>
 
 
-Testers
--------
+.. nbgallery::
+   :caption: Examples:
+
+   example_notebooks/Jet_example_only_synchrotron.ipynb
+   example_notebooks/Jet_example_phys_SSC.ipynb
+
+
+Testers:
+
 I would like to thanks the most active testers:
 
 Hubing Xiao, Cosimo Nigro, Vaidehi S. Paliya, Sara Buson, Sonal Patel
 
 
-License
--------
+License:
+
 JetSeT is released under a 3-clause BSD  license - for details see the
 `License <https://github.com/andreatramacere/jetset/blob/master/LICENSE.txt>`_ file
 

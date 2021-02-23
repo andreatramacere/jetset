@@ -1,31 +1,34 @@
 ##############################################################################
-# To run and convert notebooks for doc:  jupyter nbconvert --execute notebook.ipynb --to rst
-#
-# python make_apidoc_and_uml_graphs.py
-# notebooks are built in the ../../documentation_notebooks/user_guide, update them before building doc!
+# notebooks are built in the documentation_notebooks/user_guide, update them before building doc!
 ##############################################################################
 
- !!!!!To avoid to import the jetkernel module otherwise the build will crash
- export READTHEDOCS='True'
- !!!!!!!!!!!!!!!!!!!!
+1) to build proper api strucutre:
+python make_apidoc_and_uml_graphs.py
 
-#update the docs
-cp -r ../../documentation_notebooks/user_guide/* user_guide/
+2) To avoid to import the jetkernel module otherwise the build will crash
+   export READTHEDOCS='True'
+   Not needed since mock introduced in conf.py
 
-
-#run notebooks and build rst file with script
-./build_rst_files.ch -e #run all noteboks found in dirs
-OR
-./build_rst_files.ch -e dir-name #runs only give directories
-
-ONLY BUILD RST
-./build_rst_files.ch
-OR
-./build_rst_files.ch  dir-name
+3) run step A or B
+    A)run all notebooks and build rst file with script
+        ./build_rst_files.ch -e documentation_notebooks #run all notebooks found in documentation_notebooks
+        OR
+        ./build_rst_files.ch -e documentation_notebooks/dir-name #runs only specific sub-directory
 
 
-#builds the docs
-sphinx-build -b html ./ build
+    B) or ONLY BUILD RST
+        ./build_rst_files.ch documentation_notebooks
+        OR
+        ./build_rst_files.ch  documentation_notebooks/dir-name
+
+
+
+4)update the rst in user_guide from the notebooks in documentation_notebooks
+  find documentation_notebooks -name '*.rst' | cpio -pdm ./user_guide
+  find documentation_notebooks -name '*.png' | cpio -pdm ./user_guide
+
+5)builds the docs
+  sphinx-build -b html ./ build
 
 
 

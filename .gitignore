@@ -4,6 +4,14 @@ __pycache__/
 /doc/out.txt
 /doc/err.txt
 /doc/build/*
+
+/doc/documentation_notebooks/**
+!/doc/documentation_notebooks/**/
+!/doc/documentation_notebooks/**/*.ipynb
+
+/doc/example_notebooks/*
+!/doc/example_notebooks/*.ipynb
+
 .idea
 /.DS_Store
 *.egg-info
@@ -11,7 +19,7 @@ __pycache__/
 *.xcodeproj
 *.pkl
 *.ipynb_checkpoints
-/.DS_Store
+
 .vscode
 /testing
 /build

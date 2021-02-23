@@ -15,6 +15,7 @@ In the following the package modules are listed.
    data_loader    <data_loader.rst>
    frame_converter    <frame_converter.rst>
    jet_emitters    <jet_emitters.rst>
+   jet_emitters_factory    <jet_emitters_factory.rst>
    jet_model    <jet_model.rst>
    jet_paramters    <jet_paramters.rst>
    jet_spectral_components    <jet_spectral_components.rst>

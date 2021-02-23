@@ -1,33 +1,25 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (str, open, super, range,
-#                      object, map)
-
-
-
 
 __author__ = "Andrea Tramacere"
 
 
 
-import os
 
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+# on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
-if on_rtd == True:
-    try:
-        from .jetkernel import jetkernel as BlazarSED
-    except ImportError:
-        from .mock import jetkernel as BlazarSED
-else:
-    from .jetkernel import jetkernel as BlazarSED
+# if on_rtd == True:
+#     try:
+#         from .jetkernel import jetkernel as BlazarSED
+#     except ImportError:
+#         from .mock import jetkernel as BlazarSED
+# else:
+
+from .jetkernel import jetkernel as BlazarSED
 
 
 import numpy as np
 import time
 import  ast
 
-#import copy
 
 from tqdm.autonotebook import tqdm
 
@@ -35,11 +27,9 @@ import threading
 
 from .model_parameters import _show_table
 
-#from .output import makedir,WorkPlace
 
 from astropy.table import  Table
 
-#from .utils import safe_run,set_str_attr, old_model_warning
 
 from .jet_paramters import JetModelDictionaryPar,JetParameter,JetModelParameterArray
 from .jet_emitters import  ArrayDistribution, EmittersArrayDistribution

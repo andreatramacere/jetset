@@ -1,4 +1,6 @@
-import os
+__author__ = "Andrea Tramacere"
+
+
 import json
 import dill as pickle
 import six
@@ -21,20 +23,20 @@ from .jet_tools import *
 from .mathkernel_helper import bessel_table_file_path
 
 
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+# on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
-if on_rtd is True:
-    try:
-        from .jetkernel import jetkernel as BlazarSED
-    except ImportError:
-        from .mock import jetkernel as BlazarSED
-else:
-    from .jetkernel import jetkernel as BlazarSED
+# if on_rtd is True:
+#     try:
+#         from .jetkernel import jetkernel as BlazarSED
+#     except ImportError:
+#         from .mock import jetkernel as BlazarSED
+# else:
+
+from .jetkernel import jetkernel as BlazarSED
 
 
-__author__ = "Andrea Tramacere"
 
-__all__=['Jet']
+__all__=['Jet','JetBase']
 
 
 class JetBase(Model):

@@ -8,9 +8,7 @@ import scipy as sp
 
 import numpy as np
 
-import os
 import warnings
-import copy
 
 from scipy.stats import chi2
 
@@ -23,11 +21,10 @@ except:
 
 from tqdm.autonotebook import tqdm
 
-import  sys
 
 from .plot_sedfit import plt
 
-from scipy.optimize import least_squares,curve_fit
+from scipy.optimize import least_squares
 
 from .leastsqbound.leastsqbound import leastsqbound
 

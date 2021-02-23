@@ -15,17 +15,19 @@
 import sys
 import os
 import json
-
+import mock
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0,os.path.abspath('../'))
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-#
-#autodoc_mock_imports = []
-#autodoc_mock_imports.append('jetkernel')
-#autodoc_mock_imports.append('_jetkernel')
+
+
+autodoc_mock_imports = ["jetkernel"]
+autodoc_mock_imports.append('_jetkernel')
+for mod_name in autodoc_mock_imports:
+    sys.modules[mod_name] = mock.Mock()
 
 if on_rtd==False:  # only import and set the  if we're building docs locally
 
@@ -33,8 +35,6 @@ if on_rtd==False:  # only import and set the  if we're building docs locally
 
     theme='bootstrap'
     #theme='sphinx_rtd_theme'
-
-
 
 else:
     theme = 'bootstrap'
@@ -52,10 +52,9 @@ else:
 # ones.
 
 extensions = [
-
     'sphinx.ext.autodoc',
     'sphinx_automodapi.automodapi',
-    #'numpydoc',
+    'sphinx_gallery.load_style',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
@@ -67,17 +66,15 @@ extensions = [
     'sphinx_automodapi.automodapi',
     'sphinx_automodapi.smart_resolver',
     'sphinx.ext.autosectionlabel',
-    #'sphinxcontrib.plantuml',
-    'sphinxcontrib.bibtex',
     'sphinx.ext.napoleon',
-    #'matplotlib.sphinxext.plot_directive',
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.autosummary',
     'nbsphinx',
     'sphinx.ext.mathjax',
 ]
 
-exclude_patterns = ['_build', '**.ipynb_checkpoints','../jetkernel/*']
+bibtex_bibfiles = ['references.bib']
+exclude_patterns = ['_build', '**.ipynb_checkpoints','../jetkernel/*','../jetset/jetkernel/*']
 
 #autosummary_generate = True
 
@@ -124,7 +121,7 @@ copyright = u'2019, andrea tramacere'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-#exclude_patterns = []
+exclude_patterns = ['documentation_notebooks'   ,'build']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.

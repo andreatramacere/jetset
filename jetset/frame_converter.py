@@ -1,16 +1,10 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
 
 __author__ = "Andrea Tramacere"
 
-
-import math as m
 import numpy as np
 from .utils import *
 
-__all__=['convert_nu_to_blob','convert_nu_to_src']
+__all__=['convert_nu_to_blob','convert_nu_to_src','convert_nuFnu_to_nuLnu_src']
 
 def convert_nu_to_blob(nu,in_frame,delta,z):
     """converts Energies/frequencies from in_frame  to blob rest frame

@@ -1,34 +1,20 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (str, open, super, range,
-#                      object, map)
-
-
-
-
 __author__ = "Andrea Tramacere"
 
 
+# on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
-import os
-
-
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-
-if on_rtd == True:
-    try:
-        from .jetkernel import jetkernel as BlazarSED
-    except ImportError:
-        from .mock import jetkernel as BlazarSED
-else:
-    from .jetkernel import jetkernel as BlazarSED
+# if on_rtd == True:
+#     try:
+#         from .jetkernel import jetkernel as BlazarSED
+#     except ImportError:
+#         from .mock import jetkernel as BlazarSED
+# else:
 
 
 from .jetkernel_models_dic import allowed_disk_type
 
-from .jet_paramters import  *
+from .jet_paramters import *
 
-from .jet_emitters import *
 
 __all__=[ 'build_emitting_region_dic','build_ExtFields_dic','BLR_constraints','DT_constraints']
 

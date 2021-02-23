@@ -1,16 +1,7 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
 
 __author__ = "Andrea Tramacere"
 
 import math as m
-
-import scipy as sp
-
-
-import os
 
 
 from numpy import polyfit,polyval
@@ -21,16 +12,17 @@ import numpy as np
 from .frame_converter import convert_nu_to_blob
 
 from . import jetkernel_models_dic as Model_dic
+#
+# on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+#
+# if on_rtd == True:
+#     try:
+#         from .jetkernel import jetkernel as BlazarSED
+#     except ImportError:
+#         from .mock import jetkernel as BlazarSED
+# else:
 
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-
-if on_rtd == True:
-    try:
-        from .jetkernel import jetkernel as BlazarSED
-    except ImportError:
-        from .mock import jetkernel as BlazarSED
-else:
-    from .jetkernel import jetkernel as BlazarSED
+from .jetkernel import jetkernel as BlazarSED
 
 from .jet_model import Jet
 

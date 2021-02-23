@@ -1,25 +1,19 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
 
 __author__ = "Andrea Tramacere"
 
-#from .cosmo_tools import Cosmo
+
+
+import numpy as np
+
+from astropy.table import Table
 
 from .template_model import SpectralTemplateLogLog
 from .output import section_separator
 from .model_manager import FitModel
-from .loglog_poly_model import LogParabolaEp,LogCubic,find_max_cubic,LogLinear,LogParabolaPL
+from .loglog_poly_model import LogParabolaEp,LogCubic,find_max_cubic,LogLinear
 from .analytical_model import Disk
 from .minimizer import fit_SED
 from .plot_sedfit import  PlotSED
-from .data_loader import log_to_lin, lin_to_log
-import numpy as np
-import copy
-import  traceback
-import  sys
-from astropy.table import Table
 
 __all__=['filter_interval','find_E0','IC_fit_range','index','index_array','index_typecasting','peak_values',
          'SEDShape','spectral_index_range','sync_fit_range']

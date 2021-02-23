@@ -1,16 +1,10 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (bytes, str, open, super, range,
-#                         zip, round, input, int, pow, object, map, zip)
-
 __author__ = "Andrea Tramacere"
 
 
 import numpy as np
 import copy
 
-#from .cosmo_tools import Cosmo
-#from poly_fit import filter_interval
+
 from astropy.table  import  Table,Column
 from astropy import  units as u
 from astropy.units import cds

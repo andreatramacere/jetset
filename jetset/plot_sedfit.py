@@ -1,7 +1,4 @@
-#from __future__ import absolute_import, division, print_function
 
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
 
 __author__ = "Andrea Tramacere"
 
@@ -35,7 +32,7 @@ from .output import section_separator,WorkPlace
 
 from .utils import *
 
-__all__=['PlotSED','BasePlot','PlotPdistr','PlotSpecComp','PlotSeedPhotons','PlotSpectralMultipl']
+__all__=['PlotSED','BasePlot','PlotPdistr','PlotSpecComp','PlotSeedPhotons','PlotSpectralMultipl','PlotTempEvDiagram','PlotTempEvEmitters']
 
 def y_ev_transf(x):
     return x - np.log10(2.417E14)

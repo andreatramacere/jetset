@@ -1,7 +1,3 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
 
 __author__ = "Andrea Tramacere"
 
@@ -12,15 +8,9 @@ import numpy as np
 
 from  . import minimizer
 
-#import sed_models_dic as Model_dic
 
-from .jet_model  import Jet
 
-#from template_model import Template
-
-#from output import WorkPlace
-
-from .model_parameters import ModelParameterArray, CompositeModelParameterArray
+from .model_parameters import  CompositeModelParameterArray
 
 from .spectral_shapes import  SED
    
@@ -34,10 +24,7 @@ from .jet_model import Jet
 
 from .cosmo_tools import  Cosmo
 
-import copy
-
 import  pickle
-from collections.abc import Iterable
 
 __all__=['FitModel']
 
