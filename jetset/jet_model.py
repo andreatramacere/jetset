@@ -575,7 +575,7 @@ class JetBase(Model):
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
             self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
-            self._attach_pars_to_jet()
+            self._attach_pars_to_jet(preserve_value_emitters=True)
             self._update_emitters_pars_dependence()
             self.emitters_distribution.update()
         else:
@@ -1316,9 +1316,10 @@ class JetBase(Model):
         return out_model
 
 
-    def energetic_report(self):
+    def energetic_report(self,verbose=True):
         self._build_energetic_report()
-        _show_table(self.energetic_report_table)
+        if verbose is True:
+            _show_table(self.energetic_report_table)
 
     def _build_energetic_report(self,):
         self.energetic_dict={}
