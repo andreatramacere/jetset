@@ -25,6 +25,8 @@ from tqdm.autonotebook import tqdm
 
 import threading
 
+from astropy import constants as const
+
 from .model_parameters import _show_table
 
 
@@ -72,6 +74,103 @@ class ProgressBar(object):
 
 
 class JetTimeEvol(object):
+    """
+
+
+        Parameters
+        ----------
+        jet
+        Q_inj
+        name
+        inplace
+        jet_gamma_grid_size
+
+
+
+
+
+
+        The model parameters can be set after object creation, eg:
+
+        .. code-block:: python
+
+            from jetset.jet_emitters_factory import EmittersFactory
+            q_inj=InjEmittersFactory().create_inj_emitters('pl',emitters_type='electrons',normalize=True)
+            q_inj.parameters.gmax.val=5
+
+
+            from jetset.jet_timedep import  JetTimeEvol
+            from jetset.jet_model import Jet
+
+            my_jet=Jet()
+
+            temp_ev_acc=JetTimeEvol(jet=my_jet_acc,Q_inj=q_inj,inplace=True)
+
+            temp_ev_acc.parameters.duration.val=1E4
+
+
+        model parameters
+        ----------------
+        duration: float (s)
+            duration of the evolution in seconds
+
+        gmin_grid: float
+            lower bound of the gamma grid for the temporal evolution
+
+        gmax_grid: float
+            upper bound of the gamma grid for the temporal evolution
+
+        gamma_grid_size: int
+            size of the gamma grid
+
+        TStart_Acc: float (s)
+            starting time of the acceleration process
+
+        TStop_Acc: float (s)
+            stop time of the acceleration process
+
+        TStart_Inj: float (s)
+            starting time of the injection process
+
+        TStop_Inj: float (s)
+            stop time of the injection process
+
+        T_esc: float (R/c)
+            escape time scale in  (R/c)
+
+        Esc_Index: float
+            power-law index for the escapce term t_esc(gamma)=T_esc*gamma^(Esc_Index)
+
+        t_D0: float (s)
+            acceleration time scale for diffusive acceleration term
+
+        t_A0: float (s)
+            acceleration time scale for the systematic acceleration term
+
+        Diff_Index: float (s)
+            power-law index for the diffusive acceleration term
+
+        Acc_Index: float (s)
+            power-law index for the systematic acceleration term
+
+        Lambda_max_Turb: float (cm)
+            max scale of the turbulence
+
+        Lambda_choer_Turb_factor: float (cm)
+           max scale   for the quasi-linear resonant regime
+
+        T_SIZE: int
+            number of steps for the time grid
+
+        NUM_SET: int
+            number of the time steps saved in the output
+
+        LOG_SET: bool
+           if True, the time grid is logarithmically spaced
+
+        L_inj: float (erg/s)
+            if not None, the inj function is rescaled to match L_inj
+    """
 
     def __init__(self,
                  jet,
@@ -80,6 +179,7 @@ class JetTimeEvol(object):
                  name='jet_time_ev',
                  inplace=True,
                  jet_gamma_grid_size=200):
+
 
         self._temp_ev = BlazarSED.MakeTempEv()
         if inplace is True:
@@ -97,6 +197,7 @@ class JetTimeEvol(object):
 
 
 
+
     @property
     def temp_ev(self):
         return self._temp_ev
@@ -104,10 +205,11 @@ class JetTimeEvol(object):
     def show_pars(self, sort_key='par type'):
         self.parameters.show_pars(sort_key=sort_key)
 
-    def init_TempEv(self):
+    def init_TempEv(self,custom_inj_profile=None,custom_acc_profile=None):
         BlazarSED.Init(self.jet._blob, self.jet.get_DL_cm())
         self._init_temp_ev()
         self._fill_temp_ev_array_pre_run()
+        #if custom_ini_profile is not None:
         self._build_tempev_table(self.jet)
 
 
@@ -142,7 +244,7 @@ class JetTimeEvol(object):
         BlazarSED.Init_Q_inj(self._temp_ev)
         BlazarSED.Init_temp_evolution(self.jet._blob, self._temp_ev, self.jet.get_DL_cm())
         if self.Q_inj is not None:
-            self.Q_inj._set_L_inj(self.parameters.L_inj.val,BlazarSED.V_sphere(self.jet.parameters.R.val),self._temp_ev.deltat)
+            self.Q_inj._set_L_inj(self.parameters.L_inj.val,BlazarSED.V_sphere(self.jet.parameters.R.val))
             Ne_custom_ptr = getattr(self._temp_ev, 'Q_inj_jetset')
             gamma_custom_ptr = getattr(self._temp_ev, 'gamma_inj_jetset')
             for ID in range(self.Q_inj._gamma_grid_size):
@@ -169,13 +271,9 @@ class JetTimeEvol(object):
 
 
 
-    def eval_E_tot_inj(self):
-        if self.Q_inj is not None and self.jet is not None:
-            return self.Q_inj._eval_U()*BlazarSED.V_sphere(self.jet.parameters.R.val)*self._temp_ev.deltat
-
     def eval_L_tot_inj(self):
         if self.Q_inj is not None and self.jet is not None:
-            return self.Q_inj._eval_U()*BlazarSED.V_sphere(self.jet.parameters.R.val)/self._temp_ev.deltat
+            return self.Q_inj.eval_U_q() * BlazarSED.V_sphere(self.jet.parameters.R.val)
 
     def set_time(self,T_step=None):
         self.jet.emitters_distribution._set_arrays(self.gamma, self.N_gamma[T_step].flatten())
@@ -235,27 +333,71 @@ class JetTimeEvol(object):
         return p
 
 
-    def make_lc(self, t1, t2, nu1, nu2, comp='Sum'):
-        self.t_array = np.linspace(t1, t2, dtype=np.int)
-        self.flux_array = np.zeros(self.t_array.size)
-        for ID, T in enumerate(self.t_array):
-            #ed = EmittersArrayDistribution(name='time_dep',
-            #                               gamma_array=np.copy(self.temp_ev.gamma),
-            #                               n_gamma_array=np.copy(self.temp_ev.N_gamma[T]),
-            #                               gamma_grid_size=self.gamma_grid_size)
-            #ed._fill()
-            #self.jet.set_emitters_distribution(ed)
+    def make_lc(self, t1, t2, delta_t_out, nu1, nu2, comp='Sum', delta_T=1, n_slices=1000,rest_frame='obs',eval_cross_time=True):
+        _T_array = np.arange(t1, t2, delta_T, dtype=np.int)
+        _flux_array=np.zeros(_T_array.shape)
+        for ID, T in enumerate(_T_array):
             self.set_time(T)
             self.jet.eval()
             s = getattr(self.jet.spectral_components, comp)
-            msk = s.SED.nu.value >= nu1
-            msk *= s.SED.nu.value <= nu2
-            x = s.SED.nu[msk]
-            y = s.SED.nuFnu[msk] / x
-            self.flux_array[ID] = np.trapz(y.value, x.value)
+            if rest_frame=='src':
+                msk = s.SED.nu_src.value >= nu1
+                msk *= s.SED.nu_src.value <= nu2
+                x = s.SED.nu_src[msk]
+                y = s.SED.nuLnu_src[msk] / x
+            elif rest_frame == 'obs':
+                msk = s.SED.nu.value >= nu1
+                msk *= s.SED.nu.value <= nu2
+                x = s.SED.nu[msk]
+                y = s.SED.nuFnu[msk] / x
+            else:
+                raise  RuntimeError('rest frame must be src or obs')
+            _flux_array[ID] = np.trapz(y.value, x.value)
 
-        self.time_array = self.N_time[self.t_array] * self.temp_ev.deltat
+
+        _time_array = self.N_time[_T_array]
+        self.time_array = np.arange(_time_array[0], _time_array[-1], delta_t_out)
+        self.flux_array=np.interp(self.time_array, _time_array, _flux_array)
+
+        if eval_cross_time is True:
+            if rest_frame=='src':
+                beaming = 1
+                z=0
+            else:
+                beaming = None
+                z=None
+            self.time_array, self.flux_array=self.lc_t_obs(self.time_array,self.flux_array,n_slices=n_slices, beaming=beaming, z=z)
+
         return np.copy(self.time_array), np.copy(self.flux_array)
+
+    def _lc_weight(self, delay_r, R, delta_R):
+        return 3*(R-delay_r)*(R+delay_r)*delta_R/(4*R*R*R)
+
+
+    def lc_t_obs(self,t,lc,n_slices=1000,R=None,beaming=None, z=None):
+        if R is None:
+            R=self.jet.parameters.R.val
+
+        if beaming is  None:
+            beaming=self.jet.get_beaming()
+
+        if z is None:
+            z=self.jet.parameters.z_cosm.val
+
+        c = const.c.cgs.value
+
+        delta_R = (2 * R) / n_slices
+        delay_t = np.linspace(0, 2 * R / c, n_slices)
+        delay_r = R - delay_t * c
+        weight_array = self._lc_weight(delay_r, R, delta_R)
+        lc_out = np.zeros(lc.shape)
+        for ID, lc_in in enumerate(lc):
+            t_interp = np.linspace(t[ID] - 2 * R / c, t[ID], n_slices)
+            m = t_interp > t[0]
+            lc_interp = np.interp(t_interp[m], t, lc)
+            lc_out[ID] = np.sum(lc_interp * weight_array[m])
+
+        return t*(1+z)/beaming, lc_out
 
     def plot_model(self, T1, T2, step,p=None):
         t_array = np.linspace(T1, T2, step, dtype=np.int)
@@ -367,7 +509,7 @@ class JetTimeEvol(object):
         if self.Q_inj is not None:
             rows.append(self._build_row_dict('L inj (electrons)', 'injected lum.', 'erg/s', val=self.eval_L_tot_inj(),
                                              islog=False))
-            rows.append(self._build_row_dict('E_inj (electrons)', '', 'erg', val=self.eval_E_tot_inj(), islog=False))
+            #rows.append(self._build_row_dict('E_inj (electrons)', '', 'erg', val=self.eval_E_tot_inj(), islog=False))
 
         self._tempev_table = Table(rows=rows, names=_names, masked=False)
 
@@ -388,6 +530,73 @@ class JetTimeEvol(object):
                     pass
 
     def _build_par_dict(self):
+        """
+        These are the model parameters to set after object creation:
+        eg:
+            temp_ev_acc.parameters.duration.val=1E4
+
+        model parameters
+        ----------------
+        duration: float (s)
+            duration of the evolution in seconds
+
+        gmin_grid: float
+            lower bound of the gamma grid for the temporal evolution
+
+        gmax_grid: float
+            upper bound of the gamma grid for the temporal evolution
+
+        gamma_grid_size: int
+            size of the gamma grid
+
+        TStart_Acc: float (s)
+            starting time of the acceleration process
+
+        TStop_Acc: float (s)
+            stop time of the acceleration process
+
+        TStart_Inj: float (s)
+            starting time of the injection process
+
+        TStop_Inj: float (s)
+            stop time of the injection process
+
+        T_esc: float (R/c)
+            escape time scale in  (R/c)
+
+        Esc_Index: float
+            power-law index for the escapce term t_esc(gamma)=T_esc*gamma^(Esc_Index)
+
+        t_D0: float (s)
+            acceleration time scale for diffusive acceleration term
+
+        t_A0: float (s)
+            acceleration time scale for the systematic acceleration term
+
+        Diff_Index: float (s)
+            power-law index for the diffusive acceleration term
+
+        Acc_Index: float (s)
+            power-law index for the systematic acceleration term
+
+        Lambda_max_Turb: float (cm)
+            max scale of the turbulence
+
+        Lambda_choer_Turb_factor: float (cm)
+           max scale   for the quasi-linear resonant regime
+
+        T_SIZE: int
+            number of steps for the time grid
+
+        NUM_SET: int
+            number of the time steps saved in the output
+
+        LOG_SET: bool
+           if True, the time grid is logarithmically spaced
+
+        L_inj: float (erg/s)
+            if not None, the inj function is rescaled to match L_inj
+        """
 
         model_dic = {}
 

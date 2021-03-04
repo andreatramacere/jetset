@@ -9,7 +9,7 @@ def test_prepare_fit(sed_data=None, prefit_jet=None, plot=True,sed_number=1):
 
     if prefit_jet is None:
         from .test_phenom_constr import test_model_constr
-        prefit_jet, my_shape = test_model_constr(sed_data=sed_data)
+        prefit_jet, my_shape = test_model_constr(sed_data=sed_data,sed_number=sed_number)
 
     if hasattr(my_shape, 'host_gal'):
         template = my_shape.host_gal

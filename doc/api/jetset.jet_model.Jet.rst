@@ -20,9 +20,8 @@ Jet
       ~Jet.set_B_eq
       ~Jet.set_N_from_F_sync
       ~Jet.set_N_from_L_sync
-      ~Jet.set_N_from_Le
-      ~Jet.set_N_from_Ue
-      ~Jet.set_N_from_Up
+      ~Jet.set_N_from_U_emitters
+      ~Jet.set_N_from_U_vol_emitters
       ~Jet.set_N_from_nuFnu
       ~Jet.set_N_from_nuLnu
       ~Jet.show_electron_distribution
@@ -40,9 +39,8 @@ Jet
    .. automethod:: set_B_eq
    .. automethod:: set_N_from_F_sync
    .. automethod:: set_N_from_L_sync
-   .. automethod:: set_N_from_Le
-   .. automethod:: set_N_from_Ue
-   .. automethod:: set_N_from_Up
+   .. automethod:: set_N_from_U_emitters
+   .. automethod:: set_N_from_U_vol_emitters
    .. automethod:: set_N_from_nuFnu
    .. automethod:: set_N_from_nuLnu
    .. automethod:: show_electron_distribution

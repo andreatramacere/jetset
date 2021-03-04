@@ -26,6 +26,9 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 autodoc_mock_imports = ["jetkernel"]
 autodoc_mock_imports.append('_jetkernel')
+#autodoc_mock_imports.append('jetset.utils')
+#autodoc_mock_imports.append('jetset.tests')
+
 for mod_name in autodoc_mock_imports:
     sys.modules[mod_name] = mock.Mock()
 
@@ -73,8 +76,8 @@ extensions = [
     'sphinx.ext.mathjax',
 ]
 
-bibtex_bibfiles = ['references.bib']
-exclude_patterns = ['_build', '**.ipynb_checkpoints','../jetkernel/*','../jetset/jetkernel/*']
+#bibtex_bibfiles = ['references.bib']
+exclude_patterns = ['_build', '**.ipynb_checkpoints','../jetkernel/*','../jetset/jetkernel/*','documentation_notebooks','example_notebooks','slides']
 
 #autosummary_generate = True
 
@@ -282,7 +285,7 @@ htmlhelp_basename = 'jetsetdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
-
+latex_engine = 'pdflatex'
 latex_elements = {
 # The paper size ('letterpaper' or 'a4paper').
 #'papersize': 'letterpaper',

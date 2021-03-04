@@ -118,7 +118,7 @@ class  PlotSED (object):
         elif frame == 'src':
             self.sedplot.set_ylim(38, 55)
         else:
-            unexpetced_behaviour()
+            unexpected_behaviour()
 
         self.secaxy = self.sedplot.secondary_xaxis('top', functions=(y_ev_transf, y_ev_transf_inv))
         self.secaxy.set_xlabel('log(E) (eV)')
@@ -241,7 +241,7 @@ class  PlotSED (object):
                     self.ly = 'log($   F{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$ Hz$^{-1}$)'
 
         else:
-            unexpetced_behaviour()
+            unexpected_behaviour()
 
         self.sedplot.set_ylabel(self.ly)
         self.sedplot.set_xlabel(self.lx)
@@ -249,9 +249,9 @@ class  PlotSED (object):
 
     
     def add_res_zeroline(self):
-        y0 = np.zeros(2)
-        x0 = [0,30]
-        self.resplot.plot(x0,y0,'--',color='black')
+        #y0 = np.zeros(2)
+        #x0 = [0,30]
+        self.resplot.axhline(0, ls='--', color='black')
         self.update_plot()
 
     def rescale(self,x_min=None,x_max=None,y_min=None,y_max=None):
@@ -324,15 +324,16 @@ class  PlotSED (object):
 
     def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None,density=False, update=True):
 
-        try:
-            x, y = model.get_model_points(log_log=True, frame = self.frame)
-        except Exception as e:
-            #print("a",e)
+        if hasattr(model,'get_model_points'):
+            try:
+                x, y = model.get_model_points(log_log=True, frame = self.frame)
+            except Exception as e:
+                raise RuntimeError('for model',model.name, "problem with get_model_points()",e)
+        else:
             try:
                 x, y = model.SED.get_model_points(log_log=True, frame = self.frame)
             except Exception as e:
-                print("SED missing", e)
-                raise RuntimeError (model, "!!! Error has no SED instance or something wrong in get_model_points()",e)
+                raise RuntimeError('for model',model.name, "problem with SED.get_model_points()",e)
 
         if density is True:
             y=y-x
@@ -489,7 +490,7 @@ class  PlotSED (object):
 
 class BasePlot(object):
 
-    def __init__(self,figsize=(8,6),dpi=120):
+    def __init__(self,figsize=(8,6),dpi=None):
         self.fig, self.ax = plt.subplots(figsize=figsize,dpi=dpi)
 
     def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):
@@ -527,7 +528,7 @@ class PlotSpectralMultipl(BasePlot):
 
 class  PlotPdistr (BasePlot):
 
-    def __init__(self,figsize=(8,6),dpi=120,injection=False,loglog=True):
+    def __init__(self,figsize=(8,6),dpi=None,injection=False,loglog=True):
         super(PlotPdistr, self).__init__(figsize=figsize,dpi=dpi)
         self.loglog=loglog
         self.injection = injection
@@ -657,7 +658,7 @@ class  PlotPdistr (BasePlot):
 
 class  PlotTempEvEmitters (PlotPdistr):
 
-    def __init__(self,figsize=(8,6),dpi=120,loglog=True):
+    def __init__(self,figsize=(8,6),dpi=None,loglog=True):
         super(PlotTempEvEmitters, self).__init__(figsize=figsize,dpi=dpi,loglog=loglog,)
 
 
@@ -695,7 +696,7 @@ class  PlotTempEvEmitters (PlotPdistr):
 
 class  PlotTempEvDiagram (BasePlot):
 
-    def __init__(self,figsize=(8,6),dpi=120):
+    def __init__(self,figsize=(8,6),dpi=None):
         super(PlotTempEvDiagram, self).__init__(figsize=figsize,dpi=dpi)
 
 

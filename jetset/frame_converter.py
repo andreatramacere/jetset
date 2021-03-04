@@ -31,7 +31,7 @@ def convert_nu_to_blob(nu,in_frame,delta,z):
         delta_c=1
         z_c=0
     else:
-        unexpetced_behaviour()
+        unexpected_behaviour()
 
     return nu*(1+z_c)/delta_c
 
@@ -58,7 +58,7 @@ def convert_nu_to_src(nu,z,in_frame):
     elif in_frame=="src":
         z_c=0
     else:
-         unexpetced_behaviour()
+         unexpected_behaviour()
 
     return nu*(1+z_c)
 
@@ -70,7 +70,7 @@ def convert_nuFnu_to_nuLnu_src(nuFnu,z,in_frame,dl):
     elif in_frame == "src":
         c=1.0
     else:
-        unexpetced_behaviour()
+        unexpected_behaviour()
 
     return c*nuFnu
 

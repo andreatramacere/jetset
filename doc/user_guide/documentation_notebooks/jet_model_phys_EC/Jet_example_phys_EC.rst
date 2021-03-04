@@ -6,14 +6,14 @@ External Compton
 
 The external Compton implementation  gives you the possibility to use a double approach
  
-* transformation of the external  fields to the blob rest frame :cite:`Dermer2000`
+* transformation of the external  fields to the blob rest frame Dermer and Schlickeiser (2002) [Dermer2002]_
 
 * transformation of the electron emitting distribution from the blob restframe to
-  disk/BH restframe :cite:`Dermer95` :cite:`GKM01`
+  disk/BH restframe Dermer(1995)[Dermer95]_ and Georganopoulos, Kirk, and Mastichiadis (2001) [GKM01]_
 
 The implemented external radiative fields are 
  
-* Broad Line Region radiative field using the approach of :cite:`Donea2003` 
+* Broad Line Region radiative field using the approach of Donea & Protheroe (2003)[Donea2003]_
 
 * Dusty torus implemented as a uniform BB field within `R_DT`
 
@@ -38,8 +38,19 @@ Broad Line Region
 
 .. code:: ipython3
 
+    import jetset
+    print('tested on jetset',jetset.__version__)
+
+
+.. parsed-literal::
+
+    tested on jetset 1.2.0rc4
+
+
+.. code:: ipython3
+
     from jetset.jet_model import Jet
-    my_jet=Jet(name='BLR example',electron_distribution='bkn',beaming_expr='bulk_theta')
+    my_jet=Jet(name='EC_example',electron_distribution='bkn',beaming_expr='bulk_theta')
     my_jet.add_EC_component(['EC_BLR','EC_Disk'],disk_type='BB')
 
 
@@ -55,14 +66,14 @@ black body ``BB``
 .. parsed-literal::
 
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     jet model description
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     name: BLRexample  
     
     electrons distribution:
      type: bkn  
-     gamma energy grid size:  1001
+     gamma energy grid size:  201
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
      normalization  True
@@ -76,7 +87,7 @@ black body ``BB``
     
     radiative fields:
      seed photons grid size:  100
-     IC emission grid size:  50
+     IC emission grid size:  100
      source emissivity lower bound :  1.000000e-120
      spectral components:
        name:Sum, state: on
@@ -88,32 +99,84 @@ black body ``BB``
     external fields transformation method: blob
     
     SED info:
-     nu grid size :200
+     nu grid size jetkernel: 1000
+     nu grid size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
     flux plot lower bound   :  1.000000e-120
     
-        name          par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ----------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-           gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-           gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
-              N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
-              p   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-            p_1   HE_spectral_slope                 3.000000e+00    -1.000000e+01     1.000000e+01 False  False
-    gamma_break    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
-              R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-            R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-              B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-          theta   jet-viewing-angle             deg 1.000000e-01     0.000000e+00               -- False  False
-     BulkFactor     jet-bulk-factor Lorentz-factor* 1.000000e+01     1.000000e+00               -- False  False
-         z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
-        tau_BLR                 BLR                 1.000000e-01     0.000000e+00     1.000000e+00 False  False
-       R_BLR_in                 BLR              cm 1.000000e+18     0.000000e+00               -- False   True
-      R_BLR_out                 BLR              cm 2.000000e+18     0.000000e+00               -- False   True
-         L_Disk                Disk         erg / s 1.000000e+45     0.000000e+00               -- False  False
-         T_Disk                Disk               K 1.000000e+05     0.000000e+00               -- False  False
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
+
+
+
+.. raw:: html
+
+    <i>Table length=17</i>
+    <table id="table140567801091696-191737" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>BLRexample</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>BLRexample</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>theta</td><td>jet-viewing-angle</td><td>deg</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>BulkFactor</td><td>jet-bulk-factor</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>tau_BLR</td><td>BLR</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>R_BLR_in</td><td>BLR</td><td>cm</td><td>1.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>BLRexample</td><td>R_BLR_out</td><td>BLR</td><td>cm</td><td>2.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>BLRexample</td><td>L_Disk</td><td>Disk</td><td>erg / s</td><td>1.000000e+45</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>T_Disk</td><td>Disk</td><td>K</td><td>1.000000e+05</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140567801091696-191737').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140567801091696-191737').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    --------------------------------------------------------------------------------
 
 
 change Disk type
@@ -155,14 +218,14 @@ parameters regarding the multi temperature black body accretion disk:
 .. parsed-literal::
 
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     jet model description
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     name: BLRexample  
     
     electrons distribution:
      type: bkn  
-     gamma energy grid size:  1001
+     gamma energy grid size:  201
      gmin grid : 2.000000e+00
      gmax grid : 5.000000e+04
      normalization  True
@@ -192,35 +255,87 @@ parameters regarding the multi temperature black body accretion disk:
     external fields transformation method: blob
     
     SED info:
-     nu grid size :200
+     nu grid size jetkernel: 1000
+     nu grid size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
     flux plot lower bound   :  1.000000e-120
     
-        name          par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ----------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-           gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-           gmax high-energy-cut-off lorentz-factor* 5.000000e+04     1.000000e+00     1.000000e+15 False  False
-              N    emitters_density         1 / cm3 4.174082e+03     0.000000e+00               -- False  False
-              p   LE_spectral_slope                 1.500000e+00    -1.000000e+01     1.000000e+01 False  False
-            p_1   HE_spectral_slope                 3.200000e+00    -1.000000e+01     1.000000e+01 False  False
-    gamma_break    turn-over-energy lorentz-factor* 5.000000e+02     1.000000e+00     1.000000e+09 False  False
-              R         region_size              cm 3.000000e+15     1.000000e+03     1.000000e+30 False  False
-            R_H     region_position              cm 3.000000e+17     0.000000e+00               -- False   True
-              B      magnetic_field               G 1.500000e+00     0.000000e+00               -- False  False
-          theta   jet-viewing-angle             deg 1.000000e+00     0.000000e+00               -- False  False
-     BulkFactor     jet-bulk-factor Lorentz-factor* 2.000000e+01     1.000000e+00               -- False  False
-         z_cosm            redshift                 6.000000e-01     0.000000e+00               -- False  False
-        tau_BLR                 BLR                 1.000000e-01     0.000000e+00     1.000000e+00 False  False
-       R_BLR_in                 BLR              cm 1.000000e+18     0.000000e+00               -- False   True
-      R_BLR_out                 BLR              cm 2.000000e+18     0.000000e+00               -- False   True
-     R_inner_Sw                Disk      Sw. radii* 3.000000e+00     0.000000e+00               -- False  False
-       R_ext_Sw                Disk      Sw. radii* 5.000000e+02     0.000000e+00               -- False  False
-       accr_eff                Disk                 8.000000e-02     0.000000e+00               -- False  False
-           M_BH                Disk          M_sun* 1.000000e+09     0.000000e+00               -- False  False
-         L_Disk                Disk         erg / s 1.000000e+46     0.000000e+00               -- False  False
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
+
+
+
+.. raw:: html
+
+    <i>Table length=20</i>
+    <table id="table140567789523584-892346" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>BLRexample</td><td>R</td><td>region_size</td><td>cm</td><td>3.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>R_H</td><td>region_position</td><td>cm</td><td>3.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>BLRexample</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.500000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>theta</td><td>jet-viewing-angle</td><td>deg</td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>BulkFactor</td><td>jet-bulk-factor</td><td>lorentz-factor*</td><td>2.000000e+01</td><td>1.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>z_cosm</td><td>redshift</td><td></td><td>6.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>5.000000e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>4.187798e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>5.000000e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>p</td><td>LE_spectral_slope</td><td></td><td>1.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.200000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>tau_BLR</td><td>BLR</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>R_BLR_in</td><td>BLR</td><td>cm</td><td>1.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>BLRexample</td><td>R_BLR_out</td><td>BLR</td><td>cm</td><td>2.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>BLRexample</td><td>R_inner_Sw</td><td>Disk</td><td>Sw. radii*</td><td>3.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>R_ext_Sw</td><td>Disk</td><td>Sw. radii*</td><td>5.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>accr_eff</td><td>Disk</td><td></td><td>8.000000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>M_BH</td><td>Disk</td><td>M_sun*</td><td>1.000000e+09</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>L_Disk</td><td>Disk</td><td>erg / s</td><td>1.000000e+46</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140567789523584-892346').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140567789523584-892346').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    --------------------------------------------------------------------------------
 
 
 now we set some parameter for the model
@@ -237,7 +352,7 @@ now we set some parameter for the model
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_14_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_15_0.png
 
 
 Dusty Torus
@@ -252,14 +367,14 @@ Dusty Torus
 .. parsed-literal::
 
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     jet model description
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     name: BLRexample  
     
     electrons distribution:
      type: bkn  
-     gamma energy grid size:  1001
+     gamma energy grid size:  201
      gmin grid : 2.000000e+00
      gmax grid : 5.000000e+04
      normalization  True
@@ -286,35 +401,87 @@ Dusty Torus
     external fields transformation method: blob
     
     SED info:
-     nu grid size :200
+     nu grid size jetkernel: 1000
+     nu grid size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
     flux plot lower bound   :  1.000000e-120
     
-        name          par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ----------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-           gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-           gmax high-energy-cut-off lorentz-factor* 5.000000e+04     1.000000e+00     1.000000e+15 False  False
-              N    emitters_density         1 / cm3 4.174082e+03     0.000000e+00               -- False  False
-              p   LE_spectral_slope                 1.500000e+00    -1.000000e+01     1.000000e+01 False  False
-            p_1   HE_spectral_slope                 3.200000e+00    -1.000000e+01     1.000000e+01 False  False
-    gamma_break    turn-over-energy lorentz-factor* 5.000000e+02     1.000000e+00     1.000000e+09 False  False
-              R         region_size              cm 3.000000e+15     1.000000e+03     1.000000e+30 False  False
-            R_H     region_position              cm 3.000000e+17     0.000000e+00               -- False   True
-              B      magnetic_field               G 1.500000e+00     0.000000e+00               -- False  False
-          theta   jet-viewing-angle             deg 1.000000e+00     0.000000e+00               -- False  False
-     BulkFactor     jet-bulk-factor Lorentz-factor* 2.000000e+01     1.000000e+00               -- False  False
-         z_cosm            redshift                 6.000000e-01     0.000000e+00               -- False  False
-        tau_BLR                 BLR                 1.000000e-01     0.000000e+00     1.000000e+00 False  False
-       R_BLR_in                 BLR              cm 1.000000e+18     0.000000e+00               -- False   True
-      R_BLR_out                 BLR              cm 2.000000e+18     0.000000e+00               -- False   True
-         T_Disk                Disk               K 5.015768e+04     0.000000e+00               -- False  False
-           T_DT                  DT               K 1.000000e+02     0.000000e+00               -- False  False
-           R_DT                  DT              cm 5.000000e+18     0.000000e+00               -- False  False
-         tau_DT                  DT                 1.000000e-01     0.000000e+00     1.000000e+00 False  False
-         L_Disk                Disk         erg / s 1.000000e+46     0.000000e+00               -- False  False
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
+
+
+
+.. raw:: html
+
+    <i>Table length=20</i>
+    <table id="table140567883503648-960265" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>BLRexample</td><td>R</td><td>region_size</td><td>cm</td><td>3.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>R_H</td><td>region_position</td><td>cm</td><td>3.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>BLRexample</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.500000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>theta</td><td>jet-viewing-angle</td><td>deg</td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>BulkFactor</td><td>jet-bulk-factor</td><td>lorentz-factor*</td><td>2.000000e+01</td><td>1.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>z_cosm</td><td>redshift</td><td></td><td>6.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>5.000000e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>4.187798e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>5.000000e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>p</td><td>LE_spectral_slope</td><td></td><td>1.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.200000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>tau_BLR</td><td>BLR</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>R_BLR_in</td><td>BLR</td><td>cm</td><td>1.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>BLRexample</td><td>R_BLR_out</td><td>BLR</td><td>cm</td><td>2.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>BLRexample</td><td>T_Disk</td><td>Disk</td><td>K</td><td>5.015768e+04</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>T_DT</td><td>DT</td><td>K</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>R_DT</td><td>DT</td><td>cm</td><td>5.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>tau_DT</td><td>DT</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
+    <tr><td>BLRexample</td><td>L_Disk</td><td>Disk</td><td>erg / s</td><td>1.000000e+46</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140567883503648-960265').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140567883503648-960265').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    --------------------------------------------------------------------------------
 
 
 .. code:: ipython3
@@ -329,7 +496,7 @@ Dusty Torus
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_18_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_19_0.png
 
 
 .. code:: ipython3
@@ -345,7 +512,7 @@ Dusty Torus
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_20_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_21_0.png
 
 
 Changing the external field transformation
@@ -429,12 +596,12 @@ EC seed photon fields, in the Disk rest frame
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x120dc75d0>
+    <matplotlib.legend.Legend at 0x7fd884a1c8b0>
 
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_29_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_30_1.png
 
 
 .. code:: ipython3
@@ -496,12 +663,12 @@ EC seed photon fields, in the Disk rest frame
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x120f2ab50>
+    <matplotlib.legend.Legend at 0x7fd884d06b50>
 
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_30_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_31_1.png
 
 
 IC against the CMB
@@ -553,7 +720,7 @@ whitin the Dusty torus radius, and BLR radius, respectively
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_34_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_35_0.png
 
 
 Equipartition
@@ -584,29 +751,75 @@ points (``N_pts``)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_37_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_38_1.png
 
 
 .. parsed-literal::
 
     setting B to  0.0001389495494373139
-    setting N to  9.13927847193837e-06
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 5.000000e+01     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 3.000000e+06     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 9.139278e-06     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.580000e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 4.200000e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 3.500000e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 1.000000e+21     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.389495e-04     0.000000e+00               -- False  False
-               theta   jet-viewing-angle             deg 1.200000e+01     0.000000e+00               -- False  False
-          BulkFactor     jet-bulk-factor Lorentz-factor* 3.500000e+00     1.000000e+00               -- False  False
-              z_cosm            redshift                 6.510000e-01     0.000000e+00               -- False  False
-              L_Disk                Disk         erg / s 1.000000e+45     0.000000e+00               -- False  False
-              T_Disk                Disk               K 1.000000e+05     0.000000e+00               -- False  False
+    setting N to  9.226089586058589e-06
+
+
+
+.. raw:: html
+
+    <i>Table length=14</i>
+    <table id="table140567879970624-135880" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>test_equipartition</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+21</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>test_equipartition</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test_equipartition</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.389495e-04</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test_equipartition</td><td>theta</td><td>jet-viewing-angle</td><td>deg</td><td>1.200000e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test_equipartition</td><td>BulkFactor</td><td>jet-bulk-factor</td><td>lorentz-factor*</td><td>3.500000e+00</td><td>1.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test_equipartition</td><td>z_cosm</td><td>redshift</td><td></td><td>6.510000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test_equipartition</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>5.000000e+01</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test_equipartition</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>3.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>test_equipartition</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.226090e-06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test_equipartition</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.500000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test_equipartition</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.580000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test_equipartition</td><td>r</td><td>spectral_curvature</td><td></td><td>4.200000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test_equipartition</td><td>L_Disk</td><td>Disk</td><td>erg / s</td><td>1.000000e+45</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test_equipartition</td><td>T_Disk</td><td>Disk</td><td>K</td><td>1.000000e+05</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140567879970624-135880').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140567879970624-135880').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
 
 
 .. code:: ipython3
@@ -616,7 +829,6 @@ points (``N_pts``)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_38_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_39_0.png
 
 
-.. bibliography:: references.bib

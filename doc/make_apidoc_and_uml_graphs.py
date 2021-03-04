@@ -15,9 +15,9 @@ package = jetset
 print( package.__path__)
 
 def make_module_uml(modname):
-    cmd="pyreverse  -AS -mn -k jetset.%s -o png -p jetset"%modname
+    cmd="pyreverse  jetset.%s   -a1 -s1 -k -o dot -p jetset "%modname
     os.system(cmd)
-    cmd="mv classes_jetset.png  source/api/classes_%s.png"%modname
+    cmd="mv classes_jetset.dot  ./UML_diagrams/classes_%s.dot"%modname
     os.system(cmd)
 
 
@@ -82,10 +82,17 @@ def main():
     print (mod_list)
     #mod_list=['jet_model']
     make_apidoc(mod_list)
-    
-    # for modname in mod_list:
-    #        #make_module_uml(modname)
-    #        pass
+
+
+    #for modname in mod_list:
+    #    make_module_uml(modname)
+    #    # pass
+    #cmd = "pyreverse jetset -k -o dot "
+    #os.system(cmd)
+    #cmd = "mv  packages.dot  ./UML_diagrams/jetset_packages.dot"
+    #os.system(cmd)
+    #cmd = "mv  classes.dot  ./UML_diagrams/jetset_classes.dot"
+    #os.system(cmd)
 
 
 if __name__ == "__main__":

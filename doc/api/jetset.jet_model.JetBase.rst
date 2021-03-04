@@ -10,6 +10,7 @@ JetBase
 
    .. autosummary::
 
+      ~JetBase.IC_adaptive_e_binning
       ~JetBase.IC_nu_size
       ~JetBase.Norm_distr
       ~JetBase.gamma_grid_size
@@ -78,6 +79,7 @@ JetBase
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: IC_adaptive_e_binning
    .. autoattribute:: IC_nu_size
    .. autoattribute:: Norm_distr
    .. autoattribute:: gamma_grid_size

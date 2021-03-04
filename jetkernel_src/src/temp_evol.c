@@ -86,7 +86,7 @@ void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double lum
         pt_ev->t_Sync_cool[i] = Sync_tcool(pt_spec, pt_ev->g[i]);
         pt_ev->t_D[i] = (pt_ev->g[i] * pt_ev->g[i]) / f_Dp(pt_ev->g[i], pt_ev);
         pt_ev->t_DA[i] = 0.5 * pt_ev->t_D[i];
-        pt_ev->t_A[i] = pt_ev->g[i] / f_Acc(pt_ev->g[i], pt_ev);
+        pt_ev->t_A[i] = pt_ev->g[i] / f_A(pt_ev->g[i], pt_ev);
         pt_ev->t_Esc[i] = f_Tesc(pt_ev->g[i], pt_ev);
         delta_t_eq_t_D = pt_ev->t_Sync_cool[i] - pt_ev->t_D[i];
         delta_t_eq_t_A = pt_ev->t_Sync_cool[i] - pt_ev->t_A[i];

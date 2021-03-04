@@ -22,7 +22,7 @@ from .jetkernel import jetkernel as BlazarSED
 from . import spectral_shapes
 from .jetkernel_models_dic import nuFnu_obs_dict, n_seed_dic
 from .plot_sedfit import PlotSpecComp,PlotSeedPhotons
-from .utils import check_frame, unexpetced_behaviour
+from .utils import check_frame, unexpected_behaviour
 
 __all__=['JetSeedPhotons','JetSpecComponent','SpecCompList']
 
@@ -307,7 +307,7 @@ class SpecCompList(object):
         elif restframe=='src':
             _cols.append(self._sc_list[0].SED.nu_src)
         else:
-            unexpetced_behaviour()
+            unexpected_behaviour()
 
         for ID,sc in enumerate(self._sc_list):
             _names.append(sc.name)
@@ -322,6 +322,15 @@ class SpecCompList(object):
         _meta['redshift']=sc.jet_obj.get_par_by_type('redshift').val
         _meta['restframe']= restframe
         self._table = Table(_cols, names=_names,meta=_meta)
+
+    def get_spectral_component_by_name(self,name,verbose=True):
+        for i in range(len(self._sc_list)):
+            if self._sc_list[i].name==name:
+                return self._sc_list[i]
+        else:
+            if verbose==True:
+                print ("no spectral components with name %s found"%name)
+
 
     @property
     def table(self):

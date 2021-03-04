@@ -300,7 +300,6 @@ class ModelParameter(object):
         self._master_pars=[]
         self._depending_pars=[]
 
-
     def _add_depending_par(self,par):
         if par not in self._depending_pars:
             self._depending_pars.append(par)
@@ -348,7 +347,8 @@ class ModelParameter(object):
         #transform par name and value into a local var
         _par_values= [None]*len(self._master_pars)
         for ID, _user_par_ in enumerate(self._master_pars):
-            _par_values[ID] = _user_par_.val_lin
+            _par_values[ID] = _user_par_.val
+            #print('==> _eval_par_func',_user_par_.name,_par_values[ID])
             exec(_user_par_.name + '=_par_values[ID]')
         res = eval(self._depending_par_expr)
 

@@ -125,7 +125,7 @@ class SED(object):
         elif frame == 'src':
             x, y = self.nu_src.value, self.nuLnu_src.value
         else:
-            unexpetced_behaviour()
+            unexpected_behaviour()
 
         if log_log is True:
             msk = y>0

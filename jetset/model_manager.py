@@ -176,18 +176,33 @@ class FitModel(Model):
             for mc in self.components._components_list:
                 comp_label = mc.name
                 if hasattr(mc,'SED'):
-                    #print('--> m name',mc.name)
-                    plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim, density=density)
+                    try:
+                        plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim, density=density)
+                    except Exception as e:
+                        try:
+                            mc.eval()
+                            plot_obj.add_model_plot(mc.SED, line_style=line_style, label=comp_label,
+                                                    flim=self.flux_plot_lim, density=density)
+                        except Exception as e:
+                            raise RuntimeError('for model', mc.name, "problem with plotting SED", e)
+
 
                 if skip_sub_components is False:
                     if hasattr(mc,'spectral_components_list'):
                         for c in mc.spectral_components_list:
-                            #print('--> c name', c.name)
                             comp_label = c.name
                             if comp_label!='Sum':
                                 if hasattr(c, 'SED'):
-                                    plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim, density=density)
-
+                                    try:
+                                        plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim, density=density)
+                                    except Exception as e:
+                                        try:
+                                            #print('==> reval',mc.name)
+                                            mc.eval()
+                                            _c=mc.spectral_components.get_spectral_component_by_name(c.name)
+                                            plot_obj.add_model_plot(_c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim, density=density)
+                                        except Exception as e:
+                                            raise RuntimeError('for model', mc.name, "spectral component",c.name, "problem with plotting SED", e)
         line_style = '-'
         if label is None:
             label=self.name

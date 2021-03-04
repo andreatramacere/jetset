@@ -30,5 +30,3 @@ python make_apidoc_and_uml_graphs.py
 5)builds the docs
   sphinx-build -b html ./ build
 
-
-

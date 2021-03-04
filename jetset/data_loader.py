@@ -22,13 +22,25 @@ __all__=['get_data_set_msk','get_freq_range_msk','lin_to_log','log_to_lin','ObsD
 
 
 class Data(object):
-
+    """
+    Class to store obs data
+    """
     def __init__(self,
                  data_table=None,
                  n_rows=None,
                  meta_data=None,
                  import_dictionary=None,
                  cosmo=None):
+        """
+
+        Parameters
+        ----------
+        data_table:
+        n_rows:
+        meta_data:
+        import_dictionary:
+        cosmo:
+        """
 
         if cosmo is None:
 
@@ -230,69 +242,13 @@ class Data(object):
 
 
 class ObsData(object):
-    """
+    """ObsData class
+
     This class provides a  powerful interface  to load observational data stored in a file.
-    The following parameters set the corresponding class members: 
- 
-    :param data_file: (str), path to the data file
-    
-    :param  z: (float), redisfhit, if not provided it is looked up in the  file meta-data
-        
-    :param obj_name: (str), if not provided  it is looked up in the  file meta-data
-        
-    :param restframe: (str) restframe of the data, possible values are ``'src'`` or  ``'obs'``,
-        if not provided it is looked up in the  file meta-data
-        
-    :param col_types: (str), string specifying the way data are organized in columns in the input file.
-        This string is passed to the method  :func:`set_data_cols`. If not provided
-        it is looked up in the  file meta-data. See the corresponding :func:`set_data_cols`
-        documentation for details.
-    
-    :param col_nums: (str), string describing the corresponding column data number
-        
-    :param data_scale: (str) ``'lin-lin'`` or ``'log-log'``,it is looked up in the  file meta-data.
-        This parameter allows to specify      if the data in the file are stored as in log-log or lin-lin scale
-        
-    :param data_set_filter:  a filter to filter the SED data according to the data_set value,  eg:
-        ``'data_set_filter='mw-1'``, will filter data with ``data_set=='mw-1'``,
-        ``'data_set_filter=['mw-1','mw-2']'`` will filter data with ``data_set=='mw-1'`` or ``data_set=='mw-2'``
-    
-        
-        .. note::
-            
-            Historical data will be only plotted but will not be used in the fit.
-    
-   
-    **Class Members storing the SED data:**
-
-     data used to fit
-     
-     - nu_data
-     - nuFnu_data 
-     - dnu_data
-     - dnuFnu_data   
-     - T_data 
-     - data_set 
-     
-     upper limits
-     
-     - nu_data_UL
-     - UL_data
-   
-
-    
-    
-    The private method   :func:`_load_data`  populates the data members starting from the data in the file. Data are properly transformed according
-    to the ``restframe`` and ``data_scale`` values.
-    
-      
-
-    
-
-
-    
+    The following parameters set the corresponding class members
     """
-    
+
+
     def __init__(self,
                  cosmo=None,
                  data_table=None,
@@ -305,7 +261,17 @@ class ObsData(object):
                  **keywords):
         
         """
-            
+
+        Parameters
+        ----------
+        cosmo
+        data_table
+        dupl_filter
+        data_set_filter
+        UL_filtering
+        UL_value
+        UL_CL
+        keywords
         """
         
         self.z=None
@@ -590,7 +556,7 @@ class ObsData(object):
             self.nu_conv_factor=1.0/(1+self.z)
             self.Lum_conv_factor=1.0/(np.pi*4.0*DL*DL)
         else:
-            unexpetced_behaviour()
+            unexpected_behaviour()
 
         if self.data_scale=='lin-lin':
             
@@ -1149,7 +1115,7 @@ class ObsData(object):
                 _y, _dy = self.lin_to_log(_y, _dy)
 
         else:
-            unexpetced_behaviour()
+            unexpected_behaviour()
 
         if density is True:
 

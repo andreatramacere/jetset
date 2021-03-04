@@ -115,3 +115,30 @@ def test_custom_emitters_array(plot=True):
     j.save_model('test_jet_custom_emitters_array.pkl')
     j = Jet.load_model('test_jet_custom_emitters_array.pkl')
     j.eval()
+
+
+def test_emitters_U(plot=True):
+    from jetset.jet_model import Jet
+    from jetset.jetkernel import jetkernel
+    import numpy as np
+
+    j = Jet(emitters_distribution='plc', verbose=False, emitters_type='protons')
+    j.parameters.z_cosm.val = z = 0.001
+    j.parameters.beam_obj.val = 1
+    j.parameters.gamma_cut.val = 1000 / (jetkernel.MPC2_TeV)
+    j.parameters.NH_pp.val = 1
+    j.parameters.N.val = 1
+    j.parameters.p.val = 2.0
+    j.parameters.B.val = 1.0
+    j.parameters.R.val = 1E18
+    j.parameters.gmin.val = 1
+    j.parameters.gmax.val = 1E8
+    j.set_emiss_lim(1E-60)
+    j.set_IC_nu_size(100)
+    j.gamma_grid_size = 200
+    gmin=1.0/jetkernel.MPC2_TeV
+    j.set_N_from_U_emitters(1.0, gmin=gmin)
+    m = j.emitters_distribution.gamma_p>gmin
+    N1 = jetkernel.MPC2*np.trapz(j.emitters_distribution.n_gamma_p[m]*j.emitters_distribution.gamma_p[m],j.emitters_distribution.gamma_p[m])
+    N2 = j.emitters_distribution.eval_U(gmin=gmin)
+    np.testing.assert_allclose(N1, N2, rtol=1E-5)

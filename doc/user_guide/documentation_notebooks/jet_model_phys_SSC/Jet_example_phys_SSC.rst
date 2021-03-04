@@ -3,12 +3,23 @@
 Physical setup
 ==============
 
+.. code:: ipython3
+
+    import jetset
+    print('tested on jetset',jetset.__version__)
+
+
+.. parsed-literal::
+
+    tested on jetset 1.2.0rc4
+
+
 In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the :class:`.Jet` class from the :mod:`.jet_model` module. to This class through a flexible and intuitive interface allows to access the C numerical code that provides an accurate and fast computation of the synchrotron and inverse Compton processes.  
 
 Basic setup
 -----------
 
-A jet instance can be built using the  the :class:`.Jet` class, istanciating the object in the following way:
+A jet instance can be built using the  the :class:`.Jet` class, instantiating the object in the following way:
 
 .. code:: ipython3
 
@@ -19,7 +30,7 @@ This instruction will create:
     * a ``Jet`` object with ``name`` **test**,
     * using as electron distribution the **lppl** model, that is a log-parabola with a low-energy power-law branch.
 
-(a  working directory ``jet_wd`` will be created, this directory can be deleted when all the precesses of your script are done)
+(a  working directory ``jet_wd`` will be created, this directory can be deleted when all the processes of your script are done)
 
 For a list of possible distribution you can run the command 
 
@@ -36,9 +47,7 @@ For a list of possible distribution you can run the command
     lpep: log-parabola defined by peak energy
     plc: powerlaw with cut-off
     bkn: broken powerlaw
-    spitkov: spitkov
-    lppl_pile_up: log-parabola with low-energy powerlaw branch and pile-up
-    bkn_pile_up: broken powerlaw and pileup
+    superexp: powerlaw with super-exp cut-off
 
 
 to view all the paramters:
@@ -50,54 +59,143 @@ custom electron distributions can be created by the user as described in this se
     my_jet.show_pars()
 
 
-.. parsed-literal::
 
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140298003496096-914785" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140298003496096-914785').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140298003496096-914785').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
 
 
-Each parameter has default values. All the parameters listed are handled by :class:`.ModelParameterArray`, and each parameter is an instance of the the :class:`.JetParameter`. class. These parameters are also accessible as an astropy table, with units: 
+
+Each parameter has default values. All the parameters listed are handled by :class:`.ModelParameterArray`, and each parameter is an instance of the the :class:`.JetParameter`. class. These parameters can be visualized by the command 
 
 .. code:: ipython3
 
-    my_jet.parameters.par_table
-
+    my_jet.parameters
 
 
 
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table4670754192" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <thead><tr><th>str16</th><th>str19</th><th>object</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bool</th></tr></thead>
-    <tr><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>B</td><td>magnetic_field</td><td>G</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>beam_obj</td><td>beaming</td><td>Lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    </table>
+    <table id="table140298003496096-103048" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140298003496096-103048').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140298003496096-103048').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
 
 
 
-this means that you can easily convert the values in the table using the units module of astropy. 
+
+
+.. parsed-literal::
+
+    None
+
+
+
+and the corresponding astropy table with units can be accessed by:
+``my_jet.parameters.par_table``
+
+This means that you can easily convert the values in the table using the units module of astropy. 
 
 .. warning::
     Please note, that the table is built on the fly from the  :class:`.ModelParameterArray` and each modification you do to this table will not be reflected on the actual parameters values
@@ -112,14 +210,14 @@ To get a full description of the model you can use the instruction
 .. parsed-literal::
 
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     jet model description
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     name: test  
     
     electrons distribution:
      type: lppl  
-     gamma energy grid size:  1001
+     gamma energy grid size:  201
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
      normalization  True
@@ -127,7 +225,7 @@ To get a full description of the model you can use the instruction
     
     radiative fields:
      seed photons grid size:  100
-     IC emission grid size:  50
+     IC emission grid size:  100
      source emissivity lower bound :  1.000000e-120
      spectral components:
        name:Sum, state: on
@@ -136,26 +234,78 @@ To get a full description of the model you can use the instruction
     external fields transformation method: blob
     
     SED info:
-     nu grid size :200
+     nu grid size jetkernel: 1000
+     nu grid size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
     flux plot lower bound   :  1.000000e-120
     
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140298088119984-20549" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140298088119984-20549').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140298088119984-20549').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    --------------------------------------------------------------------------------
 
 
 as you can notice, you can now access further information regarding the model, such as numerical configuration of the grid. These parameters will be discussed 
@@ -203,28 +353,74 @@ for setting custom electron distributions can be created by the user as describe
 
 .. parsed-literal::
 
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     electrons distribution:
      type: lppl  
-     gamma energy grid size:  1001
+     gamma energy grid size:  201
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
      normalization  True
      log-values  False
     
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                   B      magnetic_field               G 2.000000e-01     0.000000e+00               -- False  False
-                   N    emitters_density         1 / cm3 1.000000e+03     0.000000e+00               -- False  False
-                   R         region_size              cm 1.000000e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 5.000000e+03     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 1.000000e+08     1.000000e+00     1.000000e+15 False  False
-                gmin  low-energy-cut-off lorentz-factor* 1.000000e+02     1.000000e+00     1.000000e+09 False  False
-                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140298088119984-915830" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>2.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>5.000000e+03</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+08</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140298088119984-915830').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140298088119984-915830').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
 
 
 .. code:: ipython3
@@ -233,7 +429,7 @@ for setting custom electron distributions can be created by the user as describe
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_27_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_29_0.png
 
 
 .. code:: ipython3
@@ -242,7 +438,7 @@ for setting custom electron distributions can be created by the user as describe
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_28_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_30_0.png
 
 
 .. code:: ipython3
@@ -251,7 +447,7 @@ for setting custom electron distributions can be created by the user as describe
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_29_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_31_0.png
 
 
 .. code:: ipython3
@@ -260,7 +456,7 @@ for setting custom electron distributions can be created by the user as describe
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_30_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_32_0.png
 
 
 .. code:: ipython3
@@ -269,14 +465,15 @@ for setting custom electron distributions can be created by the user as describe
     p=None
     for r in np.linspace(0.3,1,10):
         my_jet.parameters.r.val=r
+        _l='r=%2.2f'%r
         if p is None:
-            p=my_jet.electron_distribution.plot3p()
+            p=my_jet.electron_distribution.plot3p(label=_l)
         else:
-            p=my_jet.electron_distribution.plot3p(p)
+            p=my_jet.electron_distribution.plot3p(p,label=_l)
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_31_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_33_0.png
 
 
 
@@ -292,14 +489,14 @@ Using log values for electron distribution parameters
 .. parsed-literal::
 
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     jet model description
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     name: test  
     
     electrons distribution:
      type: lppl  
-     gamma energy grid size:  1001
+     gamma energy grid size:  201
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
      normalization  True
@@ -307,7 +504,7 @@ Using log values for electron distribution parameters
     
     radiative fields:
      seed photons grid size:  100
-     IC emission grid size:  50
+     IC emission grid size:  100
      source emissivity lower bound :  1.000000e-120
      spectral components:
        name:Sum, state: on
@@ -316,26 +513,78 @@ Using log values for electron distribution parameters
     external fields transformation method: blob
     
     SED info:
-     nu grid size :200
+     nu grid size jetkernel: 1000
+     nu grid size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
     flux plot lower bound   :  1.000000e-120
     
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 3.010300e-01     0.000000e+00     9.000000e+00  True  False
-                gmax high-energy-cut-off lorentz-factor* 6.000000e+00     0.000000e+00     1.500000e+01  True  False
-                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 4.000000e+00     0.000000e+00     9.000000e+00  True  False
-                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140266540544784-32546" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>3.010300e-01</td><td>0.000000e+00</td><td>9.000000e+00</td><td>True</td><td>False</td></tr>
+    <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.000000e+00</td><td>0.000000e+00</td><td>1.500000e+01</td><td>True</td><td>False</td></tr>
+    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>4.000000e+00</td><td>0.000000e+00</td><td>9.000000e+00</td><td>True</td><td>False</td></tr>
+    <tr><td>test</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140266540544784-32546').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140266540544784-32546').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    --------------------------------------------------------------------------------
 
 
 Evaluate and plot the model
@@ -353,21 +602,63 @@ instruction
     my_jet.show_pars()
 
 
-.. parsed-literal::
 
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 3.010300e-01     0.000000e+00     9.000000e+00  True  False
-                gmax high-energy-cut-off lorentz-factor* 6.000000e+00     0.000000e+00     1.500000e+01  True  False
-                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 4.000000e+00     0.000000e+00     9.000000e+00  True  False
-                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140449466851392-183319" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>3.010300e-01</td><td>0.000000e+00</td><td>9.000000e+00</td><td>True</td><td>False</td></tr>
+    <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.000000e+00</td><td>0.000000e+00</td><td>1.500000e+01</td><td>True</td><td>False</td></tr>
+    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>4.000000e+00</td><td>0.000000e+00</td><td>9.000000e+00</td><td>True</td><td>False</td></tr>
+    <tr><td>test</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140449466851392-183319').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140449466851392-183319').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
 
 
 and plot the corresponding SED:
@@ -381,7 +672,7 @@ and plot the corresponding SED:
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_40_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_42_0.png
 
 
 alternatively, you can call the ``plot_model`` method without passing a
@@ -394,7 +685,7 @@ alternatively, you can call the ``plot_model`` method without passing a
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_42_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_44_0.png
 
 
 If you want to have more points on the IC spectrum you can set the numerical  parameters for radiative fields(see :ref:`jet_numerical_guide' section for more details):
@@ -411,7 +702,7 @@ If you want to have more points on the IC spectrum you can set the numerical  pa
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_45_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_47_0.png
 
 
 you can access the same plot, but in the rest frame of the black hole,
@@ -425,11 +716,25 @@ passing the ``frame`` kw to ``src``
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_47_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_49_0.png
 
 
 the ``my_plot`` object returned will be built on the fly by the
 ``plot_model`` method
+
+Starting from version 1.2.0 you can also plot in the ``Fnu`` or ``Lnu``
+representation adding the ``density=True`` keyword to the
+``plot_model command``
+
+.. code:: ipython3
+
+    my_plot=my_jet.plot_model(frame='src',density=True)
+    my_plot.rescale(y_max=29,y_min=11,x_min=8,x_max=28)
+
+
+
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_52_0.png
+
 
 if you wanto to have interacitve plot:
 
@@ -443,7 +748,8 @@ if you wanto to have interacitve plot:
 2) in jupyter lab:
   .. code-block:: no
 
-    %matplotlib notebook
+    %matplotlib widget
+    (visit this url to setup and install: https://github.com/matplotlib/ipympl)
 
 
 3) in an ipython terminal
@@ -478,7 +784,7 @@ to compare the same model after changing a parameter
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_52_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_56_0.png
 
 
 Saving a plot
@@ -507,23 +813,63 @@ Saving and loading a model
     my_jet_new=Jet.load_model('test_model.pkl')
 
 
-.. parsed-literal::
 
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 1.000000e+02     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 1.000000e+08     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 1.000000e+03     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+05     1.000000e+00     1.000000e+09 False  False
-              L_Disk                Disk         erg / s 1.000000e+45     0.000000e+00               -- False  False
-              T_Disk                Disk               K 1.000000e+05     0.000000e+00               -- False  False
-                   R         region_size              cm 3.162278e+14     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 2.000000e-01     0.000000e+00               -- False  False
-            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140449449376544-26772" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+08</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+05</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>3.162278e+14</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>2.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140449449376544-26772').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140449449376544-26772').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
 
 
 Switching on/off the particle distribution normalization
@@ -545,7 +891,7 @@ If you want to chance this behavior, you can start looking at the sate of ``Norm
 
 .. parsed-literal::
 
-    1
+    True
 
 
 
@@ -618,7 +964,7 @@ flux at the given frequency
 
 .. parsed-literal::
 
-    271.77338679726074
+    274.1666592772807
 
 
 
@@ -633,7 +979,7 @@ OR
 
 .. parsed-literal::
 
-    271.77338679726074
+    274.1666592772807
 
 
 
@@ -642,21 +988,63 @@ OR
     my_jet.parameters.show_pars()
 
 
-.. parsed-literal::
 
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 2.717734e+02     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140449477103520-306205" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.741667e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140449477103520-306205').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140449477103520-306205').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
 
 
 .. code:: ipython3
@@ -667,7 +1055,7 @@ OR
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_84_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_88_0.png
 
 
 as you can see, the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1.
@@ -677,14 +1065,18 @@ Alternatively, the value of N  can be obtained using the rest-frame luminosity a
 
     my_jet.set_N_from_nuLnu(nuLnu_src=1E43,nu_src=1E15)
 
-where ``L_0`` is the source rest-frame isotropic luminosity in erg/s at the rest-frame frequency ``nu_0`` in Hz.
+where ``nuLnu_src`` is the source rest-frame isotropic luminosity in erg/s at the rest-frame frequency ``nu_src`` in Hz.
 
 
 
 Setting the beaming factor and expression
 -----------------------------------------
 
-## 
+.. important::
+    Starting from version 1.2.0, when using ``delta`` expression, the value of delta used to copute jet luminosities will be set to ``beam_obj``. In previous version a reference value of 10 was used. In any case, if you are interseted in evaluating jet luminosities you should use the ``beaming_expr`` method
+
+
+
 
 It is possible to set the beaming factor according to the relativistic BulkFactor and viewing angle, this can be done by setting the ``beaming_expr`` kw in the Jet constructor, possible choices are
 
@@ -701,22 +1093,64 @@ It is possible to set the beaming factor according to the relativistic BulkFacto
     my_jet.parameters.show_pars()
 
 
-.. parsed-literal::
 
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-               theta   jet-viewing-angle             deg 1.000000e-01     0.000000e+00               -- False  False
-          BulkFactor     jet-bulk-factor Lorentz-factor* 1.000000e+01     1.000000e+00               -- False  False
-              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
+.. raw:: html
+
+    <i>Table length=12</i>
+    <table id="table140449447269520-587762" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>theta</td><td>jet-viewing-angle</td><td>deg</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>BulkFactor</td><td>jet-bulk-factor</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140449447269520-587762').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140449447269520-587762').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
 
 
 the actual value of the beaming factor can be obtained using the :meth:`.Jet.get_beaming`
@@ -765,21 +1199,63 @@ expression as in the default case
     my_jet.parameters.show_pars()
 
 
-.. parsed-literal::
 
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140449474570176-593281" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140449474570176-593281').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140449474570176-593281').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
 
 
 Switch ON/OFF Synchrotron sefl-absorption and IC emission
@@ -793,14 +1269,14 @@ Switch ON/OFF Synchrotron sefl-absorption and IC emission
 .. parsed-literal::
 
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     jet model description
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     name: test  
     
     electrons distribution:
      type: lppl  
-     gamma energy grid size:  1001
+     gamma energy grid size:  201
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
      normalization  True
@@ -808,7 +1284,7 @@ Switch ON/OFF Synchrotron sefl-absorption and IC emission
     
     radiative fields:
      seed photons grid size:  100
-     IC emission grid size:  50
+     IC emission grid size:  100
      source emissivity lower bound :  1.000000e-120
      spectral components:
        name:Sum, state: on
@@ -817,26 +1293,78 @@ Switch ON/OFF Synchrotron sefl-absorption and IC emission
     external fields transformation method: blob
     
     SED info:
-     nu grid size :200
+     nu grid size jetkernel: 1000
+     nu grid size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
     flux plot lower bound   :  1.000000e-120
     
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-            beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-              z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140449474576048-97523" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140449474576048-97523').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140449474576048-97523').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    --------------------------------------------------------------------------------
 
 
 as you see the state of Sync emission is ``self-abs``, we can check
@@ -850,9 +1378,9 @@ states value
 
 .. parsed-literal::
 
-    name     : Sync
-    var name : do_Sync
-    state    : self-abs
+    name                : Sync
+    var name            : do_Sync
+    state               : self-abs
     allowed states : ['on', 'off', 'self-abs']
 
 
@@ -870,7 +1398,7 @@ now the sate is ‘on’ with no ‘self-abs’
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_107_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_112_0.png
 
 
 to re-enable
@@ -884,7 +1412,7 @@ to re-enable
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_109_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_114_0.png
 
 
 .. code:: ipython3
@@ -894,9 +1422,9 @@ to re-enable
 
 .. parsed-literal::
 
-    name     : SSC
-    var name : do_SSC
-    state    : on
+    name                : SSC
+    var name            : do_SSC
+    state               : on
     allowed states : ['on', 'off']
 
 
@@ -909,7 +1437,7 @@ to re-enable
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_111_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_116_0.png
 
 
 to re-enable
@@ -923,7 +1451,7 @@ to re-enable
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_113_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_118_0.png
 
 
 Accessing individual spectral components
@@ -980,11 +1508,19 @@ and from the ``SED`` object we can extract both the nu and nuFnu array
 
 .. parsed-literal::
 
-    [1.00000000e-120 5.57619143e-116 1.19513550e-022 1.98653126e-018
-     4.19702144e-016 1.69462016e-015 6.75783575e-015 2.57876150e-014
-     7.52686486e-014 1.25457799e-013 1.08986752e-013 9.77921122e-015
-     6.56770273e-031 1.00000000e-120 1.00000000e-120 1.00000000e-120
-     1.00000000e-120 1.00000000e-120 1.00000000e-120 1.00000000e-120] erg / (cm2 s)
+    [1.00000000e-120 1.00000000e-120 1.00000000e-120 6.04250670e-026
+     2.16351829e-024 9.84432972e-023 4.74613296e-021 2.28931297e-019
+     1.09662087e-017 1.83733916e-016 4.11135769e-016 7.21745036e-016
+     1.25581697e-015 2.18363181e-015 3.79383567e-015 6.57833387e-015
+     1.13501032e-014 1.93585563e-014 3.21429895e-014 5.06938061e-014
+     7.36908738e-014 9.77112603e-014 1.17645633e-013 1.28621805e-013
+     1.26850509e-013 1.10646286e-013 7.82537850e-014 3.17631756e-014
+     2.39710785e-015 8.88519981e-019 7.47780581e-029 1.00000000e-120
+     1.00000000e-120 1.00000000e-120 1.00000000e-120 1.00000000e-120
+     1.00000000e-120 1.00000000e-120 1.00000000e-120 1.00000000e-120
+     1.00000000e-120 1.00000000e-120 1.00000000e-120 1.00000000e-120
+     1.00000000e-120 1.00000000e-120 1.00000000e-120 1.00000000e-120
+     1.00000000e-120 1.00000000e-120] erg / (cm2 s)
 
 
 or for the ``src`` rest frame (isotropic luminosity)
@@ -1001,11 +1537,19 @@ or for the ``src`` rest frame (isotropic luminosity)
 
 .. parsed-literal::
 
-    [2.70118406e-65 1.50623194e-60 3.22828095e+33 5.36598657e+37
-     1.13369274e+40 4.57748096e+40 1.82541582e+41 6.96570944e+41
-     2.03314474e+42 3.38884607e+42 2.94393276e+42 2.64154494e+41
-     1.77405739e+25 2.70118406e-65 2.70118406e-65 2.70118406e-65
-     2.70118406e-65 2.70118406e-65 2.70118406e-65 2.70118406e-65] erg / s
+    [2.70118406e-65 2.70118406e-65 2.70118406e-65 1.63219228e+30
+     5.84406112e+31 2.65913465e+33 1.28201787e+35 6.18385569e+36
+     2.96217481e+38 4.96299126e+39 1.11055338e+40 1.94956618e+40
+     3.39219277e+40 5.89839143e+40 1.02478484e+41 1.77692906e+41
+     3.06587177e+41 5.22910236e+41 8.68241307e+41 1.36933301e+42
+     1.99052613e+42 2.63936099e+42 3.17782509e+42 3.47431170e+42
+     3.42646573e+42 2.98875984e+42 2.11377876e+42 8.57981835e+41
+     6.47502951e+40 2.40005601e+37 2.01989298e+27 2.70118406e-65
+     2.70118406e-65 2.70118406e-65 2.70118406e-65 2.70118406e-65
+     2.70118406e-65 2.70118406e-65 2.70118406e-65 2.70118406e-65
+     2.70118406e-65 2.70118406e-65 2.70118406e-65 2.70118406e-65
+     2.70118406e-65 2.70118406e-65 2.70118406e-65 2.70118406e-65
+     2.70118406e-65 2.70118406e-65] erg / s
 
 
 Moreover, you can access the corresponding astropy table
@@ -1024,31 +1568,31 @@ Moreover, you can access the corresponding astropy table
 
 .. raw:: html
 
-    <i>Table length=20</i>
-    <table id="table4785589008" class="table-striped table-bordered table-condensed">
+    <i>Table length=50</i>
+    <table id="table140449476972800" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
     <tr><td>1000000.0</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
-    <tr><td>16070528.182616385</td><td>5.576191428817383e-116</td><td>5.576191428817383e-116</td><td>1e-120</td></tr>
-    <tr><td>258261876.06826746</td><td>1.195135512002044e-22</td><td>1.1951354961298763e-22</td><td>1.58672802592028e-30</td></tr>
-    <tr><td>4150404757.8504725</td><td>1.9865312839076317e-18</td><td>1.986531260738741e-18</td><td>2.3166636103266375e-26</td></tr>
-    <tr><td>66699196630.30115</td><td>4.197021843444382e-16</td><td>4.1970214417308514e-16</td><td>3.9801221901792325e-23</td></tr>
-    <tr><td>1071891319205.1265</td><td>1.6946213586281682e-15</td><td>1.6946201606592805e-15</td><td>1.1971272728883229e-21</td></tr>
-    <tr><td>17225859653987.84</td><td>6.757845256991403e-15</td><td>6.757835752672071e-15</td><td>9.5015570094613e-21</td></tr>
-    <tr><td>276828663039206.1</td><td>2.578767194222354e-14</td><td>2.578761495869709e-14</td><td>5.697083473691172e-20</td></tr>
-    <tr><td>4448782831127576.5</td><td>7.526894868696564e-14</td><td>7.526864861110227e-14</td><td>2.9984550627009144e-19</td></tr>
-    <tr><td>7.1494289865975624e+16</td><td>1.2545921909789764e-13</td><td>1.2545779931301155e-13</td><td>1.4168474666127227e-18</td></tr>
-    <tr><td>1.1489510001873062e+18</td><td>1.0899286631883519e-13</td><td>1.0898675154805e-13</td><td>6.0849963181518424e-18</td></tr>
-    <tr><td>1.8464249428955386e+19</td><td>9.805471050781945e-15</td><td>9.77921122387461e-15</td><td>2.432147557861654e-17</td></tr>
-    <tr><td>2.96730240818886e+20</td><td>8.828804540046145e-17</td><td>6.56770272783107e-31</td><td>8.82880454002845e-17</td></tr>
-    <tr><td>4.768611697714455e+21</td><td>2.8835930827948307e-16</td><td>1e-120</td><td>2.8835930827948307e-16</td></tr>
-    <tr><td>7.663410868007432e+22</td><td>8.361583672257197e-16</td><td>1e-120</td><td>8.361583672257197e-16</td></tr>
-    <tr><td>1.2315506032928211e+24</td><td>1.971793193554597e-15</td><td>1e-120</td><td>1.971793193554597e-15</td></tr>
-    <tr><td>1.9791668678535492e+25</td><td>2.7085196438325807e-15</td><td>1e-120</td><td>2.7085196438325807e-15</td></tr>
-    <tr><td>3.180625692794106e+26</td><td>7.483394557563423e-16</td><td>1e-120</td><td>7.483394557563423e-16</td></tr>
-    <tr><td>5.111433483440145e+27</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
-    <tr><td>8.214343584919389e+28</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
+    <tr><td>3026648.059395689</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
+    <tr><td>9160598.47544371</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
+    <tr><td>27725907.59860481</td><td>6.042506698961876e-26</td><td>6.042506698961876e-26</td><td>1e-120</td></tr>
+    <tr><td>83916564.42830162</td><td>2.1635183262103024e-24</td><td>2.1635182921864927e-24</td><td>3.4023433519560716e-32</td></tr>
+    <tr><td>253985906.87807292</td><td>9.844329885880581e-23</td><td>9.844329720868366e-23</td><td>1.6498676086277722e-30</td></tr>
+    <tr><td>768725952.1663721</td><td>4.7461330192800106e-21</td><td>4.746132957910235e-21</td><td>6.136928342027515e-29</td></tr>
+    <tr><td>2326662911.331458</td><td>2.289313003537184e-19</td><td>2.289312967845199e-19</td><td>3.569167611890846e-27</td></tr>
+    <tr><td>7041989785.449296</td><td>1.096620888827693e-17</td><td>1.0966208685756238e-17</td><td>2.0247793809032263e-25</td></tr>
+    <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>1.7317171337233599e+25</td><td>2.727651989047602e-15</td><td>1e-120</td><td>2.727651989047602e-15</td></tr>
+    <tr><td>5.2412983022060615e+25</td><td>2.2657229497733764e-15</td><td>1e-120</td><td>2.2657229497733764e-15</td></tr>
+    <tr><td>1.5863565335085865e+26</td><td>1.376097972965168e-15</td><td>1e-120</td><td>1.376097972965168e-15</td></tr>
+    <tr><td>4.801342923653465e+26</td><td>5.034239483778965e-16</td><td>1e-120</td><td>5.034239483778965e-16</td></tr>
+    <tr><td>1.4531975242368953e+27</td><td>3.2430360747827925e-96</td><td>1e-120</td><td>3.2430360747827925e-96</td></tr>
+    <tr><td>4.3983174666502106e+27</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
+    <tr><td>1.3312159025043105e+28</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
+    <tr><td>4.029122027951344e+28</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
+    <tr><td>1.2194734366967333e+29</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
+    <tr><td>3.690916910662782e+29</td><td>1e-120</td><td>1e-120</td><td>1e-120</td></tr>
     </table>
 
 
@@ -1069,31 +1613,31 @@ and also in the ``src`` restframe
 
 .. raw:: html
 
-    <i>Table length=20</i>
-    <table id="table4785659408" class="table-striped table-bordered table-condensed">
+    <i>Table length=50</i>
+    <table id="table140449482729408" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / s</th><th>erg / s</th><th>erg / s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
-    <tr><td>1100000.0</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
-    <tr><td>17677581.000878025</td><td>1.5062319381186786e-60</td><td>1.5062319381186786e-60</td><td>2.7011840560827467e-65</td></tr>
-    <tr><td>284088063.67509425</td><td>3.2282809898782117e+33</td><td>3.228280947004565e+33</td><td>4.286044444955511e+25</td></tr>
-    <tr><td>4565445233.63552</td><td>5.365986631000883e+37</td><td>5.365986568417445e+37</td><td>6.257734807521406e+29</td></tr>
-    <tr><td>73369116293.33127</td><td>1.1336928486542983e+40</td><td>1.1336927401440799e+40</td><td>1.0751042601373284e+33</td></tr>
-    <tr><td>1179080451125.6392</td><td>4.577484195023691e+40</td><td>4.577480959089232e+40</td><td>3.233661102627757e+34</td></tr>
-    <tr><td>18948445619386.625</td><td>1.825418386165959e+41</td><td>1.8254158188743746e+41</td><td>2.5665454301918126e+35</td></tr>
-    <tr><td>304511529343126.75</td><td>6.9657248293826625e+41</td><td>6.965709437083352e+41</td><td>1.5388871045307105e+36</td></tr>
-    <tr><td>4893661114240335.0</td><td>2.0331528411134198e+42</td><td>2.0331447355120422e+42</td><td>8.099379008248303e+36</td></tr>
-    <tr><td>7.86437188525732e+16</td><td>3.3888844231583316e+42</td><td>3.388846072155358e+42</td><td>3.827165786715518e+37</td></tr>
-    <tr><td>1.263846100206037e+18</td><td>2.944097927271958e+42</td><td>2.943932756058443e+42</td><td>1.6436695035913973e+38</td></tr>
-    <tr><td>2.031067437185093e+19</td><td>2.6486382064753125e+41</td><td>2.641544943899554e+41</td><td>6.56967820533649e+38</td></tr>
-    <tr><td>3.264032649007746e+20</td><td>2.3848226057843615e+39</td><td>1.774057389350845e+25</td><td>2.3848226057795817e+39</td></tr>
-    <tr><td>5.2454728674859e+21</td><td>7.789115659475893e+39</td><td>2.7011840560827467e-65</td><td>7.789115659475893e+39</td></tr>
-    <tr><td>8.429751954808175e+22</td><td>2.2586176499102964e+40</td><td>2.7011840560827467e-65</td><td>2.2586176499102964e+40</td></tr>
-    <tr><td>1.3547056636221034e+24</td><td>5.326176336322159e+40</td><td>2.7011840560827467e-65</td><td>5.326176336322159e+40</td></tr>
-    <tr><td>2.177083554638904e+25</td><td>7.316210077507487e+40</td><td>2.7011840560827467e-65</td><td>7.316210077507487e+40</td></tr>
-    <tr><td>3.498688262073517e+26</td><td>2.021402606426672e+40</td><td>2.7011840560827467e-65</td><td>2.021402606426672e+40</td></tr>
-    <tr><td>5.62257683178416e+27</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
-    <tr><td>9.035777943411329e+28</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td><td>2.7011840560827467e-65</td></tr>
+    <tr><td>1100000.0</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td></tr>
+    <tr><td>3329312.865335258</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td></tr>
+    <tr><td>10076658.322988082</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td></tr>
+    <tr><td>30498498.35846529</td><td>1.6321922754264707e+30</td><td>1.6321922754264707e+30</td><td>2.701184056125063e-65</td></tr>
+    <tr><td>92308220.8711318</td><td>5.844061207893652e+31</td><td>5.84406111598908e+31</td><td>9.190355615766844e+23</td></tr>
+    <tr><td>279384497.56588024</td><td>2.659134693097609e+33</td><td>2.659134648524772e+33</td><td>4.456596079142524e+25</td></tr>
+    <tr><td>845598547.3830093</td><td>1.2820178839927871e+35</td><td>1.2820178674156813e+35</td><td>1.6576972991066742e+27</td></tr>
+    <tr><td>2559329202.464604</td><td>6.183855784634422e+36</td><td>6.183855688223801e+36</td><td>9.64097864687752e+28</td></tr>
+    <tr><td>7746188763.994226</td><td>2.9621748605150595e+38</td><td>2.9621748058104933e+38</td><td>5.469301780866571e+30</td></tr>
+    <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>1.904888847095696e+25</td><td>7.367890063473198e+40</td><td>2.701184056125063e-65</td><td>7.367890063473198e+40</td></tr>
+    <tr><td>5.765428132426668e+25</td><td>6.120134707524491e+40</td><td>2.701184056125063e-65</td><td>6.120134707524491e+40</td></tr>
+    <tr><td>1.744992186859445e+26</td><td>3.71709390423953e+40</td><td>2.701184056125063e-65</td><td>3.71709390423953e+40</td></tr>
+    <tr><td>5.2814772160188116e+26</td><td>1.3598407428299007e+40</td><td>2.701184056125063e-65</td><td>1.3598407428299007e+40</td></tr>
+    <tr><td>1.598517276660585e+27</td><td>8.760037338641687e-41</td><td>2.701184056125063e-65</td><td>8.760037338641687e-41</td></tr>
+    <tr><td>4.838149213315232e+27</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td></tr>
+    <tr><td>1.4643374927547416e+28</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td></tr>
+    <tr><td>4.432034230746478e+28</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td></tr>
+    <tr><td>1.3414207803664067e+29</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td></tr>
+    <tr><td>4.060008601729061e+29</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td><td>2.701184056125063e-65</td></tr>
     </table>
 
 
@@ -1110,7 +1654,7 @@ units of the Synchrotron luminostity form erg/s to GeV/s
 
 .. math::
 
-    [1.6859465 \times 10^{-62},~9.4011603 \times 10^{-58},~2.0149345 \times 10^{36},~3.3491854 \times 10^{40},~7.0759535 \times 10^{42},~2.8570389 \times 10^{43},~1.1393349 \times 10^{44},~4.3476539 \times 10^{44},~1.2689891 \times 10^{45},~2.1151514 \times 10^{45},~1.8374583 \times 10^{45},~1.6487227 \times 10^{44},~1.1072795 \times 10^{28},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62}] \; \mathrm{\frac{GeV}{s}}
+    [1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.0187343 \times 10^{33},~3.647576 \times 10^{34},~1.6597013 \times 10^{36},~8.0017262 \times 10^{37},~3.8596591 \times 10^{39},~1.8488441 \times 10^{41},~3.0976555 \times 10^{42},~6.931529 \times 10^{42},~1.2168235 \times 10^{43},~2.1172402 \times 10^{43},~3.6814864 \times 10^{43},~6.3962039 \times 10^{43},~1.1090719 \times 10^{44},~1.9135666 \times 10^{44},~3.263749 \times 10^{44},~5.419136 \times 10^{44},~8.5467044 \times 10^{44},~1.2423887 \times 10^{45},~1.6473596 \times 10^{45},~1.9834424 \times 10^{45},~2.1684948 \times 10^{45},~2.1386317 \times 10^{45},~1.8654372 \times 10^{45},~1.3193169 \times 10^{45},~5.3551014 \times 10^{44},~4.0413955 \times 10^{43},~1.4979971 \times 10^{40},~1.260718 \times 10^{30},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62},~1.6859465 \times 10^{-62}] \; \mathrm{\frac{GeV}{s}}
 
 
 
@@ -1118,19 +1662,13 @@ the table can be easily saved as an ascii file
 
 .. code:: ipython3
 
-    t_src.write('test_SED.txt',format='ascii.ecsv',overwrite='True')
+    t_src.write('test_SED.txt',format='ascii.ecsv',overwrite=True)
 
 or in fits format
 
 .. code:: ipython3
 
-    t_src.write('test_SED.fits',format='fits',overwrite='True')
-
-
-.. parsed-literal::
-
-    WARNING: VerifyWarning: Keyword name 'restframe' is greater than 8 characters or contains characters not allowed by the FITS standard; a HIERARCH card will be created. [astropy.io.fits.card]
-
+    t_src.write('test_SED.fits',format='fits',overwrite=True)
 
 Energetic report
 ----------------
@@ -1147,49 +1685,88 @@ electrons, the magnetic fields, and for the cold protons in the jet.
     my_jet.energetic_report()
 
 
-.. parsed-literal::
 
-    -----------------------------------------------------------------------------------------
-    jet eneregetic report:
-         name                   type               units       val     
-    -------------- ----------------------------- --------- ------------
-               U_e Energy dens. blob rest. frame erg / cm3 1.740434e-03
-          U_p_cold Energy dens. blob rest. frame erg / cm3 1.503276e-02
-               U_B Energy dens. blob rest. frame erg / cm3 3.978874e-04
-               U_p Energy dens. blob rest. frame erg / cm3 0.000000e+00
-        U_p_target Energy dens. blob rest. frame erg / cm3 0.000000e+00
-           U_Synch Energy dens. blob rest. frame erg / cm3 5.506770e-05
-       U_Synch_DRF Energy dens. disk rest. frame erg / cm3 8.712292e+00
-            U_Disk Energy dens. blob rest. frame erg / cm3 0.000000e+00
-             U_BLR Energy dens. blob rest. frame erg / cm3 0.000000e+00
-              U_DT Energy dens. blob rest. frame erg / cm3 0.000000e+00
-             U_CMB Energy dens. blob rest. frame erg / cm3 0.000000e+00
-        U_Disk_DRF Energy dens. disk rest. frame erg / cm3 0.000000e+00
-         U_BLR_DRF Energy dens. disk rest. frame erg / cm3 0.000000e+00
-          U_DT_DRF Energy dens. disk rest. frame erg / cm3 0.000000e+00
-         U_CMB_DRF Energy dens. disk rest. frame erg / cm3 0.000000e+00
-         L_Sync_rf         Lum. blob rest. frme.   erg / s 1.728764e+38
-          L_SSC_rf         Lum. blob rest. frme.   erg / s 3.828879e+36
-      L_EC_Disk_rf         Lum. blob rest. frme.   erg / s 0.000000e+00
-       L_EC_BLR_rf         Lum. blob rest. frme.   erg / s 0.000000e+00
-        L_EC_DT_rf         Lum. blob rest. frme.   erg / s 0.000000e+00
-       L_EC_CMB_rf         Lum. blob rest. frme.   erg / s 0.000000e+00
-     L_pp_gamma_rf         Lum. blob rest. frme.   erg / s 0.000000e+00
-        jet_L_Sync                      jet Lum.   erg / s 4.321911e+39
-         jet_L_SSC                      jet Lum.   erg / s 9.572198e+37
-     jet_L_EC_Disk                      jet Lum.   erg / s 0.000000e+00
-      jet_L_EC_BLR                      jet Lum.   erg / s 0.000000e+00
-       jet_L_EC_DT                      jet Lum.   erg / s 0.000000e+00
-      jet_L_EC_CMB                      jet Lum.   erg / s 0.000000e+00
-    jet_L_pp_gamma                      jet Lum.   erg / s 0.000000e+00
-         jet_L_rad                      jet Lum.   erg / s 4.417633e+39
-         jet_L_kin                      jet Lum.   erg / s 4.043043e+42
-         jet_L_tot                      jet Lum.   erg / s 4.047460e+42
-           jet_L_e                      jet Lum.   erg / s 4.097965e+41
-           jet_L_B                      jet Lum.   erg / s 9.368514e+40
-      jet_L_p_cold                      jet Lum.   erg / s 3.539561e+42
-           jet_L_p                      jet Lum.   erg / s 0.000000e+00
-    -----------------------------------------------------------------------------------------
+.. raw:: html
+
+    <i>Table length=36</i>
+    <table id="table140448972858704-382349" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
+    <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.736635e-03</td></tr>
+    <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>3.978874e-04</td></tr>
+    <tr><td>U_p</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_p_target</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>5.494838e-05</td></tr>
+    <tr><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.693415e+00</td></tr>
+    <tr><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_CMB</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_Disk_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_BLR_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_DT_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>U_CMB_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
+    <tr><td>L_Sync_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>1.725018e+38</td></tr>
+    <tr><td>L_SSC_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>3.362216e+36</td></tr>
+    <tr><td>L_EC_Disk_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>L_EC_BLR_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>L_EC_DT_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>L_EC_CMB_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>L_pp_gamma_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>jet_L_Sync</td><td>jet Lum.</td><td>erg / s</td><td>4.312544e+39</td></tr>
+    <tr><td>jet_L_SSC</td><td>jet Lum.</td><td>erg / s</td><td>8.405541e+37</td></tr>
+    <tr><td>jet_L_EC_Disk</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>jet_L_EC_BLR</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>jet_L_EC_CMB</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>jet_L_pp_gamma</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>jet_L_rad</td><td>jet Lum.</td><td>erg / s</td><td>4.396600e+39</td></tr>
+    <tr><td>jet_L_kin</td><td>jet Lum.</td><td>erg / s</td><td>4.068522e+41</td></tr>
+    <tr><td>jet_L_tot</td><td>jet Lum.</td><td>erg / s</td><td>5.044643e+41</td></tr>
+    <tr><td>jet_L_e</td><td>jet Lum.</td><td>erg / s</td><td>4.068522e+41</td></tr>
+    <tr><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>9.321554e+40</td></tr>
+    <tr><td>jet_L_p_cold</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140448972858704-382349').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140448972858704-382349').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [3], type: "optionalnum"}]
+        });
+    });
+    </script>
+
 
 
 If you want to evaluate the energetic report in non verbose mode:
@@ -1207,13 +1784,13 @@ If you want to evaluate the energetic report in non verbose mode:
 
 .. parsed-literal::
 
-    {'U_e': 0.0017404342430246782,
-     'U_p_cold': 0.015032764261000002,
+    {'U_e': 0.001736634756190472,
+     'U_p_cold': 0.0,
      'U_B': 0.00039788735772973844,
      'U_p': 0.0,
      'U_p_target': 0.0,
-     'U_Synch': 5.506769532122052e-05,
-     'U_Synch_DRF': 8.712292317747346,
+     'U_Synch': 5.4948380795748906e-05,
+     'U_Synch_DRF': 8.693415496816337,
      'U_Disk': 0.0,
      'U_BLR': 0.0,
      'U_DT': 0.0,
@@ -1222,26 +1799,26 @@ If you want to evaluate the energetic report in non verbose mode:
      'U_BLR_DRF': 0.0,
      'U_DT_DRF': 0.0,
      'U_CMB_DRF': 0.0,
-     'L_Sync_rf': 1.728764352592126e+38,
-     'L_SSC_rf': 3.82887909757934e+36,
+     'L_Sync_rf': 1.7250177084192923e+38,
+     'L_SSC_rf': 3.362216361563782e+36,
      'L_EC_Disk_rf': 0.0,
      'L_EC_BLR_rf': 0.0,
      'L_EC_DT_rf': 0.0,
      'L_EC_CMB_rf': 0.0,
      'L_pp_gamma_rf': 0.0,
-     'jet_L_Sync': 4.3219108814803147e+39,
-     'jet_L_SSC': 9.572197743948349e+37,
+     'jet_L_Sync': 4.3125442710482305e+39,
+     'jet_L_SSC': 8.405540903909454e+37,
      'jet_L_EC_Disk': 0.0,
      'jet_L_EC_BLR': 0.0,
      'jet_L_EC_DT': 0.0,
      'jet_L_EC_CMB': 0.0,
      'jet_L_pp_gamma': 0.0,
-     'jet_L_rad': 4.417632858919798e+39,
-     'jet_L_kin': 4.043042849486076e+42,
-     'jet_L_tot': 4.0474604823449956e+42,
-     'jet_L_e': 4.097964612089291e+41,
-     'jet_L_B': 9.368514312500004e+40,
-     'jet_L_p_cold': 3.5395612451521466e+42,
+     'jet_L_rad': 4.396599680087325e+39,
+     'jet_L_kin': 4.068522013146244e+41,
+     'jet_L_tot': 5.0446434144762236e+41,
+     'jet_L_e': 4.068522013146244e+41,
+     'jet_L_B': 9.321554045291063e+40,
+     'jet_L_p_cold': 0.0,
      'jet_L_p': 0.0}
 
 
@@ -1256,16 +1833,16 @@ If you want to evaluate the energetic report in non verbose mode:
 .. raw:: html
 
     <i>Table length=36</i>
-    <table id="table4748558928" class="table-striped table-bordered table-condensed">
+    <table id="table140448972858176" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <thead><tr><th>str14</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
-    <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.740434e-03</td></tr>
-    <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.503276e-02</td></tr>
+    <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.736635e-03</td></tr>
+    <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>3.978874e-04</td></tr>
     <tr><td>U_p</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_p_target</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>5.506770e-05</td></tr>
-    <tr><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.712292e+00</td></tr>
+    <tr><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>5.494838e-05</td></tr>
+    <tr><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.693415e+00</td></tr>
     <tr><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
@@ -1273,13 +1850,14 @@ If you want to evaluate the energetic report in non verbose mode:
     <tr><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_EC_CMB</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_pp_gamma</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>jet_L_rad</td><td>jet Lum.</td><td>erg / s</td><td>4.417633e+39</td></tr>
-    <tr><td>jet_L_kin</td><td>jet Lum.</td><td>erg / s</td><td>4.043043e+42</td></tr>
-    <tr><td>jet_L_tot</td><td>jet Lum.</td><td>erg / s</td><td>4.047460e+42</td></tr>
-    <tr><td>jet_L_e</td><td>jet Lum.</td><td>erg / s</td><td>4.097965e+41</td></tr>
-    <tr><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>9.368514e+40</td></tr>
-    <tr><td>jet_L_p_cold</td><td>jet Lum.</td><td>erg / s</td><td>3.539561e+42</td></tr>
+    <tr><td>jet_L_rad</td><td>jet Lum.</td><td>erg / s</td><td>4.396600e+39</td></tr>
+    <tr><td>jet_L_kin</td><td>jet Lum.</td><td>erg / s</td><td>4.068522e+41</td></tr>
+    <tr><td>jet_L_tot</td><td>jet Lum.</td><td>erg / s</td><td>5.044643e+41</td></tr>
+    <tr><td>jet_L_e</td><td>jet Lum.</td><td>erg / s</td><td>4.068522e+41</td></tr>
+    <tr><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>9.321554e+40</td></tr>
+    <tr><td>jet_L_p_cold</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     </table>
+
 
 

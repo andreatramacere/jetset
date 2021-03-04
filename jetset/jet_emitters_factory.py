@@ -3,7 +3,7 @@ __author__ = "Andrea Tramacere"
 import numpy as np
 import numba as nb
 import pprint
-from jetset.jet_emitters import EmittersDistribution
+from jetset.jet_emitters import EmittersDistribution, InjEmittersDistribution
 __all__=['EmittersFactory']
 
 _available_dict = {'lp': 'log-parabola',
@@ -73,6 +73,16 @@ class EmittersFactory:
                            'lpep': self._create_lpep,
                            'superexp': self._create_super_exp}
 
+        self._set_emitters_class()
+
+    def _set_emitters_class(self):
+        if type(self) == EmittersFactory:
+            self._emitters_class=EmittersDistribution
+        elif type(self) ==InjEmittersFactory:
+            self._emitters_class = InjEmittersDistribution
+        else:
+            raise RuntimeError('class instance', type(self), 'not valid')
+
     @staticmethod
     def available_distributions():
         for k in _available_dict.keys():
@@ -92,16 +102,16 @@ class EmittersFactory:
 
         if name not in self._available_dict.keys():
             raise RuntimeError('name', name, 'not among available', self._available_dict.keys())
+
         return self._func_dict[name](gamma_grid_size=gamma_grid_size,
                                      log_values=log_values,
                                      normalize=normalize,
                                      skip_build=skip_build,
                                      emitters_type=emitters_type)
 
-    @staticmethod
-    def _create_bkn(gamma_grid_size,log_values,normalize,skip_build,emitters_type):
+    def _create_bkn(self,gamma_grid_size,log_values,normalize,skip_build,emitters_type):
 
-        n_e_bkn = EmittersDistribution(name='bkn',
+        n_e_bkn = self._emitters_class(name='bkn',
                                        spectral_type='bkn',
                                        normalize=normalize,
                                        emitters_type=emitters_type,
@@ -117,10 +127,9 @@ class EmittersFactory:
         n_e_bkn.set_distr_func(distr_func_bkn)
         return n_e_bkn
 
-    @staticmethod
-    def _create_pl(gamma_grid_size, log_values, normalize, skip_build, emitters_type):
+    def _create_pl(self,gamma_grid_size, log_values, normalize, skip_build, emitters_type):
 
-        n_e_pl = EmittersDistribution(name='pl',
+        n_e_pl = self._emitters_class(name='pl',
                                        spectral_type='pl',
                                        normalize=normalize,
                                        emitters_type=emitters_type,
@@ -135,10 +144,10 @@ class EmittersFactory:
 
         return n_e_pl
 
-    @staticmethod
-    def _create_plc(gamma_grid_size,log_values,normalize,skip_build,emitters_type):
 
-        n_e_plc = EmittersDistribution(name='plc',
+    def _create_plc(self, gamma_grid_size,log_values,normalize,skip_build,emitters_type):
+
+        n_e_plc = n_e_bkn = self._emitters_class(name='plc',
                                              spectral_type='plc',
                                              normalize=normalize,
                                              emitters_type=emitters_type,
@@ -154,10 +163,10 @@ class EmittersFactory:
         n_e_plc.set_distr_func(distr_func_plc)
         return n_e_plc
 
-    @staticmethod
-    def _create_super_exp(gamma_grid_size, log_values, normalize, skip_build, emitters_type):
 
-        n_e_super_exp = EmittersDistribution(name='super_exp',
+    def _create_super_exp(self, gamma_grid_size, log_values, normalize, skip_build, emitters_type):
+
+        n_e_super_exp  = self._emitters_class(name='super_exp',
                                              spectral_type='plc',
                                              normalize=normalize,
                                              emitters_type=emitters_type,
@@ -175,10 +184,9 @@ class EmittersFactory:
 
         return n_e_super_exp
 
-    @staticmethod
-    def _create_lp(gamma_grid_size,log_values,normalize,skip_build,emitters_type):
+    def _create_lp(self, gamma_grid_size,log_values,normalize,skip_build,emitters_type):
 
-        n_lp = EmittersDistribution(name='lp',
+        n_lp  = self._emitters_class(name='lp',
                                     spectral_type='lp',
                                     normalize=normalize,
                                     emitters_type=emitters_type,
@@ -197,10 +205,9 @@ class EmittersFactory:
 
         return n_lp
 
-    @staticmethod
-    def _create_lpep(gamma_grid_size, log_values, normalize, skip_build, emitters_type):
+    def _create_lpep(self,gamma_grid_size, log_values, normalize, skip_build, emitters_type):
 
-        n_lep = EmittersDistribution(name='lpep',
+        n_lep  = self._emitters_class(name='lpep',
                                     spectral_type='lp',
                                     normalize=normalize,
                                     emitters_type=emitters_type,
@@ -217,10 +224,9 @@ class EmittersFactory:
 
         return n_lep
 
-    @staticmethod
-    def _create_lppl(gamma_grid_size, log_values, normalize, skip_build, emitters_type):
+    def _create_lppl(self, gamma_grid_size, log_values, normalize, skip_build, emitters_type):
 
-        n_lppl = EmittersDistribution(name='lppl',
+        n_lppl  = self._emitters_class(name='lppl',
                                     spectral_type='lp',
                                     normalize=normalize,
                                     emitters_type=emitters_type,
@@ -239,3 +245,27 @@ class EmittersFactory:
         n_lppl.set_distr_func(distr_func_lppl)
 
         return n_lppl
+
+
+class InjEmittersFactory(EmittersFactory):
+
+    def __init__(self):
+        super(InjEmittersFactory, self).__init__()
+
+
+
+    def create_inj_emitters(self,
+                        name,
+                        gamma_grid_size=200,
+                        log_values=False,
+                        emitters_type='electrons',
+                        normalize=True,
+                        skip_build=False):
+
+        if name not in self._available_dict.keys():
+            raise RuntimeError('name', name, 'not among available', self._available_dict.keys())
+        return self._func_dict[name](gamma_grid_size=gamma_grid_size,
+                                     log_values=log_values,
+                                     normalize=normalize,
+                                     skip_build=skip_build,
+                                     emitters_type=emitters_type)

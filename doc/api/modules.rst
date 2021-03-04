@@ -33,6 +33,7 @@ In the following the package modules are listed.
    output    <output.rst>
    plot_sedfit    <plot_sedfit.rst>
    poly_fit    <poly_fit.rst>
+   poly_fit_tools    <poly_fit_tools.rst>
    sed_shaper    <sed_shaper.rst>
    spectral_shapes    <spectral_shapes.rst>
    template_2Dmodel    <template_2Dmodel.rst>

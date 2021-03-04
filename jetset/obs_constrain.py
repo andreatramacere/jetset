@@ -226,6 +226,8 @@ class ObsConstrain(object):
 
             else:
                 raise RuntimeError('''wrong beaming_expr value=%s, allowed 'delta' or 'bulk_theta' '''%self.beaming_expr)
+        if jet_model.emitters_distribution.spectral_type not in jet_model.emitters_distribution.spectral_types_obs_constrain():
+            raise RuntimeError('''to use osb constrain the spectral type of emitters has to be ''' %jet_model.emitters_distribution.spectral_types_obs_constrain())
 
         if R_H is not None:
             jet_model.set_par('R_H',val=R_H)
