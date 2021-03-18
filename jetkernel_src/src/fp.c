@@ -56,10 +56,10 @@ double f_A(double gamma,struct temp_ev *pt){
 
 
 //---------------------------------------------------------------------
-double f_Tesc(double x, struct temp_ev *pt){
+double f_Tesc(double x, double coeff, double index){
 	//Definire il tempo di fuga
 	//gamma=x+1
-	return    pt->T_esc_Coeff*pow(x,pt->Esc_Index);
+	return    coeff*pow(x,index);
 	//return pt->T_esc_Coeff;
 }
 //---------------------------------------------------------------------

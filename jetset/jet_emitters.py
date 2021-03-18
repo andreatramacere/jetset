@@ -657,10 +657,13 @@ class EmittersArrayDistribution(EmittersDistribution):
 
     def _array_func(self,gamma):
         msk_nan=self._array_n_gamma>0
-        f_interp = interpolate.interp1d(np.log10(self._array_gamma[msk_nan]), np.log10(self._array_n_gamma[msk_nan]), bounds_error=False, kind='linear')
-        y = np.power(10., f_interp(np.log10(gamma)))
-        msk_nan = np.isnan(y)
-        y[msk_nan] = 0
+        if msk_nan.sum()>1:
+            f_interp = interpolate.interp1d(np.log10(self._array_gamma[msk_nan]), np.log10(self._array_n_gamma[msk_nan]), bounds_error=False, kind='linear')
+            y = np.power(10., f_interp(np.log10(gamma)))
+            msk_nan = np.isnan(y)
+            y[msk_nan] = 0
+        else:
+            y = np.zeros(gamma.size)
 
         return y
 

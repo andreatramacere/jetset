@@ -658,7 +658,7 @@ struct blob {
     double *Np_jetset;
     double *Q_inj_e_second;
     double *Integrand_over_gamma_grid;
-    //double *Q_inj_e;
+    
     
 
     unsigned int gamma_grid_size;
@@ -741,23 +741,19 @@ struct temp_ev{
     char STEM[256];
     char path[256];
 
-	int do_EC_cooling_Disk;
-	int do_EC_cooling_BLR;
-	int do_EC_cooling_Star;
-	int do_EC_cooling_CMB;
-	int do_EC_cooling_DT;
+	
     unsigned int T_COUNTER;
 
 	int do_Sync_cooling;
-	int do_SSC_cooling;
     int do_Compton_cooling;
 
     //double Q_scaling_factor;
 
-    double t_unit; //unit time in light crossing time
+    double t_unit, t_unit_acc; //unit time in light crossing time
     //double t_acc;
 
     double *N_gamma;
+    double *N_escaped_gamma;
     double *gamma;
     double *gamma_inj_jetset;
     double *N_time;
@@ -771,23 +767,30 @@ struct temp_ev{
     double t_DA[static_ev_arr_grid_size];
     double t_A[static_ev_arr_grid_size];
     double t_Sync_cool[static_ev_arr_grid_size];
-    double t_Esc[static_ev_arr_grid_size];
+    double t_Esc_rad[static_ev_arr_grid_size];
+    double t_Esc_acc[static_ev_arr_grid_size];
     double L_inj;
-	double *T_esc;
+	double *T_esc_acc, *T_esc_rad;
+    double *T_inj_profile;
+    double *T_acc_profile;
 	double Diff_Coeff;
 	double Diff_coeff_CD;
 	double Diff_coeff_CA;
 	double Acc_Coeff;
 	double Diff_Index;
 	double Acc_Index;
-	double T_esc_Coeff;
-    double T_esc_Coeff_R_by_c;
+	double T_esc_Coeff_acc;
+    double T_esc_Coeff_R_by_c_acc;
+    double T_esc_Coeff_rad;
+    double T_esc_Coeff_R_by_c_rad;
 	double Esc_Index;
 	double Lambda_max_Turb;
 	double Lambda_choer_Turb_factor;
 	double Gamma_Max_Turb_L_max;
 	double Gamma_Max_Turb_L_coher;
-	double gamma_eq_t_D,gamma_eq_t_A;
+	double gamma_eq_t_D, gamma_eq_t_DA ,gamma_eq_t_A;
+    double E_acc_max;
+    double R_acc;
 
 	double TStart_Inj;
 	double TStop_Inj;
@@ -812,7 +815,7 @@ double f_A(double gamma,struct temp_ev *pt);
 
 
 double f_Acc(double x, struct temp_ev *);
-double f_Tesc(double,struct temp_ev *);
+double f_Tesc(double, double coeff, double index);
 double Inj_temp_prof (double t,struct temp_ev *);
 void Init_Q_inj(struct temp_ev *pt_ev );
 //double f_Inj(double x,struct temp_ev *);
@@ -855,6 +858,7 @@ double get_Q_inj_array(double *arr, struct temp_ev *pt_ev, unsigned int id);
 double get_temp_ev_array_static(double *arr, unsigned int id);
 
 void set_q_inj_user_array(double * arr,struct temp_ev *pt, double val, unsigned int id);
+void set_temp_ev_Time_array(double * arr,struct temp_ev *pt, double val, unsigned int id);
 void set_elec_custom_array(double * arr, struct blob *pt,double val, unsigned int id);
 void set_elec_array(double * arr,struct blob *pt, double val, unsigned int id);
 void set_bessel_table(double *arr, struct blob *pt, double val, unsigned int id);
@@ -946,6 +950,7 @@ double Power_Sync_Electron_Integ(struct blob *pt_N, double Gamma);
 
 double Lum_Sync_at_nu (struct blob *pt, double nu);
 double	Lum_SSC_at_nu (struct blob *pt , double nu_1);
+double eval_E_acc(double *gamma, double *N, unsigned int gamma_size, double Vol_acc);
 
 void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned int NU_INT_MAX, struct blob * pt,
         double * nu_peak_obs,
@@ -1257,7 +1262,7 @@ double integrale_trap_log_struct(double (*pf)(struct blob *, double x),
 double integrale_simp_struct(double (*pf)(struct blob *, double x),
                              struct blob *pt, double a, double b, unsigned int intervalli);
 double integrale_simp(double (*pf)(double x), double a, double b, unsigned int n_intervalli);
-double integr_simp_gird_equilog(double * x, double *y, unsigned int size);
+double integr_simp_grid_equilog(double * x, double *y, unsigned int size);
 double trapzd_array_linear_grid(double *x, double *y, unsigned int SIZE);
 double trapzd_array_arbritary_grid(double *x, double *y, unsigned int SIZE);
 double test_int(struct blob *, double x);

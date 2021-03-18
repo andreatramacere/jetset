@@ -276,7 +276,8 @@ class  PlotSED (object):
         if len(self.sedplot.lines)>0:
 
             for l in self.sedplot.lines:
-                y_s.append(np.max(l.get_ydata()))
+                if len(l.get_ydata())>0:
+                    y_s.append(np.max(l.get_ydata()))
             if len(y_s) > 0:
                 y_min = min(y_s) - 3
                 y_max = max(y_s) + 1
@@ -322,7 +323,7 @@ class  PlotSED (object):
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None,density=False, update=True):
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None,density=False, update=True, lw=1.0):
 
         if hasattr(model,'get_model_points'):
             try:
@@ -361,7 +362,7 @@ class  PlotSED (object):
             x = x[msk1 * msk2]
             y = y[msk1 * msk2]
 
-        line, = self.sedplot.plot(x, y, line_style, label=label,color=color,linewidth=1.0)
+        line, = self.sedplot.plot(x, y, line_style, label=label,color=color,lw=lw)
 
 
         self.lines_model_list.append(line)
@@ -662,25 +663,46 @@ class  PlotTempEvEmitters (PlotPdistr):
         super(PlotTempEvEmitters, self).__init__(figsize=figsize,dpi=dpi,loglog=loglog,)
 
 
-    def _plot_distr(self,temp_ev,particle='electrons',energy_unit='gamma',pow=None,plot_Q_inj=True):
-        for ID in range(1, temp_ev.parameters.NUM_SET.val - 1):
-            x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[ID], particle, energy_unit, pow=pow)
-            self._plot(x,y,c='g',lw=0.1,label=None)
-        #print('==> a')
-        x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[0], particle, energy_unit, pow=pow)
-        self._plot(x, y, c='black', lw=2,label='Start')
-        #print('==> b')
-        x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[-1], particle, energy_unit, pow=pow)
-        self._plot(x, y, c='blue', lw=2,label='Stop')
+    def _plot_distr(self,temp_ev,particle='electrons',energy_unit='gamma',pow=None,plot_Q_inj=True,t1=None, t2=None,):
+        if t1 is None:
+            t1=temp_ev.time_sampled_emitters.time[0]
+
+        if t2 is None:
+            t2=temp_ev.time_sampled_emitters.time[-1]
+
+
+        t_array = np.linspace(t1, t2, temp_ev.time_sampled_emitters.time.size)
+
+        ls = '-'
+        lw = 0.2
+
+        for ID, t in enumerate(t_array):
+            color = 'red'
+
+            if temp_ev.custom_q_jnj_profile[temp_ev._get_time_slice_T_array(t)] > 0:
+                color = 'g'
+
+            if temp_ev.custom_acc_profile[temp_ev._get_time_slice_T_array(t)] > 0:
+                color = 'b'
+
+
+            x, y, energy_name, energy_units = self._set_variable(temp_ev.time_sampled_emitters.gamma, temp_ev.time_sampled_emitters.n_gamma[ID], particle, energy_unit, pow=pow)
+            self._plot(x,y,c=color,lw=0.1,label=None)
+            #print('==> ID,t,c',ID,t,color)
+        x, y, energy_name, energy_units = self._set_variable(temp_ev.time_sampled_emitters.gamma, temp_ev.time_sampled_emitters.n_gamma[0], particle, energy_unit, pow=pow)
+        self._plot(x, y, c='black', lw=2,label='Start sample')
+
+        x, y, energy_name, energy_units = self._set_variable(temp_ev.time_sampled_emitters.gamma, temp_ev.time_sampled_emitters.n_gamma[-1], particle, energy_unit, pow=pow)
+        self._plot(x, y, c='blue', lw=2,label='Stop sample')
         self._set_xy_label(energy_name, energy_units,pow=pow)
         if temp_ev.Q_inj is not None:
-            y = temp_ev.Q_inj.n_gamma_e * temp_ev._temp_ev.deltat
+            y = temp_ev.Q_inj.n_gamma_e * temp_ev.delta_t
             x = temp_ev.Q_inj.gamma_e
             if plot_Q_inj is True:
                 if pow is not None:
                     y=y*np.power(x,pow)
 
-                self._plot(x,y, c='red', lw=1, label='$Q_{inj}$ deltat')
+                self._plot(x,y, c='red', lw=1, label='$Q_{inj}$ delta t')
         #print('==> d')
 
         self.ax.legend()
@@ -694,26 +716,37 @@ class  PlotTempEvEmitters (PlotPdistr):
     def plot_distr3p(self, temp_ev, energy_unit='gamma',plot_Q_inj=True):
         self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=3,plot_Q_inj=plot_Q_inj)
 
-class  PlotTempEvDiagram (BasePlot):
+
+class  PlotTempEvDiagram (object):
 
     def __init__(self,figsize=(8,6),dpi=None):
-        super(PlotTempEvDiagram, self).__init__(figsize=figsize,dpi=dpi)
+        self.fig, (self.ax1, self.ax2,self.ax3) = plt.subplots(3, 1, figsize=figsize, dpi=dpi, sharex=True)
 
+    def plot(self, duration, T_array, inj_profile, acc_profile):
+        #self.ax.hlines(2, T_acc_start, T_acc_stop, label='Acc. start/stop', colors='g')
+        #self.ax.vlines(T_acc_start,0,2,ls='--',color='b',lw=0.5)
+        #self.ax.vlines(T_acc_stop,0, 2,ls='--',color='b',lw=0.5)
+        self.ax1.plot(T_array, acc_profile, label='Acc. start/stop', c='g')
+        self.ax1.set_ylim(0, 1.5)
+        self.ax2.plot(T_array, inj_profile, label='Inj. profile', c='b')
+        self.ax2.set_ylim(0,None)
+        #self.ax.hlines(2, T_inj_start, T_inj_stop, label='Acc. start/stop', colors='g')
+        #self.ax.vlines(T_inj_start, 0, 2, ls='--', color='g',lw=0.5)
+        #self.ax.vlines(T_inj_stop, 0, 2, ls='--', color='g',lw=0.5)
+        self.ax3.hlines(0.5, 0, duration, label='duration', colors='black')
+        self.ax3.hlines(0, 0,  duration, ls='--', colors='black',lw=0.5)
+        self.ax3.set_xlim(0, duration)
+        self.ax3.set_ylim(0,1.5)
+        self.ax1.legend()
+        self.ax2.legend()
+        self.ax3.legend()
+        self.ax3.set_xlabel('Time blob frame (s)')
+        self.fig.subplots_adjust(hspace=0)
+        self.fig.tight_layout()
 
-    def plot(self,duration,T_acc_start,T_acc_stop,T_inj_start,T_inj_stop):
-        self.ax.hlines(1, T_acc_start, T_acc_stop, label='Inj. start/stop', colors='b')
-        self.ax.vlines(T_acc_start,0,1,ls='--',color='b',lw=0.5)
-        self.ax.vlines(T_acc_stop,0, 1,ls='--',color='b',lw=0.5)
-        self.ax.hlines(2, T_inj_start, T_inj_stop, label='Acc. start/stop', colors='g')
-        self.ax.vlines(T_inj_start, 0, 2, ls='--', color='g',lw=0.5)
-        self.ax.vlines(T_inj_stop, 0, 2, ls='--', color='g',lw=0.5)
-        self.ax.hlines(0.5, 0, duration, label='duration', colors='black')
-        self.ax.hlines(0, 0,  duration, ls='--', colors='black',lw=0.5)
-        self.ax.set_xlim(0, duration)
-        self.ax.set_ylim(-0.5,3)
-        self.ax.legend()
-
-
+    def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):
+        self.ax.set_xlim(x_min, x_max)
+        self.ax.set_ylim(y_min, y_max)
 
 class  PlotSpecComp (BasePlot):
 

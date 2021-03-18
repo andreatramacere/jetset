@@ -78,19 +78,14 @@ void show_blob(struct blob pt ) {
 
 void show_temp_ev(  struct temp_ev pt_ev){
     printf("do_Sync_cooling=%d\n", pt_ev.do_Sync_cooling);
-    printf("do_SSC_cooling=%d\n", pt_ev.do_SSC_cooling);
-    printf("do_EC_cooling_Disk=%d\n", pt_ev.do_EC_cooling_Disk);
-    printf("do_EC_cooling_BLR=%d\n", pt_ev.do_EC_cooling_BLR);
-    printf("do_EC_cooling_DT=%d\n", pt_ev.do_EC_cooling_DT);
-    printf("do_EC_cooling_Star=%d\n", pt_ev.do_EC_cooling_Star);
-    printf("do_EC_cooling_CMB=%d\n", pt_ev.do_EC_cooling_CMB);
-
+    printf("do_Compton_cooling=%d\n", pt_ev.do_Compton_cooling);
+    
 
 
     printf("L_inj %e (erg/s)\n", pt_ev.L_inj );
     printf("Diff_coeff %e (1/s), t_D=1/Diff_coeff %e (s)\n", pt_ev.Diff_Coeff, pt_ev.t_D0 );
     printf("Acc_coeff %e (1/s),  t_A=1/Acc_coeff %e (s)\n",  pt_ev.Acc_Coeff, pt_ev.t_A0 );
-    printf("T_esc_Coeff %e (R/c)\n", pt_ev.T_esc_Coeff_R_by_c );
+    //printf("T_esc_Coeff %e (R/c)\n", pt_ev.T_esc_Coeff_R_by_c_acc );
     printf("Esc_index %e\n", pt_ev.Esc_Index );
     printf("T_start_Acc %e (s)\n", pt_ev.TStart_Acc );
     printf("T_stop_Acc  %e (s)\n", pt_ev.TStop_Acc );
@@ -108,14 +103,9 @@ struct temp_ev MakeTempEv() {
     //ev_root.t_unit=; //unit time in light crossing time
     //double t_acc;
 
-    ev_root.do_Sync_cooling = 0;
-    ev_root.do_SSC_cooling = 0;
-    ev_root.do_EC_cooling_Disk = 0;
-    ev_root.do_EC_cooling_BLR = 0;
-    ev_root.do_EC_cooling_DT = 0;
-    ev_root.do_EC_cooling_Star = 0;
-    ev_root.do_EC_cooling_CMB  = 0;
-
+    ev_root.do_Sync_cooling = 1;
+    ev_root.do_Compton_cooling = 0;
+    
     ev_root.T_COUNTER=0;
 
 
@@ -129,7 +119,8 @@ struct temp_ev MakeTempEv() {
     ev_root.Acc_Coeff=1.0/ev_root.t_A0;
     ev_root.Diff_Index=2.0;
     ev_root.Acc_Index=1.0;
-    ev_root.T_esc_Coeff_R_by_c=2.0;
+    ev_root.T_esc_Coeff_R_by_c_acc=2.0;
+    ev_root.T_esc_Coeff_R_by_c_rad=2.0;
     ev_root.Esc_Index=0.0;
     ev_root.TStart_Inj=0.0;
     ev_root.TStop_Inj=3e4;
@@ -139,7 +130,8 @@ struct temp_ev MakeTempEv() {
     ev_root.NUM_SET=50;
     ev_root.T_SIZE=1000;
     ev_root.duration=3e4;
-
+    ev_root.E_acc_max=1E200;
+    ev_root.R_acc=1E13;
     ev_root.gmin_griglia = 1.0e1;
     ev_root.gmax_griglia = 1.0e8;
     ev_root.gamma_grid_size =1E4;
@@ -155,9 +147,12 @@ struct temp_ev MakeTempEv() {
     ev_root.Q_inj_jetset=NULL;
     ev_root.gamma_inj_jetset=NULL;
     ev_root.N_gamma=NULL;
+    ev_root.N_escaped_gamma=NULL;
     ev_root.N_time=NULL;
-    ev_root.T_esc=NULL;
-    
+    ev_root.T_esc_acc=NULL;
+    ev_root.T_esc_rad=NULL;
+    ev_root.T_inj_profile=NULL;
+    ev_root.T_acc_profile=NULL;
     return ev_root;
 }
 
@@ -790,6 +785,16 @@ void set_q_inj_user_array(double * arr,struct temp_ev *pt, double val, unsigned 
         }
         else{
             printf("exceeded array size in set_elec_array\n");
+            exit(0);
+        }
+}
+
+void set_temp_ev_Time_array(double * arr,struct temp_ev *pt, double val, unsigned int id){
+    if ((id>=0) && (id<=pt->T_SIZE)){
+           arr[id]=val;
+        }
+        else{
+            printf("exceeded array size in set_T_inj_profile\n");
             exit(0);
         }
 }

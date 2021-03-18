@@ -44,12 +44,15 @@ void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double lum
     unsigned int i, TMP;
 
     double delta_t_eq_t_D, delta_t_eq_t_A, delta_t_eq_t_D_old, delta_t_eq_t_A_old;
+    double delta_t_eq_t_DA, delta_t_eq_t_DA_old;
+
 
     double delta_log;
     double log_a, log_b;
 
 
     pt_ev->t_unit = (pt_spec->R / vluce_cm);
+    pt_ev->t_unit_acc = (pt_ev->R_acc / vluce_cm);
 
     pt_ev->deltat = pt_ev->duration / (double)pt_ev->T_SIZE;
 
@@ -67,14 +70,16 @@ void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double lum
     pt_ev->Diff_coeff_CA = pt_ev->Diff_Coeff * 2 * pow((pt_ev->Gamma_Max_Turb_L_coher), pt_ev->Diff_Index);
 
     //----- Esc coeff --------
-    pt_ev->T_esc_Coeff = pt_ev->T_esc_Coeff_R_by_c * pt_ev->t_unit;
-
+    pt_ev->T_esc_Coeff_acc = pt_ev->T_esc_Coeff_R_by_c_acc * pt_ev->t_unit_acc;
+    pt_ev->T_esc_Coeff_rad = pt_ev->T_esc_Coeff_R_by_c_rad * pt_ev->t_unit;
 
     pt_ev->gamma_eq_t_D = -1.0;
+    pt_ev->gamma_eq_t_DA = -1.0;
     pt_ev->gamma_eq_t_A = -1.0;
     
     delta_t_eq_t_A_old = 1.0;
     delta_t_eq_t_D_old = 1.0;
+    delta_t_eq_t_DA_old = 1.0;
 
     log_a = log10(pt_ev->gmin_griglia);
     log_b = log10(pt_ev->gmax_griglia);
@@ -87,10 +92,12 @@ void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double lum
         pt_ev->t_D[i] = (pt_ev->g[i] * pt_ev->g[i]) / f_Dp(pt_ev->g[i], pt_ev);
         pt_ev->t_DA[i] = 0.5 * pt_ev->t_D[i];
         pt_ev->t_A[i] = pt_ev->g[i] / f_A(pt_ev->g[i], pt_ev);
-        pt_ev->t_Esc[i] = f_Tesc(pt_ev->g[i], pt_ev);
+        pt_ev->t_Esc_acc[i] = f_Tesc(pt_ev->g[i], pt_ev->T_esc_Coeff_acc, pt_ev->Esc_Index);
+        pt_ev->t_Esc_rad[i] = f_Tesc(pt_ev->g[i], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index);
         delta_t_eq_t_D = pt_ev->t_Sync_cool[i] - pt_ev->t_D[i];
         delta_t_eq_t_A = pt_ev->t_Sync_cool[i] - pt_ev->t_A[i];
-
+        delta_t_eq_t_DA = pt_ev->t_Sync_cool[i] - pt_ev->t_DA[i];
+        
         if (i > 0 && pt_ev->g[i] < pt_ev->Gamma_Max_Turb_L_max)
         {
             if (delta_t_eq_t_D <= 0 && delta_t_eq_t_D_old >= 0)
@@ -98,12 +105,20 @@ void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double lum
                 pt_ev->gamma_eq_t_D = pt_ev->g[i];
             }
 
+            if (delta_t_eq_t_DA <= 0 && delta_t_eq_t_DA_old >= 0)
+            {
+                pt_ev->gamma_eq_t_DA = pt_ev->g[i];
+            }
+
             if (delta_t_eq_t_A <= 0 && delta_t_eq_t_A_old >= 0)
             {
                 pt_ev->gamma_eq_t_A = pt_ev->g[i];
             }
+
+
             delta_t_eq_t_A_old = delta_t_eq_t_A;
             delta_t_eq_t_D_old = delta_t_eq_t_D;
+            delta_t_eq_t_DA_old = delta_t_eq_t_DA;
 
         }
     }
@@ -118,6 +133,7 @@ void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double lum
     {
         pt_ev->gamma_eq_t_A = pt_spec->griglia_gamma_Ne_log[0];
     }
+    
     if (delta_t_eq_t_D_old >= 0 && pt_ev->gamma_eq_t_D < 0)
     {
         pt_ev->gamma_eq_t_D = pt_ev->Gamma_Max_Turb_L_max;
@@ -136,7 +152,19 @@ void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double lum
         pt_ev->gamma_eq_t_D = pt_ev->Gamma_Max_Turb_L_max;
     }
 
-    
+     if (delta_t_eq_t_DA_old >= 0 && pt_ev->gamma_eq_t_DA < 0)
+    {
+        pt_ev->gamma_eq_t_DA = pt_ev->Gamma_Max_Turb_L_max;
+    }
+    else if (delta_t_eq_t_DA_old <= 0 && pt_ev->gamma_eq_t_DA < 0)
+    {
+        pt_ev->gamma_eq_t_DA = pt_spec->griglia_gamma_Ne_log[0];
+    }
+    if (pt_ev->gamma_eq_t_DA > pt_ev->Gamma_Max_Turb_L_max)
+    {
+        pt_ev->gamma_eq_t_DA = pt_ev->Gamma_Max_Turb_L_max;
+    }
+
     
     log_a = log10(pt_ev->gmin_griglia);
     log_b = log10(pt_ev->gmax_griglia);
@@ -146,8 +174,14 @@ void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double lum
     for (TMP = 0; TMP < pt_ev->gamma_grid_size; TMP++) {
         pt_ev->gamma[TMP] = pow(10, (log_a + delta_log * (double) (TMP)));
     }
+    alloc_temp_ev_array(&(pt_ev->T_inj_profile), pt_ev->T_SIZE);
+    alloc_temp_ev_array(&(pt_ev->T_acc_profile), pt_ev->T_SIZE);
+    for (TMP = 0; TMP < pt_ev->T_SIZE; TMP++) {
+        pt_ev->T_inj_profile[TMP]=0.;
+        pt_ev->T_acc_profile[TMP]=0.;
+    }
     pt_ev->T_COUNTER=0;
-    
+ 
 }
 
 void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_injection) {
@@ -159,14 +193,17 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
         //double Q_scalig_factor;
 
         double STEP_FILE, COUNT_FILE, OUT_FILE;
-        double *x, *N1, *N;
+        double *x, *N1, *N, *N_escaped;
         double  t;
         //double g, t_D, t_DA, t_A, t_Sync_cool;
         double *xm_p, *xm_m;
         double *dxm_p, *dxm_m, *dxm;
         double K, Cp, Cm, wm_p, wm_m;
         double WP_pm, WM_mm, WP_mm, WM_pm;
-        double *A, *B, *C, *R, *T_inj;
+        double *A, *B, *C, *R;
+        double E_acc_pre,E_acc_post,delta_E_acc,E_acc;
+        double Vol_acc,V_rad;
+        // *T_inj;
         //int grid_bounded_to_gamma;
         //unsigned int gamma_grid_size;
 
@@ -182,36 +219,7 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
 
 
 
-    if (pt_spec->do_Sync > 0)
-        {
-            pt_ev->do_Sync_cooling = 1;
-        }
-
-    if (pt_ev->do_Compton_cooling>0){
-        if (pt_spec->do_SSC>0){
-            pt_ev->do_SSC_cooling=1;
-        }
-
-        if (pt_spec->do_EC_Disk>0){
-            pt_ev->do_EC_cooling_Disk=1;
-        }
-
-        if (pt_spec->do_EC_BLR>0){
-            pt_ev->do_EC_cooling_BLR=1;
-        }
-
-        if (pt_spec->do_EC_DT>0){
-            pt_ev->do_EC_cooling_DT=1;
-        }
-
-        if (pt_spec->do_EC_Star>0){
-            pt_ev->do_EC_cooling_Star=1;
-        }
-
-        if (pt_spec->do_EC_CMB>0){
-            pt_ev->do_EC_cooling_CMB=1;
-        }
-    }
+   
 
     
     //--------------ALLOCATION OF DYNAMICAL ARRAYS-----------------------
@@ -224,8 +232,10 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
     
     //printf("alloc run1 start \n");
     alloc_temp_ev_array(&(pt_ev->N_gamma), pt_ev->NUM_SET * E_SIZE);
+    alloc_temp_ev_array(&(pt_ev->N_escaped_gamma), pt_ev->NUM_SET * E_SIZE);
     alloc_temp_ev_array(&(pt_ev->N_time), pt_ev->T_SIZE);
-    alloc_temp_ev_array(&(pt_ev->T_esc),E_SIZE);
+    alloc_temp_ev_array(&(pt_ev->T_esc_acc),E_SIZE);
+    alloc_temp_ev_array(&(pt_ev->T_esc_rad),E_SIZE);
     //printf("alloc run1 stop \n");
 
     
@@ -233,12 +243,13 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
     //--------Gamma energia normalizzata-------------
     N1 = (double *) calloc(E_SIZE, sizeof (double));
     N = (double *) calloc(E_SIZE, sizeof (double));
+    N_escaped = (double *) calloc(E_SIZE, sizeof (double));
     A = (double *) calloc(E_SIZE, sizeof (double));
     B = (double *) calloc(E_SIZE, sizeof (double));
     C = (double *) calloc(E_SIZE, sizeof (double));
     R = (double *) calloc(E_SIZE, sizeof (double));
     
-    T_inj = (double *) calloc(pt_ev->T_SIZE, sizeof (double));
+    //T_inj = (double *) calloc(pt_ev->T_SIZE, sizeof (double));
 
     xm_p = (double *) calloc(E_SIZE, sizeof (double));
     xm_m = (double *) calloc(E_SIZE, sizeof (double));
@@ -293,13 +304,14 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
     t = 0;
     for (T = 0; T < pt_ev->T_SIZE; T++) {
         t = t + pt_ev->deltat;
-        T_inj[T] = Inj_temp_prof(t, pt_ev);
+        //T_inj[T] = Inj_temp_prof(t, pt_ev);
         //printf("t=%e,T_inj=%e\n",t,T_inj[T]);
     }
     
     for (TMP = 0; TMP < E_SIZE; TMP++) {
-
-        pt_ev->T_esc[TMP] = f_Tesc(x[TMP], pt_ev);
+        N_escaped[TMP]=0;
+        pt_ev->T_esc_acc[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_acc, pt_ev->Esc_Index);
+        pt_ev->T_esc_rad[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index);
     }
 
     if (only_injection>0){
@@ -313,17 +325,27 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
                N[TMP] =N_distr_interp(pt_spec->gamma_grid_size,pt_ev->gamma[TMP],pt_spec->griglia_gamma_Ne_log,pt_spec->Ne);
        }
     }
+    
 
-
-
+    
     //--------------Loop over Gamma------------------------------------------
     t = 0;
     NUM_OUT=0;
+    delta_E_acc=0;
+    E_acc_pre=0;
+    E_acc_post=0;
+    E_acc=0;
+    Vol_acc=four_by_three_pi*(pt_ev->R_acc*pt_ev->R_acc*pt_ev->R_acc);
+    V_rad=four_by_three_pi*(pt_spec->R*pt_spec->R*pt_spec->R);
     for (T = 0; T < pt_ev->T_SIZE; T++) {
         //printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>  temporal evolution step=%d,%e,%e <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n", T, OUT_FILE,COUNT_FILE);
-        if (pt_ev->do_Compton_cooling == 1 && T>0) {
-            printf(">>>>>>>>>>>>>>>> Eval Sync \n");            
+        
+        
+        
+        if (pt_ev->do_Compton_cooling > 0 && T>0) {
+            //printf(">>>>>>>>>>>>>>>> Eval Sync \n");            
             spettro_sincrotrone(1, pt_spec);
+            spectra_External_Fields(1,pt_spec);
         }
         t = t + pt_ev->deltat;
         pt_ev->T_COUNTER=T;
@@ -331,7 +353,10 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
 
         //--ACC+COOLIG--------------------------
         K = pt_ev->deltat / (dxm_p[0]);
-        if (t >= pt_ev->TStart_Acc && t <= pt_ev->TStop_Acc) {
+        E_acc_pre=0;
+        if (pt_ev->T_acc_profile[T]>0 && E_acc<pt_ev->E_acc_max){
+            E_acc_pre=eval_E_acc(pt_ev->gamma, N, E_SIZE, Vol_acc);
+           //if (t >= pt_ev->TStart_Acc && t <= pt_ev->TStop_Acc) {
             //printf("Acc+Cool\n");
             Cp = Cfp(xm_p[0], pt_ev) / dxm_p[0];
             wm_p = Bfp(xm_p[0], pt_ev, pt_spec) / (Cfp(xm_p[0], pt_ev)) * dxm_p[0];
@@ -346,10 +371,10 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
             C[0] = -1 * K * Cp*WP_pm;
 
             //-------B[0]----------
-            B[0] = 1 + K * Cp * WM_pm + pt_ev->deltat / (pt_ev->T_esc[0]);
+            B[0] = 1 + K * Cp * WM_pm + pt_ev->deltat / (pt_ev->T_esc_acc[0]);
 
             //-------R[0]----------
-            R[0] = pt_ev->deltat * pt_ev->Q_inj[0] * T_inj[T] + N[0];
+            R[0] = pt_ev->deltat * pt_ev->Q_inj[0] * pt_ev->T_inj_profile[T] + N[0];
            
             //---------------------------------------
         }           
@@ -357,14 +382,16 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
         else {
             //printf("Cool\n");
             A[0] = 0;
-            B[0] = 1 + K * Cooling(xm_m[0], pt_ev, pt_spec) + pt_ev->deltat / (pt_ev->T_esc[0]);
+            B[0] = 1 + K * Cooling(xm_m[0], pt_ev, pt_spec) + pt_ev->deltat / (pt_ev->T_esc_acc[0]);
             C[0] = -1 * K * Cooling(xm_p[0], pt_ev, pt_spec);
-            R[0] = pt_ev->deltat * pt_ev->Q_inj[0] * T_inj[T] + N[0];
+            R[0] = pt_ev->deltat * pt_ev->Q_inj[0] * pt_ev->T_inj_profile[T]+ N[0];
         }
+        
         for (Gamma = 1; Gamma < E_N_SIZE; Gamma++) {
             //--------COOLING + ACC--------------
             K = pt_ev->deltat / dxm[Gamma];
-            if (t >= pt_ev->TStart_Acc && t <= pt_ev->TStop_Acc) {
+            if (pt_ev->T_acc_profile[T]>0 && E_acc<pt_ev->E_acc_max){
+            //if (t >= pt_ev->TStart_Acc && t <= pt_ev->TStop_Acc) {
                 //C_{m-1/2}
                 Cm = Cfp(xm_m[Gamma], pt_ev) / dxm_m[Gamma];
 
@@ -385,15 +412,15 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
 
                 A[Gamma] = -1 * (K * Cm * WM_mm);
                 C[Gamma] = -1 * (K * Cp * WP_pm);
-                B[Gamma] = 1 + K * (Cm * WP_mm + Cp * WM_pm) + pt_ev->deltat / (pt_ev->T_esc[Gamma]);
-                R[Gamma] = pt_ev->deltat * pt_ev->Q_inj[Gamma] * T_inj[T] + N[Gamma];
+                B[Gamma] = 1 + K * (Cm * WP_mm + Cp * WM_pm) + pt_ev->deltat / (pt_ev->T_esc_acc[Gamma]);
+                R[Gamma] = pt_ev->deltat * pt_ev->Q_inj[Gamma] * pt_ev->T_inj_profile[T] + N[Gamma];
             }
             //-----ONLY COOLING-----------------
             else {
                 A[Gamma] = 0;
-                B[Gamma] = 1 + pt_ev->deltat / (pt_ev->T_esc[Gamma]) + K * Cooling(xm_m[Gamma], pt_ev, pt_spec);
+                B[Gamma] = 1 + pt_ev->deltat / (pt_ev->T_esc_acc[Gamma]) + K * Cooling(xm_m[Gamma], pt_ev, pt_spec);
                 C[Gamma] = -1 * K * Cooling(xm_p[Gamma], pt_ev, pt_spec);
-                R[Gamma] = pt_ev->deltat * pt_ev->Q_inj[Gamma] * T_inj[T] + N[Gamma];
+                R[Gamma] = pt_ev->deltat * pt_ev->Q_inj[Gamma] * pt_ev->T_inj_profile[T] + N[Gamma];
             }
 
         }
@@ -401,7 +428,8 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
         //--------G[N_SIZE]----------------------
         //--------COOLING + ACC--------------
         K = pt_ev->deltat / (dxm_m[E_N_SIZE]);
-        if (t >= pt_ev->TStart_Acc && t <= pt_ev->TStop_Acc) {
+        if (pt_ev->T_acc_profile[T]>0  && E_acc<pt_ev->E_acc_max){
+        //if (t >= pt_ev->TStart_Acc && t <= pt_ev->TStop_Acc) {
             Cm = Cfp(xm_m[E_N_SIZE], pt_ev) / dxm_m[E_N_SIZE];
             wm_m = Bfp(xm_m[E_N_SIZE], pt_ev, pt_spec) / (Cfp(xm_m[E_N_SIZE], pt_ev)) * dxm_m[E_N_SIZE];
 
@@ -415,14 +443,14 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
             //--------C[N_SIZE]------------
             C[E_N_SIZE] = 0;
             //--------B[N_SIZE]------------
-            B[E_N_SIZE] = 1 + K * Cm * WP_mm + pt_ev->deltat / (pt_ev->T_esc[E_N_SIZE]);
+            B[E_N_SIZE] = 1 + K * Cm * WP_mm + pt_ev->deltat / (pt_ev->T_esc_rad[E_N_SIZE]);
             //--------R[N_SIZE]------------
-            R[E_N_SIZE] = pt_ev->deltat * pt_ev->Q_inj[E_N_SIZE] * T_inj[T]+ N[E_N_SIZE];
+            R[E_N_SIZE] = pt_ev->deltat * pt_ev->Q_inj[E_N_SIZE] * pt_ev->T_inj_profile[T]+ N[E_N_SIZE];
         } else {
             A[E_N_SIZE] = 0;
-            B[E_N_SIZE] = 1 + pt_ev->deltat / (pt_ev->T_esc[E_N_SIZE]) + K * Cooling(xm_m[E_N_SIZE], pt_ev, pt_spec);
+            B[E_N_SIZE] = 1 + pt_ev->deltat / (pt_ev->T_esc_rad[E_N_SIZE]) + K * Cooling(xm_m[E_N_SIZE], pt_ev, pt_spec);
             C[E_N_SIZE] = 0;
-            R[E_N_SIZE] = pt_ev->deltat * pt_ev->Q_inj[E_N_SIZE] * T_inj[T]+ N[E_N_SIZE];
+            R[E_N_SIZE] = pt_ev->deltat * pt_ev->Q_inj[E_N_SIZE] * pt_ev->T_inj_profile[T]+ N[E_N_SIZE];
         }
 
 
@@ -430,10 +458,12 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
 
         //--------------END Loop over Gamma---------------------------------------
 
-
+       
+        
         //--------------TRIDIAG SYSTEM SOLVING--------------------
         //printf("********prima di sys****************\n");
         for (TMP = 0; TMP < E_SIZE; TMP++) {
+            N_escaped[TMP] = N[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_rad[TMP]))*(Vol_acc/V_rad);
             N1[TMP] = N[TMP];
             //printf("N=%e T=%d G=%d\n",N1[TMP],T,TMP);
         }
@@ -441,15 +471,62 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
             printf("errore nella soluzione del sistema condizione di positivita' non soddisfatta\n ");
             exit(1);
         }
+        
+        
         //printf("********dopo sys********************\n");
         for (TMP = 0; TMP < E_SIZE; TMP++) {
             //iterpolate Ne from N1
+            
             N[TMP] = N1[TMP];
         }
+
+         if (pt_ev->T_acc_profile[T]>0 && E_acc<pt_ev->E_acc_max){
+            E_acc_post=eval_E_acc(pt_ev->gamma, N, E_SIZE, Vol_acc);
+            delta_E_acc=E_acc_post-E_acc_pre;
+        }else{
+            delta_E_acc=0;
+            E_acc_post=0;
+        }
+        E_acc+=delta_E_acc;
+
         for (TMP = 0; TMP < pt_spec->gamma_grid_size; TMP++) {
             //iterpolate Ne from N
-            pt_spec->Ne[TMP]=N_distr_interp(E_SIZE,pt_spec->griglia_gamma_Ne_log[TMP],pt_ev->gamma,N);
+            pt_spec->Ne[TMP]=N_distr_interp(E_SIZE,pt_spec->griglia_gamma_Ne_log[TMP],pt_ev->gamma,N_escaped);
         }   
+        
+        //-----Cool Escaped----------
+        K = pt_ev->deltat / (dxm_p[0]);
+        A[0] = 0;
+        B[0] = 1 + K * Cooling(xm_m[0], pt_ev, pt_spec) + pt_ev->deltat / (pt_ev->T_esc_Coeff_rad);
+        C[0] = -1 * K * Cooling(xm_p[0], pt_ev, pt_spec);
+        R[0] = N_escaped[0];
+        for (Gamma = 1; Gamma < E_N_SIZE; Gamma++) {
+            K = pt_ev->deltat / (dxm_m[E_N_SIZE]);
+            A[Gamma] = 0;
+            B[Gamma] = 1 + pt_ev->deltat / (pt_ev->T_esc_Coeff_rad) + K * Cooling(xm_m[Gamma], pt_ev, pt_spec);
+            C[Gamma] = -1 * K * Cooling(xm_p[Gamma], pt_ev, pt_spec);
+            R[Gamma] = N_escaped[Gamma];
+        }
+        A[E_N_SIZE] = 0;
+        B[E_N_SIZE] = 1 + pt_ev->deltat / (pt_ev->T_esc_Coeff_rad) + K * Cooling(xm_m[E_N_SIZE], pt_ev, pt_spec);
+        C[E_N_SIZE] = 0;
+        R[E_N_SIZE] =  N_escaped[E_N_SIZE];
+        for (TMP = 0; TMP < E_SIZE; TMP++) {
+            N1[TMP] = N_escaped[TMP];
+            //printf("N=%e T=%d G=%d\n",N1[TMP],T,TMP);
+        }
+        if (solve_sys1(A, B, C, R, N1, E_SIZE) > 0) {
+            printf("errore nella soluzione del sistema condizione di positivita' non soddisfatta\n ");
+            exit(1);
+        }
+        for (TMP = 0; TMP < E_SIZE; TMP++) {
+            //iterpolate Ne from N1
+            
+            N_escaped[TMP] = N1[TMP];
+        }
+
+        
+        
         //------------- OUT FILE and SED Computations ----------------
         OUT_FILE=(double)T-COUNT_FILE;
 
@@ -457,12 +534,13 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
         if ((OUT_FILE >= 0) || (T==pt_ev->T_SIZE-1)) {
             
             //printf("-> NUM_OUT=%d T_SIZE=%d T=%d\n",NUM_OUT,pt_ev->T_SIZE,T);
-
+            printf("acc=%e time=%e, delta_E_acc=%e, E_acc=%e, pre=%e, post=%e\n",pt_ev->T_acc_profile[T],t,delta_E_acc,E_acc,E_acc_pre,E_acc_post);
             for (Gamma = 0; Gamma < E_SIZE; Gamma++) {
                 
                 if (NUM_OUT<pt_ev->NUM_SET){
                     TMP = Gamma + (E_SIZE * NUM_OUT);
-                    pt_ev->N_gamma[TMP] = N1[Gamma];
+                    pt_ev->N_gamma[TMP] = N[Gamma]*(Vol_acc/V_rad)+N_escaped[Gamma];
+                    pt_ev->N_escaped_gamma[TMP] = N_escaped[Gamma];
                     pt_ev->N_time[NUM_OUT]=t;
                     
                 }
@@ -497,9 +575,14 @@ void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_in
     free(R);
     free(N1);
     free(N);
-    free(T_inj);
+    free(N_escaped);
+    //free(T_inj);
     //printf("freeing local dynamic arrays stop \n");
     return;
+}
+
+double eval_E_acc(double *gamma, double *N, unsigned int gamma_size, double Vol_acc){
+    return MEC2 * trapzd_array_arbritary_grid(gamma, N, gamma_size)*Vol_acc;
 }
 
 
