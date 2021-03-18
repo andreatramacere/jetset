@@ -131,7 +131,7 @@ struct temp_ev MakeTempEv() {
     ev_root.T_SIZE=1000;
     ev_root.duration=3e4;
     ev_root.E_acc_max=1E200;
-    ev_root.R_acc=1E13;
+    //ev_root.R_acc=1E13;
     ev_root.gmin_griglia = 1.0e1;
     ev_root.gmax_griglia = 1.0e8;
     ev_root.gamma_grid_size =1E4;
@@ -146,8 +146,9 @@ struct temp_ev MakeTempEv() {
     ev_root.gamma=NULL;
     ev_root.Q_inj_jetset=NULL;
     ev_root.gamma_inj_jetset=NULL;
-    ev_root.N_gamma=NULL;
-    ev_root.N_escaped_gamma=NULL;
+    //ev_root.N_gamma=NULL;
+    ev_root.N_rad_gamma=NULL;
+    ev_root.N_acc_gamma=NULL;
     ev_root.N_time=NULL;
     ev_root.T_esc_acc=NULL;
     ev_root.T_esc_rad=NULL;

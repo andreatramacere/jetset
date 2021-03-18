@@ -749,11 +749,12 @@ struct temp_ev{
 
     //double Q_scaling_factor;
 
-    double t_unit, t_unit_acc; //unit time in light crossing time
+    double t_unit_rad, t_unit_acc; //unit time in light crossing time
     //double t_acc;
 
-    double *N_gamma;
-    double *N_escaped_gamma;
+    //double *N_gamma;
+    double *N_rad_gamma;
+    double *N_acc_gamma;
     double *gamma;
     double *gamma_inj_jetset;
     double *N_time;
@@ -790,7 +791,7 @@ struct temp_ev{
 	double Gamma_Max_Turb_L_coher;
 	double gamma_eq_t_D, gamma_eq_t_DA ,gamma_eq_t_A;
     double E_acc_max;
-    double R_acc;
+    //double R_acc;
 
 	double TStart_Inj;
 	double TStop_Inj;
@@ -827,6 +828,27 @@ void alloc_temp_ev_array(double ** pt,int size);
 void CooolingEquilibrium(struct blob * pt, double T_esc);
 double IntegrateCooolingEquilibrium( struct blob *pt,double gamma, double T_esc );
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1);
+void time_evolve_emitters(struct blob *pt_spec, 
+                        struct temp_ev *pt_ev, 
+                        int do_inj,
+                        double t,
+                        unsigned int T,
+                        unsigned int E_SIZE,
+                        unsigned int E_N_SIZE,
+                        double E_acc,
+                        double *N_escped,
+                        double *N,
+                        double *N_swap,
+                        double *A,
+                        double *B,
+                        double *C,
+                        double *R,
+                        double *x, 
+                        double *xm_p,
+                        double *xm_m,
+                        double *dxm_p,
+                        double *dxm_m,
+                        double *dxm);
 //===================================================================================
 
 // File Interface
@@ -845,8 +867,8 @@ void Init(struct blob *pt, double luminosity_distance);
 //void alloc_photons(double ** pt,int size);
 void set_seed_freq_start(struct blob *pt_base);
 void Run_SED(struct blob *pt_base);
-void Run_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, int only_injection);
-void Init_temp_evolution(struct blob *pt_spec, struct temp_ev *pt_ev, double luminosity_distance);
+void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, int only_injection);
+void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, double luminosity_distance);
 
 double get_spectral_array(double * arr, struct blob *pt, unsigned int id);
 double get_array(double * arr, unsigned int id, unsigned int size);

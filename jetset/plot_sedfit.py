@@ -663,7 +663,7 @@ class  PlotTempEvEmitters (PlotPdistr):
         super(PlotTempEvEmitters, self).__init__(figsize=figsize,dpi=dpi,loglog=loglog,)
 
 
-    def _plot_distr(self,temp_ev,particle='electrons',energy_unit='gamma',pow=None,plot_Q_inj=True,t1=None, t2=None,):
+    def _plot_distr(self,temp_ev,region='acc',particle='electrons',energy_unit='gamma',pow=None,plot_Q_inj=True,t1=None, t2=None,):
         if t1 is None:
             t1=temp_ev.time_sampled_emitters.time[0]
 
@@ -676,6 +676,14 @@ class  PlotTempEvEmitters (PlotPdistr):
         ls = '-'
         lw = 0.2
 
+        if region == 'acc':
+
+            n = temp_ev.time_sampled_emitters.n_gamma_acc
+        elif region == 'rad':
+            n = temp_ev.time_sampled_emitters.n_gamma_rad
+        else:
+            raise RuntimeError('region must be acc or rad')
+
         for ID, t in enumerate(t_array):
             color = 'red'
 
@@ -685,17 +693,16 @@ class  PlotTempEvEmitters (PlotPdistr):
             if temp_ev.custom_acc_profile[temp_ev._get_time_slice_T_array(t)] > 0:
                 color = 'b'
 
-
-            x, y, energy_name, energy_units = self._set_variable(temp_ev.time_sampled_emitters.gamma, temp_ev.time_sampled_emitters.n_gamma[ID], particle, energy_unit, pow=pow)
+            x, y, energy_name, energy_units = self._set_variable(temp_ev.time_sampled_emitters.gamma, n[ID], particle, energy_unit, pow=pow)
             self._plot(x,y,c=color,lw=0.1,label=None)
             #print('==> ID,t,c',ID,t,color)
-        x, y, energy_name, energy_units = self._set_variable(temp_ev.time_sampled_emitters.gamma, temp_ev.time_sampled_emitters.n_gamma[0], particle, energy_unit, pow=pow)
+        x, y, energy_name, energy_units = self._set_variable(temp_ev.time_sampled_emitters.gamma, n[0], particle, energy_unit, pow=pow)
         self._plot(x, y, c='black', lw=2,label='Start sample')
 
-        x, y, energy_name, energy_units = self._set_variable(temp_ev.time_sampled_emitters.gamma, temp_ev.time_sampled_emitters.n_gamma[-1], particle, energy_unit, pow=pow)
+        x, y, energy_name, energy_units = self._set_variable(temp_ev.time_sampled_emitters.gamma, n[-1], particle, energy_unit, pow=pow)
         self._plot(x, y, c='blue', lw=2,label='Stop sample')
         self._set_xy_label(energy_name, energy_units,pow=pow)
-        if temp_ev.Q_inj is not None:
+        if temp_ev.Q_inj is not None and region == 'acc':
             y = temp_ev.Q_inj.n_gamma_e * temp_ev.delta_t
             x = temp_ev.Q_inj.gamma_e
             if plot_Q_inj is True:
@@ -707,14 +714,14 @@ class  PlotTempEvEmitters (PlotPdistr):
 
         self.ax.legend()
 
-    def plot_distr(self, temp_ev, energy_unit='gamma',plot_Q_inj=True,pow=None):
-        self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=pow,plot_Q_inj=plot_Q_inj)
+    def plot_distr(self, temp_ev, region='acc', energy_unit='gamma',plot_Q_inj=True,pow=None):
+        self._plot_distr(temp_ev,region=region, particle='electrons',energy_unit=energy_unit,pow=pow,plot_Q_inj=plot_Q_inj)
 
-    def plot_distr2p(self, temp_ev, energy_unit='gamma',plot_Q_inj=True):
-        self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=2,plot_Q_inj=plot_Q_inj)
+    def plot_distr2p(self, temp_ev, region='acc', energy_unit='gamma',plot_Q_inj=True):
+        self._plot_distr(temp_ev, region=region, particle='electrons',energy_unit=energy_unit,pow=2,plot_Q_inj=plot_Q_inj)
 
-    def plot_distr3p(self, temp_ev, energy_unit='gamma',plot_Q_inj=True):
-        self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=3,plot_Q_inj=plot_Q_inj)
+    def plot_distr3p(self, temp_ev, region='acc', energy_unit='gamma',plot_Q_inj=True):
+        self._plot_distr(temp_ev, region=region, particle='electrons',energy_unit=energy_unit,pow=3,plot_Q_inj=plot_Q_inj)
 
 
 class  PlotTempEvDiagram (object):
