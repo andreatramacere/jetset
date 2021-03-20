@@ -537,9 +537,9 @@ class JetTimeEvol(object):
 
     def get_SED(self, comp, region='rad', time_slice=None, time=None, use_cached=False, time_bin=None):
         if region == 'rad':
-            sed = self.acc_seds.get_SED(comp=comp,time_slice=time_slice,time=time,use_cached=use_cached,time_bin=time_bin)
+            sed = self.rad_seds.get_SED(comp=comp,time_slice=time_slice,time=time,use_cached=use_cached,time_bin=time_bin)
         elif region == 'acc':
-            sed = self.rad.get_SED(comp=comp,time_slice=time_slice,time=time,use_cached=use_cached,time_bin=time_bin)
+            sed = self.acc_seds.get_SED(comp=comp,time_slice=time_slice,time=time,use_cached=use_cached,time_bin=time_bin)
         else:
             raise  RuntimeError('region must be acc or rad')
         return sed
@@ -795,7 +795,7 @@ class JetTimeEvol(object):
 
         for ID, t in enumerate(t_array):
             #print(t1,t2,t)
-            s = self.get_SED(comp,region='rad', time=t, use_cached=use_cached, time_bin=time_bin)
+            s = self.get_SED(comp,region=region, time=t, use_cached=use_cached, time_bin=time_bin)
             label = None
             ls = '-'
             color = 'r'
