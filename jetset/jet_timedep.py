@@ -790,11 +790,15 @@ class JetTimeEvol(object):
         else:
             t_array = np.linspace(t1, t2, num_seds)
 
+        if time_slice is not None and num_seds is None:
+            t_array=np.array([self.time_sampled_emitters._get_time_samples(time_slice)])
+
+
         if p is None:
             p = PlotSED()
 
+
         for ID, t in enumerate(t_array):
-            #print(t1,t2,t)
             s = self.get_SED(comp,region=region, time=t, use_cached=use_cached, time_bin=time_bin)
             label = None
             ls = '-'
