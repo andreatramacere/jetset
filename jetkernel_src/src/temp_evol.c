@@ -51,8 +51,8 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
     double log_a, log_b;
 
 
-    pt_ev->t_unit_rad = (pt_spec_rad->R / vluce_cm);
-    pt_ev->t_unit_acc = (pt_spec_acc->R / vluce_cm);
+    pt_ev->t_unit_rad = (pt_ev->R_jet / vluce_cm);
+    pt_ev->t_unit_acc = (pt_ev->Delta_R_acc / vluce_cm);
 
     pt_ev->deltat = pt_ev->duration / (double)pt_ev->T_SIZE;
 
@@ -322,8 +322,8 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     E_acc_pre=0;
     E_acc_post=0;
     E_acc=0;
-    Vol_acc=four_by_three_pi*(pt_spec_acc->R*pt_spec_acc->R*pt_spec_acc->R);
-    Vol_rad=four_by_three_pi*(pt_spec_rad->R*pt_spec_rad->R*pt_spec_rad->R);
+    Vol_acc=pi*(pt_ev->R_jet*pt_ev->R_jet*pt_ev->Delta_R_acc);
+    //Vol_rad=four_by_three_pi*(pt_spec_rad->R*pt_spec_rad->R*pt_spec_rad->R);
     for (T = 0; T < pt_ev->T_SIZE; T++) {
     
         t = t + pt_ev->deltat;
@@ -331,8 +331,8 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         E_acc_pre=eval_E_acc(pt_ev->gamma, N_acc, E_SIZE, Vol_acc);
         
         // Evolve ACC Region
-        time_evolve_emitters(pt_spec_acc,pt_ev,1,t,T,E_SIZE,E_N_SIZE,E_acc,N_escaped,N_acc,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
-         //--------------UPDATE ACC ENERGY--------------------
+        time_evolve_emitters(pt_spec_acc,pt_ev,1,t,T,E_SIZE,E_N_SIZE,E_acc,pt_ev->T_esc_acc,N_escaped,N_acc,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
+        //--------------UPDATE ACC ENERGY--------------------
         if (pt_ev->T_acc_profile[T]>0 && E_acc<pt_ev->E_acc_max){
             E_acc_post=eval_E_acc(pt_ev->gamma, N_acc, E_SIZE, Vol_acc);
             delta_E_acc=E_acc_post-E_acc_pre;
@@ -342,12 +342,18 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         }
         E_acc+=delta_E_acc;
 
+        
         //--- Inj from ACC To Radiative
         for (TMP = 0; TMP < E_SIZE; TMP++) {    
-            N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]))*(Vol_acc/Vol_rad);
+            N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]));
         }
         // Evolve Rad Region
-        time_evolve_emitters(pt_spec_rad,pt_ev,2,t,T,E_SIZE,E_N_SIZE,E_acc,N_escaped,N_rad,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
+        time_evolve_emitters(pt_spec_rad,pt_ev,2,t,T,E_SIZE,E_N_SIZE,E_acc,pt_ev->T_esc_rad,N_escaped,N_rad,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
+        //--------------UPDATE T_ACC PROFILE--------------------
+        if (pt_ev->T_acc_profile[T]>0 && E_acc>=pt_ev->E_acc_max){
+            pt_ev->T_acc_profile[T]=0;
+        }
+        E_acc+=delta_E_acc;
 
         //------------- OUT FILE and SED Computations ----------------
         OUT_FILE=(double)T-COUNT_FILE;

@@ -27,6 +27,7 @@ void time_evolve_emitters(struct blob *pt_spec,
                         unsigned int E_SIZE,
                         unsigned int E_N_SIZE,
                         double E_acc,
+                        double *T_esc,
                         double *N_escped,
                         double *N,
                         double *N_swap,
@@ -64,7 +65,7 @@ void time_evolve_emitters(struct blob *pt_spec,
     //--ACC+COOLIG--------------------------
     K = pt_ev->deltat / (dxm_p[0]);
     
-    if (pt_ev->T_acc_profile[T]>0 && E_acc<pt_ev->E_acc_max){
+    if (pt_ev->T_acc_profile[T]>0 && E_acc<pt_ev->E_acc_max && do_inj==1){
         Cp = Cfp(xm_p[0], pt_ev) / dxm_p[0];
         wm_p = Bfp(xm_p[0], pt_ev, pt_spec) / (Cfp(xm_p[0], pt_ev)) * dxm_p[0];
 
@@ -78,11 +79,11 @@ void time_evolve_emitters(struct blob *pt_spec,
         C[0] = -1 * K * Cp*WP_pm;
 
         //-------B[0]----------
-        B[0] = 1 + K * Cp * WM_pm + pt_ev->deltat / (pt_ev->T_esc_acc[0]);
+        B[0] = 1 + K * Cp * WM_pm + pt_ev->deltat / (T_esc[0]);
 
         //-------R[0]----------
         R[0] =  N[0];
-        if (do_inj==0){
+        if (do_inj==1){
             R[0] += pt_ev->deltat * pt_ev->Q_inj[0] * pt_ev->T_inj_profile[T];
         }
         if (do_inj==2){
@@ -94,10 +95,10 @@ void time_evolve_emitters(struct blob *pt_spec,
     else {
         //printf("Cool\n");
         A[0] = 0;
-        B[0] = 1 + K * Cooling(xm_m[0], pt_ev, pt_spec) + pt_ev->deltat / (pt_ev->T_esc_acc[0]);
+        B[0] = 1 + K * Cooling(xm_m[0], pt_ev, pt_spec) + pt_ev->deltat / (T_esc[0]);
         C[0] = -1 * K * Cooling(xm_p[0], pt_ev, pt_spec);
         R[0] =  N[0];
-        if (do_inj==0){
+        if (do_inj==1){
             R[0] += pt_ev->deltat * pt_ev->Q_inj[0] * pt_ev->T_inj_profile[T];
         }
         if (do_inj==2){
@@ -108,7 +109,7 @@ void time_evolve_emitters(struct blob *pt_spec,
     for (Gamma = 1; Gamma < E_N_SIZE; Gamma++) {
         //--------COOLING + ACC--------------
         K = pt_ev->deltat / dxm[Gamma];
-        if (pt_ev->T_acc_profile[T]>0 && E_acc<pt_ev->E_acc_max){
+        if (pt_ev->T_acc_profile[T]>0 && E_acc<pt_ev->E_acc_max && do_inj==1){
         //if (t >= pt_ev->TStart_Acc && t <= pt_ev->TStop_Acc) {
             //C_{m-1/2}
             Cm = Cfp(xm_m[Gamma], pt_ev) / dxm_m[Gamma];
@@ -130,7 +131,7 @@ void time_evolve_emitters(struct blob *pt_spec,
 
             A[Gamma] = -1 * (K * Cm * WM_mm);
             C[Gamma] = -1 * (K * Cp * WP_pm);
-            B[Gamma] = 1 + K * (Cm * WP_mm + Cp * WM_pm) + pt_ev->deltat / (pt_ev->T_esc_acc[Gamma]);
+            B[Gamma] = 1 + K * (Cm * WP_mm + Cp * WM_pm) + pt_ev->deltat / (T_esc[Gamma]);
             R[Gamma] =  N[Gamma];
             if (do_inj==1){
                 R[Gamma] += pt_ev->deltat * pt_ev->Q_inj[Gamma] * pt_ev->T_inj_profile[T];
@@ -142,7 +143,7 @@ void time_evolve_emitters(struct blob *pt_spec,
         //-----ONLY COOLING-----------------
         else {
             A[Gamma] = 0;
-            B[Gamma] = 1 + pt_ev->deltat / (pt_ev->T_esc_acc[Gamma]) + K * Cooling(xm_m[Gamma], pt_ev, pt_spec);
+            B[Gamma] = 1 + pt_ev->deltat / (T_esc[Gamma]) + K * Cooling(xm_m[Gamma], pt_ev, pt_spec);
             C[Gamma] = -1 * K * Cooling(xm_p[Gamma], pt_ev, pt_spec);
             R[Gamma] = N[Gamma];
             if (do_inj==1){
@@ -157,8 +158,8 @@ void time_evolve_emitters(struct blob *pt_spec,
 
     //--------COOLING + ACC--------------
     K = pt_ev->deltat / (dxm_m[E_N_SIZE]);
-    if (pt_ev->T_acc_profile[T]>0  && E_acc<pt_ev->E_acc_max){
-    //if (t >= pt_ev->TStart_Acc && t <= pt_ev->TStop_Acc) {
+    if (pt_ev->T_acc_profile[T]>0  && E_acc<pt_ev->E_acc_max && do_inj==1){
+    
         Cm = Cfp(xm_m[E_N_SIZE], pt_ev) / dxm_m[E_N_SIZE];
         wm_m = Bfp(xm_m[E_N_SIZE], pt_ev, pt_spec) / (Cfp(xm_m[E_N_SIZE], pt_ev)) * dxm_m[E_N_SIZE];
 
@@ -172,7 +173,7 @@ void time_evolve_emitters(struct blob *pt_spec,
         //--------C[N_SIZE]------------
         C[E_N_SIZE] = 0;
         //--------B[N_SIZE]------------
-        B[E_N_SIZE] = 1 + K * Cm * WP_mm + pt_ev->deltat / (pt_ev->T_esc_rad[E_N_SIZE]);
+        B[E_N_SIZE] = 1 + K * Cm * WP_mm + pt_ev->deltat / (T_esc[E_N_SIZE]);
         //--------R[N_SIZE]------------
         R[E_N_SIZE] =  N[E_N_SIZE];
         if (do_inj==1){
@@ -183,7 +184,7 @@ void time_evolve_emitters(struct blob *pt_spec,
         }  
     } else {
         A[E_N_SIZE] = 0;
-        B[E_N_SIZE] = 1 + pt_ev->deltat / (pt_ev->T_esc_rad[E_N_SIZE]) + K * Cooling(xm_m[E_N_SIZE], pt_ev, pt_spec);
+        B[E_N_SIZE] = 1 + pt_ev->deltat / (T_esc[E_N_SIZE]) + K * Cooling(xm_m[E_N_SIZE], pt_ev, pt_spec);
         C[E_N_SIZE] = 0;
         R[E_N_SIZE] = N[E_N_SIZE];
         if (do_inj==1){

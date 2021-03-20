@@ -85,6 +85,18 @@ class TimeEmittersDistribution(object):
         self.n_gamma_acc = np.zeros((time_size, (gamma_size)))
 
     def _get_time_slice_samples(self, time,time_bin=None):
+        """
+        Returns the Time slice corresponding to a given time for *Sampled* time
+
+        Parameters
+        ----------
+        time
+        time_bin
+
+        Returns
+        -------
+
+        """
         if time > self.time[-1] or time < self.time[0]:
 
             warnings.warn('time must be within time start/stop range', self.time[0], self.time[-1])
@@ -92,7 +104,7 @@ class TimeEmittersDistribution(object):
         #dt = (self.N_time[-1]-self.N_time[0])/self.self.N_time.size
         #id = np.int(time/dt)
 
-        ID=[np.argmin(np.fabs(self.time-time))]
+        ID = [np.argmin(np.fabs(self.time-time))]
         if time_bin is not None:
             ID_l = np.argwhere(np.logical_and(self.time >= time, self.time <= time+time_bin ))
             if len(ID_l) > 0:
@@ -100,19 +112,36 @@ class TimeEmittersDistribution(object):
 
         return ID
 
+    def _get_time_samples(self, time_slice,time_bin=None):
+        """
+        Returns the time to a given time slice for *Sampled* time
+
+        Parameters
+        ----------
+        time_slice
+
+
+        Returns
+        -------
+
+        """
+        return  self.time[time_slice]
 
 
 class TimeSEDs(object):
 
-    def __init__(self,temp_ev,build_cached=True):
+    def __init__(self,temp_ev,jet,build_cached=True):
         self.temp_ev=temp_ev
         self.num_seds=temp_ev.parameters.num_samples.val
         self.seds_array=None
         self.time_array=np.zeros( self.num_seds, dtype=np.double)
+        self.jet=jet
+        self.cached=False
+
         if build_cached is True:
             self.build_cached_SEDs()
 
-    def get_SED(self, comp, time_slice=None, time=None, time_bin=None):
+    def get_SED(self, comp, time_slice=None, time=None, time_bin=None, use_cached=False):
 
         if time_slice is None:
             time_samples = self.temp_ev.time_sampled_emitters._get_time_slice_samples(time,time_bin=time_bin)
@@ -120,13 +149,16 @@ class TimeSEDs(object):
             time_samples = [time_slice]
 
         selected_seds_list=[]
-        if time_bin is None:
-            pass
-        for ts in time_samples:
-            #print(ts)
-            selected_seds_list.append([sed for sed in self.seds_array[ts] if sed.name == comp][0])
 
-        sed=None
+        for ts in time_samples:
+            if use_cached is True and self.seds_array is not None:
+                selected_seds_list.append([sed for sed in self.seds_array[ts] if sed.name == comp][0])
+            else:
+                self.temp_ev.set_time(time_slice=ts)
+                self.jet.eval()
+                for s in self.jet.spectral_components_list:
+                    if s.name == comp:
+                        selected_seds_list.append(s)
 
         if len(selected_seds_list) == 1:
             sed = selected_seds_list[0]
@@ -147,11 +179,12 @@ class TimeSEDs(object):
         pbar.n = 0
         for T in range(self.num_seds):
             self.temp_ev.set_time(time_slice=T)
-            self.temp_ev.jet_rad.eval()
-            self.seds_array[T] = [copy.deepcopy(s.SED) for s in self.temp_ev.jet_rad.spectral_components_list]
+            self.jet.eval()
+            self.seds_array[T] = [copy.deepcopy(s.SED) for s in self.jet.spectral_components_list]
             pbar.update(1)
         pbar.display()
         print('caching SED for each saved distribution: done')
+        self.cached=True
 
 class JetTimeEvol(object):
     """
@@ -251,7 +284,6 @@ class JetTimeEvol(object):
     def __init__(self,
                  jet_rad,
                  Q_inj=None,
-                 #flag='tests',
                  name='jet_time_ev',
                  inplace=True,
                  log_sampling=False,
@@ -261,34 +293,35 @@ class JetTimeEvol(object):
         self._temp_ev = BlazarSED.MakeTempEv()
 
         if inplace is True:
-            self.jet_rad=jet_rad.clone()
+            self._jet_rad=jet_rad.clone()
         else:
-            self.jet_rad=jet_rad
+            self._jet_rad=jet_rad
 
 
-        self._jet_acc = copy.deepcopy(self.jet_rad)
-        self._jet_acc.name=self.jet_rad.name+'acc_region'
+
+        self._jet_acc = copy.deepcopy(self._jet_rad)
+        self._jet_acc.name= self._jet_rad.name + 'acc_region'
+
 
         self._m = FitModel()
-        self._m.add_component(self.jet_rad)
+        self._m.add_component(self._jet_rad)
         self._m.add_component(self._jet_acc)
-        self._m.parameters.link_par('z_cosm',[self._jet_acc.name],self.jet_rad.name)
+        self._m.parameters.link_par('z_cosm', [self._jet_acc.name], self._jet_rad.name)
 
         self.Q_inj=Q_inj
         self.name=name
 
         self.parameters = JetModelParameterArray(model=self)
-        temp_ev_dict,jet_acc_dict = self._build_par_dict()
+        temp_ev_dict = self._build_par_dict()
         self.parameters.add_par_from_dict(temp_ev_dict,self,'_temp_ev',JetParameter)
         self._jet_acc.parameters.B.name='B_acc'
-        self._jet_acc.parameters.B.val=1.0
+        self._jet_acc.parameters.B.val=self._jet_rad.parameters.B.val
         self.parameters.add_par(self._jet_acc.parameters.B)
-        self._jet_acc.parameters.R.name = 'R_acc'
-        self._jet_acc.parameters.R.val = self.jet_rad.parameters.R.val/10
-        self.parameters.add_par(self._jet_acc.parameters.R)
+        self.parameters.R_jet.val=self._jet_rad.parameters.R.val
+
         self.jet_gamma_grid_size = jet_gamma_grid_size
 
-        self._cached_SEDs = None
+
 
         self._custom_q_jnj_profile=None
         self._custom_acc_profile = None
@@ -297,9 +330,8 @@ class JetTimeEvol(object):
         self.Sync_cooling = 'on'
         self.log_sampling = log_sampling
         self.time_sampled_emitters = None
-        #self.N_time = None
-        #self.gamma = None
-        #self.N_gamma = None
+        self.acc_seds = None
+        self.rad_seds = None
 
 
     def save_model(self, file_name):
@@ -317,6 +349,14 @@ class JetTimeEvol(object):
             raise RuntimeError(e)
 
     @property
+    def Delta_R_acc(self):
+        return  self.parameters.Delta_R_acc.val
+
+    @property
+    def R_jet(self):
+        return self.parameters.R_jet.val
+
+    @property
     def time_steps_array(self):
         return self._time_steps_array
 
@@ -332,7 +372,7 @@ class JetTimeEvol(object):
         self.parameters.show_pars(sort_key=sort_key)
 
     def init_TempEv(self):
-        BlazarSED.Init(self.jet_rad._blob, self.jet_rad.get_DL_cm())
+        BlazarSED.Init(self._jet_rad._blob, self._jet_rad.get_DL_cm())
         #if self.jet_acc is not None:
         BlazarSED.Init(self._jet_acc._blob, self._jet_acc.get_DL_cm())
         self._init_temp_ev()
@@ -340,27 +380,39 @@ class JetTimeEvol(object):
         self._set_acc_time_profile(user_defined_array=self._custom_acc_profile)
         self._fill_temp_ev_array_pre_run()
 
-        self._build_tempev_table(self.jet_rad, self._jet_acc)
+        self._build_tempev_table(self._jet_rad, self._jet_acc)
 
 
-    def run(self,only_injection=True, cache_SEDs=True):
-        self.cache_SEDs=cache_SEDs
+    def run(self,only_injection=True, cache_SEDs_rad=True, cache_SEDs_acc=False):
+        self.cache_SEDs_rad = cache_SEDs_rad
+        self.cache_SEDs_acc = cache_SEDs_acc
         print('temporal evolution running')
         self.init_TempEv()
         pbar=ProgressBarTempEV(target_class=self, N=self.parameters.t_size.val)
         t1 = threading.Thread(target=pbar.run)
         t1.start()
-        BlazarSED.Run_temp_evolution(self.jet_rad._blob, self._jet_acc._blob, self._temp_ev, int(only_injection))
+        BlazarSED.Run_temp_evolution(self._jet_rad._blob, self._jet_acc._blob, self._temp_ev, int(only_injection))
         pbar.stop = True
         pbar.finalzie()
         self._fill_temp_ev_array_post_run()
         print('temporal evolution completed')
 
         self._set_jet_post_run()
-        if cache_SEDs is True:
-            self._cached_SEDs = TimeSEDs(temp_ev=self,build_cached=True)
 
+        self.acc_seds = TimeSEDs(temp_ev=self, jet=self._jet_acc, build_cached=cache_SEDs_acc)
+        self.rad_seds = TimeSEDs(temp_ev=self, jet=self._jet_rad, build_cached=cache_SEDs_rad)
 
+    def _get_R_rad_sphere(self, time):
+        delta_R_rad = const.c.cgs.value * time
+        V_shell = self.R_jet*self.R_jet * delta_R_rad
+        return np.power((0.75*V_shell),1./3)
+
+    def _get_R_acc_sphere(self):
+        V_shell = self.R_jet*self.R_jet * self.Delta_R_acc
+        return np.power((0.75*V_shell),1./3)
+
+    def V_acc(self):
+        return  self.R_jet * self.R_jet * self.Delta_R_acc
 
     @property
     def log_sampling(self):
@@ -483,21 +535,14 @@ class JetTimeEvol(object):
             self._custom_acc_profile = np.double(user_defined_array)
 
 
-    def get_SED(self, comp, time_slice=None, time=None, use_cached=False, time_bin=None):
-        if time_bin is None:
-            pass
+    def get_SED(self, comp, region='rad', time_slice=None, time=None, use_cached=False, time_bin=None):
+        if region == 'rad':
+            sed = self.acc_seds.get_SED(comp=comp,time_slice=time_slice,time=time,use_cached=use_cached,time_bin=time_bin)
+        elif region == 'acc':
+            sed = self.rad.get_SED(comp=comp,time_slice=time_slice,time=time,use_cached=use_cached,time_bin=time_bin)
         else:
-            pass
-
-        if self._cached_SEDs is None or use_cached is False:
-            self.set_time(time_slice=time_slice,time=time)
-            self.jet_rad.eval()
-            s = getattr(self.jet_rad.spectral_components, comp).SED
-        else:
-            s = self._cached_SEDs.get_SED(comp=comp, time_slice=time_slice,time=time, time_bin=time_bin)
-
-        return s
-
+            raise  RuntimeError('region must be acc or rad')
+        return sed
 
     def _set_jet_post_run(self):
         self._jet_emitters_distr = EmittersArrayDistribution(name='time_dep',
@@ -507,8 +552,14 @@ class JetTimeEvol(object):
                                                              normalize=False)
         self._jet_emitters_distr._fill()
         self._jet_emitters_distr._fill()
-        self.jet_rad.set_emitters_distribution(self._jet_emitters_distr)
-
+        self._jet_rad.set_emitters_distribution(self._jet_emitters_distr)
+        self._jet_emitters_distr = EmittersArrayDistribution(name='time_dep',
+                                                             gamma_array=np.copy(self.time_sampled_emitters.gamma),
+                                                             n_gamma_array=np.copy(
+                                                                 self.time_sampled_emitters.n_gamma_acc[-1]),
+                                                             gamma_grid_size=self.jet_gamma_grid_size,
+                                                             normalize=False)
+        self._jet_acc.set_emitters_distribution(self._jet_emitters_distr)
 
 
     def _init_temp_ev(self):
@@ -516,9 +567,9 @@ class JetTimeEvol(object):
         if self.Q_inj is not None:
             setattr(self._temp_ev,'Q_inj_jetset_gamma_grid_size',self.Q_inj._gamma_grid_size)
         BlazarSED.Init_Q_inj(self._temp_ev)
-        BlazarSED.Init_temp_evolution(self.jet_rad._blob, self._jet_acc._blob, self._temp_ev, self.jet_rad.get_DL_cm())
+        BlazarSED.Init_temp_evolution(self._jet_rad._blob, self._jet_acc._blob, self._temp_ev, self._jet_rad.get_DL_cm())
         if self.Q_inj is not None:
-            self.Q_inj._set_L_inj(self.parameters.L_inj.val,BlazarSED.V_sphere(self.parameters.R_acc.val))
+            self.Q_inj._set_L_inj(self.parameters.L_inj.val,self.V_acc())
             Ne_custom_ptr = getattr(self._temp_ev, 'Q_inj_jetset')
             gamma_custom_ptr = getattr(self._temp_ev, 'gamma_inj_jetset')
             for ID in range(self.Q_inj._gamma_grid_size):
@@ -558,7 +609,8 @@ class JetTimeEvol(object):
 
     def _get_time_slice_T_array(self, time):
         """
-        Returns the time slice for a given time
+        Returns the time slice for a given time for *Non-sampled* times
+
         Parameters
         ----------
         time
@@ -594,9 +646,17 @@ class JetTimeEvol(object):
         if time_slice is None:
             time_slice=self.time_sampled_emitters._get_time_slice_samples(time)[0]
 
-        self.jet_rad.emitters_distribution._set_arrays(self.time_sampled_emitters.gamma, self.time_sampled_emitters.n_gamma_rad[time_slice].flatten())
-        self.jet_rad.emitters_distribution._fill()
+        if time is None:
+            time=self.time_sampled_emitters._get_time_samples(time_slice=time_slice)
 
+        self._jet_rad.parameters.R.val=self._get_R_rad_sphere(time)
+        self._jet_rad.emitters_distribution._set_arrays(self.time_sampled_emitters.gamma, self.time_sampled_emitters.n_gamma_rad[time_slice].flatten())
+        self._jet_rad.emitters_distribution._fill()
+
+        self._jet_acc.parameters.R.val = self._get_R_acc_sphere()
+        self._jet_acc.emitters_distribution._set_arrays(self.time_sampled_emitters.gamma,
+                                                       self.time_sampled_emitters.n_gamma_acc[time_slice].flatten())
+        self._jet_acc.emitters_distribution._fill()
 
     def _fill_temp_ev_array_post_run(self):
         gamma_size = self._temp_ev.gamma_grid_size
@@ -683,11 +743,11 @@ class JetTimeEvol(object):
             flux_array_out = self.eval_cross_time(time_array_out, flux_array_out, n_slices=n_slices, R=R)
 
         if rest_frame == 'src':
-            beaming = self.jet_rad.get_beaming()
+            beaming = self._jet_rad.get_beaming()
             z = 0
         else:
-            beaming = self.jet_rad.get_beaming()
-            z = self.jet_rad.parameters.z_cosm.val
+            beaming = self._jet_rad.get_beaming()
+            z = self._jet_rad.parameters.z_cosm.val
 
         time_array_out = time_array_out*(1+z)/beaming
         return Table([time_array_out * Unit('s'), flux_array_out * Unit('erg s-1 cm-2')], names=('time', 'flux'), meta={'name': name})
@@ -697,7 +757,7 @@ class JetTimeEvol(object):
 
     def eval_cross_time(self,t,lc,n_slices=1000,R=None):
         if R is None:
-            R = self.jet_rad.parameters.R.val
+            R = self._jet_rad.parameters.R.val
 
         c = const.c.cgs.value
 
@@ -714,7 +774,7 @@ class JetTimeEvol(object):
 
         return lc_out
 
-    def plot_model(self, num_seds=None, time_slice=None, t1=None, t2=None,p=None,sed_data=None,comp='Sum', use_cached=False, time_bin=None):
+    def plot_model(self, num_seds=None, region='rad', time_slice=None, t1=None, t2=None,p=None,sed_data=None,comp='Sum', use_cached=False, time_bin=None):
 
         if t1 is None or t1<self.time_sampled_emitters.time[0]:
             t1=self.time_sampled_emitters.time[0]
@@ -735,7 +795,7 @@ class JetTimeEvol(object):
 
         for ID, t in enumerate(t_array):
             #print(t1,t2,t)
-            s = self.get_SED(comp, time=t, use_cached=use_cached, time_bin=time_bin)
+            s = self.get_SED(comp,region='rad', time=t, use_cached=use_cached, time_bin=time_bin)
             label = None
             ls = '-'
             color = 'r'
@@ -771,7 +831,7 @@ class JetTimeEvol(object):
         print('-'*80)
         print("JetTimeEvol model description")
         print('-'*80)
-        self._build_tempev_table(self.jet_rad, self._jet_acc)
+        self._build_tempev_table(self._jet_rad, self._jet_acc)
         print(" ")
         print("physical setup: ")
         print("")
@@ -829,7 +889,7 @@ class JetTimeEvol(object):
 
         #if self.jet_acc is not None:
         rows.append(
-            self._build_row_dict('R acc', 'accelerator_size', 'cm', val=self.parameters.R_acc.val))
+            self._build_row_dict('Delta R acc', 'accelerator_width', 'cm', val=self.parameters.Delta_R_acc.val))
 
         #if self.jet_acc is not None:
         rows.append(
@@ -955,7 +1015,6 @@ class JetTimeEvol(object):
         """
 
         model_dict_temp_ev = {}
-        model_dict_jet_acc = {}
 
         model_dict_temp_ev['duration'] = JetModelDictionaryPar(ptype='time_grid', vmin=0, vmax=None, punit='s', froz=True, log=False,val=1E5)
 
@@ -998,15 +1057,21 @@ class JetTimeEvol(object):
         model_dict_temp_ev['Acc_Index'] = JetModelDictionaryPar(ptype='fp_coeff_index', vmin=None, vmax=None, punit='', froz=True,
                                                      log=False,val=1)
 
-        model_dict_jet_acc['R_acc'] = JetModelDictionaryPar(ptype='accelerator_size', vmin=0, vmax=None, punit='cm',
-                                                            jetkernel_par_name='R',
+        model_dict_temp_ev['Delta_R_acc'] = JetModelDictionaryPar(ptype='accelerator_width', vmin=0, vmax=None, punit='cm',
+                                                            jetkernel_par_name='Delta_R_acc',
                                                             froz=True,
-                                                            log=False, val=1E15)
+                                                            log=False, val=1E13)
 
-        model_dict_jet_acc['B_acc'] = JetModelDictionaryPar(ptype='magnetic_field', vmin=0, vmax=None, punit='G',
-                                                            jetkernel_par_name='B',
-                                                            froz=True,
-                                                            log=False, val=0.1)
+        model_dict_temp_ev['R_jet'] = JetModelDictionaryPar(ptype='region_size', vmin=0, vmax=None,
+                                                                  punit='cm',
+                                                                  jetkernel_par_name='R_jet',
+                                                                  froz=True,
+                                                                  log=False, val=1E15)
+
+        #model_dict['B_acc'] = JetModelDictionaryPar(ptype='magnetic_field', vmin=0, vmax=None, punit='G',
+        #                                                    jetkernel_par_name='B',
+        #                                                    froz=True,
+        #                                                    log=False, val=0.1)
 
         model_dict_temp_ev['E_acc_max'] = JetModelDictionaryPar(ptype='acc_energy', vmin=0, vmax=None, punit='erg',
                                                        froz=True,
@@ -1036,4 +1101,4 @@ class JetTimeEvol(object):
                                                         log=False,
                                                         val=1E39)
 
-        return model_dict_temp_ev, model_dict_jet_acc
+        return model_dict_temp_ev

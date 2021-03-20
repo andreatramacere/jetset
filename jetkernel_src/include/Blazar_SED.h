@@ -791,7 +791,8 @@ struct temp_ev{
 	double Gamma_Max_Turb_L_coher;
 	double gamma_eq_t_D, gamma_eq_t_DA ,gamma_eq_t_A;
     double E_acc_max;
-    //double R_acc;
+    double Delta_R_acc;
+    double R_jet;
 
 	double TStart_Inj;
 	double TStop_Inj;
@@ -836,6 +837,7 @@ void time_evolve_emitters(struct blob *pt_spec,
                         unsigned int E_SIZE,
                         unsigned int E_N_SIZE,
                         double E_acc,
+                        double *T_esc,
                         double *N_escped,
                         double *N,
                         double *N_swap,

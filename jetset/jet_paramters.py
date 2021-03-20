@@ -60,7 +60,7 @@ class JetParameter(ModelParameter):
                               'escape_time',
                               'gamma_grid',
                               'time_grid',
-                              'accelerator_size',
+                              'accelerator_width',
                               'fp_coeff_index',
                               'turbulence_scale',
                               'inj_luminosity',
@@ -170,11 +170,8 @@ class JetModelParameterArray(ModelParameterArray):
             p_test = self.get_par_by_name(pname)
 
 
-            #_jetkernel=getattr(model,jetkernel_attr)
             _jetkernel_struct=getattr(model,struct_name)
-            #print('>', key, jetkernel_par_name,p_test,_jetkernel_struct,)
             if p_test is None:
-                # print('-->', pname, model_dic[key].is_in_blob, model_dic[key].val)
                 if hasattr(_jetkernel_struct, jetkernel_par_name) and model_dic[key].is_in_jetkernel is True:
                     pval = getattr(_jetkernel_struct, jetkernel_par_name)
                 elif model_dic[key].val is not None:
