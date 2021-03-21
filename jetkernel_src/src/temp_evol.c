@@ -184,7 +184,7 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
  
 }
 
-void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, int only_injection) {
+void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, int only_injection, int do_injection) {
 
     // if luminosity_distance is negative is evaluated internally
     // otherwise the passed value is used
@@ -202,8 +202,8 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     //double WP_pm, WM_mm, WP_mm, WM_pm;
     double *A, *B, *C, *R;
     double E_acc_pre,E_acc_post,delta_E_acc,E_acc;
-    double Vol_acc,Vol_rad;
-        
+    double Vol_acc;
+    double exp_factor;
     
 
     
@@ -300,17 +300,19 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         pt_ev->T_esc_acc[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_acc, pt_ev->Esc_Index);
         pt_ev->T_esc_rad[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index);
         N_escaped[TMP]=0;
+        N_acc[TMP]=0;
     }
 
-    if (only_injection>0){
-        for (TMP = 0; TMP < E_SIZE; TMP++) {
-                //iterpolate N from Ne
-                N_acc[TMP] =0;                
-        }
-    }else{
+    //if (only_injection<10){
+    //    for (TMP = 0; TMP < E_SIZE; TMP++) {
+    //            //iterpolate N from Ne
+    //            N_acc[TMP] =0;                
+    //    }
+    //}else{
+    if (only_injection<1){
         for (TMP = 0; TMP < E_SIZE; TMP++) {
                //iterpolate N from Ne
-               N_acc[TMP] =N_distr_interp(pt_spec_rad->gamma_grid_size,pt_ev->gamma[TMP],pt_spec_rad->griglia_gamma_Ne_log,pt_spec_rad->Ne);
+               N_rad[TMP] =N_distr_interp(pt_spec_rad->gamma_grid_size,pt_ev->gamma[TMP],pt_spec_rad->griglia_gamma_Ne_log,pt_spec_rad->Ne);
        }
     }
     
@@ -323,30 +325,39 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     E_acc_post=0;
     E_acc=0;
     Vol_acc=pi*(pt_ev->R_jet*pt_ev->R_jet*pt_ev->Delta_R_acc);
-    //Vol_rad=four_by_three_pi*(pt_spec_rad->R*pt_spec_rad->R*pt_spec_rad->R);
+    pt_spec_rad->B=pt_ev->B_rad;
+    pt_spec_rad->R=pt_ev->R_jet;
+    pt_spec_acc->B=pt_ev->B_acc;
+    InitRadiative(pt_spec_acc);
+    InitRadiative(pt_spec_rad);
+    pt_ev->R_H_jet_t=pt_ev->R_H_jet;
+    pt_ev->R_jet_t=pt_ev->R_jet;
+
     for (T = 0; T < pt_ev->T_SIZE; T++) {
-    
+        
         t = t + pt_ev->deltat;
         pt_ev->T_COUNTER=T;
         E_acc_pre=eval_E_acc(pt_ev->gamma, N_acc, E_SIZE, Vol_acc);
         
         // Evolve ACC Region
-        time_evolve_emitters(pt_spec_acc,pt_ev,1,t,T,E_SIZE,E_N_SIZE,E_acc,pt_ev->T_esc_acc,N_escaped,N_acc,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
-        //--------------UPDATE ACC ENERGY--------------------
-        if (pt_ev->T_acc_profile[T]>0 && E_acc<pt_ev->E_acc_max){
-            E_acc_post=eval_E_acc(pt_ev->gamma, N_acc, E_SIZE, Vol_acc);
-            delta_E_acc=E_acc_post-E_acc_pre;
-        }else{
-            delta_E_acc=0;
-            E_acc_post=0;
-        }
-        E_acc+=delta_E_acc;
-
+        if (do_injection>0){     
+            time_evolve_emitters(pt_spec_acc,pt_ev,1,t,T,E_SIZE,E_N_SIZE,E_acc,pt_ev->T_esc_acc,N_escaped,N_acc,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
+            //--------------UPDATE ACC ENERGY--------------------
+            if (pt_ev->T_acc_profile[T]>0 && E_acc<pt_ev->E_acc_max){
+                E_acc_post=eval_E_acc(pt_ev->gamma, N_acc, E_SIZE, Vol_acc);
+                delta_E_acc=E_acc_post-E_acc_pre;
+            }else{
+                delta_E_acc=0;
+                E_acc_post=0;
+            }
+            E_acc+=delta_E_acc;
+            //--- Inj from ACC To Radiative
+            for (TMP = 0; TMP < E_SIZE; TMP++) {    
+                N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]))*Vol_acc/pt_spec_rad->Vol_sphere;
+            }
+         }
         
-        //--- Inj from ACC To Radiative
-        for (TMP = 0; TMP < E_SIZE; TMP++) {    
-            N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]));
-        }
+        
         // Evolve Rad Region
         time_evolve_emitters(pt_spec_rad,pt_ev,2,t,T,E_SIZE,E_N_SIZE,E_acc,pt_ev->T_esc_rad,N_escaped,N_rad,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
         //--------------UPDATE T_ACC PROFILE--------------------
@@ -354,6 +365,15 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
             pt_ev->T_acc_profile[T]=0;
         }
         E_acc+=delta_E_acc;
+
+        if (pt_ev->do_Expansion ==1){
+            exp_factor=update_jet_expansion(pt_spec_rad,pt_ev,t);
+            pt_ev->T_esc_Coeff_rad = pt_ev->T_esc_Coeff_R_by_c_rad * pt_ev->R_jet_t/vluce_cm;
+            for (TMP = 0; TMP < E_SIZE; TMP++) {
+                pt_ev->T_esc_rad[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index);
+                N_rad[TMP] = N_rad[TMP]*exp_factor;
+            }
+        }
 
         //------------- OUT FILE and SED Computations ----------------
         OUT_FILE=(double)T-COUNT_FILE;
@@ -385,7 +405,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
             NUM_OUT++;
         }
         //---------------------------------------
-    }
+    }   
     //--------------END Loop over Time-----------------------------------------------
 
 
@@ -410,6 +430,40 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     //printf("freeing local dynamic arrays stop \n");
     return;
 }
+
+
+double eval_R_H_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev, double time){
+    return pt_ev->R_H_jet + pt_spec->beta_Gamma*vluce_cm*time;
+}
+
+
+double eval_R_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev,double R_H_jet_t){
+    return pt_ev->R_jet*pow(R_H_jet_t/pt_ev->R_H_jet, pt_ev->Expansion_index);
+}
+
+double eval_B_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev, double R_H_jet_t){
+    return pt_ev->B_rad*pow(pt_ev->R_H_jet/R_H_jet_t, pt_ev->B_Index);
+}
+
+double update_jet_expansion(struct blob *pt_spec, struct temp_ev *pt_ev, double t){
+    double R_jet_old, exp_factor;
+    R_jet_old=pt_ev->R_jet_t;
+    pt_spec->beta_Gamma=eval_beta_gamma(pt_spec->BulkFactor);
+
+    pt_ev->R_H_jet_t=eval_R_H_jet_t( pt_spec,  pt_ev, t);
+    pt_ev->R_jet_t=eval_R_jet_t(pt_spec,  pt_ev, pt_ev->R_H_jet_t);
+    pt_ev->B_t=eval_B_jet_t(pt_spec,  pt_ev,  pt_ev->R_H_jet_t);
+    
+    pt_spec->B=pt_ev->B_t;
+    pt_spec->R=pt_ev->R_jet_t;
+    pt_spec->R_H=pt_ev->R_H_jet_t;
+    InitRadiative(pt_spec);
+    exp_factor=(R_jet_old*R_jet_old*R_jet_old)/(pt_ev->R_jet_t*pt_ev->R_jet_t*pt_ev->R_jet_t);
+    return exp_factor;
+ 
+}
+
+
 
 double eval_E_acc(double *gamma, double *N, unsigned int gamma_size, double Vol_acc){
     return MEC2 * trapzd_array_arbritary_grid(gamma, N, gamma_size)*Vol_acc;

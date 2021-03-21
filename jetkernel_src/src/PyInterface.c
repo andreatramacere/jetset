@@ -105,7 +105,7 @@ struct temp_ev MakeTempEv() {
 
     ev_root.do_Sync_cooling = 1;
     ev_root.do_Compton_cooling = 0;
-    
+    ev_root.do_Expansion = 0;
     ev_root.T_COUNTER=0;
 
 
@@ -119,6 +119,11 @@ struct temp_ev MakeTempEv() {
     ev_root.Acc_Coeff=1.0/ev_root.t_A0;
     ev_root.Diff_Index=2.0;
     ev_root.Acc_Index=1.0;
+    ev_root.B_Index=1.0;
+    ev_root.B_rad=1.0;
+    ev_root.B_rad=1.0;
+    ev_root.B_t=1.0;
+    ev_root.Expansion_index=1.0;
     ev_root.T_esc_Coeff_R_by_c_acc=2.0;
     ev_root.T_esc_Coeff_R_by_c_rad=2.0;
     ev_root.Esc_Index=0.0;
@@ -133,6 +138,9 @@ struct temp_ev MakeTempEv() {
     ev_root.E_acc_max=1E200;
     ev_root.Delta_R_acc=1E13;
     ev_root.R_jet=1E13;
+    ev_root.R_H_jet=1E18;
+    ev_root.R_jet_t=1E13;
+    ev_root.R_H_jet_t=1E18;
     ev_root.gmin_griglia = 1.0e1;
     ev_root.gmax_griglia = 1.0e8;
     ev_root.gamma_grid_size =1E4;
@@ -340,6 +348,72 @@ void set_seed_freq_start(struct blob *pt_base){
 
 
 //=========================================================================================
+void InitRadiative(struct blob *pt_base){
+    //========================================================
+    // Geometry Setup
+    //========================================================
+    pt_base->Vol_sphere = V_sphere(pt_base->R);
+    pt_base->Surf_sphere = S_sphere(pt_base->R);
+    SetBeaming(pt_base);
+    pt_base->beta_Gamma=eval_beta_gamma(pt_base->BulkFactor);
+
+
+    
+    //========================================================
+    // Synchrotron Parameter Initialization
+    //========================================================
+    pt_base->nu_B = (q_esu * pt_base->B) / (2 * pi * me_g * vluce_cm);
+    pt_base->UB = pow(pt_base->B, 2.0) / (8.0 * pi); /*dens. ener. B */
+    
+    if (pt_base->verbose>0) {
+        printf("gmin %e   gmax %e \n", pt_base->gmin, pt_base->gmax);
+        printf("UB=%e \n", pt_base->UB);
+        printf("nu_B_non_rel=%e \n", pt_base->nu_B);
+        printf("beaming factor =%e\n", pt_base->beam_obj);
+    }
+    
+    //COSTANTI PER ALFA=FIXED E KERNEL DELTA O KERNEL 2
+    pt_base->C1_Sync_K53 = pow(3, 0.5) * pow(q_esu, 3.0) * pt_base->sin_psi;
+    pt_base->C1_Sync_K53 *= pt_base->B / (MEC2) * one_by_four_pi;
+    pt_base->C2_Sync_K53 = 2.0/(3*pt_base->nu_B);
+
+    pt_base->C1_Sync_K_AVE= 4*pi*pow(3, 0.5) * pow(q_esu, 2.0)*pt_base->nu_B/(vluce_cm) * one_by_four_pi;
+    pt_base->C2_Sync_K_AVE=1.0/(3*pt_base->nu_B);
+
+    pt_base->C3_Sync_K53 = -1.0 * pow(3, 0.5) * pow(q_esu, 3.0) / (8 * pi * MEC2 * me_g);
+
+    pt_base->COST_Sync_COOLING = SIGTH * vluce_cm/MEC2;
+
+
+    //==================================
+    //  Bessel Fucntion Setup
+    //==================================
+    //exit(1);
+    if (pt_base->BESSEL_TABLE_DONE == 0){
+        printf("Bessel Functions\n");
+        tabella_Bessel(pt_base);
+    }
+    
+    //========================================================
+    // Compton Parameter Initialization
+    //========================================================
+    pt_base->COST_IC_K1 = 3.0 * SIGTH * vluce_cm / 4.0;
+    pt_base->COST_IC_COOLING = (4.0/3.0) * SIGTH * vluce_cm*HPLANCK/MEC2;
+
+
+    //========================================================
+    // pp parameters initialization
+    //========================================================
+    pt_base->set_pp_racc_elec = 0;
+    pt_base->set_pp_racc_gamma = 0;
+    pt_base->set_pp_racc_nu_mu = 0;
+    pt_base->pp_racc_elec = 1.0;
+    pt_base->pp_racc_gamma = 1.0;
+    pt_base->pp_racc_nu_mu = 1.0;
+
+    //========================================================
+
+}
 
 void Init(struct blob *pt_base, double luminosity_distance) {
     // if luminosity_distance is negative is evaluated internally
@@ -422,72 +496,7 @@ void Init(struct blob *pt_base, double luminosity_distance) {
     pt_base->OUT_FILE = 1;
 
 
-
-
-
-    //========================================================
-    // Geometry Setup
-    //========================================================
-    pt_base->Vol_sphere = V_sphere(pt_base->R);
-    pt_base->Surf_sphere = S_sphere(pt_base->R);
-    SetBeaming(pt_base);
-    pt_base->beta_Gamma=eval_beta_gamma(pt_base->BulkFactor);
-
-
-    
-    //========================================================
-    // Synchrotron Parameter Initialization
-    //========================================================
-    pt_base->nu_B = (q_esu * pt_base->B) / (2 * pi * me_g * vluce_cm);
-    pt_base->UB = pow(pt_base->B, 2.0) / (8.0 * pi); /*dens. ener. B */
-    
-    if (pt_base->verbose>0) {
-        printf("gmin %e   gmax %e \n", pt_base->gmin, pt_base->gmax);
-        printf("UB=%e \n", pt_base->UB);
-        printf("nu_B_non_rel=%e \n", pt_base->nu_B);
-        printf("beaming factor =%e\n", pt_base->beam_obj);
-    }
-    
-    //COSTANTI PER ALFA=FIXED E KERNEL DELTA O KERNEL 2
-    pt_base->C1_Sync_K53 = pow(3, 0.5) * pow(q_esu, 3.0) * pt_base->sin_psi;
-    pt_base->C1_Sync_K53 *= pt_base->B / (MEC2) * one_by_four_pi;
-    pt_base->C2_Sync_K53 = 2.0/(3*pt_base->nu_B);
-
-    pt_base->C1_Sync_K_AVE= 4*pi*pow(3, 0.5) * pow(q_esu, 2.0)*pt_base->nu_B/(vluce_cm) * one_by_four_pi;
-    pt_base->C2_Sync_K_AVE=1.0/(3*pt_base->nu_B);
-
-    pt_base->C3_Sync_K53 = -1.0 * pow(3, 0.5) * pow(q_esu, 3.0) / (8 * pi * MEC2 * me_g);
-
-    pt_base->COST_Sync_COOLING = SIGTH * vluce_cm/MEC2;
-
-
-    //==================================
-    //  Bessel Fucntion Setup
-    //==================================
-    //exit(1);
-    if (pt_base->BESSEL_TABLE_DONE == 0){
-        printf("Bessel Functions\n");
-        tabella_Bessel(pt_base);
-    }
-    
-    //========================================================
-    // Compton Parameter Initialization
-    //========================================================
-    pt_base->COST_IC_K1 = 3.0 * SIGTH * vluce_cm / 4.0;
-    pt_base->COST_IC_COOLING = (4.0/3.0) * SIGTH * vluce_cm*HPLANCK/MEC2;
-
-
-    //========================================================
-    // pp parameters initialization
-    //========================================================
-    pt_base->set_pp_racc_elec = 0;
-    pt_base->set_pp_racc_gamma = 0;
-    pt_base->set_pp_racc_nu_mu = 0;
-    pt_base->pp_racc_elec = 1.0;
-    pt_base->pp_racc_gamma = 1.0;
-    pt_base->pp_racc_nu_mu = 1.0;
-
-    //========================================================
+    InitRadiative(pt_base);
 
     if (luminosity_distance<0){
 
@@ -501,9 +510,6 @@ void Init(struct blob *pt_base, double luminosity_distance) {
         printf("Distanza rigorosa=%e in Mpc \n", pt_base->dist/(1.0e6*1.0e2));
         printf("Distanza rigorosa=%e in cm \n", pt_base->dist);
     }
-
-
-
 
     pt_base->Distr_e_done = 0;
     pt_base->Distr_e_pp_done = 0;

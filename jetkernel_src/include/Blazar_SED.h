@@ -746,7 +746,7 @@ struct temp_ev{
 
 	int do_Sync_cooling;
     int do_Compton_cooling;
-
+    int do_Expansion;
     //double Q_scaling_factor;
 
     double t_unit_rad, t_unit_acc; //unit time in light crossing time
@@ -777,9 +777,11 @@ struct temp_ev{
 	double Diff_Coeff;
 	double Diff_coeff_CD;
 	double Diff_coeff_CA;
+    double Expansion_index;
 	double Acc_Coeff;
 	double Diff_Index;
 	double Acc_Index;
+    double B_Index;
 	double T_esc_Coeff_acc;
     double T_esc_Coeff_R_by_c_acc;
     double T_esc_Coeff_rad;
@@ -793,6 +795,13 @@ struct temp_ev{
     double E_acc_max;
     double Delta_R_acc;
     double R_jet;
+    double R_H_jet;
+    double R_jet_t;
+    double R_H_jet_t;
+    double B_acc, B_rad;
+    double B_t;
+
+    
 
 	double TStart_Inj;
 	double TStop_Inj;
@@ -823,12 +832,18 @@ void Init_Q_inj(struct temp_ev *pt_ev );
 //double f_Inj(double x,struct temp_ev *);
 void Wm (double, double* ,double *);
 double Cooling(double,struct temp_ev *,struct blob *);
+double  Adiabatic_Cooling( struct temp_ev *pt, struct blob *pt_spec);
 int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],unsigned int size);
 //void free_tempe_ev(struct temp_ev *pt_ev);
 void alloc_temp_ev_array(double ** pt,int size);
 void CooolingEquilibrium(struct blob * pt, double T_esc);
 double IntegrateCooolingEquilibrium( struct blob *pt,double gamma, double T_esc );
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1);
+double update_jet_expansion(struct blob *pt_spec, struct temp_ev *pt_ev, double t);
+double eval_R_H_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev, double time);
+double eval_R_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev,double R_H_jet_t);
+double eval_B_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev,double R_H_jet_t);
+
 void time_evolve_emitters(struct blob *pt_spec, 
                         struct temp_ev *pt_ev, 
                         int do_inj,
@@ -863,13 +878,13 @@ struct blob MakeBlob( void );
 //void MakeNe(struct spettro *pt_base);
 struct temp_ev MakeTempEv( void);
 void Init(struct blob *pt, double luminosity_distance);
-
+void InitRadiative(struct blob *pt_base);
 
 //void build_photons(struct spettro *pt_base);
 //void alloc_photons(double ** pt,int size);
 void set_seed_freq_start(struct blob *pt_base);
 void Run_SED(struct blob *pt_base);
-void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, int only_injection);
+void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, int only_injection, int do_injection);
 void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, double luminosity_distance);
 
 double get_spectral_array(double * arr, struct blob *pt, unsigned int id);

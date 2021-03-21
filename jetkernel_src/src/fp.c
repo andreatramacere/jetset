@@ -82,6 +82,10 @@ double Cooling(double x,struct temp_ev *pt, struct blob *pt_spec){
 	    //printf('ciccio c  \n');
     	cooling+=compton_cooling(pt_spec,pt,x+1);
     }
+	if(pt->do_Expansion){
+		cooling+=Adiabatic_Cooling(pt, pt_spec);
+	}
+
 	return cooling;
 }
 //---------------------------------------------------------------------
@@ -106,6 +110,14 @@ double f_Acc(double x, struct temp_ev *pt){
 	A=f_A(x+1,pt);
 
 	return A+D_A;
+}
+//---------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------
+//Adiabatic cooling
+double Adiabatic_Cooling(struct temp_ev *pt, struct blob *pt_spec){
+	return (2/3)*pt->Expansion_index*pt->R_H_jet_t/(pt_spec->beta_Gamma*vluce_cm*(1+pt_spec->z_cosm)*pt_spec->BulkFactor);
 }
 //---------------------------------------------------------------------
 

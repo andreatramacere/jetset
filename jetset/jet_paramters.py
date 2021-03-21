@@ -73,6 +73,7 @@ class JetParameter(ModelParameter):
                               'DT',
                               'Star',
                               'region_size',
+                              'region_expansion',
                               'region_position',
                               'electron_energy',
                               'LE_spectral_slope',
