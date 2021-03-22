@@ -144,8 +144,10 @@ class TimeSEDs(object):
 
     def get_SED(self, comp, time_slice=None, time=None, time_bin=None, use_cached=False):
 
+        _t = None
         if time_slice is None:
             time_samples = self.temp_ev.time_sampled_emitters._get_time_slice_samples(time,time_bin=time_bin)
+            _t= self.temp_ev.time_sampled_emitters.time
         else:
             time_samples = [time_slice]
 
@@ -412,8 +414,11 @@ class JetTimeEvol(object):
         self.rad_seds = TimeSEDs(temp_ev=self, jet=self._jet_rad, build_cached=cache_SEDs_rad)
 
     def _get_R_rad_sphere(self, time):
-        R_H= BlazarSED.eval_R_H_jet_t(self._jet_rad._blob, self.temp_ev,  time)
-        return BlazarSED.eval_R_jet_t(self._jet_rad._blob, self.temp_ev, R_H)
+        if self.region_expansion == 'on':
+            R_H= BlazarSED.eval_R_H_jet_t(self._jet_rad._blob, self.temp_ev,  time)
+            return BlazarSED.eval_R_jet_t(self._jet_rad._blob, self.temp_ev, R_H)
+        else:
+            return  self.R_jet
 
         #delta_R_rad = const.c.cgs.value * time
         #V_shell = self.R_jet*self.R_jet * delta_R_rad
@@ -794,7 +799,8 @@ class JetTimeEvol(object):
 
     def eval_cross_time(self,t,lc,n_slices=1000,R=None):
         if R is None:
-            R = self._jet_rad.parameters.R.val
+            R = self._get_R_rad_sphere(0)
+                #self._jet_rad.parameters.R.val
 
         c = const.c.cgs.value
 
