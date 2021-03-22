@@ -373,6 +373,64 @@ class  PlotSED (object):
 
         self.counter += 1
 
+    def plot_tempev_model(self, temp_ev, num_seds=None, region='rad', time_slice=None, t1=None, t2=None,
+                        sed_data=None, comp='Sum', use_cached=False, time_bin=None):
+
+        if t1 is None or t1 < temp_ev.time_sampled_emitters.time[0]:
+            t1 = temp_ev.time_sampled_emitters.time[0]
+
+        if t2 is None or t2 > temp_ev.time_sampled_emitters.time[-1]:
+            t2 = temp_ev.time_sampled_emitters.time[-1]
+
+        if time_bin is None:
+            time_bin = temp_ev.time_sampled_emitters.time[1] - temp_ev.time_sampled_emitters.time[0]
+
+        if num_seds is None:
+            t_array = np.arange(t1, t2, time_bin)
+        else:
+            t_array = np.linspace(t1, t2, num_seds)
+
+        if time_slice is not None and num_seds is None:
+            t_array = np.array([temp_ev.time_sampled_emitters._get_time_samples(time_slice)])
+
+        g = plt.cm.Greens(np.linspace(0.5, 1, t_array.size))
+        r = plt.cm.Reds(np.linspace(0.5, 1, t_array.size))
+        b = plt.cm.Blues(np.linspace(0.5, 1, t_array.size))
+        for ID, t in enumerate(t_array):
+            s = temp_ev.get_SED(comp, region=region, time=t, use_cached=use_cached, time_bin=time_bin)
+            label = None
+            ls = '-'
+            color = r[ID]
+            if temp_ev.custom_q_jnj_profile[temp_ev._get_time_slice_T_array(t)] > 0:
+                color = g[ID]
+                ls = '-'
+                lw = 0.2
+            if temp_ev.custom_acc_profile[temp_ev._get_time_slice_T_array(t)] > 0:
+                color = b[ID]
+                ls = '-'
+                lw = 0.2
+
+            if ID == 0:
+                lw = 1
+                ls = '--'
+                label = 'start, t=%2.2e (s)' % t
+                color = 'green'
+            if ID == t_array.size - 1:
+                lw = 1
+                ls = '.'
+                color = 'purple'
+                label = 'stop, t=%2.2e (s)' % t
+
+            self.add_model_plot(model=s, label=label, line_style=ls, color=color, update=False, lw=lw,
+                                    auto_label=False)
+
+        if sed_data is not None:
+            self.add_data_plot(sed_data)
+
+        self.update_plot()
+        return
+
+
     def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=4,mew=0.5,fit_range=None, density = False):
 
 
@@ -655,6 +713,11 @@ class  PlotPdistr (BasePlot):
         self.ax.autoscale(axis='x')
         self.ax.legend()
         self.fig.tight_layout()
+
+
+
+
+
 
 
 class  PlotTempEvEmitters (PlotPdistr):

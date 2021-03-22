@@ -724,12 +724,22 @@ class JetTimeEvol(object):
                self.custom_acc_profile)
         return p
 
-    def plot_TempEv_emitters(self,region='rad',figsize=(8,8),dpi=120,energy_unit='gamma',loglog=True,plot_Q_inj=True,pow=None):
+    def plot_tempev_emitters(self,region='rad',figsize=(8,8),dpi=120,energy_unit='gamma',loglog=True,plot_Q_inj=True,pow=None):
         p=PlotTempEvEmitters(figsize=figsize,dpi=dpi,loglog=loglog)
         p.plot_distr(self,region=region,energy_unit=energy_unit,plot_Q_inj=plot_Q_inj,pow=pow)
 
         return p
 
+    def plot_tempev_model(self, num_seds=None, region='rad', time_slice=None, t1=None, t2=None,
+                        sed_data=None, comp='Sum', use_cached=False, time_bin=None,plot_obj=None):
+
+        if plot_obj is None:
+            plot_obj=PlotSED()
+
+        plot_obj.plot_tempev_model(self, num_seds=num_seds, region=region, time_slice=time_slice, t1=t1, t2=t2,
+                        sed_data=sed_data, comp=comp, use_cached=use_cached, time_bin=time_bin)
+
+        return plot_obj
 
     def plot_pre_run_plot(self,figsize=(8,6),dpi=120):
         p=BasePlot(figsize=figsize,dpi=dpi)
@@ -817,62 +827,7 @@ class JetTimeEvol(object):
 
         return lc_out
 
-    def plot_model(self, num_seds=None, region='rad', time_slice=None, t1=None, t2=None,p=None,sed_data=None,comp='Sum', use_cached=False, time_bin=None):
 
-        if t1 is None or t1<self.time_sampled_emitters.time[0]:
-            t1=self.time_sampled_emitters.time[0]
-
-        if t2 is None or t2>self.time_sampled_emitters.time[-1]:
-            t2=self.time_sampled_emitters.time[-1]
-
-        if time_bin is None:
-            time_bin = self.time_sampled_emitters.time.size
-
-        if num_seds is None:
-            t_array = np.arange(t1, t2, time_bin)
-        else:
-            t_array = np.linspace(t1, t2, num_seds)
-
-        if time_slice is not None and num_seds is None:
-            t_array=np.array([self.time_sampled_emitters._get_time_samples(time_slice)])
-
-
-        if p is None:
-            p = PlotSED()
-
-
-        for ID, t in enumerate(t_array):
-            s = self.get_SED(comp,region=region, time=t, use_cached=use_cached, time_bin=time_bin)
-            label = None
-            ls = '-'
-            color = 'r'
-            if self.custom_q_jnj_profile[self._get_time_slice_T_array(t)] > 0:
-                color = 'g'
-                ls = '-'
-                lw=0.2
-            if self.custom_acc_profile[self._get_time_slice_T_array(t)] > 0:
-                color = 'b'
-                ls = '-'
-                lw=0.2
-
-            if ID == 0:
-                lw=1
-                ls = '-'
-                label = 'start, t=%2.2e (s)'%t
-                color = 'black'
-            if ID == t_array.size - 1:
-                lw=1
-                ls = '-'
-                label = 'stop, t=%2.2e (s)'%t
-
-            p.add_model_plot(model=s, label=label,line_style=ls,color=color, update=False,lw=lw,auto_label=False)
-
-
-        if sed_data is not None:
-             p.add_data_plot(sed_data)
-
-        p.update_plot()
-        return p
 
     def show_model(self, getstring=False, names_list=None, sort_key=None):
         print('-'*80)
