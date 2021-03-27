@@ -73,8 +73,10 @@ class JetParameter(ModelParameter):
                               'DT',
                               'Star',
                               'region_size',
-                              'region_expansion',
+                              'radius_expansion_index',
                               'region_position',
+                              'jet_base_radius',
+                              'jet_base_height',
                               'electron_energy',
                               'LE_spectral_slope',
                               'HE_spectral_slope',
@@ -83,6 +85,8 @@ class JetParameter(ModelParameter):
                               'spectral_curvature',
                               'turn-over-energy',
                               'magnetic_field',
+                              'magnetic_field_index',
+                              'jet_opening_angle',
                               'beaming',
                               'jet-viewing-angle',
                               'jet-bulk-factor',
@@ -178,7 +182,7 @@ class JetModelParameterArray(ModelParameterArray):
                 elif model_dic[key].val is not None:
                     pval = model_dic[key].val
                 else:
-                    raise RuntimeError('par', pname, 'not found in temp_ev and model dict')
+                    raise RuntimeError('par', pname, 'not found in jetkernel and model dict')
 
                 log = model_dic[key].log
 

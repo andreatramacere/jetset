@@ -789,29 +789,42 @@ class  PlotTempEvEmitters (PlotPdistr):
 
 class  PlotTempEvDiagram (object):
 
-    def __init__(self,figsize=(8,6),dpi=None):
-        self.fig, (self.ax1, self.ax2,self.ax3) = plt.subplots(3, 1, figsize=figsize, dpi=dpi, sharex=True)
+    def __init__(self,figsize=(8,6),dpi=None,expanding_region=False):
+        if expanding_region is True:
+            n_rows =4
+        else:
+            n_rows = 4
+        self.fig, self.axs = plt.subplots(n_rows, 1, figsize=figsize, dpi=dpi, sharex=False)
 
-    def plot(self, duration, T_array, inj_profile, acc_profile):
-        #self.ax.hlines(2, T_acc_start, T_acc_stop, label='Acc. start/stop', colors='g')
-        #self.ax.vlines(T_acc_start,0,2,ls='--',color='b',lw=0.5)
-        #self.ax.vlines(T_acc_stop,0, 2,ls='--',color='b',lw=0.5)
-        self.ax1.plot(T_array, acc_profile, label='Acc. start/stop', c='g')
-        self.ax1.set_ylim(0, 1.5)
-        self.ax2.plot(T_array, inj_profile, label='Inj. profile', c='b')
-        self.ax2.set_ylim(0,None)
-        #self.ax.hlines(2, T_inj_start, T_inj_stop, label='Acc. start/stop', colors='g')
-        #self.ax.vlines(T_inj_start, 0, 2, ls='--', color='g',lw=0.5)
-        #self.ax.vlines(T_inj_stop, 0, 2, ls='--', color='g',lw=0.5)
-        self.ax3.hlines(0.5, 0, duration, label='duration', colors='black')
-        self.ax3.hlines(0, 0,  duration, ls='--', colors='black',lw=0.5)
-        self.ax3.set_xlim(0, duration)
-        self.ax3.set_ylim(0,1.5)
-        self.ax1.legend()
-        self.ax2.legend()
-        self.ax3.legend()
-        self.ax3.set_xlabel('Time blob frame (s)')
-        self.fig.subplots_adjust(hspace=0)
+    def plot(self,
+             T_array,
+             inj_profile,
+             acc_profile,
+             R_exp,
+             B_exp,
+             R_H_exp):
+
+
+        self.axs[0].plot(T_array, acc_profile, label='Acc. start/stop', c='g')
+        self.axs[0].set_ylim(0, 1.5)
+
+        self.axs[1].plot(T_array, inj_profile, label='Inj. profile', c='b')
+        self.axs[1].set_ylim(0,None)
+        self.axs[1].set_xlabel('Time in blob frame (s)')
+        self.axs[1].sharex = self.axs[0]
+        #if expanding_region is True:
+        self.axs[2].plot(np.log10(R_H_exp), np.log10(R_exp), label='Rad. region size', c='orange')
+        self.axs[2].set_ylabel('log(R_rad) (cm)')
+        self.axs[3].plot(np.log10(R_H_exp), np.log10(B_exp), label='B Rad. region', c='green')
+        self.axs[3].set_xlabel('log(BH distance) in observer frame (cm)')
+        self.axs[3].set_ylabel('log(B) (G)')
+        self.axs[3].sharex = self.axs[2]
+
+        for ax in self.axs:
+            ax.legend()
+
+
+        #self.fig.subplots_adjust(hspace=0)
         self.fig.tight_layout()
 
     def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):

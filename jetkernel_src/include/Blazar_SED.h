@@ -770,6 +770,13 @@ struct temp_ev{
     double t_Sync_cool[static_ev_arr_grid_size];
     double t_Esc_rad[static_ev_arr_grid_size];
     double t_Esc_acc[static_ev_arr_grid_size];
+    //dev start
+    double R_t_pre[static_ev_arr_grid_size];
+    double B_t_pre[static_ev_arr_grid_size];
+    double R_H_t_pre[static_ev_arr_grid_size];
+    //double N_exp_fatcor[static_ev_arr_grid_size];
+    double time_blob_exp[static_ev_arr_grid_size];
+    //dev stop
     double L_inj;
 	double *T_esc_acc, *T_esc_rad;
     double *T_inj_profile;
@@ -777,11 +784,11 @@ struct temp_ev{
 	double Diff_Coeff;
 	double Diff_coeff_CD;
 	double Diff_coeff_CA;
-    double Expansion_index;
+    //double m_R;
 	double Acc_Coeff;
 	double Diff_Index;
 	double Acc_Index;
-    double B_Index;
+    double m_B;
 	double T_esc_Coeff_acc;
     double T_esc_Coeff_R_by_c_acc;
     double T_esc_Coeff_rad;
@@ -794,8 +801,14 @@ struct temp_ev{
 	double gamma_eq_t_D, gamma_eq_t_DA ,gamma_eq_t_A;
     double E_acc_max;
     double Delta_R_acc;
-    double R_jet;
-    double R_H_jet;
+    double R_rad_start;
+    double R_H_rad_start;
+    //double R_jet;
+    //double R_jet_exp;
+    //double theta_exp_rad;
+    //double theta_exp_AR;
+    double v_exp_by_c;
+    double R_H_jet_exp;
     double R_jet_t;
     double R_H_jet_t;
     double B_acc, B_rad;
@@ -832,7 +845,7 @@ void Init_Q_inj(struct temp_ev *pt_ev );
 //double f_Inj(double x,struct temp_ev *);
 void Wm (double, double* ,double *);
 double Cooling(double,struct temp_ev *,struct blob *);
-double  Adiabatic_Cooling( struct temp_ev *pt, struct blob *pt_spec);
+double Adiabatic_Cooling_time(struct temp_ev *pt, struct blob *pt_spec, double R_jet_t);
 int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],unsigned int size);
 //void free_tempe_ev(struct temp_ev *pt_ev);
 void alloc_temp_ev_array(double ** pt,int size);
@@ -842,7 +855,12 @@ double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1);
 double update_jet_expansion(struct blob *pt_spec, struct temp_ev *pt_ev, double t);
 double eval_R_H_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev, double time);
 double eval_R_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev,double R_H_jet_t);
-double eval_B_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev,double R_H_jet_t);
+double eval_B_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev,double R_H_jet_t,double R_jet_t);
+double time_adiabatic(struct temp_ev *pt, struct blob *pt_spec,double R_H_jet_t);
+double time_blob_to_obs(double time_blob, struct blob *pt_spec);
+double time_obs_to_blob(double time_blob, struct blob *pt_spec);
+double eval_N_expansiont_factor(double R_jet_old, double R_jet_new);
+void expansion_profile_pre_run(struct blob *pt_spec, struct temp_ev *pt_ev);
 
 void time_evolve_emitters(struct blob *pt_spec, 
                         struct temp_ev *pt_ev, 
