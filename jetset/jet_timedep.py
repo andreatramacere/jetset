@@ -418,8 +418,8 @@ class JetTimeEvol(object):
 
     def _get_R_rad_sphere(self, time):
         if self.region_expansion == 'on':
-            R_H= BlazarSED.eval_R_H_jet_t(self._jet_rad._blob, self.temp_ev,  time)
-            return BlazarSED.eval_R_jet_t(self._jet_rad._blob, self.temp_ev, R_H)
+            ##R_H= BlazarSED.eval_R_H_jet_t(self._jet_rad._blob, self.temp_ev,  time)
+            return BlazarSED.eval_R_jet_t(self._jet_rad._blob, self.temp_ev, time)
         else:
             return  self.parameters.R_rad_start.val
 
@@ -454,8 +454,8 @@ class JetTimeEvol(object):
     #    return R_H
 
 
-    def _get_adiab_cooling_time_from_R_H(self,R_H):
-        R = BlazarSED.eval_R_jet_t(self._jet_rad._blob, self.temp_ev, R_H)
+    def _get_adiab_cooling_time_from_R(self, R):
+        #R = BlazarSED.eval_R_jet_t(self._jet_rad._blob, self.temp_ev, R_H)
         return BlazarSED.Adiabatic_Cooling_time(self.temp_ev, self._jet_rad._blob,  R)
 
     def _get_R_acc_sphere(self):
@@ -786,9 +786,9 @@ class JetTimeEvol(object):
         p.ax.loglog(self.gamma_pre_run, self.t_Esc_acc_pre_run, label='t esc R acc.')
         p.ax.loglog(self.gamma_pre_run, self.t_Esc_rad_pre_run, label='t esc R rad.')
         if self.region_expansion=='on':
-            p.ax.axhline(self._get_adiab_cooling_time_from_R_H(R_H=self.parameters.R_H_jet_exp.val), label='t adiab (exp. start)', ls='-', color='black',lw=0.5)
-            p.ax.axhline(self._get_adiab_cooling_time_from_R_H(R_H=self.R_H_t_pre_run[-1]),
-                         label='t adiab (exp. stop)', ls='-.',color='black',lw=0.5)
+            p.ax.axhline(self._get_adiab_cooling_time_from_R(R=self.parameters.R_rad_start.val), label='t adiab (exp. start)', ls='-', color='black', lw=0.5)
+            p.ax.axhline(self._get_adiab_cooling_time_from_R(R=self.R_t_pre_run.max()),
+                         label='t adiab (exp. stop)', ls='-.', color='black', lw=0.5)
         p.ax.axhline(self.delta_t, label='delta t', ls=':',color='magenta',lw=0.5)
         p.ax.axvline(self._temp_ev.gamma_eq_t_A, ls='--')
         p.ax.axvline(self._temp_ev.gamma_eq_t_D, ls='--')

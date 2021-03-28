@@ -854,9 +854,9 @@ double IntegrateCooolingEquilibrium( struct blob *pt,double gamma, double T_esc 
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1);
 double update_jet_expansion(struct blob *pt_spec, struct temp_ev *pt_ev, double t);
 double eval_R_H_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev, double time);
-double eval_R_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev,double R_H_jet_t);
+double eval_R_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev,double time_blob);
 double eval_B_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev,double R_H_jet_t,double R_jet_t);
-double time_adiabatic(struct temp_ev *pt, struct blob *pt_spec,double R_H_jet_t);
+double time_blob_to_RH(struct temp_ev *pt, struct blob *pt_spec,double R_H_jet_t);
 double time_blob_to_obs(double time_blob, struct blob *pt_spec);
 double time_obs_to_blob(double time_blob, struct blob *pt_spec);
 double eval_N_expansiont_factor(double R_jet_old, double R_jet_new);
