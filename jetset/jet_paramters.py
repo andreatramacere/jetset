@@ -66,6 +66,7 @@ class JetParameter(ModelParameter):
                               'inj_luminosity',
                               'acc_energy',
                               'time_ev_output',
+                              'exp_start_time',
                               'emitters_density',
                               'target_density',
                               'Disk',

@@ -299,7 +299,7 @@ class ObsData(object):
         self.UL_value=UL_value
         self.UL_filtering=UL_filtering
         self.zero_error_replacment=0.2
-        self.facke_error=0.2
+        self.fake_error=0.2
 
 
 
@@ -380,8 +380,8 @@ class ObsData(object):
         sed_dt.append(('nuFnu_data_log', 'f8'))
         sed_dt.append(('dnuFnu_data_log', 'f8'))
 
-        sed_dt.append(('dnuFnu_facke', 'f8'))
-        sed_dt.append(('dnuFnu_facke_log', 'f8'))
+        sed_dt.append(('dnuFnu_fake', 'f8'))
+        sed_dt.append(('dnuFnu_fake_log', 'f8'))
 
         sed_dt.append(('UL', 'bool'))
         sed_dt.append(('zero_error', 'bool'))
@@ -487,7 +487,7 @@ class ObsData(object):
         self.set_UL(self.UL_value)
 
         # set error if not present:
-        self.set_facke_error(self.facke_error)
+        self.set_fake_error(self.fake_error)
 
 
 
@@ -509,21 +509,21 @@ class ObsData(object):
         
         if self.data['dnuFnu_data'] is None and self.data_scale== 'lin-lin':
         
-            self.data['dnuFnu_data']= self.data['Fnu_data'] * self.facke_error
+            self.data['dnuFnu_data']= self.data['Fnu_data'] * self.fake_error
             
             print ("Warning: error were not provided ")
             print ("         assigning %f            ")
-            print ("         set error with .set_error"%self.facke_error)
+            print ("         set error with .set_error"%self.fake_error)
             #print self.data['dnuFnu_data']
         
         
         if self.data['dnuFnu_data_log'] is None and self.data_scale== 'log-log':
         
-            self.data['dnuFnu_data_log']= np.ones(self.data['nu_data_log'].size) * self.facke_error
+            self.data['dnuFnu_data_log']= np.ones(self.data['nu_data_log'].size) * self.fake_error
             
             print ("Warning: error were not provided ")
             print ("         assigning %f           ")
-            print ("         set error with .set_error"%self.facke_error)
+            print ("         set error with .set_error"%self.fake_error)
 
     
 
@@ -666,10 +666,10 @@ class ObsData(object):
             print ("---> data len after filtering=%d" % len(self.data['nu_data']))
         
 
-    def set_facke_error(self,):
+    def set_fake_error(self,):
 
         if 'dy' not in self.col_types:
-            self.set_error(self.facke_error)
+            self.set_error(self.fake_error)
 
         
     def set_UL(self,val=None):
@@ -987,7 +987,7 @@ class ObsData(object):
         
         self.data=self.data_reb
         
-        self.set_facke_error(self.facke_error)
+        self.set_fake_error(self.fake_error)
 
         print (section_separator)
     
@@ -1068,13 +1068,13 @@ class ObsData(object):
 
        
 
-    def set_facke_error(self,val):
+    def set_fake_error(self,val):
         """
-        Sets the value for the facke error
+        Sets the value for the fake error
         """
-        self.facke_error=val
-        self.data['dnuFnu_facke_log']= np.ones(self.data['nu_data_log'].size) * self.facke_error
-        self.data['dnuFnu_facke']= self.data['nuFnu_data'] * self.facke_error
+        self.fake_error=val
+        self.data['dnuFnu_fake_log']= np.ones(self.data['nu_data_log'].size) * self.fake_error
+        self.data['dnuFnu_fake']= self.data['nuFnu_data'] * self.fake_error
         
     
     def get_data_points(self,log_log=False,skip_UL=False,frame='obs',density=False):

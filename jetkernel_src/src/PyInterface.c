@@ -119,6 +119,7 @@ struct temp_ev MakeTempEv() {
     ev_root.Acc_Coeff=1.0/ev_root.t_A0;
     ev_root.Diff_Index=2.0;
     ev_root.Acc_Index=1.0;
+    ev_root.Esc_Index=0;
     ev_root.m_B=1.0;
     ev_root.B_rad=1.0;
     ev_root.B_acc=1.0;
@@ -140,7 +141,7 @@ struct temp_ev MakeTempEv() {
     //ev_root.R_jet=1E13;
     ev_root.v_exp_by_c=1;
     //ev_root.R_jet_exp=1E13;
-    ev_root.R_H_jet_exp=1E14;
+    ev_root.t_jet_exp=1E5;
     ev_root.R_jet_t=1E16;
     ev_root.R_H_jet_t=1E17;
     ev_root.R_H_rad_start=1E17;

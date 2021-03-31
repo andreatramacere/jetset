@@ -12,6 +12,8 @@ import warnings
 
 from scipy.stats import chi2
 
+import dill as pickle
+
 try:
     import iminuit
     minuit_installed=True
@@ -30,7 +32,9 @@ from .leastsqbound.leastsqbound import leastsqbound
 
 from .output import section_separator,WorkPlace,makedir
 from .utils import JetkerneltException
-import dill as pickle
+
+from .data_loader import ObsData,Data
+from.data_loader import lin_to_log
 
 __all__ = ['FitResults','fit_SED','Minimizer','LSMinimizer','LSBMinimizer','MinutiMinimizer','ModelMinimizer']
 
@@ -220,8 +224,71 @@ class ModelMinimizer(object):
         except Exception as e:
             raise RuntimeError(e)
 
-    def _prepare_fit(self,fit_Model,
-                     sed_data,
+    def _handle_sed_data(self,sed_data,loglog=False,use_fake_err=False):
+        if sed_data.data['dnuFnu_data'] is None:
+            sed_data.data['dnuFnu_data'] = np.ones(sed_data.data['nu_data'].size)
+
+        if loglog == False:
+            nu_fit = sed_data.data['nu_data']
+            nuFnu_fit = sed_data.data['nuFnu_data']
+            if use_fake_err == False:
+                err_nuFnu_fit = sed_data.data['dnuFnu_data']
+            else:
+                err_nuFnu_fit = sed_data.data['dnuFnu_fake']
+        else:
+            nu_fit = sed_data.data['nu_data_log']
+            nuFnu_fit = sed_data.data['nuFnu_data_log']
+            err_nuFnu_fit = sed_data.data['dnuFnu_data_log']
+            if use_fake_err == False:
+                err_nuFnu_fit = sed_data.data['dnuFnu_data_log']
+            else:
+                err_nuFnu_fit = sed_data.data['dnuFnu_fake_log']
+
+        UL = sed_data.data['UL']
+
+        data = np.zeros(nu_fit.size,
+                             dtype=[('x', nu_fit.dtype), ('y', nuFnu_fit.dtype), ('dy', err_nuFnu_fit.dtype),
+                                    ('UL', UL.dtype)])
+        data['x'] = nu_fit
+        data['y'] = nuFnu_fit
+        data['dy'] = err_nuFnu_fit
+        data['UL'] = UL
+        return data
+
+    def _handle_data_xy(self, data, loglog=False, use_fake_err=False):
+        #if data['dy'] is None:
+        #    data['dy'] = np.ones(data['x'].size)
+
+        if loglog == False:
+            x = data.table['x']
+            y = data.table['y']
+            if use_fake_err == False:
+                dy = data.table['dy']
+            else:
+                dy = data.table['dy_fake']
+        else:
+            x = np.log10(data.table['x'])
+            y, dy = lin_to_log(val=data.table['y'], err=data.table['dy'])
+            if use_fake_err == False:
+                pass
+            else:
+                y, dy = lin_to_log(val=data.table['y'], err=data.table['dy_fake'])
+
+        UL = data.table['UL']
+
+        _data = np.zeros(x.size,
+                        dtype=[('x', x.dtype), ('y', y.dtype), ('dy', dy.dtype),
+                               ('UL', UL.dtype)])
+        _data['x'] = x
+        _data['y'] = y
+        _data['dy'] = dy
+        _data['UL'] = UL
+        return _data
+
+
+    def _prepare_fit(self,
+                     fit_Model,
+                     data,
                      nu_fit_start,
                      nu_fit_stop,
                      fitname=None,
@@ -229,7 +296,7 @@ class ModelMinimizer(object):
                      loglog=False,
                      silent=False,
                      get_conf_int=False,
-                     use_facke_err=False,
+                     use_fake_err=False,
                      use_UL=False):
         #print('--> DEBUG WorkPlace.flag',WorkPlace.flag,fit_workplace)
 
@@ -249,42 +316,32 @@ class ModelMinimizer(object):
             if model.model_type == 'jet':
                 model.set_path(out_dir)
 
-        if sed_data.data['dnuFnu_data'] is None:
-            sed_data.data['dnuFnu_data'] = np.ones(sed_data.data['nu_data'].size)
+        if isinstance(data,ObsData):
+            self.data=self._handle_sed_data(data,use_fake_err)
+        elif isinstance(data,Data):
+            self.data= self._handle_data_xy(data,use_fake_err)
+        else:
+            raise  RuntimeError('data type must be Obs  Data or Data')
+
+        #if sed_data.data['dnuFnu_data'] is None:
+        #    sed_data.data['dnuFnu_data'] = np.ones(sed_data.data['nu_data'].size)
 
         # filter data points
-        msk1 = sed_data.data['nu_data'] > nu_fit_start
-        msk2 = sed_data.data['nu_data'] < nu_fit_stop
-        msk_zero_error = sed_data.data['dnuFnu_data'] > 0.0
+        msk1 = self.data['x'] > nu_fit_start
+        msk2 = self.data['x'] < nu_fit_stop
+        msk_zero_error = self.data['dy'] > 0.0
         self.use_UL=use_UL
         if use_UL == True:
             msk = msk1 * msk2 * msk_zero_error
 
         else:
-            msk = msk1 * msk2 * msk_zero_error*~sed_data.data['UL']
+            msk = msk1 * msk2 * msk_zero_error*~self.data['UL']
 
-        UL = sed_data.data['UL'][msk]
-
-        if loglog == False:
-            nu_fit = sed_data.data['nu_data'][msk]
-            nuFnu_fit = sed_data.data['nuFnu_data'][msk]
-            if use_facke_err == False:
-                err_nuFnu_fit = sed_data.data['dnuFnu_data'][msk]
-            else:
-                err_nuFnu_fit = sed_data.data['dnuFnu_facke'][msk]
-        else:
-            nu_fit = sed_data.data['nu_data_log'][msk]
-            nuFnu_fit = sed_data.data['nuFnu_data_log'][msk]
-            err_nuFnu_fit = sed_data.data['dnuFnu_data_log'][msk]
-            if use_facke_err == False:
-                err_nuFnu_fit = sed_data.data['dnuFnu_data_log'][msk]
-            else:
-                err_nuFnu_fit = sed_data.data['dnuFnu_facke_log'][msk]
-
+        self.data = self.data[msk]
 
         if silent == False:
             print("filtering data in fit range = [%e,%e]" % (nu_fit_start, nu_fit_stop))
-            print("data length", nu_fit.size)
+            print("data length", self.data.size)
 
 
 
@@ -324,22 +381,14 @@ class ModelMinimizer(object):
         self.fit_Model=fit_Model
         self.loglog=loglog
 
-        self.fit_Model.nu_min_fit = nu_fit_start
-        self.fit_Model.nu_max_fit = nu_fit_stop
+        if hasattr(self.fit_Model,'nu_min_fit'):
+            self.fit_Model.nu_min_fit = nu_fit_start
+            self.fit_Model.nu_max_fit = nu_fit_stop
 
-        #self.nu_fit = nu_fit
-        #self.nuFnu_fit = nuFnu_fit
-        #self.err_nuFnu_fit = err_nuFnu_fit
-        #self.UL = UL
-        self.data  = np.zeros(nu_fit.size, dtype=[('x', nu_fit.dtype), ('y', nuFnu_fit.dtype),('dy', err_nuFnu_fit.dtype),('UL', UL.dtype)])
-        self.data['x'] = nu_fit
-        self.data['y'] = nuFnu_fit
-        self.data['dy'] = err_nuFnu_fit
-        self.data['UL'] = UL
-        self.sed_data=sed_data
 
-        if len(fit_par_free)>len(nu_fit) and isinstance(self.minimizer,LSBMinimizer):
-            m='number of data points: %d is lower than number of free pars: %d'%(len(nu_fit), len(fit_par_free))
+
+        if len(fit_par_free)>self.data['x'].size and isinstance(self.minimizer,LSBMinimizer):
+            m='number of data points: %d is lower than number of free pars: %d'%(self.data['x'], len(fit_par_free))
             raise  JetkerneltException(message=m)
 
     def fit(self,
@@ -353,7 +402,7 @@ class ModelMinimizer(object):
             silent=False,
             get_conf_int=False,
             max_ev=0,
-            use_facke_err=False,
+            use_fake_err=False,
             use_UL=False,
             skip_minimizer=False,
             repeat=1):
@@ -362,7 +411,7 @@ class ModelMinimizer(object):
         #print('-->nu_fit_start', nu_fit_start)
 
         self._prepare_fit( fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=fitname, fit_workplace=fit_workplace,
-                     loglog=loglog, silent=silent, get_conf_int=get_conf_int, use_facke_err=use_facke_err,use_UL=use_UL)
+                     loglog=loglog, silent=silent, get_conf_int=get_conf_int, use_fake_err=use_fake_err,use_UL=use_UL)
 
         fit_Model.set_nu_grid(nu_min=nu_fit_start*0.5, nu_max=nu_fit_stop*1.5)
 
@@ -1046,7 +1095,7 @@ class MinutiMinimizer(Minimizer):
         return bound
 
 def fit_SED(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_workplace=None, loglog=False, silent=False,
-            get_conf_int=False, max_ev=0, use_facke_err=False, minimizer='lsb', use_UL=False,repeat=3):
+            get_conf_int=False, max_ev=0, use_fake_err=False, minimizer='lsb', use_UL=False,repeat=3):
 
     mm = ModelMinimizer(minimizer)
     return mm,mm.fit(fit_Model,
@@ -1059,7 +1108,7 @@ def fit_SED(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_wo
                   silent=silent,
                   get_conf_int=get_conf_int,
                   max_ev=max_ev,
-                  use_facke_err=use_facke_err,
+                  use_fake_err=use_fake_err,
                   use_UL=use_UL,
                   repeat=repeat)
 

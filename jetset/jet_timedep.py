@@ -429,9 +429,9 @@ class JetTimeEvol(object):
 
     def _get_B_rad(self, time):
         if self.region_expansion == 'on':
-            R_H = BlazarSED.eval_R_H_jet_t(self._jet_rad._blob, self.temp_ev, time)
+            #R_H = BlazarSED.eval_R_H_jet_t(self._jet_rad._blob, self.temp_ev, time)
             R = self._get_R_rad_sphere(time)
-            return BlazarSED.eval_B_jet_t(self._jet_rad._blob,self.temp_ev,R_H,R)
+            return BlazarSED.eval_B_jet_t(self._jet_rad._blob,self.temp_ev,R,time)
         else:
             return self.parameters.B_rad.val
 
@@ -796,7 +796,7 @@ class JetTimeEvol(object):
         p.ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1, prop={'size':10})
         return p
 
-    def make_lc(self, nu1, nu2, comp='Sum', t1=None, t2=None, delta_t_out=None, n_slices=1000, rest_frame='obs', eval_cross_time=True, use_cached=False, R=None, name=None):
+    def make_lc(self, nu1_obs, nu2_obs=None, comp='Sum', t1=None, t2=None, delta_t_out=None, n_slices=1000, rest_frame='obs', eval_cross_time=True, use_cached=False, R=None, name=None):
         if t1 is None:
             t1=self.time_sampled_emitters.time[0]
         if t2 is None:
@@ -812,21 +812,51 @@ class JetTimeEvol(object):
         time_array=self.time_sampled_emitters.time[selected_time_slices]
         flux_array=np.zeros(time_array.shape)
 
+        if nu2_obs is None:
+            _nu2 = nu1_obs*10
+        else:
+            _nu2 = nu2_obs
+
+        z = self._jet_rad.parameters.z_cosm.val
+        beaming = self._jet_rad.get_beaming()
+
+        if rest_frame == 'src':
+            _nu2= _nu2 *(1+z)
+            _nu1= nu1_obs *(1+z)
+
+        elif rest_frame == 'blob':
+            _nu2 = _nu2 *(1+z) / beaming
+            _nu1 = nu1_obs * (1+z) / beaming
+        else:
+           _nu1= nu1_obs
+
+
+
         for ID, time_slice in enumerate(np.argwhere(selected_time_slices).ravel()):
             s = self.get_SED(comp, time_slice=time_slice, use_cached=use_cached)
+
+
             if rest_frame=='src':
-                msk = s.nu_src.value >= nu1
-                msk *= s.nu_src.value <= nu2
+                msk = s.nu_src.value >= _nu1
+                msk *= s.nu_src.value <= _nu2
                 x = s.nu_src[msk]
                 y = s.nuLnu_src[msk] / x
             elif rest_frame == 'obs':
-                msk = s.nu.value >= nu1
-                msk *= s.nu.value <= nu2
+                msk = s.nu.value >= _nu1
+                msk *= s.nu.value <= _nu2
                 x = s.nu[msk]
                 y = s.nuFnu[msk] / x
+            elif rest_frame == 'blob':
+                msk = s.nu_src.value >= _nu1*beaming
+                msk *= s.nu_src.value <= _nu2*beaming
+                x =  s.nu_src[msk] /(beaming)
+                y = s.nuLnu_src[msk] / s.nu_src[msk] / (beaming*beaming*beaming)
             else:
-                raise  RuntimeError('rest frame must be src or obs')
-            flux_array[ID] = np.trapz(y.value, x.value)
+                raise  RuntimeError('rest frame must be src or obs or blob')
+            if nu2_obs is None:
+                flux_array[ID] = y.value[0]
+            else:
+                flux_array[ID] = np.trapz(y.value, x.value)
 
 
         flux_array_out = np.interp(time_array_out,time_array, flux_array, left=0, right=0)
@@ -836,6 +866,9 @@ class JetTimeEvol(object):
 
         if rest_frame == 'src':
             beaming = self._jet_rad.get_beaming()
+            z = 0
+        elif rest_frame == 'blob':
+            beaming = 1
             z = 0
         else:
             beaming = self._jet_rad.get_beaming()
@@ -1137,9 +1170,9 @@ class JetTimeEvol(object):
                                                                 log=False, val=1)
 
 
-        model_dict_temp_ev['R_H_jet_exp'] = JetModelDictionaryPar(ptype='jet_base_height', vmin=0, vmax=None,
-                                                            punit='cm',
-                                                            jetkernel_par_name='R_H_jet_exp',
+        model_dict_temp_ev['t_jet_exp'] = JetModelDictionaryPar(ptype='exp_start_time', vmin=0, vmax=None,
+                                                            punit='s',
+                                                            jetkernel_par_name='t_jet_exp',
                                                             froz=True,
                                                             log=False, val=1E14)
 
