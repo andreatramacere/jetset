@@ -463,7 +463,7 @@ class JetTimeEvol(object):
 
         _par_dict = _model['internals']
         for k in _par_dict.keys():
-            print('k,v',k,v)
+            #print('k,v',k,v)
             setattr(self,k,_par_dict[str(k)])
 
     def save_model(self, file_name):
