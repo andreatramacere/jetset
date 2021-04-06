@@ -228,7 +228,7 @@ class ModelMinimizer(object):
         if sed_data.data['dnuFnu_data'] is None:
             sed_data.data['dnuFnu_data'] = np.ones(sed_data.data['nu_data'].size)
 
-        if loglog == False:
+        if loglog is False:
             nu_fit = sed_data.data['nu_data']
             nuFnu_fit = sed_data.data['nuFnu_data']
             if use_fake_err == False:
@@ -259,7 +259,7 @@ class ModelMinimizer(object):
         #if data['dy'] is None:
         #    data['dy'] = np.ones(data['x'].size)
 
-        if loglog == False:
+        if loglog is False:
             x = data.table['x']
             y = data.table['y']
             if use_fake_err == False:
@@ -317,9 +317,9 @@ class ModelMinimizer(object):
                 model.set_path(out_dir)
 
         if isinstance(data,ObsData):
-            self.data=self._handle_sed_data(data,use_fake_err)
+            self.data=self._handle_sed_data(data,use_fake_err=use_fake_err,loglog=loglog)
         elif isinstance(data,Data):
-            self.data= self._handle_data_xy(data,use_fake_err)
+            self.data= self._handle_data_xy(data,use_fake_err=use_fake_err,loglog=loglog)
         else:
             raise  RuntimeError('data type must be Obs  Data or Data')
 
@@ -327,6 +327,10 @@ class ModelMinimizer(object):
         #    sed_data.data['dnuFnu_data'] = np.ones(sed_data.data['nu_data'].size)
 
         # filter data points
+        if loglog is True:
+            nu_fit_start = np.log10(nu_fit_start)
+            nu_fit_stop = np.log10(nu_fit_stop)
+
         msk1 = self.data['x'] > nu_fit_start
         msk2 = self.data['x'] < nu_fit_stop
         msk_zero_error = self.data['dy'] > 0.0
