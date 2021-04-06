@@ -86,7 +86,7 @@ void show_temp_ev(  struct temp_ev pt_ev){
     printf("Diff_coeff %e (1/s), t_D=1/Diff_coeff %e (s)\n", pt_ev.Diff_Coeff, pt_ev.t_D0 );
     printf("Acc_coeff %e (1/s),  t_A=1/Acc_coeff %e (s)\n",  pt_ev.Acc_Coeff, pt_ev.t_A0 );
     //printf("T_esc_Coeff %e (R/c)\n", pt_ev.T_esc_Coeff_R_by_c_acc );
-    printf("Esc_index %e\n", pt_ev.Esc_Index );
+    printf("Esc_index %e\n", pt_ev.Esc_Index_acc );
     printf("T_start_Acc %e (s)\n", pt_ev.TStart_Acc );
     printf("T_stop_Acc  %e (s)\n", pt_ev.TStop_Acc );
     printf("T_start_inj %e (s)\n", pt_ev.TStart_Inj );
@@ -119,7 +119,8 @@ struct temp_ev MakeTempEv() {
     ev_root.Acc_Coeff=1.0/ev_root.t_A0;
     ev_root.Diff_Index=2.0;
     ev_root.Acc_Index=1.0;
-    ev_root.Esc_Index=0;
+    ev_root.Esc_Index_acc=0;
+    ev_root.Esc_Index_rad=0.0;
     ev_root.m_B=1.0;
     ev_root.B_rad=1.0;
     ev_root.B_acc=1.0;
@@ -127,7 +128,7 @@ struct temp_ev MakeTempEv() {
     //ev_root.m_R=1.0;
     ev_root.T_esc_Coeff_R_by_c_acc=2.0;
     ev_root.T_esc_Coeff_R_by_c_rad=2.0;
-    ev_root.Esc_Index=0.0;
+    
     ev_root.TStart_Inj=0.0;
     ev_root.TStop_Inj=3e4;
     ev_root.TStart_Acc=0.0;
@@ -161,11 +162,13 @@ struct temp_ev MakeTempEv() {
     ev_root.Q_inj_jetset=NULL;
     ev_root.gamma_inj_jetset=NULL;
     //ev_root.N_gamma=NULL;
+    
     ev_root.N_rad_gamma=NULL;
     ev_root.N_acc_gamma=NULL;
     ev_root.N_time=NULL;
     ev_root.T_esc_acc=NULL;
     ev_root.T_esc_rad=NULL;
+    //ev_root.T_esc_ad_rad=NULL;
     ev_root.T_inj_profile=NULL;
     ev_root.T_acc_profile=NULL;
     return ev_root;

@@ -83,12 +83,12 @@ class  PlotSED (object):
             plot_workplace=WorkPlace()
             self.out_dir=plot_workplace.out_dir
             self.flag=plot_workplace.flag
-     
+
         else:
             self.out_dir=plot_workplace.out_dir
             self.flag=plot_workplace.flag
-        
-        
+
+
             self.title="%s_%s"%(title,self.flag)
 
         if figsize is None:
@@ -100,9 +100,9 @@ class  PlotSED (object):
 
         self.sedplot= self.fig.add_subplot(self.gs[0])
         self._add_res_plot()
-        
+
         self.set_plot_axis_labels(density=density)
-        
+
         #if autoscale==True:
         self.sedplot.set_autoscalex_on(True)
         self.sedplot.set_autoscaley_on(True)
@@ -154,15 +154,15 @@ class  PlotSED (object):
             self.del_residuals_line(0)
 
     def clean_data_lines(self):
-        
+
         for i in range(len(self.lines_data_list)):
             self.del_data_line(0)
-    
+
     def clean_model_lines(self):
         for i in range(len(self.lines_model_list)):
             self.del_model_line(0)
-            
-            
+
+
     def list_lines(self):
         if self.lines_data_list==[] and self.lines_model_list==[]:
             pass
@@ -247,7 +247,7 @@ class  PlotSED (object):
         self.sedplot.set_xlabel(self.lx)
 
 
-    
+
     def add_res_zeroline(self):
         #y0 = np.zeros(2)
         #x0 = [0,30]
@@ -262,7 +262,7 @@ class  PlotSED (object):
         self.resplot.set_xlim(x_min,x_max)
         self.resplot.set_ylim(y_min,y_max)
         self.update_plot()
-    
+
     def update_plot(self):
         self.fig.canvas.draw()
         #self.sedplot.relim()
@@ -373,8 +373,23 @@ class  PlotSED (object):
 
         self.counter += 1
 
-    def plot_tempev_model(self, temp_ev, num_seds=None, region='rad', time_slice=None, t1=None, t2=None,
-                        sed_data=None, comp='Sum', use_cached=False, time_bin=None):
+    def plot_tempev_model(self,
+                          temp_ev,
+                          comp='Sum',
+                          region='rad',
+                          t1=None,
+                          t2=None,
+                          time_slice=None,
+                          time_slice_bin=None,
+                          time=None,
+                          time_bin=None,
+                          use_cached=False,
+                          sed_data=None):
+
+
+
+        if (time_slice is not None and time is not None):
+            raise RuntimeError('you can to pass either the N-th time slice "time_slice", or the blob time in seconds "time" ')
 
         if t1 is None or t1 < temp_ev.time_sampled_emitters.time[0]:
             t1 = temp_ev.time_sampled_emitters.time[0]
@@ -382,22 +397,39 @@ class  PlotSED (object):
         if t2 is None or t2 > temp_ev.time_sampled_emitters.time[-1]:
             t2 = temp_ev.time_sampled_emitters.time[-1]
 
-        if time_bin is None:
-            time_bin = temp_ev.time_sampled_emitters.time[1] - temp_ev.time_sampled_emitters.time[0]
-
-        if num_seds is None:
-            t_array = np.arange(t1, t2, time_bin)
+        if time_slice is None:
+            _time_slice = 0
         else:
-            t_array = np.linspace(t1, t2, num_seds)
+            _time_slice = time_slice
 
-        if time_slice is not None and num_seds is None:
-            t_array = np.array([temp_ev.time_sampled_emitters._get_time_samples(time_slice)])
+        if time_slice_bin is None:
+            _time_slice_bin = 1
+        else:
+            _time_slice_bin = time_slice_bin
+
+
+        #if time_slice is not None or time_bin is None:
+
+
+        if time is not None and time_bin is not None:
+            t_array = np.arange(t1, t2, time_bin)
+            time_id_array=None
+        else:
+            t_array, time_id_array = temp_ev.time_sampled_emitters._get_time_samples(_time_slice, _time_slice_bin)
+            t_array = t_array[t_array <= t2]
+            t_array = t_array[t_array >= t1]
+            time_id_array = time_id_array[time_id_array[t_array <= t2]]
+            time_id_array = time_id_array[time_id_array[t_array >= t1]]
 
         g = plt.cm.Greens(np.linspace(0.5, 1, t_array.size))
         r = plt.cm.Reds(np.linspace(0.5, 1, t_array.size))
         b = plt.cm.Blues(np.linspace(0.5, 1, t_array.size))
         for ID, t in enumerate(t_array):
-            s = temp_ev.get_SED(comp, region=region, time=t, use_cached=use_cached, time_bin=time_bin)
+            if time is not None and time_bin is not None:
+                s = temp_ev.get_SED(comp, region=region, time=t, use_cached=use_cached, time_bin=time_bin)
+            else:
+                s = temp_ev.get_SED(comp, region=region, time_slice=time_id_array[ID], use_cached=use_cached, time_slice_bin=time_slice_bin)
+
             label = None
             ls = '-'
             color = r[ID]
@@ -411,13 +443,13 @@ class  PlotSED (object):
                 lw = 0.2
 
             if ID == 0:
-                lw = 1
+                lw = 2
                 ls = '--'
                 label = 'start, t=%2.2e (s)' % t
                 color = 'green'
             if ID == t_array.size - 1:
-                lw = 1
-                ls = '.'
+                lw = 2
+                ls = '--'
                 color = 'purple'
                 label = 'stop, t=%2.2e (s)' % t
 
@@ -438,11 +470,11 @@ class  PlotSED (object):
             x,y,dx,dy,=sed_data.get_data_points(log_log=True,frame=self.frame, density=density)
         except Exception as e:
             raise RuntimeError("!!! ERROR failed to get data points from", sed_data,e)
-            
+
 
         if dx is None:
             dx=np.zeros(len(sed_data.data['nu_data']))
-        
+
 
         if dy is None:
             dy=np.zeros(len(sed_data.data['nu_data']))
@@ -473,13 +505,13 @@ class  PlotSED (object):
         self.counter+=1
         #self.update_legend()
         self.update_plot()
-        
+
 
     def add_xy_plot(self,x,y,label=None,color=None,line_style=None,autoscale=False):
 
         if line_style is None:
             line_style='-'
-           
+
 
         if label is None:
             label='line %d'%self.counter

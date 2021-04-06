@@ -92,8 +92,8 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
         pt_ev->t_D[i] = (pt_ev->g[i] * pt_ev->g[i]) / f_Dp(pt_ev->g[i], pt_ev);
         pt_ev->t_DA[i] = 0.5 * pt_ev->t_D[i];
         pt_ev->t_A[i] = pt_ev->g[i] / f_A(pt_ev->g[i], pt_ev);
-        pt_ev->t_Esc_acc[i] = f_Tesc(pt_ev->g[i], pt_ev->T_esc_Coeff_acc, pt_ev->Esc_Index);
-        pt_ev->t_Esc_rad[i] = f_Tesc(pt_ev->g[i], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index);
+        pt_ev->t_Esc_acc[i] = f_Tesc(pt_ev->g[i], pt_ev->T_esc_Coeff_acc, pt_ev->Esc_Index_acc);
+        pt_ev->t_Esc_rad[i] = f_Tesc(pt_ev->g[i], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index_rad);
         delta_t_eq_t_D = pt_ev->t_Sync_cool[i] - pt_ev->t_D[i];
         delta_t_eq_t_A = pt_ev->t_Sync_cool[i] - pt_ev->t_A[i];
         delta_t_eq_t_DA = pt_ev->t_Sync_cool[i] - pt_ev->t_DA[i];
@@ -231,7 +231,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     double E_acc_pre,E_acc_post,delta_E_acc,E_acc;
     double Vol_acc, Vol_rad;
     double exp_factor;
-    double t_ad,t_ad_esc;
+    double t_ad,t_ad_esc,t_esc;
     
 
     
@@ -319,8 +319,8 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     
     for (TMP = 0; TMP < E_SIZE; TMP++) {
         N_rad[TMP]=0;
-        pt_ev->T_esc_acc[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_acc, pt_ev->Esc_Index);
-        pt_ev->T_esc_rad[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index);
+        pt_ev->T_esc_acc[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_acc, pt_ev->Esc_Index_acc);
+        pt_ev->T_esc_rad[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index_rad);
         N_escaped[TMP]=0;
         N_acc[TMP]=0;
     }
@@ -415,16 +415,15 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
             t_ad=Adiabatic_Cooling_time(pt_ev, pt_spec_rad, pt_ev->R_jet_t)/(3);
             pt_ev->T_esc_Coeff_rad = pt_ev->T_esc_Coeff_R_by_c_rad * pt_ev->R_jet_t/vluce_cm;;
             for (TMP = 0; TMP < E_SIZE; TMP++) {
-                pt_ev->T_esc_rad[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index);
+                t_esc=f_Tesc(x[TMP], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index_rad);
+                pt_ev->T_esc_rad[TMP] = t_esc;
                 if (t>=pt_ev->t_jet_exp){
-                    //t_ad=Adiabatic_Cooling_time(pt_ev, pt_spec_rad, pt_ev->R_jet_t);
-                    //t_ad_esc =(t_ad*pt_ev->T_esc_Coeff_rad)/(pt_ev->T_esc_Coeff_rad+t_ad);
-                    //pt_ev->T_esc_rad[TMP] = f_Tesc(x[TMP], t_ad, pt_ev->Esc_Index);
-                    N_rad[TMP] = N_rad[TMP]*exp_factor;
-                //}
+                    t_ad_esc =(t_ad*t_esc)/(t_esc+t_ad);
+                    pt_ev->T_esc_rad[TMP] = t_ad_esc;
+                    //N_rad[TMP] = N_rad[TMP]*exp_factor;
                 }else{
                    
-                    pt_ev->T_esc_rad[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index);
+                    pt_ev->T_esc_rad[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index_rad);
                 }
                 
             }
@@ -432,7 +431,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         }else{
             pt_ev->T_esc_Coeff_rad = pt_ev->T_esc_Coeff_R_by_c_rad * pt_ev->R_rad_start/vluce_cm;
             for (TMP = 0; TMP < E_SIZE; TMP++) {
-                pt_ev->T_esc_rad[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index);
+                pt_ev->T_esc_rad[TMP] = f_Tesc(x[TMP], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index_rad);
             }
         }
         time_evolve_emitters(pt_spec_rad,pt_ev,2,t,T,E_SIZE,E_N_SIZE,E_acc,pt_ev->T_esc_rad,N_escaped,N_rad,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
@@ -442,7 +441,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         if ((OUT_FILE >= 0) || (T==pt_ev->T_SIZE-1)) {
             
             //printf("-> NUM_OUT=%d T_SIZE=%d T=%d\n",NUM_OUT,pt_ev->T_SIZE,T);
-            printf(" time=%e, exp_factor=%e, T_esc_Coeff_rad=%e  T_ad=%e  T_ad_esc=%e\n",t,exp_factor,pt_ev->T_esc_Coeff_rad,t_ad,t_ad_esc);
+            //printf(" time=%e, exp_factor=%e, T_esc_Coeff_rad=%e  T_ad=%e  T_ad_esc=%e\n",t,exp_factor,pt_ev->T_esc_Coeff_rad,t_ad,t_ad_esc);
             for (Gamma = 0; Gamma < E_SIZE; Gamma++) {
                 
                 if (NUM_OUT<pt_ev->NUM_SET){
@@ -515,7 +514,7 @@ double eval_R_H_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev, double time_b
 
 
 double eval_R_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev, double time_blob){
-    double R_H_t;
+    //double R_H_t;
     //R_H_t=eval_R_H_jet_t(pt_spec,pt_ev,time_blob);
     if (time_blob<pt_ev->t_jet_exp){
         return pt_ev->R_rad_start;

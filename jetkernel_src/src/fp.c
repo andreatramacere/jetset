@@ -71,21 +71,23 @@ double Cooling(double x,struct temp_ev *pt, struct blob *pt_spec){
 	//gamma-1=x
 	//gamma=x+1
 	// printf("Sync cooling =%e\n",Sync_cool(pt_spec->B,x+1));
+
 	cooling=0;
-	if (pt->do_Sync_cooling>0){
-	    //printf('ciccio s \n');
-		cooling=Sync_cool(pt_spec,x+1);
+	if ((x+1)>1){
+		if (pt->do_Sync_cooling>0){
+			//printf('ciccio s \n');
+			cooling=Sync_cool(pt_spec,x+1);
 
+		}
+
+		if (pt->do_Compton_cooling>0){
+			//printf('ciccio c  \n');
+			cooling+=compton_cooling(pt_spec,pt,x+1);
+		}
+		if(pt->do_Expansion && pt->t>pt->t_jet_exp){
+			cooling+=(x+1)/(Adiabatic_Cooling_time(pt, pt_spec,pt->R_jet_t));
+		}
 	}
-
-	if (pt->do_Compton_cooling>0){
-	    //printf('ciccio c  \n');
-    	cooling+=compton_cooling(pt_spec,pt,x+1);
-    }
-	if(pt->do_Expansion && pt->t>pt->t_jet_exp && (x+1)>1){
-		cooling+=(x+1)/(Adiabatic_Cooling_time(pt, pt_spec,pt->R_jet_t));
-	}
-
 	return cooling;
 }
 //---------------------------------------------------------------------

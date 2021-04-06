@@ -779,6 +779,7 @@ struct temp_ev{
     //dev stop
     double L_inj;
 	double *T_esc_acc, *T_esc_rad;
+    //double *T_esc_ad_rad;
     double *T_inj_profile;
     double *T_acc_profile;
 	double Diff_Coeff;
@@ -794,7 +795,8 @@ struct temp_ev{
     double T_esc_Coeff_R_by_c_acc;
     double T_esc_Coeff_rad;
     double T_esc_Coeff_R_by_c_rad;
-	double Esc_Index;
+	double Esc_Index_acc;
+    double Esc_Index_rad;
 	double Lambda_max_Turb;
 	double Lambda_choer_Turb_factor;
 	double Gamma_Max_Turb_L_max;
