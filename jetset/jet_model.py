@@ -1215,7 +1215,7 @@ class JetBase(Model):
             else:
                 comp_label=None
             if c.state!='off':
-                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label, density=density,update=False)
+                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label, density=density,update=False, frame=frame)
 
         else:
             for c in self.spectral_components_list:
@@ -1224,7 +1224,7 @@ class JetBase(Model):
                     comp_label=label
                 #print('comp label',comp_label)
                 if c.state != 'off' and c.name!='Sum':
-                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color, density=density,update=False)
+                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color, density=density,update=False, frame=frame)
 
             c=self.get_spectral_component_by_name('Sum')
             if label is not None:

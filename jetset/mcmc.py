@@ -9,7 +9,6 @@ from itertools import cycle
 import numpy as np
 import scipy as sp
 from scipy import stats
-from .plot_sedfit import  plt, PlotSED, set_mpl
 import corner
 import dill as pickle
 from multiprocessing import cpu_count, Pool
@@ -18,6 +17,7 @@ import warnings
 import  time
 import copy
 import threading
+from .plot_sedfit import  plt, PlotSED, set_mpl
 
 __all__=['McmcSampler']
 
@@ -46,7 +46,7 @@ class McmcSampler(object):
 
     def __init__(self,model_minimizer):
 
-        self.model = model_minimizer.fit_Model
+        self.model = model_minimizer.fit_model
         self.data = model_minimizer.data
         self.fit_par_free = model_minimizer.fit_par_free
 
@@ -54,7 +54,20 @@ class McmcSampler(object):
 
 
 
-    def run_sampler(self,nwalkers=500,steps=100,pos=None,burnin=50,use_UL=False,bound=0.2,bound_rel=False,threads=None,walker_start_bound=0.002,use_labels_dict=None,loglog = False):
+    def run_sampler(self,
+                    nwalkers=500,
+                    steps=100,
+                    pos=None,
+                    burnin=50,
+                    use_UL=False,
+                    bound=0.2,
+                    bound_rel=False,
+                    threads=None,
+                    walker_start_bound=0.002,
+                    use_labels_dict=None,
+                    loglog = False,
+                    progress='notebook'):
+
         counter=Counter(nwalkers*steps)
         self.calls = 0
         self.calls_OK = 0
@@ -99,7 +112,15 @@ class McmcSampler(object):
             raise RuntimeError('Please update to emcee v>=3.0.0')
 
         print('mcmc run starting')
+        print('')
         start = time.time()
+        if progress == 'notebook':
+            pass
+
+        if progress is True:
+            tqdm=None
+
+
         if threads is not None and threads>1:
             # if threads > cpu_count():
             #     threads = cpu_count()
@@ -113,16 +134,16 @@ class McmcSampler(object):
             #                                          args=(self.model, self.data, use_UL, counter,self._bounds, self.par_array, loglog),pool=pool)
             #     self.sampler.run_mcmc(pos, steps, progress=True)
 
-            print('')
+
 
             warnings.warn('multithreadign not implemented yet')
             threads=1
             self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self.par_array, loglog))
-            self.sampler.run_mcmc(pos, steps, progress=True)
+            self.sampler.run_mcmc(pos, steps, progress=progress)
         else:
             threads=1
             self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob,args=(self.model, self.data, use_UL, counter,self._bounds, self.par_array, loglog))
-            self.sampler.run_mcmc(pos, steps, progress=True)
+            self.sampler.run_mcmc(pos, steps, progress=progress)
 
 
 
@@ -349,7 +370,7 @@ class McmcSampler(object):
         self.model.eval(fill_SED=True)
 
         p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density)
-        p.add_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
+        p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
 
         if frame == 'src' and sed_data is not None:
             sed_data.z = z_sed_data
@@ -372,14 +393,14 @@ class McmcSampler(object):
 
 
 
-def emcee_log_like(theta,fit_Model,data,use_UL,par_array,loglog):
+def emcee_log_like(theta,fit_model,data,use_UL,par_array,loglog):
     _warn = False
     for pi in range(len(theta)):
         par_array[pi].set(val=theta[pi])
         if np.isnan(theta[pi]):
             _warn=True
 
-    _m = fit_Model.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
+    _m = fit_model.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
 
     _res_sum, _res, _res_UL = _eval_res(data['y'],
                                         _m,

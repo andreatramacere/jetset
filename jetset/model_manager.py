@@ -177,12 +177,12 @@ class FitModel(Model):
                 comp_label = mc.name
                 if hasattr(mc,'SED'):
                     try:
-                        plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim, density=density)
+                        plot_obj.add_model_plot(mc.SED, line_style=line_style,label=comp_label,flim=self.flux_plot_lim, density=density, frame=frame)
                     except Exception as e:
                         try:
                             mc.eval()
                             plot_obj.add_model_plot(mc.SED, line_style=line_style, label=comp_label,
-                                                    flim=self.flux_plot_lim, density=density)
+                                                    flim=self.flux_plot_lim, density=density, frame=frame)
                         except Exception as e:
                             raise RuntimeError('for model', mc.name, "problem with plotting SED", e)
 
@@ -194,21 +194,21 @@ class FitModel(Model):
                             if comp_label!='Sum':
                                 if hasattr(c, 'SED'):
                                     try:
-                                        plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim, density=density)
+                                        plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim, density=density, frame=frame)
                                     except Exception as e:
                                         try:
                                             #print('==> reval',mc.name)
                                             mc.eval()
                                             _c=mc.spectral_components.get_spectral_component_by_name(c.name)
-                                            plot_obj.add_model_plot(_c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim, density=density)
+                                            plot_obj.add_model_plot(_c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim, density=density, frame=frame)
                                         except Exception as e:
                                             raise RuntimeError('for model', mc.name, "spectral component",c.name, "problem with plotting SED", e)
         line_style = '-'
         if label is None:
             label=self.name
 
-        plot_obj.add_model_plot(self.SED, line_style=line_style, label=label, flim=self.flux_plot_lim,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]), density=density  )
-        plot_obj.add_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]) )
+        plot_obj.add_model_plot(self.SED, line_style=line_style, label=label, flim=self.flux_plot_lim,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]), density=density, frame=frame  )
+        plot_obj.add_model_residual_plot(data=sed_data, model=self, fit_range=np.log10([self.nu_min_fit, self.nu_max_fit]))
 
         #if frame == 'src' and sed_data is not None:
         #    sed_data.z = z_sed_data

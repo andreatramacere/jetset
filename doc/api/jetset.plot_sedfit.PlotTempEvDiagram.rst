@@ -11,7 +11,9 @@ PlotTempEvDiagram
    .. autosummary::
 
       ~PlotTempEvDiagram.plot
+      ~PlotTempEvDiagram.rescale
 
    .. rubric:: Methods Documentation
 
    .. automethod:: plot
+   .. automethod:: rescale

@@ -75,8 +75,16 @@ def convert_nuFnu_to_nuLnu_src(nuFnu,z,in_frame,dl):
     return c*nuFnu
 
 
+def convert_nuLnu_src_to_nuLnu_blob(nuLnu,beaming,in_frame):
+    check_frame(in_frame)
+    c=1/(beaming**4)
+    return c*nuLnu
 
-    
+
+def convert_nu_src_to_nu_blob(nu_src,beaming,in_frame):
+    check_frame(in_frame)
+    return nu_src/beaming
+
     
     
     

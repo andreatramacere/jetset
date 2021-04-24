@@ -142,7 +142,7 @@ As first step, we define our Jet model
 
 .. parsed-literal::
 
-    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/minimizer.py:22: TqdmExperimentalWarning: Using `tqdm.autonotebook.tqdm` in notebook mode. Use `tqdm.tqdm` instead to force console mode (e.g. in jupyter console)
+    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/minimizer.py:24: TqdmExperimentalWarning: Using `tqdm.autonotebook.tqdm` in notebook mode. Use `tqdm.tqdm` instead to force console mode (e.g. in jupyter console)
       from tqdm.autonotebook import tqdm
 
 
@@ -178,7 +178,7 @@ As third step, we add the components models to the the :class:`.FitModel` class,
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140395068375296-387359" class="table-striped table-bordered table-condensed">
+    <table id="table140686192205008-110577" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -215,14 +215,14 @@ As third step, we add the components models to the the :class:`.FitModel` class,
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140395068375296-387359').dataTable()");
+        console.log("$('#table140686192205008-110577').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140395068375296-387359').dataTable({
+        $('#table140686192205008-110577').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -259,7 +259,7 @@ redshift, we link the two parameters
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140395068375680-64297" class="table-striped table-bordered table-condensed">
+    <table id="table140686139055600-756682" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -296,14 +296,14 @@ redshift, we link the two parameters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140395068375680-64297').dataTable()");
+        console.log("$('#table140686139055600-756682').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140395068375680-64297').dataTable({
+        $('#table140686139055600-756682').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -384,7 +384,7 @@ if you want to remove the link from the parameter
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140395068375680-280983" class="table-striped table-bordered table-condensed">
+    <table id="table140686192204000-282465" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -421,14 +421,14 @@ if you want to remove the link from the parameter
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140395068375680-280983').dataTable()");
+        console.log("$('#table140686192204000-282465').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140395068375680-280983').dataTable({
+        $('#table140686192204000-282465').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -463,8 +463,24 @@ Example of model fitting with EBL
 
 .. code:: ipython3
 
+    test_SEDs
+
+
+
+
+.. parsed-literal::
+
+    ['/Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/test_data/SEDs_data/SED_3C345.ecsv',
+     '/Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk421_EBL_DEABS.ecsv',
+     '/Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_ABS.ecsv',
+     '/Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_DEABS.ecsv']
+
+
+
+.. code:: ipython3
+
     %matplotlib inline
-    data=data=Data.from_file(test_SEDs[2])
+    data=Data.from_file(test_SEDs[2])
     sed_data=ObsData(data_table=data)
     myPlot=sed_data.plot_sed()
     
@@ -492,7 +508,7 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_40_2.png
+.. image:: EBL_files/EBL_41_2.png
 
 
 .. code:: ipython3
@@ -506,6 +522,12 @@ Example of model fitting with EBL
 
 .. parsed-literal::
 
+    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/minimizer.py:24: TqdmExperimentalWarning: Using `tqdm.autonotebook.tqdm` in notebook mode. Use `tqdm.tqdm` instead to force console mode (e.g. in jupyter console)
+      from tqdm.autonotebook import tqdm
+
+
+.. parsed-literal::
+
     ================================================================================
     
     *** evaluating spectral indices for data ***
@@ -514,7 +536,7 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_41_1.png
+.. image:: EBL_files/EBL_42_2.png
 
 
 .. code:: ipython3
@@ -543,7 +565,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=6</i>
-    <table id="table140395094482800-288194" class="table-striped table-bordered table-condensed">
+    <table id="table140200984706016-835098" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-6.411144e-02</td><td>-6.411144e-02</td><td>7.838965e-03</td><td>--</td><td>-4.778764e-02</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-1.751721e-03</td><td>-1.751721e-03</td><td>1.127030e-03</td><td>--</td><td>3.576201e-03</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -574,14 +596,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140395094482800-288194').dataTable()");
+        console.log("$('#table140200984706016-835098').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140395094482800-288194').dataTable({
+        $('#table140200984706016-835098').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -624,12 +646,12 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140395094273952-796134" class="table-striped table-bordered table-condensed">
+    <table id="table140200988152784-448657" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>LogCubic</td><td>b</td><td>curvature</td><td></td><td>-1.310993e-01</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>c</td><td>third-degree</td><td></td><td>-3.300446e-02</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Ep</td><td>peak freq</td><td>Hz</td><td>2.549603e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>True</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Sp</td><td>peak flux</td><td>erg / (cm2 s)</td><td>-1.057945e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>True</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>b</td><td>curvature</td><td></td><td>-1.565399e-01</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>c</td><td>third-degree</td><td></td><td>-4.351917e-02</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Ep</td><td>peak freq</td><td>Hz</td><td>2.529709e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>True</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Sp</td><td>peak flux</td><td>erg / (cm2 s)</td><td>-1.058825e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>True</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -653,14 +675,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140395094273952-796134').dataTable()");
+        console.log("$('#table140200988152784-448657').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140395094273952-796134').dataTable({
+        $('#table140200988152784-448657').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -685,11 +707,11 @@ Example of model fitting with EBL
 
     <table>
         <tr>
-            <td colspan="2" style="text-align:left" title="Minimum value of function"> FCN = 1.997 </td>
+            <td colspan="2" style="text-align:left" title="Minimum value of function"> FCN = 2.632 </td>
             <td colspan="3" style="text-align:center" title="No. of calls in last algorithm and total number of calls"> Ncalls = 54 (54 total) </td>
         </tr>
         <tr>
-            <td colspan="2" style="text-align:left" title="Estimated distance to minimum and goal"> EDM = 4.76e-07 (Goal: 0.0002) </td>
+            <td colspan="2" style="text-align:left" title="Estimated distance to minimum and goal"> EDM = 1.7e-06 (Goal: 0.0002) </td>
             <td colspan="3" style="text-align:center" title="Increase in FCN which corresponds to 1 standard deviation"> up = 1.0 </td>
         </tr>
         <tr>
@@ -723,8 +745,8 @@ Example of model fitting with EBL
         <tr>
             <th> 0 </th>
             <td> par_0 </td>
-            <td> -0.131 </td>
-            <td> 0.032 </td>
+            <td> -0.157 </td>
+            <td> 0.026 </td>
             <td>  </td>
             <td>  </td>
             <td> -10 </td>
@@ -734,8 +756,8 @@ Example of model fitting with EBL
         <tr>
             <th> 1 </th>
             <td> par_1 </td>
-            <td> -0.033 </td>
-            <td> 0.021 </td>
+            <td> -0.044 </td>
+            <td> 0.020 </td>
             <td>  </td>
             <td>  </td>
             <td> -10 </td>
@@ -745,8 +767,8 @@ Example of model fitting with EBL
         <tr>
             <th> 2 </th>
             <td> par_2 </td>
-            <td> 25.50 </td>
-            <td> 0.22 </td>
+            <td> 25.30 </td>
+            <td> 0.18 </td>
             <td>  </td>
             <td>  </td>
             <td> 0 </td>
@@ -756,8 +778,8 @@ Example of model fitting with EBL
         <tr>
             <th> 3 </th>
             <td> par_3 </td>
-            <td> -10.58 </td>
-            <td> 0.04 </td>
+            <td> -10.59 </td>
+            <td> 0.05 </td>
             <td>  </td>
             <td>  </td>
             <td> -30 </td>
@@ -770,11 +792,11 @@ Example of model fitting with EBL
 .. parsed-literal::
 
     dof=7
-    chisq=1.996618, chisq/red=0.285231 null hypothesis sig=0.960027
+    chisq=2.631978, chisq/red=0.375997 null hypothesis sig=0.916836
     
     stats without the UL
     dof  UL=7
-    chisq=1.996618, chisq/red=0.285231 null hypothesis sig=0.960027
+    chisq=2.631978, chisq/red=0.375997 null hypothesis sig=0.916836
     
     
     best fit pars
@@ -784,12 +806,12 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140395082711584-895703" class="table-striped table-bordered table-condensed">
+    <table id="table140200988548832-298941" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <tr><td>LogCubic</td><td>b</td><td>-1.310993e-01</td><td>-1.310993e-01</td><td>3.244188e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>c</td><td>-3.300446e-02</td><td>-3.300446e-02</td><td>2.072521e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Ep</td><td>2.549603e+01</td><td>2.549603e+01</td><td>2.235473e-01</td><td>--</td><td>2.556357e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Sp</td><td>-1.057945e+01</td><td>-1.057945e+01</td><td>4.332978e-02</td><td>--</td><td>-1.000000e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>b</td><td>-1.565399e-01</td><td>-1.565399e-01</td><td>2.551779e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>c</td><td>-4.351917e-02</td><td>-4.351917e-02</td><td>2.032065e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Ep</td><td>2.529709e+01</td><td>2.529709e+01</td><td>1.817240e-01</td><td>--</td><td>2.536916e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Sp</td><td>-1.058825e+01</td><td>-1.058825e+01</td><td>5.046949e-02</td><td>--</td><td>-1.000000e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -813,14 +835,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140395082711584-895703').dataTable()");
+        console.log("$('#table140200988548832-298941').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140395082711584-895703').dataTable({
+        $('#table140200988548832-298941').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -844,12 +866,12 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140395094481504-289676" class="table-striped table-bordered table-condensed">
+    <table id="table140200988548928-226516" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <tr><td>LogCubic</td><td>b</td><td>-1.310993e-01</td><td>-1.310993e-01</td><td>3.244188e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>c</td><td>-3.300446e-02</td><td>-3.300446e-02</td><td>2.072521e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Ep</td><td>2.549603e+01</td><td>2.549603e+01</td><td>2.235473e-01</td><td>--</td><td>2.556357e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Sp</td><td>-1.057945e+01</td><td>-1.057945e+01</td><td>4.332978e-02</td><td>--</td><td>-1.000000e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>b</td><td>-1.565399e-01</td><td>-1.565399e-01</td><td>2.551779e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>c</td><td>-4.351917e-02</td><td>-4.351917e-02</td><td>2.032065e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Ep</td><td>2.529709e+01</td><td>2.529709e+01</td><td>1.817240e-01</td><td>--</td><td>2.536916e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Sp</td><td>-1.058825e+01</td><td>-1.058825e+01</td><td>5.046949e-02</td><td>--</td><td>-1.000000e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -873,14 +895,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140395094481504-289676').dataTable()");
+        console.log("$('#table140200988548928-226516').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140395094481504-289676').dataTable({
+        $('#table140200988548928-226516').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -894,13 +916,13 @@ Example of model fitting with EBL
 
 .. parsed-literal::
 
-    ---> IC         nu_p=+2.549603e+01 (err=+2.235473e-01)  nuFnu_p=-1.057945e+01 (err=+4.332978e-02) curv.=-1.310993e-01 (err=+3.244188e-02)
+    ---> IC         nu_p=+2.529709e+01 (err=+1.817240e-01)  nuFnu_p=-1.058825e+01 (err=+5.046949e-02) curv.=-1.565399e-01 (err=+2.551779e-02)
     ================================================================================
     
 
 
 
-.. image:: EBL_files/EBL_43_9.png
+.. image:: EBL_files/EBL_44_9.png
 
 
 .. code:: ipython3
@@ -937,16 +959,16 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140394570178320-423483" class="table-striped table-bordered table-condensed">
+    <table id="table140200988165888-221444" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.048659e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.057083e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.310708e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>3.075705e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.989983e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
@@ -973,14 +995,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140394570178320-423483').dataTable()");
+        console.log("$('#table140200988165888-221444').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140394570178320-423483').dataTable({
+        $('#table140200988165888-221444').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1017,12 +1039,12 @@ Example of model fitting with EBL
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotSED at 0x7fb0470d6fa0>
+    <jetset.plot_sedfit.PlotSED at 0x7f83173ac430>
 
 
 
 
-.. image:: EBL_files/EBL_45_2.png
+.. image:: EBL_files/EBL_46_2.png
 
 
 .. code:: ipython3
@@ -1076,7 +1098,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=2</i>
-    <table id="table140395081983984-890391" class="table-striped table-bordered table-condensed">
+    <table id="table140200988039392-908002" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>nuFnu-scale</td><td>erg / (cm2 s)</td><td>-1.006557e+01</td><td>-2.000000e+01</td><td>2.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>host_galaxy</td><td>nu_scale</td><td>nu-scale</td><td>Hz</td><td>1.730764e-02</td><td>-2.000000e+00</td><td>2.000000e+00</td><td>False</td><td>False</td></tr>
@@ -1103,14 +1125,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140395081983984-890391').dataTable()");
+        console.log("$('#table140200988039392-908002').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140395081983984-890391').dataTable({
+        $('#table140200988039392-908002').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1164,16 +1186,16 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140395019756160-805897" class="table-striped table-bordered table-condensed">
+    <table id="table140201010673456-5000" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.048659e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.057083e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm(M)</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.310708e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>3.075705e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.989983e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
@@ -1200,14 +1222,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140395019756160-805897').dataTable()");
+        console.log("$('#table140201010673456-5000').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140395019756160-805897').dataTable({
+        $('#table140201010673456-5000').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1236,7 +1258,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=1</i>
-    <table id="table140395019717120-995121" class="table-striped table-bordered table-condensed">
+    <table id="table140201010710416-237250" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>Franceschini_2008</td><td>z_cosm(L,jet_leptonic)</td><td>redshift</td><td></td><td>--</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -1262,14 +1284,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140395019717120-995121').dataTable()");
+        console.log("$('#table140201010710416-237250').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140395019717120-995121').dataTable({
+        $('#table140201010710416-237250').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1297,12 +1319,12 @@ Example of model fitting with EBL
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotSED at 0x7fb0434744c0>
+    <jetset.plot_sedfit.PlotSED at 0x7f83174427f0>
 
 
 
 
-.. image:: EBL_files/EBL_49_1.png
+.. image:: EBL_files/EBL_50_1.png
 
 
 .. code:: ipython3
@@ -1326,7 +1348,7 @@ Example of model fitting with EBL
     composite_model.jet_leptonic.nu_size=200
     composite_model.jet_leptonic.IC_nu_size=100
     model_minimizer_lsb=ModelMinimizer('lsb')
-    best_fit_lsb=model_minimizer_lsb.fit(composite_model,sed_data,1E11,1E29,fitname='SSC-best-fit-lsb',repeat=3)
+    best_fit=model_minimizer_lsb.fit(composite_model,sed_data,1E11,1E29,fitname='SSC-best-fit-lsb',repeat=3)
 
 
 .. parsed-literal::
@@ -1349,9 +1371,9 @@ Example of model fitting with EBL
 .. parsed-literal::
 
     
-    - best chisq=1.21409e+01
+    - best chisq=8.85630e+00
     fit run: 1
-    - old chisq=1.21409e+01
+    - old chisq=8.85630e+00
 
 
 
@@ -1363,9 +1385,9 @@ Example of model fitting with EBL
 .. parsed-literal::
 
     
-    - best chisq=1.21409e+01
+    - best chisq=8.81166e+00
     fit run: 2
-    - old chisq=1.21409e+01
+    - old chisq=8.81166e+00
 
 
 
@@ -1377,7 +1399,7 @@ Example of model fitting with EBL
 .. parsed-literal::
 
     
-    - best chisq=1.21409e+01
+    - best chisq=8.81166e+00
     -------------------------------------------------------------------------
     Fit report
     
@@ -1388,21 +1410,21 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=14</i>
-    <table id="table140395095281328-220126" class="table-striped table-bordered table-condensed">
+    <table id="table140201010673888-458169" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>nuFnu-scale</td><td>erg / (cm2 s)</td><td>-1.005580e+01</td><td>-2.000000e+01</td><td>2.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>nuFnu-scale</td><td>erg / (cm2 s)</td><td>-1.005417e+01</td><td>-2.000000e+01</td><td>2.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>host_galaxy</td><td>nu_scale</td><td>nu-scale</td><td>Hz</td><td>1.730764e-02</td><td>-2.000000e+00</td><td>2.000000e+00</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>2.025476e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.372003e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.757397e-03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.735370e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.352654e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>3.895807e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm(M)</td><td>redshift</td><td></td><td>3.000000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>9.179379e+01</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.868351e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.986479e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>9.847906e+03</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.221219e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>2.229160e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.103238e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.116548e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.499808e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>8.604887e+03</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.220391e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>2.399041e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>Franceschini_2008</td><td>z_cosm(L,jet_leptonic)</td><td>redshift</td><td></td><td>--</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
@@ -1427,14 +1449,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140395095281328-220126').dataTable()");
+        console.log("$('#table140201010673888-458169').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140395095281328-220126').dataTable({
+        $('#table140201010673888-458169').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1450,7 +1472,7 @@ Example of model fitting with EBL
 
     
     converged=True
-    calls=23
+    calls=22
     mesg=
 
 
@@ -1463,7 +1485,7 @@ Example of model fitting with EBL
 .. parsed-literal::
 
     dof=21
-    chisq=12.140882, chisq/red=0.578137 null hypothesis sig=0.935736
+    chisq=8.811664, chisq/red=0.419603 null hypothesis sig=0.990620
     
     best fit pars
 
@@ -1472,21 +1494,21 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=14</i>
-    <table id="table140395081764000-721657" class="table-striped table-bordered table-condensed">
+    <table id="table140201010673456-911082" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.005580e+01</td><td>-1.005580e+01</td><td>3.966658e-02</td><td>--</td><td>-1.006557e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.005417e+01</td><td>-1.005417e+01</td><td>3.349605e-02</td><td>--</td><td>-1.006557e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
     <tr><td>host_galaxy</td><td>nu_scale</td><td>1.730764e-02</td><td>--</td><td>--</td><td>--</td><td>1.730764e-02</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>2.025476e+16</td><td>2.025476e+16</td><td>9.086084e+16</td><td>--</td><td>1.048659e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>1.372003e+16</td><td>1.372003e+16</td><td>1.344655e+16</td><td>--</td><td>1.057083e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>1.000000e+17</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>5.757397e-03</td><td>5.757397e-03</td><td>7.833220e-03</td><td>--</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.735370e+01</td><td>4.735370e+01</td><td>8.378857e+01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>1.352654e-02</td><td>1.352654e-02</td><td>5.856726e-03</td><td>--</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>3.895807e+01</td><td>3.895807e+01</td><td>1.344487e+01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm(M)</td><td>3.000000e-02</td><td>--</td><td>--</td><td>--</td><td>3.000000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>9.179379e+01</td><td>9.179379e+01</td><td>4.625308e+02</td><td>--</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>2.868351e+06</td><td>2.868351e+06</td><td>4.421136e+06</td><td>--</td><td>2.310708e+06</td><td>1.000000e+04</td><td>1.000000e+08</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>1.986479e+01</td><td>1.986479e+01</td><td>3.702673e+01</td><td>--</td><td>3.075705e+01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>9.847906e+03</td><td>9.847906e+03</td><td>3.183371e+04</td><td>--</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>2.221219e+00</td><td>2.221219e+00</td><td>3.247567e-01</td><td>--</td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>2.229160e-01</td><td>2.229160e-01</td><td>5.636454e-02</td><td>--</td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>1.103238e+02</td><td>1.103238e+02</td><td>9.398029e+01</td><td>--</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>2.116548e+06</td><td>2.116548e+06</td><td>7.457191e+05</td><td>--</td><td>2.310708e+06</td><td>1.000000e+04</td><td>1.000000e+08</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>2.499808e+01</td><td>2.499808e+01</td><td>4.266465e+00</td><td>--</td><td>2.989983e+01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>8.604887e+03</td><td>8.604887e+03</td><td>1.393575e+04</td><td>--</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>2.220391e+00</td><td>2.220391e+00</td><td>2.219036e-01</td><td>--</td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>2.399041e-01</td><td>2.399041e-01</td><td>4.778163e-02</td><td>--</td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
     <tr><td>Franceschini_2008</td><td>z_cosm(L,jet_leptonic)</td><td>3.000000e-02</td><td>--</td><td>--</td><td>--</td><td>--</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
@@ -1511,14 +1533,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140395081764000-721657').dataTable()");
+        console.log("$('#table140201010673456-911082').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140395081764000-721657').dataTable({
+        $('#table140201010673456-911082').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1544,6 +1566,5 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_51_0.png
-
+.. image:: EBL_files/EBL_52_0.png
 

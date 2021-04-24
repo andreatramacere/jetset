@@ -113,10 +113,11 @@ class  PlotSED (object):
 
         self.sedplot.set_xlim(6, 30)
         if frame == 'obs':
-           self.sedplot.set_ylim(-20, -8)
-
+            self.sedplot.set_ylim(-20, -8)
         elif frame == 'src':
             self.sedplot.set_ylim(38, 55)
+        elif frame == 'blob':
+            self.sedplot.set_ylim(34, 51)
         else:
             unexpected_behaviour()
 
@@ -137,6 +138,16 @@ class  PlotSED (object):
             self.add_model_plot(model)
         self.counter_res=0
 
+        self.add_residual_plot = self.add_model_residual_plot
+
+    def _check_frame(self,frame):
+        if frame is None:
+            frame=self.frame
+
+        elif frame != self.frame:
+            raise RuntimeError('you have to use the same restframe of the PlotSED class:',self.frame )
+
+        return frame
 
     def _add_res_plot(self):
         self.resplot = self.fig.add_subplot(self.gs[1], sharex=self.sedplot)
@@ -227,7 +238,7 @@ class  PlotSED (object):
     def set_plot_axis_labels(self, density=False):
         self.lx = 'log($ \\nu $)  (Hz)'
 
-        if self.frame == 'src':
+        if self.frame == 'src' or self.frame == 'blob':
 
             if density is False:
                 self.ly = 'log($ \\nu L_{\\nu} $ )  (erg  s$^{-1}$)'
@@ -239,6 +250,7 @@ class  PlotSED (object):
                 self.ly = 'log($ \\nu F_{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$)'
             else:
                     self.ly = 'log($   F{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$ Hz$^{-1}$)'
+
 
         else:
             unexpected_behaviour()
@@ -323,7 +335,9 @@ class  PlotSED (object):
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None,density=False, update=True, lw=1.0):
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None,density=False, update=True, lw=1.0 ,frame=None):
+
+        frame=self._check_frame(frame=frame)
 
         if hasattr(model,'get_model_points'):
             try:
@@ -375,60 +389,67 @@ class  PlotSED (object):
 
     def plot_tempev_model(self,
                           temp_ev,
+                          region,
                           comp='Sum',
-                          region='rad',
+                          frame=None,
                           t1=None,
                           t2=None,
                           time_slice=None,
                           time_slice_bin=None,
                           time=None,
                           time_bin=None,
+                          density=False,
                           use_cached=False,
-                          sed_data=None):
+                          sed_data=None,
+                          average=False):
 
+        frame=self._check_frame(frame)
 
 
         if (time_slice is not None and time is not None):
             raise RuntimeError('you can to pass either the N-th time slice "time_slice", or the blob time in seconds "time" ')
 
-        if t1 is None or t1 < temp_ev.time_sampled_emitters.time[0]:
-            t1 = temp_ev.time_sampled_emitters.time[0]
+        if t1 is None or t1 < region.time_sampled_emitters.time_blob[0]:
+            t1 = region.time_sampled_emitters.time_blob[0]
 
-        if t2 is None or t2 > temp_ev.time_sampled_emitters.time[-1]:
-            t2 = temp_ev.time_sampled_emitters.time[-1]
+        if t2 is None or t2 > region.time_sampled_emitters.time_blob[-1]:
+            t2 = region.time_sampled_emitters.time_blob[-1]
 
         if time_slice is None:
             _time_slice = 0
         else:
             _time_slice = time_slice
 
-        if time_slice_bin is None:
+        _time_slice_bin = time_slice_bin
+        if time_slice_bin is None and time_slice is None:
             _time_slice_bin = 1
-        else:
-            _time_slice_bin = time_slice_bin
 
 
         #if time_slice is not None or time_bin is None:
 
-
         if time is not None and time_bin is not None:
             t_array = np.arange(t1, t2, time_bin)
             time_id_array=None
+        elif time is not None and time_bin is None:
+            t_array = np.array([time])
+            time_id_array = None
         else:
-            t_array, time_id_array = temp_ev.time_sampled_emitters._get_time_samples(_time_slice, _time_slice_bin)
+            t_array, time_id_array = region.time_sampled_emitters._get_time_samples(time_slice=_time_slice,
+                                                                                    time_slice_bin=_time_slice_bin)
             t_array = t_array[t_array <= t2]
             t_array = t_array[t_array >= t1]
-            time_id_array = time_id_array[time_id_array[t_array <= t2]]
-            time_id_array = time_id_array[time_id_array[t_array >= t1]]
+            time_id_array = time_id_array[t_array <= t2]
+            time_id_array = time_id_array[t_array >= t1]
 
         g = plt.cm.Greens(np.linspace(0.5, 1, t_array.size))
         r = plt.cm.Reds(np.linspace(0.5, 1, t_array.size))
         b = plt.cm.Blues(np.linspace(0.5, 1, t_array.size))
         for ID, t in enumerate(t_array):
-            if time is not None and time_bin is not None:
-                s = temp_ev.get_SED(comp, region=region, time=t, use_cached=use_cached, time_bin=time_bin)
+            if time is not None:
+                s = region.get_SED(comp, frame=frame, time=t, use_cached=use_cached, time_bin=time_bin,average=average)
             else:
-                s = temp_ev.get_SED(comp, region=region, time_slice=time_id_array[ID], use_cached=use_cached, time_slice_bin=time_slice_bin)
+                s = region.get_SED(comp, frame=frame, time_slice=time_id_array[ID], use_cached=use_cached,
+                                   time_slice_bin=time_slice_bin,average=average)
 
             label = None
             ls = '-'
@@ -454,7 +475,7 @@ class  PlotSED (object):
                 label = 'stop, t=%2.2e (s)' % t
 
             self.add_model_plot(model=s, label=label, line_style=ls, color=color, update=False, lw=lw,
-                                    auto_label=False)
+                                    auto_label=False,density=density)
 
         if sed_data is not None:
             self.add_data_plot(sed_data)
@@ -463,9 +484,9 @@ class  PlotSED (object):
         return
 
 
-    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=4,mew=0.5,fit_range=None, density = False):
+    def add_data_plot(self,sed_data,label=None,color=None,frame=None,autoscale=True,fmt='o',ms=4,mew=0.5,fit_range=None, density = False):
 
-
+        frame = self._check_frame(frame)
         try:
             x,y,dx,dy,=sed_data.get_data_points(log_log=True,frame=self.frame, density=density)
         except Exception as e:
@@ -526,28 +547,28 @@ class  PlotSED (object):
         self.update_plot()
 
 
-    def add_residual_plot(self,model,data,label=None,color=None,filter_UL=True,fit_range=None):
 
-        if self.counter_res == 0:
-            self.add_res_zeroline()
-        #print('bbbbb')
+    def add_model_residual_plot(self, model, data, label=None, color=None, filter_UL=True, fit_range=None):
         if data is not None:
-
-            x,y=model.get_residuals(log_log=True,data=data,filter_UL=filter_UL)
-
-            if fit_range is not None:
-                msk1 = x<fit_range[1]
-                msk2 =x>fit_range[0]
-
-                x=x[msk1*msk2]
-                y=y[msk1*msk2]
-            #print('aaaaaaa',fit_range,x)
-            line = self.resplot.errorbar(x, y, yerr=np.ones(x.size), fmt='+',color=color)
-            self.lines_res_list.append(line)
-            self.counter_res += 1
+            x,y = model.get_residuals(log_log=True,data=data,filter_UL=filter_UL)
+            self.add_xy_residual_plot(x=x, y=y, fit_range=fit_range, color=color)
         else:
             pass
 
+
+    def add_xy_residual_plot(self, x, y, fit_range=None, color=None):
+        if self.counter_res == 0:
+            self.add_res_zeroline()
+        if fit_range is not None:
+            msk1 = x < fit_range[1]
+            msk2 = x > fit_range[0]
+
+            x = x[msk1 * msk2]
+            y = y[msk1 * msk2]
+
+        line = self.resplot.errorbar(x, y, yerr=np.ones(x.size), fmt='+', color=color)
+        self.lines_res_list.append(line)
+        self.counter_res += 1
         self.update_plot()
 
 
@@ -758,27 +779,21 @@ class  PlotTempEvEmitters (PlotPdistr):
         super(PlotTempEvEmitters, self).__init__(figsize=figsize,dpi=dpi,loglog=loglog,)
 
 
-    def _plot_distr(self,temp_ev,region='acc',particle='electrons',energy_unit='gamma',pow=None,plot_Q_inj=True,t1=None, t2=None,):
+    def _plot_distr(self,temp_ev,region,particle='electrons',energy_unit='gamma',pow=None,plot_Q_inj=True,t1=None, t2=None,):
         if t1 is None:
-            t1=temp_ev.time_sampled_emitters.time[0]
+            t1=region.time_sampled_emitters.time_blob[0]
 
         if t2 is None:
-            t2=temp_ev.time_sampled_emitters.time[-1]
+            t2=region.time_sampled_emitters.time_blob[-1]
 
 
-        t_array = np.linspace(t1, t2, temp_ev.time_sampled_emitters.time.size)
+        t_array = np.linspace(t1, t2, region.time_sampled_emitters.time_blob.size)
 
         ls = '-'
         lw = 0.2
 
-        if region == 'acc':
 
-            n = temp_ev.time_sampled_emitters.n_gamma_acc
-        elif region == 'rad':
-            n = temp_ev.time_sampled_emitters.n_gamma_rad
-        else:
-            raise RuntimeError('region must be acc or rad')
-
+        n = region.time_sampled_emitters.n_gamma
         for ID, t in enumerate(t_array):
             color = 'red'
 
@@ -788,16 +803,17 @@ class  PlotTempEvEmitters (PlotPdistr):
             if temp_ev.custom_acc_profile[temp_ev._get_time_slice_T_array(t)] > 0:
                 color = 'b'
 
-            x, y, energy_name, energy_units = self._set_variable(temp_ev.time_sampled_emitters.gamma, n[ID], particle, energy_unit, pow=pow)
+            x, y, energy_name, energy_units = self._set_variable(region.time_sampled_emitters.gamma, n[ID], particle, energy_unit, pow=pow)
             self._plot(x,y,c=color,lw=0.1,label=None)
             #print('==> ID,t,c',ID,t,color)
-        x, y, energy_name, energy_units = self._set_variable(temp_ev.time_sampled_emitters.gamma, n[0], particle, energy_unit, pow=pow)
+        x, y, energy_name, energy_units = self._set_variable(region.time_sampled_emitters.gamma, n[0], particle, energy_unit, pow=pow)
         self._plot(x, y, c='black', lw=2,label='Start sample')
 
-        x, y, energy_name, energy_units = self._set_variable(temp_ev.time_sampled_emitters.gamma, n[-1], particle, energy_unit, pow=pow)
+        x, y, energy_name, energy_units = self._set_variable(region.time_sampled_emitters.gamma, n[-1], particle, energy_unit, pow=pow)
         self._plot(x, y, c='blue', lw=2,label='Stop sample')
         self._set_xy_label(energy_name, energy_units,pow=pow)
-        if temp_ev.Q_inj is not None and region == 'acc':
+        #TODO move to plot inj if iny is used in region
+        if temp_ev.Q_inj is not None and region._region_type == 'acc':
             y = temp_ev.Q_inj.n_gamma_e * temp_ev.delta_t
             x = temp_ev.Q_inj.gamma_e
             if plot_Q_inj is True:

@@ -21,7 +21,17 @@ except:
     minuit_installed=False
 
 
-from tqdm.autonotebook import tqdm
+try:
+    from sherpa.optmethods import LevMar
+    from sherpa.fit import Fit
+    from sherpa.stats import Chi2
+    from sherpa import data as sherpa_data
+    sherpa_installed = True
+except:
+    sherpa_installed = False
+
+
+from tqdm.auto import tqdm
 
 
 from .plot_sedfit import plt
@@ -34,7 +44,11 @@ from .output import section_separator,WorkPlace,makedir
 from .utils import JetkerneltException
 
 from .data_loader import ObsData,Data
-from.data_loader import lin_to_log
+from .data_loader import lin_to_log
+
+
+
+from .sherpa_plugin import  JetsetSherpaModel
 
 __all__ = ['FitResults','fit_SED','Minimizer','LSMinimizer','LSBMinimizer','MinutiMinimizer','ModelMinimizer']
 
@@ -182,7 +196,7 @@ class ModelMinimizer(object):
 
 
     def __init__(self,minimizer_type):
-        __accepted__ = ['lsb', 'minuit', 'ls']
+        __accepted__ = ['lsb', 'minuit', 'ls','sherpa']
 
 
         if minimizer_type == 'lsb':
@@ -193,6 +207,9 @@ class ModelMinimizer(object):
 
         elif minimizer_type=='minuit':
             self.minimizer=MinutiMinimizer(self)
+
+        elif minimizer_type == 'sherpa':
+            self.minimizer = SherpaMinimizer(self)
 
         elif minimizer_type not in __accepted__:
             raise RuntimeError('minimizer ', minimizer_type, 'not accepted, please choose among', __accepted__)
@@ -287,7 +304,7 @@ class ModelMinimizer(object):
 
 
     def _prepare_fit(self,
-                     fit_Model,
+                     fit_model,
                      data,
                      nu_fit_start,
                      nu_fit_stop,
@@ -301,7 +318,7 @@ class ModelMinimizer(object):
         #print('--> DEBUG WorkPlace.flag',WorkPlace.flag,fit_workplace)
 
         if fitname is None:
-            fitname = fit_Model.name
+            fitname = fit_model.name
             #print('--> DEBUG ')
 
         if fit_workplace is None:
@@ -312,7 +329,7 @@ class ModelMinimizer(object):
 
         makedir(out_dir)
 
-        for model in fit_Model.components.components_list:
+        for model in fit_model.components.components_list:
             if model.model_type == 'jet':
                 model.set_path(out_dir)
 
@@ -349,13 +366,13 @@ class ModelMinimizer(object):
 
 
 
-        for par in fit_Model.parameters.par_array:
+        for par in fit_model.parameters.par_array:
             if get_conf_int == True:
                 par.set_fit_initial_value(par.best_fit_val)
             else:
                 par.set_fit_initial_value(par.val)
 
-        fit_par_free = [par for par in fit_Model.parameters.par_array if par.frozen is False and (par.linked is False or par.root is True) and par._is_dependent is False]
+        fit_par_free = [par for par in fit_model.parameters.par_array if par.frozen is False and (par.linked is False or par.root is True) and par._is_dependent is False]
 
         #remove duplicates and keeps the order
         fit_par_free = sorted(set(fit_par_free), key=fit_par_free.index)
@@ -365,16 +382,16 @@ class ModelMinimizer(object):
         # bounds
         free_pars = 0
 
-        for pi in range(len(fit_Model.parameters.par_array)):
+        for pi in range(len(fit_model.parameters.par_array)):
 
-            if fit_Model.parameters.par_array[pi].frozen == False:
+            if fit_model.parameters.par_array[pi].frozen == False:
                 free_pars += 1
 
         if silent == False:
             print(section_separator)
             print("*** start fit process ***")
             #print("initial pars: ")
-            #fit_Model.parameters.show_pars()
+            #fit_model.parameters.show_pars()
             print("----- ")
 
         self.out_dir=out_dir
@@ -382,12 +399,12 @@ class ModelMinimizer(object):
         self.pout=None
         self.free_pars=free_pars
         self.fit_par_free=fit_par_free
-        self.fit_Model=fit_Model
+        self.fit_model=fit_model
         self.loglog=loglog
 
-        if hasattr(self.fit_Model,'nu_min_fit'):
-            self.fit_Model.nu_min_fit = nu_fit_start
-            self.fit_Model.nu_max_fit = nu_fit_stop
+        if hasattr(self.fit_model,'nu_min_fit'):
+            self.fit_model.nu_min_fit = nu_fit_start
+            self.fit_model.nu_max_fit = nu_fit_stop
 
 
 
@@ -396,7 +413,7 @@ class ModelMinimizer(object):
             raise  JetkerneltException(message=m)
 
     def fit(self,
-            fit_Model,
+            fit_model,
             sed_data,
             nu_fit_start,
             nu_fit_stop,
@@ -414,10 +431,10 @@ class ModelMinimizer(object):
         self.silent=silent
         #print('-->nu_fit_start', nu_fit_start)
 
-        self._prepare_fit( fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=fitname, fit_workplace=fit_workplace,
+        self._prepare_fit( fit_model, sed_data, nu_fit_start, nu_fit_stop, fitname=fitname, fit_workplace=fit_workplace,
                      loglog=loglog, silent=silent, get_conf_int=get_conf_int, use_fake_err=use_fake_err,use_UL=use_UL)
 
-        fit_Model.set_nu_grid(nu_min=nu_fit_start*0.5, nu_max=nu_fit_stop*1.5)
+        fit_model.set_nu_grid(nu_min=nu_fit_start*0.5, nu_max=nu_fit_stop*1.5)
 
 
         for i in range(repeat):
@@ -469,15 +486,15 @@ class ModelMinimizer(object):
                 pass
 
 
-        return self.get_fit_results(fit_Model,nu_fit_start,nu_fit_stop,fitname,loglog=loglog,silent=silent)
+        return self.get_fit_results(fit_model,nu_fit_start,nu_fit_stop,fitname,loglog=loglog,silent=silent)
 
-    def get_fit_results(self, fit_Model, nu_fit_start, nu_fit_stop, fitname, silent=False, loglog=False):
+    def get_fit_results(self, fit_model, nu_fit_start, nu_fit_stop, fitname, silent=False, loglog=False):
 
         self.reset_to_best_fit()
         self.minimizer._fit_stats()
         best_fit = FitResults(fitname,
                               self,
-                              fit_Model.parameters,
+                              fit_model.parameters,
                               self.minimizer.calls,
                               self.minimizer.mesg,
                               self.minimizer.success,
@@ -494,28 +511,28 @@ class ModelMinimizer(object):
         if silent == False:
             best_fit.show_report()
 
-        fit_Model.set_nu_grid(nu_min=nu_fit_start , nu_max=nu_fit_stop)
-        fit_Model.eval(fill_SED=True, loglog=loglog, phys_output=True)
+        fit_model.set_nu_grid(nu_min=nu_fit_start , nu_max=nu_fit_stop)
+        fit_model.eval(fill_SED=True, loglog=loglog, phys_output=True)
 
         res_bestfit = self.minimizer.residuals_Fit(self.minimizer.pout,
                                                  self.fit_par_free,
                                                  self.data,
-                                                 self.fit_Model,
+                                                 self.fit_model,
                                                  self.loglog,
                                                  use_UL=self.use_UL)
 
 
 
         if loglog == True:
-            fit_Model.SED.fill(nu_residuals=np.power(10, self.data['x']), residuals=res_bestfit)
+            fit_model.SED.fill(nu_residuals=np.power(10, self.data['x']), residuals=res_bestfit)
         else:
-            fit_Model.SED.fill(nu_residuals=self.data['x'], residuals=res_bestfit)
+            fit_model.SED.fill(nu_residuals=self.data['x'], residuals=res_bestfit)
 
 
         if silent == False:
             print(section_separator)
 
-        fit_Model.eval(fill_SED=True)
+        fit_model.eval(fill_SED=True)
         if self.minimizer._post_fit_warnings!='':
                 print('there are  fit warnings messages, use  the .show_fit_warnings() or access the member .minimizer._post_fit_warnings')
 
@@ -535,7 +552,7 @@ class ModelMinimizer(object):
                 self.fit_par_free[pi].err_p=self.asymm_errors[pi][0]
                 self.fit_par_free[pi].err_m=self.asymm_errors[pi][1]
 
-        self.fit_Model.eval()
+        self.fit_model.eval()
 
 
 class Minimizer(object):
@@ -556,12 +573,19 @@ class Minimizer(object):
         self.use_UL = use_UL
         self.calls=0
         self.res_check=None
-        self.molde=model
+        self.model=model
         self.silent=silent
+        self._original_silent_state = silent
         self._fit(max_ev)
         self._fit_stats()
         self._set_fit_errors()
 
+
+    def _force_silent(self):
+        self.silent=True
+
+    def _restore_silent_state(self):
+        self.silent = self._original_silent_state
 
 
     def _fit_stats(self):
@@ -663,7 +687,7 @@ class Minimizer(object):
 
 
     def get_chisq(self):
-        model = self.model.fit_Model.eval(nu=self.model.data['x'],
+        model = self.model.fit_model.eval(nu=self.model.data['x'],
                                 fill_SED=False,
                                 get_model=True,
                                 loglog=self.model.loglog)
@@ -673,7 +697,7 @@ class Minimizer(object):
                                             self.model.data['dy'],
                                             self.model.data['UL'],
                                             use_UL=self.use_UL)
-        return  _res_sum
+        return _res_sum
 
 def _eval_res(data, model, data_error, UL, use_UL=False):
 
@@ -711,6 +735,7 @@ class LSBMinimizer(Minimizer):
         self.xtol=5.0E-8
         self.ftol = 5.0E-8
         self.factor=100.
+
     def _fit(self, max_ev,):
         #if self.use_UL is True:
         #    raise  RuntimeError('lsb minimizer currently is not supporting UL')
@@ -721,7 +746,7 @@ class LSBMinimizer(Minimizer):
                                                         self.model.pinit,
                                                         args=(self.model.fit_par_free,
                                                               self.model.data,
-                                                              self.model.fit_Model,
+                                                              self.model.fit_model,
                                                               self.model.loglog,
                                                               False,
                                                               self.use_UL,
@@ -758,7 +783,7 @@ class LSMinimizer(Minimizer):
                             self.model.pinit,
                             args=(self.model.fit_par_free,
                                   self.model.data,
-                                  self.model.fit_Model,
+                                  self.model.fit_model,
                                   self.model.loglog,
                                   False,
                                   False,
@@ -782,7 +807,59 @@ class LSMinimizer(Minimizer):
     #    return self.chisq
 
 
+class SherpaMinimizer(Minimizer):
 
+    def __init__(self, model,method=LevMar(),stat=Chi2()):
+        if sherpa_installed is True:
+            pass
+        else:
+            raise RuntimeError('sherpa non imstalled')
+
+        super(SherpaMinimizer, self).__init__(model)
+        self._method=method
+        self._stat=stat
+        self._sherpa_model = None
+        self._sherpa_data = None
+        self.pbar = None
+
+    def _create_sherpa_model(self):
+        self._sherpa_model = JetsetSherpaModel(jetset_model = self.model.fit_model, par_list=self.model.fit_par_free)
+
+    def _create_sherpa_data(self):
+        self._sherpa_data = sherpa_data.Data1D("sed", self.model.data['x'], self.model.data['y'], staterror=self.model.data['dy'])
+
+    @property
+    def sherpa_fitter(self):
+        return self._sherpa_fitter
+
+    @property
+    def calls(self):
+        if self._sherpa_model is not None:
+            return self._sherpa_model._jetset_ncalls
+        else:
+            return None
+
+    @calls.setter
+    def calls(self,n):
+        if self._sherpa_model is not None:
+            self._sherpa_model._jetset_ncalls = n
+
+
+    def _fit(self, max_ev,):
+        self._create_sherpa_model()
+        self._create_sherpa_data()
+        self._sherpa_model._jetset_ncalls = 0
+
+
+        self._sherpa_fitter=Fit(self._sherpa_data,self._sherpa_model, method=self._method,stat=self._stat)
+
+        self.mesg  = self._sherpa_fitter.fit()
+        self.covar = self.mesg.covar
+        self.pout = [p for p in self.mesg.parvals]
+        self.p = [p for p in self.mesg.parvals]
+
+    def _set_fit_errors(self):
+        self.errors = [np.sqrt(np.fabs(self.covar[pi, pi])) for pi in range(len(self.model.fit_par_free))]
 
 class MinutiMinimizer(Minimizer):
 
@@ -790,7 +867,7 @@ class MinutiMinimizer(Minimizer):
         if minuit_installed==True:
             pass
         else:
-            raise RuntimeError('iminuit non istalled')
+            raise RuntimeError('iminuit non installed')
 
         super(MinutiMinimizer, self).__init__(model)
 
@@ -851,7 +928,7 @@ class MinutiMinimizer(Minimizer):
         return self.residuals_Fit(p,
                           self.model.fit_par_free,
                           self.model.data,
-                          self.model.fit_Model,
+                          self.model.fit_model,
                           self.model.loglog,
                           chisq=True,
                           use_UL=self.use_UL,
@@ -876,6 +953,7 @@ class MinutiMinimizer(Minimizer):
             raise RuntimeWarning('Fit quality not sufficient to run Minos')
 
     def profile(self,par,bound=2,subtract_min=True):
+        self._force_silent()
         try:
             self.calls = 0
             bound=self._set_bounds(par,bound=bound)
@@ -885,8 +963,10 @@ class MinutiMinimizer(Minimizer):
                                             subtract_min=subtract_min)
 
             self.model.reset_to_best_fit()
+            self._restore_silent_state()
             return x,y
         except:
+            self._restore_silent_state()
             raise RuntimeWarning('Fit quality not sufficient to run profile')
 
     def mnprofile(self,par,bound=2,subtract_min=True):
@@ -903,6 +983,7 @@ class MinutiMinimizer(Minimizer):
 
         """
         try:
+            self._force_silent()
             self.calls = 0
             bound = self._set_bounds(par, bound=bound)
             x, y,r =  self.minuit_fun.mnprofile(self.minuit_par_name_dict[par],
@@ -910,8 +991,10 @@ class MinutiMinimizer(Minimizer):
                                               subtract_min=subtract_min)
             #print('-->r',r)
             self.model.reset_to_best_fit()
+            self._restore_silent_state()
             return x,y,r
         except:
+            self._restore_silent_state()
             raise RuntimeWarning('Fit quality not sufficient to run mnprofile')
 
 
@@ -927,25 +1010,33 @@ class MinutiMinimizer(Minimizer):
         -------
 
         """
+
         try:
+            self._force_silent()
             self.calls = 0
             bound = self._set_bounds(par, bound=bound)
             x,y,r=self.mnprofile(par,bound,subtract_min=True)
             fig,ax = self._draw_profile(x, y, par)
             self.model.reset_to_best_fit()
+            self._restore_silent_state()
             return x, y, fig,ax
+
         except:
+            self._restore_silent_state()
             raise RuntimeWarning('Fit quality not sufficient to run draw_mnprofile')
 
     def draw_profile(self,par,bound=2):
         try:
+            self._force_silent()
             self.calls = 0
             bound = self._set_bounds(par, bound=bound)
             x, y = self.profile(par, subtract_min=True, bound=bound)
             fig,ax=self._draw_profile(x,y,par)
             self.model.reset_to_best_fit()
+            self._restore_silent_state()
             return x,y,fig,ax
         except:
+            self._restore_silent_state()
             raise RuntimeWarning('Fit quality not sufficient to run draw_profile')
 
     def _draw_profile(self,x,y,par):
@@ -1005,14 +1096,17 @@ class MinutiMinimizer(Minimizer):
                 raise  RuntimeError('bound must be scalar or (2,) or (2,2)')
 
             bound = [bound_1, bound_2]
+            self._force_silent()
             x, y, z= self.minuit_fun.contour(self.minuit_par_name_dict[par_1],
                                              self.minuit_par_name_dict[par_2],
                                              subtract_min=subtract_min,
                                              bound=bound,
                                              bins=bins)
             self.model.reset_to_best_fit()
+            self._restore_silent_state()
             return x,y,z
         except:
+            self._restore_silent_state()
             raise RuntimeWarning('Fit quality not sufficient to run contour')
 
 
@@ -1047,14 +1141,17 @@ class MinutiMinimizer(Minimizer):
                 raise  RuntimeError('bound must be scalar or (2,) or (2,2)')
 
             bound = [bound_1, bound_2]
+            self._force_silent()
             x, y, z= self.minuit_fun.mncontour(self.minuit_par_name_dict[par_1],
                                              self.minuit_par_name_dict[par_2],
                                              subtract_min=subtract_min,
                                              bound=bound,
                                              bins=bins)
             self.model.reset_to_best_fit()
+            self._restore_silent_state()
             return x,y,z
         except:
+            self._restore_silent_state()
             raise RuntimeWarning('Fit quality not sufficient to run mcontour')
 
 
@@ -1098,11 +1195,11 @@ class MinutiMinimizer(Minimizer):
 
         return bound
 
-def fit_SED(fit_Model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_workplace=None, loglog=False, silent=False,
+def fit_SED(fit_model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_workplace=None, loglog=False, silent=False,
             get_conf_int=False, max_ev=0, use_fake_err=False, minimizer='lsb', use_UL=False,repeat=3):
 
     mm = ModelMinimizer(minimizer)
-    return mm,mm.fit(fit_Model,
+    return mm,mm.fit(fit_model,
                   sed_data,
                   nu_fit_start,
                   nu_fit_stop,

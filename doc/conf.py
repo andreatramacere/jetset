@@ -38,9 +38,14 @@ if on_rtd==False:  # only import and set the  if we're building docs locally
 
     theme='bootstrap'
     #theme='sphinx_rtd_theme'
-
+    #
 else:
     theme = 'bootstrap'
+
+
+
+
+
 
 
 #import jetset
@@ -79,6 +84,11 @@ extensions = [
 #bibtex_bibfiles = ['references.bib']
 exclude_patterns = ['_build', '**.ipynb_checkpoints','../jetkernel/*','../jetset/jetkernel/*','documentation_notebooks','example_notebooks','slides']
 
+
+sphinx_gallery_conf = {
+     'examples_dirs': 'example_notebooks',   # path to your example scripts
+     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+}
 #autosummary_generate = True
 
 #autodoc_default_flags = ['members']
@@ -124,7 +134,7 @@ copyright = u'2019, andrea tramacere'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['documentation_notebooks'   ,'build']
+exclude_patterns = ['documentation_notebooks','build']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -162,8 +172,66 @@ html_static_path = ['_static']
 html_logo = "_static/logo_small_color_transparent.png"
 
 
+if theme=='sphinxbootstrap4theme':
+    html_theme = 'sphinxbootstrap4theme'
+    html_theme_path = [sphinxbootstrap4theme.get_path()]
+    html_logo = "_static/logo_small_color_neg_transparent.png"
+    html_theme_options = {
+        # Navbar style.
+        # Values: 'fixed-top', 'full' (Default: 'fixed-top')
+        'navbar_style' : 'fixed-top',
+
+        # Navbar link color modifier class.
+        # Values: 'dark', 'light' (Default: 'dark')
+        'navbar_color_class' : 'dark',
+
+        # Navbar background color class.
+        # Values: 'inverse', 'primary', 'faded', 'success',
+        #         'info', 'warning', 'danger' (Default: 'inverse')
+        'navbar_bg_class' : 'inverse',
+
+        # Show global TOC in navbar.
+        # To display up to 4 tier in the drop-down menu.
+        # Values: True, False (Default: True)
+        'navbar_show_pages' : True,
+
+        # Link name for global TOC in navbar.
+        # (Default: 'Pages')
+        'navbar_pages_title' : 'Pages',
+
+        # Specify a list of menu in navbar.
+        # Tuples forms:
+        #  ('Name', 'external url or path of pages in the document', boolean)
+        # Third argument:
+        # True indicates an external link.
+        # False indicates path of pages in the document.
+        'navbar_links' : [
+             ('Home', 'index', False),
+             ("Link", "http://example.com", True)
+        ],
 
 
+
+        # Total width(%) of the document and the sidebar.
+        # (Default: 80%)
+        'main_width' : '80%',
+
+        # Render sidebar.
+        # Values: True, False (Default: True)
+        'show_sidebar' : True,
+
+        # Render sidebar in the right of the document.
+        # Values：True, False (Default: False)
+        'sidebar_right': False,
+
+        # Fix sidebar.
+        # Values: True, False (Default: True)
+        'sidebar_fixed': True,
+
+        # Html table header class.
+        # Values: 'inverse', 'light' (Deafult: 'inverse')
+        'table_thead_class' : 'inverse'
+    }
 
 
 if theme=='sphinx_rtd_theme':
@@ -184,23 +252,24 @@ if theme=='sphinx_rtd_theme':
         #'titles_only': False
     }
 
+def setup(app):
+    #app.add_stylesheet("my_theme.css") # also can be a full URL
+    app.add_css_file("css/my_theme.css")
+
 if theme=='bootstrap':
 
-    #html_sidebars = {'**': ['localtoc.html', 'sourcelink.html', 'searchbox.html']}
-
-    #html_sidebars = {
-    #    '**': ['localtoc.html'],
-    #}
 
 
     html_sidebars = {'**': ['my_side_bar.html', 'sourcelink.html']}
 
     html_logo = "_static/logo_small_color_neg_transparent.png"
     html_theme = 'bootstrap'
+    html_static_path = ['_static']
     if not on_rtd:
         html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
-    else:
-        html_static_path = ['_static']
+    #else:
+    #    html_static_path = ['_static']
+
 
     html_theme_options = {
         # Navigation bar title. (Default: ``project`` value)
@@ -246,6 +315,7 @@ if theme=='bootstrap':
         # HTML navbar class (Default: "navbar") to attach to <div> element.
         # For black navbar, do "navbar navbar-inverse"
         'navbar_class': "navbar navbar-inverse",
+
 
         # Fix navigation bar to top of page?
         # Values: "true" (default) or "false"

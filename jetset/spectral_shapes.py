@@ -3,7 +3,7 @@ __author__ = "Andrea Tramacere"
 
 import numpy as np
 from astropy import units
-from .frame_converter import  convert_nuFnu_to_nuLnu_src, convert_nu_to_src
+from .frame_converter import  convert_nuFnu_to_nuLnu_src, convert_nu_to_src, convert_nu_src_to_nu_blob, convert_nuLnu_src_to_nuLnu_blob
 from .utils import *
 
 __all__=['SED']
@@ -25,7 +25,13 @@ class SED(object):
                  nuLnu_src_residuals=None,
                  dl=None,
                  z=None,
-                 log_log=False):
+                 log_log=False,
+                 beaming=None):
+
+        if beaming is None:
+            beaming =1
+
+        self.beaming=beaming
 
         self.name=name
 
@@ -34,7 +40,7 @@ class SED(object):
 
         self._nu_src_units=units.Hz
         self._nuLnu_src_units = units.erg/units.s
-
+        self._nuLnu_blob_units  = units.erg/units.s
 
 
         self.nu=(nu)
@@ -114,8 +120,13 @@ class SED(object):
             else:
                 self._nuLnu = convert_nuFnu_to_nuLnu_src(self._nuFnu.value, z, 'obs', dl) * self._nuLnu_src_units
 
+    @property
+    def nuLnu_blob(self):
+        return convert_nuLnu_src_to_nuLnu_blob(self._nuLnu, beaming=self.beaming, in_frame='src')* self._nuLnu_src_units
 
-        #print('->self._nuLnu', self._nuLnu.max())
+    @property
+    def nu_blob(self):
+        return convert_nu_src_to_nu_blob(self._nu_src, beaming=self.beaming, in_frame='src')* self._nu_units
 
     def get_model_points(self,log_log=False,frame='obs'):
 
@@ -124,6 +135,8 @@ class SED(object):
             x, y = self.nu.value, self.nuFnu.value
         elif frame == 'src':
             x, y = self.nu_src.value, self.nuLnu_src.value
+        elif frame == 'blob':
+            x,y = self.nu_blob.value, self.nuLnu_blob.value
         else:
             unexpected_behaviour()
 

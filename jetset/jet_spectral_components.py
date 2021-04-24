@@ -125,7 +125,7 @@ class JetSpecComponent(object):
 
         self.nu_ptr=getattr(blob_object,self._nu_name)
 
-        self.SED=spectral_shapes.SED(name=self.name)
+        self.SED=spectral_shapes.SED(name=self.name,beaming=jet_obj.get_beaming())
         self.seed_field=None
 
         # self._nu_start_src_name, self._nu_stop_src_name = nu_src_start_stop_dict[self.name]
@@ -185,7 +185,7 @@ class JetSpecComponent(object):
     def fill_SED(self,log_log=False,lin_nu=None):
 
         x,y=self.get_SED_points( log_log=log_log,lin_nu=lin_nu,)
-
+        self.SED.beaming=self.jet_obj.get_beaming()
         self.SED.fill(nu=x,nuFnu=y,log_log=log_log)
         self.SED.fill_nuLnu(z=self.jet_obj.get_par_by_type('redshift').val,dl=self.jet_obj.get_DL_cm())
 

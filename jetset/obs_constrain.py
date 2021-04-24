@@ -162,9 +162,9 @@ class ObsConstrain(object):
                                electron_distribution_log_values=False,
                                R_H=None,
                                silent=False,
-                               disk_type='MultiBB',
                                R_H_within_BLR=False,
-                               R_H_within_DT=False):
+                               R_H_within_DT=False,
+                               disk_type='BB'):
         """
         constarin SSC model paramters
         """
@@ -183,9 +183,9 @@ class ObsConstrain(object):
                                         electron_distribution_log_values=electron_distribution_log_values,
                                         silent=silent,
                                         R_H=R_H,
-                                        disk_type=disk_type,
                                         R_H_within_BLR=R_H_within_BLR,
-                                        R_H_within_DT=R_H_within_DT)
+                                        R_H_within_DT=R_H_within_DT,
+                                        disk_type=disk_type)
         
          
 
@@ -205,9 +205,9 @@ class ObsConstrain(object):
                              electron_distribution_log_values=False,
                              silent=False,
                              R_H=None,
-                             disk_type='MultiBB',
                              R_H_within_BLR=False,
-                             R_H_within_DT=False):
+                             R_H_within_DT=False,
+                             disk_type='BB'):
         
 
 
@@ -235,10 +235,10 @@ class ObsConstrain(object):
 
         nu_p_EC_seed_field=None
         if EC_componets_list is not None:
-            jet_model.add_EC_component(EC_componets_list)
-            jet_model.parameters.disk_type.val=disk_type
+            jet_model.add_EC_component(EC_componets_list,disk_type=disk_type)
             if hasattr(jet_model.parameters, 'L_Disk'):
                 jet_model.set_par('L_Disk',val=self.SEDShape.L_Disk)
+            if hasattr(jet_model.parameters, 'T_Disk'):
                 jet_model.set_par('T_Disk', val=self.SEDShape.T_Disk)
                 if silent is False:
                     print('---> EC set L_D ',jet_model.parameters.L_Disk.val)

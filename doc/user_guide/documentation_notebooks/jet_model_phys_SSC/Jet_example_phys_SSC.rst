@@ -63,7 +63,7 @@ custom electron distributions can be created by the user as described in this se
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140298003496096-914785" class="table-striped table-bordered table-condensed">
+    <table id="table140207817567584-589958" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -99,14 +99,14 @@ custom electron distributions can be created by the user as described in this se
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140298003496096-914785').dataTable()");
+        console.log("$('#table140207817567584-589958').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140298003496096-914785').dataTable({
+        $('#table140207817567584-589958').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -129,7 +129,7 @@ Each parameter has default values. All the parameters listed are handled by :cla
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140298003496096-103048" class="table-striped table-bordered table-condensed">
+    <table id="table140207817567584-889318" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -165,14 +165,14 @@ Each parameter has default values. All the parameters listed are handled by :cla
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140298003496096-103048').dataTable()");
+        console.log("$('#table140207817567584-889318').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140298003496096-103048').dataTable({
+        $('#table140207817567584-889318').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -248,7 +248,7 @@ To get a full description of the model you can use the instruction
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140298088119984-20549" class="table-striped table-bordered table-condensed">
+    <table id="table140207813416944-885336" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -284,14 +284,14 @@ To get a full description of the model you can use the instruction
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140298088119984-20549').dataTable()");
+        console.log("$('#table140207813416944-885336').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140298088119984-20549').dataTable({
+        $('#table140207813416944-885336').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -368,7 +368,7 @@ for setting custom electron distributions can be created by the user as describe
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140298088119984-915830" class="table-striped table-bordered table-condensed">
+    <table id="table140207813416944-458513" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>2.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
@@ -404,14 +404,14 @@ for setting custom electron distributions can be created by the user as describe
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140298088119984-915830').dataTable()");
+        console.log("$('#table140207813416944-458513').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140298088119984-915830').dataTable({
+        $('#table140207813416944-458513').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -476,7 +476,6 @@ for setting custom electron distributions can be created by the user as describe
 .. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_33_0.png
 
 
-
 Using log values for electron distribution parameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -527,7 +526,7 @@ Using log values for electron distribution parameters
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140266540544784-32546" class="table-striped table-bordered table-condensed">
+    <table id="table140207875118272-834191" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -563,14 +562,14 @@ Using log values for electron distribution parameters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140266540544784-32546').dataTable()");
+        console.log("$('#table140207875118272-834191').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140266540544784-32546').dataTable({
+        $('#table140207875118272-834191').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -606,7 +605,7 @@ instruction
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140449466851392-183319" class="table-striped table-bordered table-condensed">
+    <table id="table140207880478880-445422" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -642,14 +641,14 @@ instruction
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140449466851392-183319').dataTable()");
+        console.log("$('#table140207880478880-445422').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140449466851392-183319').dataTable({
+        $('#table140207880478880-445422').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -672,7 +671,7 @@ and plot the corresponding SED:
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_42_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_41_0.png
 
 
 alternatively, you can call the ``plot_model`` method without passing a
@@ -685,7 +684,7 @@ alternatively, you can call the ``plot_model`` method without passing a
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_44_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_43_0.png
 
 
 If you want to have more points on the IC spectrum you can set the numerical  parameters for radiative fields(see :ref:`jet_numerical_guide' section for more details):
@@ -702,7 +701,7 @@ If you want to have more points on the IC spectrum you can set the numerical  pa
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_47_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_46_0.png
 
 
 you can access the same plot, but in the rest frame of the black hole,
@@ -716,7 +715,7 @@ passing the ``frame`` kw to ``src``
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_49_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_48_0.png
 
 
 the ``my_plot`` object returned will be built on the fly by the
@@ -733,7 +732,7 @@ representation adding the ``density=True`` keyword to the
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_52_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_51_0.png
 
 
 if you wanto to have interacitve plot:
@@ -784,7 +783,7 @@ to compare the same model after changing a parameter
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_56_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_55_0.png
 
 
 Saving a plot
@@ -817,7 +816,7 @@ Saving and loading a model
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140449449376544-26772" class="table-striped table-bordered table-condensed">
+    <table id="table140207736069376-593993" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+08</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -853,14 +852,14 @@ Saving and loading a model
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140449449376544-26772').dataTable()");
+        console.log("$('#table140207736069376-593993').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140449449376544-26772').dataTable({
+        $('#table140207736069376-593993').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -964,7 +963,7 @@ flux at the given frequency
 
 .. parsed-literal::
 
-    274.1666592772807
+    272.37555111028803
 
 
 
@@ -979,7 +978,7 @@ OR
 
 .. parsed-literal::
 
-    274.1666592772807
+    272.37555111028803
 
 
 
@@ -992,7 +991,7 @@ OR
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140449477103520-306205" class="table-striped table-bordered table-condensed">
+    <table id="table140207896160384-518151" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1001,7 +1000,7 @@ OR
     <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.741667e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.723756e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
@@ -1028,14 +1027,14 @@ OR
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140449477103520-306205').dataTable()");
+        console.log("$('#table140207896160384-518151').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140449477103520-306205').dataTable({
+        $('#table140207896160384-518151').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1055,7 +1054,7 @@ OR
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_88_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_87_0.png
 
 
 as you can see, the synchrotron flux at :math:`10^{15}` Hz is exactly matching the desired value of :math:`10^{-14}` ergs cm-2 s-1.
@@ -1097,7 +1096,7 @@ It is possible to set the beaming factor according to the relativistic BulkFacto
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140449447269520-587762" class="table-striped table-bordered table-condensed">
+    <table id="table140207898998576-405372" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1134,14 +1133,14 @@ It is possible to set the beaming factor according to the relativistic BulkFacto
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140449447269520-587762').dataTable()");
+        console.log("$('#table140207898998576-405372').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140449447269520-587762').dataTable({
+        $('#table140207898998576-405372').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1203,7 +1202,7 @@ expression as in the default case
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140449474570176-593281" class="table-striped table-bordered table-condensed">
+    <table id="table140207773950496-606163" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1239,14 +1238,14 @@ expression as in the default case
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140449474570176-593281').dataTable()");
+        console.log("$('#table140207773950496-606163').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140449474570176-593281').dataTable({
+        $('#table140207773950496-606163').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1307,7 +1306,7 @@ Switch ON/OFF Synchrotron sefl-absorption and IC emission
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140449474576048-97523" class="table-striped table-bordered table-condensed">
+    <table id="table140207773919840-232881" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1343,14 +1342,14 @@ Switch ON/OFF Synchrotron sefl-absorption and IC emission
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140449474576048-97523').dataTable()");
+        console.log("$('#table140207773919840-232881').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140449474576048-97523').dataTable({
+        $('#table140207773919840-232881').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1398,7 +1397,7 @@ now the sate is ‘on’ with no ‘self-abs’
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_112_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_111_0.png
 
 
 to re-enable
@@ -1412,7 +1411,7 @@ to re-enable
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_114_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_113_0.png
 
 
 .. code:: ipython3
@@ -1437,7 +1436,7 @@ to re-enable
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_116_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_115_0.png
 
 
 to re-enable
@@ -1451,7 +1450,7 @@ to re-enable
 
 
 
-.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_118_0.png
+.. image:: Jet_example_phys_SSC_files/Jet_example_phys_SSC_117_0.png
 
 
 Accessing individual spectral components
@@ -1569,7 +1568,7 @@ Moreover, you can access the corresponding astropy table
 .. raw:: html
 
     <i>Table length=50</i>
-    <table id="table140449476972800" class="table-striped table-bordered table-condensed">
+    <table id="table140207909127744" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -1614,7 +1613,7 @@ and also in the ``src`` restframe
 .. raw:: html
 
     <i>Table length=50</i>
-    <table id="table140449482729408" class="table-striped table-bordered table-condensed">
+    <table id="table140207909129424" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / s</th><th>erg / s</th><th>erg / s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -1670,6 +1669,12 @@ or in fits format
 
     t_src.write('test_SED.fits',format='fits',overwrite=True)
 
+
+.. parsed-literal::
+
+    WARNING: VerifyWarning: Keyword name 'restframe' is greater than 8 characters or contains characters not allowed by the FITS standard; a HIERARCH card will be created. [astropy.io.fits.card]
+
+
 Energetic report
 ----------------
 
@@ -1688,8 +1693,8 @@ electrons, the magnetic fields, and for the cold protons in the jet.
 
 .. raw:: html
 
-    <i>Table length=36</i>
-    <table id="table140448972858704-382349" class="table-striped table-bordered table-condensed">
+    <i>Table length=37</i>
+    <table id="table140207403342672-198049" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.736635e-03</td></tr>
     <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
@@ -1727,6 +1732,7 @@ electrons, the magnetic fields, and for the cold protons in the jet.
     <tr><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>9.321554e+40</td></tr>
     <tr><td>jet_L_p_cold</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>BulkLorentzFactor</td><td></td><td></td><td>1.000000e+01</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -1750,14 +1756,14 @@ electrons, the magnetic fields, and for the cold protons in the jet.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140448972858704-382349').dataTable()");
+        console.log("$('#table140207403342672-198049').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140448972858704-382349').dataTable({
+        $('#table140207403342672-198049').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1832,10 +1838,10 @@ If you want to evaluate the energetic report in non verbose mode:
 
 .. raw:: html
 
-    <i>Table length=36</i>
-    <table id="table140448972858176" class="table-striped table-bordered table-condensed">
+    <i>Table length=37</i>
+    <table id="table140207904122336" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
-    <thead><tr><th>str14</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
+    <thead><tr><th>str17</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.736635e-03</td></tr>
     <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>3.978874e-04</td></tr>
@@ -1847,7 +1853,6 @@ If you want to evaluate the energetic report in non verbose mode:
     <tr><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-    <tr><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_EC_CMB</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_pp_gamma</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_rad</td><td>jet Lum.</td><td>erg / s</td><td>4.396600e+39</td></tr>
@@ -1857,6 +1862,7 @@ If you want to evaluate the energetic report in non verbose mode:
     <tr><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>9.321554e+40</td></tr>
     <tr><td>jet_L_p_cold</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>BulkLorentzFactor</td><td></td><td></td><td>1.000000e+01</td></tr>
     </table>
 
 

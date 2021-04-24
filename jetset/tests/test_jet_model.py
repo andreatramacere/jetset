@@ -60,3 +60,9 @@ def test_set_N_from_nuFnu(plot=False):
     j.set_N_from_nuFnu(nuFnu_obs=nuFnu,nu_obs=nu)
     y = j.eval(nu=[nu], get_model=True)
     np.testing.assert_allclose(y, nuFnu, rtol=1E-2)
+
+
+
+
+def test_EC(plot=False):
+    print('--------> test_jet', plot)

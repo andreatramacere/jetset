@@ -354,7 +354,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     t_ad_esc=-1.0;
     //pt_ev->theta_exp_rad=pt_ev->R_jet_exp*Deg_to_Rad;
     //pt_ev->theta_exp_AR=tan(pt_ev->theta_exp_rad);
-
+    
     if (only_injection<1){
         for (TMP = 0; TMP < E_SIZE; TMP++) {
                //iterpolate N from Ne
@@ -375,7 +375,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
 
     for (T = 0; T < pt_ev->T_SIZE; T++) {
         
-        t = t + pt_ev->deltat;
+        
         pt_ev->T_COUNTER=T;
         pt_ev->t=t;
         E_acc_pre=eval_E_acc(pt_ev->gamma, N_acc, E_SIZE, Vol_acc);
@@ -403,6 +403,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         
         
         //--------------UPDATE T_ACC PROFILE--------------------
+        //if energy provided to electron exceeds limit, then switch off acceleration
         if (pt_ev->T_acc_profile[T]>0 && E_acc>=pt_ev->E_acc_max){
             pt_ev->T_acc_profile[T]=0;
         }
@@ -427,7 +428,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
                 }
                 
             }
-                
+        
         }else{
             pt_ev->T_esc_Coeff_rad = pt_ev->T_esc_Coeff_R_by_c_rad * pt_ev->R_rad_start/vluce_cm;
             for (TMP = 0; TMP < E_SIZE; TMP++) {
@@ -438,7 +439,8 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
 
         //------------- OUT FILE and SED Computations ----------------
         OUT_FILE=(double)T-COUNT_FILE;
-        if ((OUT_FILE >= 0) || (T==pt_ev->T_SIZE-1)) {
+        if ((OUT_FILE >= 0) || (T==0) || (T==pt_ev->T_SIZE-1)) {
+        //if ((OUT_FILE >= 0) || (T==pt_ev->T_SIZE-1)) {
             
             //printf("-> NUM_OUT=%d T_SIZE=%d T=%d\n",NUM_OUT,pt_ev->T_SIZE,T);
             //printf(" time=%e, exp_factor=%e, T_esc_Coeff_rad=%e  T_ad=%e  T_ad_esc=%e\n",t,exp_factor,pt_ev->T_esc_Coeff_rad,t_ad,t_ad_esc);
@@ -455,15 +457,17 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
                 
                 
             }
-            
+            //if (T>0){
             if (pt_ev->LOG_SET >=1){
                 COUNT_FILE*=STEP_FILE;
             } else {
                 COUNT_FILE += STEP_FILE;
             }
+            //}
             NUM_OUT++;
         }
         //---------------------------------------
+        t = t + pt_ev->deltat;
     }   
     //--------------END Loop over Time-----------------------------------------------
 

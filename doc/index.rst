@@ -47,12 +47,21 @@ allowing to fit the numerical models to observed data. The main features of this
    code documentation (API) <api/modules.rst>
 
 
+
+
 .. nbgallery::
-   :caption: Examples:
+    :caption: New/updated in v1.2.0:
+    :name: rst-gallery
 
-   example_notebooks/Jet_example_only_synchrotron.ipynb
-   example_notebooks/Jet_example_phys_SSC.ipynb
-
+    user_guide/documentation_notebooks/depending_pars/depending_pars.rst
+    user_guide/documentation_notebooks/composite_model/Composite_model.rst
+    user_guide/documentation_notebooks/custom_emitters_distr/custom_emitters.rst
+    user_guide/documentation_notebooks/jet_model_phys_SSC/Jet_example_phys_SSC.rst
+    user_guide/documentation_notebooks/hadronic_pp_jet/hadornic.rst
+    user_guide/documentation_notebooks/temporal_evolution/Temp_Ev.rst
+    user_guide/documentation_notebooks/phen_constr/SSC_th_bkg.rst
+    user_guide/documentation_notebooks/sherpa_plugin/sherpa-plugin-sherpa-interface.rst
+    user_guide/documentation_notebooks/sherpa_plugin/sherpa-plugin-jetset-interface.rst
 
 Testers:
 

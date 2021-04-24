@@ -19,318 +19,11 @@
 Depending parameters
 ====================
 
-example: depending pars for bkn power-law emitters
---------------------------------------------------
+In the following we show how to link parameters in the same model or
+among different models, and how to make a paramter depending on other
+parameters according to a mathematical expression.
 
-.. code:: ipython3
-
-    from jetset.jet_emitters import EmittersDistribution
-    import numpy as np
-    
-    
-    
-    from jetset.jet_model import Jet
-    
-    j = Jet(emitters_distribution='bkn')
-    
-    
-    j.parameters
-
-
-
-
-.. raw:: html
-
-    <i>Table length=11</i>
-    <table id="table140307572641744-302212" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
-    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
-    display: inline-block; margin-right: 1em; }
-    .paginate_button { margin-right: 5px; }
-    </style>
-    <script>
-    
-    var astropy_sort_num = function(a, b) {
-        var a_num = parseFloat(a);
-        var b_num = parseFloat(b);
-    
-        if (isNaN(a_num) && isNaN(b_num))
-            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-        else if (!isNaN(a_num) && !isNaN(b_num))
-            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
-        else
-            return isNaN(a_num) ? -1 : 1;
-    }
-    
-    require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
-    }});
-    require(["datatables"], function(){
-        console.log("$('#table140307572641744-302212').dataTable()");
-    
-    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-        "optionalnum-asc": astropy_sort_num,
-        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
-    });
-    
-        $('#table140307572641744-302212').dataTable({
-            order: [],
-            pageLength: 100,
-            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
-            pagingType: "full_numbers",
-            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
-        });
-    });
-    </script>
-
-
-
-
-
-.. parsed-literal::
-
-    None
-
-
-
-.. code:: ipython3
-
-    j.make_dependent_par(par='p_1',depends_on=['p'],par_expr='1 + p')
-    j.parameters.p.val=2
-    np.testing.assert_allclose(j.parameters.p_1.val, j.parameters.p.val + 1)
-    j.parameters
-
-
-.. parsed-literal::
-
-    ==> par p_1 is now depending on ['p'] according to expr 1 + p
-
-
-
-.. raw:: html
-
-    <i>Table length=11</i>
-    <table id="table140307572641744-528659" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p(M)</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*p_1(D,p)</td><td>HE_spectral_slope</td><td></td><td>3.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>True</td></tr>
-    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
-    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
-    display: inline-block; margin-right: 1em; }
-    .paginate_button { margin-right: 5px; }
-    </style>
-    <script>
-    
-    var astropy_sort_num = function(a, b) {
-        var a_num = parseFloat(a);
-        var b_num = parseFloat(b);
-    
-        if (isNaN(a_num) && isNaN(b_num))
-            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-        else if (!isNaN(a_num) && !isNaN(b_num))
-            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
-        else
-            return isNaN(a_num) ? -1 : 1;
-    }
-    
-    require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
-    }});
-    require(["datatables"], function(){
-        console.log("$('#table140307572641744-528659').dataTable()");
-    
-    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-        "optionalnum-asc": astropy_sort_num,
-        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
-    });
-    
-        $('#table140307572641744-528659').dataTable({
-            order: [],
-            pageLength: 100,
-            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
-            pagingType: "full_numbers",
-            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
-        });
-    });
-    </script>
-
-
-
-
-
-.. parsed-literal::
-
-    None
-
-
-
-.. code:: ipython3
-
-    j.save_model('jet.pkl')
-    new_jet=Jet.load_model('jet.pkl')
-
-
-
-.. parsed-literal::
-
-    ==> par p_1 is now depending on ['p'] according to expr 1 + p
-
-
-
-.. raw:: html
-
-    <i>Table length=11</i>
-    <table id="table140307596073664-132589" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p(M)</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*p_1(D,p)</td><td>HE_spectral_slope</td><td></td><td>3.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
-    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
-    display: inline-block; margin-right: 1em; }
-    .paginate_button { margin-right: 5px; }
-    </style>
-    <script>
-    
-    var astropy_sort_num = function(a, b) {
-        var a_num = parseFloat(a);
-        var b_num = parseFloat(b);
-    
-        if (isNaN(a_num) && isNaN(b_num))
-            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-        else if (!isNaN(a_num) && !isNaN(b_num))
-            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
-        else
-            return isNaN(a_num) ? -1 : 1;
-    }
-    
-    require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
-    }});
-    require(["datatables"], function(){
-        console.log("$('#table140307596073664-132589').dataTable()");
-    
-    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-        "optionalnum-asc": astropy_sort_num,
-        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
-    });
-    
-        $('#table140307596073664-132589').dataTable({
-            order: [],
-            pageLength: 100,
-            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
-            pagingType: "full_numbers",
-            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
-        });
-    });
-    </script>
-
-
-
-.. code:: ipython3
-
-    new_jet.parameters.p.val=2.5
-    np.testing.assert_allclose(new_jet.parameters.p_1.val, new_jet.parameters.p.val + 1)
-    new_jet.parameters
-
-
-
-.. raw:: html
-
-    <i>Table length=11</i>
-    <table id="table140307596073664-1972" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p(M)</td><td>LE_spectral_slope</td><td></td><td>2.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*p_1(D,p)</td><td>HE_spectral_slope</td><td></td><td>3.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
-    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
-    display: inline-block; margin-right: 1em; }
-    .paginate_button { margin-right: 5px; }
-    </style>
-    <script>
-    
-    var astropy_sort_num = function(a, b) {
-        var a_num = parseFloat(a);
-        var b_num = parseFloat(b);
-    
-        if (isNaN(a_num) && isNaN(b_num))
-            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-        else if (!isNaN(a_num) && !isNaN(b_num))
-            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
-        else
-            return isNaN(a_num) ? -1 : 1;
-    }
-    
-    require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
-    }});
-    require(["datatables"], function(){
-        console.log("$('#table140307596073664-1972').dataTable()");
-    
-    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-        "optionalnum-asc": astropy_sort_num,
-        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
-    });
-    
-        $('#table140307596073664-1972').dataTable({
-            order: [],
-            pageLength: 100,
-            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
-            pagingType: "full_numbers",
-            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
-        });
-    });
-    </script>
-
-
-
-
-
-.. parsed-literal::
-
-    None
-
-
-
-example: linked paramters for EBL
+Example: linked paramters for EBL
 ---------------------------------
 
 .. code:: ipython3
@@ -376,7 +69,7 @@ example: linked paramters for EBL
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140307583819488-921957" class="table-striped table-bordered table-condensed">
+    <table id="table140347719612928-246192" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_flaring</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_flaring</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -413,14 +106,14 @@ example: linked paramters for EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307583819488-921957').dataTable()");
+        console.log("$('#table140347719612928-246192').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307583819488-921957').dataTable({
+        $('#table140347719612928-246192').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -442,7 +135,7 @@ example: linked paramters for EBL
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140307140766832-169537" class="table-striped table-bordered table-condensed">
+    <table id="table140347579988768-422755" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_flaring</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_flaring</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -479,14 +172,14 @@ example: linked paramters for EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307140766832-169537').dataTable()");
+        console.log("$('#table140347579988768-422755').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307140766832-169537').dataTable({
+        $('#table140347579988768-422755').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -503,8 +196,330 @@ example: linked paramters for EBL
     2.0 2.0
 
 
-example depending par: Building a Jet model with B function of R_H and R_0
+Example: depending pars for bkn power-law emitters
+--------------------------------------------------
+
+here we create a custom ``bkn`` distribution where we impose a
+functional dependence among the low and high-energy spectral index.
+
+.. code:: ipython3
+
+    from jetset.jet_emitters import EmittersDistribution
+    import numpy as np
+    
+    
+    
+    from jetset.jet_model import Jet
+    
+    j = Jet(emitters_distribution='bkn')
+    
+    
+    j.parameters
+
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140347717581168-122272" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140347717581168-122272').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140347717581168-122272').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+
+
+.. parsed-literal::
+
+    None
+
+
+
+.. code:: ipython3
+
+    j.make_dependent_par(par='p_1',depends_on=['p'],par_expr='1 + p')
+    j.parameters.p.val=2
+    np.testing.assert_allclose(j.parameters.p_1.val, j.parameters.p.val + 1)
+    j.parameters
+
+
+.. parsed-literal::
+
+    ==> par p_1 is now depending on ['p'] according to expr 1 + p
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140347717581168-525186" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p(M)</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>*p_1(D,p)</td><td>HE_spectral_slope</td><td></td><td>3.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>True</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140347717581168-525186').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140347717581168-525186').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+
+
+.. parsed-literal::
+
+    None
+
+
+
+.. code:: ipython3
+
+    j.save_model('jet.pkl')
+    new_jet=Jet.load_model('jet.pkl')
+
+
+
+.. parsed-literal::
+
+    ==> par p_1 is now depending on ['p'] according to expr 1 + p
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140347708245424-268168" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p(M)</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>*p_1(D,p)</td><td>HE_spectral_slope</td><td></td><td>3.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140347708245424-268168').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140347708245424-268168').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. code:: ipython3
+
+    new_jet.parameters.p.val=2.5
+    np.testing.assert_allclose(new_jet.parameters.p_1.val, new_jet.parameters.p.val + 1)
+    new_jet.parameters
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140347708245424-895877" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p(M)</td><td>LE_spectral_slope</td><td></td><td>2.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>*p_1(D,p)</td><td>HE_spectral_slope</td><td></td><td>3.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140347708245424-895877').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140347708245424-895877').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+
+
+.. parsed-literal::
+
+    None
+
+
+
+Example depending par: Building a Jet model with B function of R_H and R_0
 --------------------------------------------------------------------------
+
+In this example we create a fuctional dependence among the paramters
+``B``, ``R_H`` introducing user custom pararameters. Wewant that the
+value of the mangentic field in the jet is a function or ``R_H``, and of
+the initial value of ``B=B0`` at ``R=R_H0``, according to the
+expression:
+
+:math:`B=B_0(R_0/R_H)^{1.1}`
 
 .. code:: ipython3
 
@@ -546,7 +561,7 @@ example depending par: Building a Jet model with B function of R_H and R_0
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140307130520624-647593" class="table-striped table-bordered table-condensed">
+    <table id="table140347716416800-263982" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>5.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
@@ -583,14 +598,14 @@ example depending par: Building a Jet model with B function of R_H and R_0
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307130520624-647593').dataTable()");
+        console.log("$('#table140347716416800-263982').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307130520624-647593').dataTable({
+        $('#table140347716416800-263982').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -619,7 +634,7 @@ example depending par: Building a Jet model with B function of R_H and R_0
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140307130520624-767923" class="table-striped table-bordered table-condensed">
+    <table id="table140347716416800-554081" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>5.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
@@ -656,14 +671,14 @@ example depending par: Building a Jet model with B function of R_H and R_0
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307130520624-767923').dataTable()");
+        console.log("$('#table140347716416800-554081').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307130520624-767923').dataTable({
+        $('#table140347716416800-554081').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -697,8 +712,10 @@ example depending par: Building a Jet model with B function of R_H and R_0
     ==> par B is now depending on ['B0', 'R0', 'R_H'] according to expr B0*np.power((R0/R_H),1.1)
 
 
-example depending par: fitting with a Jet model with depending pars
+Example depending par: fitting with a Jet model with depending pars
 -------------------------------------------------------------------
+
+In this example we show how to use the previous model during a Fit
 
 .. code:: ipython3
 
@@ -732,7 +749,7 @@ example depending par: fitting with a Jet model with depending pars
 
 
 
-.. image:: depending_pars_files/depending_pars_20_1.png
+.. image:: depending_pars_files/depending_pars_24_1.png
 
 
 .. code:: ipython3
@@ -754,7 +771,7 @@ example depending par: fitting with a Jet model with depending pars
 
 
 
-.. image:: depending_pars_files/depending_pars_21_1.png
+.. image:: depending_pars_files/depending_pars_25_1.png
 
 
 .. code:: ipython3
@@ -782,7 +799,7 @@ example depending par: fitting with a Jet model with depending pars
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140307138846624-264688" class="table-striped table-bordered table-condensed">
+    <table id="table140347203051632-105786" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-1.545300e-01</td><td>-1.545300e-01</td><td>9.534795e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-1.023245e-02</td><td>-1.023245e-02</td><td>1.433073e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -811,14 +828,14 @@ example depending par: fitting with a Jet model with depending pars
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307138846624-264688').dataTable()");
+        console.log("$('#table140347203051632-105786').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307138846624-264688').dataTable({
+        $('#table140347203051632-105786').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -859,7 +876,7 @@ example depending par: fitting with a Jet model with depending pars
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140307138792272-803021" class="table-striped table-bordered table-condensed">
+    <table id="table140347579404192-192382" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-2.098186e-01</td><td>-2.098186e-01</td><td>3.133100e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-4.661867e-02</td><td>-4.661867e-02</td><td>2.178435e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -888,14 +905,14 @@ example depending par: fitting with a Jet model with depending pars
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307138792272-803021').dataTable()");
+        console.log("$('#table140347579404192-192382').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307138792272-803021').dataTable({
+        $('#table140347579404192-192382').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -915,7 +932,7 @@ example depending par: fitting with a Jet model with depending pars
 
 
 
-.. image:: depending_pars_files/depending_pars_23_3.png
+.. image:: depending_pars_files/depending_pars_27_3.png
 
 
 .. code:: ipython3
@@ -946,16 +963,16 @@ example depending par: fitting with a Jet model with depending pars
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140307572988896-537348" class="table-striped table-bordered table-condensed">
+    <table id="table140347707986656-943997" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.117075e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.112712e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.048159e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.060843e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.188500e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
@@ -982,14 +999,14 @@ example depending par: fitting with a Jet model with depending pars
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307572988896-537348').dataTable()");
+        console.log("$('#table140347707986656-943997').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307572988896-537348').dataTable({
+        $('#table140347707986656-943997').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1014,30 +1031,26 @@ example depending par: fitting with a Jet model with depending pars
     
     from jetset.model_manager import  FitModel
     from jetset.jet_model import Jet
-
-.. code:: ipython3
-
-    fit_model_lsb=FitModel( jet=prefit_jet, name='SSC-best-fit-lsb',template=None)
-    fit_model_lsb.parameters
+    prefit_jet=Jet.load_model('prefit_jet.pkl')
 
 
 
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140307138791216-339062" class="table-striped table-bordered table-condensed">
+    <table id="table140347314306304-887020" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.117075e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.060843e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.188500e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.112712e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.048159e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.188500e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -1061,14 +1074,79 @@ example depending par: fitting with a Jet model with depending pars
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307138791216-339062').dataTable()");
+        console.log("$('#table140347314306304-887020').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307138791216-339062').dataTable({
+        $('#table140347314306304-887020').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. code:: ipython3
+
+    fit_model=FitModel( jet=prefit_jet, name='SSC-best-fit-lsb',template=None)
+    fit_model.parameters
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140347314306640-682741" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.060843e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.188500e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.112712e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140347314306640-682741').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140347314306640-682741').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1090,18 +1168,22 @@ example depending par: fitting with a Jet model with depending pars
 
 .. code:: ipython3
 
-    fit_model_lsb.jet_leptonic.parameters.beam_obj.fit_range = [5, 50]
-    fit_model_lsb.jet_leptonic.parameters.R_H.val=5E17
-    fit_model_lsb.jet_leptonic.parameters.R_H.frozen=False
-    fit_model_lsb.jet_leptonic.parameters.R_H.fit_range = [1E15, 1E19]
-    fit_model_lsb.jet_leptonic.parameters.R.fit_range = [10 ** 15.5, 10 ** 17.5]
-    fit_model_lsb.jet_leptonic.add_user_par(name='B0',units='G',val=1E3,val_min=0,val_max=None)
-    fit_model_lsb.jet_leptonic.add_user_par(name='R0', units='cm', val=5E13, val_min=0, val_max=None)
-    fit_model_lsb.jet_leptonic.parameters.R0.frozen=True
-    fit_model_lsb.jet_leptonic.parameters.B0.frozen=True
+    fit_model.jet_leptonic.parameters.beam_obj.fit_range = [5, 50]
+    fit_model.jet_leptonic.parameters.R_H.val=5E17
+    fit_model.jet_leptonic.parameters.R_H.frozen=False
+    fit_model.jet_leptonic.parameters.R_H.fit_range = [1E15, 1E19]
+    fit_model.jet_leptonic.parameters.R.fit_range = [10 ** 15.5, 10 ** 17.5]
+    fit_model.jet_leptonic.parameters.gamma0_log_parab.fit_range = [1E3,1E6]
+    fit_model.jet_leptonic.parameters.gmin.fit_range = [10,1000]
+    fit_model.jet_leptonic.parameters.gmax.fit_range = [1E5,1E8]
     
-    fit_model_lsb.jet_leptonic.make_dependent_par(par='B',depends_on=['B0','R0','R_H'],par_expr='B0*(R0/R_H)')
-    fit_model_lsb.parameters
+    fit_model.jet_leptonic.add_user_par(name='B0',units='G',val=1E3,val_min=0,val_max=None)
+    fit_model.jet_leptonic.add_user_par(name='R0', units='cm', val=5E13, val_min=0, val_max=None)
+    fit_model.jet_leptonic.parameters.R0.frozen=True
+    fit_model.jet_leptonic.parameters.B0.frozen=True
+    
+    fit_model.jet_leptonic.make_dependent_par(par='B',depends_on=['B0','R0','R_H'],par_expr='B0*(R0/R_H)')
+    fit_model.parameters
 
 
 .. parsed-literal::
@@ -1113,19 +1195,19 @@ example depending par: fitting with a Jet model with depending pars
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140307135321568-381887" class="table-striped table-bordered table-condensed">
+    <table id="table140347314306880-825216" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.117075e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.060843e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.188500e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.112712e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>5.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.048159e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.188500e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -1151,14 +1233,14 @@ example depending par: fitting with a Jet model with depending pars
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307135321568-381887').dataTable()");
+        console.log("$('#table140347314306880-825216').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307135321568-381887').dataTable({
+        $('#table140347314306880-825216').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1202,35 +1284,35 @@ example depending par: fitting with a Jet model with depending pars
 
 
 
-.. image:: depending_pars_files/depending_pars_28_1.png
+.. image:: depending_pars_files/depending_pars_32_1.png
 
 
 .. code:: ipython3
 
-    fit_model_lsb.jet_leptonic.parameters.R_H.val=5E17
+    fit_model.jet_leptonic.parameters.R_H.val=5E17
 
 .. code:: ipython3
 
-    fit_model_lsb.parameters
+    fit_model.parameters
 
 
 
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140307134652272-189994" class="table-striped table-bordered table-condensed">
+    <table id="table140347314441472-581433" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.117075e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.060843e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.188500e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.112712e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>5.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.048159e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.188500e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -1256,14 +1338,14 @@ example depending par: fitting with a Jet model with depending pars
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307134652272-189994').dataTable()");
+        console.log("$('#table140347314441472-581433').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307134652272-189994').dataTable({
+        $('#table140347314441472-581433').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1283,14 +1365,18 @@ example depending par: fitting with a Jet model with depending pars
 
 
 
+As a resuslt of the best fit modeling, we are able to determine the
+value of ``R_H``. We now perform the fit with minuit to get a better
+estimate of the errors
+
 .. code:: ipython3
 
-    model_minimizer_lsb=ModelMinimizer('lsb')
+    model_minimizer_minuit=ModelMinimizer('minuit')
 
 
 .. code:: ipython3
 
-    best_fit_lsb=model_minimizer_lsb.fit(fit_model_lsb,
+    best_fit_minuit=model_minimizer_minuit.fit(fit_model,
                                          sed_data,
                                          1E11,
                                          1E29,
@@ -1318,9 +1404,9 @@ example depending par: fitting with a Jet model with depending pars
 .. parsed-literal::
 
     
-    - best chisq=4.61764e+01
+    - best chisq=1.54131e+01
     fit run: 1
-    - old chisq=4.61764e+01
+    - old chisq=1.54131e+01
 
 
 
@@ -1332,9 +1418,9 @@ example depending par: fitting with a Jet model with depending pars
 .. parsed-literal::
 
     
-    - best chisq=4.46880e+01
+    - best chisq=1.54131e+01
     fit run: 2
-    - old chisq=4.46880e+01
+    - old chisq=1.54131e+01
 
 
 
@@ -1346,7 +1432,7 @@ example depending par: fitting with a Jet model with depending pars
 .. parsed-literal::
 
     
-    - best chisq=4.46880e+01
+    - best chisq=1.54129e+01
     -------------------------------------------------------------------------
     Fit report
     
@@ -1357,19 +1443,19 @@ example depending par: fitting with a Jet model with depending pars
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140307140103568-618771" class="table-striped table-bordered table-condensed">
+    <table id="table140347207721696-713695" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.017734e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>1.159858e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>4.310872e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.231090e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>7.156064e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.763953e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>7.382877e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.137528e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>4.095750e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.286343e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.291923e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>5.515800e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.344796e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>7.657644e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.366442e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.274581e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.107237e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.771177e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>9.654697e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>5.178826e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.998150e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.380270e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -1395,14 +1481,14 @@ example depending par: fitting with a Jet model with depending pars
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307140103568-618771').dataTable()");
+        console.log("$('#table140347207721696-713695').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307140103568-618771').dataTable({
+        $('#table140347207721696-713695').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1418,20 +1504,167 @@ example depending par: fitting with a Jet model with depending pars
 
     
     converged=True
-    calls=22
+    calls=290
     mesg=
 
 
 
-.. parsed-literal::
+.. raw:: html
 
-    'The relative error between two consecutive iterates is at most 0.000000'
+    <table>
+        <tr>
+            <td colspan="2" style="text-align:left" title="Minimum value of function"> FCN = 15.41 </td>
+            <td colspan="3" style="text-align:center" title="No. of calls in last algorithm and total number of calls"> Ncalls = 290 (290 total) </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:left" title="Estimated distance to minimum and goal"> EDM = 0.000113 (Goal: 0.0002) </td>
+            <td colspan="3" style="text-align:center" title="Increase in FCN which corresponds to 1 standard deviation"> up = 1.0 </td>
+        </tr>
+        <tr>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Valid Minimum </td>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Valid Parameters </td>
+            <td colspan="3" style="text-align:center;background-color:#FFF79A;color:black"> SOME Parameters at limit </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:center;background-color:#92CCA6;color:black"> Below EDM threshold (goal x 10) </td>
+            <td colspan="3" style="text-align:center;background-color:#92CCA6;color:black"> Below call limit </td>
+        </tr>
+        <tr>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Hesse ok </td>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Has Covariance </td>
+            <td style="text-align:center;background-color:#FFF79A;color:black" title="Is covariance matrix accurate?"> APPROXIMATE </td>
+            <td style="text-align:center;background-color:#c15ef7;color:black" title="Is covariance matrix positive definite?"> NOT pos. def. </td>
+            <td style="text-align:center;background-color:#c15ef7;color:black" title="Was positive definiteness enforced by Minuit?"> FORCED </td>
+        </tr>
+    </table><table>
+        <tr>
+            <td></td>
+            <th title="Variable name"> Name </th>
+            <th title="Value of parameter"> Value </th>
+            <th title="Hesse error"> Hesse Error </th>
+            <th title="Minos lower error"> Minos Error- </th>
+            <th title="Minos upper error"> Minos Error+ </th>
+            <th title="Lower limit of the parameter"> Limit- </th>
+            <th title="Upper limit of the parameter"> Limit+ </th>
+            <th title="Is the parameter fixed in the fit"> Fixed </th>
+        </tr>
+        <tr>
+            <th> 0 </th>
+            <td> par_0 </td>
+            <td> 550 </td>
+            <td> 40 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 10 </td>
+            <td> 1E+03 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 1 </th>
+            <td> par_1 </td>
+            <td> 0.634e6 </td>
+            <td> 0.020e6 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 1E+05 </td>
+            <td> 1E+08 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 2 </th>
+            <td> par_2 </td>
+            <td> 0.766 </td>
+            <td> 0.029 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 0 </td>
+            <td>  </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 3 </th>
+            <td> par_3 </td>
+            <td> 33.7e3 </td>
+            <td> 2.0e3 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 1E+03 </td>
+            <td> 1E+06 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 4 </th>
+            <td> par_4 </td>
+            <td> 2.275 </td>
+            <td> 0.012 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> -10 </td>
+            <td> 10 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 5 </th>
+            <td> par_5 </td>
+            <td> 0.71 </td>
+            <td> 0.04 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> -15 </td>
+            <td> 15 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 6 </th>
+            <td> par_6 </td>
+            <td> 37.7e15 </td>
+            <td> 0.7e15 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 3.16E+15 </td>
+            <td> 3.16E+17 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 7 </th>
+            <td> par_7 </td>
+            <td> 0.97e18 </td>
+            <td> 0.07e18 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 1E+15 </td>
+            <td> 1E+19 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 8 </th>
+            <td> par_8 </td>
+            <td> 50 </td>
+            <td> 4 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 5 </td>
+            <td> 50 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 9 </th>
+            <td> par_9 </td>
+            <td> 0.1380 </td>
+            <td> 0.0033 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 0 </td>
+            <td>  </td>
+            <td>  </td>
+        </tr>
+    </table>
 
 
 .. parsed-literal::
 
     dof=25
-    chisq=44.688023, chisq/red=1.787521 null hypothesis sig=0.009074
+    chisq=15.412902, chisq/red=0.616516 null hypothesis sig=0.931195
     
     best fit pars
 
@@ -1440,19 +1673,19 @@ example depending par: fitting with a Jet model with depending pars
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140307139263504-971376" class="table-striped table-bordered table-condensed">
+    <table id="table140347321986928-521990" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>3.017734e+16</td><td>3.017734e+16</td><td>3.955169e+17</td><td>--</td><td>3.117075e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>1.159858e+18</td><td>1.159858e+18</td><td>1.648745e+18</td><td>--</td><td>5.000000e+17</td><td>1.000000e+15</td><td>1.000000e+19</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>4.310872e-02</td><td>--</td><td>--</td><td>--</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.231090e+01</td><td>4.231090e+01</td><td>5.348247e+01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>7.156064e-02</td><td>7.156064e-02</td><td>8.812778e-01</td><td>--</td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>4.763953e+02</td><td>4.763953e+02</td><td>7.669914e+02</td><td>--</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>7.382877e+05</td><td>7.382877e+05</td><td>9.969415e+05</td><td>--</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>1.137528e+00</td><td>1.137528e+00</td><td>1.671422e+01</td><td>--</td><td>9.048159e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>4.095750e+04</td><td>4.095750e+04</td><td>6.954578e+04</td><td>--</td><td>3.188500e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>2.286343e+00</td><td>2.286343e+00</td><td>1.461970e-01</td><td>--</td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>7.291923e-01</td><td>7.291923e-01</td><td>3.215752e-01</td><td>--</td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>5.515800e+02</td><td>5.515800e+02</td><td>4.116769e+01</td><td>--</td><td>4.697542e+02</td><td>1.000000e+01</td><td>1.000000e+03</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>6.344796e+05</td><td>6.344796e+05</td><td>1.997257e+04</td><td>--</td><td>1.373160e+06</td><td>1.000000e+05</td><td>1.000000e+08</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>7.657644e-01</td><td>7.657644e-01</td><td>2.895344e-02</td><td>--</td><td>9.060843e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>3.366442e+04</td><td>3.366442e+04</td><td>1.972561e+03</td><td>--</td><td>3.188500e+04</td><td>1.000000e+03</td><td>1.000000e+06</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>2.274581e+00</td><td>2.274581e+00</td><td>1.165781e-02</td><td>--</td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>7.107237e-01</td><td>7.107237e-01</td><td>3.602837e-02</td><td>--</td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>3.771177e+16</td><td>3.771177e+16</td><td>6.646994e+14</td><td>--</td><td>3.112712e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>9.654697e+17</td><td>9.654697e+17</td><td>6.980727e+16</td><td>--</td><td>5.000000e+17</td><td>1.000000e+15</td><td>1.000000e+19</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>5.178826e-02</td><td>--</td><td>--</td><td>--</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.998150e+01</td><td>4.998150e+01</td><td>4.434847e+00</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>1.380270e-01</td><td>1.380270e-01</td><td>3.342700e-03</td><td>--</td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>1.000000e+03</td><td>--</td><td>--</td><td>--</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>5.000000e+13</td><td>--</td><td>--</td><td>--</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -1478,14 +1711,14 @@ example depending par: fitting with a Jet model with depending pars
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307139263504-971376').dataTable()");
+        console.log("$('#table140347321986928-521990').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307139263504-971376').dataTable({
+        $('#table140347321986928-521990').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1507,7 +1740,7 @@ example depending par: fitting with a Jet model with depending pars
 
 .. code:: ipython3
 
-    fit_model_lsb.jet_leptonic.parameters.B._depending_par_expr
+    fit_model.jet_leptonic.parameters.B._depending_par_expr
 
 
 
@@ -1520,14 +1753,31 @@ example depending par: fitting with a Jet model with depending pars
 
 .. code:: ipython3
 
-    fit_model_lsb.save_model('test.pkl')
+    fit_model.plot_model(sed_data=sed_data)
+
+
+
+
+.. parsed-literal::
+
+    <jetset.plot_sedfit.PlotSED at 0x7fa528e5a700>
+
+
+
+
+.. image:: depending_pars_files/depending_pars_39_1.png
+
+
+.. code:: ipython3
+
+    fit_model.save_model('test.pkl')
 
 
 .. code:: ipython3
 
     from jetset.model_manager import  FitModel
     
-    new_fit_model_lsb=FitModel.load_model('test.pkl')
+    new_fit_model=FitModel.load_model('test.pkl')
 
 
 .. parsed-literal::
@@ -1537,26 +1787,26 @@ example depending par: fitting with a Jet model with depending pars
 
 .. code:: ipython3
 
-    new_fit_model_lsb.parameters
+    new_fit_model.parameters
 
 
 
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140307611345488-669430" class="table-striped table-bordered table-condensed">
+    <table id="table140347221634400-820978" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.763953e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>7.382877e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.137528e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>4.095750e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.286343e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.291923e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.017734e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>1.159858e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>4.310872e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.231090e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>7.156064e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>5.515800e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.344796e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>7.657644e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.366442e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.274581e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.107237e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.771177e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>9.654697e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>5.178826e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.998150e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.380270e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -1582,14 +1832,14 @@ example depending par: fitting with a Jet model with depending pars
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307611345488-669430').dataTable()");
+        console.log("$('#table140347221634400-820978').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307611345488-669430').dataTable({
+        $('#table140347221634400-820978').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1611,30 +1861,30 @@ example depending par: fitting with a Jet model with depending pars
 
 .. code:: ipython3
 
-    new_fit_model_lsb.jet_leptonic.parameters.reset_dependencies()
+    new_fit_model.jet_leptonic.parameters.reset_dependencies()
 
 .. code:: ipython3
 
-    new_fit_model_lsb.parameters
+    new_fit_model.parameters
 
 
 
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140307584012592-238362" class="table-striped table-bordered table-condensed">
+    <table id="table140347221631232-91196" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.763953e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>7.382877e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.137528e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>4.095750e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.286343e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.291923e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.017734e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.159858e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>4.310872e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.231090e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>7.156064e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>5.515800e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.344796e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>7.657644e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.366442e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.274581e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.107237e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.771177e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>9.654697e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.178826e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.998150e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.380270e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -1660,14 +1910,14 @@ example depending par: fitting with a Jet model with depending pars
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307584012592-238362').dataTable()");
+        console.log("$('#table140347221631232-91196').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307584012592-238362').dataTable({
+        $('#table140347221631232-91196').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1689,7 +1939,7 @@ example depending par: fitting with a Jet model with depending pars
 
 .. code:: ipython3
 
-    new_fit_model_lsb.jet_leptonic.make_dependent_par(par='B',depends_on=['B0','R0','R_H'],par_expr='B0*(R0/R_H)**1.2')
+    new_fit_model.jet_leptonic.make_dependent_par(par='B',depends_on=['B0','R0','R_H'],par_expr='B0*(R0/R_H)**1.2')
 
 
 
@@ -1700,26 +1950,26 @@ example depending par: fitting with a Jet model with depending pars
 
 .. code:: ipython3
 
-    new_fit_model_lsb.parameters
+    new_fit_model.parameters
 
 
 
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140307571350400-494977" class="table-striped table-bordered table-condensed">
+    <table id="table140347221632288-584249" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.763953e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>7.382877e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.137528e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>4.095750e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.286343e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.291923e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.017734e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>1.159858e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>5.774019e-03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.231090e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>7.156064e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>5.515800e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.344796e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>7.657644e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.366442e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.274581e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.107237e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.771177e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>9.654697e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>7.195775e-03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.998150e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.380270e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -1745,14 +1995,14 @@ example depending par: fitting with a Jet model with depending pars
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140307571350400-494977').dataTable()");
+        console.log("$('#table140347221632288-584249').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140307571350400-494977').dataTable({
+        $('#table140347221632288-584249').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1769,6 +2019,7 @@ example depending par: fitting with a Jet model with depending pars
 .. parsed-literal::
 
     None
+
 
 
 

@@ -111,9 +111,9 @@ class SpectralTemplateLogLog(Model):
         else:
             raise ValueError("Wrong template type=%s, allowed=" % (template_type, cls.get_allowed_template_name()))
 
-    def plot_model(self,plot_obj=None,clean=False,label=None,sed_data=None,color=None, density=False):
+    def plot_model(self,plot_obj=None,clean=False,label=None,sed_data=None,color=None, density=False,frame='obs'):
         if plot_obj is None:
-            plot_obj=PlotSED(sed_data=sed_data)
+            plot_obj=PlotSED(sed_data=sed_data, frame=frame)
 
         if clean is True:
             plot_obj.clean_model_lines()
@@ -122,7 +122,7 @@ class SpectralTemplateLogLog(Model):
         if label is None:
             label=self.name
 
-        plot_obj.add_model_plot(self.SED, line_style='-', label=label, flim=self.flux_plot_lim,color=color, density=density)
+        plot_obj.add_model_plot(self.SED, line_style='-', label=label, flim=self.flux_plot_lim,color=color, density=density, frame=frame)
 
         return plot_obj
 

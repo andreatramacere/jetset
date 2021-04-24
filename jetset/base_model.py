@@ -163,7 +163,7 @@ class Model(object):
             label = self.name
 
         if hasattr(self,'SED'):
-            plot_obj.add_model_plot(self.SED, line_style=line_style,label =label,flim=self.flux_plot_lim,density=density)
+            plot_obj.add_model_plot(self.SED, line_style=line_style,label =label,flim=self.flux_plot_lim,density=density, frame=frame)
 
 
 
@@ -175,12 +175,12 @@ class Model(object):
                     line_style = '--'
                     if comp_label!='Sum':
                         if hasattr(c, 'SED'):
-                            plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim, density=density)
+                            plot_obj.add_model_plot(c.SED, line_style=line_style, label='  -%s'%comp_label, flim=self.flux_plot_lim, density=density, frame=frame)
 
         line_style = '-'
 
 
-        #plot_obj.add_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]) )
+        #plot_obj.add_model_residual_plot(data=sed_data, model=self,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]) )
 
         if frame == 'src' and sed_data is not None:
             sed_data.z = z_sed_data

@@ -25,9 +25,10 @@ Model fitting 2: SSC + galaxy template
 
 .. parsed-literal::
 
-    ['/Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/test_data/SEDs_data/SED_3C345.ecsv',
-     '/Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk421_EBL_DEABS.ecsv',
-     '/Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_DEABS.ecsv']
+    ['/Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/test_data/SEDs_data/SED_3C345.ecsv',
+     '/Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk421_EBL_DEABS.ecsv',
+     '/Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_ABS.ecsv',
+     '/Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_DEABS.ecsv']
 
 
 
@@ -38,7 +39,7 @@ see the :ref:`data_format` user guide for further information about loading data
 
 .. code:: ipython3
 
-    data=Data.from_file(test_SEDs[2])
+    data=Data.from_file(test_SEDs[3])
 
 
 .. code:: ipython3
@@ -53,12 +54,12 @@ see the :ref:`data_format` user guide for further information about loading data
 
 .. parsed-literal::
 
-    ===================================================================================================================
+    ================================================================================
     
     ***  binning data  ***
     ---> N bins= 90
     ---> bin_widht= 0.2
-    ===================================================================================================================
+    ================================================================================
     
 
 
@@ -89,10 +90,10 @@ Spectral indices
 
 .. parsed-literal::
 
-    ===================================================================================================================
+    ================================================================================
     
     *** evaluating spectral indices for data ***
-    ===================================================================================================================
+    ================================================================================
     
 
 
@@ -114,7 +115,7 @@ Sed shaper
 
 .. parsed-literal::
 
-    ===================================================================================================================
+    ================================================================================
     
     *** Log-Polynomial fitting of the synchrotron component ***
     ---> first blind fit run,  fit range: [10.0, 21.0]
@@ -123,16 +124,66 @@ Sed shaper
     ---> class:  HSP
     
     
-     model name     name      bestfit val     err +     err -   start val   fit range min fit range max frozen
-    ----------- ------------ ------------- ------------ ----- ------------- ------------- ------------- ------
-       LogCubic            b -6.411144e-02 7.838941e-03    -- -4.778766e-02 -1.000000e+01  0.000000e+00  False
-       LogCubic            c -1.751706e-03 1.127019e-03    --  3.576198e-03 -1.000000e+01  1.000000e+01  False
-       LogCubic           Ep  1.703747e+01 9.437328e-02    --  1.626870e+01  0.000000e+00  3.000000e+01  False
-       LogCubic           Sp -1.030068e+01 1.884113e-02    -- -1.025412e+01 -3.000000e+01  0.000000e+00  False
-    host_galaxy nuFnu_p_host -1.006556e+01 5.462496e-02    -- -1.025412e+01 -1.225412e+01 -8.254123e+00  False
-    host_galaxy     nu_scale  1.730750e-02 3.694862e-03    --  0.000000e+00 -5.000000e-01  5.000000e-01  False
-    ---> sync       nu_p=+1.703747e+01 (err=+9.437328e-02)  nuFnu_p=-1.030068e+01 (err=+1.884113e-02) curv.=-6.411144e-02 (err=+7.838941e-03)
-    ===================================================================================================================
+
+
+
+.. raw:: html
+
+    <i>Table length=6</i>
+    <table id="table140346783864000-892923" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
+    <tr><td>LogCubic</td><td>b</td><td>-6.411144e-02</td><td>-6.411144e-02</td><td>7.838965e-03</td><td>--</td><td>-4.778764e-02</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>c</td><td>-1.751721e-03</td><td>-1.751721e-03</td><td>1.127030e-03</td><td>--</td><td>3.576201e-03</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Ep</td><td>1.703747e+01</td><td>1.703747e+01</td><td>9.437354e-02</td><td>--</td><td>1.626870e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Sp</td><td>-1.030068e+01</td><td>-1.030068e+01</td><td>1.884114e-02</td><td>--</td><td>-1.025412e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.006557e+01</td><td>-1.006557e+01</td><td>5.462528e-02</td><td>--</td><td>-1.025412e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>1.730764e-02</td><td>1.730764e-02</td><td>3.694887e-03</td><td>--</td><td>0.000000e+00</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346783864000-892923').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346783864000-892923').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [2, 3, 4, 5, 6, 7, 8], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    ---> sync       nu_p=+1.703747e+01 (err=+9.437354e-02)  nuFnu_p=-1.030068e+01 (err=+1.884114e-02) curv.=-6.411144e-02 (err=+7.838965e-03)
+    ================================================================================
     
 
 
@@ -145,26 +196,76 @@ Sed shaper
 
 .. parsed-literal::
 
-    ===================================================================================================================
+    ================================================================================
     
     *** Log-Polynomial fitting of the IC component ***
     ---> fit range: [23.0, 29.0]
     ---> LogCubic fit
     
     
-    model name name  bestfit val     err +     err -   start val   fit range min fit range max frozen
-    ---------- ---- ------------- ------------ ----- ------------- ------------- ------------- ------
-      LogCubic    b -1.310958e-01 3.244105e-02    -- -1.000000e+00 -1.000000e+01  0.000000e+00  False
-      LogCubic    c -3.300308e-02 2.072526e-02    -- -1.000000e+00 -1.000000e+01  1.000000e+01  False
-      LogCubic   Ep  2.549604e+01 2.235559e-01    --  2.556357e+01  0.000000e+00  3.000000e+01  False
-      LogCubic   Sp -1.057946e+01 4.333061e-02    -- -1.000000e+01 -3.000000e+01  0.000000e+00  False
-    ---> IC         nu_p=+2.549604e+01 (err=+2.235559e-01)  nuFnu_p=-1.057946e+01 (err=+4.333061e-02) curv.=-1.310958e-01 (err=+3.244105e-02)
-    ===================================================================================================================
+
+
+
+.. raw:: html
+
+    <i>Table length=4</i>
+    <table id="table140346784448416-85390" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
+    <tr><td>LogCubic</td><td>b</td><td>-1.310993e-01</td><td>-1.310993e-01</td><td>3.244188e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>c</td><td>-3.300446e-02</td><td>-3.300446e-02</td><td>2.072521e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Ep</td><td>2.549603e+01</td><td>2.549603e+01</td><td>2.235473e-01</td><td>--</td><td>2.556357e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Sp</td><td>-1.057945e+01</td><td>-1.057945e+01</td><td>4.332978e-02</td><td>--</td><td>-1.000000e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346784448416-85390').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346784448416-85390').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [2, 3, 4, 5, 6, 7, 8], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    ---> IC         nu_p=+2.549603e+01 (err=+2.235473e-01)  nuFnu_p=-1.057945e+01 (err=+4.332978e-02) curv.=-1.310993e-01 (err=+3.244188e-02)
+    ================================================================================
     
 
 
 
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_15_1.png
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_15_3.png
 
 
 Model constraining
@@ -193,25 +294,75 @@ ore least-square bound, as shown below
 
 .. parsed-literal::
 
-    ===================================================================================================================
+    ================================================================================
     
     ***  constrains parameters from observable ***
     
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 1.057074e+02     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 1.642067e+06     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 1.078494e+02     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.248787e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 3.205572e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 7.432066e+03     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 5.485641e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-            beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
-              z_cosm            redshift                 3.360000e-02     0.000000e+00               -- False  False
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140346790186288-756025" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.046425e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.310708e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>3.082278e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
     
-    ===================================================================================================================
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346790186288-756025').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346790186288-756025').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    
+    ================================================================================
     
 
 
@@ -229,9 +380,13 @@ ore least-square bound, as shown below
 Model fitting
 -------------
 
-We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer and the ``lsb`` (least square bound scipy minimizer). Using ``minuit`` we notice that sometimes (as in the case below) the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling.
+We remind that we can use different ``minimizers`` for the model fitting. In the following we will use the ``minuit`` minimizer and the ``lsb`` (least square bound scipy minimizer). Using ``minuit`` we notice that sometimes the fit will converge, but the quality  will not be enough (``valid==false``) to run ``minos``. Anyhow, as shown in the :ref:`MCMC sampling`, it still possible to estimate asymmetric errors by means of MCMC sampling
 
 We freeze some parameters, and we also set some `fit_range` values. Setting fit_range can speed-up the fit convergence but should be judged by the user each time according to the physics of the particular source.
+
+When using ``minuit`` the best strategy is to set the `fit_range` for most of the free parameters
+
+A good strategy is to run first a `lsb` fit and then, using the same `fit_model`, run a fit with `minuit`
 
 
 .. note::
@@ -253,21 +408,63 @@ see the :ref:`composite_models` user guide for further information about the new
     jet_lsb.set_gamma_grid_size(200)
 
 
-.. parsed-literal::
 
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 1.057074e+02     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 1.642067e+06     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 1.078494e+02     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.248787e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 3.205572e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 7.432066e+03     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 5.485641e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-            beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
-              z_cosm            redshift                 3.360000e-02     0.000000e+00               -- False  False
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140346810325552-236777" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.310708e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>3.082278e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.046425e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346810325552-236777').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346810325552-236777').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
 
 
 .. code:: ipython3
@@ -279,35 +476,34 @@ see the :ref:`composite_models` user guide for further information about the new
 .. parsed-literal::
 
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     Composite model description
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     name: SSC-best-fit-lsb  
     type: composite_model  
     components models:
      -model name: jet_leptonic model type: jet
      -model name: host_galaxy model type: template
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     individual component description
     
-    
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     jet model description
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     name: jet_leptonic  
     
     electrons distribution:
      type: lppl  
      gamma energy grid size:  201
-     gmin grid : 1.057074e+02
-     gmax grid : 1.642067e+06
+     gmin grid : 1.487509e+02
+     gmax grid : 2.310708e+06
      normalization  True
      log-values  False
     
     radiative fields:
      seed photons grid size:  100
-     IC emission grid size:  50
+     IC emission grid size:  100
      source emissivity lower bound :  1.000000e-120
      spectral components:
        name:Sum, state: on
@@ -316,42 +512,142 @@ see the :ref:`composite_models` user guide for further information about the new
     external fields transformation method: blob
     
     SED info:
-     nu grid size :200
+     nu grid size jetkernel: 1000
+     nu grid size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
     flux plot lower bound   :  1.000000e-120
     
-     model name        name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ------------ ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-    jet_leptonic             gmin  low-energy-cut-off lorentz-factor* 1.057074e+02     1.000000e+00     1.000000e+09 False  False
-    jet_leptonic             gmax high-energy-cut-off lorentz-factor* 1.642067e+06     1.000000e+00     1.000000e+15 False  False
-    jet_leptonic                N    emitters_density         1 / cm3 1.078494e+02     0.000000e+00               -- False  False
-    jet_leptonic                s   LE_spectral_slope                 2.248787e+00    -1.000000e+01     1.000000e+01 False  False
-    jet_leptonic                r  spectral_curvature                 3.205572e-01    -1.500000e+01     1.500000e+01 False  False
-    jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor* 7.432066e+03     1.000000e+00     1.000000e+09 False  False
-    jet_leptonic                R         region_size              cm 5.485641e+15     1.000000e+03     1.000000e+30 False  False
-    jet_leptonic              R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-    jet_leptonic                B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-    jet_leptonic         beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
-    jet_leptonic           z_cosm            redshift                 3.360000e-02     0.000000e+00               -- False  False
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140346809872928-413284" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.310708e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>3.082278e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.046425e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
     
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
     
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
     
-    -------------------------------------------------------------------------------------------------------------------
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346809872928-413284').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346809872928-413284').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    --------------------------------------------------------------------------------
+    
+    --------------------------------------------------------------------------------
     model description
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     name: host_galaxy  
     type: template  
     
-     model name     name       par type      units          val      phys. bound. min phys. bound. max  log  frozen
-    ----------- ------------ ----------- ------------- ------------- ---------------- ---------------- ----- ------
-    host_galaxy nuFnu_p_host nuFnu-scale erg / (cm2 s) -1.006556e+01    -2.000000e+01     2.000000e+01 False  False
-    host_galaxy     nu_scale    nu-scale            Hz  1.730750e-02    -2.000000e+00     2.000000e+00 False  False
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
+
+
+
+.. raw:: html
+
+    <i>Table length=2</i>
+    <table id="table140346810852832-592657" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>nuFnu-scale</td><td>erg / (cm2 s)</td><td>-1.006557e+01</td><td>-2.000000e+01</td><td>2.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>nu-scale</td><td>Hz</td><td>1.730764e-02</td><td>-2.000000e+00</td><td>2.000000e+00</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
     
-    -------------------------------------------------------------------------------------------------------------------
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346810852832-592657').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346810852832-592657').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    --------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
 
 
 .. note::
@@ -381,6 +677,214 @@ see the :ref:`composite_models` user guide for further information about the new
     model_minimizer_lsb=ModelMinimizer('lsb')
     best_fit_lsb=model_minimizer_lsb.fit(fit_model_lsb,sed_data,10.0**11,10**29.0,fitname='SSC-best-fit-lsb',repeat=3)
 
+
+.. parsed-literal::
+
+    filtering data in fit range = [1.000000e+11,1.000000e+29]
+    data length 31
+    ================================================================================
+    
+    *** start fit process ***
+    ----- 
+    fit run: 0
+
+
+
+.. parsed-literal::
+
+    0it [00:00, ?it/s]
+
+
+.. parsed-literal::
+
+    
+    - best chisq=8.40104e+00
+    fit run: 1
+    - old chisq=8.40104e+00
+
+
+
+.. parsed-literal::
+
+    0it [00:00, ?it/s]
+
+
+.. parsed-literal::
+
+    
+    - best chisq=8.31095e+00
+    fit run: 2
+    - old chisq=8.31095e+00
+
+
+
+.. parsed-literal::
+
+    0it [00:00, ?it/s]
+
+
+.. parsed-literal::
+
+    
+    - best chisq=8.31095e+00
+    -------------------------------------------------------------------------
+    Fit report
+    
+    Model: SSC-best-fit-lsb
+
+
+
+.. raw:: html
+
+    <i>Table length=13</i>
+    <table id="table140346809872928-144046" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>9.296480e+01</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.076505e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.785727e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>5.741810e+03</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.178384e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>2.281633e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.354274e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.250348e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.364376e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>nuFnu-scale</td><td>erg / (cm2 s)</td><td>-1.005782e+01</td><td>-2.000000e+01</td><td>2.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>nu-scale</td><td>Hz</td><td>1.730764e-02</td><td>-2.000000e+00</td><td>2.000000e+00</td><td>False</td><td>True</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346809872928-144046').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346809872928-144046').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    
+    converged=True
+    calls=22
+    mesg=
+
+
+
+.. parsed-literal::
+
+    'The relative error between two consecutive iterates is at most 0.000000'
+
+
+.. parsed-literal::
+
+    dof=21
+    chisq=8.310950, chisq/red=0.395760 null hypothesis sig=0.993679
+    
+    best fit pars
+
+
+
+.. raw:: html
+
+    <i>Table length=13</i>
+    <table id="table140346810815056-68852" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>9.296480e+01</td><td>9.296480e+01</td><td>1.556202e+02</td><td>--</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>2.076505e+06</td><td>2.076505e+06</td><td>1.226398e+06</td><td>--</td><td>2.310708e+06</td><td>1.000000e+04</td><td>1.000000e+08</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>2.785727e+01</td><td>2.785727e+01</td><td>8.168846e+01</td><td>--</td><td>3.082278e+01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>5.741810e+03</td><td>5.741810e+03</td><td>9.834144e+03</td><td>--</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>2.178384e+00</td><td>2.178384e+00</td><td>1.873598e-01</td><td>--</td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>2.281633e-01</td><td>2.281633e-01</td><td>4.564839e-02</td><td>--</td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>1.354274e+16</td><td>1.354274e+16</td><td>2.281064e+16</td><td>--</td><td>1.046425e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>1.000000e+17</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>1.250348e-02</td><td>1.250348e-02</td><td>7.877401e-03</td><td>--</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.364376e+01</td><td>4.364376e+01</td><td>2.642363e+01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>3.360000e-02</td><td>--</td><td>--</td><td>--</td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.005782e+01</td><td>-1.005782e+01</td><td>3.300740e-02</td><td>--</td><td>-1.006557e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>1.730764e-02</td><td>--</td><td>--</td><td>--</td><td>1.730764e-02</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>True</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346810815056-68852').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346810815056-68852').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [2, 3, 4, 5, 6, 7, 8], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    -------------------------------------------------------------------------
+    
+    ================================================================================
+    
+
+
 .. code:: ipython3
 
     best_fit_lsb.save_report('SSC-best-fit-lsb.txt')
@@ -395,22 +899,22 @@ see the :ref:`composite_models` user guide for further information about the new
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table4691015376" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>model name</th><th>name</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <thead><tr><th>str12</th><th>str16</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>9.057901e+01</td><td>3.252862e+01</td><td>--</td><td>1.057074e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>1.923426e+06</td><td>1.035137e+06</td><td>--</td><td>1.642067e+06</td><td>1.000000e+04</td><td>1.000000e+08</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>3.428342e+01</td><td>7.360941e+01</td><td>--</td><td>1.078494e+02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>2.152853e+00</td><td>1.727103e-01</td><td>--</td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>2.185727e-01</td><td>4.325600e-02</td><td>--</td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>4.075417e+03</td><td>6.027271e+03</td><td>--</td><td>7.432066e+03</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>1.092028e+16</td><td>1.633182e+16</td><td>--</td><td>5.485641e+15</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>1.266761e-02</td><td>6.966549e-03</td><td>--</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.897303e+01</td><td>2.764700e+01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>--</td><td>--</td><td>--</td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.006011e+01</td><td>3.268392e-02</td><td>--</td><td>-1.006556e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
-    <tr><td>host_galaxy</td><td>nu_scale</td><td>--</td><td>--</td><td>--</td><td>1.730750e-02</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>True</td></tr>
+    <table id="table140346290608496" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
+    <thead><tr><th>str12</th><th>str16</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>9.296480e+01</td><td>9.296480e+01</td><td>1.556202e+02</td><td>--</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>2.076505e+06</td><td>2.076505e+06</td><td>1.226398e+06</td><td>--</td><td>2.310708e+06</td><td>1.000000e+04</td><td>1.000000e+08</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>2.785727e+01</td><td>2.785727e+01</td><td>8.168846e+01</td><td>--</td><td>3.082278e+01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>5.741810e+03</td><td>5.741810e+03</td><td>9.834144e+03</td><td>--</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>2.178384e+00</td><td>2.178384e+00</td><td>1.873598e-01</td><td>--</td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>2.281633e-01</td><td>2.281633e-01</td><td>4.564839e-02</td><td>--</td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>1.354274e+16</td><td>1.354274e+16</td><td>2.281064e+16</td><td>--</td><td>1.046425e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>1.000000e+17</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>1.250348e-02</td><td>1.250348e-02</td><td>7.877401e-03</td><td>--</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.364376e+01</td><td>4.364376e+01</td><td>2.642363e+01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>3.360000e-02</td><td>--</td><td>--</td><td>--</td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.006235e+01</td><td>-1.006235e+01</td><td>4.269333e-02</td><td>--</td><td>-1.006354e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>1.730764e-02</td><td>--</td><td>--</td><td>--</td><td>1.730764e-02</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>True</td></tr>
     </table>
 
 
@@ -437,22 +941,67 @@ Model fitting with Minuit
     jet_minuit.set_gamma_grid_size(200)
 
 
-.. parsed-literal::
 
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 1.057074e+02     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 1.642067e+06     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 1.078494e+02     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.248787e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 3.205572e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 7.432066e+03     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 5.485641e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-            beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
-              z_cosm            redshift                 3.360000e-02     0.000000e+00               -- False  False
+.. raw:: html
 
+    <i>Table length=11</i>
+    <table id="table140346784576080-441386" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.310708e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>3.082278e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.046425e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346784576080-441386').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346784576080-441386').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+To run the ``minuit`` minimizer we will use the best-fit results from
+``lsb`` to set the boundaries for our parameters.
 
 .. code:: ipython3
 
@@ -464,6 +1013,9 @@ Model fitting with Minuit
     fit_model_minuit.jet_leptonic.parameters.R.fit_range=[10**15.5,10**17.5]
     fit_model_minuit.host_galaxy.parameters.nuFnu_p_host.frozen=False
     fit_model_minuit.host_galaxy.parameters.nu_scale.frozen=True
+    fit_model_minuit.jet_leptonic.parameters.gmin.fit_range=[10,1000]
+    fit_model_minuit.jet_leptonic.parameters.gmax.fit_range=[5E5,1E8]
+    fit_model_minuit.jet_leptonic.parameters.gamma0_log_parab.fit_range=[1E3,5E5]
     
     model_minimizer_minuit=ModelMinimizer('minuit')
     best_fit_minuit=model_minimizer_minuit.fit(fit_model_minuit,sed_data,10.0**11,10**29.0,fitname='SSC-best-fit-minuit',repeat=3)
@@ -472,515 +1024,370 @@ Model fitting with Minuit
 .. parsed-literal::
 
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     Composite model description
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     name: SSC-best-fit-minuit  
     type: composite_model  
     components models:
      -model name: jet_leptonic model type: jet
      -model name: host_galaxy model type: template
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     filtering data in fit range = [1.000000e+11,1.000000e+29]
     data length 31
-    ===================================================================================================================
+    ================================================================================
     
     *** start fit process ***
     ----- 
     fit run: 0
-    | minim function calls=1010, chisq=16.080838 UL part=-0.0000002142684597977088.000000 UL part=-0.000000
+
+
+
+.. parsed-literal::
+
+    0it [00:00, ?it/s]
+
+
+.. parsed-literal::
+
+    
+    - best chisq=8.10845e+00
     fit run: 1
-    - minim function calls=140, chisq=16.289141 UL part=-0.000000
+    - old chisq=8.10845e+00
+
+
+
+.. parsed-literal::
+
+    0it [00:00, ?it/s]
+
+
+.. parsed-literal::
+
+    
+    - best chisq=8.10841e+00
     fit run: 2
-    | minim function calls=140, chisq=16.289141 UL part=-0.000000
-    **************************************************************************************************
+    - old chisq=8.10841e+00
+
+
+
+.. parsed-literal::
+
+    0it [00:00, ?it/s]
+
+
+.. parsed-literal::
+
+    
+    - best chisq=8.10836e+00
+    -------------------------------------------------------------------------
     Fit report
     
     Model: SSC-best-fit-minuit
-     model name        name             par type           units           val      phys. bound. min phys. bound. max  log  frozen
-    ------------ ---------------- ------------------- --------------- ------------- ---------------- ---------------- ----- ------
-    jet_leptonic             gmin  low-energy-cut-off lorentz-factor*  8.763027e+01     1.000000e+00     1.000000e+09 False  False
-    jet_leptonic             gmax high-energy-cut-off lorentz-factor*  9.952166e+08     1.000000e+00     1.000000e+15 False  False
-    jet_leptonic                N    emitters_density         1 / cm3  6.484866e+01     0.000000e+00               -- False  False
-    jet_leptonic                s   LE_spectral_slope                  2.247200e+00    -1.000000e+01     1.000000e+01 False  False
-    jet_leptonic                r  spectral_curvature                  3.647713e-01    -1.500000e+01     1.500000e+01 False  False
-    jet_leptonic gamma0_log_parab    turn-over-energy lorentz-factor*  1.758600e+04     1.000000e+00     1.000000e+09 False  False
-    jet_leptonic                R         region_size              cm  7.754566e+15     1.000000e+03     1.000000e+30 False  False
-    jet_leptonic              R_H     region_position              cm  1.000000e+17     0.000000e+00               -- False   True
-    jet_leptonic                B      magnetic_field               G  1.909573e-02     0.000000e+00               -- False  False
-    jet_leptonic         beam_obj             beaming Lorentz-factor*  4.702423e+01     1.000000e-04               -- False  False
-    jet_leptonic           z_cosm            redshift                  3.360000e-02     0.000000e+00               -- False   True
-     host_galaxy     nuFnu_p_host         nuFnu-scale   erg / (cm2 s) -1.004582e+01    -2.000000e+01     2.000000e+01 False  False
-     host_galaxy         nu_scale            nu-scale              Hz  1.730750e-02    -2.000000e+00     2.000000e+00 False   True
+
+
+
+.. raw:: html
+
+    <i>Table length=13</i>
+    <table id="table140346784576080-871276" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>7.999238e+01</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.206678e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.351730e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.370578e+03</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.122821e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>2.093787e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.640643e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.087639e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.265225e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>nuFnu-scale</td><td>erg / (cm2 s)</td><td>-1.006235e+01</td><td>-2.000000e+01</td><td>2.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>nu-scale</td><td>Hz</td><td>1.730764e-02</td><td>-2.000000e+00</td><td>2.000000e+00</td><td>False</td><td>True</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346784576080-871276').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346784576080-871276').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
     
     converged=True
-    calls=143
-    ------------------------------------------------------------------
-    | FCN = 16.08                   |     Ncalls=131 (142 total)     |
-    | EDM = 2.07E+04 (Goal: 1E-05)  |            up = 1.0            |
-    ------------------------------------------------------------------
-    |  Valid Min.   | Valid Param.  | Above EDM | Reached call limit |
-    ------------------------------------------------------------------
-    |     False     |     True      |   True    |       False        |
-    ------------------------------------------------------------------
-    | Hesse failed  |   Has cov.    | Accurate  | Pos. def. | Forced |
-    ------------------------------------------------------------------
-    |     False     |     True      |   True    |   True    | False  |
-    ------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------
-    |   | Name  |   Value   | Hesse Err | Minos Err- | Minos Err+ | Limit-  | Limit+  | Fixed |
-    -------------------------------------------------------------------------------------------
-    | 0 | par_0 |    88     |     9     |            |            |    1    |  1e+09  |       |
-    | 1 | par_1 |  0.995E9  |  0.002E9  |            |            |    1    |  1e+15  |       |
-    | 2 | par_2 |    65     |    21     |            |            |    0    |         |       |
-    | 3 | par_3 |   2.25    |   0.03    |            |            |   -10   |   10    |       |
-    | 4 | par_4 |   0.36    |   0.04    |            |            |   -15   |   15    |       |
-    | 5 | par_5 |   1.8E4   |   0.6E4   |            |            |    1    |  1e+09  |       |
-    | 6 | par_6 |  0.78E16  |  0.18E16  |            |            |3.16228e+15|3.16228e+17|       |
-    | 7 | par_7 |  1.91E-2  |  0.28E-2  |            |            |    0    |         |       |
-    | 8 | par_8 |    47     |     4     |            |            |    5    |   50    |       |
-    | 9 | par_9 |  -10.05   |    0.05   |            |            |-12.2541 |-8.25412 |       |
-    -------------------------------------------------------------------------------------------
-    dof=21
-    chisq=16.079774, chisq/red=0.765704 null hypothesis sig=0.765152
-    
-    best fit pars
-     model name        name        bestfit val     err +     err -   start val   fit range min fit range max frozen
-    ------------ ---------------- ------------- ------------ ----- ------------- ------------- ------------- ------
-    jet_leptonic             gmin  8.763027e+01 8.621961e+00    --  1.057074e+02  1.000000e+00  1.000000e+09  False
-    jet_leptonic             gmax  9.952166e+08 1.887130e+06    --  1.642067e+06  1.000000e+00  1.000000e+15  False
-    jet_leptonic                N  6.484866e+01 2.118340e+01    --  1.078494e+02  0.000000e+00            --  False
-    jet_leptonic                s  2.247200e+00 3.169117e-02    --  2.248787e+00 -1.000000e+01  1.000000e+01  False
-    jet_leptonic                r  3.647713e-01 4.170891e-02    --  3.205572e-01 -1.500000e+01  1.500000e+01  False
-    jet_leptonic gamma0_log_parab  1.758600e+04 5.985506e+03    --  7.432066e+03  1.000000e+00  1.000000e+09  False
-    jet_leptonic                R  7.754566e+15 1.760854e+15    --  5.485641e+15  3.162278e+15  3.162278e+17  False
-    jet_leptonic              R_H            --           --    --  1.000000e+17  0.000000e+00            --   True
-    jet_leptonic                B  1.909573e-02 2.822307e-03    --  1.000000e-01  0.000000e+00            --  False
-    jet_leptonic         beam_obj  4.702423e+01 4.242100e+00    --  2.500000e+01  5.000000e+00  5.000000e+01  False
-    jet_leptonic           z_cosm            --           --    --  3.360000e-02  0.000000e+00            --   True
-     host_galaxy     nuFnu_p_host -1.004582e+01 4.931307e-02    -- -1.004169e+01 -1.225412e+01 -8.254123e+00  False
-     host_galaxy         nu_scale            --           --    --  1.730750e-02 -5.000000e-01  5.000000e-01   True
-    **************************************************************************************************
-    
-    ===================================================================================================================
-    
-
-
-.. code:: ipython3
-
-    model_minimizer_minuit.minimizer.mesg
-
+    calls=232
+    mesg=
 
 
 
 .. raw:: html
 
     <table>
-    <tr>
-    <td colspan="2" title="Minimum value of function">
-    FCN = 16.08
-    </td>
-    <td align="center" colspan="3" title="No. of calls in last algorithm and total number of calls">
-    Ncalls = 131 (142 total)
-    </td>
-    </tr>
-    <tr>
-    <td colspan="2" title="Estimated distance to minimum and target threshold">
-    EDM = 2.07E+04 (Goal: 1E-05)
-    </td>
-    <td align="center" colspan="3" title="Increase in FCN which corresponds to 1 standard deviation">
-    up = 1.0
-    </td>
-    </tr>
-    <tr>
-    <td align="center" title="Validity of the migrad call">
-    Valid Min.
-    </td>
-    <td align="center" title="Validity of parameters">
-    Valid Param.
-    </td>
-    <td align="center" title="Is EDM above goal EDM?">
-    Above EDM
-    </td>
-    <td align="center" colspan="2" title="Did last migrad call reach max call limit?">
-    Reached call limit
-    </td>
-    </tr>
-    <tr>
-    <td align="center" style="background-color:#FF7878;">
-    False
-    </td>
-    <td align="center" style="background-color:#92CCA6;">
-    True
-    </td>
-    <td align="center" style="background-color:#FF7878;">
-    True
-    </td>
-    <td align="center" colspan="2" style="background-color:#92CCA6;">
-    False
-    </td>
-    </tr>
-    <tr>
-    <td align="center" title="Did Hesse fail?">
-    Hesse failed
-    </td>
-    <td align="center" title="Has covariance matrix">
-    Has cov.
-    </td>
-    <td align="center" title="Is covariance matrix accurate?">
-    Accurate
-    </td>
-    <td align="center" title="Is covariance matrix positive definite?">
-    Pos. def.
-    </td>
-    <td align="center" title="Was positive definiteness enforced by Minuit?">
-    Forced
-    </td>
-    </tr>
-    <tr>
-    <td align="center" style="background-color:#92CCA6;">
-    False
-    </td>
-    <td align="center" style="background-color:#92CCA6;">
-    True
-    </td>
-    <td align="center" style="background-color:#92CCA6;">
-    True
-    </td>
-    <td align="center" style="background-color:#92CCA6;">
-    True
-    </td>
-    <td align="center" style="background-color:#92CCA6;">
-    False
-    </td>
-    </tr>
-    </table>
-    <table>
-    <tr style="background-color:#F4F4F4;">
-    <td/>
-    <th title="Variable name">
-    Name
-    </th>
-    <th title="Value of parameter">
-    Value
-    </th>
-    <th title="Hesse error">
-    Hesse Error
-    </th>
-    <th title="Minos lower error">
-    Minos Error-
-    </th>
-    <th title="Minos upper error">
-    Minos Error+
-    </th>
-    <th title="Lower limit of the parameter">
-    Limit-
-    </th>
-    <th title="Upper limit of the parameter">
-    Limit+
-    </th>
-    <th title="Is the parameter fixed in the fit">
-    Fixed
-    </th>
-    </tr>
-    <tr style="background-color:#FFFFFF;">
-    <td>
-    0
-    </td>
-    <td>
-    par_0
-    </td>
-    <td>
-    88
-    </td>
-    <td>
-    9
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    1
-    </td>
-    <td>
-    1E+09
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#F4F4F4;">
-    <td>
-    1
-    </td>
-    <td>
-    par_1
-    </td>
-    <td>
-    0.995E9
-    </td>
-    <td>
-    0.002E9
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    1
-    </td>
-    <td>
-    1E+15
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#FFFFFF;">
-    <td>
-    2
-    </td>
-    <td>
-    par_2
-    </td>
-    <td>
-    65
-    </td>
-    <td>
-    21
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    0
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#F4F4F4;">
-    <td>
-    3
-    </td>
-    <td>
-    par_3
-    </td>
-    <td>
-    2.25
-    </td>
-    <td>
-    0.03
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    -10
-    </td>
-    <td>
-    10
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#FFFFFF;">
-    <td>
-    4
-    </td>
-    <td>
-    par_4
-    </td>
-    <td>
-    0.36
-    </td>
-    <td>
-    0.04
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    -15
-    </td>
-    <td>
-    15
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#F4F4F4;">
-    <td>
-    5
-    </td>
-    <td>
-    par_5
-    </td>
-    <td>
-    1.8E4
-    </td>
-    <td>
-    0.6E4
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    1
-    </td>
-    <td>
-    1E+09
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#FFFFFF;">
-    <td>
-    6
-    </td>
-    <td>
-    par_6
-    </td>
-    <td>
-    0.78E16
-    </td>
-    <td>
-    0.18E16
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    3.16E+15
-    </td>
-    <td>
-    3.16E+17
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#F4F4F4;">
-    <td>
-    7
-    </td>
-    <td>
-    par_7
-    </td>
-    <td>
-    1.91E-2
-    </td>
-    <td>
-    0.28E-2
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    0
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#FFFFFF;">
-    <td>
-    8
-    </td>
-    <td>
-    par_8
-    </td>
-    <td>
-    47
-    </td>
-    <td>
-    4
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    5
-    </td>
-    <td>
-    50
-    </td>
-    <td>
-    
-    </td>
-    </tr>
-    <tr style="background-color:#F4F4F4;">
-    <td>
-    9
-    </td>
-    <td>
-    par_9
-    </td>
-    <td>
-    -10.05
-    </td>
-    <td>
-     0.05
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    
-    </td>
-    <td>
-    -12.3
-    </td>
-    <td>
-    -8.25
-    </td>
-    <td>
-    
-    </td>
-    </tr>
+        <tr>
+            <td colspan="2" style="text-align:left" title="Minimum value of function"> FCN = 8.108 </td>
+            <td colspan="3" style="text-align:center" title="No. of calls in last algorithm and total number of calls"> Ncalls = 232 (232 total) </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:left" title="Estimated distance to minimum and goal"> EDM = 2.77e-05 (Goal: 0.0002) </td>
+            <td colspan="3" style="text-align:center" title="Increase in FCN which corresponds to 1 standard deviation"> up = 1.0 </td>
+        </tr>
+        <tr>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Valid Minimum </td>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Valid Parameters </td>
+            <td colspan="3" style="text-align:center;background-color:#FFF79A;color:black"> SOME Parameters at limit </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:center;background-color:#92CCA6;color:black"> Below EDM threshold (goal x 10) </td>
+            <td colspan="3" style="text-align:center;background-color:#92CCA6;color:black"> Below call limit </td>
+        </tr>
+        <tr>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Hesse ok </td>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Has Covariance </td>
+            <td style="text-align:center;background-color:#FFF79A;color:black" title="Is covariance matrix accurate?"> APPROXIMATE </td>
+            <td style="text-align:center;background-color:#c15ef7;color:black" title="Is covariance matrix positive definite?"> NOT pos. def. </td>
+            <td style="text-align:center;background-color:#c15ef7;color:black" title="Was positive definiteness enforced by Minuit?"> FORCED </td>
+        </tr>
+    </table><table>
+        <tr>
+            <td></td>
+            <th title="Variable name"> Name </th>
+            <th title="Value of parameter"> Value </th>
+            <th title="Hesse error"> Hesse Error </th>
+            <th title="Minos lower error"> Minos Error- </th>
+            <th title="Minos upper error"> Minos Error+ </th>
+            <th title="Lower limit of the parameter"> Limit- </th>
+            <th title="Upper limit of the parameter"> Limit+ </th>
+            <th title="Is the parameter fixed in the fit"> Fixed </th>
+        </tr>
+        <tr>
+            <th> 0 </th>
+            <td> par_0 </td>
+            <td> 80.0 </td>
+            <td> 2.6 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 10 </td>
+            <td> 1E+03 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 1 </th>
+            <td> par_1 </td>
+            <td> 2.2e6 </td>
+            <td> 1.0e6 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 5E+05 </td>
+            <td> 1E+08 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 2 </th>
+            <td> par_2 </td>
+            <td> 23.5 </td>
+            <td> 0.8 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 0 </td>
+            <td>  </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 3 </th>
+            <td> par_3 </td>
+            <td> 3.37e3 </td>
+            <td> 0.13e3 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 1E+03 </td>
+            <td> 5E+05 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 4 </th>
+            <td> par_4 </td>
+            <td> 2.123 </td>
+            <td> 0.004 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> -10 </td>
+            <td> 10 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 5 </th>
+            <td> par_5 </td>
+            <td> 0.2094 </td>
+            <td> 0.0035 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> -15 </td>
+            <td> 15 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 6 </th>
+            <td> par_6 </td>
+            <td> 16.41e15 </td>
+            <td> 0.31e15 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 3.16E+15 </td>
+            <td> 3.16E+17 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 7 </th>
+            <td> par_7 </td>
+            <td> 0.0109 </td>
+            <td> 0.0012 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 0 </td>
+            <td>  </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 8 </th>
+            <td> par_8 </td>
+            <td> 42.7 </td>
+            <td> 0.5 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 5 </td>
+            <td> 50 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 9 </th>
+            <td> par_9 </td>
+            <td> -10.06 </td>
+            <td> 0.04 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> -12.3 </td>
+            <td> -8.25 </td>
+            <td>  </td>
+        </tr>
     </table>
 
 
+.. parsed-literal::
+
+    dof=21
+    chisq=8.108363, chisq/red=0.386113 null hypothesis sig=0.994668
+    
+    best fit pars
 
 
-for further informatio regardin minuit please refer to
-https://iminuit.readthedocs.io/en/latest/
+
+.. raw:: html
+
+    <i>Table length=13</i>
+    <table id="table140346303520976-960613" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>7.999238e+01</td><td>7.999238e+01</td><td>2.641099e+00</td><td>--</td><td>1.487509e+02</td><td>1.000000e+01</td><td>1.000000e+03</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>2.206678e+06</td><td>2.206678e+06</td><td>9.946212e+05</td><td>--</td><td>2.310708e+06</td><td>5.000000e+05</td><td>1.000000e+08</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>2.351730e+01</td><td>2.351730e+01</td><td>7.973007e-01</td><td>--</td><td>3.082278e+01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>3.370578e+03</td><td>3.370578e+03</td><td>1.303130e+02</td><td>--</td><td>1.045843e+04</td><td>1.000000e+03</td><td>5.000000e+05</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>2.122821e+00</td><td>2.122821e+00</td><td>4.406770e-03</td><td>--</td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>2.093787e-01</td><td>2.093787e-01</td><td>3.530476e-03</td><td>--</td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>1.640643e+16</td><td>1.640643e+16</td><td>3.105900e+14</td><td>--</td><td>1.046425e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>1.000000e+17</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>1.087639e-02</td><td>1.087639e-02</td><td>1.229448e-03</td><td>--</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.265225e+01</td><td>4.265225e+01</td><td>4.800473e-01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>3.360000e-02</td><td>--</td><td>--</td><td>--</td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.006235e+01</td><td>-1.006235e+01</td><td>4.269333e-02</td><td>--</td><td>-1.006354e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>1.730764e-02</td><td>--</td><td>--</td><td>--</td><td>1.730764e-02</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>True</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346303520976-960613').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346303520976-960613').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [2, 3, 4, 5, 6, 7, 8], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    -------------------------------------------------------------------------
+    
+    ================================================================================
+    
+
+
+for further information regardin minuit please refer to
+https://iminuit.readthedocs.io/en/v1.5.4/
 
 .. code:: ipython3
 
@@ -1009,22 +1416,22 @@ https://iminuit.readthedocs.io/en/latest/
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table4691015376" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>model name</th><th>name</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <thead><tr><th>str12</th><th>str16</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>9.057901e+01</td><td>3.252862e+01</td><td>--</td><td>1.057074e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>1.923426e+06</td><td>1.035137e+06</td><td>--</td><td>1.642067e+06</td><td>1.000000e+04</td><td>1.000000e+08</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>3.428342e+01</td><td>7.360941e+01</td><td>--</td><td>1.078494e+02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>2.152853e+00</td><td>1.727103e-01</td><td>--</td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>2.185727e-01</td><td>4.325600e-02</td><td>--</td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>4.075417e+03</td><td>6.027271e+03</td><td>--</td><td>7.432066e+03</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>1.092028e+16</td><td>1.633182e+16</td><td>--</td><td>5.485641e+15</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>1.266761e-02</td><td>6.966549e-03</td><td>--</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.897303e+01</td><td>2.764700e+01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>--</td><td>--</td><td>--</td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.006011e+01</td><td>3.268392e-02</td><td>--</td><td>-1.006556e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
-    <tr><td>host_galaxy</td><td>nu_scale</td><td>--</td><td>--</td><td>--</td><td>1.730750e-02</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>True</td></tr>
+    <table id="table140346291927456" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
+    <thead><tr><th>str12</th><th>str16</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>9.296480e+01</td><td>9.296480e+01</td><td>1.556202e+02</td><td>--</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>2.076505e+06</td><td>2.076505e+06</td><td>1.226398e+06</td><td>--</td><td>2.310708e+06</td><td>1.000000e+04</td><td>1.000000e+08</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>2.785727e+01</td><td>2.785727e+01</td><td>8.168846e+01</td><td>--</td><td>3.082278e+01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>5.741810e+03</td><td>5.741810e+03</td><td>9.834144e+03</td><td>--</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>2.178384e+00</td><td>2.178384e+00</td><td>1.873598e-01</td><td>--</td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>2.281633e-01</td><td>2.281633e-01</td><td>4.564839e-02</td><td>--</td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>1.354274e+16</td><td>1.354274e+16</td><td>2.281064e+16</td><td>--</td><td>1.046425e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>1.000000e+17</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>1.250348e-02</td><td>1.250348e-02</td><td>7.877401e-03</td><td>--</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.364376e+01</td><td>4.364376e+01</td><td>2.642363e+01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>3.360000e-02</td><td>--</td><td>--</td><td>--</td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.006235e+01</td><td>-1.006235e+01</td><td>4.269333e-02</td><td>--</td><td>-1.006354e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>1.730764e-02</td><td>--</td><td>--</td><td>--</td><td>1.730764e-02</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>True</td></tr>
     </table>
 
 
@@ -1072,25 +1479,75 @@ Model fitting with a bkn pl
 
 .. parsed-literal::
 
-    ===================================================================================================================
+    ================================================================================
     
     ***  constrains parameters from observable ***
     
-        name          par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ----------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-           gmin  low-energy-cut-off lorentz-factor* 1.888625e+02     1.000000e+00     1.000000e+09 False  False
-           gmax high-energy-cut-off lorentz-factor* 1.955869e+06     1.000000e+00     1.000000e+15 False  False
-              N    emitters_density         1 / cm3 2.193451e+01     0.000000e+00               -- False  False
-              p   LE_spectral_slope                 2.248787e+00    -1.000000e+01     1.000000e+01 False  False
-            p_1   HE_spectral_slope                 3.500000e+00    -1.000000e+01     1.000000e+01 False  False
-    gamma_break    turn-over-energy lorentz-factor* 1.971879e+05     1.000000e+00     1.000000e+09 False  False
-              R         region_size              cm 1.045240e+16     1.000000e+03     1.000000e+30 False  False
-            R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-              B      magnetic_field               G 3.132705e-02     0.000000e+00               -- False  False
-       beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
-         z_cosm            redshift                 3.360000e-02     0.000000e+00               -- False  False
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140346335385632-671721" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.092459e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>3.008910e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.927085e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.993548e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.003808e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>2.012047e+05</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
     
-    ===================================================================================================================
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346335385632-671721').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346335385632-671721').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    
+    ================================================================================
     
 
 
@@ -1103,149 +1560,6 @@ Model fitting with a bkn pl
 
 
 .. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_43_0.png
-
-
-.. code:: ipython3
-
-    jet_minuit_bkn=Jet.load_model('prefit_jet_bkn_gal_templ.pkl')
-    jet_minuit_bkn.set_gamma_grid_size(200)
-    
-    
-    fit_model_minuit_bkn=FitModel( jet=jet_minuit_bkn, name='SSC-best-fit-minuit-bkn',template=my_shape.host_gal) 
-    fit_model_minuit_bkn.show_model_components()
-    fit_model_minuit_bkn.freeze('jet_leptonic','z_cosm')
-    fit_model_minuit_bkn.freeze('jet_leptonic','R_H')
-    fit_model_minuit_bkn.jet_leptonic.parameters.beam_obj.fit_range=[5,50]
-    fit_model_minuit_bkn.jet_leptonic.parameters.R.fit_range=[10**15.5,10**17.5]
-    fit_model_minuit_bkn.host_galaxy.parameters.nuFnu_p_host.frozen=False
-    fit_model_minuit_bkn.host_galaxy.parameters.nu_scale.frozen=True
-    
-    model_minimizer_minuit_bkn=ModelMinimizer('minuit')
-    best_fit_minuit_bkn=model_minimizer_minuit.fit(fit_model_minuit_bkn,sed_data,1E11,1E29,fitname='SSC-best-fit-minuit-bkn',repeat=3)
-
-
-.. parsed-literal::
-
-        name          par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ----------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-           gmin  low-energy-cut-off lorentz-factor* 1.888625e+02     1.000000e+00     1.000000e+09 False  False
-           gmax high-energy-cut-off lorentz-factor* 1.955869e+06     1.000000e+00     1.000000e+15 False  False
-              N    emitters_density         1 / cm3 2.193451e+01     0.000000e+00               -- False  False
-              p   LE_spectral_slope                 2.248787e+00    -1.000000e+01     1.000000e+01 False  False
-            p_1   HE_spectral_slope                 3.500000e+00    -1.000000e+01     1.000000e+01 False  False
-    gamma_break    turn-over-energy lorentz-factor* 1.971879e+05     1.000000e+00     1.000000e+09 False  False
-              R         region_size              cm 1.045240e+16     1.000000e+03     1.000000e+30 False  False
-            R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-              B      magnetic_field               G 3.132705e-02     0.000000e+00               -- False  False
-       beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
-         z_cosm            redshift                 3.360000e-02     0.000000e+00               -- False  False
-    
-    -------------------------------------------------------------------------------------------------------------------
-    Composite model description
-    -------------------------------------------------------------------------------------------------------------------
-    name: SSC-best-fit-minuit-bkn  
-    type: composite_model  
-    components models:
-     -model name: jet_leptonic model type: jet
-     -model name: host_galaxy model type: template
-    
-    -------------------------------------------------------------------------------------------------------------------
-    filtering data in fit range = [1.000000e+11,1.000000e+29]
-    data length 31
-    ===================================================================================================================
-    
-    *** start fit process ***
-    ----- 
-    fit run: 0
-    | minim function calls=1320, chisq=66.130577 UL part=-0.0000000
-    fit run: 1
-    - minim function calls=140, chisq=41.673638 UL part=-0.000000
-    fit run: 2
-    | minim function calls=140, chisq=41.673638 UL part=-0.000000
-    **************************************************************************************************
-    Fit report
-    
-    Model: SSC-best-fit-minuit-bkn
-     model name      name           par type           units           val      phys. bound. min phys. bound. max  log  frozen
-    ------------ ------------ ------------------- --------------- ------------- ---------------- ---------------- ----- ------
-    jet_leptonic         gmin  low-energy-cut-off lorentz-factor*  2.051986e+02     1.000000e+00     1.000000e+09 False  False
-    jet_leptonic         gmax high-energy-cut-off lorentz-factor*  9.605091e+08     1.000000e+00     1.000000e+15 False  False
-    jet_leptonic            N    emitters_density         1 / cm3  2.569272e+01     0.000000e+00               -- False  False
-    jet_leptonic            p   LE_spectral_slope                  2.416570e+00    -1.000000e+01     1.000000e+01 False  False
-    jet_leptonic          p_1   HE_spectral_slope                  3.628967e+00    -1.000000e+01     1.000000e+01 False  False
-    jet_leptonic  gamma_break    turn-over-energy lorentz-factor*  3.357861e+05     1.000000e+00     1.000000e+09 False  False
-    jet_leptonic            R         region_size              cm  1.237821e+16     1.000000e+03     1.000000e+30 False  False
-    jet_leptonic          R_H     region_position              cm  1.000000e+17     0.000000e+00               -- False   True
-    jet_leptonic            B      magnetic_field               G  1.894651e-02     0.000000e+00               -- False  False
-    jet_leptonic     beam_obj             beaming Lorentz-factor*  3.279214e+01     1.000000e-04               -- False  False
-    jet_leptonic       z_cosm            redshift                  3.360000e-02     0.000000e+00               -- False   True
-     host_galaxy nuFnu_p_host         nuFnu-scale   erg / (cm2 s) -1.001478e+01    -2.000000e+01     2.000000e+01 False  False
-     host_galaxy     nu_scale            nu-scale              Hz  1.730750e-02    -2.000000e+00     2.000000e+00 False   True
-    
-    converged=True
-    calls=147
-    ------------------------------------------------------------------
-    | FCN = 40.86                   |     Ncalls=135 (146 total)     |
-    | EDM = 3.88E+04 (Goal: 1E-05)  |            up = 1.0            |
-    ------------------------------------------------------------------
-    |  Valid Min.   | Valid Param.  | Above EDM | Reached call limit |
-    ------------------------------------------------------------------
-    |     False     |     True      |   True    |       False        |
-    ------------------------------------------------------------------
-    | Hesse failed  |   Has cov.    | Accurate  | Pos. def. | Forced |
-    ------------------------------------------------------------------
-    |     False     |     True      |   False   |   False   |  True  |
-    ------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------
-    |   | Name  |   Value   | Hesse Err | Minos Err- | Minos Err+ | Limit-  | Limit+  | Fixed |
-    -------------------------------------------------------------------------------------------
-    | 0 | par_0 |   205.2   |    0.8    |            |            |    1    |  1e+09  |       |
-    | 1 | par_1 |  0.961E9  |  0.003E9  |            |            |    1    |  1e+15  |       |
-    | 2 | par_2 |   25.7    |    2.4    |            |            |    0    |         |       |
-    | 3 | par_3 |   2.417   |   0.020   |            |            |   -10   |   10    |       |
-    | 4 | par_4 |   3.63    |   0.11    |            |            |   -10   |   10    |       |
-    | 5 | par_5 |  0.34E6   |  0.06E6   |            |            |    1    |  1e+09  |       |
-    | 6 | par_6 |  1.24E16  |  0.06E16  |            |            |3.16228e+15|3.16228e+17|       |
-    | 7 | par_7 |  1.89E-2  |  0.17E-2  |            |            |    0    |         |       |
-    | 8 | par_8 |   32.8    |    2.0    |            |            |    5    |   50    |       |
-    | 9 | par_9 |  -10.01   |    0.05   |            |            |-12.2541 |-8.25412 |       |
-    -------------------------------------------------------------------------------------------
-    dof=21
-    chisq=40.860003, chisq/red=1.945714 null hypothesis sig=0.005835
-    
-    best fit pars
-     model name      name      bestfit val     err +     err -   start val   fit range min fit range max frozen
-    ------------ ------------ ------------- ------------ ----- ------------- ------------- ------------- ------
-    jet_leptonic         gmin  2.051986e+02 8.367297e-01    --  1.888625e+02  1.000000e+00  1.000000e+09  False
-    jet_leptonic         gmax  9.605091e+08 2.865538e+06    --  1.955869e+06  1.000000e+00  1.000000e+15  False
-    jet_leptonic            N  2.569272e+01 2.353670e+00    --  2.193451e+01  0.000000e+00            --  False
-    jet_leptonic            p  2.416570e+00 1.989287e-02    --  2.248787e+00 -1.000000e+01  1.000000e+01  False
-    jet_leptonic          p_1  3.628967e+00 1.129247e-01    --  3.500000e+00 -1.000000e+01  1.000000e+01  False
-    jet_leptonic  gamma_break  3.357861e+05 5.541361e+04    --  1.971879e+05  1.000000e+00  1.000000e+09  False
-    jet_leptonic            R  1.237821e+16 6.448324e+14    --  1.045240e+16  3.162278e+15  3.162278e+17  False
-    jet_leptonic          R_H            --           --    --  1.000000e+17  0.000000e+00            --   True
-    jet_leptonic            B  1.894651e-02 1.680518e-03    --  3.132705e-02  0.000000e+00            --  False
-    jet_leptonic     beam_obj  3.279214e+01 1.965164e+00    --  2.500000e+01  5.000000e+00  5.000000e+01  False
-    jet_leptonic       z_cosm            --           --    --  3.360000e-02  0.000000e+00            --   True
-     host_galaxy nuFnu_p_host -1.001478e+01 4.529686e-02    -- -1.001700e+01 -1.225412e+01 -8.254123e+00  False
-     host_galaxy     nu_scale            --           --    --  1.730750e-02 -5.000000e-01  5.000000e-01   True
-    **************************************************************************************************
-    
-    ===================================================================================================================
-    
-
-
-.. code:: ipython3
-
-    %matplotlib inline
-    fit_model_minuit_bkn.set_nu_grid(1E6,1E30,200)
-    fit_model_minuit_bkn.eval()
-    p2=fit_model_minuit_bkn.plot_model(sed_data=sed_data)
-    p2.rescale(y_min=-13,x_min=6,x_max=28.5)
-
-
-
-.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_45_0.png
 
 
 .. code:: ipython3
@@ -1269,78 +1583,269 @@ Model fitting with a bkn pl
 
 
 
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140346303577728-837681" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.927085e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.993548e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.003808e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>2.012047e+05</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.092459e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>3.008910e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346303577728-837681').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346303577728-837681').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
 .. parsed-literal::
 
-        name          par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ----------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-           gmin  low-energy-cut-off lorentz-factor* 1.888625e+02     1.000000e+00     1.000000e+09 False  False
-           gmax high-energy-cut-off lorentz-factor* 1.955869e+06     1.000000e+00     1.000000e+15 False  False
-              N    emitters_density         1 / cm3 2.193451e+01     0.000000e+00               -- False  False
-              p   LE_spectral_slope                 2.248787e+00    -1.000000e+01     1.000000e+01 False  False
-            p_1   HE_spectral_slope                 3.500000e+00    -1.000000e+01     1.000000e+01 False  False
-    gamma_break    turn-over-energy lorentz-factor* 1.971879e+05     1.000000e+00     1.000000e+09 False  False
-              R         region_size              cm 1.045240e+16     1.000000e+03     1.000000e+30 False  False
-            R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-              B      magnetic_field               G 3.132705e-02     0.000000e+00               -- False  False
-       beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
-         z_cosm            redshift                 3.360000e-02     0.000000e+00               -- False  False
     filtering data in fit range = [1.000000e+11,1.000000e+29]
     data length 31
-    ===================================================================================================================
+    ================================================================================
     
     *** start fit process ***
     ----- 
     fit run: 0
-    - minim function calls=110, chisq=10.605368 UL part=-0.000000
+
+
+
+.. parsed-literal::
+
+    0it [00:00, ?it/s]
+
+
+.. parsed-literal::
+
+    
+    - best chisq=1.03910e+01
     fit run: 1
-    / minim function calls=30, chisq=10.533876 UL part=-0.000000
+    - old chisq=1.03910e+01
+
+
+
+.. parsed-literal::
+
+    0it [00:00, ?it/s]
+
+
+.. parsed-literal::
+
+    
+    - best chisq=1.03712e+01
     fit run: 2
-    \ minim function calls=20, chisq=10.591447 UL part=-0.000000
-    **************************************************************************************************
+    - old chisq=1.03712e+01
+
+
+
+.. parsed-literal::
+
+    0it [00:00, ?it/s]
+
+
+.. parsed-literal::
+
+    
+    - best chisq=1.03712e+01
+    -------------------------------------------------------------------------
     Fit report
     
     Model: SSC-best-fit-lsb
-     model name      name           par type           units           val      phys. bound. min phys. bound. max  log  frozen
-    ------------ ------------ ------------------- --------------- ------------- ---------------- ---------------- ----- ------
-    jet_leptonic         gmin  low-energy-cut-off lorentz-factor*  1.749680e+02     1.000000e+00     1.000000e+09 False  False
-    jet_leptonic         gmax high-energy-cut-off lorentz-factor*  1.697600e+06     1.000000e+00     1.000000e+15 False  False
-    jet_leptonic            N    emitters_density         1 / cm3  1.701337e+01     0.000000e+00               -- False  False
-    jet_leptonic            p   LE_spectral_slope                  2.259594e+00    -1.000000e+01     1.000000e+01 False  False
-    jet_leptonic          p_1   HE_spectral_slope                  2.959331e+00    -1.000000e+01     1.000000e+01 False  False
-    jet_leptonic  gamma_break    turn-over-energy lorentz-factor*  5.507627e+04     1.000000e+00     1.000000e+09 False  False
-    jet_leptonic            R         region_size              cm  1.207377e+16     1.000000e+03     1.000000e+30 False  False
-    jet_leptonic          R_H     region_position              cm  1.000000e+17     0.000000e+00               -- False   True
-    jet_leptonic            B      magnetic_field               G  1.433677e-02     0.000000e+00               -- False  False
-    jet_leptonic     beam_obj             beaming Lorentz-factor*  4.296909e+01     1.000000e-04               -- False  False
-    jet_leptonic       z_cosm            redshift                  3.360000e-02     0.000000e+00               -- False   True
-     host_galaxy nuFnu_p_host         nuFnu-scale   erg / (cm2 s) -1.004890e+01    -2.000000e+01     2.000000e+01 False  False
-     host_galaxy     nu_scale            nu-scale              Hz  1.730750e-02    -2.000000e+00     2.000000e+00 False   True
+
+
+
+.. raw:: html
+
+    <i>Table length=13</i>
+    <table id="table140346787817408-878007" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.508123e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.731131e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.742838e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>5.481682e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.245314e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>2.955656e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.340182e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.410984e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.093266e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>nuFnu-scale</td><td>erg / (cm2 s)</td><td>-1.004895e+01</td><td>-2.000000e+01</td><td>2.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>nu-scale</td><td>Hz</td><td>1.730764e-02</td><td>-2.000000e+00</td><td>2.000000e+00</td><td>False</td><td>True</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346787817408-878007').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346787817408-878007').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
     
     converged=True
-    calls=29
-    The relative error between two consecutive iterates is at most 0.000000
+    calls=21
+    mesg=
+
+
+
+.. parsed-literal::
+
+    'The relative error between two consecutive iterates is at most 0.000000'
+
+
+.. parsed-literal::
+
     dof=21
-    chisq=10.573237, chisq/red=0.503487 null hypothesis sig=0.970467
+    chisq=10.371200, chisq/red=0.493867 null hypothesis sig=0.973678
     
     best fit pars
-     model name      name      bestfit val     err +     err -   start val   fit range min fit range max frozen
-    ------------ ------------ ------------- ------------ ----- ------------- ------------- ------------- ------
-    jet_leptonic         gmin  1.749680e+02 1.817072e+02    --  1.888625e+02  1.000000e+00  1.000000e+09  False
-    jet_leptonic         gmax  1.697600e+06 5.412972e+00    --  1.955869e+06  1.000000e+04  1.000000e+08  False
-    jet_leptonic            N  1.701337e+01 1.843144e+01    --  2.193451e+01  0.000000e+00            --  False
-    jet_leptonic            p  2.259594e+00 1.081772e-01    --  2.248787e+00 -1.000000e+01  1.000000e+01  False
-    jet_leptonic          p_1  2.959331e+00 5.902665e-02    --  3.500000e+00 -1.000000e+01  1.000000e+01  False
-    jet_leptonic  gamma_break  5.507627e+04 1.989682e+04    --  1.971879e+05  1.000000e+00  1.000000e+09  False
-    jet_leptonic            R  1.207377e+16 9.871346e+15    --  1.045240e+16  3.162278e+15  3.162278e+17  False
-    jet_leptonic          R_H            --           --    --  1.000000e+17  0.000000e+00            --   True
-    jet_leptonic            B  1.433677e-02 6.168436e-03    --  3.132705e-02  0.000000e+00            --  False
-    jet_leptonic     beam_obj  4.296909e+01 1.428408e+01    --  2.500000e+01  5.000000e+00  5.000000e+01  False
-    jet_leptonic       z_cosm            --           --    --  3.360000e-02  0.000000e+00            --   True
-     host_galaxy nuFnu_p_host -1.004890e+01 3.571625e-02    -- -1.001478e+01 -1.225412e+01 -8.254123e+00  False
-     host_galaxy     nu_scale            --           --    --  1.730750e-02 -5.000000e-01  5.000000e-01   True
-    **************************************************************************************************
+
+
+
+.. raw:: html
+
+    <i>Table length=13</i>
+    <table id="table140346811316688-646218" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>1.508123e+02</td><td>1.508123e+02</td><td>1.352894e+02</td><td>--</td><td>1.927085e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>1.731131e+06</td><td>1.731131e+06</td><td>7.971782e+05</td><td>--</td><td>2.993548e+06</td><td>1.000000e+04</td><td>1.000000e+08</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>1.742838e+01</td><td>1.742838e+01</td><td>1.817798e+01</td><td>--</td><td>2.003808e+01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>5.481682e+04</td><td>5.481682e+04</td><td>3.559044e+04</td><td>--</td><td>2.012047e+05</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p</td><td>2.245314e+00</td><td>2.245314e+00</td><td>1.406859e-01</td><td>--</td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p_1</td><td>2.955656e+00</td><td>2.955656e+00</td><td>5.714302e-02</td><td>--</td><td>3.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>1.340182e+16</td><td>1.340182e+16</td><td>1.616766e+16</td><td>--</td><td>1.092459e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>1.000000e+17</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>1.410984e-02</td><td>1.410984e-02</td><td>8.428057e-03</td><td>--</td><td>3.008910e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.093266e+01</td><td>4.093266e+01</td><td>1.815767e+01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>3.360000e-02</td><td>--</td><td>--</td><td>--</td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.004895e+01</td><td>-1.004895e+01</td><td>3.564742e-02</td><td>--</td><td>-1.006235e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>1.730764e-02</td><td>--</td><td>--</td><td>--</td><td>1.730764e-02</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>True</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
     
-    ===================================================================================================================
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346811316688-646218').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346811316688-646218').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [2, 3, 4, 5, 6, 7, 8], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    -------------------------------------------------------------------------
+    
+    ================================================================================
     
 
 
@@ -1348,8 +1853,470 @@ Model fitting with a bkn pl
 
     %matplotlib inline
     fit_model_lsb_bkn.set_nu_grid(1E6,1E30,200)
-    fit_model_minuit_bkn.eval()
+    fit_model_lsb_bkn.eval()
     p2=fit_model_lsb_bkn.plot_model(sed_data=sed_data)
+    p2.rescale(y_min=-13,x_min=6,x_max=28.5)
+
+
+
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_45_0.png
+
+
+.. code:: ipython3
+
+    jet_minuit_bkn=Jet.load_model('prefit_jet_bkn_gal_templ.pkl')
+    jet_minuit_bkn.set_gamma_grid_size(200)
+    
+    
+    fit_model_minuit_bkn=FitModel( jet=jet_minuit_bkn, name='SSC-best-fit-minuit-bkn',template=my_shape.host_gal) 
+    fit_model_minuit_bkn.show_model_components()
+    fit_model_minuit_bkn.freeze('jet_leptonic','z_cosm')
+    fit_model_minuit_bkn.freeze('jet_leptonic','R_H')
+    fit_model_minuit_bkn.jet_leptonic.parameters.beam_obj.fit_range=[5,50]
+    fit_model_minuit_bkn.jet_leptonic.parameters.R.fit_range=[10**15.5,10**17.5]
+    fit_model_minuit_bkn.host_galaxy.parameters.nuFnu_p_host.frozen=False
+    fit_model_minuit_bkn.host_galaxy.parameters.nu_scale.frozen=True
+    fit_model_minuit_bkn.jet_leptonic.parameters.gmin.fit_range=[10,1000]
+    fit_model_minuit_bkn.jet_leptonic.parameters.gmax.fit_range=[5E5,1E8]
+    fit_model_minuit_bkn.jet_leptonic.parameters.gamma_break.fit_range=[1E3,1E6]
+    fit_model_minuit_bkn.jet_leptonic.parameters.p.fit_range=[1,3]
+    fit_model_minuit_bkn.jet_leptonic.parameters.p_1.fit_range=[2,5]
+    
+    
+    model_minimizer_minuit_bkn=ModelMinimizer('minuit')
+    best_fit_minuit_bkn=model_minimizer_minuit.fit(fit_model_minuit_bkn,sed_data,1E11,1E29,fitname='SSC-best-fit-minuit-bkn',repeat=3)
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140346351729104-956195" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.927085e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.993548e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.003808e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>2.012047e+05</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.092459e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>3.008910e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346351729104-956195').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346351729104-956195').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    
+    --------------------------------------------------------------------------------
+    Composite model description
+    --------------------------------------------------------------------------------
+    name: SSC-best-fit-minuit-bkn  
+    type: composite_model  
+    components models:
+     -model name: jet_leptonic model type: jet
+     -model name: host_galaxy model type: template
+    
+    --------------------------------------------------------------------------------
+    filtering data in fit range = [1.000000e+11,1.000000e+29]
+    data length 31
+    ================================================================================
+    
+    *** start fit process ***
+    ----- 
+    fit run: 0
+
+
+
+.. parsed-literal::
+
+    0it [00:00, ?it/s]
+
+
+.. parsed-literal::
+
+    
+    - best chisq=1.04693e+01
+    fit run: 1
+    - old chisq=1.04693e+01
+
+
+
+.. parsed-literal::
+
+    0it [00:00, ?it/s]
+
+
+.. parsed-literal::
+
+    
+    - best chisq=1.04383e+01
+    fit run: 2
+    - old chisq=1.04383e+01
+
+
+
+.. parsed-literal::
+
+    0it [00:00, ?it/s]
+
+
+.. parsed-literal::
+
+    
+    - best chisq=1.04383e+01
+    -------------------------------------------------------------------------
+    Fit report
+    
+    Model: SSC-best-fit-minuit-bkn
+
+
+
+.. raw:: html
+
+    <i>Table length=13</i>
+    <table id="table140346361970752-427685" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.347072e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.789881e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.890036e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>5.700211e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.244991e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>2.963614e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.399196e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.359199e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.080182e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>nuFnu-scale</td><td>erg / (cm2 s)</td><td>-1.004888e+01</td><td>-2.000000e+01</td><td>2.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>nu-scale</td><td>Hz</td><td>1.730764e-02</td><td>-2.000000e+00</td><td>2.000000e+00</td><td>False</td><td>True</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346361970752-427685').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346361970752-427685').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    
+    converged=True
+    calls=177
+    mesg=
+
+
+
+.. raw:: html
+
+    <table>
+        <tr>
+            <td colspan="2" style="text-align:left" title="Minimum value of function"> FCN = 10.44 </td>
+            <td colspan="3" style="text-align:center" title="No. of calls in last algorithm and total number of calls"> Ncalls = 177 (177 total) </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:left" title="Estimated distance to minimum and goal"> EDM = 4.1e-05 (Goal: 0.0002) </td>
+            <td colspan="3" style="text-align:center" title="Increase in FCN which corresponds to 1 standard deviation"> up = 1.0 </td>
+        </tr>
+        <tr>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Valid Minimum </td>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Valid Parameters </td>
+            <td colspan="3" style="text-align:center;background-color:#FFF79A;color:black"> SOME Parameters at limit </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:center;background-color:#92CCA6;color:black"> Below EDM threshold (goal x 10) </td>
+            <td colspan="3" style="text-align:center;background-color:#92CCA6;color:black"> Below call limit </td>
+        </tr>
+        <tr>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Hesse ok </td>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Has Covariance </td>
+            <td style="text-align:center;background-color:#FFF79A;color:black" title="Is covariance matrix accurate?"> APPROXIMATE </td>
+            <td style="text-align:center;background-color:#c15ef7;color:black" title="Is covariance matrix positive definite?"> NOT pos. def. </td>
+            <td style="text-align:center;background-color:#c15ef7;color:black" title="Was positive definiteness enforced by Minuit?"> FORCED </td>
+        </tr>
+    </table><table>
+        <tr>
+            <td></td>
+            <th title="Variable name"> Name </th>
+            <th title="Value of parameter"> Value </th>
+            <th title="Hesse error"> Hesse Error </th>
+            <th title="Minos lower error"> Minos Error- </th>
+            <th title="Minos upper error"> Minos Error+ </th>
+            <th title="Lower limit of the parameter"> Limit- </th>
+            <th title="Upper limit of the parameter"> Limit+ </th>
+            <th title="Is the parameter fixed in the fit"> Fixed </th>
+        </tr>
+        <tr>
+            <th> 0 </th>
+            <td> par_0 </td>
+            <td> 135 </td>
+            <td> 7 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 10 </td>
+            <td> 1E+03 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 1 </th>
+            <td> par_1 </td>
+            <td> 1.790e6 </td>
+            <td> 0.031e6 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 5E+05 </td>
+            <td> 1E+08 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 2 </th>
+            <td> par_2 </td>
+            <td> 18.9 </td>
+            <td> 2.5 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 0 </td>
+            <td>  </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 3 </th>
+            <td> par_3 </td>
+            <td> 57e3 </td>
+            <td> 7e3 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 1E+03 </td>
+            <td> 1E+06 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 4 </th>
+            <td> par_4 </td>
+            <td> 2.245 </td>
+            <td> 0.021 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 1 </td>
+            <td> 3 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 5 </th>
+            <td> par_5 </td>
+            <td> 2.96 </td>
+            <td> 0.04 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 2 </td>
+            <td> 5 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 6 </th>
+            <td> par_6 </td>
+            <td> 14.0e15 </td>
+            <td> 0.8e15 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 3.16E+15 </td>
+            <td> 3.16E+17 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 7 </th>
+            <td> par_7 </td>
+            <td> 13.6e-3 </td>
+            <td> 0.9e-3 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 0 </td>
+            <td>  </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 8 </th>
+            <td> par_8 </td>
+            <td> 40.8 </td>
+            <td> 1.0 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 5 </td>
+            <td> 50 </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 9 </th>
+            <td> par_9 </td>
+            <td> -10.05 </td>
+            <td> 0.05 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> -12.3 </td>
+            <td> -8.25 </td>
+            <td>  </td>
+        </tr>
+    </table>
+
+
+.. parsed-literal::
+
+    dof=21
+    chisq=10.438272, chisq/red=0.497061 null hypothesis sig=0.972641
+    
+    best fit pars
+
+
+
+.. raw:: html
+
+    <i>Table length=13</i>
+    <table id="table140346290500080-634241" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>1.347072e+02</td><td>1.347072e+02</td><td>7.387719e+00</td><td>--</td><td>1.927085e+02</td><td>1.000000e+01</td><td>1.000000e+03</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>1.789881e+06</td><td>1.789881e+06</td><td>3.102305e+04</td><td>--</td><td>2.993548e+06</td><td>5.000000e+05</td><td>1.000000e+08</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>1.890036e+01</td><td>1.890036e+01</td><td>2.508897e+00</td><td>--</td><td>2.003808e+01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>5.700211e+04</td><td>5.700211e+04</td><td>6.618752e+03</td><td>--</td><td>2.012047e+05</td><td>1.000000e+03</td><td>1.000000e+06</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p</td><td>2.244991e+00</td><td>2.244991e+00</td><td>2.143237e-02</td><td>--</td><td>2.248787e+00</td><td>1.000000e+00</td><td>3.000000e+00</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p_1</td><td>2.963614e+00</td><td>2.963614e+00</td><td>3.787257e-02</td><td>--</td><td>3.500000e+00</td><td>2.000000e+00</td><td>5.000000e+00</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>1.399196e+16</td><td>1.399196e+16</td><td>8.007647e+14</td><td>--</td><td>1.092459e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>1.000000e+17</td><td>--</td><td>--</td><td>--</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>1.359199e-02</td><td>1.359199e-02</td><td>9.193824e-04</td><td>--</td><td>3.008910e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.080182e+01</td><td>4.080182e+01</td><td>9.887688e-01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>3.360000e-02</td><td>--</td><td>--</td><td>--</td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.004888e+01</td><td>-1.004888e+01</td><td>4.808028e-02</td><td>--</td><td>-1.004895e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>1.730764e-02</td><td>--</td><td>--</td><td>--</td><td>1.730764e-02</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>True</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346290500080-634241').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346290500080-634241').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [2, 3, 4, 5, 6, 7, 8], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    -------------------------------------------------------------------------
+    
+    ================================================================================
+    
+
+
+.. code:: ipython3
+
+    %matplotlib inline
+    fit_model_minuit_bkn.set_nu_grid(1E6,1E30,200)
+    fit_model_minuit_bkn.eval()
+    p2=fit_model_minuit_bkn.plot_model(sed_data=sed_data)
     p2.rescale(y_min=-13,x_min=6,x_max=28.5)
 
 
@@ -1445,20 +2412,18 @@ the full set of free parameters will be used
 .. parsed-literal::
 
     mcmc run starting
-
-
-.. parsed-literal::
-
-    100%|██████████| 50/50 [05:33<00:00,  6.66s/it]
-
-.. parsed-literal::
-
-    mcmc run done, with 1 threads took 340.49 seconds
-
-
-.. parsed-literal::
-
     
+
+
+
+.. parsed-literal::
+
+      0%|          | 0/50 [00:00<?, ?it/s]
+
+
+.. parsed-literal::
+
+    mcmc run done, with 1 threads took 441.46 seconds
 
 
 .. code:: ipython3
@@ -1468,7 +2433,7 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    0.5264062500000001
+    0.5528124999999999
 
 
 .. code:: ipython3
@@ -1508,8 +2473,8 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    (array([33.62965681, 33.03731839, 33.64361785, ..., 29.52744229,
-            41.31820058, 39.60121389]),
+    (array([27.13365648, 27.56888754, 27.44743786, ..., 31.04123012,
+            20.41634151, 31.10457229]),
      0)
 
 
@@ -1536,21 +2501,63 @@ rerun the fit changing the constrain on ``beam_obj`` parameter.
 
 
 
-.. parsed-literal::
 
-          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-                gmin  low-energy-cut-off lorentz-factor* 1.057074e+02     1.000000e+00     1.000000e+09 False  False
-                gmax high-energy-cut-off lorentz-factor* 1.642067e+06     1.000000e+00     1.000000e+15 False  False
-                   N    emitters_density         1 / cm3 1.078494e+02     0.000000e+00               -- False  False
-                   s   LE_spectral_slope                 2.248787e+00    -1.000000e+01     1.000000e+01 False  False
-                   r  spectral_curvature                 3.205572e-01    -1.500000e+01     1.500000e+01 False  False
-    gamma0_log_parab    turn-over-energy lorentz-factor* 7.432066e+03     1.000000e+00     1.000000e+09 False  False
-                   R         region_size              cm 5.485641e+15     1.000000e+03     1.000000e+30 False  False
-                 R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-                   B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-            beam_obj             beaming Lorentz-factor* 2.500000e+01     1.000000e-04               -- False  False
-              z_cosm            redshift                 3.360000e-02     0.000000e+00               -- False  False
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140346331534624-517401" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.310708e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>3.082278e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.046425e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140346331534624-517401').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140346331534624-517401').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
 
 
 .. code:: ipython3
@@ -1572,16 +2579,6 @@ rerun the fit changing the constrain on ``beam_obj`` parameter.
 
     model_minimizer_lsb=ModelMinimizer('lsb')
     best_fit_lsb=model_minimizer_lsb.fit(fit_model_lsb,sed_data,10.0**11,10**29.0,fitname='SSC-best-fit-lsb',repeat=3,silent=True)
-
-
-.. parsed-literal::
-
-    fit run: 0
-    
-    fit run: 1
-    
-    fit run: 2
-    
 
 .. code:: ipython3
 
@@ -1619,20 +2616,18 @@ rerun the fit changing the constrain on ``beam_obj`` parameter.
 .. parsed-literal::
 
     mcmc run starting
-
-
-.. parsed-literal::
-
-    100%|██████████| 50/50 [06:02<00:00,  7.24s/it]
-
-.. parsed-literal::
-
-    mcmc run done, with 1 threads took 369.33 seconds
-
-
-.. parsed-literal::
-
     
+
+
+
+.. parsed-literal::
+
+      0%|          | 0/50 [00:00<?, ?it/s]
+
+
+.. parsed-literal::
+
+    mcmc run done, with 1 threads took 452.72 seconds
 
 
 .. code:: ipython3
@@ -1689,4 +2684,5 @@ Save and reuse MCMC
 
 
 .. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_73_0.png
+
 

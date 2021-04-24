@@ -76,7 +76,7 @@ we can easily access the astropy table
 .. raw:: html
 
     <i>Table length=10</i>
-    <table id="table140461030479472" class="table-striped table-bordered table-condensed">
+    <table id="table140316093220272" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -180,6 +180,7 @@ familiar with data handling
 
     ['/Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/test_data/SEDs_data/SED_3C345.ecsv',
      '/Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk421_EBL_DEABS.ecsv',
+     '/Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_ABS.ecsv',
      '/Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/test_data/SEDs_data/SED_MW_Mrk501_EBL_DEABS.ecsv']
 
 
@@ -204,7 +205,7 @@ As you can see there are three 3 files. We use in this example the file for Mrk 
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table140461071128848" class="table-striped table-bordered table-condensed">
+    <table id="table140316051741472" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>str13</th></tr></thead>
@@ -297,7 +298,7 @@ the data can be loaded from the saved table
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table140461074113152" class="table-striped table-bordered table-condensed">
+    <table id="table140316127455168" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>str13</th></tr></thead>
@@ -371,7 +372,7 @@ of course this method applies if you have a generic 2-dim numpy array.
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table140461074116176" class="table-striped table-bordered table-condensed">
+    <table id="table140316093008960" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -440,7 +441,7 @@ Assume that we downloaded the data for Mrk421, in observed fluxes and linear sca
 .. raw:: html
 
     <i>Table length=3550</i>
-    <table id="table140461030271776" class="table-striped table-bordered table-condensed">
+    <table id="table140316048442464" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -479,8 +480,6 @@ In the example we use one of the test SEDs provided by the package:
 
 We start to loading  the SED of  Mrk 421, and we pass to ``ObsData`` directly the path to the file, because this is already in the format that we need and that we have discussed above.
 
-
-
 .. code:: ipython3
 
     from jetset.data_loader import Data
@@ -506,8 +505,8 @@ and after elimination of duplicated entries, and upper limits
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table140461074156272" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>nu_data</th><th>dnu_data</th><th>nuFnu_data</th><th>dnuFnu_data</th><th>nu_data_log</th><th>dnu_data_log</th><th>nuFnu_data_log</th><th>dnuFnu_data_log</th><th>dnuFnu_facke</th><th>dnuFnu_facke_log</th><th>UL</th><th>zero_error</th><th>T_start</th><th>T_stop</th><th>data_set</th></tr></thead>
+    <table id="table140316127455264" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>nu_data</th><th>dnu_data</th><th>nuFnu_data</th><th>dnuFnu_data</th><th>nu_data_log</th><th>dnu_data_log</th><th>nuFnu_data_log</th><th>dnuFnu_data_log</th><th>dnuFnu_fake</th><th>dnuFnu_fake_log</th><th>UL</th><th>zero_error</th><th>T_start</th><th>T_stop</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th></th><th></th><th></th><th>MJD</th><th>MJD</th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bool</th><th>float64</th><th>float64</th><th>str13</th></tr></thead>
     <tr><td>2299540000.0</td><td>0.0</td><td>1.3409e-14</td><td>3.91e-16</td><td>9.361640968434164</td><td>0.0</td><td>-13.872603609223393</td><td>0.012663818511758627</td><td>2.6818000000000003e-15</td><td>0.2</td><td>False</td><td>False</td><td>0.0</td><td>0.0</td><td>campaing-2009</td></tr>
@@ -561,7 +560,7 @@ We can now plot our SED using the :class:`BlazarSEDFit.plot_sedfit.Plot` class
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_62_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_61_0.png
 
 
 or you can create the object to plot on the fly in this way
@@ -573,7 +572,7 @@ or you can create the object to plot on the fly in this way
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_64_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_63_0.png
 
 
 you can rescale your plot
@@ -585,7 +584,7 @@ you can rescale your plot
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_66_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_65_0.png
 
 
 plotting in the ``src`` restframe
@@ -597,7 +596,7 @@ plotting in the ``src`` restframe
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_68_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_67_0.png
 
 
 **to have interactive plot in jupyter**
@@ -648,7 +647,7 @@ this is not a problem for the fit process, you might want to rebin
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_72_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_71_1.png
 
 
 Handling errors and systematics
@@ -675,7 +674,7 @@ For these reasons the package offer the possibility to add systematics
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_74_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_73_0.png
 
 
 with this command we add 20% systematics for data between :math:`10^{6}<\nu<10^{29}` Hz
@@ -709,7 +708,7 @@ we use ``show_dataset=True`` to have the legend of all the datasets
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_80_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_79_0.png
 
 
 .. code:: ipython3
@@ -755,7 +754,7 @@ method. Please not with ``exclude=True`` we exclude dataset in
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_83_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_82_1.png
 
 
 we can pass more datasets, comma separated
@@ -783,7 +782,7 @@ we can pass more datasets, comma separated
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_85_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_84_1.png
 
 
 we can also use ``filter_data_set`` to exclude *only* the datasets in
@@ -813,7 +812,7 @@ we can also use ``filter_data_set`` to exclude *only* the datasets in
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_87_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_86_1.png
 
 
 we can revert ``sed_data`` to the original state with the
@@ -839,7 +838,7 @@ we can revert ``sed_data`` to the original state with the
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_90_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_89_1.png
 
 
 Saving sed_data and loading
@@ -861,6 +860,6 @@ you can save and relaod you sed_data
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_95_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_94_0.png
 
 

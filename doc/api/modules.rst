@@ -35,6 +35,7 @@ In the following the package modules are listed.
    poly_fit    <poly_fit.rst>
    poly_fit_tools    <poly_fit_tools.rst>
    sed_shaper    <sed_shaper.rst>
+   sherpa_plugin    <sherpa_plugin.rst>
    spectral_shapes    <spectral_shapes.rst>
    template_2Dmodel    <template_2Dmodel.rst>
    template_model    <template_model.rst>

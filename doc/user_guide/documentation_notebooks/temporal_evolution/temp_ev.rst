@@ -390,7 +390,7 @@ In this section we describe how  to perform the temporal evolution of a Jet, usi
 .. raw:: html
 
     <i>Table length=19</i>
-    <table id="table140193922683808-750070" class="table-striped table-bordered table-condensed">
+    <table id="table140193922039664-159322" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>1.0</td><td>s</td><td>0.00029979245799999996</td><td>R/c</td><td>False</td></tr>
     <tr><td>R/c</td><td>time</td><td>3335.6409519815206</td><td>s</td><td>1.0</td><td>R/c</td><td>False</td></tr>
@@ -434,14 +434,14 @@ In this section we describe how  to perform the temporal evolution of a Jet, usi
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140193922683808-750070').dataTable()");
+        console.log("$('#table140193922039664-159322').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140193922683808-750070').dataTable({
+        $('#table140193922039664-159322').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -465,7 +465,7 @@ In this section we describe how  to perform the temporal evolution of a Jet, usi
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table140193934573968-95269" class="table-striped table-bordered table-condensed">
+    <table id="table140194444184304-661405" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+04</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.100000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -510,14 +510,14 @@ In this section we describe how  to perform the temporal evolution of a Jet, usi
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140193934573968-95269').dataTable()");
+        console.log("$('#table140194444184304-661405').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140193934573968-95269').dataTable({
+        $('#table140194444184304-661405').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -634,13 +634,8 @@ running cooling and acc using only injection
     temp_ev_acc.plot_model(10,199,50)
 
 
-.. parsed-literal::
 
-    
-
-
-
-.. image:: Temp_Ev_files/Temp_Ev_30_1.png
+.. image:: Temp_Ev_files/Temp_Ev_30_0.png
 
 
 .. code:: ipython3

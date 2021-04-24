@@ -1,7 +1,7 @@
 .. _composite_models:
 
-Composite Models
-================
+Composite Models and depending pars
+===================================
 
 .. code:: ipython3
 
@@ -48,7 +48,7 @@ Now we add the components models to the the :class:`.FitModel` class, using the 
 
 .. parsed-literal::
 
-    /Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/model_manager.py:160: UserWarning: no cosmology defined, using default FlatLambdaCDM(name="Planck13", H0=67.8 km / (Mpc s), Om0=0.307, Tcmb0=2.725 K, Neff=3.05, m_nu=[0.   0.   0.06] eV, Ob0=0.0483)
+    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/model_manager.py:147: UserWarning: no cosmology defined, using default FlatLambdaCDM(name="Planck13", H0=67.8 km / (Mpc s), Om0=0.307, Tcmb0=2.725 K, Neff=3.05, m_nu=[0.   0.   0.06] eV, Ob0=0.0483)
       warnings.warn('no cosmology defined, using default %s'%self.cosmo)
 
 
@@ -60,22 +60,64 @@ cosmology model to the ``FitModel`` class, so it is using a default one
     composite_model.show_pars()
 
 
-.. parsed-literal::
 
-        model name          name             par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ----------------- ---------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-          jet_flaring             gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-          jet_flaring             gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
-          jet_flaring                N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
-          jet_flaring                s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-          jet_flaring                r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-          jet_flaring gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
-          jet_flaring                R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-          jet_flaring              R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-          jet_flaring                B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-          jet_flaring         beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-          jet_flaring           z_cosm            redshift                 1.000000e-01     0.000000e+00               -- False  False
-    Franceschini_2008           z_cosm            redshift                 1.000000e+00     0.000000e+00               -- False   True
+.. raw:: html
+
+    <i>Table length=12</i>
+    <table id="table140657529666912-374034" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_flaring</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_flaring</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>Franceschini_2008</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140657529666912-374034').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140657529666912-374034').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
 
 
 Since, both the Jet model the EBL share the same parameter, i.e. the
@@ -83,35 +125,83 @@ redshift, we link the two parameters
 
 .. code:: ipython3
 
-    composite_model.link_par(par_name='z_cosm',model_name_list=['jet_flaring'],root_model_name='Franceschini_2008')
+    composite_model.link_par(par_name='z_cosm',from_model=['Franceschini_2008'],to_model='jet_flaring')
+
+
+.. parsed-literal::
+
+    ==> par: z_cosm from model: Franceschini_2008 linked to same parameter in model jet_flaring
+
 
 .. code:: ipython3
 
     composite_model.show_pars()
 
 
-.. parsed-literal::
 
-        model name                name                  par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ----------------- --------------------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-          jet_flaring                        gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-          jet_flaring                        gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
-          jet_flaring                           N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
-          jet_flaring                           s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-          jet_flaring                           r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-          jet_flaring            gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
-          jet_flaring                           R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-          jet_flaring                         R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-          jet_flaring                           B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-          jet_flaring                    beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-          jet_flaring z_cosm(L,Franceschini_2008)            redshift                           --               --               -- False   True
-    Franceschini_2008                   z_cosm(R)            redshift                 1.000000e+00     0.000000e+00               -- False   True
+.. raw:: html
+
+    <i>Table length=12</i>
+    <table id="table140657529666720-615225" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_flaring</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_flaring</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>z_cosm(M)</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>Franceschini_2008</td><td>z_cosm(L,jet_flaring)</td><td>redshift</td><td></td><td>--</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140657529666720-615225').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140657529666720-615225').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
 
 
-As you can see, now the paramter ``z_cosm`` in ``Franceschini_2008`` is
-the root parameter (flagged by the R in parenthesis), and the one
-belonging to the ``jet_flaring`` component is the linked one (flagged by
-the L in parenthesis).
+
+As you can see, now the paramter ``z_cosm`` in ``jet_flaring`` is the
+``master`` parameter (flagged by the M in parenthesis), and the one
+belonging to the ``Franceschini_2008`` component is the linked one
+(flagged by the L in parenthesis).
 
 Setting parameters
 ------------------
@@ -151,16 +241,16 @@ names reported in the model description table, and that’s it!
 .. parsed-literal::
 
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     Composite model description
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     name: EBL corrected  
     type: composite_model  
     components models:
      -model name: jet_flaring model type: jet
      -model name: Franceschini_2008 model type: table2D
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
 
 
 .. code:: ipython3
@@ -194,7 +284,7 @@ component) and apply to both of them the EBL absorption.
 
 .. parsed-literal::
 
-    /Users/orion/anaconda3/envs/jetset/lib/python3.7/site-packages/jetset-1.1.2-py3.7-macosx-10.9-x86_64.egg/jetset/model_manager.py:160: UserWarning: no cosmology defined, using default FlatLambdaCDM(name="Planck13", H0=67.8 km / (Mpc s), Om0=0.307, Tcmb0=2.725 K, Neff=3.05, m_nu=[0.   0.   0.06] eV, Ob0=0.0483)
+    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/model_manager.py:147: UserWarning: no cosmology defined, using default FlatLambdaCDM(name="Planck13", H0=67.8 km / (Mpc s), Om0=0.307, Tcmb0=2.725 K, Neff=3.05, m_nu=[0.   0.   0.06] eV, Ob0=0.0483)
       warnings.warn('no cosmology defined, using default %s'%self.cosmo)
 
 
@@ -208,9 +298,9 @@ component) and apply to both of them the EBL absorption.
 .. parsed-literal::
 
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     Composite model description
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
     name: EBL corrected flaring+steady  
     type: composite_model  
     components models:
@@ -218,44 +308,96 @@ component) and apply to both of them the EBL absorption.
      -model name: Franceschini_2008 model type: table2D
      -model name: steady_jet model type: jet
     
-    -------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
 
+
+now we link the same parameter ``z_cosm`` from the ``steady_jet`` to the
+same ``master`` parameter used for the ``EBL`` model, i.e. to the
+``jet_flaring`` model
 
 .. code:: ipython3
 
-    composite_model.link_par(par_name='z_cosm',model_name_list=['steady_jet'],root_model_name='Franceschini_2008') 
+    composite_model.link_par(par_name='z_cosm',from_model=['steady_jet'],to_model='jet_flaring') 
+
+
+.. parsed-literal::
+
+    ==> par: z_cosm from model: steady_jet linked to same parameter in model jet_flaring
+
 
 .. code:: ipython3
 
     composite_model.show_pars()
 
 
-.. parsed-literal::
 
-        model name                name                  par type           units          val      phys. bound. min phys. bound. max  log  frozen
-    ----------------- --------------------------- ------------------- --------------- ------------ ---------------- ---------------- ----- ------
-          jet_flaring                        gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-          jet_flaring                        gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
-          jet_flaring                           N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
-          jet_flaring                           s   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-          jet_flaring                           r  spectral_curvature                 4.000000e-01    -1.500000e+01     1.500000e+01 False  False
-          jet_flaring            gamma0_log_parab    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
-          jet_flaring                           R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-          jet_flaring                         R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-          jet_flaring                           B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-          jet_flaring                    beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-          jet_flaring z_cosm(L,Franceschini_2008)            redshift                           --               --               -- False   True
-    Franceschini_2008                   z_cosm(R)            redshift                 1.000000e-01     0.000000e+00               -- False   True
-           steady_jet                        gmin  low-energy-cut-off lorentz-factor* 2.000000e+00     1.000000e+00     1.000000e+09 False  False
-           steady_jet                        gmax high-energy-cut-off lorentz-factor* 1.000000e+06     1.000000e+00     1.000000e+15 False  False
-           steady_jet                           N    emitters_density         1 / cm3 1.000000e+02     0.000000e+00               -- False  False
-           steady_jet                           p   LE_spectral_slope                 2.000000e+00    -1.000000e+01     1.000000e+01 False  False
-           steady_jet                   gamma_cut    turn-over-energy lorentz-factor* 1.000000e+04     1.000000e+00     1.000000e+09 False  False
-           steady_jet                           R         region_size              cm 5.000000e+15     1.000000e+03     1.000000e+30 False  False
-           steady_jet                         R_H     region_position              cm 1.000000e+17     0.000000e+00               -- False   True
-           steady_jet                           B      magnetic_field               G 1.000000e-01     0.000000e+00               -- False  False
-           steady_jet                    beam_obj             beaming Lorentz-factor* 1.000000e+01     1.000000e-04               -- False  False
-           steady_jet z_cosm(L,Franceschini_2008)            redshift                           --               --               -- False   True
+.. raw:: html
+
+    <i>Table length=22</i>
+    <table id="table140657011807664-565188" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_flaring</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_flaring</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>z_cosm(M)</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_flaring</td><td>r</td><td>spectral_curvature</td><td></td><td>4.000000e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>Franceschini_2008</td><td>z_cosm(L,jet_flaring)</td><td>redshift</td><td></td><td>--</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>steady_jet</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>steady_jet</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>steady_jet</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>steady_jet</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>steady_jet</td><td>z_cosm(L,jet_flaring)</td><td>redshift</td><td></td><td>--</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>steady_jet</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>steady_jet</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>steady_jet</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>steady_jet</td><td>gamma_cut</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>steady_jet</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140657011807664-565188').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140657011807664-565188').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
 
 
 .. code:: ipython3
@@ -275,5 +417,6 @@ component) and apply to both of them the EBL absorption.
 
 
 
-.. image:: Composite_model_files/Composite_model_33_0.png
+.. image:: Composite_model_files/Composite_model_34_0.png
+
 

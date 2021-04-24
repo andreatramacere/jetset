@@ -8,7 +8,7 @@
 # - {z: 0.0336 }
 # - {restframe: obs}
 # - {data_scale: lin-lin}
-# - {obj_name: 'Mrk-501'}
+# - {obj_name: 'Mrk-501-ebl-deabs'}
 # schema: astropy-2.0
 x y dy
 2.299540e+09 3.689200e-14 2.668000e-15

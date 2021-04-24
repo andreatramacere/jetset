@@ -16,13 +16,13 @@ __author__ = "Andrea Tramacere"
 
 import  warnings
 import numpy as np
-import time
+import time as system_time
 import  ast
 import copy
 import dill as pickle
 
 
-from tqdm.autonotebook import tqdm
+from tqdm.auto import tqdm
 
 import threading
 
@@ -31,7 +31,7 @@ from astropy import constants as const
 from .model_parameters import _show_table
 
 from .jetkernel import jetkernel as BlazarSED
-from .utils import   get_info
+from .utils import   get_info, unexpected_behaviour
 
 from astropy.table import Table
 from astropy.units import Unit
@@ -45,7 +45,7 @@ from .model_manager import FitModel
 from .plot_sedfit import  BasePlot,PlotPdistr,PlotTempEvDiagram,PlotTempEvEmitters, PlotSED
 
 
-__all__=['JetTimeEvol']
+__all__=['JetTimeEvol','TimeEmittersDistribution', 'TimeEvolvingRegion']
 
 
 class ProgressBarTempEV(object):
@@ -66,7 +66,7 @@ class ProgressBarTempEV(object):
     def finalzie(self,max_try=10):
         n_try=1
         while (self.pbar.n<self.N and n_try<max_try):
-            time.sleep(.1)
+            system_time.sleep(.1)
             n_try += 1
             self.update()
         self.pbar.display()
@@ -75,83 +75,103 @@ class ProgressBarTempEV(object):
         self.pbar.n = 0
         while (self.stop is False):
             self.update()
-            time.sleep(.1)
+            system_time.sleep(.1)
 
-
-
-def _get_time_slice_from_time(time_samples_array, time):
-    ID = None
-    if time > time_samples_array[-1] or time < time_samples_array[0]:
-        warnings.warn('time must be within time start/stop range', time_samples_array[0], time_samples_array[-1])
-    else:
-        ID = (np.abs(time_samples_array - time)).argmin()
-
-    return ID
-
-
-def _get_time_from_time_slice(time_samples_array,time_slice):
-    ID = None
-    if time_slice > time_samples_array.size-1 or time_slice<0:
-        warnings.warn('time_slice must be within time 0/%d', time_samples_array.size)
-    else:
-        ID = time_slice
-
-    return ID
-
-
-def _get_time_slice_samples_from_time(time_samples_array, time,time_bin=None):
-    if time > time_samples_array[-1] or time < time_samples_array[0]:
-        warnings.warn('time must be within time start/stop range', time_samples_array[0], time_samples_array[-1])
-
-    ID = [np.argmin(np.fabs(time_samples_array - time))]
-    if time_bin is not None:
-        ID_l = np.argwhere(np.logical_and(time_samples_array >= time, time_samples_array <= time + time_bin))
-        if len(ID_l) > 0:
-            ID = ID_l.ravel()
-
-    return ID
+# def _get_time_slice_from_time(time_samples_array, time):
+#     ID = None
+#     if time > time_samples_array[-1] or time < time_samples_array[0]:
+#         warnings.warn('time must be within time start/stop range', time_samples_array[0], time_samples_array[-1])
+#     else:
+#         ID = (np.abs(time_samples_array - time)).argmin()
+#     return ID
+#
+# def _get_time_from_time_slice(time_samples_array,time_slice):
+#     ID = None
+#     if time_slice > time_samples_array.size-1 or time_slice<0:
+#         warnings.warn('time_slice must be within time 0/%d', time_samples_array.size)
+#     else:
+#         ID = time_slice
+#     return ID
+#
+# def _get_time_slice_samples_from_time(time_samples_array, time,time_bin=None):
+#     if time > time_samples_array[-1] or time < time_samples_array[0]:
+#         warnings.warn('time must be within time start/stop range', time_samples_array[0], time_samples_array[-1])
+#
+#     ID = [np.argmin(np.fabs(time_samples_array - time))]
+#     if time_bin is not None:
+#         ID_l = np.argwhere(np.logical_and(time_samples_array >= time, time_samples_array <= time + time_bin))
+#         if len(ID_l) > 0:
+#             ID = ID_l.ravel()
+#     return ID
 
 
 class TimeEmittersDistribution(object):
 
-    def __init__(self,time_size,gamma_size):
-        self.time=np.zeros(time_size)
+    def __init__(self, jet, time_size, gamma_size):
+        self.jet=jet
+        self.time_blob=np.zeros(time_size)
         self.gamma=np.zeros(gamma_size)
-        self.n_gamma_rad = np.zeros((time_size,(gamma_size)))
-        self.n_gamma_acc = np.zeros((time_size, (gamma_size)))
+        self.n_gamma = np.zeros((time_size, (gamma_size)) )
 
-    def _get_time_slice_samples(self, time,time_bin=None):
+    #@property
+    #def time_blob(self):
+    #    return self.time_blob
+
+    @property
+    def time_src(self):
+        return self.time_blob / self.jet.get_beaming()
+
+    @property
+    def time_obs(self):
+        return self.time_blob * (1 + self.jet.parameters.z_cosm.val) / self.jet.get_beaming()
+
+    def _time_obs_to_blob(self,time_obs):
+        return time_obs / (1 + self.jet.parameters.z_cosm.val) * self.jet.get_beaming()
+
+    def _time_src_to_blob(self,time_src):
+        return time_src / (1 + self.jet.parameters.z_cosm.val) * self.jet.get_beaming()
+
+    def _get_time_slice_samples(self, time, frame, time_bin=None):
         """
         Returns the Time slice/s corresponding to a given time for *Sampled* time
 
         Parameters
         ----------
         time
+        frame
         time_bin
 
         Returns
         -------
 
         """
-        ID = [None]
-        if time > self.time[-1] or time < self.time[0]:
+        if frame == 'blob':
+            t_ev_time = self.time_blob
+        elif frame == 'src':
+            #time=self._time_src_to_blob(time)
+            t_ev_time = self.time_src
+        elif frame == 'obs':
+            #time=self._time_obs_to_blob(time)
+            t_ev_time = self.time_obs
+        else:
+            raise  RuntimeError("frame must be 'blob' or 'src' or 'obs'")
 
-            warnings.warn('time must be within time start/stop range', self.time[0], self.time[-1])
-            return ID
-        #dt = (self.N_time[-1]-self.N_time[0])/self.self.N_time.size
-        #id = np.int(time/dt)
+        if time > t_ev_time[-1] or time < t_ev_time[0]:
+            raise  RuntimeError('time in %s frame, must be within time start/stop range=[%e,%e]' % (frame, t_ev_time[0], t_ev_time[-1]))
 
-        ID = [np.argmin(np.fabs(self.time-time))]
+        ID = np.array(np.argmin(np.fabs(t_ev_time - time))).ravel()
         if time_bin is not None:
-            ID_l = np.argwhere(np.logical_and(self.time >= time, self.time <= time+time_bin ))
+            ID_l = np.argwhere(np.logical_and(t_ev_time >= time, t_ev_time <= time + time_bin))
             if len(ID_l) > 0:
                 ID = ID_l.ravel()
 
+        if ID.size == 0:
+            raise  RuntimeError('time in %s frame, must be within time start/stop range=[%e,%e]' % (frame, t_ev_time.min(), t_ev_time.max()))
         return ID
 
     def _get_time_samples(self, time_slice,time_slice_bin=None):
         """
-        Returns the time/s to a given time slice for *Sampled* time
+        Returns the blob time/s for a given time slice for *Sampled* time
 
         Parameters
         ----------
@@ -162,71 +182,210 @@ class TimeEmittersDistribution(object):
         -------
 
         """
+        if time_slice == -1:
+            time = np.array([self.time_blob[time_slice]])
+            time_slice_out = np.array([time_slice])
 
-        if time_slice > self.time.size - 1 or time_slice < 0:
-            warnings.warn('time_slice must be within time 0/%d', self.time.size)
-            time = np.array([None])
-            time_slice_out =  np.array([None])
+        elif time_slice > self.time_blob.size - 1 or time_slice < 0:
+            raise RuntimeError('time_slice must be -1, i.e. last slice, or within  [0, %d]' % self.time_blob.size)
+            #warnings.warn('time_slice must be -1, i.e. last slice, or within  [0, %d]' % self.time_blob.size)
+            #time = np.array([None])
+            #time_slice_out =  np.array([None])
         else:
-            time = np.array([self.time[time_slice]])
+            time = np.array([self.time_blob[time_slice]])
             time_slice_out =  np.array([time_slice])
 
 
         if time_slice_bin is not None:
-            time_slice_out=np.arange(time_slice,self.time.size,time_slice_bin)
-            time = self.time[time_slice_out]
+            time_slice_out=np.arange(time_slice, self.time_blob.size, time_slice_bin)
+            time = self.time_blob[time_slice_out]
+
+        if None in time or None in time_slice_out :
+            warnings.warn('some time intervals are our of boundaries')
 
         return time,time_slice_out
 
 
-class TimeSEDs(object):
+class TimeEvolvingRegion(object):
 
-    def __init__(self,temp_ev,jet,build_cached=True, mult_factor=1):
-        self.temp_ev=temp_ev
-        self.num_seds=temp_ev.parameters.num_samples.val
-        self.seds_array=None
-        self.time_array=np.zeros( self.num_seds, dtype=np.double)
-        self.jet=jet
-        self.cached=False
-        self.mult_factor=mult_factor
+    def __init__(self,temp_ev,jet,region_type,build_cached=True,):
 
+        self._set_region_type(region_type)
+        self._set_up(temp_ev=temp_ev,
+                     jet=jet,
+                     build_cached=build_cached)
+        self.time_sampled_emitters=None
+
+    def _set_region_type(self,region_type):
+        self._chek_region_type(region_type)
+        self._region_type = region_type
+
+    def _chek_region_type(self,region_type):
+        if region_type=='rad':
+            pass
+        elif region_type=='acc':
+            pass
+        else:
+            raise  RuntimeError("region must be 'acc' or 'rad' ")
+
+    @property
+    def num_seds(self):
+        if hasattr(self.temp_ev,'parameters'):
+            N = self.temp_ev.parameters.num_samples.val
+        else:
+            N = None
+
+        return N
+
+    @property
+    def region_type(self):
+        return self._region_type
+
+    @property
+    def mult_factor(self):
+        if self._region_type == 'acc':
+            R, _mult_factor = self.temp_ev._get_R_acc_sphere()
+        else:
+            _mult_factor = 1
+        return _mult_factor
+
+    def _set_up(self,temp_ev,jet,build_cached=True,):
+        self.temp_ev = temp_ev
+        self.seds_array = None
+        if self.num_seds is not None:
+            self.time_array = np.zeros(self.num_seds, dtype=np.double)
+        else:
+            self.time_array = None
+        self.jet = jet
+        self.cached = False
         if build_cached is True:
             self.build_cached_SEDs()
 
-    def get_SED(self, comp, time_slice=None, time_slice_bin=None, time=None, time_bin=None, use_cached=False):
+    def _fill_temp_ev_array_post_run(self,):
+        gamma_size = self.temp_ev._temp_ev.gamma_grid_size
+        time_size = self.temp_ev.parameters.num_samples.val
+
+        self.time_sampled_emitters = TimeEmittersDistribution(jet=self.jet, time_size=time_size, gamma_size=gamma_size)
+
+        if self.region_type=='rad':
+            _ptr=self.temp_ev._temp_ev.N_rad_gamma
+        elif  self.region_type=='acc':
+            _ptr = self.temp_ev._temp_ev.N_acc_gamma
+        else:
+            unexpected_behaviour()
+
+        self.time = np.zeros(gamma_size)
+        for i in range(time_size):
+            self.time_sampled_emitters.time_blob[i]=BlazarSED.get_temp_ev_N_time_array(self.temp_ev._temp_ev.N_time, self.temp_ev._temp_ev, i)
+            for j in range(gamma_size):
+                self.time_sampled_emitters.gamma[j] = BlazarSED.get_temp_ev_gamma_array(self.temp_ev._temp_ev.gamma, self.temp_ev._temp_ev, j)
+                self.time_sampled_emitters.n_gamma[i,j] = BlazarSED.get_temp_ev_N_gamma_array(_ptr,  self.temp_ev._temp_ev,i,j)
+
+
+    def _update(self,temp_ev=None,jet=None,build_cached=True):
+        if jet is None:
+            jet=self.jet
+        if temp_ev is None:
+            temp_ev=self.temp_ev
+
+        self._set_up(temp_ev=temp_ev,
+                     jet=jet,
+                     build_cached=build_cached)
+
+    def _set_jet_post_run(self):
+        _jet_emitters_distr = EmittersArrayDistribution(name='time_dep',
+                                                             gamma_array=np.copy(self.time_sampled_emitters.gamma),
+                                                             n_gamma_array=np.copy(self.time_sampled_emitters.n_gamma[-1]),
+                                                             gamma_grid_size=self.temp_ev.jet_gamma_grid_size,
+                                                             normalize=False)
+        _jet_emitters_distr._fill()
+        _jet_emitters_distr._fill()
+        self.jet.set_emitters_distribution(_jet_emitters_distr)
+
+    def _post_run_update(self,build_cached=True):
+        self._set_jet_post_run()
+        self._update(build_cached=build_cached)
+
+    def set_time(self, time_slice=None, time=None, frame='blob'):
+        if (time_slice is None and time is None) or (time_slice is not None and time is not None):
+            raise RuntimeError('you can use either the N-th time slice, or the time in seconds')
+
+        if time is not None:
+            time_slice = self.time_sampled_emitters._get_time_slice_samples(time=time, frame=frame)[0]
+            t = time
+            if time_slice is None:
+                raise RuntimeError('time=%e out of boundaries'%time)
+
+            if frame == 'src':
+                t = self.time_sampled_emitters._time_src_to_blob(time)
+            if frame == 'obs':
+                t = self.time_sampled_emitters._time_obs_to_blob(time)
+
+        if time_slice is not None:
+            time, time_ids = self.time_sampled_emitters._get_time_samples(time_slice=time_slice)
+            t = time[0]
+            if time is None:
+                raise RuntimeError('time_slice=%d out of boundaries' % time_slice)
+        if self._region_type == 'rad':
+            self.jet.parameters.R.val = self.temp_ev._get_R_rad_sphere(t)
+            self.jet.parameters.B.val = self.temp_ev._get_B_rad(t)
+        elif self._region_type == 'acc':
+            self.jet.parameters.R.val,_ = self.temp_ev._get_R_acc_sphere()
+            self.jet.parameters.B.val = self.temp_ev._get_B_acc()
+
+        self.jet.emitters_distribution._set_arrays(self.time_sampled_emitters.gamma,
+                                                   self.time_sampled_emitters.n_gamma[time_slice].flatten())
+        self.jet.emitters_distribution._fill()
+
+    def get_SED(self,
+                comp,
+                frame,
+                time_slice=None,
+                time_slice_bin=None,
+                time=None,
+                time_bin=None,
+                use_cached=False,
+                average =False):
 
         if (time_slice is not None and time is not None):
             raise RuntimeError(
                 'you can to pass either the N-th time slice "time_slice", or the blob time in seconds "time" ')
 
         if time_slice is None:
-            time_samples = self.temp_ev.time_sampled_emitters._get_time_slice_samples(time,time_bin=time_bin)
+            time_samples = self.time_sampled_emitters._get_time_slice_samples(time, frame=frame, time_bin=time_bin)
         else:
             time_samples = [time_slice]
             if time_slice_bin is not None:
-                time_samples=np.arange(time_slice,self.temp_ev.time_sampled_emitters.time.size,time_slice_bin)
+                time_samples=np.arange(time_slice, time_slice + time_slice_bin, 1)
 
         selected_seds_list=[]
 
         for ts in time_samples:
-            if use_cached is True and self.seds_array is not None:
-                selected_seds_list.append([sed for sed in self.seds_array[ts] if sed.name == comp][0])
+            if ts is not None:
+                if use_cached is True and self.seds_array is not None:
+                    selected_seds_list.append([sed for sed in self.seds_array[ts] if sed.name == comp][0])
+                else:
+                    self.set_time(time_slice=ts)
+                    self.jet.eval()
+                    for s in self.jet.spectral_components_list:
+                        if s.name == comp:
+                            selected_seds_list.append(s.SED)
+
+        sed=None
+        if len(selected_seds_list)>0:
+            if len(selected_seds_list) == 1:
+                sed = selected_seds_list[0]
             else:
-                self.temp_ev.set_time(time_slice=ts)
-                self.jet.eval()
-                for s in self.jet.spectral_components_list:
-                    if s.name == comp:
-                        selected_seds_list.append(s)
+                sed=copy.deepcopy(selected_seds_list[0])
 
-        if len(selected_seds_list) == 1:
-            sed = selected_seds_list[0]
-        else:
-            sed=copy.copy(selected_seds_list[0])
+                if average is True:
+                    for ID in range(len(selected_seds_list)):
+                        sed._nuFnu += selected_seds_list[ID]._nuFnu
+                        sed._nuLnu_src += selected_seds_list[ID]._nuLnu_src
 
-            for ID in range(len(selected_seds_list)):
-                sed._nuFnu += selected_seds_list[ID]._nuFnu
 
-            sed._nuFnu *= self.mult_factor/len(selected_seds_list)
+                    sed._nuFnu *= self.mult_factor/len(selected_seds_list)
+                    sed._nuLnu_src *= self.mult_factor / len(selected_seds_list)
 
         return sed
 
@@ -236,13 +395,123 @@ class TimeSEDs(object):
         pbar = tqdm(total=self.num_seds)
         pbar.n = 0
         for T in range(self.num_seds):
-            self.temp_ev.set_time(time_slice=T)
+            self.set_time(time_slice=T)
             self.jet.eval()
             self.seds_array[T] = [copy.deepcopy(s.SED) for s in self.jet.spectral_components_list]
             pbar.update(1)
         pbar.display()
         print('caching SED for each saved distribution: done')
         self.cached=True
+
+    def make_lc(self,
+                nu1,
+                nu2=None,
+                comp='Sum',
+                #region='rad',
+                t1=None,
+                t2=None,
+                delta_t_out=None,
+                cross_time_slices=1000,
+                frame='obs',
+                eval_cross_time=True,
+                use_cached=False,
+                R=None,
+                name=None):
+
+        beaming = self.jet.get_beaming()
+
+        if frame == 'obs':
+            _u = Unit('erg s-1')
+            _t = self.time_sampled_emitters.time_obs
+        elif frame == 'src':
+            _u = Unit('erg s-1')
+            _t = self.time_sampled_emitters.time_src
+        elif frame == 'blob':
+            _u = Unit('erg s-1 cm-2')
+            _t = self.time_sampled_emitters.time_blob
+        else:
+            raise RuntimeError('rest_frame must be src or blob or obs')
+
+        if t1 is None:
+            t1 = _t[0]
+        if t2 is None:
+            t2 = _t[-1]
+
+        selected_time_slices = np.logical_and(_t >= t1, _t <= t2)
+
+        if delta_t_out is None:
+            time_array_out = _t[selected_time_slices]
+        else:
+            time_array_out = np.arange(t1, t2, delta_t_out)
+
+        time_array = _t[selected_time_slices]
+        flux_array = np.zeros(time_array.shape)
+
+        for ID, time_slice in enumerate(np.argwhere(selected_time_slices).ravel()):
+            s = self.get_SED(comp, frame=frame, time_slice=time_slice, use_cached=use_cached)
+            if frame == 'src':
+                msk = s.nu_src.value >= nu1
+                if nu2 is not None:
+                    msk *= s.nu_src.value <= nu2
+                x = s.nu_src[msk]
+                y = s.nuLnu_src[msk] / x
+            elif frame == 'obs':
+                msk = s.nu.value >= nu1
+                if nu2 is not None:
+                    msk *= s.nu.value <= nu2
+                x = s.nu[msk]
+                y = s.nuFnu[msk] / x
+            elif frame == 'blob':
+                msk = s.nu_src.value >= nu1
+                if nu2 is not None:
+                    msk *= s.nu_src.value <= nu2
+                x = s.nu_src[msk] / (beaming)
+                y = s.nuLnu_src[msk] / s.nu_src[msk] / (beaming * beaming * beaming)
+            else:
+                raise RuntimeError('rest frame must be src or obs or blob')
+            if nu2 is None:
+                flux_array[ID] = y.value[0]
+            else:
+                flux_array[ID] = np.trapz(y.value, x.value)
+
+        flux_array_out = np.interp(time_array_out, time_array, flux_array, left=0, right=0)
+
+        if eval_cross_time is True:
+            t_cr = time_array_out
+            if frame == 'src':
+                t_cr = self.time_sampled_emitters._time_src_to_blob(time_array_out)
+            if frame == 'obs':
+                t_cr = self.time_sampled_emitters._time_obs_to_blob(time_array_out)
+            flux_array_out = self.eval_cross_time(t_cr, flux_array_out, n_slices=cross_time_slices, R=R)
+
+        return Table([time_array_out * Unit('s'), flux_array_out * Unit('erg s-1 cm-2')], names=('time', 'flux'),
+                     meta={'name': name})
+
+    def _lc_weight(self, delay_r, R, delta_R):
+        return 3 * (R - delay_r) * (R + delay_r) * delta_R / (4 * R * R * R)
+
+    def eval_cross_time(self, t, lc, n_slices=1000, R=None):
+        if R is None:
+            #TODO, here I should use radius at t=time
+            #in the expansion case, but I need to figure out
+            #better how this impact the time convolution
+            R = self.temp_ev._get_R_rad_sphere(0)
+
+        c = const.c.cgs.value
+
+        delta_R = (2 * R) / n_slices
+        delay_t = np.linspace(0, 2 * R / c, n_slices)
+        delay_r = R - delay_t * c
+        weight_array = self._lc_weight(delay_r, R, delta_R)
+        lc_out = np.zeros(lc.shape)
+        for ID, lc_in in enumerate(lc):
+            t_interp = np.linspace(t[ID] - 2 * R / c, t[ID], n_slices)
+            m = t_interp > t[0]
+            lc_interp = np.interp(t_interp[m], t, lc, left=0, right=0)
+            lc_out[ID] = np.sum(lc_interp * weight_array[m])
+
+        return lc_out
+
 
 class JetTimeEvol(object):
     """
@@ -350,31 +619,31 @@ class JetTimeEvol(object):
 
 
         self._temp_ev = BlazarSED.MakeTempEv()
-
-        if inplace is True:
-            self._jet_rad=jet_rad.clone()
-        else:
-            self._jet_rad=jet_rad
-
-
-
-
         if setup is True:
-            self._setup_(Q_inj,name,log_sampling,jet_gamma_grid_size)
+            self._setup_(jet_rad,Q_inj,name,log_sampling,jet_gamma_grid_size,inplace)
 
     def _setup_(self,
+                jet_rad,
                 Q_inj,
                 name,
                 log_sampling,
-                jet_gamma_grid_size):
+                jet_gamma_grid_size,
+                inplace):
 
-        self._jet_acc = copy.deepcopy(self._jet_rad)
-        self._jet_acc.name = self._jet_rad.name + 'acc_region'
+        if inplace is True:
+            _jet_rad = jet_rad.clone()
+        else:
+            _jet_rad = jet_rad
+
+        self.rad_region = TimeEvolvingRegion(temp_ev=self, jet=_jet_rad, build_cached=False, region_type='rad')
+        _jet_acc = copy.deepcopy(self.rad_region.jet)
+        _jet_acc.name = self.rad_region.jet.name + 'acc_region'
+        self.acc_region = TimeEvolvingRegion(temp_ev=self, jet=_jet_acc, build_cached=False, region_type='acc')
 
         self._m = FitModel()
-        self._m.add_component(self._jet_rad)
-        self._m.add_component(self._jet_acc)
-        self._m.parameters.link_par('z_cosm', [self._jet_acc.name], self._jet_rad.name)
+        self._m.add_component(self.rad_region.jet)
+        self._m.add_component(self.acc_region.jet)
+        self._m.parameters.link_par('z_cosm', [self.acc_region.jet.name], self.rad_region.jet.name)
 
         self.Q_inj=Q_inj
         self.name=name
@@ -386,18 +655,15 @@ class JetTimeEvol(object):
         self.Sync_cooling = 'on'
         self.region_expansion = 'off'
         self.log_sampling = log_sampling
-        self.time_sampled_emitters = None
-        self.acc_seds = None
-        self.rad_seds = None
-        self._acc_seds_mult_factor = 1
+        #self.time_sampled_emitters = None
 
         self.parameters = JetModelParameterArray(model=self)
         temp_ev_dict = self._build_par_dict()
         self.parameters.add_par_from_dict(temp_ev_dict,self,'_temp_ev',JetParameter)
 
-        self.parameters.R_rad_start.val=self._jet_rad.parameters.R.val
-        self.parameters.B_acc.val = self._jet_acc.parameters.B.val
-        self.parameters.B_rad.val = self._jet_rad.parameters.B.val
+        self.parameters.R_rad_start.val=self.rad_region.jet.parameters.R.val
+        self.parameters.B_acc.val = self.acc_region.jet.parameters.B.val
+        self.parameters.B_rad.val = self.rad_region.jet.parameters.B.val
 
         self.jet_gamma_grid_size = jet_gamma_grid_size
 
@@ -414,8 +680,8 @@ class JetTimeEvol(object):
         _model['version']=get_info()['version']
         _model['name'] = self.name
         _model['internals']={}
-        _model['internals']['_jet_rad']=self._jet_rad
-        _model['internals']['_jet_acc'] = self._jet_acc
+        #_model['internals']['_jet_rad']=self._jet_rad
+        #_model['internals']['_jet_acc'] = self._jet_acc
         _model['internals']['Q_inj'] = self.Q_inj
         _model['internals']['_custom_q_jnj_profile'] = self._custom_q_jnj_profile
         _model['internals']['_custom_acc_profile'] = self._custom_acc_profile
@@ -424,10 +690,10 @@ class JetTimeEvol(object):
         _model['internals']['Sync_cooling'] = self.Sync_cooling
         _model['internals']['region_expansion'] = self.region_expansion
         _model['internals']['log_sampling'] = self.log_sampling
-        _model['internals']['time_sampled_emitters'] = self.time_sampled_emitters
-        _model['internals']['acc_seds'] = self.acc_seds
-        _model['internals']['rad_seds'] = self.rad_seds
-        _model['internals']['_acc_seds_mult_factor'] = self._acc_seds_mult_factor
+        #_model['internals']['time_sampled_emitters'] = self.time_sampled_emitters
+        _model['internals']['acc_region'] = self.acc_region
+        _model['internals']['rad_region'] = self.rad_region
+        #_model['internals']['_acc_seds_mult_factor'] = self._acc_seds_mult_factor
         _model['internals']['jet_gamma_grid_size'] = self.jet_gamma_grid_size
 
         _model['pars'] = {}
@@ -480,43 +746,44 @@ class JetTimeEvol(object):
         except Exception as e:
             raise RuntimeError(e)
 
-    @property
-    def Delta_R_acc(self):
-        return  self.parameters.Delta_R_acc.val
 
-    #@property
-    #def R_jet(self):
-    #    return self.parameters.R_jet.val
-
-    @property
-    def time_steps_array(self):
-        return self._time_steps_array
-
-    @time_steps_array.setter
-    def time_steps_array(self,v):
-        self._time_steps_array = v
-
-    @property
-    def temp_ev(self):
-        return self._temp_ev
-
-    def show_pars(self, sort_key='par type'):
-        self.parameters.show_pars(sort_key=sort_key)
+    def get_region(self, region):
+        if region == 'rad':
+            _reg = self.rad_region
+        elif region == 'acc':
+            _reg = self.acc_region
+        else:
+            raise RuntimeError('region must be rad or acc')
+        return _reg
 
     def init_TempEv(self):
-        BlazarSED.Init(self._jet_rad._blob, self._jet_rad.get_DL_cm())
-        BlazarSED.Init(self._jet_acc._blob, self._jet_acc.get_DL_cm())
+        BlazarSED.Init(self.rad_region.jet._blob, self.rad_region.jet.get_DL_cm())
+        BlazarSED.Init(self.acc_region.jet._blob, self.acc_region.jet.get_DL_cm())
         self.temp_ev.R_H_rad_start = self.parameters.R_H_rad_start.val
-        #self._get_R_H_from_R_rad(self.parameters.R_rad_start.val)
         self._init_temp_ev()
         self._set_inj_time_profile(user_defined_array=self._custom_q_jnj_profile)
         self._set_acc_time_profile(user_defined_array=self._custom_acc_profile)
         self._fill_temp_ev_array_pre_run()
-        self._build_tempev_table(self._jet_rad, self._jet_acc)
-
+        self._build_tempev_table(self.rad_region.jet, self.acc_region.jet)
 
 
     def run(self,only_injection=True, do_injection=True, cache_SEDs_rad=True, cache_SEDs_acc=False):
+        """
+
+        Parameters
+        ----------
+        only_injection : if TRUE radiative regions is considered empty and is filled by particles escaped from acceleration region,
+        otherwise particle escaped from acc regions are injected and mixed with pre-existing particles in the radiative region.
+        if Q_inj is not provided in the object, then  only_injection will be considered FALSE
+        do_injection : if TRUE, particles are injected in the acceleration region, otherwise acc region is skipped, and only particles
+        in the radiative region are cooled.  if Q_inj is not provided in the object, then  do_injection will be considered FALSE
+        cache_SEDs_rad : if TRUE, all the SEDs of the radiative region will be cached
+        cache_SEDs_acc : if TRUE, all the SEDs of the acceleration region will be cached
+
+        Returns
+        -------
+
+        """
         self.cache_SEDs_rad = cache_SEDs_rad
         self.cache_SEDs_acc = cache_SEDs_acc
         print('temporal evolution running')
@@ -526,71 +793,151 @@ class JetTimeEvol(object):
         t1.start()
         do_injection =do_injection *(self.Q_inj!=None)
         only_injection = only_injection *(self.Q_inj!=None)
-        BlazarSED.Run_temp_evolution(self._jet_rad._blob, self._jet_acc._blob, self._temp_ev, int(only_injection), int(do_injection))
+        BlazarSED.Run_temp_evolution(self.rad_region.jet._blob, self.acc_region.jet._blob, self._temp_ev, int(only_injection), int(do_injection))
         pbar.stop = True
         pbar.finalzie()
-        self._fill_temp_ev_array_post_run()
+        #self._fill_temp_ev_array_post_run()
+        self.rad_region._fill_temp_ev_array_post_run()
+        if self.acc_region is not None:
+            self.acc_region._fill_temp_ev_array_post_run()
         print('temporal evolution completed')
 
-        self._set_jet_post_run()
+        #self._set_jet_post_run()
+        self.rad_region._post_run_update(build_cached=cache_SEDs_rad)
+        if self.acc_region is not None:
+            self.acc_region._post_run_update(build_cached=cache_SEDs_acc)
 
-        self.acc_seds = TimeSEDs(temp_ev=self, jet=self._jet_acc, build_cached=cache_SEDs_acc,mult_factor= self._acc_seds_mult_factor)
-        self.rad_seds = TimeSEDs(temp_ev=self, jet=self._jet_rad, build_cached=cache_SEDs_rad)
+
+    def _init_temp_ev(self):
+        self.time_steps_array = np.linspace(0., self._temp_ev.duration, self.parameters.t_size.val, dtype=np.double)
+        if self.Q_inj is not None:
+            setattr(self._temp_ev,'Q_inj_jetset_gamma_grid_size',self.Q_inj._gamma_grid_size)
+        BlazarSED.Init_Q_inj(self._temp_ev)
+        BlazarSED.Init_temp_evolution(self.rad_region.jet._blob, self.acc_region.jet._blob, self._temp_ev, self.rad_region.jet.get_DL_cm())
+        if self.Q_inj is not None:
+            self.Q_inj._set_L_inj(self.parameters.L_inj.val,self.V_acc())
+            Ne_custom_ptr = getattr(self._temp_ev, 'Q_inj_jetset')
+            gamma_custom_ptr = getattr(self._temp_ev, 'gamma_inj_jetset')
+            for ID in range(self.Q_inj._gamma_grid_size):
+                BlazarSED.set_q_inj_user_array(gamma_custom_ptr, self._temp_ev, self.Q_inj.gamma_e[ID], ID)
+                BlazarSED.set_q_inj_user_array(Ne_custom_ptr, self._temp_ev, self.Q_inj.n_gamma_e[ID], ID)
+
+    def _fill_temp_ev_array_pre_run(self):
+        size = BlazarSED.static_ev_arr_grid_size
+        self.gamma_pre_run=np.zeros(size)
+        self.t_Sync_cool_pre_run = np.zeros(size)
+        self.t_D_pre_run = np.zeros(size)
+        self.t_DA_pre_run = np.zeros(size)
+        self.t_A_pre_run = np.zeros(size)
+        self.t_Esc_rad_pre_run = np.zeros(size)
+        self.t_Esc_acc_pre_run = np.zeros(size)
+        self.R_H_t_pre_run = np.zeros(size)
+        self.R_t_pre_run = np.zeros(size)
+        self.B_t_pre_run = np.zeros(size)
+        for i in range(size):
+            self.gamma_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.g, i)
+            self.t_Sync_cool_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_Sync_cool, i)
+            self.t_D_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_D, i)
+            self.t_DA_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_DA, i)
+            self.t_A_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_A, i)
+            self.t_Esc_acc_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_Esc_acc, i)
+            self.t_Esc_rad_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_Esc_rad, i)
+            self.R_H_t_pre_run[i] =  BlazarSED.get_temp_ev_array_static(self._temp_ev.R_H_t_pre, i)
+            self.R_t_pre_run[i] =  BlazarSED.get_temp_ev_array_static(self._temp_ev.R_t_pre, i)
+            self.B_t_pre_run[i] =  BlazarSED.get_temp_ev_array_static(self._temp_ev.B_t_pre, i)
+
+        for i in range(self.parameters.t_size.val):
+            T_inj_profile_ptr = getattr(self._temp_ev, 'T_inj_profile')
+            BlazarSED.set_temp_ev_Time_array(T_inj_profile_ptr, self._temp_ev, self.custom_q_jnj_profile[i], i)
+            Acc_profile_ptr = getattr(self._temp_ev, 'T_acc_profile')
+            BlazarSED.set_temp_ev_Time_array(Acc_profile_ptr, self._temp_ev, self.custom_acc_profile[i], i)
+
+    # def _fill_temp_ev_array_post_run(self):
+    #     if self.acc_region is not None:
+    #         self.acc_region._set_time_sampled_emitters('acc')
+    #     self.rad_region._set_time_sampled_emitters('rad')
+    #
+    #     # gamma_size = self._temp_ev.gamma_grid_size
+    #     # time_size = self.parameters.num_samples.val
+    #     # self.time_sampled_emitters=TimeEmittersDistribution(time_size=time_size, gamma_size=gamma_size)
+    #     #
+    #     # self.time_sampled_emitters.time = np.zeros(time_size)
+    #     # #self.gamma = np.zeros(gamma_size)
+    #     # #self.N_gamma = np.zeros((time_size,(gamma_size)))
+    #     # for i in range(time_size):
+    #     #     self.time_sampled_emitters.time[i]=BlazarSED.get_temp_ev_N_time_array(self._temp_ev.N_time, self._temp_ev, i)
+    #     #     for j in range(gamma_size):
+    #     #         self.time_sampled_emitters.gamma[j] = BlazarSED.get_temp_ev_gamma_array(self._temp_ev.gamma, self._temp_ev, j)
+    #     #         self.time_sampled_emitters.n_gamma_rad[i,j] = BlazarSED.get_temp_ev_N_gamma_array(self._temp_ev.N_rad_gamma, self._temp_ev,i,j)
+    #     #         self.time_sampled_emitters.n_gamma_acc[i, j] = BlazarSED.get_temp_ev_N_gamma_array(self._temp_ev.N_acc_gamma,self._temp_ev, i, j)
+
+    # def _set_jet_post_run(self):
+    #     self._jet_emitters_distr = EmittersArrayDistribution(name='time_dep',
+    #                                                          gamma_array=np.copy(self.time_sampled_emitters.gamma),
+    #                                                          n_gamma_array=np.copy(self.time_sampled_emitters.n_gamma_rad[-1]),
+    #                                                          gamma_grid_size=self.jet_gamma_grid_size,
+    #                                                          normalize=False)
+    #     self._jet_emitters_distr._fill()
+    #     self._jet_emitters_distr._fill()
+    #     self._jet_rad.set_emitters_distribution(self._jet_emitters_distr)
+    #     self._jet_emitters_distr = EmittersArrayDistribution(name='time_dep',
+    #                                                          gamma_array=np.copy(self.time_sampled_emitters.gamma),
+    #                                                          n_gamma_array=np.copy(
+    #                                                              self.time_sampled_emitters.n_gamma_acc[-1]),
+    #                                                          gamma_grid_size=self.jet_gamma_grid_size,
+    #                                                          normalize=False)
+    #     self.acc_region.jet.set_emitters_distribution(self._jet_emitters_distr)
+
+    @property
+    def Delta_R_acc(self):
+        return self.parameters.Delta_R_acc.val
+
+    @property
+    def time_steps_array(self):
+        return self._time_steps_array
+
+    @time_steps_array.setter
+    def time_steps_array(self, v):
+        self._time_steps_array = v
+
+    @property
+    def temp_ev(self):
+        return self._temp_ev
 
     def _get_R_rad_sphere(self, time):
-        R =  self.parameters.R_rad_start.val
+        R = self.parameters.R_rad_start.val
         if self.region_expansion == 'on':
-            ##R_H= BlazarSED.eval_R_H_jet_t(self._jet_rad._blob, self.temp_ev,  time)
-            R = BlazarSED.eval_R_jet_t(self._jet_rad._blob, self.temp_ev, time)
+            R = BlazarSED.eval_R_jet_t(self.rad_region.jet._blob, self.temp_ev, time)
 
         return R
 
-
-        #delta_R_rad = const.c.cgs.value * time
-        #V_shell = self.R_jet*self.R_jet * delta_R_rad
-        #return np.power((0.75*V_shell),1./3)
-
     def _get_B_rad(self, time):
         if self.region_expansion == 'on':
-            #R_H = BlazarSED.eval_R_H_jet_t(self._jet_rad._blob, self.temp_ev, time)
             R = self._get_R_rad_sphere(time)
-            return BlazarSED.eval_B_jet_t(self._jet_rad._blob,self.temp_ev,R,time)
+            return BlazarSED.eval_B_jet_t(self.rad_region.jet._blob, self.temp_ev, R, time)
         else:
             return self.parameters.B_rad.val
 
     def _get_B_acc(self):
         return self.parameters.B_acc.val
 
-    #def _get_jet_theta_0(self):
-    #    return np.rad2deg(np.arctan( self.parameters.R_jet_exp.val/self.parameters.R_H_jet_exp.val))
-
-
-    #def _get_R_H_from_R_rad(self,R):
-    #    if self.region_expansion == 'on' and self.parameters.m_R.val>0:
-    #        if R>self.parameters.R_jet_exp.val:
-    #            R_H= np.power(R/self.parameters.R_jet_exp.val,1/self.parameters.m_R.val)*self.parameters.R_H_jet_exp.val
-    #        else:
-    #            R_H= self.parameters.R_H_jet_exp.val
-    #
-    #    else:
-    #        R_H= self._jet_rad.parameters.R_H.val
-    #    return R_H
-
-
     def _get_adiab_cooling_time_from_R(self, R):
-        #R = BlazarSED.eval_R_jet_t(self._jet_rad._blob, self.temp_ev, R_H)
-        return BlazarSED.Adiabatic_Cooling_time(self.temp_ev, self._jet_rad._blob,  R)
+        # R = BlazarSED.eval_R_jet_t(self._jet_rad._blob, self.temp_ev, R_H)
+        return BlazarSED.Adiabatic_Cooling_time(self.temp_ev, self.rad_region.jet._blob, R)
 
     def _get_R_acc_sphere(self):
         R = self.parameters.R_rad_start.val
-        V_shell = R *R * self.Delta_R_acc
-        R1=(4/3)*np.pi*(self.Delta_R_acc/0.5)**3
-        N=V_shell/R1
-        return self.Delta_R_acc*0.5,N
+        V_shell = R * R * self.Delta_R_acc
+        R1 = (4 / 3) * np.pi * (self.Delta_R_acc / 0.5) ** 3
+        N = V_shell / R1
+        return self.Delta_R_acc * 0.5, N
 
     def V_acc(self):
         R = self.parameters.R_rad_start.val
-        return  R* R * self.Delta_R_acc
+        return R * R * self.Delta_R_acc
+
+    def show_pars(self, sort_key='par type'):
+        self.parameters.show_pars(sort_key=sort_key)
 
     @property
     def log_sampling(self):
@@ -648,7 +995,6 @@ class JetTimeEvol(object):
         """
         return self._temp_ev.deltat
 
-
     @property
     def IC_cooling(self):
         return self._IC_cooling
@@ -705,8 +1051,8 @@ class JetTimeEvol(object):
     def _set_inj_time_profile(self,user_defined_array=None):
         if user_defined_array is None:
             self._custom_q_jnj_profile = np.zeros(self.parameters.t_size.val, dtype=np.double)
-            msk= self.time_steps_array > self._temp_ev.TStart_Inj
-            msk*= self.time_steps_array < self._temp_ev.TStop_Inj
+            msk= self.time_steps_array >= self._temp_ev.TStart_Inj
+            msk*= self.time_steps_array <= self._temp_ev.TStop_Inj
             self._custom_q_jnj_profile[msk] = 1.0
         else:
             if np.shape(user_defined_array)!=(self.parameters.t_size.val,):
@@ -716,109 +1062,87 @@ class JetTimeEvol(object):
     def _set_acc_time_profile(self,user_defined_array=None):
         if user_defined_array is None:
             self._custom_acc_profile = np.zeros(self._temp_ev.T_SIZE, dtype=np.double)
-            msk= self.time_steps_array > self._temp_ev.TStart_Acc
-            msk*= self.time_steps_array <    self._temp_ev.TStop_Acc
+            msk= self.time_steps_array >= self._temp_ev.TStart_Acc
+            msk*= self.time_steps_array <= self._temp_ev.TStop_Acc
             self._custom_acc_profile[msk] = 1.0
         else:
             if np.shape(user_defined_array)!=(self.parameters.t_size.val,):
                 raise  RuntimeError('user_defined_array must be 1d array with size =',self._temp_ev.T_SIZE)
             self._custom_acc_profile = np.double(user_defined_array)
 
+    # def get_SED(self,
+    #             comp,
+    #             region='rad',
+    #             time_slice=None,
+    #             time_slice_bin=None,
+    #             time=None,
+    #             time_bin=None,
+    #             use_cached=False,
+    #             average=False,
+    #             frame='obs'):
+    #
+    #     if region == 'rad':
+    #         sed = self.rad_region.get_SED(comp=comp,
+    #                                       time_slice=time_slice,
+    #                                       time_slice_bin=time_slice_bin,
+    #                                       time=time,
+    #                                       time_bin=time_bin,
+    #                                       use_cached=use_cached,
+    #                                       average=average,
+    #                                       frame=frame)
+    #     elif region == 'acc':
+    #         sed = self.acc_region.get_SED(comp=comp,
+    #                                       time_slice=time_slice,
+    #                                       time_slice_bin=time_slice_bin,
+    #                                       time=time,
+    #                                       time_bin=time_bin,
+    #                                       use_cached=use_cached,
+    #                                       average=average,
+    #                                       frame=frame)
+    #     else:
+    #         raise RuntimeError("region must be 'acc' or 'rad'")
+    #     return sed
 
-    def get_SED(self, comp, region='rad', time_slice=None, time_slice_bin=None, time=None, time_bin=None,use_cached=False):
-        if region == 'rad':
-            sed = self.rad_seds.get_SED(comp=comp,
-                                        time_slice=time_slice,
-                                        time_slice_bin=time_slice_bin,
-                                        time=time,
-                                        time_bin=time_bin,
-                                        use_cached=use_cached)
-        elif region == 'acc':
-            sed = self.acc_seds.get_SED(comp=comp,
-                                        time_slice=time_slice,
-                                        time_slice_bin=time_slice_bin,
-                                        time=time,
-                                        time_bin=time_bin,
-                                        use_cached=use_cached)
-        else:
-            raise  RuntimeError('region must be acc or rad')
-        return sed
-
-    def _set_jet_post_run(self):
-        self._jet_emitters_distr = EmittersArrayDistribution(name='time_dep',
-                                                             gamma_array=np.copy(self.time_sampled_emitters.gamma),
-                                                             n_gamma_array=np.copy(self.time_sampled_emitters.n_gamma_rad[-1]),
-                                                             gamma_grid_size=self.jet_gamma_grid_size,
-                                                             normalize=False)
-        self._jet_emitters_distr._fill()
-        self._jet_emitters_distr._fill()
-        self._jet_rad.set_emitters_distribution(self._jet_emitters_distr)
-        self._jet_emitters_distr = EmittersArrayDistribution(name='time_dep',
-                                                             gamma_array=np.copy(self.time_sampled_emitters.gamma),
-                                                             n_gamma_array=np.copy(
-                                                                 self.time_sampled_emitters.n_gamma_acc[-1]),
-                                                             gamma_grid_size=self.jet_gamma_grid_size,
-                                                             normalize=False)
-        self._jet_acc.set_emitters_distribution(self._jet_emitters_distr)
-
-
-    def _init_temp_ev(self):
-        self.time_steps_array = np.linspace(0., self._temp_ev.duration, self.parameters.t_size.val, dtype=np.double)
-        if self.Q_inj is not None:
-            setattr(self._temp_ev,'Q_inj_jetset_gamma_grid_size',self.Q_inj._gamma_grid_size)
-        BlazarSED.Init_Q_inj(self._temp_ev)
-        BlazarSED.Init_temp_evolution(self._jet_rad._blob, self._jet_acc._blob, self._temp_ev, self._jet_rad.get_DL_cm())
-        if self.Q_inj is not None:
-            self.Q_inj._set_L_inj(self.parameters.L_inj.val,self.V_acc())
-            Ne_custom_ptr = getattr(self._temp_ev, 'Q_inj_jetset')
-            gamma_custom_ptr = getattr(self._temp_ev, 'gamma_inj_jetset')
-            for ID in range(self.Q_inj._gamma_grid_size):
-                BlazarSED.set_q_inj_user_array(gamma_custom_ptr, self._temp_ev, self.Q_inj.gamma_e[ID], ID)
-                BlazarSED.set_q_inj_user_array(Ne_custom_ptr, self._temp_ev, self.Q_inj.n_gamma_e[ID], ID)
-
-    def _fill_temp_ev_array_pre_run(self):
-        size = BlazarSED.static_ev_arr_grid_size
-        self.gamma_pre_run=np.zeros(size)
-        self.t_Sync_cool_pre_run = np.zeros(size)
-        self.t_D_pre_run = np.zeros(size)
-        self.t_DA_pre_run = np.zeros(size)
-        self.t_A_pre_run = np.zeros(size)
-        self.t_Esc_rad_pre_run = np.zeros(size)
-        self.t_Esc_acc_pre_run = np.zeros(size)
-        self.R_H_t_pre_run = np.zeros(size)
-        self.R_t_pre_run = np.zeros(size)
-        self.B_t_pre_run = np.zeros(size)
-        for i in range(size):
-            self.gamma_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.g, i)
-            self.t_Sync_cool_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_Sync_cool, i)
-            self.t_D_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_D, i)
-            self.t_DA_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_DA, i)
-            self.t_A_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_A, i)
-            self.t_Esc_acc_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_Esc_acc, i)
-            self.t_Esc_rad_pre_run[i] = BlazarSED.get_temp_ev_array_static(self._temp_ev.t_Esc_rad, i)
-            self.R_H_t_pre_run[i] =  BlazarSED.get_temp_ev_array_static(self._temp_ev.R_H_t_pre, i)
-            self.R_t_pre_run[i] =  BlazarSED.get_temp_ev_array_static(self._temp_ev.R_t_pre, i)
-            self.B_t_pre_run[i] =  BlazarSED.get_temp_ev_array_static(self._temp_ev.B_t_pre, i)
-
-        for i in range(self.parameters.t_size.val):
-            T_inj_profile_ptr = getattr(self._temp_ev, 'T_inj_profile')
-            BlazarSED.set_temp_ev_Time_array(T_inj_profile_ptr, self._temp_ev, self.custom_q_jnj_profile[i], i)
-            Acc_profile_ptr = getattr(self._temp_ev, 'T_acc_profile')
-            BlazarSED.set_temp_ev_Time_array(Acc_profile_ptr, self._temp_ev, self.custom_acc_profile[i], i)
+    # def make_lc(self,
+    #             nu1,
+    #             nu2=None,
+    #             comp='Sum',
+    #             region='rad',
+    #             t1=None,
+    #             t2=None,
+    #             delta_t_out=None,
+    #             cross_time_slices=1000,
+    #             rest_frame='obs',
+    #             eval_cross_time=True,
+    #             use_cached=False,
+    #             R=None,
+    #             name=None):
+    #
+    #     return self.get_region(region).make_lc(nu1,
+    #                                     nu2 = nu2,
+    #                                     comp = comp,
+    #                                     region = region,
+    #                                     t1 = t1,
+    #                                     t2 = t2,
+    #                                     delta_t_out = delta_t_out,
+    #                                     cross_time_slices = cross_time_slices,
+    #                                     rest_frame = rest_frame,
+    #                                     eval_cross_time = eval_cross_time,
+    #                                     use_cached = use_cached,
+    #                                     R = R,
+    #                                     name = name)
 
     def eval_L_tot_inj(self):
-        if self.Q_inj is not None and self._jet_acc is not None:
-            return self.Q_inj.eval_U_q() * BlazarSED.V_sphere(self._jet_acc.parameters.R.val)
+        if self.Q_inj is not None and self.acc_region is not None:
+            return self.Q_inj.eval_U_q() * BlazarSED.V_sphere(self.acc_region.jet.parameters.R.val)
 
-
-
-    def _get_time_slice_T_array(self, time):
+    def _get_time_slice_T_array(self, time_blob):
         """
         Returns the time slice for a given time for *Non-sampled* times
 
         Parameters
         ----------
-        time
+        time_blob
 
         Returns
         -------
@@ -826,12 +1150,15 @@ class JetTimeEvol(object):
         """
         r = min(0, np.int(np.log10(self.delta_t))-1)
         if r<0:
-            _time = np.round(time,-r)
+            _time = np.round(time_blob, -r)
         else:
-            _time = time
+            _time = time_blob
+
+        if _time== -1:
+            _id = -1
 
         if _time > self.time_steps_array[-1] or _time < self.time_steps_array[0]:
-            raise RuntimeError('time must be within time start/stop range', self.time_steps_array[0], self.time_steps_array[-1],'time=',_time)
+            raise RuntimeError('time=%e must be within time start/stop range =[%e,%e]'%(_time,self.time_steps_array[0], self.time_steps_array[-1]))
 
         dt = (self.time_steps_array[-1] - self.time_steps_array[0]) / self.time_steps_array.size
         _id = np.int(_time/dt)
@@ -844,46 +1171,49 @@ class JetTimeEvol(object):
 
         return _id
 
+    def set_time(self, time_slice=None, time=None, frame='blob'):
+        self.rad_region.set_time(time_slice=time_slice,time=time,frame=frame)
+        if self.acc_region is not None:
+            self.acc_region.set_time(time_slice=time_slice, time=time, frame=frame)
 
-    def set_time(self,time_slice=None,time=None):
-        if (time_slice is None and time is None) or (time_slice is not None and time is not None):
-            raise RuntimeError('you can use either the N-th time slice, or the time in seconds')
+    # def set_time(self,time_slice=None,time=None,frame='blob',region='rad'):
+    #     if (time_slice is None and time is None) or (time_slice is not None and time is not None):
+    #         raise RuntimeError('you can use either the N-th time slice, or the time in seconds')
+    #
+    #
+    #     region = self.get_region(region)
+    #
+    #     if time is not None:
+    #         if frame == 'obs':
+    #             time = time
+    #         elif frame == 'src':
+    #             _t = self.temp_ev.time_sampled_emitters.time_src
+    #
+    #         elif frame == 'blob':
+    #             pass
+    #         else:
+    #             raise RuntimeError('rest_frame must be src or blob or obs')
+    #
+    #
+    #         time_slice=region.time_sampled_emitters._get_time_slice_samples(time)[0]
+    #
+    #     if time_slice is not  None:
+    #         time,time_ids = region.time_sampled_emitters._get_time_samples(time_slice=time_slice)
+    #         time = time[0]
+    #
+    #     self.rad_region.jet.parameters.R.val=self._get_R_rad_sphere(time)
+    #     self.rad_region.jet.parameters.B.val = self._get_B_rad(time)
+    #     self.rad_region.jet.emitters_distribution._set_arrays(self.time_sampled_emitters.gamma, self.time_sampled_emitters.n_gamma_rad[time_slice].flatten())
+    #     self.rad_region.jet.emitters_distribution._fill()
+    #
+    #     R,N_spheres = self._get_R_acc_sphere()
+    #     self._acc_seds_mult_factor = N_spheres
+    #     self.acc_region.jet.parameters.R.val = R
+    #     self.rad_region.jet.parameters.B.val = self._get_B_acc()
+    #     self.acc_region.jet.emitters_distribution._set_arrays(self.time_sampled_emitters.gamma,
+    #                                                    self.time_sampled_emitters.n_gamma_acc[time_slice].flatten())
+    #     self.acc_region.jet.emitters_distribution._fill()
 
-        if time_slice is None:
-            time_slice=self.time_sampled_emitters._get_time_slice_samples(time)[0]
-
-        if time is None:
-            time,time_ids = self.time_sampled_emitters._get_time_samples(time_slice=time_slice)
-            time = time[0]
-
-        self._jet_rad.parameters.R.val=self._get_R_rad_sphere(time)
-        self._jet_rad.parameters.B.val = self._get_B_rad(time)
-        self._jet_rad.emitters_distribution._set_arrays(self.time_sampled_emitters.gamma, self.time_sampled_emitters.n_gamma_rad[time_slice].flatten())
-        self._jet_rad.emitters_distribution._fill()
-
-        R,N_spheres = self._get_R_acc_sphere()
-        self._acc_seds_mult_factor = N_spheres
-        self._jet_acc.parameters.R.val = R
-        self._jet_rad.parameters.B.val = self._get_B_acc()
-        self._jet_acc.emitters_distribution._set_arrays(self.time_sampled_emitters.gamma,
-                                                       self.time_sampled_emitters.n_gamma_acc[time_slice].flatten())
-        self._jet_acc.emitters_distribution._fill()
-
-    def _fill_temp_ev_array_post_run(self):
-        gamma_size = self._temp_ev.gamma_grid_size
-        time_size = self.parameters.num_samples.val
-        self.time_sampled_emitters=TimeEmittersDistribution(time_size=time_size, gamma_size=gamma_size)
-
-        self.time_sampled_emitters.time = np.zeros(time_size)
-        #self.gamma = np.zeros(gamma_size)
-        #self.N_gamma = np.zeros((time_size,(gamma_size)))
-        for i in range(time_size):
-            self.time_sampled_emitters.time[i]=BlazarSED.get_temp_ev_N_time_array(self._temp_ev.N_time, self._temp_ev, i)
-            for j in range(gamma_size):
-                self.time_sampled_emitters.gamma[j] = BlazarSED.get_temp_ev_gamma_array(self._temp_ev.gamma, self._temp_ev, j)
-                self.time_sampled_emitters.n_gamma_rad[i,j] = BlazarSED.get_temp_ev_N_gamma_array(self._temp_ev.N_rad_gamma, self._temp_ev,i,j)
-                self.time_sampled_emitters.n_gamma_acc[i, j] = BlazarSED.get_temp_ev_N_gamma_array(self._temp_ev.N_acc_gamma,
-                                                                                               self._temp_ev, i, j)
 
     def plot_time_profile(self,figsize=(8,8),dpi=120):
         p=PlotTempEvDiagram(figsize=figsize,dpi=dpi,expanding_region=self.region_expansion=='on')
@@ -896,39 +1226,47 @@ class JetTimeEvol(object):
         return p
 
     def plot_tempev_emitters(self,region='rad',figsize=(8,8),dpi=120,energy_unit='gamma',loglog=True,plot_Q_inj=True,pow=None):
+        region=self.get_region(region)
+
         p=PlotTempEvEmitters(figsize=figsize,dpi=dpi,loglog=loglog)
-        p.plot_distr(self,region=region,energy_unit=energy_unit,plot_Q_inj=plot_Q_inj,pow=pow)
+        p.plot_distr(temp_ev=self,region=region,energy_unit=energy_unit,plot_Q_inj=plot_Q_inj,pow=pow)
 
         return p
 
     def plot_tempev_model(self,
                           comp='Sum',
                           region='rad',
+                          frame='obs',
                           t1=None,
                           t2=None,
                           time_slice=None,
                           time_slice_bin=None,
                           time=None,
                           time_bin=None,
+                          density=False,
                           use_cached=False,
                           sed_data=None,
-                          plot_obj=None):
+                          plot_obj=None,
+                          average=False):
 
 
         if plot_obj is None:
-            plot_obj=PlotSED()
+            plot_obj=PlotSED(frame=frame)
 
-        plot_obj.plot_tempev_model(self,
-                                   comp =comp,
+        region = self.get_region(region)
+        plot_obj.plot_tempev_model(temp_ev=self,
                                    region=region,
+                                   comp=comp,
                                    t1=t1,
                                    t2=t2,
                                    time_slice=time_slice,
                                    time_slice_bin=time_slice_bin,
                                    time=time,
                                    time_bin=time_bin,
+                                   density=density,
                                    sed_data=sed_data,
-                                   use_cached=use_cached)
+                                   use_cached=use_cached,
+                                   average=average,)
 
         return plot_obj
 
@@ -951,117 +1289,11 @@ class JetTimeEvol(object):
         p.ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1, prop={'size':10})
         return p
 
-    def make_lc(self, nu1_obs, nu2_obs=None, comp='Sum', t1=None, t2=None, delta_t_out=None, cross_time_slices=1000, rest_frame='obs', eval_cross_time=True, use_cached=False, R=None, name=None):
-        if t1 is None:
-            t1=self.time_sampled_emitters.time[0]
-        if t2 is None:
-            t2=self.time_sampled_emitters.time[-1]
-
-        selected_time_slices = np.logical_and(self.time_sampled_emitters.time >= t1, self.time_sampled_emitters.time <= t2)
-
-        if delta_t_out is None:
-            time_array_out = self.time_sampled_emitters.time[selected_time_slices]
-        else:
-            time_array_out = np.arange(t1, t2, delta_t_out)
-
-        time_array=self.time_sampled_emitters.time[selected_time_slices]
-        flux_array=np.zeros(time_array.shape)
-
-        if nu2_obs is None:
-            _nu2 = nu1_obs*10
-        else:
-            _nu2 = nu2_obs
-
-        z = self._jet_rad.parameters.z_cosm.val
-        beaming = self._jet_rad.get_beaming()
-
-        if rest_frame == 'src':
-            _nu2= _nu2 *(1+z)
-            _nu1= nu1_obs *(1+z)
-
-        elif rest_frame == 'blob':
-            _nu2 = _nu2 *(1+z) / beaming
-            _nu1 = nu1_obs * (1+z) / beaming
-        else:
-           _nu1= nu1_obs
-
-
-
-        for ID, time_slice in enumerate(np.argwhere(selected_time_slices).ravel()):
-            s = self.get_SED(comp, time_slice=time_slice, use_cached=use_cached)
-
-
-            if rest_frame=='src':
-                msk = s.nu_src.value >= _nu1
-                msk *= s.nu_src.value <= _nu2
-                x = s.nu_src[msk]
-                y = s.nuLnu_src[msk] / x
-            elif rest_frame == 'obs':
-                msk = s.nu.value >= _nu1
-                msk *= s.nu.value <= _nu2
-                x = s.nu[msk]
-                y = s.nuFnu[msk] / x
-            elif rest_frame == 'blob':
-                msk = s.nu_src.value >= _nu1*beaming
-                msk *= s.nu_src.value <= _nu2*beaming
-                x =  s.nu_src[msk] /(beaming)
-                y = s.nuLnu_src[msk] / s.nu_src[msk] / (beaming*beaming*beaming)
-            else:
-                raise  RuntimeError('rest frame must be src or obs or blob')
-            if nu2_obs is None:
-                flux_array[ID] = y.value[0]
-            else:
-                flux_array[ID] = np.trapz(y.value, x.value)
-
-
-        flux_array_out = np.interp(time_array_out,time_array, flux_array, left=0, right=0)
-
-        if eval_cross_time is True:
-            flux_array_out = self.eval_cross_time(time_array_out, flux_array_out, n_slices=cross_time_slices, R=R)
-
-        if rest_frame == 'src':
-            beaming = self._jet_rad.get_beaming()
-            z = 0
-        elif rest_frame == 'blob':
-            beaming = 1
-            z = 0
-        else:
-            beaming = self._jet_rad.get_beaming()
-            z = self._jet_rad.parameters.z_cosm.val
-
-        time_array_out = time_array_out*(1+z)/beaming
-        return Table([time_array_out * Unit('s'), flux_array_out * Unit('erg s-1 cm-2')], names=('time', 'flux'), meta={'name': name})
-
-    def _lc_weight(self, delay_r, R, delta_R):
-        return 3*(R-delay_r)*(R+delay_r)*delta_R/(4*R*R*R)
-
-    def eval_cross_time(self,t,lc,n_slices=1000,R=None):
-        if R is None:
-            R = self._get_R_rad_sphere(0)
-                #self._jet_rad.parameters.R.val
-
-        c = const.c.cgs.value
-
-        delta_R = (2 * R) / n_slices
-        delay_t = np.linspace(0, 2 * R / c, n_slices)
-        delay_r = R - delay_t * c
-        weight_array = self._lc_weight(delay_r, R, delta_R)
-        lc_out = np.zeros(lc.shape)
-        for ID, lc_in in enumerate(lc):
-            t_interp = np.linspace(t[ID] - 2 * R / c, t[ID], n_slices)
-            m = t_interp > t[0]
-            lc_interp = np.interp(t_interp[m], t, lc,left=0, right=0)
-            lc_out[ID] = np.sum(lc_interp * weight_array[m])
-
-        return lc_out
-
-
-
     def show_model(self, getstring=False, names_list=None, sort_key=None):
         print('-'*80)
         print("JetTimeEvol model description")
         print('-'*80)
-        self._build_tempev_table(self._jet_rad, self._jet_acc)
+        self._build_tempev_table(self.rad_region.jet, self.acc_region.jet)
         print(" ")
         print("physical setup: ")
         print("")
@@ -1105,7 +1337,7 @@ class JetTimeEvol(object):
         rows.append(self._build_row_dict('Diff index', '', '', val=self._temp_ev.Diff_Index, islog=False))
         rows.append(self._build_row_dict('Acc index', '', 's-1', val=self._temp_ev.Acc_Index, islog=False))
 
-        if self._jet_acc is not None:
+        if self.acc_region is not None:
             rows.append(
                 self._build_row_dict('Tesc acc', 'time', 's', val=self._temp_ev.T_esc_Coeff_acc, val_by=self.t_unit_acc,
                                      unit1='R_acc/c', islog=False))

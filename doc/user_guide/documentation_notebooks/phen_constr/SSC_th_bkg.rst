@@ -126,7 +126,7 @@ This section is based on the work presented in
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140539038861968-374316" class="table-striped table-bordered table-condensed">
+    <table id="table140561271651872-509181" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -162,14 +162,14 @@ This section is based on the work presented in
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140539038861968-374316').dataTable()");
+        console.log("$('#table140561271651872-509181').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140539038861968-374316').dataTable({
+        $('#table140561271651872-509181').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -208,7 +208,7 @@ This section is based on the work presented in
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd1cb83b340>
+    <matplotlib.legend.Legend at 0x7fd6fd2fafa0>
 
 
 
@@ -227,7 +227,7 @@ This section is based on the work presented in
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd1cba09e50>
+    <matplotlib.legend.Legend at 0x7fd6fd827f10>
 
 
 
@@ -365,7 +365,7 @@ Synchrotron trend for :math:`\gamma_{min}`
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd1cf22bd60>
+    <matplotlib.legend.Legend at 0x7fd6fe335e20>
 
 
 
@@ -480,7 +480,7 @@ Synchrotron trend for the low-energy spectral slope
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd1e8fae160>
+    <matplotlib.legend.Legend at 0x7fd6e05c1610>
 
 
 
@@ -636,7 +636,6 @@ Changing :math:`\gamma_{min}`
 .. image:: SSC_th_bkg_files/SSC_th_bkg_31_0.png
 
 
-
 Changing the turn-over energy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -668,7 +667,7 @@ Changing the turn-over energy
 
 
 
-.. image:: SSC_th_bkg_files/SSC_th_bkg_34_0.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_33_0.png
 
 
 The IC redistribution function
@@ -721,7 +720,7 @@ The IC redistribution function
 
 
 
-.. image:: SSC_th_bkg_files/SSC_th_bkg_38_0.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_37_0.png
 
 
 .. code:: ipython3
@@ -743,7 +742,7 @@ The IC redistribution function
 
 
 
-.. image:: SSC_th_bkg_files/SSC_th_bkg_39_1.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_38_1.png
 
 
 Transition from TH to KN regime for the IC emission: changing the curvature in the high-enegy branch of the emitters
@@ -806,11 +805,11 @@ Transition from TH to KN regime for the IC emission: changing the curvature in t
 
 
 
-.. image:: SSC_th_bkg_files/SSC_th_bkg_42_0.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_41_0.png
 
 
 
-.. image:: SSC_th_bkg_files/SSC_th_bkg_42_1.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_41_1.png
 
 
 the following plot shows the trend for the S curvature (b) and the IC
@@ -841,12 +840,12 @@ the curvature of the electron distribution (r)
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fe4032911f0>
+    <matplotlib.legend.Legend at 0x7fd6fd8b8640>
 
 
 
 
-.. image:: SSC_th_bkg_files/SSC_th_bkg_44_1.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_43_1.png
 
 
 Transition from TH to KN regime for the IC emission: changing the turnover energy
@@ -920,12 +919,12 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.collections.PathCollection at 0x7fd1eaf8b220>
+    <matplotlib.collections.PathCollection at 0x7fd6dfa16c40>
 
 
 
 
-.. image:: SSC_th_bkg_files/SSC_th_bkg_47_1.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_46_1.png
 
 
 .. code:: ipython3
@@ -947,12 +946,12 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd1eafeabe0>
+    <matplotlib.legend.Legend at 0x7fd6fd4d5460>
 
 
 
 
-.. image:: SSC_th_bkg_files/SSC_th_bkg_48_1.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_47_1.png
 
 
 .. code:: ipython3
@@ -977,12 +976,12 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd1cf0d3730>
+    <matplotlib.legend.Legend at 0x7fd6fec64490>
 
 
 
 
-.. image:: SSC_th_bkg_files/SSC_th_bkg_49_1.png
+.. image:: SSC_th_bkg_files/SSC_th_bkg_48_1.png
 
 
 Exercise
@@ -993,4 +992,3 @@ gamma0_log_parab
 
 hint: use the get_component_peak to extract the peak of the SED for each
 component
-

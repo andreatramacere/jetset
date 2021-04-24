@@ -131,7 +131,7 @@ Phenomenological model constraining: application
 .. raw:: html
 
     <i>Table length=6</i>
-    <table id="table140301043733504-952039" class="table-striped table-bordered table-condensed">
+    <table id="table140437773773792-936706" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-7.183721e-02</td><td>-7.183721e-02</td><td>1.342816e-02</td><td>--</td><td>-5.476368e-02</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-2.748340e-03</td><td>-2.748340e-03</td><td>2.032578e-03</td><td>--</td><td>3.836062e-03</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -162,14 +162,14 @@ Phenomenological model constraining: application
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140301043733504-952039').dataTable()");
+        console.log("$('#table140437773773792-936706').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140301043733504-952039').dataTable({
+        $('#table140437773773792-936706').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -230,12 +230,12 @@ Phenomenological model constraining: application
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140301049109904-761129" class="table-striped table-bordered table-condensed">
+    <table id="table140437724194368-356491" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>LogCubic</td><td>b</td><td>curvature</td><td></td><td>-1.239376e-01</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>c</td><td>third-degree</td><td></td><td>-2.636682e-02</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Ep</td><td>peak freq</td><td>Hz</td><td>2.545172e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>True</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Sp</td><td>peak flux</td><td>erg / (cm2 s)</td><td>-1.057063e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>True</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>b</td><td>curvature</td><td></td><td>-1.547080e-01</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>c</td><td>third-degree</td><td></td><td>-3.773118e-02</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Ep</td><td>peak freq</td><td>Hz</td><td>2.526637e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>True</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Sp</td><td>peak flux</td><td>erg / (cm2 s)</td><td>-1.057499e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>True</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -259,14 +259,14 @@ Phenomenological model constraining: application
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140301049109904-761129').dataTable()");
+        console.log("$('#table140437724194368-356491').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140301049109904-761129').dataTable({
+        $('#table140437724194368-356491').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -295,11 +295,11 @@ Phenomenological model constraining: application
 .. parsed-literal::
 
     dof=9
-    chisq=1.256424, chisq/red=0.139603 null hypothesis sig=0.998583
+    chisq=1.441196, chisq/red=0.160133 null hypothesis sig=0.997560
     
     stats without the UL
     dof  UL=9
-    chisq=1.256424, chisq/red=0.139603 null hypothesis sig=0.998583
+    chisq=1.441196, chisq/red=0.160133 null hypothesis sig=0.997560
     
     
     best fit pars
@@ -309,12 +309,12 @@ Phenomenological model constraining: application
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140301049139056-729466" class="table-striped table-bordered table-condensed">
+    <table id="table140437773445680-520921" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <tr><td>LogCubic</td><td>b</td><td>-1.239376e-01</td><td>-1.239376e-01</td><td>1.501286e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>c</td><td>-2.636682e-02</td><td>-2.636682e-02</td><td>6.064115e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Ep</td><td>2.545172e+01</td><td>2.545172e+01</td><td>7.473136e-02</td><td>--</td><td>2.546097e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Sp</td><td>-1.057063e+01</td><td>-1.057063e+01</td><td>2.131005e-02</td><td>--</td><td>-1.000000e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>b</td><td>-1.547080e-01</td><td>-1.547080e-01</td><td>1.475869e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>c</td><td>-3.773118e-02</td><td>-3.773118e-02</td><td>6.449603e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Ep</td><td>2.526637e+01</td><td>2.526637e+01</td><td>6.717304e-02</td><td>--</td><td>2.526894e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Sp</td><td>-1.057499e+01</td><td>-1.057499e+01</td><td>2.337071e-02</td><td>--</td><td>-1.000000e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -338,14 +338,14 @@ Phenomenological model constraining: application
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140301049139056-729466').dataTable()");
+        console.log("$('#table140437773445680-520921').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140301049139056-729466').dataTable({
+        $('#table140437773445680-520921').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -369,12 +369,12 @@ Phenomenological model constraining: application
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140301049138432-760398" class="table-striped table-bordered table-condensed">
+    <table id="table140437725402016-472688" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <tr><td>LogCubic</td><td>b</td><td>-1.239376e-01</td><td>-1.239376e-01</td><td>1.501286e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>c</td><td>-2.636682e-02</td><td>-2.636682e-02</td><td>6.064115e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Ep</td><td>2.545172e+01</td><td>2.545172e+01</td><td>7.473136e-02</td><td>--</td><td>2.546097e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Sp</td><td>-1.057063e+01</td><td>-1.057063e+01</td><td>2.131005e-02</td><td>--</td><td>-1.000000e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>b</td><td>-1.547080e-01</td><td>-1.547080e-01</td><td>1.475869e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>c</td><td>-3.773118e-02</td><td>-3.773118e-02</td><td>6.449603e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Ep</td><td>2.526637e+01</td><td>2.526637e+01</td><td>6.717304e-02</td><td>--</td><td>2.526894e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Sp</td><td>-1.057499e+01</td><td>-1.057499e+01</td><td>2.337071e-02</td><td>--</td><td>-1.000000e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -398,14 +398,14 @@ Phenomenological model constraining: application
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140301049138432-760398').dataTable()");
+        console.log("$('#table140437725402016-472688').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140301049138432-760398').dataTable({
+        $('#table140437725402016-472688').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -419,7 +419,7 @@ Phenomenological model constraining: application
 
 .. parsed-literal::
 
-    ---> IC         nu_p=+2.545172e+01 (err=+7.473136e-02)  nuFnu_p=-1.057063e+01 (err=+2.131005e-02) curv.=-1.239376e-01 (err=+1.501286e-02)
+    ---> IC         nu_p=+2.526637e+01 (err=+6.717304e-02)  nuFnu_p=-1.057499e+01 (err=+2.337071e-02) curv.=-1.547080e-01 (err=+1.475869e-02)
     ================================================================================
     
 
@@ -495,57 +495,57 @@ Phenomenological model constraining: application
     ---> using gamma_3p_Sync= 178021.53012425778
     
     ---> nu_p_seed_blob=6.449254e+15
-    ---> COMPTON FACTOR=9.291968e+00 23183.387070604676
-    ---> determine gamma_3p_SSCc= 3.160788e+05
+    ---> COMPTON FACTOR=9.291968e+00 18728.351429444156
+    ---> determine gamma_3p_SSCc= 2.553395e+05
     ---> task completed True
     
-    ---> setting par type turn-over energy, corresponding to par gamma0_log_parab=4.447727e+00
+    ---> setting par type turn-over energy, corresponding to par gamma0_log_parab=4.355049e+00
     ---> task completed True
-    ---> using gamma_3p_SSC=3.160788e+05
+    ---> using gamma_3p_SSC=2.553395e+05
     
     
     ---> setting par type emitters_density, corresponding to par N
-    ---> to N=2.815572e+00
+    ---> to N=3.212930e+00
     ---> task completed (None, True)
     
     ---> setting B from nu_p_S to B=1.000000e+00
     ---> to B=1.000000e+00
     ---> setting B from best matching of nu_p_IC
     
-         Best B=3.290127e-02
+         Best B=3.372112e-02
     ---> setting par type magnetic_field, corresponding to par B
     ---> task completed  True
-    ---> best B found: 3.290127e-02
+    ---> best B found: 3.372112e-02
     
     ---> update pars for new B 
     ---> setting par type low-energy-cut-off, corresponding to par gmin
     ---> task completed True
-    ---> set to 2.225908e+00
+    ---> set to 2.220564e+00
     
     ---> setting par type low-energy-cut-off, corresponding to par gamma0_log_parab
     ---> task completed True
     ---> task completed  True
-    ---> using gamma_3p_Sync= 230169.36176828775
-    ---> to 4.309979e+00
+    ---> using gamma_3p_Sync= 227354.15789066278
+    ---> to 4.304634e+00
     
-    ---> gamma_max=3.695803e+06 from nu_max_Sync= 2.413075e+19, using B=3.290127e-02
+    ---> gamma_max=3.650600e+06 from nu_max_Sync= 2.413075e+19, using B=3.372112e-02
     ---> task completed True
     ---> setting par type high-energy-cut-off, corresponding to par gmax
-    ---> set to 6.567709e+00
+    ---> set to 6.562364e+00
     
     ---> setting par type emitters_density, corresponding to par N
-    ---> to N=7.001306e+00
+    ---> to N=6.799820e+00
     ---> task completed (None, True)
     
     ---> setting R from Compton Dominance (CD)
-         Best R=3.948056e+16
+         Best R=3.871091e+16
     ---> setting par type region_size, corresponding to par R
-    ---> set to 3.948056e+16
+    ---> set to 3.871091e+16
     ---> task completed True
     ---> updating setting par type emitters_density, corresponding to par N
-    ---> set to 6.042946e+00
+    ---> set to 6.226111e+00
     ---> task completed (None, True)
-    ---> t_var (days) 1.0502921501574718
+    ---> t_var (days) 1.0298173038983975
     
     show pars
 
@@ -554,17 +554,17 @@ Phenomenological model constraining: application
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140301045151056-968954" class="table-striped table-bordered table-condensed">
+    <table id="table140437794122336-766876" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.948056e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.871091e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>3.290127e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>3.372112e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.225908e+00</td><td>0.000000e+00</td><td>9.000000e+00</td><td>True</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.567709e+00</td><td>0.000000e+00</td><td>1.500000e+01</td><td>True</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>6.042946e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>4.309979e+00</td><td>0.000000e+00</td><td>9.000000e+00</td><td>True</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.220564e+00</td><td>0.000000e+00</td><td>9.000000e+00</td><td>True</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.562364e+00</td><td>0.000000e+00</td><td>1.500000e+01</td><td>True</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>6.226111e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>4.304634e+00</td><td>0.000000e+00</td><td>9.000000e+00</td><td>True</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.244223e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>3.591861e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -590,14 +590,14 @@ Phenomenological model constraining: application
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140301045151056-968954').dataTable()");
+        console.log("$('#table140437794122336-766876').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140301045151056-968954').dataTable({
+        $('#table140437794122336-766876').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
