@@ -1,3 +1,4 @@
+__author__ = "Andrea Tramacere"
 
 
 #Peak values

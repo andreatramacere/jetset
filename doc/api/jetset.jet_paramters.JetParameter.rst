@@ -10,10 +10,10 @@ JetParameter
 
    .. autosummary::
 
-      ~JetParameter.assign_val_to_blob
+      ~JetParameter.assign_val_to_jetkernel
       ~JetParameter.set
 
    .. rubric:: Methods Documentation
 
-   .. automethod:: assign_val_to_blob
+   .. automethod:: assign_val_to_jetkernel
    .. automethod:: set

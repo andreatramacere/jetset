@@ -17,6 +17,7 @@ SpecCompList
    .. autosummary::
 
       ~SpecCompList.build_table
+      ~SpecCompList.get_spectral_component_by_name
       ~SpecCompList.show
 
    .. rubric:: Attributes Documentation
@@ -26,4 +27,5 @@ SpecCompList
    .. rubric:: Methods Documentation
 
    .. automethod:: build_table
+   .. automethod:: get_spectral_component_by_name
    .. automethod:: show

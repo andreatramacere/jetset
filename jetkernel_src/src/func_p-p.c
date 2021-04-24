@@ -589,7 +589,7 @@ double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, 
                 pt->i_griglia_gamma=ID_gamma;
                 pt->Integrand_over_gamma_grid[ID_gamma] =pf_pp_kernel(pt->griglia_gamma_Np_log[pt->i_griglia_gamma], E_out_TeV, pt);
         }
-        integr= integr_simp_gird_equilog(pt->griglia_gamma_Np_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
+        integr= integr_simp_grid_equilog(pt->griglia_gamma_Np_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
         
     }
     return integr;

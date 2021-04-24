@@ -11,9 +11,11 @@ Minimizer
    .. autosummary::
 
       ~Minimizer.fit
+      ~Minimizer.get_chisq
       ~Minimizer.residuals_Fit
 
    .. rubric:: Methods Documentation
 
    .. automethod:: fit
+   .. automethod:: get_chisq
    .. automethod:: residuals_Fit

@@ -243,7 +243,7 @@ double integrale_Sync(double (*pf) (struct blob *, unsigned int  ID), struct blo
         pt->Integrand_over_gamma_grid[ID] =pf(pt,ID);
     }
 
-    return integr_simp_gird_equilog(pt->griglia_gamma_Ne_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
+    return integr_simp_grid_equilog(pt->griglia_gamma_Ne_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
 }
     //OLD IMPLEMENTATION
     // double integr, y1, y2, y3, x1, x3;

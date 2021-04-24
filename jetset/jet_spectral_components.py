@@ -1,10 +1,3 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
-
-
-
 
 __author__ = "Andrea Tramacere"
 
@@ -15,22 +8,21 @@ from astropy.table import Table
 from numpy.core._multiarray_umath import zeros, log10
 from scipy import interpolate
 
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+# on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
-if on_rtd == True:
-    try:
-        from .jetkernel import jetkernel as BlazarSED
-    except ImportError:
-        from .mock import jetkernel as BlazarSED
-else:
-    from .jetkernel import jetkernel as BlazarSED
+# if on_rtd == True:
+#     try:
+#         from .jetkernel import jetkernel as BlazarSED
+#     except ImportError:
+#         from .mock import jetkernel as BlazarSED
+# else:
+
+from .jetkernel import jetkernel as BlazarSED
 
 from . import spectral_shapes
 from .jetkernel_models_dic import nuFnu_obs_dict, n_seed_dic
-#nu_src_start_stop_dict
 from .plot_sedfit import PlotSpecComp,PlotSeedPhotons
-from .utils import check_frame, unexpetced_behaviour
-#from .frame_converter import convert_nu_to_src,convert_nu_to_blob
+from .utils import check_frame, unexpected_behaviour
 
 __all__=['JetSeedPhotons','JetSpecComponent','SpecCompList']
 
@@ -133,7 +125,7 @@ class JetSpecComponent(object):
 
         self.nu_ptr=getattr(blob_object,self._nu_name)
 
-        self.SED=spectral_shapes.SED(name=self.name)
+        self.SED=spectral_shapes.SED(name=self.name,beaming=jet_obj.get_beaming())
         self.seed_field=None
 
         # self._nu_start_src_name, self._nu_stop_src_name = nu_src_start_stop_dict[self.name]
@@ -193,7 +185,7 @@ class JetSpecComponent(object):
     def fill_SED(self,log_log=False,lin_nu=None):
 
         x,y=self.get_SED_points( log_log=log_log,lin_nu=lin_nu,)
-
+        self.SED.beaming=self.jet_obj.get_beaming()
         self.SED.fill(nu=x,nuFnu=y,log_log=log_log)
         self.SED.fill_nuLnu(z=self.jet_obj.get_par_by_type('redshift').val,dl=self.jet_obj.get_DL_cm())
 
@@ -315,7 +307,7 @@ class SpecCompList(object):
         elif restframe=='src':
             _cols.append(self._sc_list[0].SED.nu_src)
         else:
-            unexpetced_behaviour()
+            unexpected_behaviour()
 
         for ID,sc in enumerate(self._sc_list):
             _names.append(sc.name)
@@ -330,6 +322,15 @@ class SpecCompList(object):
         _meta['redshift']=sc.jet_obj.get_par_by_type('redshift').val
         _meta['restframe']= restframe
         self._table = Table(_cols, names=_names,meta=_meta)
+
+    def get_spectral_component_by_name(self,name,verbose=True):
+        for i in range(len(self._sc_list)):
+            if self._sc_list[i].name==name:
+                return self._sc_list[i]
+        else:
+            if verbose==True:
+                print ("no spectral components with name %s found"%name)
+
 
     @property
     def table(self):

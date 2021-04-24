@@ -18,6 +18,7 @@ def test_sed_shaper(my_shape=None, plot=True, sed_number=None,sed_data=None,chec
     if my_shape is None:
         my_shape=test_spectral_indices(plot=plot,sed_number=sed_number,sed_data=sed_data)
 
+    print('==> check_host_gal_template',check_host_gal_template,sed_number)
     mm, best_fit = my_shape.sync_fit(check_host_gal_template=check_host_gal_template,
                                      Ep_start=None,
                                      minimizer='lsb',
@@ -42,6 +43,9 @@ def test_sed_shaper(my_shape=None, plot=True, sed_number=None,sed_data=None,chec
 def test_model_constr(my_shape=None, plot=True,sed_number=None,sed_data=None,check_host_gal_template=False):
     from jetset.obs_constrain import ObsConstrain
 
+    if sed_number == 2:
+        check_host_gal_template=True
+    print('==> check_host_gal_template', check_host_gal_template, sed_number)
     if my_shape is None:
         my_shape=test_sed_shaper(plot=plot,sed_number=sed_number,sed_data=sed_data,check_host_gal_template=check_host_gal_template)
 

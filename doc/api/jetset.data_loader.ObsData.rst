@@ -37,7 +37,7 @@ ObsData
       ~ObsData.save
       ~ObsData.set_UL
       ~ObsData.set_error
-      ~ObsData.set_facke_error
+      ~ObsData.set_fake_error
       ~ObsData.set_zero_error
       ~ObsData.show_data_sets
       ~ObsData.show_time_span
@@ -69,7 +69,7 @@ ObsData
    .. automethod:: save
    .. automethod:: set_UL
    .. automethod:: set_error
-   .. automethod:: set_facke_error
+   .. automethod:: set_fake_error
    .. automethod:: set_zero_error
    .. automethod:: show_data_sets
    .. automethod:: show_time_span

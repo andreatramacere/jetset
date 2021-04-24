@@ -3,3 +3,4 @@
 
  pytest --pyargs jetset.tests.test_functions::test_short
  python -c'from jetset.tests.test_functions import test_short; test_short()'
+ pytest --disable-warnings --pyargs -vvv -m integration jetset.tests.test_functions::TestFull

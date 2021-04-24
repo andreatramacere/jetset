@@ -1,16 +1,10 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (bytes, str, open, super, range,
-#                         zip, round, input, int, pow, object, map, zip)
-
 __author__ = "Andrea Tramacere"
 
 
 import numpy as np
 import copy
 
-#from .cosmo_tools import Cosmo
-#from poly_fit import filter_interval
+
 from astropy.table  import  Table,Column
 from astropy import  units as u
 from astropy.units import cds
@@ -28,13 +22,25 @@ __all__=['get_data_set_msk','get_freq_range_msk','lin_to_log','log_to_lin','ObsD
 
 
 class Data(object):
-
+    """
+    Class to store obs data
+    """
     def __init__(self,
                  data_table=None,
                  n_rows=None,
                  meta_data=None,
                  import_dictionary=None,
                  cosmo=None):
+        """
+
+        Parameters
+        ----------
+        data_table:
+        n_rows:
+        meta_data:
+        import_dictionary:
+        cosmo:
+        """
 
         if cosmo is None:
 
@@ -236,69 +242,13 @@ class Data(object):
 
 
 class ObsData(object):
-    """
+    """ObsData class
+
     This class provides a  powerful interface  to load observational data stored in a file.
-    The following parameters set the corresponding class members: 
- 
-    :param data_file: (str), path to the data file
-    
-    :param  z: (float), redisfhit, if not provided it is looked up in the  file meta-data
-        
-    :param obj_name: (str), if not provided  it is looked up in the  file meta-data
-        
-    :param restframe: (str) restframe of the data, possible values are ``'src'`` or  ``'obs'``,
-        if not provided it is looked up in the  file meta-data
-        
-    :param col_types: (str), string specifying the way data are organized in columns in the input file.
-        This string is passed to the method  :func:`set_data_cols`. If not provided
-        it is looked up in the  file meta-data. See the corresponding :func:`set_data_cols`
-        documentation for details.
-    
-    :param col_nums: (str), string describing the corresponding column data number
-        
-    :param data_scale: (str) ``'lin-lin'`` or ``'log-log'``,it is looked up in the  file meta-data.
-        This parameter allows to specify      if the data in the file are stored as in log-log or lin-lin scale
-        
-    :param data_set_filter:  a filter to filter the SED data according to the data_set value,  eg:
-        ``'data_set_filter='mw-1'``, will filter data with ``data_set=='mw-1'``,
-        ``'data_set_filter=['mw-1','mw-2']'`` will filter data with ``data_set=='mw-1'`` or ``data_set=='mw-2'``
-    
-        
-        .. note::
-            
-            Historical data will be only plotted but will not be used in the fit.
-    
-   
-    **Class Members storing the SED data:**
-
-     data used to fit
-     
-     - nu_data
-     - nuFnu_data 
-     - dnu_data
-     - dnuFnu_data   
-     - T_data 
-     - data_set 
-     
-     upper limits
-     
-     - nu_data_UL
-     - UL_data
-   
-
-    
-    
-    The private method   :func:`_load_data`  populates the data members starting from the data in the file. Data are properly transformed according
-    to the ``restframe`` and ``data_scale`` values.
-    
-      
-
-    
-
-
-    
+    The following parameters set the corresponding class members
     """
-    
+
+
     def __init__(self,
                  cosmo=None,
                  data_table=None,
@@ -311,7 +261,17 @@ class ObsData(object):
                  **keywords):
         
         """
-            
+
+        Parameters
+        ----------
+        cosmo
+        data_table
+        dupl_filter
+        data_set_filter
+        UL_filtering
+        UL_value
+        UL_CL
+        keywords
         """
         
         self.z=None
@@ -339,7 +299,7 @@ class ObsData(object):
         self.UL_value=UL_value
         self.UL_filtering=UL_filtering
         self.zero_error_replacment=0.2
-        self.facke_error=0.2
+        self.fake_error=0.2
 
 
 
@@ -420,8 +380,8 @@ class ObsData(object):
         sed_dt.append(('nuFnu_data_log', 'f8'))
         sed_dt.append(('dnuFnu_data_log', 'f8'))
 
-        sed_dt.append(('dnuFnu_facke', 'f8'))
-        sed_dt.append(('dnuFnu_facke_log', 'f8'))
+        sed_dt.append(('dnuFnu_fake', 'f8'))
+        sed_dt.append(('dnuFnu_fake_log', 'f8'))
 
         sed_dt.append(('UL', 'bool'))
         sed_dt.append(('zero_error', 'bool'))
@@ -527,7 +487,7 @@ class ObsData(object):
         self.set_UL(self.UL_value)
 
         # set error if not present:
-        self.set_facke_error(self.facke_error)
+        self.set_fake_error(self.fake_error)
 
 
 
@@ -549,21 +509,21 @@ class ObsData(object):
         
         if self.data['dnuFnu_data'] is None and self.data_scale== 'lin-lin':
         
-            self.data['dnuFnu_data']= self.data['Fnu_data'] * self.facke_error
+            self.data['dnuFnu_data']= self.data['Fnu_data'] * self.fake_error
             
             print ("Warning: error were not provided ")
             print ("         assigning %f            ")
-            print ("         set error with .set_error"%self.facke_error)
+            print ("         set error with .set_error"%self.fake_error)
             #print self.data['dnuFnu_data']
         
         
         if self.data['dnuFnu_data_log'] is None and self.data_scale== 'log-log':
         
-            self.data['dnuFnu_data_log']= np.ones(self.data['nu_data_log'].size) * self.facke_error
+            self.data['dnuFnu_data_log']= np.ones(self.data['nu_data_log'].size) * self.fake_error
             
             print ("Warning: error were not provided ")
             print ("         assigning %f           ")
-            print ("         set error with .set_error"%self.facke_error)
+            print ("         set error with .set_error"%self.fake_error)
 
     
 
@@ -596,7 +556,7 @@ class ObsData(object):
             self.nu_conv_factor=1.0/(1+self.z)
             self.Lum_conv_factor=1.0/(np.pi*4.0*DL*DL)
         else:
-            unexpetced_behaviour()
+            unexpected_behaviour()
 
         if self.data_scale=='lin-lin':
             
@@ -706,10 +666,10 @@ class ObsData(object):
             print ("---> data len after filtering=%d" % len(self.data['nu_data']))
         
 
-    def set_facke_error(self,):
+    def set_fake_error(self,):
 
         if 'dy' not in self.col_types:
-            self.set_error(self.facke_error)
+            self.set_error(self.fake_error)
 
         
     def set_UL(self,val=None):
@@ -1027,7 +987,7 @@ class ObsData(object):
         
         self.data=self.data_reb
         
-        self.set_facke_error(self.facke_error)
+        self.set_fake_error(self.fake_error)
 
         print (section_separator)
     
@@ -1108,13 +1068,13 @@ class ObsData(object):
 
        
 
-    def set_facke_error(self,val):
+    def set_fake_error(self,val):
         """
-        Sets the value for the facke error
+        Sets the value for the fake error
         """
-        self.facke_error=val
-        self.data['dnuFnu_facke_log']= np.ones(self.data['nu_data_log'].size) * self.facke_error
-        self.data['dnuFnu_facke']= self.data['nuFnu_data'] * self.facke_error
+        self.fake_error=val
+        self.data['dnuFnu_fake_log']= np.ones(self.data['nu_data_log'].size) * self.fake_error
+        self.data['dnuFnu_fake']= self.data['nuFnu_data'] * self.fake_error
         
     
     def get_data_points(self,log_log=False,skip_UL=False,frame='obs',density=False):
@@ -1155,7 +1115,7 @@ class ObsData(object):
                 _y, _dy = self.lin_to_log(_y, _dy)
 
         else:
-            unexpetced_behaviour()
+            unexpected_behaviour()
 
         if density is True:
 

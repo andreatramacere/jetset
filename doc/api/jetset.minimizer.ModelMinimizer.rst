@@ -15,6 +15,7 @@ ModelMinimizer
       ~ModelMinimizer.load_model
       ~ModelMinimizer.reset_to_best_fit
       ~ModelMinimizer.save_model
+      ~ModelMinimizer.show_fit_warnings
 
    .. rubric:: Methods Documentation
 
@@ -23,3 +24,4 @@ ModelMinimizer
    .. automethod:: load_model
    .. automethod:: reset_to_best_fit
    .. automethod:: save_model
+   .. automethod:: show_fit_warnings

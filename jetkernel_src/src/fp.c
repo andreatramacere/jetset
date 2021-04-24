@@ -56,10 +56,10 @@ double f_A(double gamma,struct temp_ev *pt){
 
 
 //---------------------------------------------------------------------
-double f_Tesc(double x, struct temp_ev *pt){
+double f_Tesc(double x, double coeff, double index){
 	//Definire il tempo di fuga
 	//gamma=x+1
-	return    pt->T_esc_Coeff*pow(x,pt->Esc_Index);
+	return    coeff*pow(x,index);
 	//return pt->T_esc_Coeff;
 }
 //---------------------------------------------------------------------
@@ -71,17 +71,23 @@ double Cooling(double x,struct temp_ev *pt, struct blob *pt_spec){
 	//gamma-1=x
 	//gamma=x+1
 	// printf("Sync cooling =%e\n",Sync_cool(pt_spec->B,x+1));
+
 	cooling=0;
-	if (pt->do_Sync_cooling>0){
-	    //printf('ciccio s \n');
-		cooling=Sync_cool(pt_spec,x+1);
+	if ((x+1)>1){
+		if (pt->do_Sync_cooling>0){
+			//printf('ciccio s \n');
+			cooling=Sync_cool(pt_spec,x+1);
 
+		}
+
+		if (pt->do_Compton_cooling>0){
+			//printf('ciccio c  \n');
+			cooling+=compton_cooling(pt_spec,pt,x+1);
+		}
+		if(pt->do_Expansion && pt->t>pt->t_jet_exp){
+			cooling+=(x+1)/(Adiabatic_Cooling_time(pt, pt_spec,pt->R_jet_t));
+		}
 	}
-
-	if (pt->do_Compton_cooling>0){
-	    //printf('ciccio c  \n');
-    	cooling+=compton_cooling(pt_spec,pt,x+1);
-    }
 	return cooling;
 }
 //---------------------------------------------------------------------
@@ -106,6 +112,15 @@ double f_Acc(double x, struct temp_ev *pt){
 	A=f_A(x+1,pt);
 
 	return A+D_A;
+}
+//---------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------
+//Adiabatic cooling
+double Adiabatic_Cooling_time(struct temp_ev *pt, struct blob *pt_spec, double R_jet_t){
+	return R_jet_t/(pt->v_exp_by_c*vluce_cm);
+	//return 1.0/time_adiabatic(pt,pt_spec,pt->R_H_jet_t);
 }
 //---------------------------------------------------------------------
 

@@ -12,10 +12,11 @@ PlotSED
 
       ~PlotSED.add_data_plot
       ~PlotSED.add_model_plot
+      ~PlotSED.add_model_residual_plot
       ~PlotSED.add_res_zeroline
-      ~PlotSED.add_residual_plot
       ~PlotSED.add_text
       ~PlotSED.add_xy_plot
+      ~PlotSED.add_xy_residual_plot
       ~PlotSED.clean_data_lines
       ~PlotSED.clean_model_lines
       ~PlotSED.clean_residuals_lines
@@ -23,6 +24,7 @@ PlotSED
       ~PlotSED.del_model_line
       ~PlotSED.del_residuals_line
       ~PlotSED.list_lines
+      ~PlotSED.plot_tempev_model
       ~PlotSED.rescale
       ~PlotSED.rescale_res
       ~PlotSED.save
@@ -35,10 +37,11 @@ PlotSED
 
    .. automethod:: add_data_plot
    .. automethod:: add_model_plot
+   .. automethod:: add_model_residual_plot
    .. automethod:: add_res_zeroline
-   .. automethod:: add_residual_plot
    .. automethod:: add_text
    .. automethod:: add_xy_plot
+   .. automethod:: add_xy_residual_plot
    .. automethod:: clean_data_lines
    .. automethod:: clean_model_lines
    .. automethod:: clean_residuals_lines
@@ -46,6 +49,7 @@ PlotSED
    .. automethod:: del_model_line
    .. automethod:: del_residuals_line
    .. automethod:: list_lines
+   .. automethod:: plot_tempev_model
    .. automethod:: rescale
    .. automethod:: rescale_res
    .. automethod:: save

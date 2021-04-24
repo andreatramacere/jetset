@@ -11,6 +11,7 @@ ModelParameterArray
    .. autosummary::
 
       ~ModelParameterArray.best_fit_par_table
+      ~ModelParameterArray.names
       ~ModelParameterArray.par_table
 
    .. rubric:: Methods Summary
@@ -24,6 +25,7 @@ ModelParameterArray
       ~ModelParameterArray.get
       ~ModelParameterArray.get_par_by_name
       ~ModelParameterArray.get_par_by_type
+      ~ModelParameterArray.reset_dependencies
       ~ModelParameterArray.set
       ~ModelParameterArray.show_best_fit_pars
       ~ModelParameterArray.show_pars
@@ -31,6 +33,7 @@ ModelParameterArray
    .. rubric:: Attributes Documentation
 
    .. autoattribute:: best_fit_par_table
+   .. autoattribute:: names
    .. autoattribute:: par_table
 
    .. rubric:: Methods Documentation
@@ -42,6 +45,7 @@ ModelParameterArray
    .. automethod:: get
    .. automethod:: get_par_by_name
    .. automethod:: get_par_by_type
+   .. automethod:: reset_dependencies
    .. automethod:: set
    .. automethod:: show_best_fit_pars
    .. automethod:: show_pars

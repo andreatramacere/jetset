@@ -23,7 +23,7 @@ double j_nu_bremss_ee(struct blob * pt, double nu_out) {
     for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
             pt->Integrand_over_gamma_grid[ID_gamma] =b_ee_sigma(pt->griglia_gamma_Ne_log[ID_gamma],nu_out*HPLANCK*one_by_MEC2)*pt->Ne[ID_gamma];
         }
-    return vluce_cm*one_by_four_pi*one_by_MEC2*HPLANCK*HPLANCK*nu_out*integr_simp_gird_equilog(pt->griglia_gamma_Ne_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
+    return vluce_cm*one_by_four_pi*one_by_MEC2*HPLANCK*HPLANCK*nu_out*integr_simp_grid_equilog(pt->griglia_gamma_Ne_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
 }
 
 double j_nu_bremss_ep(struct blob *pt, double nu_out) {
@@ -32,7 +32,7 @@ double j_nu_bremss_ep(struct blob *pt, double nu_out) {
     for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
             pt->Integrand_over_gamma_grid[ID_gamma] =b_ep_sigma(pt->griglia_gamma_Ne_log[ID_gamma],nu_out*HPLANCK*one_by_MEC2)*pt->Ne[ID_gamma];
         }
-    return vluce_cm*one_by_four_pi*one_by_MEC2*HPLANCK*HPLANCK*nu_out*integr_simp_gird_equilog(pt->griglia_gamma_Ne_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
+    return vluce_cm*one_by_four_pi*one_by_MEC2*HPLANCK*HPLANCK*nu_out*integr_simp_grid_equilog(pt->griglia_gamma_Ne_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
 }
 
 double b_ep_sigma(double gamma_e, double epsilon_gamma){
