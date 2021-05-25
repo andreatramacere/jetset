@@ -158,14 +158,7 @@ class FitModel(Model):
             self.add_component(analytical)
 
     def plot_model(self,plot_obj=None,clean=False,sed_data=None,frame='obs',skip_components=False,label=None,skip_sub_components=False, density=False):
-        if plot_obj is None:
-            plot_obj=PlotSED(sed_data = sed_data, frame = frame,density=density)
-
-        if frame == 'src' and sed_data is not None:
-            z_sed_data = sed_data.z
-            if self.get_par_by_type('redshift') is not None:
-
-                sed_data.z = self.get_par_by_type('redshift').val
+        plot_obj=self._set_up_plot(plot_obj,sed_data,frame,density)
 
         if clean is True:
             plot_obj.clean_model_lines()
@@ -212,11 +205,6 @@ class FitModel(Model):
 
         #if frame == 'src' and sed_data is not None:
         #    sed_data.z = z_sed_data
-
-        if frame == 'src' and sed_data is not None:
-            sed_data.z = z_sed_data
-
-
 
         return plot_obj
 

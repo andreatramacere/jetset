@@ -436,10 +436,11 @@ class  PlotSED (object):
         else:
             t_array, time_id_array = region.time_sampled_emitters._get_time_samples(time_slice=_time_slice,
                                                                                     time_slice_bin=_time_slice_bin)
-            t_array = t_array[t_array <= t2]
-            t_array = t_array[t_array >= t1]
             time_id_array = time_id_array[t_array <= t2]
             time_id_array = time_id_array[t_array >= t1]
+            t_array = t_array[t_array <= t2]
+            t_array = t_array[t_array >= t1]
+
 
         g = plt.cm.Greens(np.linspace(0.5, 1, t_array.size))
         r = plt.cm.Reds(np.linspace(0.5, 1, t_array.size))

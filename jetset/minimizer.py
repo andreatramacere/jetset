@@ -158,10 +158,11 @@ class FitResults(object):
         return self.parameters.best_fit_par_table
 
     def _update_asymm_errors(self):
-        for pi in range(len(self.mm.fit_par_free)):
-            if  hasattr(self.mm.minimizer,'asymm_errors'):
-                self.mm.fit_par_free[pi].err_p=self.mm.minimizer.asymm_errors[pi][0]
-                self.mm.fit_par_free[pi].err_m=self.mm.minimizer.asymm_errors[pi][1]
+        if hasattr(self.mm):
+            for pi in range(len(self.mm.fit_par_free)):
+                if  hasattr(self.mm.minimizer,'asymm_errors'):
+                    self.mm.fit_par_free[pi].err_p=self.mm.minimizer.asymm_errors[pi][0]
+                    self.mm.fit_par_free[pi].err_m=self.mm.minimizer.asymm_errors[pi][1]
 
     def show_report(self):
         try:
@@ -179,8 +180,30 @@ class FitResults(object):
     def save_report(self,name=None):
         if name is None:
             name = 'best_fit_report.pkl'
+        mm =self.mm
         self.mm=None
-        pickle.dump(self, open(name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+        setattr(self, 'mm', mm)
+        try:
+            pickle.dump(self, open(name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+        except:
+            o = FitResults(name=self.name,
+                           mm=None,
+                           parameters=self.parameters,
+                           calls=self.calls,
+                           mesg=None,
+                           success=self.success,
+                           chisq=self.chisq,
+                           dof=self.dof,
+                           chisq_red=self.chisq_red,
+                           null_hyp_sig=self.null_hyp_sig,
+                           wd=self.wd,
+                           chisq_no_UL=self.chisq_no_UL,
+                           dof_no_UL=self.dof_no_UL,
+                           chisq_red_no_UL=self.chisq_red_no_UL,
+                           null_hyp_sig_no_UL=self.null_hyp_sig_no_UL)
+
+            pickle.dump(o, open(name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+
 
 
 
@@ -459,8 +482,8 @@ class ModelMinimizer(object):
                 self.reset_to_best_fit()
                 self.minimizer._fit_stats()
                 if silent is False:
-                    print()
                     print('- best chisq=%5.5e'%(self.minimizer.chisq))
+                    print()
 
                 new_chisq = self.minimizer.chisq
                 if i==0:
@@ -640,10 +663,12 @@ class Minimizer(object):
                       chisq=False,
                       use_UL=False,
                       silent=False):
-
+        #print('==>p', p)
+        #print('==>fit_par_fre', self.model.fit_par_free)
         _warn=False
         for pi in range(len(fit_par)):
             _old_v=fit_par[pi].val
+            #print('==> set', fit_par[pi].val,fit_par[pi].val_min,p[pi])
             fit_par[pi].set(val=p[pi])
             if np.isnan(p[pi]):
                 _warn=True
@@ -881,11 +906,24 @@ class MinutiMinimizer(Minimizer):
             max_ev =10000
 
         self.mesg=self.minuit_fun.migrad(ncall=max_ev)
-        self.pout=[self.minuit_fun.values[k] for k in self.minuit_fun.values.keys()]
-        self.p=[self.minuit_fun.values[k] for k in self.minuit_fun.values.keys()]
+        #print('==> mesg',self.mesg)
+        if iminuit.__version__ < "2":
+            self.pout=[self.minuit_fun.values[k] for k in self.minuit_fun.values.keys()]
+            self.p=[self.minuit_fun.values[k] for k in self.minuit_fun.values.keys()]
+        else:
+            self.pout=[None]*len(self.minuit_fun.values)
+            self.p = [None] * len(self.minuit_fun.values)
+            for ID,val in enumerate(self.minuit_fun.values):
+                self.pout[ID] = val
+                self.p[ID] = val
 
     def _set_fit_errors(self):
-        self.errors = [self.minuit_fun.errors[k] for k in self.minuit_fun.errors.keys()]
+        if iminuit.__version__ < "2":
+            self.errors = [self.minuit_fun.errors[k] for k in self.minuit_fun.errors]
+        else:
+            self.errors = [None] * len(self.minuit_fun.values)
+            for ID,err in enumerate(self.minuit_fun.errors):
+                self.errors[ID] = err
 
 
 
@@ -912,20 +950,34 @@ class MinutiMinimizer(Minimizer):
         self.minuit_par_name_dict={}
         self.minuit_bounds_dict={}
         self.par_dict = {}
+        #print('==> iminuit.__version__',iminuit.__version__)
         for ID,par in enumerate(self.model.fit_par_free):
             self.minuit_par_name_dict[par.name]=p_names[ID]
             self.minuit_bounds_dict[par.name]=bounds[ID]
             self.par_dict[par.name]=par
-
-        self.minuit_fun = iminuit.Minuit(fcn=self.chisq_func,
-            name=p_names,
-            pedantic=False,
-            errordef=1,
-            **kwdarg)
-
+        if iminuit.__version__ < "2":
+            self.minuit_fun = iminuit.Minuit(fcn=self.chisq_func,
+                name=p_names,
+                pedantic=False,
+                errordef=1,
+                **kwdarg)
+        else:
+            values=tuple(par.val for ID,par in enumerate(self.model.fit_par_free))
+            #print('=> values',values)
+            self.minuit_fun = iminuit.Minuit(self.chisq_func,
+                                             values,
+                                             name=p_names)
+            self.minuit_fun.limits=[ bounds[ID] for ID,par in enumerate(self.model.fit_par_free) ]
+            #print('=>  self.minuit_fun.limits',  self.minuit_fun.limits)
     def chisq_func(self, *p):
-        self.p = p
-        return self.residuals_Fit(p,
+        if iminuit.__version__ < "2":
+            self.p = p
+        else:
+            self.p = p[0]
+
+        #print('==>p',self.p)
+        #print('==>fit_par_fre', self.model.fit_par_free)
+        return self.residuals_Fit(self.p,
                           self.model.fit_par_free,
                           self.model.data,
                           self.model.fit_model,
@@ -1214,3 +1266,21 @@ def fit_SED(fit_model, sed_data, nu_fit_start, nu_fit_stop, fitname=None, fit_wo
                   repeat=repeat)
 
 
+
+def fit_XY(fit_model, data, x_fit_start,x_fit_stop,fitname=None,silent=False,get_conf_int=False,minimizer='minuit',
+           use_UL=False, repeat=1):
+
+    mm = ModelMinimizer(minimizer)
+    return mm, mm.fit(fit_model,
+                      data,
+                      nu_fit_start=x_fit_start,
+                      nu_fit_stop=x_fit_stop,
+                      fitname=fitname,
+                      fit_workplace=None,
+                      loglog=False,
+                      silent=silent,
+                      get_conf_int=get_conf_int,
+                      max_ev=0,
+                      use_fake_err=False,
+                      use_UL=use_UL,
+                      repeat=repeat)

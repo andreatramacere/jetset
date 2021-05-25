@@ -934,7 +934,7 @@ class JetTimeEvol(object):
 
     def V_acc(self):
         R = self.parameters.R_rad_start.val
-        return R * R * self.Delta_R_acc
+        return R * R * self.Delta_R_acc*np.pi
 
     def show_pars(self, sort_key='par type'):
         self.parameters.show_pars(sort_key=sort_key)
@@ -1134,7 +1134,7 @@ class JetTimeEvol(object):
 
     def eval_L_tot_inj(self):
         if self.Q_inj is not None and self.acc_region is not None:
-            return self.Q_inj.eval_U_q() * BlazarSED.V_sphere(self.acc_region.jet.parameters.R.val)
+            return self.Q_inj.eval_U_q() * self.V_acc()
 
     def _get_time_slice_T_array(self, time_blob):
         """
@@ -1367,7 +1367,7 @@ class JetTimeEvol(object):
 
         rows.append(
             self._build_row_dict('R v exp.', 'region_position', '', unit1='v/c',
-                                 val=self.parameters.v_exp_R.val,  val_by=const.c.cgs))
+                                 val=self.parameters.beta_exp_R.val,  val_by=const.c.cgs))
 
         rows.append(
             self._build_row_dict('T_A0=1/ACC_COEFF', 'time', 's', val=self._temp_ev.t_A0, val_by=self.t_unit_rad,
@@ -1567,7 +1567,7 @@ class JetTimeEvol(object):
                                                             froz=True,
                                                             log=False, val=1E14)
 
-        model_dict_temp_ev['v_exp_R'] = JetModelDictionaryPar(ptype='jet_base_radius', vmin=0, vmax=1,
+        model_dict_temp_ev['beta_exp_R'] = JetModelDictionaryPar(ptype='jet_base_radius', vmin=0, vmax=1,
                                                                   punit='v/c',
                                                                   jetkernel_par_name='v_exp_by_c',
                                                                   froz=True,

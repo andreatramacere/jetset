@@ -327,21 +327,14 @@ class McmcSampler(object):
         return f
 
     def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False):
-        #if labels is None:
-        #    labels = self.labels
+
         if sed_data is None:
             sed_data=self.sed_data
 
         if fit_range is None:
             fit_range = [self.model.nu_min_fit, self.model.nu_max_fit]
 
-        p = PlotSED(frame=frame)
-
-        if frame == 'src' and sed_data is not None:
-            z_sed_data = sed_data.z
-            sed_data.z = self.model.get_par_by_type('redshift').val
-
-        p.add_data_plot(sed_data,density=density)
+        p = self.model._set_up_plot(None, sed_data, frame, density)
 
         self.reset_to_best_fit()
         self.model.eval(fill_SED=True)
@@ -372,8 +365,6 @@ class McmcSampler(object):
         p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density)
         p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
 
-        if frame == 'src' and sed_data is not None:
-            sed_data.z = z_sed_data
 
         return p
 

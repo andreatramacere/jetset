@@ -107,8 +107,7 @@ class TemplateTable2D(Model):
         self.model_type = 'table2D'
 
     def plot_model(self,plot_obj=None,clean=False,label=None,sed_data=None,color=None, density=False,frame='obs'):
-        if plot_obj is None:
-            plot_obj=PlotSED(sed_data=sed_data,frame=frame)
+        plot_obj=self._set_up_plot(plot_obj,sed_data,frame,density)
 
         if clean==True:
             plot_obj.clean_model_lines()

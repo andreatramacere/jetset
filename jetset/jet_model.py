@@ -1194,15 +1194,9 @@ class JetBase(Model):
         print('-' * 80)
 
     def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-',frame='obs', density=False):
-        if plot_obj is None:
-            plot_obj=PlotSED(sed_data=sed_data, frame= frame, density=density)
+        plot_obj=self._set_up_plot(plot_obj,sed_data,frame,density)
 
-
-        if frame == 'src' and sed_data is not None:
-            z_sed_data = sed_data.z
-            sed_data.z = self.get_par_by_type('redshift').val
-
-        if clean==True:
+        if clean is True:
             plot_obj.clean_model_lines()
 
         if comp is not None:
@@ -1234,9 +1228,8 @@ class JetBase(Model):
 
             plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color, density=density,update=False)
 
-        if frame == 'src' and sed_data is not None:
-            sed_data.z = z_sed_data
         plot_obj.update_plot()
+
         return plot_obj
 
     @safe_run
