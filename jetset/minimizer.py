@@ -21,17 +21,6 @@ except:
     minuit_installed=False
 
 
-try:
-    from sherpa.optmethods import LevMar
-    from sherpa.fit import Fit
-    from sherpa.stats import Chi2
-    from sherpa import data as sherpa_data
-    sherpa_installed = True
-    from .sherpa_plugin import JetsetSherpaModel
-except:
-    sherpa_installed = False
-
-
 from tqdm.auto import tqdm
 
 
@@ -233,6 +222,7 @@ class ModelMinimizer(object):
             self.minimizer=MinutiMinimizer(self)
 
         elif minimizer_type == 'sherpa':
+            from .sherpa_plugin import  SherpaMinimizer
             self.minimizer = SherpaMinimizer(self)
 
         elif minimizer_type not in __accepted__:
@@ -833,59 +823,7 @@ class LSMinimizer(Minimizer):
     #    return self.chisq
 
 
-class SherpaMinimizer(Minimizer):
 
-    def __init__(self, model,method=LevMar(),stat=Chi2()):
-        if sherpa_installed is True:
-            pass
-        else:
-            raise ImportError('sherpa not installed, \n to use sherpa plugin you need to install sherpa: https://sherpa.readthedocs.io/en/latest/install.html')
-
-        super(SherpaMinimizer, self).__init__(model)
-        self._method=method
-        self._stat=stat
-        self._sherpa_model = None
-        self._sherpa_data = None
-        self.pbar = None
-
-    def _create_sherpa_model(self):
-        self._sherpa_model = JetsetSherpaModel(jetset_model = self.model.fit_model, par_list=self.model.fit_par_free)
-
-    def _create_sherpa_data(self):
-        self._sherpa_data = sherpa_data.Data1D("sed", self.model.data['x'], self.model.data['y'], staterror=self.model.data['dy'])
-
-    @property
-    def sherpa_fitter(self):
-        return self._sherpa_fitter
-
-    @property
-    def calls(self):
-        if self._sherpa_model is not None:
-            return self._sherpa_model._jetset_ncalls
-        else:
-            return None
-
-    @calls.setter
-    def calls(self,n):
-        if self._sherpa_model is not None:
-            self._sherpa_model._jetset_ncalls = n
-
-
-    def _fit(self, max_ev,):
-        self._create_sherpa_model()
-        self._create_sherpa_data()
-        self._sherpa_model._jetset_ncalls = 0
-
-
-        self._sherpa_fitter=Fit(self._sherpa_data,self._sherpa_model, method=self._method,stat=self._stat)
-
-        self.mesg  = self._sherpa_fitter.fit()
-        self.covar = self.mesg.covar
-        self.pout = [p for p in self.mesg.parvals]
-        self.p = [p for p in self.mesg.parvals]
-
-    def _set_fit_errors(self):
-        self.errors = [np.sqrt(np.fabs(self.covar[pi, pi])) for pi in range(len(self.model.fit_par_free))]
 
 class MinutiMinimizer(Minimizer):
 
