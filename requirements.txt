@@ -19,4 +19,4 @@ tqdm
 jupyter
 ipython
 dill
-sherpa
+#sherpa

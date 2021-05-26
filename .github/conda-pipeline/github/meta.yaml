@@ -39,7 +39,7 @@ requirements:
   - ipython
   - tqdm
   - dill
-  - sherpa
+ # - sherpa
 
 
 
