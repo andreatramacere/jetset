@@ -27,6 +27,7 @@ try:
     from sherpa.stats import Chi2
     from sherpa import data as sherpa_data
     sherpa_installed = True
+    from .sherpa_plugin import JetsetSherpaModel
 except:
     sherpa_installed = False
 
@@ -48,7 +49,7 @@ from .data_loader import lin_to_log
 
 
 
-from .sherpa_plugin import  JetsetSherpaModel
+
 
 __all__ = ['FitResults','fit_SED','Minimizer','LSMinimizer','LSBMinimizer','MinutiMinimizer','ModelMinimizer']
 
@@ -838,7 +839,7 @@ class SherpaMinimizer(Minimizer):
         if sherpa_installed is True:
             pass
         else:
-            raise RuntimeError('sherpa non imstalled')
+            raise ImportError('sherpa not installed, \n to use sherpa plugin you need to install sherpa: https://sherpa.readthedocs.io/en/latest/install.html')
 
         super(SherpaMinimizer, self).__init__(model)
         self._method=method
