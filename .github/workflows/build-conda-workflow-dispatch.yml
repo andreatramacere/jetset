@@ -70,10 +70,10 @@ jobs:
           conda install conda-build
           conda install -c conda-forge swig">=3.0.0"
           conda install -c conda-forge emcee">=3.0.0"
-          conda install sherpa
+          conda install -c sherpa sherpa
           conda install -c astropy --file requirements.txt
           conda install  pytest
-          conda install -c sherpa sherpa
+
 
 
       - name: 'set env JETSETBESSELBUILD'
@@ -106,7 +106,7 @@ jobs:
         run: |
           conda config --set anaconda_upload no
           conda build purge
-          conda build .  -c defaults -c astropy -c conda-forge -c sherpa 
+          conda build .  -c defaults -c astropy -c conda-forge -c sherpa
           conda build . --output > ./CONDABUILDJETSET.txt
 
       - name: 'set env CONDABUILDJETSET'
