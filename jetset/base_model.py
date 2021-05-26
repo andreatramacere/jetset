@@ -258,9 +258,10 @@ class Model(object):
 
     def _fix_par_dep_on_load(self,):
         for p in self.parameters.par_array:
-            if p._is_dependent is True:
+            #print("==> 1", p.name, p._master_par_list, p._depending_par_expr,p.model.name)
+            if p._is_dependent is True and p._linked is False:
                 self._is_dependent = False
-                #print("==>", p.name, p._master_par_list, p._depending_par_expr)
+                #print("==> 2", p.name, p._master_par_list, p._depending_par_expr)
                 self.make_dependent_par(p.name, p._master_par_list, p._depending_par_expr)
 
     #def _set_pars_dep(self):

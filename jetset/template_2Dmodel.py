@@ -356,7 +356,7 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
 
     def plot_model(self, plot_obj=None,  label=None, line_style='-',color=None,frame='obs'):
         if plot_obj is None:
-            plot_obj = PlotSpectralMultipl(frame=frame)
+            plot_obj = PlotSpectralMultipl()
 
         if label is None:
             label = '%s'%self.name
