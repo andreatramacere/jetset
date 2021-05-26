@@ -36,5 +36,7 @@ notebooks/*
 !notebooks/images
 !notebooks/*.md
 !notebooks/QuickStart_files
+!notebooks/jetset_slides
+
 requirements_action.txt
 obsolete
