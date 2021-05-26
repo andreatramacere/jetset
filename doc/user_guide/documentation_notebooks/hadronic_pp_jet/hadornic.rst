@@ -33,7 +33,6 @@ Jet pp Consistency with Kelner 2006
     from jetset.jetkernel import jetkernel
     from astropy import constants as const
     from jetset.jet_emitters_factory import EmittersFactory
-    from jetset.jet_emitters import InjEmittersArrayDistribution
 
 
 .. code:: ipython3
@@ -132,7 +131,7 @@ Jet pp Consistency with Kelner 2006
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140698358628304-682122" class="table-striped table-bordered table-condensed">
+    <table id="table140512693000416-601336" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_hadronic_pp</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+18</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_hadronic_pp</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -168,14 +167,14 @@ Jet pp Consistency with Kelner 2006
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140698358628304-682122').dataTable()");
+        console.log("$('#table140512693000416-601336').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140698358628304-682122').dataTable({
+        $('#table140512693000416-601336').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],

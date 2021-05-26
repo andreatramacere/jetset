@@ -16,7 +16,8 @@ class SED(object):
     """
     Class handling the SED 
     """
-    def __init__(self,name=None,
+    def __init__(self,
+                 name=None,
                  nu=None,
                  nuFnu=None,
                  nu_residuals=None,
@@ -142,9 +143,10 @@ class SED(object):
 
         if log_log is True:
             msk = y>0
-            x = np.log10(x[msk])
-            y = np.log10(y[msk])
-        
+            x = np.log10(x)
+            y[~msk] = -1E10
+            y[msk]= np.log10(y[msk])
+
         return x, y
 
     def get_residuals(self, log_log=False):

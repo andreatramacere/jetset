@@ -107,7 +107,8 @@ Installation from source using Anaconda
 
       conda install --yes   -c astropy --file requirements.txt
 
-if anaconda fails to install swig, you can try one of the following alternative :ref:`swig`
+.. important::
+    if anaconda fails to install swig, you can try one of the following alternative :ref:`swig'
 
 -  run on the command line
 
@@ -143,7 +144,8 @@ Installation from source using PIP
 
     pip install -r requirements.txt
 
-if pip fails to install swig, you can try one of the following alternative :ref:`swig`
+.. important::
+    if pip fails to install swig, you can try one of the following alternative :ref:`swig'
 
 
 - Install JetSeT: run on the command line:
@@ -172,11 +174,11 @@ Requirements
 The following python packages are required:
  - python >=3.6 (python >=3.6 is suggested, older python 3 versions should  work, python 2 is not supported any more from version>=1.1.0)
  - setuptools
- - scipy
- - numpy
- - astropy
- - matplotlib
- - swig
+ - scipy>=1.5.0
+ - numpy>=1.16
+ - astropy>=4.0
+ - matplotlib>=3.1.0
+ - swig>=3.0.0
  - future
  - iminuit
  - corner
@@ -184,7 +186,8 @@ The following python packages are required:
  - emcee
  - pyyaml
  - numba
+ - sherpa
 
-A C compiler is also necessary, plus the SWIG wrapper generator.
+To install from source A C compiler is also necessary, plus the SWIG wrapper generator.
 
 All the dependencies are installed following the Anaconda method **OR** the pip method, as described below.

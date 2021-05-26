@@ -182,9 +182,9 @@ class JetSpecComponent(object):
         return self._blob_object.emiss_lim
 
 
-    def fill_SED(self,log_log=False,lin_nu=None):
+    def fill_SED(self,log_log=False,lin_nu=None,skip_zeros=False):
 
-        x,y=self.get_SED_points( log_log=log_log,lin_nu=lin_nu,)
+        x,y=self.get_SED_points( log_log=log_log,lin_nu=lin_nu,skip_zeros=skip_zeros)
         self.SED.beaming=self.jet_obj.get_beaming()
         self.SED.fill(nu=x,nuFnu=y,log_log=log_log)
         self.SED.fill_nuLnu(z=self.jet_obj.get_par_by_type('redshift').val,dl=self.jet_obj.get_DL_cm())
@@ -194,7 +194,7 @@ class JetSpecComponent(object):
 
 
 
-    def get_SED_points(self, log_log=False, lin_nu=None,interp='linear'):
+    def get_SED_points(self, log_log=False, lin_nu=None,interp='linear',skip_zeros=False):
 
         size = self._blob_object.nu_grid_size
         x = zeros(size)
@@ -214,20 +214,34 @@ class JetSpecComponent(object):
         msk = y < self.get_emiss_lim()
         y[msk] = self.get_emiss_lim()
 
+        msk_zeros = y > self.get_emiss_lim()
+
         if lin_nu is not None:
             #f_interp=interpolate.Akima1DInterpolator(log10(x), log10(y))
             f_interp = interpolate.interp1d(log10(x), log10(y), bounds_error=False, kind=interp)
             y = np.power(10., f_interp(log10(lin_nu)))
             x=lin_nu
             msk_nan = np.isnan(y)
-            y[msk_nan] = self.get_emiss_lim()
+            y[msk_nan] = 0.
+            msk_zeros = y > self.get_emiss_lim()
+            y[~msk_zeros] = 0.
 
         if log_log == True:
             msk = y <= 0.
-            y[msk] = self.get_emiss_lim()
+            y[msk] = -1.0E10
+            msk_zeros = y >  self.get_emiss_lim()
             x = log10(x)
             y = log10(y)
-        return x, y
+
+
+        if skip_zeros is True:
+            _x = x[msk_zeros]
+            _y = y[msk_zeros]
+        else:
+            _x = x
+            _y = y
+
+        return _x, _y
 
 
 

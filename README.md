@@ -144,6 +144,7 @@ The following python packages are required:
         emcee
         pyyaml
         numba
+        sherpa
          
 
 

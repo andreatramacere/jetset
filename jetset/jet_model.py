@@ -170,7 +170,7 @@ class JetBase(Model):
 
         self.set_emitting_region(beaming_expr)
 
-        self.flux_plot_lim=1E-120
+        self.flux_plot_lim=1E-30
         self.set_emiss_lim(1E-120)
 
         self._IC_states = {}

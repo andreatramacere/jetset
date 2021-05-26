@@ -122,7 +122,7 @@ class Model(object):
 
         if hasattr(self, 'spectral_components_list'):
             for i in range(len(self.spectral_components_list)):
-                self.spectral_components_list[i].fill_SED(lin_nu=lin_nu)
+                self.spectral_components_list[i].fill_SED(lin_nu=lin_nu,skip_zeros=False)
 
     def eval(self, fill_SED=True, nu=None, get_model=False, loglog=False, label=None, **kwargs):
 

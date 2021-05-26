@@ -342,10 +342,16 @@ class McmcSampler(object):
         x, y = self.model.SED.get_model_points(log_log=True, frame=frame)
         #if density is True:
         #    y=y-x
+        if size is None:
+            size = len(self.samples)
+            ID_mcmc = np.arange(size)
+        else:
+            size = min(len(self.samples), int(size))
+            ID_mcmc = np.random.randint(len(self.samples), size=size)
 
         y = np.zeros((size,x.size))
 
-        for ID,ID_rand in enumerate(np.random.randint(len(self.samples), size=size)):
+        for ID,ID_rand in enumerate(ID_mcmc):
 
             for ID_par, pi in enumerate(self.par_array):
                 pi.set(val=self.get_par(ID_par)[0][ID_rand])
@@ -357,12 +363,13 @@ class McmcSampler(object):
             y=y-x
         y_min=np.amin(y, axis=0)
         y_max=np.amax(y, axis=0)
-        p.sedplot.fill_between(x,y_max,y_min,color='gray',alpha=0.3,label='mcmc model range')
+        msk = y_min > np.log10(self.model.flux_plot_lim)
+        p.sedplot.fill_between(x[msk],y_max[msk],y_min[msk],color='gray',alpha=0.3,label='mcmc model range')
 
         self.reset_to_best_fit()
         self.model.eval(fill_SED=True)
 
-        p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density)
+        p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density,flim=self.model.flux_plot_lim)
         p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
 
 

@@ -11,7 +11,7 @@ Numerical setup
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc4
+    tested on jetset 1.2.0rc6
 
 
 Changing the grid size for the electron distribution
@@ -65,7 +65,7 @@ Changing the grid size for the electron distribution
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140191460376048-876533" class="table-striped table-bordered table-condensed">
+    <table id="table140393533601440-542086" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -101,14 +101,14 @@ Changing the grid size for the electron distribution
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140191460376048-876533').dataTable()");
+        console.log("$('#table140393533601440-542086').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140191460376048-876533').dataTable({
+        $('#table140393533601440-542086').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -167,7 +167,6 @@ and this value can be changed using the method :meth:`.Jet.set_gamma_grid_size`.
 .. image:: Jet_example_num_files/Jet_example_num_10_0.png
 
 
-
 .. code:: ipython3
 
     my_jet.flux_plot_lim=1E-200
@@ -178,7 +177,7 @@ and this value can be changed using the method :meth:`.Jet.set_gamma_grid_size`.
 
 
 
-.. image:: Jet_example_num_files/Jet_example_num_12_0.png
+.. image:: Jet_example_num_files/Jet_example_num_11_0.png
 
 
 .. code:: ipython3
@@ -190,7 +189,7 @@ and this value can be changed using the method :meth:`.Jet.set_gamma_grid_size`.
 
 
 
-.. image:: Jet_example_num_files/Jet_example_num_13_0.png
+.. image:: Jet_example_num_files/Jet_example_num_12_0.png
 
 
 Changing the grid size for the seed photons
@@ -243,7 +242,7 @@ Changing the grid size for the seed photons
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140191384291120-51557" class="table-striped table-bordered table-condensed">
+    <table id="table140393560969856-974824" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -279,14 +278,14 @@ Changing the grid size for the seed photons
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140191384291120-51557').dataTable()");
+        console.log("$('#table140393560969856-974824').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140191384291120-51557').dataTable({
+        $('#table140393560969856-974824').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -328,7 +327,7 @@ and this value can be changed using the method :meth:`.Jet.set_seed_nu_size`. In
 
 
 
-.. image:: Jet_example_num_files/Jet_example_num_20_0.png
+.. image:: Jet_example_num_files/Jet_example_num_19_0.png
 
 
 Changing the grid size for the IC process spectra
@@ -383,7 +382,7 @@ Changing the grid size for the IC process spectra
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140191492092448-290866" class="table-striped table-bordered table-condensed">
+    <table id="table140393570244352-621978" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -419,14 +418,14 @@ Changing the grid size for the IC process spectra
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140191492092448-290866').dataTable()");
+        console.log("$('#table140393570244352-621978').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140191492092448-290866').dataTable({
+        $('#table140393570244352-621978').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -462,7 +461,7 @@ Changing the grid size for the IC process spectra
 
 
 
-.. image:: Jet_example_num_files/Jet_example_num_25_0.png
+.. image:: Jet_example_num_files/Jet_example_num_24_0.png
 
 
 .. code:: ipython3
@@ -474,7 +473,7 @@ Changing the grid size for the IC process spectra
 
 
 
-.. image:: Jet_example_num_files/Jet_example_num_26_0.png
+.. image:: Jet_example_num_files/Jet_example_num_25_0.png
 
 
 .. code:: ipython3
@@ -486,7 +485,7 @@ Changing the grid size for the IC process spectra
 
 
 
-.. image:: Jet_example_num_files/Jet_example_num_27_0.png
+.. image:: Jet_example_num_files/Jet_example_num_26_0.png
 
 
 .. code:: ipython3
@@ -499,7 +498,7 @@ Changing the grid size for the IC process spectra
 
 
 
-.. image:: Jet_example_num_files/Jet_example_num_28_0.png
+.. image:: Jet_example_num_files/Jet_example_num_27_0.png
 
 
 .. code:: ipython3
@@ -530,7 +529,7 @@ Changing the grid size for the IC process spectra
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140191401065824-969776" class="table-striped table-bordered table-condensed">
+    <table id="table140393560438048-748319" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -567,14 +566,14 @@ Changing the grid size for the IC process spectra
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140191401065824-969776').dataTable()");
+        console.log("$('#table140393560438048-748319').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140191401065824-969776').dataTable({
+        $('#table140393560438048-748319').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -624,7 +623,7 @@ Changing the grid size for the IC process spectra
 .. raw:: html
 
     <i>Table length=37</i>
-    <table id="table140191508690832-709016" class="table-striped table-bordered table-condensed">
+    <table id="table140393549151872-605684" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.736635e-03</td></tr>
     <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
@@ -686,14 +685,14 @@ Changing the grid size for the IC process spectra
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140191508690832-709016').dataTable()");
+        console.log("$('#table140393549151872-605684').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140191508690832-709016').dataTable({
+        $('#table140393549151872-605684').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -716,7 +715,7 @@ Changing the grid size for the IC process spectra
 .. raw:: html
 
     <i>Table length=37</i>
-    <table id="table140191485532048-478541" class="table-striped table-bordered table-condensed">
+    <table id="table140393538896368-750163" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.736635e-03</td></tr>
     <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
@@ -778,14 +777,14 @@ Changing the grid size for the IC process spectra
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140191485532048-478541').dataTable()");
+        console.log("$('#table140393538896368-750163').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140191485532048-478541').dataTable({
+        $('#table140393538896368-750163').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
