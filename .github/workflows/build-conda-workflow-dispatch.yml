@@ -73,6 +73,8 @@ jobs:
           conda install sherpa
           conda install -c astropy --file requirements.txt
           conda install  pytest
+          conda install -c sherpa sherpa
+
 
       - name: 'set env JETSETBESSELBUILD'
         run: |
