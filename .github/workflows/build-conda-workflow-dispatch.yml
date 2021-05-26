@@ -131,7 +131,7 @@ jobs:
         if: github.event.inputs.skip_test != 'yes'
         working-directory: .github/action_test/
         run: |
-          pytest --pyargs jetset.tests.test_functions::test_custom
+          pytest --pyargs jetset.tests.test_functions::TestFull
 
       - name: 'prepare asset'
         run: |
