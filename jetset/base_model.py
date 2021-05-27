@@ -373,8 +373,10 @@ class Model(object):
             m._add_depending_par(dep_par)
 
         for p in master_par_list:
+
             m = self.parameters.get_par_by_name(p)
-            m.val=m.val
+            if m._is_dependent is False:
+                m.val=m.val
         print('==> par', dep_par.name, 'is now depending on', master_par_list, 'according to expr', par_expr)
     def add_user_par(self,name,val,units='',val_min=None,val_max=None):
         self.parameters.add_par(ModelParameter(name=name,units=units,val=val,val_min=val_min,val_max=val_max,par_type='user_defined'))

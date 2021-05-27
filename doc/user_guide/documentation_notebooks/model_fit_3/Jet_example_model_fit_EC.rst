@@ -1286,7 +1286,7 @@ EC model fit
 
 .. code:: ipython3
 
-    best_fit_minuit.save_report('EC-best-fit-minuit.txt')
+    best_fit_minuit.save_report('EC-best-fit-minuit.pkl')
     model_minimizer_minuit.save_model('EC_model_minimizer_minuit.pkl')
     fit_model.save_model('EC_fit_model_minuit.pkl')
 

@@ -11,7 +11,7 @@ Phenomenological model constraining: SSC theory
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc4
+    tested on jetset 1.2.0rc6
 
 
 .. code:: ipython3
@@ -126,7 +126,7 @@ This section is based on the work presented in
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140561271651872-509181" class="table-striped table-bordered table-condensed">
+    <table id="table140550859468752-855975" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -162,14 +162,14 @@ This section is based on the work presented in
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140561271651872-509181').dataTable()");
+        console.log("$('#table140550859468752-855975').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140561271651872-509181').dataTable({
+        $('#table140550859468752-855975').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -208,7 +208,7 @@ This section is based on the work presented in
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd6fd2fafa0>
+    <matplotlib.legend.Legend at 0x7fd48c3a32e0>
 
 
 
@@ -227,7 +227,7 @@ This section is based on the work presented in
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd6fd827f10>
+    <matplotlib.legend.Legend at 0x7fd48c181eb0>
 
 
 
@@ -365,7 +365,7 @@ Synchrotron trend for :math:`\gamma_{min}`
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd6fe335e20>
+    <matplotlib.legend.Legend at 0x7fd46e87a550>
 
 
 
@@ -480,7 +480,7 @@ Synchrotron trend for the low-energy spectral slope
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd6e05c1610>
+    <matplotlib.legend.Legend at 0x7fd46f7d6910>
 
 
 
@@ -840,7 +840,7 @@ the curvature of the electron distribution (r)
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd6fd8b8640>
+    <matplotlib.legend.Legend at 0x7fd48d699700>
 
 
 
@@ -919,7 +919,7 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.collections.PathCollection at 0x7fd6dfa16c40>
+    <matplotlib.collections.PathCollection at 0x7fd48e055c40>
 
 
 
@@ -946,7 +946,7 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd6fd4d5460>
+    <matplotlib.legend.Legend at 0x7fd46f939e80>
 
 
 
@@ -976,7 +976,7 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd6fec64490>
+    <matplotlib.legend.Legend at 0x7fd48dad5370>
 
 
 

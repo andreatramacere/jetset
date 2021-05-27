@@ -42,7 +42,7 @@ allowing to fit the numerical models to observed data. The main features of this
    :caption: Documentation:
 
    installation <install.rst>
-   what's new in jetset 1.1.2  <new_release.rst>
+   what's new in jetset 1.2.0  <new_release.rst>
    user guide <user_guide/user_guide.rst>
    code documentation (API) <api/modules.rst>
 

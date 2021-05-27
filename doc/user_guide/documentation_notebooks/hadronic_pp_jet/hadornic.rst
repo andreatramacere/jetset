@@ -1,4 +1,4 @@
-.. \_hadronic_pp_jet_guide:
+.. _hadronic_pp_jet_guide:
 
 .. code:: ipython3
 
