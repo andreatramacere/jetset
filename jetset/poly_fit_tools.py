@@ -75,8 +75,11 @@ def get_SED_log_par_fit(x_p,y_p,j,comp,delta_p=[-1,1]):
 
     """
     c=j.get_spectral_component_by_name(comp)
-    x=np.log10(c.SED.nu.value)
-    y=np.log10(c.SED.nuFnu.value)
+    msk = c.SED.nuFnu.value > 0
+    x = np.log10(c.SED.nu.value[msk])
+    y = np.log10(c.SED.nuFnu.value[msk])
+    #x=np.log10(c.SED.nu.value)
+    #y=np.log10(c.SED.nuFnu.value)
 
     p,err=do_log_Parab_FIT(x,y,x_p,y_p,-0.1,x_range=[x_p + delta_p[0], x_p + delta_p[1] ],dy=np.ones(x.size))
     p,err=do_log_Parab_FIT(x,y,p[0],p[1],p[2],x_range=[p[0] + delta_p[0], p[0] + delta_p[1] ],dy=np.ones(x.size))

@@ -142,6 +142,8 @@ class SED(object):
             unexpected_behaviour()
 
         if log_log is True:
+            x=np.copy(x)
+            y=np.copy(y)    
             msk = y>0
             x = np.log10(x)
             y[~msk] = -1E10
