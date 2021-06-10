@@ -16,6 +16,7 @@ import dill as pickle
 
 try:
     import iminuit
+    from iminuit import Minuit
     minuit_installed=True
 except:
     minuit_installed=False
@@ -908,7 +909,6 @@ class MinuitMinimizer(Minimizer):
                                              name=p_names)
             self.minuit_fun.limits=[ bounds[ID] for ID,par in enumerate(self.model.fit_par_free) ]
             #print('=>  self.minuit_fun.limits',  self.minuit_fun.limits)
-            from iminuit import Minuit
             self.minuit_fun.errordef = Minuit.LEAST_SQUARES
     def chisq_func(self, *p):
         if iminuit.__version__ < "2":
