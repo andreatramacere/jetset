@@ -908,7 +908,8 @@ class MinuitMinimizer(Minimizer):
                                              name=p_names)
             self.minuit_fun.limits=[ bounds[ID] for ID,par in enumerate(self.model.fit_par_free) ]
             #print('=>  self.minuit_fun.limits',  self.minuit_fun.limits)
-            self.minuit_fun.errordef = iminuit.LEAST_SQUARES
+            from iminuit import Minuit
+            self.minuit_fun.errordef = Minuit.LEAST_SQUARES
     def chisq_func(self, *p):
         if iminuit.__version__ < "2":
             self.p = p
