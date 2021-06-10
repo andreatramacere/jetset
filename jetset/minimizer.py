@@ -40,7 +40,7 @@ from .data_loader import lin_to_log
 
 
 
-__all__ = ['FitResults','fit_SED','Minimizer','LSMinimizer','LSBMinimizer','MinutiMinimizer','ModelMinimizer']
+__all__ = ['FitResults','fit_SED','Minimizer','LSMinimizer','LSBMinimizer', 'MinuitMinimizer', 'ModelMinimizer']
 
 
 
@@ -219,7 +219,7 @@ class ModelMinimizer(object):
             self.minimizer=LSMinimizer(self)
 
         elif minimizer_type=='minuit':
-            self.minimizer=MinutiMinimizer(self)
+            self.minimizer=MinuitMinimizer(self)
 
         elif minimizer_type == 'sherpa':
             from .sherpa_plugin import  SherpaMinimizer
@@ -825,7 +825,7 @@ class LSMinimizer(Minimizer):
 
 
 
-class MinutiMinimizer(Minimizer):
+class MinuitMinimizer(Minimizer):
 
     def __init__(self,model):
         if minuit_installed==True:
@@ -833,7 +833,7 @@ class MinutiMinimizer(Minimizer):
         else:
             raise RuntimeError('iminuit non installed')
 
-        super(MinutiMinimizer, self).__init__(model)
+        super(MinuitMinimizer, self).__init__(model)
 
 
 
@@ -908,6 +908,7 @@ class MinutiMinimizer(Minimizer):
                                              name=p_names)
             self.minuit_fun.limits=[ bounds[ID] for ID,par in enumerate(self.model.fit_par_free) ]
             #print('=>  self.minuit_fun.limits',  self.minuit_fun.limits)
+            self.minuit_fun.errordef = iminuit.LEAST_SQUARES
     def chisq_func(self, *p):
         if iminuit.__version__ < "2":
             self.p = p

@@ -147,7 +147,7 @@ class Model(object):
 
     def _set_up_plot(self,plot_obj,sed_data,frame,density):
         if plot_obj is None:
-            plot_obj=PlotSED( frame = frame, density=density)
+            plot_obj=PlotSED( frame = frame, density=density,sed_data=sed_data)
 
         z_sed_data = None
         if frame == 'src' and sed_data is not None:
@@ -155,8 +155,8 @@ class Model(object):
             if self.get_par_by_type('redshift') is not None:
                 sed_data.z = self.get_par_by_type('redshift').val
 
-        if sed_data is not None:
-            plot_obj.add_data_plot(sed_data)
+        #if sed_data is not None:
+        #    plot_obj.add_data_plot(sed_data)
 
 
         if frame == 'src' and z_sed_data is not None:
