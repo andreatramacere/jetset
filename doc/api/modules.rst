@@ -15,6 +15,7 @@ In the following the package modules are listed.
    data_loader    <data_loader.rst>
    frame_converter    <frame_converter.rst>
    jet_emitters    <jet_emitters.rst>
+   jet_emitters_factory    <jet_emitters_factory.rst>
    jet_model    <jet_model.rst>
    jet_paramters    <jet_paramters.rst>
    jet_spectral_components    <jet_spectral_components.rst>
@@ -32,7 +33,9 @@ In the following the package modules are listed.
    output    <output.rst>
    plot_sedfit    <plot_sedfit.rst>
    poly_fit    <poly_fit.rst>
+   poly_fit_tools    <poly_fit_tools.rst>
    sed_shaper    <sed_shaper.rst>
+   sherpa_plugin    <sherpa_plugin.rst>
    spectral_shapes    <spectral_shapes.rst>
    template_2Dmodel    <template_2Dmodel.rst>
    template_model    <template_model.rst>

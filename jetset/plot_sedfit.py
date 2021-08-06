@@ -1,7 +1,4 @@
-#from __future__ import absolute_import, division, print_function
 
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
 
 __author__ = "Andrea Tramacere"
 
@@ -35,7 +32,7 @@ from .output import section_separator,WorkPlace
 
 from .utils import *
 
-__all__=['PlotSED','BasePlot','PlotPdistr','PlotSpecComp','PlotSeedPhotons','PlotSpectralMultipl']
+__all__=['PlotSED','BasePlot','PlotPdistr','PlotSpecComp','PlotSeedPhotons','PlotSpectralMultipl','PlotTempEvDiagram','PlotTempEvEmitters']
 
 def y_ev_transf(x):
     return x - np.log10(2.417E14)
@@ -86,12 +83,12 @@ class  PlotSED (object):
             plot_workplace=WorkPlace()
             self.out_dir=plot_workplace.out_dir
             self.flag=plot_workplace.flag
-     
+
         else:
             self.out_dir=plot_workplace.out_dir
             self.flag=plot_workplace.flag
-        
-        
+
+
             self.title="%s_%s"%(title,self.flag)
 
         if figsize is None:
@@ -103,9 +100,9 @@ class  PlotSED (object):
 
         self.sedplot= self.fig.add_subplot(self.gs[0])
         self._add_res_plot()
-        
+
         self.set_plot_axis_labels(density=density)
-        
+
         #if autoscale==True:
         self.sedplot.set_autoscalex_on(True)
         self.sedplot.set_autoscaley_on(True)
@@ -116,12 +113,13 @@ class  PlotSED (object):
 
         self.sedplot.set_xlim(6, 30)
         if frame == 'obs':
-           self.sedplot.set_ylim(-20, -8)
-
+            self.sedplot.set_ylim(-20, -8)
         elif frame == 'src':
             self.sedplot.set_ylim(38, 55)
+        elif frame == 'blob':
+            self.sedplot.set_ylim(34, 51)
         else:
-            unexpetced_behaviour()
+            unexpected_behaviour()
 
         self.secaxy = self.sedplot.secondary_xaxis('top', functions=(y_ev_transf, y_ev_transf_inv))
         self.secaxy.set_xlabel('log(E) (eV)')
@@ -140,6 +138,16 @@ class  PlotSED (object):
             self.add_model_plot(model)
         self.counter_res=0
 
+        self.add_residual_plot = self.add_model_residual_plot
+
+    def _check_frame(self,frame):
+        if frame is None:
+            frame=self.frame
+
+        elif frame != self.frame:
+            raise RuntimeError('you have to use the same restframe of the PlotSED class:',self.frame )
+
+        return frame
 
     def _add_res_plot(self):
         self.resplot = self.fig.add_subplot(self.gs[1], sharex=self.sedplot)
@@ -157,15 +165,15 @@ class  PlotSED (object):
             self.del_residuals_line(0)
 
     def clean_data_lines(self):
-        
+
         for i in range(len(self.lines_data_list)):
             self.del_data_line(0)
-    
+
     def clean_model_lines(self):
         for i in range(len(self.lines_model_list)):
             self.del_model_line(0)
-            
-            
+
+
     def list_lines(self):
         if self.lines_data_list==[] and self.lines_model_list==[]:
             pass
@@ -230,7 +238,7 @@ class  PlotSED (object):
     def set_plot_axis_labels(self, density=False):
         self.lx = 'log($ \\nu $)  (Hz)'
 
-        if self.frame == 'src':
+        if self.frame == 'src' or self.frame == 'blob':
 
             if density is False:
                 self.ly = 'log($ \\nu L_{\\nu} $ )  (erg  s$^{-1}$)'
@@ -243,18 +251,19 @@ class  PlotSED (object):
             else:
                     self.ly = 'log($   F{\\nu} $ )  (erg cm$^{-2}$  s$^{-1}$ Hz$^{-1}$)'
 
+
         else:
-            unexpetced_behaviour()
+            unexpected_behaviour()
 
         self.sedplot.set_ylabel(self.ly)
         self.sedplot.set_xlabel(self.lx)
 
 
-    
+
     def add_res_zeroline(self):
-        y0 = np.zeros(2)
-        x0 = [0,30]
-        self.resplot.plot(x0,y0,'--',color='black')
+        #y0 = np.zeros(2)
+        #x0 = [0,30]
+        self.resplot.axhline(0, ls='--', color='black')
         self.update_plot()
 
     def rescale(self,x_min=None,x_max=None,y_min=None,y_max=None):
@@ -265,7 +274,7 @@ class  PlotSED (object):
         self.resplot.set_xlim(x_min,x_max)
         self.resplot.set_ylim(y_min,y_max)
         self.update_plot()
-    
+
     def update_plot(self):
         self.fig.canvas.draw()
         #self.sedplot.relim()
@@ -279,7 +288,8 @@ class  PlotSED (object):
         if len(self.sedplot.lines)>0:
 
             for l in self.sedplot.lines:
-                y_s.append(np.max(l.get_ydata()))
+                if len(l.get_ydata())>0:
+                    y_s.append(np.max(l.get_ydata()))
             if len(y_s) > 0:
                 y_min = min(y_s) - 3
                 y_max = max(y_s) + 1
@@ -325,17 +335,20 @@ class  PlotSED (object):
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None,density=False, update=True):
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None,density=False, update=True, lw=1.0 ,frame=None):
 
-        try:
-            x, y = model.get_model_points(log_log=True, frame = self.frame)
-        except Exception as e:
-            #print("a",e)
+        frame=self._check_frame(frame=frame)
+
+        if hasattr(model,'get_model_points'):
+            try:
+                x, y = model.get_model_points(log_log=True, frame = self.frame)
+            except Exception as e:
+                raise RuntimeError('for model',model.name, "problem with get_model_points()",e)
+        else:
             try:
                 x, y = model.SED.get_model_points(log_log=True, frame = self.frame)
             except Exception as e:
-                print("SED missing", e)
-                raise RuntimeError (model, "!!! Error has no SED instance or something wrong in get_model_points()",e)
+                raise RuntimeError('for model',model.name, "problem with SED.get_model_points()",e)
 
         if density is True:
             y=y-x
@@ -363,7 +376,7 @@ class  PlotSED (object):
             x = x[msk1 * msk2]
             y = y[msk1 * msk2]
 
-        line, = self.sedplot.plot(x, y, line_style, label=label,color=color,linewidth=1.0)
+        line, = self.sedplot.plot(x, y, line_style, label=label,color=color,lw=lw)
 
 
         self.lines_model_list.append(line)
@@ -374,18 +387,116 @@ class  PlotSED (object):
 
         self.counter += 1
 
-    def add_data_plot(self,sed_data,label=None,color=None,autoscale=True,fmt='o',ms=4,mew=0.5,fit_range=None, density = False):
+    def plot_tempev_model(self,
+                          temp_ev,
+                          region,
+                          comp='Sum',
+                          frame=None,
+                          t1=None,
+                          t2=None,
+                          time_slice=None,
+                          time_slice_bin=None,
+                          time=None,
+                          time_bin=None,
+                          density=False,
+                          use_cached=False,
+                          sed_data=None,
+                          average=False):
+
+        frame=self._check_frame(frame)
 
 
+        if (time_slice is not None and time is not None):
+            raise RuntimeError('you can to pass either the N-th time slice "time_slice", or the blob time in seconds "time" ')
+
+        if t1 is None or t1 < region.time_sampled_emitters.time_blob[0]:
+            t1 = region.time_sampled_emitters.time_blob[0]
+
+        if t2 is None or t2 > region.time_sampled_emitters.time_blob[-1]:
+            t2 = region.time_sampled_emitters.time_blob[-1]
+
+        if time_slice is None:
+            _time_slice = 0
+        else:
+            _time_slice = time_slice
+
+        _time_slice_bin = time_slice_bin
+        if time_slice_bin is None and time_slice is None:
+            _time_slice_bin = 1
+
+
+        #if time_slice is not None or time_bin is None:
+
+        if time is not None and time_bin is not None:
+            t_array = np.arange(t1, t2, time_bin)
+            time_id_array=None
+        elif time is not None and time_bin is None:
+            t_array = np.array([time])
+            time_id_array = None
+        else:
+            t_array, time_id_array = region.time_sampled_emitters._get_time_samples(time_slice=_time_slice,
+                                                                                    time_slice_bin=_time_slice_bin)
+            time_id_array = time_id_array[t_array <= t2]
+            time_id_array = time_id_array[t_array >= t1]
+            t_array = t_array[t_array <= t2]
+            t_array = t_array[t_array >= t1]
+
+
+        g = plt.cm.Greens(np.linspace(0.5, 1, t_array.size))
+        r = plt.cm.Reds(np.linspace(0.5, 1, t_array.size))
+        b = plt.cm.Blues(np.linspace(0.5, 1, t_array.size))
+        for ID, t in enumerate(t_array):
+            if time is not None:
+                s = region.get_SED(comp, frame=frame, time=t, use_cached=use_cached, time_bin=time_bin,average=average)
+            else:
+                s = region.get_SED(comp, frame=frame, time_slice=time_id_array[ID], use_cached=use_cached,
+                                   time_slice_bin=time_slice_bin,average=average)
+
+            label = None
+            ls = '-'
+            color = r[ID]
+            if temp_ev.custom_q_jnj_profile[temp_ev._get_time_slice_T_array(t)] > 0:
+                color = g[ID]
+                ls = '-'
+                lw = 0.2
+            if temp_ev.custom_acc_profile[temp_ev._get_time_slice_T_array(t)] > 0:
+                color = b[ID]
+                ls = '-'
+                lw = 0.2
+
+            if ID == 0:
+                lw = 2
+                ls = '--'
+                label = 'start, t=%2.2e (s)' % t
+                color = 'green'
+            if ID == t_array.size - 1:
+                lw = 2
+                ls = '--'
+                color = 'purple'
+                label = 'stop, t=%2.2e (s)' % t
+
+            self.add_model_plot(model=s, label=label, line_style=ls, color=color, update=False, lw=lw,
+                                    auto_label=False,density=density)
+
+        if sed_data is not None:
+            self.add_data_plot(sed_data)
+
+        self.update_plot()
+        return
+
+
+    def add_data_plot(self,sed_data,label=None,color=None,frame=None,autoscale=True,fmt='o',ms=4,mew=0.5,fit_range=None, density = False):
+
+        frame = self._check_frame(frame)
         try:
             x,y,dx,dy,=sed_data.get_data_points(log_log=True,frame=self.frame, density=density)
         except Exception as e:
             raise RuntimeError("!!! ERROR failed to get data points from", sed_data,e)
-            
+
 
         if dx is None:
             dx=np.zeros(len(sed_data.data['nu_data']))
-        
+
 
         if dy is None:
             dy=np.zeros(len(sed_data.data['nu_data']))
@@ -416,13 +527,13 @@ class  PlotSED (object):
         self.counter+=1
         #self.update_legend()
         self.update_plot()
-        
+
 
     def add_xy_plot(self,x,y,label=None,color=None,line_style=None,autoscale=False):
 
         if line_style is None:
             line_style='-'
-           
+
 
         if label is None:
             label='line %d'%self.counter
@@ -437,28 +548,28 @@ class  PlotSED (object):
         self.update_plot()
 
 
-    def add_residual_plot(self,model,data,label=None,color=None,filter_UL=True,fit_range=None):
 
-        if self.counter_res == 0:
-            self.add_res_zeroline()
-        #print('bbbbb')
+    def add_model_residual_plot(self, model, data, label=None, color=None, filter_UL=True, fit_range=None):
         if data is not None:
-
-            x,y=model.get_residuals(log_log=True,data=data,filter_UL=filter_UL)
-
-            if fit_range is not None:
-                msk1 = x<fit_range[1]
-                msk2 =x>fit_range[0]
-
-                x=x[msk1*msk2]
-                y=y[msk1*msk2]
-            #print('aaaaaaa',fit_range,x)
-            line = self.resplot.errorbar(x, y, yerr=np.ones(x.size), fmt='+',color=color)
-            self.lines_res_list.append(line)
-            self.counter_res += 1
+            x,y = model.get_residuals(log_log=True,data=data,filter_UL=filter_UL)
+            self.add_xy_residual_plot(x=x, y=y, fit_range=fit_range, color=color)
         else:
             pass
 
+
+    def add_xy_residual_plot(self, x, y, fit_range=None, color=None):
+        if self.counter_res == 0:
+            self.add_res_zeroline()
+        if fit_range is not None:
+            msk1 = x < fit_range[1]
+            msk2 = x > fit_range[0]
+
+            x = x[msk1 * msk2]
+            y = y[msk1 * msk2]
+
+        line = self.resplot.errorbar(x, y, yerr=np.ones(x.size), fmt='+', color=color)
+        self.lines_res_list.append(line)
+        self.counter_res += 1
         self.update_plot()
 
 
@@ -492,7 +603,7 @@ class  PlotSED (object):
 
 class BasePlot(object):
 
-    def __init__(self,figsize=(8,6),dpi=120):
+    def __init__(self,figsize=(8,6),dpi=None):
         self.fig, self.ax = plt.subplots(figsize=figsize,dpi=dpi)
 
     def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):
@@ -530,7 +641,7 @@ class PlotSpectralMultipl(BasePlot):
 
 class  PlotPdistr (BasePlot):
 
-    def __init__(self,figsize=(8,6),dpi=120,injection=False,loglog=True):
+    def __init__(self,figsize=(8,6),dpi=None,injection=False,loglog=True):
         super(PlotPdistr, self).__init__(figsize=figsize,dpi=dpi)
         self.loglog=loglog
         self.injection = injection
@@ -658,64 +769,116 @@ class  PlotPdistr (BasePlot):
         self.fig.tight_layout()
 
 
+
+
+
+
+
 class  PlotTempEvEmitters (PlotPdistr):
 
-    def __init__(self,figsize=(8,6),dpi=120,loglog=True):
+    def __init__(self,figsize=(8,6),dpi=None,loglog=True):
         super(PlotTempEvEmitters, self).__init__(figsize=figsize,dpi=dpi,loglog=loglog,)
 
 
-    def _plot_distr(self,temp_ev,particle='electrons',energy_unit='gamma',pow=None,plot_Q_inj=True):
-        for ID in range(1, temp_ev.parameters.NUM_SET.val - 1):
-            x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[ID], particle, energy_unit, pow=pow)
-            self._plot(x,y,c='g',lw=0.1,label=None)
-        #print('==> a')
-        x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[0], particle, energy_unit, pow=pow)
-        self._plot(x, y, c='black', lw=2,label='Start')
-        #print('==> b')
-        x, y, energy_name, energy_units = self._set_variable(temp_ev.gamma, temp_ev.N_gamma[-1], particle, energy_unit, pow=pow)
-        self._plot(x, y, c='blue', lw=2,label='Stop')
+    def _plot_distr(self,temp_ev,region,particle='electrons',energy_unit='gamma',pow=None,plot_Q_inj=True,t1=None, t2=None,):
+        if t1 is None:
+            t1=region.time_sampled_emitters.time_blob[0]
+
+        if t2 is None:
+            t2=region.time_sampled_emitters.time_blob[-1]
+
+
+        t_array = np.linspace(t1, t2, region.time_sampled_emitters.time_blob.size)
+
+        ls = '-'
+        lw = 0.2
+
+
+        n = region.time_sampled_emitters.n_gamma
+        for ID, t in enumerate(t_array):
+            color = 'red'
+
+            if temp_ev.custom_q_jnj_profile[temp_ev._get_time_slice_T_array(t)] > 0:
+                color = 'g'
+
+            if temp_ev.custom_acc_profile[temp_ev._get_time_slice_T_array(t)] > 0:
+                color = 'b'
+
+            x, y, energy_name, energy_units = self._set_variable(region.time_sampled_emitters.gamma, n[ID], particle, energy_unit, pow=pow)
+            self._plot(x,y,c=color,lw=0.1,label=None)
+            #print('==> ID,t,c',ID,t,color)
+        x, y, energy_name, energy_units = self._set_variable(region.time_sampled_emitters.gamma, n[0], particle, energy_unit, pow=pow)
+        self._plot(x, y, c='black', lw=2,label='Start sample')
+
+        x, y, energy_name, energy_units = self._set_variable(region.time_sampled_emitters.gamma, n[-1], particle, energy_unit, pow=pow)
+        self._plot(x, y, c='blue', lw=2,label='Stop sample')
         self._set_xy_label(energy_name, energy_units,pow=pow)
-        if temp_ev.Q_inj is not None:
-            y = temp_ev.Q_inj.n_gamma_e * temp_ev._temp_ev.deltat
+        #TODO move to plot inj if iny is used in region
+        if temp_ev.Q_inj is not None and region._region_type == 'acc':
+            y = temp_ev.Q_inj.n_gamma_e * temp_ev.delta_t
             x = temp_ev.Q_inj.gamma_e
             if plot_Q_inj is True:
                 if pow is not None:
                     y=y*np.power(x,pow)
 
-                self._plot(x,y, c='red', lw=1, label='$Q_{inj}$ deltat')
+                self._plot(x,y, c='red', lw=1, label='$Q_{inj}$ delta t')
         #print('==> d')
 
         self.ax.legend()
 
-    def plot_distr(self, temp_ev, energy_unit='gamma',plot_Q_inj=True,pow=None):
-        self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=pow,plot_Q_inj=plot_Q_inj)
+    def plot_distr(self, temp_ev, region='acc', energy_unit='gamma',plot_Q_inj=True,pow=None):
+        self._plot_distr(temp_ev,region=region, particle='electrons',energy_unit=energy_unit,pow=pow,plot_Q_inj=plot_Q_inj)
 
-    def plot_distr2p(self, temp_ev, energy_unit='gamma',plot_Q_inj=True):
-        self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=2,plot_Q_inj=plot_Q_inj)
+    def plot_distr2p(self, temp_ev, region='acc', energy_unit='gamma',plot_Q_inj=True):
+        self._plot_distr(temp_ev, region=region, particle='electrons',energy_unit=energy_unit,pow=2,plot_Q_inj=plot_Q_inj)
 
-    def plot_distr3p(self, temp_ev, energy_unit='gamma',plot_Q_inj=True):
-        self._plot_distr(temp_ev,particle='electrons',energy_unit=energy_unit,pow=3,plot_Q_inj=plot_Q_inj)
-
-class  PlotTempEvDiagram (BasePlot):
-
-    def __init__(self,figsize=(8,6),dpi=120):
-        super(PlotTempEvDiagram, self).__init__(figsize=figsize,dpi=dpi)
+    def plot_distr3p(self, temp_ev, region='acc', energy_unit='gamma',plot_Q_inj=True):
+        self._plot_distr(temp_ev, region=region, particle='electrons',energy_unit=energy_unit,pow=3,plot_Q_inj=plot_Q_inj)
 
 
-    def plot(self,duration,T_acc_start,T_acc_stop,T_inj_start,T_inj_stop):
-        self.ax.hlines(1, T_acc_start, T_acc_stop, label='Inj. start/stop', colors='b')
-        self.ax.vlines(T_acc_start,0,1,ls='--',color='b',lw=0.5)
-        self.ax.vlines(T_acc_stop,0, 1,ls='--',color='b',lw=0.5)
-        self.ax.hlines(2, T_inj_start, T_inj_stop, label='Acc. start/stop', colors='g')
-        self.ax.vlines(T_inj_start, 0, 2, ls='--', color='g',lw=0.5)
-        self.ax.vlines(T_inj_stop, 0, 2, ls='--', color='g',lw=0.5)
-        self.ax.hlines(0.5, 0, duration, label='duration', colors='black')
-        self.ax.hlines(0, 0,  duration, ls='--', colors='black',lw=0.5)
-        self.ax.set_xlim(0, duration)
-        self.ax.set_ylim(-0.5,3)
-        self.ax.legend()
+class  PlotTempEvDiagram (object):
+
+    def __init__(self,figsize=(8,6),dpi=None,expanding_region=False):
+        if expanding_region is True:
+            n_rows =4
+        else:
+            n_rows = 4
+        self.fig, self.axs = plt.subplots(n_rows, 1, figsize=figsize, dpi=dpi, sharex=False)
+
+    def plot(self,
+             T_array,
+             inj_profile,
+             acc_profile,
+             R_exp,
+             B_exp,
+             R_H_exp):
 
 
+        self.axs[0].plot(T_array, acc_profile, label='Acc. start/stop', c='g')
+        self.axs[0].set_ylim(0, 1.5)
+
+        self.axs[1].plot(T_array, inj_profile, label='Inj. profile', c='b')
+        self.axs[1].set_ylim(0,None)
+        self.axs[1].set_xlabel('Time in blob frame (s)')
+        self.axs[1].sharex = self.axs[0]
+        #if expanding_region is True:
+        self.axs[2].plot(np.log10(R_H_exp), np.log10(R_exp), label='Rad. region size', c='orange')
+        self.axs[2].set_ylabel('log(R_rad) (cm)')
+        self.axs[3].plot(np.log10(R_H_exp), np.log10(B_exp), label='B Rad. region', c='green')
+        self.axs[3].set_xlabel('log(BH distance) in observer frame (cm)')
+        self.axs[3].set_ylabel('log(B) (G)')
+        self.axs[3].sharex = self.axs[2]
+
+        for ax in self.axs:
+            ax.legend()
+
+
+        #self.fig.subplots_adjust(hspace=0)
+        self.fig.tight_layout()
+
+    def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):
+        self.ax.set_xlim(x_min, x_max)
+        self.ax.set_ylim(y_min, y_max)
 
 class  PlotSpecComp (BasePlot):
 

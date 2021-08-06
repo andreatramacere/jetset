@@ -1,10 +1,3 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
-
-
-
 
 __author__ = "Andrea Tramacere"
 
@@ -67,10 +60,13 @@ class JetParameter(ModelParameter):
                               'escape_time',
                               'gamma_grid',
                               'time_grid',
+                              'accelerator_width',
                               'fp_coeff_index',
                               'turbulence_scale',
                               'inj_luminosity',
+                              'acc_energy',
                               'time_ev_output',
+                              'exp_start_time',
                               'emitters_density',
                               'target_density',
                               'Disk',
@@ -78,7 +74,10 @@ class JetParameter(ModelParameter):
                               'DT',
                               'Star',
                               'region_size',
+                              'radius_expansion_index',
                               'region_position',
+                              'jet_base_radius',
+                              'jet_base_height',
                               'electron_energy',
                               'LE_spectral_slope',
                               'HE_spectral_slope',
@@ -87,6 +86,8 @@ class JetParameter(ModelParameter):
                               'spectral_curvature',
                               'turn-over-energy',
                               'magnetic_field',
+                              'magnetic_field_index',
+                              'jet_opening_angle',
                               'beaming',
                               'jet-viewing-angle',
                               'jet-bulk-factor',
@@ -175,17 +176,14 @@ class JetModelParameterArray(ModelParameterArray):
             p_test = self.get_par_by_name(pname)
 
 
-            #_jetkernel=getattr(model,jetkernel_attr)
             _jetkernel_struct=getattr(model,struct_name)
-            #print('>', key, jetkernel_par_name,p_test,_jetkernel_struct,)
             if p_test is None:
-                # print('-->', pname, model_dic[key].is_in_blob, model_dic[key].val)
                 if hasattr(_jetkernel_struct, jetkernel_par_name) and model_dic[key].is_in_jetkernel is True:
                     pval = getattr(_jetkernel_struct, jetkernel_par_name)
                 elif model_dic[key].val is not None:
                     pval = model_dic[key].val
                 else:
-                    raise RuntimeError('par', pname, 'not found in temp_ev and model dict')
+                    raise RuntimeError('par', pname, 'not found in jetkernel and model dict')
 
                 log = model_dic[key].log
 
@@ -224,6 +222,7 @@ class JetModelParameterArray(ModelParameterArray):
                 else:
                     _master_pars=[]
 
+                #print('==>, p',pname,'log_val',log,pval)
                 self.add_par(parameter_class(model,
                                              struct_name,
                                              jetkernel_par_name,

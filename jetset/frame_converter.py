@@ -1,16 +1,10 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
 
 __author__ = "Andrea Tramacere"
 
-
-import math as m
 import numpy as np
 from .utils import *
 
-__all__=['convert_nu_to_blob','convert_nu_to_src']
+__all__=['convert_nu_to_blob','convert_nu_to_src','convert_nuFnu_to_nuLnu_src']
 
 def convert_nu_to_blob(nu,in_frame,delta,z):
     """converts Energies/frequencies from in_frame  to blob rest frame
@@ -37,7 +31,7 @@ def convert_nu_to_blob(nu,in_frame,delta,z):
         delta_c=1
         z_c=0
     else:
-        unexpetced_behaviour()
+        unexpected_behaviour()
 
     return nu*(1+z_c)/delta_c
 
@@ -64,7 +58,7 @@ def convert_nu_to_src(nu,z,in_frame):
     elif in_frame=="src":
         z_c=0
     else:
-         unexpetced_behaviour()
+         unexpected_behaviour()
 
     return nu*(1+z_c)
 
@@ -76,13 +70,21 @@ def convert_nuFnu_to_nuLnu_src(nuFnu,z,in_frame,dl):
     elif in_frame == "src":
         c=1.0
     else:
-        unexpetced_behaviour()
+        unexpected_behaviour()
 
     return c*nuFnu
 
 
+def convert_nuLnu_src_to_nuLnu_blob(nuLnu,beaming,in_frame):
+    check_frame(in_frame)
+    c=1/(beaming**4)
+    return c*nuLnu
 
-    
+
+def convert_nu_src_to_nu_blob(nu_src,beaming,in_frame):
+    check_frame(in_frame)
+    return nu_src/beaming
+
     
     
     

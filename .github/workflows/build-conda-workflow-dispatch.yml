@@ -9,6 +9,9 @@ on:
       tags:
         description: tag
         required: false
+      skip_test:
+        description: skip test
+        required: false
 
 jobs:
   create_release:
@@ -42,7 +45,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-10.15 ]
-        python-version: [ 3.8 ]
+        python-version: [3.8,3.9]
 
     steps:
       - name: 'Clone Repository (Latest)'
@@ -69,6 +72,8 @@ jobs:
           conda install -c conda-forge emcee">=3.0.0"
           conda install -c astropy --file requirements.txt
           conda install  pytest
+
+
 
       - name: 'set env JETSETBESSELBUILD'
         run: |
@@ -122,17 +127,19 @@ jobs:
           cp -r jetset/tests/test*.py  .github/action_test/
 
       - name: 'test'
+        if: github.event.inputs.skip_test != 'yes'
         working-directory: .github/action_test/
         run: |
-          pytest --pyargs jetset.tests.test_functions::test_custom
+          echo $(running tests!)
+          pytest --pyargs jetset.tests.test_functions::TestFull
 
       - name: 'prepare asset'
         run: |
           echo ${{ env.CONDABUILDJETSET }}
           ls ${{ env.CONDABUILDJETSET }}
-          mkdir  conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}
-          mv ${{ env.CONDABUILDJETSET }} ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}
-          tar -cvf conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}/*
+          mkdir  conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}
+          mv ${{ env.CONDABUILDJETSET }} ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}
+          tar -cvf conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}.tar ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}/*
 
       - name: 'Upload Release Asset'
         uses: softprops/action-gh-release@v1
@@ -140,6 +147,6 @@ jobs:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
           files: |
-            conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+            conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}.tar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

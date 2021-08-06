@@ -1,16 +1,7 @@
 
-#from __future__ import absolute_import, division, print_function
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
-
 __author__ = "Andrea Tramacere"
 
 
-#from .cosmo_tools import Cosmo
-
-from .data_loader import log_to_lin, lin_to_log
-
-from scipy.interpolate import interp1d
 
 from scipy import interpolate
 
@@ -22,12 +13,10 @@ from astropy.table import Table
 
 import os
 
-from .spectral_shapes import SED
 from  .plot_sedfit import PlotSED,PlotSpectralMultipl
 
-from .model_parameters import ModelParameter,ModelParameterArray
+from .model_parameters import ModelParameter
 from .base_model import  Model, MultiplicativeModel
-from .template_model import TemplateParameter
 
 __all__=['TemplateTable2D', 'EBLAbsorptionTemplate']
 
@@ -117,14 +106,8 @@ class TemplateTable2D(Model):
         
         self.model_type = 'table2D'
 
-    
-
-      
-
-
-    def plot_model(self,plot_obj=None,clean=False,label=None,sed_data=None,color=None, density=False):
-        if plot_obj is None:
-            plot_obj=PlotSED(sed_data=sed_data)
+    def plot_model(self,plot_obj=None,clean=False,label=None,sed_data=None,color=None, density=False,frame='obs'):
+        plot_obj=self._set_up_plot(plot_obj,sed_data,frame,density)
 
         if clean==True:
             plot_obj.clean_model_lines()
@@ -132,7 +115,7 @@ class TemplateTable2D(Model):
         if label is None:
             label=self.name
 
-        plot_obj.add_model_plot(self.SED, line_style='-', label=label, flim=self.flux_plot_lim,color=color, density=density)
+        plot_obj.add_model_plot(self.SED, line_style='-', label=label, flim=self.flux_plot_lim,color=color, density=density,frame=frame)
 
         return plot_obj
 
@@ -371,7 +354,7 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
 
         return out_model
 
-    def plot_model(self, plot_obj=None,  label=None, line_style='-',color=None):
+    def plot_model(self, plot_obj=None,  label=None, line_style='-',color=None,frame='obs'):
         if plot_obj is None:
             plot_obj = PlotSpectralMultipl()
 

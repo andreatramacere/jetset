@@ -1,6 +1,5 @@
 __author__ = "Andrea Tramacere"
 
-import os
 import numpy as np
 from inspect import signature
 from astropy.constants import m_e,m_p,c
@@ -11,16 +10,17 @@ from .jet_paramters import *
 from .utils import set_str_attr
 from .model_parameters import ModelParameterArray, ModelParameter
 
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-if on_rtd is True:
-    try:
-        from .jetkernel import jetkernel as BlazarSED
-    except ImportError:
-        from .mock import jetkernel as BlazarSED
-else:
-    from .jetkernel import jetkernel as BlazarSED
+# on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+# if on_rtd is True:
+#     try:
+#         from .jetkernel import jetkernel as BlazarSED
+#     except ImportError:
+#         from .mock import jetkernel as BlazarSED
+# else:
 
-__all__=['JetkernelEmittersDistribution', 'EmittersDistribution', 'ArrayDistribution','EmittersArrayDistribution']
+from .jetkernel import jetkernel as BlazarSED
+
+__all__=['EmittersDistribution','BaseEmittersDistribution', 'ArrayDistribution','EmittersArrayDistribution','InjEmittersDistribution','JetkernelEmittersDistribution']
 
 
 class ArrayDistribution(object):
@@ -60,7 +60,7 @@ class BaseEmittersDistribution(object):
                  normalize=False):
 
         self._spectral_type = None
-        self._allowed_spectral_types = ['bkn', 'plc', 'lp', 'lppl', 'pl', 'lpep', 'array']
+        self._allowed_spectral_types = ['bkn', 'plc', 'lp', 'lppl', 'pl', 'lpep', 'array','user_defined']
         self._set_emitters_type(emitters_type)
         self._set_spectral_type(spectral_type)
         self._Norm = 1.0
@@ -85,15 +85,20 @@ class BaseEmittersDistribution(object):
         else:
             self._spectral_type = spectral_type
 
+
+    @staticmethod
+    def spectral_types_obs_constrain():
+        return ['bkn', 'plc', 'lp', 'lppl', 'pl', 'lpep', 'array']
+
     @property
     def spectral_type(self):
         return self._spectral_type
 
     @check_par_name
     def add_par(self, name, par_type, val, vmax, vmin, unit='', log=False, frozen=False):
-        #print('==> adding',name)
-        if log is True:
-            val = np.log10(val)
+        #print('==> adding',name,val)
+        #if log is True:
+        #    val = np.log10(val)
 
         self.parameters.add_par(ModelParameter(name=name,
                                                par_type=par_type,
@@ -145,6 +150,13 @@ class BaseEmittersDistribution(object):
         else:
             return np.log10([a,b])
 
+    def _set_log_val(self,a,log_val=False):
+        if log_val == False:
+            return a
+
+        else:
+            return np.log10(a)
+
 
     def _eval_func(self,gamma):
         p_dict = {}
@@ -183,14 +195,28 @@ class BaseEmittersDistribution(object):
         else:
             raise  RuntimeError('emitters type',self.emitters_type, 'not valid')
 
-    def _eval_U(self):
+    def eval_U(self, gmin=None, gmax=None):
         self.update()
-        if self.emitters_type=='electrons':
-            return np.trapz(self.n_gamma_e*self.gamma_e,self.gamma_e)*m_e.cgs.value*(c.cgs**2).value
-        elif self.emitters_type=='protons':
-            return np.trapz(self.n_gamma_p* self.gamma_, self.gamma_p)*m_p.cgs.value*(c.cgs**2).value
+        if self.emitters_type == 'electrons':
+            x=self.gamma_e
+            y=self.n_gamma_e * self.gamma_e
+            cost=m_e.cgs.value * (c.cgs ** 2).value
+
+        elif self.emitters_type == 'protons':
+            x = self.gamma_p
+            y = self.n_gamma_p * self.gamma_p
+            cost =  m_p.cgs.value * (c.cgs ** 2).value
+
         else:
             raise  RuntimeError('emitters type',self.emitters_type, 'not valid')
+
+        msk = np.ones(x.shape, dtype=np.bool)
+        if gmin is not None:
+            msk = x>=gmin
+        if gmax is not None:
+            msk = np.logical_and(msk, x<=gmax)
+
+        return np.trapz(y[msk],x[msk]) * cost
 
     def _fill(self,):
         self.set_grid()
@@ -215,8 +241,9 @@ class BaseEmittersDistribution(object):
         if self.emitters_type == 'protons':
             self.gamma_p = np.zeros(self._gamma_grid_size)
             self.n_gamma_p = np.zeros(self._gamma_grid_size)
-            self.gamma_e_second_inj = np.zeros(self._gamma_grid_size)
-            self.n_gamma_e_second_inj = np.zeros(self._gamma_grid_size)
+            if self._secondaries_done is False:
+                self.gamma_e_second_inj = np.zeros(self._gamma_grid_size)
+                self.n_gamma_e_second_inj = np.zeros(self._gamma_grid_size)
 
             self.gamma_p = self._gamma_grid
             self.n_gamma_p = self.f
@@ -229,10 +256,12 @@ class BaseEmittersDistribution(object):
 
 
     def _plot(self,m, p, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None):
-        self.update()
+
         if hasattr(self,'_jet'):
             if self._jet is not None:
                 self._set_blob()
+        self.update()
+
         if self.emitters_type == 'electrons':
             if label is None:
                 label = 'electrons'
@@ -377,8 +406,8 @@ class EmittersDistribution(BaseEmittersDistribution):
             self._parameters_dict[par.name]._master_pars = par._master_pars
 
     def add_par(self, name, par_type, val, vmax, vmin, unit='', log=False, frozen=False):
-        if log is True:
-            val = np.log10(val)
+        #if log is True:
+        #    val = np.log10(val)
 
         if name not in self._parameters_dict.keys():
             self._parameters_dict[name]=JetModelDictionaryPar(ptype=par_type,
@@ -392,6 +421,7 @@ class EmittersDistribution(BaseEmittersDistribution):
         else:
             raise ValueError('par',name,'already assigned')
 
+        #print('==> add par',name,val,log)
         self.parameters.add_par(ModelParameter(name=name,
                                                par_type=par_type,
                                                val=val,
@@ -421,12 +451,12 @@ class EmittersDistribution(BaseEmittersDistribution):
         self._parameters_dict=model_dict
 
         for k,par in model_dict.items():
-        #    #print('==> k',k,'par',par)
-            if self._log_values is True:
+            # print('==> k',k,'par',par,par.val,par.log)
+            if par.log is True:
                 val = np.log10(par.val)
             else:
                 val = par.val
-
+            # print('==> k', k, 'par', par, val, par.log)
             self.parameters.add_par(ModelParameter(name=k,
                                                    par_type=par.ptype,
                                                    val=val,
@@ -517,6 +547,7 @@ class EmittersDistribution(BaseEmittersDistribution):
             for ID in range(size):
                 self._gamma_grid[ID] = BlazarSED.get_elec_array(gamma_ptr, self._jet._blob, ID)
             self._gamma_grid_size=self._jet.gamma_grid_size
+
 
 
 
@@ -626,10 +657,13 @@ class EmittersArrayDistribution(EmittersDistribution):
 
     def _array_func(self,gamma):
         msk_nan=self._array_n_gamma>0
-        f_interp = interpolate.interp1d(np.log10(self._array_gamma[msk_nan]), np.log10(self._array_n_gamma[msk_nan]), bounds_error=False, kind='linear')
-        y = np.power(10., f_interp(np.log10(gamma)))
-        msk_nan = np.isnan(y)
-        y[msk_nan] = 0
+        if msk_nan.sum()>1:
+            f_interp = interpolate.interp1d(np.log10(self._array_gamma[msk_nan]), np.log10(self._array_n_gamma[msk_nan]), bounds_error=False, kind='linear')
+            y = np.power(10., f_interp(np.log10(gamma)))
+            msk_nan = np.isnan(y)
+            y[msk_nan] = 0
+        else:
+            y = np.zeros(gamma.size)
 
         return y
 
@@ -641,7 +675,9 @@ class InjEmittersDistribution(BaseEmittersDistribution):
                  spectral_type,
                  gamma_grid_size=200,
                  log_values=False,
-                 skip_build=False):
+                 skip_build=False,
+                 normalize=True,
+                 emitters_type='electrons'):
 
         super(InjEmittersDistribution, self).__init__(name=name,
                                                       spectral_type=spectral_type,
@@ -653,6 +689,7 @@ class InjEmittersDistribution(BaseEmittersDistribution):
 
         if skip_build is False:
             self._build(name, log_values, gamma_grid_size, normalize=True)
+
 
     def _set_base_pars(self):
         #model_dic = {}
@@ -698,15 +735,66 @@ class InjEmittersDistribution(BaseEmittersDistribution):
             self.n_gamma_e[np.isnan(self.n_gamma_e)] = 0
             self.n_gamma_e[np.isinf(self.n_gamma_e)] = 0
 
+    def eval_U_q(self):
+        return self.eval_U()
 
-    def _set_L_inj(self, L_inj_target_erg, volume, delta_t):
-        self.parameters.Q.val *=L_inj_target_erg/(self._eval_U()*volume*delta_t)
-        #print('==>',self._eval_U()*volume*delta_t)
+    def _set_L_inj(self, L_inj_target_erg, volume):
+        if L_inj_target_erg >0:
+            self.parameters.Q.val *=L_inj_target_erg/(self.eval_U_q() * volume )
+        else:
+            pass
+        #print('==>',self.eval_U()*volume*delta_t)
         self.update()
 
     def set_temp_ev(self):
         self.e_gamma_ptr = getattr(self._temp_ev, self._gammae_name)
         self._Q_inj_e_second_ptr = getattr(self._temp_ev._blob, self._Q_inj_e_second_name)
+
+
+
+class InjEmittersArrayDistribution(InjEmittersDistribution):
+    def __init__(self,
+                 name,
+                 emitters_type='electrons',
+                 normalize=False,
+                 skip_build=False,
+                 gamma_array=None,
+                 n_gamma_array=None,
+                 gamma_grid_size=None):
+
+        super(InjEmittersArrayDistribution, self).__init__(name,
+                                                        spectral_type='array',
+                                                        emitters_type=emitters_type)
+
+        if gamma_array is not None and n_gamma_array is not None:
+            if self._spectral_type != 'array':
+                raise RuntimeError('you can pass  gamma_array and n_gamma_array only for array distribution')
+            self._set_arrays(gamma_array,n_gamma_array)
+        elif (gamma_array is not None) and (n_gamma_array is not None) is False:
+            raise RuntimeError('you have to pass both gamma_array and n_gamma_array for array distribution')
+
+        if gamma_grid_size is None:
+            gamma_grid_size=gamma_array.size
+        if skip_build is False:
+            self._build( name, False, gamma_grid_size, normalize)
+        self.parameters.gmin.val=self._array_gamma[0]
+        self.parameters.gmax.val = self._array_gamma[-1]
+        self.parameters.Q.val =1
+        self.set_distr_func(self._array_func)
+
+    def _set_arrays(self,gamma_array,n_gamma_array):
+        _ids = np.argsort(gamma_array)
+        self._array_gamma = gamma_array[_ids]
+        self._array_n_gamma = n_gamma_array[_ids]
+
+    def _array_func(self,gamma):
+        msk_nan=self._array_n_gamma>0
+        f_interp = interpolate.interp1d(np.log10(self._array_gamma[msk_nan]), np.log10(self._array_n_gamma[msk_nan]), bounds_error=False, kind='linear')
+        y = np.power(10., f_interp(np.log10(gamma)))
+        msk_nan = np.isnan(y)
+        y[msk_nan] = 0
+
+        return y
 
 
 

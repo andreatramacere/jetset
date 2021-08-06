@@ -4,7 +4,8 @@ numpy
 astropy>=4.0
 matplotlib>3.1.0
 future
-iminuit>1.3.7,<2
+#iminuit>1.3.7,<2
+iminuit
 corner
 six
 emcee>3.0.0
@@ -14,5 +15,5 @@ tqdm
 numba
 pytest
 dill
-
+#sherpa
 

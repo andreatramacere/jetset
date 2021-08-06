@@ -157,7 +157,7 @@ double rate_compton_GR(struct blob *pt_GR) {
                 pt_GR->nu_seed = pt_GR->nu_DT_disk_RF;
                 pt_GR->n_seed = pt_GR->n_DT_DRF;
                 rate_comp = integrale_IC(pt_GR,
-                                         pt_GR->nu_stop_DT_DRF,
+                                         pt_GR->nu_start_DT,
                                          pt_GR->nu_stop_DT_DRF,
                                          pt_GR->EC_stat);
                 pt_GR->nu_1 = nu_1_original;
@@ -245,47 +245,6 @@ double rate_compton_GR(struct blob *pt_GR) {
     }
 
     
-
- /*    //EC CMB stat
-    if (pt_GR->nu_1 < pt_GR->nu_stop_EC_CMB && pt_GR->ord_comp == 1) {
-        if (pt_GR->SSC == 0 && pt_GR->EC == 6) {
-
-            if (pt_GR->verbose>1) {
-                printf("CMB\n");
-                printf("nu_start_CMB_seed=%e\n", pt_GR->nu_start_CMB_stat);
-                printf("nu_stop_CMB_seed=%e\n", pt_GR->nu_stop_CMB_stat);
-            }
-
-            //sed photon field in the disk rest frame
-            pt_GR->nu_seed = pt_GR->nu_CMB_stat;
-            pt_GR->n_seed = pt_GR->n_CMB_stat;
-
-            // nu out comp in disk rest frame
-            // nu seed is alread in disk rest frame 
-
-            nu_1_original=pt_GR->nu_1;
-            pt_GR->nu_1=pt_GR->nu_1*pt_GR->beam_obj;
-
-
-            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log_stat;
-            //pt_GR->N_IC=pt_GR->Ne_stat;
-            rate_comp = integrale_IC(pf_K,
-                    pt_GR,
-                    pt_GR->nu_start_CMB_stat,
-                    pt_GR->nu_stop_CMB_stat,
-                    1);
-            
-           
-
-            pt_GR->nu_1=nu_1_original;
-
-
-
-            //printf("rate comp%e\n",rate_comp);
-        }
-
-    } */
-
 
     return rate_comp;
 }
@@ -460,7 +419,7 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame) {
         for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
             pt->Integrand_over_gamma_grid[ID_gamma] =f_compton_K1(pt, pt->griglia_gamma_Ne_log_IC[ID_gamma]) * pt->Ne_IC[ID_gamma];
         }
-        integr_gamma= integr_simp_gird_equilog(pt->griglia_gamma_Ne_log_IC, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
+        integr_gamma= integr_simp_grid_equilog(pt->griglia_gamma_Ne_log_IC, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
 
         //Integration over seed photons number density
         nu2 = pt->nu_seed[ID + 1];
@@ -510,7 +469,7 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
     }
 
     //SSC
-    if (pt_ev->do_SSC_cooling) {
+    if (pt_spec->do_Sync) {
         if (pt_spec->verbose>1) {
             printf("nu_start_Sync=%e\n", pt_spec->nu_start_Sync);
             printf("nu_stop_Sync_ssc=%e\n", pt_spec->nu_stop_Sync_ssc);
@@ -519,8 +478,6 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
          
         pt_spec->nu_seed = pt_spec->nu_Sync;
         pt_spec->n_seed = pt_spec->n_Sync;
-        //0.75 is the Gould correction factor
-        //has been moved to spetto_sincrotrone.c
         comp_cooling += integrale_IC_cooling(pt_spec,
                 pt_spec->nu_start_Sync,
                 pt_spec->nu_stop_Sync_ssc,
@@ -529,7 +486,8 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
     }
 
     //EC Disk
-    if (pt_ev->do_EC_cooling_Disk == 1 ) {
+
+    if (pt_spec->do_EC_Disk == 1 ) {
 
         if (pt_spec->verbose>1) {
             printf("Disk\n");
@@ -546,7 +504,7 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
     }
 
     //EC BLR
-    if (pt_ev->do_EC_cooling_BLR == 1 ) {
+    if (pt_spec->do_EC_BLR == 1 ) {
 
     	if (pt_spec->verbose>1) {
     		printf("BLR\n");
@@ -564,7 +522,7 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
 
 
     //EC DT
-    if (pt_ev->do_EC_cooling_DT == 1 ) {
+    if (pt_spec->do_EC_DT == 1 ) {
 
     	if (pt_spec->verbose>1) {
     		printf("DT\n");
@@ -581,7 +539,7 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
     }
 
     //EC Star
-    if (pt_ev->do_EC_cooling_Star == 1 ) {
+    if (pt_spec->do_EC_Star == 1 ) {
 
     	if (pt_spec->verbose>1) {
     		printf("Star\n");
@@ -598,7 +556,7 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
     }
 
     //EC CMB
-    if (pt_ev->do_EC_cooling_CMB == 1 ) {
+    if (pt_spec->do_EC_CMB == 1 ) {
 
     	if (pt_spec->verbose>1) {
     		printf("CMB\n");

@@ -1,8 +1,3 @@
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
-
 __author__ = "Andrea Tramacere"
 
 from .minimizer import  _eval_res
@@ -14,7 +9,6 @@ from itertools import cycle
 import numpy as np
 import scipy as sp
 from scipy import stats
-from .plot_sedfit import  plt, PlotSED, set_mpl
 import corner
 import dill as pickle
 from multiprocessing import cpu_count, Pool
@@ -23,6 +17,7 @@ import warnings
 import  time
 import copy
 import threading
+from .plot_sedfit import  plt, PlotSED, set_mpl
 
 __all__=['McmcSampler']
 
@@ -51,7 +46,7 @@ class McmcSampler(object):
 
     def __init__(self,model_minimizer):
 
-        self.model = model_minimizer.fit_Model
+        self.model = model_minimizer.fit_model
         self.data = model_minimizer.data
         self.fit_par_free = model_minimizer.fit_par_free
 
@@ -59,7 +54,20 @@ class McmcSampler(object):
 
 
 
-    def run_sampler(self,nwalkers=500,steps=100,pos=None,burnin=50,use_UL=False,bound=0.2,bound_rel=False,threads=None,walker_start_bound=0.002,use_labels_dict=None,loglog = False):
+    def run_sampler(self,
+                    nwalkers=500,
+                    steps=100,
+                    pos=None,
+                    burnin=50,
+                    use_UL=False,
+                    bound=0.2,
+                    bound_rel=False,
+                    threads=None,
+                    walker_start_bound=0.002,
+                    use_labels_dict=None,
+                    loglog = False,
+                    progress='notebook'):
+
         counter=Counter(nwalkers*steps)
         self.calls = 0
         self.calls_OK = 0
@@ -104,7 +112,15 @@ class McmcSampler(object):
             raise RuntimeError('Please update to emcee v>=3.0.0')
 
         print('mcmc run starting')
+        print('')
         start = time.time()
+        if progress == 'notebook':
+            pass
+
+        if progress is True:
+            tqdm=None
+
+
         if threads is not None and threads>1:
             # if threads > cpu_count():
             #     threads = cpu_count()
@@ -118,16 +134,16 @@ class McmcSampler(object):
             #                                          args=(self.model, self.data, use_UL, counter,self._bounds, self.par_array, loglog),pool=pool)
             #     self.sampler.run_mcmc(pos, steps, progress=True)
 
-            print('')
+
 
             warnings.warn('multithreadign not implemented yet')
             threads=1
             self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self.par_array, loglog))
-            self.sampler.run_mcmc(pos, steps, progress=True)
+            self.sampler.run_mcmc(pos, steps, progress=progress)
         else:
             threads=1
             self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob,args=(self.model, self.data, use_UL, counter,self._bounds, self.par_array, loglog))
-            self.sampler.run_mcmc(pos, steps, progress=True)
+            self.sampler.run_mcmc(pos, steps, progress=progress)
 
 
 
@@ -311,21 +327,14 @@ class McmcSampler(object):
         return f
 
     def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False):
-        #if labels is None:
-        #    labels = self.labels
+
         if sed_data is None:
             sed_data=self.sed_data
 
         if fit_range is None:
             fit_range = [self.model.nu_min_fit, self.model.nu_max_fit]
 
-        p = PlotSED(frame=frame)
-
-        if frame == 'src' and sed_data is not None:
-            z_sed_data = sed_data.z
-            sed_data.z = self.model.get_par_by_type('redshift').val
-
-        p.add_data_plot(sed_data,density=density)
+        p = self.model._set_up_plot(None, sed_data, frame, density)
 
         self.reset_to_best_fit()
         self.model.eval(fill_SED=True)
@@ -333,10 +342,16 @@ class McmcSampler(object):
         x, y = self.model.SED.get_model_points(log_log=True, frame=frame)
         #if density is True:
         #    y=y-x
+        if size is None:
+            size = len(self.samples)
+            ID_mcmc = np.arange(size)
+        else:
+            size = min(len(self.samples), int(size))
+            ID_mcmc = np.random.randint(len(self.samples), size=size)
 
         y = np.zeros((size,x.size))
 
-        for ID,ID_rand in enumerate(np.random.randint(len(self.samples), size=size)):
+        for ID,ID_rand in enumerate(ID_mcmc):
 
             for ID_par, pi in enumerate(self.par_array):
                 pi.set(val=self.get_par(ID_par)[0][ID_rand])
@@ -348,16 +363,15 @@ class McmcSampler(object):
             y=y-x
         y_min=np.amin(y, axis=0)
         y_max=np.amax(y, axis=0)
-        p.sedplot.fill_between(x,y_max,y_min,color='gray',alpha=0.3,label='mcmc model range')
+        msk = y_min > np.log10(self.model.flux_plot_lim)
+        p.sedplot.fill_between(x[msk],y_max[msk],y_min[msk],color='gray',alpha=0.3,label='mcmc model range')
 
         self.reset_to_best_fit()
         self.model.eval(fill_SED=True)
 
-        p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density)
-        p.add_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
+        p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density,flim=self.model.flux_plot_lim)
+        p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
 
-        if frame == 'src' and sed_data is not None:
-            sed_data.z = z_sed_data
 
         return p
 
@@ -377,14 +391,14 @@ class McmcSampler(object):
 
 
 
-def emcee_log_like(theta,fit_Model,data,use_UL,par_array,loglog):
+def emcee_log_like(theta,fit_model,data,use_UL,par_array,loglog):
     _warn = False
     for pi in range(len(theta)):
         par_array[pi].set(val=theta[pi])
         if np.isnan(theta[pi]):
             _warn=True
 
-    _m = fit_Model.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
+    _m = fit_model.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
 
     _res_sum, _res, _res_UL = _eval_res(data['y'],
                                         _m,

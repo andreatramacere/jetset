@@ -2,7 +2,7 @@
 #FROM continuumio/miniconda3
 
 #PIP
-FROM python:3.7-slim
+FROM python:3.8-slim
 # install the notebook package
 RUN pip install --no-cache --upgrade pip && \
     pip install --no-cache notebook
@@ -20,9 +20,6 @@ USER root
 
 ADD requirements_docker.txt /requirements_docker.txt
 
-#ANACONDA
-#RUN conda create -n jetset-env python=3.7 ipython notebook
-#RUN conda install --yes -c astropy --file requirements_docker.txt
 
 #PIPI
 RUN pip install -r requirements_docker.txt
@@ -40,8 +37,7 @@ ENV USER ${NB_USER}
 ENV NB_UID ${NB_UID}
 ENV HOME /home/${NB_USER}
 
-ADD notebooks/QuickStart_1.ipynb $HOME/notebooks/QuickStart_1.ipynb
-ADD notebooks/QuickStart_2.ipynb $HOME/notebooks/QuickStart_2.ipynb
+ADD notebooks $HOME/notebooks
 
 
 RUN adduser --disabled-password \

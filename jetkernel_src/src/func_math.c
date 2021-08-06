@@ -418,7 +418,7 @@ double trapzd_array_arbritary_grid( double *x, double *y, unsigned int SIZE)
 //=========================================================
 // INTEGRAZIONE ALLA SINPSON CON ARRAYS  E GRIGLIA EQUILOG CON MIDPOINT                
 //=========================================================
-double integr_simp_gird_equilog(double * x, double *y, unsigned int size) {
+double integr_simp_grid_equilog(double * x, double *y, unsigned int size) {
     double integr, delta;
     unsigned int ID;
 

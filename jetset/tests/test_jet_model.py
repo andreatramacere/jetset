@@ -1,6 +1,7 @@
 import pytest
 import  numpy as np
-def test_hadronic_jet(plot=True):
+
+def test_hadronic_jet(plot=False):
     from jetset.jet_model import Jet
     j = Jet(proton_distribution='plc')
     j.parameters.gmin.val = 2
@@ -29,7 +30,7 @@ def test_build_bessel():
 
 
 @pytest.mark.users
-def test_jet(plot=True):
+def test_jet(plot=False):
     print('--------> test_jet',plot)
     from jetset.jet_model import Jet
     j=Jet()
@@ -48,3 +49,20 @@ def test_jet(plot=True):
     j_new.eval()
     sum2 = j_new.spectral_components.Sum.SED.nuFnu
     np.testing.assert_allclose(sum2, sum1, rtol=1E-5)
+
+def test_set_N_from_nuFnu(plot=False):
+    from jetset.jet_model import Jet
+    from jetset.jetkernel import jetkernel
+    import numpy as np
+    nu = 1E15
+    nuFnu = 1E-15
+    j = Jet()
+    j.set_N_from_nuFnu(nuFnu_obs=nuFnu,nu_obs=nu)
+    y = j.eval(nu=[nu], get_model=True)
+    np.testing.assert_allclose(y, nuFnu, rtol=1E-2)
+
+
+
+
+def test_EC(plot=False):
+    print('--------> test_jet', plot)

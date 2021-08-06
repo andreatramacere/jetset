@@ -32,35 +32,46 @@ allowing to fit the numerical models to observed data. The main features of this
     * `Tramacere A. 2020 <https://ui.adsabs.harvard.edu/abs/2020ascl.soft09001T/abstract>`_
     * `Tramacere A. et al. 2011 <http://adsabs.harvard.edu/abs/2011ApJ...739...66T>`_
     * `Tramacere A. et al. 2009 <http://adsabs.harvard.edu/abs/2009A%26A...501..879T>`_
-    * `Massaro E. et. al 2006 <http://adsabs.harvard.edu/abs/2006A%26A...448..861M>`_
 
 
 
 .. _user-docs:
 
-
-Documentation
--------------
-
-
 .. toctree::
    :maxdepth: 1
+   :caption: Documentation:
 
-   installation <install.rst>
-   what's new in jetset 1.1.2  <new_release.rst>
+   installation <install_pre.rst>
+   what's new in jetset 1.2.0  <new_release.rst>
    user guide <user_guide/user_guide.rst>
    code documentation (API) <api/modules.rst>
 
 
-Testers
--------
+
+
+.. nbgallery::
+    :caption: New/updated in v1.2.0:
+    :name: rst-gallery
+
+    user_guide/documentation_notebooks/depending_pars/depending_pars.rst
+    user_guide/documentation_notebooks/composite_model/Composite_model.rst
+    user_guide/documentation_notebooks/custom_emitters_distr/custom_emitters.rst
+    user_guide/documentation_notebooks/jet_model_phys_SSC/Jet_example_phys_SSC.rst
+    user_guide/documentation_notebooks/hadronic_pp_jet/hadornic.rst
+    user_guide/documentation_notebooks/temporal_evolution/Temp_Ev.rst
+    user_guide/documentation_notebooks/phen_constr/SSC_th_bkg.rst
+    user_guide/documentation_notebooks/sherpa_plugin/sherpa-plugin-sherpa-interface.rst
+    user_guide/documentation_notebooks/sherpa_plugin/sherpa-plugin-jetset-interface.rst
+
+Testers:
+
 I would like to thanks the most active testers:
 
 Hubing Xiao, Cosimo Nigro, Vaidehi S. Paliya, Sara Buson, Sonal Patel
 
 
-License
--------
+License:
+
 JetSeT is released under a 3-clause BSD  license - for details see the
 `License <https://github.com/andreatramacere/jetset/blob/master/LICENSE.txt>`_ file
 

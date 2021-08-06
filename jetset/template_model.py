@@ -1,8 +1,3 @@
-
-#from __future__ import absolute_import, division, print_function
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
-
 __author__ = "Andrea Tramacere"
 
 
@@ -17,7 +12,7 @@ import numpy as np
 import os
 
 from .spectral_shapes import SED
-from  .plot_sedfit import PlotSED,PlotSpecComp
+from .plot_sedfit import PlotSED,PlotSpecComp
 
 from .model_parameters import ModelParameter,ModelParameterArray
 from .base_model import  Model
@@ -116,9 +111,8 @@ class SpectralTemplateLogLog(Model):
         else:
             raise ValueError("Wrong template type=%s, allowed=" % (template_type, cls.get_allowed_template_name()))
 
-    def plot_model(self,plot_obj=None,clean=False,label=None,sed_data=None,color=None, density=False):
-        if plot_obj is None:
-            plot_obj=PlotSED(sed_data=sed_data)
+    def plot_model(self,plot_obj=None,clean=False,label=None,sed_data=None,color=None, density=False,frame='obs'):
+        plot_obj = self._set_up_plot(plot_obj, sed_data, frame, density)
 
         if clean is True:
             plot_obj.clean_model_lines()
@@ -127,7 +121,7 @@ class SpectralTemplateLogLog(Model):
         if label is None:
             label=self.name
 
-        plot_obj.add_model_plot(self.SED, line_style='-', label=label, flim=self.flux_plot_lim,color=color, density=density)
+        plot_obj.add_model_plot(self.SED, line_style='-', label=label, flim=self.flux_plot_lim,color=color, density=density, frame=frame)
 
         return plot_obj
 

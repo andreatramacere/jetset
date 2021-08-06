@@ -1,4 +1,6 @@
-import os
+__author__ = "Andrea Tramacere"
+
+
 import json
 import dill as pickle
 import six
@@ -21,25 +23,24 @@ from .jet_tools import *
 from .mathkernel_helper import bessel_table_file_path
 
 
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+# on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
-if on_rtd is True:
-    try:
-        from .jetkernel import jetkernel as BlazarSED
-    except ImportError:
-        from .mock import jetkernel as BlazarSED
-else:
-    from .jetkernel import jetkernel as BlazarSED
+# if on_rtd is True:
+#     try:
+#         from .jetkernel import jetkernel as BlazarSED
+#     except ImportError:
+#         from .mock import jetkernel as BlazarSED
+# else:
+
+from .jetkernel import jetkernel as BlazarSED
 
 
-__author__ = "Andrea Tramacere"
 
-__all__=['Jet']
+__all__=['Jet','JetBase']
 
 
 class JetBase(Model):
-    """
-
+    """ JetBase class.
     This class allows to build a ``Jet`` model providing the interface to the
     C code, giving  full access to the physical parameters and
     providing the methods to run the code.
@@ -48,12 +49,6 @@ class JetBase(Model):
     i.e. a collection of :class:`JetParameter` objects.
     All the physical parameters are  also accessible as attributes of
     the  ::py:attr:`Jet.parameters`
-
-    **Examples**
-
-
-
-
     """
     def __repr__(self):
         return str(self.show_model())
@@ -62,7 +57,7 @@ class JetBase(Model):
 
     def __init__(self,
                  cosmo=None,
-                 name='tests',
+                 name='test',
                  emitters_type='electrons',
                  emitters_distribution='pl',
                  emitters_distribution_log_values=False,
@@ -79,13 +74,14 @@ class JetBase(Model):
         ----------
         cosmo
         name
-        electron_distribution
-        electron_distribution_log_values
+        emitters_type
+        emitters_distribution
+        emitters_distribution_log_values
         beaming_expr
         jet_workplace
         verbose
+        nu_size
         clean_work_dir
-        keywords
         """
         super(JetBase,self).__init__(  **keywords)
 
@@ -174,7 +170,7 @@ class JetBase(Model):
 
         self.set_emitting_region(beaming_expr)
 
-        self.flux_plot_lim=1E-120
+        self.flux_plot_lim=1E-30
         self.set_emiss_lim(1E-120)
 
         self._IC_states = {}
@@ -245,16 +241,29 @@ class JetBase(Model):
     def load_model(cls, file_name):
         try:
             _model = pickle.load(open(file_name, "rb"))
-            jet = cls()
+        except Exception as e:
+            raise RuntimeError('The model you loaded is not valid please check the file name', e)
+
+        try:
+            jet = cls(name='no_name')
             jet._decode_model(_model)
             jet._fix_par_dep_on_load()
             jet.show_pars()
             jet.eval()
             return jet
-
         except Exception as e:
+            if 'version' in _model.keys():
+                v=_model['version']
+            else:
+                v='unknown(<1.1.2)'
+            msg = "trying  to load a model saved with jetset version %s \n "%v
+            msg += "currenlty using jetset version %s \n "%get_info()['version']
+            msg += "caused the following problem:\n %s\n"%(repr(e))
 
-            raise RuntimeError('The model you loaded is not valid please check the file name', e)
+            raise RuntimeError (msg)
+
+
+
 
     def _decode_model(self,_model):
 
@@ -525,6 +534,17 @@ class JetBase(Model):
 
         self.parameters.add_par_from_dict(self._emitting_region_dic,self,'_blob',JetParameter)
 
+    @property
+    def IC_adaptive_e_binning(self,):
+        return np.int(self._blob.IC_adaptive_e_binning)
+
+    @IC_adaptive_e_binning.setter
+    def IC_adaptive_e_binning(self,state):
+        if type(state) == bool:
+            pass
+        else:
+            raise RuntimeError('state has to be boolean')
+        self._blob.IC_adaptive_e_binning=np.int(state)
 
     @staticmethod
     def available_emitters_distributions():
@@ -573,7 +593,7 @@ class JetBase(Model):
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
             self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
-            self._attach_pars_to_jet()
+            self._attach_pars_to_jet(preserve_value_emitters=True)
             self._update_emitters_pars_dependence()
             self.emitters_distribution.update()
         else:
@@ -914,15 +934,6 @@ class JetBase(Model):
         set_str_attr(self._blob,'path',path)
         makedir(path,clean_work_dir=clean_work_dir)
 
-
-
-    #def set_IC_mode(self,val):
-
-    #    if val not in self._IC_states.keys():
-    #        raise RuntimeError('val',val,'not in allowed values',self._IC_states.keys())
-
-    #    self._blob.do_IC=self._IC_states[val]
-
     def get_IC_mode(self):
         return dict(map(reversed, self._IC_states.items()))[self._blob.do_IC]
 
@@ -1019,15 +1030,25 @@ class JetBase(Model):
     @Norm_distr.setter
     def Norm_distr(self, val):
         if hasattr(self, 'emitters_distribution'):
-            if self.emitters_distribution._user_defined is False:
+
                 if val == 1 or val is True:
-                    self._blob.Norm_distr = 1
+                    if self.emitters_distribution._user_defined is False:
+                        self._blob.Norm_distr = 1
+                    else:
+                        self.emitters_distribution.normalize = val
+                    self.parameters.N.par_type='emitters_density'
+                    self.parameters.N.units ='1/cm3'
                 elif val == 0 or val is False:
-                    self._blob.Norm_distr = 0
+                    if self.emitters_distribution._user_defined is False:
+                        self._blob.Norm_distr = 0
+                    else:
+                        self.emitters_distribution.normalize = val
+                        self.parameters.N.par_type = 'scaling_factor'
                 else:
                     raise RuntimeError('value', val, 'not allowed, allowed 0/1 or False/True')
-            else:
-                self.emitters_distribution.normalize = val
+
+
+
 
     def switch_Norm_distr_ON(self):
         self.Norm_distr=True
@@ -1173,15 +1194,9 @@ class JetBase(Model):
         print('-' * 80)
 
     def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-',frame='obs', density=False):
-        if plot_obj is None:
-            plot_obj=PlotSED(sed_data=sed_data, frame= frame, density=density)
+        plot_obj=self._set_up_plot(plot_obj,sed_data,frame,density)
 
-
-        if frame == 'src' and sed_data is not None:
-            z_sed_data = sed_data.z
-            sed_data.z = self.get_par_by_type('redshift').val
-
-        if clean==True:
+        if clean is True:
             plot_obj.clean_model_lines()
 
         if comp is not None:
@@ -1194,7 +1209,7 @@ class JetBase(Model):
             else:
                 comp_label=None
             if c.state!='off':
-                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label, density=density,update=False)
+                plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,color=color,auto_label=auto_label, density=density,update=False, frame=frame)
 
         else:
             for c in self.spectral_components_list:
@@ -1203,7 +1218,7 @@ class JetBase(Model):
                     comp_label=label
                 #print('comp label',comp_label)
                 if c.state != 'off' and c.name!='Sum':
-                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color, density=density,update=False)
+                    plot_obj.add_model_plot(c.SED, line_style=line_style, label=comp_label,flim=self.flux_plot_lim,auto_label=auto_label,color=color, density=density,update=False, frame=frame)
 
             c=self.get_spectral_component_by_name('Sum')
             if label is not None:
@@ -1213,9 +1228,8 @@ class JetBase(Model):
 
             plot_obj.add_model_plot(c.SED, line_style='--', label=comp_label, flim=self.flux_plot_lim,color=color, density=density,update=False)
 
-        if frame == 'src' and sed_data is not None:
-            sed_data.z = z_sed_data
         plot_obj.update_plot()
+
         return plot_obj
 
     @safe_run
@@ -1314,13 +1328,14 @@ class JetBase(Model):
         return out_model
 
 
-    def energetic_report(self):
+    def energetic_report(self,verbose=True):
         self._build_energetic_report()
-        _show_table(self.energetic_report_table)
+        if verbose is True:
+            _show_table(self.energetic_report_table)
 
     def _build_energetic_report(self,):
         self.energetic_dict={}
-
+        BlazarSED.SetBeaming(self._blob)
         _energetic = BlazarSED.EnergeticOutput(self._blob,0)
         _par_array=ModelParameterArray()
 
@@ -1351,7 +1366,7 @@ class JetBase(Model):
                     self.energetic_dict[_n]=getattr(_energetic, _n)
 
                     _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
-
+            _par_array.add_par(ModelParameter(name='BulkLorentzFactor', val=self._blob.BulkFactor, units='',par_type=''))
             self.energetic_report_table = _par_array.par_table
             self.energetic_report_table.remove_columns(['log','frozen','phys. bound. min','phys. bound. max'])
             self.energetic_report_table.rename_column('par type','type')
@@ -1404,13 +1419,13 @@ class JetBase(Model):
 
 
 class Jet(JetBase):
-    """
-    Jet class
+    """ Jet class
+
     """
 
     def __init__(self,
                  cosmo=None,
-                 name='',
+                 name=None,
                  emitters_type='electrons',
                  emitters_distribution='plc',
                  emitters_distribution_log_values=False,
@@ -1423,7 +1438,25 @@ class Jet(JetBase):
                  proton_distribution=None,
                  electron_distribution_log_values=None,
                  proton_distribution_log_values=None):
+        """
 
+        Parameters
+        ----------
+        cosmo
+        name
+        emitters_type
+        emitters_distribution
+        emitters_distribution_log_values
+        beaming_expr
+        T_esc_e_second
+        jet_workplace
+        verbose
+        clean_work_dir
+        electron_distribution
+        proton_distribution
+        electron_distribution_log_values
+        proton_distribution_log_values
+        """
         if electron_distribution is not None:
             emitters_type = 'electrons'
             emitters_distribution= electron_distribution
@@ -1438,10 +1471,12 @@ class Jet(JetBase):
 
 
         if name is None:
-            name=''
+            _name = 'jet'
+        else:
+            _name = name
 
         super(Jet,self).__init__(cosmo=cosmo,
-                                 name=name,
+                                 name=_name,
                                  emitters_type=emitters_type,
                                  emitters_distribution=emitters_distribution,
                                  emitters_distribution_log_values=emitters_distribution_log_values,
@@ -1449,6 +1484,7 @@ class Jet(JetBase):
                                  jet_workplace=jet_workplace,
                                  verbose=verbose,
                                  clean_work_dir=clean_work_dir)
+
         if name is None or name == '':
             if self.emitters_distribution.emitters_type == 'electrons':
                 name = 'jet_leptonic'
@@ -1507,76 +1543,139 @@ class Jet(JetBase):
 
 
 
-    def set_N_from_Up(self, U_p):
-        if self.emitters_distribution.emitters_type!='protons':
-            raise  RuntimeError('set_N_from_Up can be used only with protons emitters')
-        N=self.parameters.N.val
-        gamma_grid_size = self._blob.gamma_grid_size
-        self.emitters_distribution.set_grid_size(100)
-        self.set_blob()
-        BlazarSED.EvalU_p(self._blob)
-        ratio = U_p/self._blob.U_p
-        self.emitters_distribution.set_grid_size(gamma_grid_size)
-        self.set_par('N', val= N* ratio)
 
-    def set_N_from_Ue(self,U_e):
+
+    def set_N_from_U_emitters(self,U, gmin=None, gmax=None):
+        """ Sets the normalization of N to match the energy density of the primary emitters
+        Parameters
+        ----------
+        U: float, (erg/cm3)
+        gmin: float, optional,
+            minimum value to evaluate the integral
+
+        gmax: float, optional,
+            maximum value to evaluate the integral
+        Returns
+        -------
+
+        """
         N = self.parameters.N.val
-        gamma_grid_size = self._blob.gamma_grid_size
-        self.emitters_distribution.set_grid_size(100)
-        self.emitters_distribution._fill()
-        self.set_blob()
-        BlazarSED.EvalU_e(self._blob)
-        ratio = U_e/self._blob.U_e
-        self.emitters_distribution.set_grid_size(gamma_grid_size)
+        #gamma_grid_size = self._blob.gamma_grid_size
+        #self.emitters_distribution.set_grid_size(1000)
+        #self.emitters_distribution._fill()
+        #self.set_blob()
+        #BlazarSED.EvalU_e(self._blob)
+        ratio = U/self.emitters_distribution.eval_U(gmin=gmin, gmax=gmax)
+        #self.emitters_distribution.set_grid_size(gamma_grid_size)
         self.emitters_distribution._fill()
         self.set_par('N', val=N *ratio)
         self.set_blob()
 
-    def set_N_from_Le(self,L_e):
-        gamma_grid_size = self._blob.gamma_grid_size
-        self.emitters_distribution.set_grid_size(100)
-        self.set_blob()
-        U_e=L_e/ self._blob.Vol_sphere
-        self.emitters_distribution.set_grid_size(gamma_grid_size)
-        self.set_N_from_Ue(U_e)
+    def set_N_from_U_vol_emitters(self, U_vol, gmin=None, gmax=None):
+        """Sets the normalization of N to match the volume integrated energy of the primary emitters
+
+        Parameters
+        ----------
+        U_vol: float (erg)
+
+        gmin: float, optional,
+            minimum value to evaluate the integral
+
+        gmax: float, optional,
+            maximum value to evaluate the integral
+
+        Returns
+        -------
+
+        """
+        #gamma_grid_size = self._blob.gamma_grid_size
+        #self.emitters_distribution.set_grid_size(1000)
+        #self.set_blob()
+        U=U_vol/ self._blob.Vol_sphere
+        #self.emitters_distribution.set_grid_size(gamma_grid_size)
+        self.set_N_from_U_emitters(U, gmin=gmin, gmax=gmax)
 
 
     def set_N_from_L_sync(self,L_sync):
+        """Sets the normalization of N to match the src integrated Luminosity of the   synchrotron emission
+
+        Parameters
+        ----------
+        L_sync : float (erg/s)
+
+        Returns
+        -------
+
+        """
         self.set_par('N', val=1.0)
-        gamma_grid_size = self._blob.gamma_grid_size
-        self.emitters_distribution.set_grid_size(100)
-        self.set_blob()
+        #gamma_grid_size = self._blob.gamma_grid_size
+        #self.emitters_distribution.set_grid_size(100)
+        #self.set_blob()
         delta = self._blob.beam_obj
         ratio = L_sync/(BlazarSED.Power_Sync_Electron(self._blob)* delta ** 4)
-        self.emitters_distribution.set_grid_size(gamma_grid_size)
+        #self.emitters_distribution.set_grid_size(gamma_grid_size)
         self.set_par('N', val=ratio)
 
 
     def set_N_from_F_sync(self, F_sync):
+        """Sets the normalization of N to match the observed integrated synchrotron flux
+
+        Parameters
+        ----------
+        F_sync : float, (erg cm-1 s-1 Hz-1)
+            observed integrated synchrotron flux
+
+        Returns
+        -------
+
+        """
         DL = self.get_DL_cm()
         L = F_sync * DL * DL * 4.0 * np.pi
         self.set_N_from_L_sync(L)
 
     def set_N_from_nuLnu(self,nuLnu_src, nu_src):
-        """
-        sets the normalization of N to match the rest frame luminosity nuLnu_src, at a given frequency nu_src
+        """Sets the normalization of N to match the src Luminosity of the   synchrotron emission at src frequency nu
+
+        Parameters
+        ----------
+        nuLnu_src : float, (erg/s)
+            Luminosity of the   synchrotron emission at src frequency nu
+
+        nu_src: float (Hz)
+            synchrotron emission at src frequency nu (Hz)
+
+        Returns
+        -------
+
         """
         self.set_par('N',val=1.0)
-        gamma_grid_size = self._blob.gamma_grid_size
-        self.emitters_distribution.set_grid_size(100)
+        #gamma_grid_size = self._blob.gamma_grid_size
+        #self.emitters_distribution.set_grid_size(100)
         self.set_blob()
         delta = self._blob.beam_obj
         nu_blob = nu_src / delta
         L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
         N_out = nuLnu_src / L_out
-        self.emitters_distribution.set_grid_size(gamma_grid_size)
+        #self.emitters_distribution.set_grid_size(gamma_grid_size)
         self.set_par('N', val=N_out)
 
 
     def set_N_from_nuFnu(self, nuFnu_obs, nu_obs):
+        """Sets the normalization of N to match the observed flux nuFnu_obs at a given frequency nu_obs
+
+        Parameters
+        ----------
+        nuFnu_obs: float, (erg cm-1 s-1 Hz-1)
+            observed differential synchrotron flux
+
+        nu_obs: float, (Hz)
+            synchrotron emission at src frequency nu (Hz)
+
+        Returns
+        -------
+
         """
-        sets the normalization of N to match the observed flux nuFnu_obs at a given frequency nu_obs
-        """
+
         self.set_blob()
         DL =  self.get_DL_cm()
         L = nuFnu_obs * DL * DL * 4.0 * np.pi
@@ -1586,11 +1685,33 @@ class Jet(JetBase):
 
 
     def set_B_eq(self, nuFnu_obs, nu_obs, B_min=1E-9,B_max=1.0,N_pts=20,plot=False):
-        """
-        returns equipartition B
-        """
-        # print B_min
+        """Sets the magnetic field (B) equipartition from numerical minimization over a logarithmic grid  of B values,
+        for a given observed flux of the  synchrotron emission (nuFnu_obs) at a given observed frequency (nu_obs)
 
+        Parameters
+        ----------
+        nuFnu_obs: float, (erg cm-1 s-1 Hz-1)
+            observed differential synchrotron flux
+
+        nu_obs: float, (Hz)
+            synchrotron emission at src frequency nu (Hz)
+
+        B_min: float, (Gauss), optional
+            lower bound for B-grid
+
+        B_max:  float, (Gauss), optional
+            upper bound for B-grid
+
+        N_pts: int, optional
+            Other number of points to build the B-grid
+
+        plot: book, optional, default=False
+            if True plots the numerical grid
+
+        Returns
+        -------
+
+        """
 
         b_grid = np.logspace(np.log10(B_min), np.log10(B_max), N_pts)
         print ('B grid min ',B_min)

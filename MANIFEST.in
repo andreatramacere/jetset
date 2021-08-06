@@ -6,10 +6,9 @@ include jetset/pkg_info.json
 
 include jetset/jetkernel/mathkernel/F_Sync.dat
 include jetset/Spectral_Templates_Repo/*.dat
-include test_data/SEDs_data/*.ecsv
-include jetset/ebl_data
+include jetset/test_data/SEDs_data/*.ecsv
+include jetset/ebl_data/*
 
 prune doc
 prune ebl_models
-prune CICD
 prune jetset.egg-info

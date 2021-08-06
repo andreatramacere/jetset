@@ -1,8 +1,4 @@
-
-#from __future__ import absolute_import, division, print_function
-
-#from builtins import (bytes, str, open, super, range,
-#                      zip, round, input, int, pow, object, map, zip)
+__author__ = "Andrea Tramacere"
 
 import re
 import inspect
@@ -12,9 +8,8 @@ import os
 import json
 
 
-__author__ = "Andrea Tramacere"
 
-__all__=['check_frame','unexpetced_behaviour']
+__all__=['check_frame','unexpected_behaviour']
 
 
 
@@ -23,26 +18,24 @@ def check_frame(frame):
     if frame not in allowed:
         raise RuntimeError('rest frame', frame, 'not allowed',allowed)
 
-
-def unexpetced_behaviour():
+def unexpected_behaviour():
     raise RuntimeError('the code reached a condition that should never happen!')
 
 
-
-
-
 def clean_var_name(s):
+    _s = s
+    s.replace('-', '_')
+    s.replace(' ', '_')
 
-   s.replace('-','_')
-   s.replace(' ', '_')
+    # Remove invalid characters
+    s = re.sub('[^0-9a-zA-Z_]', '', s)
 
-   # Remove invalid characters
-   s = re.sub('[^0-9a-zA-Z_]', '', s)
+    # Remove leading characters until we find a letter or underscore
+    s = re.sub('^[^a-zA-Z_]+', '', s)
 
-   # Remove leading characters until we find a letter or underscore
-   s = re.sub('^[^a-zA-Z_]+', '', s)
-
-   return s
+    if len(s) == 0:
+        raise RuntimeError('the string ', _s, 'is not valid, please change it (do not use leading numbers or math symbols)')
+    return s
 
 
 class NoTraceBackWithLineNumber(Exception):
@@ -81,15 +74,15 @@ class JetkerneltException(Exception):
         self.debug_message=debug_message
 
 
-def str_hook(pairs):
-    new_pairs = []
-    for key, value in pairs:
-        if isinstance(value, unicode):
-            value = value.encode('utf-8')
-        if isinstance(key, unicode):
-            key = key.encode('utf-8')
-        new_pairs.append((key, value))
-    return dict(new_pairs)
+#def str_hook(pairs):
+#    new_pairs = []
+#    for key, value in pairs:
+#        if isinstance(value, unicode):
+#            value = value.encode('utf-8')
+#        if isinstance(key, unicode):
+#            key = key.encode('utf-8')
+#        new_pairs.append((key, value))
+#    return dict(new_pairs)
 
 
 
@@ -100,8 +93,8 @@ def safe_run(func):
             return func(*args, **kwargs)
         except Exception as e:
            message =  'the jetkernel failed\n'
-           message += '\n exception message: '
-           message += '%s'%e
+           message += '\n exception message: \n'
+           message += '%s'%str(e)
            new_version_warning()
 
            raise JetkerneltException(message=message)

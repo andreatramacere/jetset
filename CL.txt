@@ -1,5 +1,8 @@
 ./make_tag.py 1.1.2 -do_remote_tag
 ./make_tag.py stable -do_remote_tag
 
+ python -c"import iminuit; print('iminuit',iminuit.__version__); import jetset; print('jetset',jetset.__version__)"
+
  pytest --pyargs jetset.tests.test_functions::test_short
  python -c'from jetset.tests.test_functions import test_short; test_short()'
+ pytest --disable-warnings --pyargs -vvv -m integration jetset.tests.test_functions::TestFull
