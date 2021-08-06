@@ -165,7 +165,6 @@ jobs:
           tag_name: ${{ github.event.inputs.tags }}
           files: |
             pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}.tar
-            pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
