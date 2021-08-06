@@ -170,7 +170,7 @@ jobs:
 
       - name: 'Upload  Src Release Asset'
         uses: softprops/action-gh-release@v1
-        if: matrix.os==3.7
+        if: matrix.python-version == 3.7
         with:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
