@@ -158,7 +158,7 @@ jobs:
           mv pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
           tar -cvf pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
 
-      - name: 'Upload Release Asset'
+      - name: 'Upload Binary Release Asset'
         uses: softprops/action-gh-release@v1
         with:
           name: Release  ${{ github.event.inputs.tags }}
@@ -168,4 +168,15 @@ jobs:
             pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'Upload  Src Release Asset'
+        uses: softprops/action-gh-release@v1
+        if: matrix.os==3.7
+        with:
+          name: Release  ${{ github.event.inputs.tags }}
+          tag_name: ${{ github.event.inputs.tags }}
+          files: |
+              pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
