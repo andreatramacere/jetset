@@ -157,7 +157,7 @@ double rate_compton_GR(struct blob *pt_GR) {
                 pt_GR->nu_seed = pt_GR->nu_DT_disk_RF;
                 pt_GR->n_seed = pt_GR->n_DT_DRF;
                 rate_comp = integrale_IC(pt_GR,
-                                         pt_GR->nu_stop_DT_DRF,
+                                         pt_GR->nu_start_DT,
                                          pt_GR->nu_stop_DT_DRF,
                                          pt_GR->EC_stat);
                 pt_GR->nu_1 = nu_1_original;
