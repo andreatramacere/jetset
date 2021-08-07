@@ -261,6 +261,7 @@ struct blob MakeBlob() {
     spettro_root.gamma_cooling_eq=0;
 
     spettro_root.EC_stat=0; 
+    spettro_root.EC_stat_orig=0;
     spettro_root.do_EC_Disk = 0;
     spettro_root.do_EC_BLR = 0;
     spettro_root.do_EC_DT = 0;
