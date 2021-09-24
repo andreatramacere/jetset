@@ -56,10 +56,10 @@ void spectra_External_Fields(int Num_file, struct blob *pt) {
 		set_EC_stat_post(pt);
 	}
     if (pt->do_EC_DT==1 || pt->do_DT==1){
-		printf("EC_stat=%d, R_H=%e\n",pt->EC_stat,pt->R_H);
+		//printf("EC_stat=%d, R_H=%e\n",pt->EC_stat,pt->R_H);
 		set_EC_stat_pre(pt, pt->R_DT);
     	Build_I_nu_DT(pt);
-		printf("EC_stat=%d, R_H=%e\n",pt->EC_stat,pt->R_H);
+		//printf("EC_stat=%d, R_H=%e\n",pt->EC_stat,pt->R_H);
 		set_EC_stat_post(pt);
     }
     if (pt->do_EC_CMB==1){

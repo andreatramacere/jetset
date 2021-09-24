@@ -19,7 +19,7 @@
 
 void set_EC_stat_pre(struct blob *pt, double R_ext_emit){
 	double R_H_lim;
-	printf(" pre 1 pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
+	//printf(" pre 1 pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
 	pt->EC_stat_orig=pt->EC_stat;
 	pt->EC_factor=1.0;
 	pt->R_H_orig=pt->R_H;
@@ -38,7 +38,7 @@ void set_EC_stat_pre(struct blob *pt, double R_ext_emit){
 		//	pt->EC_factor=1.0/((pt->R_H/pt->R_H_orig)*(pt->R_H/pt->R_H_orig));
 		//}
 	}
-	printf(" pre 2 pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
+	//printf(" pre 2 pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
 	//printf("pt->R_H=%e pt->R_H_orig=%e R_H_lim=%e pt->EC_factor=%e\n",pt->R_H,pt->R_H_orig,R_lim, pt->EC_factor);
 }
 
@@ -51,7 +51,7 @@ void set_EC_stat_post(struct blob *pt){
 		pt->EC_stat=pt->EC_stat_orig;
 		pt->EC_factor=1.0;
 		pt->R_H=pt->R_H_orig;
-		printf("post pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
+		//printf("post pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
 }
 	
 
