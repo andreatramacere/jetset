@@ -704,7 +704,7 @@ class  PlotPdistr (BasePlot):
             _e = ''
 
         n_str = 'n($%s$)'%energy_name
-        if pow is not None:
+        if pow is not None and pow!=0:
             n_str = 'n($%s$) $%s^{%d}$' % (energy_name,energy_name,pow)
         if self.injection is False:
 
@@ -718,11 +718,11 @@ class  PlotPdistr (BasePlot):
             else:
                 self.ax.set_ylabel(r'Q$_{inj}$($%s$)   ($cm^{-3} s^{-1} %s$)' % (energy_name,_e))
 
-    def _plot(self,x,y,c=None,lw=None,label=None):
+    def _plot(self,x,y,c=None,lw=None,ls=None,label=None):
         if self.loglog is True:
-            self.ax.plot(x, y, c=c, lw=lw, label=label)
+            self.ax.plot(x, y, c=c, lw=lw, label=label,ls=ls)
         else:
-            self.ax.loglog(x, y,c=c, lw=lw, label=label)
+            self.ax.loglog(x, y,c=c, lw=lw, label=label,ls=ls)
 
     def plot_distr(self,gamma,n_gamma,y_min=None,y_max=None,x_min=None,x_max=None,particle='electrons',energy_unit='gamma',label=None):
 
@@ -780,38 +780,69 @@ class  PlotTempEvEmitters (PlotPdistr):
         super(PlotTempEvEmitters, self).__init__(figsize=figsize,dpi=dpi,loglog=loglog,)
 
 
-    def _plot_distr(self,temp_ev,region,particle='electrons',energy_unit='gamma',pow=None,plot_Q_inj=True,t1=None, t2=None,):
+    def _plot_distr(self,temp_ev,
+                        region,particle='electrons',
+                        energy_unit='gamma',
+                        pow=None,
+                        plot_Q_inj=True,
+                        t1=None, 
+                        t2=None,
+                        #time_slice_bin=None,
+                        #time_slice=None):
+                    ):
+
         if t1 is None:
             t1=region.time_sampled_emitters.time_blob[0]
 
         if t2 is None:
             t2=region.time_sampled_emitters.time_blob[-1]
+        
+       # if time_slice_bin is None and time_slice is None:
+       #     _time_slice_bin = 1
 
-
-        t_array = np.linspace(t1, t2, region.time_sampled_emitters.time_blob.size)
+        t_array = np.linspace(t1, t2, region.time_sampled_emitters.time_blob.size,)
 
         ls = '-'
         lw = 0.2
 
+        g = plt.cm.Greens(np.linspace(0.5, 1, t_array.size))
+        r = plt.cm.Reds(np.linspace(0.5, 1, t_array.size))
+        b = plt.cm.Blues(np.linspace(0.5, 1, t_array.size))
 
         n = region.time_sampled_emitters.n_gamma
         for ID, t in enumerate(t_array):
-            color = 'red'
+            label = None
+            ls = '-'
+            color = r[ID]
 
             if temp_ev.custom_q_jnj_profile[temp_ev._get_time_slice_T_array(t)] > 0:
-                color = 'g'
+                color = g[ID]
+                ls = '-'
+                lw = 0.2
 
             if temp_ev.custom_acc_profile[temp_ev._get_time_slice_T_array(t)] > 0:
-                color = 'b'
+                color = b[ID]
+                ls = '-'
+                lw = 0.2
+
+            if ID == 0:
+                lw = 2
+                ls = '--'
+                label = 'start, t=%2.2e (s)' % t
+                color = 'green'
+            if ID == t_array.size - 1:
+                lw = 2
+                ls = '--'
+                color = 'purple'
+                label = 'stop, t=%2.2e (s)' % t
 
             x, y, energy_name, energy_units = self._set_variable(region.time_sampled_emitters.gamma, n[ID], particle, energy_unit, pow=pow)
-            self._plot(x,y,c=color,lw=0.1,label=None)
-            #print('==> ID,t,c',ID,t,color)
-        x, y, energy_name, energy_units = self._set_variable(region.time_sampled_emitters.gamma, n[0], particle, energy_unit, pow=pow)
-        self._plot(x, y, c='black', lw=2,label='Start sample')
+            self._plot(x,y,c=color,lw=lw,label=label,ls=ls)
+        #x, y, energy_name, energy_units = self._set_variable(region.time_sampled_emitters.gamma, n[0], particle, #energy_unit, pow=pow)
+        #self._plot(x, y, c='black', lw=2,label='Start sample')
 
-        x, y, energy_name, energy_units = self._set_variable(region.time_sampled_emitters.gamma, n[-1], particle, energy_unit, pow=pow)
-        self._plot(x, y, c='blue', lw=2,label='Stop sample')
+        #x, y, energy_name, energy_units = self._set_variable(region.time_sampled_emitters.gamma, n[-1], particle, #energy_unit, pow=pow)
+        #self._plot(x, y, c='blue', lw=2,label='Stop sample')
         self._set_xy_label(energy_name, energy_units,pow=pow)
         #TODO move to plot inj if iny is used in region
         if temp_ev.Q_inj is not None and region._region_type == 'acc':

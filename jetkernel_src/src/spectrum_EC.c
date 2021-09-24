@@ -17,17 +17,43 @@
  *
  */
 
-void set_EC_stat_pre(struct blob *pt, double R_lim){
+void set_EC_stat_pre(struct blob *pt, double R_ext_emit){
+	double R_H_lim;
+	printf(" pre 1 pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
 	pt->EC_stat_orig=pt->EC_stat;
-
-	if ((pt->R_H>R_lim) && (pt->EC_stat==1) && R_lim>0){
+	pt->EC_factor=1.0;
+	pt->R_H_orig=pt->R_H;
+	//theta_lim=2*(1/pt->BulkFactor)/Deg_to_Rad;
+	R_ext_emit=R_ext_emit*pt->R_ext_factor;
+	if ((pt->R_H>R_ext_emit) && (pt->EC_stat==1) && R_ext_emit>0){
 		pt->EC_stat=0;
+
+		if (pt->theta>pt->EC_theta_lim){
+			pt->R_H=R_ext_emit*pt->R_H_scale_factor;
+			pt->EC_factor=((pt->R_H/pt->R_H_orig)*(pt->R_H/pt->R_H_orig));
+		}
+	
+		//else{
+		//	pt->R_H=R_lim;
+		//	pt->EC_factor=1.0/((pt->R_H/pt->R_H_orig)*(pt->R_H/pt->R_H_orig));
+		//}
 	}
+	printf(" pre 2 pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
+	//printf("pt->R_H=%e pt->R_H_orig=%e R_H_lim=%e pt->EC_factor=%e\n",pt->R_H,pt->R_H_orig,R_lim, pt->EC_factor);
 }
 
+	
+    
+
+
+
 void set_EC_stat_post(struct blob *pt){
-	pt->EC_stat=pt->EC_stat_orig;
-	}
+		pt->EC_stat=pt->EC_stat_orig;
+		pt->EC_factor=1.0;
+		pt->R_H=pt->R_H_orig;
+		printf("post pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
+}
+	
 
 
 void spettro_EC(int Num_file, struct blob *pt) {
@@ -199,8 +225,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
    	build_log_grid(*nu_start_EC,  *nu_stop_EC, pt->nu_IC_size, freq_array);
    	build_log_grid(*nu_start_EC_obs,  *nu_stop_EC_obs, pt->nu_IC_size, freq_array_obs);
 
-    //pt->nu_stop_compton = *nu_start_EC_obs;
-    //pt->nu_start_compton = *nu_stop_EC_obs;
+	
 
 
    	if (pt->verbose>0) {
@@ -247,7 +272,8 @@ void spettro_EC(int Num_file, struct blob *pt) {
 					pt->j_EC[NU_INT] = pt->q_comp[NU_INT] *
 									   HPLANCK * freq_array[NU_INT];
 				}
-
+				
+				pt->j_EC[NU_INT]= pt->j_EC[NU_INT] *pt->EC_factor;
 
 
 				if (pt->verbose > 1) {

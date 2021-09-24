@@ -39,24 +39,33 @@ void spectra_External_Fields(int Num_file, struct blob *pt) {
     //=====================================================
 	pt->beaming_EC = pt->BulkFactor;
 
-	//printf("=> Ciccio %d %d %d %d %d\n", pt->do_EC_Disk, pt->do_EC_BLR, pt->do_Disk, pt->do_EC_DT, pt->do_DT);
 
 	if (pt->do_EC_Star==1 || pt->do_Star==1){
+		set_EC_stat_pre(pt, pt->R_Star);
     	Build_I_nu_Star(pt);
     }
 	if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 1 || pt->do_Disk == 1 || pt->do_EC_DT == 1 || pt->do_DT ==1)
 	{
-		
+		set_EC_stat_pre(pt, pt->R_ext);
 		Build_I_nu_Disk(pt);
+		set_EC_stat_post(pt);
     }
     if (pt->do_EC_BLR==1){
+		set_EC_stat_pre(pt, pt->R_BLR_out);
 		Build_I_nu_BLR(pt);
+		set_EC_stat_post(pt);
 	}
     if (pt->do_EC_DT==1 || pt->do_DT==1){
+		printf("EC_stat=%d, R_H=%e\n",pt->EC_stat,pt->R_H);
+		set_EC_stat_pre(pt, pt->R_DT);
     	Build_I_nu_DT(pt);
+		printf("EC_stat=%d, R_H=%e\n",pt->EC_stat,pt->R_H);
+		set_EC_stat_post(pt);
     }
     if (pt->do_EC_CMB==1){
+		set_EC_stat_pre(pt, -1);
     	Build_I_nu_CMB(pt);
+		set_EC_stat_post(pt);
     }
 
     //if (pt->do_EC_CMB_stat==1){
@@ -66,6 +75,7 @@ void spectra_External_Fields(int Num_file, struct blob *pt) {
 	{
 		printf("#-> ********************************\n\n");
 	}
+	
 }
 //=========================================================================================
 
@@ -1046,7 +1056,7 @@ double eval_theta_max_BLR(struct blob *pt)
 		theta_max = pi;
 	}
 
-
+	
 	return theta_max;
 	
 }
@@ -1421,7 +1431,7 @@ double eval_theta_max_DT(struct blob *pt)
 {
 	double theta_max;
 
-	if (pt->R_H > pt->R_DT){
+	if (pt->R_H >= pt->R_DT){
 		theta_max= asin(pt->R_DT / pt->R_H);
 	}
 	else{

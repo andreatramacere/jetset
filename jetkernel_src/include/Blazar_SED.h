@@ -385,6 +385,11 @@ struct blob {
 
     //dist BLOB/DISK or STAR
     double R_H;
+    double R_H_orig;
+    double EC_factor;
+    double R_H_scale_factor;
+    double R_ext_factor;
+    double EC_theta_lim;
 
     //--- STAR
     //-PARAMTERS

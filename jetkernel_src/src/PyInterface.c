@@ -262,6 +262,7 @@ struct blob MakeBlob() {
 
     spettro_root.EC_stat=0; 
     spettro_root.EC_stat_orig=0;
+    spettro_root.EC_factor=1.0;
     spettro_root.do_EC_Disk = 0;
     spettro_root.do_EC_BLR = 0;
     spettro_root.do_EC_DT = 0;
@@ -277,6 +278,10 @@ struct blob MakeBlob() {
     spettro_root.mono_planck_max_factor=2.0;
     sprintf(spettro_root.disk_type, "BB");
     spettro_root.R_H=1E17;
+    spettro_root.R_H_orig=spettro_root.R_H;
+    spettro_root.R_H_scale_factor=20.0;
+    spettro_root.R_ext_factor=1.0;
+    spettro_root.EC_theta_lim=5.0;
     spettro_root.M_BH = 1E9;
 
     spettro_root.theta_n_int=50;
@@ -632,6 +637,7 @@ void Run_SED(struct blob *pt_base){
 	if (pt_base->do_IC) {
 		if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1 || pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1 || pt_base->do_EC_CMB == 1 || pt_base->do_Disk==1 || pt_base->do_DT==1 || pt_base->do_Star==1) 
         {
+                
                 spectra_External_Fields(1, pt_base);
                 if (pt_base->do_EC_Star == 1) {
                     //if (pt_base->verbose) {
