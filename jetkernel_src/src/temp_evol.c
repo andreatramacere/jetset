@@ -247,7 +247,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     //alloc_temp_ev_array(&(pt_ev->N_gamma), pt_ev->NUM_SET * E_SIZE);
     alloc_temp_ev_array(&(pt_ev->N_acc_gamma), pt_ev->NUM_SET * E_SIZE);
     alloc_temp_ev_array(&(pt_ev->N_rad_gamma), pt_ev->NUM_SET * E_SIZE);
-    alloc_temp_ev_array(&(pt_ev->N_time), pt_ev->T_SIZE);
+    alloc_temp_ev_array(&(pt_ev->N_time), pt_ev->NUM_SET);
     alloc_temp_ev_array(&(pt_ev->T_esc_acc),E_SIZE);
     alloc_temp_ev_array(&(pt_ev->T_esc_rad),E_SIZE);
     //printf("alloc run1 stop \n");
@@ -371,8 +371,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         pt_ev->Q_inj[TMP] =  N_distr_interp(pt_ev->Q_inj_jetset_gamma_grid_size,pt_ev->gamma[TMP],pt_ev->gamma_inj_jetset,pt_ev->Q_inj_jetset);
         //*Vol_acc;
     }
-
-
+    
     for (T = 0; T < pt_ev->T_SIZE; T++) {
         
         
@@ -451,11 +450,15 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
                     //pt_ev->N_gamma[TMP] = N_acc[Gamma]*(Vol_acc/Vol_rad)+N_rad[Gamma];
                     pt_ev->N_rad_gamma[TMP] = N_rad[Gamma];
                     pt_ev->N_acc_gamma[TMP] = N_acc[Gamma];
-                    pt_ev->N_time[NUM_OUT]=t;
+                    
                     
                 }
                 
                 
+            }
+            if (NUM_OUT<pt_ev->NUM_SET){
+                pt_ev->N_time[NUM_OUT]=t;
+                //printf("NUM_SET=%d NUM_OUT=%d t=%e T=%d T_SIZE=%d\n",pt_ev->NUM_SET,NUM_OUT,t,T,pt_ev->T_SIZE);
             }
             //if (T>0){
             if (pt_ev->LOG_SET >=1){
@@ -468,6 +471,12 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         }
         //---------------------------------------
         t = t + pt_ev->deltat;
+
+        //if the last element OUT has been skipped, we set time negative to remove from the python wrapper
+        if (NUM_OUT == pt_ev->NUM_SET-1){
+           pt_ev->N_time[pt_ev->NUM_SET-1]=-1.0;
+           //printf("NUM_SET=%d NUM_OUT=%d t=%e T=%d T_SIZE=%d\n",pt_ev->NUM_SET,NUM_OUT,t,T,pt_ev->T_SIZE); 
+        }
     }   
     //--------------END Loop over Time-----------------------------------------------
 

@@ -752,6 +752,7 @@ struct temp_ev{
 	int do_Sync_cooling;
     int do_Compton_cooling;
     int do_Expansion;
+    int do_Adiabatic_cooling;
     //double Q_scaling_factor;
 
     double t_unit_rad, t_unit_acc; //unit time in light crossing time

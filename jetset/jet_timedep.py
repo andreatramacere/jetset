@@ -129,7 +129,13 @@ class TimeEmittersDistribution(object):
         return time_obs / (1 + self.jet.parameters.z_cosm.val) * self.jet.get_beaming()
 
     def _time_src_to_blob(self,time_src):
-        return time_src / (1 + self.jet.parameters.z_cosm.val) * self.jet.get_beaming()
+        return time_src  * self.jet.get_beaming()
+
+    def _time_blob_to_src(self,time_blob):
+        return time_blob  / self.jet.get_beaming()
+    
+    def _time_blob_to_obs(self,time_obs):
+        return time_obs / (1 + self.jet.parameters.z_cosm.val) * self.jet.get_beaming()
 
     def _get_time_slice_samples(self, time, frame, time_bin=None):
         """
@@ -264,7 +270,14 @@ class TimeEvolvingRegion(object):
     def _fill_temp_ev_array_post_run(self,):
         gamma_size = self.temp_ev._temp_ev.gamma_grid_size
         time_size = self.temp_ev.parameters.num_samples.val
-
+        _t=np.zeros(time_size)
+        for i in range(time_size):
+            _t[i]=BlazarSED.get_temp_ev_N_time_array(self.temp_ev._temp_ev.N_time, self.temp_ev._temp_ev, i)            
+        
+        _t=_t[_t>=0.]
+        time_size=_t.size
+        self.temp_ev.parameters.num_samples.val=time_size
+        
         self.time_sampled_emitters = TimeEmittersDistribution(jet=self.jet, time_size=time_size, gamma_size=gamma_size)
 
         if self.region_type=='rad':
@@ -274,12 +287,12 @@ class TimeEvolvingRegion(object):
         else:
             unexpected_behaviour()
 
-        self.time = np.zeros(gamma_size)
         for i in range(time_size):
-            self.time_sampled_emitters.time_blob[i]=BlazarSED.get_temp_ev_N_time_array(self.temp_ev._temp_ev.N_time, self.temp_ev._temp_ev, i)
+            self.time_sampled_emitters.time_blob[i]=BlazarSED.get_temp_ev_N_time_array(self.temp_ev._temp_ev.N_time, self.temp_ev._temp_ev, i)            
             for j in range(gamma_size):
                 self.time_sampled_emitters.gamma[j] = BlazarSED.get_temp_ev_gamma_array(self.temp_ev._temp_ev.gamma, self.temp_ev._temp_ev, j)
                 self.time_sampled_emitters.n_gamma[i,j] = BlazarSED.get_temp_ev_N_gamma_array(_ptr,  self.temp_ev._temp_ev,i,j)
+
 
 
     def _update(self,temp_ev=None,jet=None,build_cached=True):
@@ -416,7 +429,8 @@ class TimeEvolvingRegion(object):
                 eval_cross_time=True,
                 use_cached=False,
                 R=None,
-                name=None):
+                name=None,
+                density=False):
 
         beaming = self.jet.get_beaming()
 
@@ -469,22 +483,36 @@ class TimeEvolvingRegion(object):
                 y = s.nuLnu_src[msk] / s.nu_src[msk] / (beaming * beaming * beaming)
             else:
                 raise RuntimeError('rest frame must be src or obs or blob')
+
+            if density is True:
+                y= y/x
+            
             if nu2 is None:
                 flux_array[ID] = y.value[0]
             else:
                 flux_array[ID] = np.trapz(y.value, x.value)
 
+        if density is True:
+            un=Unit('erg s-1 cm-2 Hz-1')
+        else:
+             un=Unit('erg s-1 cm-2')
+
         flux_array_out = np.interp(time_array_out, time_array, flux_array, left=0, right=0)
 
         if eval_cross_time is True:
-            t_cr = time_array_out
+            t_cr = np.copy(time_array_out)
             if frame == 'src':
-                t_cr = self.time_sampled_emitters._time_src_to_blob(time_array_out)
+                t_cr_blob = self.time_sampled_emitters._time_src_to_blob(t_cr)
             if frame == 'obs':
-                t_cr = self.time_sampled_emitters._time_obs_to_blob(time_array_out)
-            flux_array_out = self.eval_cross_time(t_cr, flux_array_out, n_slices=cross_time_slices, R=R)
+                t_cr_blob = self.time_sampled_emitters._time_obs_to_blob(t_cr)
+            flux_array_out,t_cr_blob = self.eval_cross_time(t_cr_blob, flux_array_out, n_slices=cross_time_slices, R=R)
 
-        return Table([time_array_out * Unit('s'), flux_array_out * Unit('erg s-1 cm-2')], names=('time', 'flux'),
+            if frame == 'src':
+                time_array_out = self.time_sampled_emitters._time_blob_to_src(t_cr_blob)
+            if frame == 'obs':
+                time_array_out = self.time_sampled_emitters._time_blob_to_src(t_cr_blob)
+
+        return Table([time_array_out * Unit('s'), flux_array_out * un], names=('time', 'flux'),
                      meta={'name': name})
 
     def _lc_weight(self, delay_r, R, delta_R):
@@ -495,7 +523,9 @@ class TimeEvolvingRegion(object):
             #TODO, here I should use radius at t=time
             #in the expansion case, but I need to figure out
             #better how this impact the time convolution
-            R = self.temp_ev._get_R_rad_sphere(0)
+            R = np.zeros(np.size(t))
+            for ID,_t in enumerate(t):
+                R[ID] = self.temp_ev._get_R_rad_sphere(t[ID])
 
         c = const.c.cgs.value
 
@@ -510,7 +540,7 @@ class TimeEvolvingRegion(object):
             lc_interp = np.interp(t_interp[m], t, lc, left=0, right=0)
             lc_out[ID] = np.sum(lc_interp * weight_array[m])
 
-        return lc_out
+        return lc_out,t_itnterp
 
 
 class JetTimeEvol(object):
@@ -653,6 +683,7 @@ class JetTimeEvol(object):
         self.time_steps_array = None
         self.IC_cooling = 'off'
         self.Sync_cooling = 'on'
+        self.Adiabatic_cooling='on'
         self.region_expansion = 'off'
         self.log_sampling = log_sampling
         #self.time_sampled_emitters = None
@@ -688,6 +719,7 @@ class JetTimeEvol(object):
         _model['internals']['time_steps_array'] = self.time_steps_array
         _model['internals']['IC_cooling'] = self.IC_cooling
         _model['internals']['Sync_cooling'] = self.Sync_cooling
+        _model['internals']['Adiabatic_cooling'] = self.Adiabatic_cooling
         _model['internals']['region_expansion'] = self.region_expansion
         _model['internals']['log_sampling'] = self.log_sampling
         #_model['internals']['time_sampled_emitters'] = self.time_sampled_emitters
@@ -1031,6 +1063,18 @@ class JetTimeEvol(object):
         self._Sync_cooling = val
         self.temp_ev.do_Sync_cooling = state_dict[val]
 
+    @property
+    def Adiabatic_cooling(self):
+        return self._Adiabatic_cooling
+
+    @Sync_cooling.setter
+    def Adiabatic_cooling(self, val):
+        state_dict = dict((('on', 1), ('off', 0)))
+        if val not in state_dict.keys():
+            raise RuntimeError('allowed values are on/off')
+        self._Adiabatic_cooling = val
+        self.temp_ev.do_Adiabatic_cooling = state_dict[val]
+
 
     @property
     def custom_q_jnj_profile(self):
@@ -1334,6 +1378,7 @@ class JetTimeEvol(object):
 
         rows.append(self._build_row_dict('IC cooling', '', '', val=self.IC_cooling, islog=False))
         rows.append(self._build_row_dict('Sync cooling', '', '', val=self.Sync_cooling, islog=False))
+        rows.append(self._build_row_dict('Adiab. cooling', '', '', val=self.Adiabatic_cooling, islog=False))
         rows.append(self._build_row_dict('Diff index', '', '', val=self._temp_ev.Diff_Index, islog=False))
         rows.append(self._build_row_dict('Acc index', '', 's-1', val=self._temp_ev.Acc_Index, islog=False))
 

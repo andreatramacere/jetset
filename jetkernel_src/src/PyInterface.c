@@ -106,6 +106,7 @@ struct temp_ev MakeTempEv() {
     ev_root.do_Sync_cooling = 1;
     ev_root.do_Compton_cooling = 0;
     ev_root.do_Expansion = 0;
+    ev_root.do_Adiabatic_cooling = 1;
     ev_root.T_COUNTER=0;
 
 

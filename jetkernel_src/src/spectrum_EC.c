@@ -177,7 +177,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
     	nu_start_EC_obs = &(pt->nu_start_EC_CMB_obs);
     	nu_stop_EC_obs = &(pt->nu_stop_EC_CMB_obs);
     	NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_CMB);
-		set_EC_stat_pre(pt, -1);
+	    set_EC_stat_pre(pt, -1);
     	if (pt->verbose>0) {
     		printf("nu_start_CMB=%e    nu_stop_CMB=%e\n",
     				pt->nu_start_CMB,
