@@ -25,10 +25,10 @@ requirements:
     - python
     - scipy>=1.5.0
     - numpy>=1.16
-    - astropy>=4.0
+    - astropy>=4.0,<5
     - matplotlib>3.1.0
     - future
-    - iminuit
+    - iminuit>2.0.0
     - corner
     - six
     - emcee>=3.0.0
