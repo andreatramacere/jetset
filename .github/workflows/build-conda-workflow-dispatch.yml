@@ -45,7 +45,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-10.15 ]
-        python-version: [3.8,3.9,3.10]
+        python-version: [3.8,3.9]
 
     steps:
       - name: 'Clone Repository (Latest)'
@@ -69,8 +69,7 @@ jobs:
           conda config --set always_yes yes
           conda install conda-build
           conda install -c conda-forge swig">=3.0.0"
-          conda install -c conda-forge emcee">=3.0.0"
-          onda install -c astropy -c conda-forge --file requirements.txt
+          conda install -c astropy -c conda-forge --file requirements.txt
           conda install  pytest
 
 
