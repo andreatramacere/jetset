@@ -6,16 +6,12 @@ on:
       git-ref:
         description: Git Ref (Optional)
         required: false
-      tags:
-        description: tag
-        required: false
       skip_test:
         description: skip test
         required: false
 
 jobs:
-  create_release:
-    if: github.event.inputs.tags != null
+  clone:
     runs-on: ubuntu-latest
     steps:
     - name: 'Clone Repository (Latest)'
@@ -27,20 +23,9 @@ jobs:
       with:
         ref: ${{ github.event.inputs.git-ref }}
 
-    - name: 'Create release'
-      if: github.event.inputs.tags != null
-      uses: softprops/action-gh-release@v1
-      id: create_release
-      #if: startsWith(github.ref, 'refs/tags/')
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        name: Release  ${{ github.event.inputs.tags }}
-        tag_name: ${{ github.event.inputs.tags }}
-
 
   build_conda:
-    needs: [ create_release ]
+    needs: [clone]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -67,11 +52,9 @@ jobs:
       - name: 'Install dependencies'
         run: |
           conda config --set always_yes yes
-          conda install conda-build
-          conda install -c conda-forge swig">=3.0.0"
-          conda install -c conda-forge emcee">=3.0.0"
-          conda install -c astropy --file requirements.txt
-          conda install  pytest
+          conda install conda-build pytest
+          conda install -c conda-forge swig">=3.0.0" 
+          conda install -c astropy -c conda-forge --file requirements.txt
 
 
 
@@ -106,7 +89,7 @@ jobs:
           conda config --set anaconda_upload no
           conda build purge
           conda build .  -c defaults -c astropy -c conda-forge
-          conda build . --output > ./CONDABUILDJETSET.txt
+          conda build .  --output > ./CONDABUILDJETSET.txt
 
       - name: 'set env CONDABUILDJETSET'
         working-directory: .github/conda-pipeline/github/
@@ -132,4 +115,3 @@ jobs:
         run: |
           echo $(running tests!)
           pytest --pyargs jetset.tests.test_functions::TestFull
-          
