@@ -70,7 +70,7 @@ jobs:
           conda install conda-build
           conda install -c conda-forge swig">=3.0.0"
           conda install -c conda-forge emcee">=3.0.0"
-          conda install -c astropy -c conda-forge --file requirements.txt
+          onda install -c astropy -c conda-forge --file requirements.txt
           conda install  pytest
 
 
@@ -105,8 +105,8 @@ jobs:
         run: |
           conda config --set anaconda_upload no
           conda build purge
-          conda build . -c astropy -c conda-forge
-          conda build . --output > ./CONDABUILDJETSET.txt
+          conda build .
+          conda build .  --python=${{matrix.python-version}}  -c astropy -c conda-forge --output > ./CONDABUILDJETSET.txt
 
       - name: 'set env CONDABUILDJETSET'
         working-directory: .github/conda-pipeline/github/
