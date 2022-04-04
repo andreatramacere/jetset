@@ -150,12 +150,12 @@ jobs:
 
       - name: 'prepare asset pip'
         run: |
-          mv dist pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}
-          tar -cvf pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}.tar ./pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}/*.whl
+          mv dist pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}}
+          tar -cvf pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}}.tar ./pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}}/*.whl
 
       - name: 'prepare asset src'
         run: |
-          mv pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          mv pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
           tar -cvf pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
 
       - name: 'Upload Binary Release Asset'
@@ -164,7 +164,7 @@ jobs:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
           files: |
-            pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}.tar
+            pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}}.tar
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
