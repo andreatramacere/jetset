@@ -1,4 +1,4 @@
-name: conda build-test
+name: conda test
 
 on:
   workflow_dispatch:
