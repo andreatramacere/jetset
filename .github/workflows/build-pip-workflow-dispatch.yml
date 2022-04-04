@@ -1,4 +1,4 @@
-name: pip build-test
+name: pip build-release-test
 
 on:
   workflow_dispatch:
@@ -57,7 +57,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-10.15]
-        python-version: [3.8]
+        python-version: [3.7,3.8,3.9]
 
     steps:
       - name: 'Clone Repository (Latest)'
@@ -150,21 +150,19 @@ jobs:
 
       - name: 'prepare asset pip'
         run: |
-          mv dist pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}}
-          tar -cvf pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}}.tar ./pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}}/*.whl
-
+          mv dist pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}
+          tar -cvf pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}.tar ./pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}/*.whl
       - name: 'prepare asset src'
         run: |
-          mv pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          mv pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
           tar -cvf pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
-
       - name: 'Upload Binary Release Asset'
         uses: softprops/action-gh-release@v1
         with:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
           files: |
-            pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}}.tar
+            pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}.tar
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -178,4 +176,3 @@ jobs:
               pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
