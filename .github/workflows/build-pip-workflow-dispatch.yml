@@ -1,4 +1,4 @@
-name: pip build-release-test
+name: pip build-test-release
 
 on:
   workflow_dispatch:
@@ -152,10 +152,12 @@ jobs:
         run: |
           mv dist pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}
           tar -cvf pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}.tar ./pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}/*.whl
+
       - name: 'prepare asset src'
         run: |
           mv pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
           tar -cvf pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
+
       - name: 'Upload Binary Release Asset'
         uses: softprops/action-gh-release@v1
         with:
