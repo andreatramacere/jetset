@@ -12,7 +12,34 @@ import warnings
 
 from numpy import array, take, eye, triu, transpose, dot
 from numpy import empty_like, sqrt, cos, sin, arcsin
-from scipy.optimize.minpack import _check_func
+try:
+    from scipy.optimize.minpack import _check_func
+except:
+    from numpy import (atleast_1d, dot, take, triu, shape, eye,
+                   transpose, inexact, issubdtype, dtype)
+    def _check_func(checker, argname, thefunc, x0, args, numinputs,
+                output_shape=None):
+        res = atleast_1d(thefunc(*((x0[:numinputs],) + args)))
+        if (output_shape is not None) and (shape(res) != output_shape):
+            if (output_shape[0] != 1):
+                if len(output_shape) > 1:
+                    if output_shape[1] == 1:
+                        return shape(res)
+                msg = "%s: there is a mismatch between the input and output " \
+                    "shape of the '%s' argument" % (checker, argname)
+                func_name = getattr(thefunc, '__name__', None)
+                if func_name:
+                    msg += " '%s'." % func_name
+                else:
+                    msg += "."
+                msg += 'Shape should be %s but it is %s.' % (output_shape, shape(res))
+                raise TypeError(msg)
+        if issubdtype(res.dtype, inexact):
+            dt = res.dtype
+        else:
+            dt = dtype(float)
+        return shape(res), dt 
+        
 from scipy.optimize import _minpack, leastsq
 
 

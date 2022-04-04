@@ -31,15 +31,20 @@ class Data(object):
                  meta_data=None,
                  import_dictionary=None,
                  cosmo=None):
-        """
+        """_summary_
 
         Parameters
         ----------
-        data_table:
-        n_rows:
-        meta_data:
-        import_dictionary:
-        cosmo:
+        data_table : astropy table, optional
+            _description_, by default None
+        n_rows : int, optional
+            the number of rows for an empty table if no data_table is passed, by default None
+        meta_data : dictionary, optional
+            the dictionary for the metadata, by default None
+        import_dictionary : dictionary, optional
+            a dictionary mapping the column renaming if needed for the data_table, by default None
+        cosmo : jetset.cosmo_tools.Cosmo, optional
+            the cosmology object, by default None
         """
 
         if cosmo is None:
@@ -62,7 +67,7 @@ class Data(object):
 
         self._units = [u.Hz, u.Hz,(u.erg / (u.cm ** 2 * u.s)) ,(u.erg / (u.cm ** 2 * u.s)), cds.MJD, cds.MJD, None, None]
 
-        #print('h', type(data_table))
+       
         if isinstance(data_table,str):
             data_table = Table.read(data_table, guess=True)
 
@@ -82,7 +87,6 @@ class Data(object):
 
                 self.set_meta_data(k,meta_data[k])
         else:
-            #print('->',self._table.meta)
             for k in self._table.meta.keys():
                 self.set_meta_data(k,self._table.meta[k])
 
@@ -90,6 +94,7 @@ class Data(object):
         self._check_frame_and_scale()
         self._convert_units()
 
+        #self._table.sort('x')
 
 
     @property
@@ -161,7 +166,6 @@ class Data(object):
             raise RuntimeError('meta data ',m,'not in allowed',self._allowed_meta.keys())
 
         if  self._allowed_meta[m] is not None:
-            #print (self._allowed_meta[m])
             if v not in self._allowed_meta[m]:
                 raise RuntimeError('meta data value ', v, 'not in allowed', self._allowed_meta[m])
 
@@ -178,7 +182,9 @@ class Data(object):
 
         self._table[field] = value
         if unit is not None:
-            self._table[field] *= unit
+            self._table[field].unit = unit
+
+        
 
     def _build_empty_table(self,n_rows,meta_data=None):
 
@@ -333,6 +339,7 @@ class ObsData(object):
         self._set_kw(keywords,_skip)
 
         self._build_data(dupl_filter=dupl_filter)
+        self.data.sort('nu_data')
 
     def _set_kw(self,keywords,skip=[]):
         keys = sorted(keywords.keys())
@@ -365,9 +372,11 @@ class ObsData(object):
 
     @property
     def metadata(self,skip=['col_types','col_nums']):
+        _d={}
         for k in self.allowed_keywords.keys():
             if hasattr(self,k) and k not in skip:
-                print(k,': ',getattr(self,k))
+                _d[k]=getattr(self,k)
+        return _d
 
     def _build_empty_table(self,n_rows=None):
         sed_dt = [('nu_data', 'f8')]
@@ -984,11 +993,17 @@ class ObsData(object):
           
         self.data_reb['nu_data'],self.data_reb['dnu_data']=self.log_to_lin(log_val=self.data_reb['nu_data_log'], log_err=self.data_reb['dnu_data_log'])
         
-        
+        #set original units
+        for c in self.data.colnames:
+            if self.data[c].unit is not None:
+                self.data_reb[c] = self.data_reb[c].value*self.data[c].unit
+
         self.data=self.data_reb
         
         self.set_fake_error(self.fake_error)
 
+        self.data.sort('nu_data')
+       
         print (section_separator)
     
     def add_systematics(self,syst,nu_range=None,data_set=None):
@@ -1024,8 +1039,9 @@ class ObsData(object):
         else:
             self.data['dnuFnu_data']=np.sqrt(self.data['dnuFnu_data'] * self.data['dnuFnu_data'] + (self.data['nuFnu_data'] * self.data['nuFnu_data'] * syst * syst))
             self.data['nuFnu_data_log'], self.data['dnuFnu_data_log']=self.lin_to_log(val=self.data['nuFnu_data'], err=self.data['dnuFnu_data'])
-    
-    
+
+        self.data.sort('nu_data')
+        
     
     def set_error(self,error_value,nu_range=None,data_set=None,data_msk=None):
         """
@@ -1270,6 +1286,24 @@ class ObsData(object):
         return log_to_lin(log_val=log_val,log_err=log_err)
         
 
+    @property
+    def gammapy_table(self):
+        return self.get_gammapy_table()
+
+
+    def get_gammapy_table(self):
+        table = Table()
+        for c in self.metadata:
+            table.meta[c]=self.metadata[c]
+                
+        table['e_ref']=self.data['nu_data'].to("eV", equivalencies=u.spectral())
+      
+        table["e2dnde"] = self.data['nuFnu_data']
+        table["e2dnde_err"] = self.data['dnuFnu_data']
+        
+        table.meta["SED_TYPE"] = "e2dnde"
+        
+        return table
 
 
 def lin_to_log(val=None,err=None):

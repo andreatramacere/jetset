@@ -24,7 +24,7 @@ from .jet_model import Jet
 
 from .cosmo_tools import  Cosmo
 
-import  pickle
+import  dill as pickle
 
 __all__=['FitModel']
 
@@ -200,8 +200,8 @@ class FitModel(Model):
         if label is None:
             label=self.name
 
-        plot_obj.add_model_plot(self.SED, line_style=line_style, label=label, flim=self.flux_plot_lim,fit_range=np.log10([self.nu_min_fit,self.nu_max_fit]), density=density, frame=frame  )
-        plot_obj.add_model_residual_plot(data=sed_data, model=self, fit_range=np.log10([self.nu_min_fit, self.nu_max_fit]))
+        plot_obj.add_model_plot(self.SED, line_style=line_style, label=label, flim=self.flux_plot_lim,fit_range=[self.nu_min_fit,self.nu_max_fit], density=density, frame=frame  )
+        plot_obj.add_model_residual_plot(data=sed_data, model=self, fit_range=[self.nu_min_fit, self.nu_max_fit])
 
         #if frame == 'src' and sed_data is not None:
         #    sed_data.z = z_sed_data
@@ -340,8 +340,12 @@ class FitModel(Model):
 
     @classmethod
     def load_model(cls, file_name):
+         c = pickle.load(open(file_name, "rb"))
+         return cls._build_model(c)
+    
+    @staticmethod
+    def _build_model(c):
         try:
-            c = pickle.load(open(file_name, "rb"))
             ml=c.components.components_list[::]
             for m in ml:
                 try:
@@ -370,6 +374,8 @@ class FitModel(Model):
         except Exception as e:
             raise RuntimeError(e)
 
+    def clone(self):
+        return self._build_model(pickle.loads(pickle.dumps(self, protocol=pickle.HIGHEST_PROTOCOL)))
 
     def show_model_components(self):
         print("")

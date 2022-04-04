@@ -339,7 +339,7 @@ class McmcSampler(object):
         self.reset_to_best_fit()
         self.model.eval(fill_SED=True)
 
-        x, y = self.model.SED.get_model_points(log_log=True, frame=frame)
+        x, y = self.model.SED.get_model_points(log_log=False, frame=frame)
         #if density is True:
         #    y=y-x
         if size is None:
@@ -357,10 +357,10 @@ class McmcSampler(object):
                 pi.set(val=self.get_par(ID_par)[0][ID_rand])
 
             self.model.eval(fill_SED=True)
-            x, y[ID] = self.model.SED.get_model_points(log_log=True, frame=frame)
+            x, y[ID] = self.model.SED.get_model_points(log_log=False, frame=frame)
 
         if density is True:
-            y=y-x
+            y=y/x
         y_min=np.amin(y, axis=0)
         y_max=np.amax(y, axis=0)
         msk = y_min > np.log10(self.model.flux_plot_lim)

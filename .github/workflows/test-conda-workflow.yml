@@ -45,7 +45,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-10.15 ]
-        python-version: [ 3.8]
+        python-version: [ 3.8,3.9]
 
     steps:
       - name: 'Clone Repository (Latest)'
@@ -137,9 +137,9 @@ jobs:
         run: |
           echo ${{ env.CONDABUILDJETSET }}
           ls ${{ env.CONDABUILDJETSET }}
-          mkdir  conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}}
-          mv ${{ env.CONDABUILDJETSET }} ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}}
-          tar -cvf conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}}.tar ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}}/*
+          mkdir  conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}
+          mv ${{ env.CONDABUILDJETSET }} ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}
+          tar -cvf conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}.tar ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}/*
 
       - name: 'Upload Release Asset'
         uses: softprops/action-gh-release@v1
@@ -147,6 +147,6 @@ jobs:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
           files: |
-            conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}}.tar
+            conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}.tar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

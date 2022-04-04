@@ -469,7 +469,8 @@ class SEDShape(object):
                 loglog_pl=FitModel(cosmo=self.cosmo, name='%s'%index.name,loglog_poly=loglog_poly)
                 #print(10.**index.idx_range[0],10.**index.idx_range[1])
                 mm,best_fit=fit_SED(loglog_pl,
-                                 self.sed_data,10.**index.idx_range[0],
+                                 self.sed_data,
+                                 10.**index.idx_range[0],
                                  10.**index.idx_range[1],
                                  loglog=True,
                                  silent=silent,

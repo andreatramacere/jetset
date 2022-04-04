@@ -318,24 +318,24 @@ class BaseEmittersDistribution(object):
 
         return p
 
-    def plot(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None):
+    def plot(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None,loglog=False):
         if p is None:
-            p = PlotPdistr()
+            p = PlotPdistr(loglog=loglog)
         m=getattr(p,'plot_distr')
         self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label)
         return p
 
-    def plot2p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None):
+    def plot2p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None,loglog=False):
         if p is None:
-            p = PlotPdistr()
+            p = PlotPdistr(loglog=loglog)
         m=getattr(p,'plot_distr2p')
         self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label)
 
         return p
 
-    def plot3p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None):
+    def plot3p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None,loglog=False):
         if p is None:
-            p = PlotPdistr()
+            p = PlotPdistr(loglog=loglog)
         m=getattr(p,'plot_distr3p')
         self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label)
         return p

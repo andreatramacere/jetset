@@ -344,13 +344,14 @@ class Model(object):
         return d
 
     def _test_par_expr(self,master_par_list,par_expr):
-        for p_name in master_par_list:
-            exec(p_name + '= 1')
-        try:
-            eval(par_expr)
-            pass
-        except:
-            raise RuntimeError('the parameter expression is not valid')
+        if type(par_expr) == str:
+            for p_name in master_par_list:
+                exec(p_name + '= 1')
+            try:
+                eval(par_expr)
+                pass
+            except:
+                raise RuntimeError('the parameter expression is not valid')
 
     def make_dependent_par(self, par, depends_on, par_expr):
         master_par_list = depends_on
@@ -377,7 +378,12 @@ class Model(object):
             m = self.parameters.get_par_by_name(p)
             if m._is_dependent is False:
                 m.val=m.val
-        print('==> par', dep_par.name, 'is now depending on', master_par_list, 'according to expr', par_expr)
+        if isinstance(par_expr,str):
+            _par_expr=par_expr
+        else:
+            _par_expr=inspect.getsource(par_expr)
+        print('==> par', dep_par.name, 'is now depending on', master_par_list, f'according to expr:{dep_par.name} =\n{_par_expr}'.format(dep_par.name,_par_expr))
+
     def add_user_par(self,name,val,units='',val_min=None,val_max=None):
         self.parameters.add_par(ModelParameter(name=name,units=units,val=val,val_min=val_min,val_max=val_max,par_type='user_defined'))
 
