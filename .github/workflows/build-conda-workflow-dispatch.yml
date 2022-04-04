@@ -105,7 +105,6 @@ jobs:
         run: |
           conda config --set anaconda_upload no
           conda build purge
-          conda build .
           conda build .  --python=${{matrix.python-version}}  -c astropy -c conda-forge --output > ./CONDABUILDJETSET.txt
 
       - name: 'set env CONDABUILDJETSET'
