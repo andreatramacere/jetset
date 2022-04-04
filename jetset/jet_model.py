@@ -1340,7 +1340,8 @@ class JetBase(Model):
         _par_array=ModelParameterArray()
 
         _name = [i for i in _energetic.__class__.__dict__.keys() if i[:1] != '_']
-
+        _par_array.add_par(ModelParameter(name='BulkLorentzFactor', val=self._blob.BulkFactor, units='',par_type=''))
+        self.energetic_dict['BulkLorentzFactor']= self._blob.BulkFactor
         try:
             for _n in _name:
                 units = 'skip_this'
@@ -1366,7 +1367,7 @@ class JetBase(Model):
                     self.energetic_dict[_n]=getattr(_energetic, _n)
 
                     _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
-            _par_array.add_par(ModelParameter(name='BulkLorentzFactor', val=self._blob.BulkFactor, units='',par_type=''))
+           
             self.energetic_report_table = _par_array.par_table
             self.energetic_report_table.remove_columns(['log','frozen','phys. bound. min','phys. bound. max'])
             self.energetic_report_table.rename_column('par type','type')

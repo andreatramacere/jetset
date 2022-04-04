@@ -120,25 +120,43 @@ def test_dep_par_composite_model(plot=False):
     fit_model.jet_leptonic.parameters.R.fit_range = [10 ** 15.5, 10 ** 17.5]
     fit_model.jet_leptonic.add_user_par(name='B0', units='G', val=1E3, val_min=0, val_max=None)
     fit_model.jet_leptonic.add_user_par(name='R0', units='cm', val=5E13, val_min=0, val_max=None)
+    fit_model.jet_leptonic.add_user_par(name='m_B', val=1, val_min=1, val_max=2)
+
     fit_model.jet_leptonic.parameters.R0.frozen = True
     fit_model.jet_leptonic.parameters.B0.frozen = True
 
-    par_expr = 'B0*(R0/R_H)'
+    def par_func(R0,B0,R_H,m_B): 
+        return B0*np.power((R0/R_H),m_B)
 
-    fit_model.jet_leptonic.make_dependent_par(par='B', depends_on=['B0', 'R0', 'R_H'], par_expr=par_expr)
+    fit_model.jet_leptonic.make_dependent_par(par='B', depends_on=['B0', 'R0', 'R_H','m_B'], par_expr=par_func)
 
     B0=fit_model.jet_leptonic.parameters.B0.val
     R0 = fit_model.jet_leptonic.parameters.R0.val
     R_H = fit_model.jet_leptonic.parameters.R_H.val
+    m_B= fit_model.jet_leptonic.parameters.m_B.val
 
-    np.testing.assert_allclose(fit_model.jet_leptonic.parameters.B.val, eval(par_expr))
+    np.testing.assert_allclose(fit_model.jet_leptonic.parameters.B.val, par_func(B0,R0,R_H,m_B))
 
     fit_model.save_model('test_composite.pkl')
-    new_fit_model=FitModel.load_model('test_composite.pkl')
-    new_fit_model.jet_leptonic.parameters.B0.val=1E4
+    fit_model.parameters._build_par_table()
+    t=fit_model.parameters._par_table
+    t.sort(t.colnames)
+    
+    for new_fit_model in [FitModel.load_model('test_composite.pkl'),fit_model.clone()]:
+        
+        new_fit_model.parameters._build_par_table()
+        _t=new_fit_model.parameters._par_table
+        _t.sort(_t.colnames)
 
-    B0 = new_fit_model.jet_leptonic.parameters.B0.val
-    R0 = new_fit_model.jet_leptonic.parameters.R0.val
-    R_H = new_fit_model.jet_leptonic.parameters.R_H.val
+        assert(all([_t[i]['frozen']==t[i]['frozen'] for i in range(len(_t))]))
+        assert(all([_t[i]['val']==t[i]['val'] for i in range(len(_t))]))
 
-    np.testing.assert_allclose(new_fit_model.jet_leptonic.parameters.B.val, eval(par_expr))
+        new_fit_model.jet_leptonic.parameters.B0.val=1E4
+
+        B0 = new_fit_model.jet_leptonic.parameters.B0.val
+        R0 = new_fit_model.jet_leptonic.parameters.R0.val
+        R_H = new_fit_model.jet_leptonic.parameters.R_H.val
+        
+        np.testing.assert_allclose(new_fit_model.jet_leptonic.parameters.B.val, par_func(B0,R0,R_H,m_B))
+
+        

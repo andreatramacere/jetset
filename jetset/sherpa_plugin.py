@@ -90,7 +90,7 @@ class JetsetSherpaModel(RegriddableModel1D):
         self._jetset_model.eval()
         plot_obj = self._jetset_model.plot_model(plot_obj=plot_obj, sed_data=sed_data)
         plot_obj.add_model_residual_plot(data=sed_data, model=self._jetset_model,
-                                         fit_range=np.log10([fit_range[0], fit_range[1]]))
+                                         fit_range=[fit_range[0], fit_range[1]])
 
 
 def plot_sherpa_model(sherpa_model, fit_range=None, model_range=[1E10, 1E30], nu_grid_size=200, sed_data=None,
@@ -107,13 +107,13 @@ def plot_sherpa_model(sherpa_model, fit_range=None, model_range=[1E10, 1E30], nu
     if sed_data is not None:
         plot_obj.add_data_plot(sed_data=sed_data)
 
-    plot_obj.add_xy_plot(np.log10(x), np.log10(y), label=label, line_style=line_style)
+    plot_obj.add_xy_plot(x, y, label=label, line_style=line_style)
 
     if add_res is True and fit_range is not None:
         nufnu_res = sherpa_model(sed_data.data['nu_data'])
         y_res = (sed_data.data['nuFnu_data'] - nufnu_res) / sed_data.data['dnuFnu_data']
         x_res = sed_data.data['nu_data']
-        plot_obj.add_xy_residual_plot(x=np.log10(x_res), y=y_res, fit_range=np.log10([fit_range[0], fit_range[1]]))
+        plot_obj.add_xy_residual_plot(x=x_res, y=y_res, fit_range= [fit_range[0], fit_range[1]])
 
     return plot_obj
 

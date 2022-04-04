@@ -1,6 +1,10 @@
-./make_tag.py 1.1.2 -do_remote_tag
-./make_tag.py stable -do_remote_tag
+1)update the tag in  jetset/pkg_info.json
 
+2) ./make_tag.py 1.1.2 -do_remote_tag
+  OR
+   ./make_tag.py stable -do_remote_tag
+
+3) testing
  python -c"import iminuit; print('iminuit',iminuit.__version__); import jetset; print('jetset',jetset.__version__)"
 
  pytest --pyargs jetset.tests.test_functions::test_short

@@ -9,7 +9,7 @@ from .test_emitters import *
 from .test_ebl import *
 from .test_mcmc import test_emcee
 from .test_depending_parameters import *
-
+from .test_composite_model import *
 
 @pytest.mark.integration
 class TestFull:
@@ -80,3 +80,6 @@ class TestFull:
 
     def test_hadronic_jet(self, plot=False):
         test_hadronic_jet(plot=plot)
+
+    def test_composite_model_pars(self, plot=False):
+        test_composite_model_pars(plot=plot)

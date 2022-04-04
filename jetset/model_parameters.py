@@ -7,6 +7,8 @@ from astropy import  units as u
 from .utils import clean_var_name
 from functools import wraps
 import ast
+import inspect
+
 
 __all__=['ModelParameter','ModelParameterArray','Value']
 
@@ -334,6 +336,14 @@ class ModelParameter(object):
     #     #return d
     #     pass
 
+    @property
+    def print_par_expr(self):
+        if isinstance(self.par_expr,str):
+            _par_expr=self.par_expr
+        else:
+            _par_expr=inspect.getsource(self.par_expr)
+        print('==> par', self.name, 'is depending on', [_p.name for _p in self._master_pars],  f'according to expr:   {self.name} =\n{_par_expr}'.format(self.name,_par_expr))
+        
 
     @property
     def par_expr(self):
@@ -345,17 +355,24 @@ class ModelParameter(object):
 
     def _eval_par_func(self):
         #transform par name and value into a local var
-        _par_values= [None]*len(self._master_pars)
-        for ID, _user_par_ in enumerate(self._master_pars):
-            _par_values[ID] = _user_par_.val
-            #print('==> _eval_par_func',_user_par_.name,_par_values[ID])
-            exec(_user_par_.name + '=_par_values[ID]')
-        res = eval(self._depending_par_expr)
+        if type(self._depending_par_expr) == str:
+            _par_values= [None]*len(self._master_pars)
+            for ID, _user_par_ in enumerate(self._master_pars):
+                _par_values[ID] = _user_par_.val
+                #print('==> _eval_par_func',_user_par_.name,_par_values[ID])
+                exec(_user_par_.name + '=_par_values[ID]')
+            res = eval(self._depending_par_expr)
+        elif callable(self._depending_par_expr) is True:
+            _par_values={}
+            for ID, _user_par_ in enumerate(self._master_pars):
+                _par_values[_user_par_.name] = _user_par_.val
+            res=self._depending_par_expr(**_par_values)
 
         if self.islog is True:
             res=np.log10(res)
 
-        return eval(self.par_expr)
+        return res
+        #return eval(self.par_expr)
 
 
     def set(self, *args, skip_dep_par_warning=False, **keywords):

@@ -369,7 +369,7 @@ struct blob {
     
 
     //Const
-    int do_EC_Disk,do_EC_BLR,do_EC_DT,do_EC_Star,do_EC_CMB,EC_stat;
+    int do_EC_Disk,do_EC_BLR,do_EC_DT,do_EC_Star,do_EC_CMB,EC_stat,EC_stat_orig;
     int do_Disk,do_DT,do_Star;
     double nu_planck_min_factor;
     double nu_planck_max_factor;
@@ -385,6 +385,11 @@ struct blob {
 
     //dist BLOB/DISK or STAR
     double R_H;
+    double R_H_orig;
+    double EC_factor;
+    double R_H_scale_factor;
+    double R_ext_factor;
+    double EC_theta_lim;
 
     //--- STAR
     //-PARAMTERS
@@ -747,6 +752,7 @@ struct temp_ev{
 	int do_Sync_cooling;
     int do_Compton_cooling;
     int do_Expansion;
+    int do_Adiabatic_cooling;
     //double Q_scaling_factor;
 
     double t_unit_rad, t_unit_acc; //unit time in light crossing time
@@ -1210,6 +1216,9 @@ void spettro_compton(int num_file, struct blob *);
 /********************* FUNZIONI EXTERNAL COMPOTON************************************/
 void spectra_External_Fields(int Num_file, struct blob *pt_d);
 void spettro_EC(int num_file, struct blob *);
+
+void set_EC_stat_pre(struct blob *pt, double R_lim);
+void set_EC_stat_post(struct blob *pt);
 
 /***  DISK PLANCK FUNCTIONS  *********/
 double eval_T_disk(struct blob *pt, double R);

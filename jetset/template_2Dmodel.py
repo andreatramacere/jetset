@@ -127,9 +127,9 @@ class TemplateTable2D(Model):
         if self._log_log_interp is True:
             x=np.log10(x)
             y=np.log10(y)
-
+             
         model = self.interp_func(x,y)
-        #print('-->',x,y,model)
+        #
         model[model<self._zero]=self._zero
 
         if self._log_log_interp is True:

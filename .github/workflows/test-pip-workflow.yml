@@ -1,4 +1,4 @@
-name: pip build-test-release
+name: pip test
 
 on:
   workflow_dispatch:
@@ -128,53 +128,3 @@ jobs:
           echo $(running tests!)
           pytest --pyargs jetset.tests.test_functions::TestFull
 
-      - name: 'set pkg version'
-        run: |
-          echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
-
-      - name: 'echo pkg version'
-        run: |
-          echo "PKG_VERSION=${{env.PKG_VERSION}}"
-
-      #- name: 'upload .whl'
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-pip-binary.tar.gz
-      #    path: dist/*.whl
-
-      #- name: 'upload sdist'
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-src.tar.gz
-      #    path: dist/*.tar.gz
-
-      - name: 'prepare asset pip'
-        run: |
-          mv dist pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}
-          tar -cvf pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}.tar ./pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}/*.whl
-
-      - name: 'prepare asset src'
-        run: |
-          mv pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
-          tar -cvf pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
-
-      - name: 'Upload Binary Release Asset'
-        uses: softprops/action-gh-release@v1
-        with:
-          name: Release  ${{ github.event.inputs.tags }}
-          tag_name: ${{ github.event.inputs.tags }}
-          files: |
-            pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}.tar
-        env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 'Upload  Src Release Asset'
-        uses: softprops/action-gh-release@v1
-        if: matrix.python-version == 3.7
-        with:
-          name: Release  ${{ github.event.inputs.tags }}
-          tag_name: ${{ github.event.inputs.tags }}
-          files: |
-              pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

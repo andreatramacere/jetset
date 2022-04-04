@@ -84,7 +84,7 @@ double Cooling(double x,struct temp_ev *pt, struct blob *pt_spec){
 			//printf('ciccio c  \n');
 			cooling+=compton_cooling(pt_spec,pt,x+1);
 		}
-		if(pt->do_Expansion && pt->t>pt->t_jet_exp){
+		if(pt->do_Expansion>0 && pt->t>pt->t_jet_exp && pt->do_Adiabatic_cooling>0){
 			cooling+=(x+1)/(Adiabatic_Cooling_time(pt, pt_spec,pt->R_jet_t));
 		}
 	}
