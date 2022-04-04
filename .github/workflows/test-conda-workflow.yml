@@ -6,16 +6,12 @@ on:
       git-ref:
         description: Git Ref (Optional)
         required: false
-      tags:
-        description: tag
-        required: false
       skip_test:
         description: skip test
         required: false
 
 jobs:
-  create_release:
-    if: github.event.inputs.tags != null
+  clone:
     runs-on: ubuntu-latest
     steps:
     - name: 'Clone Repository (Latest)'
@@ -27,20 +23,9 @@ jobs:
       with:
         ref: ${{ github.event.inputs.git-ref }}
 
-    - name: 'Create release'
-      if: github.event.inputs.tags != null
-      uses: softprops/action-gh-release@v1
-      id: create_release
-      #if: startsWith(github.ref, 'refs/tags/')
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        name: Release  ${{ github.event.inputs.tags }}
-        tag_name: ${{ github.event.inputs.tags }}
-
 
   build_conda:
-    needs: [ create_release ]
+    needs: [clone]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -103,7 +88,8 @@ jobs:
         run: |
           conda config --set anaconda_upload no
           conda build purge
-          conda build . -c astropy -c conda-forge --output > ./CONDABUILDJETSET.txt
+          conda build .  -c defaults -c astropy -c conda-forge
+          conda build .  --output > ./CONDABUILDJETSET.txt
 
       - name: 'set env CONDABUILDJETSET'
         working-directory: .github/conda-pipeline/github/
