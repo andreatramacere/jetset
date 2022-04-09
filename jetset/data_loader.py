@@ -408,9 +408,12 @@ class ObsData(object):
 
     @staticmethod
     def load(file_name,):
-        return pickle.load(open(file_name, "rb"))
+        _obj=pickle.load(open(file_name, "rb"))
+        _obj.data.sort('nu_data')
+        return _obj
 
     def save(self, file_name):
+        self.data.sort('nu_data')
         pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
 
@@ -996,7 +999,7 @@ class ObsData(object):
         #set original units
         for c in self.data.colnames:
             if self.data[c].unit is not None:
-                self.data_reb[c] = self.data_reb[c].value*self.data[c].unit
+                self.data_reb[c] = self.data_reb[c]*self.data[c].unit
 
         self.data=self.data_reb
         

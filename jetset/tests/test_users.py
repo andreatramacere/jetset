@@ -1,6 +1,8 @@
 import sys
 import pytest
-from .test_functions import test_short
+from .test_composite_model import TestCompositeModel
+from .test_jet_model import TestJets
+from .test_depending_parameters import TestDependingParameters
 
 @pytest.fixture
 def plot():
@@ -8,6 +10,8 @@ def plot():
    return input
 
 
-@pytest.mark.users
-def test_users():
-    test_short(plot=False)
+def test(plot):
+   for TestClass in [TestJets,TestDependingParameters,TestCompositeModel]:
+      t=TestClass()
+      t.test_all(plot=plot)
+   
