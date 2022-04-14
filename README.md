@@ -64,7 +64,7 @@ run the notebook on binder:
 
 - run the test
 ```bash
-pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
+pytest --disable-warnings --pyargs jetset.tests.test_users::test
  ```  
 
 **run all the examples outside of the installation dir**
