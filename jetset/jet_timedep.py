@@ -534,13 +534,14 @@ class TimeEvolvingRegion(object):
         delay_r = R - delay_t * c
         weight_array = self._lc_weight(delay_r, R, delta_R)
         lc_out = np.zeros(lc.shape)
+        t_out=np.zeros(lc.shape)
         for ID, lc_in in enumerate(lc):
             t_interp = np.linspace(t[ID] - 2 * R / c, t[ID], n_slices)
             m = t_interp > t[0]
             lc_interp = np.interp(t_interp[m], t, lc, left=0, right=0)
             lc_out[ID] = np.sum(lc_interp * weight_array[m])
-
-        return lc_out,t_itnterp
+            t_out[ID]=t[ID]
+        return lc_out,t_out
 
 
 class JetTimeEvol(object):
