@@ -51,7 +51,7 @@ def GammapyJetsetModelFactory(jetmodel,clone=True):
             if energy is None:
                 el1=np.log10( self._jetset_model.nu_min)
                 el2=np.log10( self._jetset_model.nu_max)
-                energy=(np.logspace(el1,el2,self._jetset_model.nu_grid_size)*u.Hz).to('eV',equivalencies=u.spectral())
+                energy=(np.logspace(el1,el2,self._jetset_model.nu_size)*u.Hz).to('eV',equivalencies=u.spectral())
             
             nu = energy.to("Hz", equivalencies=u.spectral())
 

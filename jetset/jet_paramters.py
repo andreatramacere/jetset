@@ -76,7 +76,7 @@ class JetParameter(ModelParameter):
                               'region_size',
                               'radius_expansion_index',
                               'region_position',
-                              'jet_base_radius',
+                              'beta_expansion',
                               'jet_base_height',
                               'electron_energy',
                               'LE_spectral_slope',

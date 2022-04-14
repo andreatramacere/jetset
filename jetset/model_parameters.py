@@ -358,14 +358,14 @@ class ModelParameter(object):
         if type(self._depending_par_expr) == str:
             _par_values= [None]*len(self._master_pars)
             for ID, _user_par_ in enumerate(self._master_pars):
-                _par_values[ID] = _user_par_.val
+                _par_values[ID] = _user_par_.val_lin
                 #print('==> _eval_par_func',_user_par_.name,_par_values[ID])
                 exec(_user_par_.name + '=_par_values[ID]')
             res = eval(self._depending_par_expr)
         elif callable(self._depending_par_expr) is True:
             _par_values={}
             for ID, _user_par_ in enumerate(self._master_pars):
-                _par_values[_user_par_.name] = _user_par_.val
+                _par_values[_user_par_.name] = _user_par_.val_lin
             res=self._depending_par_expr(**_par_values)
 
         if self.islog is True:

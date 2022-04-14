@@ -382,22 +382,28 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         // Evolve ACC Region
         if (do_injection>0){
             
-            time_evolve_emitters(pt_spec_acc,pt_ev,1,t,T,E_SIZE,E_N_SIZE,E_acc,pt_ev->T_esc_acc,N_escaped,N_acc,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
-            //--------------UPDATE ACC ENERGY--------------------
-            if (pt_ev->T_acc_profile[T]>0 && E_acc<pt_ev->E_acc_max){
-                E_acc_post=eval_E_acc(pt_ev->gamma, N_acc, E_SIZE, Vol_acc);
-                delta_E_acc=E_acc_post-E_acc_pre;
+            if (do_injection==1){
+                time_evolve_emitters(pt_spec_acc,pt_ev,1,t,T,E_SIZE,E_N_SIZE,E_acc,pt_ev->T_esc_acc,N_escaped,N_acc,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
+                //--------------UPDATE ACC ENERGY--------------------
+                if (pt_ev->T_acc_profile[T]>0 && E_acc<pt_ev->E_acc_max){
+                    E_acc_post=eval_E_acc(pt_ev->gamma, N_acc, E_SIZE, Vol_acc);
+                    delta_E_acc=E_acc_post-E_acc_pre;
+                }else{
+                    delta_E_acc=0;
+                    E_acc_post=0;
+                }
+                E_acc+=delta_E_acc;
+                //--- Inj from ACC To Radiative
+                for (TMP = 0; TMP < E_SIZE; TMP++) { 
+                    N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]))*Vol_acc/pt_spec_rad->Vol_sphere;
+                }
             }else{
-                delta_E_acc=0;
-                E_acc_post=0;
+                for (TMP = 0; TMP < E_SIZE; TMP++) { 
+                    N_escaped[TMP] = pt_ev->deltat * pt_ev->Q_inj[TMP] * pt_ev->T_inj_profile[T]*pt_spec_acc->Vol_sphere/pt_spec_rad->Vol_sphere;
+                    N_acc[TMP]=N_escaped[TMP];
+                }
             }
-            E_acc+=delta_E_acc;
-            //--- Inj from ACC To Radiative
-            for (TMP = 0; TMP < E_SIZE; TMP++) { 
-                N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]))*Vol_acc/pt_spec_rad->Vol_sphere;
-                //N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]))*Vol_acc/Vol_rad;
-            }
-         }
+         }  
         
         
         

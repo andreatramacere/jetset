@@ -25,6 +25,7 @@ import numpy as np
 import  os
 from astropy.constants import m_e,m_p,c
 import matplotlib.ticker as ticker
+import warnings
 
 from collections import namedtuple
 
@@ -51,6 +52,15 @@ def set_mpl():
     mpl.rcParams['legend.fontsize'] = 'medium'
     mpl.rcParams['figure.titlesize'] = 'medium'
 
+
+
+def _rescale( x_min=None, x_max=None, y_min=None, y_max=None):
+        warnings.warn('`The rescale method has been removed and has been replaced by the setlim method')
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("!The rescale method as been replaced by the setlim method            !")
+        print("!please notice that now jetset uses log axis rather than loglog plots!")
+        print("!so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)!")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
 class  PlotSED (object):
     def __init__(self,
@@ -274,11 +284,7 @@ class  PlotSED (object):
 
     
     def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print("The rescale method as been replaced by the setlim method")
-        print("please notice that now jetset uses log axis rather than loglog plots")
-        print("so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)")
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        _rescale(x_min=x_min,x_max=x_max,y_min=y_min,y_max=y_max)
 
     def setlim(self, x_min=None, x_max=None, y_min=None, y_max=None):
         self.sedplot.set_xlim(x_min, x_max)
@@ -613,17 +619,14 @@ class  PlotSED (object):
 
 
 
+
 class BasePlot(object):
 
     def __init__(self,figsize=(8,6),dpi=100):
         self.fig, self.ax = plt.subplots(figsize=figsize,dpi=dpi)
 
     def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print("The rescale method as been replaced by the setlim method")
-        print("please notice that now jetset uses log axis rather than loglog plots")
-        print("so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)")
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        _rescale(x_min=x_min,x_max=x_max,y_min=y_min,y_max=y_max)
 
     def setlim(self, x_min=None, x_max=None, y_min=None, y_max=None):
         self.ax.set_xlim(x_min, x_max)
@@ -870,7 +873,7 @@ class  PlotTempEvEmitters (PlotPdistr):
         #self._plot(x, y, c='blue', lw=2,label='Stop sample')
         self._set_xy_label(energy_name, energy_units,pow=pow)
         #TODO move to plot inj if iny is used in region
-        if temp_ev.Q_inj is not None and region._region_type == 'acc':
+        if temp_ev.Q_inj is not None and (region._region_type == 'acc' or temp_ev._only_radiation is True):
             y = temp_ev.Q_inj.n_gamma_e * temp_ev.delta_t
             x = temp_ev.Q_inj.gamma_e
             if plot_Q_inj is True:
@@ -933,11 +936,7 @@ class  PlotTempEvDiagram (object):
         self.fig.tight_layout()
 
     def rescale(self, x_min=None, x_max=None, y_min=None, y_max=None):
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        print("The rescale method as been replaced by the setlim method")
-        print("please notice that now jetset uses log axis rather than loglog plots")
-        print("so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)")
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        _rescale(x_min=x_min,x_max=x_max,y_min=y_min,y_max=y_max)
 
     def setlim(self, x_min=None, x_max=None, y_min=None, y_max=None):
         self.ax.set_xlim(x_min, x_max)

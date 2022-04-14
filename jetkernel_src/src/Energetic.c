@@ -431,7 +431,7 @@ struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
     }
     
     if (strcmp(pt->PARTICLE, "protons") == 0) {
-        energetic.U_p_cold = pt->NH_pp  * MPC2;
+        energetic.U_p_target = pt->NH_pp  * MPC2;
 
         energetic.U_p = pt->U_p;
         energetic.L_pp_gamma_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_pp_gamma, pt->nuFnu_pp_gamma_obs, pt->NU_INT_STOP_PP_GAMMA);
@@ -441,7 +441,7 @@ struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
     }
     else
     {
-        energetic.U_p_cold = pt->N_e * 0.1 * MPC2;
+        energetic.U_p_cold = pt->N * 0.1 * MPC2;
         energetic.U_p = 0.;
         energetic.U_p_target = 0.;
         energetic.L_pp_gamma_rf=0;

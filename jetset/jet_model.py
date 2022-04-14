@@ -1183,7 +1183,7 @@ class JetBase(Model):
         print ('')
         print ('SED info:')
         print (' nu grid size jetkernel: %d' % self.nu_grid_size)
-        print (' nu grid size: %d' % self.nu_size)
+        print (' nu size: %d' % self.nu_size)
         print (' nu mix (Hz): %e' % self._get_nu_min_grid())
         print (' nu max (Hz): %e' % self._get_nu_max_grid())
         print('')
@@ -1329,7 +1329,7 @@ class JetBase(Model):
 
 
     def energetic_report(self,verbose=True):
-        self._build_energetic_report()
+        self._build_energetic_report()            
         if verbose is True:
             _show_table(self.energetic_report_table)
 
@@ -1367,7 +1367,18 @@ class JetBase(Model):
                     self.energetic_dict[_n]=getattr(_energetic, _n)
 
                     _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
-           
+
+
+            if self.emitters_distribution.emitters_type=='electrons':
+                _i=_par_array.par_table['name']=='U_p_target'
+                _par_array.par_table.remove_rows(_i)
+                _=self.energetic_dict.pop('U_p_target')
+
+            if self.emitters_distribution.emitters_type=='protons':
+                _i=_par_array.par_table['name']=='U_p_cold'
+                _par_array.par_table.remove_rows(_i)
+                _=self.energetic_dict.pop('U_p_cold')
+
             self.energetic_report_table = _par_array.par_table
             self.energetic_report_table.remove_columns(['log','frozen','phys. bound. min','phys. bound. max'])
             self.energetic_report_table.rename_column('par type','type')
