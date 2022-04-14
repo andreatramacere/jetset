@@ -520,26 +520,26 @@ class TimeEvolvingRegion(object):
 
     def eval_cross_time(self, t, lc, n_slices=1000, R=None):
         if R is None:
-            #TODO, here I should use radius at t=time
-            #in the expansion case, but I need to figure out
-            #better how this impact the time convolution
             R = np.zeros(np.size(t))
             for ID,_t in enumerate(t):
                 R[ID] = self.temp_ev._get_R_rad_sphere(t[ID])
 
         c = const.c.cgs.value
-
+        delay_max=2 * R / c
         delta_R = (2 * R) / n_slices
-        delay_t = np.linspace(0, 2 * R / c, n_slices)
-        delay_r = R - delay_t * c
-        weight_array = self._lc_weight(delay_r, R, delta_R)
+        delay_t_delay = np.linspace(0, delay_max, n_slices)
+        delay_r = R - delay_t_delay * c
+        weight_array = self._lc_weight(delay_r, R, delta_R)       
         lc_out = np.zeros(lc.shape)
-        t_out=np.zeros(lc.shape)
-        for ID, lc_in in enumerate(lc):
-            t_interp = np.linspace(t[ID] - 2 * R / c, t[ID], n_slices)
-            m = t_interp > t[0]
-            lc_interp = np.interp(t_interp[m], t, lc, left=0, right=0)
-            lc_out[ID] = np.sum(lc_interp * weight_array[m])
+        t_out=np.zeros(t.shape)  
+        for ID, lc_in in enumerate(lc_out):
+            t_interp = np.linspace(t[ID] -delay_max[ID], t[ID], n_slices)
+            m = np.atleast_1d( t_interp > t[0])            
+            if m.sum()==0:
+                lc_out[ID]=0
+            else:
+                lc_interp = np.interp(t_interp[m], t, lc, left=0, right=0)
+                lc_out[ID] = np.sum(lc_interp * weight_array[m,ID])
             t_out[ID]=t[ID]
         return lc_out,t_out
 
