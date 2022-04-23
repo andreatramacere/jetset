@@ -29,12 +29,6 @@ This is the class to use for model fitting and in general in Jetset
     import jetset
     print('tested on jetset',jetset.__version__)
 
-
-.. parsed-literal::
-
-    tested on jetset 1.2.0rc4
-
-
 .. code:: ipython3
 
     import warnings
@@ -58,7 +52,6 @@ once that is clear the data format. The easiest way to understand the
 data format is to build an empty table to have a look at the structure
 of the table:
 
-
 .. code:: ipython3
 
     from jetset.data_loader import Data
@@ -76,7 +69,7 @@ we can easily access the astropy table
 .. raw:: html
 
     <i>Table length=10</i>
-    <table id="table140316093220272" class="table-striped table-bordered table-condensed">
+    <table id="table140538418063536" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -205,7 +198,7 @@ As you can see there are three 3 files. We use in this example the file for Mrk 
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table140316051741472" class="table-striped table-bordered table-condensed">
+    <table id="table140538442366640" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>str13</th></tr></thead>
@@ -298,7 +291,7 @@ the data can be loaded from the saved table
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table140316127455168" class="table-striped table-bordered table-condensed">
+    <table id="table140538418063152" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>str13</th></tr></thead>
@@ -372,7 +365,7 @@ of course this method applies if you have a generic 2-dim numpy array.
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table140316093008960" class="table-striped table-bordered table-condensed">
+    <table id="table140538442408240" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -441,7 +434,7 @@ Assume that we downloaded the data for Mrk421, in observed fluxes and linear sca
 .. raw:: html
 
     <i>Table length=3550</i>
-    <table id="table140316048442464" class="table-striped table-bordered table-condensed">
+    <table id="table140538417879792" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -505,7 +498,7 @@ and after elimination of duplicated entries, and upper limits
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table140316127455264" class="table-striped table-bordered table-condensed">
+    <table id="table140538444373344" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu_data</th><th>dnu_data</th><th>nuFnu_data</th><th>dnuFnu_data</th><th>nu_data_log</th><th>dnu_data_log</th><th>nuFnu_data_log</th><th>dnuFnu_data_log</th><th>dnuFnu_fake</th><th>dnuFnu_fake_log</th><th>UL</th><th>zero_error</th><th>T_start</th><th>T_stop</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th></th><th></th><th></th><th>MJD</th><th>MJD</th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bool</th><th>float64</th><th>float64</th><th>str13</th></tr></thead>
@@ -560,7 +553,7 @@ We can now plot our SED using the :class:`BlazarSEDFit.plot_sedfit.Plot` class
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_61_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_60_0.png
 
 
 or you can create the object to plot on the fly in this way
@@ -572,7 +565,7 @@ or you can create the object to plot on the fly in this way
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_63_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_62_0.png
 
 
 you can rescale your plot
@@ -580,11 +573,20 @@ you can rescale your plot
 .. code:: ipython3
 
     myPlot=sed_data.plot_sed()
-    myPlot.rescale(x_min=7,x_max=28,y_min=-15,y_max=-9)
+    myPlot.rescale(x_min=1E7,x_max=1E28,y_min=1E-15,y_max=1E-9)
+
+
+.. parsed-literal::
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    The rescale method as been replaced by the setlim method
+    please notice that now jetset uses log axis rather than loglog plots
+    so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_65_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_64_1.png
 
 
 plotting in the ``src`` restframe
@@ -592,11 +594,20 @@ plotting in the ``src`` restframe
 .. code:: ipython3
 
     myPlot=sed_data.plot_sed(frame='src')
-    myPlot.rescale(x_min=7,x_max=28,y_min=40,y_max=46)
+    myPlot.rescale(x_min=1E7,x_max=1E28,y_min=1E40,y_max=1E46)
+
+
+.. parsed-literal::
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    The rescale method as been replaced by the setlim method
+    please notice that now jetset uses log axis rather than loglog plots
+    so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_67_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_66_1.png
 
 
 **to have interactive plot in jupyter**
@@ -630,9 +641,9 @@ this is not a problem for the fit process, you might want to rebin
     %matplotlib inline
     
     myPlot=sed_data.plot_sed()
-    myPlot.rescale(y_min=-15)
     sed_data.group_data(bin_width=0.2)
     myPlot.add_data_plot(sed_data,label='rebinned')
+    myPlot.rescale(x_min=1E7,x_max=1E28,y_min=1E-15,y_max=1E-9)
 
 
 .. parsed-literal::
@@ -644,10 +655,15 @@ this is not a problem for the fit process, you might want to rebin
     ---> bin_widht= 0.2
     ================================================================================
     
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    The rescale method as been replaced by the setlim method
+    please notice that now jetset uses log axis rather than loglog plots
+    so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_71_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_70_1.png
 
 
 Handling errors and systematics
@@ -670,11 +686,20 @@ For these reasons the package offer the possibility to add systematics
 
     sed_data.add_systematics(0.2,[10.**6,10.**29])
     myPlot=sed_data.plot_sed()
-    myPlot.rescale(y_min=-15)
+    myPlot.rescale(x_min=1E7,x_max=1E28,y_min=1E-15,y_max=1E-9)
+
+
+.. parsed-literal::
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    The rescale method as been replaced by the setlim method
+    please notice that now jetset uses log axis rather than loglog plots
+    so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_73_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_72_1.png
 
 
 with this command we add 20% systematics for data between :math:`10^{6}<\nu<10^{29}` Hz
@@ -708,7 +733,7 @@ we use ``show_dataset=True`` to have the legend of all the datasets
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_79_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_78_0.png
 
 
 .. code:: ipython3
@@ -754,7 +779,7 @@ method. Please not with ``exclude=True`` we exclude dataset in
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_82_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_81_1.png
 
 
 we can pass more datasets, comma separated
@@ -782,7 +807,7 @@ we can pass more datasets, comma separated
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_84_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_83_1.png
 
 
 we can also use ``filter_data_set`` to exclude *only* the datasets in
@@ -812,7 +837,7 @@ we can also use ``filter_data_set`` to exclude *only* the datasets in
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_86_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_85_1.png
 
 
 we can revert ``sed_data`` to the original state with the
@@ -838,7 +863,7 @@ we can revert ``sed_data`` to the original state with the
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_89_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_88_1.png
 
 
 Saving sed_data and loading
@@ -856,10 +881,11 @@ you can save and relaod you sed_data
 
 .. code:: ipython3
 
-    p=sed_data.plot_sed()
+    p=sed_data.plot_sed(show_dataset=True)
 
 
 
-.. image:: Jet_example_load_data_files/Jet_example_load_data_94_0.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_93_0.png
+
 
 

@@ -3,6 +3,9 @@
 Example to use the sherpa plugin with the sherpa interface
 ==========================================================
 
+In this tutorial we show how to import a jetset model into Sherpa, and
+finally we perform a model fitting with Sherpa.
+
 .. code:: ipython3
 
     import warnings
@@ -70,7 +73,7 @@ see the :ref:`data_format` user guide for further information about loading data
 
 
 
-.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_7_1.png
+.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_8_1.png
 
 
 .. code:: ipython3
@@ -91,7 +94,7 @@ spectral indices
     my_shape=SEDShape(sed_data)
     my_shape.eval_indices(minimizer='lsb',silent=True)
     p=my_shape.plot_indices()
-    p.rescale(y_min=-15,y_max=-6)
+    p.setlim(y_min=1E-15,y_max=1E-6)
 
 
 .. parsed-literal::
@@ -104,7 +107,7 @@ spectral indices
 
 
 
-.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_12_1.png
+.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_13_1.png
 
 
 sed shaper
@@ -136,14 +139,14 @@ sed shaper
 .. raw:: html
 
     <i>Table length=6</i>
-    <table id="table140682856225232-591923" class="table-striped table-bordered table-condensed">
+    <table id="table140505636040032-757453" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <tr><td>LogCubic</td><td>b</td><td>-6.411144e-02</td><td>-6.411144e-02</td><td>7.838965e-03</td><td>--</td><td>-4.778764e-02</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>c</td><td>-1.751721e-03</td><td>-1.751721e-03</td><td>1.127030e-03</td><td>--</td><td>3.576201e-03</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Ep</td><td>1.703747e+01</td><td>1.703747e+01</td><td>9.437354e-02</td><td>--</td><td>1.626870e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Sp</td><td>-1.030068e+01</td><td>-1.030068e+01</td><td>1.884114e-02</td><td>--</td><td>-1.025412e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
-    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.006557e+01</td><td>-1.006557e+01</td><td>5.462528e-02</td><td>--</td><td>-1.025412e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
-    <tr><td>host_galaxy</td><td>nu_scale</td><td>1.730764e-02</td><td>1.730764e-02</td><td>3.694887e-03</td><td>--</td><td>0.000000e+00</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>b</td><td>-6.411143e-02</td><td>-6.411143e-02</td><td>7.838958e-03</td><td>--</td><td>-4.778764e-02</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>c</td><td>-1.751705e-03</td><td>-1.751705e-03</td><td>1.127020e-03</td><td>--</td><td>3.576201e-03</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Ep</td><td>1.703747e+01</td><td>1.703747e+01</td><td>9.437333e-02</td><td>--</td><td>1.626870e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Sp</td><td>-1.030068e+01</td><td>-1.030068e+01</td><td>1.884116e-02</td><td>--</td><td>-1.025412e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.006556e+01</td><td>-1.006556e+01</td><td>5.462500e-02</td><td>--</td><td>-1.025412e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
+    <tr><td>host_galaxy</td><td>nu_scale</td><td>1.730750e-02</td><td>1.730750e-02</td><td>3.694838e-03</td><td>--</td><td>0.000000e+00</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -167,14 +170,14 @@ sed shaper
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140682856225232-591923').dataTable()");
+        console.log("$('#table140505636040032-757453').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140682856225232-591923').dataTable({
+        $('#table140505636040032-757453').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -188,7 +191,7 @@ sed shaper
 
 .. parsed-literal::
 
-    ---> sync       nu_p=+1.703747e+01 (err=+9.437354e-02)  nuFnu_p=-1.030068e+01 (err=+1.884114e-02) curv.=-6.411144e-02 (err=+7.838965e-03)
+    ---> sync       nu_p=+1.703747e+01 (err=+9.437333e-02)  nuFnu_p=-1.030068e+01 (err=+1.884116e-02) curv.=-6.411143e-02 (err=+7.838958e-03)
     ================================================================================
     
 
@@ -197,7 +200,7 @@ sed shaper
 
     my_shape.IC_fit(fit_range=[23.,29.],minimizer='minuit',silent=True)
     p=my_shape.plot_shape_fit()
-    p.rescale(y_min=-15)
+    p.setlim(y_min=1E-15)
 
 
 .. parsed-literal::
@@ -215,7 +218,7 @@ sed shaper
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140682860988880-786788" class="table-striped table-bordered table-condensed">
+    <table id="table140505640523136-131413" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-1.565399e-01</td><td>-1.565399e-01</td><td>2.551779e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-4.351917e-02</td><td>-4.351917e-02</td><td>2.032066e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -244,14 +247,14 @@ sed shaper
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140682860988880-786788').dataTable()");
+        console.log("$('#table140505640523136-131413').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140682860988880-786788').dataTable({
+        $('#table140505640523136-131413').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -271,7 +274,7 @@ sed shaper
 
 
 
-.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_15_3.png
+.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_16_3.png
 
 
 Model constraining
@@ -309,19 +312,19 @@ ore least-square bound, as shown below
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140682861249536-286550" class="table-striped table-bordered table-condensed">
+    <table id="table140505122778896-752088" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.056955e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.056958e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.360000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.703917e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.310708e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>7.087137e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>7.087120e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.045836e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>3.205571e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -345,14 +348,14 @@ ore least-square bound, as shown below
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140682861249536-286550').dataTable()");
+        console.log("$('#table140505122778896-752088').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140682861249536-286550').dataTable({
+        $('#table140505122778896-752088').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -375,15 +378,17 @@ ore least-square bound, as shown below
 
     pl=prefit_jet.plot_model(sed_data=sed_data)
     pl.add_model_residual_plot(prefit_jet,sed_data)
-    pl.rescale(y_min=-15,x_min=7,x_max=29)
+    pl.setlim(y_min=1E-15,x_min=1E7,x_max=1E29)
 
 
 
-.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_19_0.png
+.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_20_0.png
 
 
-Model fitting with Sherpa
--------------------------
+Model fitting with using a Sherpa model
+---------------------------------------
+
+we show now, how to import a jetset model into a Sherpa model
 
 .. code:: ipython3
 
@@ -406,15 +411,15 @@ Model fitting with Sherpa
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140682858833760-535674" class="table-striped table-bordered table-condensed">
+    <table id="table140505627276144-149622" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.703917e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.310708e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>7.087137e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.045843e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>7.087120e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.045836e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.248787e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>3.205572e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.056955e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>3.205571e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.056958e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.050000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
@@ -442,14 +447,14 @@ Model fitting with Sherpa
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140682858833760-535674').dataTable()");
+        console.log("$('#table140505627276144-149622').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140682858833760-535674').dataTable({
+        $('#table140505627276144-149622').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -460,6 +465,9 @@ Model fitting with Sherpa
     </script>
 
 
+
+The following instructions create a Sherpa model for each of the
+existing jetset models.
 
 .. code:: ipython3
 
@@ -473,6 +481,7 @@ Model fitting with Sherpa
 .. parsed-literal::
 
     jetset model name R renamed to  R_sh due to sherpa internal naming convention
+
 
 
 .. code:: ipython3
@@ -576,7 +585,7 @@ Model fitting with Sherpa
         font-size: large;
         padding: 1em;
     }
-    </style><div class="sherpa-text-fallback">&lt;BinaryOpModel model instance &#x27;((jet_leptonic + host_galaxy) * Franceschini_2008)&#x27;&gt;</div><div hidden class="sherpa"><details open><summary>Model</summary><table class="model"><caption>Expression: (jet_leptonic + host_galaxy) * Franceschini_2008</caption><thead><tr><th>Component</th><th>Parameter</th><th>Thawed</th><th>Value</th><th>Min</th><th>Max</th><th>Units</th></tr></thead><tbody><tr><th class="model-odd" scope="rowgroup" rowspan=11>jet_leptonic</th><td>gmin</td><td><input disabled type="checkbox" checked></input></td><td>470.39174855643597</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>gmax</td><td><input disabled type="checkbox" checked></input></td><td>2310708.197406515</td><td>1.0</td><td>1000000000000000.0</td><td>lorentz-factor*</td></tr><tr><td>N</td><td><input disabled type="checkbox" checked></input></td><td>7.087136892517435</td><td>0.0</td><td>MAX</td><td>1 / cm3</td></tr><tr><td>gamma0_log_parab</td><td><input disabled type="checkbox" checked></input></td><td>10458.433237258416</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>s</td><td><input disabled type="checkbox" checked></input></td><td>2.2487867709713574</td><td>-10.0</td><td>10.0</td><td></td></tr><tr><td>r</td><td><input disabled type="checkbox" checked></input></td><td>0.32055721323507314</td><td>-15.0</td><td>15.0</td><td></td></tr><tr><td>R_sh</td><td><input disabled type="checkbox" checked></input></td><td>1.0569554329483122e+16</td><td>1000.0</td><td>1e+30</td><td>cm</td></tr><tr><td>R_H</td><td><input disabled type="checkbox" checked></input></td><td>1e+17</td><td>0.0</td><td>MAX</td><td>cm</td></tr><tr><td>B</td><td><input disabled type="checkbox" checked></input></td><td>0.0505</td><td>0.0</td><td>MAX</td><td>gauss</td></tr><tr><td>beam_obj</td><td><input disabled type="checkbox" checked></input></td><td>25.0</td><td>0.0001</td><td>MAX</td><td>lorentz-factor*</td></tr><tr><td>z_cosm</td><td><input disabled type="checkbox" checked></input></td><td>0.0336</td><td>0.0</td><td>MAX</td><td></td></tr><tr class="block"><th class="model-even" scope="rowgroup" rowspan=2>host_galaxy</th><td>nuFnu_p_host</td><td><input disabled type="checkbox" checked></input></td><td>-10.065573840795157</td><td>-12.25412262810351</td><td>-8.25412262810351</td><td>erg / (cm2 s)</td></tr><tr><td>nu_scale</td><td><input disabled type="checkbox" checked></input></td><td>0.01730764400081941</td><td>-0.5</td><td>0.5</td><td>Hz</td></tr><tr class="block"><th class="model-odd" scope="rowgroup" rowspan=1>Franceschini_2008</th><td>z_cosm</td><td><input disabled type="checkbox" checked></input></td><td>1.0</td><td>0.0</td><td>MAX</td><td></td></tr></tbody></table></details></div>
+    </style><div class="sherpa-text-fallback">&lt;BinaryOpModel model instance &#x27;((jet_leptonic + host_galaxy) * Franceschini_2008)&#x27;&gt;</div><div hidden class="sherpa"><details open><summary>Model</summary><table class="model"><caption>Expression: (jet_leptonic + host_galaxy) * Franceschini_2008</caption><thead><tr><th>Component</th><th>Parameter</th><th>Thawed</th><th>Value</th><th>Min</th><th>Max</th><th>Units</th></tr></thead><tbody><tr><th class="model-odd" scope="rowgroup" rowspan=11>jet_leptonic</th><td>gmin</td><td><input disabled type="checkbox" checked></input></td><td>470.39174855643597</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>gmax</td><td><input disabled type="checkbox" checked></input></td><td>2310708.197406515</td><td>1.0</td><td>1000000000000000.0</td><td>lorentz-factor*</td></tr><tr><td>N</td><td><input disabled type="checkbox" checked></input></td><td>7.087120469822453</td><td>0.0</td><td>MAX</td><td>1 / cm3</td></tr><tr><td>gamma0_log_parab</td><td><input disabled type="checkbox" checked></input></td><td>10458.36315393129</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>s</td><td><input disabled type="checkbox" checked></input></td><td>2.2487867709713574</td><td>-10.0</td><td>10.0</td><td></td></tr><tr><td>r</td><td><input disabled type="checkbox" checked></input></td><td>0.320557142636666</td><td>-15.0</td><td>15.0</td><td></td></tr><tr><td>R_sh</td><td><input disabled type="checkbox" checked></input></td><td>1.0569580559768326e+16</td><td>1000.0</td><td>1e+30</td><td>cm</td></tr><tr><td>R_H</td><td><input disabled type="checkbox" checked></input></td><td>1e+17</td><td>0.0</td><td>MAX</td><td>cm</td></tr><tr><td>B</td><td><input disabled type="checkbox" checked></input></td><td>0.0505</td><td>0.0</td><td>MAX</td><td>gauss</td></tr><tr><td>beam_obj</td><td><input disabled type="checkbox" checked></input></td><td>25.0</td><td>0.0001</td><td>MAX</td><td>lorentz-factor*</td></tr><tr><td>z_cosm</td><td><input disabled type="checkbox" checked></input></td><td>0.0336</td><td>0.0</td><td>MAX</td><td></td></tr><tr class="block"><th class="model-even" scope="rowgroup" rowspan=2>host_galaxy</th><td>nuFnu_p_host</td><td><input disabled type="checkbox" checked></input></td><td>-10.065562059421486</td><td>-12.254122641095535</td><td>-8.254122641095535</td><td>erg / (cm2 s)</td></tr><tr><td>nu_scale</td><td><input disabled type="checkbox" checked></input></td><td>0.017307503006438463</td><td>-0.5</td><td>0.5</td><td>Hz</td></tr><tr class="block"><th class="model-odd" scope="rowgroup" rowspan=1>Franceschini_2008</th><td>z_cosm</td><td><input disabled type="checkbox" checked></input></td><td>1.0</td><td>0.0</td><td>MAX</td><td></td></tr></tbody></table></details></div>
 
 
 
@@ -681,7 +690,7 @@ Model fitting with Sherpa
         font-size: large;
         padding: 1em;
     }
-    </style><div class="sherpa-text-fallback">&lt;BinaryOpModel model instance &#x27;((jet_leptonic + host_galaxy) * Franceschini_2008)&#x27;&gt;</div><div hidden class="sherpa"><details open><summary>Model</summary><table class="model"><caption>Expression: (jet_leptonic + host_galaxy) * Franceschini_2008</caption><thead><tr><th>Component</th><th>Parameter</th><th>Thawed</th><th>Value</th><th>Min</th><th>Max</th><th>Units</th></tr></thead><tbody><tr><th class="model-odd" scope="rowgroup" rowspan=11>jet_leptonic</th><td>gmin</td><td><input disabled type="checkbox" checked></input></td><td>470.39174855643597</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>gmax</td><td><input disabled type="checkbox" checked></input></td><td>2310708.197406515</td><td>1.0</td><td>1000000000000000.0</td><td>lorentz-factor*</td></tr><tr><td>N</td><td><input disabled type="checkbox" checked></input></td><td>7.087136892517435</td><td>0.0</td><td>MAX</td><td>1 / cm3</td></tr><tr><td>gamma0_log_parab</td><td><input disabled type="checkbox" checked></input></td><td>10458.433237258416</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>s</td><td><input disabled type="checkbox" checked></input></td><td>2.2487867709713574</td><td>-10.0</td><td>10.0</td><td></td></tr><tr><td>r</td><td><input disabled type="checkbox" checked></input></td><td>0.32055721323507314</td><td>-15.0</td><td>15.0</td><td></td></tr><tr><td>R_sh</td><td><input disabled type="checkbox" checked></input></td><td>1.0569554329483122e+16</td><td>1000.0</td><td>1e+30</td><td>cm</td></tr><tr><td>R_H</td><td><input disabled type="checkbox" checked></input></td><td>1e+17</td><td>0.0</td><td>MAX</td><td>cm</td></tr><tr><td>B</td><td><input disabled type="checkbox" checked></input></td><td>0.0505</td><td>0.0</td><td>MAX</td><td>gauss</td></tr><tr><td>beam_obj</td><td><input disabled type="checkbox" checked></input></td><td>25.0</td><td>0.0001</td><td>MAX</td><td>lorentz-factor*</td></tr><tr><td>z_cosm</td><td><input disabled type="checkbox" checked></input></td><td>0.0336</td><td>0.0</td><td>MAX</td><td></td></tr><tr class="block"><th class="model-even" scope="rowgroup" rowspan=2>host_galaxy</th><td>nuFnu_p_host</td><td><input disabled type="checkbox" checked></input></td><td>-10.065573840795157</td><td>-12.25412262810351</td><td>-8.25412262810351</td><td>erg / (cm2 s)</td></tr><tr><td>nu_scale</td><td><input disabled type="checkbox" checked></input></td><td>0.01730764400081941</td><td>-0.5</td><td>0.5</td><td>Hz</td></tr><tr class="block"><th class="model-odd" scope="rowgroup" rowspan=1>Franceschini_2008</th><td>z_cosm</td><td>linked</td><td>0.0336</td><td colspan=2>&#8656; jet_leptonic.z_cosm</td><td></td></tr></tbody></table></details></div>
+    </style><div class="sherpa-text-fallback">&lt;BinaryOpModel model instance &#x27;((jet_leptonic + host_galaxy) * Franceschini_2008)&#x27;&gt;</div><div hidden class="sherpa"><details open><summary>Model</summary><table class="model"><caption>Expression: (jet_leptonic + host_galaxy) * Franceschini_2008</caption><thead><tr><th>Component</th><th>Parameter</th><th>Thawed</th><th>Value</th><th>Min</th><th>Max</th><th>Units</th></tr></thead><tbody><tr><th class="model-odd" scope="rowgroup" rowspan=11>jet_leptonic</th><td>gmin</td><td><input disabled type="checkbox" checked></input></td><td>470.39174855643597</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>gmax</td><td><input disabled type="checkbox" checked></input></td><td>2310708.197406515</td><td>1.0</td><td>1000000000000000.0</td><td>lorentz-factor*</td></tr><tr><td>N</td><td><input disabled type="checkbox" checked></input></td><td>7.087120469822453</td><td>0.0</td><td>MAX</td><td>1 / cm3</td></tr><tr><td>gamma0_log_parab</td><td><input disabled type="checkbox" checked></input></td><td>10458.36315393129</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>s</td><td><input disabled type="checkbox" checked></input></td><td>2.2487867709713574</td><td>-10.0</td><td>10.0</td><td></td></tr><tr><td>r</td><td><input disabled type="checkbox" checked></input></td><td>0.320557142636666</td><td>-15.0</td><td>15.0</td><td></td></tr><tr><td>R_sh</td><td><input disabled type="checkbox" checked></input></td><td>1.0569580559768326e+16</td><td>1000.0</td><td>1e+30</td><td>cm</td></tr><tr><td>R_H</td><td><input disabled type="checkbox" checked></input></td><td>1e+17</td><td>0.0</td><td>MAX</td><td>cm</td></tr><tr><td>B</td><td><input disabled type="checkbox" checked></input></td><td>0.0505</td><td>0.0</td><td>MAX</td><td>gauss</td></tr><tr><td>beam_obj</td><td><input disabled type="checkbox" checked></input></td><td>25.0</td><td>0.0001</td><td>MAX</td><td>lorentz-factor*</td></tr><tr><td>z_cosm</td><td><input disabled type="checkbox" checked></input></td><td>0.0336</td><td>0.0</td><td>MAX</td><td></td></tr><tr class="block"><th class="model-even" scope="rowgroup" rowspan=2>host_galaxy</th><td>nuFnu_p_host</td><td><input disabled type="checkbox" checked></input></td><td>-10.065562059421486</td><td>-12.254122641095535</td><td>-8.254122641095535</td><td>erg / (cm2 s)</td></tr><tr><td>nu_scale</td><td><input disabled type="checkbox" checked></input></td><td>0.017307503006438463</td><td>-0.5</td><td>0.5</td><td>Hz</td></tr><tr class="block"><th class="model-odd" scope="rowgroup" rowspan=1>Franceschini_2008</th><td>z_cosm</td><td>linked</td><td>0.0336</td><td colspan=2>&#8656; jet_leptonic.z_cosm</td><td></td></tr></tbody></table></details></div>
 
 
 
@@ -802,7 +811,7 @@ Model fitting with Sherpa
         font-size: large;
         padding: 1em;
     }
-    </style><div class="sherpa-text-fallback">&lt;BinaryOpModel model instance &#x27;((jet_leptonic + host_galaxy) * Franceschini_2008)&#x27;&gt;</div><div hidden class="sherpa"><details open><summary>Model</summary><table class="model"><caption>Expression: (jet_leptonic + host_galaxy) * Franceschini_2008</caption><thead><tr><th>Component</th><th>Parameter</th><th>Thawed</th><th>Value</th><th>Min</th><th>Max</th><th>Units</th></tr></thead><tbody><tr><th class="model-odd" scope="rowgroup" rowspan=11>jet_leptonic</th><td>gmin</td><td><input disabled type="checkbox" checked></input></td><td>470.39174855643597</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>gmax</td><td><input disabled type="checkbox" checked></input></td><td>2310708.197406515</td><td>100000.0</td><td>10000000.0</td><td>lorentz-factor*</td></tr><tr><td>N</td><td><input disabled type="checkbox" checked></input></td><td>7.087136892517435</td><td>0.0</td><td>MAX</td><td>1 / cm3</td></tr><tr><td>gamma0_log_parab</td><td><input disabled type="checkbox" checked></input></td><td>10458.433237258416</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>s</td><td><input disabled type="checkbox" checked></input></td><td>2.2487867709713574</td><td>-10.0</td><td>10.0</td><td></td></tr><tr><td>r</td><td><input disabled type="checkbox" checked></input></td><td>0.32055721323507314</td><td>-15.0</td><td>15.0</td><td></td></tr><tr><td>R_sh</td><td><input disabled type="checkbox" checked></input></td><td>1.0569554329483122e+16</td><td>1000000000000000.0</td><td>3.1622776601683795e+17</td><td>cm</td></tr><tr><td>R_H</td><td><input disabled type="checkbox"></input></td><td>1e+17</td><td>0.0</td><td>MAX</td><td>cm</td></tr><tr><td>B</td><td><input disabled type="checkbox" checked></input></td><td>0.0505</td><td>0.0</td><td>MAX</td><td>gauss</td></tr><tr><td>beam_obj</td><td><input disabled type="checkbox" checked></input></td><td>25.0</td><td>5.0</td><td>50.0</td><td>lorentz-factor*</td></tr><tr><td>z_cosm</td><td><input disabled type="checkbox"></input></td><td>0.0336</td><td>0.0</td><td>MAX</td><td></td></tr><tr class="block"><th class="model-even" scope="rowgroup" rowspan=2>host_galaxy</th><td>nuFnu_p_host</td><td><input disabled type="checkbox" checked></input></td><td>-10.065573840795157</td><td>-12.25412262810351</td><td>-8.25412262810351</td><td>erg / (cm2 s)</td></tr><tr><td>nu_scale</td><td><input disabled type="checkbox"></input></td><td>0.01730764400081941</td><td>-0.5</td><td>0.5</td><td>Hz</td></tr><tr class="block"><th class="model-odd" scope="rowgroup" rowspan=1>Franceschini_2008</th><td>z_cosm</td><td>linked</td><td>0.0336</td><td colspan=2>&#8656; jet_leptonic.z_cosm</td><td></td></tr></tbody></table></details></div>
+    </style><div class="sherpa-text-fallback">&lt;BinaryOpModel model instance &#x27;((jet_leptonic + host_galaxy) * Franceschini_2008)&#x27;&gt;</div><div hidden class="sherpa"><details open><summary>Model</summary><table class="model"><caption>Expression: (jet_leptonic + host_galaxy) * Franceschini_2008</caption><thead><tr><th>Component</th><th>Parameter</th><th>Thawed</th><th>Value</th><th>Min</th><th>Max</th><th>Units</th></tr></thead><tbody><tr><th class="model-odd" scope="rowgroup" rowspan=11>jet_leptonic</th><td>gmin</td><td><input disabled type="checkbox" checked></input></td><td>470.39174855643597</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>gmax</td><td><input disabled type="checkbox" checked></input></td><td>2310708.197406515</td><td>100000.0</td><td>10000000.0</td><td>lorentz-factor*</td></tr><tr><td>N</td><td><input disabled type="checkbox" checked></input></td><td>7.087120469822453</td><td>0.0</td><td>MAX</td><td>1 / cm3</td></tr><tr><td>gamma0_log_parab</td><td><input disabled type="checkbox" checked></input></td><td>10458.36315393129</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>s</td><td><input disabled type="checkbox" checked></input></td><td>2.2487867709713574</td><td>-10.0</td><td>10.0</td><td></td></tr><tr><td>r</td><td><input disabled type="checkbox" checked></input></td><td>0.320557142636666</td><td>-15.0</td><td>15.0</td><td></td></tr><tr><td>R_sh</td><td><input disabled type="checkbox" checked></input></td><td>1.0569580559768326e+16</td><td>1000000000000000.0</td><td>3.1622776601683795e+17</td><td>cm</td></tr><tr><td>R_H</td><td><input disabled type="checkbox"></input></td><td>1e+17</td><td>0.0</td><td>MAX</td><td>cm</td></tr><tr><td>B</td><td><input disabled type="checkbox" checked></input></td><td>0.0505</td><td>0.0</td><td>MAX</td><td>gauss</td></tr><tr><td>beam_obj</td><td><input disabled type="checkbox" checked></input></td><td>25.0</td><td>5.0</td><td>50.0</td><td>lorentz-factor*</td></tr><tr><td>z_cosm</td><td><input disabled type="checkbox"></input></td><td>0.0336</td><td>0.0</td><td>MAX</td><td></td></tr><tr class="block"><th class="model-even" scope="rowgroup" rowspan=2>host_galaxy</th><td>nuFnu_p_host</td><td><input disabled type="checkbox" checked></input></td><td>-10.065562059421486</td><td>-12.254122641095535</td><td>-8.254122641095535</td><td>erg / (cm2 s)</td></tr><tr><td>nu_scale</td><td><input disabled type="checkbox"></input></td><td>0.017307503006438463</td><td>-0.5</td><td>0.5</td><td>Hz</td></tr><tr class="block"><th class="model-odd" scope="rowgroup" rowspan=1>Franceschini_2008</th><td>z_cosm</td><td>linked</td><td>0.0336</td><td colspan=2>&#8656; jet_leptonic.z_cosm</td><td></td></tr></tbody></table></details></div>
 
 
 
@@ -939,7 +948,7 @@ Model fitting with Sherpa
         font-size: large;
         padding: 1em;
     }
-    </style><div class="sherpa-text-fallback">&lt;Fit results instance&gt;</div><div hidden class="sherpa"><details open><summary>Fit parameters</summary><table class="fit"><thead><tr><th>Parameter</th><th>Best-fit value</th><th>Approximate error</th></tr></thead><tbody><tr><td>jet_leptonic.gmin</td><td>     221.318</td><td>&#177;      223.032</td></tr><tr><td>jet_leptonic.gmax</td><td> 2.12042e+06</td><td>&#177;            0</td></tr><tr><td>jet_leptonic.N</td><td>      9.7309</td><td>&#177;      9.52985</td></tr><tr><td>jet_leptonic.gamma0_log_parab</td><td>     6444.37</td><td>&#177;            0</td></tr><tr><td>jet_leptonic.s</td><td>     2.20226</td><td>&#177;    0.0932377</td></tr><tr><td>jet_leptonic.r</td><td>    0.225421</td><td>&#177;    0.0344871</td></tr><tr><td>jet_leptonic.R_sh</td><td> 1.47547e+16</td><td>&#177;            0</td></tr><tr><td>jet_leptonic.B</td><td>   0.0123178</td><td>&#177;   0.00255532</td></tr><tr><td>jet_leptonic.beam_obj</td><td>     41.9941</td><td>&#177;      5.52668</td></tr><tr><td>host_galaxy.nuFnu_p_host</td><td>    -10.0581</td><td>&#177;    0.0509935</td></tr></tbody></table></details><details><summary>Summary (10)</summary><div class="datavals"><div class="dataname">Method</div><div class="dataval">levmar</div><div class="dataname">Statistic</div><div class="dataval">chi2</div><div class="dataname">Final statistic</div><div class="dataval">8.25029</div><div class="dataname">Number of evaluations</div><div class="dataval">292</div><div class="dataname">Reduced statistic</div><div class="dataval">0.392871</div><div class="dataname">Probability (Q-value)</div><div class="dataval">0.993989</div><div class="dataname">Initial statistic</div><div class="dataval">124.614</div><div class="dataname">&#916; statistic</div><div class="dataval">116.364</div><div class="dataname">Number of data points</div><div class="dataval">31</div><div class="dataname">Degrees of freedom</div><div class="dataval">21</div></div></details></div>
+    </style><div class="sherpa-text-fallback">&lt;Fit results instance&gt;</div><div hidden class="sherpa"><details open><summary>Fit parameters</summary><table class="fit"><thead><tr><th>Parameter</th><th>Best-fit value</th><th>Approximate error</th></tr></thead><tbody><tr><td>jet_leptonic.gmin</td><td>     137.121</td><td>&#177;      415.258</td></tr><tr><td>jet_leptonic.gmax</td><td> 2.09775e+06</td><td>&#177;            0</td></tr><tr><td>jet_leptonic.N</td><td>     13.5871</td><td>&#177;      44.3954</td></tr><tr><td>jet_leptonic.gamma0_log_parab</td><td>     2373.13</td><td>&#177;            0</td></tr><tr><td>jet_leptonic.s</td><td>      2.0909</td><td>&#177;    0.0399267</td></tr><tr><td>jet_leptonic.r</td><td>    0.201778</td><td>&#177;    0.0160092</td></tr><tr><td>jet_leptonic.R_sh</td><td> 1.49982e+16</td><td>&#177;            0</td></tr><tr><td>jet_leptonic.B</td><td>   0.0108858</td><td>&#177;   0.00229933</td></tr><tr><td>jet_leptonic.beam_obj</td><td>      44.972</td><td>&#177;      5.47095</td></tr><tr><td>host_galaxy.nuFnu_p_host</td><td>    -10.0639</td><td>&#177;     0.051195</td></tr></tbody></table></details><details><summary>Summary (10)</summary><div class="datavals"><div class="dataname">Method</div><div class="dataval">levmar</div><div class="dataname">Statistic</div><div class="dataval">chi2</div><div class="dataname">Final statistic</div><div class="dataval">8.021</div><div class="dataname">Number of evaluations</div><div class="dataval">524</div><div class="dataname">Reduced statistic</div><div class="dataval">0.381953</div><div class="dataname">Probability (Q-value)</div><div class="dataval">0.995055</div><div class="dataname">Initial statistic</div><div class="dataval">124.614</div><div class="dataname">&#916; statistic</div><div class="dataval">116.593</div><div class="dataname">Number of data points</div><div class="dataval">31</div><div class="dataname">Degrees of freedom</div><div class="dataval">21</div></div></details></div>
 
 
 
@@ -1040,7 +1049,7 @@ Model fitting with Sherpa
         font-size: large;
         padding: 1em;
     }
-    </style><div class="sherpa-text-fallback">&lt;BinaryOpModel model instance &#x27;((jet_leptonic + host_galaxy) * Franceschini_2008)&#x27;&gt;</div><div hidden class="sherpa"><details open><summary>Model</summary><table class="model"><caption>Expression: (jet_leptonic + host_galaxy) * Franceschini_2008</caption><thead><tr><th>Component</th><th>Parameter</th><th>Thawed</th><th>Value</th><th>Min</th><th>Max</th><th>Units</th></tr></thead><tbody><tr><th class="model-odd" scope="rowgroup" rowspan=11>jet_leptonic</th><td>gmin</td><td><input disabled type="checkbox" checked></input></td><td>221.31785661529102</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>gmax</td><td><input disabled type="checkbox" checked></input></td><td>2120423.887680081</td><td>100000.0</td><td>10000000.0</td><td>lorentz-factor*</td></tr><tr><td>N</td><td><input disabled type="checkbox" checked></input></td><td>9.7308970102023</td><td>0.0</td><td>MAX</td><td>1 / cm3</td></tr><tr><td>gamma0_log_parab</td><td><input disabled type="checkbox" checked></input></td><td>6444.369213670939</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>s</td><td><input disabled type="checkbox" checked></input></td><td>2.2022618914877032</td><td>-10.0</td><td>10.0</td><td></td></tr><tr><td>r</td><td><input disabled type="checkbox" checked></input></td><td>0.225421000374633</td><td>-15.0</td><td>15.0</td><td></td></tr><tr><td>R_sh</td><td><input disabled type="checkbox" checked></input></td><td>1.475471290427188e+16</td><td>1000000000000000.0</td><td>3.1622776601683795e+17</td><td>cm</td></tr><tr><td>R_H</td><td><input disabled type="checkbox"></input></td><td>1e+17</td><td>0.0</td><td>MAX</td><td>cm</td></tr><tr><td>B</td><td><input disabled type="checkbox" checked></input></td><td>0.012317793468494567</td><td>0.0</td><td>MAX</td><td>gauss</td></tr><tr><td>beam_obj</td><td><input disabled type="checkbox" checked></input></td><td>41.99405643997288</td><td>5.0</td><td>50.0</td><td>lorentz-factor*</td></tr><tr><td>z_cosm</td><td><input disabled type="checkbox"></input></td><td>0.0336</td><td>0.0</td><td>MAX</td><td></td></tr><tr class="block"><th class="model-even" scope="rowgroup" rowspan=2>host_galaxy</th><td>nuFnu_p_host</td><td><input disabled type="checkbox" checked></input></td><td>-10.058085094520706</td><td>-12.25412262810351</td><td>-8.25412262810351</td><td>erg / (cm2 s)</td></tr><tr><td>nu_scale</td><td><input disabled type="checkbox"></input></td><td>0.01730764400081941</td><td>-0.5</td><td>0.5</td><td>Hz</td></tr><tr class="block"><th class="model-odd" scope="rowgroup" rowspan=1>Franceschini_2008</th><td>z_cosm</td><td>linked</td><td>0.0336</td><td colspan=2>&#8656; jet_leptonic.z_cosm</td><td></td></tr></tbody></table></details></div>
+    </style><div class="sherpa-text-fallback">&lt;BinaryOpModel model instance &#x27;((jet_leptonic + host_galaxy) * Franceschini_2008)&#x27;&gt;</div><div hidden class="sherpa"><details open><summary>Model</summary><table class="model"><caption>Expression: (jet_leptonic + host_galaxy) * Franceschini_2008</caption><thead><tr><th>Component</th><th>Parameter</th><th>Thawed</th><th>Value</th><th>Min</th><th>Max</th><th>Units</th></tr></thead><tbody><tr><th class="model-odd" scope="rowgroup" rowspan=11>jet_leptonic</th><td>gmin</td><td><input disabled type="checkbox" checked></input></td><td>137.12136279004176</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>gmax</td><td><input disabled type="checkbox" checked></input></td><td>2097752.099964037</td><td>100000.0</td><td>10000000.0</td><td>lorentz-factor*</td></tr><tr><td>N</td><td><input disabled type="checkbox" checked></input></td><td>13.587127748284898</td><td>0.0</td><td>MAX</td><td>1 / cm3</td></tr><tr><td>gamma0_log_parab</td><td><input disabled type="checkbox" checked></input></td><td>2373.1255420068783</td><td>1.0</td><td>1000000000.0</td><td>lorentz-factor*</td></tr><tr><td>s</td><td><input disabled type="checkbox" checked></input></td><td>2.0908996547652823</td><td>-10.0</td><td>10.0</td><td></td></tr><tr><td>r</td><td><input disabled type="checkbox" checked></input></td><td>0.2017776523199925</td><td>-15.0</td><td>15.0</td><td></td></tr><tr><td>R_sh</td><td><input disabled type="checkbox" checked></input></td><td>1.4998210278443002e+16</td><td>1000000000000000.0</td><td>3.1622776601683795e+17</td><td>cm</td></tr><tr><td>R_H</td><td><input disabled type="checkbox"></input></td><td>1e+17</td><td>0.0</td><td>MAX</td><td>cm</td></tr><tr><td>B</td><td><input disabled type="checkbox" checked></input></td><td>0.010885837346301244</td><td>0.0</td><td>MAX</td><td>gauss</td></tr><tr><td>beam_obj</td><td><input disabled type="checkbox" checked></input></td><td>44.97202054482866</td><td>5.0</td><td>50.0</td><td>lorentz-factor*</td></tr><tr><td>z_cosm</td><td><input disabled type="checkbox"></input></td><td>0.0336</td><td>0.0</td><td>MAX</td><td></td></tr><tr class="block"><th class="model-even" scope="rowgroup" rowspan=2>host_galaxy</th><td>nuFnu_p_host</td><td><input disabled type="checkbox" checked></input></td><td>-10.063947287805279</td><td>-12.254122641095535</td><td>-8.254122641095535</td><td>erg / (cm2 s)</td></tr><tr><td>nu_scale</td><td><input disabled type="checkbox"></input></td><td>0.017307503006438463</td><td>-0.5</td><td>0.5</td><td>Hz</td></tr><tr class="block"><th class="model-odd" scope="rowgroup" rowspan=1>Franceschini_2008</th><td>z_cosm</td><td>linked</td><td>0.0336</td><td colspan=2>&#8656; jet_leptonic.z_cosm</td><td></td></tr></tbody></table></details></div>
 
 
 
@@ -1059,7 +1068,7 @@ Model fitting with Sherpa
 
 
 
-.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_40_0.png
+.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_44_0.png
 
 
 You can access all the sherpa fetarues
@@ -1074,7 +1083,15 @@ https://sherpa.readthedocs.io/en/latest/fit/index.html
     iproj.plot()
 
 
+.. parsed-literal::
 
-.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_42_0.png
+    WARNING: hard minimum hit for parameter jet_leptonic.gmin
+    WARNING: hard maximum hit for parameter jet_leptonic.gmin
+    WARNING: hard minimum hit for parameter jet_leptonic.gmax
+    WARNING: hard maximum hit for parameter jet_leptonic.gmax
+
+
+
+.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_46_1.png
 
 

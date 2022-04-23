@@ -12,7 +12,7 @@ Custom emitters distribution
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc4
+    tested on jetset 1.2.0rc13
 
 
 The user can bulid custom emitters distributions using the :class:`.EmittersDistribution` class. The following examples show how to implement it
@@ -33,8 +33,8 @@ then you have to link the parmeters in your funtcion to a paramters of
 the ``EmittersDistribution`` class.
 
 .. note::
-   It is important that each parameter has the proper `par_type` string, if you want to have good results using the phenomenological constraining.
-   Have a look at the predefined model to unterstand ho to set the `par_type` string. As a general rule
+   It is important to note that each parameter has the proper `par_type` string, and it is importat to properly set this `par_type` if you want to have good results using the phenomenological constraining.
+   Have a look at the predefined model to understand how to set the `par_type` string. As a general rule:
    
    1) the slope of the power law that starts from 'gmin' should be defined 'LE_spectral_slope'
    
@@ -90,7 +90,7 @@ parameters can be easily set
 .. raw:: html
 
     <i>Table length=6</i>
-    <table id="table140510420593824-177684" class="table-striped table-bordered table-condensed">
+    <table id="table140558472680160-684452" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -121,14 +121,14 @@ parameters can be easily set
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140510420593824-177684').dataTable()");
+        console.log("$('#table140558472680160-684452').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140510420593824-177684').dataTable({
+        $('#table140558472680160-684452').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -181,7 +181,7 @@ here we define a bkn power-law
 .. raw:: html
 
     <i>Table length=6</i>
-    <table id="table140510437003424-346491" class="table-striped table-bordered table-condensed">
+    <table id="table140558492970912-294611" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -212,14 +212,14 @@ here we define a bkn power-law
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140510437003424-346491').dataTable()");
+        console.log("$('#table140558492970912-294611').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140510437003424-346491').dataTable({
+        $('#table140558492970912-294611').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -287,7 +287,7 @@ passed to the model will not affect the original one**
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-120
+    flux plot lower bound   :  1.000000e-30
     
     --------------------------------------------------------------------------------
 
@@ -296,7 +296,7 @@ passed to the model will not affect the original one**
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140510466077312-734506" class="table-striped table-bordered table-condensed">
+    <table id="table140558492967792-843680" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -332,14 +332,14 @@ passed to the model will not affect the original one**
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140510466077312-734506').dataTable()");
+        console.log("$('#table140558492967792-843680').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140510466077312-734506').dataTable({
+        $('#table140558492967792-843680').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -380,14 +380,14 @@ number density of particles and conpare it to the parameter ``N``
 .. code:: ipython3
 
     p=my_jet.plot_model()
-    p.rescale(y_min=-16,y_max=-13)
+    p.setlim(y_min=1E-16,y_max=1E-13)
 
 
 
 .. image:: custom_emitters_files/custom_emitters_28_0.png
 
 
-Now we shitch on the normalization for the emetters distribtuion, and we
+Now we switch on the normalization for the emetters distribtuion, and we
 keep all the parameters unchanged, including N
 
 .. code:: ipython3
@@ -432,7 +432,7 @@ keep all the parameters unchanged, including N
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-120
+    flux plot lower bound   :  1.000000e-30
     
     --------------------------------------------------------------------------------
 
@@ -441,7 +441,7 @@ keep all the parameters unchanged, including N
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140510474190080-873959" class="table-striped table-bordered table-condensed">
+    <table id="table140558534482192-946351" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -477,14 +477,14 @@ keep all the parameters unchanged, including N
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140510474190080-873959').dataTable()");
+        console.log("$('#table140558534482192-946351').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140510474190080-873959').dataTable({
+        $('#table140558534482192-946351').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -521,7 +521,7 @@ to the parameter N
 .. code:: ipython3
 
     p=my_jet.plot_model()
-    p.rescale(y_min=-16,y_max=-13)
+    p.setlim(y_min=1E-16,y_max=1E-13)
 
 
 
@@ -602,7 +602,7 @@ skip them
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-120
+    flux plot lower bound   :  1.000000e-30
     
     --------------------------------------------------------------------------------
 
@@ -611,7 +611,7 @@ skip them
 .. raw:: html
 
     <i>Table length=8</i>
-    <table id="table140510474395312-463081" class="table-striped table-bordered table-condensed">
+    <table id="table140558536646464-15470" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -644,14 +644,14 @@ skip them
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140510474395312-463081').dataTable()");
+        console.log("$('#table140558536646464-15470').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140510474395312-463081').dataTable({
+        $('#table140558536646464-15470').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -668,7 +668,7 @@ skip them
     --------------------------------------------------------------------------------
 
 
-you can alos skip the next cell, it is just to check
+you can also skip the next cell, it is just to check
 
 .. code:: ipython3
 
@@ -680,18 +680,18 @@ you can alos skip the next cell, it is just to check
     np.testing.assert_allclose(N1, my_jet.emitters_distribution.eval_N(), rtol=1E-2)
 
 
-``N`` will act as a scalinf factor for the array when normalization is
+``N`` will act as a scaling factor for the array when normalization is
 set to ``False``
 
 .. code:: ipython3
 
     my_jet.parameters.N.val=1E9
-    print('this is the actaul number of emitters dendisty %2.2f'%my_jet.emitters_distribution.eval_N(),'this the scaling factor',my_jet.parameters.N.val)
+    print('this is the actual number of emitters dendisty %2.2f'%my_jet.emitters_distribution.eval_N(),'this the scaling factor',my_jet.parameters.N.val)
 
 
 .. parsed-literal::
 
-    this is the actaul number of emitters dendisty 999.56 this the scaling factor 1000000000.0
+    this is the actual number of emitters dendisty 999.56 this the scaling factor 1000000000.0
 
 
 .. code:: ipython3
@@ -739,7 +739,7 @@ you can still normalize the distribution
 .. raw:: html
 
     <i>Table length=8</i>
-    <table id="table140510473885200-515872" class="table-striped table-bordered table-condensed">
+    <table id="table140558537438544-195452" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+08</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -772,14 +772,14 @@ you can still normalize the distribution
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140510473885200-515872').dataTable()");
+        console.log("$('#table140558537438544-195452').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140510473885200-515872').dataTable({
+        $('#table140558537438544-195452').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],

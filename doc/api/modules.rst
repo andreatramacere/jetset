@@ -14,6 +14,7 @@ In the following the package modules are listed.
    cosmo_tools    <cosmo_tools.rst>
    data_loader    <data_loader.rst>
    frame_converter    <frame_converter.rst>
+   gammapy_plugin    <gammapy_plugin.rst>
    jet_emitters    <jet_emitters.rst>
    jet_emitters_factory    <jet_emitters_factory.rst>
    jet_model    <jet_model.rst>

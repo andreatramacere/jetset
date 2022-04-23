@@ -17,6 +17,7 @@ FitModel
    .. autosummary::
 
       ~FitModel.add_component
+      ~FitModel.clone
       ~FitModel.del_component
       ~FitModel.eval
       ~FitModel.free
@@ -41,6 +42,7 @@ FitModel
    .. rubric:: Methods Documentation
 
    .. automethod:: add_component
+   .. automethod:: clone
    .. automethod:: del_component
    .. automethod:: eval
    .. automethod:: free

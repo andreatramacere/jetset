@@ -5,26 +5,26 @@ In the following are listed the main new features common to 1.1.2 and 1.2.0
 
 Introduction of depending pars
 -----------------------------------
-See this section of the user guide  :ref:`depending_parameters_guide`
+Model parameters can be linked via functional dependence.
+See this section of the user guide  :ref:`depending_parameters`
 
 
 Temporal Evolution
 -----------------------------------
-Th python interface to perform self-consistent temporal evolution of leptonic emitters under
-acceleration and cooling has been added
+The python interface to perform self-consistent temporal evolution of leptonic emitters under
+acceleration and cooling has been added.
 See this section of the user guide  :ref:`temp_ev`
 
 Hadronic pp emission
 -----------------------------------
-Th python interface to perform self-consistent temporal evolution of leptonic emitters under
-acceleration and cooling has been added
+The python interface to perform self-consistent temporal evolution of leptonic emitters under
+acceleration and cooling has been added.
 See this section of the user guide  :ref:`hadronic_pp_jet_guide`
 
 
 Theoretical background for SSC model
 ------------------------------------
-Th python interface to perform self-consistent temporal evolution of leptonic emitters under
-acceleration and cooling has been added
+A detailed explanation of the theoretical background for SSC/EC model has been added.
 See this section of the user guide  :ref:`ssc_th_bkg`
 
 

@@ -11,15 +11,15 @@ python make_apidoc_and_uml_graphs.py
 
 3) run step A or B
     A)run all notebooks and build rst file with script
-        ./build_rst_files.ch -e documentation_notebooks #run all notebooks found in documentation_notebooks
+        ./build_rst_files.sh -e documentation_notebooks #run all notebooks found in documentation_notebooks
         OR
-        ./build_rst_files.ch -e documentation_notebooks/dir-name #runs only specific sub-directory
+        ./build_rst_files.sh -e documentation_notebooks/dir-name #runs only specific sub-directory
 
 
     B) or ONLY BUILD RST
-        ./build_rst_files.ch documentation_notebooks
+        ./build_rst_files.sh documentation_notebooks
         OR
-        ./build_rst_files.ch  documentation_notebooks/dir-name
+        ./build_rst_files.sh  documentation_notebooks/dir-name
 
 
 

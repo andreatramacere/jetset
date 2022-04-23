@@ -669,9 +669,9 @@ class JetTimeEvol(object):
             _jet_rad = jet_rad
 
         self._only_radiation=only_radiation
-
+        self._bkp_acc_region=None
         self.rad_region = TimeEvolvingRegion(temp_ev=self, jet=_jet_rad, build_cached=False, region_type='rad')
-    
+        self.acc_region=None
         if self._only_radiation is False:
             _jet_acc = copy.deepcopy(self.rad_region.jet)
             _jet_acc.name = self.rad_region.jet.name + 'acc_region'
@@ -731,6 +731,8 @@ class JetTimeEvol(object):
         _model['internals']['Q_inj'] = self.Q_inj
         _model['internals']['_custom_q_jnj_profile'] = self._custom_q_jnj_profile
         _model['internals']['_custom_acc_profile'] = self._custom_acc_profile
+        _model['internals']['_only_radiation'] = self._only_radiation
+        _model['internals']['_bkp_acc_region'] = self._bkp_acc_region
         _model['internals']['time_steps_array'] = self.time_steps_array
         _model['internals']['IC_cooling'] = self.IC_cooling
         _model['internals']['Sync_cooling'] = self.Sync_cooling
@@ -738,8 +740,7 @@ class JetTimeEvol(object):
         _model['internals']['region_expansion'] = self.region_expansion
         _model['internals']['log_sampling'] = self.log_sampling
         #_model['internals']['time_sampled_emitters'] = self.time_sampled_emitters
-        if self.acc_region is not None:
-            _model['internals']['acc_region'] = self.acc_region
+        _model['internals']['acc_region'] = self.acc_region
     
         _model['internals']['rad_region'] = self.rad_region
         #_model['internals']['_acc_seds_mult_factor'] = self._acc_seds_mult_factor
@@ -756,8 +757,12 @@ class JetTimeEvol(object):
         #    self._set_version(_model['version'])
         #else:
         #    self._set_version(v='unknown(<1.1.2)')
-
+        
         self.name = _model['name']
+        self.acc_region=_model['internals']['acc_region']
+        self.rad_region=_model['internals']['rad_region']
+        self._only_radiation=_model['internals']['_only_radiation']
+        self._bkp_acc_region=_model['internals']['_bkp_acc_region'] 
         self.parameters = JetModelParameterArray(model=self)
         temp_ev_dict = self._build_par_dict()
         self.parameters.add_par_from_dict(temp_ev_dict, self, '_temp_ev', JetParameter)
@@ -814,6 +819,8 @@ class JetTimeEvol(object):
 
         self.temp_ev.R_H_rad_start = self.parameters.R_H_rad_start.val
         self._init_temp_ev()
+        self._custom_q_jnj_profile=None
+        self._custom_acc_profile=None
         self._set_inj_time_profile(user_defined_array=self._custom_q_jnj_profile)
         self._set_acc_time_profile(user_defined_array=self._custom_acc_profile)
         self._fill_temp_ev_array_pre_run()

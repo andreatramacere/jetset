@@ -9,11 +9,11 @@ The external Compton implementation  gives you the possibility to use a double a
 * transformation of the external  fields to the blob rest frame Dermer and Schlickeiser (2002) [Dermer2002]_
 
 * transformation of the electron emitting distribution from the blob restframe to
-  disk/BH restframe Dermer(1995)[Dermer95]_ and Georganopoulos, Kirk, and Mastichiadis (2001) [GKM01]_
+  disk/BH restframe Dermer(1995) [Dermer95]_ and Georganopoulos, Kirk, and Mastichiadis (2001) [GKM01]_
 
 The implemented external radiative fields are 
  
-* Broad Line Region radiative field using the approach of Donea & Protheroe (2003)[Donea2003]_
+* Broad Line Region radiative field using the approach of Donea & Protheroe (2003) [Donea2003]_
 
 * Dusty torus implemented as a uniform BB field within `R_DT`
 
@@ -44,7 +44,7 @@ Broad Line Region
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc4
+    tested on jetset 1.2.0rc13
 
 
 .. code:: ipython3
@@ -100,11 +100,11 @@ black body ``BB``
     
     SED info:
      nu grid size jetkernel: 1000
-     nu grid size: 500
+     nu size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-120
+    flux plot lower bound   :  1.000000e-30
     
     --------------------------------------------------------------------------------
 
@@ -113,7 +113,7 @@ black body ``BB``
 .. raw:: html
 
     <i>Table length=17</i>
-    <table id="table140702458564672-466115" class="table-striped table-bordered table-condensed">
+    <table id="table140299809656784-399146" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -155,14 +155,14 @@ black body ``BB``
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140702458564672-466115').dataTable()");
+        console.log("$('#table140299809656784-399146').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140702458564672-466115').dataTable({
+        $('#table140299809656784-399146').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -256,11 +256,11 @@ parameters regarding the multi temperature black body accretion disk:
     
     SED info:
      nu grid size jetkernel: 1000
-     nu grid size: 500
+     nu size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-120
+    flux plot lower bound   :  1.000000e-30
     
     --------------------------------------------------------------------------------
 
@@ -269,7 +269,7 @@ parameters regarding the multi temperature black body accretion disk:
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table140702465461072-681397" class="table-striped table-bordered table-condensed">
+    <table id="table140299885780560-272947" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>3.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>3.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -314,14 +314,14 @@ parameters regarding the multi temperature black body accretion disk:
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140702465461072-681397').dataTable()");
+        console.log("$('#table140299885780560-272947').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140702465461072-681397').dataTable({
+        $('#table140299885780560-272947').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -348,7 +348,7 @@ now we set some parameter for the model
 .. code:: ipython3
 
     p=my_jet.plot_model(frame='obs')
-    p.rescale(y_min=-13.5,y_max=-9.5,x_min=9,x_max=27)
+    p.setlim(y_min=1E-13,y_max=5E-11,x_min=1E9,x_max=1E27)
 
 
 
@@ -402,11 +402,11 @@ Dusty Torus
     
     SED info:
      nu grid size jetkernel: 1000
-     nu grid size: 500
+     nu size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-120
+    flux plot lower bound   :  1.000000e-30
     
     --------------------------------------------------------------------------------
 
@@ -415,7 +415,7 @@ Dusty Torus
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table140702467160096-855512" class="table-striped table-bordered table-condensed">
+    <table id="table140299904491472-151007" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>3.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>3.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -460,14 +460,14 @@ Dusty Torus
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140702467160096-855512').dataTable()");
+        console.log("$('#table140299904491472-151007').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140702467160096-855512').dataTable({
+        $('#table140299904491472-151007').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -492,7 +492,7 @@ Dusty Torus
 .. code:: ipython3
 
     p=my_jet.plot_model()
-    p.rescale(y_min=-13.5,y_max=-9.5,x_min=9,x_max=27)
+    p.setlim(y_min=1E-13,y_max=5E-11,x_min=1E9,x_max=1E27)
 
 
 
@@ -508,7 +508,7 @@ Dusty Torus
 .. code:: ipython3
 
     p=my_jet.plot_model()
-    p.rescale(y_min=-13.5,y_max=-9.5,x_min=9,x_max=27)
+    p.setlim(y_min=1E-13,y_max=5E-11,x_min=1E9,x_max=1E27)
 
 
 
@@ -524,32 +524,29 @@ Dusty Torus
 
 .. raw:: html
 
-    <i>Table length=23</i>
-    <table id="table140702477679776-353033" class="table-striped table-bordered table-condensed">
+    <i>Table length=20</i>
+    <table id="table140299400836240-996741" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>5.000000e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>4.171189e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>5.000000e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>p</td><td>LE_spectral_slope</td><td></td><td>1.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.200000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>tau_BLR</td><td>BLR</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>R_BLR_in</td><td>BLR</td><td>cm</td><td>1.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>EC_example</td><td>R_BLR_out</td><td>BLR</td><td>cm</td><td>2.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>EC_example</td><td>R_inner_Sw</td><td>Disk</td><td>Sw. radii*</td><td>3.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>R_ext_Sw</td><td>Disk</td><td>Sw. radii*</td><td>5.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>accr_eff</td><td>Disk</td><td></td><td>8.000000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>M_BH</td><td>Disk</td><td>M_sun*</td><td>1.000000e+09</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>T_DT</td><td>DT</td><td>K</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>R_DT</td><td>DT</td><td>cm</td><td>5.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>tau_DT</td><td>DT</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>L_Disk</td><td>Disk</td><td>erg / s</td><td>1.000000e+45</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>EC_example</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>theta</td><td>jet-viewing-angle</td><td>deg</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>BulkFactor</td><td>jet-bulk-factor</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>L_Disk</td><td>Disk</td><td>erg / s</td><td>1.000000e+46</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>T_Disk</td><td>Disk</td><td>K</td><td>5.015768e+04</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>3.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>3.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>EC_example</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.500000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>theta</td><td>jet-viewing-angle</td><td>deg</td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>BulkFactor</td><td>jet-bulk-factor</td><td>lorentz-factor*</td><td>2.000000e+01</td><td>1.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>z_cosm</td><td>redshift</td><td></td><td>6.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -573,14 +570,14 @@ Dusty Torus
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140702477679776-353033').dataTable()");
+        console.log("$('#table140299400836240-996741').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140702477679776-353033').dataTable({
+        $('#table140299400836240-996741').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -590,6 +587,129 @@ Dusty Torus
     });
     </script>
 
+
+
+setting the BLR and DT radius as a function of the disk luminosity
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Using the depending parameters (see :ref:`depending_parameters`, for more details) we can set the BLR and DT radius, as a function of the disk luminosity
+
+.. code:: ipython3
+
+    #kaspi+ 2007:https://iopscience.iop.org/article/10.1086/512094/pdf
+    my_jet.make_dependent_par(par='R_BLR_in', depends_on=['L_Disk'], par_expr='1E17*(L_Disk/1E45)**0.5')
+    
+    my_jet.make_dependent_par(par='R_BLR_out', depends_on=['R_BLR_in'], par_expr='R_BLR_in*1.1')
+    
+    #Cleary+ 2007:https://iopscience.iop.org/article/10.1086/511969/pdf
+    my_jet.make_dependent_par(par='R_DT', depends_on=['L_Disk'], par_expr='2.5E18*(L_Disk/1E45)**0.5')
+
+
+
+.. parsed-literal::
+
+    ==> par R_BLR_in is now depending on ['L_Disk'] according to expr:R_BLR_in =
+    1E17*(L_Disk/1E45)**0.5
+    ==> par R_BLR_out is now depending on ['R_BLR_in'] according to expr:R_BLR_out =
+    R_BLR_in*1.1
+    ==> par R_DT is now depending on ['L_Disk'] according to expr:R_DT =
+    2.5E18*(L_Disk/1E45)**0.5
+
+
+.. code:: ipython3
+
+    my_jet.parameters.L_Disk.val=5E45
+
+.. code:: ipython3
+
+    my_jet.parameters
+
+
+
+.. raw:: html
+
+    <i>Table length=20</i>
+    <table id="table140299400836240-172733" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>EC_example</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>5.000000e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>4.171189e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>5.000000e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>p</td><td>LE_spectral_slope</td><td></td><td>1.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.200000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>tau_BLR</td><td>BLR</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>*R_BLR_in(D,L_Disk)</td><td>BLR</td><td>cm</td><td>2.236068e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>EC_example</td><td>*R_BLR_out(D,R_BLR_in)</td><td>BLR</td><td>cm</td><td>2.459675e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>EC_example</td><td>T_DT</td><td>DT</td><td>K</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>*R_DT(D,L_Disk)</td><td>DT</td><td>cm</td><td>5.590170e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>EC_example</td><td>tau_DT</td><td>DT</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>L_Disk(M)</td><td>Disk</td><td>erg / s</td><td>5.000000e+45</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>T_Disk</td><td>Disk</td><td>K</td><td>5.015768e+04</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>3.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>3.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>EC_example</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.500000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>theta</td><td>jet-viewing-angle</td><td>deg</td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>BulkFactor</td><td>jet-bulk-factor</td><td>lorentz-factor*</td><td>2.000000e+01</td><td>1.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>EC_example</td><td>z_cosm</td><td>redshift</td><td></td><td>6.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140299400836240-172733').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140299400836240-172733').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+
+
+.. parsed-literal::
+
+    None
+
+
+
+.. code:: ipython3
+
+    my_jet.eval()
+    p=my_jet.plot_model()
+    p.setlim(y_min=1E-13,y_max=5E-11,x_min=1E9,x_max=1E27)
+
+
+
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_28_0.png
 
 
 Changing the external field transformation
@@ -603,13 +723,19 @@ the disk/BH frame to the relativistic blob
     my_jet.set_external_field_transf('blob')
 
 Alternatively, in the case of istropric fields as the CMB or the BLR and
-DT within the BLR radius, and DT radius, respectively, the it is
-possible to transform the the electron distribution, moving the blob to
-the disk/BH frame.
+DT within the BLR radius, and DT radius, respectively, it is possible to
+transform the the electron distribution, moving the blob to the disk/BH
+frame.
 
 .. code:: ipython3
 
     my_jet.set_external_field_transf('disk')
+
+**Anyhow, the ``disk`` transformation is valid only for isotropic
+external fields, suchs as the CMB, or the BLR and Dusty torus seed
+photons whitin the DT radius and BLR radius, respectively. Beyond the
+isotropic region, the code will switch automatically to the ``blob``
+transformation, even if ``disk`` is used**
 
 External photon field energy density along the jet
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -673,12 +799,12 @@ EC seed photon fields, in the Disk rest frame
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7ff7d890c730>
+    <matplotlib.legend.Legend at 0x7f8995fee940>
 
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_31_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_38_1.png
 
 
 .. code:: ipython3
@@ -740,12 +866,12 @@ EC seed photon fields, in the Disk rest frame
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7ff7d8d21790>
+    <matplotlib.legend.Legend at 0x7f8976fa39a0>
 
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_32_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_39_1.png
 
 
 IC against the CMB
@@ -770,10 +896,9 @@ IC against the CMB
 We can now compare the different beaming pattern for the EC emission if
 the CMB, and realize that the beaming pattern is different. This is very
 important in the case of radio galaxies. The ``src`` transformation is
-the one to use in the case of radio galaies or misaligned AGNs, and
-gives a more accurate results. Anyhow, be careful that this works only
-for isotropic external fields, suchs as the CMB, or the BLR seed photons
-whitin the Dusty torus radius, and BLR radius, respectively
+the one to use in the case of radio galaxies or misaligned AGNs in
+general, and gives a more accurate results for the beaming patter of an
+isotropic external field.
 
 .. code:: ipython3
 
@@ -793,11 +918,11 @@ whitin the Dusty torus radius, and BLR radius, respectively
         my_jet.eval()
         my_jet.plot_model(plot_obj=p,comp='Sum',label='disk, theta=%2.2f'%theta,line_style='',color=c[ID])
     
-    p.rescale(y_min=-17.5,y_max=-12.5,x_max=28)
+    p.setlim(y_min=5E-18,y_max=5E-13,x_max=1E28)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_36_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_43_0.png
 
 
 Equipartition
@@ -828,7 +953,7 @@ points (``N_pts``)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_39_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_46_1.png
 
 
 .. parsed-literal::
@@ -841,7 +966,7 @@ points (``N_pts``)
 .. raw:: html
 
     <i>Table length=14</i>
-    <table id="table140702479999520-710298" class="table-striped table-bordered table-condensed">
+    <table id="table140228868320560-551053" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test_equipartition</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+21</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test_equipartition</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -880,14 +1005,14 @@ points (``N_pts``)
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140702479999520-710298').dataTable()");
+        console.log("$('#table140228868320560-551053').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140702479999520-710298').dataTable({
+        $('#table140228868320560-551053').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -902,10 +1027,13 @@ points (``N_pts``)
 .. code:: ipython3
 
     p=my_jet.plot_model()
-    p.rescale(y_min=-16.5,y_max=-13.5,x_max=28)
+    p.setlim(y_min=5E-18,y_max=2E-14,x_max=1E28)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_40_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_47_0.png
+
+
+.. bibliography:: ../../refs.bib
 
 

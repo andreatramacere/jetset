@@ -1,6 +1,6 @@
 __author__ = "Andrea Tramacere"
 
-
+import os
 try:
     from gammapy.modeling.models import (
     SpectralModel,
@@ -13,7 +13,13 @@ try:
     gammapy_installed = True
 
 except:
-    raise  ImportError('to use gammapy plugin you need to install gammapy: https://docs.gammapy.org/0.19/getting-started/install.html')
+    on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+    
+    if on_rtd is True:
+        pass
+    else:
+
+        raise  ImportError('to use gammapy plugin you need to install gammapy: https://docs.gammapy.org/0.19/getting-started/install.html')
 
 import astropy.units as u
 import  numpy as np

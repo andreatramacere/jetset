@@ -10,6 +10,7 @@ JetTimeEvol
 
    .. autosummary::
 
+      ~JetTimeEvol.Adiabatic_cooling
       ~JetTimeEvol.Delta_R_acc
       ~JetTimeEvol.IC_cooling
       ~JetTimeEvol.Sync_cooling
@@ -21,6 +22,7 @@ JetTimeEvol
       ~JetTimeEvol.t_unit_acc
       ~JetTimeEvol.t_unit_rad
       ~JetTimeEvol.temp_ev
+      ~JetTimeEvol.tempev_table
       ~JetTimeEvol.time_steps_array
 
    .. rubric:: Methods Summary
@@ -28,12 +30,11 @@ JetTimeEvol
    .. autosummary::
 
       ~JetTimeEvol.V_acc
+      ~JetTimeEvol.V_rad
       ~JetTimeEvol.eval_L_tot_inj
-      ~JetTimeEvol.eval_cross_time
-      ~JetTimeEvol.get_SED
+      ~JetTimeEvol.get_region
       ~JetTimeEvol.init_TempEv
       ~JetTimeEvol.load_model
-      ~JetTimeEvol.make_lc
       ~JetTimeEvol.plot_pre_run_plot
       ~JetTimeEvol.plot_tempev_emitters
       ~JetTimeEvol.plot_tempev_model
@@ -46,6 +47,7 @@ JetTimeEvol
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: Adiabatic_cooling
    .. autoattribute:: Delta_R_acc
    .. autoattribute:: IC_cooling
    .. autoattribute:: Sync_cooling
@@ -57,17 +59,17 @@ JetTimeEvol
    .. autoattribute:: t_unit_acc
    .. autoattribute:: t_unit_rad
    .. autoattribute:: temp_ev
+   .. autoattribute:: tempev_table
    .. autoattribute:: time_steps_array
 
    .. rubric:: Methods Documentation
 
    .. automethod:: V_acc
+   .. automethod:: V_rad
    .. automethod:: eval_L_tot_inj
-   .. automethod:: eval_cross_time
-   .. automethod:: get_SED
+   .. automethod:: get_region
    .. automethod:: init_TempEv
    .. automethod:: load_model
-   .. automethod:: make_lc
    .. automethod:: plot_pre_run_plot
    .. automethod:: plot_tempev_emitters
    .. automethod:: plot_tempev_model

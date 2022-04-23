@@ -1,5 +1,12 @@
 .. _hadronic_pp_jet_guide:
 
+
+
+Hadronic pp jet model
+=====================
+
+In this section we show the hadronic `pp` implemented for the Jet model. The `pp` implementation is based on the [Kelner2006]_.
+
 .. code:: ipython3
 
     def get_component(j_name,nu_name):
@@ -24,9 +31,6 @@
     
 
 
-Jet pp Consistency with Kelner 2006
-===================================
-
 .. code:: ipython3
 
     from jetset.jet_model import Jet
@@ -43,16 +47,175 @@ Jet pp Consistency with Kelner 2006
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc4
+    tested on jetset 1.2.0rc13
 
+
+To get an hadronic jet with ``pp`` interaction, we set the
+``emitters_type='protons'``
 
 .. code:: ipython3
 
     j=Jet(emitters_distribution='plc',verbose=False,emitters_type='protons')
+    j.parameters.R.val=1E16
+    j.parameters.N.val=1000
+    j.parameters.B.val=1
+    j.parameters.z_cosm.val=0.001
+    j.parameters.beam_obj.val=20
+
 
 .. code:: ipython3
 
     
+    j.eval()
+    j.show_model()
+
+
+
+.. parsed-literal::
+
+    
+    --------------------------------------------------------------------------------
+    jet model description
+    --------------------------------------------------------------------------------
+    name: jet_hadronic_pp  
+    
+    protons distribution:
+     type: plc  
+     gamma energy grid size:  201
+     gmin grid : 2.000000e+00
+     gmax grid : 1.000000e+06
+     normalization  True
+     log-values  False
+    
+    radiative fields:
+     seed photons grid size:  100
+     IC emission grid size:  100
+     source emissivity lower bound :  1.000000e-120
+     spectral components:
+       name:Sum, state: on
+       name:Sync, state: self-abs
+       name:SSC, state: on
+       name:PP_gamma, state: on
+       name:PP_neutrino_tot, state: on
+       name:PP_neutrino_mu, state: on
+       name:PP_neutrino_e, state: on
+       name:Bremss_ep, state: on
+    external fields transformation method: blob
+    
+    SED info:
+     nu grid size jetkernel: 1000
+     nu size: 500
+     nu mix (Hz): 1.000000e+06
+     nu max (Hz): 1.000000e+30
+    
+    flux plot lower bound   :  1.000000e-30
+    
+    --------------------------------------------------------------------------------
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140191814568016-79820" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_hadronic_pp</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_hadronic_pp</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_hadronic_pp</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_hadronic_pp</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_hadronic_pp</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_hadronic_pp</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_hadronic_pp</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_hadronic_pp</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_hadronic_pp</td><td>NH_pp</td><td>target_density</td><td>1 / cm3</td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_hadronic_pp</td><td>gamma_cut</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_hadronic_pp</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140191814568016-79820').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140191814568016-79820').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+.. parsed-literal::
+
+    --------------------------------------------------------------------------------
+
+
+.. code:: ipython3
+
+    gmin=1.0/jetkernel.MPC2_TeV
+    m=j.emitters_distribution.gamma_p>=gmin
+    print('U(p) (erg/cm3) =',j.emitters_distribution.eval_U(gmin=gmin))
+
+
+.. parsed-literal::
+
+    U(p) (erg/cm3) = 5.257679637585933
+
+
+.. code:: ipython3
+
+    %matplotlib inline
+    p=j.emitters_distribution.plot()
+
+
+
+.. image:: hadornic_files/hadornic_11_0.png
+
+
+.. code:: ipython3
+
+    %matplotlib inline
+    p=j.plot_model()
+    p.setlim(y_min=1E-27)
+
+
+
+.. image:: hadornic_files/hadornic_12_0.png
+
+
+Jet pp Consistency with Kelner 2006
+-----------------------------------
+
+.. code:: ipython3
+
+    j=Jet(emitters_distribution='plc',verbose=False,emitters_type='protons')
     j.parameters.z_cosm.val=z=0.001
     j.parameters.beam_obj.val=10
     j.parameters.gamma_cut.val=1000/(jetkernel.MPC2_TeV)
@@ -76,13 +239,13 @@ Jet pp Consistency with Kelner 2006
     gamma_sec_inj=np.copy(j.emitters_distribution.gamma_e_second_inj)
     n_gamma_sec_inj=np.copy(j.emitters_distribution.n_gamma_e_second_inj)
 
+
 .. code:: ipython3
 
     gmin=1.0/jetkernel.MPC2_TeV
     j.set_N_from_U_emitters(1.0, gmin=gmin)
     j.eval()
     j.show_model()
-
 
 
 .. parsed-literal::
@@ -118,11 +281,11 @@ Jet pp Consistency with Kelner 2006
     
     SED info:
      nu grid size jetkernel: 1000
-     nu grid size: 500
+     nu size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+31
     
-    flux plot lower bound   :  1.000000e-120
+    flux plot lower bound   :  1.000000e-30
     
     --------------------------------------------------------------------------------
 
@@ -131,7 +294,7 @@ Jet pp Consistency with Kelner 2006
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140512693000416-601336" class="table-striped table-bordered table-condensed">
+    <table id="table140191806407488-30806" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_hadronic_pp</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+18</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_hadronic_pp</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -167,14 +330,14 @@ Jet pp Consistency with Kelner 2006
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140512693000416-601336').dataTable()");
+        console.log("$('#table140191806407488-30806').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140512693000416-601336').dataTable({
+        $('#table140191806407488-30806').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -193,7 +356,6 @@ Jet pp Consistency with Kelner 2006
 
 .. code:: ipython3
 
-    
     m=j.emitters_distribution.gamma_p>=gmin
     print('U(p) (erg/cm3) =',j.emitters_distribution.eval_U(gmin=gmin))
 
@@ -210,19 +372,7 @@ Jet pp Consistency with Kelner 2006
 
 
 
-.. image:: hadornic_files/hadornic_10_0.png
-
-
-.. code:: ipython3
-
-    %matplotlib widget
-    p=j.plot_model()
-
-
-
-.. parsed-literal::
-
-    Canvas(toolbar=Toolbar(toolitems=[('Home', 'Reset original view', 'home', 'home'), ('Back', 'Back to previous …
+.. image:: hadornic_files/hadornic_18_0.png
 
 
 .. code:: ipython3
@@ -271,12 +421,12 @@ Jet pp Consistency with Kelner 2006
 
 .. parsed-literal::
 
-    <matplotlib.lines.Line2D at 0x7fc2d3e1dd30>
+    <matplotlib.lines.Line2D at 0x7f8524c58610>
 
 
 
 
-.. image:: hadornic_files/hadornic_12_1.png
+.. image:: hadornic_files/hadornic_19_1.png
 
 
 .. code:: ipython3
@@ -319,5 +469,7 @@ Jet pp Consistency with Kelner 2006
 
 
 
-.. image:: hadornic_files/hadornic_13_1.png
+.. image:: hadornic_files/hadornic_20_1.png
 
+
+.. bibliography:: references.rst

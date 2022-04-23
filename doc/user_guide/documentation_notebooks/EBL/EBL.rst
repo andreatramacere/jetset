@@ -443,7 +443,6 @@ if you want to remove the link from the parameter
 
 now the two ``z_cosm`` parameters are not linkend anymore
 
-.. bibliography:: references.bib
 
 
 Example of model fitting with EBL

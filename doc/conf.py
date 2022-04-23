@@ -78,9 +78,11 @@ extensions = [
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.autosummary',
     'nbsphinx',
+#    'sphinxcontrib.bibtex',
     'sphinx.ext.mathjax',
 ]
 
+#bibtex_bibfiles = ['refs.bib']
 #bibtex_bibfiles = ['references.bib']
 exclude_patterns = ['_build', '**.ipynb_checkpoints','../jetkernel/*','../jetset/jetkernel/*','documentation_notebooks','example_notebooks','slides']
 
@@ -257,9 +259,6 @@ def setup(app):
     app.add_css_file("css/my_theme.css")
 
 if theme=='bootstrap':
-
-
-
     html_sidebars = {'**': ['my_side_bar.html', 'sourcelink.html']}
 
     html_logo = "_static/logo_small_color_neg_transparent.png"
