@@ -63,7 +63,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           update-conda: true
-          python-version: ${{ matrix.python-version }}
           conda-channels: conda-forge,astropy
           #auto-update-conda: true
           #channels: conda-forge, astropy
