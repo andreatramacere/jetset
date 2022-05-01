@@ -121,8 +121,11 @@ jobs:
         run: |
           conda config --set anaconda_upload no
           conda build purge
-          conda build  . -c anaconda -c astropy -c conda-forge 
-          conda build  . --output > ./CONDABUILDJETSET.txt 
+          conda build  .  -c conda-forge -c astropy
+
+      - name: 'get  out dir'
+        run: |
+          conda build  . --output > ./CONDABUILDJETSET.txt  
 
       - name: 'set env CONDABUILDJETSET'
         shell: bash
