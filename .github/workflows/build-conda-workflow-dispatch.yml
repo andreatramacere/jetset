@@ -63,10 +63,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           auto-update-conda: true
-          channels: anaconda, conda-forge,astrop
-          channel-priority: flexible
-          show-channel-urls: true
-          use-only-tar-bz2: true 
+          channels: conda-forge, astropy
+
+      - name: 'conda env name'
+        run: |
+          echo "CONDA_DEFAULT_ENV=${{CONDA_DEFAULT_ENV}}""
+          echo "CONDA_DEFAULT_ENV=${{CONDA_PREFIX}}"
 
       - name: 'Install dependencies'
         run: |
