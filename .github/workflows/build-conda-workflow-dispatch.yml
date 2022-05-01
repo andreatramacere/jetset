@@ -163,7 +163,6 @@ jobs:
           tar -cvf conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}.tar ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}/*
 
       - name: 'Upload Release Asset'
-        shell: bash
         uses: softprops/action-gh-release@v1
         with:
           name: Release  ${{ github.event.inputs.tags }}
