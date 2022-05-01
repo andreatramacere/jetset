@@ -89,9 +89,6 @@ jobs:
           conda config --set anaconda_upload no
           conda build purge
           conda build .  -c conda-forge -c astrop
-          
-      - name: 'get  out dir'
-        run: |
           conda build  . --output > ./CONDABUILDJETSET.txt  
       
       - name: 'set env CONDABUILDJETSET'
