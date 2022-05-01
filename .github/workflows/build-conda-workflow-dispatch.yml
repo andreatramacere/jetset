@@ -64,10 +64,9 @@ jobs:
           use-mamba: true
           update-conda: true
           python-version: ${{ matrix.python-version }}
-          conda-channels: anaconda, conda-forge, astropy
-          python-version: ${{ matrix.python-version }}
           auto-update-conda: true
-          channels: anaconda, conda-forge,astropys
+          architecture: "x64"
+          channels: anaconda, conda-forge,astropy 
           use-only-tar-bz2: true
                   
 
