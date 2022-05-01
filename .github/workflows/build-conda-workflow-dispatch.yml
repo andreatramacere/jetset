@@ -70,6 +70,7 @@ jobs:
       - name: 'activate env'
         shell: bash
         run: |
+          conda init bash
           conda activate jetset
         
 
