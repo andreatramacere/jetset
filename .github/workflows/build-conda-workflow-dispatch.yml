@@ -58,24 +58,17 @@ jobs:
           ref: ${{ github.event.inputs.git-ref }}
 
       - name: 'setup conda'
-        #uses: s-weigand/setup-conda@v1
-        uses: conda-incubator/setup-miniconda@v2
+        uses: s-weigand/setup-conda@v1
+        #uses: conda-incubator/setup-miniconda@v2
         with:
           python-version: ${{ matrix.python-version }}
-          auto-update-conda: true
-          channels: conda-forge, astropy
-          activate-environment: "conda-jetset"
-          auto-activate-base: false
-
-      - name: 'init conda'
-        shell: bash
-        run: |
-          conda init bash
-      
-      - name: 'activate env'
-        shell: bash
-        run: |
-          conda activate conda-jetset
+          update-conda: true
+          python-version: ${{ matrix.python-version }}
+          conda-channels: conda-forge,astropy
+          #auto-update-conda: true
+          #channels: conda-forge, astropy
+          #activate-environment: "conda-jetset"
+          #auto-activate-base: false
 
       - name: 'conda env name'
         shell: bash
