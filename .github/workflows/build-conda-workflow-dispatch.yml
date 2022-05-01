@@ -73,8 +73,8 @@ jobs:
           echo "CONDA_DEFAULT_ENV=${{env.CONDA_PREFIX}}"
 
       - name: 'Install dependencies'
+        shell: bash
         run: |
-          conda init bash
           conda activate conda-jetset
           conda config --set always_yes yes
           conda install conda-build pytest
@@ -84,15 +84,18 @@ jobs:
 
 
       - name: 'set env JETSETBESSELBUILD'
+        shell: bash
         run: |
           echo "FALSE">JETSETBESSELBUILD
           echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
 
       - name: 'echo env TEST'
+        shell: bash
         run: |
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
       - name: 'build '
+        shell: bash
         run: |
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
           python setup.py clean
@@ -101,14 +104,17 @@ jobs:
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
       - name: 'set pkg version'
+        shell: bash
         run: |
          echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
 
       - name: 'echo pkg version'
+        shell: bash
         run: |
           echo "PKG_VERSION=${{env.PKG_VERSION}}"
 
       - name: 'conda build'
+        shell: bash
         working-directory: .github/conda-pipeline/github/
         run: |
           conda config --set anaconda_upload no
@@ -117,6 +123,7 @@ jobs:
           conda build  . --output > ./CONDABUILDJETSET.txt 
 
       - name: 'set env CONDABUILDJETSET'
+        shell: bash
         working-directory: .github/conda-pipeline/github/
         run: |
           echo $($PWD)
@@ -124,18 +131,22 @@ jobs:
           echo "CONDABUILDJETSET=$(tail -1 CONDABUILDJETSET.txt)"  >> $GITHUB_ENV
         
       - name: 'echo env CONDABUILDJETSET'
+        shell: bash
         working-directory: .github/conda-pipeline/github/
         run: echo "CONDABUILDJETSET=${{env.CONDABUILDJETSET}}"
 
       - name: 'conda install'
+        shell: bash
         run: |
           conda install --yes --offline $CONDABUILDJETSET
 
       - name: 'make test env'
+        shell: bash
         run: |
           cp -r jetset/tests/test*.py  .github/action_test/
 
       - name: 'test'
+        shell: bash
         if: github.event.inputs.skip_test != 'yes'
         working-directory: .github/action_test/
         run: |
@@ -143,6 +154,7 @@ jobs:
           pytest --pyargs jetset.tests.test_functions::TestFull
 
       - name: 'prepare asset'
+        shell: bash
         run: |
           echo ${{ env.CONDABUILDJETSET }}
           ls ${{ env.CONDABUILDJETSET }}
@@ -151,6 +163,7 @@ jobs:
           tar -cvf conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}.tar ./conda-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }}/*
 
       - name: 'Upload Release Asset'
+        shell: bash
         uses: softprops/action-gh-release@v1
         with:
           name: Release  ${{ github.event.inputs.tags }}
