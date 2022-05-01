@@ -64,7 +64,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           auto-update-conda: true
           channels: conda-forge, astropy
-          activate-environment: jetset
+          activate-environment: conda-jetset
 
       - name: 'conda env name'
         run: |
@@ -74,7 +74,8 @@ jobs:
 
       - name: 'Install dependencies'
         run: |
-          conda activate jetset
+          conda init bash
+          conda activate conda-jetset
           conda config --set always_yes yes
           conda install conda-build pytest
           conda install -c conda-forge swig">=3.0.0" 
