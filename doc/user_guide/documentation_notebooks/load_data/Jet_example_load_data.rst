@@ -573,7 +573,7 @@ you can rescale your plot
 .. code:: ipython3
 
     myPlot=sed_data.plot_sed()
-    myPlot.rescale(x_min=1E7,x_max=1E28,y_min=1E-15,y_max=1E-9)
+    myPlot.setlim(x_min=1E7,x_max=1E28,y_min=1E-15,y_max=1E-9)
 
 
 .. parsed-literal::
@@ -594,7 +594,7 @@ plotting in the ``src`` restframe
 .. code:: ipython3
 
     myPlot=sed_data.plot_sed(frame='src')
-    myPlot.rescale(x_min=1E7,x_max=1E28,y_min=1E40,y_max=1E46)
+    myPlot.setlim(x_min=1E7,x_max=1E28,y_min=1E40,y_max=1E46)
 
 
 .. parsed-literal::
@@ -643,7 +643,7 @@ this is not a problem for the fit process, you might want to rebin
     myPlot=sed_data.plot_sed()
     sed_data.group_data(bin_width=0.2)
     myPlot.add_data_plot(sed_data,label='rebinned')
-    myPlot.rescale(x_min=1E7,x_max=1E28,y_min=1E-15,y_max=1E-9)
+    myPlot.setlim(x_min=1E7,x_max=1E28,y_min=1E-15,y_max=1E-9)
 
 
 .. parsed-literal::
@@ -686,7 +686,7 @@ For these reasons the package offer the possibility to add systematics
 
     sed_data.add_systematics(0.2,[10.**6,10.**29])
     myPlot=sed_data.plot_sed()
-    myPlot.rescale(x_min=1E7,x_max=1E28,y_min=1E-15,y_max=1E-9)
+    myPlot.setlim(x_min=1E7,x_max=1E28,y_min=1E-15,y_max=1E-9)
 
 
 .. parsed-literal::

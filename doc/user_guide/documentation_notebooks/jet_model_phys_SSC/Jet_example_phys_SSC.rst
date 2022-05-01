@@ -671,7 +671,7 @@ and plot the corresponding SED:
     from jetset.plot_sedfit import PlotSED
     my_plot=PlotSED()
     my_jet.plot_model(plot_obj=my_plot)
-    my_plot.rescale(y_min=10**-17.5)
+    my_plot.setlim(y_min=10**-17.5)
 
 
 .. parsed-literal::

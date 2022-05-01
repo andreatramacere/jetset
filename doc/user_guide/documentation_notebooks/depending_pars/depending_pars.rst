@@ -1011,7 +1011,7 @@ In this example we show how to use the previous model during a Fit
 
     my_shape.IC_fit(fit_range=[23.,29.],minimizer='minuit',silent=True)
     p=my_shape.plot_shape_fit()
-    p.rescale(y_min=-15)
+    p.setlim(y_min=1E-15)
 
 
 .. parsed-literal::

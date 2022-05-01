@@ -87,10 +87,10 @@ extensions = [
 exclude_patterns = ['_build', '**.ipynb_checkpoints','../jetkernel/*','../jetset/jetkernel/*','documentation_notebooks','example_notebooks','slides']
 
 
-sphinx_gallery_conf = {
-     'examples_dirs': 'example_notebooks',   # path to your example scripts
-     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
-}
+#sphinx_gallery_conf = {
+#     'examples_dirs': 'example_notebooks',   # path to your example scripts
+#     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+#}
 #autosummary_generate = True
 
 #autodoc_default_flags = ['members']

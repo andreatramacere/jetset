@@ -281,7 +281,7 @@ names reported in the model description table, and that’s it!
     composite_model.jet_flaring.IC_nu_size=150
     composite_model.eval()
     p=composite_model.plot_model()
-    #p.rescale(y_max=-12)
+
 
 
 
@@ -443,7 +443,7 @@ same ``master`` parameter used for the ``EBL`` model, i.e. to the
 
     composite_model.eval()
     p=composite_model.plot_model()
-    p.rescale(y_max=-12)
+    p.setlim(y_max=1E-12)
 
 
 .. parsed-literal::

@@ -5,7 +5,7 @@
 Hadronic pp jet model
 =====================
 
-In this section we show the hadronic `pp` implemented for the Jet model. The `pp` implementation is based on the [Kelner2006]_.
+In this section we show the hadronic `pp` implemented for the Jet model. The `pp` implementation is based on the work presented in [Kelner2006]_.
 
 .. code:: ipython3
 
