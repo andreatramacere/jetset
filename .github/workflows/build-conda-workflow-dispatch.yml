@@ -105,8 +105,8 @@ jobs:
         run: |
           conda config --set anaconda_upload no
           conda build purge
-          conda build . --python=${{matrix.python-version}}  -c defaults -c astropy -c conda-forge
-          conda build .  --output > ./CONDABUILDJETSET.txt
+          conda build  --python=${{matrix.python-version}}  -c defaults -c astropy -c conda-forge .
+          conda build   --output > ./CONDABUILDJETSET.txt .
 
       - name: 'set env CONDABUILDJETSET'
         working-directory: .github/conda-pipeline/github/
