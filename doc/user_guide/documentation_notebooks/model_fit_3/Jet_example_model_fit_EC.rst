@@ -125,7 +125,7 @@ see the :ref:`phenom_constr` user guide for further information about phenomenol
     my_shape=SEDShape(sed_data)
     my_shape.eval_indices(silent=True)
     p=my_shape.plot_indices()
-    p.rescale(y_min=-15,y_max=-6)
+    p.setlim(y_min=1E-15,y_max=1E-6)
 
 
 .. parsed-literal::
@@ -176,7 +176,7 @@ luminosity and temperature
 .. raw:: html
 
     <i>Table length=5</i>
-    <table id="table140242212242240-356215" class="table-striped table-bordered table-condensed">
+    <table id="table140458361624320-905375" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogParabolaEp</td><td>b</td><td>-2.984653e-01</td><td>-2.984653e-01</td><td>5.631694e-02</td><td>--</td><td>-1.527892e-01</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogParabolaEp</td><td>Ep</td><td>1.190850e+01</td><td>1.190850e+01</td><td>2.238841e-01</td><td>--</td><td>1.298338e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
@@ -206,14 +206,14 @@ luminosity and temperature
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140242212242240-356215').dataTable()");
+        console.log("$('#table140458361624320-905375').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140242212242240-356215').dataTable({
+        $('#table140458361624320-905375').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -236,7 +236,7 @@ luminosity and temperature
 
     my_shape.IC_fit(fit_range=[16,26],minimizer='minuit', silent=True)
     p=my_shape.plot_shape_fit()
-    p.rescale(y_min=-15)
+    p.setlim(y_min=1E-15)
 
 
 .. parsed-literal::
@@ -254,12 +254,12 @@ luminosity and temperature
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140242212443664-458478" class="table-striped table-bordered table-condensed">
+    <table id="table140458393599808-258017" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <tr><td>LogCubic</td><td>b</td><td>-1.128690e-01</td><td>-1.128690e-01</td><td>1.241604e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>c</td><td>-1.064758e-02</td><td>-1.064758e-02</td><td>2.396209e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Ep</td><td>2.273377e+01</td><td>2.273377e+01</td><td>1.454766e-01</td><td>--</td><td>2.270678e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
-    <tr><td>LogCubic</td><td>Sp</td><td>-1.043099e+01</td><td>-1.043099e+01</td><td>6.086309e-02</td><td>--</td><td>-1.000000e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>b</td><td>-1.128855e-01</td><td>-1.128855e-01</td><td>1.240849e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>c</td><td>-1.065003e-02</td><td>-1.065003e-02</td><td>2.393721e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Ep</td><td>2.273378e+01</td><td>2.273378e+01</td><td>1.453319e-01</td><td>--</td><td>2.270678e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
+    <tr><td>LogCubic</td><td>Sp</td><td>-1.043090e+01</td><td>-1.043090e+01</td><td>6.087264e-02</td><td>--</td><td>-1.000000e+01</td><td>-3.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -283,14 +283,14 @@ luminosity and temperature
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140242212443664-458478').dataTable()");
+        console.log("$('#table140458393599808-258017').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140242212443664-458478').dataTable({
+        $('#table140458393599808-258017').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -304,7 +304,7 @@ luminosity and temperature
 
 .. parsed-literal::
 
-    ---> IC         nu_p=+2.273377e+01 (err=+1.454766e-01)  nuFnu_p=-1.043099e+01 (err=+6.086309e-02) curv.=-1.128690e-01 (err=+1.241604e-02)
+    ---> IC         nu_p=+2.273378e+01 (err=+1.453319e-01)  nuFnu_p=-1.043090e+01 (err=+6.087264e-02) curv.=-1.128855e-01 (err=+1.240849e-02)
     ================================================================================
     
 
@@ -347,7 +347,7 @@ read the section :ref:`jet_physical_guide_EC`  for more information regarding th
 .. raw:: html
 
     <i>Table length=19</i>
-    <table id="table140242182551200-938951" class="table-striped table-bordered table-condensed">
+    <table id="table140458375874592-8419" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>2.845488e+17</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -391,14 +391,14 @@ read the section :ref:`jet_physical_guide_EC`  for more information regarding th
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140242182551200-938951').dataTable()");
+        console.log("$('#table140458375874592-8419').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140242182551200-938951').dataTable({
+        $('#table140458375874592-8419').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -456,7 +456,7 @@ EC model fit
 .. raw:: html
 
     <i>Table length=19</i>
-    <table id="table140242218255024-683217" class="table-striped table-bordered table-condensed">
+    <table id="table140458375778464-964873" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.071498e+01</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.601124e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -500,14 +500,14 @@ EC model fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140242218255024-683217').dataTable()");
+        console.log("$('#table140458375778464-964873').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140242218255024-683217').dataTable({
+        $('#table140458375778464-964873').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -574,8 +574,8 @@ EC model fit
 
 .. parsed-literal::
 
-    
     - best chisq=1.93395e+01
+    
     fit run: 1
     - old chisq=1.93395e+01
 
@@ -588,8 +588,8 @@ EC model fit
 
 .. parsed-literal::
 
-    
     - best chisq=1.93395e+01
+    
     fit run: 2
     - old chisq=1.93395e+01
 
@@ -602,8 +602,8 @@ EC model fit
 
 .. parsed-literal::
 
-    
     - best chisq=1.93386e+01
+    
     -------------------------------------------------------------------------
     Fit report
     
@@ -614,7 +614,7 @@ EC model fit
 .. raw:: html
 
     <i>Table length=19</i>
-    <table id="table140242214573824-960696" class="table-striped table-bordered table-condensed">
+    <table id="table140458380886224-366162" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.297117e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.822712e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -658,14 +658,14 @@ EC model fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140242214573824-960696').dataTable()");
+        console.log("$('#table140458380886224-366162').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140242214573824-960696').dataTable({
+        $('#table140458380886224-366162').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -703,7 +703,7 @@ EC model fit
 .. raw:: html
 
     <i>Table length=19</i>
-    <table id="table140242193488240-620815" class="table-striped table-bordered table-condensed">
+    <table id="table140458376009856-140243" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>4.297117e+00</td><td>4.297117e+00</td><td>3.882204e+01</td><td>--</td><td>1.071498e+01</td><td>2.000000e+00</td><td>1.000000e+02</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>2.822712e+04</td><td>2.822712e+04</td><td>6.287440e+04</td><td>--</td><td>1.601124e+04</td><td>1.000000e+03</td><td>1.000000e+06</td><td>False</td></tr>
@@ -747,14 +747,14 @@ EC model fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140242193488240-620815').dataTable()");
+        console.log("$('#table140458376009856-140243').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140242193488240-620815').dataTable({
+        $('#table140458376009856-140243').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -780,7 +780,7 @@ EC model fit
     fit_model.set_nu_grid(1E6,1E30,200)
     fit_model.eval()
     p2=fit_model.plot_model(sed_data=sed_data)
-    p2.rescale(y_min=-15,y_max=-9.5,x_min=6,x_max=28.5)
+    p2.setlim(y_min=1E-15,y_max=5E-9,x_min=1E6,x_max=2E28)
 
 
 
@@ -815,10 +815,10 @@ EC model fit
 
 .. parsed-literal::
 
+    - best chisq=1.16376e+01
     
-    - best chisq=7.44585e+00
     fit run: 1
-    - old chisq=7.44585e+00
+    - old chisq=1.16376e+01
 
 
 
@@ -829,8 +829,8 @@ EC model fit
 
 .. parsed-literal::
 
+    - best chisq=1.05577e+01
     
-    - best chisq=5.24530e+00
     -------------------------------------------------------------------------
     Fit report
     
@@ -841,26 +841,26 @@ EC model fit
 .. raw:: html
 
     <i>Table length=19</i>
-    <table id="table140241729549552-228508" class="table-striped table-bordered table-condensed">
+    <table id="table140458376009616-159606" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.347846e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.485428e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.241585e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.001769e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>1.041515e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.457395e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>T_DT</td><td>DT</td><td>K</td><td>3.398520e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.295675e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.002469e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>2.257972e+01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.008410e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>1.036353e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.604263e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>T_DT</td><td>DT</td><td>K</td><td>4.431086e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_DT</td><td>DT</td><td>cm</td><td>5.143375e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>tau_DT</td><td>DT</td><td></td><td>1.012248e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>tau_BLR</td><td>BLR</td><td></td><td>7.350812e-03</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>tau_DT</td><td>DT</td><td></td><td>1.761708e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>tau_BLR</td><td>BLR</td><td></td><td>7.299979e-09</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_BLR_in</td><td>BLR</td><td>cm</td><td>2.057350e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R_BLR_out</td><td>BLR</td><td>cm</td><td>4.114700e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>L_Disk</td><td>Disk</td><td>erg / s</td><td>4.232688e+45</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>T_Disk</td><td>Disk</td><td>K</td><td>5.246771e+04</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>4.140526e+17</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>T_Disk</td><td>Disk</td><td>K</td><td>3.853341e+04</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>4.109322e+17</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>9.984351e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.142916e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.094358e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.275298e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.069429e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>5.930000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
@@ -885,14 +885,14 @@ EC model fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140241729549552-228508').dataTable()");
+        console.log("$('#table140458376009616-159606').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140241729549552-228508').dataTable({
+        $('#table140458376009616-159606').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -908,7 +908,7 @@ EC model fit
 
     
     converged=True
-    calls=2766
+    calls=1240
     mesg=
 
 
@@ -917,28 +917,28 @@ EC model fit
 
     <table>
         <tr>
-            <td colspan="2" style="text-align:left" title="Minimum value of function"> FCN = 5.245 </td>
-            <td colspan="3" style="text-align:center" title="No. of calls in last algorithm and total number of calls"> Ncalls = 2766 (2766 total) </td>
+            <td colspan="2" style="text-align:left" title="Minimum value of function"> FCN = 10.56 </td>
+            <td colspan="3" style="text-align:center" title="No. of function evaluations in last call and total number"> Nfcn = 1240 </td>
         </tr>
         <tr>
-            <td colspan="2" style="text-align:left" title="Estimated distance to minimum and goal"> EDM = 2.67e-06 (Goal: 0.0002) </td>
-            <td colspan="3" style="text-align:center" title="Increase in FCN which corresponds to 1 standard deviation"> up = 1.0 </td>
+            <td colspan="2" style="text-align:left" title="Estimated distance to minimum and goal"> EDM = 9.31e+08 (Goal: 0.0002) </td>
+            <td colspan="3" style="text-align:center" title="No. of gradient evaluations in last call and total number">  </td>
         </tr>
         <tr>
-            <td style="text-align:center;background-color:#92CCA6;color:black"> Valid Minimum </td>
+            <td style="text-align:center;background-color:#c15ef7;color:black"> INVALID Minimum </td>
             <td style="text-align:center;background-color:#92CCA6;color:black"> Valid Parameters </td>
-            <td colspan="3" style="text-align:center;background-color:#FFF79A;color:black"> SOME Parameters at limit </td>
+            <td colspan="3" style="text-align:center;background-color:#92CCA6;color:black"> No Parameters at limit </td>
         </tr>
         <tr>
-            <td colspan="2" style="text-align:center;background-color:#92CCA6;color:black"> Below EDM threshold (goal x 10) </td>
+            <td colspan="2" style="text-align:center;background-color:#c15ef7;color:black"> ABOVE EDM threshold (goal x 10) </td>
             <td colspan="3" style="text-align:center;background-color:#92CCA6;color:black"> Below call limit </td>
         </tr>
         <tr>
+            <td style="text-align:center;background-color:#92CCA6;color:black"> Covariance </td>
             <td style="text-align:center;background-color:#92CCA6;color:black"> Hesse ok </td>
-            <td style="text-align:center;background-color:#92CCA6;color:black"> Has Covariance </td>
-            <td style="text-align:center;background-color:#92CCA6;color:black" title="Is covariance matrix accurate?"> Accurate </td>
-            <td style="text-align:center;background-color:#92CCA6;color:black" title="Is covariance matrix positive definite?"> Pos. def. </td>
-            <td style="text-align:center;background-color:#92CCA6;color:black" title="Was positive definiteness enforced by Minuit?"> Not forced </td>
+            <td style="text-align:center;background-color:#FFF79A;color:black" title="Is covariance matrix accurate?"> APPROXIMATE </td>
+            <td style="text-align:center;background-color:#c15ef7;color:black" title="Is covariance matrix positive definite?"> NOT pos. def. </td>
+            <td style="text-align:center;background-color:#c15ef7;color:black" title="Was positive definiteness enforced by Minuit?"> FORCED </td>
         </tr>
     </table><table>
         <tr>
@@ -955,8 +955,8 @@ EC model fit
         <tr>
             <th> 0 </th>
             <td> par_0 </td>
-            <td> 4.347846 </td>
-            <td> 0.000027 </td>
+            <td> 4.2956749 </td>
+            <td> 0.0000006 </td>
             <td>  </td>
             <td>  </td>
             <td> 2 </td>
@@ -966,8 +966,8 @@ EC model fit
         <tr>
             <th> 1 </th>
             <td> par_1 </td>
-            <td> 148.5428e3 </td>
-            <td> 0.0006e3 </td>
+            <td> 100.246922e3 </td>
+            <td> 0.000015e3 </td>
             <td>  </td>
             <td>  </td>
             <td> 1E+03 </td>
@@ -977,8 +977,8 @@ EC model fit
         <tr>
             <th> 2 </th>
             <td> par_2 </td>
-            <td> 22.4158540 </td>
-            <td> 0.0000018 </td>
+            <td> 22.5797225 </td>
+            <td> 0.0000005 </td>
             <td>  </td>
             <td>  </td>
             <td> 0 </td>
@@ -988,8 +988,8 @@ EC model fit
         <tr>
             <th> 3 </th>
             <td> par_3 </td>
-            <td> 300.17691 </td>
-            <td> 0.00005 </td>
+            <td> 300.841009 </td>
+            <td> 0.000011 </td>
             <td>  </td>
             <td>  </td>
             <td> 300 </td>
@@ -999,8 +999,8 @@ EC model fit
         <tr>
             <th> 4 </th>
             <td> par_4 </td>
-            <td> 1.0415148 </td>
-            <td> 0.0000014 </td>
+            <td> 1 </td>
+            <td> 6 </td>
             <td>  </td>
             <td>  </td>
             <td> -10 </td>
@@ -1010,8 +1010,8 @@ EC model fit
         <tr>
             <th> 5 </th>
             <td> par_5 </td>
-            <td> 3.457395 </td>
-            <td> 0.000017 </td>
+            <td> 3.604263 </td>
+            <td> 0.000007 </td>
             <td>  </td>
             <td>  </td>
             <td> -10 </td>
@@ -1021,8 +1021,8 @@ EC model fit
         <tr>
             <th> 6 </th>
             <td> par_6 </td>
-            <td> 339.8520270 </td>
-            <td> 0.0000018 </td>
+            <td> 443.10861749 </td>
+            <td> 0.00000004 </td>
             <td>  </td>
             <td>  </td>
             <td> 0 </td>
@@ -1032,8 +1032,8 @@ EC model fit
         <tr>
             <th> 7 </th>
             <td> par_7 </td>
-            <td> 101.2248e-3 </td>
-            <td> 0.0006e-3 </td>
+            <td> 176.170830e-3 </td>
+            <td> 0.000015e-3 </td>
             <td>  </td>
             <td>  </td>
             <td> 0 </td>
@@ -1043,8 +1043,8 @@ EC model fit
         <tr>
             <th> 8 </th>
             <td> par_8 </td>
-            <td> 7.35081e-3 </td>
-            <td> 0.00016e-3 </td>
+            <td> 7.3000e-9 </td>
+            <td> 0.0034e-9 </td>
             <td>  </td>
             <td>  </td>
             <td> 0 </td>
@@ -1054,8 +1054,8 @@ EC model fit
         <tr>
             <th> 9 </th>
             <td> par_9 </td>
-            <td> 52.4677081549e3 </td>
-            <td> 0.0000000018e3 </td>
+            <td> 38.53341003833e3 </td>
+            <td> 0.00000000004e3 </td>
             <td>  </td>
             <td>  </td>
             <td> 0 </td>
@@ -1065,8 +1065,8 @@ EC model fit
         <tr>
             <th> 10 </th>
             <td> par_10 </td>
-            <td> 414.0526e15 </td>
-            <td> 0.0025e15 </td>
+            <td> 410.93223e15 </td>
+            <td> 0.00027e15 </td>
             <td>  </td>
             <td>  </td>
             <td> 1E+16 </td>
@@ -1076,8 +1076,8 @@ EC model fit
         <tr>
             <th> 11 </th>
             <td> par_11 </td>
-            <td> 114.29e-3 </td>
-            <td> 0.11e-3 </td>
+            <td> 127.529767e-3 </td>
+            <td> 0.000023e-3 </td>
             <td>  </td>
             <td>  </td>
             <td> 0 </td>
@@ -1087,13 +1087,238 @@ EC model fit
         <tr>
             <th> 12 </th>
             <td> par_12 </td>
-            <td> 10.9435833 </td>
-            <td> 0.0000018 </td>
+            <td> 10.69428574 </td>
+            <td> 0.00000004 </td>
             <td>  </td>
             <td>  </td>
             <td> 0.0001 </td>
             <td>  </td>
             <td>  </td>
+        </tr>
+    </table><table>
+        <tr>
+            <td></td>
+            <th> par_0 </th>
+            <th> par_1 </th>
+            <th> par_2 </th>
+            <th> par_3 </th>
+            <th> par_4 </th>
+            <th> par_5 </th>
+            <th> par_6 </th>
+            <th> par_7 </th>
+            <th> par_8 </th>
+            <th> par_9 </th>
+            <th> par_10 </th>
+            <th> par_11 </th>
+            <th> par_12 </th>
+        </tr>
+        <tr>
+            <th> par_0 </th>
+            <td> 4.1e-13 </td>
+            <td style="background-color:rgb(250,218,218);color:black"> 2.04e-09 <strong>(0.215)</strong> </td>
+            <td style="background-color:rgb(250,196,196);color:black"> 1.21e-13 <strong>(0.363)</strong> </td>
+            <td style="background-color:rgb(250,196,196);color:black"> 2.62e-12 <strong>(0.359)</strong> </td>
+            <td style="background-color:rgb(250,195,195);color:black"> 1.42e-06 <strong>(0.364)</strong> </td>
+            <td style="background-color:rgb(250,195,195);color:black"> 1.51e-12 <strong>(0.363)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -5.12e-22 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 4.92e-19 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -5.75e-27 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.69e-24 </td>
+            <td style="background-color:rgb(250,197,197);color:black"> 6.07e+04 <strong>(0.356)</strong> </td>
+            <td style="background-color:rgb(222,222,250);color:black"> -3.23e-15 <strong>(-0.218)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.26e-18 </td>
+        </tr>
+        <tr>
+            <th> par_1 </th>
+            <td style="background-color:rgb(250,218,218);color:black"> 2.04e-09 <strong>(0.215)</strong> </td>
+            <td> 0.000221 </td>
+            <td style="background-color:rgb(250,162,162);color:black"> 4.54e-09 <strong>(0.587)</strong> </td>
+            <td style="background-color:rgb(250,163,163);color:black"> 9.84e-08 <strong>(0.581)</strong> </td>
+            <td style="background-color:rgb(250,162,162);color:black"> 0.0533 <strong>(0.589)</strong> </td>
+            <td style="background-color:rgb(250,162,162);color:black"> 5.69e-08 <strong>(0.588)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.93e-17 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.85e-14 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.16e-22 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -6.37e-20 </td>
+            <td style="background-color:rgb(250,164,164);color:black"> 2.28e+09 <strong>(0.577)</strong> </td>
+            <td style="background-color:rgb(204,204,250);color:black"> -1.22e-10 <strong>(-0.353)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -8.49e-14 </td>
+        </tr>
+        <tr>
+            <th> par_2 </th>
+            <td style="background-color:rgb(250,196,196);color:black"> 1.21e-13 <strong>(0.363)</strong> </td>
+            <td style="background-color:rgb(250,162,162);color:black"> 4.54e-09 <strong>(0.587)</strong> </td>
+            <td> 2.7e-13 </td>
+            <td style="background-color:rgb(250,103,103);color:black"> 5.81e-12 <strong>(0.983)</strong> </td>
+            <td style="background-color:rgb(250,100,100);color:black"> 3.15e-06 <strong>(0.997)</strong> </td>
+            <td style="background-color:rgb(250,101,101);color:black"> 3.36e-12 <strong>(0.995)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.14e-21 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.09e-18 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.28e-26 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -3.76e-24 </td>
+            <td style="background-color:rgb(250,104,104);color:black"> 1.35e+05 <strong>(0.976)</strong> </td>
+            <td style="background-color:rgb(172,172,250);color:black"> -7.19e-15 <strong>(-0.597)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -5.02e-18 </td>
+        </tr>
+        <tr>
+            <th> par_3 </th>
+            <td style="background-color:rgb(250,196,196);color:black"> 2.62e-12 <strong>(0.359)</strong> </td>
+            <td style="background-color:rgb(250,163,163);color:black"> 9.84e-08 <strong>(0.581)</strong> </td>
+            <td style="background-color:rgb(250,103,103);color:black"> 5.81e-12 <strong>(0.983)</strong> </td>
+            <td> 1.3e-10 </td>
+            <td style="background-color:rgb(250,102,102);color:black"> 6.83e-05 <strong>(0.986)</strong> </td>
+            <td style="background-color:rgb(250,102,102);color:black"> 7.29e-11 <strong>(0.984)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.47e-20 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 2.37e-17 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.77e-25 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -8.15e-23 </td>
+            <td style="background-color:rgb(250,105,105);color:black"> 2.92e+06 <strong>(0.965)</strong> </td>
+            <td style="background-color:rgb(173,173,250);color:black"> -1.56e-13 <strong>(-0.590)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.09e-16 </td>
+        </tr>
+        <tr>
+            <th> par_4 </th>
+            <td style="background-color:rgb(250,195,195);color:black"> 1.42e-06 <strong>(0.364)</strong> </td>
+            <td style="background-color:rgb(250,162,162);color:black"> 0.0533 <strong>(0.589)</strong> </td>
+            <td style="background-color:rgb(250,100,100);color:black"> 3.15e-06 <strong>(0.997)</strong> </td>
+            <td style="background-color:rgb(250,102,102);color:black"> 6.83e-05 <strong>(0.986)</strong> </td>
+            <td> 37 </td>
+            <td style="background-color:rgb(250,100,100);color:black"> 3.95e-05 <strong>(0.998)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.34e-14 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.29e-11 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.5e-19 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -4.42e-17 </td>
+            <td style="background-color:rgb(250,103,103);color:black"> 1.58e+12 <strong>(0.979)</strong> </td>
+            <td style="background-color:rgb(172,172,250);color:black"> -8.45e-08 <strong>(-0.599)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -5.9e-11 </td>
+        </tr>
+        <tr>
+            <th> par_5 </th>
+            <td style="background-color:rgb(250,195,195);color:black"> 1.51e-12 <strong>(0.363)</strong> </td>
+            <td style="background-color:rgb(250,162,162);color:black"> 5.69e-08 <strong>(0.588)</strong> </td>
+            <td style="background-color:rgb(250,101,101);color:black"> 3.36e-12 <strong>(0.995)</strong> </td>
+            <td style="background-color:rgb(250,102,102);color:black"> 7.29e-11 <strong>(0.984)</strong> </td>
+            <td style="background-color:rgb(250,100,100);color:black"> 3.95e-05 <strong>(0.998)</strong> </td>
+            <td> 4.23e-11 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.43e-20 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.37e-17 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.6e-25 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -4.72e-23 </td>
+            <td style="background-color:rgb(250,103,103);color:black"> 1.69e+06 <strong>(0.977)</strong> </td>
+            <td style="background-color:rgb(172,172,250);color:black"> -9.01e-14 <strong>(-0.597)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -6.29e-17 </td>
+        </tr>
+        <tr>
+            <th> par_6 </th>
+            <td style="background-color:rgb(250,250,250);color:black"> -5.12e-22 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.93e-17 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.14e-21 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.47e-20 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.34e-14 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.43e-20 </td>
+            <td> 1.62e-15 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -4.64e-27 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 5.42e-35 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.6e-32 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -0.000572 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 3.05e-23 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 2.13e-26 </td>
+        </tr>
+        <tr>
+            <th> par_7 </th>
+            <td style="background-color:rgb(250,250,250);color:black"> 4.92e-19 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.85e-14 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.09e-18 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 2.37e-17 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.29e-11 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.37e-17 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -4.64e-27 </td>
+            <td> 2.35e-16 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -5.21e-32 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.53e-29 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 0.55 <strong>(0.000)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.93e-20 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.05e-23 </td>
+        </tr>
+        <tr>
+            <th> par_8 </th>
+            <td style="background-color:rgb(250,250,250);color:black"> -5.75e-27 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.16e-22 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.28e-26 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.77e-25 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.5e-19 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.6e-25 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 5.42e-35 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -5.21e-32 </td>
+            <td> 1.18e-23 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.79e-37 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -6.42e-09 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 3.42e-28 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 2.39e-31 </td>
+        </tr>
+        <tr>
+            <th> par_9 </th>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.69e-24 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -6.37e-20 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -3.76e-24 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -8.15e-23 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -4.42e-17 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -4.72e-23 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.6e-32 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.53e-29 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.79e-37 </td>
+            <td> 1.62e-15 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.89e-06 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.01e-25 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 7.04e-29 </td>
+        </tr>
+        <tr>
+            <th> par_10 </th>
+            <td style="background-color:rgb(250,197,197);color:black"> 6.07e+04 <strong>(0.356)</strong> </td>
+            <td style="background-color:rgb(250,164,164);color:black"> 2.28e+09 <strong>(0.577)</strong> </td>
+            <td style="background-color:rgb(250,104,104);color:black"> 1.35e+05 <strong>(0.976)</strong> </td>
+            <td style="background-color:rgb(250,105,105);color:black"> 2.92e+06 <strong>(0.965)</strong> </td>
+            <td style="background-color:rgb(250,103,103);color:black"> 1.58e+12 <strong>(0.979)</strong> </td>
+            <td style="background-color:rgb(250,103,103);color:black"> 1.69e+06 <strong>(0.977)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -0.000572 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 0.55 <strong>(0.000)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -6.42e-09 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.89e-06 </td>
+            <td> 7.08e+22 </td>
+            <td style="background-color:rgb(174,174,250);color:black"> -3.61e+03 <strong>(-0.586)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.52 <strong>(-0.000)</strong> </td>
+        </tr>
+        <tr>
+            <th> par_11 </th>
+            <td style="background-color:rgb(222,222,250);color:black"> -3.23e-15 <strong>(-0.218)</strong> </td>
+            <td style="background-color:rgb(204,204,250);color:black"> -1.22e-10 <strong>(-0.353)</strong> </td>
+            <td style="background-color:rgb(172,172,250);color:black"> -7.19e-15 <strong>(-0.597)</strong> </td>
+            <td style="background-color:rgb(173,173,250);color:black"> -1.56e-13 <strong>(-0.590)</strong> </td>
+            <td style="background-color:rgb(172,172,250);color:black"> -8.45e-08 <strong>(-0.599)</strong> </td>
+            <td style="background-color:rgb(172,172,250);color:black"> -9.01e-14 <strong>(-0.597)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 3.05e-23 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.93e-20 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 3.42e-28 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.01e-25 </td>
+            <td style="background-color:rgb(174,174,250);color:black"> -3.61e+03 <strong>(-0.586)</strong> </td>
+            <td> 5.38e-16 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.35e-19 </td>
+        </tr>
+        <tr>
+            <th> par_12 </th>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.26e-18 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -8.49e-14 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -5.02e-18 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.09e-16 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -5.9e-11 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -6.29e-17 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 2.13e-26 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.05e-23 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 2.39e-31 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 7.04e-29 </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -2.52 <strong>(-0.000)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> 1.35e-19 </td>
+            <td> 1.61e-15 </td>
         </tr>
     </table>
 
@@ -1101,7 +1326,7 @@ EC model fit
 .. parsed-literal::
 
     dof=8
-    chisq=5.245296, chisq/red=0.655662 null hypothesis sig=0.731066
+    chisq=10.557743, chisq/red=1.319718 null hypothesis sig=0.228038
     
     best fit pars
 
@@ -1110,26 +1335,26 @@ EC model fit
 .. raw:: html
 
     <i>Table length=19</i>
-    <table id="table140241729524928-611349" class="table-striped table-bordered table-condensed">
+    <table id="table140457902848704-257577" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>4.347846e+00</td><td>4.347846e+00</td><td>2.744442e-05</td><td>--</td><td>4.297117e+00</td><td>2.000000e+00</td><td>1.000000e+02</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>1.485428e+05</td><td>1.485428e+05</td><td>6.490992e-01</td><td>--</td><td>1.000000e+05</td><td>1.000000e+03</td><td>1.000000e+06</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>2.241585e+01</td><td>2.241585e+01</td><td>1.826625e-06</td><td>--</td><td>2.258362e+01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma_break</td><td>3.001769e+02</td><td>3.001769e+02</td><td>4.849093e-05</td><td>--</td><td>3.008818e+02</td><td>3.000000e+02</td><td>3.000000e+03</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p</td><td>1.041515e+00</td><td>1.041515e+00</td><td>1.391149e-06</td><td>--</td><td>1.034138e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>p_1</td><td>3.457395e+00</td><td>3.457395e+00</td><td>1.708928e-05</td><td>--</td><td>3.639483e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>T_DT</td><td>3.398520e+02</td><td>3.398520e+02</td><td>1.831386e-06</td><td>--</td><td>4.580689e+02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>4.295675e+00</td><td>4.295675e+00</td><td>6.400531e-07</td><td>--</td><td>4.297117e+00</td><td>2.000000e+00</td><td>1.000000e+02</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>1.002469e+05</td><td>1.002469e+05</td><td>1.487448e-02</td><td>--</td><td>1.000000e+05</td><td>1.000000e+03</td><td>1.000000e+06</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>2.257972e+01</td><td>2.257972e+01</td><td>5.195583e-07</td><td>--</td><td>2.258362e+01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>3.008410e+02</td><td>3.008410e+02</td><td>1.138513e-05</td><td>--</td><td>3.008818e+02</td><td>3.000000e+02</td><td>3.000000e+03</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p</td><td>1.036353e+00</td><td>1.036353e+00</td><td>5.713136e+00</td><td>--</td><td>1.034138e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p_1</td><td>3.604263e+00</td><td>3.604263e+00</td><td>6.503548e-06</td><td>--</td><td>3.639483e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>T_DT</td><td>4.431086e+02</td><td>4.431086e+02</td><td>4.021774e-08</td><td>--</td><td>4.580689e+02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_DT</td><td>5.143375e+18</td><td>--</td><td>--</td><td>--</td><td>5.143375e+18</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>tau_DT</td><td>1.012248e-01</td><td>1.012248e-01</td><td>5.523753e-07</td><td>--</td><td>1.781413e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>tau_BLR</td><td>7.350812e-03</td><td>7.350812e-03</td><td>1.564399e-07</td><td>--</td><td>2.089862e-04</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>tau_DT</td><td>1.761708e-01</td><td>1.761708e-01</td><td>1.532161e-08</td><td>--</td><td>1.781413e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>tau_BLR</td><td>7.299979e-09</td><td>7.299979e-09</td><td>3.436224e-12</td><td>--</td><td>2.089862e-04</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_BLR_in</td><td>2.057350e+17</td><td>--</td><td>--</td><td>--</td><td>2.057350e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R_BLR_out</td><td>4.114700e+17</td><td>--</td><td>--</td><td>--</td><td>4.114700e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>L_Disk</td><td>4.232688e+45</td><td>--</td><td>--</td><td>--</td><td>4.232688e+45</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>T_Disk</td><td>5.246771e+04</td><td>5.246771e+04</td><td>1.831395e-06</td><td>--</td><td>3.780580e+04</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>4.140526e+17</td><td>4.140526e+17</td><td>2.488394e+12</td><td>--</td><td>4.119800e+17</td><td>1.000000e+16</td><td>5.000000e+18</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>T_Disk</td><td>3.853341e+04</td><td>3.853341e+04</td><td>4.021422e-08</td><td>--</td><td>3.780580e+04</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>4.109322e+17</td><td>4.109322e+17</td><td>2.660756e+11</td><td>--</td><td>4.119800e+17</td><td>1.000000e+16</td><td>5.000000e+18</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>9.984351e+17</td><td>--</td><td>--</td><td>--</td><td>9.984351e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>1.142916e-01</td><td>1.142916e-01</td><td>1.060216e-04</td><td>--</td><td>1.277432e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>1.094358e+01</td><td>1.094358e+01</td><td>1.824959e-06</td><td>--</td><td>1.071574e+01</td><td>1.000000e-04</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>1.275298e-01</td><td>1.275298e-01</td><td>2.319318e-08</td><td>--</td><td>1.277432e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>1.069429e+01</td><td>1.069429e+01</td><td>4.007054e-08</td><td>--</td><td>1.071574e+01</td><td>1.000000e-04</td><td>--</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>5.930000e-01</td><td>--</td><td>--</td><td>--</td><td>5.930000e-01</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
@@ -1154,14 +1379,14 @@ EC model fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140241729524928-611349').dataTable()");
+        console.log("$('#table140457902848704-257577').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140241729524928-611349').dataTable({
+        $('#table140457902848704-257577').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1187,7 +1412,7 @@ EC model fit
     fit_model.set_nu_grid(1E6,1E30,500)
     fit_model.eval()
     p2=fit_model.plot_model(sed_data=sed_data)
-    p2.rescale(y_min=-15,y_max=-9.5,x_min=6,x_max=28.5)
+    p2.setlim(y_min=1E-15,y_max=5E-9,x_min=1E6,x_max=2E28)
 
 
 
@@ -1203,45 +1428,45 @@ EC model fit
 .. raw:: html
 
     <i>Table length=37</i>
-    <table id="table140241738783184-604788" class="table-striped table-bordered table-condensed">
+    <table id="table140457871687536-384035" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
-    <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.863896e-03</td></tr>
-    <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>5.197429e-04</td></tr>
+    <tr><td>BulkLorentzFactor</td><td></td><td></td><td>1.069429e+01</td></tr>
+    <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.829260e-03</td></tr>
+    <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>3.394356e-03</td></tr>
+    <tr><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>6.471177e-04</td></tr>
     <tr><td>U_p</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_p_target</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.870816e-04</td></tr>
-    <tr><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>2.683300e+00</td></tr>
-    <tr><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.335830e-04</td></tr>
-    <tr><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>3.630718e-05</td></tr>
-    <tr><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.034262e-02</td></tr>
+    <tr><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.927297e-04</td></tr>
+    <tr><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>2.520901e+00</td></tr>
+    <tr><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.331209e-04</td></tr>
+    <tr><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>3.467122e-11</td></tr>
+    <tr><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.718776e-02</td></tr>
     <tr><td>U_CMB</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_Disk_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>1.112494e-02</td></tr>
-    <tr><td>U_BLR_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.548400e-05</td></tr>
-    <tr><td>U_DT_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>4.327039e-05</td></tr>
+    <tr><td>U_BLR_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.489284e-11</td></tr>
+    <tr><td>U_DT_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>7.530747e-05</td></tr>
     <tr><td>U_CMB_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>L_Sync_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>3.998270e+42</td></tr>
-    <tr><td>L_SSC_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>1.056464e+42</td></tr>
+    <tr><td>L_Sync_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>4.051976e+42</td></tr>
+    <tr><td>L_SSC_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>9.051115e+41</td></tr>
     <tr><td>L_EC_Disk_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>L_EC_BLR_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>2.113164e+41</td></tr>
-    <tr><td>L_EC_DT_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>7.397052e+43</td></tr>
+    <tr><td>L_EC_BLR_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>1.863765e+35</td></tr>
+    <tr><td>L_EC_DT_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>1.030114e+44</td></tr>
     <tr><td>L_EC_CMB_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>L_pp_gamma_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>jet_L_Sync</td><td>jet Lum.</td><td>erg / s</td><td>1.197102e+44</td></tr>
-    <tr><td>jet_L_SSC</td><td>jet Lum.</td><td>erg / s</td><td>3.163106e+43</td></tr>
+    <tr><td>jet_L_Sync</td><td>jet Lum.</td><td>erg / s</td><td>1.158539e+44</td></tr>
+    <tr><td>jet_L_SSC</td><td>jet Lum.</td><td>erg / s</td><td>2.587889e+43</td></tr>
     <tr><td>jet_L_EC_Disk</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>jet_L_EC_BLR</td><td>jet Lum.</td><td>erg / s</td><td>6.326920e+42</td></tr>
-    <tr><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>2.214715e+45</td></tr>
+    <tr><td>jet_L_EC_BLR</td><td>jet Lum.</td><td>erg / s</td><td>5.328865e+36</td></tr>
+    <tr><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>2.945295e+45</td></tr>
     <tr><td>jet_L_EC_CMB</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_pp_gamma</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>jet_L_rad</td><td>jet Lum.</td><td>erg / s</td><td>2.372383e+45</td></tr>
-    <tr><td>jet_L_kin</td><td>jet Lum.</td><td>erg / s</td><td>3.589231e+45</td></tr>
-    <tr><td>jet_L_tot</td><td>jet Lum.</td><td>erg / s</td><td>6.962463e+45</td></tr>
-    <tr><td>jet_L_e</td><td>jet Lum.</td><td>erg / s</td><td>3.589231e+45</td></tr>
-    <tr><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>1.000849e+45</td></tr>
-    <tr><td>jet_L_p_cold</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>jet_L_rad</td><td>jet Lum.</td><td>erg / s</td><td>3.087028e+45</td></tr>
+    <tr><td>jet_L_kin</td><td>jet Lum.</td><td>erg / s</td><td>9.459731e+45</td></tr>
+    <tr><td>jet_L_tot</td><td>jet Lum.</td><td>erg / s</td><td>1.371866e+46</td></tr>
+    <tr><td>jet_L_e</td><td>jet Lum.</td><td>erg / s</td><td>3.312706e+45</td></tr>
+    <tr><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>1.171901e+45</td></tr>
+    <tr><td>jet_L_p_cold</td><td>jet Lum.</td><td>erg / s</td><td>6.147025e+45</td></tr>
     <tr><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>BulkLorentzFactor</td><td></td><td></td><td>1.094358e+01</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -1265,14 +1490,14 @@ EC model fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140241738783184-604788').dataTable()");
+        console.log("$('#table140457871687536-384035').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140241738783184-604788').dataTable({
+        $('#table140457871687536-384035').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1358,7 +1583,7 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    mcmc run done, with 1 threads took 411.97 seconds
+    mcmc run done, with 1 threads took 277.30 seconds
 
 
 .. code:: ipython3
@@ -1368,15 +1593,15 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    0.49484375
+    0.5128125
 
 
 .. code:: ipython3
 
     mcmc.model.set_nu_grid(1E6,1E30,200)
     
-    p=mcmc.plot_model(sed_data=sed_data,fit_range=[11., 27.4],size=50)
-    p.rescale(y_min=-13,x_min=6,x_max=28.5)
+    p=mcmc.plot_model(sed_data=sed_data,fit_range=[1E11, 1E27],size=50)
+    p.setlim(y_min=1E-13,x_min=1E6,x_max=2E28)
 
 
 
@@ -1423,8 +1648,8 @@ Save and reuse MCMC
 
     ms.model.set_nu_grid(1E6,1E30,200)
     
-    p=ms.plot_model(sed_data=sed_data,fit_range=[11., 27.4],size=50)
-    p.rescale(y_min=-13,x_min=6,x_max=28.5)
+    p=ms.plot_model(sed_data=sed_data,fit_range=[1E11, 1E27],size=50)
+    p.setlim(y_min=1E-13,x_min=1E6,x_max=2E28)
 
 
 

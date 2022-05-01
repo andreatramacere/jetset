@@ -11,7 +11,7 @@ Phenomenological model constraining: SSC theory
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc6
+    tested on jetset 1.2.0rc13
 
 
 .. code:: ipython3
@@ -113,11 +113,11 @@ This section is based on the work presented in
     
     SED info:
      nu grid size jetkernel: 1000
-     nu grid size: 500
+     nu size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
-    flux plot lower bound   :  1.000000e-120
+    flux plot lower bound   :  1.000000e-30
     
     --------------------------------------------------------------------------------
 
@@ -126,7 +126,7 @@ This section is based on the work presented in
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140550859468752-855975" class="table-striped table-bordered table-condensed">
+    <table id="table140529845757168-482301" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -162,14 +162,14 @@ This section is based on the work presented in
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140550859468752-855975').dataTable()");
+        console.log("$('#table140529845757168-482301').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140550859468752-855975').dataTable({
+        $('#table140529845757168-482301').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -208,7 +208,7 @@ This section is based on the work presented in
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd48c3a32e0>
+    <matplotlib.legend.Legend at 0x7fcfa8864bb0>
 
 
 
@@ -227,7 +227,7 @@ This section is based on the work presented in
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd48c181eb0>
+    <matplotlib.legend.Legend at 0x7fcfa9714100>
 
 
 
@@ -238,7 +238,7 @@ This section is based on the work presented in
 .. code:: ipython3
 
     my_plot=my_jet.plot_model()
-    my_plot.rescale(y_max=-11,y_min=-17.5,x_min=9)
+    my_plot.setlim(y_max=1E-11,y_min=5E-17,x_min=1E9)
 
 
 
@@ -248,7 +248,7 @@ This section is based on the work presented in
 .. code:: ipython3
 
     my_plot=my_jet.plot_model(frame='src')
-    my_plot.rescale(y_max=44,y_min=38,x_min=9)
+    my_plot.setlim(y_max=1E44,y_min=1E38,x_min=1E9)
 
 
 
@@ -332,7 +332,7 @@ Synchrotron trend for :math:`\gamma_{min}`
     
     p.sedplot.scatter(nu_p_S,nuFnu_p_S)
     
-    p.rescale(y_min=-18,y_max=-9,x_min=7,x_max=32)
+    p.setlim(y_min=1E-18,y_max=1E-9,x_min=1E7,x_max=1E32)
 
 
 
@@ -365,7 +365,7 @@ Synchrotron trend for :math:`\gamma_{min}`
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd46e87a550>
+    <matplotlib.legend.Legend at 0x7fcf8b2f13d0>
 
 
 
@@ -446,7 +446,7 @@ Synchrotron trend for the low-energy spectral slope
     
     p.sedplot.scatter(nu_p_S,nuFnu_p_S)
     
-    p.rescale(y_min=-18,y_max=-9,x_min=7,x_max=34)
+    p.setlim(y_min=1E-18,y_max=1E-9,x_min=1E7,x_max=1E34)
     
 
 
@@ -480,7 +480,7 @@ Synchrotron trend for the low-energy spectral slope
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd46f7d6910>
+    <matplotlib.legend.Legend at 0x7fcfa9e169a0>
 
 
 
@@ -552,7 +552,7 @@ Change in the peak frequency of the SED
     p.sedplot.scatter(nu_p_S,nuFnu_p_S)
     ax.scatter(g_p_e,n3g_p_e)
     
-    p.rescale(y_min=-18,y_max=-11,x_min=8.9,x_max=30)
+    p.setlim(y_min=1E-18,y_max=1E-11,x_min=1E9,x_max=1E30)
     ax.set_ylim(2,9)
 
 
@@ -663,7 +663,7 @@ Changing the turn-over energy
         my_jet.eval()
         my_jet.plot_model(p,label='gammma_0=%2.2e'%gamma0_log_parab,color=colors[ID])
         
-    p.rescale(y_min=-20,y_max=-11,x_min=9)
+    p.setlim(y_min=1E-20,y_max=1E-11,x_min=1E9)
 
 
 
@@ -800,8 +800,8 @@ Transition from TH to KN regime for the IC emission: changing the curvature in t
         my_jet.electron_distribution.plot3p(pe)
         
         
-    p.rescale(y_min=-14,y_max=-10.5,x_min=10,x_max=29)
-    pe.rescale(y_min=0)
+    p.setlim(y_min=1E-14,y_max=5E-11,x_min=1E10,x_max=1E29)
+    pe.setlim(y_min=0)
 
 
 
@@ -840,7 +840,7 @@ the curvature of the electron distribution (r)
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd48d699700>
+    <matplotlib.legend.Legend at 0x7fcf8d032490>
 
 
 
@@ -908,7 +908,7 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
         g_p_e[ID] = pars[0]
         n3g_p_e[ID] = pars[1]
         
-    p.rescale(y_min=-18,y_max=-11.5,x_min=9)
+    p.setlim(y_min=1E-18,y_max=5E-11,x_min=1E9)
     
     p.sedplot.scatter(nu_p_S,nuFnu_p_S)
     p.sedplot.scatter(nu_p_IC,nuFnu_p_IC)
@@ -919,7 +919,7 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.collections.PathCollection at 0x7fd48e055c40>
+    <matplotlib.collections.PathCollection at 0x7fcf8bf3c6d0>
 
 
 
@@ -946,7 +946,7 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd46f939e80>
+    <matplotlib.legend.Legend at 0x7fcf8b2e2250>
 
 
 
@@ -976,7 +976,7 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd48dad5370>
+    <matplotlib.legend.Legend at 0x7fcf8be93df0>
 
 
 
@@ -992,3 +992,4 @@ gamma0_log_parab
 
 hint: use the get_component_peak to extract the peak of the SED for each
 component
+

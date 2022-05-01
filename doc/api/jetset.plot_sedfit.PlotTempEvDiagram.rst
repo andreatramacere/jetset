@@ -12,8 +12,10 @@ PlotTempEvDiagram
 
       ~PlotTempEvDiagram.plot
       ~PlotTempEvDiagram.rescale
+      ~PlotTempEvDiagram.setlim
 
    .. rubric:: Methods Documentation
 
    .. automethod:: plot
    .. automethod:: rescale
+   .. automethod:: setlim

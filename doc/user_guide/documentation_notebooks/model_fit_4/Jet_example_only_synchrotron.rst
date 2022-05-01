@@ -23,7 +23,7 @@ Model fitting 4: Only Synchrotron
 
 .. parsed-literal::
 
-    1.2.0rc6
+    1.2.0rc13
 
 
 .. code:: ipython3
@@ -102,7 +102,7 @@ Spectral indices
     my_shape=SEDShape(sed_data)
     my_shape.eval_indices(silent=True)
     p=my_shape.plot_indices()
-    p.rescale(y_min=-15,y_max=-6)
+    p.setlim(y_min=1E-15,y_max=1E-6)
 
 
 .. parsed-literal::
@@ -146,7 +146,7 @@ Sed shaper
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140194487468720-267811" class="table-striped table-bordered table-condensed">
+    <table id="table140678961306640-699611" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-1.545300e-01</td><td>-1.545300e-01</td><td>9.534795e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-1.023245e-02</td><td>-1.023245e-02</td><td>1.433073e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -175,14 +175,14 @@ Sed shaper
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140194487468720-267811').dataTable()");
+        console.log("$('#table140678961306640-699611').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140194487468720-267811').dataTable({
+        $('#table140678961306640-699611').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -205,7 +205,7 @@ Sed shaper
 
     my_shape.IC_fit(fit_range=[23., 29.],minimizer='minuit',silent=True)
     p=my_shape.plot_shape_fit()
-    p.rescale(y_min=-15)
+    p.setlim(y_min=1E-15)
 
 
 .. parsed-literal::
@@ -223,7 +223,7 @@ Sed shaper
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140194486375568-992326" class="table-striped table-bordered table-condensed">
+    <table id="table140678961307408-21252" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-2.098186e-01</td><td>-2.098186e-01</td><td>3.133032e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-4.661868e-02</td><td>-4.661868e-02</td><td>2.178352e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -252,14 +252,14 @@ Sed shaper
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140194486375568-992326').dataTable()");
+        console.log("$('#table140678961307408-21252').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140194486375568-992326').dataTable({
+        $('#table140678961307408-21252').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -314,7 +314,7 @@ Model constraining
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140194506177936-199457" class="table-striped table-bordered table-condensed">
+    <table id="table140678958229056-577967" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.112712e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -350,14 +350,14 @@ Model constraining
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140194506177936-199457').dataTable()");
+        console.log("$('#table140678958229056-577967').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140194506177936-199457').dataTable({
+        $('#table140678958229056-577967').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -380,7 +380,7 @@ Model constraining
 
     pl=prefit_jet.plot_model(sed_data=sed_data)
     pl.add_residual_plot(prefit_jet,sed_data)
-    pl.rescale(y_min=-15,x_min=7,x_max=29)
+    pl.setlim(y_min=1E-15,x_min=1E7,x_max=1E29)
 
 
 
@@ -409,7 +409,7 @@ Model fitting with Minuit
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140194511229280-336699" class="table-striped table-bordered table-condensed">
+    <table id="table140678950357264-202940" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -445,14 +445,14 @@ Model fitting with Minuit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140194511229280-336699').dataTable()");
+        console.log("$('#table140678950357264-202940').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140194511229280-336699').dataTable({
+        $('#table140678950357264-202940').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -501,7 +501,7 @@ we switch off the IC component
     
     SED info:
      nu grid size jetkernel: 1000
-     nu grid size: 500
+     nu size: 500
      nu mix (Hz): 1.000000e+06
      nu max (Hz): 1.000000e+30
     
@@ -514,7 +514,7 @@ we switch off the IC component
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140194507916816-336121" class="table-striped table-bordered table-condensed">
+    <table id="table140678961274400-777062" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -550,14 +550,14 @@ we switch off the IC component
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140194507916816-336121').dataTable()");
+        console.log("$('#table140678961274400-777062').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140194507916816-336121').dataTable({
+        $('#table140678961274400-777062').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -652,7 +652,7 @@ we switch off the IC component
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140194511665280-598405" class="table-striped table-bordered table-condensed">
+    <table id="table140678960808960-887499" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>9.157430e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>True</td></tr>
@@ -688,14 +688,14 @@ we switch off the IC component
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140194511665280-598405').dataTable()");
+        console.log("$('#table140678960808960-887499').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140194511665280-598405').dataTable({
+        $('#table140678960808960-887499').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -928,7 +928,7 @@ we switch off the IC component
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140194511171392-942578" class="table-striped table-bordered table-condensed">
+    <table id="table140678955623616-507351" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>9.157430e+02</td><td>9.157430e+02</td><td>2.681484e+02</td><td>--</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>1.373160e+06</td><td>--</td><td>--</td><td>--</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>True</td></tr>
@@ -964,14 +964,14 @@ we switch off the IC component
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140194511171392-942578').dataTable()");
+        console.log("$('#table140678955623616-507351').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140194511171392-942578').dataTable({
+        $('#table140678955623616-507351').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -997,7 +997,7 @@ we switch off the IC component
     fit_model_minuit.set_nu_grid(1E6,1E30,200)
     fit_model_minuit.eval()
     p2=fit_model_minuit.plot_model(sed_data=sed_data)
-    p2.rescale(y_min=-11,x_min=15,y_max=-9,x_max=19.5)
+    p2.setlim(y_min=1E-11,x_min=1E15,y_max=1E-9,x_max=3E19)
 
 
 
@@ -1095,7 +1095,7 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    mcmc run done, with 1 threads took 269.73 seconds
+    mcmc run done, with 1 threads took 180.34 seconds
 
 
 .. code:: ipython3
@@ -1105,13 +1105,13 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    0.5545312499999999
+    0.53
 
 
 .. code:: ipython3
 
-    p=mcmc.plot_model(sed_data=sed_data,fit_range=[15., 20.],size=50)
-    p.rescale(y_min=-14,x_min=6,x_max=20.5)
+    p=mcmc.plot_model(sed_data=sed_data,fit_range=[1E15, 1E20],size=50)
+    p.setlim(y_min=1E-14,x_min=1E6,x_max=2E20)
 
 
 
@@ -1138,8 +1138,8 @@ f=mcmc.plot_chain(‘s’,log_plot=False)
 
 .. parsed-literal::
 
-    (array([1.84677712, 1.83776114, 2.12633154, ..., 1.58324311, 2.23515898,
-            1.51746582]),
+    (array([1.86715271, 1.82682887, 1.8699941 , ..., 2.02290304, 1.90952071,
+            2.4641022 ]),
      0)
 
 
@@ -1195,8 +1195,8 @@ Save and reuse MCMC
 
 .. code:: ipython3
 
-    p=ms.plot_model(sed_data=sed_data,fit_range=[15., 20.],size=50)
-    p.rescale(y_min=-14,x_min=6,x_max=20.5)
+    p=ms.plot_model(sed_data=sed_data,fit_range=[1E15, 1E20],size=50)
+    p.setlim(y_min=1E-14,x_min=1E6,x_max=2E20)
 
 
 

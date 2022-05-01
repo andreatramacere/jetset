@@ -26,9 +26,10 @@ PlotSED
       ~PlotSED.list_lines
       ~PlotSED.plot_tempev_model
       ~PlotSED.rescale
-      ~PlotSED.rescale_res
       ~PlotSED.save
       ~PlotSED.set_plot_axis_labels
+      ~PlotSED.setlim
+      ~PlotSED.setlim_res
       ~PlotSED.show
       ~PlotSED.update_legend
       ~PlotSED.update_plot
@@ -51,9 +52,10 @@ PlotSED
    .. automethod:: list_lines
    .. automethod:: plot_tempev_model
    .. automethod:: rescale
-   .. automethod:: rescale_res
    .. automethod:: save
    .. automethod:: set_plot_axis_labels
+   .. automethod:: setlim
+   .. automethod:: setlim_res
    .. automethod:: show
    .. automethod:: update_legend
    .. automethod:: update_plot

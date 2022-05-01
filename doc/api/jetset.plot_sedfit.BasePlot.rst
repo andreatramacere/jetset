@@ -11,9 +11,11 @@ BasePlot
    .. autosummary::
 
       ~BasePlot.rescale
+      ~BasePlot.setlim
       ~BasePlot.update_plot
 
    .. rubric:: Methods Documentation
 
    .. automethod:: rescale
+   .. automethod:: setlim
    .. automethod:: update_plot

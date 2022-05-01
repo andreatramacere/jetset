@@ -1,5 +1,3 @@
-.. _depending_parameters_guide:
-
 .. code:: ipython3
 
     import warnings
@@ -13,8 +11,10 @@
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc7
+    tested on jetset 1.2.0rc13
 
+
+.. _depending_parameters:
 
 Depending parameters
 ====================
@@ -60,16 +60,22 @@ Example: linked paramters for EBL
     new_composite_model.show_pars()
     v=2.0
     new_composite_model.jet_flaring.parameters.z_cosm.val=v
-    print(new_composite_model.Franceschini_2008.parameters.z_cosm.val,v)
+    print('new_composite_model.Franceschini_2008.parameters.z_cosm.val',new_composite_model.Franceschini_2008.parameters.z_cosm.val,'v',v)
     assert (new_composite_model.Franceschini_2008.parameters.z_cosm.val == v)
     assert (new_composite_model.Franceschini_2008.parameters.z_cosm.linked == True)
+
+
+.. parsed-literal::
+
+    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/model_manager.py:147: UserWarning: no cosmology defined, using default FlatLambdaCDM(name="Planck13", H0=67.8 km / (Mpc s), Om0=0.307, Tcmb0=2.725 K, Neff=3.05, m_nu=[0.   0.   0.06] eV, Ob0=0.0483)
+      warnings.warn('no cosmology defined, using default %s'%self.cosmo)
 
 
 
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140302865201952-133925" class="table-striped table-bordered table-condensed">
+    <table id="table140613869498224-535841" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_flaring</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_flaring</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -106,14 +112,14 @@ Example: linked paramters for EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302865201952-133925').dataTable()");
+        console.log("$('#table140613869498224-535841').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302865201952-133925').dataTable({
+        $('#table140613869498224-535841').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -135,7 +141,7 @@ Example: linked paramters for EBL
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140302893717968-639162" class="table-striped table-bordered table-condensed">
+    <table id="table140613897635152-656111" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_flaring</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_flaring</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -172,14 +178,14 @@ Example: linked paramters for EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302893717968-639162').dataTable()");
+        console.log("$('#table140613897635152-656111').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302893717968-639162').dataTable({
+        $('#table140613897635152-656111').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -193,7 +199,7 @@ Example: linked paramters for EBL
 
 .. parsed-literal::
 
-    2.0 2.0
+    new_composite_model.Franceschini_2008.parameters.z_cosm.val 2.0 v 2.0
 
 
 Example: depending pars for bkn power-law emitters
@@ -222,7 +228,7 @@ functional dependence among the low and high-energy spectral index.
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140302898799520-878465" class="table-striped table-bordered table-condensed">
+    <table id="table140613765061984-443934" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -258,14 +264,14 @@ functional dependence among the low and high-energy spectral index.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302898799520-878465').dataTable()");
+        console.log("$('#table140613765061984-443934').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302898799520-878465').dataTable({
+        $('#table140613765061984-443934').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -285,9 +291,14 @@ functional dependence among the low and high-energy spectral index.
 
 
 
+the functional dependence can be provided by a python function, where
+the argument (``p`` in this case) is the same name as the parameter:
+
 .. code:: ipython3
 
-    j.make_dependent_par(par='p_1',depends_on=['p'],par_expr='1 + p')
+    def f_p(p):
+        return p+1
+    j.make_dependent_par(par='p_1',depends_on=['p'],par_expr=f_p)
     j.parameters.p.val=2
     np.testing.assert_allclose(j.parameters.p_1.val, j.parameters.p.val + 1)
     j.parameters
@@ -295,14 +306,17 @@ functional dependence among the low and high-energy spectral index.
 
 .. parsed-literal::
 
-    ==> par p_1 is now depending on ['p'] according to expr 1 + p
+    ==> par p_1 is now depending on ['p'] according to expr:p_1 =
+    def f_p(p):
+        return p+1
+    
 
 
 
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140302898799520-712950" class="table-striped table-bordered table-condensed">
+    <table id="table140613765061984-704554" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -338,14 +352,14 @@ functional dependence among the low and high-energy spectral index.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302898799520-712950').dataTable()");
+        console.log("$('#table140613765061984-704554').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302898799520-712950').dataTable({
+        $('#table140613765061984-704554').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -363,6 +377,110 @@ functional dependence among the low and high-energy spectral index.
 
     None
 
+
+
+as you can notice, now a message is shown describing the dependence of
+the parameters
+
+It is also possible to set the dependence function as a string that can
+be evaluated
+
+.. code:: ipython3
+
+    j.make_dependent_par(par='p_1',depends_on=['p'],par_expr='p+1')
+    j.parameters.p.val=2
+    np.testing.assert_allclose(j.parameters.p_1.val, j.parameters.p.val + 1)
+    j.parameters
+
+
+.. parsed-literal::
+
+    ==> par p_1 is now depending on ['p'] according to expr:p_1 =
+    p+1
+
+
+
+.. raw:: html
+
+    <i>Table length=11</i>
+    <table id="table140613824323792-262776" class="table-striped table-bordered table-condensed">
+    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>p(M)</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>*p_1(D,p)</td><td>HE_spectral_slope</td><td></td><td>3.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>True</td></tr>
+    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+    display: inline-block; margin-right: 1em; }
+    .paginate_button { margin-right: 5px; }
+    </style>
+    <script>
+    
+    var astropy_sort_num = function(a, b) {
+        var a_num = parseFloat(a);
+        var b_num = parseFloat(b);
+    
+        if (isNaN(a_num) && isNaN(b_num))
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        else if (!isNaN(a_num) && !isNaN(b_num))
+            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+        else
+            return isNaN(a_num) ? -1 : 1;
+    }
+    
+    require.config({paths: {
+        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+    }});
+    require(["datatables"], function(){
+        console.log("$('#table140613824323792-262776').dataTable()");
+    
+    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+        "optionalnum-asc": astropy_sort_num,
+        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+    });
+    
+        $('#table140613824323792-262776').dataTable({
+            order: [],
+            pageLength: 100,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+            pagingType: "full_numbers",
+            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+        });
+    });
+    </script>
+
+
+
+
+
+.. parsed-literal::
+
+    None
+
+
+
+In principle, you can use strings for short expressions, and functions
+for more complicated formulas.
+
+You can print the actual expression/function for the depending parameter
+using the ``print_par_expr`` method:
+
+.. code:: ipython3
+
+    j.parameters.p_1.print_par_expr
+
+
+.. parsed-literal::
+
+    ==> par p_1 is depending on ['p'] according to expr:   p_1 =
+    p+1
 
 
 .. code:: ipython3
@@ -374,14 +492,15 @@ functional dependence among the low and high-energy spectral index.
 
 .. parsed-literal::
 
-    ==> par p_1 is now depending on ['p'] according to expr 1 + p
+    ==> par p_1 is now depending on ['p'] according to expr:p_1 =
+    p+1
 
 
 
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140302899316624-27888" class="table-striped table-bordered table-condensed">
+    <table id="table140613901155488-388526" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -417,14 +536,14 @@ functional dependence among the low and high-energy spectral index.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302899316624-27888').dataTable()");
+        console.log("$('#table140613901155488-388526').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302899316624-27888').dataTable({
+        $('#table140613901155488-388526').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -447,7 +566,7 @@ functional dependence among the low and high-energy spectral index.
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140302899316624-742377" class="table-striped table-bordered table-condensed">
+    <table id="table140613901155488-294447" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -483,14 +602,14 @@ functional dependence among the low and high-energy spectral index.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302899316624-742377').dataTable()");
+        console.log("$('#table140613901155488-294447').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302899316624-742377').dataTable({
+        $('#table140613901155488-294447').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -507,6 +626,7 @@ functional dependence among the low and high-energy spectral index.
 .. parsed-literal::
 
     None
+
 
 
 
@@ -533,39 +653,52 @@ expression:
     
     fit_model_lsb.jet_leptonic.add_user_par(name='B0',units='G',val=1E3,val_min=0,val_max=None)
     fit_model_lsb.jet_leptonic.add_user_par(name='R0', units='cm', val=5E13, val_min=0, val_max=None)
+    fit_model_lsb.jet_leptonic.add_user_par(name='m_B', val=1, val_min=1, val_max=2)
     fit_model_lsb.jet_leptonic.parameters.R0.frozen=True
     fit_model_lsb.jet_leptonic.parameters.B0.frozen=True
     
-    par_expr = 'B0*np.power((R0/R_H),1.1)'
+    def par_func(R0,B0,R_H,m_B): 
+        return B0*np.power((R0/R_H),m_B)
     
-    fit_model_lsb.jet_leptonic.make_dependent_par(par='B', depends_on=['B0', 'R0', 'R_H'], par_expr=par_expr)
+    fit_model_lsb.jet_leptonic.make_dependent_par(par='B', depends_on=['B0', 'R0', 'R_H','m_B'], par_expr=par_func)
     
     B0=fit_model_lsb.jet_leptonic.parameters.B0.val
     R0 = fit_model_lsb.jet_leptonic.parameters.R0.val
     R_H = fit_model_lsb.jet_leptonic.parameters.R_H.val
+    m_B= fit_model_lsb.jet_leptonic.parameters.m_B.val
     
-    np.testing.assert_allclose(fit_model_lsb.jet_leptonic.parameters.B.val, eval(par_expr))
+    np.testing.assert_allclose(fit_model_lsb.jet_leptonic.parameters.B.val, par_func(R0,B0,R_H,m_B))
 
 
 .. parsed-literal::
 
-    ==> par B is now depending on ['B0', 'R0', 'R_H'] according to expr B0*np.power((R0/R_H),1.1)
+    ==> par B is now depending on ['B0', 'R0', 'R_H', 'm_B'] according to expr:B =
+    def par_func(R0,B0,R_H,m_B): 
+        return B0*np.power((R0/R_H),m_B)
+    
+
+
+.. parsed-literal::
+
+    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/model_manager.py:147: UserWarning: no cosmology defined, using default FlatLambdaCDM(name="Planck13", H0=67.8 km / (Mpc s), Om0=0.307, Tcmb0=2.725 K, Neff=3.05, m_nu=[0.   0.   0.06] eV, Ob0=0.0483)
+      warnings.warn('no cosmology defined, using default %s'%self.cosmo)
 
 
 .. code:: ipython3
 
+    
     fit_model_lsb.jet_leptonic.parameters
 
 
 
 .. raw:: html
 
-    <i>Table length=12</i>
-    <table id="table140302744411344-946341" class="table-striped table-bordered table-condensed">
+    <i>Table length=13</i>
+    <table id="table140613824323648-530942" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>5.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>3.981072e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>*B(D,m_B)</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
@@ -575,6 +708,7 @@ expression:
     <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>m_B(M)</td><td>user_defined</td><td></td><td>1.000000e+00</td><td>1.000000e+00</td><td>2.000000e+00</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -598,14 +732,14 @@ expression:
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302744411344-946341').dataTable()");
+        console.log("$('#table140613824323648-530942').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302744411344-946341').dataTable({
+        $('#table140613824323648-530942').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -633,12 +767,12 @@ expression:
 
 .. raw:: html
 
-    <i>Table length=12</i>
-    <table id="table140302744411344-317529" class="table-striped table-bordered table-condensed">
+    <i>Table length=13</i>
+    <table id="table140613824323648-131721" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>5.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>3.981072e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>*B(D,m_B)</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
@@ -648,6 +782,7 @@ expression:
     <tr><td>jet_leptonic</td><td>p</td><td>LE_spectral_slope</td><td></td><td>2.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>m_B(M)</td><td>user_defined</td><td></td><td>1.000000e+00</td><td>1.000000e+00</td><td>2.000000e+00</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -671,14 +806,14 @@ expression:
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302744411344-317529').dataTable()");
+        console.log("$('#table140613824323648-131721').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302744411344-317529').dataTable({
+        $('#table140613824323648-131721').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -709,8 +844,20 @@ expression:
 
 .. parsed-literal::
 
-    ==> par B is now depending on ['B0', 'R0', 'R_H'] according to expr B0*np.power((R0/R_H),1.1)
+    ==> par B is now depending on ['B0', 'R0', 'R_H', 'm_B'] according to expr:B =
+    def par_func(R0,B0,R_H,m_B): 
+        return B0*np.power((R0/R_H),m_B)
+    
 
+
+.. code:: ipython3
+
+    B0=fit_model_lsb.jet_leptonic.parameters.B0.val
+    R0 = fit_model_lsb.jet_leptonic.parameters.R0.val
+    R_H = fit_model_lsb.jet_leptonic.parameters.R_H.val
+    m_B= fit_model_lsb.jet_leptonic.parameters.m_B.val
+    
+    np.testing.assert_allclose(fit_model_lsb.jet_leptonic.parameters.B.val, par_func(R0,B0,R_H,m_B))
 
 Example depending par: fitting with a Jet model with depending pars
 -------------------------------------------------------------------
@@ -748,8 +895,14 @@ In this example we show how to use the previous model during a Fit
     
 
 
+.. parsed-literal::
 
-.. image:: depending_pars_files/depending_pars_24_1.png
+    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/astropy/table/table.py:1187: FutureWarning: Using a non-tuple sequence for multidimensional indexing is deprecated; use `arr[tuple(seq)]` instead of `arr[seq]`. In the future this will be interpreted as an array index, `arr[np.array(seq)]`, which will result either in an error or a different result.
+      newcol = col[slice_]
+
+
+
+.. image:: depending_pars_files/depending_pars_33_2.png
 
 
 .. code:: ipython3
@@ -758,7 +911,7 @@ In this example we show how to use the previous model during a Fit
     my_shape=SEDShape(sed_data)
     my_shape.eval_indices(minimizer='lsb',silent=True)
     p=my_shape.plot_indices()
-    p.rescale(y_min=-15,y_max=-6)
+
 
 
 .. parsed-literal::
@@ -771,7 +924,7 @@ In this example we show how to use the previous model during a Fit
 
 
 
-.. image:: depending_pars_files/depending_pars_25_1.png
+.. image:: depending_pars_files/depending_pars_34_1.png
 
 
 .. code:: ipython3
@@ -799,7 +952,7 @@ In this example we show how to use the previous model during a Fit
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140302885356352-587224" class="table-striped table-bordered table-condensed">
+    <table id="table140613880650528-175210" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-1.545300e-01</td><td>-1.545300e-01</td><td>9.534795e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-1.023245e-02</td><td>-1.023245e-02</td><td>1.433073e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -828,14 +981,14 @@ In this example we show how to use the previous model during a Fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302885356352-587224').dataTable()");
+        console.log("$('#table140613880650528-175210').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302885356352-587224').dataTable({
+        $('#table140613880650528-175210').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -858,7 +1011,7 @@ In this example we show how to use the previous model during a Fit
 
     my_shape.IC_fit(fit_range=[23.,29.],minimizer='minuit',silent=True)
     p=my_shape.plot_shape_fit()
-    p.rescale(y_min=-15)
+    p.setlim(y_min=1E-15)
 
 
 .. parsed-literal::
@@ -876,7 +1029,7 @@ In this example we show how to use the previous model during a Fit
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140302894201872-203106" class="table-striped table-bordered table-condensed">
+    <table id="table140613881734384-614703" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-2.098186e-01</td><td>-2.098186e-01</td><td>3.133032e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-4.661868e-02</td><td>-4.661868e-02</td><td>2.178352e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -905,14 +1058,14 @@ In this example we show how to use the previous model during a Fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302894201872-203106').dataTable()");
+        console.log("$('#table140613881734384-614703').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302894201872-203106').dataTable({
+        $('#table140613881734384-614703').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -929,10 +1082,15 @@ In this example we show how to use the previous model during a Fit
     ---> IC         nu_p=+2.524926e+01 (err=+1.147759e-01)  nuFnu_p=-1.011085e+01 (err=+3.498963e-02) curv.=-2.098186e-01 (err=+3.133032e-02)
     ================================================================================
     
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    The rescale method as been replaced by the setlim method
+    please notice that now jetset uses log axis rather than loglog plots
+    so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 
-.. image:: depending_pars_files/depending_pars_27_3.png
+.. image:: depending_pars_files/depending_pars_36_3.png
 
 
 .. code:: ipython3
@@ -959,11 +1117,17 @@ In this example we show how to use the previous model during a Fit
     
 
 
+.. parsed-literal::
+
+    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/obs_constrain.py:650: RankWarning: Polyfit may be poorly conditioned
+      return func(*args, **kwargs),completed
+
+
 
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140302886186480-763117" class="table-striped table-bordered table-condensed">
+    <table id="table140613880788880-314103" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.112712e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -999,14 +1163,14 @@ In this example we show how to use the previous model during a Fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302886186480-763117').dataTable()");
+        console.log("$('#table140613880788880-314103').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302886186480-763117').dataTable({
+        $('#table140613880788880-314103').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1038,7 +1202,7 @@ In this example we show how to use the previous model during a Fit
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140302893101456-313744" class="table-striped table-bordered table-condensed">
+    <table id="table140613390075888-660475" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -1074,14 +1238,14 @@ In this example we show how to use the previous model during a Fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302893101456-313744').dataTable()");
+        console.log("$('#table140613390075888-660475').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302893101456-313744').dataTable({
+        $('#table140613390075888-660475').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1099,11 +1263,17 @@ In this example we show how to use the previous model during a Fit
     fit_model.parameters
 
 
+.. parsed-literal::
+
+    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/model_manager.py:147: UserWarning: no cosmology defined, using default FlatLambdaCDM(name="Planck13", H0=67.8 km / (Mpc s), Om0=0.307, Tcmb0=2.725 K, Neff=3.05, m_nu=[0.   0.   0.06] eV, Ob0=0.0483)
+      warnings.warn('no cosmology defined, using default %s'%self.cosmo)
+
+
 
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140302894441232-534678" class="table-striped table-bordered table-condensed">
+    <table id="table140613897498384-558986" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -1139,14 +1309,14 @@ In this example we show how to use the previous model during a Fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302894441232-534678').dataTable()");
+        console.log("$('#table140613897498384-558986').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302894441232-534678').dataTable({
+        $('#table140613897498384-558986').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1179,23 +1349,30 @@ In this example we show how to use the previous model during a Fit
     
     fit_model.jet_leptonic.add_user_par(name='B0',units='G',val=1E3,val_min=0,val_max=None)
     fit_model.jet_leptonic.add_user_par(name='R0', units='cm', val=5E13, val_min=0, val_max=None)
+    fit_model.jet_leptonic.add_user_par(name='m_B', val=1, val_min=1, val_max=2)
     fit_model.jet_leptonic.parameters.R0.frozen=True
     fit_model.jet_leptonic.parameters.B0.frozen=True
     
-    fit_model.jet_leptonic.make_dependent_par(par='B',depends_on=['B0','R0','R_H'],par_expr='B0*(R0/R_H)')
+    def par_func(R0,B0,R_H,m_B): 
+        return B0*np.power((R0/R_H),m_B)
+    
+    fit_model.jet_leptonic.make_dependent_par(par='B', depends_on=['B0', 'R0', 'R_H','m_B'], par_expr=par_func)
     fit_model.parameters
 
 
 .. parsed-literal::
 
-    ==> par B is now depending on ['B0', 'R0', 'R_H'] according to expr B0*(R0/R_H)
+    ==> par B is now depending on ['B0', 'R0', 'R_H', 'm_B'] according to expr:B =
+    def par_func(R0,B0,R_H,m_B): 
+        return B0*np.power((R0/R_H),m_B)
+    
 
 
 
 .. raw:: html
 
-    <i>Table length=13</i>
-    <table id="table140302894442096-714322" class="table-striped table-bordered table-condensed">
+    <i>Table length=14</i>
+    <table id="table140613897496704-80829" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -1205,11 +1382,12 @@ In this example we show how to use the previous model during a Fit
     <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.112712e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>5.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>*B(D,m_B)</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>m_B(M)</td><td>user_defined</td><td></td><td>1.000000e+00</td><td>1.000000e+00</td><td>2.000000e+00</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -1233,14 +1411,14 @@ In this example we show how to use the previous model during a Fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302894442096-714322').dataTable()");
+        console.log("$('#table140613897496704-80829').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302894442096-714322').dataTable({
+        $('#table140613897496704-80829').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1284,7 +1462,7 @@ In this example we show how to use the previous model during a Fit
 
 
 
-.. image:: depending_pars_files/depending_pars_32_1.png
+.. image:: depending_pars_files/depending_pars_41_1.png
 
 
 .. code:: ipython3
@@ -1299,8 +1477,8 @@ In this example we show how to use the previous model during a Fit
 
 .. raw:: html
 
-    <i>Table length=13</i>
-    <table id="table140302895366304-100844" class="table-striped table-bordered table-condensed">
+    <i>Table length=14</i>
+    <table id="table140613892072640-331050" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -1310,11 +1488,12 @@ In this example we show how to use the previous model during a Fit
     <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.112712e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>5.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>*B(D,m_B)</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>m_B(M)</td><td>user_defined</td><td></td><td>1.000000e+00</td><td>1.000000e+00</td><td>2.000000e+00</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -1338,14 +1517,14 @@ In this example we show how to use the previous model during a Fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302895366304-100844').dataTable()");
+        console.log("$('#table140613892072640-331050').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302895366304-100844').dataTable({
+        $('#table140613892072640-331050').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1403,10 +1582,10 @@ estimate of the errors
 
 .. parsed-literal::
 
-    - best chisq=1.53754e+01
+    - best chisq=1.55264e+01
     
     fit run: 1
-    - old chisq=1.53754e+01
+    - old chisq=1.55264e+01
 
 
 
@@ -1417,10 +1596,10 @@ estimate of the errors
 
 .. parsed-literal::
 
-    - best chisq=1.53754e+01
+    - best chisq=1.55263e+01
     
     fit run: 2
-    - old chisq=1.53754e+01
+    - old chisq=1.55263e+01
 
 
 
@@ -1431,7 +1610,7 @@ estimate of the errors
 
 .. parsed-literal::
 
-    - best chisq=1.53754e+01
+    - best chisq=1.55263e+01
     
     -------------------------------------------------------------------------
     Fit report
@@ -1442,22 +1621,23 @@ estimate of the errors
 
 .. raw:: html
 
-    <i>Table length=13</i>
-    <table id="table140302892214544-504379" class="table-striped table-bordered table-condensed">
+    <i>Table length=14</i>
+    <table id="table140613411914080-903617" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>5.368198e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.211715e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.536303e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.256015e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.271004e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.076524e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.124032e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>9.438578e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>5.297408e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.999997e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.179783e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>5.707170e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.628146e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.096259e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.542531e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.275366e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.219607e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.022039e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>6.570078e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>*B(D,m_B)</td><td>magnetic_field</td><td>gauss</td><td>4.997430e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.643401e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>9.556801e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>m_B(M)</td><td>user_defined</td><td></td><td>1.044348e+00</td><td>1.000000e+00</td><td>2.000000e+00</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -1481,14 +1661,14 @@ estimate of the errors
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302892214544-504379').dataTable()");
+        console.log("$('#table140613411914080-903617').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302892214544-504379').dataTable({
+        $('#table140613411914080-903617').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1504,7 +1684,7 @@ estimate of the errors
 
     
     converged=True
-    calls=171
+    calls=187
     mesg=
 
 
@@ -1513,17 +1693,17 @@ estimate of the errors
 
     <table>
         <tr>
-            <td colspan="2" style="text-align:left" title="Minimum value of function"> FCN = 15.38 </td>
-            <td colspan="3" style="text-align:center" title="No. of function evaluations in last call and total number"> Nfcn = 171 </td>
+            <td colspan="2" style="text-align:left" title="Minimum value of function"> FCN = 15.53 </td>
+            <td colspan="3" style="text-align:center" title="No. of function evaluations in last call and total number"> Nfcn = 187 </td>
         </tr>
         <tr>
-            <td colspan="2" style="text-align:left" title="Estimated distance to minimum and goal"> EDM = 6.66e-05 (Goal: 0.0002) </td>
+            <td colspan="2" style="text-align:left" title="Estimated distance to minimum and goal"> EDM = 0.000156 (Goal: 0.0002) </td>
             <td colspan="3" style="text-align:center" title="No. of gradient evaluations in last call and total number">  </td>
         </tr>
         <tr>
             <td style="text-align:center;background-color:#92CCA6;color:black"> Valid Minimum </td>
             <td style="text-align:center;background-color:#92CCA6;color:black"> Valid Parameters </td>
-            <td colspan="3" style="text-align:center;background-color:#FFF79A;color:black"> SOME Parameters at limit </td>
+            <td colspan="3" style="text-align:center;background-color:#92CCA6;color:black"> No Parameters at limit </td>
         </tr>
         <tr>
             <td colspan="2" style="text-align:center;background-color:#92CCA6;color:black"> Below EDM threshold (goal x 10) </td>
@@ -1551,8 +1731,8 @@ estimate of the errors
         <tr>
             <th> 0 </th>
             <td> par_0 </td>
-            <td> 537 </td>
-            <td> 20 </td>
+            <td> 571 </td>
+            <td> 18 </td>
             <td>  </td>
             <td>  </td>
             <td> 10 </td>
@@ -1562,8 +1742,8 @@ estimate of the errors
         <tr>
             <th> 1 </th>
             <td> par_1 </td>
-            <td> 0.62e6 </td>
-            <td> 0.06e6 </td>
+            <td> 0.663e6 </td>
+            <td> 0.011e6 </td>
             <td>  </td>
             <td>  </td>
             <td> 1E+05 </td>
@@ -1573,8 +1753,8 @@ estimate of the errors
         <tr>
             <th> 2 </th>
             <td> par_2 </td>
-            <td> 0.95 </td>
-            <td> 0.08 </td>
+            <td> 0.910 </td>
+            <td> 0.029 </td>
             <td>  </td>
             <td>  </td>
             <td> 0 </td>
@@ -1584,8 +1764,8 @@ estimate of the errors
         <tr>
             <th> 3 </th>
             <td> par_3 </td>
-            <td> 33e3 </td>
-            <td> 4e3 </td>
+            <td> 35.4e3 </td>
+            <td> 3.3e3 </td>
             <td>  </td>
             <td>  </td>
             <td> 1E+03 </td>
@@ -1595,8 +1775,8 @@ estimate of the errors
         <tr>
             <th> 4 </th>
             <td> par_4 </td>
-            <td> 2.271 </td>
-            <td> 0.014 </td>
+            <td> 2.275 </td>
+            <td> 0.015 </td>
             <td>  </td>
             <td>  </td>
             <td> -10 </td>
@@ -1606,8 +1786,8 @@ estimate of the errors
         <tr>
             <th> 5 </th>
             <td> par_5 </td>
-            <td> 0.71 </td>
-            <td> 0.10 </td>
+            <td> 0.72 </td>
+            <td> 0.04 </td>
             <td>  </td>
             <td>  </td>
             <td> -15 </td>
@@ -1617,8 +1797,8 @@ estimate of the errors
         <tr>
             <th> 6 </th>
             <td> par_6 </td>
-            <td> 31.2e15 </td>
-            <td> 2.0e15 </td>
+            <td> 30.2e15 </td>
+            <td> 0.6e15 </td>
             <td>  </td>
             <td>  </td>
             <td> 3.16E+15 </td>
@@ -1628,8 +1808,8 @@ estimate of the errors
         <tr>
             <th> 7 </th>
             <td> par_7 </td>
-            <td> 0.94e18 </td>
-            <td> 0.05e18 </td>
+            <td> 0.66e18 </td>
+            <td> 0.06e18 </td>
             <td>  </td>
             <td>  </td>
             <td> 1E+15 </td>
@@ -1639,8 +1819,8 @@ estimate of the errors
         <tr>
             <th> 8 </th>
             <td> par_8 </td>
-            <td> 50 </td>
-            <td> 34 </td>
+            <td> 46.4 </td>
+            <td> 0.5 </td>
             <td>  </td>
             <td>  </td>
             <td> 5 </td>
@@ -1650,12 +1830,23 @@ estimate of the errors
         <tr>
             <th> 9 </th>
             <td> par_9 </td>
-            <td> 0.118 </td>
-            <td> 0.004 </td>
+            <td> 0.0956 </td>
+            <td> 0.0020 </td>
             <td>  </td>
             <td>  </td>
             <td> 0 </td>
             <td>  </td>
+            <td>  </td>
+        </tr>
+        <tr>
+            <th> 10 </th>
+            <td> par_10 </td>
+            <td> 1.044 </td>
+            <td> 0.008 </td>
+            <td>  </td>
+            <td>  </td>
+            <td> 1 </td>
+            <td> 2 </td>
             <td>  </td>
         </tr>
     </table><table>
@@ -1671,144 +1862,169 @@ estimate of the errors
             <th> par_7 </th>
             <th> par_8 </th>
             <th> par_9 </th>
+            <th> par_10 </th>
         </tr>
         <tr>
             <th> par_0 </th>
-            <td> 422 </td>
-            <td style="background-color:rgb(250,229,229);color:black"> 1.81e+05 <strong>(0.141)</strong> </td>
-            <td style="background-color:rgb(205,205,250);color:black"> -0.578 <strong>(-0.343)</strong> </td>
-            <td style="background-color:rgb(250,214,214);color:black"> 2.1e+04 <strong>(0.238)</strong> </td>
-            <td style="background-color:rgb(250,207,207);color:black"> 0.0806 <strong>(0.286)</strong> </td>
-            <td style="background-color:rgb(250,222,222);color:black"> 0.38 <strong>(0.190)</strong> </td>
-            <td style="background-color:rgb(232,232,250);color:black"> -5.88e+15 <strong>(-0.142)</strong> </td>
-            <td style="background-color:rgb(250,250,250);color:black"> 1.31e+15 <strong>(0.001)</strong> </td>
-            <td style="background-color:rgb(250,250,250);color:black"> 0.00227 </td>
-            <td style="background-color:rgb(221,221,250);color:black"> -0.0197 <strong>(-0.225)</strong> </td>
+            <td> 314 </td>
+            <td style="background-color:rgb(223,223,250);color:black"> -4.13e+04 <strong>(-0.207)</strong> </td>
+            <td style="background-color:rgb(202,202,250);color:black"> -0.19 <strong>(-0.367)</strong> </td>
+            <td style="background-color:rgb(250,174,174);color:black"> 3.01e+04 <strong>(0.510)</strong> </td>
+            <td style="background-color:rgb(250,164,164);color:black"> 0.157 <strong>(0.575)</strong> </td>
+            <td style="background-color:rgb(250,238,238);color:black"> 0.0518 <strong>(0.081)</strong> </td>
+            <td style="background-color:rgb(250,205,205);color:black"> 3.01e+15 <strong>(0.299)</strong> </td>
+            <td style="background-color:rgb(250,158,158);color:black"> 6.09e+17 <strong>(0.617)</strong> </td>
+            <td style="background-color:rgb(218,218,250);color:black"> -2.3 <strong>(-0.246)</strong> </td>
+            <td style="background-color:rgb(250,219,219);color:black"> 0.00721 <strong>(0.204)</strong> </td>
+            <td style="background-color:rgb(175,175,250);color:black"> -0.0841 <strong>(-0.573)</strong> </td>
         </tr>
         <tr>
             <th> par_1 </th>
-            <td style="background-color:rgb(250,229,229);color:black"> 1.81e+05 <strong>(0.141)</strong> </td>
-            <td> 3.92e+09 </td>
-            <td style="background-color:rgb(250,241,241);color:black"> 302 <strong>(0.059)</strong> </td>
-            <td style="background-color:rgb(250,249,249);color:black"> 2.17e+06 <strong>(0.008)</strong> </td>
-            <td style="background-color:rgb(203,203,250);color:black"> -309 <strong>(-0.359)</strong> </td>
-            <td style="background-color:rgb(250,195,195);color:black"> 2.24e+03 <strong>(0.367)</strong> </td>
-            <td style="background-color:rgb(223,223,250);color:black"> -2.63e+19 <strong>(-0.207)</strong> </td>
-            <td style="background-color:rgb(249,249,250);color:black"> -2.85e+19 <strong>(-0.010)</strong> </td>
-            <td style="background-color:rgb(250,250,250);color:black"> 2.24 <strong>(0.001)</strong> </td>
-            <td style="background-color:rgb(219,219,250);color:black"> -63.8 <strong>(-0.239)</strong> </td>
+            <td style="background-color:rgb(223,223,250);color:black"> -4.13e+04 <strong>(-0.207)</strong> </td>
+            <td> 1.27e+08 </td>
+            <td style="background-color:rgb(250,226,226);color:black"> 52.7 <strong>(0.160)</strong> </td>
+            <td style="background-color:rgb(225,225,250);color:black"> -7.33e+06 <strong>(-0.195)</strong> </td>
+            <td style="background-color:rgb(229,229,250);color:black"> -28.7 <strong>(-0.165)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.24 <strong>(-0.003)</strong> </td>
+            <td style="background-color:rgb(226,226,250);color:black"> -1.17e+18 <strong>(-0.183)</strong> </td>
+            <td style="background-color:rgb(232,232,250);color:black"> -8.6e+19 <strong>(-0.137)</strong> </td>
+            <td style="background-color:rgb(250,244,244);color:black"> 227 <strong>(0.038)</strong> </td>
+            <td style="background-color:rgb(242,242,250);color:black"> -1.32 <strong>(-0.059)</strong> </td>
+            <td style="background-color:rgb(250,235,235);color:black"> 9.53 <strong>(0.102)</strong> </td>
         </tr>
         <tr>
             <th> par_2 </th>
-            <td style="background-color:rgb(205,205,250);color:black"> -0.578 <strong>(-0.343)</strong> </td>
-            <td style="background-color:rgb(250,241,241);color:black"> 302 <strong>(0.059)</strong> </td>
-            <td> 0.00672 </td>
-            <td style="background-color:rgb(250,193,193);color:black"> 134 <strong>(0.379)</strong> </td>
-            <td style="background-color:rgb(250,226,226);color:black"> 0.000181 <strong>(0.161)</strong> </td>
-            <td style="background-color:rgb(250,193,193);color:black"> 0.00304 <strong>(0.380)</strong> </td>
-            <td style="background-color:rgb(157,157,250);color:black"> -1.18e+14 <strong>(-0.714)</strong> </td>
-            <td style="background-color:rgb(180,180,250);color:black"> -2.05e+15 <strong>(-0.540)</strong> </td>
-            <td style="background-color:rgb(250,250,250);color:black"> 9.81e-06 <strong>(0.002)</strong> </td>
-            <td style="background-color:rgb(223,223,250);color:black"> -7.24e-05 <strong>(-0.207)</strong> </td>
+            <td style="background-color:rgb(202,202,250);color:black"> -0.19 <strong>(-0.367)</strong> </td>
+            <td style="background-color:rgb(250,226,226);color:black"> 52.7 <strong>(0.160)</strong> </td>
+            <td> 0.000853 </td>
+            <td style="background-color:rgb(235,235,250);color:black"> -11.3 <strong>(-0.116)</strong> </td>
+            <td style="background-color:rgb(247,247,250);color:black"> -1.06e-05 <strong>(-0.024)</strong> </td>
+            <td style="background-color:rgb(248,248,250);color:black"> -1.51e-05 <strong>(-0.014)</strong> </td>
+            <td style="background-color:rgb(214,214,250);color:black"> -4.56e+12 <strong>(-0.275)</strong> </td>
+            <td style="background-color:rgb(225,225,250);color:black"> -3.1e+14 <strong>(-0.191)</strong> </td>
+            <td style="background-color:rgb(247,247,250);color:black"> -0.000306 <strong>(-0.020)</strong> </td>
+            <td style="background-color:rgb(250,240,240);color:black"> 3.7e-06 <strong>(0.064)</strong> </td>
+            <td style="background-color:rgb(250,220,220);color:black"> 4.78e-05 <strong>(0.198)</strong> </td>
         </tr>
         <tr>
             <th> par_3 </th>
-            <td style="background-color:rgb(250,214,214);color:black"> 2.1e+04 <strong>(0.238)</strong> </td>
-            <td style="background-color:rgb(250,249,249);color:black"> 2.17e+06 <strong>(0.008)</strong> </td>
-            <td style="background-color:rgb(250,193,193);color:black"> 134 <strong>(0.379)</strong> </td>
-            <td> 1.85e+07 </td>
-            <td style="background-color:rgb(250,218,218);color:black"> 12.7 <strong>(0.215)</strong> </td>
-            <td style="background-color:rgb(250,122,122);color:black"> 358 <strong>(0.852)</strong> </td>
-            <td style="background-color:rgb(147,147,250);color:black"> -6.92e+18 <strong>(-0.796)</strong> </td>
-            <td style="background-color:rgb(164,164,250);color:black"> -1.32e+20 <strong>(-0.661)</strong> </td>
-            <td style="background-color:rgb(250,249,249);color:black"> 1.36 <strong>(0.005)</strong> </td>
-            <td style="background-color:rgb(178,178,250);color:black"> -10.1 <strong>(-0.552)</strong> </td>
+            <td style="background-color:rgb(250,174,174);color:black"> 3.01e+04 <strong>(0.510)</strong> </td>
+            <td style="background-color:rgb(225,225,250);color:black"> -7.33e+06 <strong>(-0.195)</strong> </td>
+            <td style="background-color:rgb(235,235,250);color:black"> -11.3 <strong>(-0.116)</strong> </td>
+            <td> 1.11e+07 </td>
+            <td style="background-color:rgb(250,125,125);color:black"> 42.8 <strong>(0.834)</strong> </td>
+            <td style="background-color:rgb(250,170,170);color:black"> 64.2 <strong>(0.531)</strong> </td>
+            <td style="background-color:rgb(250,162,162);color:black"> 1.11e+18 <strong>(0.586)</strong> </td>
+            <td style="background-color:rgb(250,130,130);color:black"> 1.49e+20 <strong>(0.800)</strong> </td>
+            <td style="background-color:rgb(216,216,250);color:black"> -455 <strong>(-0.258)</strong> </td>
+            <td style="background-color:rgb(250,218,218);color:black"> 1.44 <strong>(0.216)</strong> </td>
+            <td style="background-color:rgb(150,150,250);color:black"> -21.2 <strong>(-0.770)</strong> </td>
         </tr>
         <tr>
             <th> par_4 </th>
-            <td style="background-color:rgb(250,207,207);color:black"> 0.0806 <strong>(0.286)</strong> </td>
-            <td style="background-color:rgb(203,203,250);color:black"> -309 <strong>(-0.359)</strong> </td>
-            <td style="background-color:rgb(250,226,226);color:black"> 0.000181 <strong>(0.161)</strong> </td>
-            <td style="background-color:rgb(250,218,218);color:black"> 12.7 <strong>(0.215)</strong> </td>
-            <td> 0.000188 </td>
-            <td style="background-color:rgb(237,237,250);color:black"> -0.000136 <strong>(-0.102)</strong> </td>
-            <td style="background-color:rgb(235,235,250);color:black"> -3.29e+12 <strong>(-0.118)</strong> </td>
-            <td style="background-color:rgb(220,220,250);color:black"> -1.48e+14 <strong>(-0.233)</strong> </td>
-            <td style="background-color:rgb(250,250,250);color:black"> 1.57e-06 <strong>(0.002)</strong> </td>
-            <td style="background-color:rgb(236,236,250);color:black"> -6.27e-06 <strong>(-0.107)</strong> </td>
+            <td style="background-color:rgb(250,164,164);color:black"> 0.157 <strong>(0.575)</strong> </td>
+            <td style="background-color:rgb(229,229,250);color:black"> -28.7 <strong>(-0.165)</strong> </td>
+            <td style="background-color:rgb(247,247,250);color:black"> -1.06e-05 <strong>(-0.024)</strong> </td>
+            <td style="background-color:rgb(250,125,125);color:black"> 42.8 <strong>(0.834)</strong> </td>
+            <td> 0.000238 </td>
+            <td style="background-color:rgb(250,212,212);color:black"> 0.00014 <strong>(0.250)</strong> </td>
+            <td style="background-color:rgb(250,153,153);color:black"> 5.68e+12 <strong>(0.649)</strong> </td>
+            <td style="background-color:rgb(250,126,126);color:black"> 7.08e+14 <strong>(0.824)</strong> </td>
+            <td style="background-color:rgb(223,223,250);color:black"> -0.00171 <strong>(-0.209)</strong> </td>
+            <td style="background-color:rgb(250,222,222);color:black"> 5.84e-06 <strong>(0.190)</strong> </td>
+            <td style="background-color:rgb(147,147,250);color:black"> -0.000101 <strong>(-0.790)</strong> </td>
         </tr>
         <tr>
             <th> par_5 </th>
-            <td style="background-color:rgb(250,222,222);color:black"> 0.38 <strong>(0.190)</strong> </td>
-            <td style="background-color:rgb(250,195,195);color:black"> 2.24e+03 <strong>(0.367)</strong> </td>
-            <td style="background-color:rgb(250,193,193);color:black"> 0.00304 <strong>(0.380)</strong> </td>
-            <td style="background-color:rgb(250,122,122);color:black"> 358 <strong>(0.852)</strong> </td>
-            <td style="background-color:rgb(237,237,250);color:black"> -0.000136 <strong>(-0.102)</strong> </td>
-            <td> 0.00951 </td>
-            <td style="background-color:rgb(144,144,250);color:black"> -1.6e+14 <strong>(-0.813)</strong> </td>
-            <td style="background-color:rgb(159,159,250);color:black"> -3.18e+15 <strong>(-0.704)</strong> </td>
-            <td style="background-color:rgb(250,249,249);color:black"> 3.37e-05 <strong>(0.006)</strong> </td>
-            <td style="background-color:rgb(174,174,250);color:black"> -0.000244 <strong>(-0.587)</strong> </td>
+            <td style="background-color:rgb(250,238,238);color:black"> 0.0518 <strong>(0.081)</strong> </td>
+            <td style="background-color:rgb(250,250,250);color:black"> -1.24 <strong>(-0.003)</strong> </td>
+            <td style="background-color:rgb(248,248,250);color:black"> -1.51e-05 <strong>(-0.014)</strong> </td>
+            <td style="background-color:rgb(250,170,170);color:black"> 64.2 <strong>(0.531)</strong> </td>
+            <td style="background-color:rgb(250,212,212);color:black"> 0.00014 <strong>(0.250)</strong> </td>
+            <td> 0.00132 </td>
+            <td style="background-color:rgb(250,232,232);color:black"> 2.46e+12 <strong>(0.119)</strong> </td>
+            <td style="background-color:rgb(250,221,221);color:black"> 3.9e+14 <strong>(0.193)</strong> </td>
+            <td style="background-color:rgb(250,248,248);color:black"> 0.00025 <strong>(0.013)</strong> </td>
+            <td style="background-color:rgb(250,241,241);color:black"> 4.33e-06 <strong>(0.060)</strong> </td>
+            <td style="background-color:rgb(215,215,250);color:black"> -8.1e-05 <strong>(-0.269)</strong> </td>
         </tr>
         <tr>
             <th> par_6 </th>
-            <td style="background-color:rgb(232,232,250);color:black"> -5.88e+15 <strong>(-0.142)</strong> </td>
-            <td style="background-color:rgb(223,223,250);color:black"> -2.63e+19 <strong>(-0.207)</strong> </td>
-            <td style="background-color:rgb(157,157,250);color:black"> -1.18e+14 <strong>(-0.714)</strong> </td>
-            <td style="background-color:rgb(147,147,250);color:black"> -6.92e+18 <strong>(-0.796)</strong> </td>
-            <td style="background-color:rgb(235,235,250);color:black"> -3.29e+12 <strong>(-0.118)</strong> </td>
-            <td style="background-color:rgb(144,144,250);color:black"> -1.6e+14 <strong>(-0.813)</strong> </td>
-            <td> 4.08e+30 </td>
-            <td style="background-color:rgb(250,136,136);color:black"> 7.14e+31 <strong>(0.761)</strong> </td>
-            <td style="background-color:rgb(249,249,250);color:black"> -7.51e+11 <strong>(-0.006)</strong> </td>
-            <td style="background-color:rgb(250,153,153);color:black"> 5.56e+12 <strong>(0.645)</strong> </td>
+            <td style="background-color:rgb(250,205,205);color:black"> 3.01e+15 <strong>(0.299)</strong> </td>
+            <td style="background-color:rgb(226,226,250);color:black"> -1.17e+18 <strong>(-0.183)</strong> </td>
+            <td style="background-color:rgb(214,214,250);color:black"> -4.56e+12 <strong>(-0.275)</strong> </td>
+            <td style="background-color:rgb(250,162,162);color:black"> 1.11e+18 <strong>(0.586)</strong> </td>
+            <td style="background-color:rgb(250,153,153);color:black"> 5.68e+12 <strong>(0.649)</strong> </td>
+            <td style="background-color:rgb(250,232,232);color:black"> 2.46e+12 <strong>(0.119)</strong> </td>
+            <td> 3.23e+29 </td>
+            <td style="background-color:rgb(250,151,151);color:black"> 2.08e+31 <strong>(0.657)</strong> </td>
+            <td style="background-color:rgb(208,208,250);color:black"> -9.7e+13 <strong>(-0.323)</strong> </td>
+            <td style="background-color:rgb(250,202,202);color:black"> 3.66e+11 <strong>(0.323)</strong> </td>
+            <td style="background-color:rgb(170,170,250);color:black"> -2.89e+12 <strong>(-0.613)</strong> </td>
         </tr>
         <tr>
             <th> par_7 </th>
-            <td style="background-color:rgb(250,250,250);color:black"> 1.31e+15 <strong>(0.001)</strong> </td>
-            <td style="background-color:rgb(249,249,250);color:black"> -2.85e+19 <strong>(-0.010)</strong> </td>
-            <td style="background-color:rgb(180,180,250);color:black"> -2.05e+15 <strong>(-0.540)</strong> </td>
-            <td style="background-color:rgb(164,164,250);color:black"> -1.32e+20 <strong>(-0.661)</strong> </td>
-            <td style="background-color:rgb(220,220,250);color:black"> -1.48e+14 <strong>(-0.233)</strong> </td>
-            <td style="background-color:rgb(159,159,250);color:black"> -3.18e+15 <strong>(-0.704)</strong> </td>
-            <td style="background-color:rgb(250,136,136);color:black"> 7.14e+31 <strong>(0.761)</strong> </td>
-            <td> 2.15e+33 </td>
-            <td style="background-color:rgb(250,250,250);color:black"> -7.41e+12 <strong>(-0.003)</strong> </td>
-            <td style="background-color:rgb(250,208,208);color:black"> 5.48e+13 <strong>(0.277)</strong> </td>
+            <td style="background-color:rgb(250,158,158);color:black"> 6.09e+17 <strong>(0.617)</strong> </td>
+            <td style="background-color:rgb(232,232,250);color:black"> -8.6e+19 <strong>(-0.137)</strong> </td>
+            <td style="background-color:rgb(225,225,250);color:black"> -3.1e+14 <strong>(-0.191)</strong> </td>
+            <td style="background-color:rgb(250,130,130);color:black"> 1.49e+20 <strong>(0.800)</strong> </td>
+            <td style="background-color:rgb(250,126,126);color:black"> 7.08e+14 <strong>(0.824)</strong> </td>
+            <td style="background-color:rgb(250,221,221);color:black"> 3.9e+14 <strong>(0.193)</strong> </td>
+            <td style="background-color:rgb(250,151,151);color:black"> 2.08e+31 <strong>(0.657)</strong> </td>
+            <td> 3.11e+33 </td>
+            <td style="background-color:rgb(217,217,250);color:black"> -7.51e+15 <strong>(-0.255)</strong> </td>
+            <td style="background-color:rgb(250,219,219);color:black"> 2.32e+13 <strong>(0.209)</strong> </td>
+            <td style="background-color:rgb(126,126,250);color:black"> -4.42e+14 <strong>(-0.956)</strong> </td>
         </tr>
         <tr>
             <th> par_8 </th>
-            <td style="background-color:rgb(250,250,250);color:black"> 0.00227 </td>
-            <td style="background-color:rgb(250,250,250);color:black"> 2.24 <strong>(0.001)</strong> </td>
-            <td style="background-color:rgb(250,250,250);color:black"> 9.81e-06 <strong>(0.002)</strong> </td>
-            <td style="background-color:rgb(250,249,249);color:black"> 1.36 <strong>(0.005)</strong> </td>
-            <td style="background-color:rgb(250,250,250);color:black"> 1.57e-06 <strong>(0.002)</strong> </td>
-            <td style="background-color:rgb(250,249,249);color:black"> 3.37e-05 <strong>(0.006)</strong> </td>
-            <td style="background-color:rgb(249,249,250);color:black"> -7.51e+11 <strong>(-0.006)</strong> </td>
-            <td style="background-color:rgb(250,250,250);color:black"> -7.41e+12 <strong>(-0.003)</strong> </td>
-            <td> 0.00351 </td>
-            <td style="background-color:rgb(250,250,250);color:black"> -3.75e-07 <strong>(-0.001)</strong> </td>
+            <td style="background-color:rgb(218,218,250);color:black"> -2.3 <strong>(-0.246)</strong> </td>
+            <td style="background-color:rgb(250,244,244);color:black"> 227 <strong>(0.038)</strong> </td>
+            <td style="background-color:rgb(247,247,250);color:black"> -0.000306 <strong>(-0.020)</strong> </td>
+            <td style="background-color:rgb(216,216,250);color:black"> -455 <strong>(-0.258)</strong> </td>
+            <td style="background-color:rgb(223,223,250);color:black"> -0.00171 <strong>(-0.209)</strong> </td>
+            <td style="background-color:rgb(250,248,248);color:black"> 0.00025 <strong>(0.013)</strong> </td>
+            <td style="background-color:rgb(208,208,250);color:black"> -9.7e+13 <strong>(-0.323)</strong> </td>
+            <td style="background-color:rgb(217,217,250);color:black"> -7.51e+15 <strong>(-0.255)</strong> </td>
+            <td> 0.279 </td>
+            <td style="background-color:rgb(250,235,235);color:black"> 0.000108 <strong>(0.102)</strong> </td>
+            <td style="background-color:rgb(250,202,202);color:black"> 0.0014 <strong>(0.321)</strong> </td>
         </tr>
         <tr>
             <th> par_9 </th>
-            <td style="background-color:rgb(221,221,250);color:black"> -0.0197 <strong>(-0.225)</strong> </td>
-            <td style="background-color:rgb(219,219,250);color:black"> -63.8 <strong>(-0.239)</strong> </td>
-            <td style="background-color:rgb(223,223,250);color:black"> -7.24e-05 <strong>(-0.207)</strong> </td>
-            <td style="background-color:rgb(178,178,250);color:black"> -10.1 <strong>(-0.552)</strong> </td>
-            <td style="background-color:rgb(236,236,250);color:black"> -6.27e-06 <strong>(-0.107)</strong> </td>
-            <td style="background-color:rgb(174,174,250);color:black"> -0.000244 <strong>(-0.587)</strong> </td>
-            <td style="background-color:rgb(250,153,153);color:black"> 5.56e+12 <strong>(0.645)</strong> </td>
-            <td style="background-color:rgb(250,208,208);color:black"> 5.48e+13 <strong>(0.277)</strong> </td>
-            <td style="background-color:rgb(250,250,250);color:black"> -3.75e-07 <strong>(-0.001)</strong> </td>
-            <td> 1.82e-05 </td>
+            <td style="background-color:rgb(250,219,219);color:black"> 0.00721 <strong>(0.204)</strong> </td>
+            <td style="background-color:rgb(242,242,250);color:black"> -1.32 <strong>(-0.059)</strong> </td>
+            <td style="background-color:rgb(250,240,240);color:black"> 3.7e-06 <strong>(0.064)</strong> </td>
+            <td style="background-color:rgb(250,218,218);color:black"> 1.44 <strong>(0.216)</strong> </td>
+            <td style="background-color:rgb(250,222,222);color:black"> 5.84e-06 <strong>(0.190)</strong> </td>
+            <td style="background-color:rgb(250,241,241);color:black"> 4.33e-06 <strong>(0.060)</strong> </td>
+            <td style="background-color:rgb(250,202,202);color:black"> 3.66e+11 <strong>(0.323)</strong> </td>
+            <td style="background-color:rgb(250,219,219);color:black"> 2.32e+13 <strong>(0.209)</strong> </td>
+            <td style="background-color:rgb(250,235,235);color:black"> 0.000108 <strong>(0.102)</strong> </td>
+            <td> 3.98e-06 </td>
+            <td style="background-color:rgb(214,214,250);color:black"> -4.61e-06 <strong>(-0.279)</strong> </td>
+        </tr>
+        <tr>
+            <th> par_10 </th>
+            <td style="background-color:rgb(175,175,250);color:black"> -0.0841 <strong>(-0.573)</strong> </td>
+            <td style="background-color:rgb(250,235,235);color:black"> 9.53 <strong>(0.102)</strong> </td>
+            <td style="background-color:rgb(250,220,220);color:black"> 4.78e-05 <strong>(0.198)</strong> </td>
+            <td style="background-color:rgb(150,150,250);color:black"> -21.2 <strong>(-0.770)</strong> </td>
+            <td style="background-color:rgb(147,147,250);color:black"> -0.000101 <strong>(-0.790)</strong> </td>
+            <td style="background-color:rgb(215,215,250);color:black"> -8.1e-05 <strong>(-0.269)</strong> </td>
+            <td style="background-color:rgb(170,170,250);color:black"> -2.89e+12 <strong>(-0.613)</strong> </td>
+            <td style="background-color:rgb(126,126,250);color:black"> -4.42e+14 <strong>(-0.956)</strong> </td>
+            <td style="background-color:rgb(250,202,202);color:black"> 0.0014 <strong>(0.321)</strong> </td>
+            <td style="background-color:rgb(214,214,250);color:black"> -4.61e-06 <strong>(-0.279)</strong> </td>
+            <td> 6.86e-05 </td>
         </tr>
     </table>
 
 
 .. parsed-literal::
 
-    dof=25
-    chisq=15.375410, chisq/red=0.615016 null hypothesis sig=0.932164
+    dof=24
+    chisq=15.526262, chisq/red=0.646928 null hypothesis sig=0.904412
     
     best fit pars
 
@@ -1816,22 +2032,23 @@ estimate of the errors
 
 .. raw:: html
 
-    <i>Table length=13</i>
-    <table id="table140302891938768-335527" class="table-striped table-bordered table-condensed">
+    <i>Table length=14</i>
+    <table id="table140613427091968-499301" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>5.368198e+02</td><td>5.368198e+02</td><td>2.052798e+01</td><td>--</td><td>4.697542e+02</td><td>1.000000e+01</td><td>1.000000e+03</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>6.211715e+05</td><td>6.211715e+05</td><td>6.263881e+04</td><td>--</td><td>1.373160e+06</td><td>1.000000e+05</td><td>1.000000e+08</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>9.536303e-01</td><td>9.536303e-01</td><td>8.194088e-02</td><td>--</td><td>9.060842e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>3.256015e+04</td><td>3.256015e+04</td><td>4.305212e+03</td><td>--</td><td>3.188500e+04</td><td>1.000000e+03</td><td>1.000000e+06</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>2.271004e+00</td><td>2.271004e+00</td><td>1.371986e-02</td><td>--</td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>7.076524e-01</td><td>7.076524e-01</td><td>9.749619e-02</td><td>--</td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>3.124032e+16</td><td>3.124032e+16</td><td>2.020868e+15</td><td>--</td><td>3.112712e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>9.438578e+17</td><td>9.438578e+17</td><td>4.640439e+16</td><td>--</td><td>5.000000e+17</td><td>1.000000e+15</td><td>1.000000e+19</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>5.297408e-02</td><td>--</td><td>--</td><td>--</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.999997e+01</td><td>4.999997e+01</td><td>3.403813e+01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>1.179783e-01</td><td>1.179783e-01</td><td>4.264552e-03</td><td>--</td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>5.707170e+02</td><td>5.707170e+02</td><td>1.770879e+01</td><td>--</td><td>4.697542e+02</td><td>1.000000e+01</td><td>1.000000e+03</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>6.628146e+05</td><td>6.628146e+05</td><td>1.128277e+04</td><td>--</td><td>1.373160e+06</td><td>1.000000e+05</td><td>1.000000e+08</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>9.096259e-01</td><td>9.096259e-01</td><td>2.920374e-02</td><td>--</td><td>9.060842e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>3.542531e+04</td><td>3.542531e+04</td><td>3.330848e+03</td><td>--</td><td>3.188500e+04</td><td>1.000000e+03</td><td>1.000000e+06</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>2.275366e+00</td><td>2.275366e+00</td><td>1.541557e-02</td><td>--</td><td>2.181578e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>7.219607e-01</td><td>7.219607e-01</td><td>3.630592e-02</td><td>--</td><td>7.726502e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>3.022039e+16</td><td>3.022039e+16</td><td>5.684398e+14</td><td>--</td><td>3.112712e+16</td><td>3.162278e+15</td><td>3.162278e+17</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>6.570078e+17</td><td>6.570078e+17</td><td>5.574426e+16</td><td>--</td><td>5.000000e+17</td><td>1.000000e+15</td><td>1.000000e+19</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>*B(D,m_B)</td><td>4.997430e-02</td><td>--</td><td>--</td><td>--</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>4.643401e+01</td><td>4.643401e+01</td><td>5.282534e-01</td><td>--</td><td>2.500000e+01</td><td>5.000000e+00</td><td>5.000000e+01</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>9.556801e-02</td><td>9.556801e-02</td><td>1.995728e-03</td><td>--</td><td>3.080000e-02</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>1.000000e+03</td><td>--</td><td>--</td><td>--</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>5.000000e+13</td><td>--</td><td>--</td><td>--</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>m_B(M)</td><td>1.044348e+00</td><td>1.044348e+00</td><td>8.281168e-03</td><td>--</td><td>1.000000e+00</td><td>1.000000e+00</td><td>2.000000e+00</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -1855,14 +2072,14 @@ estimate of the errors
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302891938768-335527').dataTable()");
+        console.log("$('#table140613427091968-499301').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302891938768-335527').dataTable({
+        $('#table140613427091968-499301').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1884,19 +2101,6 @@ estimate of the errors
 
 .. code:: ipython3
 
-    fit_model.jet_leptonic.parameters.B._depending_par_expr
-
-
-
-
-.. parsed-literal::
-
-    'B0*(R0/R_H)'
-
-
-
-.. code:: ipython3
-
     fit_model.plot_model(sed_data=sed_data)
 
 
@@ -1904,12 +2108,39 @@ estimate of the errors
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotSED at 0x7f9acfc0dc10>
+    <jetset.plot_sedfit.PlotSED at 0x7fe31d5f5310>
 
 
 
 
-.. image:: depending_pars_files/depending_pars_39_1.png
+.. image:: depending_pars_files/depending_pars_47_1.png
+
+
+.. code:: ipython3
+
+    %matplotlib inline
+    plt.figure(dpi=150)
+    R_H_array=np.logspace(13,18,100)
+    B_array=np.zeros(R_H_array.shape)
+    for ID,R_H in enumerate(R_H_array):
+        fit_model_lsb.jet_leptonic.parameters.R_H.val=R_H
+        B_array[ID]=fit_model_lsb.jet_leptonic.parameters.B.val
+    
+    plt.loglog(R_H_array,B_array)
+    plt.xlabel('R_H (cm)')
+    plt.ylabel('B (G)')
+
+
+
+
+.. parsed-literal::
+
+    Text(0, 0.5, 'B (G)')
+
+
+
+
+.. image:: depending_pars_files/depending_pars_48_1.png
 
 
 .. code:: ipython3
@@ -1926,7 +2157,10 @@ estimate of the errors
 
 .. parsed-literal::
 
-    ==> par B is now depending on ['B0', 'R0', 'R_H'] according to expr B0*(R0/R_H)
+    ==> par B is now depending on ['B0', 'R0', 'R_H', 'm_B'] according to expr:B =
+    def par_func(R0,B0,R_H,m_B): 
+        return B0*np.power((R0/R_H),m_B)
+    
 
 
 .. code:: ipython3
@@ -1937,22 +2171,23 @@ estimate of the errors
 
 .. raw:: html
 
-    <i>Table length=13</i>
-    <table id="table140302420272224-490708" class="table-striped table-bordered table-condensed">
+    <i>Table length=14</i>
+    <table id="table140613426298736-189257" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>5.368198e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.211715e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.536303e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.256015e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.271004e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.076524e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.124032e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>9.438578e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>5.297408e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.999997e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.179783e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>5.707170e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.628146e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.096259e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.542531e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.275366e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.219607e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.022039e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>6.570078e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>*B(D,m_B)</td><td>magnetic_field</td><td>gauss</td><td>4.997430e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.643401e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>9.556801e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0(M)</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0(M)</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>m_B(M)</td><td>user_defined</td><td></td><td>1.044348e+00</td><td>1.000000e+00</td><td>2.000000e+00</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -1976,14 +2211,14 @@ estimate of the errors
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302420272224-490708').dataTable()");
+        console.log("$('#table140613426298736-189257').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302420272224-490708').dataTable({
+        $('#table140613426298736-189257').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -2015,22 +2250,23 @@ estimate of the errors
 
 .. raw:: html
 
-    <i>Table length=13</i>
-    <table id="table140302422590944-592269" class="table-striped table-bordered table-condensed">
+    <i>Table length=14</i>
+    <table id="table140613891350000-796089" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>5.368198e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.211715e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.536303e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.256015e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.271004e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.076524e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.124032e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>9.438578e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>5.297408e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.999997e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.179783e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>5.707170e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.628146e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.096259e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.542531e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.275366e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.219607e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.022039e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>6.570078e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>4.997430e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.643401e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>9.556801e-02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B0</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>R0</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>m_B</td><td>user_defined</td><td></td><td>1.044348e+00</td><td>1.000000e+00</td><td>2.000000e+00</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -2054,14 +2290,14 @@ estimate of the errors
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140302422590944-592269').dataTable()");
+        console.log("$('#table140613891350000-796089').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140302422590944-592269').dataTable({
+        $('#table140613891350000-796089').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -2078,92 +2314,5 @@ estimate of the errors
 .. parsed-literal::
 
     None
-
-
-
-.. code:: ipython3
-
-    new_fit_model.jet_leptonic.make_dependent_par(par='B',depends_on=['B0','R0','R_H'],par_expr='B0*(R0/R_H)**1.2')
-
-
-
-.. parsed-literal::
-
-    ==> par B is now depending on ['B0', 'R0', 'R_H'] according to expr B0*(R0/R_H)**1.2
-
-
-.. code:: ipython3
-
-    new_fit_model.parameters
-
-
-
-.. raw:: html
-
-    <i>Table length=13</i>
-    <table id="table140302892701728-901565" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>5.368198e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>6.211715e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>9.536303e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>gamma0_log_parab</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>3.256015e+04</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>s</td><td>LE_spectral_slope</td><td></td><td>2.271004e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>r</td><td>spectral_curvature</td><td></td><td>7.076524e-01</td><td>-1.500000e+01</td><td>1.500000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.124032e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>R_H(M)</td><td>region_position</td><td>cm</td><td>9.438578e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>*B(D,R_H)</td><td>magnetic_field</td><td>gauss</td><td>7.393944e-03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>4.999997e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.179783e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>B0(M)</td><td>user_defined</td><td>G</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>R0(M)</td><td>user_defined</td><td>cm</td><td>5.000000e+13</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
-    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
-    display: inline-block; margin-right: 1em; }
-    .paginate_button { margin-right: 5px; }
-    </style>
-    <script>
-    
-    var astropy_sort_num = function(a, b) {
-        var a_num = parseFloat(a);
-        var b_num = parseFloat(b);
-    
-        if (isNaN(a_num) && isNaN(b_num))
-            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-        else if (!isNaN(a_num) && !isNaN(b_num))
-            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
-        else
-            return isNaN(a_num) ? -1 : 1;
-    }
-    
-    require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
-    }});
-    require(["datatables"], function(){
-        console.log("$('#table140302892701728-901565').dataTable()");
-    
-    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-        "optionalnum-asc": astropy_sort_num,
-        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
-    });
-    
-        $('#table140302892701728-901565').dataTable({
-            order: [],
-            pageLength: 100,
-            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
-            pagingType: "full_numbers",
-            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
-        });
-    });
-    </script>
-
-
-
-
-
-.. parsed-literal::
-
-    None
-
-
 
 

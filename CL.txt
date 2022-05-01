@@ -1,12 +1,21 @@
 1)update the tag in  jetset/pkg_info.json
 
+If you want  to make a tag without github actions
 2) ./make_tag.py 1.1.2 -do_remote_tag
   OR
    ./make_tag.py stable -do_remote_tag
 
-3) testing
+If you want  to make a tag with github actions
+  b) set the branch in the Git Ref
+  a) set the tag in the tag field
+  this will create a remote tag and release 
+
+3) testing locally
  python -c"import iminuit; print('iminuit',iminuit.__version__); import jetset; print('jetset',jetset.__version__)"
 
  pytest --pyargs jetset.tests.test_functions::test_short
  python -c'from jetset.tests.test_functions import test_short; test_short()'
  pytest --disable-warnings --pyargs -vvv -m integration jetset.tests.test_functions::TestFull
+
+4) testing remotely:
+   use the github actions pipelines conda test/pip test or test

@@ -12,7 +12,9 @@ SED
 
       ~SED.nu
       ~SED.nuFnu
+      ~SED.nuLnu_blob
       ~SED.nuLnu_src
+      ~SED.nu_blob
       ~SED.nu_src
 
    .. rubric:: Methods Summary
@@ -28,7 +30,9 @@ SED
 
    .. autoattribute:: nu
    .. autoattribute:: nuFnu
+   .. autoattribute:: nuLnu_blob
    .. autoattribute:: nuLnu_src
+   .. autoattribute:: nu_blob
    .. autoattribute:: nu_src
 
    .. rubric:: Methods Documentation

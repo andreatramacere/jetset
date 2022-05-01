@@ -10,6 +10,7 @@ ObsData
 
    .. autosummary::
 
+      ~ObsData.gammapy_table
       ~ObsData.metadata
       ~ObsData.table
 
@@ -25,6 +26,7 @@ ObsData
       ~ObsData.find_time_span
       ~ObsData.get_data_points
       ~ObsData.get_data_sets
+      ~ObsData.get_gammapy_table
       ~ObsData.get_time_span
       ~ObsData.group_data
       ~ObsData.lin_to_log
@@ -44,6 +46,7 @@ ObsData
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: gammapy_table
    .. autoattribute:: metadata
    .. autoattribute:: table
 
@@ -57,6 +60,7 @@ ObsData
    .. automethod:: find_time_span
    .. automethod:: get_data_points
    .. automethod:: get_data_sets
+   .. automethod:: get_gammapy_table
    .. automethod:: get_time_span
    .. automethod:: group_data
    .. automethod:: lin_to_log

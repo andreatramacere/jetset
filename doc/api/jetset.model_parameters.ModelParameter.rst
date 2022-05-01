@@ -16,6 +16,7 @@ ModelParameter
       ~ModelParameter.islog
       ~ModelParameter.linked
       ~ModelParameter.par_expr
+      ~ModelParameter.print_par_expr
       ~ModelParameter.units
       ~ModelParameter.val
       ~ModelParameter.val_lin
@@ -47,6 +48,7 @@ ModelParameter
    .. autoattribute:: islog
    .. autoattribute:: linked
    .. autoattribute:: par_expr
+   .. autoattribute:: print_par_expr
    .. autoattribute:: units
    .. autoattribute:: val
    .. autoattribute:: val_lin

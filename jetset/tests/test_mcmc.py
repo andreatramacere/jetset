@@ -44,7 +44,7 @@ class TestEmcee(TestBase):
         if plot is True:
 
             p = mcmc.plot_model(sed_data=sed_data, fit_range=[11., 27.4], size=50)
-            p.rescale(y_min=-13, x_min=6, x_max=28.5)
+            p.setlim(y_min=1E-13, x_min=1E6, x_max=3E28)
 
         mcmc.save('mcmc_sampler.pkl')
 
@@ -57,4 +57,4 @@ class TestEmcee(TestBase):
 
         if plot is True:
             p = ms.plot_model(sed_data=sed_data, fit_range=[11., 27.4], size=50)
-            p.rescale(y_min=-13, x_min=6, x_max=28.5)
+            p.setlim(y_min=1E-13, x_min=1E6, x_max=3E28)
