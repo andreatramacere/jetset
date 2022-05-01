@@ -58,8 +58,10 @@ jobs:
           ref: ${{ github.event.inputs.git-ref }}
 
       - name: 'setup conda'
-        uses: s-weigand/setup-conda@v1
+        #uses: s-weigand/setup-conda@v1
+        uses: conda-incubator/setup-miniconda@v2
         with:
+          use-mamba: true
           update-conda: true
           python-version: ${{ matrix.python-version }}
           conda-channels: anaconda, conda-forge,astropy

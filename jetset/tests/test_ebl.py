@@ -28,7 +28,7 @@ class TestEBL(TestBase):
             p = ebl_dominguez.plot_model()
             ebl_finke.plot_model(p)
             ebl_franceschini.plot_model(p)
-            p.rescale(y_min=-10, x_max=29)
+            p.setlim(y_min=1E-10, x_max=1E29)
 
         nu = 1E26
         z_range = np.linspace(0.001, 1, 100)

@@ -27,7 +27,7 @@ class TestPhenomenologyConstr(TestBase):
         my_shape.eval_indices(silent=True)
         if plot is True:
             p = my_shape.plot_indices()
-            p.rescale(y_min=-15, y_max=-6)
+            p.setlim(y_min=1E-15, y_max=1E-6)
 
         return my_shape
 
@@ -52,7 +52,7 @@ class TestPhenomenologyConstr(TestBase):
 
         if plot is True:
             p = my_shape.plot_shape_fit()
-            p.rescale(y_min=-15)
+            p.setlim(y_min=1E-15)
 
         best_fit.show_report()
         best_fit.save_report('IC_shape_fit_rep.pkl')
