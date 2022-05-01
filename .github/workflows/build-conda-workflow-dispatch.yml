@@ -67,7 +67,18 @@ jobs:
           activate-environment: "conda-jetset"
           auto-activate-base: false
 
+      - name: 'init conda'
+        shell: bash
+        run: |
+          conda init bash
+      
+      - name: 'activate env'
+        shell: bash
+        run: |
+          conda activate conda-jetset
+
       - name: 'conda env name'
+        shell: bash
         run: |
           echo "CONDA_DEFAULT_ENV=${{env.CONDA_DEFAULT_ENV}}"
           echo "CONDA_PREFIX=${{env.CONDA_PREFIX}}"
