@@ -77,6 +77,7 @@ jobs:
         run: |
           conda activate jetset
 
+
       - name: 'conda env name'
         run: |
           echo "CONDA_DEFAULT_ENV=${{env.CONDA_DEFAULT_ENV}}"
