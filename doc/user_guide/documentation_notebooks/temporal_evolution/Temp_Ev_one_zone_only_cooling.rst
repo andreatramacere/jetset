@@ -13,6 +13,11 @@ Cooling only the newly injecting electrons
 
 .. code:: ipython3
 
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+.. code:: ipython3
+
     import jetset
     print('tested on jetset',jetset.__version__)
 
@@ -265,7 +270,7 @@ Now, we setup some relevant parameters
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_16_1.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_17_1.png
 
 
 .. code:: ipython3
@@ -275,7 +280,7 @@ Now, we setup some relevant parameters
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_17_0.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_18_0.png
 
 
 setting ``cache_SEDs_rad=True`` will generate and cache all the SED at
@@ -332,7 +337,7 @@ Particle spectrum in the radiative region
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_21_0.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_22_0.png
 
 
 SEDs in the radiative region
@@ -344,7 +349,7 @@ SEDs in the radiative region
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_23_0.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_24_0.png
 
 
 We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz,
@@ -409,7 +414,7 @@ without the effect of the light crossing time, in the observer frame
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_27_1.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_28_1.png
 
 
 We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz, with
@@ -439,7 +444,7 @@ setting ``eval_cross_time=True``
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_30_1.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_31_1.png
 
 
 .. code:: ipython3
@@ -622,7 +627,7 @@ SEDs, and electron distributions
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_36_0.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_37_0.png
 
 
 .. code:: ipython3
@@ -642,5 +647,5 @@ SEDs, and electron distributions
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_37_1.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_38_1.png
 

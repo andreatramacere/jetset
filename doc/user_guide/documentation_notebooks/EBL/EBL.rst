@@ -1,6 +1,5 @@
 .. _ebl_model:
 
-
 EBL
 ===
 
@@ -14,6 +13,11 @@ EBL
 
     tested on jetset 1.2.0
 
+
+.. code:: ipython3
+
+    import matplotlib.pyplot as plt
+    import numpy as np
 
 EBL models are implemented using a 2D interpolation where the x and y axes represent the redshift and the frequency, and the z axes represents the value of :math:`e^{-\tau}`
 
@@ -45,15 +49,17 @@ Included models are
     p=ebl_dominguez.plot_model()
     ebl_finke.plot_model(p)
     ebl_franceschini.plot_model(p)
-    p.setlim(y_min=1E-10,x_max=1E29)
+    p.setlim(y_max=1,y_min=-10,x_max=29)
 
 
 
-.. image:: EBL_files/EBL_6_0.png
+.. image:: EBL_files/EBL_7_0.png
 
 
 .. code:: ipython3
 
+    plt.figure(dpi=150)
+    
     nu=1E26
     z_range=np.linspace(0.001,1,100)
     y_fr = np.zeros(z_range.size)
@@ -80,7 +86,7 @@ Included models are
 
 
 
-.. image:: EBL_files/EBL_7_0.png
+.. image:: EBL_files/EBL_8_0.png
 
 
 .. code:: ipython3
@@ -112,7 +118,7 @@ Included models are
 
 
 
-.. image:: EBL_files/EBL_8_0.png
+.. image:: EBL_files/EBL_9_0.png
 
 
 
@@ -354,7 +360,7 @@ and that’s it!
 
 
 
-.. image:: EBL_files/EBL_31_0.png
+.. image:: EBL_files/EBL_32_0.png
 
 
 if you want to remove the link from the parameter
@@ -496,7 +502,7 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_40_2.png
+.. image:: EBL_files/EBL_41_2.png
 
 
 .. code:: ipython3
@@ -518,7 +524,7 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_41_1.png
+.. image:: EBL_files/EBL_42_1.png
 
 
 .. code:: ipython3
@@ -940,7 +946,7 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_43_9.png
+.. image:: EBL_files/EBL_44_9.png
 
 
 .. code:: ipython3
@@ -1062,7 +1068,7 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_45_2.png
+.. image:: EBL_files/EBL_46_2.png
 
 
 .. code:: ipython3
@@ -1342,7 +1348,7 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_49_1.png
+.. image:: EBL_files/EBL_50_1.png
 
 
 .. code:: ipython3
@@ -1587,6 +1593,6 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_51_0.png
+.. image:: EBL_files/EBL_52_0.png
 
 

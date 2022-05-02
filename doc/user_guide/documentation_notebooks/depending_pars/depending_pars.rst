@@ -5,6 +5,10 @@
 
 .. code:: ipython3
 
+    import numpy as np
+
+.. code:: ipython3
+
     import jetset
     print('tested on jetset',jetset.__version__)
 
@@ -884,7 +888,7 @@ In this example we show how to use the previous model during a Fit
 
 
 
-.. image:: depending_pars_files/depending_pars_33_1.png
+.. image:: depending_pars_files/depending_pars_34_1.png
 
 
 .. code:: ipython3
@@ -906,7 +910,7 @@ In this example we show how to use the previous model during a Fit
 
 
 
-.. image:: depending_pars_files/depending_pars_34_1.png
+.. image:: depending_pars_files/depending_pars_35_1.png
 
 
 .. code:: ipython3
@@ -1067,7 +1071,7 @@ In this example we show how to use the previous model during a Fit
 
 
 
-.. image:: depending_pars_files/depending_pars_36_3.png
+.. image:: depending_pars_files/depending_pars_37_3.png
 
 
 .. code:: ipython3
@@ -1406,6 +1410,8 @@ In this example we show how to use the previous model during a Fit
 .. code:: ipython3
 
     %matplotlib inline
+    import matplotlib.pyplot as plt
+    
     plt.figure(dpi=150)
     R_H_array=np.logspace(13,18,100)
     B_array=np.zeros(R_H_array.shape)
@@ -1427,7 +1433,7 @@ In this example we show how to use the previous model during a Fit
 
 
 
-.. image:: depending_pars_files/depending_pars_41_1.png
+.. image:: depending_pars_files/depending_pars_42_1.png
 
 
 .. code:: ipython3
@@ -2078,7 +2084,7 @@ estimate of the errors
 
 
 
-.. image:: depending_pars_files/depending_pars_47_1.png
+.. image:: depending_pars_files/depending_pars_48_1.png
 
 
 .. code:: ipython3
@@ -2105,7 +2111,7 @@ estimate of the errors
 
 
 
-.. image:: depending_pars_files/depending_pars_48_1.png
+.. image:: depending_pars_files/depending_pars_49_1.png
 
 
 .. code:: ipython3

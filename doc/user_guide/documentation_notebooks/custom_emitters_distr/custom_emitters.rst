@@ -6,6 +6,10 @@ Custom emitters distribution
 
 .. code:: ipython3
 
+    import numpy as np
+
+.. code:: ipython3
+
     import jetset
     print('tested on jetset',jetset.__version__)
 
@@ -146,7 +150,7 @@ parameters can be easily set
 
 
 
-.. image:: custom_emitters_files/custom_emitters_16_0.png
+.. image:: custom_emitters_files/custom_emitters_17_0.png
 
 
 .. code:: ipython3
@@ -155,7 +159,7 @@ parameters can be easily set
 
 
 
-.. image:: custom_emitters_files/custom_emitters_17_0.png
+.. image:: custom_emitters_files/custom_emitters_18_0.png
 
 
 here we define a bkn power-law
@@ -232,7 +236,7 @@ here we define a bkn power-law
 
 
 
-.. image:: custom_emitters_files/custom_emitters_19_1.png
+.. image:: custom_emitters_files/custom_emitters_20_1.png
 
 
 Passing the custom distribution to the Jet class
@@ -384,7 +388,7 @@ number density of particles and conpare it to the parameter ``N``
 
 
 
-.. image:: custom_emitters_files/custom_emitters_28_0.png
+.. image:: custom_emitters_files/custom_emitters_29_0.png
 
 
 Now we switch on the normalization for the emetters distribtuion, and we
@@ -525,7 +529,7 @@ to the parameter N
 
 
 
-.. image:: custom_emitters_files/custom_emitters_34_0.png
+.. image:: custom_emitters_files/custom_emitters_35_0.png
 
 
 Building a distribution from an external array
@@ -561,7 +565,7 @@ skip them
 
 
 
-.. image:: custom_emitters_files/custom_emitters_39_0.png
+.. image:: custom_emitters_files/custom_emitters_40_0.png
 
 
 .. code:: ipython3
@@ -701,7 +705,7 @@ set to ``False``
 
 
 
-.. image:: custom_emitters_files/custom_emitters_45_0.png
+.. image:: custom_emitters_files/custom_emitters_46_0.png
 
 
 you can still normalize the distribution
@@ -725,7 +729,7 @@ you can still normalize the distribution
 
 
 
-.. image:: custom_emitters_files/custom_emitters_48_0.png
+.. image:: custom_emitters_files/custom_emitters_49_0.png
 
 
 .. code:: ipython3
@@ -798,6 +802,6 @@ you can still normalize the distribution
 
 
 
-.. image:: custom_emitters_files/custom_emitters_50_0.png
+.. image:: custom_emitters_files/custom_emitters_51_0.png
 
 
