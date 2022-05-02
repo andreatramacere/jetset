@@ -9,6 +9,7 @@ python make_apidoc_and_uml_graphs.py
    export READTHEDOCS='True'
    Not needed since mock introduced in conf.py
 
+----SEPARATE STEPS----------------
 3) run step A or B
     A)run all notebooks and build rst file with script
         ./build_rst_files.sh -e documentation_notebooks #run all notebooks found in documentation_notebooks
@@ -30,3 +31,14 @@ python make_apidoc_and_uml_graphs.py
 5)builds the docs
   sphinx-build -b html ./ build
 
+OR
+----IN ONE STEPS----------------
+to build without executing
+./build.sh documentation_notebooks/dir-name
+OR
+./build_rst_files.sh  documentation_notebooks/dir-name
+
+to build executing
+./build.sh e- documentation_notebooks/dir-name
+OR
+./build_rst_files.sh -e documentation_notebooks/dir-name

@@ -19,7 +19,7 @@ Cooling only the newly injecting electrons
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc13
+    tested on jetset 1.2.0
 
 
 This is a very preliminary documentation for the temporal evolution
@@ -65,15 +65,24 @@ the next version of the documentation
     NUM_SET=200
 
 
-here we setup the ``JetTimeEvol`` class, passing the radiative region
-jet model, and the injected particle class. The IC cooling is switched
-off to make the process faster. *``only_radiation=True``* **will disable
-the accleration region, and only the radiative region will be used.**
+Here, we instantiate the ``JetTimeEvol`` object, passing the radiative
+region jet model, and the injected particle class.
+``only_radiation=True`` **will disable the accleration region, and only
+the radiative region will be used.**
 
 .. code:: ipython3
 
     from jetset.jet_timedep import JetTimeEvol
     temp_ev=JetTimeEvol(jet_rad=jet_model,Q_inj=q_inj,inplace=True,only_radiation=True)
+
+**The IC cooling is switched off, as default, to make the process
+faster**. to switch on the IC cooling ``temp_ev_acc.IC_cooling='on'``
+
+Now, we setup some relevant parameters
+
+.. code:: ipython3
+
+    
     temp_ev.rad_region.jet.nu_min=1E8
     T_SIZE=np.int(T_SIZE)
     
@@ -113,7 +122,7 @@ the accleration region, and only the radiative region will be used.**
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140644563225568-777082" class="table-striped table-bordered table-condensed">
+    <table id="table140201300056384-9674" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>1.000000e+02</td><td>s</td><td>0.0005995849159999999</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -150,14 +159,14 @@ the accleration region, and only the radiative region will be used.**
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140644563225568-777082').dataTable()");
+        console.log("$('#table140201300056384-9674').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140644563225568-777082').dataTable({
+        $('#table140201300056384-9674').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -181,7 +190,7 @@ the accleration region, and only the radiative region will be used.**
 .. raw:: html
 
     <i>Table length=17</i>
-    <table id="table140644555598576-163234" class="table-striped table-bordered table-condensed">
+    <table id="table140201302281616-340507" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -223,14 +232,14 @@ the accleration region, and only the radiative region will be used.**
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140644555598576-163234').dataTable()");
+        console.log("$('#table140201302281616-340507').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140644555598576-163234').dataTable({
+        $('#table140201302281616-340507').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -251,12 +260,12 @@ the accleration region, and only the radiative region will be used.**
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotTempEvDiagram at 0x7fea5cc62820>
+    <jetset.plot_sedfit.PlotTempEvDiagram at 0x7f8328d30250>
 
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_13_1.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_16_1.png
 
 
 .. code:: ipython3
@@ -266,14 +275,14 @@ the accleration region, and only the radiative region will be used.**
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_14_0.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_17_0.png
 
 
-setting ``cache_SEDs_rad=True`` will save all the SED at any time of the
-``NUM_SET``. This will increase the computational time during the run.
-Anyhow, will speed up the computation of SEDs and light curves.
-Moreover, these SEDs will be saved in the model, and read if you will
-reload the model in the future.
+setting ``cache_SEDs_rad=True`` will generate and cache all the SED at
+any time of the ``NUM_SET``. **This will increase the computational time
+during the run. Anyhow, will speed up the computation of SEDs and light
+curves. Moreover, these SEDs will be saved in the model, and read if you
+will reload the model in the future**.
 
 .. code:: ipython3
 
@@ -323,7 +332,7 @@ Particle spectrum in the radiative region
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_18_0.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_21_0.png
 
 
 SEDs in the radiative region
@@ -335,7 +344,7 @@ SEDs in the radiative region
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_20_0.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_23_0.png
 
 
 We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz,
@@ -356,7 +365,7 @@ without the effect of the light crossing time, in the observer frame
 .. raw:: html
 
     <i>Table length=344</i>
-    <table id="table140644117065888" class="table-striped table-bordered table-condensed">
+    <table id="table140200830948592" class="table-striped table-bordered table-condensed">
     <thead><tr><th>time</th><th>flux</th></tr></thead>
     <thead><tr><th>s</th><th>erg / (cm2 s)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th></tr></thead>
@@ -400,7 +409,7 @@ without the effect of the light crossing time, in the observer frame
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_24_1.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_27_1.png
 
 
 We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz, with
@@ -430,7 +439,7 @@ setting ``eval_cross_time=True``
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_27_1.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_30_1.png
 
 
 .. code:: ipython3
@@ -477,7 +486,7 @@ SEDs, and electron distributions
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140644080480016-857306" class="table-striped table-bordered table-condensed">
+    <table id="table140200868245952-29339" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>1.000000e+02</td><td>s</td><td>0.0005995849159999999</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -514,14 +523,14 @@ SEDs, and electron distributions
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140644080480016-857306').dataTable()");
+        console.log("$('#table140200868245952-29339').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140644080480016-857306').dataTable({
+        $('#table140200868245952-29339').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -545,7 +554,7 @@ SEDs, and electron distributions
 .. raw:: html
 
     <i>Table length=17</i>
-    <table id="table140644471277888-85880" class="table-striped table-bordered table-condensed">
+    <table id="table140200874797520-910618" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -587,14 +596,14 @@ SEDs, and electron distributions
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140644471277888-85880').dataTable()");
+        console.log("$('#table140200874797520-910618').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140644471277888-85880').dataTable({
+        $('#table140200874797520-910618').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -613,7 +622,7 @@ SEDs, and electron distributions
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_33_0.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_36_0.png
 
 
 .. code:: ipython3
@@ -633,5 +642,5 @@ SEDs, and electron distributions
 
 
 
-.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_34_1.png
+.. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_37_1.png
 

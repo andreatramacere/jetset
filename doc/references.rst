@@ -24,6 +24,9 @@ Bibliography
 .. [Dermer95] `Dermer (1995) <https://ui.adsabs.harvard.edu/abs/1995ApJ...446L..63D>`_
     "On the Beaming Statistics of Gamma-Ray Sources"
 
+.. [Inoue96] `Inoue & Takahara (1996) <https://ui.adsabs.harvard.edu/abs/1996ApJ...463..555I/abstract>`_
+    "Electron Acceleration and Gamma-Ray Emission from Blazars"
+
 .. [Dermer2002] `Dermer and Schlickeiser (2002) <https://ui.adsabs.harvard.edu/abs/2002ApJ...575..667D>`_,
     "Transformation Properties of External Radiation Fields, Energy-Loss Rates and Scattered Spectra, and a Model for Blazar Variability"
 

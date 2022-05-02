@@ -1,10 +1,12 @@
 .. _sherpa_plugin:
 
-Example to use the sherpa minimizer plugin with a JeSeT model
+Example to use the Sherpa minimizer plugin with a JeSeT model
 =============================================================
 
 In this tutorial we show how to import a jetset model into sherpa, and
-finally we perform a model fitting.
+finally we perform a model fitting. To run this plugin you have to
+install Sherpa: https://sherpa.readthedocs.io/en/latest/install.html
+
 
 .. code:: ipython3
 
@@ -73,7 +75,7 @@ see the :ref:`data_format` user guide for further information about loading data
 
 
 
-.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_8_1.png
+.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_9_1.png
 
 
 .. code:: ipython3
@@ -107,7 +109,7 @@ spectral indices
 
 
 
-.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_13_1.png
+.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_14_1.png
 
 
 sed shaper
@@ -274,7 +276,7 @@ sed shaper
 
 
 
-.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_16_3.png
+.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_17_3.png
 
 
 Model constraining
@@ -382,7 +384,7 @@ ore least-square bound, as shown below
 
 
 
-.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_20_0.png
+.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_21_0.png
 
 
 Model fitting with Sherpa
@@ -484,7 +486,7 @@ Model fitting with Sherpa
 
 
 
-.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_24_2.png
+.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_25_2.png
 
 
 .. code:: ipython3
@@ -783,7 +785,7 @@ Model fitting with Sherpa
 
 
 
-.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_27_0.png
+.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_28_0.png
 
 
 Using the ``sherpa_fitter`` you can access all the sherpa fetarues
@@ -921,6 +923,6 @@ https://sherpa.readthedocs.io/en/latest/fit/index.html
 
 
 
-.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_30_1.png
+.. image:: sherpa-plugin-jetset-interface_files/sherpa-plugin-jetset-interface_31_1.png
 
 

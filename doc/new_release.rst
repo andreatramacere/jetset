@@ -37,6 +37,10 @@ EBL absorption
 linking of parameters has been updated See this section of the user guide  :ref:`ebl_model`
 
 
+Plugins 
+-----------------
+JetSeT plugins to Sherpa and Gamma-py  :ref:`ebl_model`
+
 
 
 

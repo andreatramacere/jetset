@@ -14,15 +14,13 @@ Install the Windows Subsystem for Linux: https://docs.microsoft.com/en-us/window
 
 Install  JetSeT from Anaconda
 ------------------------------------------------------------------------------
-I suggest to use anaconda and python3 (https://www.anaconda.com/download/)
+to get anaconda: https://www.anaconda.com/download/
 
 - create a virtual environment (not necessary, but suggested):
 
   .. code-block:: bash
 
-      conda create --name jetset python=3.8 ipython jupyter
-
-
+      conda create --name jetset python=3.9 ipython jupyter
 
   .. code-block:: bash
 
@@ -52,7 +50,7 @@ Install  JetSeT from pip
 
     pip install virtualenv
 
-    virtualenv -p python3.8 jetset
+    virtualenv -p python3.9 jetset
 
     source jetset/bin/activate
 
@@ -73,8 +71,6 @@ Install  JetSeT from pip
   .. code-block:: bash
 
       pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
-
-
 
 
 
@@ -169,25 +165,6 @@ Installation from source using PIP
 
 
 
-Requirements
-^^^^^^^^^^^^
-The following python packages are required:
- - python >=3.6 (python >=3.6 is suggested, older python 3 versions should  work, python 2 is not supported any more from version>=1.1.0)
- - setuptools
- - scipy>=1.5.0
- - numpy>=1.16
- - astropy>=4.0
- - matplotlib>=3.1.0
- - swig>=3.0.0
- - future
- - iminuit
- - corner
- - six
- - emcee
- - pyyaml
- - numba
- - sherpa
-
-To install from source A C compiler is also necessary, plus the SWIG wrapper generator.
+To install from source a C compiler is also necessary, plus the SWIG wrapper generator.
 
 All the dependencies are installed following the Anaconda method **OR** the pip method, as described below.

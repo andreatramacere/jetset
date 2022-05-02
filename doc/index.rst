@@ -23,8 +23,7 @@ allowing to fit the numerical models to observed data. The main features of this
   starting model,following the phenomenological trends that I have implemented. fitting of multiwavelength SEDs using
   both frequentist approach (iminuit) and bayesian MCMC sampling (emcee)
 
-* Self-consistent temporal evolution of the plasma under the effect of radiative and accelerative processes, both first
-  order and second order (stochastic acceleration) processes.
+* Self-consistent temporal evolution of the plasma under the effect of radiative, accelerative processes, and adiabatic expansion. Both first order and second order (stochastic acceleration) processes are implemented.
 
 .. Important::
     Acknowledgements: if you use this code in any kind of scientific publication please cite the following papers:
@@ -41,7 +40,7 @@ allowing to fit the numerical models to observed data. The main features of this
    :maxdepth: 1
    :caption: Documentation:
 
-   installation <install_pre.rst>
+   installation <install.rst>
    what's new in jetset 1.2.0  <new_release.rst>
    user guide <user_guide/user_guide.rst>
    code documentation (API) <api/modules.rst>
@@ -64,6 +63,7 @@ allowing to fit the numerical models to observed data. The main features of this
     user_guide/documentation_notebooks/phen_constr/SSC_th_bkg.rst
     user_guide/documentation_notebooks/sherpa_plugin/sherpa-plugin-sherpa-interface.rst
     user_guide/documentation_notebooks/sherpa_plugin/sherpa-plugin-jetset-interface.rst
+    user_guide/documentation_notebooks/gammapy_plugin/gammapy_plugin.rst
 
 Testers:
 

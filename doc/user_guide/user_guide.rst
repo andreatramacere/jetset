@@ -20,6 +20,7 @@ but before I suggest to through the tutorials below. You can also run the quick 
    data and phenomenology <data_and_phenomenology.rst>
    model fitting <model_fitting.rst>
    temporal evolution <temp_ev.rst>
+   plugins <plugins.rst>
 
 
 
