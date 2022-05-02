@@ -117,15 +117,16 @@ jobs:
         run: |
           pip install dist/*.whl
 
-      - name: 'make test env'
-        run: |
-          cp -r jetset/tests/test*.py  .github/action_test/
+      #- name: 'make test env'
+      #  run: |
+      #    cp -r jetset/tests/test*.py  .github/action_test/
 
       - name: 'test'
         if: github.event.inputs.skip_test != 'yes'
         working-directory: .github/action_test/
         run: |
           echo $(running tests!)
+          pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
 
       - name: 'set pkg version'

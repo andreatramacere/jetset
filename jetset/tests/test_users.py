@@ -22,7 +22,6 @@ def plot():
 class TestUser(TestBase):
   
    def test_jet(self,plot=plot):
-      
       t=TestJets()
       t.integration_suite()
 
