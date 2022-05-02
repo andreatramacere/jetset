@@ -4,11 +4,6 @@
 EBL
 ===
 
-.. warning::
-    This model is still experimental, so any feedback that you can provide is welcome
-
-
-
 .. code:: ipython3
 
     import jetset
@@ -17,7 +12,7 @@ EBL
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc6
+    tested on jetset 1.2.0
 
 
 EBL models are implemented using a 2D interpolation where the x and y axes represent the redshift and the frequency, and the z axes represents the value of :math:`e^{-\tau}`
@@ -54,7 +49,7 @@ Included models are
 
 
 
-.. image:: EBL_files/EBL_7_0.png
+.. image:: EBL_files/EBL_6_0.png
 
 
 .. code:: ipython3
@@ -85,7 +80,7 @@ Included models are
 
 
 
-.. image:: EBL_files/EBL_8_0.png
+.. image:: EBL_files/EBL_7_0.png
 
 
 .. code:: ipython3
@@ -117,7 +112,7 @@ Included models are
 
 
 
-.. image:: EBL_files/EBL_9_0.png
+.. image:: EBL_files/EBL_8_0.png
 
 
 
@@ -171,7 +166,7 @@ As third step, we add the components models to the the :class:`.FitModel` class,
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140321639537296-613179" class="table-striped table-bordered table-condensed">
+    <table id="table140261291118896-693634" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -208,14 +203,14 @@ As third step, we add the components models to the the :class:`.FitModel` class,
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321639537296-613179').dataTable()");
+        console.log("$('#table140261291118896-693634').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321639537296-613179').dataTable({
+        $('#table140261291118896-693634').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -252,7 +247,7 @@ redshift, we link the two parameters
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140321703064384-861812" class="table-striped table-bordered table-condensed">
+    <table id="table140261303401344-911815" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -289,14 +284,14 @@ redshift, we link the two parameters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321703064384-861812').dataTable()");
+        console.log("$('#table140261303401344-911815').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321703064384-861812').dataTable({
+        $('#table140261303401344-911815').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -358,23 +353,8 @@ and that’s it!
     p.setlim(y_max=1E-12)
 
 
-.. parsed-literal::
 
-    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/plot_sedfit.py:58: UserWarning: `The rescale method has been removed and has been replaced by the setlim method
-      warnings.warn('`The rescale method has been removed and has been replaced by the setlim method')
-
-
-.. parsed-literal::
-
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    !The rescale method as been replaced by the setlim method            !
-    !please notice that now jetset uses log axis rather than loglog plots!
-    !so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)!
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-.. image:: EBL_files/EBL_32_2.png
+.. image:: EBL_files/EBL_31_0.png
 
 
 if you want to remove the link from the parameter
@@ -392,7 +372,7 @@ if you want to remove the link from the parameter
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140321715673216-813977" class="table-striped table-bordered table-condensed">
+    <table id="table140261273650224-723655" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -429,14 +409,14 @@ if you want to remove the link from the parameter
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321715673216-813977').dataTable()");
+        console.log("$('#table140261273650224-723655').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321715673216-813977').dataTable({
+        $('#table140261273650224-723655').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -507,23 +487,16 @@ Example of model fitting with EBL
     ---> bin_widht= 0.2
     ================================================================================
     
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    !The rescale method as been replaced by the setlim method            !
-    !please notice that now jetset uses log axis rather than loglog plots!
-    !so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)!
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 .. parsed-literal::
 
     /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/astropy/table/table.py:1187: FutureWarning: Using a non-tuple sequence for multidimensional indexing is deprecated; use `arr[tuple(seq)]` instead of `arr[seq]`. In the future this will be interpreted as an array index, `arr[np.array(seq)]`, which will result either in an error or a different result.
       newcol = col[slice_]
-    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/plot_sedfit.py:58: UserWarning: `The rescale method has been removed and has been replaced by the setlim method
-      warnings.warn('`The rescale method has been removed and has been replaced by the setlim method')
 
 
 
-.. image:: EBL_files/EBL_41_2.png
+.. image:: EBL_files/EBL_40_2.png
 
 
 .. code:: ipython3
@@ -544,23 +517,8 @@ Example of model fitting with EBL
     
 
 
-.. parsed-literal::
 
-    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/plot_sedfit.py:58: UserWarning: `The rescale method has been removed and has been replaced by the setlim method
-      warnings.warn('`The rescale method has been removed and has been replaced by the setlim method')
-
-
-.. parsed-literal::
-
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    !The rescale method as been replaced by the setlim method            !
-    !please notice that now jetset uses log axis rather than loglog plots!
-    !so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)!
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-.. image:: EBL_files/EBL_42_3.png
+.. image:: EBL_files/EBL_41_1.png
 
 
 .. code:: ipython3
@@ -589,7 +547,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=6</i>
-    <table id="table140321201666800-614204" class="table-striped table-bordered table-condensed">
+    <table id="table140261273650848-719717" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-6.411143e-02</td><td>-6.411143e-02</td><td>7.838958e-03</td><td>--</td><td>-4.778764e-02</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-1.751705e-03</td><td>-1.751705e-03</td><td>1.127020e-03</td><td>--</td><td>3.576201e-03</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -620,14 +578,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321201666800-614204').dataTable()");
+        console.log("$('#table140261273650848-719717').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321201666800-614204').dataTable({
+        $('#table140261273650848-719717').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -670,7 +628,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140321221091392-318425" class="table-striped table-bordered table-condensed">
+    <table id="table140260791450832-282369" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>curvature</td><td></td><td>-1.565399e-01</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>third-degree</td><td></td><td>-4.351917e-02</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
@@ -699,14 +657,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321221091392-318425').dataTable()");
+        console.log("$('#table140260791450832-282369').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321221091392-318425').dataTable({
+        $('#table140260791450832-282369').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -866,7 +824,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140321220999008-763581" class="table-striped table-bordered table-condensed">
+    <table id="table140260802710544-597042" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-1.565399e-01</td><td>-1.565399e-01</td><td>2.551779e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-4.351917e-02</td><td>-4.351917e-02</td><td>2.032066e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -895,14 +853,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321220999008-763581').dataTable()");
+        console.log("$('#table140260802710544-597042').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321220999008-763581').dataTable({
+        $('#table140260802710544-597042').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -926,7 +884,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140321221092160-385897" class="table-striped table-bordered table-condensed">
+    <table id="table140260803196000-597766" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-1.565399e-01</td><td>-1.565399e-01</td><td>2.551779e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-4.351917e-02</td><td>-4.351917e-02</td><td>2.032066e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -955,14 +913,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321221092160-385897').dataTable()");
+        console.log("$('#table140260803196000-597766').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321221092160-385897').dataTable({
+        $('#table140260803196000-597766').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -981,23 +939,8 @@ Example of model fitting with EBL
     
 
 
-.. parsed-literal::
 
-    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/plot_sedfit.py:58: UserWarning: `The rescale method has been removed and has been replaced by the setlim method
-      warnings.warn('`The rescale method has been removed and has been replaced by the setlim method')
-
-
-.. parsed-literal::
-
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    !The rescale method as been replaced by the setlim method            !
-    !please notice that now jetset uses log axis rather than loglog plots!
-    !so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)!
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-.. image:: EBL_files/EBL_44_11.png
+.. image:: EBL_files/EBL_43_9.png
 
 
 .. code:: ipython3
@@ -1034,7 +977,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140321200409040-710947" class="table-striped table-bordered table-condensed">
+    <table id="table140261304170768-847391" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.057086e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1070,14 +1013,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321200409040-710947').dataTable()");
+        console.log("$('#table140261304170768-847391').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321200409040-710947').dataTable({
+        $('#table140261304170768-847391').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1114,12 +1057,12 @@ Example of model fitting with EBL
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotSED at 0x7f9f31486430>
+    <jetset.plot_sedfit.PlotSED at 0x7f912144a850>
 
 
 
 
-.. image:: EBL_files/EBL_46_2.png
+.. image:: EBL_files/EBL_45_2.png
 
 
 .. code:: ipython3
@@ -1173,7 +1116,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=2</i>
-    <table id="table140321202104784-16215" class="table-striped table-bordered table-condensed">
+    <table id="table140260803219952-623621" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>nuFnu-scale</td><td>erg / (cm2 s)</td><td>-1.006556e+01</td><td>-2.000000e+01</td><td>2.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>host_galaxy</td><td>nu_scale</td><td>nu-scale</td><td>Hz</td><td>1.730750e-02</td><td>-2.000000e+00</td><td>2.000000e+00</td><td>False</td><td>False</td></tr>
@@ -1200,14 +1143,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321202104784-16215').dataTable()");
+        console.log("$('#table140260803219952-623621').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321202104784-16215').dataTable({
+        $('#table140260803219952-623621').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1261,7 +1204,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140321201904128-951531" class="table-striped table-bordered table-condensed">
+    <table id="table140261296887072-29179" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.057086e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1297,14 +1240,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321201904128-951531').dataTable()");
+        console.log("$('#table140261296887072-29179').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321201904128-951531').dataTable({
+        $('#table140261296887072-29179').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1333,7 +1276,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=1</i>
-    <table id="table140321703025776-991379" class="table-striped table-bordered table-condensed">
+    <table id="table140261299981040-249599" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>Franceschini_2008</td><td>z_cosm(L,jet_leptonic)</td><td>redshift</td><td></td><td>--</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -1359,14 +1302,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321703025776-991379').dataTable()");
+        console.log("$('#table140261299981040-249599').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321703025776-991379').dataTable({
+        $('#table140261299981040-249599').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1394,12 +1337,12 @@ Example of model fitting with EBL
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotSED at 0x7f9f13f38610>
+    <jetset.plot_sedfit.PlotSED at 0x7f91211a72b0>
 
 
 
 
-.. image:: EBL_files/EBL_50_1.png
+.. image:: EBL_files/EBL_49_1.png
 
 
 .. code:: ipython3
@@ -1485,7 +1428,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=14</i>
-    <table id="table140321211858608-858910" class="table-striped table-bordered table-condensed">
+    <table id="table140261303402448-210315" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>nuFnu-scale</td><td>erg / (cm2 s)</td><td>-1.005576e+01</td><td>-2.000000e+01</td><td>2.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>host_galaxy</td><td>nu_scale</td><td>nu-scale</td><td>Hz</td><td>1.730750e-02</td><td>-2.000000e+00</td><td>2.000000e+00</td><td>False</td><td>True</td></tr>
@@ -1524,14 +1467,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321211858608-858910').dataTable()");
+        console.log("$('#table140261303402448-210315').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321211858608-858910').dataTable({
+        $('#table140261303402448-210315').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1569,7 +1512,7 @@ Example of model fitting with EBL
 .. raw:: html
 
     <i>Table length=14</i>
-    <table id="table140321193058752-40359" class="table-striped table-bordered table-condensed">
+    <table id="table140261303886992-971533" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>-1.005576e+01</td><td>-1.005576e+01</td><td>3.293807e-02</td><td>--</td><td>-1.006556e+01</td><td>-1.225412e+01</td><td>-8.254123e+00</td><td>False</td></tr>
     <tr><td>host_galaxy</td><td>nu_scale</td><td>1.730750e-02</td><td>--</td><td>--</td><td>--</td><td>1.730750e-02</td><td>-5.000000e-01</td><td>5.000000e-01</td><td>True</td></tr>
@@ -1608,14 +1551,14 @@ Example of model fitting with EBL
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140321193058752-40359').dataTable()");
+        console.log("$('#table140261303886992-971533').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140321193058752-40359').dataTable({
+        $('#table140261303886992-971533').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1637,9 +1580,13 @@ Example of model fitting with EBL
 
 .. code:: ipython3
 
+    composite_model.nu_min=1E8
+    composite_model.jet_leptonic.nu_min=1E8
+    composite_model.eval()
     p=composite_model.plot_model(sed_data=sed_data)
 
 
 
-.. image:: EBL_files/EBL_52_0.png
+.. image:: EBL_files/EBL_51_0.png
+
 

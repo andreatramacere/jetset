@@ -1,10 +1,12 @@
 .. _sherpa_plugin:
 
-Example to use the sherpa plugin with the sherpa interface
+Example to use the Sherpa plugin with the sherpa interface
 ==========================================================
 
 In this tutorial we show how to import a jetset model into Sherpa, and
-finally we perform a model fitting with Sherpa.
+finally we perform a model fitting with Sherpa. To run this plugin you
+have to install Sherpa:
+https://sherpa.readthedocs.io/en/latest/install.html
 
 .. code:: ipython3
 

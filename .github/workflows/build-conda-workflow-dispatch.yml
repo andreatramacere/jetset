@@ -58,16 +58,19 @@ jobs:
           ref: ${{ github.event.inputs.git-ref }}
 
       - name: 'setup conda'
-        #uses: s-weigand/setup-conda@v1
-        uses: conda-incubator/setup-miniconda@v2
+        uses: s-weigand/setup-conda@v1
+        #uses: conda-incubator/setup-miniconda@v2
         with:
           python-version: ${{ matrix.python-version }}
-          auto-update-conda: true
-          channels: conda-forge, astropy
-          activate-environment: "conda-jetset"
-          auto-activate-base: false
+          update-conda: true
+          conda-channels: conda-forge,astropy
+          #auto-update-conda: true
+          #channels: conda-forge, astropy
+          #activate-environment: "conda-jetset"
+          #auto-activate-base: false
 
       - name: 'conda env name'
+        shell: bash
         run: |
           echo "CONDA_DEFAULT_ENV=${{env.CONDA_DEFAULT_ENV}}"
           echo "CONDA_PREFIX=${{env.CONDA_PREFIX}}"
@@ -118,8 +121,8 @@ jobs:
         run: |
           conda config --set anaconda_upload no
           conda build purge
-          conda build  . -c anaconda -c astropy -c conda-forge 
-          conda build  . --output > ./CONDABUILDJETSET.txt 
+          conda build  .  -c conda-forge -c astropy
+          conda build  . --output > ./CONDABUILDJETSET.txt  
 
       - name: 'set env CONDABUILDJETSET'
         shell: bash

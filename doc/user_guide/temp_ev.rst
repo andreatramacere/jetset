@@ -1,7 +1,9 @@
 .. _temp_ev:
 
-temporal  evolution
--------------------
+temporal evolution
+------------------
+This is preliminary documentation for the temporal evolution. A more detailed version will come later. In case, contact the author or open an issue on the git repo: https://github.com/andreatramacere/jetset
+
 .. toctree::
    :maxdepth: 1
 

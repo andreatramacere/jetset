@@ -23,7 +23,7 @@ Model fitting 2: SSC + galaxy template
 
 .. parsed-literal::
 
-    1.2.0rc13
+    1.2.0
 
 
 .. code:: ipython3
@@ -140,7 +140,7 @@ Sed shaper
 .. raw:: html
 
     <i>Table length=6</i>
-    <table id="table140572366373936-272146" class="table-striped table-bordered table-condensed">
+    <table id="table140622746681408-161444" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-6.411143e-02</td><td>-6.411143e-02</td><td>7.838958e-03</td><td>--</td><td>-4.778764e-02</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-1.751705e-03</td><td>-1.751705e-03</td><td>1.127020e-03</td><td>--</td><td>3.576201e-03</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -171,14 +171,14 @@ Sed shaper
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140572366373936-272146').dataTable()");
+        console.log("$('#table140622746681408-161444').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140572366373936-272146').dataTable({
+        $('#table140622746681408-161444').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -219,7 +219,7 @@ Sed shaper
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140572366373744-644125" class="table-striped table-bordered table-condensed">
+    <table id="table140622746908848-580906" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-1.310993e-01</td><td>-1.310993e-01</td><td>3.244183e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-3.300446e-02</td><td>-3.300446e-02</td><td>2.072517e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -248,14 +248,14 @@ Sed shaper
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140572366373744-644125').dataTable()");
+        console.log("$('#table140622746908848-580906').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140572366373744-644125').dataTable({
+        $('#table140622746908848-580906').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -314,7 +314,7 @@ ore least-square bound, as shown below
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140572361372336-685541" class="table-striped table-bordered table-condensed">
+    <table id="table140622747321488-263599" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.046428e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -350,14 +350,14 @@ ore least-square bound, as shown below
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140572361372336-685541').dataTable()");
+        console.log("$('#table140622747321488-263599').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140572361372336-685541').dataTable({
+        $('#table140622747321488-263599').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -422,7 +422,7 @@ see the :ref:`composite_models` user guide for further information about the new
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140572363433920-771126" class="table-striped table-bordered table-condensed">
+    <table id="table140622232698352-904734" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.310708e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -458,14 +458,14 @@ see the :ref:`composite_models` user guide for further information about the new
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140572363433920-771126').dataTable()");
+        console.log("$('#table140622232698352-904734').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140572363433920-771126').dataTable({
+        $('#table140622232698352-904734').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -536,7 +536,7 @@ see the :ref:`composite_models` user guide for further information about the new
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140572363448576-422365" class="table-striped table-bordered table-condensed">
+    <table id="table140622742679504-68841" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.310708e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -572,14 +572,14 @@ see the :ref:`composite_models` user guide for further information about the new
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140572363448576-422365').dataTable()");
+        console.log("$('#table140622742679504-68841').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140572363448576-422365').dataTable({
+        $('#table140622742679504-68841').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -608,7 +608,7 @@ see the :ref:`composite_models` user guide for further information about the new
 .. raw:: html
 
     <i>Table length=2</i>
-    <table id="table140572365969680-438121" class="table-striped table-bordered table-condensed">
+    <table id="table140622746684624-943581" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>host_galaxy</td><td>nuFnu_p_host</td><td>nuFnu-scale</td><td>erg / (cm2 s)</td><td>-1.006556e+01</td><td>-2.000000e+01</td><td>2.000000e+01</td><td>False</td><td>False</td></tr>
     <tr><td>host_galaxy</td><td>nu_scale</td><td>nu-scale</td><td>Hz</td><td>1.730750e-02</td><td>-2.000000e+00</td><td>2.000000e+00</td><td>False</td><td>False</td></tr>
@@ -635,14 +635,14 @@ see the :ref:`composite_models` user guide for further information about the new
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140572365969680-438121').dataTable()");
+        console.log("$('#table140622746684624-943581').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140572365969680-438121').dataTable({
+        $('#table140622746684624-943581').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -747,7 +747,7 @@ see the :ref:`composite_models` user guide for further information about the new
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140572366449392-873460" class="table-striped table-bordered table-condensed">
+    <table id="table140622746683952-697915" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>9.979718e+01</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.027394e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -785,14 +785,14 @@ see the :ref:`composite_models` user guide for further information about the new
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140572366449392-873460').dataTable()");
+        console.log("$('#table140622746683952-697915').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140572366449392-873460').dataTable({
+        $('#table140622746683952-697915').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -830,7 +830,7 @@ see the :ref:`composite_models` user guide for further information about the new
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140572363449680-923712" class="table-striped table-bordered table-condensed">
+    <table id="table140622734811680-75568" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>9.979718e+01</td><td>9.979718e+01</td><td>1.973688e+02</td><td>--</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>2.027394e+06</td><td>2.027394e+06</td><td>1.339381e+06</td><td>--</td><td>2.310708e+06</td><td>1.000000e+04</td><td>1.000000e+08</td><td>False</td></tr>
@@ -868,14 +868,14 @@ see the :ref:`composite_models` user guide for further information about the new
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140572363449680-923712').dataTable()");
+        console.log("$('#table140622734811680-75568').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140572363449680-923712').dataTable({
+        $('#table140622734811680-75568').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -909,7 +909,7 @@ see the :ref:`composite_models` user guide for further information about the new
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140572363700064" class="table-striped table-bordered table-condensed">
+    <table id="table140622742679360" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <thead><tr><th>str12</th><th>str16</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>9.979718e+01</td><td>9.979718e+01</td><td>1.973688e+02</td><td>--</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
@@ -955,7 +955,7 @@ Model fitting with Minuit
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140571844351120-274290" class="table-striped table-bordered table-condensed">
+    <table id="table140622254955440-253927" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.310708e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -991,14 +991,14 @@ Model fitting with Minuit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140571844351120-274290').dataTable()");
+        console.log("$('#table140622254955440-253927').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140571844351120-274290').dataTable({
+        $('#table140622254955440-253927').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1101,7 +1101,7 @@ To run the ``minuit`` minimizer we will use the best-fit results from
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140571843295312-622851" class="table-striped table-bordered table-condensed">
+    <table id="table140622254443872-362960" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>7.837482e+01</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.168678e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -1139,14 +1139,14 @@ To run the ``minuit`` minimizer we will use the best-fit results from
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140571843295312-622851').dataTable()");
+        console.log("$('#table140622254443872-362960').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140571843295312-622851').dataTable({
+        $('#table140622254443872-362960').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1475,7 +1475,7 @@ To run the ``minuit`` minimizer we will use the best-fit results from
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140572363465152-157853" class="table-striped table-bordered table-condensed">
+    <table id="table140622734715104-459326" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>7.837482e+01</td><td>7.837482e+01</td><td>7.830642e+00</td><td>--</td><td>1.487509e+02</td><td>1.000000e+01</td><td>1.000000e+03</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>2.168678e+06</td><td>2.168678e+06</td><td>3.860903e+04</td><td>--</td><td>2.310708e+06</td><td>5.000000e+05</td><td>1.000000e+08</td><td>False</td></tr>
@@ -1513,14 +1513,14 @@ To run the ``minuit`` minimizer we will use the best-fit results from
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140572363465152-157853').dataTable()");
+        console.log("$('#table140622734715104-459326').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140572363465152-157853').dataTable({
+        $('#table140622734715104-459326').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1570,7 +1570,7 @@ https://iminuit.readthedocs.io/en/v1.5.4/
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140571844351120" class="table-striped table-bordered table-condensed">
+    <table id="table140622734715104" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <thead><tr><th>str12</th><th>str16</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>9.979718e+01</td><td>9.979718e+01</td><td>1.973688e+02</td><td>--</td><td>1.487509e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
@@ -1643,7 +1643,7 @@ Model fitting with a bkn pl
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140571899272784-125193" class="table-striped table-bordered table-condensed">
+    <table id="table140622278007776-107858" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.092462e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1679,14 +1679,14 @@ Model fitting with a bkn pl
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140571899272784-125193').dataTable()");
+        console.log("$('#table140622278007776-107858').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140571899272784-125193').dataTable({
+        $('#table140622278007776-107858').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1741,7 +1741,7 @@ Model fitting with a bkn pl
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140572363203248-924411" class="table-striped table-bordered table-condensed">
+    <table id="table140622741150640-936751" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.927085e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.993548e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -1777,14 +1777,14 @@ Model fitting with a bkn pl
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140572363203248-924411').dataTable()");
+        console.log("$('#table140622741150640-936751').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140572363203248-924411').dataTable({
+        $('#table140622741150640-936751').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1855,7 +1855,7 @@ Model fitting with a bkn pl
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140571890650128-100847" class="table-striped table-bordered table-condensed">
+    <table id="table140622734521296-167518" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.535419e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.736794e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -1893,14 +1893,14 @@ Model fitting with a bkn pl
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140571890650128-100847').dataTable()");
+        console.log("$('#table140622734521296-167518').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140571890650128-100847').dataTable({
+        $('#table140622734521296-167518').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1938,7 +1938,7 @@ Model fitting with a bkn pl
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140571890914544-164194" class="table-striped table-bordered table-condensed">
+    <table id="table140622746683952-84048" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>1.535419e+02</td><td>1.535419e+02</td><td>1.172176e+02</td><td>--</td><td>1.927085e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>1.736794e+06</td><td>1.736794e+06</td><td>7.155313e+05</td><td>--</td><td>2.993548e+06</td><td>1.000000e+04</td><td>1.000000e+08</td><td>False</td></tr>
@@ -1976,14 +1976,14 @@ Model fitting with a bkn pl
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140571890914544-164194').dataTable()");
+        console.log("$('#table140622746683952-84048').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140571890914544-164194').dataTable({
+        $('#table140622746683952-84048').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -2045,7 +2045,7 @@ Model fitting with a bkn pl
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140572364797648-957687" class="table-striped table-bordered table-condensed">
+    <table id="table140622734335664-661329" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.927085e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.993548e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -2081,14 +2081,14 @@ Model fitting with a bkn pl
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140572364797648-957687').dataTable()");
+        console.log("$('#table140622734335664-661329').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140572364797648-957687').dataTable({
+        $('#table140622734335664-661329').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -2170,7 +2170,7 @@ Model fitting with a bkn pl
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140571880473312-713457" class="table-striped table-bordered table-condensed">
+    <table id="table140622266774720-211909" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.187507e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.814606e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -2208,14 +2208,14 @@ Model fitting with a bkn pl
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140571880473312-713457').dataTable()");
+        console.log("$('#table140622266774720-211909').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140571880473312-713457').dataTable({
+        $('#table140622266774720-211909').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -2544,7 +2544,7 @@ Model fitting with a bkn pl
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table140571880474608-934291" class="table-striped table-bordered table-condensed">
+    <table id="table140622266774864-676616" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>1.187507e+02</td><td>1.187507e+02</td><td>7.495853e-02</td><td>--</td><td>1.927085e+02</td><td>1.000000e+01</td><td>1.000000e+03</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>1.814606e+06</td><td>1.814606e+06</td><td>4.278641e+04</td><td>--</td><td>2.993548e+06</td><td>5.000000e+05</td><td>1.000000e+08</td><td>False</td></tr>
@@ -2582,14 +2582,14 @@ Model fitting with a bkn pl
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140571880474608-934291').dataTable()");
+        console.log("$('#table140622266774864-676616').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140571880474608-934291').dataTable({
+        $('#table140622266774864-676616').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -2721,7 +2721,7 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    mcmc run done, with 1 threads took 284.72 seconds
+    mcmc run done, with 1 threads took 279.97 seconds
 
 
 .. code:: ipython3
@@ -2731,11 +2731,13 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    0.555625
+    0.56578125
 
 
 .. code:: ipython3
 
+    mcmc.model.jet_leptonic.nu_min=1E6
+    mcmc.model.nu_min=1E6
     p=mcmc.plot_model(sed_data=sed_data,fit_range=[1E11, 2E28],size=50)
     p.setlim(y_min=1E-14,x_min=1E6,x_max=2E28)
 
@@ -2771,8 +2773,8 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    (array([25.25952224, 26.17247395, 24.66667642, ..., 24.89107294,
-            25.54856039, 23.5643173 ]),
+    (array([24.21849323, 24.65218497, 24.38593037, ..., 22.71420676,
+            26.93932893, 26.27969979]),
      0)
 
 
@@ -2806,6 +2808,8 @@ Save and reuse MCMC
 
 .. code:: ipython3
 
+    ms.model.nu_min=1E6
+    ms.model.jet_leptonic.nu_min=1E6
     p=ms.plot_model(sed_data=sed_data,fit_range=[2E11, 2E28],size=50)
     p.setlim(y_min=1E-14,x_min=1E6,x_max=2E28)
 

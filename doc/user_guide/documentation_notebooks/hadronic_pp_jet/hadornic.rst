@@ -1,11 +1,15 @@
 .. _hadronic_pp_jet_guide:
 
-
-
 Hadronic pp jet model
 =====================
 
 In this section we show the hadronic `pp` implemented for the Jet model. The `pp` implementation is based on the work presented in [Kelner2006]_.
+
+Secondaries :math:`e^{\pm}`, are evolved to the equilibrium following the approach in [Inoue96]_. To speed up the process only synchroton cooling is taken into account. In the next release also the option to switch on IC cooling contribution will be added.  
+
+A validation of the integral solution for the :math:`e^{\pm}` equilibrium used for the pp jet against the Fokker-Plank equation solution, implemented in the  :class:`.JetTimeEvol` class, is presented in  :ref:`hadronic_pp_jet_validation_guide`
+
+We remind the approximation of the only synchrotron cooling is used only for this specific class, and for this first release, and that the :class:`.JetTimeEvol` class offers full cooling access (synchrotron, IC, and adiabatic expansion). See :ref:`temp_ev` for more details.
 
 .. code:: ipython3
 
@@ -47,7 +51,7 @@ In this section we show the hadronic `pp` implemented for the Jet model. The `pp
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc13
+    tested on jetset 1.2.0
 
 
 To get an hadronic jet with ``pp`` interaction, we set the
@@ -117,7 +121,7 @@ To get an hadronic jet with ``pp`` interaction, we set the
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140191814568016-79820" class="table-striped table-bordered table-condensed">
+    <table id="table140445796917152-141351" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_hadronic_pp</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_hadronic_pp</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -153,14 +157,14 @@ To get an hadronic jet with ``pp`` interaction, we set the
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140191814568016-79820').dataTable()");
+        console.log("$('#table140445796917152-141351').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140191814568016-79820').dataTable({
+        $('#table140445796917152-141351').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -196,7 +200,7 @@ To get an hadronic jet with ``pp`` interaction, we set the
 
 
 
-.. image:: hadornic_files/hadornic_11_0.png
+.. image:: hadornic_files/hadornic_13_0.png
 
 
 .. code:: ipython3
@@ -207,7 +211,7 @@ To get an hadronic jet with ``pp`` interaction, we set the
 
 
 
-.. image:: hadornic_files/hadornic_12_0.png
+.. image:: hadornic_files/hadornic_14_0.png
 
 
 Jet pp Consistency with Kelner 2006
@@ -294,7 +298,7 @@ Jet pp Consistency with Kelner 2006
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140191806407488-30806" class="table-striped table-bordered table-condensed">
+    <table id="table140445820183360-71078" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_hadronic_pp</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+18</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_hadronic_pp</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -330,14 +334,14 @@ Jet pp Consistency with Kelner 2006
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140191806407488-30806').dataTable()");
+        console.log("$('#table140445820183360-71078').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140191806407488-30806').dataTable({
+        $('#table140445820183360-71078').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -372,7 +376,7 @@ Jet pp Consistency with Kelner 2006
 
 
 
-.. image:: hadornic_files/hadornic_18_0.png
+.. image:: hadornic_files/hadornic_20_0.png
 
 
 .. code:: ipython3
@@ -421,12 +425,12 @@ Jet pp Consistency with Kelner 2006
 
 .. parsed-literal::
 
-    <matplotlib.lines.Line2D at 0x7f8524c58610>
+    <matplotlib.lines.Line2D at 0x7fbc161dbca0>
 
 
 
 
-.. image:: hadornic_files/hadornic_19_1.png
+.. image:: hadornic_files/hadornic_21_1.png
 
 
 .. code:: ipython3
@@ -469,7 +473,7 @@ Jet pp Consistency with Kelner 2006
 
 
 
-.. image:: hadornic_files/hadornic_20_1.png
+.. image:: hadornic_files/hadornic_22_1.png
 
 
 .. bibliography:: references.rst

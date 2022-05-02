@@ -16,13 +16,15 @@ Temporal evolution, two zones, cooling+acc
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc13
+    tested on jetset 1.2.0
 
 
 This is a very preliminary documentation for the temporal evolution
 capabilities of jetset. Here we show how to create a decopuled
 radiative+acceleration region, and how to evolve the system in order to
 generate both particle spectra, SEDs, and lightcurves
+
+To have full understanding of the analysis presented in this tutorial, it is advised to read the paper Tramacere et al. (2011) [Tramacere2011]_ for the understanding of stochastic and first order acceleration, and  Tramacere et al (2022) [Tramacere2022]_ for the coupling of radiative and acceleration regions.
 
 definition of the injected particle distribution (``q_inj``), and of the
 jet model for the radiative region
@@ -63,14 +65,27 @@ the next version of the documentation
     Diff_Index=2.0
     Acc_Index=1.0
 
-here we setup the ``JetTimeEvol`` class, passing the radiative region
-jet model, and the injected particle class. The IC cooling is switched
-off to make the process faster.
+Here we instantiate the ``JetTimeEvol`` object, passing the radiative
+region jet model, and the injected particle class.
 
 .. code:: ipython3
 
     from jetset.jet_timedep import JetTimeEvol
     temp_ev_acc=JetTimeEvol(jet_rad=jet_model,Q_inj=q_inj,inplace=True)
+
+
+.. parsed-literal::
+
+    ==> par: z_cosm from model: jet_leptonicacc_region linked to same parameter in model jet_leptonic
+
+
+**The IC cooling is switched off, as default, to make the process
+faster**. to switch on the IC cooling ``temp_ev_acc.IC_cooling='on'``
+
+Now, we setup some relevant parameters
+
+.. code:: ipython3
+
     temp_ev_acc.rad_region.jet.nu_min=1E8
     temp_ev_acc.acc_region.jet.nu_min=1E8
     T_SIZE=np.int(T_SIZE)
@@ -113,7 +128,6 @@ off to make the process faster.
 
 .. parsed-literal::
 
-    ==> par: z_cosm from model: jet_leptonicacc_region linked to same parameter in model jet_leptonic
     --------------------------------------------------------------------------------
     JetTimeEvol model description
     --------------------------------------------------------------------------------
@@ -127,7 +141,7 @@ off to make the process faster.
 .. raw:: html
 
     <i>Table length=29</i>
-    <table id="table140643683125472-935163" class="table-striped table-bordered table-condensed">
+    <table id="table140463348449584-2005" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>5.000000e+01</td><td>s</td><td>0.00029979245799999996</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -181,14 +195,14 @@ off to make the process faster.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140643683125472-935163').dataTable()");
+        console.log("$('#table140463348449584-2005').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140643683125472-935163').dataTable({
+        $('#table140463348449584-2005').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -212,7 +226,7 @@ off to make the process faster.
 .. raw:: html
 
     <i>Table length=30</i>
-    <table id="table140643680493472-574927" class="table-striped table-bordered table-condensed">
+    <table id="table140463348452656-734976" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -267,14 +281,14 @@ off to make the process faster.
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140643680493472-574927').dataTable()");
+        console.log("$('#table140463348452656-734976').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140643680493472-574927').dataTable({
+        $('#table140463348452656-734976').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -295,17 +309,26 @@ off to make the process faster.
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotTempEvDiagram at 0x7fea28474b20>
+    <jetset.plot_sedfit.PlotTempEvDiagram at 0x7fc02fcf5790>
 
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_11_1.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_15_1.png
 
 
-we do not want to evolve the particle in the ``jet_rad``, so we set
+**we do not want to evolve the particle in the ``jet_rad``, so we set
 ``only_injection=True``, and we set ``do_injection=True`` to injet the
-particle defined by ``q_inj``
+particle defined by ``q_inj``**
+
+setting ``cache_SEDs_rad=True`` will generate and cache all the SED at
+any time of the ``NUM_SET``. **This will increase the computational time
+during the run. Anyhow, will speed up the computation of SEDs and light
+curves. Moreover, these SEDs will be saved in the model, and read if you
+will reload the model in the future**.
+
+setting ``cache_SEDs_acc=True`` will generate and cache also the SEDs in
+the acceleration region.
 
 .. code:: ipython3
 
@@ -375,7 +398,7 @@ Particle spectrum in the radiative region
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_15_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_21_0.png
 
 
 Particle spectrum in the acceleration region
@@ -390,7 +413,7 @@ Particle spectrum in the acceleration region
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_17_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_23_0.png
 
 
 SEDs in the acceleration region
@@ -402,7 +425,7 @@ SEDs in the acceleration region
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_19_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_25_0.png
 
 
 SEDs in the acceleration region
@@ -414,7 +437,7 @@ SEDs in the acceleration region
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_21_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_27_0.png
 
 
 We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz,
@@ -435,7 +458,7 @@ without the effect of the light crossing time, in the observer frame
 .. raw:: html
 
     <i>Table length=344</i>
-    <table id="table140643254016464" class="table-striped table-bordered table-condensed">
+    <table id="table140463072946256" class="table-striped table-bordered table-condensed">
     <thead><tr><th>time</th><th>flux</th></tr></thead>
     <thead><tr><th>s</th><th>erg / (cm2 s)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th></tr></thead>
@@ -479,7 +502,7 @@ without the effect of the light crossing time, in the observer frame
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_25_1.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_31_1.png
 
 
 We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz, with
@@ -508,7 +531,7 @@ the effect of the light crossing time, in the observer frame
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_28_1.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_34_1.png
 
 
 We can save the model and reuse it later for plotting lightcurcves,
@@ -542,7 +565,7 @@ SEDs, and electron distributions
 .. raw:: html
 
     <i>Table length=29</i>
-    <table id="table140643255309360-481218" class="table-striped table-bordered table-condensed">
+    <table id="table140463079550496-266144" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>5.000000e+01</td><td>s</td><td>0.00029979245799999996</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -596,14 +619,14 @@ SEDs, and electron distributions
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140643255309360-481218').dataTable()");
+        console.log("$('#table140463079550496-266144').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140643255309360-481218').dataTable({
+        $('#table140463079550496-266144').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -627,7 +650,7 @@ SEDs, and electron distributions
 .. raw:: html
 
     <i>Table length=30</i>
-    <table id="table140643253014384-422041" class="table-striped table-bordered table-condensed">
+    <table id="table140463079315920-342226" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -682,14 +705,14 @@ SEDs, and electron distributions
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140643253014384-422041').dataTable()");
+        console.log("$('#table140463079315920-342226').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140643253014384-422041').dataTable({
+        $('#table140463079315920-342226').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -708,7 +731,7 @@ SEDs, and electron distributions
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_33_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_39_0.png
 
 
 .. code:: ipython3
@@ -728,6 +751,6 @@ SEDs, and electron distributions
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_34_1.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_40_1.png
 
 

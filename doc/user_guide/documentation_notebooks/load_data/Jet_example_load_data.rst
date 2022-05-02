@@ -29,6 +29,12 @@ This is the class to use for model fitting and in general in Jetset
     import jetset
     print('tested on jetset',jetset.__version__)
 
+
+.. parsed-literal::
+
+    tested on jetset 1.2.0
+
+
 .. code:: ipython3
 
     import warnings
@@ -69,7 +75,7 @@ we can easily access the astropy table
 .. raw:: html
 
     <i>Table length=10</i>
-    <table id="table140538418063536" class="table-striped table-bordered table-condensed">
+    <table id="table140627727467952" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -198,7 +204,7 @@ As you can see there are three 3 files. We use in this example the file for Mrk 
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table140538442366640" class="table-striped table-bordered table-condensed">
+    <table id="table140627761957808" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>str13</th></tr></thead>
@@ -291,7 +297,7 @@ the data can be loaded from the saved table
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table140538418063152" class="table-striped table-bordered table-condensed">
+    <table id="table140627763972416" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>str13</th></tr></thead>
@@ -365,7 +371,7 @@ of course this method applies if you have a generic 2-dim numpy array.
 .. raw:: html
 
     <i>Table length=20</i>
-    <table id="table140538442408240" class="table-striped table-bordered table-condensed">
+    <table id="table140627762058096" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -434,7 +440,7 @@ Assume that we downloaded the data for Mrk421, in observed fluxes and linear sca
 .. raw:: html
 
     <i>Table length=3550</i>
-    <table id="table140538417879792" class="table-striped table-bordered table-condensed">
+    <table id="table140627763972224" class="table-striped table-bordered table-condensed">
     <thead><tr><th>x</th><th>dx</th><th>y</th><th>dy</th><th>T_start</th><th>T_stop</th><th>UL</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>MJD</th><th>MJD</th><th></th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bytes16</th></tr></thead>
@@ -498,7 +504,7 @@ and after elimination of duplicated entries, and upper limits
 .. raw:: html
 
     <i>Table length=110</i>
-    <table id="table140538444373344" class="table-striped table-bordered table-condensed">
+    <table id="table140627764112928" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu_data</th><th>dnu_data</th><th>nuFnu_data</th><th>dnuFnu_data</th><th>nu_data_log</th><th>dnu_data_log</th><th>nuFnu_data_log</th><th>dnuFnu_data_log</th><th>dnuFnu_fake</th><th>dnuFnu_fake_log</th><th>UL</th><th>zero_error</th><th>T_start</th><th>T_stop</th><th>data_set</th></tr></thead>
     <thead><tr><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>Hz</th><th>Hz</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th>erg / (cm2 s)</th><th></th><th></th><th></th><th>MJD</th><th>MJD</th><th></th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>float64</th><th>bool</th><th>bool</th><th>float64</th><th>float64</th><th>str13</th></tr></thead>
@@ -531,13 +537,16 @@ and after elimination of duplicated entries, and upper limits
     sed_data.metadata
 
 
+
+
 .. parsed-literal::
 
-    z :  0.0308
-    obj_name :  J1104+3812,Mrk421
-    restframe :  obs
-    data_scale :  lin-lin
-    UL_CL :  0.95
+    {'z': 0.0308,
+     'obj_name': 'J1104+3812,Mrk421',
+     'restframe': 'obs',
+     'data_scale': 'lin-lin',
+     'UL_CL': 0.95}
+
 
 
 Plotting ObsData
@@ -576,17 +585,8 @@ you can rescale your plot
     myPlot.setlim(x_min=1E7,x_max=1E28,y_min=1E-15,y_max=1E-9)
 
 
-.. parsed-literal::
 
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    The rescale method as been replaced by the setlim method
-    please notice that now jetset uses log axis rather than loglog plots
-    so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-.. image:: Jet_example_load_data_files/Jet_example_load_data_64_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_64_0.png
 
 
 plotting in the ``src`` restframe
@@ -597,17 +597,8 @@ plotting in the ``src`` restframe
     myPlot.setlim(x_min=1E7,x_max=1E28,y_min=1E40,y_max=1E46)
 
 
-.. parsed-literal::
 
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    The rescale method as been replaced by the setlim method
-    please notice that now jetset uses log axis rather than loglog plots
-    so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-.. image:: Jet_example_load_data_files/Jet_example_load_data_66_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_66_0.png
 
 
 **to have interactive plot in jupyter**
@@ -655,11 +646,6 @@ this is not a problem for the fit process, you might want to rebin
     ---> bin_widht= 0.2
     ================================================================================
     
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    The rescale method as been replaced by the setlim method
-    please notice that now jetset uses log axis rather than loglog plots
-    so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 
@@ -689,17 +675,8 @@ For these reasons the package offer the possibility to add systematics
     myPlot.setlim(x_min=1E7,x_max=1E28,y_min=1E-15,y_max=1E-9)
 
 
-.. parsed-literal::
 
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    The rescale method as been replaced by the setlim method
-    please notice that now jetset uses log axis rather than loglog plots
-    so, the correct way to use it is rescale(x_min=8)->setlim(x_min=1E8)
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-.. image:: Jet_example_load_data_files/Jet_example_load_data_72_1.png
+.. image:: Jet_example_load_data_files/Jet_example_load_data_72_0.png
 
 
 with this command we add 20% systematics for data between :math:`10^{6}<\nu<10^{29}` Hz

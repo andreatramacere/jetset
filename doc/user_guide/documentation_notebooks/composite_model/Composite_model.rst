@@ -64,7 +64,7 @@ cosmology model to the ``FitModel`` class, so it is using a default one
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140726733193424-269044" class="table-striped table-bordered table-condensed">
+    <table id="table140282729901552-747754" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_flaring</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_flaring</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -101,14 +101,14 @@ cosmology model to the ``FitModel`` class, so it is using a default one
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140726733193424-269044').dataTable()");
+        console.log("$('#table140282729901552-747754').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140726733193424-269044').dataTable({
+        $('#table140282729901552-747754').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -143,7 +143,7 @@ redshift, we link the two parameters
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140726746377712-810788" class="table-striped table-bordered table-condensed">
+    <table id="table140282776509408-950502" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_flaring</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_flaring</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -180,14 +180,14 @@ redshift, we link the two parameters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140726746377712-810788').dataTable()");
+        console.log("$('#table140282776509408-950502').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140726746377712-810788').dataTable({
+        $('#table140282776509408-950502').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -364,7 +364,7 @@ same ``master`` parameter used for the ``EBL`` model, i.e. to the
 .. raw:: html
 
     <i>Table length=22</i>
-    <table id="table140653292052880-530520" class="table-striped table-bordered table-condensed">
+    <table id="table140282785368672-147343" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_flaring</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_flaring</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -411,14 +411,14 @@ same ``master`` parameter used for the ``EBL`` model, i.e. to the
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140653292052880-530520').dataTable()");
+        console.log("$('#table140282785368672-147343').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140653292052880-530520').dataTable({
+        $('#table140282785368672-147343').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -446,15 +446,8 @@ same ``master`` parameter used for the ``EBL`` model, i.e. to the
     p.setlim(y_max=1E-12)
 
 
-.. parsed-literal::
 
-    /Users/orion/anaconda3/envs/jetset/lib/python3.8/site-packages/jetset/plot_sedfit.py:276: UserWarning: Attempted to set non-positive top ylim on a log-scaled axis.
-    Invalid limit will be ignored.
-      self.sedplot.set_ylim(y_min,y_max)
-
-
-
-.. image:: Composite_model_files/Composite_model_37_1.png
+.. image:: Composite_model_files/Composite_model_37_0.png
 
 
 .. code:: ipython3
@@ -481,7 +474,7 @@ same ``master`` parameter used for the ``EBL`` model, i.e. to the
 .. raw:: html
 
     <i>Table length=22</i>
-    <table id="table140672382469696-178215" class="table-striped table-bordered table-condensed">
+    <table id="table140282789829360-43004" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_flaring</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_flaring</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -528,14 +521,14 @@ same ``master`` parameter used for the ``EBL`` model, i.e. to the
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140672382469696-178215').dataTable()");
+        console.log("$('#table140282789829360-43004').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140672382469696-178215').dataTable({
+        $('#table140282789829360-43004').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],

@@ -634,7 +634,9 @@ void CooolingEquilibrium(struct blob * pt, double T_esc){
     
     double  a;
     unsigned int ID;
-    a=3.0*MEC2/(4.0*vluce_cm*(pt->UB)*SIGTH);
+    double Uph;
+    Uph=0;
+    a=3.0*MEC2/(4.0*vluce_cm*(pt->UB + Uph)*SIGTH);
     pt->gamma_cooling_eq=a/T_esc;
     
     for (ID = 0; ID < pt->gamma_grid_size ; ID++){

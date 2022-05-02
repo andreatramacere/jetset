@@ -1,7 +1,17 @@
 .. _gammapy_plugin:
 
-Example to use the sherpa plugin with the JeSeT interface
-=========================================================
+.. warning::
+    This plugin is still experimental, so any feedback that you can provide is welcome. 
+    
+    **It has been tested against Gamma-py version 0.19. Please, take into account that might break if Gamma-py changes interface**
+
+Example to use the Gamma-py plugin with the JeSeT interface
+===========================================================
+
+In this tutorial we show how to import a jetset model into Gamma-py, and
+finally we perform a model fitting with Gamma-py. To run this plugin you
+have to install Gamma-py
+https://docs.gammapy.org/0.19/getting-started/install.html
 
 .. code:: ipython3
 
@@ -188,7 +198,7 @@ plotting with gammapy
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_12_0.png
+.. image:: gammapy_plugin_files/gammapy_plugin_14_0.png
 
 
 plotting with jetset
@@ -208,7 +218,7 @@ plotting with jetset
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_14_1.png
+.. image:: gammapy_plugin_files/gammapy_plugin_16_1.png
 
 
 Model fitting with gammapy
@@ -243,7 +253,7 @@ Model fitting with gammapy
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_16_2.png
+.. image:: gammapy_plugin_files/gammapy_plugin_18_2.png
 
 
 .. code:: ipython3
@@ -265,7 +275,7 @@ Model fitting with gammapy
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_17_1.png
+.. image:: gammapy_plugin_files/gammapy_plugin_19_1.png
 
 
 .. code:: ipython3
@@ -426,7 +436,7 @@ Model fitting with gammapy
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_19_3.png
+.. image:: gammapy_plugin_files/gammapy_plugin_21_3.png
 
 
 .. code:: ipython3
@@ -533,7 +543,7 @@ Model fitting with gammapy
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_21_0.png
+.. image:: gammapy_plugin_files/gammapy_plugin_23_0.png
 
 
 setting gammapy jetset model
@@ -668,7 +678,7 @@ gammapy has not fit_range, but uses only min/max
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_27_0.png
+.. image:: gammapy_plugin_files/gammapy_plugin_29_0.png
 
 
 importing data to gammapy
@@ -691,7 +701,7 @@ importing data to gammapy
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_29_1.png
+.. image:: gammapy_plugin_files/gammapy_plugin_31_1.png
 
 
 .. code:: ipython3
@@ -703,7 +713,7 @@ importing data to gammapy
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_30_0.png
+.. image:: gammapy_plugin_files/gammapy_plugin_32_0.png
 
 
 building gammapy SkyModel
@@ -753,7 +763,7 @@ we build the SkyModel, and we degrade the pre-fit model quality
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_33_1.png
+.. image:: gammapy_plugin_files/gammapy_plugin_35_1.png
 
 
 setting gammapy Datasets and Fit classes, and running the fit
@@ -830,7 +840,7 @@ setting gammapy Datasets and Fit classes, and running the fit
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_39_0.png
+.. image:: gammapy_plugin_files/gammapy_plugin_41_0.png
 
 
 .. code:: ipython3
@@ -841,7 +851,7 @@ setting gammapy Datasets and Fit classes, and running the fit
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_40_0.png
+.. image:: gammapy_plugin_files/gammapy_plugin_42_0.png
 
 
 .. code:: ipython3
@@ -854,6 +864,6 @@ setting gammapy Datasets and Fit classes, and running the fit
 
 
 
-.. image:: gammapy_plugin_files/gammapy_plugin_41_0.png
+.. image:: gammapy_plugin_files/gammapy_plugin_43_0.png
 
 

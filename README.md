@@ -17,8 +17,7 @@ allowing to fit the numerical models to observed data. The main features of this
    starting model,following the phenomenological trends that I have implemented. fitting of multiwavelength SEDs using  
    both frequentist approach (iminuit) and bayesian MCMC sampling (emcee)
  
- * Self-consistent temporal evolution of the plasma under the effect of radiative and accelerative processes, both first  
-   order and second order (stochastic acceleration) processes.
+ * Self-consistent temporal evolution of the plasma under the effect of radiative, accelerative processes, and adiabatic expansion. Both first order and second order (stochastic acceleration) processes are implemented.
 
 
 
@@ -43,13 +42,18 @@ visit: https://jetset.readthedocs.io/en/latest/
 run the notebook on binder: 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/andreatramacere/jetset/master)
 # Installation 
-> **_NOTE:_** Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.7 is suggested, older python 3 versions (< 3.7) should work.
+> **_NOTE:_** Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.8 is suggested, older python 3 versions (< 3.8) should work.
 
-## Install  JetSeT from Anaconda  (suggested for OSX and Linux)
+
+## Install  JetSeT from pip 
+- create a virtual environment (not necessary, but suggested): 
+  `pip install jetset`
+
+## Install  JetSeT from Anaconda 
  
  - create a virtual environment (not necessary, but suggested): 
  
-    `conda create --name jetset python=3.8 ipython jupyter`
+    `conda create --name jetset python=3.9 ipython jupyter`
     
      `conda activate jetset`
      
@@ -61,13 +65,11 @@ run the notebook on binder:
     
    `conda install -c andreatramacere -c astropy  -c  conda-forge jetset`
    
-
-- run the test
+## run the test
 ```bash
 pytest --disable-warnings --pyargs jetset.tests.test_users::test
  ```  
 
-**run all the examples outside of the installation dir**
 
 ## Install the JetSeT from source 
 
@@ -130,7 +132,7 @@ pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
 ##  Requirements
 The following python packages are required:
 
-        python >=3.6 (python >=3.6 is suggested, older python 3 versions should  work, python 2 is not supported any more from version>=1.1.0)
+        python =3.9 (python 3.9 is suggested, older python 3 versions should  work, python 2 is not supported any more from version>=1.1.0)
         setuptools
         scipy
         numpy
@@ -160,21 +162,6 @@ The code is hosted here:
  
 
 
-
-
-# Build documentation
-
- requires: 
-    
- - sphinx
- - pylint
- - sphinx-pyreverse: "https://github.com/alendit/sphinx-pyreverse"
- - nbsphinx: "conda install -c conda-forge nbsphinx"
- - sphinx_rtd_theme: conda install -c anaconda sphinx_rtd_theme 
- - sphinx-bootstrap-theme: 'https://github.com/ryan-roemer/sphinx-bootstrap-theme'
- - sphinx-automod: 'https://github.com/astropy/sphinx-automodapi'    
- 
- 
  
 
 

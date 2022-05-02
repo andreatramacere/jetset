@@ -1,4 +1,10 @@
-.. \_hadronic_pp_jet_validation_guide:
+.. _hadronic_pp_jet_validation_guide:
+
+Validation of the pp equilibrium against the Fokker-Plank equation solution
+===========================================================================
+
+In this tutorial we validate the integral solution for the :math:`e^{\pm}` equilibrium, used for the pp jet against the Fokker-Plank equation solution implemented in the  :class:`.JetTimeEvol` class
+(see the :ref:`hadronic_pp_jet_guide`, for more details on the pp hadronic jet model)
 
 .. code:: ipython3
 
@@ -24,8 +30,8 @@
     
 
 
-Jet pp Consistency with Kelner 2006
-===================================
+Jet pp
+------
 
 .. code:: ipython3
 
@@ -44,7 +50,7 @@ Jet pp Consistency with Kelner 2006
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc13
+    tested on jetset 1.2.0
 
 
 .. code:: ipython3
@@ -97,12 +103,12 @@ Jet pp Consistency with Kelner 2006
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotPdistr at 0x7fd18ccaadf0>
+    <jetset.plot_sedfit.PlotPdistr at 0x7fc5c3373fd0>
 
 
 
 
-.. image:: hadornic_validate_temp_ev_files/hadornic_validate_temp_ev_8_1.png
+.. image:: hadornic_validate_temp_ev_files/hadornic_validate_temp_ev_10_1.png
 
 
 .. code:: ipython3
@@ -119,7 +125,7 @@ Jet pp Consistency with Kelner 2006
 .. raw:: html
 
     <i>Table length=11</i>
-    <table id="table140538009036880-962051" class="table-striped table-bordered table-condensed">
+    <table id="table140487375148032-709371" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_hadronic_pp</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_hadronic_pp</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -155,14 +161,14 @@ Jet pp Consistency with Kelner 2006
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140538009036880-962051').dataTable()");
+        console.log("$('#table140487375148032-709371').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140538009036880-962051').dataTable({
+        $('#table140487375148032-709371').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -173,6 +179,9 @@ Jet pp Consistency with Kelner 2006
     </script>
 
 
+
+setting up the JetTimeEvol model
+--------------------------------
 
 .. code:: ipython3
 
@@ -196,7 +205,7 @@ Jet pp Consistency with Kelner 2006
 .. raw:: html
 
     <i>Table length=3</i>
-    <table id="table140537895686000-749539" class="table-striped table-bordered table-condensed">
+    <table id="table140487381173488-902901" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.836150e+07</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -224,14 +233,14 @@ Jet pp Consistency with Kelner 2006
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140537895686000-749539').dataTable()");
+        console.log("$('#table140487381173488-902901').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140537895686000-749539').dataTable({
+        $('#table140487381173488-902901').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -264,12 +273,12 @@ Jet pp Consistency with Kelner 2006
 
 .. parsed-literal::
 
-    [<matplotlib.lines.Line2D at 0x7fd18eb21d30>]
+    [<matplotlib.lines.Line2D at 0x7fc5c471fd90>]
 
 
 
 
-.. image:: hadornic_validate_temp_ev_files/hadornic_validate_temp_ev_14_1.png
+.. image:: hadornic_validate_temp_ev_files/hadornic_validate_temp_ev_17_1.png
 
 
 .. code:: ipython3
@@ -344,7 +353,7 @@ we use the acc region with escape time equal to radiative region
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140537034329968-251237" class="table-striped table-bordered table-condensed">
+    <table id="table140487367076976-604089" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>2.500000e+03</td><td>s</td><td>7.494811449999999e-05</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -356,7 +365,7 @@ we use the acc region with escape time equal to radiative region
     <tr><td>Tesc rad</td><td>time</td><td>3.335641e+07</td><td>s</td><td>1.0</td><td>R/c</td><td>False</td></tr>
     <tr><td>R_rad rad start</td><td>region_position</td><td>1.000000e+18</td><td>cm</td><td>None</td><td></td><td>False</td></tr>
     <tr><td>R_H rad start</td><td>region_position</td><td>1.000000e+17</td><td>cm</td><td>None</td><td></td><td>False</td></tr>
-    <tr><td>T min. synch. cooling</td><td></td><td>1.547600e+01</td><td>s</td><td>None</td><td></td><td>False</td></tr>
+    <tr><td>T min. synch. cooling</td><td></td><td>6.190400e+01</td><td>s</td><td>None</td><td></td><td>False</td></tr>
     <tr><td>L inj (electrons)</td><td>injected lum.</td><td>7.490407e+38</td><td>erg/s</td><td>None</td><td></td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
@@ -381,14 +390,14 @@ we use the acc region with escape time equal to radiative region
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140537034329968-251237').dataTable()");
+        console.log("$('#table140487367076976-604089').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140537034329968-251237').dataTable({
+        $('#table140487367076976-604089').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -412,7 +421,7 @@ we use the acc region with escape time equal to radiative region
 .. raw:: html
 
     <i>Table length=17</i>
-    <table id="table140537542288672-998633" class="table-striped table-bordered table-condensed">
+    <table id="table140487395094688-84928" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>5.000000e+09</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.100000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -454,14 +463,14 @@ we use the acc region with escape time equal to radiative region
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140537542288672-998633').dataTable()");
+        console.log("$('#table140487395094688-84928').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140537542288672-998633').dataTable({
+        $('#table140487395094688-84928').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -480,7 +489,7 @@ we use the acc region with escape time equal to radiative region
 
 
 
-.. image:: hadornic_validate_temp_ev_files/hadornic_validate_temp_ev_19_0.png
+.. image:: hadornic_validate_temp_ev_files/hadornic_validate_temp_ev_22_0.png
 
 
 .. code:: ipython3
@@ -489,7 +498,7 @@ we use the acc region with escape time equal to radiative region
 
 
 
-.. image:: hadornic_validate_temp_ev_files/hadornic_validate_temp_ev_20_0.png
+.. image:: hadornic_validate_temp_ev_files/hadornic_validate_temp_ev_23_0.png
 
 
 .. code:: ipython3
@@ -526,7 +535,7 @@ we use the acc region with escape time equal to radiative region
 
 
 
-.. image:: hadornic_validate_temp_ev_files/hadornic_validate_temp_ev_23_0.png
+.. image:: hadornic_validate_temp_ev_files/hadornic_validate_temp_ev_26_0.png
 
 
 .. code:: ipython3
@@ -564,12 +573,10 @@ we use the acc region with escape time equal to radiative region
 
 .. parsed-literal::
 
-    [<matplotlib.lines.Line2D at 0x7fd1526e72b0>]
+    [<matplotlib.lines.Line2D at 0x7fc5c4724130>]
 
 
 
 
-.. image:: hadornic_validate_temp_ev_files/hadornic_validate_temp_ev_26_1.png
-
-
+.. image:: hadornic_validate_temp_ev_files/hadornic_validate_temp_ev_29_1.png
 

@@ -19,7 +19,7 @@ passing a specifc cosmology model form astropy
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0rc4
+    tested on jetset 1.2.0
 
 
 .. code:: ipython3
