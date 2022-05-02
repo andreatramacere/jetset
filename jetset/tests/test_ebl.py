@@ -118,7 +118,7 @@ class TestEBL(TestBase):
         from .test_model_fit import TestModelFit
         
 
-        template, jet,sed_data = TestModelFit().test_prepare_fit(sed_number=sed_number)
+        template, jet,sed_data = TestModelFit().prepare_model(sed_number=sed_number)
 
         from jetset.template_2Dmodel import EBLAbsorptionTemplate
         ebl_franceschini = EBLAbsorptionTemplate.from_name('Franceschini_2008')

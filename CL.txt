@@ -13,9 +13,14 @@ If you want  to make a tag with github actions
 3) testing locally
  python -c"import iminuit; print('iminuit',iminuit.__version__); import jetset; print('jetset',jetset.__version__)"
 
- pytest --pyargs jetset.tests.test_functions::test_short
- python -c'from jetset.tests.test_functions import test_short; test_short()'
- pytest --disable-warnings --pyargs -vvv -m integration jetset.tests.test_functions::TestFull
+user test:
+pytest  --pyargs  -vvv jetset.tests.test_users::TestUser
+
+specific module test (eg: test_jet_model):
+pytest  --pyargs -vvv -s jetset.tests.test_jet_model
+
+integration test :
+pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
 
 4) testing remotely:
    use the github actions pipelines conda test/pip test or test

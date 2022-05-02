@@ -6,9 +6,10 @@ from .base_class import TestBase
 class TestJets(TestBase):
 
     def integration_suite(self,plot=False):
-        self.test_all(plot=plot)
+        self._all(plot=plot)
 
     def test_hadronic_jet(self,plot=False):
+        print('--------> test_hadronic_jet',plot)
         from jetset.jet_model import Jet
         j = Jet(proton_distribution='plc')
         j.parameters.gmin.val = 2
@@ -41,6 +42,7 @@ class TestJets(TestBase):
         
 
     def test_build_bessel(self,plot=False):
+        print('--------> test_build_bessel',plot)
         from jetset.jet_model import Jet
         Jet().eval()
 
@@ -72,6 +74,7 @@ class TestJets(TestBase):
         np.testing.assert_allclose(j.energetic_dict['U_e'],j.emitters_distribution.eval_U(),rtol=1E-2)
 
     def test_set_N_from_nuFnu(self,plot=False):
+        print('--------> test_set_N_from_nuFnu',plot)
         from jetset.jet_model import Jet
         from jetset.jetkernel import jetkernel
         import numpy as np
@@ -84,4 +87,4 @@ class TestJets(TestBase):
 
        
     def test_EC(self,plot=False):
-        print('--------> test_jet', plot)
+        print('--------> test_EC', plot)

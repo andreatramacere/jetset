@@ -13,9 +13,6 @@ class TestPhenomenologyConstr(TestBase):
         
         return dict(jet=prefit_jet, shape=my_shape,template=template,sed_data=sed_data)
 
-    def test_all(self, sed_number=1,plot=False):
-        self.integration_suite(sed_number=sed_number,plot=plot)
-
     def test_spectral_indices(self,sed_data=None,plot=True,sed_number=1):
         from jetset.sed_shaper import SEDShape
         from .test_data import TestData

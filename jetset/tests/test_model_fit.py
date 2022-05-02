@@ -4,7 +4,10 @@ from .base_class import TestBase
 
 class TestModelFit(TestBase):
 
-    def integration_suite(self,plot=False,sed_number=None,phenom_dict=None,use_dep_pars=False,use_ebl=False):
+    def test(self,plot=False):
+        self.integration_suite(plot=plot,sed_number=1)
+
+    def integration_suite(self,plot=False,sed_number=1,phenom_dict=None,use_dep_pars=False,use_ebl=False,skip_minuit=False):
         if sed_number is not None:
             template,jet,sed_data=self.prepare_model(plot=plot,sed_number=sed_number)
         elif phenom_dict is not None:
@@ -19,16 +22,13 @@ class TestModelFit(TestBase):
                                                             sed_data=sed_data, 
                                                             minimizer='lsb')
 
-    
-        fit_model, model_minimizer,sed_data=self.model_fit(fit_model=fit_model,
-                                                            sed_data=sed_data, 
-                                                            minimizer='minuit')
+
+        if skip_minuit is False:
+            fit_model, model_minimizer,sed_data=self.model_fit(fit_model=fit_model,
+                                                                sed_data=sed_data, 
+                                                                minimizer='minuit')
 
         return dict(fit_model=fit_model, model_minimizer=model_minimizer,sed_data=sed_data)
-
-
-    def test_all(self,sed_number=1,plot=False):
-        self.integration_suite(sed_number=sed_number,plot=plot)
 
     def prepare_model(self, plot=True,sed_number=1):
         from .test_phenom_constr import TestPhenomenologyConstr
@@ -101,7 +101,7 @@ class TestModelFit(TestBase):
         model_minimizer = ModelMinimizer(minimizer)
         
         if minimizer == 'minuit':
-            fit_model.jet_leptonic.parameters.gmin.fit_range = [2, 200]
+            fit_model.jet_leptonic.parameters.gmin.fit_range = [2, 300]
             fit_model.jet_leptonic.parameters.gmax.fit_range = [1E5, 1E7]
 
         best_fit = model_minimizer.fit(fit_model, sed_data, 10 ** 11., 10 ** 29.0,
