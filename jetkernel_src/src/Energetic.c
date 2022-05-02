@@ -429,17 +429,12 @@ struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
         energetic.L_SSC_rf=0;
         energetic.jet_L_SSC=0;
     }
-    printf("energetic report protos  \n ");
     if (strcmp(pt->PARTICLE, "protons") == 0) {
-        printf("energetic report protos 1 \n ");
         energetic.U_p_target = pt->NH_pp  * MPC2;
-        printf("energetic report protos 2 \n ");
         energetic.U_p = pt->U_p;
         energetic.L_pp_gamma_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_pp_gamma, pt->nuFnu_pp_gamma_obs, pt->NU_INT_STOP_PP_GAMMA);
-        printf("energetic report protos 3 \n ");
         energetic.jet_L_pp_gamma = energetic.L_pp_gamma_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
         energetic.jet_L_rad += energetic.jet_L_pp_gamma;
-        printf("energetic report protos 4 \n ");
     }
     else
     {
