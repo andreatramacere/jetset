@@ -1,6 +1,6 @@
 setuptools
 scipy
-numpy>=1.18,<1.21
+numpy>=1.18
 astropy>=4.0,<5.0.0
 matplotlib>3.1.0
 future
@@ -11,7 +11,7 @@ emcee>3.0.0
 pyyaml
 pytest
 tqdm
-numba
+numba>0.55
 pytest
 dill
 #sherpa
