@@ -34,7 +34,7 @@ python make_apidoc_and_uml_graphs.py
 OR
 ----IN ONE STEPS----------------
 to build without executing
-./build.sh documentation_notebooks/dir-name
+./build.sh documentation_notebooks
 OR
 ./build_rst_files.sh  documentation_notebooks/dir-name
 

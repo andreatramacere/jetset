@@ -13,6 +13,15 @@ We remind the approximation of the only synchrotron cooling is used only for thi
 
 .. code:: ipython3
 
+    from jetset.jet_model import Jet
+    from jetset.jetkernel import jetkernel
+    from astropy import constants as const
+    from jetset.jet_emitters_factory import EmittersFactory
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+.. code:: ipython3
+
     def get_component(j_name,nu_name):
         j_nu_ptr=getattr(j._blob,j_name)
         nu_ptr=getattr(j._blob,nu_name)
@@ -33,14 +42,6 @@ We remind the approximation of the only synchrotron cooling is used only for thi
         
         return xg,yg
     
-
-
-.. code:: ipython3
-
-    from jetset.jet_model import Jet
-    from jetset.jetkernel import jetkernel
-    from astropy import constants as const
-    from jetset.jet_emitters_factory import EmittersFactory
 
 
 .. code:: ipython3

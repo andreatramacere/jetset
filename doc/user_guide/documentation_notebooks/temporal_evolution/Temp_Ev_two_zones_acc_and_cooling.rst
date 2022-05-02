@@ -10,6 +10,11 @@ Temporal evolution, two zones, cooling+acc
 
 .. code:: ipython3
 
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+.. code:: ipython3
+
     import jetset
     print('tested on jetset',jetset.__version__)
 
@@ -314,7 +319,7 @@ Now, we setup some relevant parameters
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_15_1.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_16_1.png
 
 
 **we do not want to evolve the particle in the ``jet_rad``, so we set
@@ -398,7 +403,7 @@ Particle spectrum in the radiative region
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_21_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_22_0.png
 
 
 Particle spectrum in the acceleration region
@@ -413,7 +418,7 @@ Particle spectrum in the acceleration region
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_23_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_24_0.png
 
 
 SEDs in the acceleration region
@@ -425,7 +430,7 @@ SEDs in the acceleration region
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_25_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_26_0.png
 
 
 SEDs in the acceleration region
@@ -437,7 +442,7 @@ SEDs in the acceleration region
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_27_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_28_0.png
 
 
 We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz,
@@ -502,7 +507,7 @@ without the effect of the light crossing time, in the observer frame
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_31_1.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_32_1.png
 
 
 We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz, with
@@ -531,7 +536,7 @@ the effect of the light crossing time, in the observer frame
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_34_1.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_35_1.png
 
 
 We can save the model and reuse it later for plotting lightcurcves,
@@ -731,7 +736,7 @@ SEDs, and electron distributions
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_39_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_40_0.png
 
 
 .. code:: ipython3
@@ -751,6 +756,6 @@ SEDs, and electron distributions
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_40_1.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_41_1.png
 
 

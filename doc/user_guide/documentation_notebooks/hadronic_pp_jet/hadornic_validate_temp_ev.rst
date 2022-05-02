@@ -6,6 +6,20 @@ Validation of the pp equilibrium against the Fokker-Plank equation solution
 In this tutorial we validate the integral solution for the :math:`e^{\pm}` equilibrium, used for the pp jet against the Fokker-Plank equation solution implemented in the  :class:`.JetTimeEvol` class
 (see the :ref:`hadronic_pp_jet_guide`, for more details on the pp hadronic jet model)
 
+Jet pp
+------
+
+.. code:: ipython3
+
+    from jetset.jet_model import Jet
+    from jetset.jetkernel import jetkernel
+    from astropy import constants as const
+    from jetset.jet_emitters_factory import EmittersFactory
+    from jetset.jet_emitters import InjEmittersArrayDistribution
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+
 .. code:: ipython3
 
     def get_component(j_name,nu_name):
@@ -28,18 +42,6 @@ In this tutorial we validate the integral solution for the :math:`e^{\pm}` equil
         
         return xg,yg
     
-
-
-Jet pp
-------
-
-.. code:: ipython3
-
-    from jetset.jet_model import Jet
-    from jetset.jetkernel import jetkernel
-    from astropy import constants as const
-    from jetset.jet_emitters_factory import EmittersFactory
-    from jetset.jet_emitters import InjEmittersArrayDistribution
 
 
 .. code:: ipython3

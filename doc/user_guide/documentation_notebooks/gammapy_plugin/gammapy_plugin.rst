@@ -17,6 +17,7 @@ https://docs.gammapy.org/0.19/getting-started/install.html
 
     import astropy.units as u
     import  numpy as np
+    import matplotlib.pyplot as plt
     
     from jetset.gammapy_plugin import GammapyJetsetModelFactory
     from jetset.jet_model import Jet

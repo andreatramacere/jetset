@@ -49,6 +49,11 @@ Broad Line Region
 
 .. code:: ipython3
 
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+.. code:: ipython3
+
     from jetset.jet_model import Jet
     my_jet=Jet(name='EC_example',electron_distribution='bkn',beaming_expr='bulk_theta')
     my_jet.add_EC_component(['EC_BLR','EC_Disk'],disk_type='BB')
@@ -352,7 +357,7 @@ now we set some parameter for the model
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_15_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_16_0.png
 
 
 Dusty Torus
@@ -496,7 +501,7 @@ Dusty Torus
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_19_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_20_0.png
 
 
 .. code:: ipython3
@@ -512,7 +517,7 @@ Dusty Torus
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_21_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_22_0.png
 
 
 .. code:: ipython3
@@ -709,7 +714,7 @@ Using the depending parameters (see :ref:`depending_parameters`, for more detail
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_28_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_29_0.png
 
 
 Changing the external field transformation
@@ -803,7 +808,7 @@ EC seed photon fields, in the Disk rest frame
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_38_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_39_1.png
 
 
 .. code:: ipython3
@@ -868,7 +873,7 @@ EC seed photon fields, in the Disk rest frame
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_39_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_40_1.png
 
 
 IC against the CMB
@@ -919,7 +924,7 @@ isotropic external field.
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_43_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_44_0.png
 
 
 Equipartition
@@ -950,7 +955,7 @@ points (``N_pts``)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_46_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_47_1.png
 
 
 .. parsed-literal::
@@ -1028,7 +1033,7 @@ points (``N_pts``)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_47_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_48_0.png
 
 
 .. bibliography:: ../../refs.bib
