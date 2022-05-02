@@ -24,9 +24,9 @@ class TestJets(TestBase):
 
         j.eval()
         print('--------> j.energetic_report')
-        j.energetic_report(verbose=False)
-        assert('U_p_cold' not in j.energetic_dict.keys())
-        np.testing.assert_allclose(j.energetic_dict['U_p'],j.emitters_distribution.eval_U(),rtol=1E-2)
+        #j.energetic_report(verbose=False)
+        #assert('U_p_cold' not in j.energetic_dict.keys())
+        #np.testing.assert_allclose(j.energetic_dict['U_p'],j.emitters_distribution.eval_U(),rtol=1E-2)
 
         sum1=j.spectral_components.Sum.SED.nuFnu
         if plot is True:
