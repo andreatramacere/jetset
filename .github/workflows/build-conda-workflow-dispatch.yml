@@ -142,10 +142,10 @@ jobs:
         run: |
           conda install --yes --offline $CONDABUILDJETSET
 
-      - name: 'make test env'
-        shell: bash
-        run: |
-          cp -r jetset/tests/test*.py  .github/action_test/
+      #- name: 'make test env'
+      #  shell: bash
+      #  run: |
+      #    cp -r jetset/tests/test*.py  .github/action_test/
 
       - name: 'test'
         shell: bash

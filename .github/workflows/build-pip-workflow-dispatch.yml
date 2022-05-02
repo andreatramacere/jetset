@@ -117,9 +117,9 @@ jobs:
         run: |
           pip install dist/*.whl
 
-      - name: 'make test env'
-        run: |
-          cp -r jetset/tests/test*.py  .github/action_test/
+      #- name: 'make test env'
+      #  run: |
+      #    cp -r jetset/tests/test*.py  .github/action_test/
 
       - name: 'test'
         if: github.event.inputs.skip_test != 'yes'
