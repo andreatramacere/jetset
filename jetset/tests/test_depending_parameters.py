@@ -4,7 +4,7 @@ from .base_class import TestBase
 class TestDependingParameters(TestBase):
 
     def integration_suite(self,plot=False):
-        self.test_all(plot=plot)
+        self._all(plot=plot)
 
     def test_dep_par(self,plot=False):
         from jetset.jet_emitters import EmittersDistribution

@@ -6,7 +6,7 @@ from .base_class import TestBase
 class TestCompositeModel(TestBase):
 
     def integration_suite(self,plot=False):
-        self.test_all(plot=plot)
+        self._all(plot=plot)
 
     def test_composite_model_pars(self,plot=False):
         from jetset.model_manager import  FitModel

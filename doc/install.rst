@@ -38,7 +38,7 @@ to get anaconda: https://www.anaconda.com/download/
 
   .. code-block:: bash
 
-      pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
+    pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser
 
 
 Install  JetSeT from pip
@@ -70,7 +70,8 @@ Install  JetSeT from pip
 
   .. code-block:: bash
 
-      pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
+    pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser
+
 
 
 
@@ -124,7 +125,8 @@ Installation from source using Anaconda
 
      cd test_jetset
 
-     pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
+     pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser
+
 
 
 

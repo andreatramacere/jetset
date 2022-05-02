@@ -4,7 +4,7 @@ from .base_class import TestBase
 class TestEmitters(TestBase):
 
     def integration_suite(self,plot=False):
-        self.test_all(plot=plot)
+        self._all(plot=plot)
 
     def test_custom_emitters(self,plot=True):
         from jetset.jet_model import Jet

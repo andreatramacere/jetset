@@ -1,15 +1,14 @@
 import  pytest
 from .base_class import TestBase
+import numpy as np
 
 class TestTempEv(TestBase):
 
     def integration_suite(self,plot=False):
-        self.test_all(plot=plot)
+        self._all(plot=plot)
 
-    def test_all(self,plot=False):
-        self.integration_suite(plot=plot)
-
-    def test_emp_ev_two_zone_cooling_acc(plot=False):
+    def test_emp_ev_two_zone_cooling_acc(self, plot=False):
+        print('--------> test_emp_ev_two_zone_cooling_acc',plot)
         from jetset.jet_emitters_factory import InjEmittersFactory
         from jetset.jet_model import Jet
         jet_model=Jet()
@@ -128,3 +127,5 @@ class TestTempEv(TestBase):
             plt.plot(lx['time'],lx['flux'])
             plt.xlabel('time (%s)'%lg['time'].unit)
             plt.ylabel('flux (%s)'%lg['flux'].unit)
+
+        print('-------->',plot)

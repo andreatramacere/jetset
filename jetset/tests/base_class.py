@@ -2,7 +2,7 @@ import pytest
 import inspect
 class TestBase:
 
-    def test_all(self,**kwargs):
+    def _all(self,**kwargs):
         m_list=inspect.getmembers(self, inspect.ismethod)
         for m in m_list:
             if m[0].startswith('test_') and  m[0]!='test_all':
