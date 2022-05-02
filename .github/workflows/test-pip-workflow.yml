@@ -99,4 +99,4 @@ jobs:
         working-directory: .github/action_test/
         run: |
           echo $(running tests!)
-          pytest  --pyargs -vvv jetset.tests.test_users::TestUser
+          pytest  --pyargs -vvv -s jetset.tests.test_users::TestUser
