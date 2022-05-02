@@ -429,7 +429,7 @@ struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
         energetic.L_SSC_rf=0;
         energetic.jet_L_SSC=0;
     }
-    
+    printf("energetic report protos  \n ");
     if (strcmp(pt->PARTICLE, "protons") == 0) {
         printf("energetic report protos 1 \n ");
         energetic.U_p_target = pt->NH_pp  * MPC2;
