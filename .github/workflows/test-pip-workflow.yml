@@ -99,4 +99,5 @@ jobs:
         working-directory: .github/action_test/
         run: |
           echo $(running tests!)
+          pytest  --pyargs -vvv jetset.tests test_hadronic_energetic
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration

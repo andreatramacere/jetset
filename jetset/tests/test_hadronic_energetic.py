@@ -28,3 +28,7 @@ def test(plot=False):
     j_new.eval()
     sum2 = j_new.spectral_components.Sum.SED.nuFnu
     np.testing.assert_allclose(sum2,sum1, rtol=1E-5)
+    print('-------->  j_new.energetic_report')
+    j_new.energetic_report(verbose=False)
+    assert('U_p_cold' not in j.energetic_dict.keys())   
+    np.testing.assert_allclose(j.energetic_dict['U_p'],j.emitters_distribution.eval_U(),rtol=1E-2)
