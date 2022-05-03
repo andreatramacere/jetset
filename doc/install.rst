@@ -159,7 +159,7 @@ Installation from source using PIP
        cd ~/
        mkdir test_jetset
        cd test_jetset
-       pytest  --disable-warnings --pyargs jetset.tests.test_users::test_short
+       pytest  --pyargs  -vvv jetset.tests.test_users::TestUser
 
 
 
