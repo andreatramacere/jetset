@@ -1,7 +1,7 @@
 __author__ = "Andrea Tramacere"
 
 from astropy.units import  Unit as u
-
+from astropy import cosmology 
 
 __all__=['Cosmo']
 
@@ -17,9 +17,8 @@ class  Cosmo (object):
             raise  RuntimeError('Either you provide an astropy cosmology objet, or luminosity distance in cm, or nothing')
 
         elif astropy_cosmo is None and DL_cm is None:
-            from astropy.cosmology import Planck13 as cosmo
-
-            _c = cosmo
+           
+            _c = cosmology.Planck13
 
         elif astropy_cosmo is not None and DL_cm is None:
 
