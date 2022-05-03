@@ -89,8 +89,7 @@ pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser
  
  - Install requirements, run on the command line:
     - `conda install --yes  swig">=3.0.0"`
-    - `conda install --yes   -c conda-forge emcee">=3.0.0"`
-    - `conda install --yes   -c astropy --file requirements.txt`
+    - `conda install -c astropy -c conda-forge --file requirements.txt`
   
    
 if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
@@ -100,9 +99,12 @@ if anaconda fails to install swig, you can try one of the following alternative 
      * `python setup.py clean`
      * `python setup.py install`
 
- - run the test (**run all the examples outside of the installation dir**)
+ - run the test (optional, **run all the examples outside  the installation dir**)
 ```bash
-pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
+cd ~/
+mkdir test_jetset
+cd test_jetset
+pytest  --pyargs  -vvv jetset.tests.test_users::TestUser
  ```  
 
 
@@ -120,9 +122,12 @@ pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
     * `python setup.py clean`
     * `python setup.py install`
 
- - run the test (**run all the examples outside of the installation dir**)
+ - run the test (optional, **run all the examples outside  the installation dir**)
 ```bash
-pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
+cd ~/
+mkdir test_jetset
+cd test_jetset
+pytest  --pyargs  -vvv jetset.tests.test_users::TestUser
  ```    
       
    

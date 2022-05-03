@@ -34,7 +34,7 @@ to get anaconda: https://www.anaconda.com/download/
 
 
 
-- run the test
+- run the test (optional)
 
   .. code-block:: bash
 
@@ -66,7 +66,7 @@ Install  JetSeT from pip
 
 
 
-- run the test
+- run the test (optional)
 
   .. code-block:: bash
 
@@ -100,9 +100,7 @@ Installation from source using Anaconda
 
       conda install --yes   swig">=3.0.0"
 
-      conda install --yes   -c conda-forge emcee">=3.0.0"
-
-      conda install --yes   -c astropy --file requirements.txt
+      conda install -c astropy -c conda-forge --file requirements.txt
 
 .. important::
     if anaconda fails to install swig, you can try one of the following alternative :ref:`swig'
@@ -115,7 +113,7 @@ Installation from source using Anaconda
 
        python setup.py install
 
-- run the test (**run all the examples outside of the installation dir**)
+- run the test (optional, **run all the examples outside  the installation dir**)
 
   .. code-block:: bash
 
@@ -154,14 +152,14 @@ Installation from source using PIP
 
         python setup.py install
 
-- run the test  (**run all the examples outside of the installation dir**)
+- run the test  (optional, **run all the examples outside of the installation dir**)
 
   .. code-block:: bash
 
        cd ~/
        mkdir test_jetset
        cd test_jetset
-       pytest  --disable-warnings --pyargs jetset.tests.test_users::test_short
+       pytest  --pyargs  -vvv jetset.tests.test_users::TestUser
 
 
 
