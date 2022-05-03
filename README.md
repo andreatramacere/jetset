@@ -121,7 +121,7 @@ pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
 
  - run the test (**run all the examples outside of the installation dir**)
 ```bash
-pytest --disable-warnings --pyargs jetset.tests.test_users::test_short
+pytest  --pyargs  -vvv jetset.tests.test_users::TestUser
  ```    
       
    
