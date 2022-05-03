@@ -12,10 +12,7 @@ on:
       skip_test:
         description: skip test
         required: false
-      python_version:
-        description: python version
-        required: false
-
+        
 jobs:
   create_release:
     if: github.event.inputs.tags != null
