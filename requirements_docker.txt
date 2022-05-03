@@ -14,5 +14,4 @@ tqdm
 numba>0.55
 pytest
 dill
-#sherpa
 
