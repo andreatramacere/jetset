@@ -170,7 +170,7 @@ class TestEBL(TestBase):
                                     fitname='SSC-best-fit-minuit', repeat=1)
         best_fit.show_report()
         best_fit.save_report('best-fit-%s-report.pkl' % minimizer)
-        best_fit.bestfit_table.write('best-fit-%s-report.ecsv' % minimizer)
+        best_fit.bestfit_table.write('best-fit-%s-report.ecsv' % minimizer,overwrite=True)
         model_minimizer.save_model('model_minimizer_%s.pkl' % minimizer)
 
         model_minimizer = ModelMinimizer.load_model('model_minimizer_%s.pkl' % minimizer)
