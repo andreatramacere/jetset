@@ -12,6 +12,9 @@ on:
       skip_test:
         description: skip test
         required: false
+      python_version:
+        description: python version
+        required: false
 
 jobs:
   create_release:
@@ -45,7 +48,9 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-10.15 ]
-        python-version: [3.8,3.9,"3.10"]
+        cond: ${{ github.event.inputs.python_version != null}}
+        if_true: python-version: [github.event.inputs.python_version]
+        if_false: python-version: [ 3.8,3.9,'3.10']
 
     steps:
       - name: 'Clone Repository (Latest)'
