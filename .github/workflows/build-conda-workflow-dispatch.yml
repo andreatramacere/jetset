@@ -48,9 +48,10 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-10.15 ]
-        cond: ${{ github.event.inputs.python_version != null}}
-        if_true: python-version: ${{github.event.inputs.python_version}}
-        if_false: python-version: [ 3.8,3.9,'3.10']
+        python-version: [ 3.8,3.9,'3.10']
+        if: github.event.inputs.python_version != ''
+        with:
+          python-version: [ 3.8,3.9,'3.10']
 
     steps:
       - name: 'Clone Repository (Latest)'
