@@ -34,7 +34,7 @@ to get anaconda: https://www.anaconda.com/download/
 
 
 
-- run the test
+- run the test (optional)
 
   .. code-block:: bash
 
@@ -66,7 +66,7 @@ Install  JetSeT from pip
 
 
 
-- run the test
+- run the test (optional)
 
   .. code-block:: bash
 
@@ -113,7 +113,7 @@ Installation from source using Anaconda
 
        python setup.py install
 
-- run the test (**run all the examples outside of the installation dir**)
+- run the test (optional, **run all the examples outside  the installation dir**)
 
   .. code-block:: bash
 
@@ -152,7 +152,7 @@ Installation from source using PIP
 
         python setup.py install
 
-- run the test  (**run all the examples outside of the installation dir**)
+- run the test  (optional, **run all the examples outside of the installation dir**)
 
   .. code-block:: bash
 
