@@ -50,8 +50,7 @@ jobs:
         os: [ ubuntu-latest, macos-10.15 ]
         python-version: [ 3.8,3.9,'3.10']
         if: github.event.inputs.python_version != ''
-        with:
-          python-version: [${{ github.event.inputs.python_version }}]
+        python-version: [${{ github.event.inputs.python_version }}]
 
     steps:
       - name: 'Clone Repository (Latest)'
