@@ -89,8 +89,7 @@ pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser
  
  - Install requirements, run on the command line:
     - `conda install --yes  swig">=3.0.0"`
-    - `conda install --yes   -c conda-forge emcee">=3.0.0"`
-    - `conda install --yes   -c astropy --file requirements.txt`
+    - `conda install -c astropy -c conda-forge --file requirements.txt`
   
    
 if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
