@@ -187,7 +187,7 @@ jobs:
 
       - name: 'cibuildwheel'
         env:
-          CIBW_BEFORE_ALL_LINUX:  yum update -y && yum install -y
+          CIBW_BEFORE_ALL_LINUX:  yum update -y && yum install swig -y
         run: |
           python -m cibuildwheel --output-dir dist
         
