@@ -15,12 +15,12 @@ try:
     sherpa_installed = True
 
 except:
-    on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+    #on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
     
-    if on_rtd is True:
-        pass
-    else:
-        raise  ImportError('to use sherpa plugin you need to install sherpa: https://sherpa.readthedocs.io/en/latest/install.html')
+    #if on_rtd is True:
+    #    pass
+    #else:
+    raise  ImportError('to use sherpa plugin you need to install sherpa: https://sherpa.readthedocs.io/en/latest/install.html')
 
 import  numpy as np
 from .plot_sedfit import  PlotSED
