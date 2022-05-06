@@ -118,6 +118,7 @@ jobs:
           python setup.py sdist 
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
           rm -rf dist
+      - name: 'pip build 2'
         env:
           CIBW_BEFORE_ALL_LINUX: sudo apt-get update; sudo apt-get install swig
         run: |
