@@ -69,9 +69,11 @@ run the notebook on binder:
   > **_NOTE:_** currently, pip binaries for linux are not provided:
   1) Use anaconda
   OR
+
   2) Install from source
   OR
-  3) Use the git release binaries [from git releases](install_git_releases.md)
+  
+  3) Use the git release binaries [from git releases  ](install_git_releases.md)
 
 
 ## run the test
