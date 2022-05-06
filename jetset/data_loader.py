@@ -110,7 +110,7 @@ class Data(object):
         return cls(data_table= Table.read(data_table, format=format,guess=guess),import_dictionary=import_dictionary)
 
     def save_file(self, name, format='ascii.ecsv'):
-        self._table.write(name,format=format)
+        self._table.write(name,format=format,overwrite=True)
 
 
 

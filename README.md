@@ -44,11 +44,6 @@ run the notebook on binder:
 # Installation 
 > **_NOTE:_** Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.8 is suggested, older python 3 versions (< 3.8) should work.
 
-
-## Install  JetSeT from pip 
-- create a virtual environment (not necessary, but suggested): 
-  `pip install jetset`
-
 ## Install  JetSeT from Anaconda 
  
  - create a virtual environment (not necessary, but suggested): 
@@ -64,7 +59,25 @@ run the notebook on binder:
   if conda fails with dependencies you can try
     
    `conda install -c andreatramacere -c astropy  -c  conda-forge jetset`
-   
+
+## Install  JetSeT from pip 
+- MacOS
+  - create a virtual environment (not necessary, but suggested): 
+  `pip install jetset`
+
+- Linux
+  > **_NOTE:_** currently, pip binaries for linux are not provided:
+  1) Use anaconda
+  
+  OR
+
+  2) Install from source
+  
+  OR
+
+  3) Use the git release binaries [from git releases  ](install_git_releases.md)
+
+
 ## run the test
 ```bash
 pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser

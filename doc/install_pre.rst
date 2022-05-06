@@ -1,22 +1,27 @@
 .. _install_pre_file:
 
-Installation
-============
+Install GitHUb releases
+=======================
 
 .. important::
     Starting from version 1.1.0, python 2 is not supported anymore. Python [3.8-3.9] is suggested, older python 3 versions (<=3.7)  should work.
 
-To install the prerelease you can follow the  install script method or the instructions in the wiki page, described below.
 
 Windows 10 prerequisites
 ------------------------
 Install the Windows Subsystem for Linux: https://docs.microsoft.com/en-us/windows/wsl/install-win10
 
+To install the github release you can follow the install script method or the instructions in the wiki page
 
-install  JetSeT prerelease from binaries using the install script
+install  JetSeT github release from binaries using the install script
 -----------------------------------------------------------------
-follow the instructions here: https://github.com/andreatramacere/jetset-installer
+download the script https://github.com/andreatramacere/jetset-installer
+and run:
+ .. code-block:: bash
 
-install  JetSeT prerelease using the wikipage instructions
+      python jetset_installer.py 1.2.1
+
+
+install  JetSeT github release using the wikipage instructions
 ----------------------------------------------------------
 follow the instructions here: https://github.com/andreatramacere/jetset/wiki

@@ -1,4 +1,8 @@
+
 .. _swig:
+
+Swig installation
+=================
 
 If pip or conda fails to install swig you can try one of the following methods. It is mandatory to install swig version>=3.0.0
 

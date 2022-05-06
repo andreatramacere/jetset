@@ -44,7 +44,7 @@ class TestPhenomenologyConstr(TestBase):
 
         best_fit.show_report()
         best_fit.save_report('synch_shape_fit_rep.pkl')
-        best_fit.bestfit_table.write('IC_shape_fit_rep.ecsv')
+        best_fit.bestfit_table.write('IC_shape_fit_rep.ecsv',overwrite=True)
         mm, best_fit= my_shape.IC_fit(fit_range=[23, 29], minimizer='minuit',silent=True)
 
         if plot is True:
@@ -53,7 +53,7 @@ class TestPhenomenologyConstr(TestBase):
 
         best_fit.show_report()
         best_fit.save_report('IC_shape_fit_rep.pkl')
-        best_fit.bestfit_table.write('IC_shape_fit_rep.ecsv')
+        best_fit.bestfit_table.write('IC_shape_fit_rep.ecsv',overwrite=True)
         my_shape.save_values('sed_shape_values.ecsv')
         return my_shape
 
