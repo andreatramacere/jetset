@@ -11,7 +11,9 @@ To install the github release you can follow the install script method or the in
 
 ## install  JetSeT github release from binaries using the install script
 follow the instructions here: https://github.com/andreatramacere/jetset-installer
-
+and run:
+    
+    `python jetset_installer.py 1.2.1`
 
 ## install  JetSeT github release using the wikipage instructions
 follow the instructions here: https://github.com/andreatramacere/jetset/wiki
