@@ -120,7 +120,7 @@ jobs:
           rm -rf dist
         env:
           CIBW_BEFORE_ALL_LINUX: sudo apt-get update; sudo apt-get install swig
-       run: |
+        run: |
           python -m cibuildwheel --output-dir dist
           
       
