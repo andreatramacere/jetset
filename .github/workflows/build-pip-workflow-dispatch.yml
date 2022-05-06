@@ -184,13 +184,3 @@ jobs:
               pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 'cibuildwheel'
-        env:
-          CIBW_BEFORE_ALL_LINUX:  yum update -y && yum install swig -y
-        run: |
-          python -m cibuildwheel --output-dir dist
-        
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ./dist/*.whl
