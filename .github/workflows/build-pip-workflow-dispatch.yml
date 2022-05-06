@@ -119,6 +119,8 @@ jobs:
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
           rm -rf dist
           python -m cibuildwheel --output-dir dist
+          env:
+            CIBW_BEFORE_ALL_LINUX: sudo apt-get update; sudo apt-get install swig
       
       - name: 'pip install'
         run: |
