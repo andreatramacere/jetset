@@ -8,16 +8,15 @@ from astropy.table import Table
 from numpy.core._multiarray_umath import zeros, log10
 from scipy import interpolate
 
-# on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
-# if on_rtd == True:
-#     try:
-#         from .jetkernel import jetkernel as BlazarSED
-#     except ImportError:
-#         from .mock import jetkernel as BlazarSED
-# else:
-
-from .jetkernel import jetkernel as BlazarSED
+if on_rtd == True:
+    try:
+        from .jetkernel import jetkernel as BlazarSED
+    except ImportError:
+        from .mock import jetkernel as BlazarSED
+else:
+    from .jetkernel import jetkernel as BlazarSED
 
 from . import spectral_shapes
 from .jetkernel_models_dic import nuFnu_obs_dict, n_seed_dic

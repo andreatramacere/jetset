@@ -3,15 +3,8 @@ __author__ = "Andrea Tramacere"
 
 
 
+import os
 
-# on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-
-# if on_rtd == True:
-#     try:
-#         from .jetkernel import jetkernel as BlazarSED
-#     except ImportError:
-#         from .mock import jetkernel as BlazarSED
-# else:
 
 
 import  warnings
@@ -30,7 +23,16 @@ from astropy import constants as const
 
 from .model_parameters import _show_table
 
-from .jetkernel import jetkernel as BlazarSED
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+if on_rtd == True:
+    try:
+        from .jetkernel import jetkernel as BlazarSED
+    except ImportError:
+        from .mock import jetkernel as BlazarSED
+else:
+     from .jetkernel import jetkernel as BlazarSED
+     
 from .utils import   get_info, unexpected_behaviour
 
 from astropy.table import Table

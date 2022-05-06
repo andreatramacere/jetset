@@ -1,6 +1,6 @@
 __author__ = "Andrea Tramacere"
 
-
+import os
 try:
     from sherpa.models.model import ArithmeticModel, modelCacher1d, RegriddableModel1D
     from sherpa.models.parameter import Parameter
@@ -15,6 +15,11 @@ try:
     sherpa_installed = True
 
 except:
+    #on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+    
+    #if on_rtd is True:
+    #    pass
+    #else:
     raise  ImportError('to use sherpa plugin you need to install sherpa: https://sherpa.readthedocs.io/en/latest/install.html')
 
 import  numpy as np

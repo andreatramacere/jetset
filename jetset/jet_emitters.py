@@ -1,5 +1,6 @@
 __author__ = "Andrea Tramacere"
 
+import os
 import numpy as np
 from inspect import signature
 from astropy.constants import m_e,m_p,c
@@ -10,15 +11,14 @@ from .jet_paramters import *
 from .utils import set_str_attr
 from .model_parameters import ModelParameterArray, ModelParameter
 
-# on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-# if on_rtd is True:
-#     try:
-#         from .jetkernel import jetkernel as BlazarSED
-#     except ImportError:
-#         from .mock import jetkernel as BlazarSED
-# else:
-
-from .jetkernel import jetkernel as BlazarSED
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+if on_rtd is True:
+    try:
+        from .jetkernel import jetkernel as BlazarSED
+    except ImportError:
+        from .mock import jetkernel as BlazarSED
+else:
+    from .jetkernel import jetkernel as BlazarSED
 
 __all__=['EmittersDistribution','BaseEmittersDistribution', 'ArrayDistribution','EmittersArrayDistribution','InjEmittersDistribution','JetkernelEmittersDistribution']
 
