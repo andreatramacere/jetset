@@ -4,7 +4,7 @@ Installation
 ============
 
 .. important::
-    Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.6 is suggested, older python 3 versions (<3.6)  should work.
+    Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.7 is suggested, older python 3 versions (<3.7)  should work.
 
 
 Windows 10 prerequisites
@@ -60,6 +60,9 @@ Install  JetSeT from pip
 
 - install the code
 
+  .. note:: LINUX: currently, pip binaries for linux are not provided, then pip will build the wheel from source on the fly. You have to install swig the following of these :ref:`swig` 
+
+
   .. code-block:: bash
 
      pip install jetset
@@ -82,6 +85,7 @@ Install the JetSeT from source
 Download the code
 ^^^^^^^^^^^^^^^^^
 
+
 - Get the source code from: https://github.com/andreatramacere/jetset/archive/stable.tar.gz
 - Uncompress the  archive:  `jetset-stable.tar.gz`
 
@@ -103,7 +107,8 @@ Installation from source using Anaconda
       conda install -c astropy -c conda-forge --file requirements.txt
 
 .. important::
-    if anaconda fails to install swig, you can try one of the following alternative :ref:`swig'
+    if anaconda fails to install swig, you can try one of the following alternative :ref:`swig` 
+
 
 -  run on the command line
 
@@ -132,7 +137,7 @@ Installation from source using Anaconda
 
 Installation from source using PIP
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-- Install requirements, run on the command line:
+- Install requirements, run on the command line: 
 
   .. code-block:: bash
 
@@ -141,7 +146,7 @@ Installation from source using PIP
     pip install -r requirements.txt
 
 .. important::
-    if pip fails to install swig, you can try one of the following alternative :ref:`swig'
+    if pip fails to install swig, you can try one of the following alternative :ref:`swig` 
 
 
 - Install JetSeT: run on the command line:
@@ -168,3 +173,5 @@ Installation from source using PIP
 To install from source a C compiler is also necessary, plus the SWIG wrapper generator.
 
 All the dependencies are installed following the Anaconda method **OR** the pip method, as described below.
+
+

@@ -36,9 +36,9 @@ OR
 to build without executing
 ./build.sh documentation_notebooks
 OR
-./build_rst_files.sh  documentation_notebooks/dir-name
+./build.sh  documentation_notebooks/dir-name
 
 to build executing
 ./build.sh e- documentation_notebooks/dir-name
 OR
-./build_rst_files.sh -e documentation_notebooks/dir-name
+./build.sh -e documentation_notebooks/dir-name

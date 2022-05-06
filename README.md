@@ -44,14 +44,6 @@ run the notebook on binder:
 # Installation 
 > **_NOTE:_** Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.8 is suggested, older python 3 versions (< 3.8) should work.
 
-
-## Install  JetSeT from pip 
-- create a virtual environment (not necessary, but suggested): 
-  `pip install jetset`
-
-
-> **_NOTE:_** if pip on linux does not find the binary for your system, then pip will build the wheel from source on the fly. You will get an error if swig is missing.  You can install swig the following of these [methods](swig.md)
-
 ## Install  JetSeT from Anaconda 
  
  - create a virtual environment (not necessary, but suggested): 
@@ -67,7 +59,17 @@ run the notebook on binder:
   if conda fails with dependencies you can try
     
    `conda install -c andreatramacere -c astropy  -c  conda-forge jetset`
-   
+
+## Install  JetSeT from pip 
+- MacOS
+  - create a virtual environment (not necessary, but suggested): 
+  `pip install jetset`
+
+- Linux
+  > **_NOTE:_** currently, pip binaries for linux are not provided, then pip will build the wheel from source on the fly. You have to install swig the following of these [methods](swig.md) 
+  - create a virtual environment (not necessary, but suggested) (Linux): `pip install jetset`
+
+
 ## run the test
 ```bash
 pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser
