@@ -49,6 +49,9 @@ run the notebook on binder:
 - create a virtual environment (not necessary, but suggested): 
   `pip install jetset`
 
+
+> **_NOTE:_** if pip on linux does not find the binary for your system, then pip will build the wheel from source on the fly. You will get an error if swig is missing.  You can install swig the following of these [methods](swig.md)
+
 ## Install  JetSeT from Anaconda 
  
  - create a virtual environment (not necessary, but suggested): 
