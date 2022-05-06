@@ -115,10 +115,9 @@ jobs:
         run: |
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
           python setup.py clean
-          python setup.py sdist 
+          python setup.py sdist bdist_wheel
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
-          rm -rf dist
-  
+      
       - name: 'pip install'
         run: |
           pip install dist/*.whl
