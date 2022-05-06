@@ -28,5 +28,3 @@ tqdm
 jupyter
 ipython
 dill
-sherpa
-gammapy
