@@ -18,7 +18,6 @@ except:
     if on_rtd is True:
         pass
     else:
-
         raise  ImportError('to use gammapy plugin you need to install gammapy: https://docs.gammapy.org/0.19/getting-started/install.html')
 
 import astropy.units as u
