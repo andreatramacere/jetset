@@ -56,17 +56,28 @@ Install  JetSeT from pip
 
     pip install ipython jupyter
 
-
-
-- install the code
-
-  .. note:: LINUX: currently, pip binaries for linux are not provided, then pip will build the wheel from source on the fly. You have to install swig the following of these :ref:`swig` 
-
-
+- MacOS
+  
   .. code-block:: bash
 
-     pip install jetset
+      pip install jetset
 
+- Linux
+  
+  .. note:: LINUX: currently, pip binaries for linux are not provided
+
+  -) Use anaconda
+
+  OR
+
+  -) Install from source
+  
+  OR
+  
+  -) Use the git release binaries follow the instructions here: :ref:`install_pre_file`
+
+
+  
 
 
 - run the test (optional)
