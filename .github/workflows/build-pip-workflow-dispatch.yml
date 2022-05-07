@@ -118,7 +118,7 @@ jobs:
           python setup.py sdist bdist_wheel
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
       
-      - name: 'pip install'
+      - name: 'pip install dist'
         run: |
           pip install dist/*.whl
 
@@ -133,6 +133,12 @@ jobs:
           echo $(running tests!)
           pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
+
+      - name: 'pip install sdist'
+        run: |
+          pip uninstall jetset  
+          pip install dist/*.tar.gz
+          pytest --disable-warnings  --pyargs  -vvv  jetset.tests.test_users::TestUser
 
       - name: 'set pkg version'
         run: |
