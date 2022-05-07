@@ -10,7 +10,7 @@ include jetset/test_data/SEDs_data/*.ecsv
 include jetset/ebl_data/*
 
 graft jetkernel_src/include
-graft jetset/jetkernel/mathkernel
+graft jetset/mathkernel
 
 prune doc
 prune ebl_models
