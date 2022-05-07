@@ -118,13 +118,20 @@ jobs:
           python setup.py sdist bdist_wheel
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
       
-      - name: 'pip install dist'
+      - name: 'pip install sdist'
         run: |
+          pip install dist/*.tar.gz
+          
+      - name: 'test sdist'
+        working-directory: .github/action_test/
+        run: |
+          echo $(running tests!)
+          pytest --disable-warnings  --pyargs  -vvv  jetset.tests.test_users::TestUser
+      
+      - name: 'pip install wheel'
+        run: |
+          pip uninstall jetset  
           pip install dist/*.whl
-
-      #- name: 'make test env'
-      #  run: |
-      #    cp -r jetset/tests/test*.py  .github/action_test/
 
       - name: 'test'
         if: github.event.inputs.skip_test != 'yes'
@@ -134,11 +141,6 @@ jobs:
           pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
 
-      - name: 'pip install sdist'
-        run: |
-          pip uninstall jetset  
-          pip install dist/*.tar.gz
-          pytest --disable-warnings  --pyargs  -vvv  jetset.tests.test_users::TestUser
 
       - name: 'set pkg version'
         run: |
