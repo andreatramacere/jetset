@@ -145,7 +145,10 @@ jobs:
           pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
 
-
+    - name: 'pip build install sdist'
+      run: |
+        python setup.py sdist 
+        
       - name: 'set pkg version'
         run: |
           echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV

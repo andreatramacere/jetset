@@ -64,7 +64,11 @@ Install  JetSeT from pip
 
 - Linux
   
-  .. note:: LINUX: currently, pip binaries for linux are not provided
+  .. note:: LINUX: currently, pip binaries for linux are not provided, 
+
+  -) install swig :ref:`swig` and check that you have a C compiler (gcc) then `pip install jetset`
+
+  if fails, use one of the following methods 
 
   -) Use anaconda
 
