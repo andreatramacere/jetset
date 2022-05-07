@@ -99,7 +99,7 @@ jobs:
 
       - name: 'pip build install wheel'
         run: |
-          pip uninstall jetset
+          pip uninstall --yes jetset
           python setup.py clean 
           python setup.py  bdist_wheel 
           pip install dist/*.whl
