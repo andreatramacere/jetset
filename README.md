@@ -66,7 +66,14 @@ run the notebook on binder:
   `pip install jetset`
 
 - Linux
-  > **_NOTE:_** currently, pip binaries for linux are not provided:
+  > **_NOTE:_** currently, pip binaries for linux are not provided, so pip will build the binary on the fly. Hence:
+  
+  - install swig with of these [methods](swig.md) and check that you have a C compiler (gcc) 
+  
+  - `pip install jetset`
+  
+  if fails, use one of the following methods 
+
   1) Use anaconda
   
   OR
