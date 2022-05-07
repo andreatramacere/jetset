@@ -83,11 +83,12 @@ jobs:
         run: |
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
           python setup.py clean
-          python setup.py sdist bdist_wheel
+          
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
       
       - name: 'pip install sdist'
         run: |
+          python setup.py sdist 
           pip install dist/*.tar.gz
           
       - name: 'test sdist'
@@ -99,7 +100,9 @@ jobs:
 
       - name: 'pip install wheel'
         run: |
-          pip uninstall jetset  
+          pip uninstall jetset
+          python setup.py clean 
+          python setup.py  bdist_wheel 
           pip install dist/*.whl
 
       - name: 'test'
