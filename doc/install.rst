@@ -30,7 +30,7 @@ to get anaconda: https://www.anaconda.com/download/
 
   .. code-block:: bash
 
-      conda install -c andreatramacere -c astropy -c conda-forge jetset
+      conda install -c andreatramacere -c astropy -c conda-forge 'jetset>=1.2'
 
 
 
