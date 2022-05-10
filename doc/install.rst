@@ -94,11 +94,13 @@ Install  JetSeT from pip
     pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser
 
 
+Install binaries from GitHUb
+------------------------------
+To use the git release binaries, follow the instructions here: :ref:`install_pre_file`
 
 
 Install the JetSeT from source
 ------------------------------
-
 
 Download the code
 ^^^^^^^^^^^^^^^^^

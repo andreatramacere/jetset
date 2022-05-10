@@ -15,7 +15,7 @@ and run:
     
     python jetset_installer.py 1.2.1post2
 
-you can substitute ` 1.2.1post2` with the desired version 
+you can substitute `1.2.1post2` with the desired version 
 
 ## install  JetSeT github release using the wikipage instructions
 follow the instructions here: https://github.com/andreatramacere/jetset/wiki
