@@ -28,11 +28,11 @@ def update_version_and_label(version):
         _info = json.load(fp)
         if version is not None:
             _info['version']=version
-        label=subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii').strip()
-        _info['label']= '%s'%label
+        #label=subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii').strip()
+        #_info['label']= '%s'%label
     print(_info)
-    with open('jetset/pkg_info.json', 'w') as json_file:
-        json.dump(_info, json_file)
+    #with open('jetset/pkg_info.json', 'w') as json_file:
+    #    json.dump(_info, json_file)
 
 
 

@@ -58,7 +58,7 @@ run the notebook on binder:
   
   if conda fails with dependencies you can try
     
-   `conda install -c andreatramacere -c astropy  -c  conda-forge jetset`
+   `conda install -c andreatramacere -c astropy -c conda-forge 'jetset>=1.2'`
 
 ## Install  JetSeT from pip 
 - MacOS

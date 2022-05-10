@@ -1,9 +1,9 @@
-.. _gammapy_plugin:
-
 .. warning::
     This plugin is still experimental, so any feedback that you can provide is welcome. 
     
     **It has been tested against Gamma-py version 0.19. Please, take into account that might break if Gamma-py changes interface**
+
+.. _gammapy_plugin:
 
 Example to use the Gamma-py plugin with the JeSeT interface
 ===========================================================

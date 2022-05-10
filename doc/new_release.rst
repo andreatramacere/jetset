@@ -39,7 +39,8 @@ linking of parameters has been updated See this section of the user guide  :ref:
 
 Plugins 
 -----------------
-JetSeT plugins to Sherpa and Gamma-py  :ref:`ebl_model`
+ - JetSeT plugins to Sherpa (:ref:`sherpa_plugin`, :ref:`sherpa_minimizer_plugin`) 
+ - Gammapy plugin  (:ref:`gammapy_plugin`)
 
 
 
