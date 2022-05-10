@@ -1,4 +1,4 @@
-.. _sherpa_plugin:
+.. _sherpa_minimizer_plugin:
 
 Example to use the Sherpa minimizer plugin with a JeSeT model
 =============================================================
