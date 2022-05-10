@@ -82,10 +82,10 @@ run the notebook on binder:
   
   OR
 
-  3) Use the git release binaries [from git releases  ](install_git_releases.md)
+  3) Install the git release binaries [from git releases](install_git_releases.md)
 
 ## Install  JetSeT GitHub binaries
-To install the git release binaries: [binaries](install_git_releases.md)
+Install the git release binaries [from git releases](install_git_releases.md)
 
 ## run the test
 ```bash
