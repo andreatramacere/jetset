@@ -160,9 +160,10 @@ void setNgrid(struct blob *pt)
     {
         *gmax_griglia = *gmax;
         *gmin_griglia = *gmin;
-        //if (pt->gmin_griglia<1.0){
-        //    pt->gmin_griglia=1.0;
-        // }
+        if (strcmp(pt->PARTICLE, "secondaries_el") == 0)
+        {
+            *gmin_griglia=1.0;
+        }
     }
 }
 
@@ -719,7 +720,7 @@ double N_distr(struct blob *pt_N, double Gamma) {
 
     a=0.;
 
-    if (Gamma >= pt_N->gmin_griglia_secondaries && Gamma <= pt_N->gmax_griglia_secondaries && pt_N->TIPO_DISTR == -1) {
+    if (Gamma >= pt_N->gmin_secondaries && Gamma <= pt_N->gmax_secondaries && pt_N->TIPO_DISTR == -1) {
         //pt_N->Gamma = Gamma;
         a= vluce_cm * pt_N->NH_pp * MEC2_TeV * bn_to_cm2 * rate_electrons_pp(pt_N, Gamma);
     }else{
