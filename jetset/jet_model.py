@@ -1371,12 +1371,14 @@ class JetBase(Model):
 
             if self.emitters_distribution.emitters_type=='electrons':
                 _i=_par_array.par_table['name']=='U_p_target'
-                _par_array.par_table.remove_rows(_i)
+                _i=np.argwhere(_i==True).flatten()[0]
+                _par_array.par_table.remove_row(_i)
                 _=self.energetic_dict.pop('U_p_target')
 
             if self.emitters_distribution.emitters_type=='protons':
                 _i=_par_array.par_table['name']=='U_p_cold'
-                _par_array.par_table.remove_rows(_i)
+                _i=np.argwhere(_i==True).flatten()[0]
+                _par_array.par_table.remove_row(_i)
                 _=self.energetic_dict.pop('U_p_cold')
 
             self.energetic_report_table = _par_array.par_table

@@ -136,8 +136,8 @@ class TimeEmittersDistribution(object):
     def _time_blob_to_src(self,time_blob):
         return time_blob  / self.jet.get_beaming()
     
-    def _time_blob_to_obs(self,time_obs):
-        return time_obs / (1 + self.jet.parameters.z_cosm.val) * self.jet.get_beaming()
+    def _time_blob_to_obs(self,time_blob):
+        return time_blob * (1 + self.jet.parameters.z_cosm.val) / self.jet.get_beaming()
 
     def _get_time_slice_samples(self, time, frame, time_bin=None):
         """
@@ -463,6 +463,7 @@ class TimeEvolvingRegion(object):
         time_array = _t[selected_time_slices]
         flux_array = np.zeros(time_array.shape)
 
+        meta_dict={'name': name}
         for ID, time_slice in enumerate(np.argwhere(selected_time_slices).ravel()):
             s = self.get_SED(comp, frame=frame, time_slice=time_slice, use_cached=use_cached)
             if frame == 'src':
@@ -501,26 +502,59 @@ class TimeEvolvingRegion(object):
 
         flux_array_out = np.interp(time_array_out, time_array, flux_array, left=0, right=0)
 
+        meta_dict['no_corss_time_duration']=(time_array_out[-1]-time_array_out[0])*Unit('s')
+        R_blob=None
         if eval_cross_time is True:
+            
             t_cr = np.copy(time_array_out)
             if frame == 'src':
                 t_cr_blob = self.time_sampled_emitters._time_src_to_blob(t_cr)
             if frame == 'obs':
                 t_cr_blob = self.time_sampled_emitters._time_obs_to_blob(t_cr)
-            flux_array_out,t_cr_blob = self.eval_cross_time(t_cr_blob, flux_array_out, n_slices=cross_time_slices, R=R)
-
+            
+            if R is None:
+                c = const.c.cgs.value
+                R_t_max = self.temp_ev._get_R_rad_sphere(t_cr_blob[-1])
+                t_cross_ext=2*R_t_max/c
+                dt=t_cr_blob[1]-t_cr_blob[0]
+                t_cr_blob=np.arange(t_cr_blob[0], t_cr_blob[-1]+t_cross_ext, dt)
+                delta_size=t_cr_blob.size-flux_array_out.size
+                if delta_size>0:
+                    flux_array_out=np.concatenate((flux_array_out,np.zeros(delta_size,dtype=t_cr_blob.dtype)))
+                 
+            flux_array_out,t_cr_blob,R_blob = self.eval_R_cross_time(t_cr_blob, flux_array_out, n_slices=cross_time_slices, R=R)
+          
             if frame == 'src':
                 time_array_out = self.time_sampled_emitters._time_blob_to_src(t_cr_blob)
             if frame == 'obs':
-                time_array_out = self.time_sampled_emitters._time_blob_to_src(t_cr_blob)
+                time_array_out = self.time_sampled_emitters._time_blob_to_obs(t_cr_blob)
+        
+        meta_dict['duration']=(time_array_out[-1]-time_array_out[0])*Unit('s')
+        
+        columns=[time_array_out * Unit('s'), flux_array_out * un]
+        names=['time', 'flux']
+        if R_blob is None:
+            t_cr = np.copy(time_array_out)  
+           
+            if frame == 'src':
+                t_cr_blob = self.time_sampled_emitters._time_src_to_blob(t_cr)
+            if frame == 'obs':
+                t_cr_blob = self.time_sampled_emitters._time_obs_to_blob(t_cr)
+            R_blob = np.zeros(np.size(t_cr_blob))
+            for ID,_t in enumerate(t_cr_blob):
+                R_blob[ID] = self.temp_ev._get_R_rad_sphere(t_cr_blob[ID])
+        if R_blob is not None:
+            columns.append(R_blob*Unit('cm'))
+            names.append('R_blob')
+            columns.append(t_cr_blob*Unit('s'))
+            names.append('t_blob')
 
-        return Table([time_array_out * Unit('s'), flux_array_out * un], names=('time', 'flux'),
-                     meta={'name': name})
+        return Table(columns, names=names, meta=meta_dict)
 
     def _lc_weight(self, delay_r, R, delta_R):
         return 3 * (R - delay_r) * (R + delay_r) * delta_R / (4 * R * R * R)
 
-    def eval_cross_time(self, t, lc, n_slices=1000, R=None):
+    def eval_R_cross_time(self, t, lc, n_slices=1000, R=None):
         if R is None:
             R = np.zeros(np.size(t))
             for ID,_t in enumerate(t):
@@ -543,8 +577,77 @@ class TimeEvolvingRegion(object):
                 lc_interp = np.interp(t_interp[m], t, lc, left=0, right=0)
                 lc_out[ID] = np.sum(lc_interp * weight_array[m,ID])
             t_out[ID]=t[ID]
-        return lc_out,t_out
+            #if ID % 1000 == 0: 
+            #    print('ID = {}'.format(ID),'f=%f'%(ID/lc_out.size))
+       
+        return lc_out,t_out,R
+    
+    # def eval_cross_time_r_exp_conv(self, t, lc, n_slices=1000,R=None):
+    #     c = const.c.cgs.value
+    #     step=np.int32(t.size)/n_slices
+    #     if step<1:
+    #         step=1
+    #     for i_slice in range(n_slices):
+    #         t_id_1=0
+    #         t_id_2=t_id_1+step
+    #         t_id_R=t_id_1
+    #         delta_t=self.temp_ev._get_R_rad_sphere(t[t_id_R])/c
+    #         t_rd=delta_t/2
+    #         _lc=np.copy(lc)
+    #         if i_slice==0:
+    #             lc_out,t_out=self._gauss_prof_conv(_lc,t,delta_t,t_rd)
+    #         else:
+    #             _lc_out,t_out=self._gauss_prof_conv(_lc,t,delta_t,t_rd)
+    #             lc_out+=_lc_out
 
+    #         t_id_1=t_id_2
+    #         if i_slice % 100 == 0: 
+    #             print('i = {}'.format(i_slice),'f=%f'%(i_slice/n_slices))
+
+    #     a1=np.trapz(lc,t)
+    #     a2=np.trapz(lc_out,t_out)
+    #     lc_out=lc_out/a2*a1
+        
+    #     return lc_out,t_out
+
+    # def eval_cross_time(self, t,lc):
+    #     c = const.c.cgs.value
+    #     delta_t=self.temp_ev._get_R_rad_sphere(t[0])/c
+    #     t_rd=delta_t/2
+    #     lc_out,t_out=self._gauss_prof_conv(lc,t,delta_t,t_rd)
+    #     return lc_out,t_out
+
+    # def _gauss_kernel(self,t,delta_t,sigma):
+    #     return np.exp(-1.0 * ((t - delta_t)**2.0) / (2.0 * sigma**2.0))
+    
+    # def _gauss_prof_conv(self,y,t,delta_t,t_rd,skip_norm=False):
+    #     dt=t[1]-t[0]
+    #     if skip_norm is False:
+    #         a1=np.trapz(y,t)
+    #     t_conv=np.arange(t[0],t[-1]+4*t_rd,dt)
+    #     s=self._gauss_kernel(t_conv,delta_t,t_rd)
+    #     flux_array_out=np.convolve(y,s)
+    #     dt=t[1]-t[0]
+    #     time_array_out=np.arange(1,flux_array_out.size+1)*dt
+    #     y_out=np.interp(t_conv,xp=time_array_out,fp=flux_array_out) 
+    #     if skip_norm is False:
+    #         a2=np.trapz(y_out,t_conv)
+    #         y_out=y_out/a2*a1
+    #     return y_out,t_conv
+
+
+    # def _gauss_prof_conv_r_exp(self,t1,t2,y,t,delta_t,t_rd):
+    #     dt=t[1]-t[0]
+    #     a1=np.trapz(y,t)
+    #     t_conv=np.arange(t[0],t[-1]+4*t_rd,dt)
+    #     s=self._gauss_kernel(t_conv,delta_t,t_rd)
+    #     flux_array_out=np.convolve(y,s)
+    #     dt=t[1]-t[0]
+    #     time_array_out=np.arange(1,flux_array_out.size+1)*dt
+    #     y_out=np.interp(t_conv,xp=time_array_out,fp=flux_array_out) 
+    #     a2=np.trapz(y_out,t_conv)
+    #     y_out=y_out/a2*a1
+    #     return y_out,t_conv
 
 class JetTimeEvol(object):
     """
