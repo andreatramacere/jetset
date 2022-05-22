@@ -503,80 +503,113 @@ class TimeEvolvingRegion(object):
         flux_array_out = np.interp(time_array_out, time_array, flux_array, left=0, right=0)
 
         meta_dict['no_corss_time_duration']=(time_array_out[-1]-time_array_out[0])*Unit('s')
-        R_blob=None
+        meta_dict['cross_time_applied']=False
+        
+        t_cr = np.copy(time_array_out)
+        if frame == 'src':
+            t_cr_blob = self.time_sampled_emitters._time_src_to_blob(t_cr)
+        if frame == 'obs':
+            t_cr_blob = self.time_sampled_emitters._time_obs_to_blob(t_cr)
+        
+        if R is None:
+            R_blob = np.zeros(np.size(t_cr_blob))
+            for ID,_t in enumerate(t_cr_blob):
+                R_blob[ID] = self.temp_ev._get_R_rad_sphere(t_cr_blob[ID])
+        elif np.iscalar(R):
+                R_blob=np.ones(t_cr_blob.size)*R
+        else:
+            if np.shape(R)!=np.shape(t_cr_blob):
+                raise RuntimeError('R must be a scalar or match the shape of t_blob:',t_cr_blob.shape,'current R shape',np.shape(R))  
+
         if eval_cross_time is True:
+            meta_dict['cross_time_applied']=True
+            flux_array_out,t_cr_blob = self.eval_R_cross_time(t_cr_blob, flux_array_out,R=R_blob, n_slices=cross_time_slices)
             
-            t_cr = np.copy(time_array_out)
-            if frame == 'src':
-                t_cr_blob = self.time_sampled_emitters._time_src_to_blob(t_cr)
-            if frame == 'obs':
-                t_cr_blob = self.time_sampled_emitters._time_obs_to_blob(t_cr)
+            R_blob = np.zeros(np.size(t_cr_blob))
             
-            if R is None:
-                c = const.c.cgs.value
-                R_t_max = self.temp_ev._get_R_rad_sphere(t_cr_blob[-1])
-                t_cross_ext=2*R_t_max/c
-                dt=t_cr_blob[1]-t_cr_blob[0]
-                t_cr_blob=np.arange(t_cr_blob[0], t_cr_blob[-1]+t_cross_ext, dt)
-                delta_size=t_cr_blob.size-flux_array_out.size
-                if delta_size>0:
-                    flux_array_out=np.concatenate((flux_array_out,np.zeros(delta_size,dtype=t_cr_blob.dtype)))
-                 
-            flux_array_out,t_cr_blob,R_blob = self.eval_R_cross_time(t_cr_blob, flux_array_out, n_slices=cross_time_slices, R=R)
-          
+            for ID,_t in enumerate(t_cr_blob):
+                R_blob[ID] = self.temp_ev._get_R_rad_sphere(t_cr_blob[ID])
             if frame == 'src':
                 time_array_out = self.time_sampled_emitters._time_blob_to_src(t_cr_blob)
             if frame == 'obs':
                 time_array_out = self.time_sampled_emitters._time_blob_to_obs(t_cr_blob)
-        
+            
+            meta_dict['cross_time_applied']=False
+            
+
         meta_dict['duration']=(time_array_out[-1]-time_array_out[0])*Unit('s')
         
         columns=[time_array_out * Unit('s'), flux_array_out * un]
         names=['time', 'flux']
-        if R_blob is None:
-            t_cr = np.copy(time_array_out)  
-           
-            if frame == 'src':
-                t_cr_blob = self.time_sampled_emitters._time_src_to_blob(t_cr)
-            if frame == 'obs':
-                t_cr_blob = self.time_sampled_emitters._time_obs_to_blob(t_cr)
-            R_blob = np.zeros(np.size(t_cr_blob))
-            for ID,_t in enumerate(t_cr_blob):
-                R_blob[ID] = self.temp_ev._get_R_rad_sphere(t_cr_blob[ID])
-        if R_blob is not None:
-            columns.append(R_blob*Unit('cm'))
-            names.append('R_blob')
-            columns.append(t_cr_blob*Unit('s'))
-            names.append('t_blob')
+        
+        columns.append(R_blob*Unit('cm'))
+        names.append('R_blob')
+        columns.append(t_cr_blob*Unit('s'))
+        names.append('t_blob')
 
         return Table(columns, names=names, meta=meta_dict)
-
-    def _lc_weight(self, delay_r, R, delta_R):
+    
+    @staticmethod
+    def _lc_weight( delay_r, R, delta_R):
         return 3 * (R - delay_r) * (R + delay_r) * delta_R / (4 * R * R * R)
 
-    def eval_R_cross_time(self, t, lc, n_slices=1000, R=None):
-        if R is None:
-            R = np.zeros(np.size(t))
-            for ID,_t in enumerate(t):
-                R[ID] = self.temp_ev._get_R_rad_sphere(t[ID])
+    @staticmethod
+    def eval_R_cross_time( t_blob, lc, R=None, n_slices=1000 ):
+        c = const.c.cgs.value
+        
+        R=np.copy(R)
+        t_blob=np.copy(t_blob)
+        t_cross_ext=2*np.max(R)/c
+        dt=t_blob[1]-t_blob[0]
+  
+        if t_cross_ext>dt:
+            t_blob=np.arange(t_blob[0], t_blob[-1]+t_cross_ext, dt)
+            delta_size=t_blob.size-lc.size
+            lc=np.concatenate((lc,np.zeros(delta_size,dtype=t_blob.dtype)))
+            R=np.concatenate((R,np.ones(delta_size,dtype=t_blob.dtype)*R[-1]))
+                
+                
+        delay_max=R / c
+        delta_R = (2 * R) / n_slices
+        delay_t_delay = np.linspace(0, delay_max, n_slices)
+        delay_r = R - delay_t_delay * c
+        weight_array = TimeEvolvingRegion._lc_weight(delay_r, R, delta_R)       
+        lc_out = np.zeros(lc.shape)
+        t_out=np.zeros(t_blob.shape)  
+        for ID, lc_in in enumerate(lc_out):
+            t_interp = np.linspace(t_blob[ID] -delay_max[ID], t_blob[ID], n_slices)
+            m = np.atleast_1d( t_interp > t_blob[0])            
+            if m.sum()==0:
+                lc_out[ID]=0
+            else:
+                lc_interp = np.interp(t_interp[m], t_blob, lc, left=0, right=0)
+                lc_out[ID] = np.sum(lc_interp * weight_array[m,ID])
+                
+            t_out[ID]=t_blob[ID]
+            #if ID % 1000 == 0: 
+            #    print('ID = {}'.format(ID),'f=%f'%(ID/lc_out.size))
+        
+        return lc_out,t_out
 
+
+    def eval_R_cross_time_no( t_blob, lc, R, n_slices=1000):
         c = const.c.cgs.value
         delay_max=2 * R / c
         delta_R = (2 * R) / n_slices
         delay_t_delay = np.linspace(0, delay_max, n_slices)
         delay_r = R - delay_t_delay * c
-        weight_array = self._lc_weight(delay_r, R, delta_R)       
+        weight_array = TimeEvolvingRegion._lc_weight(delay_r, R, delta_R)       
         lc_out = np.zeros(lc.shape)
-        t_out=np.zeros(t.shape)  
+        t_out=np.zeros(t_blob.shape)  
         for ID, lc_in in enumerate(lc_out):
-            t_interp = np.linspace(t[ID] -delay_max[ID], t[ID], n_slices)
-            m = np.atleast_1d( t_interp > t[0])            
+            t_interp = np.linspace(t_blob[ID] -delay_max[ID], t_blob[ID], n_slices)
+            m = np.atleast_1d( t_interp > t_blob[0])            
             if m.sum()==0:
                 lc_out[ID]=0
             else:
-                lc_interp = np.interp(t_interp[m], t, lc, left=0, right=0)
+                lc_interp = np.interp(t_interp[m], t_blob, lc, left=0, right=0)
                 lc_out[ID] = np.sum(lc_interp * weight_array[m,ID])
-            t_out[ID]=t[ID]
+            t_out[ID]=t_blob[ID]
             #if ID % 1000 == 0: 
             #    print('ID = {}'.format(ID),'f=%f'%(ID/lc_out.size))
        
