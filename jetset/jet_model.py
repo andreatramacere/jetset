@@ -1335,7 +1335,6 @@ class JetBase(Model):
 
     def _build_energetic_report(self,):
         self.energetic_dict={}
-        self.set_blob()
         BlazarSED.SetBeaming(self._blob)        
         _energetic = BlazarSED.EnergeticOutput(self._blob,0)
         _par_array=ModelParameterArray()
