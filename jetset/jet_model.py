@@ -1328,14 +1328,15 @@ class JetBase(Model):
         return out_model
 
 
-    def energetic_report(self,verbose=True):
+    def energetic_report(self,verbose=True,):
         self._build_energetic_report()            
         if verbose is True:
             _show_table(self.energetic_report_table)
 
     def _build_energetic_report(self,):
         self.energetic_dict={}
-        BlazarSED.SetBeaming(self._blob)
+        self.set_blob()
+        BlazarSED.SetBeaming(self._blob)        
         _energetic = BlazarSED.EnergeticOutput(self._blob,0)
         _par_array=ModelParameterArray()
 
