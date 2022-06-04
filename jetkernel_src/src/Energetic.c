@@ -430,10 +430,10 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     if (strcmp(pt->PARTICLE, "protons") == 0) {
         energetic.U_p_target = pt->NH_pp  * MPC2;
         energetic.U_p = pt->U_p;
-        //energetic.L_pp_gamma_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_pp_gamma, pt->nuFnu_pp_gamma_obs, pt->NU_INT_STOP_PP_GAMMA);
-        //energetic.jet_L_pp_gamma = energetic.L_pp_gamma_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
-        //energetic.jet_L_rad += energetic.jet_L_pp_gamma;
-        //energetic.U_p_cold = 0.;
+        energetic.L_pp_gamma_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_pp_gamma, pt->nuFnu_pp_gamma_obs, pt->NU_INT_STOP_PP_GAMMA);
+        energetic.jet_L_pp_gamma = energetic.L_pp_gamma_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
+        energetic.jet_L_rad += energetic.jet_L_pp_gamma;
+        energetic.U_p_cold = 0.;
     }
     else
     {
