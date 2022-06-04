@@ -489,13 +489,13 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
         energetic.jet_L_EC_CMB = 0;
         energetic.L_EC_CMB_rf = 0;
     }
-    // lum_factor = pi * pt->R * pt->R * vluce_cm * eval_beta_gamma(pt->BulkFactor) * pt->BulkFactor * pt->BulkFactor ;
-    // energetic.jet_L_e = pt->U_e * lum_factor;
-    // energetic.jet_L_p = lum_factor * energetic.U_p;
-    // energetic.jet_L_p_cold = lum_factor * energetic.U_p_cold;
-    // energetic.jet_L_B = pt->UB * lum_factor;
-    // energetic.jet_L_kin = energetic.jet_L_e + energetic.jet_L_p_cold + energetic.jet_L_p;
-    // energetic.jet_L_tot = energetic.jet_L_kin + energetic.jet_L_rad + energetic.jet_L_B ;
+    lum_factor = pi * pt->R * pt->R * vluce_cm * eval_beta_gamma(pt->BulkFactor) * pt->BulkFactor * pt->BulkFactor ;
+    energetic.jet_L_e = pt->U_e * lum_factor;
+    energetic.jet_L_p = lum_factor * energetic.U_p;
+    energetic.jet_L_p_cold = lum_factor * energetic.U_p_cold;
+    energetic.jet_L_B = pt->UB * lum_factor;
+    energetic.jet_L_kin = energetic.jet_L_e + energetic.jet_L_p_cold + energetic.jet_L_p;
+    energetic.jet_L_tot = energetic.jet_L_kin + energetic.jet_L_rad + energetic.jet_L_B ;
 
    
     return energetic;
