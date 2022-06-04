@@ -415,17 +415,17 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     energetic.jet_L_Sync = energetic.L_Sync_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
     energetic.jet_L_rad = +energetic.jet_L_Sync;
     
-    // if (pt->do_SSC) 
-    // {
-    //     energetic.L_SSC_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_SSC, pt->nuF_nu_SSC_obs, pt->NU_INT_STOP_COMPTON_SSC);
-    //     energetic.jet_L_SSC = energetic.L_SSC_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
-    //     energetic.jet_L_rad += energetic.jet_L_SSC;
-    // }   
-    // else
-    // {
-    //     energetic.L_SSC_rf=0;
-    //     energetic.jet_L_SSC=0;
-    // }
+    if (pt->do_SSC) 
+    {
+        energetic.L_SSC_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_SSC, pt->nuF_nu_SSC_obs, pt->NU_INT_STOP_COMPTON_SSC);
+        energetic.jet_L_SSC = energetic.L_SSC_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
+        energetic.jet_L_rad += energetic.jet_L_SSC;
+    }   
+    else
+    {
+        energetic.L_SSC_rf=0;
+        energetic.jet_L_SSC=0;
+    }
     // printf("6\n");
     // if (strcmp(pt->PARTICLE, "protons") == 0) {
     //     energetic.U_p_target = pt->NH_pp  * MPC2;
