@@ -8,6 +8,7 @@ import numpy as np
 import copy
 import warnings
 import os
+from astropy import units as u
 
 from .jet_spectral_components import JetSpecComponent, SpecCompList
 
@@ -140,7 +141,7 @@ class JetBase(Model):
 
         self.parameters = JetModelParameterArray(model=self)
 
-        self._emitting_region_dic = None
+        self._emitting_region_dict = None
         self._electron_distribution_dic= None
         self._external_photon_fields_dic= None
         self._original_emitters_distr = None
@@ -159,7 +160,7 @@ class JetBase(Model):
 
         self.parameters = JetModelParameterArray(model=self)
 
-        self._emitting_region_dic = None
+        self._emitting_region_dict = None
         self._emitters_distribution_dic = None
         self._external_photon_fields_dic = None
 
@@ -168,7 +169,7 @@ class JetBase(Model):
         self._blob.IC_adaptive_e_binning = 0
         self._blob.do_IC_down_scattering = 0
 
-        self.set_emitting_region(beaming_expr)
+        self.set_emitting_region(beaming_expr,emitters_type)
 
         self.flux_plot_lim=1E-30
         self.set_emiss_lim(1E-120)
@@ -330,7 +331,7 @@ class JetBase(Model):
 
         self.SED = self.get_spectral_component_by_name('Sum').SED
 
-        self.set_emitting_region(str(_model['beaming_expr']))
+        self.set_emitting_region(str(_model['beaming_expr']),self.emitters_distribution.emitters_type)
         #self.set_electron_distribution(str(_model['electron_distribution']))
 
         _par_dict = _model['pars']
@@ -399,7 +400,7 @@ class JetBase(Model):
 
         jet.SED = jet.get_spectral_component_by_name('Sum').SED
 
-        jet.set_emitting_region(str(_model['beaming_expr']))
+        jet.set_emitting_region(str(_model['beaming_expr']),emitters_type='electrons')
 
         _par_dict = _model['pars']
         jet.show_pars()
@@ -499,8 +500,9 @@ class JetBase(Model):
 
         blob.N = 100
 
-
         blob.NH_pp = 1
+
+        blob.NH_cold_to_e = 0.1        
 
         blob.L_Disk = 1E45
 
@@ -521,18 +523,18 @@ class JetBase(Model):
 
         return blob
 
-    def set_emitting_region(self,beaming_expr):
+    def set_emitting_region(self,beaming_expr,emitters_type):
 
-        if  self._emitting_region_dic is not None:
-            self.del_par_from_dic(self._emitting_region_dic)
+        if  self._emitting_region_dict is not None:
+            self.del_par_from_dic(self._emitting_region_dict)
 
         self._beaming_expr=beaming_expr
 
         set_str_attr(self._blob,'BEAMING_EXPR',beaming_expr)
 
-        self._emitting_region_dic=build_emitting_region_dic(self.cosmo,beaming_expr=beaming_expr)
+        self._emitting_region_dict=build_emitting_region_dict(self.cosmo,beaming_expr=beaming_expr,emitters_type=emitters_type)
 
-        self.parameters.add_par_from_dict(self._emitting_region_dic,self,'_blob',JetParameter)
+        self.parameters.add_par_from_dict(self._emitting_region_dict,self,'_blob',JetParameter)
 
     @property
     def IC_adaptive_e_binning(self,):
@@ -794,7 +796,6 @@ class JetBase(Model):
             if self.get_par_by_name('disk_type') is not None:
                 disk_type=self.get_par_by_name('disk_type').val
 
-
         if isinstance(EC_components_list, six.string_types):
             EC_components_list=[EC_components_list]
 
@@ -874,8 +875,8 @@ class JetBase(Model):
         #IF disk_type is already a parameter it has to be updated here to make it effective
         self.parameters.add_par_from_dict(build_ExtFields_dic(self.EC_components_list, disk_type),self,'_blob',JetParameter)
         #print('--> disk_type',disk_type)
-        if disk_type is not None:
-
+        
+        if disk_type is not None and 'Disk' in self.EC_components_list:
             #remove the old disk type parameters
             if  self.parameters.get_par_by_name('disk_type') is not None:
                 self.del_par_from_dic(build_ExtFields_dic(['Disk'],self.parameters.get_par_by_name('disk_type').val))
@@ -1143,8 +1144,7 @@ class JetBase(Model):
         """
         print("")
         print('-'*80)
-
-        print ("jet model description")
+        print("%s model description"%self.name)
         print('-'*80)
         print("name: %s  " % (self.name))
         print('')
@@ -1153,8 +1153,11 @@ class JetBase(Model):
         print (" gamma energy grid size: ",self.gamma_grid_size)
         print (" gmin grid : %e"%self._blob.gmin_griglia)
         print (" gmax grid : %e"%self._blob.gmax_griglia)
-        print(" normalization ", self.Norm_distr)
-        print(" log-values ", self._emitters_distribution_log_values)
+        print(" normalization: ", self.Norm_distr)
+        print(" log-values: ", self._emitters_distribution_log_values)
+        _p = self.parameters.get_par_by_name('NH_cold_to_rel_e') 
+        if _p is not None:
+            print(' ratio of cold protons to relativistic electrons: %e'%_p.val)
         print('')
         if 'Disk' in self.EC_components_list:
             print('accretion disk:')
@@ -1340,13 +1343,13 @@ class JetBase(Model):
         _par_array=ModelParameterArray()
 
         _name = [i for i in _energetic.__class__.__dict__.keys() if i[:1] != '_']
-        _par_array.add_par(ModelParameter(name='BulkLorentzFactor', val=self._blob.BulkFactor, units='',par_type=''))
+        _par_array.add_par(ModelParameter(name='BulkLorentzFactor', val=self._blob.BulkFactor, units='',par_type='jet-bulk-factor'))
         self.energetic_dict['BulkLorentzFactor']= self._blob.BulkFactor
         try:
             for _n in _name:
                 units = 'skip_this'
                 if _n[0]=='L':
-                    par_type='Lum. blob rest. frme.'
+                    par_type='Lum. blob rest. frame.'
                     units='erg/s'
                 elif _n[0] == 'U' and 'DRF' not in _n:
                     par_type = 'Energy dens. blob rest. frame'
@@ -1370,20 +1373,90 @@ class JetBase(Model):
 
 
             if self.emitters_distribution.emitters_type=='electrons':
-                _i=_par_array.par_table['name']=='U_p_target'
-                _i=np.argwhere(_i==True).flatten()[0]
-                _par_array.par_table.remove_row(_i)
-                _=self.energetic_dict.pop('U_p_target')
-
-            if self.emitters_distribution.emitters_type=='protons':
-                _i=_par_array.par_table['name']=='U_p_cold'
-                _i=np.argwhere(_i==True).flatten()[0]
-                _par_array.par_table.remove_row(_i)
-                _=self.energetic_dict.pop('U_p_cold')
-
+                _par_array.add_par(ModelParameter(name='NH_cold_to_rel_e', val=self.parameters.NH_cold_to_rel_e.val, units='',par_type='cold_p_to_rel_e_ratio'))
+                self.energetic_dict['NH_cold_to_rel_e']= self.parameters.NH_cold_to_rel_e.val
+    
             self.energetic_report_table = _par_array.par_table
             self.energetic_report_table.remove_columns(['log','frozen','phys. bound. min','phys. bound. max'])
             self.energetic_report_table.rename_column('par type','type')
+
+            if self.emitters_distribution.emitters_type=='electrons':
+                _i=self.energetic_report_table['name']=='U_p_target'
+                _i=np.argwhere(_i==True).flatten()[0]
+                self.energetic_report_table.remove_row(_i)
+                _=self.energetic_dict.pop('U_p_target')
+               
+                _i=self.energetic_report_table['name']=='U_p'
+                _i=np.argwhere(_i==True).flatten()[0]
+                self.energetic_report_table.remove_row(_i)
+                _=self.energetic_dict.pop('U_p')
+
+                _i=self.energetic_report_table['name']=='L_pp_gamma_rf'	
+                _i=np.argwhere(_i==True).flatten()[0]
+                self.energetic_report_table.remove_row(_i)
+                _=self.energetic_dict.pop('L_pp_gamma_rf')
+
+            if self.emitters_distribution.emitters_type=='protons':
+                _i=self.energetic_report_table['name']=='U_p_cold'
+                _i=np.argwhere(_i==True).flatten()[0]
+                self.energetic_report_table.remove_row(_i)
+                _=self.energetic_dict.pop('U_p_cold')
+
+                _i=self.energetic_report_table['name']=='jet_L_p_cold'
+                _i=np.argwhere(_i==True).flatten()[0]
+                self.energetic_report_table.remove_row(_i)
+                _=self.energetic_dict.pop('jet_L_p_cold')
+
+            if isinstance(self,GalacticUnbeamed):
+                i=[]
+                for n in self.energetic_report_table['name']:
+                    if 'jet' in n:
+                        i.append(True)
+                        _=self.energetic_dict.pop(n)
+                    else:
+                        i.append(False)
+                i=np.array(i)
+                i=np.argwhere(i==True)
+                self.energetic_report_table.remove_rows(i)
+
+                _d_l=['U_Disk','U_BLR','U_DT','U_CMB','U_Synch_DRF']
+                i=[]
+                for n in self.energetic_report_table['name']:
+                    if n in _d_l:
+                        i.append(True)
+                        _=self.energetic_dict.pop(n)
+                    else:
+                        i.append(False)
+                i=np.array(i)
+                i=np.argwhere(i==True)
+                self.energetic_report_table.remove_rows(i)
+
+                for n in self.energetic_report_table['name']:
+                    if '_DRF' in n:
+                        _i=self.energetic_report_table['name']==n
+                        _i=np.argwhere(_i==True).flatten()[0]
+                        nn=self.energetic_report_table[_i]['name'].replace('_DRF','')
+                        self.energetic_report_table[_i]['name']=nn
+                        self.energetic_dict[nn]=self.energetic_dict.pop(n)
+                    if '_rf' in n:
+                        _i=self.energetic_report_table['name']==n
+                        _i=np.argwhere(_i==True).flatten()[0]
+                        nn=self.energetic_report_table[_i]['name'].replace('_rf','')
+                        self.energetic_report_table[_i]['name']=nn
+                        self.energetic_dict[nn]=self.energetic_dict.pop(n)
+
+                for r in self.energetic_report_table:
+                    if 'blob' in r['type']:
+                        nn=r['type'].replace('blob','')
+                        if n in self.energetic_dict.keys():
+                            self.energetic_dict[nn]=self.energetic_dict.pop(n)
+                        r['type']=nn
+                    if 'disk' in r['type']:
+                        nn=r['type'].replace('disk','')
+                        r['type']=nn
+                        if n in self.energetic_dict.keys():
+                            self.energetic_dict[nn]=self.energetic_dict.pop(n)
+
 
         except Exception as e:
             print('_energetic',_energetic)
@@ -1487,7 +1560,7 @@ class Jet(JetBase):
         if name is None:
             _name = 'jet'
         else:
-            _name = name
+            _name = name = clean_var_name(name)
 
         super(Jet,self).__init__(cosmo=cosmo,
                                  name=_name,
@@ -1517,6 +1590,7 @@ class Jet(JetBase):
 
         if self.emitters_distribution.emitters_type == 'electrons':
             self.electron_distribution=self.emitters_distribution
+            self.parameters.NH_cold_to_rel_e.hidden=True
 
         if self.emitters_distribution.emitters_type == 'protons':
             self.protons_distribution=self.emitters_distribution
@@ -1770,4 +1844,141 @@ class Jet(JetBase):
         print ('setting B to ',b_grid[ID_min])
         print ('setting N to ',N[ID_min])
         return b_grid[ID_min],b_grid,U_B,U_e
+
+
+class GalacticBeamed(Jet):
+
+    def __init__(self,
+                distance=3*u.kpc,
+                 name=None,
+                 emitters_type='electrons',
+                 emitters_distribution='plc',
+                 emitters_distribution_log_values=False,
+                 beaming_expr='delta',
+                 T_esc_e_second=None,
+                 jet_workplace=None,
+                 verbose=None,
+                 clean_work_dir=True,
+                 electron_distribution=None,
+                 proton_distribution=None,
+                 electron_distribution_log_values=None,
+                 proton_distribution_log_values=None):
+        
+        if name is None:
+            _name = 'unbeamed'
+        else:
+            _name = name = clean_var_name(name)
+
+        if electron_distribution is not None:
+            emitters_type = 'electrons'
+            emitters_distribution= electron_distribution
+        if electron_distribution_log_values is not None:
+            emitters_distribution_log_values = electron_distribution_log_values
+
+        if proton_distribution is not None:
+            emitters_type = 'protons'
+            emitters_distribution= proton_distribution
+        if proton_distribution_log_values is not None:
+            emitters_distribution_log_values = proton_distribution_log_values
+
+        if np.isscalar(distance):
+            _d=distance
+        else:
+            try:
+                _d=distance.to('cm')
+            except:
+                raise RuntimeError('distance must be either an astropy unit object convertible to cm, or a scalar in cm')
+        
+        cosmo=Cosmo(DL_cm=_d,verbose=False)
+
+        super(GalacticBeamed,self).__init__(cosmo=cosmo,
+                                    T_esc_e_second=T_esc_e_second,
+                                    name=_name,
+                                    emitters_type=emitters_type,
+                                    emitters_distribution=emitters_distribution,
+                                    emitters_distribution_log_values=emitters_distribution_log_values,
+                                    beaming_expr=beaming_expr,
+                                    jet_workplace=jet_workplace,
+                                    verbose=verbose,
+                                    clean_work_dir=clean_work_dir)
+
+        if name is None or name == '':
+            if self.emitters_distribution.emitters_type == 'electrons':
+                name = 'galactic_beamed_leptonic'
+            elif self.emitters_distribution.emitters_type == 'protons':
+                name = 'galactic_beamed_hadronic_pp'
+            else:
+                name = 'galactic_beamed'
+
+        self.name = clean_var_name(name)
+
+        self._blob.z_cosm=0
+        self.parameters.z_cosm.val=0
+        self.parameters.z_cosm.hidden=True
+        _dmax=1000*u.kpc.to('cm')
+       
+        self.add_user_par(name='DL_cm',units='cm',val=_d.value,val_min=0,val_max=_dmax)
+
+        self.make_dependent_par(par='z_cosm', depends_on=['DL_cm'], par_expr=self._dummy_z_par_func,verbose=False)
+       
+        p=self.parameters.get_par_by_name('DL_cm')
+        p.par_type='distance'
+
+    def _dummy_z_par_func(self,DL_cm):
+            self.cosmo._DL_cm=DL_cm*u.cm
+            return 0
+
+class GalacticUnbeamed(GalacticBeamed):
+
+    def __init__(self,
+                 distance=3*u.kpc,
+                 name=None,
+                 emitters_type='electrons',
+                 emitters_distribution='plc',
+                 emitters_distribution_log_values=False,
+                 T_esc_e_second=None,
+                 jet_workplace=None,
+                 verbose=None,
+                 clean_work_dir=True,
+                 electron_distribution=None,
+                 proton_distribution=None,
+                 electron_distribution_log_values=None,
+                 proton_distribution_log_values=None):
+        
+   
+        if name is None or name == '':
+            if self.emitters_distribution.emitters_type == 'electrons':
+                name = 'galactic_unbeamed_leptonic'
+            elif self.emitters_distribution.emitters_type == 'protons':
+                name = 'galactic_unbeamed_hadronic_pp'
+            else:
+                name = 'galactic_unbeamed'
+
+        super(GalacticUnbeamed,self).__init__(distance=distance,
+                                            name=name,
+                                            emitters_type=emitters_type,
+                                            emitters_distribution=emitters_distribution,
+                                            emitters_distribution_log_values=emitters_distribution_log_values,
+                                            beaming_expr='delta',
+                                            T_esc_e_second=T_esc_e_second,
+                                            jet_workplace=jet_workplace,
+                                            verbose=verbose,
+                                            clean_work_dir=clean_work_dir,
+                                            electron_distribution=electron_distribution,
+                                            proton_distribution=proton_distribution,
+                                            electron_distribution_log_values=electron_distribution_log_values,
+                                            proton_distribution_log_values=proton_distribution_log_values)
+
+        
+
+ 
+        self.parameters.beam_obj.val=1
+        self.parameters.beam_obj.hidden=True
+        self.parameters.R_H.hidden=True
+        self.set_external_field_transf('disk')
+        
+    def _dummy_z_par_func(self,DL_cm):
+        self.cosmo._DL_cm=DL_cm*u.cm
+        return 0
+
 

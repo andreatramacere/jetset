@@ -69,6 +69,7 @@ class JetParameter(ModelParameter):
                               'exp_start_time',
                               'emitters_density',
                               'target_density',
+                              'cold_p_to_rel_e_ratio',
                               'Disk',
                               'BLR',
                               'DT',

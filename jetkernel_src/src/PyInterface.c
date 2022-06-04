@@ -232,6 +232,7 @@ struct blob MakeBlob() {
     spettro_root.beam_obj=10.0;
     spettro_root.z_cosm = 0.1;
     spettro_root.NH_pp = 0.1;
+    spettro_root.NH_cold_to_rel_e = 0.1;
     spettro_root.N = 10;
     spettro_root.Norm_distr = 1;
     //spettro_root.Norm_distr_L_e_Sync=-1.0;

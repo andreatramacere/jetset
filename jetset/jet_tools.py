@@ -17,7 +17,7 @@ from .jetkernel_models_dic import allowed_disk_type
 from .jet_paramters import *
 
 
-__all__=[ 'build_emitting_region_dic','build_ExtFields_dic','BLR_constraints','DT_constraints']
+__all__=[ 'build_emitting_region_dict','build_ExtFields_dic','BLR_constraints','DT_constraints']
 
 
 
@@ -26,7 +26,7 @@ __all__=[ 'build_emitting_region_dic','build_ExtFields_dic','BLR_constraints','D
 
 
 
-def build_emitting_region_dic(cosmo, beaming_expr='delta'):
+def build_emitting_region_dict(cosmo, beaming_expr='delta',emitters_type='electrons'):
     """
 
     Builds a dictionary to init the :class:`.JetParameter`
@@ -48,17 +48,18 @@ def build_emitting_region_dic(cosmo, beaming_expr='delta'):
     #    ['region_size',0,30,'cm',False,True]
     model_dic['R_H'] = JetModelDictionaryPar(ptype='region_position', vmin=0, vmax=None, punit='cm', froz=True)
     # ['region_position', 0, None, 'cm']
-    model_dic['B'] = JetModelDictionaryPar(ptype='magnetic_field', vmin=0, vmax=None, punit='gauss')
-    # ['magnetic_field',0,None,'G']
+    model_dic['B'] = JetModelDictionaryPar(ptype='magnetic_field', vmin=1E-10, vmax=1E10, punit='gauss')
+    if emitters_type=='electrons':
+        model_dic['NH_cold_to_rel_e'] = JetModelDictionaryPar(ptype='cold_p_to_rel_e_ratio', vmin=0, vmax=None, punit='')
 
     if beaming_expr == 'bulk_theta':
         model_dic['theta'] = JetModelDictionaryPar(ptype='jet-viewing-angle', vmin=0, vmax=None, punit='deg')
         # ['jet-viewing-angle',0.0,None,'deg']
-        model_dic['BulkFactor'] = JetModelDictionaryPar(ptype='jet-bulk-factor', vmin=1.0, vmax=None,
+        model_dic['BulkFactor'] = JetModelDictionaryPar(ptype='jet-bulk-factor', vmin=1.0, vmax=1E5,
                                                         punit='lorentz-factor')
         # ['jet-bulk-factor',1.0,None,'Lorentz-factor']
     elif beaming_expr == 'delta' or beaming_expr == '':
-        model_dic['beam_obj'] = JetModelDictionaryPar(ptype='beaming', vmin=1E-4, vmax=None, punit='lorentz-factor')
+        model_dic['beam_obj'] = JetModelDictionaryPar(ptype='beaming', vmin=1E-4, vmax=1E4, punit='lorentz-factor')
         # ['beaming', 1, None, '']
     else:
         raise RuntimeError('''wrong beaming_expr="%s" value, allowed 'delta' or 'bulk_theta' ''' % (beaming_expr))
@@ -66,8 +67,6 @@ def build_emitting_region_dic(cosmo, beaming_expr='delta'):
     if cosmo._c is not None:
         model_dic['z_cosm'] = JetModelDictionaryPar(ptype='redshift', vmin=0, vmax=None, punit='')
     else:
-        print("using cosmo without z and only DL, should be used only for galactic objects!!")
-        print("z will be fixed to zero")
         model_dic['z_cosm'] = JetModelDictionaryPar(ptype='redshift', vmin=0, vmax=None, val=0, punit='', froz=True)
 
     return model_dic

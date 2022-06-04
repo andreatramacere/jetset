@@ -685,6 +685,7 @@ struct blob {
     double N_tot_p_Sferic;
     double N;
     double N_e_pp, N_p, N_e;
+    double NH_cold_to_rel_e;
     double N_0,N_0p,N_0e; /* costante di normalizzazione per distrib elettr staz */
     double gmin;
     double gmax;
