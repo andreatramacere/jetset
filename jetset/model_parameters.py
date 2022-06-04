@@ -1432,5 +1432,7 @@ class ModelParameterArray(object):
 
     def _decode_pars(self,_par_dict):
         for p_name in _par_dict.keys():
-            self.set(p_name,**_par_dict[p_name])
+            p=self.get_par_by_name(p_name)
+            if p._is_dependent is False:
+                self.set(p_name,**_par_dict[p_name])
 

@@ -50,7 +50,7 @@ def build_emitting_region_dict(cosmo, beaming_expr='delta',emitters_type='electr
     # ['region_position', 0, None, 'cm']
     model_dic['B'] = JetModelDictionaryPar(ptype='magnetic_field', vmin=1E-10, vmax=1E10, punit='gauss')
     if emitters_type=='electrons':
-        model_dic['NH_cold_to_rel_e'] = JetModelDictionaryPar(ptype='cold_p_to_rel_e_ratio', vmin=0, vmax=None, punit='')
+        model_dic['NH_cold_to_rel_e'] = JetModelDictionaryPar(ptype='cold_p_to_rel_e_ratio', vmin=0, vmax=None, punit='',froz=True, log=False)
 
     if beaming_expr == 'bulk_theta':
         model_dic['theta'] = JetModelDictionaryPar(ptype='jet-viewing-angle', vmin=0, vmax=None, punit='deg')

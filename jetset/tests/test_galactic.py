@@ -38,7 +38,9 @@ class TestGalactic(TestBase):
         assert('NH_cold_to_rel_e'  in pwn.energetic_dict.keys())
         _par_array=pwn._build_energetic_dict()
         np.testing.assert_allclose(pwn.energetic_dict['U_Synch'],pwn.energetic_dict['U_Synch_DRF'],rtol=1E-3)
-    
+        pwn.save_model('pwn.pkl')
+        GalacticUnbeamed.load_model('pwn.pkl')
+
     def test_galactic_hadronic_unbeamed(self,plot=False):
         from jetset.jet_model import GalacticUnbeamed
 
@@ -54,7 +56,8 @@ class TestGalactic(TestBase):
             p.setlim(y_min=1E33)
         
         gal_hadronic.energetic_report()
-
+        gal_hadronic.save_model('gal_hadronic.pkl')
+        GalacticUnbeamed.load_model('gal_hadronic.pkl')
 
     def test_galactic_hadronic_beamed(self,plot=False):
         from jetset.jet_model import GalacticBeamed
@@ -73,4 +76,5 @@ class TestGalactic(TestBase):
             p.setlim(y_min=1E36)
 
         gal_hadronic.energetic_report()
-
+        gal_hadronic.save_model('gal_hadronic_beamed.pkl')
+        GalacticBeamed.load_model('gal_hadronic_beamed.pkl')

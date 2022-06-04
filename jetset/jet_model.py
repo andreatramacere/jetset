@@ -9,6 +9,8 @@ import copy
 import warnings
 import os
 from astropy import units as u
+from contextlib import redirect_stdout
+import io
 
 from .jet_spectral_components import JetSpecComponent, SpecCompList
 
@@ -168,6 +170,8 @@ class JetBase(Model):
 
         self._blob.IC_adaptive_e_binning = 0
         self._blob.do_IC_down_scattering = 0
+        if hasattr(emitters_distribution,'emitters_type'):
+            emitters_type=emitters_distribution.emitters_type
 
         self.set_emitting_region(beaming_expr,emitters_type)
 
@@ -195,7 +199,6 @@ class JetBase(Model):
         self._decode_model(state)
 
     def _serialize_model(self):
-
         _model = {}
         _model['version']=get_info()['version']
         _model['name'] = self.name
@@ -235,7 +238,10 @@ class JetBase(Model):
         return _model
 
     def save_model(self,file_name):
-        pickle.dump(self._serialize_model(), open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+        f = io.StringIO()
+        with redirect_stdout(f):
+            pickle.dump(self._serialize_model(), open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+      
 
     @classmethod
     @safe_run
@@ -330,10 +336,12 @@ class JetBase(Model):
                 comp.state = _model['spectral_components_state'][ID]
 
         self.SED = self.get_spectral_component_by_name('Sum').SED
-
+       
         self.set_emitting_region(str(_model['beaming_expr']),self.emitters_distribution.emitters_type)
         #self.set_electron_distribution(str(_model['electron_distribution']))
-
+        if isinstance(self,GalacticBeamed):
+            self._handle_z(d=u.kpc*1)
+            
         _par_dict = _model['pars']
         _non_user_dict={}
         _user_dict={}
@@ -342,6 +350,7 @@ class JetBase(Model):
                 _user_dict[k]=v
             else:
                 _non_user_dict[k]=v
+
         self.parameters._decode_pars(_non_user_dict)
 
         for k, v in _user_dict.items():
@@ -553,7 +562,6 @@ class JetBase(Model):
         EmittersFactory.available_distributions()
 
     def set_emitters_distribution(self, distr=None, log_values=False, emitters_type='electrons', init=True):
-
         if init is True:
             self.set_blob()
         self._emitters_distribution_log_values = log_values
@@ -586,6 +594,7 @@ class JetBase(Model):
             self._attach_pars_to_jet(preserve_value_emitters=True)
 
             self.emitters_distribution.update()
+            
         elif isinstance(distr, str):
             nf=EmittersFactory()
             self.emitters_distribution = nf.create_emitters(distr, log_values=log_values, emitters_type=emitters_type)
@@ -1600,7 +1609,7 @@ class Jet(JetBase):
 
         if self.emitters_distribution.emitters_type == 'electrons':
             self.electron_distribution=self.emitters_distribution
-            self.parameters.NH_cold_to_rel_e.hidden=True
+            self.parameters.NH_cold_to_rel_e.hidden=False
 
         if self.emitters_distribution.emitters_type == 'protons':
             self.protons_distribution=self.emitters_distribution
@@ -1921,22 +1930,26 @@ class GalacticBeamed(Jet):
                 name = 'galactic_beamed'
 
         self.name = clean_var_name(name)
+        self._handle_z(d=_d)
+        
 
+    def _dummy_z_par_func(self,DL_cm):
+            self.cosmo._DL_cm=DL_cm*u.cm
+            return 0
+
+    def _handle_z(self,d=u.kpc*1):
         self._blob.z_cosm=0
         self.parameters.z_cosm.val=0
         self.parameters.z_cosm.hidden=True
         _dmax=1000*u.kpc.to('cm')
        
-        self.add_user_par(name='DL_cm',units='cm',val=_d.value,val_min=0,val_max=_dmax)
+        self.add_user_par(name='DL_cm',units='cm',val=d.value,val_min=0,val_max=_dmax)
 
         self.make_dependent_par(par='z_cosm', depends_on=['DL_cm'], par_expr=self._dummy_z_par_func,verbose=False)
        
         p=self.parameters.get_par_by_name('DL_cm')
         p.par_type='distance'
 
-    def _dummy_z_par_func(self,DL_cm):
-            self.cosmo._DL_cm=DL_cm*u.cm
-            return 0
 
 class GalacticUnbeamed(GalacticBeamed):
 
@@ -1956,13 +1969,7 @@ class GalacticUnbeamed(GalacticBeamed):
                  proton_distribution_log_values=None):
         
    
-        if name is None or name == '':
-            if self.emitters_distribution.emitters_type == 'electrons':
-                name = 'galactic_unbeamed_leptonic'
-            elif self.emitters_distribution.emitters_type == 'protons':
-                name = 'galactic_unbeamed_hadronic_pp'
-            else:
-                name = 'galactic_unbeamed'
+        
 
         super(GalacticUnbeamed,self).__init__(distance=distance,
                                             name=name,
@@ -1981,14 +1988,19 @@ class GalacticUnbeamed(GalacticBeamed):
 
         
 
- 
+        if name is None or name == '':
+            if self.emitters_distribution.emitters_type == 'electrons':
+                name = 'galactic_unbeamed_leptonic'
+            elif self.emitters_distribution.emitters_type == 'protons':
+                name = 'galactic_unbeamed_hadronic_pp'
+            else:
+                name = 'galactic_unbeamed'
+        
+        self.name=name
+
+
         self.parameters.beam_obj.val=1
         self.parameters.beam_obj.hidden=True
         self.parameters.R_H.hidden=True
         self.set_external_field_transf('disk')
-        
-    def _dummy_z_par_func(self,DL_cm):
-        self.cosmo._DL_cm=DL_cm*u.cm
-        return 0
-
-
+    
