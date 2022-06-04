@@ -23,7 +23,10 @@ class TestUser(TestBase):
   
    def test_jet(self,plot=plot):
       t=TestJets()
-      t.integration_suite()
+      t.test_jet(plot=plot)
+      t.test_set_N_from_nuFnu(plot=plot)
+      t.test_EC(plot=plot)
+      t.test_hadronic_jet(plot=plot)
 
    def test_emitters(self,plot=plot):
       t=TestEmitters()
