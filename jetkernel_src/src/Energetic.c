@@ -398,7 +398,7 @@ struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
 
     energetic.U_B= pt->UB;
     energetic.U_e= pt->U_e;
-   
+    energetic.jet_L_rad=0.;
     
 
     energetic.U_Synch = Uph_Sync(pt);
