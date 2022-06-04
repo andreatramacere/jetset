@@ -7,10 +7,10 @@ class TestJets(TestBase):
 
     def integration_suite(self,plot=False):
         #self.test_build_bessel(plot=plot)
-        #self.test_jet(plot=plot)
+        self.test_jet(plot=plot)
         #self.test_set_N_from_nuFnu(plot=plot)
         #self.test_EC(plot=plot)
-        self.test_hadronic_jet(plot=plot)
+        #self.test_hadronic_jet(plot=plot)
 
     def test_hadronic_jet(self,plot=False):
         print('--------> test_hadronic_jet',plot)
