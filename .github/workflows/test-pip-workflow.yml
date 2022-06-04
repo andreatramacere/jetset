@@ -90,11 +90,11 @@ jobs:
           python setup.py sdist 
           pip install dist/*.tar.gz
           
-      - name: 'test sdist'
-        working-directory: .github/action_test/
-        run: |
-          echo $(running tests!)
-          pytest --disable-warnings  --pyargs  -vvv  jetset.tests.test_users::TestUser
+      #- name: 'test sdist'
+      #  working-directory: .github/action_test/
+      #  run: |
+      #    echo $(running tests!)
+      #    pytest --disable-warnings  --pyargs  -vvv  jetset.tests.test_users::TestUser
       
 
       - name: 'pip build install wheel'
