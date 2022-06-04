@@ -41,4 +41,4 @@ for importer, modname, ispkg in pkgutil.walk_packages(path=[pkg_dir],
 
 
 data_dir = os.path.dirname(__file__)+'/data'
-run_version_checking()
+#run_version_checking()

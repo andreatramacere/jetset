@@ -1336,7 +1336,7 @@ class JetBase(Model):
         if verbose is True:
             _show_table(self.energetic_report_table)
 
-    def _build_energetic_report(self,):
+    def _build_energetic_dict(self):
         self.energetic_dict={}
         BlazarSED.SetBeaming(self._blob)        
         _energetic = BlazarSED.EnergeticOutput(self._blob,0)
@@ -1370,96 +1370,100 @@ class JetBase(Model):
                     self.energetic_dict[_n]=getattr(_energetic, _n)
 
                     _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
-
-
-            if self.emitters_distribution.emitters_type=='electrons':
-                _par_array.add_par(ModelParameter(name='NH_cold_to_rel_e', val=self.parameters.NH_cold_to_rel_e.val, units='',par_type='cold_p_to_rel_e_ratio'))
-                self.energetic_dict['NH_cold_to_rel_e']= self.parameters.NH_cold_to_rel_e.val
-    
-            self.energetic_report_table = _par_array.par_table
-            self.energetic_report_table.remove_columns(['log','frozen','phys. bound. min','phys. bound. max'])
-            self.energetic_report_table.rename_column('par type','type')
-
-            if self.emitters_distribution.emitters_type=='electrons':
-                _i=self.energetic_report_table['name']=='U_p_target'
-                _i=np.argwhere(_i==True).flatten()[0]
-                self.energetic_report_table.remove_row(_i)
-                _=self.energetic_dict.pop('U_p_target')
-               
-                _i=self.energetic_report_table['name']=='U_p'
-                _i=np.argwhere(_i==True).flatten()[0]
-                self.energetic_report_table.remove_row(_i)
-                _=self.energetic_dict.pop('U_p')
-
-                _i=self.energetic_report_table['name']=='L_pp_gamma_rf'	
-                _i=np.argwhere(_i==True).flatten()[0]
-                self.energetic_report_table.remove_row(_i)
-                _=self.energetic_dict.pop('L_pp_gamma_rf')
-
-            if self.emitters_distribution.emitters_type=='protons':
-                _i=self.energetic_report_table['name']=='U_p_cold'
-                _i=np.argwhere(_i==True).flatten()[0]
-                self.energetic_report_table.remove_row(_i)
-                _=self.energetic_dict.pop('U_p_cold')
-
-                _i=self.energetic_report_table['name']=='jet_L_p_cold'
-                _i=np.argwhere(_i==True).flatten()[0]
-                self.energetic_report_table.remove_row(_i)
-                _=self.energetic_dict.pop('jet_L_p_cold')
-
-            if isinstance(self,GalacticUnbeamed):
-                i=[]
-                for n in self.energetic_report_table['name']:
-                    if 'jet' in n:
-                        i.append(True)
-                        _=self.energetic_dict.pop(n)
-                    else:
-                        i.append(False)
-                i=np.array(i)
-                i=np.argwhere(i==True)
-                self.energetic_report_table.remove_rows(i)
-
-                _d_l=['U_Disk','U_BLR','U_DT','U_CMB','U_Synch_DRF']
-                i=[]
-                for n in self.energetic_report_table['name']:
-                    if n in _d_l:
-                        i.append(True)
-                        _=self.energetic_dict.pop(n)
-                    else:
-                        i.append(False)
-                i=np.array(i)
-                i=np.argwhere(i==True)
-                self.energetic_report_table.remove_rows(i)
-
-                for n in self.energetic_report_table['name']:
-                    if '_DRF' in n:
-                        _i=self.energetic_report_table['name']==n
-                        _i=np.argwhere(_i==True).flatten()[0]
-                        nn=self.energetic_report_table[_i]['name'].replace('_DRF','')
-                        self.energetic_report_table[_i]['name']=nn
-                        self.energetic_dict[nn]=self.energetic_dict.pop(n)
-                    if '_rf' in n:
-                        _i=self.energetic_report_table['name']==n
-                        _i=np.argwhere(_i==True).flatten()[0]
-                        nn=self.energetic_report_table[_i]['name'].replace('_rf','')
-                        self.energetic_report_table[_i]['name']=nn
-                        self.energetic_dict[nn]=self.energetic_dict.pop(n)
-
-                for r in self.energetic_report_table:
-                    if 'blob' in r['type']:
-                        nn=r['type'].replace('blob','')
-                        if n in self.energetic_dict.keys():
-                            self.energetic_dict[nn]=self.energetic_dict.pop(n)
-                        r['type']=nn
-                    if 'disk' in r['type']:
-                        nn=r['type'].replace('disk','')
-                        r['type']=nn
-                        if n in self.energetic_dict.keys():
-                            self.energetic_dict[nn]=self.energetic_dict.pop(n)
-
-
         except Exception as e:
             print('_energetic',_energetic)
+            raise RuntimeError('energetic_report failed',e)
+
+        return  _par_array
+
+    def _set_energetic_report(self,_par_array):
+        if self.emitters_distribution.emitters_type=='electrons':
+                _par_array.add_par(ModelParameter(name='NH_cold_to_rel_e', val=self.parameters.NH_cold_to_rel_e.val, units='',par_type='cold_p_to_rel_e_ratio'))
+                self.energetic_dict['NH_cold_to_rel_e'] = self.parameters.NH_cold_to_rel_e.val
+
+        self.energetic_report_table = _par_array.par_table
+        self.energetic_report_table.remove_columns(['log','frozen','phys. bound. min','phys. bound. max'])
+        self.energetic_report_table.rename_column('par type','type')
+
+        if self.emitters_distribution.emitters_type=='electrons':
+            _i=self.energetic_report_table['name']=='U_p_target'
+            _i=np.argwhere(_i==True).flatten()[0]
+            self.energetic_report_table.remove_row(_i)
+            _=self.energetic_dict.pop('U_p_target')
+            
+            _i=self.energetic_report_table['name']=='U_p'
+            _i=np.argwhere(_i==True).flatten()[0]
+            self.energetic_report_table.remove_row(_i)
+            _=self.energetic_dict.pop('U_p')
+
+            _i=self.energetic_report_table['name']=='L_pp_gamma_rf'	
+            _i=np.argwhere(_i==True).flatten()[0]
+            self.energetic_report_table.remove_row(_i)
+            _=self.energetic_dict.pop('L_pp_gamma_rf')
+
+        if self.emitters_distribution.emitters_type=='protons':
+            _i=self.energetic_report_table['name']=='U_p_cold'
+            _i=np.argwhere(_i==True).flatten()[0]
+            self.energetic_report_table.remove_row(_i)
+            _=self.energetic_dict.pop('U_p_cold')
+
+            _i=self.energetic_report_table['name']=='jet_L_p_cold'
+            _i=np.argwhere(_i==True).flatten()[0]
+            self.energetic_report_table.remove_row(_i)
+            _=self.energetic_dict.pop('jet_L_p_cold')
+
+        if isinstance(self,GalacticUnbeamed):
+            i=[]
+            for n in self.energetic_report_table['name']:
+                if 'jet' in n:
+                    i.append(True)
+                    _=self.energetic_dict.pop(n)
+                else:
+                    i.append(False)
+            i=np.array(i)
+            i=np.argwhere(i==True)
+            self.energetic_report_table.remove_rows(i)
+
+            _d_l=['U_Disk','U_BLR','U_DT','U_CMB','U_Synch_DRF']
+            i=[]
+            for n in self.energetic_report_table['name']:
+                if n in _d_l:
+                    i.append(True)
+                    _=self.energetic_dict.pop(n)
+                else:
+                    i.append(False)
+            i=np.array(i)
+            i=np.argwhere(i==True)
+            self.energetic_report_table.remove_rows(i)
+
+            for n in self.energetic_report_table['name']:
+                if n.endswith('_DRF'):
+                    _i=self.energetic_report_table['name']==n
+                    _i=np.argwhere(_i==True).flatten()[0]
+                    nn=self.energetic_report_table[_i]['name'].replace('_DRF','')
+                    self.energetic_report_table[_i]['name']=nn
+                    self.energetic_dict[nn]=self.energetic_dict.pop(n)
+                if n.endswith('_rf'):
+                    _i=self.energetic_report_table['name']==n
+                    _i=np.argwhere(_i==True).flatten()[0]
+                    nn=self.energetic_report_table[_i]['name'].replace('_rf','')
+                    self.energetic_report_table[_i]['name']=nn
+                    self.energetic_dict[nn]=self.energetic_dict.pop(n)
+
+            for r in self.energetic_report_table:
+                if 'blob' in r['type']:
+                    nn=r['type'].replace('blob','')
+                    r['type']=nn
+                    
+                if 'disk' in r['type']:
+                    nn=r['type'].replace('disk','')
+                    r['type']=nn
+
+    def _build_energetic_report(self,):
+        try:
+            _par_array=self._build_energetic_dict()
+            self._set_energetic_report(_par_array)
+        except Exception as e:
             raise RuntimeError('energetic_report failed',e)
 
 
