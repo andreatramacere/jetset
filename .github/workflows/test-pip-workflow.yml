@@ -29,8 +29,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-10.15]
-        python-version: [3.7,3.8,3.9]
+        os: [ubuntu-latest]
+        python-version: [3.8]
 
     steps:
       - name: 'Clone Repository (Latest)'
@@ -97,17 +97,17 @@ jobs:
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
       
 
-      - name: 'pip build install wheel'
-        run: |
-          pip uninstall --yes jetset
-          python setup.py clean 
-          python setup.py  bdist_wheel 
-          pip install dist/*.whl
+      # - name: 'pip build install wheel'
+      #   run: |
+      #     pip uninstall --yes jetset
+      #     python setup.py clean 
+      #     python setup.py  bdist_wheel 
+      #     pip install dist/*.whl
 
-      - name: 'test'
-        if: github.event.inputs.skip_test != 'yes'
-        working-directory: .github/action_test/
-        run: |
-          echo $(running tests!)
-          pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
-          pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
+      # - name: 'test'
+      #   if: github.event.inputs.skip_test != 'yes'
+      #   working-directory: .github/action_test/
+      #   run: |
+      #     echo $(running tests!)
+      #     pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
+      #     pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
