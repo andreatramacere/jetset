@@ -1144,8 +1144,9 @@ class JetBase(Model):
         """
         print("")
         print('-'*80)
-        print("%s model description"%self.name)
+        print("model description: ")
         print('-'*80)
+        print("type:",self.__class__.__name__)
         print("name: %s  " % (self.name))
         print('')
         print('%s distribution:'%self._emitters_type)
@@ -1400,6 +1401,11 @@ class JetBase(Model):
             _i=np.argwhere(_i==True).flatten()[0]
             self.energetic_report_table.remove_row(_i)
             _=self.energetic_dict.pop('L_pp_gamma_rf')
+
+            _i=self.energetic_report_table['name']=='jet_L_p'	
+            _i=np.argwhere(_i==True).flatten()[0]
+            self.energetic_report_table.remove_row(_i)
+            _=self.energetic_dict.pop('jet_L_p')
 
         if self.emitters_distribution.emitters_type=='protons':
             _i=self.energetic_report_table['name']=='U_p_cold'
