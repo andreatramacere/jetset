@@ -10,6 +10,6 @@ basic features
 
     jet model numerical setup   *New (v1.2.0)* <documentation_notebooks/jet_model_num/Jet_example_num.rst>
 
-    jet hadronic pp model *New (v1.2.0)* <documentation_notebooks/hadronic_pp_jet/hadornic.rst>
+    jet hadronic pp model *New (v1.2.0)* <documentation_notebooks/hadronic_pp_jet/hadronic.rst>
 
     change cosmology model <documentation_notebooks/cosmology/Jet_example_cosmo.rst>

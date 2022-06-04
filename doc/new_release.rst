@@ -1,7 +1,15 @@
-What's new in version 1.2.0
+What's new in version 1.2.2
 ===========================
 
-In the following are listed the main new features common to 1.1.2 and 1.2.0
+In the following are listed the main new features common to 1.2.0 - 1.2.2
+
+
+Introduction of a class for galactic objects (beamed and unbeamed) 
+------------------------------------------------------------------
+This class is useful for PWN, SNR, or jetted galactic objects
+It is still preliminary, and will be improved soon
+See this section of the user guide  :ref:`galactic_guide`
+
 
 Introduction of depending pars
 -----------------------------------

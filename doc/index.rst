@@ -56,7 +56,7 @@ allowing to fit the numerical models to observed data. The main features of this
     user_guide/documentation_notebooks/composite_model/Composite_model.rst
     user_guide/documentation_notebooks/custom_emitters_distr/custom_emitters.rst
     user_guide/documentation_notebooks/jet_model_phys_SSC/Jet_example_phys_SSC.rst
-    user_guide/documentation_notebooks/hadronic_pp_jet/hadornic.rst
+    user_guide/documentation_notebooks/hadronic_pp_jet/hadronic.rst
     user_guide/documentation_notebooks/temporal_evolution/Temp_Ev_one_zone_only_cooling.rst
     user_guide/documentation_notebooks/temporal_evolution/Temp_Ev_two_zones_acc_and_cooling.rst
     user_guide/documentation_notebooks/temporal_evolution/Temp_Ev_two_zones_acc_and_cooling_adb_exp.rst
