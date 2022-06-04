@@ -126,7 +126,7 @@ jobs:
         working-directory: .github/action_test/
         run: |
           echo $(running tests!)
-          pytest --disable-warnings  --pyargs  -vvv  jetset.tests.test_users::TestUser
+          pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
       
 
       - name: 'pip build install wheel'

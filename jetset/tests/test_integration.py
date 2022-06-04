@@ -19,10 +19,6 @@ def plot():
 
 class TestIntegration(TestBase):
    
-   def test_jet(self,plot=plot):   
-      t=TestJets()
-      t.integration_suite(plot=plot)
-
    def test_galactic(self,plot=plot):
       t=TestGalactic()
       t.integration_suite(plot=plot)
