@@ -511,7 +511,7 @@ class JetBase(Model):
 
         blob.NH_pp = 1
 
-        blob.NH_cold_to_e = 0.1        
+        blob.NH_cold_to_rel_e = 0.1        
 
         blob.L_Disk = 1E45
 
@@ -529,7 +529,7 @@ class JetBase(Model):
 
         blob.nu_start_grid = 1e6
         blob.nu_stop_grid = 1e30
-
+        
         return blob
 
     def set_emitting_region(self,beaming_expr,emitters_type):

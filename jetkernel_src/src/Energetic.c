@@ -439,7 +439,7 @@ struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
     }
     else
     {
-        energetic.U_p_cold = pt->N * 0.1 * MPC2;
+        energetic.U_p_cold = pt->N * pt->NH_cold_to_rel_e * MPC2;
         energetic.U_p = 0.;
         energetic.U_p_target = 0.;
         energetic.L_pp_gamma_rf=0;
