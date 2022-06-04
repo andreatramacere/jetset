@@ -444,51 +444,51 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
         energetic.jet_L_pp_gamma=0.;
     }
 
-    // if (pt->do_EC_Disk == 1 ) {
-    //     energetic.L_EC_Disk_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_Disk, pt->nuF_nu_EC_Disk_obs, pt->NU_INT_STOP_EC_Disk);
-    //     energetic.jet_L_EC_Disk = energetic.L_EC_Disk_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
-    //     energetic.jet_L_rad += energetic.jet_L_EC_Disk;
-    // }
-    // else
-    // {
-    //     energetic.jet_L_EC_Disk = 0;
-    //     energetic.L_EC_Disk_rf = 0;
-    // }
+    if (pt->do_EC_Disk == 1 ) {
+        energetic.L_EC_Disk_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_Disk, pt->nuF_nu_EC_Disk_obs, pt->NU_INT_STOP_EC_Disk);
+        energetic.jet_L_EC_Disk = energetic.L_EC_Disk_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
+        energetic.jet_L_rad += energetic.jet_L_EC_Disk;
+    }
+    else
+    {
+        energetic.jet_L_EC_Disk = 0;
+        energetic.L_EC_Disk_rf = 0;
+    }
 
-    // if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 1)
-    // {
-    //     energetic.L_EC_BLR_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_BLR, pt->nuF_nu_EC_BLR_obs, pt->NU_INT_STOP_EC_BLR);
-    //     energetic.jet_L_EC_BLR = energetic.L_EC_BLR_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
-    //     energetic.jet_L_rad += energetic.jet_L_EC_BLR;
-    // }
-    // else
-    // {
-    //     energetic.L_EC_BLR_rf=0;
-    //     energetic.jet_L_EC_BLR=0;
-    // }
+    if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 1)
+    {
+        energetic.L_EC_BLR_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_BLR, pt->nuF_nu_EC_BLR_obs, pt->NU_INT_STOP_EC_BLR);
+        energetic.jet_L_EC_BLR = energetic.L_EC_BLR_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
+        energetic.jet_L_rad += energetic.jet_L_EC_BLR;
+    }
+    else
+    {
+        energetic.L_EC_BLR_rf=0;
+        energetic.jet_L_EC_BLR=0;
+    }
     
-    // if (pt->do_EC_DT == 1) {
-    //     energetic.L_EC_DT_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_DT, pt->nuF_nu_EC_DT_obs, pt->NU_INT_STOP_EC_DT);
-    //     energetic.jet_L_EC_DT = energetic.L_EC_DT_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
-    //     energetic.jet_L_rad += energetic.jet_L_EC_DT;
-    // }
-    // else
-    // {
-    //     energetic.jet_L_EC_DT = 0;
-    //     energetic.L_EC_DT_rf = 0;
-    // }
+    if (pt->do_EC_DT == 1) {
+        energetic.L_EC_DT_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_DT, pt->nuF_nu_EC_DT_obs, pt->NU_INT_STOP_EC_DT);
+        energetic.jet_L_EC_DT = energetic.L_EC_DT_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
+        energetic.jet_L_rad += energetic.jet_L_EC_DT;
+    }
+    else
+    {
+        energetic.jet_L_EC_DT = 0;
+        energetic.L_EC_DT_rf = 0;
+    }
     
-    // if (pt->do_EC_CMB == 1)
-    // {
-    //     energetic.L_EC_CMB_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_CMB, pt->nuF_nu_EC_CMB_obs, pt->NU_INT_STOP_EC_CMB);
-    //     energetic.jet_L_EC_CMB = energetic.L_EC_CMB_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
-    //     energetic.jet_L_rad += energetic.jet_L_EC_CMB;
-    // }
-    // else
-    // {
-    //     energetic.jet_L_EC_CMB = 0;
-    //     energetic.L_EC_CMB_rf = 0;
-    // }
+    if (pt->do_EC_CMB == 1)
+    {
+        energetic.L_EC_CMB_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_CMB, pt->nuF_nu_EC_CMB_obs, pt->NU_INT_STOP_EC_CMB);
+        energetic.jet_L_EC_CMB = energetic.L_EC_CMB_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
+        energetic.jet_L_rad += energetic.jet_L_EC_CMB;
+    }
+    else
+    {
+        energetic.jet_L_EC_CMB = 0;
+        energetic.L_EC_CMB_rf = 0;
+    }
     // lum_factor = pi * pt->R * pt->R * vluce_cm * eval_beta_gamma(pt->BulkFactor) * pt->BulkFactor * pt->BulkFactor ;
     // energetic.jet_L_e = pt->U_e * lum_factor;
     // energetic.jet_L_p = lum_factor * energetic.U_p;
