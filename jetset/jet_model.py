@@ -1274,7 +1274,7 @@ class JetBase(Model):
         BlazarSED.Run_SED(self._blob)
 
         if phys_output==True:
-            BlazarSED.EnergeticOutput(self._blob,0)
+            BlazarSED.EnergeticOutput(self._blob)
 
         if self.emitters_distribution._user_defined is False:
             if update_emitters is True:
@@ -1349,7 +1349,7 @@ class JetBase(Model):
     def _build_energetic_dict(self):
         self.energetic_dict={}
         BlazarSED.SetBeaming(self._blob)        
-        _energetic = BlazarSED.EnergeticOutput(self._blob,0)
+        _energetic = BlazarSED.EnergeticOutput(self._blob)
         _par_array=ModelParameterArray()
 
         _name = [i for i in _energetic.__class__.__dict__.keys() if i[:1] != '_']

@@ -1029,7 +1029,7 @@ void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned int NU_INT_MAX, str
         double * nuLnu_peak_blob);
 
 
-struct jet_energetic EnergeticOutput(struct blob *pt, int write_file);
+struct jet_energetic EnergeticOutput(struct blob *pt);
 
 void EvalU_e(struct blob *pt);
 void EvalU_p(struct blob *pt); 

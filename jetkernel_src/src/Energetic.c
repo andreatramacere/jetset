@@ -387,7 +387,7 @@ double I_nu_to_Uph(double * nu, double * I_nu, unsigned int NU_INT_STOP) {
 // Energetic output
 //=========================================================================================
 
-struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
+struct jet_energetic EnergeticOutput(struct blob * pt) {
     double lum_factor;
     //double L_rad, L_Sync, L_SSC, L_EC_Disk,L_EC_BLR, L_EC_DT, L_PP;
     //double L_kin, L_tot, L_e, L_B, L_p;
@@ -395,28 +395,25 @@ struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
     //char f_Energetic[static_file_name_max_legth];
     //FILE *fp_Energetic;
 
-    printf("1\n");
     energetic.U_B= pt->UB;
     energetic.U_e= pt->U_e;
-    // energetic.jet_L_rad=0.;
-    // printf("2\n");
+    energetic.jet_L_rad=0.;
 
-    // energetic.U_Synch = Uph_Sync(pt);
-    // energetic.U_BLR = I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR);
-    // energetic.U_DT=I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT);
-    // energetic.U_CMB = I_nu_to_Uph(pt->nu_CMB, pt->I_nu_CMB, pt->NU_INT_MAX_CMB);
-    // energetic.U_Disk = I_nu_to_Uph(pt->nu_Disk, pt->I_nu_Disk, pt->NU_INT_MAX_Disk);
-    // printf("3\n");
-    // energetic.U_Synch_DRF = Uph_Sync(pt) * pt->beam_obj * pt->beam_obj * pt->beam_obj * pt->beam_obj;
-    // energetic.U_BLR_DRF = I_nu_to_Uph(pt->nu_BLR_disk_RF, pt->I_nu_BLR_disk_RF, pt->NU_INT_MAX_BLR);
-    // energetic.U_DT_DRF = I_nu_to_Uph(pt->nu_DT_disk_RF, pt->I_nu_DT_disk_RF, pt->NU_INT_MAX_DT);
-    // energetic.U_CMB_DRF = I_nu_to_Uph(pt->nu_CMB_disk_RF, pt->I_nu_CMB_disk_RF, pt->NU_INT_MAX_CMB);
-    // energetic.U_Disk_DRF = I_nu_to_Uph(pt->nu_Disk_disk_RF, pt->I_nu_Disk_disk_RF, pt->NU_INT_MAX_Disk);
-    // printf("4\n");
-    // energetic.L_Sync_rf = PowerPhotons_blob_rest_frame (pt, pt->nu_Sync, pt->nuF_nu_Sync_obs, pt->NU_INT_STOP_Sync_SSC);
-    // energetic.jet_L_Sync = energetic.L_Sync_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
-    // energetic.jet_L_rad = +energetic.jet_L_Sync;
-    // printf("5\n");
+    energetic.U_Synch = Uph_Sync(pt);
+    energetic.U_BLR = I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR);
+    energetic.U_DT=I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT);
+    energetic.U_CMB = I_nu_to_Uph(pt->nu_CMB, pt->I_nu_CMB, pt->NU_INT_MAX_CMB);
+    energetic.U_Disk = I_nu_to_Uph(pt->nu_Disk, pt->I_nu_Disk, pt->NU_INT_MAX_Disk);
+
+    energetic.U_Synch_DRF = Uph_Sync(pt) * pt->beam_obj * pt->beam_obj * pt->beam_obj * pt->beam_obj;
+    energetic.U_BLR_DRF = I_nu_to_Uph(pt->nu_BLR_disk_RF, pt->I_nu_BLR_disk_RF, pt->NU_INT_MAX_BLR);
+    energetic.U_DT_DRF = I_nu_to_Uph(pt->nu_DT_disk_RF, pt->I_nu_DT_disk_RF, pt->NU_INT_MAX_DT);
+    energetic.U_CMB_DRF = I_nu_to_Uph(pt->nu_CMB_disk_RF, pt->I_nu_CMB_disk_RF, pt->NU_INT_MAX_CMB);
+    energetic.U_Disk_DRF = I_nu_to_Uph(pt->nu_Disk_disk_RF, pt->I_nu_Disk_disk_RF, pt->NU_INT_MAX_Disk);
+
+    energetic.L_Sync_rf = PowerPhotons_blob_rest_frame (pt, pt->nu_Sync, pt->nuF_nu_Sync_obs, pt->NU_INT_STOP_Sync_SSC);
+    energetic.jet_L_Sync = energetic.L_Sync_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
+    energetic.jet_L_rad = +energetic.jet_L_Sync;
     
     // if (pt->do_SSC) 
     // {
@@ -446,7 +443,7 @@ struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
     //     energetic.L_pp_gamma_rf=0.;
     //     energetic.jet_L_pp_gamma=0.;
     // }
-    // printf("7\n");
+
     // if (pt->do_EC_Disk == 1 ) {
     //     energetic.L_EC_Disk_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_Disk, pt->nuF_nu_EC_Disk_obs, pt->NU_INT_STOP_EC_Disk);
     //     energetic.jet_L_EC_Disk = energetic.L_EC_Disk_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
