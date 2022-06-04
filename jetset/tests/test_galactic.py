@@ -11,8 +11,6 @@ class TestGalactic(TestBase):
         self.test_galactic_leptonic_unbeamed(plot=plot)
         self.test_galactic_hadronic_unbeamed(plot=plot)
         self.test_galactic_hadronic_beamed(plot=plot)
-        self.test_EC(plot=plot)
-        self.test_hadronic_jet(plot=plot)
 
     def test_galactic_leptonic_unbeamed(self,plot=False):
         from jetset.jet_model import GalacticUnbeamed
