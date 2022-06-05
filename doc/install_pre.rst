@@ -19,9 +19,9 @@ download the script https://github.com/andreatramacere/jetset-installer
 and run:
  .. code-block:: bash
 
-      python jetset_installer.py  1.2.1post2
+      python jetset_installer.py  1.2.2
 
-you can substitute `1.2.1post2` with the desired version 
+you can substitute `1.2.2` with the desired version 
 
 install  JetSeT github release using the wikipage instructions
 ----------------------------------------------------------
