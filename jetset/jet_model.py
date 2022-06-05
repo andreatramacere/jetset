@@ -39,7 +39,7 @@ else:
 
 
 
-__all__=['Jet','JetBase']
+__all__=['Jet','JetBase','GalacticBeamed','GalacticUnbeamed']
 
 
 class JetBase(Model):
@@ -792,6 +792,12 @@ class JetBase(Model):
                     self._del_spectral_component('Star', verbose=False)
                     self.EC_components_list.remove('Star')
 
+            if EC_component=='EC_Star':
+                if self.get_spectral_component_by_name('EC_Star', verbose=False) is not None:
+                    self._blob.do_EC_Satr=0
+                    self._del_spectral_component('EC_Star', verbose=False)
+                    self.EC_components_list.remove('EC_Star')
+
         self.del_par_from_dic(build_ExtFields_dic(EC_components_list,disk_type))
 
 
@@ -859,6 +865,14 @@ class JetBase(Model):
                     self.EC_components_list.append('Star')
 
 
+            if EC_component == 'EC_Star':
+                if self.get_spectral_component_by_name('Star',verbose=False) is None:
+                    self._add_spectral_component('Star',var_name='do_Star', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('Star')
+
+                if self.get_spectral_component_by_name('EC_Star',verbose=False) is None:
+                    self._add_spectral_component('EC_Star', var_name='do_EC_Star', state_dict=dict((('on', 1), ('off', 0))))
+                    self.EC_components_list.append('EC_Star')
 
 
             if EC_component=='EC_DT':

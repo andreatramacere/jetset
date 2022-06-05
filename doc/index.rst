@@ -13,7 +13,7 @@
 
 
 
-JetSeT is an open source  C/Python   framework  to reproduce radiative and accelerative processes acting in relativistic jets,
+JetSeT is an open source  C/Python   framework  to reproduce radiative and accelerative processes acting in relativistic jets, and unbeamed galactic objects,
 allowing to fit the numerical models to observed data. The main features of this framework are:
 
 * handling observed data: re-binning, definition of data sets, bindings to astropy tables and quantities definition of complex numerical radiative scenarios: Synchrotron Self-Compton (SSC), external Compton (EC) and EC against the CMB
@@ -41,7 +41,7 @@ allowing to fit the numerical models to observed data. The main features of this
    :caption: Documentation:
 
    installation <install.rst>
-   what's new in jetset 1.2.0  <new_release.rst>
+   what's new in jetset 1.2.2 and bug fixing  <new_release.rst>
    user guide <user_guide/user_guide.rst>
    code documentation (API) <api/modules.rst>
    bibliography <references.rst>
@@ -49,7 +49,7 @@ allowing to fit the numerical models to observed data. The main features of this
 
 
 .. nbgallery::
-    :caption: New/updated in v1.2.0:
+    :caption: New/updated in v 1.2.2-1.2.0:
     :name: rst-gallery
 
     user_guide/documentation_notebooks/depending_pars/depending_pars.rst
@@ -64,7 +64,7 @@ allowing to fit the numerical models to observed data. The main features of this
     user_guide/documentation_notebooks/sherpa_plugin/sherpa-plugin-sherpa-interface.rst
     user_guide/documentation_notebooks/sherpa_plugin/sherpa-plugin-jetset-interface.rst
     user_guide/documentation_notebooks/gammapy_plugin/gammapy_plugin.rst
-
+    user_guide/documentation_notebooks/galactic/galactic.rst
 Testers:
 
 I would like to thanks the most active testers:

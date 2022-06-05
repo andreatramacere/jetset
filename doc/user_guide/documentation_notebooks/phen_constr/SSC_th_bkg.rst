@@ -11,7 +11,7 @@ Phenomenological model constraining: SSC theory
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0
+    tested on jetset 1.2.2
 
 
 .. code:: ipython3
@@ -89,8 +89,9 @@ This section is based on the work presented in
 
     
     --------------------------------------------------------------------------------
-    jet model description
+    model description: 
     --------------------------------------------------------------------------------
+    type: Jet
     name: jet_leptonic  
     
     electrons distribution:
@@ -98,8 +99,9 @@ This section is based on the work presented in
      gamma energy grid size:  201
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
-     normalization  True
-     log-values  False
+     normalization:  True
+     log-values:  False
+     ratio of cold protons to relativistic electrons: 1.000000e-01
     
     radiative fields:
      seed photons grid size:  100
@@ -125,13 +127,14 @@ This section is based on the work presented in
 
 .. raw:: html
 
-    <i>Table length=11</i>
-    <table id="table140269273477072-942053" class="table-striped table-bordered table-condensed">
+    <i>Table length=12</i>
+    <table id="table140512283233296-295407" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>1.000000e-10</td><td>1.000000e+10</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>1.000000e+04</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -162,14 +165,14 @@ This section is based on the work presented in
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140269273477072-942053').dataTable()");
+        console.log("$('#table140512283233296-295407').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140269273477072-942053').dataTable({
+        $('#table140512283233296-295407').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -208,7 +211,7 @@ This section is based on the work presented in
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f92fc8924f0>
+    <matplotlib.legend.Legend at 0x7fcb90f53400>
 
 
 
@@ -227,7 +230,7 @@ This section is based on the work presented in
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f92fd518430>
+    <matplotlib.legend.Legend at 0x7fcb91bee190>
 
 
 
@@ -365,7 +368,7 @@ Synchrotron trend for :math:`\gamma_{min}`
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f92dfe5f220>
+    <matplotlib.legend.Legend at 0x7fcb73f85100>
 
 
 
@@ -480,7 +483,7 @@ Synchrotron trend for the low-energy spectral slope
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f92fd5a0580>
+    <matplotlib.legend.Legend at 0x7fcb925b59d0>
 
 
 
@@ -840,7 +843,7 @@ the curvature of the electron distribution (r)
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f92dff03070>
+    <matplotlib.legend.Legend at 0x7fcb73efeb20>
 
 
 
@@ -919,7 +922,7 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.collections.PathCollection at 0x7f92df17f550>
+    <matplotlib.collections.PathCollection at 0x7fcb91db2940>
 
 
 
@@ -946,7 +949,7 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f92df5c22e0>
+    <matplotlib.legend.Legend at 0x7fcb7596bc70>
 
 
 
@@ -976,7 +979,7 @@ Transition from TH to KN regime for the IC emission: changing the turnover energ
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7f92dff831c0>
+    <matplotlib.legend.Legend at 0x7fcb73ab0e50>
 
 
 

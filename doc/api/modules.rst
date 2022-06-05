@@ -14,6 +14,7 @@ In the following the package modules are listed.
    cosmo_tools    <cosmo_tools.rst>
    data_loader    <data_loader.rst>
    frame_converter    <frame_converter.rst>
+   gammapy_plugin    <gammapy_plugin.rst>
    jet_emitters    <jet_emitters.rst>
    jet_emitters_factory    <jet_emitters_factory.rst>
    jet_model    <jet_model.rst>
@@ -35,8 +36,10 @@ In the following the package modules are listed.
    poly_fit    <poly_fit.rst>
    poly_fit_tools    <poly_fit_tools.rst>
    sed_shaper    <sed_shaper.rst>
+   sherpa_plugin    <sherpa_plugin.rst>
    spectral_shapes    <spectral_shapes.rst>
    template_2Dmodel    <template_2Dmodel.rst>
    template_model    <template_model.rst>
    test_data_helper    <test_data_helper.rst>
    utils    <utils.rst>
+   version_notifier    <version_notifier.rst>

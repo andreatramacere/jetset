@@ -1,7 +1,10 @@
 What's new in version 1.2.2
 ===========================
 
-In the following are listed the main new features common to 1.2.0 - 1.2.2
+bug fixing 
+----------
+- hadronic pp: the grid for the equilibrium evolution was not starting from gmin=1, but from the lowest energy of the secondary
+- temporal evolution: in the light curves with crossing time, the `(1+z)` factor term was missing in the times column
 
 
 Introduction of a class for galactic objects (beamed and unbeamed) 
@@ -10,6 +13,18 @@ This class is useful for PWN, SNR, or jetted galactic objects
 It is still preliminary, and will be improved soon
 See this section of the user guide  :ref:`galactic_guide`
 
+
+quantile confidence range for MCMC plots 
+-----------------------------------------
+The MCMC plot method now accepts quantities for model confidence band eg:
+
+.. code-block:: python
+
+    mcmc.plot_model(sed_data=sed_data,fit_range=[1E11, 2E27],size=100,quantiles=[0.05,0.95])
+
+
+What's new in version 1.2.1
+---------------------------
 
 Introduction of depending pars
 -----------------------------------

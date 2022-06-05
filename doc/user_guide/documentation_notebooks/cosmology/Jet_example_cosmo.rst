@@ -19,7 +19,7 @@ passing a specifc cosmology model form astropy
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0
+    tested on jetset 1.2.2
 
 
 .. code:: ipython3
@@ -67,13 +67,6 @@ or you can set directly a luminosity distance in cm
 .. code:: ipython3
 
     c=Cosmo(DL_cm=1e28)
-
-
-.. parsed-literal::
-
-    using cosmo without z and only DL, should be used only for galactic objects!!
-    z will be fixed to zero
-
 
 .. code:: ipython3
 

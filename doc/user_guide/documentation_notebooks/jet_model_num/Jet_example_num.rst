@@ -11,7 +11,7 @@ Numerical setup
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0
+    tested on jetset 1.2.2
 
 
 Changing the grid size for the electron distribution
@@ -28,8 +28,9 @@ Changing the grid size for the electron distribution
 
     
     --------------------------------------------------------------------------------
-    jet model description
+    model description: 
     --------------------------------------------------------------------------------
+    type: Jet
     name: test  
     
     electrons distribution:
@@ -37,8 +38,9 @@ Changing the grid size for the electron distribution
      gamma energy grid size:  201
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
-     normalization  True
-     log-values  False
+     normalization:  True
+     log-values:  False
+     ratio of cold protons to relativistic electrons: 1.000000e-01
     
     radiative fields:
      seed photons grid size:  100
@@ -64,13 +66,14 @@ Changing the grid size for the electron distribution
 
 .. raw:: html
 
-    <i>Table length=11</i>
-    <table id="table140238419254528-534596" class="table-striped table-bordered table-condensed">
+    <i>Table length=12</i>
+    <table id="table140494627146288-90043" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>1.000000e-10</td><td>1.000000e+10</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>1.000000e+04</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -101,14 +104,14 @@ Changing the grid size for the electron distribution
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140238419254528-534596').dataTable()");
+        console.log("$('#table140494627146288-90043').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140238419254528-534596').dataTable({
+        $('#table140494627146288-90043').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -182,8 +185,9 @@ Changing the grid size for the IC process spectra
 
     
     --------------------------------------------------------------------------------
-    jet model description
+    model description: 
     --------------------------------------------------------------------------------
+    type: Jet
     name: test  
     
     electrons distribution:
@@ -191,8 +195,9 @@ Changing the grid size for the IC process spectra
      gamma energy grid size:  201
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
-     normalization  True
-     log-values  False
+     normalization:  True
+     log-values:  False
+     ratio of cold protons to relativistic electrons: 1.000000e-01
     
     radiative fields:
      seed photons grid size:  100
@@ -218,13 +223,14 @@ Changing the grid size for the IC process spectra
 
 .. raw:: html
 
-    <i>Table length=11</i>
-    <table id="table140238448376512-460445" class="table-striped table-bordered table-condensed">
+    <i>Table length=12</i>
+    <table id="table140494632922272-567950" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>1.000000e-10</td><td>1.000000e+10</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>1.000000e+04</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -255,14 +261,14 @@ Changing the grid size for the IC process spectra
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140238448376512-460445').dataTable()");
+        console.log("$('#table140494632922272-567950').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140238448376512-460445').dataTable({
+        $('#table140494632922272-567950').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -322,8 +328,9 @@ Changing the grid size for the seed photons
 
     
     --------------------------------------------------------------------------------
-    jet model description
+    model description: 
     --------------------------------------------------------------------------------
+    type: Jet
     name: test  
     
     electrons distribution:
@@ -331,8 +338,9 @@ Changing the grid size for the seed photons
      gamma energy grid size:  201
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
-     normalization  True
-     log-values  False
+     normalization:  True
+     log-values:  False
+     ratio of cold protons to relativistic electrons: 1.000000e-01
     
     radiative fields:
      seed photons grid size:  100
@@ -358,13 +366,14 @@ Changing the grid size for the seed photons
 
 .. raw:: html
 
-    <i>Table length=11</i>
-    <table id="table140238283875712-957274" class="table-striped table-bordered table-condensed">
+    <i>Table length=12</i>
+    <table id="table140494632881120-318368" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>1.000000e-10</td><td>1.000000e+10</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>1.000000e+04</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -395,14 +404,14 @@ Changing the grid size for the seed photons
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140238283875712-957274').dataTable()");
+        console.log("$('#table140494632881120-318368').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140238283875712-957274').dataTable({
+        $('#table140494632881120-318368').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -457,8 +466,9 @@ and this value can be changed using the method :meth:`.Jet.set_seed_nu_size`. In
 
     
     --------------------------------------------------------------------------------
-    jet model description
+    model description: 
     --------------------------------------------------------------------------------
+    type: Jet
     name: test  
     
     electrons distribution:
@@ -466,8 +476,9 @@ and this value can be changed using the method :meth:`.Jet.set_seed_nu_size`. In
      gamma energy grid size:  201
      gmin grid : 2.000000e+00
      gmax grid : 1.000000e+06
-     normalization  True
-     log-values  False
+     normalization:  True
+     log-values:  False
+     ratio of cold protons to relativistic electrons: 1.000000e-01
     
     radiative fields:
      seed photons grid size:  100
@@ -493,13 +504,14 @@ and this value can be changed using the method :meth:`.Jet.set_seed_nu_size`. In
 
 .. raw:: html
 
-    <i>Table length=11</i>
-    <table id="table140238442646928-336820" class="table-striped table-bordered table-condensed">
+    <i>Table length=12</i>
+    <table id="table140494148317728-815888" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.000000e-01</td><td>1.000000e-10</td><td>1.000000e+10</td><td>False</td><td>False</td></tr>
+    <tr><td>test</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+    <tr><td>test</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.000000e+01</td><td>1.000000e-04</td><td>1.000000e+04</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>z_cosm</td><td>redshift</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.000000e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -530,14 +542,14 @@ and this value can be changed using the method :meth:`.Jet.set_seed_nu_size`. In
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140238442646928-336820').dataTable()");
+        console.log("$('#table140494148317728-815888').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140238442646928-336820').dataTable({
+        $('#table140494148317728-815888').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
