@@ -28,3 +28,4 @@ tqdm
 jupyter
 ipython
 dill
+sherpa
