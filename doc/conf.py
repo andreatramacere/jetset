@@ -26,6 +26,8 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 autodoc_mock_imports = ["jetkernel"]
 autodoc_mock_imports.append('_jetkernel')
+autodoc_mock_imports.append('gammapy')
+autodoc_mock_imports.append('sherpa')
 #autodoc_mock_imports.append('jetset.utils')
 #autodoc_mock_imports.append('jetset.tests')
 
@@ -84,7 +86,13 @@ extensions = [
 
 #bibtex_bibfiles = ['refs.bib']
 #bibtex_bibfiles = ['references.bib']
-exclude_patterns = ['_build', '**.ipynb_checkpoints','../jetkernel/*','../jetset/jetkernel/*','documentation_notebooks','example_notebooks','slides']
+exclude_patterns = ['_build', 
+                    '**.ipynb_checkpoints',
+                    '../jetkernel/*',
+                    '../jetset/jetkernel/*',
+                    'documentation_notebooks',
+                    'example_notebooks',
+                    'slides']
 
 
 #sphinx_gallery_conf = {

@@ -13,7 +13,7 @@
 
 
 
-JetSeT is an open source  C/Python   framework  to reproduce radiative and accelerative processes acting in relativistic jets, and unbeamed galactic objects,
+JetSeT is an open source  C/Python   framework  to reproduce radiative and accelerative processes acting in relativistic jets, and galactic objects (beamed and unbeamed),
 allowing to fit the numerical models to observed data. The main features of this framework are:
 
 * handling observed data: re-binning, definition of data sets, bindings to astropy tables and quantities definition of complex numerical radiative scenarios: Synchrotron Self-Compton (SSC), external Compton (EC) and EC against the CMB

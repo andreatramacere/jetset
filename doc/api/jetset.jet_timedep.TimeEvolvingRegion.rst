@@ -19,7 +19,8 @@ TimeEvolvingRegion
    .. autosummary::
 
       ~TimeEvolvingRegion.build_cached_SEDs
-      ~TimeEvolvingRegion.eval_cross_time
+      ~TimeEvolvingRegion.eval_R_cross_time
+      ~TimeEvolvingRegion.eval_R_cross_time_no
       ~TimeEvolvingRegion.get_SED
       ~TimeEvolvingRegion.make_lc
       ~TimeEvolvingRegion.set_time
@@ -33,7 +34,8 @@ TimeEvolvingRegion
    .. rubric:: Methods Documentation
 
    .. automethod:: build_cached_SEDs
-   .. automethod:: eval_cross_time
+   .. automethod:: eval_R_cross_time
+   .. automethod:: eval_R_cross_time_no
    .. automethod:: get_SED
    .. automethod:: make_lc
    .. automethod:: set_time
