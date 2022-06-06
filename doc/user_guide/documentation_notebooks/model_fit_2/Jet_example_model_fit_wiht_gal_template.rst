@@ -2792,40 +2792,55 @@ the full set of free parameters will be used
 
 .. code:: ipython3
 
-    p=ms.plot_model(sed_data=sed_data,fit_range=[2E11, 2E28],quantiles=[0.05,0.95])
+    p=mcmc.plot_model(sed_data=sed_data,fit_range=[2E11, 2E28],quantiles=[0.05,0.95])
     p.setlim(y_min=1E-14,x_min=1E6,x_max=2E28)
 
 
-::
 
-
-    ---------------------------------------------------------------------------
-
-    NameError                                 Traceback (most recent call last)
-
-    <ipython-input-36-47716ef9ce44> in <module>
-    ----> 1 p=ms.plot_model(sed_data=sed_data,fit_range=[2E11, 2E28],quantiles=[0.05,0.95])
-          2 p.setlim(y_min=1E-14,x_min=1E6,x_max=2E28)
-
-
-    NameError: name 'ms' is not defined
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_57_0.png
 
 
 .. code:: ipython3
 
     f=mcmc.plot_chain('s',log_plot=False)
 
+
+
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_58_0.png
+
+
 .. code:: ipython3
 
     f=mcmc.corner_plot()
+
+
+
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_59_0.png
+
 
 .. code:: ipython3
 
     mcmc.get_par('N')
 
+
+
+
+.. parsed-literal::
+
+    (array([23.30777532, 21.06432533, 23.84958056, ..., 22.85071713,
+            22.5372472 , 23.2611265 ]),
+     0)
+
+
+
 .. code:: ipython3
 
     f=mcmc.plot_par('beam_obj')
+
+
+
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_61_0.png
+
 
 Save and reuse MCMC
 -------------------
@@ -2852,17 +2867,37 @@ Save and reuse MCMC
     p=ms.plot_model(sed_data=sed_data,fit_range=[2E11, 2E28],size=100)
     p.setlim(y_min=1E-14,x_min=1E6,x_max=2E28)
 
+
+
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_65_0.png
+
+
 .. code:: ipython3
 
     p=ms.plot_model(sed_data=sed_data,fit_range=[2E11, 2E28],quantiles=[0.05,0.95])
     p.setlim(y_min=1E-14,x_min=1E6,x_max=2E28)
+
+
+
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_66_0.png
+
 
 .. code:: ipython3
 
     f=ms.plot_par('beam_obj',log_plot=False)
 
 
+
+
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_67_0.png
+
+
 .. code:: ipython3
 
     f=ms.plot_chain('s',log_plot=False)
+
+
+
+.. image:: Jet_example_model_fit_wiht_gal_template_files/Jet_example_model_fit_wiht_gal_template_68_0.png
+
 
