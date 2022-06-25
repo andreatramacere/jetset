@@ -7,6 +7,7 @@ import pkgutil
 import os
 #import json
 from .utils import get_info
+from .version_notifier import run_version_checking
 
 from . import jetkernel
 
@@ -40,4 +41,4 @@ for importer, modname, ispkg in pkgutil.walk_packages(path=[pkg_dir],
 
 
 data_dir = os.path.dirname(__file__)+'/data'
-
+#run_version_checking()

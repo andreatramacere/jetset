@@ -25,7 +25,7 @@ __all__=['Model','MultiplicativeModel']
 class Model(object):
     
     
-    def __init__(self,name='no-name',nu_size=200,model_type='base_model',scale='lin-lin',cosmo=None,nu_min=None,nu_max=None):
+    def __init__(self,name='no_name',nu_size=200,model_type='base_model',scale='lin-lin',cosmo=None,nu_min=None,nu_max=None):
         
         self.model_type=model_type
         
@@ -353,7 +353,7 @@ class Model(object):
             except:
                 raise RuntimeError('the parameter expression is not valid')
 
-    def make_dependent_par(self, par, depends_on, par_expr):
+    def make_dependent_par(self, par, depends_on, par_expr,verbose=True):
         master_par_list = depends_on
 
         dep_par=self.parameters.get_par_by_name(par)
@@ -382,7 +382,8 @@ class Model(object):
             _par_expr=par_expr
         else:
             _par_expr=inspect.getsource(par_expr)
-        print('==> par', dep_par.name, 'is now depending on', master_par_list, f'according to expr:{dep_par.name} =\n{_par_expr}'.format(dep_par.name,_par_expr))
+        if verbose is True:
+            print('==> par', dep_par.name, 'is now depending on', master_par_list, f'according to expr:{dep_par.name} =\n{_par_expr}'.format(dep_par.name,_par_expr))
 
     def add_user_par(self,name,val,units='',val_min=None,val_max=None):
         self.parameters.add_par(ModelParameter(name=name,units=units,val=val,val_min=val_min,val_max=val_max,par_type='user_defined'))

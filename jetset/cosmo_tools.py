@@ -9,7 +9,7 @@ __all__=['Cosmo']
 class  Cosmo (object):
 
 
-    def __init__(self,astropy_cosmo=None,DL_cm=None):
+    def __init__(self,astropy_cosmo=None,DL_cm=None,verbose=False):
 
         _c = None
 
@@ -27,8 +27,9 @@ class  Cosmo (object):
         elif astropy_cosmo is None and DL_cm is not None:
 
             _c=None
-            print("using cosmo without z and only DL, should be used only for galactic objects!!")
-            print("z will be fixed to zero")
+            if verbose is True:
+                print("using cosmo without z and only DL, should be used only for galactic objects!!")
+                print("z will be fixed to zero")
         else:
             raise RuntimeError('Either you provide an astropy comsology objet, or luminosity distance in cm, or nothing')
 

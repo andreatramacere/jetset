@@ -212,6 +212,8 @@ class ModelParameter(object):
 
         self._val = Value(val=_v, islog=_l,units=_units)
 
+        self.hidden=False
+        
         for kw in self.allowed_keywords.keys():
             if kw == 'val':
                 pass
@@ -1038,6 +1040,8 @@ class ModelParameterArray(object):
                 except:
                     append= False
 
+            if par.hidden is True:
+                append=False
 
             if append is True:
                 if self.model is not None:
@@ -1141,6 +1145,9 @@ class ModelParameterArray(object):
                     append=True
             else:
                 append = True
+
+            if par.hidden is True:
+                append=False
 
             if type(par.val_start) is str:
                 try:
@@ -1425,5 +1432,7 @@ class ModelParameterArray(object):
 
     def _decode_pars(self,_par_dict):
         for p_name in _par_dict.keys():
-            self.set(p_name,**_par_dict[p_name])
+            p=self.get_par_by_name(p_name)
+            if p._is_dependent is False:
+                self.set(p_name,**_par_dict[p_name])
 

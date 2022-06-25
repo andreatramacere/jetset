@@ -326,7 +326,7 @@ class McmcSampler(object):
         ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1)
         return f
 
-    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False):
+    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None):
 
         if sed_data is None:
             sed_data=self.sed_data
@@ -361,11 +361,17 @@ class McmcSampler(object):
 
         if density is True:
             y=y/x
-        y_min=np.amin(y, axis=0)
-        y_max=np.amax(y, axis=0)
-        msk = y_min > np.log10(self.model.flux_plot_lim)
-        p.sedplot.fill_between(x[msk],y_max[msk],y_min[msk],color='gray',alpha=0.3,label='mcmc model range')
-
+        
+        if quantiles is None:
+            y_min=np.amin(y, axis=0)
+            y_max=np.amax(y, axis=0)
+            msk = y_min > self.model.flux_plot_lim
+            l=p.sedplot.fill_between(x[msk],y_max[msk],y_min[msk],color='gray',alpha=0.3,label='mcmc model range')
+        else:
+            y_min,y_max=np.quantile(y, quantiles, axis=0)
+            msk = y_min > self.model.flux_plot_lim
+            l=p.sedplot.fill_between(x[msk],y_max[msk],y_min[msk],color='gray',alpha=0.3,label='mcmc model conf %s'%quantiles)
+        p.lines_model_list.append(l)
         self.reset_to_best_fit()
         self.model.eval(fill_SED=True)
 

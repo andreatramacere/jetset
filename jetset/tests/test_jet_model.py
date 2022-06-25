@@ -27,25 +27,25 @@ class TestJets(TestBase):
         j.show_model()
 
         j.eval()
-        #print('--------> j.energetic_report')
-        #j.energetic_report(verbose=False)
-        #assert('U_p_cold' not in j.energetic_dict.keys())
-        #np.testing.assert_allclose(j.energetic_dict['U_p'],j.emitters_distribution.eval_U(),rtol=1E-2)
+        j.energetic_report(verbose=False)
+        assert('U_p_cold' not in j.energetic_dict.keys())
+        np.testing.assert_allclose(j.energetic_dict['U_p'],j.emitters_distribution.eval_U(),rtol=1E-2)
 
         sum1=j.spectral_components.Sum.SED.nuFnu
         if plot is True:
-            j.plot_model()
+           j.plot_model()
+        
         j.save_model('test_jet_hadronic.pkl')
+        
+        
         j_new = Jet.load_model('test_jet_hadronic.pkl')
         j_new.eval()
         sum2 = j_new.spectral_components.Sum.SED.nuFnu
         np.testing.assert_allclose(sum2,sum1, rtol=1E-5)
-        #print('-------->  j_new.energetic_report')
-        #j_new.energetic_report(verbose=False)
-        #assert('U_p_cold' not in j.energetic_dict.keys())   
-        #np.testing.assert_allclose(j.energetic_dict['U_p'],j.emitters_distribution.eval_U(),rtol=1E-2)
+        j_new.energetic_report(verbose=False)
+        assert('U_p_cold' not in j_new.energetic_dict.keys())   
+        np.testing.assert_allclose(j_new.energetic_dict['U_p'],j_new.emitters_distribution.eval_U(),rtol=1E-2)
         
-
     def test_build_bessel(self,plot=False):
         print('--------> test_build_bessel',plot)
         from jetset.jet_model import Jet
@@ -56,8 +56,6 @@ class TestJets(TestBase):
         from jetset.jet_model import Jet
         j=Jet()
         j.eval()
-       
-
 
         sum1 = j.spectral_components.Sum.SED.nuFnu
         if plot is True:
@@ -67,16 +65,19 @@ class TestJets(TestBase):
             j.emitters_distribution.plot3p()
             j.emitters_distribution.plot3p(energy_unit='eV')
             j.emitters_distribution.plot3p(energy_unit='erg')
+
+        j.energetic_report()
+        assert('U_p_target' not in j.energetic_dict.keys())
+        np.testing.assert_allclose(j.energetic_dict['U_e'],j.emitters_distribution.eval_U(),rtol=1E-2)
         j.save_model('test_jet.pkl')
+        
         j_new=Jet.load_model('test_jet.pkl')
         j_new.eval()
         sum2 = j_new.spectral_components.Sum.SED.nuFnu
         np.testing.assert_allclose(sum2, sum1, rtol=1E-5)
-        
-        j=j_new
-        j.energetic_report()
-        assert('U_p_target' not in j.energetic_dict.keys())
-        np.testing.assert_allclose(j.energetic_dict['U_e'],j.emitters_distribution.eval_U(),rtol=1E-2)
+        j_new.energetic_report()
+        assert('U_p_target' not in j_new.energetic_dict.keys())
+        np.testing.assert_allclose(j_new.energetic_dict['U_e'],j_new.emitters_distribution.eval_U(),rtol=1E-2)
 
     def test_set_N_from_nuFnu(self,plot=False):
         print('--------> test_set_N_from_nuFnu',plot)

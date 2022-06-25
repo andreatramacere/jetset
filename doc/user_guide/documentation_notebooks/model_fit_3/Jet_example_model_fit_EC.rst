@@ -176,7 +176,7 @@ luminosity and temperature
 .. raw:: html
 
     <i>Table length=5</i>
-    <table id="table140377071359888-703608" class="table-striped table-bordered table-condensed">
+    <table id="table140499512350752-895753" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogParabolaEp</td><td>b</td><td>-2.984653e-01</td><td>-2.984653e-01</td><td>5.631694e-02</td><td>--</td><td>-1.527892e-01</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogParabolaEp</td><td>Ep</td><td>1.190850e+01</td><td>1.190850e+01</td><td>2.238841e-01</td><td>--</td><td>1.298338e+01</td><td>0.000000e+00</td><td>3.000000e+01</td><td>False</td></tr>
@@ -206,14 +206,14 @@ luminosity and temperature
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140377071359888-703608').dataTable()");
+        console.log("$('#table140499512350752-895753').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140377071359888-703608').dataTable({
+        $('#table140499512350752-895753').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -254,7 +254,7 @@ luminosity and temperature
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table140377092391792-472312" class="table-striped table-bordered table-condensed">
+    <table id="table140499508456656-341893" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-1.128855e-01</td><td>-1.128855e-01</td><td>1.240849e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-1.065003e-02</td><td>-1.065003e-02</td><td>2.393721e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -283,14 +283,14 @@ luminosity and temperature
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140377092391792-472312').dataTable()");
+        console.log("$('#table140499508456656-341893').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140377092391792-472312').dataTable({
+        $('#table140499508456656-341893').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -346,12 +346,13 @@ read the section :ref:`jet_physical_guide_EC`  for more information regarding th
 
 .. raw:: html
 
-    <i>Table length=19</i>
-    <table id="table140377057313408-260650" class="table-striped table-bordered table-condensed">
+    <i>Table length=20</i>
+    <table id="table140499539319056-633643" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>2.845488e+17</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.500000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>5.930000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.071498e+01</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
@@ -391,14 +392,14 @@ read the section :ref:`jet_physical_guide_EC`  for more information regarding th
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140377057313408-260650').dataTable()");
+        console.log("$('#table140499539319056-633643').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140377057313408-260650').dataTable({
+        $('#table140499539319056-633643').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -455,8 +456,8 @@ EC model fit
 
 .. raw:: html
 
-    <i>Table length=19</i>
-    <table id="table140377045339200-197714" class="table-striped table-bordered table-condensed">
+    <i>Table length=20</i>
+    <table id="table140499505886544-473084" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>1.071498e+01</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.601124e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -475,6 +476,7 @@ EC model fit
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>2.845488e+17</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.500000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>5.930000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -500,14 +502,14 @@ EC model fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140377045339200-197714').dataTable()");
+        console.log("$('#table140499505886544-473084').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140377045339200-197714').dataTable({
+        $('#table140499505886544-473084').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -613,8 +615,8 @@ EC model fit
 
 .. raw:: html
 
-    <i>Table length=19</i>
-    <table id="table140377067785472-591660" class="table-striped table-bordered table-condensed">
+    <i>Table length=20</i>
+    <table id="table140499532139104-175191" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.297117e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>2.822712e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -633,6 +635,7 @@ EC model fit
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>4.119800e+17</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>9.984351e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.277432e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.071574e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>5.930000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -658,14 +661,14 @@ EC model fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140377067785472-591660').dataTable()");
+        console.log("$('#table140499532139104-175191').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140377067785472-591660').dataTable({
+        $('#table140499532139104-175191').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -702,8 +705,8 @@ EC model fit
 
 .. raw:: html
 
-    <i>Table length=19</i>
-    <table id="table140377079496464-101377" class="table-striped table-bordered table-condensed">
+    <i>Table length=20</i>
+    <table id="table140499528631824-160516" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>4.297117e+00</td><td>4.297117e+00</td><td>3.882204e+01</td><td>--</td><td>1.071498e+01</td><td>2.000000e+00</td><td>1.000000e+02</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>2.822712e+04</td><td>2.822712e+04</td><td>6.287440e+04</td><td>--</td><td>1.601124e+04</td><td>1.000000e+03</td><td>1.000000e+06</td><td>False</td></tr>
@@ -722,6 +725,7 @@ EC model fit
     <tr><td>jet_leptonic</td><td>R</td><td>4.119800e+17</td><td>4.119800e+17</td><td>1.157586e+18</td><td>--</td><td>2.845488e+17</td><td>1.000000e+16</td><td>5.000000e+18</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>9.984351e+17</td><td>9.984351e+17</td><td>1.675663e+22</td><td>--</td><td>1.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>B</td><td>1.277432e-01</td><td>1.277432e-01</td><td>4.863055e-01</td><td>--</td><td>1.500000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>NH_cold_to_rel_e</td><td>1.000000e-01</td><td>--</td><td>--</td><td>--</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>1.071574e+01</td><td>1.071574e+01</td><td>3.382188e+01</td><td>--</td><td>2.500000e+01</td><td>1.000000e-04</td><td>--</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>5.930000e-01</td><td>--</td><td>--</td><td>--</td><td>5.930000e-01</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -747,14 +751,14 @@ EC model fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140377079496464-101377').dataTable()");
+        console.log("$('#table140499528631824-160516').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140377079496464-101377').dataTable({
+        $('#table140499528631824-160516').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -840,8 +844,8 @@ EC model fit
 
 .. raw:: html
 
-    <i>Table length=19</i>
-    <table id="table140376602092112-344415" class="table-striped table-bordered table-condensed">
+    <i>Table length=20</i>
+    <table id="table140499057410736-458586" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.295675e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.002469e+05</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -860,6 +864,7 @@ EC model fit
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>4.109322e+17</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>9.984351e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.275298e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>beaming</td><td>lorentz-factor*</td><td>1.069429e+01</td><td>1.000000e-04</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>redshift</td><td></td><td>5.930000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -885,14 +890,14 @@ EC model fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140376602092112-344415').dataTable()");
+        console.log("$('#table140499057410736-458586').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140376602092112-344415').dataTable({
+        $('#table140499057410736-458586').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1334,8 +1339,8 @@ EC model fit
 
 .. raw:: html
 
-    <i>Table length=19</i>
-    <table id="table140376602206608-307236" class="table-striped table-bordered table-condensed">
+    <i>Table length=20</i>
+    <table id="table140499057379216-357318" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>4.295675e+00</td><td>4.295675e+00</td><td>6.400531e-07</td><td>--</td><td>4.297117e+00</td><td>2.000000e+00</td><td>1.000000e+02</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>1.002469e+05</td><td>1.002469e+05</td><td>1.487448e-02</td><td>--</td><td>1.000000e+05</td><td>1.000000e+03</td><td>1.000000e+06</td><td>False</td></tr>
@@ -1354,6 +1359,7 @@ EC model fit
     <tr><td>jet_leptonic</td><td>R</td><td>4.109322e+17</td><td>4.109322e+17</td><td>2.660756e+11</td><td>--</td><td>4.119800e+17</td><td>1.000000e+16</td><td>5.000000e+18</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>9.984351e+17</td><td>--</td><td>--</td><td>--</td><td>9.984351e+17</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>B</td><td>1.275298e-01</td><td>1.275298e-01</td><td>2.319318e-08</td><td>--</td><td>1.277432e-01</td><td>0.000000e+00</td><td>--</td><td>False</td></tr>
+    <tr><td>jet_leptonic</td><td>NH_cold_to_rel_e</td><td>1.000000e-01</td><td>--</td><td>--</td><td>--</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     <tr><td>jet_leptonic</td><td>beam_obj</td><td>1.069429e+01</td><td>1.069429e+01</td><td>4.007054e-08</td><td>--</td><td>1.071574e+01</td><td>1.000000e-04</td><td>--</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>z_cosm</td><td>5.930000e-01</td><td>--</td><td>--</td><td>--</td><td>5.930000e-01</td><td>0.000000e+00</td><td>--</td><td>True</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
@@ -1379,14 +1385,14 @@ EC model fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140376602206608-307236').dataTable()");
+        console.log("$('#table140499057379216-357318').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140376602206608-307236').dataTable({
+        $('#table140499057379216-357318').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1427,15 +1433,13 @@ EC model fit
 
 .. raw:: html
 
-    <i>Table length=37</i>
-    <table id="table140376582213984-793546" class="table-striped table-bordered table-condensed">
+    <i>Table length=34</i>
+    <table id="table140499039233456-617979" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
-    <tr><td>BulkLorentzFactor</td><td></td><td></td><td>1.069429e+01</td></tr>
+    <tr><td>BulkLorentzFactor</td><td>jet-bulk-factor</td><td></td><td>1.069429e+01</td></tr>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.829260e-03</td></tr>
     <tr><td>U_p_cold</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>3.394356e-03</td></tr>
     <tr><td>U_B</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>6.471177e-04</td></tr>
-    <tr><td>U_p</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_p_target</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_Synch</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.927297e-04</td></tr>
     <tr><td>U_Synch_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>2.520901e+00</td></tr>
     <tr><td>U_Disk</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.331209e-04</td></tr>
@@ -1446,13 +1450,12 @@ EC model fit
     <tr><td>U_BLR_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>8.489284e-11</td></tr>
     <tr><td>U_DT_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>7.530747e-05</td></tr>
     <tr><td>U_CMB_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>L_Sync_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>4.051976e+42</td></tr>
-    <tr><td>L_SSC_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>9.051115e+41</td></tr>
-    <tr><td>L_EC_Disk_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>L_EC_BLR_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>1.863765e+35</td></tr>
-    <tr><td>L_EC_DT_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>1.030114e+44</td></tr>
-    <tr><td>L_EC_CMB_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>L_pp_gamma_rf</td><td>Lum. blob rest. frme.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>L_Sync_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>4.051976e+42</td></tr>
+    <tr><td>L_SSC_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>9.051115e+41</td></tr>
+    <tr><td>L_EC_Disk_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>L_EC_BLR_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>1.863765e+35</td></tr>
+    <tr><td>L_EC_DT_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>1.030114e+44</td></tr>
+    <tr><td>L_EC_CMB_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_Sync</td><td>jet Lum.</td><td>erg / s</td><td>1.158539e+44</td></tr>
     <tr><td>jet_L_SSC</td><td>jet Lum.</td><td>erg / s</td><td>2.587889e+43</td></tr>
     <tr><td>jet_L_EC_Disk</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
@@ -1466,7 +1469,7 @@ EC model fit
     <tr><td>jet_L_e</td><td>jet Lum.</td><td>erg / s</td><td>3.312706e+45</td></tr>
     <tr><td>jet_L_B</td><td>jet Lum.</td><td>erg / s</td><td>1.171901e+45</td></tr>
     <tr><td>jet_L_p_cold</td><td>jet Lum.</td><td>erg / s</td><td>6.147025e+45</td></tr>
-    <tr><td>jet_L_p</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e-01</td></tr>
     </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
     .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
     display: inline-block; margin-right: 1em; }
@@ -1490,14 +1493,14 @@ EC model fit
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140376582213984-793546').dataTable()");
+        console.log("$('#table140499039233456-617979').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140376582213984-793546').dataTable({
+        $('#table140499039233456-617979').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1583,7 +1586,7 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    mcmc run done, with 1 threads took 267.81 seconds
+    mcmc run done, with 1 threads took 325.05 seconds
 
 
 .. code:: ipython3
@@ -1593,14 +1596,14 @@ the full set of free parameters will be used
 
 .. parsed-literal::
 
-    0.5153125000000001
+    0.5132812499999999
 
 
 .. code:: ipython3
 
     mcmc.model.set_nu_grid(1E6,1E30,200)
     
-    p=mcmc.plot_model(sed_data=sed_data,fit_range=[1E11, 1E27],size=50)
+    p=mcmc.plot_model(sed_data=sed_data,fit_range=[1E11, 1E27],size=100)
     p.setlim(y_min=1E-13,x_min=1E6,x_max=2E28)
 
 
@@ -1610,7 +1613,8 @@ the full set of free parameters will be used
 
 .. code:: ipython3
 
-    f=mcmc.corner_plot()
+    p=mcmc.plot_model(sed_data=sed_data,fit_range=[1E11, 1E27],size=100,quantiles=[0.05,0.95])
+    p.setlim(y_min=1E-13,x_min=1E6,x_max=2E28)
 
 
 
@@ -1619,11 +1623,25 @@ the full set of free parameters will be used
 
 .. code:: ipython3
 
+    f=mcmc.corner_plot()
+
+
+.. parsed-literal::
+
+    WARNING:root:Too few points to create valid contours
+
+
+
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_41_1.png
+
+
+.. code:: ipython3
+
     f=mcmc.plot_chain('p_1',log_plot=False)
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_41_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_42_0.png
 
 
 Save and reuse MCMC
@@ -1648,12 +1666,22 @@ Save and reuse MCMC
 
     ms.model.set_nu_grid(1E6,1E30,200)
     
-    p=ms.plot_model(sed_data=sed_data,fit_range=[1E11, 1E27],size=50)
+    p=ms.plot_model(sed_data=sed_data,fit_range=[1E11, 1E27],size=100)
     p.setlim(y_min=1E-13,x_min=1E6,x_max=2E28)
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_45_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_46_0.png
+
+
+.. code:: ipython3
+
+    p=ms.plot_model(sed_data=sed_data,fit_range=[1E11, 1E27],size=100,quantiles=[0.05,0.95])
+    p.setlim(y_min=1E-13,x_min=1E6,x_max=2E28)
+
+
+
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_47_0.png
 
 
 .. code:: ipython3
@@ -1663,7 +1691,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_46_0.png
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_48_0.png
 
 
 .. code:: ipython3
@@ -1671,7 +1699,12 @@ Save and reuse MCMC
     f=ms.corner_plot()
 
 
+.. parsed-literal::
 
-.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_47_0.png
+    WARNING:root:Too few points to create valid contours
+
+
+
+.. image:: Jet_example_model_fit_EC_files/Jet_example_model_fit_EC_49_1.png
 
 

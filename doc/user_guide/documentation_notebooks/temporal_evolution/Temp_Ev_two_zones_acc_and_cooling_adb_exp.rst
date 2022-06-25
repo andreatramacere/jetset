@@ -22,7 +22,7 @@ Temporal evolution, two zones, cooling+acc+adb exp
 
 .. parsed-literal::
 
-    tested on jetset 1.2.0
+    tested on jetset 1.2.2
 
 
 In this tutorial I show how to perform a full acc+radiative+adiabatic expansion simulation. To have full understanding of the analysis presented in this tutorial, it is advised to read the paper Tramacere et al (2022) [Tramacere2022]_.
@@ -57,7 +57,7 @@ region under the effect of radiative plus adiabatic cooling
 .. raw:: html
 
     <i>Table length=29</i>
-    <table id="table140554507096464-201602" class="table-striped table-bordered table-condensed">
+    <table id="table140664999319968-223370" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>5.000000e+01</td><td>s</td><td>0.00029979245799999996</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -111,14 +111,14 @@ region under the effect of radiative plus adiabatic cooling
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140554507096464-201602').dataTable()");
+        console.log("$('#table140664999319968-223370').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140554507096464-201602').dataTable({
+        $('#table140664999319968-223370').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -142,7 +142,7 @@ region under the effect of radiative plus adiabatic cooling
 .. raw:: html
 
     <i>Table length=30</i>
-    <table id="table140554507054864-710953" class="table-striped table-bordered table-condensed">
+    <table id="table140665002109824-418325" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -197,14 +197,14 @@ region under the effect of radiative plus adiabatic cooling
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140554507054864-710953').dataTable()");
+        console.log("$('#table140665002109824-418325').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140554507054864-710953').dataTable({
+        $('#table140665002109824-418325').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -228,7 +228,7 @@ the next version of the documentation
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotTempEvDiagram at 0x7fd565768df0>
+    <jetset.plot_sedfit.PlotTempEvDiagram at 0x7fef1f7baf10>
 
 
 
@@ -463,7 +463,7 @@ paramters
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140554180947776-821342" class="table-striped table-bordered table-condensed">
+    <table id="table140664695788304-842103" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>1.000008e+03</td><td>s</td><td>0.005995894232556255</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -500,14 +500,14 @@ paramters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140554180947776-821342').dataTable()");
+        console.log("$('#table140664695788304-842103').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140554180947776-821342').dataTable({
+        $('#table140664695788304-842103').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -531,7 +531,7 @@ paramters
 .. raw:: html
 
     <i>Table length=17</i>
-    <table id="table140554373347360-555877" class="table-striped table-bordered table-condensed">
+    <table id="table140665001468928-836938" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.611112e+07</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -573,14 +573,14 @@ paramters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140554373347360-555877').dataTable()");
+        console.log("$('#table140665001468928-836938').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140554373347360-555877').dataTable({
+        $('#table140665001468928-836938').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -601,7 +601,7 @@ paramters
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotTempEvDiagram at 0x7fd5528b1220>
+    <jetset.plot_sedfit.PlotTempEvDiagram at 0x7fef0d4593a0>
 
 
 
@@ -616,8 +616,8 @@ particle already injected and evolved in the radiative region of the
 setting ``cache_SEDs_rad=True`` will generate and cache all the SED at
 any time of the ``NUM_SET``. **This will increase the computational time
 during the run. Anyhow, will speed up the computation of SEDs and light
-curves. Moreover, these SEDs will be saved in the model, and read if you
-will reload the model in the future**.
+curves. Moreover, these SEDs will be saved in the model, and will be
+read if once you will load the model in the future**.
 
 .. code:: ipython3
 
@@ -686,7 +686,7 @@ adiabatic expansion simulations, for both the radio and gamma
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x7fd52a6a4c40>
+    <matplotlib.legend.Legend at 0x7feee3d7a2e0>
 
 
 

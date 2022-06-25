@@ -121,7 +121,7 @@ class TestTempEv(TestBase):
         if plot is True:
             p=temp_ev_acc_1.plot_tempev_model(region='rad',sed_data=None, use_cached = True)
         
-        lx=temp_ev_acc_1.rad_region.make_lc(nu1=1E17,nu2=1E18,name='X',eval_cross_time=False,delta_t_out=100,use_cached=True,frame='obs')
+        lx=temp_ev_acc_1.rad_region.make_lc(nu1=1E17,nu2=1E18,name='X',eval_cross_time=True,delta_t_out=100,use_cached=True,frame='obs')
 
         if plot is True:
             plt.plot(lx['time'],lx['flux'])

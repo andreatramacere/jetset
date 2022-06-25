@@ -10,7 +10,7 @@ but before I suggest to through the tutorials below. You can also run the quick 
  :target: https://mybinder.org/v2/gh/andreatramacere/jetset/master
 
 .. note::
-   Items with the  *New (v1.2.0)*  flag refer to new api or improved features for  v1.2.0, and it is warmly advised to read the section also for experienced users
+   Items with the  *New (v1.2.2)*  flag refer to new api or improved features for  v1.2.2, and it is warmly advised to read the section also for experienced users
 
 .. toctree::
    :maxdepth: 2

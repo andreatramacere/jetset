@@ -387,7 +387,7 @@ double I_nu_to_Uph(double * nu, double * I_nu, unsigned int NU_INT_STOP) {
 // Energetic output
 //=========================================================================================
 
-struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
+struct jet_energetic EnergeticOutput(struct blob * pt) {
     double lum_factor;
     //double L_rad, L_Sync, L_SSC, L_EC_Disk,L_EC_BLR, L_EC_DT, L_PP;
     //double L_kin, L_tot, L_e, L_B, L_p;
@@ -395,11 +395,9 @@ struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
     //char f_Energetic[static_file_name_max_legth];
     //FILE *fp_Energetic;
 
-
     energetic.U_B= pt->UB;
     energetic.U_e= pt->U_e;
-   
-    
+    energetic.jet_L_rad=0.;
 
     energetic.U_Synch = Uph_Sync(pt);
     energetic.U_BLR = I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR);
@@ -416,7 +414,6 @@ struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
     energetic.L_Sync_rf = PowerPhotons_blob_rest_frame (pt, pt->nu_Sync, pt->nuF_nu_Sync_obs, pt->NU_INT_STOP_Sync_SSC);
     energetic.jet_L_Sync = energetic.L_Sync_rf * 0.25 * pt->BulkFactor * pt->BulkFactor;
     energetic.jet_L_rad = +energetic.jet_L_Sync;
-
     
     if (pt->do_SSC) 
     {
@@ -429,22 +426,23 @@ struct jet_energetic EnergeticOutput(struct blob * pt,int write_file) {
         energetic.L_SSC_rf=0;
         energetic.jet_L_SSC=0;
     }
+
     if (strcmp(pt->PARTICLE, "protons") == 0) {
         energetic.U_p_target = pt->NH_pp  * MPC2;
         energetic.U_p = pt->U_p;
         energetic.L_pp_gamma_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_pp_gamma, pt->nuFnu_pp_gamma_obs, pt->NU_INT_STOP_PP_GAMMA);
         energetic.jet_L_pp_gamma = energetic.L_pp_gamma_rf* 0.25 * pt->BulkFactor * pt->BulkFactor;
         energetic.jet_L_rad += energetic.jet_L_pp_gamma;
+        energetic.U_p_cold = 0.;
     }
     else
     {
-        energetic.U_p_cold = pt->N * 0.1 * MPC2;
+        energetic.U_p_cold = pt->N * pt->NH_cold_to_rel_e * MPC2;
         energetic.U_p = 0.;
         energetic.U_p_target = 0.;
-        energetic.L_pp_gamma_rf=0;
-        energetic.jet_L_pp_gamma=0;
+        energetic.L_pp_gamma_rf=0.;
+        energetic.jet_L_pp_gamma=0.;
     }
-
 
     if (pt->do_EC_Disk == 1 ) {
         energetic.L_EC_Disk_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_Disk, pt->nuF_nu_EC_Disk_obs, pt->NU_INT_STOP_EC_Disk);

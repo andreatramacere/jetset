@@ -685,6 +685,7 @@ struct blob {
     double N_tot_p_Sferic;
     double N;
     double N_e_pp, N_p, N_e;
+    double NH_cold_to_rel_e;
     double N_0,N_0p,N_0e; /* costante di normalizzazione per distrib elettr staz */
     double gmin;
     double gmax;
@@ -1028,7 +1029,7 @@ void FindEpSp(double * nu_blob, double * nuFnu_obs, unsigned int NU_INT_MAX, str
         double * nuLnu_peak_blob);
 
 
-struct jet_energetic EnergeticOutput(struct blob *pt, int write_file);
+struct jet_energetic EnergeticOutput(struct blob *pt);
 
 void EvalU_e(struct blob *pt);
 void EvalU_p(struct blob *pt); 
