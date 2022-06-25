@@ -109,9 +109,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==1.12.0
+        run: python -m pip install cibuildwheel==1.11.1
 
-      - name: 'pip build sdist'
+      - name: 'pip build'
         run: |
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
           python setup.py clean
@@ -129,20 +129,12 @@ jobs:
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
       
 
-
-      
       - name: 'pip build install wheel'
-        - uses: pypa/cibuildwheel@v1.12.0
-      
-      - name: 'upload artifacts'
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ./wheelhouse/*.whl
-        #run: |
-        #  pip uninstall --yes jetset
-        #  python setup.py clean 
-        #  python setup.py  bdist_wheel 
-        #  pip install dist/*.whl
+        run: |
+          pip uninstall --yes jetset
+          python setup.py clean 
+          python setup.py  bdist_wheel 
+          pip install dist/*.whl
 
 
       - name: 'test'
@@ -178,4 +170,33 @@ jobs:
       #    name: jetset-${{ env.PKG_VERSION }}-${{ matrix.os }}-src.tar.gz
       #    path: dist/*.tar.gz
 
-     
+      - name: 'prepare asset pip'
+        run: |
+          mv dist pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}
+          tar -cvf pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}.tar ./pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}/*.whl
+
+      - name: 'prepare asset src'
+        run: |
+          mv pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os }}-py-${{ matrix.python-version }} pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}
+          tar -cvf pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar ./pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}/*.tar.gz
+
+      - name: 'Upload Binary Release Asset'
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release  ${{ github.event.inputs.tags }}
+          tag_name: ${{ github.event.inputs.tags }}
+          files: |
+            pip-binary-${{ env.PKG_VERSION }}-${{ matrix.os}}-py-${{ matrix.python-version }}.tar
+        env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'Upload  Src Release Asset'
+        uses: softprops/action-gh-release@v1
+        if: matrix.python-version == 3.7
+        with:
+          name: Release  ${{ github.event.inputs.tags }}
+          tag_name: ${{ github.event.inputs.tags }}
+          files: |
+              pip-src-${{ env.PKG_VERSION }}-${{ matrix.os }}.tar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
