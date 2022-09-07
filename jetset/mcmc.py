@@ -210,7 +210,7 @@ class McmcSampler(object):
     def show_pars(self):
         pass
 
-    def corner_plot(self, labels = None, quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}):
+    def corner_plot(self, labels = None, quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, **kwargs):
         _id = []
 
         if labels is None:
@@ -228,7 +228,7 @@ class McmcSampler(object):
                           quantiles=quantiles, labels=[self.labels[i] for i in _id],
                           truths=[self.labels_start_val[i] for i in _id],
                           title_kwargs=title_kwargs,show_titles = True,
-                          levels = levels)
+                          levels = levels,**kwargs)
 
         title = 'quantiles ='+str(quantiles)
         f.suptitle(title,y=1.0)

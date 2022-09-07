@@ -103,10 +103,10 @@ void Build_I_nu_Star(struct blob *pt){
 	}
 	*/
 
-	//set_Star_geometry(pt);
+	set_Star_geometry(pt);
 
-	pt->Star_mu_1=0;
-	pt->Star_mu_2=1;
+	//pt->Star_mu_1=0;
+	//pt->Star_mu_2=1;
 	pt->Star_surface = 4 * pi * pt->R_Star * pt->R_Star;
    
 	nu_peak_BB=eval_nu_peak_Disk(pt->T_Star_max);
@@ -162,7 +162,7 @@ void Build_I_nu_Star(struct blob *pt){
 		pt->I_nu_Star[NU_INT]=eval_I_nu_Star_blob_RF(pt,pt->nu_Star[NU_INT]);
 		pt->n_Star[NU_INT] =I_nu_to_n(pt->I_nu_Star[NU_INT], pt->nu_Star[NU_INT]);
 		//EC with n(gamma) transf
-		pt->n_Star_DRF[NU_INT] = I_nu_to_n(pt->J_nu_Star_disk_RF[NU_INT], pt->nu_Star_disk_RF[NU_INT]);
+		pt->n_Star_DRF[NU_INT] = I_nu_to_n(pt->I_nu_Star_disk_RF[NU_INT], pt->nu_Star_disk_RF[NU_INT]);
 		
 
 		if (pt->I_nu_Star[NU_INT]>pt->emiss_lim){
@@ -233,7 +233,7 @@ double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu){
 
 	i=x_to_grid_index( pt->nu_Star_disk_RF,nu_disk_RF,pt->nu_seed_size);
 	if (i>0){
-		return pt->J_nu_Star_disk_RF[i]*pt->BulkFactor*(1-pt->beta_Gamma*mu);
+		return pt->I_nu_Star_disk_RF[i]*pt->BulkFactor*(1-pt->beta_Gamma*mu);
 	}
 	else{
 		return 0;
@@ -260,51 +260,17 @@ double eval_Star_L_nu(struct blob *pt, double nu_Star_disk_RF){
 //========================
 
 void set_Star_geometry(struct blob *pt){
-	double mu1,mu2,mu,mu_star,c,b,a,psi_star;
+	double mu1,mu2,a,b;
 
-	mu=1.0;
-	b=pt->R_H-pt->R_Star*cos(pt->Star_psi_1* pi/ 180.0);
-	a=pt->R_Star*sin(pt->Star_psi_1* pi/ 180.0);
-	c=sqrt(a*a+b*b);
-	printf("%e %e %e\n",a,b,c);
-	mu_star=b/c;
-
-	//max cos=> min angle (0-pi)
-	mu1=min(mu,mu_star);
-
-	if (pt->verbose){
-		printf("mu1=%e mu_star=%e  mu=%e \n",mu1,mu_star,mu);
-	}
-
-
-	b=sqrt(pt->R_H*pt->R_H - pt->R_Star*pt->R_Star  );
-	mu_star=b/pt->R_H;
-	psi_star = asin(mu_star) * 180.0 / pi;
-
-
-	mu2=min(pt->Star_psi_2,psi_star);
-	mu2=cos(mu2* pi/ 180.0);
-
-
-	if (psi_star<=pt->Star_psi_2){
-		c=pt->R_H;
-		a=pt->R_Star;
-		b=sqrt(c*c - a*a);
-		mu2=b/c;
-	}else{
-		b=pt->R_H - pt->R_Star*cos(pt->Star_psi_2* pi/ 180.0);
-		a=pt->R_Star*sin(pt->Star_psi_2* pi/ 180.0);
-		c=sqrt(b*b + a*a);
-		mu2=b/c;
-	}
-	//printf("mu2=%e mu_star=%e  psi_star=%e Star_psi_2=%e \n",mu2,mu_star,psi_star,pt->Star_psi_2);
+	mu2=1.0;
+	b=sqrt(pt->R_H*pt->R_H - pt->R_Star*pt->R_Star);	
+	mu1=b/pt->R_H;
 
 	pt->Star_mu_1=min(mu1,mu2);
 	pt->Star_mu_2=max(mu1,mu2);
 
-
 	if (pt->verbose){
-		printf("mu1=%e mu2=%e psi_star=%e ,mu=%e \n",pt->Star_mu_1,pt->Star_mu_2,psi_star,mu);
+		printf("mu1=%e mu2=%e\n",pt->Star_mu_1,pt->Star_mu_2);
 	}
 
 	pt->Star_surface=4*pi*pt->R_Star*pt->R_Star;
