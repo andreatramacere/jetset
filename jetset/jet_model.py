@@ -1731,13 +1731,11 @@ class Jet(JetBase):
         self.set_par('N', val=1.0)
         #gamma_grid_size = self._blob.gamma_grid_size
         #self.emitters_distribution.set_grid_size(100)
-        #self.set_blob()
-        delta = self._blob.beam_obj
+        self.set_blob()
+        delta = self.get_beaming()
         ratio = L_sync/(BlazarSED.Power_Sync_Electron(self._blob)* delta ** 4)
-        #self.emitters_distribution.set_grid_size(gamma_grid_size)
         self.set_par('N', val=ratio)
-
-
+       
     def set_N_from_F_sync(self, F_sync):
         """Sets the normalization of N to match the observed integrated synchrotron flux
 
