@@ -394,12 +394,13 @@ struct blob {
     //--- STAR
     //-PARAMTERS
     double L_Star;
-    double T_Star_max;
+    double T_Star;
     double R_Star;
     double Star_psi_1, Star_psi_2;
     //
     double Star_surface;
-    double Star_mu_1, Star_mu_2;
+    //double Star_mu_1, Star_mu_2;
+    double theta_star, mu_star;
     //-FREQ BOUNDARIES
 	double nu_start_EC_Star;
 	double nu_stop_EC_Star;

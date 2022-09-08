@@ -107,15 +107,15 @@ void Build_I_nu_Star(struct blob *pt){
 
 	//pt->Star_mu_1=0;
 	//pt->Star_mu_2=1;
-	pt->Star_surface = 4 * pi * pt->R_Star * pt->R_Star;
+	
    
-	nu_peak_BB=eval_nu_peak_Disk(pt->T_Star_max);
+	nu_peak_BB=eval_nu_peak_Disk(pt->T_Star);
 
 	nu_start_disk_RF = nu_peak_BB*pt->nu_planck_min_factor;
 	nu_stop_disk_RF  = nu_peak_BB*pt->nu_planck_max_factor;
 
-	pt->nu_start_Star = eval_nu_min_blob_RF(pt,pt->Star_mu_1, pt->Star_mu_2, nu_start_disk_RF);
-	pt->nu_stop_Star  = eval_nu_max_blob_RF(pt,pt->Star_mu_1, pt->Star_mu_2, nu_stop_disk_RF);
+	pt->nu_start_Star = eval_nu_min_blob_RF(pt,pt->mu_star, pt->mu_star, nu_start_disk_RF);
+	pt->nu_stop_Star  = eval_nu_max_blob_RF(pt,pt->mu_star, pt->mu_star, nu_stop_disk_RF);
 
 	pt->nu_start_Star_DRF = nu_start_disk_RF;
 	pt->nu_stop_Star_DRF = nu_stop_disk_RF;
@@ -143,13 +143,12 @@ void Build_I_nu_Star(struct blob *pt){
 		printf("nu_start_Star_obs=%e  nu_stop_Star_obs=%e \n",
 			   pt->nu_start_Star_obs,
 			   pt->nu_stop_Star_obs);
+		
 	}
-
 	build_log_grid( nu_start_disk_RF,  nu_stop_disk_RF, pt->nu_seed_size, pt->nu_Star_disk_RF);
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->I_nu_Star_disk_RF[NU_INT]=eval_I_nu_Star_disk_RF(pt, pt->nu_Star_disk_RF[NU_INT]);
 		//pt->J_nu_Star_disk_RF[NU_INT]=eval_J_nu_Star_disk_RF(pt, pt->I_nu_Star_disk_RF[NU_INT]);
-
 	}
 
 
@@ -158,13 +157,11 @@ void Build_I_nu_Star(struct blob *pt){
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		nu_obs = nu_disk_to_nu_obs_disk(pt->nu_Star_disk_RF[NU_INT],pt->z_cosm);
 		pt->nu_Star_obs[NU_INT]=nu_obs;
-
 		pt->I_nu_Star[NU_INT]=eval_I_nu_Star_blob_RF(pt,pt->nu_Star[NU_INT]);
 		pt->n_Star[NU_INT] =I_nu_to_n(pt->I_nu_Star[NU_INT], pt->nu_Star[NU_INT]);
 		//EC with n(gamma) transf
 		pt->n_Star_DRF[NU_INT] = I_nu_to_n(pt->I_nu_Star_disk_RF[NU_INT], pt->nu_Star_disk_RF[NU_INT]);
 		
-
 		if (pt->I_nu_Star[NU_INT]>pt->emiss_lim){
 			pt->nu_stop_Star = pt->nu_Star[NU_INT];
 			pt->NU_INT_MAX_Star = NU_INT;
@@ -203,6 +200,7 @@ void Build_I_nu_Star(struct blob *pt){
 		*/
 
 	}
+	
 	/*
 	if (pt->WRITE_TO_FILE == 1)
 	{
@@ -217,8 +215,7 @@ void Build_I_nu_Star(struct blob *pt){
 //========================
 
 double eval_I_nu_Star_disk_RF(struct blob *pt,double nu_Star_disk_RF){
-	return f_planck(pt->T_Star_max, nu_Star_disk_RF);
-	
+	return eval_Star_L_nu(pt,nu_Star_disk_RF)/(16*pi*pi*pt->R_H*pt->R_H);
 }
 
 //TODO!! THIS MUST BE IMPROVED FOR PROPER ANGULAR INTEGRATION
@@ -243,15 +240,19 @@ double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu){
 
 
 double eval_I_nu_Star_blob_RF(struct blob *pt, double nu_blob_RF){
-	pt->nu_blob_RF=nu_blob_RF;
-	double (*pf) (struct blob *, double x);
-	pf = &integrand_I_nu_Star_blob_RF;
-	//0.5 comes from 2pi/(4pi)
-	return  0.5*integrale_simp_struct(pf, pt, pt->Star_mu_1, pt->Star_mu_2,pt->theta_n_int);
+	int i;
+	double nu_disk_RF=nu_blob_RF_to_nu_disk_RF(nu_blob_RF,pt->BulkFactor,pt->beta_Gamma,pt->mu_star);
+	i=x_to_grid_index( pt->nu_Star_disk_RF,nu_disk_RF,pt->nu_seed_size);
+	if (i>0){
+		return pt->I_nu_Star_disk_RF[i]*pt->BulkFactor*(1-pt->beta_Gamma*pt->mu_star);
+	}
+	else{
+		return 0;
+	}
 }
 
 double eval_Star_L_nu(struct blob *pt, double nu_Star_disk_RF){
-	return  pt->Star_surface *eval_I_nu_Star_disk_RF(pt, nu_Star_disk_RF)*pi;
+	return  pt->Star_surface *f_planck(pt->T_Star, nu_Star_disk_RF);
 }
 
 
@@ -260,19 +261,19 @@ double eval_Star_L_nu(struct blob *pt, double nu_Star_disk_RF){
 //========================
 
 void set_Star_geometry(struct blob *pt){
-	double mu1,mu2,a,b;
+	// double mu1,mu2,b;
 
-	mu2=1.0;
-	b=sqrt(pt->R_H*pt->R_H - pt->R_Star*pt->R_Star);	
-	mu1=b/pt->R_H;
+	// mu2=1.0;
+	// b=sqrt(pt->R_H*pt->R_H - pt->R_Star*pt->R_Star);	
+	// mu1=b/pt->R_H;
 
-	pt->Star_mu_1=min(mu1,mu2);
-	pt->Star_mu_2=max(mu1,mu2);
+	// pt->Star_mu_1=min(mu1,mu2);
+	// pt->Star_mu_2=max(mu1,mu2);
 
-	if (pt->verbose){
-		printf("mu1=%e mu2=%e\n",pt->Star_mu_1,pt->Star_mu_2);
-	}
-
+	// if (pt->verbose){
+	// 	printf("mu1=%e mu2=%e\n",pt->Star_mu_1,pt->Star_mu_2);
+	// 
+	pt->mu_star = cos(pt->theta_star*M_PI / 180.0);
 	pt->Star_surface=4*pi*pt->R_Star*pt->R_Star;
 
 }

@@ -299,7 +299,7 @@ void interpola_somma(struct blob *pt_j, double nu_obs, unsigned int i)
 			pt_j->nuFnu_Star_grid[i] = 0;
 		}
 		pt_j->nuFnu_sum_grid[i] += pt_j->nuFnu_Star_grid[i];
-		printf("=> pt->nuFnu_Star_grid %e\n", pt_j->nuFnu_Star_grid[i]);
+		//printf("=> pt->nuFnu_Star_grid %e\n", pt_j->nuFnu_Star_grid[i]);
 	}
 
 	//Neutrino
