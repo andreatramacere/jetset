@@ -734,10 +734,10 @@ struct jet_energetic{
     double U_e, U_p_cold,U_B;
     double U_p, U_p_target;
     double U_Synch, U_Synch_DRF;
-    double U_Disk, U_BLR, U_DT, U_CMB;
-    double U_Disk_DRF, U_BLR_DRF, U_DT_DRF, U_CMB_DRF;
-    double L_Sync_rf, L_SSC_rf, L_EC_Disk_rf,L_EC_BLR_rf, L_EC_DT_rf,L_EC_CMB_rf, L_pp_gamma_rf;
-    double jet_L_Sync,jet_L_SSC, jet_L_EC_Disk, jet_L_EC_BLR, jet_L_EC_DT,jet_L_EC_CMB,jet_L_pp_gamma;
+    double U_Disk, U_BLR, U_DT, U_CMB, U_Star;
+    double U_Disk_DRF, U_BLR_DRF, U_DT_DRF, U_CMB_DRF, U_Star_DRF;
+    double L_Sync_rf, L_SSC_rf, L_EC_Disk_rf,L_EC_BLR_rf, L_EC_DT_rf,L_EC_CMB_rf, L_EC_Star_rf, L_pp_gamma_rf;
+    double jet_L_Sync,jet_L_SSC, jet_L_EC_Disk, jet_L_EC_BLR, jet_L_EC_Star, jet_L_EC_DT,jet_L_EC_CMB,jet_L_pp_gamma;
     double jet_L_rad,jet_L_kin, jet_L_tot, jet_L_e, jet_L_B, jet_L_p_cold, jet_L_p;
 };
 

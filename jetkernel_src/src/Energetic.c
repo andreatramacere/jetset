@@ -404,12 +404,14 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     energetic.U_DT=I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT);
     energetic.U_CMB = I_nu_to_Uph(pt->nu_CMB, pt->I_nu_CMB, pt->NU_INT_MAX_CMB);
     energetic.U_Disk = I_nu_to_Uph(pt->nu_Disk, pt->I_nu_Disk, pt->NU_INT_MAX_Disk);
+    energetic.U_Star = I_nu_to_Uph(pt->nu_Star, pt->I_nu_Star, pt->NU_INT_MAX_Star);
 
     energetic.U_Synch_DRF = energetic.U_Synch*(pt->beam_obj*pt->beam_obj*pt->beam_obj*pt->beam_obj);
     energetic.U_BLR_DRF = I_nu_to_Uph(pt->nu_BLR_disk_RF, pt->I_nu_BLR_disk_RF, pt->NU_INT_MAX_BLR);
     energetic.U_DT_DRF = I_nu_to_Uph(pt->nu_DT_disk_RF, pt->I_nu_DT_disk_RF, pt->NU_INT_MAX_DT);
     energetic.U_CMB_DRF = I_nu_to_Uph(pt->nu_CMB_disk_RF, pt->I_nu_CMB_disk_RF, pt->NU_INT_MAX_CMB);
     energetic.U_Disk_DRF = I_nu_to_Uph(pt->nu_Disk_disk_RF, pt->I_nu_Disk_disk_RF, pt->NU_INT_MAX_Disk);
+    energetic.U_Star_DRF =  I_nu_to_Uph(pt->nu_Star_disk_RF, pt->I_nu_Star_disk_RF, pt->NU_INT_MAX_Star);
 
     energetic.L_Sync_rf = PowerPhotons_blob_rest_frame (pt, pt->nu_Sync, pt->nuF_nu_Sync_obs, pt->NU_INT_STOP_Sync_SSC);
     energetic.jet_L_Sync = energetic.L_Sync_rf * lum_factor_rad;
@@ -484,6 +486,18 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
         energetic.L_EC_CMB_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_CMB, pt->nuF_nu_EC_CMB_obs, pt->NU_INT_STOP_EC_CMB);
         energetic.jet_L_EC_CMB = energetic.L_EC_CMB_rf * lum_factor_rad;
         energetic.jet_L_rad += energetic.jet_L_EC_CMB;
+    }
+    else
+    {
+        energetic.jet_L_EC_CMB = 0;
+        energetic.L_EC_CMB_rf = 0;
+    }
+
+    if (pt->do_EC_Star == 1)
+    {
+        energetic.L_EC_Star_rf = PowerPhotons_blob_rest_frame(pt, pt->nu_EC_Star, pt->nuF_nu_EC_Star_obs, pt->NU_INT_STOP_EC_Star);
+        energetic.jet_L_EC_Star = energetic.L_EC_Star_rf * lum_factor_rad;
+        energetic.jet_L_rad += energetic.jet_L_EC_Star;
     }
     else
     {
