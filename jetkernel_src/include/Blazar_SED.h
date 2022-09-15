@@ -396,11 +396,12 @@ struct blob {
     double L_Star;
     double T_Star;
     double R_Star;
+    double R_H_Star;
     double Star_psi_1, Star_psi_2;
     //
     double Star_surface;
     //double Star_mu_1, Star_mu_2;
-    double theta_star, mu_star;
+    double theta_Star, mu_star, theta_c_Star;
     //-FREQ BOUNDARIES
 	double nu_start_EC_Star;
 	double nu_stop_EC_Star;
@@ -1252,6 +1253,8 @@ double eval_I_nu_Star_disk_RF(struct blob *pt,double nu_Star_disk_RF);
 double eval_I_nu_Star_blob_RF(struct blob *pt, double nu_blob_RF);
 double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu);
 double eval_Star_L_nu(struct blob *pt, double nu_Star_disk_RF);
+double eval_Star_L(struct blob *pt, double T_Star);
+
 void set_Star_geometry(struct blob *pt);
 
 /***  SPECTRAL/GEOMETRIC FUNCTIONS EC DISK ****/

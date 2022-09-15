@@ -310,9 +310,10 @@ struct blob MakeBlob() {
     spettro_root.T_DT = 100;
     spettro_root.R_DT = 5.0e18;
     spettro_root.tau_DT = 1e-1;
-    spettro_root.R_Star = 1e10;
-    spettro_root.T_Star =1E5;
-    spettro_root.theta_star=90;
+    spettro_root.L_Star = 1e33;
+    spettro_root.R_H_Star = 1e14;
+    spettro_root.T_Star =6000.;
+    spettro_root.theta_Star=90;
 
     spettro_root.gam=NULL;
     spettro_root.Q_inj_e_second=NULL;

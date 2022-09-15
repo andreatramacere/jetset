@@ -215,14 +215,8 @@ void Build_I_nu_Star(struct blob *pt){
 //========================
 
 double eval_I_nu_Star_disk_RF(struct blob *pt,double nu_Star_disk_RF){
-	return eval_Star_L_nu(pt,nu_Star_disk_RF)/(16*pi*pi*pt->R_H*pt->R_H);
+	return eval_Star_L_nu(pt,nu_Star_disk_RF)/(16*pi*pi*pt->R_H_Star*pt->R_H_Star);
 }
-
-//TODO!! THIS MUST BE IMPROVED FOR PROPER ANGULAR INTEGRATION
-//double eval_J_nu_Star_disk_RF(struct spettro *pt, double I_nu_Star_disk_RF){
-//	return I_nu_Star_disk_RF*(2.0*pi/(4*pi))*(pt->Star_mu_2- pt->Star_mu_1);
-//}
-
 
 double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu){
 	int i;
@@ -237,8 +231,6 @@ double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu){
 	}
 }
 
-
-
 double eval_I_nu_Star_blob_RF(struct blob *pt, double nu_blob_RF){
 	int i;
 	double nu_disk_RF=nu_blob_RF_to_nu_disk_RF(nu_blob_RF,pt->BulkFactor,pt->beta_Gamma,pt->mu_star);
@@ -252,7 +244,11 @@ double eval_I_nu_Star_blob_RF(struct blob *pt, double nu_blob_RF){
 }
 
 double eval_Star_L_nu(struct blob *pt, double nu_Star_disk_RF){
-	return  pt->Star_surface *f_planck(pt->T_Star, nu_Star_disk_RF);
+	return  pi*pt->Star_surface *f_planck(pt->T_Star, nu_Star_disk_RF);
+}
+
+double eval_Star_L(struct blob *pt, double T_Star){
+	return  sigma_steph_boltz *T_Star*T_Star*T_Star*T_Star*pt->Star_surface;
 }
 
 
@@ -261,9 +257,9 @@ double eval_Star_L_nu(struct blob *pt, double nu_Star_disk_RF){
 //========================
 
 void set_Star_geometry(struct blob *pt){
-	// double mu1,mu2,b;
-
-	// mu2=1.0;
+	double theta_c;
+	pt->theta_c_Star=asin(pt->theta_Star/pt->R_H_Star);
+	
 	// b=sqrt(pt->R_H*pt->R_H - pt->R_Star*pt->R_Star);	
 	// mu1=b/pt->R_H;
 
@@ -271,11 +267,11 @@ void set_Star_geometry(struct blob *pt){
 	// pt->Star_mu_2=max(mu1,mu2);
 
 	// if (pt->verbose){
-	// 	printf("mu1=%e mu2=%e\n",pt->Star_mu_1,pt->Star_mu_2);
+	printf("theta_c_Star=%20.20e\n",pt->theta_c_Star);
 	// 
-	pt->mu_star = cos(pt->theta_star*M_PI / 180.0);
+	pt->mu_star = cos(pt->theta_Star*M_PI / 180.0);
+	pt->R_Star=sqrt(pt->L_Star/(4*pi*pt->T_Star*pt->T_Star*pt->T_Star*pt->T_Star*sigma_steph_boltz));
 	pt->Star_surface=4*pi*pt->R_Star*pt->R_Star;
-
 }
 //=========================================================================================
 

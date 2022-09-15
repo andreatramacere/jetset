@@ -1697,7 +1697,7 @@ class Jet(JetBase):
 
         Parameters
         ----------
-        U_vol: float (erg)
+        U_vol: float (erg/s)
 
         gmin: float, optional,
             minimum value to evaluate the integral
@@ -2014,5 +2014,8 @@ class GalacticUnbeamed(GalacticBeamed):
         self.parameters.beam_obj.val=1
         self.parameters.beam_obj.hidden=True
         self.parameters.R_H.hidden=True
+    
         self.set_external_field_transf('disk')
     
+    def _R_H_Star(self,R_H_Star):
+        return R_H_Star

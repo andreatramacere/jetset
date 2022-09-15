@@ -135,10 +135,11 @@ def build_ExtFields_dic(EC_model_list,disk_type ):
             # ['DT',0.0,1.0,'']
 
         if 'Star' in EC_model:
-            model_dic['R_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='cm')
+            model_dic['L_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='erg s-1')
             # ['DT',0.0,None,'K']
             model_dic['T_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='K')
-            model_dic['theta_star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=180, punit='deg')
+            model_dic['theta_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=180, punit='deg')
+            model_dic['R_H_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='cm')
 
             # ['DT',0,None,'cm',True]
             #model_dic['tau_DT'] = JetModelDictionaryPar(ptype='DT', vmin=0, vmax=1.0, punit='')
