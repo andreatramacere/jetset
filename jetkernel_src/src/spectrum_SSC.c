@@ -109,7 +109,7 @@ void spettro_compton(int Num_file, struct blob *pt){
 				}
 				//nu_src = nu_blob_to_nu_src(pt->nu_SSC[NU_INT], pt->beam_obj,
 				//		pt->z_cosm);
-				L_nu_SSC = j_nu_to_L_nu_src(pt->j_comp[NU_INT], pt->Vol_sphere,
+				L_nu_SSC = j_nu_to_L_nu_src(pt->j_comp[NU_INT], pt->Vol_region,
 						pt->beam_obj);
 				//nuL_nu_SSC = L_nu_SSC * nu_src;
 				F_nu_SSC_obs = L_nu_src_to_F_nu(L_nu_SSC, pt->beam_obj,

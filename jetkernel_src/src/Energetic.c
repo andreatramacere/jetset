@@ -73,7 +73,7 @@ void EvalU_e(struct blob *pt) {
             pt->gmin_griglia,
             pt->gmax_griglia,
             10000);
-    pt->E_tot_e = pt->U_e * pt->Vol_sphere;
+    pt->E_tot_e = pt->U_e * pt->Vol_region;
 }
 
 void EvalU_p(struct blob *pt) {
@@ -93,7 +93,7 @@ void EvalU_p(struct blob *pt) {
             pt->gmin,
             pt->gmax,
             10000);
-    pt->E_tot_p = pt->U_p * pt->Vol_sphere;
+    pt->E_tot_p = pt->U_p * pt->Vol_region;
 }
 
 double GetU_e(struct blob *pt) {
@@ -265,7 +265,7 @@ double	Lum_SSC_at_nu (struct blob *pt , double nu_1) {
     pt->nu_1=nu_1;
     q_comp=rate_compton_GR(pt);
     j_comp=q_comp*HPLANCK*nu_1;
-    nuL_nu_comp=nu_1*j_nu_to_L_nu_blob(j_comp, pt->Vol_sphere); /*erg s^-1  Hz^-1 */
+    nuL_nu_comp=nu_1*j_nu_to_L_nu_blob(j_comp, pt->Vol_region); /*erg s^-1  Hz^-1 */
 
     return nuL_nu_comp;
 }
@@ -297,7 +297,7 @@ double	Lum_Sync_at_nu (struct blob *pt , double nu) {
     alpha_nu = alfa_nu_Sync(pt);
     S_nu = eval_S_nu_Sync(pt, j_nu, alpha_nu);
 
-    nuL_nu_Sync = I_nu_to_L_nu_blob(S_nu, pt->Surf_sphere)*nu; /*erg s^-1  Hz^-1 */
+    nuL_nu_Sync = I_nu_to_L_nu_blob(S_nu, pt->Surf_region)*nu; /*erg s^-1  Hz^-1 */
 
     return nuL_nu_Sync;
 }
@@ -334,9 +334,9 @@ double Power_Sync_Electron(struct blob *pt) {
             pt->gmin_griglia,
             pt->gmax_griglia,
             10000);
-    //printf("%e %e %e \n",a,,pt->Vol_sphere);
+    //printf("%e %e %e \n",a,,pt->Vol_region);
 
-        return a * pt->UB * SIGTH * (four_by_three) * vluce_cm * pt->Vol_sphere *
+        return a * pt->UB * SIGTH * (four_by_three) * vluce_cm * pt->Vol_region *
                 pt->sin_psi * pt->sin_psi;
 }
 

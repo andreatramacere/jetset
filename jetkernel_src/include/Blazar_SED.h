@@ -138,8 +138,12 @@ struct blob {
     double beta_Gamma;
     double dist;
     double z_cosm;
-    double Vol_sphere;
-    double Surf_sphere;
+    double Vol_region;
+    double R_sh,h_sh,R_in_sh;
+    double Surf_region,R_sync;
+    double R_sync_self_abs;
+    double n_sync_corr_factor;
+    char GEOMETRY[64];
 
     //----- Summed Spectra-----//
     //double nuF_nu_Sum_obs[static_spec_arr_size];
@@ -1047,8 +1051,8 @@ double PowerPhotons_disk_rest_frame(struct blob *pt, double *nu, double *nu_Fnu,
 
 //======================================================================================
 /************************************ GEOMETRY/REL.SPEC. *******************************/
-double V_sphere(double R);
-double S_sphere(double R);
+double V_region(struct blob *pt);
+double S_sphere(struct blob *pt);
 
 double get_beaming(double BulkFactor, double theta);
 void   SetBeaming(struct blob *pt);
@@ -1109,6 +1113,7 @@ double alfa_nu_Sync(struct blob *);
 double integrale_Sync(double (*pf)(struct blob *, unsigned int ID), struct blob *pt);
 double Sync_tcool(struct blob * , double g);
 double Sync_cool(struct blob * , double g);
+void set_R_Sync(struct blob *);
 //===========================================================================================
 
 

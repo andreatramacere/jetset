@@ -69,6 +69,7 @@ class JetBase(Model):
                  verbose=None,
                  nu_size=500,
                  clean_work_dir=True,
+                 geometry='spherical',
                  **keywords):
 
         """
@@ -101,7 +102,7 @@ class JetBase(Model):
         self.model_type='jet'
         self._emitters_type=emitters_type
         self._scale='lin-lin'
-
+    
         self._blob = self.build_blob(verbose=verbose)
         self._static_spec_arr_grid_size = BlazarSED.static_spec_arr_grid_size
         self._nu_static_size = BlazarSED.static_spec_arr_size
@@ -113,10 +114,14 @@ class JetBase(Model):
         else:
             out_dir=jet_workplace.out_dir+'/'+self.name+'_jet_prod/'
 
+        self._allowed_geometry=['spherical','spherical_shell']
+
+        self.geometry=geometry
         self.set_path(out_dir,clean_work_dir=clean_work_dir)
 
         self.set_flag(self.name)
 
+        
 
         self._allowed_EC_components_list=['EC_BLR',
                                           'DT',
@@ -499,6 +504,7 @@ class JetBase(Model):
         blob.do_SSC = 1
 
         blob.R = 5.0e15
+        blob.h_sh=0.1
 
         blob.B = 0.1
 
@@ -533,7 +539,7 @@ class JetBase(Model):
         return blob
 
     def set_emitting_region(self,beaming_expr,emitters_type):
-
+        
         if  self._emitting_region_dict is not None:
             self.del_par_from_dic(self._emitting_region_dict)
 
@@ -542,8 +548,31 @@ class JetBase(Model):
         set_str_attr(self._blob,'BEAMING_EXPR',beaming_expr)
 
         self._emitting_region_dict=build_emitting_region_dict(self.cosmo,beaming_expr=beaming_expr,emitters_type=emitters_type)
-
+        self._set_geometry()
         self.parameters.add_par_from_dict(self._emitting_region_dict,self,'_blob',JetParameter)
+        
+
+    def _set_geometry(self):
+        self._blob.GEOMETRY=self.geometry
+        if self.geometry == 'spherical':
+            pass
+        elif self.geometry == 'spherical_shell':
+            self._emitting_region_dict.pop('R')
+            self._emitting_region_dict['R_sh'] = JetModelDictionaryPar(ptype='region_size', vmin=1E3, vmax=1E30, punit='cm', froz=False, log=False)
+            self._emitting_region_dict['h_sh'] = JetModelDictionaryPar(ptype='scaling_factor',val=0.1, vmin=0, punit='', vmax=1, froz=False, log=False)
+
+    
+    @property
+    def geometry(self,):
+        return self._geometry
+
+    @geometry.setter
+    def geometry(self,geometry):
+        if geometry in self._allowed_geometry:
+            self._geometry=geometry
+        else:
+            raise RuntimeError("geometry %s not allowed" % geometry, "please choose among ",
+                                   self._allowed_geometry)
 
     @property
     def IC_adaptive_e_binning(self,):
@@ -1557,7 +1586,8 @@ class Jet(JetBase):
                  electron_distribution=None,
                  proton_distribution=None,
                  electron_distribution_log_values=None,
-                 proton_distribution_log_values=None):
+                 proton_distribution_log_values=None,
+                 geometry='spherical'):
         """
 
         Parameters
@@ -1603,7 +1633,8 @@ class Jet(JetBase):
                                  beaming_expr=beaming_expr,
                                  jet_workplace=jet_workplace,
                                  verbose=verbose,
-                                 clean_work_dir=clean_work_dir)
+                                 clean_work_dir=clean_work_dir,
+                                 geometry=geometry)
 
         if name is None or name == '':
             if self.emitters_distribution.emitters_type == 'electrons':
@@ -1893,7 +1924,8 @@ class GalacticBeamed(Jet):
                  electron_distribution=None,
                  proton_distribution=None,
                  electron_distribution_log_values=None,
-                 proton_distribution_log_values=None):
+                 proton_distribution_log_values=None,
+                 geometry='spherical'):
         
         if name is None:
             _name = 'unbeamed'
@@ -1931,7 +1963,8 @@ class GalacticBeamed(Jet):
                                     beaming_expr=beaming_expr,
                                     jet_workplace=jet_workplace,
                                     verbose=verbose,
-                                    clean_work_dir=clean_work_dir)
+                                    clean_work_dir=clean_work_dir,
+                                    geometry=geometry)
 
         if name is None or name == '':
             if self.emitters_distribution.emitters_type == 'electrons':
@@ -1978,7 +2011,8 @@ class GalacticUnbeamed(GalacticBeamed):
                  electron_distribution=None,
                  proton_distribution=None,
                  electron_distribution_log_values=None,
-                 proton_distribution_log_values=None):
+                 proton_distribution_log_values=None,
+                 geometry='spherical'):
         
    
         
@@ -1996,7 +2030,8 @@ class GalacticUnbeamed(GalacticBeamed):
                                             electron_distribution=electron_distribution,
                                             proton_distribution=proton_distribution,
                                             electron_distribution_log_values=electron_distribution_log_values,
-                                            proton_distribution_log_values=proton_distribution_log_values)
+                                            proton_distribution_log_values=proton_distribution_log_values,
+                                            geometry=geometry)
 
         
 

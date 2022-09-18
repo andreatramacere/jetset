@@ -565,12 +565,41 @@ double theta_heaviside(double x){
     }
 }
 
-double V_sphere(double R) {
-    return four_by_three_pi * R * R*R;
+double V_region(struct blob *pt ) {
+    double V;
+    if (strcmp(pt->GEOMETRY, "spherical") == 0) {
+	    V = four_by_three_pi * pt->R * pt->R* pt->R;
+    }
+
+	else if (strcmp(pt->GEOMETRY, "spherical_shell") == 0) {
+        V = four_by_three_pi * pt->R_sh * pt->R_sh* pt->R_sh;
+		V = V - four_by_three_pi *pt->R_in_sh * pt->R_in_sh * pt->R_in_sh;
+	}
+
+	else {
+		printf("GEOMETRY variable set to wrong value, posible spherical or spherical_shell \n");
+		exit(0);
+	}
+
+    return V;
 }
 
-double S_sphere(double R) {
-    return four_pi * R*R;
+double S_sphere(struct blob *pt ) {
+    double S;
+    if (strcmp(pt->GEOMETRY, "spherical") == 0) {
+	    S = four_pi * pt->R * pt->R;
+    }
+
+	else if (strcmp(pt->GEOMETRY, "spherical_shell") == 0) {
+        S = four_pi * pt->R_sh * pt->R_sh;
+	}
+
+	else {
+		printf("GEOMETRY variable set to wrong value, posible spherical or spherical_shell \n");
+		exit(0);
+	}
+
+    return S;
 }
 
 double eval_beta_gamma(double gamma) {

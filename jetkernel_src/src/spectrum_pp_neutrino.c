@@ -110,21 +110,21 @@ void spettro_pp_neutrino(int Num_file, struct blob *pt) {
                 }
                 //tot
                 //nu_src = nu_blob_to_nu_src(nu_1, pt->beam_obj, pt->z_cosm);
-                L_nu_pp = j_nu_to_L_nu_src(pt->j_pp_neutrino_tot[NU_INT], pt->Vol_sphere, pt->beam_obj);
+                L_nu_pp = j_nu_to_L_nu_src(pt->j_pp_neutrino_tot[NU_INT], pt->Vol_region, pt->beam_obj);
                 //nuL_nu_pp = L_nu_pp*nu_src;
                 F_nu_pp_obs = L_nu_src_to_F_nu(L_nu_pp, pt->beam_obj, pt->z_cosm, pt->dist);
                 
                 pt->nuFnu_pp_neutrino_tot_obs[NU_INT] = F_nu_pp_obs * pt->nu_pp_neutrino_tot_obs[NU_INT];
                 
                 //mu
-                L_nu_pp = j_nu_to_L_nu_src(pt->j_pp_neutrino_mu[NU_INT], pt->Vol_sphere, pt->beam_obj);
+                L_nu_pp = j_nu_to_L_nu_src(pt->j_pp_neutrino_mu[NU_INT], pt->Vol_region, pt->beam_obj);
                 //nuL_nu_pp = L_nu_pp*nu_src;
                 F_nu_pp_obs = L_nu_src_to_F_nu(L_nu_pp, pt->beam_obj, pt->z_cosm, pt->dist);
 
                 pt->nuFnu_pp_neutrino_mu_obs[NU_INT] = F_nu_pp_obs * pt->nu_pp_neutrino_mu_obs[NU_INT];
 
                 //e-
-                L_nu_pp = j_nu_to_L_nu_src(pt->j_pp_neutrino_e[NU_INT], pt->Vol_sphere, pt->beam_obj);
+                L_nu_pp = j_nu_to_L_nu_src(pt->j_pp_neutrino_e[NU_INT], pt->Vol_region, pt->beam_obj);
                 //nuL_nu_pp = L_nu_pp*nu_src;
                 F_nu_pp_obs = L_nu_src_to_F_nu(L_nu_pp, pt->beam_obj, pt->z_cosm, pt->dist);
 

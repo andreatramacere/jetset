@@ -64,8 +64,6 @@ double F_int_ave(struct blob * pt,unsigned int  ID){
 
 
 
-
-
 //=========================================================================================
 //    integrand for alfa_nu_Sync
 //=========================================================================================
@@ -123,7 +121,7 @@ double solve_S_nu_Sync(struct blob * pt, unsigned int  NU_INT){
 
 
 	if (pt->do_Sync == 2) {
-		tau_nu = 2 * pt->R * pt->alfa_Sync[NU_INT];
+		tau_nu = 2 * pt->R_sync_self_abs * pt->alfa_Sync[NU_INT];
 		if (tau_nu > 1e-4) {
 			pt->I_nu_Sync[NU_INT] =
 					(pt->j_Sync[NU_INT] / pt->alfa_Sync[NU_INT])*
@@ -141,7 +139,7 @@ double solve_S_nu_Sync(struct blob * pt, unsigned int  NU_INT){
 	//Radiative solution for no self abs
 	//limit of S_nu,alfa->0=(4/3)*R
 	if (pt->do_Sync == 1) {
-		pt->I_nu_Sync[NU_INT]=pt->j_Sync[NU_INT] * pt->R;
+		pt->I_nu_Sync[NU_INT]=pt->j_Sync[NU_INT] * pt->R_sync;
 	}
 	if (pt->verbose>1) {
 		printf("#-> nu=%e j=%e alfa=%e tau_nu=%e  I_nu=%e\n", pt->nu_Sync[NU_INT], pt->j_Sync[NU_INT],
@@ -158,7 +156,7 @@ double eval_S_nu_Sync(struct blob *pt, double j_Sync, double alfa_Sync)
     S_nu=0;
     if (pt->do_Sync == 2)
     {
-        tau_nu = 2 * pt->R *  alfa_Sync;
+        tau_nu = 2 * pt->R_sync_self_abs *  alfa_Sync;
         if (tau_nu > 1e-4)
         {
           
@@ -174,16 +172,43 @@ double eval_S_nu_Sync(struct blob *pt, double j_Sync, double alfa_Sync)
     }
 
     //==========================
-    //Radiative solution for no self abs
-    //limit of S_nu,alfa->0=(4/3)*R
+    
     if (pt->do_Sync == 1)
     {
        
-        S_nu =  j_Sync * pt->R * four_by_three;
+        S_nu =  j_Sync * pt->R_sync;
     }
     
     return S_nu;
 }
+
+
+
+void set_R_Sync(struct blob * pt){
+    double R_sync_Shell;
+    if (strcmp(pt->GEOMETRY, "spherical") == 0) {
+            pt->R_sync_self_abs = pt->R;
+            //Radiative solution for no self abs
+            //limit of S_nu,alfa->0=(4/3)*R
+            pt->R_sync = pt->R* four_by_three;
+            pt->n_sync_corr_factor=0.75;
+
+        }
+
+        else if (strcmp(pt->GEOMETRY, "spherical_shell") == 0) {    
+            R_sync_Shell=(1 - (1-pt->h_sh)*(1-pt->h_sh)*(1-pt->h_sh))*pt->R_sh;
+            pt->R_sync_self_abs = R_sync_Shell;
+            pt->R_sync = R_sync_Shell*(four_by_three);
+            pt->n_sync_corr_factor=1.0;
+        }
+        else {
+            printf("GEOMETRY variable set to wrong value, possible spherical or spherical_shell \n");
+            exit(0);
+        }
+
+    }
+
+
 //=========================================================================================
 
 
@@ -245,38 +270,6 @@ double integrale_Sync(double (*pf) (struct blob *, unsigned int  ID), struct blo
 
     return integr_simp_grid_equilog(pt->griglia_gamma_Ne_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
 }
-    //OLD IMPLEMENTATION
-    // double integr, y1, y2, y3, x1, x3;
-    // double delta;
-    // integr=0;
-    // x1=pt->griglia_gamma_Ne_log[0];
-    // y1=pf(pt,0);
-   
-    // for (ID = 1; ID < pt->gamma_grid_size - 1; ID++)
-    // {
-
-    //     y2=pf(pt,ID);
-    //     ID++;
-    //     x3=pt->griglia_gamma_Ne_log[ID];
-    //     y3=pf(pt,ID);
-               
-
-    //     //QUESTO DELTA RIMANE QUI
-    //     //PERCHE' LA GRIGLIA NON E' EQUISPACED
-    //     //NON PUO ANDARE FUORI DAL LOOP
-    //     delta=(x3-x1);
-    //     integr+=(y1+4.0*y2+y3)*delta;
-    //     y1=y3;
-    //     x1=x3;
-    //     //printf("ID=%d, delta=%e, integr=%e\n",ID,delta,integr);
-    // }
-    // if(pt->verbose>2){
-    //     printf("Synch Integr=%e\n", integr);
-    // }
-    // integr= integr*(0.5/3.0);
-    // printf("r=%e\n", test/integr);
-
-    // return integr*(0.5/3.0);
 //=========================================================================================
 
 

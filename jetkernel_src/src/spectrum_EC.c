@@ -286,11 +286,11 @@ void spettro_EC(int Num_file, struct blob *pt) {
 				//		pt->z_cosm);
 				if (pt->EC_stat == 1)
 				{
-					L_nu_EC = j_nu_src_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_sphere,
+					L_nu_EC = j_nu_src_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_region,
 												   pt->beam_obj);
 				}
 				else{
-					L_nu_EC = j_nu_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_sphere,
+					L_nu_EC = j_nu_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_region,
 						pt->beam_obj);
 				}
 				//nuL_nu_EC = L_nu_EC * nu_src;

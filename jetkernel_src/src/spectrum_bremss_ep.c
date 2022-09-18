@@ -84,7 +84,7 @@ void spettro_bremss_ep(int Num_file, struct blob *pt) {
                             nu_1, i);
                 }
                 //nu_src = nu_blob_to_nu_src(nu_1, pt->beam_obj, pt->z_cosm);
-                L_nu_bremss_ep = j_nu_to_L_nu_src(pt->j_bremss_ep[NU_INT], pt->Vol_sphere, pt->beam_obj);
+                L_nu_bremss_ep = j_nu_to_L_nu_src(pt->j_bremss_ep[NU_INT], pt->Vol_region, pt->beam_obj);
                 //nuL_nu_ep_brem = L_nu_bremss_ep*nu_src;
                 F_nu_bremss_ep_obs = L_nu_src_to_F_nu(L_nu_bremss_ep, pt->beam_obj, pt->z_cosm, pt->dist);
                 pt->nuFnu_bremss_ep_obs[NU_INT] = F_nu_bremss_ep_obs * pt->nu_bremss_ep_obs[NU_INT];

@@ -395,11 +395,11 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
                 E_acc+=delta_E_acc;
                 //--- Inj from ACC To Radiative
                 for (TMP = 0; TMP < E_SIZE; TMP++) { 
-                    N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]))*Vol_acc/pt_spec_rad->Vol_sphere;
+                    N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]))*Vol_acc/pt_spec_rad->Vol_region;
                 }
             }else{
                 for (TMP = 0; TMP < E_SIZE; TMP++) { 
-                    N_escaped[TMP] = pt_ev->deltat * pt_ev->Q_inj[TMP] * pt_ev->T_inj_profile[T]*pt_spec_acc->Vol_sphere/pt_spec_rad->Vol_sphere;
+                    N_escaped[TMP] = pt_ev->deltat * pt_ev->Q_inj[TMP] * pt_ev->T_inj_profile[T]*pt_spec_acc->Vol_region/pt_spec_rad->Vol_region;
                     N_acc[TMP]=N_escaped[TMP];
                 }
             }

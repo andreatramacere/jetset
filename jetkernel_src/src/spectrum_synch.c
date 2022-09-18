@@ -163,13 +163,13 @@ void spettro_sincrotrone(int Num_file, struct blob * pt) {
 
         	//=============================
             //Fluxes transformations and n_Synch
-            L_nu_Sync = I_nu_to_L_nu_src(S_nu, pt->Surf_sphere, pt->beam_obj); /*erg s^-1  Hz^-1 */
+            L_nu_Sync = I_nu_to_L_nu_src(S_nu, pt->Surf_region, pt->beam_obj); /*erg s^-1  Hz^-1 */
             nu_src = nu_blob_to_nu_src(pt->nu_Sync[NU_INT], pt->beam_obj, pt->z_cosm);
             nuL_nu_Sync = L_nu_Sync*nu_src; /* erg*s^-1 */
             F_nu_Sync_obs = L_nu_src_to_F_nu(L_nu_Sync, pt->beam_obj, pt->z_cosm, pt->dist);
             pt->nuF_nu_Sync_obs[NU_INT] = F_nu_Sync_obs*pt->nu_Sync_obs[NU_INT];
             //Gould correction factor
-            pt->n_Sync[NU_INT] =0.75*I_nu_to_n(pt->I_nu_Sync[NU_INT], pt->nu_Sync[NU_INT]);
+            pt->n_Sync[NU_INT] =pt->n_sync_corr_factor*I_nu_to_n(pt->I_nu_Sync[NU_INT], pt->nu_Sync[NU_INT]);
      
 
             //=============================

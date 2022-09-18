@@ -225,6 +225,10 @@ struct blob MakeBlob() {
     spettro_root.B = 0.1;
     spettro_root.sin_psi = 1.0;
     spettro_root.R = 1e15;
+    spettro_root.h_sh = 1;
+    spettro_root.R_in_sh =  0;
+    spettro_root.R_sh =  spettro_root.R;
+    sprintf(spettro_root.GEOMETRY, "spherical");
     sprintf(spettro_root.BEAMING_EXPR, "delta");
     spettro_root.BulkFactor = 10;
     spettro_root.beta_Gamma=eval_beta_gamma(spettro_root.BulkFactor);
@@ -370,11 +374,13 @@ void InitRadiative(struct blob *pt_base){
     //========================================================
     // Geometry Setup
     //========================================================
-    pt_base->Vol_sphere = V_sphere(pt_base->R);
-    pt_base->Surf_sphere = S_sphere(pt_base->R);
+    pt_base->R_in_sh =  pt_base->R_sh*(1-pt_base->h_sh);
+    set_R_Sync(pt_base);
+    pt_base->Vol_region = V_region(pt_base);
+    pt_base->Surf_region = S_sphere(pt_base);
     SetBeaming(pt_base);
     pt_base->beta_Gamma=eval_beta_gamma(pt_base->BulkFactor);
-
+    
 
     
     //========================================================
@@ -534,12 +540,12 @@ void Init(struct blob *pt_base, double luminosity_distance) {
 
     if (pt_base->verbose) {     
         printf("******************************  Geometry  *********************************\n");
-        printf("Volume for Spherical Geom.=%e\n", pt_base->Vol_sphere);
+        printf("Volume Geom.=%e\n", pt_base->Vol_region);
     }
     
     if (strcmp(pt_base->PARTICLE, "electrons") == 0) {
         InitNe(pt_base);
-        pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N_e;
+        pt_base->N_tot_e_Sferic = pt_base->Vol_region * pt_base->N_e;
         FindNe_NpGp(pt_base);
         EvalU_e(pt_base);
         
@@ -561,9 +567,9 @@ void Init(struct blob *pt_base, double luminosity_distance) {
 
     } else if (strcmp(pt_base->PARTICLE, "protons") == 0) {
         Init_Np_Ne_pp(pt_base);        
-        pt_base->N_tot_p_Sferic = pt_base->Vol_sphere * pt_base->N_p;             
+        pt_base->N_tot_p_Sferic = pt_base->Vol_region * pt_base->N_p;             
         EvalU_p(pt_base);             
-        pt_base->N_tot_e_Sferic = pt_base->Vol_sphere * pt_base->N_e_pp;
+        pt_base->N_tot_e_Sferic = pt_base->Vol_region * pt_base->N_e_pp;
         EvalU_e(pt_base);
         FindNe_NpGp(pt_base);
         if (pt_base->verbose) {
