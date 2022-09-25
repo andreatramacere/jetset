@@ -419,7 +419,7 @@ void Init_Np_Ne_pp(struct blob *pt)
     build_Q_inj_e_second(pt);
     SetDistr(pt);
     Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Q_inj_e_second);
-    CooolingEquilibrium(pt,pt->T_esc_e_second);
+    CoolingEquilibrium(pt,pt->T_esc_e_second);
     pt->Distr_e_done = 1;
     pt->N_0e = pt->N_0;
     

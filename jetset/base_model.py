@@ -369,9 +369,14 @@ class Model(object):
         dep_par._func = dep_par._eval_par_func
         dep_par._master_par_list=master_par_list
         for p in master_par_list:
-            m = self.parameters.get_par_by_name(p)
-            dep_par._add_master_par(m)
-            m._add_depending_par(dep_par)
+            try:
+                m = self.parameters.get_par_by_name(p)
+                dep_par._add_master_par(m)
+                m._add_depending_par(dep_par)
+            except Exception as e:
+                message='problem with parameter name: %s'%p
+                message+='\nexception:%s'%str(e)
+                raise RuntimeError(message)
 
         for p in master_par_list:
 

@@ -139,9 +139,10 @@ struct blob {
     double dist;
     double z_cosm;
     double Vol_region;
-    double R_sh,h_sh,R_in_sh;
+    double R_sh,h_sh,R_ext_sh;
     double Surf_region,R_sync;
     double R_sync_self_abs;
+    double R_sync_n_photons;
     double n_sync_corr_factor;
     char GEOMETRY[64];
 
@@ -740,6 +741,7 @@ struct jet_energetic{
     double U_Synch, U_Synch_DRF;
     double U_Disk, U_BLR, U_DT, U_CMB, U_Star;
     double U_Disk_DRF, U_BLR_DRF, U_DT_DRF, U_CMB_DRF, U_Star_DRF;
+    double U_seed_tot;
     double L_Sync_rf, L_SSC_rf, L_EC_Disk_rf,L_EC_BLR_rf, L_EC_DT_rf,L_EC_CMB_rf, L_EC_Star_rf, L_pp_gamma_rf;
     double jet_L_Sync,jet_L_SSC, jet_L_EC_Disk, jet_L_EC_BLR, jet_L_EC_Star, jet_L_EC_DT,jet_L_EC_CMB,jet_L_pp_gamma;
     double jet_L_rad,jet_L_kin, jet_L_tot, jet_L_e, jet_L_B, jet_L_p_cold, jet_L_p;
@@ -866,7 +868,7 @@ double Adiabatic_Cooling_time(struct temp_ev *pt, struct blob *pt_spec, double R
 int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],unsigned int size);
 //void free_tempe_ev(struct temp_ev *pt_ev);
 void alloc_temp_ev_array(double ** pt,int size);
-void CooolingEquilibrium(struct blob * pt, double T_esc);
+void CoolingEquilibrium(struct blob * pt, double T_esc);
 double IntegrateCooolingEquilibrium( struct blob *pt,double gamma, double T_esc );
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1);
 double update_jet_expansion(struct blob *pt_spec, struct temp_ev *pt_ev, double t);
@@ -1256,7 +1258,7 @@ void Build_I_nu_Star(struct blob *pt_d);
 double eval_I_nu_Star_disk_RF(struct blob *pt,double nu_Star_disk_RF);
 //double eval_J_nu_Star_disk_RF(struct spettro *pt, double I_nu_Star_disk_RF);
 double eval_I_nu_Star_blob_RF(struct blob *pt, double nu_blob_RF);
-double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu);
+//double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu);
 double eval_Star_L_nu(struct blob *pt, double nu_Star_disk_RF);
 double eval_Star_L(struct blob *pt, double T_Star);
 

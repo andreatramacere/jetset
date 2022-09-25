@@ -116,37 +116,38 @@ double Sync_self_abs_int(struct blob *pt,unsigned int  ID){
 // see Kataoka Thesis, page 299
 // tau_nu in I_nu=alfa_nu*R, so we multiply by 0.5
 double solve_S_nu_Sync(struct blob * pt, unsigned int  NU_INT){
-	double S_nu,tau_nu;
-    pt->I_nu_Sync[NU_INT] = 0.0;
+	double S_nu;
+    // pt->I_nu_Sync[NU_INT] = 0.0;
 
 
-	if (pt->do_Sync == 2) {
-		tau_nu = 2 * pt->R_sync_self_abs * pt->alfa_Sync[NU_INT];
-		if (tau_nu > 1e-4) {
-			pt->I_nu_Sync[NU_INT] =
-					(pt->j_Sync[NU_INT] / pt->alfa_Sync[NU_INT])*
-					(1 - exp(-tau_nu*0.5));
+	// if (pt->do_Sync == 2) {
+	// 	tau_nu = 2 * pt->R_sync_self_abs * pt->alfa_Sync[NU_INT];
+	// 	if (tau_nu > 1e-4) {
+	// 		pt->I_nu_Sync[NU_INT] =
+	// 				(pt->j_Sync[NU_INT] / pt->alfa_Sync[NU_INT])*
+	// 				(1 - exp(-tau_nu*0.5));
 
-        } else {
-			pt->I_nu_Sync[NU_INT] =
-					(pt->j_Sync[NU_INT] / pt->alfa_Sync[NU_INT])*
-					( tau_nu*0.5 - (1.0 / 4.0) * tau_nu * tau_nu*0.5*0.5);
+    //     } else {
+	// 		pt->I_nu_Sync[NU_INT] =
+	// 				(pt->j_Sync[NU_INT] / pt->alfa_Sync[NU_INT])*
+	// 				( tau_nu*0.5 - (1.0 / 4.0) * tau_nu * tau_nu*0.5*0.5);
 			
-		}
-	}
+	// 	}
+	// }
 
-	//==========================
-	//Radiative solution for no self abs
-	//limit of S_nu,alfa->0=(4/3)*R
-	if (pt->do_Sync == 1) {
-		pt->I_nu_Sync[NU_INT]=pt->j_Sync[NU_INT] * pt->R_sync;
-	}
-	if (pt->verbose>1) {
-		printf("#-> nu=%e j=%e alfa=%e tau_nu=%e  I_nu=%e\n", pt->nu_Sync[NU_INT], pt->j_Sync[NU_INT],
-				pt->alfa_Sync[NU_INT], tau_nu, pt->I_nu_Sync[NU_INT]);
-	}
-
-    S_nu = eval_S_nu_Sync(pt, pt->j_Sync[NU_INT], pt->alfa_Sync[NU_INT]); 
+	// //==========================
+	// //Radiative solution for no self abs
+	// //limit of S_nu,alfa->0=(4/3)*R
+	// if (pt->do_Sync == 1) {
+	// 	pt->I_nu_Sync[NU_INT]=pt->j_Sync[NU_INT] * pt->R_sync;
+	// }
+	// if (pt->verbose>1) {
+	// 	printf("#-> nu=%e j=%e alfa=%e tau_nu=%e  I_nu=%e\n", pt->nu_Sync[NU_INT], pt->j_Sync[NU_INT],
+	// 			pt->alfa_Sync[NU_INT], tau_nu, pt->I_nu_Sync[NU_INT]);
+	// }
+    
+    S_nu = eval_S_nu_Sync(pt, pt->j_Sync[NU_INT], pt->alfa_Sync[NU_INT]);
+    pt->I_nu_Sync[NU_INT]=I_nu_to_L_nu_blob(S_nu,pt->Surf_region)/(16*pi*pt->R_sync_n_photons*pt->R_sync_n_photons); 
     return S_nu;
 }
 
@@ -192,6 +193,7 @@ void set_R_Sync(struct blob * pt){
             //limit of S_nu,alfa->0=(4/3)*R
             pt->R_sync = pt->R* four_by_three;
             pt->n_sync_corr_factor=0.75;
+            pt->R_sync_n_photons=pt->R;
 
         }
 
@@ -200,6 +202,8 @@ void set_R_Sync(struct blob * pt){
             pt->R_sync_self_abs = R_sync_Shell;
             pt->R_sync = R_sync_Shell*(four_by_three);
             pt->n_sync_corr_factor=1.0;
+            //NOTE: This is a crude approximation, should be improved 
+            pt->R_sync_n_photons=pt->R_sh;
         }
         else {
             printf("GEOMETRY variable set to wrong value, possible spherical or spherical_shell \n");

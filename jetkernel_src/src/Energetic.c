@@ -406,6 +406,8 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     energetic.U_Disk = I_nu_to_Uph(pt->nu_Disk, pt->I_nu_Disk, pt->NU_INT_MAX_Disk);
     energetic.U_Star = I_nu_to_Uph(pt->nu_Star, pt->I_nu_Star, pt->NU_INT_MAX_Star);
 
+    energetic.U_seed_tot = energetic.U_Synch+ energetic.U_BLR + energetic.U_DT + energetic.U_Disk + energetic.U_Star;
+
     energetic.U_Synch_DRF = energetic.U_Synch*(pt->beam_obj*pt->beam_obj*pt->beam_obj*pt->beam_obj);
     energetic.U_BLR_DRF = I_nu_to_Uph(pt->nu_BLR_disk_RF, pt->I_nu_BLR_disk_RF, pt->NU_INT_MAX_BLR);
     energetic.U_DT_DRF = I_nu_to_Uph(pt->nu_DT_disk_RF, pt->I_nu_DT_disk_RF, pt->NU_INT_MAX_DT);

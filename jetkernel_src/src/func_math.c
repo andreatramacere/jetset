@@ -573,7 +573,7 @@ double V_region(struct blob *pt ) {
 
 	else if (strcmp(pt->GEOMETRY, "spherical_shell") == 0) {
         V = four_by_three_pi * pt->R_sh * pt->R_sh* pt->R_sh;
-		V = V - four_by_three_pi *pt->R_in_sh * pt->R_in_sh * pt->R_in_sh;
+		V = four_by_three_pi * pt->R_ext_sh * pt->R_ext_sh * pt->R_ext_sh -V;
 	}
 
 	else {
@@ -591,7 +591,7 @@ double S_sphere(struct blob *pt ) {
     }
 
 	else if (strcmp(pt->GEOMETRY, "spherical_shell") == 0) {
-        S = four_pi * pt->R_sh * pt->R_sh;
+        S = four_pi * pt->R_ext_sh * pt->R_ext_sh;
 	}
 
 	else {

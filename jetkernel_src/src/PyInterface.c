@@ -226,7 +226,7 @@ struct blob MakeBlob() {
     spettro_root.sin_psi = 1.0;
     spettro_root.R = 1e15;
     spettro_root.h_sh = 1;
-    spettro_root.R_in_sh =  0;
+    spettro_root.R_ext_sh =  0;
     spettro_root.R_sh =  spettro_root.R;
     sprintf(spettro_root.GEOMETRY, "spherical");
     sprintf(spettro_root.BEAMING_EXPR, "delta");
@@ -374,7 +374,7 @@ void InitRadiative(struct blob *pt_base){
     //========================================================
     // Geometry Setup
     //========================================================
-    pt_base->R_in_sh =  pt_base->R_sh*(1-pt_base->h_sh);
+    pt_base->R_ext_sh =  pt_base->R_sh*(1+pt_base->h_sh);
     set_R_Sync(pt_base);
     pt_base->Vol_region = V_region(pt_base);
     pt_base->Surf_region = S_sphere(pt_base);
@@ -435,6 +435,14 @@ void InitRadiative(struct blob *pt_base){
     pt_base->pp_racc_gamma = 1.0;
     pt_base->pp_racc_nu_mu = 1.0;
 
+    //========================================================
+    // EC  Initialization
+    //========================================================
+    if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1 || pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1 || pt_base->do_EC_CMB == 1 || pt_base->do_Disk==1 || pt_base->do_DT==1 || pt_base->do_Star==1) 
+        {
+                
+                spectra_External_Fields(1, pt_base);
+        }
     //========================================================
 
 }
@@ -647,8 +655,6 @@ void Run_SED(struct blob *pt_base){
 	if (pt_base->do_IC) {
 		if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1 || pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1 || pt_base->do_EC_CMB == 1 || pt_base->do_Disk==1 || pt_base->do_DT==1 || pt_base->do_Star==1) 
         {
-                
-                spectra_External_Fields(1, pt_base);
                 if (pt_base->do_EC_Star == 1) {
                     //if (pt_base->verbose) {
                     //    printf("************* Disk ****************\n");

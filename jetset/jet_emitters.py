@@ -255,7 +255,7 @@ class BaseEmittersDistribution(object):
             self.n_gamma_e_second_inj[np.isinf(self.n_gamma_e_second_inj)] = 0
 
 
-    def _plot(self,m, p, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None):
+    def _plot(self,m, p, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None, loglog=False):
 
         if hasattr(self,'_jet'):
             if self._jet is not None:
@@ -302,8 +302,9 @@ class BaseEmittersDistribution(object):
                         eq= self.gamma_cooling_eq_second* (m_e * c * c).to(energy_unit).value
                     else:
                         eq = self.gamma_cooling_eq_second
-
-                    p.ax.axvline(np.log10(eq), ls='--', label='cooling. eq. second.', lw=0.5, c='r')
+                    if loglog is True:
+                        eq = np.log10(eq)
+                    p.ax.axvline(eq, ls='--', label='cooling. eq. second.', lw=0.5, c='r')
 
                 if hasattr(self, 'gamma_e_second_inj'):
                     m(self.gamma_e_second_inj,
@@ -322,14 +323,14 @@ class BaseEmittersDistribution(object):
         if p is None:
             p = PlotPdistr(loglog=loglog)
         m=getattr(p,'plot_distr')
-        self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label)
+        self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label,loglog=loglog)
         return p
 
     def plot2p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None,loglog=False):
         if p is None:
             p = PlotPdistr(loglog=loglog)
         m=getattr(p,'plot_distr2p')
-        self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label)
+        self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label,loglog=loglog)
 
         return p
 
@@ -337,7 +338,7 @@ class BaseEmittersDistribution(object):
         if p is None:
             p = PlotPdistr(loglog=loglog)
         m=getattr(p,'plot_distr3p')
-        self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label)
+        self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label,loglog=loglog)
         return p
 
 

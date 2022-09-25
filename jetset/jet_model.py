@@ -9,6 +9,7 @@ import copy
 import warnings
 import os
 from astropy import units as u
+from astropy import constants
 from contextlib import redirect_stdout
 import io
 
@@ -152,7 +153,7 @@ class JetBase(Model):
         self._electron_distribution_dic= None
         self._external_photon_fields_dic= None
         self._original_emitters_distr = None
-
+        self._energetic = None
         self._setup(emitters_distribution,emitters_distribution_log_values,beaming_expr,emitters_type)
 
 
@@ -217,10 +218,13 @@ class JetBase(Model):
             _model['custom_emitters_distribution'] =self._original_emitters_distr
             _model['emitters_distribution_class'] = 'EmittersDistribution'
         else:
-            raise  RuntimeError('emitters distribuion type not valid',type(self._emitters_distribution))
+            raise  RuntimeError('emitters distribution type not valid',type(self._emitters_distribution))
 
         if hasattr(self,'T_esc_e_second'):
             _model['T_esc_e_second']=self.T_esc_e_second
+        
+        if hasattr(self,'geometry'):
+            _model['geometry']=self.geometry
 
         _model['beaming_expr'] = self._beaming_expr
         _model['spectral_components_name'] = self.get_spectral_component_names_list()
@@ -287,6 +291,7 @@ class JetBase(Model):
         self.cosmo = _model['cosmo']
         self.model_type = 'jet'
         self.name = _model['name']
+        self.geometry=_model['geometry']
         self.set_blob()
         self.parameters = JetModelParameterArray(model=self)
 
@@ -1200,6 +1205,7 @@ class JetBase(Model):
         print('-'*80)
         print("type:",self.__class__.__name__)
         print("name: %s  " % (self.name))
+        print("geometry: %s  " % (self.geometry))
         print('')
         print('%s distribution:'%self._emitters_type)
         print(" type: %s  " % (self._emitters_distribution_name))
@@ -1226,7 +1232,9 @@ class JetBase(Model):
                 print(' accr_rate: %e (M_sun/yr)'%(yr*self._blob.accr_rate/BlazarSED.m_sun))
                 print(' accr_rate Edd.: %e (M_sun/yr)'%(yr*self._blob.accr_Edd/BlazarSED.m_sun))
 
-
+        if 'EC_Star' in self.EC_components_list:
+            print('Star:')
+            print(' Star radius %e (cm)'%self._blob.R_Star, ',%e (R_Sun)'%(self._blob.R_Star/constants.R_sun.to('cm').value))
             print('')
         print('radiative fields:')
         print (" seed photons grid size: ", self.nu_seed_size)
@@ -1292,7 +1300,10 @@ class JetBase(Model):
     def set_blob(self):
         if hasattr(self, 'T_esc_e_second'):
             if self.T_esc_e_second is None:
-                self._blob.T_esc_e_second = self.parameters.R.val / BlazarSED.vluce_cm
+                if self.geometry == 'spherical':
+                    self._blob.T_esc_e_second = self.parameters.R.val / BlazarSED.vluce_cm
+                else:
+                    self._blob.T_esc_e_second = self.parameters.R_sh.val*self.parameters.h_sh.val / BlazarSED.vluce_cm
             else:
                 self._blob.T_esc_e_second = self.T_esc_e_second
         if self.emitters_distribution._user_defined is True:
@@ -1392,10 +1403,10 @@ class JetBase(Model):
     def _build_energetic_dict(self):
         self.energetic_dict={}
         BlazarSED.SetBeaming(self._blob)        
-        _energetic = BlazarSED.EnergeticOutput(self._blob)
+        self._energetic = BlazarSED.EnergeticOutput(self._blob)
         _par_array=ModelParameterArray()
 
-        _name = [i for i in _energetic.__class__.__dict__.keys() if i[:1] != '_']
+        _name = [i for i in self._energetic.__class__.__dict__.keys() if i[:1] != '_']
         _par_array.add_par(ModelParameter(name='BulkLorentzFactor', val=self._blob.BulkFactor, units='',par_type='jet-bulk-factor'))
         self.energetic_dict['BulkLorentzFactor']= self._blob.BulkFactor
         try:
@@ -1420,11 +1431,11 @@ class JetBase(Model):
                 if units == 'skip_this':
                     pass
                 else:
-                    self.energetic_dict[_n]=getattr(_energetic, _n)
+                    self.energetic_dict[_n]=getattr(self._energetic, _n)
 
-                    _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
+                    _par_array.add_par(ModelParameter(name=_n, val=getattr(self._energetic, _n), units=units,par_type=par_type))
         except Exception as e:
-            print('_energetic',_energetic)
+            print('_energetic',self._energetic)
             raise RuntimeError('energetic_report failed',e)
 
         return  _par_array
@@ -1482,7 +1493,7 @@ class JetBase(Model):
             i=np.argwhere(i==True)
             self.energetic_report_table.remove_rows(i)
 
-            _d_l=['U_Disk','U_BLR','U_DT','U_CMB','U_Synch_DRF']
+            _d_l=['U_Disk','U_BLR','U_DT','U_CMB','U_Synch_DRF','U_Star']
             i=[]
             for n in self.energetic_report_table['name']:
                 if n in _d_l:
@@ -1607,6 +1618,12 @@ class Jet(JetBase):
         electron_distribution_log_values
         proton_distribution_log_values
         """
+        if electron_distribution is not None and emitters_type == 'protons':
+            raise RuntimeError("if you provide an electron_distribution, you can't set emitters_type=",emitters_type, 'use emitters_distribution instead')
+        
+        if proton_distribution is not None and emitters_type == 'electrons':
+            raise RuntimeError("if you provide a proton_distribution, you can't set emitters_type=",emitters_type, 'use emitters_distribution instead')
+
         if electron_distribution is not None:
             emitters_type = 'electrons'
             emitters_distribution= electron_distribution
@@ -1926,23 +1943,10 @@ class GalacticBeamed(Jet):
                  electron_distribution_log_values=None,
                  proton_distribution_log_values=None,
                  geometry='spherical'):
-        
         if name is None:
             _name = 'unbeamed'
         else:
             _name = name = clean_var_name(name)
-
-        if electron_distribution is not None:
-            emitters_type = 'electrons'
-            emitters_distribution= electron_distribution
-        if electron_distribution_log_values is not None:
-            emitters_distribution_log_values = electron_distribution_log_values
-
-        if proton_distribution is not None:
-            emitters_type = 'protons'
-            emitters_distribution= proton_distribution
-        if proton_distribution_log_values is not None:
-            emitters_distribution_log_values = proton_distribution_log_values
 
         if np.isscalar(distance):
             _d=distance
@@ -1953,19 +1957,23 @@ class GalacticBeamed(Jet):
                 raise RuntimeError('distance must be either an astropy unit object convertible to cm, or a scalar in cm')
         
         cosmo=Cosmo(DL_cm=_d,verbose=False)
-
+        
         super(GalacticBeamed,self).__init__(cosmo=cosmo,
                                     T_esc_e_second=T_esc_e_second,
                                     name=_name,
                                     emitters_type=emitters_type,
                                     emitters_distribution=emitters_distribution,
                                     emitters_distribution_log_values=emitters_distribution_log_values,
+                                    electron_distribution=electron_distribution,
+                                    proton_distribution=proton_distribution,
+                                    electron_distribution_log_values=electron_distribution_log_values,
+                                    proton_distribution_log_values=proton_distribution_log_values,
                                     beaming_expr=beaming_expr,
                                     jet_workplace=jet_workplace,
                                     verbose=verbose,
                                     clean_work_dir=clean_work_dir,
                                     geometry=geometry)
-
+        
         if name is None or name == '':
             if self.emitters_distribution.emitters_type == 'electrons':
                 name = 'galactic_beamed_leptonic'
@@ -2013,10 +2021,6 @@ class GalacticUnbeamed(GalacticBeamed):
                  electron_distribution_log_values=None,
                  proton_distribution_log_values=None,
                  geometry='spherical'):
-        
-   
-        
-
         super(GalacticUnbeamed,self).__init__(distance=distance,
                                             name=name,
                                             emitters_type=emitters_type,
@@ -2032,8 +2036,6 @@ class GalacticUnbeamed(GalacticBeamed):
                                             electron_distribution_log_values=electron_distribution_log_values,
                                             proton_distribution_log_values=proton_distribution_log_values,
                                             geometry=geometry)
-
-        
 
         if name is None or name == '':
             if self.emitters_distribution.emitters_type == 'electrons':
@@ -2051,6 +2053,4 @@ class GalacticUnbeamed(GalacticBeamed):
         self.parameters.R_H.hidden=True
     
         self.set_external_field_transf('disk')
-    
-    def _R_H_Star(self,R_H_Star):
-        return R_H_Star
+  

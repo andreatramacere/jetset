@@ -41,8 +41,9 @@ void spectra_External_Fields(int Num_file, struct blob *pt) {
 
 
 	if (pt->do_EC_Star==1 || pt->do_Star==1){
-		set_EC_stat_pre(pt, pt->R_Star);
+		set_EC_stat_pre(pt, -1);
     	Build_I_nu_Star(pt);
+		set_EC_stat_post(pt);
     }
 	if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 1 || pt->do_Disk == 1 || pt->do_EC_DT == 1 || pt->do_DT ==1)
 	{
@@ -218,18 +219,18 @@ double eval_I_nu_Star_disk_RF(struct blob *pt,double nu_Star_disk_RF){
 	return eval_Star_L_nu(pt,nu_Star_disk_RF)/(16*pi*pi*pt->R_H_Star*pt->R_H_Star);
 }
 
-double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu){
-	int i;
-	double nu_disk_RF=nu_blob_RF_to_nu_disk_RF(pt->nu_blob_RF,pt->BulkFactor,pt->beta_Gamma,mu);
+// double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu){
+// 	int i;
+// 	double nu_disk_RF=nu_blob_RF_to_nu_disk_RF(pt->nu_blob_RF,pt->BulkFactor,pt->beta_Gamma,mu);
 
-	i=x_to_grid_index( pt->nu_Star_disk_RF,nu_disk_RF,pt->nu_seed_size);
-	if (i>0){
-		return pt->I_nu_Star_disk_RF[i]*pt->BulkFactor*(1-pt->beta_Gamma*mu);
-	}
-	else{
-		return 0;
-	}
-}
+// 	i=x_to_grid_index( pt->nu_Star_disk_RF,nu_disk_RF,pt->nu_seed_size);
+// 	if (i>0){
+// 		return pt->I_nu_Star_disk_RF[i]*pt->BulkFactor*(1-pt->beta_Gamma*mu);
+// 	}
+// 	else{
+// 		return 0;
+// 	}
+// }
 
 double eval_I_nu_Star_blob_RF(struct blob *pt, double nu_blob_RF){
 	int i;
@@ -267,7 +268,7 @@ void set_Star_geometry(struct blob *pt){
 	// pt->Star_mu_2=max(mu1,mu2);
 
 	// if (pt->verbose){
-	printf("theta_c_Star=%20.20e\n",pt->theta_c_Star);
+	//printf("theta_c_Star=%20.20e\n",pt->theta_c_Star);
 	// 
 	pt->mu_star = cos(pt->theta_Star*M_PI / 180.0);
 	pt->R_Star=sqrt(pt->L_Star/(4*pi*pt->T_Star*pt->T_Star*pt->T_Star*pt->T_Star*sigma_steph_boltz));

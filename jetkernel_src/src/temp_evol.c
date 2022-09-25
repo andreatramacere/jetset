@@ -628,14 +628,21 @@ double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc
 }
 
 
-void CooolingEquilibrium(struct blob * pt, double T_esc){
+void CoolingEquilibrium(struct blob * pt, double T_esc){
     //using Eq. 2.26 in Inoue&Takahara
     //http://adsabs.harvard.edu/doi/10.1086/177270
-    
+    struct jet_energetic energetic;
     double  a;
     unsigned int ID;
     double Uph;
     Uph=0;
+    //Uph += Power_Sync_Electron(pt);
+    Uph += I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR);
+    Uph += I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT);
+    Uph += I_nu_to_Uph(pt->nu_CMB, pt->I_nu_CMB, pt->NU_INT_MAX_CMB);
+    Uph += I_nu_to_Uph(pt->nu_Disk, pt->I_nu_Disk, pt->NU_INT_MAX_Disk);
+    Uph += I_nu_to_Uph(pt->nu_Star, pt->I_nu_Star, pt->NU_INT_MAX_Star);
+
     a=3.0*MEC2/(4.0*vluce_cm*(pt->UB + Uph)*SIGTH);
     pt->gamma_cooling_eq=a/T_esc;
     
@@ -645,6 +652,4 @@ void CooolingEquilibrium(struct blob * pt, double T_esc){
                                                 pt->griglia_gamma_Ne_log[ID], 
                                                 T_esc);
     }
-
-
 }

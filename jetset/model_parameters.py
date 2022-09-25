@@ -265,10 +265,11 @@ class ModelParameter(object):
         self._val.units=val
 
     def to(self, units):
-        if isinstance(self.units,u.Unit):
-            return self.val*self.units.to(units)
-        else:
-            message='the units of this parameter:'+self.units+', are not convertible'
+        try:
+            return (self.val*self.units).to(units)
+        except Exception as e:
+            print(e)
+            message='the units of this parameter:'+ str(self.units) +', are not convertible'
             warnings.warn(message)
     @property
     def fit_range(self):
@@ -357,22 +358,40 @@ class ModelParameter(object):
 
     def _eval_par_func(self):
         #transform par name and value into a local var
+        #print('working on ',self.name)
+        #TODO:THIS HOLDS ONLY FOR NUMPY <1.22, should be removed
+        warnings.filterwarnings('ignore', message='invalid value encountered in reciprocal*')
         if type(self._depending_par_expr) == str:
             _par_values= [None]*len(self._master_pars)
             for ID, _user_par_ in enumerate(self._master_pars):
-                _par_values[ID] = _user_par_.val_lin
+                _par_values[ID] = _user_par_.val_lin*_user_par_.units
                 #print('==> _eval_par_func',_user_par_.name,_par_values[ID])
                 exec(_user_par_.name + '=_par_values[ID]')
             res = eval(self._depending_par_expr)
         elif callable(self._depending_par_expr) is True:
             _par_values={}
             for ID, _user_par_ in enumerate(self._master_pars):
-                _par_values[_user_par_.name] = _user_par_.val_lin
+                _par_values[_user_par_.name] = _user_par_.val_lin*_user_par_.units
+                #print(_user_par_.name,_user_par_.val_lin)
             res=self._depending_par_expr(**_par_values)
+        #TODO:THIS HOLDS ONLY FOR NUMPY <1.22, should be removed
+        res=self._depending_par_expr(**_par_values)
+        _unit = None
+       
+        if hasattr(res,'unit'):
+            _unit=res.unit
+ 
+        if hasattr(res,'value'):
+            res=res.value
+            
 
         if self.islog is True:
             res=np.log10(res)
-
+       
+        #if _unit is not None:
+        #    print('units,',self.units,_unit)
+        #    assert(self.units==_unit)
+            
         return res
         #return eval(self.par_expr)
 
