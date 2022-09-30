@@ -101,7 +101,7 @@ class JetBase(Model):
         self.name = clean_var_name(name)
 
         self.model_type='jet'
-        self._emitters_type=emitters_type
+        #self._emitters_type=emitters_type
         self._scale='lin-lin'
     
         self._blob = self.build_blob(verbose=verbose)
@@ -208,10 +208,10 @@ class JetBase(Model):
         _model = {}
         _model['version']=get_info()['version']
         _model['name'] = self.name
+        _model['emitters_type'] = self.emitters_distribution.emitters_type
         if isinstance(self.emitters_distribution,JetkernelEmittersDistribution):
             _model['emitters_distribution'] = self._emitters_distribution_name
             _model['emitters_distribution_log_values'] = self._emitters_distribution_log_values
-            _model['emitters_type'] = self._emitters_type
             _model['emitters_distribution_class']='JetkernelEmittersDistribution'
         elif isinstance(self.emitters_distribution,EmittersDistribution):
             self._original_emitters_distr._copy_from_jet(self)
@@ -291,7 +291,12 @@ class JetBase(Model):
         self.cosmo = _model['cosmo']
         self.model_type = 'jet'
         self.name = _model['name']
-        self.geometry=_model['geometry']
+        if 'geometry' in _model.keys():
+            self.geometry=_model['geometry']
+        else:
+             warnings.warn('the model you are loading has not geometry specification. Assuming it is spherical!')
+             self.geometry='spherical'
+             
         self.set_blob()
         self.parameters = JetModelParameterArray(model=self)
 
@@ -300,6 +305,7 @@ class JetBase(Model):
             emitters_type=str(_model['emitters_type'])
         else:
             emitters_type = 'electrons'
+        #self._emitters_type=emitters_type
 
         if 'electron_distribution' in _model.keys():
             _v=_model['electron_distribution']
@@ -1180,7 +1186,7 @@ class JetBase(Model):
 
     def show_emitters_distribution(self):
         print('-'*80)
-        print('%s distribution:'%self._emitters_type)
+        print('%s distribution:'%self.emitters_distribution.emitters_type)
         print(" type: %s  " % (self._emitters_distribution_name))
         print(" gamma energy grid size: ", self.gamma_grid_size)
         print(" gmin grid : %e" % self._blob.
@@ -1207,7 +1213,7 @@ class JetBase(Model):
         print("name: %s  " % (self.name))
         print("geometry: %s  " % (self.geometry))
         print('')
-        print('%s distribution:'%self._emitters_type)
+        print('%s distribution:'%self.emitters_distribution.emitters_type)
         print(" type: %s  " % (self._emitters_distribution_name))
         print (" gamma energy grid size: ",self.gamma_grid_size)
         print (" gmin grid : %e"%self._blob.gmin_griglia)
