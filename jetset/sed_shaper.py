@@ -14,6 +14,7 @@ from .loglog_poly_model import LogParabolaEp,LogCubic,find_max_cubic,LogLinear
 from .analytical_model import Disk
 from .minimizer import fit_SED
 from .plot_sedfit import  PlotSED
+from .model_parameters import _show_table
 
 __all__=['filter_interval','find_E0','IC_fit_range','index','index_array','index_typecasting','peak_values',
          'SEDShape','spectral_index_range','sync_fit_range']
@@ -119,22 +120,54 @@ class index_array(object):
     Class to handle an array of :class:`index` objects
     """
     def __init__(self):
-        self.idx_array=[]
+        self.idx_list=[]
     
     def add_index(self,name=None,data_type=None,val=None,err=None,idx_range=[]):
-        self.idx_array.append(index(name=name,data_type=data_type,val=val,err=err,idx_range=idx_range))
+        self.idx_list.append(index(name=name,data_type=data_type,val=val,err=err,idx_range=idx_range))
     
     def get_by_name(self,name):
-        for pi in range(len(self.idx_array)):
-            if self.idx_array[pi].name==name:
-                return self.idx_array[pi]
+        for pi in range(len(self.idx_list)):
+            if self.idx_list[pi].name==name:
+                return self.idx_list[pi]
         else:
             print ("no index with name %s found"%name)
             return None
-            
+
+    def _build_table(self):
+        name=[]
+        log_nu1_range=[]
+        log_nu2_range=[]
+        photon=[]
+        photon_err=[]
+        spectral=[]
+        spectral_err=[]
+        for par in self.idx_list:
+            log_nu1_range.append(par.idx_range[0])
+            log_nu2_range.append(par.idx_range[1])
+            name.append(par.name)
+            if par.val is not None:
+                photon.append(par.val.photon)
+                photon_err.append(par.err.photon)
+                spectral.append(par.val.spectral)
+                spectral_err.append(par.err.spectral)
+            else:
+                photon.append(np.nan)
+                photon_err.append(np.nan)
+                spectral.append(np.nan)
+                spectral_err.append(np.nan)
+
+        names=['name','log(nu min) (Hz)','log(nu max) (Hz)','ph index','ph index err','sp index','sp index err']
+        self.table=Table(data=[name,log_nu1_range,log_nu2_range,photon,photon_err,spectral,spectral_err],names=names)
+        for n in names:
+            if n!='name':
+                self.table[n].format='%3.3f'
+
+
+
     def show_pars(self):
-        for par in self.idx_array:
-            par.show_val()
+        self._build_table()
+        _show_table(self.table)
+        
 #----------------------------------------------------
 
 #----------------------------------------------------
@@ -377,7 +410,7 @@ class SEDShape(object):
 
         print ('---> spectral inidces values')
         
-        for index in self.indices.idx_array:
+        for index in self.indices.idx_list:
         
             index.show_val()
         
@@ -413,7 +446,7 @@ class SEDShape(object):
 
         _dt=[('src_name','S32')]
         _v = [name]
-        for index in self.indices.idx_array:
+        for index in self.indices.idx_list:
             _dt.append((index.name, 'f8'))
             _dt.append((index.name + '_err', 'f8'))
             if index.val is not None:
@@ -462,7 +495,7 @@ class SEDShape(object):
         
         self.index_models=[]
         
-        for index in self.indices.idx_array:
+        for index in self.indices.idx_list:
             do_fit=self.check_adapt_range_size(self.sed_data.data['nu_data_log'],index,3,silent=silent)
             if do_fit==True:
                 loglog_poly=LogLinear()
@@ -498,7 +531,7 @@ class SEDShape(object):
 
             if silent is False:
                 print()
-
+        self.indices._build_table()
         print (section_separator)
             
 
