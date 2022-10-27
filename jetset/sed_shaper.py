@@ -467,15 +467,8 @@ class SEDShape(object):
             if do_fit==True:
                 loglog_poly=LogLinear()
                 loglog_pl=FitModel(cosmo=self.cosmo, name='%s'%index.name,loglog_poly=loglog_poly)
-                m,q=self.get_initial_index_values(index)
-                
-                loglog_pl.LogLinear.parameters.alpha.val=m
-                loglog_pl.LogLinear.parameters.alpha.fit_range=[m-2,m+2]
-                
-                loglog_pl.LogLinear.parameters.K.fit_range_min=q-5
-                loglog_pl.LogLinear.parameters.K.fit_range_max=q+5
-                loglog_pl.LogLinear.parameters.K.val=q
-                
+                self.get_initial_index_values(index,loglog_pl)
+             
                 mm,best_fit=fit_SED(loglog_pl,
                                  self.sed_data,
                                  10.**index.idx_range[0],
@@ -962,7 +955,7 @@ class SEDShape(object):
         return  do_fit
 
 
-    def get_initial_index_values(self,index):
+    def get_initial_index_values(self,index,loglog_pl):
         d=self.sed_data.data[np.logical_and(self.sed_data.data['nu_data_log']>=index.idx_range[0],self.sed_data.data['nu_data_log']<=index.idx_range[1])]
         id_min=np.argmin(d['nu_data_log'])
         id_max=np.argmax(d['nu_data_log'])
@@ -974,7 +967,13 @@ class SEDShape(object):
         m=(y2-y1)/(x2-x1)
         q=y1-m*x1
 
-        return m,q
+         
+        loglog_pl.LogLinear.parameters.alpha.val=m
+        loglog_pl.LogLinear.parameters.alpha.fit_range=[m-2,m+2]
+        
+        loglog_pl.LogLinear.parameters.K.fit_range_min=q-5
+        loglog_pl.LogLinear.parameters.K.fit_range_max=q+5
+        loglog_pl.LogLinear.parameters.K.val=q
 
 
 def find_E0(b,a,Ep):
