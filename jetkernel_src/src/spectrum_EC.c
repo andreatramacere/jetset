@@ -16,45 +16,111 @@
  * \brief CALCOLO DELLO SPETTRO EC
  *
  */
+double f_psi_EC(double R_ext,double R_H, double mu_s,double beaming,double phi){
+	double x2, cos_psi;
+	x2= (R_ext*R_ext)+(R_H*R_H);   
+    cos_psi=mu_s*(R_H/sqrt(x2))+(sqrt((1-(mu_s*mu_s)))*sqrt(1-((R_H*R_H)/x2)))*cos(phi);
+	
+	return ((1 - cos_psi) * (1 - cos_psi)) * pow(beaming,6) / x2;
+}
+
+double beaming_pattern_EC(double theta_s,double R_ext,double R_H,double Gamma){
+	double phi[100], y[100];
+	int i;
+	double delta_phi, beaming, mu_s;
+	beaming=get_beaming(Gamma,theta_s);
+	delta_phi=2*pi/100;
+	mu_s = cos(Deg_to_Rad * theta_s);
+	for (i = 0; i<100; i++) {
+		phi[i]=0+ (i*delta_phi);
+		y[i] = f_psi_EC(R_ext, R_H, mu_s, beaming, phi[i]);
+	}
+
+	return trapzd_array_linear_grid(phi, y,100);
+}
+
+double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma){
+	double y_theta, y_theta_0;
+
+	y_theta = beaming_pattern_EC(theta_s, R_ext, R_H_orig, Gamma);
+	y_theta_0 = beaming_pattern_EC(theta_s, R_ext, R_H_in, Gamma);
+	return y_theta / y_theta_0;
+}
 
 void set_EC_stat_pre(struct blob *pt, double R_ext_emit){
 	double R_H_lim;
-	//printf(" pre 1 pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
 	pt->EC_stat_orig=pt->EC_stat;
-	pt->EC_factor=1.0;
 	pt->R_H_orig=pt->R_H;
-	//theta_lim=2*(1/pt->BulkFactor)/Deg_to_Rad;
-	R_ext_emit=R_ext_emit*pt->R_ext_factor;
-	if ((pt->R_H>R_ext_emit) && (pt->EC_stat==1) && R_ext_emit>0){
+	if ((pt->R_H>R_ext_emit*2) && (pt->EC_stat==1) && R_ext_emit>0){
 		pt->EC_stat=0;
 
-		if (pt->theta>pt->EC_theta_lim){
-			pt->R_H=R_ext_emit*pt->R_H_scale_factor;
-			pt->EC_factor=((pt->R_H/pt->R_H_orig)*(pt->R_H/pt->R_H_orig));
-		}
-	
-		//else{
-		//	pt->R_H=R_lim;
-		//	pt->EC_factor=1.0/((pt->R_H/pt->R_H_orig)*(pt->R_H/pt->R_H_orig));
-		//}
+		pt->R_H=R_ext_emit*pt->R_H_scale_factor;
+		pt->EC_factor = ((pt->R_H / pt->R_H_orig) * (pt->R_H / pt->R_H_orig)) ;
+
 	}
-	//printf(" pre 2 pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
-	//printf("pt->R_H=%e pt->R_H_orig=%e R_H_lim=%e pt->EC_factor=%e\n",pt->R_H,pt->R_H_orig,R_lim, pt->EC_factor);
+	
 }
 
+void update_EC_for_bp(struct blob *pt, double R_ext_emit, unsigned int SIZE, double *nu_obs, double *nuFnu_obs)
+{
+	double j_nu, Fnu_ref, L_nu_EC_ref, nuFnu_obs_max, nuFnu_obs_ref, nu_ref;
+	double s_bp, s_actual, RH_in,RH_orig;
+	unsigned int nu_peak_ID, NU_INT, I_MAX;
+	RH_in = R_ext_emit * 0.5;
+	RH_orig =  pt->R_H_orig;
+	s_bp = scaling_function_EC(pt->theta, R_ext_emit, RH_in, RH_orig, pt->BulkFactor);
+
+	I_MAX = pt->nu_IC_size - 1;
+
+	nuFnu_obs_max = nuFnu_obs[0];
+	nu_peak_ID = 0;
+	for (NU_INT = 0; NU_INT < I_MAX; NU_INT++)
+	{
+		if (nuFnu_obs[NU_INT] > nuFnu_obs_max)
+		{
+			nuFnu_obs_max = nuFnu_obs[NU_INT];
+			nu_peak_ID = NU_INT;
+		}
+	}
+	pt->R_H = RH_in;
+	spectra_External_Fields(1, pt);
 	
-    
+	nu_ref = nu_obs[nu_peak_ID];
+	j_nu = rate_compton_GR(pt) * HPLANCK * nu_obs[nu_peak_ID];
+	L_nu_EC_ref = j_nu_to_L_nu_src(j_nu, pt->Vol_region, pt->beam_obj);
+	Fnu_ref = L_nu_src_to_F_nu(L_nu_EC_ref, pt->beam_obj, pt->z_cosm, pt->dist);
+	nuFnu_obs_ref = Fnu_ref * nu_obs[nu_peak_ID];
 
+	s_actual = nuFnu_obs_max / nuFnu_obs_ref;
 
-
-void set_EC_stat_post(struct blob *pt){
-		pt->EC_stat=pt->EC_stat_orig;
-		pt->EC_factor=1.0;
-		pt->R_H=pt->R_H_orig;
-		//printf("post pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
+	for (NU_INT = 0; NU_INT <= I_MAX; NU_INT++)
+	{
+		if (nuFnu_obs[NU_INT] > pt->emiss_lim)
+		{
+			nuFnu_obs[NU_INT] = nuFnu_obs[NU_INT] * (s_bp / s_actual);
+			//printf("R_H =%e, R_H_orig=%e\n", (pt->R_H, pt->R_H_orig));
+		}
+	}
+	pt->R_H_orig = RH_orig;
 }
-	
 
+void set_EC_stat_post(struct blob *pt, double R_ext_emit, unsigned int NU_SIZE, double *nu_obs, double *nuFnu_obs)
+{
+	if ((pt->R_H>R_ext_emit) && (pt->EC_stat==0) && R_ext_emit>0){
+		update_EC_for_bp(pt, R_ext_emit, NU_SIZE,  nu_obs, nuFnu_obs);
+	}
+
+	pt->EC_stat = pt->EC_stat_orig;
+	pt->R_H = pt->R_H_orig;
+	pt->EC_factor = 1;
+}
+
+void set_EC_stat_post_external_fields(struct blob *pt)
+{
+	pt->EC_stat = pt->EC_stat_orig;
+	pt->R_H = pt->R_H_orig;
+	pt->EC_factor = 1;	
+}
 
 void spettro_EC(int Num_file, struct blob *pt) {
     double L_nu_EC, F_nu_EC_obs,nu_peak;
@@ -65,9 +131,9 @@ void spettro_EC(int Num_file, struct blob *pt) {
     double * nu_start_EC, * nu_stop_EC, * nu_start_EC_obs, * nu_stop_EC_obs, nu_seed_max;
     unsigned int * NU_INT_STOP_EC;
     unsigned int NU_INT, I_MAX, stop;
-    
+	double R_ext_emit;
 
-    //============================================================
+	//============================================================
     //         inizio  loop sulle freq per spettro  compton
     //============================================================
     pt->TOT = 0;
@@ -99,8 +165,8 @@ void spettro_EC(int Num_file, struct blob *pt) {
 		nu_start_EC_obs = &(pt->nu_start_EC_Disk_obs);
     	nu_stop_EC_obs = &(pt->nu_stop_EC_Disk_obs);
     	NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_Disk);
-		set_EC_stat_pre(pt, pt->R_ext);
-    	if (pt->verbose>0) {
+		R_ext_emit= pt->R_ext;
+		if (pt->verbose>0) {
     		printf("nu_star_Disk=%e    nu_stop_Disk=%e\n",
     			pt->nu_start_Disk,
     			pt->nu_stop_Disk);
@@ -117,8 +183,8 @@ void spettro_EC(int Num_file, struct blob *pt) {
     	nu_start_EC_obs = &(pt->nu_start_EC_BLR_obs);
     	nu_stop_EC_obs = &(pt->nu_stop_EC_BLR_obs);
     	NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_BLR);
-		set_EC_stat_pre(pt, pt->R_BLR_out);
-    	if (pt->verbose>0) {
+		R_ext_emit = pt->R_BLR_out;
+		if (pt->verbose>0) {
 			printf("nu_star_BLR=%e    nu_stop_BLR=%e\n",
 					pt->nu_start_BLR,
 					pt->nu_stop_BLR);
@@ -136,7 +202,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
     	nu_start_EC_obs = &(pt->nu_start_EC_DT_obs);
     	nu_stop_EC_obs = &(pt->nu_stop_EC_DT_obs);
     	NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_DT);
-		set_EC_stat_pre(pt, pt->R_DT);
+		R_ext_emit = pt->R_DT;
 		//printf("pre R_H=%e R_DT=%e EC_Stat=%d\n",pt->R_H,pt->R_DT,pt->EC_stat);
     	if (pt->verbose>0) {
 			printf("nu_star_DT=%e    nu_stop_DT=%e\n",
@@ -157,8 +223,8 @@ void spettro_EC(int Num_file, struct blob *pt) {
     	nu_start_EC_obs = &(pt->nu_start_EC_Star_obs);
     	nu_stop_EC_obs = &(pt->nu_stop_EC_Star_obs);
     	NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_Star);
-		set_EC_stat_pre(pt, -1);
-    	if (pt->verbose>0) {
+		R_ext_emit = -1;
+		if (pt->verbose>0) {
 			printf("nu_start_Star=%e    nu_stop_Star=%e\n",
 					pt->nu_start_Star,
 					pt->nu_stop_Star);
@@ -177,8 +243,9 @@ void spettro_EC(int Num_file, struct blob *pt) {
     	nu_start_EC_obs = &(pt->nu_start_EC_CMB_obs);
     	nu_stop_EC_obs = &(pt->nu_stop_EC_CMB_obs);
     	NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_CMB);
-	    set_EC_stat_pre(pt, -1);
-    	if (pt->verbose>0) {
+		R_ext_emit = -1;
+		
+		if (pt->verbose>0) {
     		printf("nu_start_CMB=%e    nu_stop_CMB=%e\n",
     				pt->nu_start_CMB,
     				pt->nu_stop_CMB);
@@ -189,11 +256,11 @@ void spettro_EC(int Num_file, struct blob *pt) {
     }else{
 		printf("wrong EC \n ");
         exit(0);
+		
 	}
-	
-    
+	set_EC_stat_pre(pt, R_ext_emit);
 
-    gmax=Find_gmax(pt,pt->Ne,pt->griglia_gamma_Ne_log);
+	gmax=Find_gmax(pt,pt->Ne,pt->griglia_gamma_Ne_log);
 	numax_KN = 1000 * gmax * MEC2 / HPLANCK;
 	numax_TH = 1000 * (4.0 / 3.0) * pow(gmax, 2) * nu_seed_max;
 	if (HPLANCK * nu_seed_max * gmax / MEC2 > 0.1) {
@@ -273,7 +340,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
 									   HPLANCK * freq_array[NU_INT];
 				}
 				
-				pt->j_EC[NU_INT]= pt->j_EC[NU_INT] *pt->EC_factor;
+				pt->j_EC[NU_INT]= pt->j_EC[NU_INT];// *pt->EC_factor;
 
 
 				if (pt->verbose > 1) {
@@ -388,8 +455,9 @@ void spettro_EC(int Num_file, struct blob *pt) {
             //}
     	}
     }
-	set_EC_stat_post(pt);
-	//printf("post R_H=%e R_DT=%e EC_Stat=%d\n",pt->R_H,pt->R_DT,pt->EC_stat);
+	//set_EC_stat_post(pt, R_ext_emit, pt->nu_IC_size, freq_array_obs, nuFnu_obs_array);
+	set_EC_stat_post_external_fields(pt);
+	spectra_External_Fields(1, pt);
 	//===========================================
 	//    trova nu peak e Flux peak
 	//===========================================

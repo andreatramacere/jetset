@@ -393,7 +393,6 @@ struct blob {
     double R_H_orig;
     double EC_factor;
     double R_H_scale_factor;
-    double R_ext_factor;
     double EC_theta_lim;
 
     //--- STAR
@@ -925,7 +924,8 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
 void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, double luminosity_distance);
 
 double get_spectral_array(double * arr, struct blob *pt, unsigned int id);
-double get_array(double * arr, unsigned int id, unsigned int size);
+void set_spectral_array(double *arr, struct blob *pt, unsigned int id, double val);
+double get_array(double *arr, unsigned int id, unsigned int size);
 double get_elec_array(double * arr, struct blob *pt, unsigned int id);
 double get_temp_ev_N_gamma_array(double *arr, struct temp_ev *pt_ev, unsigned int row, unsigned int col);
 double get_temp_ev_N_time_array(double *arr, struct temp_ev *pt_ev, unsigned int id);
@@ -1228,7 +1228,11 @@ void spectra_External_Fields(int Num_file, struct blob *pt_d);
 void spettro_EC(int num_file, struct blob *);
 
 void set_EC_stat_pre(struct blob *pt, double R_lim);
-void set_EC_stat_post(struct blob *pt);
+void set_EC_stat_post_external_fields(struct blob *pt);
+void set_EC_stat_post(struct blob *pt, double R_ext_emit, unsigned int NU_SIZE, double *nu_obs, double *nuFnu_obs);
+double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma);
+double beaming_pattern_EC(double theta_s,double R_ext,double R_H,double Gamma);
+double f_psi_EC(double R_ext,double R_H, double mu_s,double beaming,double phi);
 
 /***  DISK PLANCK FUNCTIONS  *********/
 double eval_T_disk(struct blob *pt, double R);

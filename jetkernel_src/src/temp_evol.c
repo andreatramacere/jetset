@@ -644,7 +644,7 @@ void CoolingEquilibrium(struct blob * pt, double T_esc){
     Uph += I_nu_to_Uph(pt->nu_Star, pt->I_nu_Star, pt->NU_INT_MAX_Star);
 
     a=3.0*MEC2/(4.0*vluce_cm*(pt->UB + Uph)*SIGTH);
-    pt->gamma_cooling_eq=a/T_esc;
+    pt->gamma_cooling_eq=(a/T_esc);
     
     for (ID = 0; ID < pt->gamma_grid_size ; ID++){
         
