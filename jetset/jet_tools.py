@@ -1,7 +1,7 @@
 __author__ = "Andrea Tramacere"
 
 import os
-
+import numpy as np
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if on_rtd == True:
@@ -53,7 +53,7 @@ def build_emitting_region_dict(cosmo, beaming_expr='delta',emitters_type='electr
         model_dic['NH_cold_to_rel_e'] = JetModelDictionaryPar(ptype='cold_p_to_rel_e_ratio', vmin=0, vmax=None, punit='',froz=True, log=False)
 
     if beaming_expr == 'bulk_theta':
-        model_dic['theta'] = JetModelDictionaryPar(ptype='jet-viewing-angle', vmin=0, vmax=None, punit='deg')
+        model_dic['theta'] = JetModelDictionaryPar(ptype='jet-viewing-angle', vmin=0, vmax=180, punit='deg')
         # ['jet-viewing-angle',0.0,None,'deg']
         model_dic['BulkFactor'] = JetModelDictionaryPar(ptype='jet-bulk-factor', vmin=1.0, vmax=1E5,
                                                         punit='lorentz-factor')
@@ -113,7 +113,7 @@ def build_ExtFields_dic(EC_model_list,disk_type ):
 
                     model_dic['R_ext_Sw'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='Sw. radii')
 
-                    model_dic['accr_eff'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='')
+                    model_dic['accr_eff'] = JetModelDictionaryPar(ptype='Disk', vmin=0.06, vmax=0.1, punit='')
 
                     model_dic['M_BH'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='M_sun')
 
@@ -146,4 +146,4 @@ def build_ExtFields_dic(EC_model_list,disk_type ):
             ## ['DT',0.0,1.0,'']
     #print('----->', model_dic)
     return model_dic
-
+    

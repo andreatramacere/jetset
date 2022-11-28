@@ -243,16 +243,13 @@ class JetSpecComponent(object):
         return _x, _y
 
 
-
-
-    def update(self):
-        size = self._blob.nu_grid_size
-        x = zeros(size)
+    def _update_jetkernel_spectral_array(self,y):
+        size = self._blob_object.nu_grid_size
         y = zeros(size)
 
         for i in range(size):
-            x[i] = BlazarSED.get_spectral_array(self.nu_ptr, self._blob, i)
-            y[i] = BlazarSED.get_spectral_array(self.nuFnu_ptr, self._blob, i)
+            BlazarSED.set_spectral_array(self.nu_ptr, self._blob_object, i, y[i])
+            
 
 
     def show(self):
@@ -348,3 +345,77 @@ class SpecCompList(object):
     @property
     def table(self):
         return self._table
+
+
+def _f_psi_ring(R_ext, R_H, mu_s, d, phi):
+    x2 = R_ext**2+R_H**2
+    cos_psi = mu_s*(R_H/np.sqrt(x2))+(np.sqrt((1-mu_s**2))* np.sqrt(1-R_H**2/x2))*np.cos(phi)
+    return (1-cos_psi)**2/x2*d**6
+
+
+def _beaming_pattern(jet, theta_s, R_ext, R_H,):
+    mu_s = np.cos(np.radians(theta_s))
+    d = jet.get_beaming()
+    phi = np.linspace(0, 2*np.pi, 100)
+    y = _f_psi_ring(R_ext, R_H, mu_s, d, phi)
+    return np.trapz(y, phi)
+
+
+def _EC_scaling_function(jet, theta_s, R_ext, R_H):
+    y_theta = _beaming_pattern(jet, theta_s, R_ext, R_H)
+    y_theta_0 = _beaming_pattern(jet, theta_s, R_ext, 0)
+    return y_theta/y_theta_0
+
+def get_EC_ref_model(jet):
+    _jet = jet.clone()
+    _jet.set_external_field_transf('disk')
+    _jet.set_par("R_H", val=0)
+    _jet.set_par("theta", val=jet.parameters.theta.val)
+    
+    return _jet
+
+def update_EC_bp(jet,jet_ref_model):
+    _update_list = []
+    for sc_name in jet.EC_components_list:
+        sc = jet.spectral_components.get_spectral_component_by_name(sc_name)
+        if sc_name.startswith('EC') and sc.state == 'on' and jet.get_external_field_transf() == 'disk':
+            _update_list.append(sc)
+
+    
+    if len(_update_list) > 0:
+        
+        _update_list_SED_list = []
+    
+        for sc in _update_list:
+            if sc.name == 'EC_DT':
+                ec_sed_ref_DT = jet_ref_model.spectral_components.EC_DT.SED.nuFnu.max()
+                R_ext = jet.parameters.R_DT.val
+                if jet.parameters.R_H.val > R_ext:  
+                    s_bp = _EC_scaling_function(jet, jet.parameters.theta.val, R_ext, jet.parameters.R_H.val)
+                    s_actual = jet.spectral_components.EC_DT.SED.nuFnu.max()/ec_sed_ref_DT
+                    m=jet.spectral_components.EC_DT.SED.nuFnu.value> jet._blob.emiss_lim
+                    
+                    sc.SED.nuFnu[m] *=(s_bp/s_actual)
+                    sc._update_jetkernel_spectral_array(sc.SED.nuFnu.value)
+                    #sc.fill_SED()
+                    _update_list_SED_list.append(sc)
+
+            if sc.name == 'EC_BLR':
+                ec_sed_ref_BLR = jet_ref_model.spectral_components.BLR.SED.nuFnu.max()
+                R_ext = jet.parameters.R_BLR_out.val
+                if jet.parameters.R_H.val > R_ext:
+                    s_bp = jet._EC_scaling_function(jet, jet.parameters.theta.val, R_ext, jet.parameters.R_H.val)
+                    s_actual = jet.spectral_components.BLR.SED.nuFnu.max()/ec_sed_ref_BLR
+                    m = jet.spectral_components.BLR.SED.nuFnu.value > jet._blob.emiss_lim
+                    sc._update_jetkernel_spectral_array( sc.SED.nuFnu.value)
+                    sc.SED.nuFnu[m] *=(s_bp/s_actual)
+
+        #update Sum
+        if len(_update_list_SED_list) > 0:
+            y_sum = 0
+            for sc_name in _update_list_SED_list:
+                y_sum += sc.SED.nuFnu
+            y_sum[y_sum.value < jet._blob.emiss_lim] = jet._blob.emiss_lim * \
+                sc.SED._nuFnu_units
+            jet.spectral_components.Sum._update_jetkernel_spectral_array(y_sum)
+            jet.spectral_components.Sum.nuFnu=y_sum

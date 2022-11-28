@@ -7,6 +7,7 @@ import json
 import dill as pickle
 import warnings
 import inspect
+import numbers
 
 from .model_parameters import ModelParameterArray, ModelParameter
 from .spectral_shapes import SED
@@ -393,6 +394,18 @@ class Model(object):
     def add_user_par(self,name,val,units='',val_min=None,val_max=None):
         self.parameters.add_par(ModelParameter(name=name,units=units,val=val,val_min=val_min,val_max=val_max,par_type='user_defined'))
 
+
+    def set_fit_range(self,down_tol=0.1,up_tol=100):
+        for p in self.parameters.par_array:
+            if isinstance(p.val, numbers.Number):
+                if p.val_min is not None:
+                    p.fit_range_min=max(p.val_min,p.val_lin*down_tol)
+                else:
+                    p.fit_range_min = p.val_lin*down_tol
+                if p.val_max is not None:
+                    p.fit_range_max=min(p.val_max,p.val_lin *(1+up_tol))
+                else:
+                    p.fit_range_max = p.val_lin*(1+up_tol)
 
 class MultiplicativeModel(Model):
 

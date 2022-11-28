@@ -69,7 +69,7 @@ class ObsConstrain(object):
                 if kw =='indices':
                     self.indices=keywords[kw]
                     
-            for index in self.indices.idx_array:
+            for index in self.indices.idx_list:
                 index.show_val()
             
             self.beta_S=keywords['beta_S']

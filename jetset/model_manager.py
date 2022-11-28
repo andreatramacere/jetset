@@ -338,6 +338,7 @@ class FitModel(Model):
 
         return out_model
 
+    
     @classmethod
     def load_model(cls, file_name):
          c = pickle.load(open(file_name, "rb"))
@@ -373,6 +374,12 @@ class FitModel(Model):
 
         except Exception as e:
             raise RuntimeError(e)
+
+
+    def set_fit_range(self,down_tol=0.1,up_tol=100):
+        for m in self.components.components_list:
+            m.set_fit_range(down_tol=down_tol,up_tol=up_tol)
+                
 
     def clone(self):
         return self._build_model(pickle.loads(pickle.dumps(self, protocol=pickle.HIGHEST_PROTOCOL)))

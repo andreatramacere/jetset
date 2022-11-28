@@ -365,17 +365,14 @@ class ModelParameter(object):
             _par_values= [None]*len(self._master_pars)
             for ID, _user_par_ in enumerate(self._master_pars):
                 _par_values[ID] = _user_par_.val_lin*_user_par_.units
-                #print('==> _eval_par_func',_user_par_.name,_par_values[ID])
                 exec(_user_par_.name + '=_par_values[ID]')
             res = eval(self._depending_par_expr)
         elif callable(self._depending_par_expr) is True:
             _par_values={}
             for ID, _user_par_ in enumerate(self._master_pars):
                 _par_values[_user_par_.name] = _user_par_.val_lin*_user_par_.units
-                #print(_user_par_.name,_user_par_.val_lin)
             res=self._depending_par_expr(**_par_values)
-        #TODO:THIS HOLDS ONLY FOR NUMPY <1.22, should be removed
-        res=self._depending_par_expr(**_par_values)
+     
         _unit = None
        
         if hasattr(res,'unit'):
