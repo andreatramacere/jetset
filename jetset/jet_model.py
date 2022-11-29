@@ -13,7 +13,7 @@ from astropy import constants
 from contextlib import redirect_stdout
 import io
 
-from .jet_spectral_components import JetSpecComponent, SpecCompList, update_EC_bp, get_EC_ref_model
+from .jet_spectral_components import JetSpecComponent, SpecCompList, update_EC_bp, get_EC_ref_model 
 
 from .model_parameters import ModelParameterArray, ModelParameter, _show_table
 from .base_model import Model
@@ -1394,7 +1394,7 @@ class JetBase(Model):
         #print('-->',lin_nu.min(),lin_nu.max())
         if fill_SED is True:
             self._fill(lin_nu,lin_model)
-            if update_EC_beaming_pattern is True:
+            if update_EC_beaming_pattern is True and jet_ref_model is not None:
                 jet_ref_model.eval(update_EC_beaming_pattern=False)
                 update_EC_bp(self,jet_ref_model)
 

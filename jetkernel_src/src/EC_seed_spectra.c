@@ -21,7 +21,7 @@
 // Evaluation of external radiative fields
 //===============================================================
 
-void spectra_External_Fields(int Num_file, struct blob *pt) {
+void spectra_External_Fields(int Num_file, struct blob *pt, int set_EC){
 
     //==================================================================
 	//if (pt->verbose){
@@ -39,44 +39,70 @@ void spectra_External_Fields(int Num_file, struct blob *pt) {
     //=====================================================
 	pt->beaming_EC = pt->BulkFactor;
 
-
+	//printf("spectra_External_Fields 1  R_H_orig=%e, R_H=%e\n", pt->R_H_orig, pt->R_H);
 	if (pt->do_EC_Star==1 || pt->do_Star==1){
-		set_EC_stat_pre(pt, -1);
+		if (set_EC==1){
+			set_EC_stat_pre(pt, -1);
+		}
     	Build_I_nu_Star(pt);
-		set_EC_stat_post(pt);
+		if (set_EC == 1)
+		{
+			set_EC_stat_post(pt);
+		}
 	}
 	if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 1 || pt->do_Disk == 1 || pt->do_EC_DT == 1 || pt->do_DT ==1)
 	{
-		set_EC_stat_pre(pt, pt->R_ext);
+		if (set_EC == 1){
+			set_EC_stat_pre(pt, pt->R_ext);
+		}
 		Build_I_nu_Disk(pt);
-		set_EC_stat_post(pt);
+		if (set_EC == 1)
+		{
+			set_EC_stat_post(pt);
+		}
 	}
     if (pt->do_EC_BLR==1){
-		set_EC_stat_pre(pt, pt->R_BLR_out);
+		if (set_EC == 1)
+		{
+			set_EC_stat_pre(pt, pt->R_BLR_out);
+		}
 		Build_I_nu_BLR(pt);
-		set_EC_stat_post(pt);
+		if (set_EC == 1)
+		{
+			set_EC_stat_post(pt);
+		}
 	}
     if (pt->do_EC_DT==1 || pt->do_DT==1){
 		//printf("EC_stat=%d, R_H=%e\n",pt->EC_stat,pt->R_H);
-		set_EC_stat_pre(pt, pt->R_DT);
-    	Build_I_nu_DT(pt);
-		//printf("EC_stat=%d, R_H=%e\n",pt->EC_stat,pt->R_H);
-		set_EC_stat_post(pt);
+		if (set_EC == 1)
+		{
+			set_EC_stat_pre(pt, pt->R_DT);
+		}
+		Build_I_nu_DT(pt);
+		if (set_EC == 1)
+		{
+			set_EC_stat_post(pt);
+		}
 	}
-    if (pt->do_EC_CMB==1){
-		set_EC_stat_pre(pt, -1);
-    	Build_I_nu_CMB(pt);
-		set_EC_stat_post(pt);
+	if (pt->do_EC_CMB==1){
+		if (set_EC == 1)
+		{
+			set_EC_stat_pre(pt, -1);
+		}
+		Build_I_nu_CMB(pt);
+		if (set_EC == 1)
+		{
+			set_EC_stat_post(pt);
+		}
 	}
-
-    //if (pt->do_EC_CMB_stat==1){
+	//if (pt->do_EC_CMB_stat==1){
     //	Build_I_nu_CMB_stat(pt);
     //}
+	//printf("spectra_External_Fields 2  R_H_orig=%e, R_H=%e\n", pt->R_H_orig, pt->R_H);
 	if (pt->verbose > 1)
 	{
 		printf("#-> ********************************\n\n");
 	}
-	
 }
 //=========================================================================================
 
@@ -258,7 +284,7 @@ double eval_Star_L(struct blob *pt, double T_Star){
 //========================
 
 void set_Star_geometry(struct blob *pt){
-	double theta_c;
+	//double theta_c;
 	pt->theta_c_Star=asin(pt->theta_Star/pt->R_H_Star);
 	
 	// b=sqrt(pt->R_H*pt->R_H - pt->R_Star*pt->R_Star);	
