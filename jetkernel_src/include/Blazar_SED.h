@@ -394,7 +394,6 @@ struct blob {
     //double EC_factor;
     double R_ext_emit_factor;
     double R_H_scale_factor;
-    double EC_theta_lim;
 
     //--- STAR
     //-PARAMTERS
@@ -1230,7 +1229,12 @@ void spettro_EC(int num_file, struct blob *);
 
 void set_EC_stat_pre(struct blob *pt, double R_lim);
 void set_EC_stat_post(struct blob *pt);
-
+double f_psi_EC(double R_ext,double R_H, double mu_s,double beaming,double phi);
+double beaming_pattern_EC(double theta_s, double R_ext, double R_H, double Gamma);
+double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma);
+double get_EC_reference(struct blob *pt, double *nuFnu_obs);
+void update_EC_for_bp(struct blob *pt, double nuFnu_obs_ref, double R_ext_emit, unsigned int SIZE, double *nuFnu_obs);
+int set_condition_EC_correction(struct blob *pt, double R_ext_emit);
 
 /***  DISK PLANCK FUNCTIONS  *********/
 double eval_T_disk(struct blob *pt, double R);

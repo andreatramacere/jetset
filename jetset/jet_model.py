@@ -1386,17 +1386,17 @@ class JetBase(Model):
         out_model = None
         lin_nu, log_nu = self._prepare_nu_model(nu, loglog)
         
-        if update_EC_beaming_pattern is True:
-            jet_ref_model=get_EC_ref_model(self)
+       #if update_EC_beaming_pattern is True:
+       #     jet_ref_model=get_EC_ref_model(self)
             
         lin_model, log_model= self._eval_model(lin_nu, log_nu ,init, loglog, phys_output=phys_output,
                                                 update_emitters=update_emitters)
         #print('-->',lin_nu.min(),lin_nu.max())
         if fill_SED is True:
             self._fill(lin_nu,lin_model)
-            if update_EC_beaming_pattern is True and jet_ref_model is not None:
-                jet_ref_model.eval(update_EC_beaming_pattern=False)
-                update_EC_bp(self,jet_ref_model)
+            #if update_EC_beaming_pattern is True and jet_ref_model is not None:
+            #    jet_ref_model.eval(update_EC_beaming_pattern=False)
+            #    update_EC_bp(self,jet_ref_model)
 
         if get_model is True:
 

@@ -287,7 +287,7 @@ struct blob MakeBlob() {
     spettro_root.R_H_orig = 1E17;
     spettro_root.R_H_scale_factor=20.0;
     spettro_root.R_ext_emit_factor=1.0;
-    spettro_root.EC_theta_lim=5.0;
+    //spettro_root.EC_theta_lim=5.0;
     spettro_root.M_BH = 1E9;
 
     spettro_root.theta_n_int=50;
@@ -438,11 +438,10 @@ void InitRadiative(struct blob *pt_base){
     //========================================================
     // EC  Initialization
     //========================================================
+    pt_base->R_H_orig=pt_base->R_H;
     if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1 || pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1 || pt_base->do_EC_CMB == 1 || pt_base->do_Disk==1 || pt_base->do_DT==1 || pt_base->do_Star==1) 
         {
-            //printf("InitRadiative 1  R_H_orig=%e, R_H=%e\n", pt_base->R_H_orig, pt_base->R_H);
             spectra_External_Fields(1, pt_base, 1);
-            //printf("InitRadiative 2  R_H_orig=%e, R_H=%e\n", pt_base->R_H_orig, pt_base->R_H);
         }
     //========================================================
 
@@ -609,7 +608,7 @@ void Init(struct blob *pt_base, double luminosity_distance) {
 }
  
 void Run_SED(struct blob *pt_base){
-	//unsigned int i;
+    double nuFnu_obs_ref_EC;
     if (pt_base->verbose) {
         printf("STEM=%s\n", pt_base->STEM);
         printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> RUN      <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
@@ -659,48 +658,52 @@ void Run_SED(struct blob *pt_base){
 		if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1 || pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1 || pt_base->do_EC_CMB == 1 || pt_base->do_Disk==1 || pt_base->do_DT==1 || pt_base->do_Star==1) 
         {
                 if (pt_base->do_EC_Star == 1) {
-                    //if (pt_base->verbose) {
-                    //    printf("************* Disk ****************\n");
-                    //}
+                    
                     pt_base->EC = 4;
                     spettro_EC(1, pt_base);
                 }
                 if (pt_base->do_EC_Disk == 1 || pt_base->do_Disk==1) {
-                    //if (pt_base->verbose) {
-                    //    printf("************* Disk ****************\n");
-                   // }
+                   
                     pt_base->EC = 1;
                     spettro_EC(1, pt_base);
                 }
                 if (pt_base->do_EC_BLR == 1) {
-                    //if (pt_base->verbose) {
-                    //    printf("************* BLR ****************\n");
-                    //}
                     pt_base->EC = 2;
+                    if (set_condition_EC_correction(pt_base, pt_base->R_BLR_out) > 0)
+                    {
+                        pt_base->R_H = 0;
+                        Build_I_nu_BLR(pt_base);
+                        spettro_EC(1, pt_base);
+                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->nuF_nu_EC_BLR_obs);
+                        pt_base->R_H = pt_base->R_H_orig;
+                    }
                     spettro_EC(1, pt_base);
+                    if (set_condition_EC_correction(pt_base, pt_base->R_BLR_out) > 0){
+                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_BLR_out, pt_base->nu_IC_size, pt_base->nuF_nu_EC_BLR_obs);
+                    }
                 }
                 if (pt_base->do_EC_DT == 1) {
-                    //if (pt_base->verbose) {
-                    //    printf("************* DT ****************\n");
-                    // }
                     pt_base->EC = 3;
+                    if (set_condition_EC_correction(pt_base, pt_base->R_DT) > 0)
+                    {
+                        pt_base->R_H = 0;
+                        Build_I_nu_DT(pt_base);
+                        spettro_EC(1, pt_base);
+                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->nuF_nu_EC_DT_obs);
+                        pt_base->R_H = pt_base->R_H_orig;
+                    }
                     spettro_EC(1, pt_base);
+                    if (set_condition_EC_correction(pt_base, pt_base->R_BLR_out) > 0)
+                    {
+                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_DT, pt_base->nu_IC_size, pt_base->nuF_nu_EC_DT_obs);
+                    }
                 }
                 if (pt_base->do_EC_CMB == 1) {
-                    //if (pt_base->verbose) {
-                    //    printf("************* CMB ****************\n");
-                   // }
+                    
                     pt_base->EC = 5;
                     spettro_EC(1, pt_base);
                 }
-                //if (pt_base->do_EC_CMB_stat == 1) {
-                //    if (pt_base->verbose) {
-                //       printf("************* CMB stat ****************\n");
-                //   }
-                //       printf("************* CMB stat ****************\n");
-                //    pt_base->EC = 6;
-                //    spettro_EC(1, pt_base);
-                //}
+              
             }
         //printf("=>done\n");
     }

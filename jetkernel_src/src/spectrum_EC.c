@@ -18,13 +18,108 @@
  */
 
 
+double f_psi_EC(double R_ext,double R_H, double mu_s,double beaming,double phi){
+	double x2, cos_psi;
+	x2= (R_ext*R_ext)+(R_H*R_H);   
+    cos_psi=mu_s*(R_H/sqrt(x2))+(sqrt((1-(mu_s*mu_s)))*sqrt(1-((R_H*R_H)/x2)))*cos(phi);
+	return ((1 - cos_psi) * (1 - cos_psi)) * pow(beaming,6) / x2;
+}
+
+double beaming_pattern_EC(double theta_s, double R_ext, double R_H, double Gamma)
+{
+	double phi[100], y[100];
+	int i;
+	double delta_phi, beaming, mu_s;
+	beaming = get_beaming(Gamma, theta_s);
+	delta_phi = 2 * pi / 100;
+	mu_s = cos(Deg_to_Rad * theta_s);
+	for (i = 0; i < 100; i++)
+	{
+		phi[i] = 0 + (i * delta_phi);
+		y[i] = f_psi_EC(R_ext, R_H, mu_s, beaming, phi[i]);
+	}
+
+	return trapzd_array_linear_grid(phi, y, 100);
+}
+
+double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma){
+	double y_theta, y_theta_0;
+
+	y_theta = beaming_pattern_EC(theta_s, R_ext, R_H_orig, Gamma);
+	y_theta_0 = beaming_pattern_EC(theta_s, R_ext, R_H_in, Gamma);
+	return y_theta / y_theta_0;
+}
+
+void update_EC_for_bp(struct blob *pt, double nuFnu_obs_ref, double R_ext_emit, unsigned int SIZE, double *nuFnu_obs)
+{
+	double s_bp, s_actual, nuFnu_obs_max;
+	unsigned int I_MAX, NU_INT;
+
+	s_bp = scaling_function_EC(pt->theta, R_ext_emit, 0, pt->R_H_orig, pt->BulkFactor);
+
+	I_MAX = pt->nu_IC_size - 1;	
+	nuFnu_obs_max = nuFnu_obs[0];
+	for (NU_INT = 0; NU_INT < I_MAX; NU_INT++)
+	{
+		if (nuFnu_obs[NU_INT] > nuFnu_obs_max)
+		{
+			nuFnu_obs_max = nuFnu_obs[NU_INT];
+		}
+	}
+	
+	s_actual = nuFnu_obs_max / nuFnu_obs_ref;
+	for (NU_INT = 0; NU_INT <= I_MAX; NU_INT++)
+	{
+		if (nuFnu_obs[NU_INT] > pt->emiss_lim)
+		{
+			nuFnu_obs[NU_INT] = nuFnu_obs[NU_INT] * (s_bp / s_actual);
+			if (nuFnu_obs[NU_INT] <= pt->emiss_lim)
+			{
+					nuFnu_obs[NU_INT] = pt->emiss_lim;
+			}
+			
+		}
+	}
+
+}
+
+double get_EC_reference(struct blob *pt, double *nuFnu_obs)
+{
+	double nuFnu_obs_ref;
+	unsigned int I_MAX, NU_INT;
+	
+
+	I_MAX = pt->nu_IC_size - 1;
+
+	nuFnu_obs_ref = nuFnu_obs[0];
+	for (NU_INT = 0; NU_INT < I_MAX; NU_INT++)
+	{
+		if (nuFnu_obs[NU_INT] > nuFnu_obs_ref)
+		{
+			nuFnu_obs_ref = nuFnu_obs[NU_INT];
+			
+		}
+	}
+	return nuFnu_obs_ref;
+}
+
+int set_condition_EC_correction(struct blob *pt,double R_ext_emit)
+{
+	int do_EC_correction =0;
+	if ((pt->R_H > (R_ext_emit * pt->R_ext_emit_factor)) && (pt->EC_stat == 1) && R_ext_emit > 0){
+		do_EC_correction =1;
+	}
+
+	return do_EC_correction;
+}
+
 void set_EC_stat_pre(struct blob *pt, double R_ext_emit)
 {
-	double R_H_lim;
+	
 	//printf("set_EC_stat_pre 1 R_ext_emit =%e, R_H_orig=%e, R_H=%e\n", R_ext_emit, pt->R_H_orig, pt->R_H);
 	pt->EC_stat_orig = pt->EC_stat;
-	pt->R_H_orig = pt->R_H;
-	if ((pt->R_H > (R_ext_emit * pt->R_ext_emit_factor)) && (pt->EC_stat == 1) && R_ext_emit > 0)
+	
+	if (set_condition_EC_correction(pt,R_ext_emit) > 0 && R_ext_emit>0)
 	{
 		pt->EC_stat = 0;
 
@@ -34,11 +129,8 @@ void set_EC_stat_pre(struct blob *pt, double R_ext_emit)
 
 void set_EC_stat_post(struct blob *pt)
 {
-	//printf("set_EC_stat_post 1  R_H_orig=%e, R_H=%e\n",  pt->R_H_orig, pt->R_H);
 	pt->EC_stat = pt->EC_stat_orig;
-	pt->R_H = pt->R_H_orig;
-	//pt->EC_factor = 1;
-	//printf("set_EC_stat_post 2  R_H_orig=%e, R_H=%e\n",  pt->R_H_orig, pt->R_H);
+	pt->R_H = pt->R_H_orig;	 
 }
 
 
