@@ -16,111 +16,121 @@
  * \brief CALCOLO DELLO SPETTRO EC
  *
  */
-double f_psi_EC(double R_ext,double R_H, double mu_s,double beaming,double phi){
-	double x2, cos_psi;
-	x2= (R_ext*R_ext)+(R_H*R_H);   
-    cos_psi=mu_s*(R_H/sqrt(x2))+(sqrt((1-(mu_s*mu_s)))*sqrt(1-((R_H*R_H)/x2)))*cos(phi);
+// double f_psi_EC(double R_ext,double R_H, double mu_s,double beaming,double phi){
+// 	double x2, cos_psi;
+// 	x2= (R_ext*R_ext)+(R_H*R_H);   
+//     cos_psi=mu_s*(R_H/sqrt(x2))+(sqrt((1-(mu_s*mu_s)))*sqrt(1-((R_H*R_H)/x2)))*cos(phi);
 	
-	return ((1 - cos_psi) * (1 - cos_psi)) * pow(beaming,6) / x2;
-}
+// 	return ((1 - cos_psi) * (1 - cos_psi)) * pow(beaming,6) / x2;
+// }
 
-double beaming_pattern_EC(double theta_s,double R_ext,double R_H,double Gamma){
-	double phi[100], y[100];
-	int i;
-	double delta_phi, beaming, mu_s;
-	beaming=get_beaming(Gamma,theta_s);
-	delta_phi=2*pi/100;
-	mu_s = cos(Deg_to_Rad * theta_s);
-	for (i = 0; i<100; i++) {
-		phi[i]=0+ (i*delta_phi);
-		y[i] = f_psi_EC(R_ext, R_H, mu_s, beaming, phi[i]);
-	}
+// double beaming_pattern_EC(double theta_s,double R_ext,double R_H,double Gamma){
+// 	double phi[100], y[100];
+// 	int i;
+// 	double delta_phi, beaming, mu_s;
+// 	beaming=get_beaming(Gamma,theta_s);
+// 	delta_phi=2*pi/100;
+// 	mu_s = cos(Deg_to_Rad * theta_s);
+// 	for (i = 0; i<100; i++) {
+// 		phi[i]=0+ (i*delta_phi);
+// 		y[i] = f_psi_EC(R_ext, R_H, mu_s, beaming, phi[i]);
+// 	}
 
-	return trapzd_array_linear_grid(phi, y,100);
-}
+// 	return trapzd_array_linear_grid(phi, y,100);
+// }
 
-double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma){
-	double y_theta, y_theta_0;
+// double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma){
+// 	double y_theta, y_theta_0;
 
-	y_theta = beaming_pattern_EC(theta_s, R_ext, R_H_orig, Gamma);
-	y_theta_0 = beaming_pattern_EC(theta_s, R_ext, R_H_in, Gamma);
-	return y_theta / y_theta_0;
-}
+// 	y_theta = beaming_pattern_EC(theta_s, R_ext, R_H_orig, Gamma);
+// 	y_theta_0 = beaming_pattern_EC(theta_s, R_ext, R_H_in, Gamma);
+// 	return y_theta / y_theta_0;
+// }
 
-void set_EC_stat_pre(struct blob *pt, double R_ext_emit){
+// void update_EC_for_bp(struct blob *pt, double R_ext_emit, unsigned int SIZE, double *nu_blob, double *nu_obs, double *nuFnu_obs)
+// {
+// 	double j_nu, Fnu_ref, L_nu_EC_ref, nuFnu_obs_max, nuFnu_obs_ref, nu_ref;
+// 	double s_bp, s_actual, RH_in,RH_orig;
+// 	unsigned int nu_peak_ID_blob, NU_INT, I_MAX;
+// 	RH_in = R_ext_emit * 0.5;
+// 	//RH_orig =  pt->R_H_orig;
+// 	s_bp = scaling_function_EC(pt->theta, R_ext_emit, RH_in, RH_orig, pt->BulkFactor);
+
+// 	I_MAX = pt->nu_IC_size - 1;
+
+// 	nuFnu_obs_max = nuFnu_obs[0];
+// 	nu_peak_ID_blob = 0;
+// 	for (NU_INT = 0; NU_INT < I_MAX; NU_INT++)
+// 	{
+// 		if (nuFnu_obs[NU_INT] > nuFnu_obs_max)
+// 		{
+// 			nuFnu_obs_max = nuFnu_obs[NU_INT];
+// 			nu_peak_ID_blob = NU_INT;
+// 		}
+// 	}
+// 	pt->R_H = RH_in;
+// 	spectra_External_Fields(1, pt);
+
+// 	nu_ref = nu_blob[nu_peak_ID_blob];
+// 	pt->nu_1 = nu_ref;
+// 	j_nu = rate_compton_GR(pt) * HPLANCK * nu_blob[nu_peak_ID_blob];
+// 	L_nu_EC_ref = j_nu_to_L_nu_src(j_nu, pt->Vol_region, pt->beam_obj);
+// 	Fnu_ref = L_nu_src_to_F_nu(L_nu_EC_ref, pt->beam_obj, pt->z_cosm, pt->dist);
+// 	nuFnu_obs_ref = Fnu_ref * nu_obs[nu_peak_ID_blob];
+
+// 	s_actual = nuFnu_obs_max / nuFnu_obs_ref;
+
+// 	for (NU_INT = 0; NU_INT <= I_MAX; NU_INT++)
+// 	{
+// 		if (nuFnu_obs[NU_INT] > pt->emiss_lim)
+// 		{
+// 			nuFnu_obs[NU_INT] = nuFnu_obs[NU_INT] * (s_bp / s_actual);
+// 			if (nuFnu_obs[NU_INT] <= pt->emiss_lim)
+// 			{
+// 					nuFnu_obs[NU_INT] <= pt->emiss_lim;
+// 			}
+// 			//printf("R_H =%e, R_H_orig=%e\n", (pt->R_H, pt->R_H_orig));
+// 		}
+// 	}
+// 	//pt->R_H_orig = RH_orig;
+// }
+
+// void set_EC_stat_post(struct blob *pt, double R_ext_emit, unsigned int NU_SIZE, double *nu_blob, double *nu_obs, double *nuFnu_obs)
+// {
+
+// 	//pt->EC_stat = pt->EC_stat_orig;
+// 	//pt->R_H = pt->R_H_orig;
+// 	pt->EC_factor = 1;
+// 	if ((pt->R_H>R_ext_emit) && (pt->EC_stat==0) && R_ext_emit>0){
+// 		update_EC_for_bp(pt, R_ext_emit, NU_SIZE, nu_blob, nu_obs, nuFnu_obs);
+// 	}
+// 	pt->EC_stat = pt->EC_stat_orig;
+// 	pt->R_H = pt->R_H_orig;
+// 	pt->EC_factor = 1;
+// 	spectra_External_Fields(1, pt);
+// }
+
+void set_EC_stat_pre(struct blob *pt, double R_ext_emit)
+{
 	double R_H_lim;
-	pt->EC_stat_orig=pt->EC_stat;
-	pt->R_H_orig=pt->R_H;
-	if ((pt->R_H>R_ext_emit*2) && (pt->EC_stat==1) && R_ext_emit>0){
-		pt->EC_stat=0;
+	pt->EC_stat_orig = pt->EC_stat;
+	pt->R_H_orig = pt->R_H;
+	if ((pt->R_H > (R_ext_emit * pt->R_ext_emit_factor)) && (pt->EC_stat == 1) && R_ext_emit > 0)
+	{
+		pt->EC_stat = 0;
 
-		pt->R_H=R_ext_emit*pt->R_H_scale_factor;
-		pt->EC_factor = ((pt->R_H / pt->R_H_orig) * (pt->R_H / pt->R_H_orig)) ;
-
+		pt->R_H = R_ext_emit * pt->R_H_scale_factor;
+		pt->EC_factor = ((pt->R_H / pt->R_H_orig) * (pt->R_H / pt->R_H_orig));
 	}
-	
 }
 
-void update_EC_for_bp(struct blob *pt, double R_ext_emit, unsigned int SIZE, double *nu_obs, double *nuFnu_obs)
+void set_EC_stat_post(struct blob *pt)
 {
-	double j_nu, Fnu_ref, L_nu_EC_ref, nuFnu_obs_max, nuFnu_obs_ref, nu_ref;
-	double s_bp, s_actual, RH_in,RH_orig;
-	unsigned int nu_peak_ID, NU_INT, I_MAX;
-	RH_in = R_ext_emit * 0.5;
-	RH_orig =  pt->R_H_orig;
-	s_bp = scaling_function_EC(pt->theta, R_ext_emit, RH_in, RH_orig, pt->BulkFactor);
-
-	I_MAX = pt->nu_IC_size - 1;
-
-	nuFnu_obs_max = nuFnu_obs[0];
-	nu_peak_ID = 0;
-	for (NU_INT = 0; NU_INT < I_MAX; NU_INT++)
-	{
-		if (nuFnu_obs[NU_INT] > nuFnu_obs_max)
-		{
-			nuFnu_obs_max = nuFnu_obs[NU_INT];
-			nu_peak_ID = NU_INT;
-		}
-	}
-	pt->R_H = RH_in;
-	spectra_External_Fields(1, pt);
-	
-	nu_ref = nu_obs[nu_peak_ID];
-	j_nu = rate_compton_GR(pt) * HPLANCK * nu_obs[nu_peak_ID];
-	L_nu_EC_ref = j_nu_to_L_nu_src(j_nu, pt->Vol_region, pt->beam_obj);
-	Fnu_ref = L_nu_src_to_F_nu(L_nu_EC_ref, pt->beam_obj, pt->z_cosm, pt->dist);
-	nuFnu_obs_ref = Fnu_ref * nu_obs[nu_peak_ID];
-
-	s_actual = nuFnu_obs_max / nuFnu_obs_ref;
-
-	for (NU_INT = 0; NU_INT <= I_MAX; NU_INT++)
-	{
-		if (nuFnu_obs[NU_INT] > pt->emiss_lim)
-		{
-			nuFnu_obs[NU_INT] = nuFnu_obs[NU_INT] * (s_bp / s_actual);
-			//printf("R_H =%e, R_H_orig=%e\n", (pt->R_H, pt->R_H_orig));
-		}
-	}
-	pt->R_H_orig = RH_orig;
-}
-
-void set_EC_stat_post(struct blob *pt, double R_ext_emit, unsigned int NU_SIZE, double *nu_obs, double *nuFnu_obs)
-{
-	if ((pt->R_H>R_ext_emit) && (pt->EC_stat==0) && R_ext_emit>0){
-		update_EC_for_bp(pt, R_ext_emit, NU_SIZE,  nu_obs, nuFnu_obs);
-	}
-
 	pt->EC_stat = pt->EC_stat_orig;
 	pt->R_H = pt->R_H_orig;
 	pt->EC_factor = 1;
 }
 
-void set_EC_stat_post_external_fields(struct blob *pt)
-{
-	pt->EC_stat = pt->EC_stat_orig;
-	pt->R_H = pt->R_H_orig;
-	pt->EC_factor = 1;	
-}
 
 void spettro_EC(int Num_file, struct blob *pt) {
     double L_nu_EC, F_nu_EC_obs,nu_peak;
@@ -340,7 +350,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
 									   HPLANCK * freq_array[NU_INT];
 				}
 				
-				pt->j_EC[NU_INT]= pt->j_EC[NU_INT];// *pt->EC_factor;
+				pt->j_EC[NU_INT]= pt->j_EC[NU_INT] *pt->EC_factor;
 
 
 				if (pt->verbose > 1) {
@@ -455,8 +465,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
             //}
     	}
     }
-	//set_EC_stat_post(pt, R_ext_emit, pt->nu_IC_size, freq_array_obs, nuFnu_obs_array);
-	set_EC_stat_post_external_fields(pt);
+	set_EC_stat_post(pt);
 	spectra_External_Fields(1, pt);
 	//===========================================
 	//    trova nu peak e Flux peak

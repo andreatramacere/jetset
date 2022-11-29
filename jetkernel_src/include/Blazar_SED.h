@@ -392,6 +392,7 @@ struct blob {
     double R_H;
     double R_H_orig;
     double EC_factor;
+    double R_ext_emit_factor;
     double R_H_scale_factor;
     double EC_theta_lim;
 
@@ -1228,11 +1229,12 @@ void spectra_External_Fields(int Num_file, struct blob *pt_d);
 void spettro_EC(int num_file, struct blob *);
 
 void set_EC_stat_pre(struct blob *pt, double R_lim);
-void set_EC_stat_post_external_fields(struct blob *pt);
-void set_EC_stat_post(struct blob *pt, double R_ext_emit, unsigned int NU_SIZE, double *nu_obs, double *nuFnu_obs);
-double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma);
-double beaming_pattern_EC(double theta_s,double R_ext,double R_H,double Gamma);
-double f_psi_EC(double R_ext,double R_H, double mu_s,double beaming,double phi);
+void set_EC_stat_post(struct blob *pt);
+//void set_EC_stat_post(struct blob *pt, double R_ext_emit, unsigned int NU_SIZE, double *nu_blob, double *nu_obs, double *nuFnu_obs);
+//void update_EC_for_bp(struct blob *pt, double R_ext_emit, unsigned int SIZE, double *nu_obs, double *nu_blob,  double *nuFnu_obs);
+//double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma);
+//double beaming_pattern_EC(double theta_s,double R_ext,double R_H,double Gamma);
+//double f_psi_EC(double R_ext,double R_H, double mu_s,double beaming,double phi);
 
 /***  DISK PLANCK FUNCTIONS  *********/
 double eval_T_disk(struct blob *pt, double R);

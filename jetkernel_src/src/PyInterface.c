@@ -286,7 +286,7 @@ struct blob MakeBlob() {
     spettro_root.R_H=1E17;
     spettro_root.R_H_orig=spettro_root.R_H;
     spettro_root.R_H_scale_factor=20.0;
-
+    spettro_root.R_ext_emit_factor=1.0;
     spettro_root.EC_theta_lim=5.0;
     spettro_root.M_BH = 1E9;
 

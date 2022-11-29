@@ -43,30 +43,30 @@ void spectra_External_Fields(int Num_file, struct blob *pt) {
 	if (pt->do_EC_Star==1 || pt->do_Star==1){
 		set_EC_stat_pre(pt, -1);
     	Build_I_nu_Star(pt);
-		set_EC_stat_post_external_fields(pt);
-    }
+		set_EC_stat_post(pt);
+	}
 	if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 1 || pt->do_Disk == 1 || pt->do_EC_DT == 1 || pt->do_DT ==1)
 	{
 		set_EC_stat_pre(pt, pt->R_ext);
 		Build_I_nu_Disk(pt);
-		set_EC_stat_post_external_fields(pt);
+		set_EC_stat_post(pt);
 	}
     if (pt->do_EC_BLR==1){
 		set_EC_stat_pre(pt, pt->R_BLR_out);
 		Build_I_nu_BLR(pt);
-		set_EC_stat_post_external_fields(pt);
+		set_EC_stat_post(pt);
 	}
     if (pt->do_EC_DT==1 || pt->do_DT==1){
 		//printf("EC_stat=%d, R_H=%e\n",pt->EC_stat,pt->R_H);
 		set_EC_stat_pre(pt, pt->R_DT);
     	Build_I_nu_DT(pt);
 		//printf("EC_stat=%d, R_H=%e\n",pt->EC_stat,pt->R_H);
-		set_EC_stat_post_external_fields(pt);
+		set_EC_stat_post(pt);
 	}
     if (pt->do_EC_CMB==1){
 		set_EC_stat_pre(pt, -1);
     	Build_I_nu_CMB(pt);
-		set_EC_stat_post_external_fields(pt);
+		set_EC_stat_post(pt);
 	}
 
     //if (pt->do_EC_CMB_stat==1){
