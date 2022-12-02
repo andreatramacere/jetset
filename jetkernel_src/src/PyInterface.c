@@ -285,7 +285,7 @@ struct blob MakeBlob() {
     sprintf(spettro_root.disk_type, "BB");
     spettro_root.R_H=1E17;
     spettro_root.R_H_orig = 1E17;
-    spettro_root.R_H_scale_factor=20.0;
+    spettro_root.R_H_scale_factor=2.0;
     spettro_root.R_ext_emit_factor=1.0;
     //spettro_root.EC_theta_lim=5.0;
     spettro_root.M_BH = 1E9;
@@ -439,6 +439,7 @@ void InitRadiative(struct blob *pt_base){
     // EC  Initialization
     //========================================================
     pt_base->R_H_orig=pt_base->R_H;
+    pt_base->EC_stat_orig = pt_base->EC_stat;
     if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1 || pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1 || pt_base->do_EC_CMB == 1 || pt_base->do_Disk==1 || pt_base->do_DT==1 || pt_base->do_Star==1) 
         {
             spectra_External_Fields(1, pt_base, 1);
@@ -684,19 +685,26 @@ void Run_SED(struct blob *pt_base){
                 }
                 if (pt_base->do_EC_DT == 1) {
                     pt_base->EC = 3;
+                    //printf("RUN 1 R_H=%e c=%d , EC_stat=%d\n", pt_base->R_H, set_condition_EC_correction(pt_base, pt_base->R_DT), pt_base->EC_stat);
                     if (set_condition_EC_correction(pt_base, pt_base->R_DT) > 0)
                     {
                         pt_base->R_H = 0;
+                        
+
                         Build_I_nu_DT(pt_base);
                         spettro_EC(1, pt_base);
                         nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->nuF_nu_EC_DT_obs);
                         pt_base->R_H = pt_base->R_H_orig;
                     }
+                    //printf("RUN 2 R_H=%e c=%d , EC_stat=%d\n", pt_base->R_H, set_condition_EC_correction(pt_base, pt_base->R_DT), pt_base->EC_stat);
+                    //printf("RUN 3 R_H=%e c=%d \n", pt_base->R_H, set_condition_EC_correction(pt_base, pt_base->R_DT));
                     spettro_EC(1, pt_base);
-                    if (set_condition_EC_correction(pt_base, pt_base->R_BLR_out) > 0)
+                    //printf("RUN 4 R_H=%e c=%d \n", pt_base->R_H,set_condition_EC_correction(pt_base, pt_base->R_DT) );
+                    if (set_condition_EC_correction(pt_base, pt_base->R_DT) > 0)
                     {
                         update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_DT, pt_base->nu_IC_size, pt_base->nuF_nu_EC_DT_obs);
                     }
+                    //printf("RUN 4 R_H=%e c=%d \n", pt_base->R_H, set_condition_EC_correction(pt_base, pt_base->R_DT));
                 }
                 if (pt_base->do_EC_CMB == 1) {
                     

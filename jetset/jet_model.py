@@ -13,7 +13,7 @@ from astropy import constants
 from contextlib import redirect_stdout
 import io
 
-from .jet_spectral_components import JetSpecComponent, SpecCompList, update_EC_bp, get_EC_ref_model 
+from .jet_spectral_components import JetSpecComponent, SpecCompList
 
 from .model_parameters import ModelParameterArray, ModelParameter, _show_table
 from .base_model import Model
@@ -1006,7 +1006,6 @@ class JetBase(Model):
     def set_external_field_transf(self,val):
         if val not in self._external_field_transf.keys():
             raise RuntimeError('val',val,'not in allowed values',self._external_field_transf.keys())
-
         self._blob.EC_stat=self._external_field_transf[val]
 
     def get_external_field_transf(self):
@@ -1386,18 +1385,12 @@ class JetBase(Model):
         out_model = None
         lin_nu, log_nu = self._prepare_nu_model(nu, loglog)
         
-       #if update_EC_beaming_pattern is True:
-       #     jet_ref_model=get_EC_ref_model(self)
-            
         lin_model, log_model= self._eval_model(lin_nu, log_nu ,init, loglog, phys_output=phys_output,
                                                 update_emitters=update_emitters)
         #print('-->',lin_nu.min(),lin_nu.max())
         if fill_SED is True:
             self._fill(lin_nu,lin_model)
-            #if update_EC_beaming_pattern is True and jet_ref_model is not None:
-            #    jet_ref_model.eval(update_EC_beaming_pattern=False)
-            #    update_EC_bp(self,jet_ref_model)
-
+        
         if get_model is True:
 
             if loglog is True:

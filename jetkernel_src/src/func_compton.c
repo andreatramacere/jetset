@@ -133,7 +133,7 @@ double rate_compton_GR(struct blob *pt_GR) {
     //EC DT
     if (pt_GR->nu_1 < pt_GR->nu_stop_EC_DT && pt_GR->ord_comp == 1) {
     	if (pt_GR->SSC == 0 && pt_GR->EC == 3) {
-
+            //printf("GR 1 R_H=%e EC_stat,=%d c=%d \n", pt_GR->R_H, pt_GR->EC_stat, set_condition_EC_correction(pt_GR, pt_GR->R_DT));
             if (pt_GR->verbose>1) {
                 printf("DT\n");
                 printf("(blob rest frame) nu_start_EC_seed DT=%e\n", pt_GR->nu_start_DT);
@@ -162,6 +162,7 @@ double rate_compton_GR(struct blob *pt_GR) {
                                          pt_GR->EC_stat);
                 pt_GR->nu_1 = nu_1_original;
             }
+            //printf("GR 2 R_H=%e EC_stat,=%d c=%d \n", pt_GR->R_H, pt_GR->EC_stat, set_condition_EC_correction(pt_GR, pt_GR->R_DT));
        }
     }
 
@@ -368,7 +369,7 @@ void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int 
 // the [sterad-1] comes from n_seed
 //=========================================================================================
 double integrale_IC( struct blob * pt, double a, double b, int stat_frame) {
-    double nu1, nu2, integr_gamma, integr_nu;
+    double nu1, nu2, integr_gamma, integr_nu, nu_seed_max_EC, x2, cos_psi;
     //double test,test1,test2,N,N_IC,N_IC_1;
     //int negative;
     //double g2, g1, y_g1, y_g2, y_g3,delta_g;

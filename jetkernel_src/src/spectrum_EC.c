@@ -117,20 +117,23 @@ void set_EC_stat_pre(struct blob *pt, double R_ext_emit)
 {
 	
 	//printf("set_EC_stat_pre 1 R_ext_emit =%e, R_H_orig=%e, R_H=%e\n", R_ext_emit, pt->R_H_orig, pt->R_H);
-	pt->EC_stat_orig = pt->EC_stat;
-	
-	if (set_condition_EC_correction(pt,R_ext_emit) > 0 && R_ext_emit>0)
-	{
-		pt->EC_stat = 0;
 
-		pt->R_H = R_ext_emit * pt->R_H_scale_factor;
+	if (set_condition_EC_correction(pt, R_ext_emit) > 0 && R_ext_emit > 0 && pt->EC_stat==1)
+	{
+		pt->R_H_scale_factor = pt->BulkFactor / get_beaming( pt->BulkFactor,pt->theta);
+		if ((pt->R_H / (R_ext_emit * pt->R_ext_emit_factor)) > pt->R_H_scale_factor)
+		{
+			pt->EC_stat = 0;
+		}
+		//pt->R_H = R_ext_emit * pt->R_H_scale_factor;
 	}
 }
 
 void set_EC_stat_post(struct blob *pt)
 {
 	pt->EC_stat = pt->EC_stat_orig;
-	pt->R_H = pt->R_H_orig;	 
+	pt->R_H = pt->R_H_orig;
+	pt->R_H_scale_factor=1.0;
 }
 
 
@@ -270,7 +273,9 @@ void spettro_EC(int Num_file, struct blob *pt) {
         exit(0);
 		
 	}
+	//printf("spettro_EC 1 R_H=%e c=%d \n", pt->R_H, set_condition_EC_correction(pt, pt->R_DT));
 	set_EC_stat_pre(pt, R_ext_emit);
+	//printf("spettro_EC 2 R_H=%e c=%d \n", pt->R_H, set_condition_EC_correction(pt, pt->R_DT));
 
 	gmax=Find_gmax(pt,pt->Ne,pt->griglia_gamma_Ne_log);
 	numax_KN = 1000 * gmax * MEC2 / HPLANCK;
@@ -467,8 +472,14 @@ void spettro_EC(int Num_file, struct blob *pt) {
             //}
     	}
     }
+	//printf("spettro_EC 3 R_H=%e c=%d \n", pt->R_H, set_condition_EC_correction(pt, pt->R_DT));
+
 	set_EC_stat_post(pt);
+	//printf("spettro_EC 4 R_H=%e c=%d \n", pt->R_H, set_condition_EC_correction(pt, pt->R_DT));
+
 	spectra_External_Fields(1, pt,1);
+	//printf("spettro_EC 5 R_H=%e c=%d \n", pt->R_H, set_condition_EC_correction(pt, pt->R_DT));
+
 	//===========================================
 	//    trova nu peak e Flux peak
 	//===========================================
