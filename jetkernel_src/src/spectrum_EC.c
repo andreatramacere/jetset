@@ -66,7 +66,6 @@ void update_EC_for_bp(struct blob *pt, double nuFnu_obs_ref, double R_ext_emit, 
 			nuFnu_obs_max = nuFnu_obs[NU_INT];
 		}
 	}
-	
 	s_actual = nuFnu_obs_max / nuFnu_obs_ref;
 	for (NU_INT = 0; NU_INT <= I_MAX; NU_INT++)
 	{
@@ -97,7 +96,6 @@ double get_EC_reference(struct blob *pt, double *nuFnu_obs)
 		if (nuFnu_obs[NU_INT] > nuFnu_obs_ref)
 		{
 			nuFnu_obs_ref = nuFnu_obs[NU_INT];
-			
 		}
 	}
 	return nuFnu_obs_ref;
@@ -147,7 +145,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
     unsigned int * NU_INT_STOP_EC;
     unsigned int NU_INT, I_MAX, stop;
 	double R_ext_emit;
-
+	void (*eval_j_ptr)(struct j_args * thread_args);
 	//============================================================
     //         inizio  loop sulle freq per spettro  compton
     //============================================================
@@ -328,38 +326,18 @@ void spettro_EC(int Num_file, struct blob *pt) {
 
 	I_MAX = pt->nu_IC_size-1;
 	stop=0;
+
+	eval_j_ptr = &eval_j_EC;
+    threaded_j_evaluation(pt, eval_j_ptr, pt->j_EC, freq_array, *nu_start_EC, *nu_stop_EC,I_MAX,pt->N_THREADS);
+
 	for (NU_INT = 0; NU_INT <= I_MAX; NU_INT++) {
-
-        pt->nu_1 = freq_array[NU_INT];
         nuFnu_obs_array[NU_INT]=pt->emiss_lim;
-        pt->j_EC[NU_INT] = pt->emiss_lim;
-
         if (pt->verbose>1) {
             printf("#-> nu_em=%e  nu_obs=%e  i=%d\n", freq_array[NU_INT], freq_array_obs[NU_INT], NU_INT);
         }
         if ((freq_array[NU_INT] >= *nu_start_EC) && (freq_array[NU_INT] <= *nu_stop_EC)) {
 			if (!stop) {
 				
-				pt->q_comp[NU_INT] = rate_compton_GR(pt);
-				if (pt->EC_stat == 1){
-					//in this case we have q_comp in the disk frame, so j_nu is in the disk rest frame
-					//and we have to use also the scattered nu in the disk rest frame
-					j_nu_disk=pt->q_comp[NU_INT]*HPLANCK*freq_array[NU_INT]*pt->beam_obj;
-
-					//now we go back to the blob
-					//this is the j_nu in the blob frame at nu_blob
-					//evaluated from j_disk at nu_disk
-					pt->j_EC[NU_INT]=j_nu_disk;
-				
-				}
-				else{
-					pt->j_EC[NU_INT] = pt->q_comp[NU_INT] *
-									   HPLANCK * freq_array[NU_INT];
-				}
-				
-				pt->j_EC[NU_INT]= pt->j_EC[NU_INT];
-
-
 				if (pt->verbose > 1) {
 					printf("#-> q_comp[%d]=%e j[%d]=%e nu_1=%e \n", NU_INT,
 							pt->q_comp[NU_INT], NU_INT, pt->j_EC[NU_INT],
@@ -561,6 +539,37 @@ void spettro_EC(int Num_file, struct blob *pt) {
 
 
 
+void * eval_j_EC(struct j_args * thread_args){
+    unsigned int NU_INT;
+    double nu_IC_out;
+    for (NU_INT = thread_args->NU_INT_START; NU_INT <= thread_args->NU_INT_STOP; NU_INT++) {
+        nu_IC_out=thread_args->nu_array[NU_INT];
+        thread_args->blob_pt->q_comp[NU_INT] = 0.;
+        thread_args->blob_pt->j_EC[NU_INT] = 0.;
+       
+        if (thread_args->blob_pt->verbose > 1) {
+                printf("#->1 in eval_j_EC   NU_INT=%d eval_j_EC  nu_1=%e \n", NU_INT, thread_args->nu_array[NU_INT]);
+        }
 
+		thread_args->blob_pt->q_comp[NU_INT] = rate_compton_GR(thread_args->blob_pt,nu_IC_out);
+		if (thread_args->blob_pt->EC_stat == 1){
+			//in this case we have q_comp in the disk frame, so j_nu is in the disk rest frame
+			//and we have to use also the scattered nu in the disk rest frame
+
+			//now we go back to the blob
+			//this is the j_nu in the blob frame at nu_blob
+			//evaluated from j_disk at nu_disk
+			thread_args->blob_pt->j_EC[NU_INT]=thread_args->blob_pt->q_comp[NU_INT]*HPLANCK*thread_args->nu_array[NU_INT]*thread_args->blob_pt->beam_obj;
+		}
+		else{
+			thread_args->blob_pt->j_EC[NU_INT] = thread_args->blob_pt->q_comp[NU_INT] * HPLANCK * thread_args->nu_array[NU_INT];
+		}
+        if (thread_args->blob_pt->verbose > 1) {
+                printf("#->2 in  eval_j_EC NU_INT=%d q_comp[%d]=%e j[%d]=%e nu_1=%e \n", NU_INT,NU_INT,
+                        thread_args->blob_pt->q_comp[NU_INT], NU_INT, thread_args->blob_pt->j_EC[NU_INT],
+                        thread_args->nu_array[NU_INT]);
+        }
+    }   
+}
 
 
