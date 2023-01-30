@@ -139,10 +139,10 @@ class JetBase(Model):
 
         self._allwed_disk_type =['BB', 'Mono', 'MultiBB']
         self.EC_components_list =[]
-        self.spectral_components_list=[]
+        self._spectral_components_list=[]
+        self._hidden_spectral_components_list = []
 
-
-        self.spectral_components= SpecCompList(self.spectral_components_list)
+        self.spectral_components= SpecCompList(self._spectral_components_list)
 
         self.add_basic_components()
         self.SED=self.get_spectral_component_by_name('Sum').SED
@@ -159,9 +159,9 @@ class JetBase(Model):
 
     def _setup(self, emitters_distribution, emitters_distribution_log_values, beaming_expr, emitters_type):
         self.EC_components_list = []
-        self.spectral_components_list = []
+        self._spectral_components_list = []
 
-        self.spectral_components = SpecCompList(self.spectral_components_list)
+        self.spectral_components = SpecCompList(self._spectral_components_list)
         self.add_basic_components()
 
         self.SED = self.get_spectral_component_by_name('Sum').SED
@@ -228,7 +228,7 @@ class JetBase(Model):
 
         _model['beaming_expr'] = self._beaming_expr
         _model['spectral_components_name'] = self.get_spectral_component_names_list()
-        _model['spectral_components_state'] = [c.state for c in self.spectral_components_list]
+        _model['spectral_components_state'] = [c.state for c in self._spectral_components_list]
         _model['EC_components_name'] = self.EC_components_list
         _model['basic_components_name'] = self.basic_components_list
         _model['cosmo'] = self.cosmo
@@ -574,6 +574,10 @@ class JetBase(Model):
 
     
     @property
+    def spectral_components_list(self):
+        return [s for s in self._spectral_components_list if s.hidden is False]
+
+    @property
     def geometry(self,):
         return self._geometry
 
@@ -678,7 +682,7 @@ class JetBase(Model):
 
         print ("Spectral components for Jet model:%s"%(self.name))
 
-        for comp in self.spectral_components_list:
+        for comp in self._spectral_components_list:
 
             print ("comp: %s "%(comp.name))
 
@@ -686,9 +690,9 @@ class JetBase(Model):
 
 
     def get_spectral_component_by_name(self,name,verbose=True):
-        for i in range(len(self.spectral_components_list)):
-            if self.spectral_components_list[i].name==name:
-                return self.spectral_components_list[i]
+        for i in range(len(self._spectral_components_list)):
+            if self._spectral_components_list[i].name==name:
+                return self._spectral_components_list[i]
         else:
             if verbose==True:
                 print ("no spectral components with name %s found"%name)
@@ -698,13 +702,13 @@ class JetBase(Model):
             return None
 
     def list_spectral_components(self):
-        for i in range(len(self.spectral_components_list)):
-            print (self.spectral_components_list[i].name)
+        for i in range(len(self._spectral_components_list)):
+            print (self._spectral_components_list[i].name)
 
     def get_spectral_component_names_list(self):
         _l=[]
-        for i in range(len(self.spectral_components_list)):
-            _l.append(self.spectral_components_list[i].name)
+        for i in range(len(self._spectral_components_list)):
+            _l.append(self._spectral_components_list[i].name)
         return _l
 
     def del_spectral_component(self,name):
@@ -726,7 +730,7 @@ class JetBase(Model):
 
         if comp is not None:
 
-            self.spectral_components_list.remove(comp)
+            self._spectral_components_list.remove(comp)
 
             self.spectral_components.__delattr__(name)
 
@@ -734,17 +738,18 @@ class JetBase(Model):
 
     def _add_spectral_component(self, name, var_name=None, state_dict=None,state=None):
 
-        self.spectral_components_list.append(
+        self._spectral_components_list.append(
             JetSpecComponent(self, name, self._blob, var_name=var_name, state_dict=state_dict, state=state))
-        setattr(self.spectral_components,name,self.spectral_components_list[-1])
+        setattr(self.spectral_components,name,self._spectral_components_list[-1])
 
     def _update_spectral_components(self):
-        _l=[]
-        for ID,s in enumerate(self.spectral_components_list):
-            self.spectral_components_list[ID]= JetSpecComponent(self, s.name, self._blob, var_name=s._var_name, state_dict=s._state_dict, state=s.state)
-            setattr(self.spectral_components, self.spectral_components_list[ID].name, self.spectral_components_list[ID])
+        for ID,s in enumerate(self._spectral_components_list):
+            self._spectral_components_list[ID]= JetSpecComponent(self, s.name, self._blob, var_name=s._var_name, state_dict=s._state_dict, state=s.state)
+            self._spectral_components_list[ID].hidden = s.hidden
+            setattr(self.spectral_components, self._spectral_components_list[ID].name, self._spectral_components_list[ID])
+            
 
-
+    
     def add_basic_components(self):
         self.basic_components_list=['Sum','Sync','SSC']
 
@@ -1246,8 +1251,9 @@ class JetBase(Model):
         print (" IC emission grid size: ", self.get_IC_nu_size())
         print (' source emissivity lower bound :  %e' % self._blob.emiss_lim)
         print (' spectral components:')
-        for _s in self.spectral_components_list:
+        for _s in self._spectral_components_list:
             print("   name:%s,"%_s.name, 'state:', _s.state)
+            print("   name:%s,"%_s.name, 'hidden:', _s.hidden)
         print('external fields transformation method:', self.get_external_field_transf())
         print ('')
         print ('SED info:')
@@ -1341,7 +1347,17 @@ class JetBase(Model):
             else:
                 self.emitters_distribution._fill()
 
+        
         nu_sed_sum, nuFnu_sed_sum = self.spectral_components.Sum.get_SED_points(lin_nu=lin_nu,log_log=False,interp=self._jetkernel_interp)
+        
+        nuFnu_sed_hidden=0.
+        for _sc in self._spectral_components_list:
+            if _sc.hidden is True:
+                _, _nuFnu_sed= _sc.get_SED_points(lin_nu=lin_nu,log_log=False,interp=self._jetkernel_interp)
+                nuFnu_sed_hidden += _nuFnu_sed
+        
+        nuFnu_sed_sum = nuFnu_sed_sum - nuFnu_sed_hidden
+       
         return nu_sed_sum, nuFnu_sed_sum
 
     def _eval_model(self, lin_nu, log_nu, init, loglog, phys_output=False, update_emitters=True):
@@ -1387,9 +1403,10 @@ class JetBase(Model):
         
         lin_model, log_model= self._eval_model(lin_nu, log_nu ,init, loglog, phys_output=phys_output,
                                                 update_emitters=update_emitters)
-        #print('-->',lin_nu.min(),lin_nu.max())
+
         if fill_SED is True:
             self._fill(lin_nu,lin_model)
+            self.spectral_components.Sum.SED.nuFnu=lin_model
         
         if get_model is True:
 

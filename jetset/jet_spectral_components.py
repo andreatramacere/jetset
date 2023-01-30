@@ -126,7 +126,7 @@ class JetSpecComponent(object):
 
         self.SED=spectral_shapes.SED(name=self.name,beaming=jet_obj.get_beaming())
         self.seed_field=None
-
+        self._hidden=False
         # self._nu_start_src_name, self._nu_stop_src_name = nu_src_start_stop_dict[self.name]
         #
         # self.nu_ptr_start = getattr(blob_object, self._nu_name)
@@ -176,6 +176,17 @@ class JetSpecComponent(object):
     #     else:
     #         self._nu_start_src = nu
     #         self._nu_start_obs = convert_nu_to_src(nu, self.jet_obj.get_par_by_type('redshift').val, 'obs')
+
+    @property
+    def hidden(self):
+        return self._hidden
+
+    @hidden.setter
+    def hidden(self,val):
+        if val not in [True,False]:
+            raise RuntimeError('val must be False or True')
+        else:
+            self._hidden=val
 
     def get_emiss_lim(self,seed=False):
         return self._blob_object.emiss_lim

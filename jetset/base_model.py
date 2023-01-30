@@ -99,7 +99,6 @@ class Model(object):
         return lin_model,log_model
 
     def _fill(self, lin_nu, lin_model):
-
         if hasattr(self,'SED'):
             self.SED.fill(nu=lin_nu, nuFnu=lin_model)
             z=self.get_par_by_type('redshift')
@@ -247,7 +246,7 @@ class Model(object):
     def load_model(cls, file_name):
         try:
             c = pickle.load(open(file_name, "rb"))
-            c._fix_par_dep_on_load()
+            #c._fix_par_dep_on_load()
             if isinstance(c, Model):
                 c.eval()
                 return c
@@ -259,12 +258,12 @@ class Model(object):
 
     def _fix_par_dep_on_load(self,):
         for p in self.parameters.par_array:
-            #print("==> 1", p.name, p._master_par_list, p._depending_par_expr,p.model.name)
             if p._is_dependent is True and p._linked is False:
-                self._is_dependent = False
-                #print("==> 2", p.name, p._master_par_list, p._depending_par_expr)
-                self.make_dependent_par(p.name, p._master_par_list, p._depending_par_expr)
-
+                p._master_pars=[]
+                self._is_dependent = False     
+                #print('==> par expr',p._par_expr_text)           
+                self.make_dependent_par(p.name, p._master_par_list, p._depending_par_expr,set_par_expr_source_code=True)
+        
     #def _set_pars_dep(self):
     #    for p in self.parameters.par_array:
     #        if
@@ -354,7 +353,7 @@ class Model(object):
             except:
                 raise RuntimeError('the parameter expression is not valid')
 
-    def make_dependent_par(self, par, depends_on, par_expr,verbose=True):
+    def make_dependent_par(self, par, depends_on, par_expr,verbose=True,set_par_expr_source_code=True):
         master_par_list = depends_on
 
         dep_par=self.parameters.get_par_by_name(par)
@@ -384,15 +383,14 @@ class Model(object):
             m = self.parameters.get_par_by_name(p)
             if m._is_dependent is False:
                 m.val=m.val
-        if isinstance(par_expr,str):
-            _par_expr=par_expr
-        else:
-            _par_expr=inspect.getsource(par_expr)
-        if verbose is True:
-            print('==> par', dep_par.name, 'is now depending on', master_par_list, f'according to expr:{dep_par.name} =\n{_par_expr}'.format(dep_par.name,_par_expr))
-
+        if set_par_expr_source_code is True:
+            dep_par._set_par_expr_source_code()
+            if verbose is True:
+                dep_par.par_expression_source_code
+    
     def add_user_par(self,name,val,units='',val_min=None,val_max=None):
         self.parameters.add_par(ModelParameter(name=name,units=units,val=val,val_min=val_min,val_max=val_max,par_type='user_defined'))
+
 
 
     def set_fit_range(self,down_tol=0.1,up_tol=100):
