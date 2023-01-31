@@ -448,6 +448,8 @@ double integr_simp_grid_equilog(double * x, double *y, unsigned int size) {
 
 }
 
+
+
 //============================================================================
 // INTEGRAZIONE TRAPEZOIDALE CON INT CHIUSO E GRIGLIA  EQUI_LOG
 //============================================================================

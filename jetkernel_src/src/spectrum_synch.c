@@ -40,7 +40,7 @@ void spettro_sincrotrone(int Num_file, struct blob * pt) {
 
     //char f_Synch[static_file_name_max_legth];
 
-    void (*eval_j_ptr)(struct j_args * thread_args);
+
     //FILE *fp_Synch;
     if (pt->Distr_e_done == 0) {
         printf("No electron distribution calculated \n ");
@@ -115,23 +115,36 @@ void spettro_sincrotrone(int Num_file, struct blob * pt) {
         printf("out_file=%d\n", pt->OUT_FILE);
     }
     //========================================================
-    eval_j_ptr = &eval_j_Sync;
-    threaded_j_evaluation(pt, eval_j_ptr, pt->j_Sync,pt->nu_Sync,pt->nu_start_Sync, pt->nu_stop_Sync,I_MAX,pt->N_THREADS);
+
+
     for (NU_INT = 0; NU_INT <= I_MAX; NU_INT++) {
 
-    
+        // !!!  ATT! NON TOGLIERE QUESTA ISTRUZIONE
+        pt->nu = pt->nu_Sync[NU_INT];
+
         if (pt->verbose>1) {
             printf("nu=%+-2.20e NU_INT=%d\n", pt->nu_Sync[NU_INT], NU_INT);
             printf("stop=%d\n", stop);
         }
 
         // Eval j_un and alpha_nu   and set to 0 all the arrays
-   
+        pt->j_Sync[NU_INT] = 0.0;
+        pt->alfa_Sync[NU_INT] = 0.0;
 
         // Synch is evaluated as int as  nu_start_Sync <nu<nu_stop_Sync
         if ( pt->nu_Sync[NU_INT] <= pt->nu_stop_Sync &&  pt->nu_Sync[NU_INT] >= pt->nu_start_Sync && stop != 1) {
 
             /* erg*s^-1*cm^-3*Hz^-1*sterad^-1 */
+            pt->j_Sync[NU_INT] = j_nu_Sync(pt);
+
+            if (pt->do_Sync == 2) {
+                /* cm^-1 */
+                pt->alfa_Sync[NU_INT] = alfa_nu_Sync(pt);
+
+            }
+
+            // Update the maximum frequency of the Synch
+            // to use in the IC computation
             pt->nu_stop_Sync_ssc =  pt->nu_Sync[NU_INT];
             pt->NU_INT_STOP_Sync_SSC = NU_INT;
             
@@ -221,30 +234,3 @@ void spettro_sincrotrone(int Num_file, struct blob * pt) {
     return;
 }
 //=========================================================================================
-
-void * eval_j_Sync(struct j_args * thread_args){
-    unsigned int NU_INT;
-    double nu_sync;
-    //printf("sono qui, eval_j_SSC \n");
-    for (NU_INT = thread_args->NU_INT_START; NU_INT <= thread_args->NU_INT_STOP; NU_INT++) {    
-        nu_sync=thread_args->nu_array[NU_INT];
-        thread_args->blob_pt->j_Sync[NU_INT] = 0.0;
-        thread_args->blob_pt->alfa_Sync[NU_INT] = 0.0;
-        if (thread_args->blob_pt->verbose > 1) {
-                printf("#->1 in eval_j_sync   NU_INT=%d   nu_1=%e \n", NU_INT, thread_args->nu_array[NU_INT]);
-        }
-        thread_args->blob_pt->j_Sync[NU_INT] = j_nu_Sync(thread_args->blob_pt, nu_sync);
-        if (thread_args->blob_pt->do_Sync == 2) {
-            /* cm^-1 */
-            thread_args->blob_pt->alfa_Sync[NU_INT] = alfa_nu_Sync(thread_args->blob_pt, nu_sync);
-
-        }
-        if (thread_args->blob_pt->verbose > 1) {
-                printf("#->2 in  eval_j_sync NU_INT=%d j[%d]=%e nu_1=%e \n", NU_INT,NU_INT,
-                        thread_args->blob_pt->j_Sync[NU_INT],
-                        thread_args->nu_array[NU_INT]);
-        }
-    }
-    //}
-   
-}

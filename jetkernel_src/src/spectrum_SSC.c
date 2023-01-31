@@ -8,8 +8,6 @@
 #include <unistd.h>
 //#include "libmia.h"
 #include "Blazar_SED.h"
-#include <pthread.h>
-
 /**
  * \file spettro_Compton.c
  * \author Andrea Tramacere
@@ -24,7 +22,7 @@ void spettro_compton(int Num_file, struct blob *pt){
     double L_nu_SSC, F_nu_SSC_obs;
     double gmax,numax_KN,numax_TH,nu_min_TH_1,nu_min_TH_2;
     unsigned int NU_INT, I_MAX, stop;
-    void (*eval_j_ptr)(struct j_args * thread_args);
+   
     
     
     //============================================================
@@ -65,6 +63,10 @@ void spettro_compton(int Num_file, struct blob *pt){
     build_log_grid(pt->nu_start_SSC_obs,  pt->nu_stop_SSC_obs, pt->nu_IC_size, pt->nu_SSC_obs);
 
 
+
+    
+
+
 	I_MAX = pt->nu_IC_size-1;
 	if (pt->verbose>0) {
 		printf("**********************  SSC spectrum 1st Order   ****************************\n");
@@ -86,16 +88,20 @@ void spettro_compton(int Num_file, struct blob *pt){
 	}
 
 	stop=0;
-    eval_j_ptr = &eval_j_SSC;
-    threaded_j_evaluation(pt, eval_j_ptr, pt->j_comp,pt->nu_SSC,pt->nu_start_SSC, pt->nu_stop_SSC,I_MAX,pt->N_THREADS);
     for (NU_INT = 0; NU_INT <= I_MAX; NU_INT++) {
         
-        //pt->nu_1=pt->nu_SSC[NU_INT];
+
+        pt->nu_1=pt->nu_SSC[NU_INT];
+        //pt->j_comp[NU_INT]=pt->emiss_lim;
+        //pt->nuF_nu_SSC_obs[NU_INT]=pt->emiss_lim;
         if(pt->verbose>1){
             printf("#-> nu_em=%e  nu_obs=%e  i=%d\n", pt->nu_SSC[NU_INT], pt->nu_SSC_obs[NU_INT], NU_INT);
         }
         if((pt->nu_SSC[NU_INT]>=pt->nu_start_SSC) &&(pt->nu_SSC[NU_INT]<=pt->nu_stop_SSC)){
 			if (!stop) {
+				pt->q_comp[NU_INT] = rate_compton_GR(pt);
+				pt->j_comp[NU_INT] = pt->q_comp[NU_INT] *
+				HPLANCK * pt->nu_SSC[NU_INT];
 				if (pt->verbose > 1) {
 					printf("#-> q_comp[%d]=%e j[%d]=%e nu_1=%e \n", NU_INT,
 							pt->q_comp[NU_INT], NU_INT, pt->j_comp[NU_INT],
@@ -116,14 +122,31 @@ void spettro_compton(int Num_file, struct blob *pt){
 							NU_INT);
 				}
 
-			
+				//if (pt->j_comp[NU_INT] < pt->emiss_lim) {
+				//	out = 0;
+
+				//	if (pt->nu_SSC[NU_INT] > numax_TH) {
+				//		stop = 1;
+				//	}
                 if (pt->j_comp[NU_INT] < pt->emiss_lim) {
                     pt->j_comp[NU_INT] = pt->emiss_lim;
                     pt->nuF_nu_SSC_obs[NU_INT] = pt->emiss_lim;
                 }
-				
+				//}
+                //
+				//else {
+				//	out = 1;
+				//}
+
+				//if (stop == 1 && pt->nu_SSC[NU_INT] > numax_TH) {
+				//	F_nu_SSC_obs = pt->emiss_lim;
+				//pt->nu_stop_SSC = pt->nu_SSC[NU_INT];
+				//pt->nu_stop_SSC_obs = pt->nu_SSC_obs[NU_INT];
 				pt->NU_INT_STOP_COMPTON_SSC = NU_INT;
-				
+				//	if (pt->verbose > 1) {
+				//		printf("%e %d\n ", pt->nu_SSC[NU_INT], NU_INT);
+				//	}
+				//}
 			}
             else{
 				pt->j_comp[NU_INT]=pt->emiss_lim;
@@ -177,26 +200,8 @@ void spettro_compton(int Num_file, struct blob *pt){
 //=========================================================================================
 
 
-void * eval_j_SSC(struct j_args * thread_args){
-    unsigned int NU_INT;
-    double nu_IC_out;
-    for (NU_INT = thread_args->NU_INT_START; NU_INT <= thread_args->NU_INT_STOP; NU_INT++) {
-        nu_IC_out=thread_args->nu_array[NU_INT];
-        thread_args->blob_pt->q_comp[NU_INT] = 0.;
-        thread_args->blob_pt->j_comp[NU_INT] = 0.;
-       
-        if (thread_args->blob_pt->verbose > 1) {
-                printf("#->1 in eval_j_SSC   NU_INT=%d eval_j_SSC  nu_1=%e \n", NU_INT, thread_args->nu_array[NU_INT]);
-        }
-        
-        thread_args->blob_pt->q_comp[NU_INT] = rate_compton_GR(thread_args->blob_pt,nu_IC_out);
-        thread_args->blob_pt->j_comp[NU_INT] = thread_args->blob_pt->q_comp[NU_INT] *HPLANCK * thread_args->nu_array[NU_INT];
-        if (thread_args->blob_pt->verbose > 1) {
-                printf("#->2 in  eval_j_SSC NU_INT=%d q_comp[%d]=%e j[%d]=%e nu_1=%e \n", NU_INT,NU_INT,
-                        thread_args->blob_pt->q_comp[NU_INT], NU_INT, thread_args->blob_pt->j_comp[NU_INT],
-                        thread_args->nu_array[NU_INT]);
-        }
-    }
-    //}
-   
-}
+
+
+
+
+

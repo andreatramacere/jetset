@@ -262,7 +262,8 @@ double	Lum_SSC_at_nu (struct blob *pt , double nu_1) {
     }
 
 
-    q_comp=rate_compton_GR(pt,nu_1);
+    pt->nu_1=nu_1;
+    q_comp=rate_compton_GR(pt);
     j_comp=q_comp*HPLANCK*nu_1;
     nuL_nu_comp=nu_1*j_nu_to_L_nu_blob(j_comp, pt->Vol_region); /*erg s^-1  Hz^-1 */
 
@@ -291,8 +292,9 @@ double	Lum_Sync_at_nu (struct blob *pt , double nu) {
         exit(0);
     }
 
-    j_nu= j_nu_Sync(pt,nu);
-    alpha_nu = alfa_nu_Sync(pt,nu);
+    pt->nu=nu;
+    j_nu= j_nu_Sync(pt);
+    alpha_nu = alfa_nu_Sync(pt);
     S_nu = eval_S_nu_Sync(pt, j_nu, alpha_nu);
 
     nuL_nu_Sync = I_nu_to_L_nu_blob(S_nu, pt->Surf_region)*nu; /*erg s^-1  Hz^-1 */

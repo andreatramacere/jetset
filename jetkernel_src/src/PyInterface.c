@@ -180,8 +180,6 @@ struct temp_ev MakeTempEv() {
 struct blob MakeBlob() {
 
     struct blob spettro_root;
-
-    spettro_root.N_THREADS = 0;
     spettro_root.spec_array_size=static_spec_arr_size;
 
     spettro_root.WRITE_TO_FILE=0;
@@ -197,9 +195,9 @@ struct blob MakeBlob() {
     spettro_root.do_IC=1;
     spettro_root.do_pp_gamma=0;
     spettro_root.do_bremss_ep=0;
-    //spettro_root.set_pp_racc_elec = 0;
-    //spettro_root.set_pp_racc_gamma = 0;
-    //spettro_root.set_pp_racc_nu_mu = 0;
+    spettro_root.set_pp_racc_elec = 0;
+    spettro_root.set_pp_racc_gamma = 0;
+    spettro_root.set_pp_racc_nu_mu = 0;
     spettro_root.pp_racc_elec = 1.0;
     spettro_root.pp_racc_gamma = 1.0;
     spettro_root.pp_racc_nu_mu = 1.0;
@@ -326,13 +324,14 @@ struct blob MakeBlob() {
 
     spettro_root.Ne=NULL;
     spettro_root.Ne_custom=NULL;
-    //spettro_root.Ne_IC=NULL;
+    spettro_root.Ne_IC=NULL;
     spettro_root.Ne_jetset=NULL;
-    //spettro_root.Ne_stat=NULL;
+    spettro_root.Ne_stat=NULL;
     
     spettro_root.griglia_gamma_Ne_log=NULL;
     spettro_root.gamma_e_custom=NULL;
     spettro_root.griglia_gamma_Ne_log_stat=NULL;
+    spettro_root.griglia_gamma_Ne_log_IC=NULL;
     spettro_root.griglia_gamma_jetset_Ne_log=NULL;
 
     spettro_root.Np=NULL;
@@ -429,12 +428,12 @@ void InitRadiative(struct blob *pt_base){
     //========================================================
     // pp parameters initialization
     //========================================================
-    //pt_base->set_pp_racc_elec = 0;
-    //pt_base->set_pp_racc_gamma = 0;
-    //pt_base->set_pp_racc_nu_mu = 0;
-    //pt_base->pp_racc_elec = 1.0;
-    //pt_base->pp_racc_gamma = 1.0;
-    //pt_base->pp_racc_nu_mu = 1.0;
+    pt_base->set_pp_racc_elec = 0;
+    pt_base->set_pp_racc_gamma = 0;
+    pt_base->set_pp_racc_nu_mu = 0;
+    pt_base->pp_racc_elec = 1.0;
+    pt_base->pp_racc_gamma = 1.0;
+    pt_base->pp_racc_nu_mu = 1.0;
 
     //========================================================
     // EC  Initialization
@@ -621,6 +620,7 @@ void Run_SED(struct blob *pt_base){
     if ((strcmp(pt_base->PARTICLE, "protons") == 0) && pt_base->do_pp_gamma) {
 
         spettro_pp_gamma(1, pt_base);
+        spettro_pp_neutrino(1,pt_base);
     }
 
     if ((strcmp(pt_base->PARTICLE, "protons") == 0) && pt_base->do_pp_neutrino) {
@@ -648,7 +648,7 @@ void Run_SED(struct blob *pt_base){
     // Evaluate SSC Spectrum
     //==================================================
     if (pt_base->do_SSC && pt_base->do_IC) {
-       spettro_compton(1, pt_base);
+        spettro_compton(1, pt_base);
     }
 
 
@@ -689,6 +689,8 @@ void Run_SED(struct blob *pt_base){
                     if (set_condition_EC_correction(pt_base, pt_base->R_DT) > 0)
                     {
                         pt_base->R_H = 0;
+                        
+
                         Build_I_nu_DT(pt_base);
                         spettro_EC(1, pt_base);
                         nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->nuF_nu_EC_DT_obs);

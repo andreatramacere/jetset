@@ -100,8 +100,7 @@
 //     double nu_obs[static_spec_arr_size];
 //     double nuFnu_grid[static_spec_arr_grid_size];
 // };
-//#include <pthread.h>
-//pthread_mutex_t mutex ;
+
 
 struct blob {
     int verbose;
@@ -118,7 +117,6 @@ struct blob {
     char PARTICLE[16];
     int OUT_FILE;
     int START_FILE;
-    unsigned int N_THREADS;
     int Num_file;
     int SSC, EC, TOT;
     int WRITE_TO_FILE;
@@ -231,8 +229,8 @@ struct blob {
     //-----------pp-gamma-emission---//
     //--- CONST
     double NH_pp;
-    //double MPI_kernel_delta;
-    //double MPI_kernel_delta_Emin;
+    double MPI_kernel_delta;
+    double MPI_kernel_delta_Emin;
 
     //--- FREQ BOUNDARIES
     double nu_stop_pp_gamma_pred,nu_stop_pp_gamma;
@@ -348,12 +346,12 @@ struct blob {
 
     //--- IC Kernel computation
     double Gamma;
-    //double nu; /*freq spettro sinc */
+    double nu; /*freq spettro sinc */
     double nu_1; /*freq spettro comp */
-    //double nu_compton_0; /* freq campo fot Sync per spettro IC */
+    double nu_compton_0; /* freq campo fot Sync per spettro IC */
     double * nu_seed;
     double * n_seed;
-    //double g_min_IC;
+    double g_min_IC;
 
     //--- FREQ/FLUX array
     double q_comp[static_spec_arr_size];
@@ -665,8 +663,8 @@ struct blob {
     double *gam;
     double *Ne;
     double *Ne_jetset;
-    //double *Ne_IC;
-    //double *Ne_stat;
+    double *Ne_IC;
+    double *Ne_stat;
     double *Np;
     double *Np_jetset;
     double *Q_inj_e_second;
@@ -678,6 +676,7 @@ struct blob {
     double * griglia_gamma_Ne_log;
     double * griglia_gamma_jetset_Ne_log;
     
+    double * griglia_gamma_Ne_log_IC;
     double * griglia_gamma_Ne_log_stat;
 
     double * griglia_gamma_Np_log;
@@ -687,6 +686,7 @@ struct blob {
     //double *griglia_gamma_log_IC;
     //double *N_IC;
 
+    unsigned int i_griglia_gamma;
     double N_tot_e_Sferic;
     double N_tot_p_Sferic;
     double N;
@@ -968,7 +968,7 @@ void build_Ne(struct blob *pt);
 void build_Np(struct blob *pt);
 void build_Ne_jetset(struct blob *pt);
 void build_Np_jetset(struct blob *pt);
-void Fill_Ne_IC(struct blob *pt, double g_min_IC, int stat_frame, double * Ne_IC, double * griglia_gamma_Ne_log_IC);
+void Fill_Ne_IC(struct blob *pt, double gmin, int stat_frame);
 void InitNe(struct blob *pt);
 void Init_Np_Ne_pp(struct blob *pt);
 double N_distr(struct blob *, double Gamma);
@@ -1105,14 +1105,14 @@ double nu_obs_to_nu_src(double nu, double z);
 void spettro_sincrotrone(int Num_file, struct blob *);
 double F_K_53(struct blob *, double x);
 double F_K_ave(struct blob *, double x);
-double F_int_fix(struct blob *, unsigned int ID, double nu_sync);
-double F_int_ave(struct blob *, unsigned int  ID, double nu_sync);
-double Sync_self_abs_int(struct blob *, unsigned int ID, double nu_sync);
-double j_nu_Sync(struct blob *, double nu_sync);
+double F_int_fix(struct blob *, unsigned int ID);
+double F_int_ave(struct blob *, unsigned int  ID);
+double Sync_self_abs_int(struct blob *, unsigned int ID);
+double j_nu_Sync(struct blob *);
 double solve_S_nu_Sync(struct blob *pt, unsigned int NU_INT);
 double eval_S_nu_Sync(struct blob *pt, double j_nu, double alpha_nu);
-double alfa_nu_Sync(struct blob *, double nu_sync);
-double integrale_Sync(double (*pf)(struct blob *, unsigned int ID, double nu_sync), struct blob *pt, double nu_sync);
+double alfa_nu_Sync(struct blob *);
+double integrale_Sync(double (*pf)(struct blob *, unsigned int ID), struct blob *pt);
 double Sync_tcool(struct blob * , double g);
 double Sync_cool(struct blob * , double g);
 void set_R_Sync(struct blob *);
@@ -1136,26 +1136,25 @@ double sigma_pp_inel(double Ep_TeV);
 double  check_pp_kernel(double res,struct blob *pt,double E_p_TeV, double x );
 
 
-double rate_gamma_pp(struct blob *pt, double nu_out, int eval_only_racc);
-double rate_electrons_pp(struct blob *pt, double Gamma, int eval_only_racc);
-double rate_neutrino_mu_1_pp(struct blob *pt, double nu_nu_mu, int eval_only_racc);
+double rate_gamma_pp(struct blob *pt);
+double rate_electrons_pp(struct blob *pt, double Gamma);
+double rate_neutrino_mu_1_pp(struct blob *pt, double nu_nu_mu);
 
-double pp_gamma_kernel(double gamma_p, double E_out_TeV,struct blob * pt, unsigned int i_griglia_gamma);
-double pp_gamma_kernel_delta(struct blob *pt, double E_pi, double pp_racc_gamma);
+double pp_gamma_kernel(double gamma_p, double E_out_TeV,struct blob * pt);
+double pp_gamma_kernel_delta(struct blob *pt, double E_pi);
 
-double pp_electron_kernel_delta(struct blob *pt,double E_pi, double pp_racc_elec);
-double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct blob *pt, unsigned int i_griglia_gamma);
+double pp_electron_kernel_delta(struct blob *pt,double E_pi);
+double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct blob *pt);
 
-double pp_neturino_mu_1_kernel(double gamma_p, double E_out_TeV, struct blob *pt, unsigned int i_griglia_gamma);
-double pp_neutrino_mu_1_kernel_delta(struct blob *pt,double E_pi, double pp_racc_nu_mu );
+double pp_neturino_mu_1_kernel(double gamma_p, double E_out_TeV, struct blob *pt);
+double pp_neutrino_mu_1_kernel_delta(struct blob *pt, double E_pi);
 
-double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, double E_out_TeV, struct blob *pt, unsigned int i_griglia_gamma), double E_out_TeV, struct blob * pt, unsigned int i_start);
-double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) ( struct blob *pt,double E, double pp_racc_elec),
+double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, double E_out_TeV, struct blob *pt), double E_out_TeV, struct blob * pt, unsigned int i_start);
+double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) ( struct blob *pt,double E),
                               double (*E_min_pi) (double gamma_p, struct blob *pt),
                               double (*E_max_pi) (struct blob *pt),  
                               double E_out_TeV,
-                              struct blob * pt,
-                              double pp_racc_elec);
+                              struct blob * pt);
 
 
 unsigned int E_min_p_grid_even(struct blob *pt, double * gamma_p_grid, double E_start_TeV, unsigned int i_start, unsigned int gamma_p_grid_size );
@@ -1203,10 +1202,10 @@ int x_to_grid_index(double *nu_grid, double nu, unsigned int SIZE);
 
 //=================================================================================
 /************************************ FUNCTIONS  IC  *****************************/
-double f_compton_K1(struct blob *, double Gamma, double nu_IC_out, double nu_IC_in);
-void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int stat_frame, double * Ne_IC, double * griglia_gamma_Ne_log_IC);
-double rate_compton_GR(struct blob *, double nu_IC_out);
-double integrale_IC(struct blob * pt, double a, double b,int stat_frame, double nu_IC_out);
+double f_compton_K1(struct blob *, double Gamma);
+void set_N_distr_for_Compton(struct blob *, double nu_in, double nu_out, int stat_frame);
+double rate_compton_GR(struct blob *);
+double integrale_IC(struct blob * pt, double a, double b,int stat_frame);
 double integrale_IC_cooling(struct blob * pt, double a, double b, double gamma);
 double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma);
 double f_compton_cooling(double b);
@@ -1375,23 +1374,4 @@ double test_solid_anlge(struct blob *pt, double mu);
 
 
 
-//===========================================================================================
-/**********************        THREADS                     ************************/
-struct j_args{
-    struct blob * blob_pt;
-    unsigned int NU_INT_START;
-    unsigned int NU_INT_STOP;
-    unsigned int NU_INT_MAX;
-    double * nu_array;
 
-
-};
-void threaded_j_evaluation(struct blob * pt, void (*eval_j)(struct j_args * thread_args), 
-    double * j_nu_array, double * nu_array, double nu_start, double nu_stop, unsigned int I_MAX, unsigned int N_THREADS);
-
-void * eval_j_SSC(struct j_args * thread_args);
-void * eval_j_Sync(struct j_args * thread_args);
-void * eval_j_EC(struct j_args * thread_args);
-void * eval_j_pp_gamma(struct j_args * thread_args);
-void * eval_j_pp_bremss_ep(struct j_args * thread_args);
-void * eval_j_pp_neutrino(struct j_args * thread_args);
