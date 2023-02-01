@@ -185,7 +185,7 @@ void build_Ne(struct blob *pt) {
     //printf("stationary build_Ne Set array per Ne 3%s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Ne_log_stat),pt->gamma_grid_size);
     //printf("stationarybuild_Ne Set array per Ne 4%s \n",pt->DISTR);
-    alloc_N_distr(&(pt->Ne_stat),pt->gamma_grid_size);
+    //alloc_N_distr(&(pt->Ne_stat),pt->gamma_grid_size);
     
     //if (pt->verbose>1) {
     //    printf("DONE \n");
@@ -193,9 +193,9 @@ void build_Ne(struct blob *pt) {
 
     //N for IC and simpson equilog integration over N_grid
     //printf("N for IC and simpson build_Ne Set array per Ne 5%s \n",pt->DISTR);
-    alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->gamma_grid_size);
+    //alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->gamma_grid_size);
     //printf("N for IC and simpson build_Ne Set array per Ne 6%s \n",pt->DISTR);
-    alloc_N_distr(&(pt->Ne_IC),pt->gamma_grid_size);
+    //alloc_N_distr(&(pt->Ne_IC),pt->gamma_grid_size);
     //printf("N for IC and simpson build_Ne Set array per Ne 7%s \n",pt->DISTR);
     alloc_N_distr(&(pt->Integrand_over_gamma_grid),pt->gamma_grid_size);
 
@@ -213,14 +213,14 @@ void build_Ne_secondaries(struct blob *pt) {
     //printf("build_Ne_secondaries Set array per Ne %s \n",pt->DISTR);
     alloc_N_distr(&(pt->griglia_gamma_Ne_log_stat),pt->gamma_grid_size);
     //printf("build_Ne_secondaries Set array per Ne %s \n",pt->DISTR);
-    alloc_N_distr(&(pt->Ne_stat),pt->gamma_grid_size);
+    //alloc_N_distr(&(pt->Ne_stat),pt->gamma_grid_size);
     //if (pt->verbose>1) {
     //    printf("DONE \n");
     //}
 
     //N for IC and simpson equilog integration over N_grid
-    alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->gamma_grid_size);
-    alloc_N_distr(&(pt->Ne_IC),pt->gamma_grid_size);
+    //alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->gamma_grid_size);
+    //alloc_N_distr(&(pt->Ne_IC),pt->gamma_grid_size);
     alloc_N_distr(&(pt->Integrand_over_gamma_grid),pt->gamma_grid_size);
 
 }
@@ -257,7 +257,7 @@ void build_Ne_jetset(struct blob *pt) {
 }
 
 
-void Fill_Ne_IC(struct blob *pt, double g_min_IC, int stat_frame) {
+void Fill_Ne_IC(struct blob *pt, double g_min_IC, int stat_frame, double * Ne_IC, double * griglia_gamma_Ne_log_IC) {
     unsigned int i,i_start;
     //double gmin_grid;
     i_start=0;
@@ -278,45 +278,45 @@ void Fill_Ne_IC(struct blob *pt, double g_min_IC, int stat_frame) {
     if (strcmp(pt->PARTICLE, "protons") == 0) {
         
         if(pt->IC_adaptive_e_binning ==1){
-            Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,g_min_IC, pt->gmax_griglia_secondaries);
+            Genera_griglia_gamma_N_log(pt, griglia_gamma_Ne_log_IC,g_min_IC, pt->gmax_griglia_secondaries);
         }else{
-            Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,pt->gmin_griglia_secondaries, pt->gmax_griglia_secondaries);
+            Genera_griglia_gamma_N_log(pt, griglia_gamma_Ne_log_IC,pt->gmin_griglia_secondaries, pt->gmax_griglia_secondaries);
         }
         
     }
     else{
         if(pt->IC_adaptive_e_binning ==1){
             //gmin_grid=max(pt->gmin_griglia,g_min_IC/10);
-            Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,g_min_IC, pt->gmax_griglia);
+            Genera_griglia_gamma_N_log(pt, griglia_gamma_Ne_log_IC,g_min_IC, pt->gmax_griglia);
         }else{
-            Genera_griglia_gamma_N_log(pt, pt->griglia_gamma_Ne_log_IC,pt->gmin_griglia, pt->gmax_griglia);
+            Genera_griglia_gamma_N_log(pt, griglia_gamma_Ne_log_IC,pt->gmin_griglia, pt->gmax_griglia);
         }
     }
     SetDistr(pt);
     for (i = 0; i < pt->gamma_grid_size; i++) {
         if(pt->IC_adaptive_e_binning ==1){
-            if (pt->griglia_gamma_Ne_log_IC[i]>=g_min_IC){
-             pt->Ne_IC[i] = N_distr_interp(pt->gamma_grid_size,
-                                    pt->griglia_gamma_Ne_log_IC[i],
+            if (griglia_gamma_Ne_log_IC[i]>=g_min_IC){
+                Ne_IC[i] = N_distr_interp(pt->gamma_grid_size,
+                                    griglia_gamma_Ne_log_IC[i],
                                     pt->griglia_gamma_Ne_log,
                                     pt->Ne);
             }else{
-                 pt->Ne_IC[i]=0;
+                Ne_IC[i]=0;
                 }
         }else{
-            pt->Ne_IC[i] = pt->Ne[i]; 
+            Ne_IC[i] = pt->Ne[i]; 
         }                 
         if (stat_frame==1){
             //the delta^2 in Ne_stat is also correct because we use electron density
             //so the relativistic invariant is
             //N/(V*gamma^2)=N'/(V'gamma'2^)
-            pt->Ne_IC[i]*=pt->beam_obj*pt->beam_obj;
+            Ne_IC[i]*=pt->beam_obj*pt->beam_obj;
 
             //This transformation is correct
             //the grid is shifted by a factor of delta, hence the integration
             //boundaries are properly updated but the value of N[i] is still the
             //value of N(gamma') as in the formula 6.133 in Dermer&Menon
-            pt->griglia_gamma_Ne_log_IC[i]*=pt->beam_obj;
+            griglia_gamma_Ne_log_IC[i]*=pt->beam_obj;
         }
     }
 }
@@ -418,6 +418,7 @@ void Init_Np_Ne_pp(struct blob *pt)
     build_Ne_secondaries(pt);
     build_Q_inj_e_second(pt);
     SetDistr(pt);
+    pt->pp_racc_elec=rate_electrons_pp(pt, pt->griglia_gamma_Ne_log[0],1);
     Fill_N(pt, pt->griglia_gamma_Ne_log, pt->Q_inj_e_second);
     CoolingEquilibrium(pt,pt->T_esc_e_second);
     pt->Distr_e_done = 1;
@@ -719,10 +720,9 @@ double N_distr(struct blob *pt_N, double Gamma) {
 
 
     a=0.;
-
     if (Gamma >= pt_N->gmin_secondaries && Gamma <= pt_N->gmax_secondaries && pt_N->TIPO_DISTR == -1) {
         //pt_N->Gamma = Gamma;
-        a= vluce_cm * pt_N->NH_pp * MEC2_TeV * bn_to_cm2 * rate_electrons_pp(pt_N, Gamma);
+        a= vluce_cm * pt_N->NH_pp * MEC2_TeV * bn_to_cm2 * rate_electrons_pp(pt_N, Gamma,-1);
     }else{
 
         a= N_distr_integranda(pt_N,Gamma)*pt_N->N/pt_N->N_0;

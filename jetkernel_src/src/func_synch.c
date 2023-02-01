@@ -39,21 +39,21 @@ double F_K_ave(struct blob *pt, double x){
 //=========================================================================================
 // j_nu Sync integrands
 //=========================================================================================
-double F_int_fix(struct blob * pt,unsigned int  ID){
+double F_int_fix(struct blob * pt,unsigned int  ID, double nu_sync){
     //PITCH ANGLE FIXED
     double a, y,g;
     g=pt->griglia_gamma_Ne_log[ID];
-    y=(pt->nu/(g*g))*pt->C2_Sync_K53;
+    y=(nu_sync/(g*g))*pt->C2_Sync_K53;
     a=F_K_53(pt, y);
     a*=pt->Ne[ID];
     return a;
 }
 
-double F_int_ave(struct blob * pt,unsigned int  ID){
+double F_int_ave(struct blob * pt,unsigned int  ID, double nu_sync){
     //PITCH ANGLE AVE
     double a, y,g;
     g=pt->griglia_gamma_Ne_log[ID];
-    y=pt->nu/(g*g)*pt->C2_Sync_K_AVE;
+    y=nu_sync/(g*g)*pt->C2_Sync_K_AVE;
     a=F_K_ave(pt, y);
     a*=pt->Ne[ID];
     return a;
@@ -67,7 +67,7 @@ double F_int_ave(struct blob * pt,unsigned int  ID){
 //=========================================================================================
 //    integrand for alfa_nu_Sync
 //=========================================================================================
-double Sync_self_abs_int(struct blob *pt,unsigned int  ID){
+double Sync_self_abs_int(struct blob *pt,unsigned int  ID, double nu_sync){
     double a,g, y, x1, x2, y1, y2, delta;
     
     
@@ -92,11 +92,11 @@ double Sync_self_abs_int(struct blob *pt,unsigned int  ID){
     a=(y2-y1)/delta;
     g=pt->griglia_gamma_Ne_log[ID];
     if (pt->Sync_kernel==0){
-    	y=(pt->nu/(g*g))*pt->C2_Sync_K53;
+    	y=(nu_sync/(g*g))*pt->C2_Sync_K53;
     	a*=(g*g)*F_K_53(pt, y);
     }
     else{
-    	y=pt->nu/(g*g)*pt->C2_Sync_K_AVE;
+    	y=nu_sync/(g*g)*pt->C2_Sync_K_AVE;
     	a*=(g*g)*F_K_ave(pt, y);
     }
     //This is fixing numerical instabilities 
@@ -223,18 +223,18 @@ void set_R_Sync(struct blob * pt){
 //=========================================================================================
 //  Synchrotron emissivity j_nu_Sync
 //=========================================================================================
-double j_nu_Sync(struct blob * f){
+double j_nu_Sync(struct blob * f, double nu_sync){
     double a;
-    double (*pf_fint) (struct blob * ,unsigned int  ID);
+    double (*pf_fint) (struct blob * ,unsigned int  ID, double nu_sync);
     /*** segli in base al kernel ***/
     if (f->Sync_kernel==0){
 		pf_fint=&F_int_fix;
-		a=integrale_Sync(pf_fint, f);
+		a=integrale_Sync(pf_fint, f,  nu_sync);
 		return a*f->C1_Sync_K53;
     }
     else {
     	pf_fint=&F_int_ave;
-    	a=integrale_Sync(pf_fint, f);
+    	a=integrale_Sync(pf_fint, f, nu_sync);
     	return a*f->C1_Sync_K_AVE;
     }
 }
@@ -248,12 +248,12 @@ double j_nu_Sync(struct blob * f){
 //=========================================================================================
 // Synch self abs alfa_nu_Sync
 //=========================================================================================
-double alfa_nu_Sync(struct blob * f){
+double alfa_nu_Sync(struct blob * f, double nu_sync){
     double a;
     double (*pf_fint1) (struct blob * ,unsigned int  ID);
     pf_fint1=&Sync_self_abs_int;
-    a=integrale_Sync(pf_fint1, f);
-    return a*f->C3_Sync_K53*(f->B)/(f->nu*f->nu);
+    a=integrale_Sync(pf_fint1, f,nu_sync);
+    return a*f->C3_Sync_K53*(f->B)/(nu_sync*nu_sync);
 }
 //=========================================================================================
 
@@ -264,15 +264,20 @@ double alfa_nu_Sync(struct blob * f){
 //=========================================================================================
 // Sync INTEGRATION WITH SIMPSON AND GRIGLIA EQUI-LOG
 //=========================================================================================
-double integrale_Sync(double (*pf) (struct blob *, unsigned int  ID), struct blob * pt ) {
+double integrale_Sync(double (*pf) (struct blob *, unsigned int  ID, double nu_sync), struct blob * pt, double nu_sync ) {
 
     unsigned int  ID;
+    double *Integrand_over_gamma_grid;
+    double integral;
+    integral =0;
+    Integrand_over_gamma_grid = (double *) calloc(pt->gamma_grid_size, sizeof (double));
     //double test;
     for (ID = 0; ID < pt->gamma_grid_size ; ID++){
-        pt->Integrand_over_gamma_grid[ID] =pf(pt,ID);
+        Integrand_over_gamma_grid[ID] =pf(pt,ID, nu_sync);
     }
-
-    return integr_simp_grid_equilog(pt->griglia_gamma_Ne_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
+    integral= integr_simp_grid_equilog(pt->griglia_gamma_Ne_log, Integrand_over_gamma_grid, pt->gamma_grid_size);
+    free(Integrand_over_gamma_grid);
+    return integral;
 }
 //=========================================================================================
 
