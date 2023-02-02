@@ -22,7 +22,7 @@ void spettro_pp_gamma(int Num_file, struct blob *pt) {
     double L_nu_pp, F_nu_pp_obs;
     double  gmax;
     unsigned int NU_INT, i, I_MAX, stop;
-    void (*eval_j_ptr)(struct j_args * thread_args);
+    void *(*eval_j_ptr)(void * args);
     //============================================================
     //         inizio  loop sulle freq per spettro  pp
     //============================================================
@@ -136,7 +136,8 @@ void spettro_pp_gamma(int Num_file, struct blob *pt) {
 }
 //=========================================================================================
 
-void * eval_j_pp_gamma(struct j_args * thread_args){
+void * eval_j_pp_gamma(void *data){
+    struct j_args *thread_args = data;
     unsigned int NU_INT;
     double nu_out;
     for (NU_INT = thread_args->NU_INT_START; NU_INT <= thread_args->NU_INT_STOP; NU_INT++) {
@@ -161,5 +162,6 @@ void * eval_j_pp_gamma(struct j_args * thread_args){
                             nu_out);
         }
     }
+    return NULL; 
 }
    

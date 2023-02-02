@@ -23,7 +23,7 @@ void spettro_bremss_ep(int Num_file, struct blob *pt) {
     double L_nu_bremss_ep, F_nu_bremss_ep_obs;
     double gmax;
     unsigned int NU_INT, i, I_MAX, stop;
-    void (*eval_j_bremss)(struct j_args * thread_args);
+    void *(*eval_j_bremss)(void * args);
 
     //============================================================
     //         inizio  loop sulle freq per spettro  pp
@@ -132,9 +132,10 @@ void spettro_bremss_ep(int Num_file, struct blob *pt) {
 }
 //=========================================================================================
 
-void * eval_j_pp_bremss_ep(struct j_args * thread_args){
+void * eval_j_pp_bremss_ep(void *data){
     unsigned int NU_INT;
     double nu_out;
+    struct j_args *thread_args = data;
     for (NU_INT = thread_args->NU_INT_START; NU_INT <= thread_args->NU_INT_STOP; NU_INT++) {
         nu_out=thread_args->nu_array[NU_INT];
         thread_args->blob_pt->j_bremss_ep[NU_INT] = 0.;
@@ -158,4 +159,5 @@ void * eval_j_pp_bremss_ep(struct j_args * thread_args){
                             nu_out);
         }
     }
+    return NULL; 
 }

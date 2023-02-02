@@ -24,7 +24,7 @@ void spettro_compton(int Num_file, struct blob *pt){
     double L_nu_SSC, F_nu_SSC_obs;
     double gmax,numax_KN,numax_TH,nu_min_TH_1,nu_min_TH_2;
     unsigned int NU_INT, I_MAX, stop;
-    void (*eval_j_ptr)(struct j_args * thread_args);
+    void *(*eval_j_ptr)(void * args);
     
     
     //============================================================
@@ -177,9 +177,10 @@ void spettro_compton(int Num_file, struct blob *pt){
 //=========================================================================================
 
 
-void * eval_j_SSC(struct j_args * thread_args){
+void  * eval_j_SSC(void *data){
     unsigned int NU_INT;
     double nu_IC_out;
+    struct j_args *thread_args = data;
     for (NU_INT = thread_args->NU_INT_START; NU_INT <= thread_args->NU_INT_STOP; NU_INT++) {
         nu_IC_out=thread_args->nu_array[NU_INT];
         thread_args->blob_pt->q_comp[NU_INT] = 0.;
@@ -198,5 +199,5 @@ void * eval_j_SSC(struct j_args * thread_args){
         }
     }
     //}
-   
+   return NULL; 
 }

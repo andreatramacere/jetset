@@ -145,7 +145,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
     unsigned int * NU_INT_STOP_EC;
     unsigned int NU_INT, I_MAX, stop;
 	double R_ext_emit;
-	void (*eval_j_ptr)(struct j_args * thread_args);
+	void *(*eval_j_ptr)(void * args);
 	//============================================================
     //         inizio  loop sulle freq per spettro  compton
     //============================================================
@@ -539,9 +539,10 @@ void spettro_EC(int Num_file, struct blob *pt) {
 
 
 
-void * eval_j_EC(struct j_args * thread_args){
+void  * eval_j_EC(void *data){
     unsigned int NU_INT;
     double nu_IC_out;
+	struct j_args *thread_args = data;
     for (NU_INT = thread_args->NU_INT_START; NU_INT <= thread_args->NU_INT_STOP; NU_INT++) {
         nu_IC_out=thread_args->nu_array[NU_INT];
         thread_args->blob_pt->q_comp[NU_INT] = 0.;
@@ -569,7 +570,8 @@ void * eval_j_EC(struct j_args * thread_args){
                         thread_args->blob_pt->q_comp[NU_INT], NU_INT, thread_args->blob_pt->j_EC[NU_INT],
                         thread_args->nu_array[NU_INT]);
         }
-    }   
+    }
+	return NULL; 
 }
 
 

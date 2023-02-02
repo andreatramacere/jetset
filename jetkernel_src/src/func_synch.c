@@ -250,7 +250,7 @@ double j_nu_Sync(struct blob * f, double nu_sync){
 //=========================================================================================
 double alfa_nu_Sync(struct blob * f, double nu_sync){
     double a;
-    double (*pf_fint1) (struct blob * ,unsigned int  ID);
+    double (*pf_fint1) (struct blob * , unsigned int ID, double nu_sync);
     pf_fint1=&Sync_self_abs_int;
     a=integrale_Sync(pf_fint1, f,nu_sync);
     return a*f->C3_Sync_K53*(f->B)/(nu_sync*nu_sync);

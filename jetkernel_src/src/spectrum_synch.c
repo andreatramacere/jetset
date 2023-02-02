@@ -40,7 +40,7 @@ void spettro_sincrotrone(int Num_file, struct blob * pt) {
 
     //char f_Synch[static_file_name_max_legth];
 
-    void (*eval_j_ptr)(struct j_args * thread_args);
+    void *(*eval_j_ptr)(void * args);
     //FILE *fp_Synch;
     if (pt->Distr_e_done == 0) {
         printf("No electron distribution calculated \n ");
@@ -222,8 +222,9 @@ void spettro_sincrotrone(int Num_file, struct blob * pt) {
 }
 //=========================================================================================
 
-void * eval_j_Sync(struct j_args * thread_args){
+void  * eval_j_Sync(void *data){
     unsigned int NU_INT;
+	struct j_args *thread_args = data;
     double nu_sync;
     //printf("sono qui, eval_j_SSC \n");
     for (NU_INT = thread_args->NU_INT_START; NU_INT <= thread_args->NU_INT_STOP; NU_INT++) {    
@@ -246,5 +247,5 @@ void * eval_j_Sync(struct j_args * thread_args){
         }
     }
     //}
-   
+    return NULL;   
 }

@@ -1386,12 +1386,12 @@ struct j_args{
 
 
 };
-void threaded_j_evaluation(struct blob * pt, void (*eval_j)(struct j_args * thread_args), 
+void threaded_j_evaluation(struct blob * pt,  void  *(*eval_j)(void *data), 
     double * j_nu_array, double * nu_array, double nu_start, double nu_stop, unsigned int I_MAX, unsigned int N_THREADS);
 
-void * eval_j_SSC(struct j_args * thread_args);
-void * eval_j_Sync(struct j_args * thread_args);
-void * eval_j_EC(struct j_args * thread_args);
-void * eval_j_pp_gamma(struct j_args * thread_args);
-void * eval_j_pp_bremss_ep(struct j_args * thread_args);
-void * eval_j_pp_neutrino(struct j_args * thread_args);
+void  * eval_j_SSC(void *data);
+void  * eval_j_Sync(void *data);
+void  * eval_j_EC(void *data);
+void  * eval_j_pp_gamma(void *data);
+void  * eval_j_pp_bremss_ep(void *data);
+void  * eval_j_pp_neutrino(void *data);

@@ -446,7 +446,7 @@ double rate_gamma_pp(struct blob *pt, double nu_out, int eval_only_racc) {
         a1= integrale_pp_second_low_en_rate(pf_K_delta,pf_E_min,pf_E_max,E_gamma_TeV,pt,1);
 
         pp_racc_gamma = a2 / a1;
-        printf("rate_gamma_pp, pp_racc_gamma=%e, nu_out=%e\n",pp_racc_gamma,nu_out);
+        //printf("rate_gamma_pp, pp_racc_gamma=%e, nu_out=%e\n",pp_racc_gamma,nu_out);
         return pp_racc_gamma;
     }
     else{
