@@ -631,7 +631,7 @@ double Disk_Spectrum(struct blob *pt, double nu_Disk_disk_RF){
 	else if (pt->disk==3){
 		I= eval_nu_peak_Disk(pt->T_Disk)*(pt->mono_planck_max_factor-pt->mono_planck_min_factor);
 	}
-	return I;
+	return I*cos(pt->theta * Deg_to_Rad);
 }
 
 double eval_I_nu_theta_Disk(struct blob *pt, double mu)
