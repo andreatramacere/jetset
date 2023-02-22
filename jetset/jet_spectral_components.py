@@ -332,15 +332,16 @@ class SpecCompList(object):
             unexpected_behaviour()
 
         for ID,sc in enumerate(self._sc_list):
-            _names.append(sc.name)
-            if restframe == 'obs':
-                _cols.append(sc.SED.nuFnu)
-            else:
-                _cols.append(sc.SED.nuLnu_src)
+            if sc.hidden is False:
+                _names.append(sc.name)
+                if restframe == 'obs':
+                    _cols.append(sc.SED.nuFnu)
+                else:
+                    _cols.append(sc.SED.nuLnu_src)
 
 
 
-        _meta=dict(src_name=sc.jet_obj.name)
+        _meta=dict(model_name=sc.jet_obj.name)
         _meta['redshift']=sc.jet_obj.get_par_by_type('redshift').val
         _meta['restframe']= restframe
         self._table = Table(_cols, names=_names,meta=_meta)

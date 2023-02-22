@@ -689,6 +689,16 @@ class JetBase(Model):
         print()
 
 
+    @property
+    def sed_table(self, restframe='obs'):
+        try:
+            self.spectral_components.build_table(restframe=restframe)
+        except:
+            self.eval()
+            
+        self._SED_table = self.spectral_components.table
+        return  self._SED_table
+
     def get_spectral_component_by_name(self,name,verbose=True):
         for i in range(len(self._spectral_components_list)):
             if self._spectral_components_list[i].name==name:
@@ -1641,11 +1651,6 @@ class Jet(JetBase):
         electron_distribution_log_values
         proton_distribution_log_values
         """
-        if electron_distribution is not None and emitters_type == 'protons':
-            raise RuntimeError("if you provide an electron_distribution, you can't set emitters_type=",emitters_type, 'use emitters_distribution instead')
-        
-        if proton_distribution is not None and emitters_type == 'electrons':
-            raise RuntimeError("if you provide a proton_distribution, you can't set emitters_type=",emitters_type, 'use emitters_distribution instead')
 
         if electron_distribution is not None:
             emitters_type = 'electrons'
@@ -1658,6 +1663,15 @@ class Jet(JetBase):
             emitters_distribution= proton_distribution
         if proton_distribution_log_values is not None:
             emitters_distribution_log_values = proton_distribution_log_values
+
+
+        if electron_distribution is not None and emitters_type == 'protons':
+            raise RuntimeError("if you provide an electron_distribution, you can't set emitters_type=",emitters_type, 'use emitters_distribution instead')
+        
+        if proton_distribution is not None and emitters_type == 'electrons':
+            raise RuntimeError("if you provide a proton_distribution, you can't set emitters_type=",emitters_type, 'use emitters_distribution instead')
+
+        
 
 
         if name is None:

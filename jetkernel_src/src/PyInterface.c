@@ -666,7 +666,18 @@ void Run_SED(struct blob *pt_base){
                 if (pt_base->do_EC_Disk == 1 || pt_base->do_Disk==1) {
                    
                     pt_base->EC = 1;
+                    if (set_condition_EC_correction(pt_base, pt_base->R_inner) > 0)
+                    {
+                        pt_base->R_H = pt_base->R_inner/10;
+                        Build_I_nu_Disk(pt_base);
+                        spettro_EC(1, pt_base);
+                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->nuF_nu_EC_Disk_obs);
+                        pt_base->R_H = pt_base->R_H_orig;
+                    }
                     spettro_EC(1, pt_base);
+                    if (set_condition_EC_correction(pt_base, pt_base->R_inner) > 0){
+                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_inner, pt_base->nu_IC_size, pt_base->nuF_nu_EC_Disk_obs);
+                    }
                 }
                 if (pt_base->do_EC_BLR == 1) {
                     pt_base->EC = 2;

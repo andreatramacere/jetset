@@ -8,13 +8,14 @@ import dill as pickle
 import warnings
 import inspect
 import numbers
+from astropy.table import Table
 
 from .model_parameters import ModelParameterArray, ModelParameter
 from .spectral_shapes import SED
 from .data_loader import  ObsData
 from .utils import  get_info
 from .plot_sedfit import  PlotSED
-
+from .utils import check_frame,unexpected_behaviour
 
 from .cosmo_tools import  Cosmo
 
@@ -33,7 +34,7 @@ class Model(object):
         self.name=name
 
         self.SED = SED(name=self.name)
-    
+
         self.parameters = ModelParameterArray()    
         
         self._scale=scale
@@ -404,6 +405,43 @@ class Model(object):
                     p.fit_range_max=min(p.val_max,p.val_lin *(1+up_tol))
                 else:
                     p.fit_range_max = p.val_lin*(1+up_tol)
+
+
+    def build_table(self, restframe='obs'):
+
+        _names = ['nu']
+        _cols=[]
+        if hasattr(self,'SED'):
+            check_frame(restframe)
+            if restframe=='obs':
+                 _cols.append(self.SED.nu)
+            elif restframe=='src':
+                _cols.append(self.SED.nu_src)
+            else:
+                unexpected_behaviour()
+
+            
+            if restframe == 'obs':
+                _names.append('nuFnu')
+                _cols.append(self.SED.nuFnu)
+            else:
+                _names.append('nuLnu_src')
+                _cols.append(self.SED.nuLnu_src)
+        
+        _meta=dict(model_name=self.name)       
+        _meta['restframe']= restframe
+        self._SED_table = Table(_cols, names=_names,meta=_meta)
+    
+    
+    def sed_table(self, restframe='obs'):
+        try:
+            self.build_table(restframe=restframe)
+        except:
+            self.eval()
+            self.build_table(restframe=restframe)
+                 
+        return  self._SED_table
+   
 
 class MultiplicativeModel(Model):
 

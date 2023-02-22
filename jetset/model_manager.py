@@ -134,7 +134,8 @@ class FitModel(Model):
         self.components=CompositeModelContainer()
         self.parameters=self.components.parameters
         self.composite_expr = composite_expr
-
+        self.spectral_components_table_list=[]
+        
         if elec_distr is not None:
             jet=Jet(cosmo=cosmo,name=flag, electron_distribution=elec_distr, jet_workplace=None)
             self.add_component(jet)
@@ -417,3 +418,13 @@ class FitModel(Model):
         self.components.show_model()
         print('-'*80)
 
+    def sed_tables_dict(self, restframe='obs'):
+        self.eval()
+        self._sed_tables_dict={}
+        
+        self._sed_tables_dict[self.name]=self.sed_table(restframe=restframe)
+        for comp in self.components.components_list:
+            if hasattr(comp,'spectral_components'):
+                self._sed_tables_dict[comp.name]=comp.sed_table
+        
+        return self._sed_tables_dict

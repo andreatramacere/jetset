@@ -796,7 +796,12 @@ class CompositeModelParameterArray(object):
                     dep_par._add_master_par(p_root)
                     p_root._add_depending_par(dep_par)
                     dep_par.freeze()
-                    p_root.val=p_root.val
+                    #try:
+                        #print('p_root',p_root.name,'jet comp',m_root.name)
+                    p_root.set(val=p_root.val,skip_dep_par_warning=True)
+                    #except Exception as e:
+                        #print('problem with p_root',p_root.name,'jet comp',m_root.name)
+                        #print(e)
             else:
                  self._handle_missing_component_error(m_name)
 

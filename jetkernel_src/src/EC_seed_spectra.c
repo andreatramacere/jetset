@@ -448,6 +448,10 @@ void Build_I_nu_Disk(struct blob *pt){
 		exit(1);
 	}
 
+	//if (pt->corona==1){
+	//	pt->nu_stop_disk_RF=1E21;
+	//}
+
 	pt->nu_start_Disk = eval_nu_min_blob_RF(pt, pt->Disk_mu_1, pt->Disk_mu_2, nu_start_disk_RF);
 	pt->nu_stop_Disk = eval_nu_max_blob_RF(pt,pt->Disk_mu_1, pt->Disk_mu_2, nu_stop_disk_RF);
 
@@ -666,7 +670,10 @@ double integrand_I_nu_Disk_blob_RF(struct blob *pt, double mu)
 {
 	//double psi, sin_theta;
 	//sin_theta=sqrt(1.0 - mu*mu);
-	return 2 * pi  * eval_I_nu_theta_Disk(pt, mu) * pt->BulkFactor * (1.0 - pt->beta_Gamma * mu);
+	double f;
+	f=  (pt->BulkFactor * (1.0 - pt->beta_Gamma * mu));
+	//f=1/( (pt->BulkFactor * (1.0 - pt->beta_Gamma * mu)) * (pt->BulkFactor * (1.0 - pt->beta_Gamma * mu)) );
+	return 2 * pi  * eval_I_nu_theta_Disk(pt, mu) *f;
 }
 
 double integrand_I_nu_Disk_disk_RF(struct blob *pt, double mu)
@@ -730,7 +737,7 @@ double eval_Disk_L_nu(struct blob *pt, double nu_Disk_disk_RF)
 {
 	if (pt->disk == 2) {
 		//in this case no multiplication by L_Disk, because we acutally integrate every annluar BB along the disk
-		//printf("=> %e\n", Disk_Spectrum(pt, nu_Disk_disk_RF));
+		//printf("=> %e\n", `(pt, nu_Disk_disk_RF));
 		//printf("=> nu_Disk_disk_RF %e\n", nu_Disk_disk_RF);
 		return  Disk_Spectrum(pt, nu_Disk_disk_RF);
 	}
@@ -957,9 +964,11 @@ double integrand_I_nu_BLR_blob_RF(struct blob *pt, double theta)
 	//mu = cos(theta);
 	//mu1 = (pt->beta_Gamma - mu )/(pt->beta_Gamma*mu - 1.0 );
 	//c=(pt->BulkFactor * pt->BulkFactor * pt->BulkFactor );
+	double f;
 	//c = c * (1.0 + pt->BulkFactor * mu + 1.0) * (1.0 + pt->BulkFactor * mu + 1.0) * (1.0 + pt->BulkFactor * mu + 1.0);
-
-	return 2 * pi * sin(theta) * eval_I_nu_theta_BLR(pt, cos(theta)) * pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta));
+	f=pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta));
+	//f=1/( (pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta))) * (pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta))));
+	return 2 * pi * sin(theta) * eval_I_nu_theta_BLR(pt, cos(theta)) *f;
 }
 
 double integrand_I_nu_BLR_disk_RF(struct blob * pt, double theta)
@@ -1341,7 +1350,10 @@ double eval_I_nu_theta_DT(struct blob *pt, double mu, double theta)
 double integrand_I_nu_DT_blob_RF(struct blob *pt, double theta)
 {
 	//double psi;
-	return 2 * pi * sin(theta) * eval_I_nu_theta_DT(pt, cos(theta), theta) * pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta));
+	double f;
+	//f=1/( (pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta))) * (pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta))));
+	f=pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta));
+	return 2 * pi * sin(theta) * eval_I_nu_theta_DT(pt, cos(theta), theta)*f;
 }
 
 double integrand_I_nu_DT_disk_RF(struct blob *pt, double theta)
