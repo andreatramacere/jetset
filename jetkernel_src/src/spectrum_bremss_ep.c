@@ -40,7 +40,7 @@ void spettro_bremss_ep(int Num_file, struct blob *pt) {
     pt->nu_stop_bremss_ep_obs = nu_blob_to_nu_obs(pt->nu_stop_bremss_ep_pred, pt->beam_obj, pt->z_cosm);
     nu_check=(pt->nu_start_bremss_ep)*0.5;
     NU_INT = 0;
-    I_MAX = pt->nu_IC_size;
+    I_MAX = pt->nu_IC_size -1;
     
     build_log_grid(pt->nu_start_bremss_ep,  pt->nu_stop_bremss_ep_pred, pt->nu_IC_size, pt->nu_bremss_ep);
     build_log_grid(pt->nu_start_bremss_ep_obs,  pt->nu_stop_bremss_ep_obs, pt->nu_IC_size, pt->nu_bremss_ep_obs);

@@ -334,6 +334,7 @@ struct blob {
     int ord_comp;
     int IC_adaptive_e_binning;
     int do_IC_down_scattering; 
+    int bulk_compton;
     double COST_IC_K1,COST_IC_COOLING ;
 
     //--- FREQ BOUNDARIES

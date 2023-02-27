@@ -208,6 +208,7 @@ struct blob MakeBlob() {
     
     spettro_root.IC_adaptive_e_binning =0;
     spettro_root.do_IC_down_scattering =0;
+    spettro_root.bulk_compton = 0;
     sprintf(spettro_root.MODE, "fast");
     //GRID SIZE FOR SEED
     spettro_root.nu_seed_size = 200;

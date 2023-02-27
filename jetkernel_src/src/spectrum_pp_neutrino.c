@@ -49,7 +49,7 @@ void spettro_pp_neutrino(int Num_file, struct blob *pt) {
 
     build_log_grid(pt->nu_start_pp_neutrino,  pt->nu_stop_pp_neutrino_pred, pt->nu_IC_size, pt->nu_pp_neutrino_e);
     build_log_grid(pt->nu_start_pp_neutrino_obs,  pt->nu_stop_pp_neutrino_obs, pt->nu_IC_size, pt->nu_pp_neutrino_e_obs);
-    I_MAX = pt->nu_IC_size;
+    I_MAX = pt->nu_IC_size -1;
 
     eval_j_neutrio_ptr = &eval_j_pp_neutrino;
     pt->pp_racc_nu_mu=rate_neutrino_mu_1_pp(pt ,pt->nu_start_pp_neutrino,1);

@@ -363,7 +363,7 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame, doubl
     griglia_gamma_Ne_log_IC =  (double *) calloc(pt->gamma_grid_size, sizeof (double));
     Ne_IC = (double *) calloc(pt->gamma_grid_size, sizeof (double));
     //pf_K1 = &f_compton_K1;
-    
+    double ic_kernel;
     integr_gamma = 0.0;
     integr_nu = 0.0;
     ID = 0;
@@ -402,8 +402,15 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame, doubl
         //Integration over electron Lorentz factor
              
         for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
-            
-            Integrand_over_gamma_grid[ID_gamma] =f_compton_K1(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out, nu_IC_in) * Ne_IC[ID_gamma];
+            if (pt->bulk_compton == 0){
+                ic_kernel=f_compton_K1(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out, nu_IC_in);
+            }else{
+                ic_kernel=pt->COST_IC_K1 / (nu_IC_in * griglia_gamma_Ne_log_IC[ID_gamma]*griglia_gamma_Ne_log_IC[ID_gamma]);
+                if (nu_IC_out>nu_IC_in){
+                    ic_kernel=0;
+                }
+            }
+            Integrand_over_gamma_grid[ID_gamma] =ic_kernel * Ne_IC[ID_gamma];
             
         }
         

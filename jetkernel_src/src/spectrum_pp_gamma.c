@@ -47,7 +47,7 @@ void spettro_pp_gamma(int Num_file, struct blob *pt) {
     build_log_grid(pt->nu_start_pp_gamma_obs,  pt->nu_stop_pp_gamma_obs, pt->nu_IC_size, pt->nu_pp_gamma_obs);
 
 
-    I_MAX = pt->nu_IC_size;
+    I_MAX = pt->nu_IC_size -1;
     eval_j_ptr = &eval_j_pp_gamma;
     pt->pp_racc_gamma=rate_gamma_pp(pt ,pt->nu_start_pp_gamma,1);
     threaded_j_evaluation(pt, eval_j_ptr, pt->j_pp_gamma,pt->nu_pp_gamma,pt->nu_start_pp_gamma, pt->nu_stop_pp_gamma_pred,I_MAX,pt->N_THREADS);

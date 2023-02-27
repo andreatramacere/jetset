@@ -58,7 +58,7 @@ void spettro_sincrotrone(int Num_file, struct blob * pt) {
     //=============================================================================
     //initialize the index of pt->nu_Sync[]
     NU_INT = 0;
-    I_MAX = pt->nu_seed_size-1;
+    I_MAX = pt->nu_seed_size -1;
     //nu_B and UB
     pt->nu_B = (q_esu * pt->B) / (2 * pi * me_g * vluce_cm);
     pt->UB = pow(pt->B, 2.0) / (8.0 * pi); /*dens. ener. B */

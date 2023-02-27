@@ -324,7 +324,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
 		printf("emiss limit=%e\n", pt->emiss_lim);
 	}
 
-	I_MAX = pt->nu_IC_size-1;
+	I_MAX = pt->nu_IC_size -1;
 	stop=0;
 
 	eval_j_ptr = &eval_j_EC;
