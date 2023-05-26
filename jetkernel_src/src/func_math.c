@@ -65,7 +65,16 @@ double bessel_K_53(struct blob *pt, double x) {
     return a;
 }
 
+double bessel_K_23(struct blob *pt, double x) {
+    double ri, rip, rkp, ord, a;
+    ord = 2.0 / 3.0;
+    bessik(x, ord, &ri, &a, &rip, &rkp);
+    return a;
+}
+
+
 double bessel_K_pitch_ave(struct blob *pt, double x) {
+    //The Astrophysical Journal, 334:L5-L8,1988 November 1
     double ri, rip, rkp, ord, a, K_43,K_13;
     ord = 4.0 / 3.0;
     bessik(x, ord, &ri, &K_43, &rip, &rkp);
@@ -87,7 +96,7 @@ double bessel_K_pitch_ave(struct blob *pt, double x) {
 void tabella_Bessel(struct blob *pt_TB) {
     //double a, t_Bessel;
 
-    double (*pf) (struct blob *, double x);
+    double (*pf_53) (struct blob *, double x);
     unsigned int i;
     FILE *fp ;
 
@@ -117,7 +126,7 @@ void tabella_Bessel(struct blob *pt_TB) {
     pt_TB->log_x_ave_Bessel_max = log10(pt_TB->x_ave_Bessel_max);
 
     //if(pt_TB->x_Bessel_max>Bessel_MAX)pt_TB->x_Bessel_max=Bessel_MAX;
-    pf = &bessel_K_53;
+    pf_53 = &bessel_K_53;
     //printf("SYSPATH =%s\n", pt_TB->SYSPATH);
     //return;
     //strcpy(f_bessel_file, pt_TB->SYSPATH);
@@ -138,108 +147,57 @@ void tabella_Bessel(struct blob *pt_TB) {
 	build_log_grid( pt_TB->x_Bessel_min,  pt_TB->x_Bessel_max, static_bess_table_size,  pt_TB->F_Sync_x);
 	build_log_grid( pt_TB->x_ave_Bessel_min,  pt_TB->x_ave_Bessel_max, static_bess_table_size, pt_TB->F_ave_Sync_x);
 
-    if (fp == NULL ) {
-        //fclose(fp);
+ 
+    //fclose(fp);
 
-    	fp = fopen(f_bessel_file, "w");
-    	printf("Bessel Tables  not found, was expected to be: %s\n", f_bessel_file);
-        printf("Now GENERATING F_Sync.dat file\n");
+    fp = fopen(f_bessel_file, "w");
+    printf("Bessel Tables  not found, was expected to be: %s\n", f_bessel_file);
+    printf("Now GENERATING F_Sync.dat file\n");
 
-
+    fprintf(fp, "# F_x F_y F_x_ave F_y_ave G_x G_y\n");
+    
+    for (i = 0; i < static_bess_table_size; i++) {
+        //x = pt_TB->x_Bessel_min *
+        //        pow((pt_TB->x_Bessel_max / pt_TB->x_Bessel_min),
+        //        ((double) i) / ((double) elementi_tabelle - 1.0));
         
-        for (i = 0; i < static_bess_table_size; i++) {
-            //x = pt_TB->x_Bessel_min *
-            //        pow((pt_TB->x_Bessel_max / pt_TB->x_Bessel_min),
-            //        ((double) i) / ((double) elementi_tabelle - 1.0));
-           
-            //pt_TB->F_Sync_x[i] = x;
-            pt_TB->F_Sync_y[i]= pt_TB->F_Sync_x[i] * integrale_trap_log_struct(pf, pt_TB, pt_TB->F_Sync_x[i], 1000, 1000);
-            pt_TB->log_F_Sync_x[i] = log10(pt_TB->F_Sync_x[i]);
-            if (pt_TB->F_Sync_y[i]>0.0){
-            	pt_TB->log_F_Sync_y[i] = log10(pt_TB->F_Sync_y[i]);
-            }
-            else{
-            	pt_TB->log_F_Sync_y[i] = -300.0;
-            }
-            //pt_TB->F_ave_Sync_x[i] = x;
-            pt_TB->F_ave_Sync_y[i]= pt_TB->F_ave_Sync_x[i] *pt_TB->F_ave_Sync_x[i]*  bessel_K_pitch_ave(pt_TB,  pt_TB->F_ave_Sync_x[i]);
-            pt_TB->log_F_ave_Sync_x[i] = log10(pt_TB->F_ave_Sync_x[i]);
-            if(pt_TB->F_ave_Sync_y[i]>0.0){
-            	pt_TB->log_F_ave_Sync_y[i] = log10(pt_TB->F_ave_Sync_y[i]);
-            }
-            else{
-            	pt_TB->log_F_ave_Sync_y[i]=-300.0;
-            }
-            fprintf(fp, "%e %e %e %e\n",
-            		pt_TB->F_Sync_x[i] , pt_TB->F_Sync_y[i] , pt_TB->F_ave_Sync_x[i], pt_TB->F_ave_Sync_y[i]);
+        //pt_TB->F_Sync_x[i] = x;
+        pt_TB->F_Sync_y[i]= pt_TB->F_Sync_x[i] * integrale_trap_log_struct(pf_53, pt_TB, pt_TB->F_Sync_x[i], 1000, 1000);
+        
+        pt_TB->G_Sync_x[i]= pt_TB->F_Sync_x[i];
+        pt_TB->G_Sync_y[i]= pt_TB->G_Sync_x[i] * bessel_K_23(pt_TB,pt_TB->G_Sync_x[i]);
+        pt_TB->log_F_Sync_x[i] = log10(pt_TB->F_Sync_x[i]);
+        pt_TB->log_G_Sync_x[i] = log10(pt_TB->G_Sync_x[i]);
+        if (pt_TB->F_Sync_y[i]>0.0){
+            pt_TB->log_F_Sync_y[i] = log10(pt_TB->F_Sync_y[i]);
+        }
+        else{
+            pt_TB->log_F_Sync_y[i] = -300.0;
+        }
+
+        if ( pt_TB->G_Sync_y[i]>0.0){
+            pt_TB->log_G_Sync_y[i] = log10(pt_TB->G_Sync_y[i]);
+        }
+        else{
+            pt_TB->log_G_Sync_y[i] = -300.0;
+        }
+
+        //pt_TB->F_ave_Sync_x[i] = x;
+        pt_TB->F_ave_Sync_y[i]= pt_TB->F_ave_Sync_x[i] *pt_TB->F_ave_Sync_x[i]*  bessel_K_pitch_ave(pt_TB,  pt_TB->F_ave_Sync_x[i]);
+        pt_TB->log_F_ave_Sync_x[i] = log10(pt_TB->F_ave_Sync_x[i]);
+        if(pt_TB->F_ave_Sync_y[i]>0.0){
+            pt_TB->log_F_ave_Sync_y[i] = log10(pt_TB->F_ave_Sync_y[i]);
+        }
+        else{
+            pt_TB->log_F_ave_Sync_y[i]=-300.0;
+        }
+        fprintf(fp, "%e %e %e %e %e %e\n",
+                pt_TB->F_Sync_x[i] , pt_TB->F_Sync_y[i] , pt_TB->F_ave_Sync_x[i], pt_TB->F_ave_Sync_y[i], pt_TB->F_Sync_x[i], pt_TB->G_Sync_y[i]);
+        
+        //printf("i=%d i_max=%d x=%e F(x)=%e\n",i,elementi_tabelle,x,pt_TB->tabella_F[i][1]);
             
-            //printf("i=%d i_max=%d x=%e F(x)=%e\n",i,elementi_tabelle,x,pt_TB->tabella_F[i][1]);
-               
-        }
-    } else {
-        i = 0;
-        if (pt_TB->verbose>0) {
-            printf("Bessel Tables file found: %s\n", f_bessel_file);
-            printf("reading K5/3\n");
-
-        }
-        while (!feof(fp)) {
-            //fscanf(fp, "%s %s %s %s\n", in_x, in_y,in_ave_x,in_ave_y);
-            //pt_TB->F_Sync_x[i] = strtod(in_x, &end);
-            //pt_TB->F_Sync_y[i] = strtod(in_y, NULL);
-
-            //pt_TB->F_ave_Sync_x[i] = strtod(in_ave_x, NULL);
-            //pt_TB->F_ave_Sync_y[i] = strtod(in_ave_y, NULL);
-
-
-
-            fscanf(fp, "%lf %lf %lf %lf\n", &_x, &_y, &_in_ave_x, &_in_ave_y);
-            
-
-            pt_TB->F_Sync_x[i] = _x;
-            pt_TB->F_Sync_y[i] = _y;
-
-            pt_TB->F_ave_Sync_x[i] = _in_ave_x;
-            pt_TB->F_ave_Sync_y[i] = _in_ave_y;
-
-            pt_TB->log_F_Sync_x[i] = log10(pt_TB->F_Sync_x[i]);
-            
-            if (pt_TB->F_Sync_y[i]>0.0){
-            	pt_TB->log_F_Sync_y[i] = log10(pt_TB->F_Sync_y[i]);
-            }
-            else{
-            	pt_TB->log_F_Sync_y[i] = -300.0;
-            }
-
-            pt_TB->log_F_ave_Sync_x[i] =log10(pt_TB->F_ave_Sync_x[i]);
-
-            if(pt_TB->F_ave_Sync_y[i]>0.0){
-            	pt_TB->log_F_ave_Sync_y[i] = log10(pt_TB->F_ave_Sync_y[i]);
-            }
-            else{
-            	pt_TB->log_F_ave_Sync_y[i]=-300.0;
-            }
-
-            //printf("i=%d i_max=%d x=%e F(x)=%e\n",
-            //     i,elementi_tabelle,pt_TB->tabella_F[i][0],pt_TB->tabella_F[i][1]);
-            //printf("F_delta=%e\n",pt_TB->tabella_Fdelta[i][1]);
-            i++;
-        }
-        i--;
-
-        if ((i != static_bess_table_size - 1) ||
-                (pt_TB->F_Sync_x[0] != pt_TB->x_Bessel_min) ||
-                (pt_TB->F_Sync_x[static_bess_table_size - 1] != pt_TB->x_Bessel_max)
-                ) {
-            printf("i_max=%d elementi_tabelle=%d \n", i, static_bess_table_size);
-            printf("F_Sync_x min=%e, %e\n", pt_TB->F_Sync_x[0], pt_TB->x_Bessel_min);
-            printf("F_Sync_x max=%e, %e\n", pt_TB->F_Sync_x[static_bess_table_size - 1], pt_TB->x_Bessel_max);
-            printf("file %s not valid!!!!!!!!!!!!!!!!\n",f_bessel_file);
-            printf("delete it and re-execute the code\n");
-            exit(0);
-        }
-       
     }
+    
     if (pt_TB->verbose > 0)
     {
         printf("i_max=%d elementi_tabelle=%d \n", i, static_bess_table_size);

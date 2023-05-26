@@ -27,7 +27,9 @@
 double F_K_53(struct blob * pt, double x){
     return log_log_interp(log10(x), pt->log_F_Sync_x, pt->log_x_Bessel_min, pt->log_x_Bessel_max, pt->log_F_Sync_y,static_bess_table_size,0  );
 }
-
+double F_K_23(struct blob * pt, double x){
+    return log_log_interp(log10(x), pt->log_G_Sync_x, pt->log_x_Bessel_min, pt->log_x_Bessel_max, pt->log_G_Sync_y,static_bess_table_size,0  );
+}
 
 double F_K_ave(struct blob *pt, double x){
     return log_log_interp(log10(x), pt->log_F_ave_Sync_x, pt->log_x_ave_Bessel_min, pt->log_x_ave_Bessel_max, pt->log_F_ave_Sync_y,static_bess_table_size,0  );
@@ -49,8 +51,20 @@ double F_int_fix(struct blob * pt,unsigned int  ID, double nu_sync){
     return a;
 }
 
+double F_int_fix_parallel(struct blob * pt,unsigned int  ID, double nu_sync){
+    //PITCH ANGLE FIXED
+    double a, y,g;
+    g=pt->griglia_gamma_Ne_log[ID];
+    y=(nu_sync/(g*g))*pt->C2_Sync_K53;
+    a=F_K_23(pt, y);
+    a*=pt->Ne[ID];
+    return a;
+}
+
+
 double F_int_ave(struct blob * pt,unsigned int  ID, double nu_sync){
     //PITCH ANGLE AVE
+    //The Astrophysical Journal, 334:L5-L8,1988 November 1
     double a, y,g;
     g=pt->griglia_gamma_Ne_log[ID];
     y=nu_sync/(g*g)*pt->C2_Sync_K_AVE;
@@ -240,6 +254,24 @@ double j_nu_Sync(struct blob * f, double nu_sync){
 }
 //=========================================================================================
 
+double eval_Sync_polarization(struct blob * f, double nu_sync){
+    double p_num,p_den,pol;
+    pol=0;
+    double (*pf_fint) (struct blob * ,unsigned int  ID, double nu_sync);
+    //EQ 6.37 R&L, for integration over N(gamma)
+    //Since The integral is additive, 6.37 holds
+    //p_num=P_ort-P_parallel=> integral [F(x) + G(X)] - integral [F(X) - G(X)] =  2*integral [G(X)]
+    //p_den=P_ort+P_parallel=> integral [F(x) + G(X)] + integral [F(X) - G(X)] =  2*integral [F(X)]
+    //pol=integral [G(X)]/integral [F(X)]
+  
+        pf_fint=&F_int_fix_parallel;
+        p_num=integrale_Sync(pf_fint, f,  nu_sync);
+        pf_fint=&F_int_fix;
+        p_den=integrale_Sync(pf_fint, f,  nu_sync);
+        pol=(p_num)/(p_den);
+  
+    return pol;
+}
 
 
 

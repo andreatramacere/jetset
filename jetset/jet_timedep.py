@@ -344,9 +344,11 @@ class TimeEvolvingRegion(object):
         if self._region_type == 'rad':
             self.jet.parameters.R.val = self.temp_ev._get_R_rad_sphere(t)
             self.jet.parameters.B.val = self.temp_ev._get_B_rad(t)
+            self.jet.parameters.R_H.val = self.temp_ev._get_R_H(t)
         elif self._region_type == 'acc':
             self.jet.parameters.R.val,_ = self.temp_ev._get_R_acc_sphere()
             self.jet.parameters.B.val = self.temp_ev._get_B_acc()
+            self.jet.parameters.R_H.val = self.temp_ev._get_R_H(t)
 
         self.jet.emitters_distribution._set_arrays(self.time_sampled_emitters.gamma,
                                                    self.time_sampled_emitters.n_gamma[time_slice].flatten())
@@ -1127,6 +1129,13 @@ class JetTimeEvol(object):
 
         return R
 
+    def _get_R_H(self,time):
+        R_H = self.parameters.R_H_rad_start.val
+        if self.region_expansion == 'on':
+            R_H = BlazarSED.eval_R_H_jet_t(self.rad_region.jet._blob,  self.temp_ev, time)
+
+        return R_H
+      
     def _get_B_rad(self, time):
         if self.region_expansion == 'on':
             R = self._get_R_rad_sphere(time)

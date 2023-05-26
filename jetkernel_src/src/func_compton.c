@@ -233,9 +233,17 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
 //=========================================================================================
 
 
+double f_compton_bulk(struct blob *pt_K1, double g, double nu_IC_out, double nu_IC_in_1, double nu_IC_in_2) {
+    double cost, rate,k,g2;
+    rate=0;
+    if (nu_IC_out >=  nu_IC_in_1 &&  nu_IC_out <nu_IC_in_2) {
+        cost = pt_K1->COST_IC_K1/nu_IC_in_1;
+       
+        rate = cost;
+    }
 
-
-
+    return rate;
+}
 
 //=========================================================================================
 // Function to evaluate the kernel of IC emission
@@ -405,10 +413,7 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame, doubl
             if (pt->bulk_compton == 0){
                 ic_kernel=f_compton_K1(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out, nu_IC_in);
             }else{
-                ic_kernel=pt->COST_IC_K1 / (nu_IC_in * griglia_gamma_Ne_log_IC[ID_gamma]*griglia_gamma_Ne_log_IC[ID_gamma]);
-                if (nu_IC_out>nu_IC_in){
-                    ic_kernel=0;
-                }
+                ic_kernel=f_compton_bulk(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out,  pt->nu_seed[ID], pt->nu_seed[ID+1]);
             }
             Integrand_over_gamma_grid[ID_gamma] =ic_kernel * Ne_IC[ID_gamma];
             

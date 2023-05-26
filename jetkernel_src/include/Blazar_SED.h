@@ -220,6 +220,10 @@ struct blob {
     double log_F_Sync_y[static_bess_table_size];
     double log_F_ave_Sync_x[static_bess_table_size];
     double log_F_ave_Sync_y[static_bess_table_size];
+    double G_Sync_x[static_bess_table_size];
+    double log_G_Sync_x[static_bess_table_size];
+    double G_Sync_y[static_bess_table_size];
+    double log_G_Sync_y[static_bess_table_size];
     double t_Bessel_min, t_Bessel_max;
     double x_Bessel_min, x_Bessel_max;
     double x_ave_Bessel_min, x_ave_Bessel_max;
@@ -1105,11 +1109,15 @@ double nu_obs_to_nu_src(double nu, double z);
 /****************************** FUNZIONI SPETTRO SINCROTRONE ********************************/
 void spettro_sincrotrone(int Num_file, struct blob *);
 double F_K_53(struct blob *, double x);
+double F_K_23(struct blob *, double x);
 double F_K_ave(struct blob *, double x);
 double F_int_fix(struct blob *, unsigned int ID, double nu_sync);
+double F_int_fix_parallel(struct blob *, unsigned int ID, double nu_sync);
 double F_int_ave(struct blob *, unsigned int  ID, double nu_sync);
 double Sync_self_abs_int(struct blob *, unsigned int ID, double nu_sync);
 double j_nu_Sync(struct blob *, double nu_sync);
+double j_nu_Sync(struct blob *, double nu_sync);
+double eval_Sync_polarization(struct blob * f, double nu_sync);
 double solve_S_nu_Sync(struct blob *pt, unsigned int NU_INT);
 double eval_S_nu_Sync(struct blob *pt, double j_nu, double alpha_nu);
 double alfa_nu_Sync(struct blob *, double nu_sync);
@@ -1205,6 +1213,7 @@ int x_to_grid_index(double *nu_grid, double nu, unsigned int SIZE);
 //=================================================================================
 /************************************ FUNCTIONS  IC  *****************************/
 double f_compton_K1(struct blob *, double Gamma, double nu_IC_out, double nu_IC_in);
+double f_compton_bulk(struct blob *pt_K1, double g, double nu_IC_out, double nu_IC_in_1, double nu_IC_in_2);
 void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int stat_frame, double * Ne_IC, double * griglia_gamma_Ne_log_IC);
 double rate_compton_GR(struct blob *, double nu_IC_out);
 double integrale_IC(struct blob * pt, double a, double b,int stat_frame, double nu_IC_out);
@@ -1343,6 +1352,7 @@ void beschb(double x, double *gam1, double *gam2, double *gampl,
 double chebev(float a, float b, float c[], int m, float x);
 void bessik(double x, double xnu, double *ri, double *rk, double *rip, double *rkp);
 double bessel_K_53(struct blob *, double x);
+double bessel_K_23(struct blob *, double x);
 double bessel_K_pitch_ave(struct blob *pt, double x);
 void tabella_Bessel(struct blob *);
 double derivata(double (*pf) (struct blob *, double x), struct blob *pt, double x);

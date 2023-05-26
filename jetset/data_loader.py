@@ -880,7 +880,7 @@ class ObsData(object):
             
             
             
-    def group_data(self,N_bin=None,bin_width=None):
+    def group_data(self,N_bin=None,bin_width=None,correct_dispersions=True):
         
         """
         function to perform a spectral group of the data
@@ -947,43 +947,38 @@ class ObsData(object):
             msk=msk1*msk2
             
             if msk.any()==True>0:
-                if len(self.data['dnuFnu_data_log'][msk])>1:
-                    w=1.0/self.data['dnuFnu_data_log'][msk]
-                    #print "w",self.data['dnuFnu_data'][msk]
-                    w=w*w
+                sample_size=len(self.data['dnuFnu_data'][msk])
+                if sample_size>1:
+                    sigma_2_i=self.data['dnuFnu_data'][msk]**2
+                    w=1.0/sigma_2_i
                     
-                    #w=1/sig_i^2
-                    y_bin[id],sum_w=np.average(self.data['nuFnu_data_log'][msk], axis=0, weights=w, returned=True)
-                    V1=sum_w
-                    V2=w*w
-                    V2=V2.sum()
-                    V3= w * (self.data['nuFnu_data_log'][msk] - y_bin[id]) * (self.data['nuFnu_data_log'][msk] - y_bin[id])
-                    V3=V3.sum()
-                    
-                    if V3==0 or V1*V1-V2==0:
-                    
-                        #print"weighted average not possible for bin=",id
-                        #print"V3 V1*V1-V2", V1,V1*V1-V2
-                        #print"using err=sqrt(1/sum(w))"
-                        dy_bin[id]=np.sqrt(1.0/V1)
-                    
+                    w_prime=w/(w.sum())
+                    #https://en.wikipedia.org/wiki/Weighted_arithmetic_mean#Correcting_for_over-_or_under-dispersion
+                    y_bin[id],sum_w=np.average(self.data['nuFnu_data'][msk], axis=0, weights=w, returned=True)
+                    sigma_y_2_bar= np.sum(w_prime**2*sigma_2_i)
+                    if sample_size <2:
+                        sample_size=2
+                    if correct_dispersions is True:
+                        corr_term=np.sum(w * (self.data['nuFnu_data'][msk] - y_bin[id]) * (self.data['nuFnu_data'][msk] - y_bin[id]))/(sample_size-1)
                     else:
-                        dy_bin[id]=np.sqrt((V1/(V1*V1-V2))*V3)
+                        corr_term=1
                     
+
+                    dy_bin[id]=np.sqrt(sigma_y_2_bar*corr_term)
                     dx_bin[id]=bin_width/2
                     x_bin[id]=bin_grid[id]-dx_bin[id]
                     #print"x", x_bin[id],len(w)
                 else:
                     #print "xxx"
                     x_bin[id]=self.data['nu_data_log'][msk]
-                    y_bin[id]=self.data['nuFnu_data_log'][msk]
+                    y_bin[id]=self.data['nuFnu_data'][msk]
                     dx_bin[id]=bin_width/2
-                    dy_bin[id]=self.data['dnuFnu_data_log'][msk]
+                    dy_bin[id]=self.data['dnuFnu_data'][msk]
                     
         self.data_reb['nu_data_log']=x_bin
-        self.data_reb['nuFnu_data_log']=y_bin
+        self.data_reb['nuFnu_data']=y_bin
         self.data_reb['dnu_data_log']=dx_bin
-        self.data_reb['dnuFnu_data_log']=dy_bin
+        self.data_reb['dnuFnu_data']=dy_bin
         
         #remove empty bins
         msk=[self.data_reb['nu_data_log']!=0]
@@ -992,9 +987,13 @@ class ObsData(object):
         
         
          
-        self.data_reb['nuFnu_data'],self.data_reb['dnuFnu_data']=self.log_to_lin(log_val=self.data_reb['nuFnu_data_log'], log_err=self.data_reb['dnuFnu_data_log'])
+        #self.data_reb['nuFnu_data'],self.data_reb['dnuFnu_data']=self.log_to_lin(log_val=self.data_reb['nuFnu_data_log'], log_err=self.data_reb['dnuFnu_data_log'])
           
         self.data_reb['nu_data'],self.data_reb['dnu_data']=self.log_to_lin(log_val=self.data_reb['nu_data_log'], log_err=self.data_reb['dnu_data_log'])
+
+        self.data_reb['nuFnu_data_log'],self.data_reb['dnuFnu_data_log']=self.lin_to_log(val=self.data_reb['nuFnu_data'], err=self.data_reb['dnuFnu_data'])
+          
+        #self.data_reb['nu_data_log'],self.data_reb['dnu_data']=self.lin_to_log(val=self.data_reb['nu_data'], err=self.data_reb['dnu_data'])
         
         #set original units
         for c in self.data.colnames:

@@ -462,6 +462,11 @@ class JetBase(Model):
 
         F_Sync_y_ptr = getattr(blob,  'F_Sync_y')
 
+        G_Sync_x_ptr = getattr(blob, 'G_Sync_x')
+
+        G_Sync_y_ptr = getattr(blob,  'G_Sync_y')
+
+
         F_ave_Sync_x_ptr = getattr(blob,  'F_ave_Sync_x')
 
         F_ave_Sync_y_ptr = getattr(blob, 'F_ave_Sync_y')
@@ -474,23 +479,32 @@ class JetBase(Model):
 
         log_F_ave_Sync_y_ptr = getattr(blob, 'log_F_ave_Sync_y')
 
+        log_G_Sync_x_ptr = getattr(blob, 'log_G_Sync_x')
 
-        d = np.genfromtxt(bessel_table_file_path)
+        log_G_Sync_y_ptr = getattr(blob, 'log_G_Sync_y')
+        d = np.genfromtxt(bessel_table_file_path,comments='#')
         log_F_Sync_x=np.log10(d[:,0])
         log_F_Sync_y=np.log10(d[:,1])
         log_F_ave_Sync_x=np.log10(d[:,2])
         log_F_ave_Sync_y=np.log10(d[:,3])
+        log_G_Sync_x=np.log10(d[:,4])
+        log_G_Sync_y=np.log10(d[:,5])
 
         for ID, l in enumerate(d):
             BlazarSED.set_bessel_table(F_Sync_x_ptr,blob, l[0], ID)
             BlazarSED.set_bessel_table(F_Sync_y_ptr, blob,  l[1], ID)
             BlazarSED.set_bessel_table(F_ave_Sync_x_ptr, blob,  l[2], ID)
             BlazarSED.set_bessel_table(F_ave_Sync_y_ptr, blob,  l[3], ID)
+            BlazarSED.set_bessel_table(G_Sync_x_ptr,blob, l[4], ID)
+            BlazarSED.set_bessel_table(G_Sync_y_ptr, blob,  l[5], ID)
+
 
             BlazarSED.set_bessel_table(log_F_Sync_x_ptr, blob, log_F_Sync_x[ID], ID)
             BlazarSED.set_bessel_table(log_F_Sync_y_ptr, blob, log_F_Sync_y[ID], ID)
             BlazarSED.set_bessel_table(log_F_ave_Sync_x_ptr, blob, log_F_ave_Sync_x[ID], ID)
             BlazarSED.set_bessel_table(log_F_ave_Sync_y_ptr, blob, log_F_ave_Sync_y[ID], ID)
+            BlazarSED.set_bessel_table(log_G_Sync_x_ptr, blob, log_G_Sync_x[ID], ID)
+            BlazarSED.set_bessel_table(log_G_Sync_y_ptr, blob, log_G_Sync_y[ID], ID)
 
         blob.BESSEL_TABLE_DONE=1
 

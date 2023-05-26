@@ -215,7 +215,6 @@ class ModelParameter(object):
            _units= keywords['units']
         
         if '_par_expr_text' in keywords.keys():
-            print('ciccio',keywords['_par_expr_text'])
             if keywords['_par_expr_text'] is None:
                 pass
             else:
@@ -277,7 +276,10 @@ class ModelParameter(object):
 
     @property
     def adimensional(self):
-        return self._val._adimensional
+        if hasattr(self,'_adimensional'):
+            return self._val._adimensional
+        else:
+            return False
 
     def to(self, units):
         try:
@@ -404,10 +406,12 @@ class ModelParameter(object):
         elif callable(self._depending_par_expr) is True:
             _par_values={}
             for ID, _user_par_ in enumerate(self._master_pars):
+                 
                 if _user_par_.adimensional:
                     _par_values[_user_par_.name] = _user_par_.val_lin
                 else:
                     _par_values[_user_par_.name] = _user_par_.val_lin*_user_par_.units
+                
             res=self._depending_par_expr(**_par_values)
      
         _unit = None

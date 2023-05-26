@@ -20,17 +20,17 @@ def plot():
 
 
 class TestUser(TestBase):
-  
+   
+   def test_emitters(self,plot=plot):
+      t=TestEmitters()
+      t.integration_suite()
+
    def test_jet(self,plot=plot):
       t=TestJets()
       t.test_jet(plot=plot)
       t.test_set_N_from_nuFnu(plot=plot)
       t.test_EC(plot=plot)
       t.test_hadronic_jet(plot=plot)
-
-   #def test_emitters(self,plot=plot):
-  #    t=TestEmitters()
-   #   t.integration_suite()
 
    def test_dep_pars(self,plot=plot):
       t=TestDependingParameters()

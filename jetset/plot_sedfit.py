@@ -556,7 +556,7 @@ class  PlotSED (object):
         if label is None:
             label='line %d'%self.counter
 
-        line, = self.sedplot.plot(x, y, line_style,label=label)
+        line, = self.sedplot.plot(x, y, line_style,label=label,color=color)
 
         self.lines_model_list.append(line)
 
