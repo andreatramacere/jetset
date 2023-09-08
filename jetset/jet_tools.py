@@ -59,7 +59,7 @@ def build_emitting_region_dict(cosmo, beaming_expr='delta',emitters_type='electr
                                                         punit='lorentz-factor')
         # ['jet-bulk-factor',1.0,None,'Lorentz-factor']
     elif beaming_expr == 'delta' or beaming_expr == '':
-        model_dic['beam_obj'] = JetModelDictionaryPar(ptype='beaming', vmin=1E-4, vmax=None, punit='lorentz-factor')
+        model_dic['beam_obj'] = JetModelDictionaryPar(ptype='beaming', vmin=1E-4, vmax=None, punit='')
         # ['beaming', 1, None, '']
     else:
         raise RuntimeError('''wrong beaming_expr="%s" value, allowed 'delta' or 'bulk_theta' ''' % (beaming_expr))
