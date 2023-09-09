@@ -91,7 +91,10 @@ class Value(object):
     def units(self, p_unit,verbose=False):
         try:
             self._units = u.Unit(p_unit)
-            self._adimensional = False
+            if self._units == '':
+                self._adimensional = True
+            else:
+                self._adimensional = False
             #print(units,type(self._units))
         except Exception as e:
             if verbose is True:
@@ -107,6 +110,8 @@ class Value(object):
                     self._units = p_unit
 
             self._adimensional = True
+            
+            
 
 class ModelParameter(object):
     """
@@ -276,7 +281,7 @@ class ModelParameter(object):
 
     @property
     def adimensional(self):
-        if hasattr(self,'_adimensional'):
+        if hasattr(self._val,'_adimensional'):
             return self._val._adimensional
         else:
             return False
@@ -406,7 +411,6 @@ class ModelParameter(object):
         elif callable(self._depending_par_expr) is True:
             _par_values={}
             for ID, _user_par_ in enumerate(self._master_pars):
-                 
                 if _user_par_.adimensional:
                     _par_values[_user_par_.name] = _user_par_.val_lin
                 else:
