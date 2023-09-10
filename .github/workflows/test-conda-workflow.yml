@@ -42,21 +42,22 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install Conda environment from environment.yml
-        uses: mamba-org/provision-with-micromamba@main
-        with:
-          cache-env: true
-    
       
+      - uses: mamba-org/setup-micromamba@v1
+        with:
+          # the create command looks like this:
+          # `micromamba create -n test-env python=3.10 numpy`
+          environment-name: test-env
+          create-args: >-
+            python=${{ matrix.python-version }}
+            swig">=3.0.0" 
+            conda-build
+          init-shell: bash
 
       - name: 'Install dependencies'
         shell: bash
         run: |
+          micromamba activate test-env
           micromamba config --set always_yes yes
           micromamba install -c astropy -c conda-forge --file requirements.txt
           micromamba install -c conda-forge  conda-build pytest swig">=3.0.0" 
@@ -91,10 +92,10 @@ jobs:
       - name: 'conda build'
         working-directory: .github/conda-pipeline/github/
         run: |
-          conda config --set anaconda_upload no
-          conda build purge
-          conda build .  -c conda-forge -c astropy
-          conda build . --output > ./CONDABUILDJETSET.txt  
+          micromamba config --set anaconda_upload no
+          micromamba build purge
+          micromamba build .  -c conda-forge -c astropy
+          micromamba build . --output > ./CONDABUILDJETSET.txt  
       
       - name: 'set env CONDABUILDJETSET'
         working-directory: .github/conda-pipeline/github/
