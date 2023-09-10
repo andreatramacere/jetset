@@ -50,8 +50,9 @@ jobs:
           environment-name: test-env
           create-args: >-
             python=${{ matrix.python-version }}
-            swig">=3.0.0" 
+            swig>=3.0.0 
             conda-build
+            pytest
           init-shell: bash
 
       - name: 'Install dependencies'
@@ -60,7 +61,7 @@ jobs:
           micromamba activate test-env
           micromamba config --set always_yes yes
           micromamba install -c astropy -c conda-forge --file requirements.txt
-          micromamba install -c conda-forge  conda-build pytest swig 
+         
           
   
 
