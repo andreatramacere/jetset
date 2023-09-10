@@ -64,9 +64,9 @@ jobs:
         shell: bash
         run: |
           conda config --set always_yes yes
-          conda install conda-build pytest
-          conda install -c conda-forge swig">=3.0.0" 
           conda install -c astropy -c conda-forge --file requirements.txt
+          conda install -c conda-forge  pytest swig">=3.0.0" 
+          
   
 
       - name: 'set env JETSETBESSELBUILD'
