@@ -98,7 +98,7 @@ jobs:
         working-directory: .github/conda-pipeline/github/
         run: |
           source ~/.bash_profile
-          conda activate test-env
+          micromamba activate test-env
           conda config --set anaconda_upload no
           conda build purge
           conda build .  -c conda-forge -c astropy
