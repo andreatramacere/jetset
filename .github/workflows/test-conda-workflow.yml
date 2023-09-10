@@ -53,7 +53,7 @@ jobs:
           fi
           ./micromamba shell init -s bash -p ~/micromamba
           mkdir -p ~/micromamba/pkgs/
-  
+          
       - name: 'setup micromamba'
         run: |
           export MAMBA_ROOT_PREFIX=~/micromamba
