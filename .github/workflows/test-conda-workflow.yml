@@ -98,11 +98,11 @@ jobs:
         working-directory: .github/conda-pipeline/github/
         run: |
           source ~/.bash_profile
-          micromamba activate test-env
-          micromamba config --set anaconda_upload no
-          micromamba build purge
-          micromamba build .  -c conda-forge -c astropy
-          micromamba build . --output > ./CONDABUILDJETSET.txt  
+          conda activate test-env
+          conda config --set anaconda_upload no
+          conda build purge
+          conda build .  -c conda-forge -c astropy
+          conda build . --output > ./CONDABUILDJETSET.txt  
       
       - name: 'set env CONDABUILDJETSET'
         working-directory: .github/conda-pipeline/github/
