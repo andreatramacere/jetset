@@ -42,8 +42,8 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
+      - uses: actions/checkout@v2
       - name: install micromamba
-        uses: actions/checkout@v2
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
             wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj bin/micromamba --strip-components=1
@@ -53,9 +53,7 @@ jobs:
           fi
           ./micromamba shell init -s bash -p ~/micromamba
           mkdir -p ~/micromamba/pkgs/
-     
-         
-
+  
       - name: 'setup micromamba'
         run: |
           export MAMBA_ROOT_PREFIX=~/micromamba
