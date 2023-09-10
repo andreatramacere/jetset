@@ -54,9 +54,10 @@ jobs:
             conda-build
             pytest
           init-shell: bash
+          generate-run-shell: true
 
       - name: 'Install dependencies'
-        shell: bash
+        shell: micromamba-shell {0}
         run: |
           micromamba activate test-env
           micromamba config --set always_yes yes
