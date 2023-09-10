@@ -52,7 +52,7 @@ jobs:
           activate-environment: test
       - name: Install conda dependencies
         run: |-
-          mamba env update -f $CONDA_ENV_FILE
+          mamba update -n test mamba
          
 
       - name: 'Install dependencies'
