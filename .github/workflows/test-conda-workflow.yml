@@ -78,6 +78,8 @@ jobs:
 
       - name: 'build '
         run: |
+          source ~/.bash_profile
+          micromamba activate test-env
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
           python setup.py clean
           python setup.py install
@@ -95,6 +97,8 @@ jobs:
       - name: 'conda build'
         working-directory: .github/conda-pipeline/github/
         run: |
+          source ~/.bash_profile
+          micromamba activate test-env
           micromamba config --set anaconda_upload no
           micromamba build purge
           micromamba build .  -c conda-forge -c astropy
@@ -112,6 +116,8 @@ jobs:
 
       - name: 'conda install'
         run: |
+          source ~/.bash_profile
+          micromamba activate test-env
           conda install --yes --offline $CONDABUILDJETSET
 
       #- name: 'make test env'
