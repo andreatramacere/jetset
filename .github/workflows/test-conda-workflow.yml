@@ -99,10 +99,11 @@ jobs:
         run: |
           source ~/.bash_profile
           micromamba activate test-env
+          micromamba install boa -c conda-forge
           conda config --set anaconda_upload no
-          conda build purge
-          conda build .  -c conda-forge -c astropy
-          conda build . --output > ./CONDABUILDJETSET.txt  
+          conda mambabuild purge
+          conda mambabuild .  -c conda-forge -c astropy
+          conda mambabuild . --output > ./CONDABUILDJETSET.txt  
       
       - name: 'set env CONDABUILDJETSET'
         working-directory: .github/conda-pipeline/github/
@@ -129,6 +130,8 @@ jobs:
         working-directory: .github/action_test/
         run: |
           echo $(running tests!)
+          source ~/.bash_profile
+          micromamba activate test-env
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
           pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
