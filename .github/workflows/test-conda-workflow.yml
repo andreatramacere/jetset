@@ -53,8 +53,9 @@ jobs:
             swig>=3.0.0 
             conda-build
             pytest
-          init-shell: bash
+          
           generate-run-shell: true
+          init-shell: bash
 
       - name: 'Install dependencies'
         shell: micromamba-shell {0}
@@ -68,6 +69,7 @@ jobs:
 
       - name: 'set env JETSETBESSELBUILD'
         run: |
+          micromamba-shell {0}
           echo "FALSE">JETSETBESSELBUILD
           echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
 
