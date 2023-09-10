@@ -43,7 +43,8 @@ jobs:
           ref: ${{ github.event.inputs.git-ref }}
 
       - name: 'setup conda'
-        uses: s-weigand/setup-conda@v1
+        #uses: s-weigand/setup-conda@v1
+        uses: mamba-org/setup-micromamba@v1
         with:
           update-conda: true
           python-version: ${{ matrix.python-version }}
@@ -88,7 +89,7 @@ jobs:
         run: |
           conda config --set anaconda_upload no
           conda build purge
-          conda build .  -c conda-forge -c astrop
+          conda build .  -c conda-forge -c astropy
           conda build  . --output > ./CONDABUILDJETSET.txt  
       
       - name: 'set env CONDABUILDJETSET'
