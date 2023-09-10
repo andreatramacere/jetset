@@ -59,7 +59,7 @@ jobs:
         run: |
           export MAMBA_ROOT_PREFIX=~/micromamba
           export MAMBA_EXE=$(pwd)/micromamba
-          . $MAMBA_ROOT_PREFIX/etc/profile.d/mamba.sh
+          
           ./micromamba create -n test -python=${{ matrix.python-version }} -c conda-forge
       
       - name: 'Install dependencies'
@@ -67,7 +67,7 @@ jobs:
         run: |
           export MAMBA_ROOT_PREFIX=~/micromamba
           export MAMBA_EXE=$(pwd)/micromamba
-          . $MAMBA_ROOT_PREFIX/etc/profile.d/mamba.sh
+          
           micromamba activate test
           micromamba install -c conda-forge  conda-build pytest swig">=3.0.0"
           micromamba install -c astropy -c conda-forge --file requirements.txt
