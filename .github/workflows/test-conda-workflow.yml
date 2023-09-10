@@ -49,9 +49,10 @@ jobs:
           mamba-version: "*"
           auto-update-conda: false
           python-version: ${{ matrix.python-version }}
+          activate-environment: test
       - name: Install conda dependencies
         run: |-
-          mamba update
+          mamba env update -f $CONDA_ENV_FILE
          
 
       - name: 'Install dependencies'
