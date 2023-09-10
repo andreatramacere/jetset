@@ -62,7 +62,7 @@ jobs:
         run: |
           export MAMBA_ROOT_PREFIX=~/micromamba
           export MAMBA_EXE=~/micromamba-bin/micromamba
-          export $CONDARC ~/micromamba-bin/.condarc
+          export $CONDARC=~/micromamba-bin/.condarc
           micromamba activate test-env
           micromamba config --set always_yes yes
           micromamba install -c astropy -c conda-forge --file requirements.txt
