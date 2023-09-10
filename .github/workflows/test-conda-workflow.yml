@@ -42,10 +42,9 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - name: Setup conda
+      - name: install micromamba
         uses: actions/checkout@v2
-        - name: install micromamba
-          run: |
+        run: |
             if [ "$RUNNER_OS" == "Linux" ]; then
               wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj bin/micromamba --strip-components=1
             else
