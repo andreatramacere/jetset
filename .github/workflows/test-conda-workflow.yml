@@ -42,15 +42,16 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - name: 'setup mamba'
-        #uses: s-weigand/setup-conda@v1
-        uses: mamba-org/setup-micromamba@v1
+      - name: Setup conda
+        uses: conda-incubator/setup-miniconda@v2
         with:
-          init-shell: bash
-          condarc: |
-            channels:
-              - conda-forge
-              - astropy
+          channels: conda-forge,astropy
+          mamba-version: "*"
+          auto-update-conda: false
+          python-version: ${{ matrix.python-version }}
+      - name: Install conda dependencies
+        run: |-
+          mamba update
          
 
       - name: 'Install dependencies'
