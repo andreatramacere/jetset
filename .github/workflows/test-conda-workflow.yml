@@ -58,8 +58,9 @@ jobs:
           init-shell: bash
 
       - name: 'Install dependencies'
-        shell: micromamba-shell {0}
+        shell: bash
         run: |
+          micromamba-shell {0}
           micromamba activate test-env
           micromamba config --set always_yes yes
           micromamba install -c astropy -c conda-forge --file requirements.txt
