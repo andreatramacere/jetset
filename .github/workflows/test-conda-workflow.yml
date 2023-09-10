@@ -52,10 +52,10 @@ jobs:
 
       - name: 'Install dependencies'
         run: |
-          conda config --set always_yes yes
-          conda install conda-build pytest
-          conda install -c conda-forge swig">=3.0.0" 
-          conda install -c astropy -c conda-forge --file requirements.txt
+          mamba config --set always_yes yes
+          mamba install conda-build pytest
+          mamba install -c conda-forge swig">=3.0.0" 
+          mamba install -c astropy -c conda-forge --file requirements.txt
 
 
 
@@ -87,10 +87,10 @@ jobs:
       - name: 'conda build'
         working-directory: .github/conda-pipeline/github/
         run: |
-          conda config --set anaconda_upload no
-          conda build purge
-          conda build .  -c conda-forge -c astropy
-          conda build  . --output > ./CONDABUILDJETSET.txt  
+          mamba config --set anaconda_upload no
+          mamba build purge
+          mamba build .  -c conda-forge -c astropy
+          mamba build  . --output > ./CONDABUILDJETSET.txt  
       
       - name: 'set env CONDABUILDJETSET'
         working-directory: .github/conda-pipeline/github/
