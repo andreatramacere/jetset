@@ -60,8 +60,7 @@ jobs:
       - name: 'Install dependencies'
         shell: bash
         run: |
-          cat .bashrc
-          cat .bash_profile
+          cat ~/.bash_profile
           export MAMBA_ROOT_PREFIX=~/micromamba
           export MAMBA_EXE=~/micromamba-bin/micromamba
           export CONDARC=~/micromamba-bin/.condarc
