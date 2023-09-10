@@ -60,7 +60,8 @@ jobs:
       - name: 'Install dependencies'
         shell: bash
         run: |
-          micromamba 
+          export MAMBA_ROOT_PREFIX=~/micromamba
+          export MAMBA_EXE=~/micromamba
           micromamba activate test-env
           micromamba config --set always_yes yes
           micromamba install -c astropy -c conda-forge --file requirements.txt
@@ -70,7 +71,6 @@ jobs:
 
       - name: 'set env JETSETBESSELBUILD'
         run: |
-          micromamba-shell {0}
           echo "FALSE">JETSETBESSELBUILD
           echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
 
