@@ -101,7 +101,7 @@ jobs:
           micromamba activate test-env
           micromamba install boa -c conda-forge
           conda config --set anaconda_upload no
-          conda  purge
+          conda build purge
           conda mambabuild .  -c conda-forge -c astropy
           conda mambabuild . --output > ./CONDABUILDJETSET.txt  
       
