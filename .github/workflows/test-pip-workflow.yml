@@ -98,6 +98,11 @@ jobs:
         run: |
           echo $(running tests!)
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
+      
+      - name: Upload wheels
+        uses: actions/upload-artifact@v3
+        with:
+          path: dist/*.tar.gz
 
       
       #- name: 'pip build install wheel'
@@ -116,6 +121,7 @@ jobs:
           CIBW_BUILD: ${{ matrix.cibw_python }}
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
           CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.cibw_manylinux }}
+          CIBW_TEST_COMMAND: pytest  --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model && pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic && pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
   
       - name: Show files
         run: ls -lh wheelhouse
@@ -126,11 +132,10 @@ jobs:
         shell: bash
       
       
-      - name: 'test'
-        if: github.event.inputs.skip_test != 'yes'
-        working-directory: .github/action_test/
-        run: |
-          echo $(running tests!)
-          pytest  --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
-          pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
-          pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v3
+        with:
+          path: wheelhouse/*.whl
+      
+   
