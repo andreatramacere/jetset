@@ -111,7 +111,10 @@ jobs:
 
       - uses: pypa/cibuildwheel@v2.11.4
         env:
-          CIBW_BUILD: cp*
+          CIBW_SKIP: "*-musllinux_*"
+          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
+          CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.cibw_manylinux }}
   
       - name: Show files
         run: ls -lh wheelhouse
