@@ -53,6 +53,7 @@ jobs:
             swig>=3.0.0 
             conda-build
             pytest
+            boa
           
           generate-run-shell: true
           init-shell: bash
@@ -99,10 +100,11 @@ jobs:
         run: |
           source ~/.bash_profile
           micromamba activate test-env
-          micromamba install boa -c conda-forge
           conda config --set anaconda_upload no
           conda build purge
+          echo "building"
           conda mambabuild .  -c conda-forge -c astropy
+          echo "redirect output"
           conda mambabuild . --output > ./CONDABUILDJETSET.txt  
       
       - name: 'set env CONDABUILDJETSET'
