@@ -29,10 +29,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        #os: [ubuntu-latest]
-        #python-version: [ 3.8]
         os: [ubuntu-latest, macos-10.15]
-        python-version: [3.7,3.8,3.9]
+        cibw_python: ["cp38-*", "cp39*", "cp310-*"]
+        cibw_manylinux: [manylinux2014]
+        cibw_arch: ["x86_64"]
+
 
     steps:
       - name: 'Clone Repository (Latest)'
