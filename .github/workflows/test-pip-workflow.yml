@@ -30,7 +30,7 @@ jobs:
     strategy:
       matrix:
         #os: [ubuntu-latest]
-        os: [macos-10.15,ubuntu-latest]
+        os: [macOS-12,ubuntu-latest]
         cibw_python: ["cp38-*", "cp39*", "cp310-*"]
         cibw_manylinux: [manylinux2014]
         cibw_arch: ["x86_64"]
@@ -115,9 +115,6 @@ jobs:
       
 
       - uses: actions/checkout@v3
-        if: github.event.inputs.git-ref != ''
-        with:
-          ref: ${{ github.event.inputs.git-ref }}
 
       - uses: pypa/cibuildwheel@v2.11.4
         env:
