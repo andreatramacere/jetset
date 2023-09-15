@@ -150,17 +150,23 @@ jobs:
           pytest --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest --pyargs -vvv jetset.tests.test_integration::TestIntegration
       
+      - name: 'prepare asset'
+        shell: bash
+        run: |
+          python .github/workflows/conda_rename.py
+         
+       
       - name: Upload packages
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.CONDABUILDJETSET }}
-
+          path: 'conda-binary/*'
+      
       - name: 'Upload Release Asset'
         if: github.event.inputs.tags != null
         uses: softprops/action-gh-release@v1
         with:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
-          files: ${{ env.CONDABUILDJETSET }}
+          files: 'conda-binary/*'
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
