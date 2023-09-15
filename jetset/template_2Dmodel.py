@@ -265,7 +265,7 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
 
         _Templates_dir = os.path.dirname(__file__) + '/ebl_data'
 
-        _allowed_templates = ['Finke_2010', 'Dominguez_2011', 'Dominguez_2023','Franceschini_2008']
+        _allowed_templates = ['Finke_2010','Dominguez_2010', 'Dominguez_2010_v11', 'Dominguez_2023','Franceschini_2008']
 
         if template_name not in _allowed_templates:
             raise ValueError('template EBL model', template_name, 'not in allowdr',_allowed_templates)
@@ -275,8 +275,8 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
         _template_name_dict['Finke_2010'] = 'tau_finke_2010.fits'
         _template_name_dict['Dominguez_2023'] = 'tau_dominguez_2023.fits'
         _template_name_dict['Franceschini_2008'] = 'tau_franceschini_2008.dat'
-        _template_name_dict['Dominguez_2011'] = 'tau_dominguez_2010_v2011.fits'
-        _template_name_dict['Dominguez_2010'] = 'tau_dominguez_2010_v2011.fits'
+        _template_name_dict['Dominguez_2010'] = 'tau_dominguez_2010.fits'
+        _template_name_dict['Dominguez_2010_v2011'] = 'tau_dominguez_2010_v2011.fits'
 
         file_path = os.path.join(_Templates_dir, _template_name_dict[template_name])
 
