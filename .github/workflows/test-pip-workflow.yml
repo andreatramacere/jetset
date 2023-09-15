@@ -6,6 +6,9 @@ on:
       git-ref:
         description: Git Ref (Optional)
         required: false
+      tags:
+        description: tag
+        required: false
       skip_test:
         description: skip test
         required: false
@@ -103,7 +106,7 @@ jobs:
           echo $(running tests!)
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
             
-      - name: Upload wheels
+      - name: Upload SDist
         uses: actions/upload-artifact@v3
         with:
           path: dist/*.tar.gz
