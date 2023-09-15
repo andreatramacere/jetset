@@ -1,5 +1,7 @@
 1)update the tag in  jetset/pkg_info.json
 
+clean __pycache__: find . -type d -name '__pycache__' | xargs rm -r 
+
 If you want  to make a tag without github actions
 2) ./make_tag.py 1.1.2 -do_remote_tag
   OR
@@ -9,6 +11,9 @@ If you want  to make a tag with github actions
   b) set the branch in the Git Ref
   a) set the tag in the tag field
   this will create a remote tag and release 
+
+Anaconda meta.yaml is built from requirements.txt using:
+python .github/workflows/requirements_to_conda_yml.py  
 
 3) testing locally
  python -c"import iminuit; print('iminuit',iminuit.__version__); import jetset; print('jetset',jetset.__version__)"
@@ -24,3 +29,8 @@ pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
 
 4) testing remotely:
    use the github actions pipelines conda test/pip test or test
+
+
+5) installing from source without setup.py install
+   a) pip: rm -rf ./build
+           pip install .
