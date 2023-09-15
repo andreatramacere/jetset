@@ -91,7 +91,6 @@ jobs:
         run: |
           python .github/workflows/adapt_reqirements_to_git_action.py
 
-
   
       - name: Build SDist and install
         run: |
@@ -111,6 +110,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: dist/*.tar.gz
+      
+      - name: Upload Release Asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: 
+          gh release upload ${{ github.event.inputs.tags }} dist/*.tar.gz
+      
 
       
       - uses: actions/checkout@v3
@@ -157,17 +163,11 @@ jobs:
       #       wheelhouse/*.whl
       #   env:
       #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: 'prepare asset'
-        shell: bash
-        run: |
-          mkdir pip-asset
-          cp -r dist/*.tar.gz pip-asset
-          cp -r wheelhouse/*.whl pip-asset
-      
+
       - name: Upload Release Asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: 
-          gh release upload ${{ github.event.inputs.tags }} pip-asset/*
+          gh release upload ${{ github.event.inputs.tags }} wheelhouse/*.whl
       
       
