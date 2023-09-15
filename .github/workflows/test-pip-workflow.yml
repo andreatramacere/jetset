@@ -49,15 +49,15 @@ jobs:
 
 
     steps:
-      #- name: 'Clone Repository (Latest)'
-      #  uses: actions/checkout@v3
+      - name: 'Clone Repository (Latest)'
+        uses: actions/checkout@v3
 
-      #- name: 'Clone Repository (Custom Ref)'
-      #  uses: actions/checkout@v3
-      #  if: github.event.inputs.git-ref != ''
-      #  with:
-      #    ref: ${{ github.event.inputs.git-ref }}
-
+      - name: 'Clone Repository (Custom Ref)'
+        uses: actions/checkout@v3
+        if: github.event.inputs.git-ref != ''
+        with:
+          ref: ${{ github.event.inputs.git-ref }}
+          
       - name: 'set env JETSETBESSELBUILD'
         run: |
           echo "FALSE">JETSETBESSELBUILD
@@ -136,6 +136,7 @@ jobs:
           path: wheelhouse/*.whl
   
       - name: 'Upload Release Asset'
+        if: github.event.inputs.tags != null
         uses: softprops/action-gh-release@v1
         with:
           name: Release  ${{ github.event.inputs.tags }}
