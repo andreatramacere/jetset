@@ -174,4 +174,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run:
-          gh release upload ${{ github.event.inputs.tags }} conda-binary/*
+          gh release upload ${{ github.event.inputs.tags }} conda-binary/*  --clobber
