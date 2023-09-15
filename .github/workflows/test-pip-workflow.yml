@@ -7,7 +7,7 @@ on:
         description: Git Ref (Optional)
         required: false
       tags:
-        description: tag for releaser
+        description: tag for release
         required: false
       skip_test:
         description: skip test
@@ -35,6 +35,8 @@ jobs:
       with:
         name: Release  ${{ github.event.inputs.tags }}
         tag_name: ${{ github.event.inputs.tags }}
+        draft: true
+        prerelease: true
 
   build_pip:
     needs: [clone]
