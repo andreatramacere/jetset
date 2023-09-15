@@ -160,7 +160,7 @@ jobs:
       - name: Upload Release Asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run:
+        run: |
           gh release upload ${{ github.event.inputs.tags }} dist/*.tar.gz
           gh release upload ${{ github.event.inputs.tags }} wheelhouse/*.whl
       
