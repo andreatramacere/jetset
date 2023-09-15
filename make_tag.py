@@ -50,10 +50,10 @@ def do_remote_tag(tag):
     l=[]
     l.append(["git tag  -d %s"%tag])
     l.append(['git push --delete origin %s'%tag])
-    l.append(['git push --delete origin-github %s'%tag])
+    #l.append(['git push --delete origin-github %s'%tag])
     l.append(['''git tag -a %s  -m '%s' '''%(tag,tag)])
     l.append(['git push origin %s'%tag])
-    l.append(['git push origin-github %s' % tag])
+    #l.append(['git push origin-github %s' % tag])
 
     res = subprocess.call(l[0], shell=True)
     for  i in l[1::]:
