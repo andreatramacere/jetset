@@ -276,6 +276,7 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
         _template_name_dict['Dominguez_2023'] = 'tau_dominguez_2023.fits'
         _template_name_dict['Franceschini_2008'] = 'tau_franceschini_2008.dat'
         _template_name_dict['Dominguez_2011'] = 'tau_dominguez_2010_v2011.fits'
+        _template_name_dict['Dominguez_2010'] = 'tau_dominguez_2010_v2011.fits'
 
         file_path = os.path.join(_Templates_dir, _template_name_dict[template_name])
 
