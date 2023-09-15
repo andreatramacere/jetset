@@ -21,21 +21,30 @@ def makedir(out_dir,clean_work_dir=True):
     """
     creates a directory
     """
-    if not os.path.exists(out_dir):
-        if os.path.isdir(out_dir):
-            Warning ("directory %s already existing"%(out_dir))
-            if clean_work_dir==True:
-                Warning ('removing existing dir')
+    
+    if os.path.isdir(out_dir):
+        Warning ("directory %s already existing"%(out_dir))
+        if clean_work_dir==True:
+            Warning ('removing existing dir')
+            try:
                 shutil.rmtree(out_dir)
+            except OSError:
+                Warning ('the directory %s could not be deleted' % (out_dir))
+
+            try:
                 os.mkdir(out_dir)
-                Warning ('the directory %s has been created' % (out_dir))
+            except OSError:
+                Warning ('the directory %s could not be created' % (out_dir))
+            
+    else:
+        if os.path.isfile(out_dir):
+            Warning ("a file with the same name of dir=%s, exists"%out_dir)
+            Warning ("select a different name")
         else:
-            if os.path.isfile(out_dir):
-                Warning ("a file with the same name of dir=%s, exists"%out_dir)
-                Warning ("select a differn name")
-            else:
+            try:
                 os.mkdir(out_dir)
-                Warning ('the directory %s has been created'%(out_dir))
+            except OSError:
+                Warning ('the directory %s could not be created' % (out_dir))
 
 
 class WorkPlace(object):

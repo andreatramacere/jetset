@@ -217,7 +217,7 @@ class Data(object):
             if l.startswith('#'):
                 lines.remove(l)
 
-        UL = np.zeros(len(lines), dtype=np.bool)
+        UL = np.zeros(len(lines), dtype=bool)
 
         for ID, l in enumerate(lines):
             t = l.strip().split(';')
@@ -239,7 +239,7 @@ class Data(object):
         data_table['dy'] = data_table['dy'] * (u.erg / (u.cm ** 2 * u.s))
         data_table['T_start'] = data_table['T_start'] * cds.MJD
         data_table['T_stop'] = data_table['T_stop'] * cds.MJD
-        data_table['UL']=np.array(data_table['UL'], dtype=np.bool)
+        data_table['UL']=np.array(data_table['UL'], dtype=bool)
         data_table.meta['z'] = z
         data_table.meta['restframe'] = restframe
         data_table.meta['data_scale'] = data_scale
@@ -1027,7 +1027,7 @@ class ObsData(object):
         if data_set is None:
             if nu_range is None:
 
-                msk=np.ones(len(self.data),dtype=np.bool)
+                msk=np.ones(len(self.data),dtype=bool)
 
             else:
                 msk=get_freq_range_msk(self.data['nu_data'], nu_range)

@@ -96,8 +96,7 @@ class TemplateTable2D(Model):
             self._x_grid =  _x
             self._y_grid =  _y
             self._z_grid =  _z
-
-
+    
         self.interp_func = interpolate.RectBivariateSpline(self._x_grid, self._y_grid, self._z_grid)
 
         self.nu_size = nu_size
@@ -266,7 +265,7 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
 
         _Templates_dir = os.path.dirname(__file__) + '/ebl_data'
 
-        _allowed_templates = ['Finke_2010', 'Dominguez_2010', 'Franceschini_2008']
+        _allowed_templates = ['Finke_2010', 'Dominguez_2011', 'Dominguez_2023','Franceschini_2008']
 
         if template_name not in _allowed_templates:
             raise ValueError('template EBL model', template_name, 'not in allowdr',_allowed_templates)
@@ -274,8 +273,9 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
         _template_name_dict = {}
 
         _template_name_dict['Finke_2010'] = 'tau_finke_2010.fits'
-        _template_name_dict['Dominguez_2010'] = 'tau_dominguez_2010.fits'
+        _template_name_dict['Dominguez_2023'] = 'tau_dominguez_2023.fits'
         _template_name_dict['Franceschini_2008'] = 'tau_franceschini_2008.dat'
+        _template_name_dict['Dominguez_2011'] = 'tau_dominguez_2010_v2011.fits'
 
         file_path = os.path.join(_Templates_dir, _template_name_dict[template_name])
 
@@ -290,9 +290,9 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
         y_values = np.log10(y_values.to('Hz', equivalencies=spectral()).value)
 
         try:
-            x_values = np.array(data.meta['REDSHIFT'], dtype=np.float)
+            x_values = np.array(data.meta['REDSHIFT'], dtype=np.float64)
         except:
-            x_values = np.array(data.meta['redshift'], dtype=np.float)
+            x_values = np.array(data.meta['redshift'], dtype=np.float64)
 
         cn = [name for name in data.colnames if name != 'energies']
         z_values = np.array([data[n].data for n in cn])

@@ -210,7 +210,7 @@ class BaseEmittersDistribution(object):
         else:
             raise  RuntimeError('emitters type',self.emitters_type, 'not valid')
 
-        msk = np.ones(x.shape, dtype=np.bool)
+        msk = np.ones(x.shape, dtype=bool)
         if gmin is not None:
             msk = x>=gmin
         if gmax is not None:

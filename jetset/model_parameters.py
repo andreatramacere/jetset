@@ -1163,9 +1163,9 @@ class ModelParameterArray(object):
                 try:
                     if None in t[n].data:
 
-                        t[n] = MaskedColumn(t[n].data, name=n, dtype=np.float, mask=t[n].data==None)
+                        t[n] = MaskedColumn(t[n].data, name=n, dtype=np.float64, mask=t[n].data==None)
                     else:
-                        t[n] = MaskedColumn(t[n].data, name=n, dtype=np.float)
+                        t[n] = MaskedColumn(t[n].data, name=n, dtype=np.float64)
                     t[n].format = '%e'
                 except:
 
