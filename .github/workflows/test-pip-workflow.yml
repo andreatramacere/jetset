@@ -7,7 +7,7 @@ on:
         description: Git Ref (Optional)
         required: false
       tags:
-        description: tag
+        description: tag for releaser
         required: false
       skip_test:
         description: skip test
@@ -57,7 +57,7 @@ jobs:
         if: github.event.inputs.git-ref != ''
         with:
           ref: ${{ github.event.inputs.git-ref }}
-          
+
       - name: 'set env JETSETBESSELBUILD'
         run: |
           echo "FALSE">JETSETBESSELBUILD
@@ -111,7 +111,7 @@ jobs:
           path: dist/*.tar.gz
 
       
-      #- uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - uses: pypa/cibuildwheel@v2.11.4
         env:
@@ -130,6 +130,15 @@ jobs:
         run: git diff --exit-code
         shell: bash
       
+      - name: 'test'
+        if: github.event.inputs.skip_test != 'yes'
+        working-directory: .github/action_test/
+        run: |
+          echo $(running tests!)
+          pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
+          pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
+          pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
+
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
