@@ -6,6 +6,9 @@ on:
       git-ref:
         description: Git Ref (Optional)
         required: false
+      tags:
+        description: tag for release
+        required: false
       skip_test:
         description: skip test
         required: false
@@ -22,6 +25,18 @@ jobs:
       if: github.event.inputs.git-ref != ''
       with:
         ref: ${{ github.event.inputs.git-ref }}
+    
+    - name: 'Create release'
+      if: github.event.inputs.tags != null
+      uses: softprops/action-gh-release@v1
+      id : create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: Release  ${{ github.event.inputs.tags }}
+        tag_name: ${{ github.event.inputs.tags }}
+        draft: true
+        prerelease: true
 
 
   build_conda:
@@ -29,15 +44,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-10.15 ]
+        os: [macOS-12,ubuntu-latest]
         python-version: [ 3.8,3.9,'3.10']
 
     steps:
       - name: 'Clone Repository (Latest)'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 'Clone Repository (Custom Ref)'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: github.event.inputs.git-ref != ''
         with:
           ref: ${{ github.event.inputs.git-ref }}
@@ -123,10 +138,7 @@ jobs:
           micromamba activate test-env
           conda install --yes --offline $CONDABUILDJETSET
 
-      #- name: 'make test env'
-      #  run: |
-      #    cp -r jetset/tests/test*.py  .github/action_test/
-
+   
       - name: 'test'
         if: github.event.inputs.skip_test != 'yes'
         working-directory: .github/action_test/
@@ -137,3 +149,18 @@ jobs:
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
           pytest --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest --pyargs -vvv jetset.tests.test_integration::TestIntegration
+      
+      - name: Upload packages
+        uses: actions/upload-artifact@v3
+        with:
+          path: ${{ env.CONDABUILDJETSET }}/jetset*
+
+      - name: 'Upload Release Asset'
+        if: github.event.inputs.tags != null
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release  ${{ github.event.inputs.tags }}
+          tag_name: ${{ github.event.inputs.tags }}
+          files: ${{ env.CONDABUILDJETSET }}/jetset*
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
