@@ -54,6 +54,7 @@ jobs:
       - name: 'echo env TEST'
         run: |
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
+          python -v
 
 
       - name: 'Install swig'
