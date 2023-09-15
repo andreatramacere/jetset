@@ -131,7 +131,7 @@ jobs:
           path: wheelhouse/*.whl
   
       - name: 'Upload Binary Release Asset'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v1
         with:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
