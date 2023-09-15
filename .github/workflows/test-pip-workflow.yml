@@ -15,14 +15,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 'Clone Repository (Latest)'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: 'Clone Repository (Custom Ref)'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       if: github.event.inputs.git-ref != ''
       with:
         ref: ${{ github.event.inputs.git-ref }}
-
+    
+    - name: 'Create release'
+      if: github.event.inputs.tags != null
+      uses: softprops/action-gh-release@v1
+      id : create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: Release  ${{ github.event.inputs.tags }}
+        tag_name: ${{ github.event.inputs.tags }}
 
   build_pip:
     needs: [clone]
@@ -39,10 +48,10 @@ jobs:
 
     steps:
       - name: 'Clone Repository (Latest)'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 'Clone Repository (Custom Ref)'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         if: github.event.inputs.git-ref != ''
         with:
           ref: ${{ github.event.inputs.git-ref }}
@@ -78,44 +87,23 @@ jobs:
         run: |
           python .github/workflows/adapt_reqirements_to_git_action.py
 
-      - name: 'Install dependencies'
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest
-          pip install wheel
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: 'pip build'
-        run: |
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
-          python setup.py clean
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
+  
+      - name: Build SDist
+        run: pipx run build --sdist
       
-      - name: 'pip build install sdist'
-        run: |
-          python setup.py sdist 
-          pip install dist/*.tar.gz
-          
       - name: 'test sdist'
         working-directory: .github/action_test/
         run: |
           echo $(running tests!)
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
-      
+            
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
           path: dist/*.tar.gz
 
       
-      #- name: 'pip build install wheel'
-      #  run: |
-      #    pip uninstall --yes jetset
-      #    python setup.py clean 
-      #    python setup.py  bdist_wheel 
-      #    pip install dist/*.whl
-      
-
       - uses: actions/checkout@v3
 
       - uses: pypa/cibuildwheel@v2.11.4
@@ -141,5 +129,16 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: wheelhouse/*.whl
+  
+      - name: 'Upload Binary Release Asset'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release  ${{ github.event.inputs.tags }}
+          tag_name: ${{ github.event.inputs.tags }}
+          files: |
+            dist/*.tar.gz
+            wheelhouse/*.whl
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       
-   
