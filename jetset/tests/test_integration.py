@@ -2,7 +2,7 @@ import pytest
 from .base_class import TestBase
 
 from .test_mcmc import TestEmcee
-from .test_jet_model import TestJets
+from .test_jet_model import TestJets,TestJetHadronic
 from .test_phenom_constr import TestPhenomenologyConstr
 from .test_model_fit import TestModelFit
 from .test_emitters import TestEmitters
@@ -18,6 +18,14 @@ def plot():
    return input
 
 class TestIntegration(TestBase):
+
+   def test_jet(self,plot=plot):
+      t=TestJets()
+      t.integration_suite()
+    
+   def test_jet_hadronic(self,plot=plot):
+      t=TestJetHadronic()
+      t.test_hadronic_jet(plot=plot)
    
    def test_galactic(self,plot=plot):
       t=TestGalactic()
