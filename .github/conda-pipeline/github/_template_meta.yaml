@@ -1,4 +1,3 @@
-
 {% set data = load_setup_py_data(setup_file='../../../setup.py', from_recipe_dir=True) %}
 {% set version = data.get('version')  %}
 
@@ -20,27 +19,12 @@ requirements:
     - swig>3.0.0
     - python {{ python }}
     - setuptools
-    - numpy>=1.18,<1.22
+   # - numpy this will come from requirements.txt
 
   run:
-    - python>=3.8
-    - setuptools
-    - scipy>=1.5.0
-    - numpy>=1.18,<1.22
-    - astropy>=4.0,<=5
-    - matplotlib>=3.1.0
-    - future
-    - iminuit>=2.0.0
-    - corner
-    - six
-    - emcee>=3.0.0
-    - pyyaml
-    - pytest
-    - numba>0.55
-    - tqdm
-    - jupyter
-    - ipython
-    - dill
+    # - entries from requirements.txt
+
+
 
 about:
   home: https://github.com/andreatramacere/jetset
@@ -51,4 +35,3 @@ about:
 extra:
   recipe-maintainers:
     - andreatramacere
-

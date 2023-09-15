@@ -109,6 +109,12 @@ jobs:
       - name: 'echo pkg version'
         run: |
           echo "PKG_VERSION=${{env.PKG_VERSION}}"
+      
+      - name: 'generate meta.yaml from requirements.txt'
+        run: |
+          source ~/.bash_profile
+          micromamba activate test-env
+          python .github/workflows/requirements_to_conda_yml.py
 
       - name: 'conda build'
         working-directory: .github/conda-pipeline/github/
