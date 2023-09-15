@@ -31,6 +31,7 @@ jobs:
       matrix:
         #os: [ubuntu-latest]
         os: [macOS-12,ubuntu-latest]
+        python-version: ['3.9']
         cibw_python: ["cp38-*", "cp39*", "cp310-*"]
         cibw_manylinux: [manylinux2014]
         cibw_arch: ["x86_64"]
@@ -69,7 +70,7 @@ jobs:
            fi
 
       - name: 'Setup pip'
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
 
