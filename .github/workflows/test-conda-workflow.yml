@@ -104,7 +104,7 @@ jobs:
 
       - name: 'set pkg version'
         run: |
-         echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
+         echo "PKG_VERSION=$(micromamba activate test-env && cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
 
       - name: 'echo pkg version'
         run: |
@@ -153,7 +153,7 @@ jobs:
       - name: Upload packages
         uses: actions/upload-artifact@v3
         with:
-          path: ${{ env.CONDABUILDJETSET }}/jetset*
+          path: ${{ env.CONDABUILDJETSET }}
 
       - name: 'Upload Release Asset'
         if: github.event.inputs.tags != null
@@ -161,6 +161,6 @@ jobs:
         with:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
-          files: ${{ env.CONDABUILDJETSET }}/jetset*
+          files: ${{ env.CONDABUILDJETSET }}
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
