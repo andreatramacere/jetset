@@ -12,6 +12,6 @@ new_name=name.replace('.tar.bz2','_%s.tar.bz2'%system_str)
 
 shutil.move(name,new_name)
 
-os.makedir('conda-binary')
+os.makedirs('conda-binary')
 
 shutil.move(new_name,'conda-binary')
