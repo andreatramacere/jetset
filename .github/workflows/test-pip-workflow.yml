@@ -95,6 +95,7 @@ jobs:
       - name: 'test sdist'
         working-directory: .github/action_test/
         run: |
+          pip install pytest
           echo $(running tests!)
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
             
@@ -123,14 +124,12 @@ jobs:
         run: git diff --exit-code
         shell: bash
       
-      
-
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
           path: wheelhouse/*.whl
   
-      - name: 'Upload Binary Release Asset'
+      - name: 'Upload Release Asset'
         uses: softprops/action-gh-release@v1
         with:
           name: Release  ${{ github.event.inputs.tags }}
