@@ -41,7 +41,7 @@ class TestTempEv(TestBase):
 
         temp_ev_acc.rad_region.jet.nu_min=1E8
         temp_ev_acc.acc_region.jet.nu_min=1E8
-        T_SIZE=np.int64(T_SIZE)
+        T_SIZE=np.uint64(T_SIZE)
 
         if Delta_R_acc_ratio is not None:
             temp_ev_acc.parameters.Delta_R_acc.val=temp_ev_acc.parameters.R_rad_start.val*Delta_R_acc_ratio

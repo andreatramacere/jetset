@@ -605,7 +605,7 @@ class JetBase(Model):
 
     @property
     def IC_adaptive_e_binning(self,):
-        return np.int(self._blob.IC_adaptive_e_binning)
+        return np.intc(self._blob.IC_adaptive_e_binning)
 
     @IC_adaptive_e_binning.setter
     def IC_adaptive_e_binning(self,state):
@@ -613,7 +613,7 @@ class JetBase(Model):
             pass
         else:
             raise RuntimeError('state has to be boolean')
-        self._blob.IC_adaptive_e_binning=np.int(state)
+        self._blob.IC_adaptive_e_binning=np.intc(state)
 
     @staticmethod
     def available_emitters_distributions():
