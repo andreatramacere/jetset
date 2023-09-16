@@ -79,33 +79,6 @@ class ProgressBarTempEV(object):
             self.update()
             system_time.sleep(.1)
 
-# def _get_time_slice_from_time(time_samples_array, time):
-#     ID = None
-#     if time > time_samples_array[-1] or time < time_samples_array[0]:
-#         warnings.warn('time must be within time start/stop range', time_samples_array[0], time_samples_array[-1])
-#     else:
-#         ID = (np.abs(time_samples_array - time)).argmin()
-#     return ID
-#
-# def _get_time_from_time_slice(time_samples_array,time_slice):
-#     ID = None
-#     if time_slice > time_samples_array.size-1 or time_slice<0:
-#         warnings.warn('time_slice must be within time 0/%d', time_samples_array.size)
-#     else:
-#         ID = time_slice
-#     return ID
-#
-# def _get_time_slice_samples_from_time(time_samples_array, time,time_bin=None):
-#     if time > time_samples_array[-1] or time < time_samples_array[0]:
-#         warnings.warn('time must be within time start/stop range', time_samples_array[0], time_samples_array[-1])
-#
-#     ID = [np.argmin(np.fabs(time_samples_array - time))]
-#     if time_bin is not None:
-#         ID_l = np.argwhere(np.logical_and(time_samples_array >= time, time_samples_array <= time + time_bin))
-#         if len(ID_l) > 0:
-#             ID = ID_l.ravel()
-#     return ID
-
 
 class TimeEmittersDistribution(object):
 
@@ -424,7 +397,6 @@ class TimeEvolvingRegion(object):
                 nu1,
                 nu2=None,
                 comp='Sum',
-                #region='rad',
                 t1=None,
                 t2=None,
                 delta_t_out=None,
@@ -617,73 +589,7 @@ class TimeEvolvingRegion(object):
        
         return lc_out,t_out,R
     
-    # def eval_cross_time_r_exp_conv(self, t, lc, n_slices=1000,R=None):
-    #     c = const.c.cgs.value
-    #     step=np.int32(t.size)/n_slices
-    #     if step<1:
-    #         step=1
-    #     for i_slice in range(n_slices):
-    #         t_id_1=0
-    #         t_id_2=t_id_1+step
-    #         t_id_R=t_id_1
-    #         delta_t=self.temp_ev._get_R_rad_sphere(t[t_id_R])/c
-    #         t_rd=delta_t/2
-    #         _lc=np.copy(lc)
-    #         if i_slice==0:
-    #             lc_out,t_out=self._gauss_prof_conv(_lc,t,delta_t,t_rd)
-    #         else:
-    #             _lc_out,t_out=self._gauss_prof_conv(_lc,t,delta_t,t_rd)
-    #             lc_out+=_lc_out
-
-    #         t_id_1=t_id_2
-    #         if i_slice % 100 == 0: 
-    #             print('i = {}'.format(i_slice),'f=%f'%(i_slice/n_slices))
-
-    #     a1=np.trapz(lc,t)
-    #     a2=np.trapz(lc_out,t_out)
-    #     lc_out=lc_out/a2*a1
-        
-    #     return lc_out,t_out
-
-    # def eval_cross_time(self, t,lc):
-    #     c = const.c.cgs.value
-    #     delta_t=self.temp_ev._get_R_rad_sphere(t[0])/c
-    #     t_rd=delta_t/2
-    #     lc_out,t_out=self._gauss_prof_conv(lc,t,delta_t,t_rd)
-    #     return lc_out,t_out
-
-    # def _gauss_kernel(self,t,delta_t,sigma):
-    #     return np.exp(-1.0 * ((t - delta_t)**2.0) / (2.0 * sigma**2.0))
     
-    # def _gauss_prof_conv(self,y,t,delta_t,t_rd,skip_norm=False):
-    #     dt=t[1]-t[0]
-    #     if skip_norm is False:
-    #         a1=np.trapz(y,t)
-    #     t_conv=np.arange(t[0],t[-1]+4*t_rd,dt)
-    #     s=self._gauss_kernel(t_conv,delta_t,t_rd)
-    #     flux_array_out=np.convolve(y,s)
-    #     dt=t[1]-t[0]
-    #     time_array_out=np.arange(1,flux_array_out.size+1)*dt
-    #     y_out=np.interp(t_conv,xp=time_array_out,fp=flux_array_out) 
-    #     if skip_norm is False:
-    #         a2=np.trapz(y_out,t_conv)
-    #         y_out=y_out/a2*a1
-    #     return y_out,t_conv
-
-
-    # def _gauss_prof_conv_r_exp(self,t1,t2,y,t,delta_t,t_rd):
-    #     dt=t[1]-t[0]
-    #     a1=np.trapz(y,t)
-    #     t_conv=np.arange(t[0],t[-1]+4*t_rd,dt)
-    #     s=self._gauss_kernel(t_conv,delta_t,t_rd)
-    #     flux_array_out=np.convolve(y,s)
-    #     dt=t[1]-t[0]
-    #     time_array_out=np.arange(1,flux_array_out.size+1)*dt
-    #     y_out=np.interp(t_conv,xp=time_array_out,fp=flux_array_out) 
-    #     a2=np.trapz(y_out,t_conv)
-    #     y_out=y_out/a2*a1
-    #     return y_out,t_conv
-
 class JetTimeEvol(object):
     """
 
@@ -1192,7 +1098,7 @@ class JetTimeEvol(object):
             raise RuntimeError('this parameter must be bolean')
 
         self._log_sampling = v
-        self.temp_ev.LOG_SET= np.int(v)
+        self.temp_ev.LOG_SET= np.int64(v)
 
     @property
     def t_unit_rad(self):
@@ -1313,68 +1219,6 @@ class JetTimeEvol(object):
                 raise  RuntimeError('user_defined_array must be 1d array with size =',self._temp_ev.T_SIZE)
             self._custom_acc_profile = np.double(user_defined_array)
 
-    # def get_SED(self,
-    #             comp,
-    #             region='rad',
-    #             time_slice=None,
-    #             time_slice_bin=None,
-    #             time=None,
-    #             time_bin=None,
-    #             use_cached=False,
-    #             average=False,
-    #             frame='obs'):
-    #
-    #     if region == 'rad':
-    #         sed = self.rad_region.get_SED(comp=comp,
-    #                                       time_slice=time_slice,
-    #                                       time_slice_bin=time_slice_bin,
-    #                                       time=time,
-    #                                       time_bin=time_bin,
-    #                                       use_cached=use_cached,
-    #                                       average=average,
-    #                                       frame=frame)
-    #     elif region == 'acc':
-    #         sed = self.acc_region.get_SED(comp=comp,
-    #                                       time_slice=time_slice,
-    #                                       time_slice_bin=time_slice_bin,
-    #                                       time=time,
-    #                                       time_bin=time_bin,
-    #                                       use_cached=use_cached,
-    #                                       average=average,
-    #                                       frame=frame)
-    #     else:
-    #         raise RuntimeError("region must be 'acc' or 'rad'")
-    #     return sed
-
-    # def make_lc(self,
-    #             nu1,
-    #             nu2=None,
-    #             comp='Sum',
-    #             region='rad',
-    #             t1=None,
-    #             t2=None,
-    #             delta_t_out=None,
-    #             cross_time_slices=1000,
-    #             rest_frame='obs',
-    #             eval_cross_time=True,
-    #             use_cached=False,
-    #             R=None,
-    #             name=None):
-    #
-    #     return self.get_region(region).make_lc(nu1,
-    #                                     nu2 = nu2,
-    #                                     comp = comp,
-    #                                     region = region,
-    #                                     t1 = t1,
-    #                                     t2 = t2,
-    #                                     delta_t_out = delta_t_out,
-    #                                     cross_time_slices = cross_time_slices,
-    #                                     rest_frame = rest_frame,
-    #                                     eval_cross_time = eval_cross_time,
-    #                                     use_cached = use_cached,
-    #                                     R = R,
-    #                                     name = name)
-
     def eval_L_tot_inj(self):
         if self.Q_inj is not None and self.acc_region is not None:
             return self.Q_inj.eval_U_q() * self.V_acc()
@@ -1395,7 +1239,7 @@ class JetTimeEvol(object):
         -------
 
         """
-        r = min(0, np.int(np.log10(self.delta_t))-1)
+        r = min(0, np.int64(np.log10(self.delta_t))-1)
         if r<0:
             _time = np.round(time_blob, -r)
         else:
@@ -1408,7 +1252,7 @@ class JetTimeEvol(object):
             raise RuntimeError('time=%e must be within time start/stop range =[%e,%e]'%(_time,self.time_steps_array[0], self.time_steps_array[-1]))
 
         dt = (self.time_steps_array[-1] - self.time_steps_array[0]) / self.time_steps_array.size
-        _id = np.int(_time/dt)
+        _id = np.int64(_time/dt)
 
         if _id<0:
             _id =  0
@@ -1423,44 +1267,7 @@ class JetTimeEvol(object):
         if self.acc_region is not None:
             self.acc_region.set_time(time_slice=time_slice, time=time, frame=frame)
 
-    # def set_time(self,time_slice=None,time=None,frame='blob',region='rad'):
-    #     if (time_slice is None and time is None) or (time_slice is not None and time is not None):
-    #         raise RuntimeError('you can use either the N-th time slice, or the time in seconds')
-    #
-    #
-    #     region = self.get_region(region)
-    #
-    #     if time is not None:
-    #         if frame == 'obs':
-    #             time = time
-    #         elif frame == 'src':
-    #             _t = self.temp_ev.time_sampled_emitters.time_src
-    #
-    #         elif frame == 'blob':
-    #             pass
-    #         else:
-    #             raise RuntimeError('rest_frame must be src or blob or obs')
-    #
-    #
-    #         time_slice=region.time_sampled_emitters._get_time_slice_samples(time)[0]
-    #
-    #     if time_slice is not  None:
-    #         time,time_ids = region.time_sampled_emitters._get_time_samples(time_slice=time_slice)
-    #         time = time[0]
-    #
-    #     self.rad_region.jet.parameters.R.val=self._get_R_rad_sphere(time)
-    #     self.rad_region.jet.parameters.B.val = self._get_B_rad(time)
-    #     self.rad_region.jet.emitters_distribution._set_arrays(self.time_sampled_emitters.gamma, self.time_sampled_emitters.n_gamma_rad[time_slice].flatten())
-    #     self.rad_region.jet.emitters_distribution._fill()
-    #
-    #     R,N_spheres = self._get_R_acc_sphere()
-    #     self._acc_seds_mult_factor = N_spheres
-    #     self.acc_region.jet.parameters.R.val = R
-    #     self.rad_region.jet.parameters.B.val = self._get_B_acc()
-    #     self.acc_region.jet.emitters_distribution._set_arrays(self.time_sampled_emitters.gamma,
-    #                                                    self.time_sampled_emitters.n_gamma_acc[time_slice].flatten())
-    #     self.acc_region.jet.emitters_distribution._fill()
-
+  
 
     def plot_time_profile(self,figsize=(8,8),dpi=120):
         p=PlotTempEvDiagram(figsize=figsize,dpi=dpi,expanding_region=self.region_expansion=='on')
