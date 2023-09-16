@@ -107,16 +107,17 @@ jobs:
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
             
       - name: Upload SDist
-        if: matrix.python-version == 3.9
+        if: matrix.cibw_python == 'cp39*'
         uses: actions/upload-artifact@v3
         with:
           path: dist/*.tar.gz
       
       
       - name: Upload Release Asset
-        if: matrix.python-version == 3.9
+        if: matrix.cibw_python == 'cp39*'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         
         run: 
           gh release upload ${{ github.event.inputs.tags }} dist/*.tar.gz --clobber
       
