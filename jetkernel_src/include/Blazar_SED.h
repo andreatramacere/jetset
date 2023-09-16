@@ -845,7 +845,7 @@ struct temp_ev{
 	double TStop_Acc;
 	double Inj_temp_slope;
 	unsigned int NUM_SET;
-    unsigned int LOG_SET;
+    int LOG_SET;
 	unsigned int T_SIZE;
     //unsigned int T_EVALUATED;
 	double duration,t_D0,t_DA0,t_A0;

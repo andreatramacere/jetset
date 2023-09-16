@@ -1098,7 +1098,7 @@ class JetTimeEvol(object):
             raise RuntimeError('this parameter must be bolean')
 
         self._log_sampling = v
-        self.temp_ev.LOG_SET= np.uint(v)
+        self.temp_ev.LOG_SET= int(v)
 
     @property
     def t_unit_rad(self):
