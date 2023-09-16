@@ -7,9 +7,10 @@ from scipy import interpolate
 
 import numpy as np
 
-from astropy.units import Unit as u
+from astropy import units as u
 from astropy.units import spectral
 from astropy.table import Table
+from astropy.io import fits as pf
 
 import os
 
@@ -97,7 +98,8 @@ class TemplateTable2D(Model):
             self._y_grid =  _y
             self._z_grid =  _z
     
-        self.interp_func = interpolate.RectBivariateSpline(self._x_grid, self._y_grid, self._z_grid)
+        #self.interp_func = interpolate.RectBivariateSpline(self._x_grid, self._y_grid, self._z_grid)
+        self.interp_func = interpolate.RegularGridInterpolator((self._x_grid, self._y_grid), self._z_grid,bounds_error=False, fill_value=None)
 
         self.nu_size = nu_size
         
@@ -127,10 +129,10 @@ class TemplateTable2D(Model):
             x=np.log10(x)
             y=np.log10(y)
              
-        model = self.interp_func(x,y)
+        model = self.interp_func((x,y))
         #
         model[model<self._zero]=self._zero
-
+        
         if self._log_log_interp is True:
             return np.power(10., model)
         else:
@@ -182,7 +184,7 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
     def __init__(self,
                  redshift_array,
                  energy_array,
-                 tau_values,
+                 tau_array,
                  applied_model=None,
                  z=1.0,
                  template_name='tau_ebl_template',
@@ -202,14 +204,20 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
         super(EBLAbsorptionTemplate, self).__init__(
             x_values=redshift_array,
             y_values=energy_array,
-            z_values=tau_values,
+            z_values=tau_array,
             log_input_grid=False,
             log_log_interp=False,
             nu_size=nu_size,
             name=template_name
         )
 
-
+        self.parameters.add_par(ModelParameter(name='scale_factor',
+                                                val=1.0,
+                                                val_min=0,
+                                                val_max=None,
+                                                units='',
+                                                frozen=True,
+                                                log=False))
 
         if z is None and applied_model is not None:
             self.parameters.add_par(applied_model.get_par_by_type('redshift'))
@@ -247,6 +255,22 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
     def _check(self):
         pass
 
+    @property
+    def redshift_array(self):
+        return self.x_values
+    
+    @property
+    def energy_array(self):
+        return self.y_values
+    
+    @property
+    def tau_array(self):
+        return self.z_values
+    
+    @property
+    def redshift_array(self):
+        return self.x_values
+        
     @classmethod
     def from_name(cls,template_name,applied_model=None,z=1.0,nu_size=100):
         """
@@ -265,7 +289,7 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
 
         _Templates_dir = os.path.dirname(__file__) + '/ebl_data'
 
-        _allowed_templates = ['Finke_2010','Dominguez_2010', 'Dominguez_2010_v11', 'Dominguez_2023','Franceschini_2008']
+        _allowed_templates = ['Finke_2010', 'Dominguez_2010_v2011', 'Dominguez_2023','Franceschini_2008','Franceschini_2017']
 
         if template_name not in _allowed_templates:
             raise ValueError('template EBL model', template_name, 'not in allowdr',_allowed_templates)
@@ -275,32 +299,43 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
         _template_name_dict['Finke_2010'] = 'tau_finke_2010.fits'
         _template_name_dict['Dominguez_2023'] = 'tau_dominguez_2023.fits'
         _template_name_dict['Franceschini_2008'] = 'tau_franceschini_2008.dat'
-        _template_name_dict['Dominguez_2010'] = 'tau_dominguez_2010.fits'
         _template_name_dict['Dominguez_2010_v2011'] = 'tau_dominguez_2010_v2011.fits'
+        _template_name_dict['Franceschini_2017'] = 'ebl_franceschini_2017.fits.gz'
 
         file_path = os.path.join(_Templates_dir, _template_name_dict[template_name])
 
-        if file_path.endswith('fits'):
-            data = Table.read(file_path,format='fits')
-        elif file_path.endswith('dat'):
-            data = Table.read(file_path, format='ascii.ecsv')
-        else:
-            data = Table.read(file_path)
+        if template_name in ['Finke_2010', 'Dominguez_2010_v2011', 'Dominguez_2023','Franceschini_2008']:
 
-        y_values = data['energies']
-        y_values = np.log10(y_values.to('Hz', equivalencies=spectral()).value)
 
-        try:
-            x_values = np.array(data.meta['REDSHIFT'], dtype=np.float64)
-        except:
-            x_values = np.array(data.meta['redshift'], dtype=np.float64)
+            if file_path.endswith('fits'):
+                data = Table.read(file_path,format='fits')
+            elif file_path.endswith('dat'):
+                data = Table.read(file_path, format='ascii.ecsv')
+            else:
+                data = Table.read(file_path)
 
-        cn = [name for name in data.colnames if name != 'energies']
-        z_values = np.array([data[n].data for n in cn])
+            y_values = data['energies']
+            y_values = np.log10(y_values.to('Hz', equivalencies=spectral()).value)
+
+            try:
+                x_values = np.array(data.meta['REDSHIFT'], dtype=np.float64)
+            except:
+                x_values = np.array(data.meta['redshift'], dtype=np.float64)
+
+            cn = [name for name in data.colnames if name != 'energies']
+            z_values = np.array([data[n].data for n in cn])
+
+        elif template_name in ['Franceschini_2017']:
+            data=pf.open(file_path)
+
+            y_values=np.log10(((data[2].data['ENERG_LO']+data[2].data['ENERG_HI'])*0.5*u.keV).to('Hz', equivalencies=spectral()).value)
+            x_values=data[3].data['PARAMVAL']
+            z_values= np.array(data[3].data['INTPSPEC'], dtype=np.float64)
+            z_values=-np.log(z_values)
 
         return cls(redshift_array=x_values,
                    energy_array=y_values,
-                   tau_values=z_values,
+                   tau_array=z_values,
                    template_name=template_name,
                    applied_model=applied_model,
                    z=z,
@@ -335,9 +370,10 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
 
 
         z=self.parameters.get_par_by_name('z_cosm').val
+        s=self.parameters.scale_factor.val
 
-        model = np.exp(-self._func(z,log_nu).T).flatten()
-
+        model = np.exp(-s*self._func(z,log_nu).T).flatten()
+        model[np.isnan(model)]=self._zero
         if get_model == True:
             if loglog == False:
                 out_model=model
