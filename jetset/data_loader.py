@@ -981,8 +981,8 @@ class ObsData(object):
         self.data_reb['dnuFnu_data']=dy_bin
         
         #remove empty bins
-        msk=[self.data_reb['nu_data_log']!=0]
-        
+        msk=self.data_reb['nu_data_log']!=0
+        print('msk',msk)
         self.data_reb=self.data_reb[msk]
         
         
