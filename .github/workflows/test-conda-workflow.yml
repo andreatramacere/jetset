@@ -167,20 +167,22 @@ jobs:
         with:
           path: 'conda-binary/*'
       
-      #- name: 'Upload Release Asset'
-      #  uses: softprops/action-gh-release@v1
-      #  with:
-      #    name: Release  ${{ github.event.inputs.tags }}
-      #    tag_name: ${{ github.event.inputs.tags }}
-      #    files: 'conda-binary/*'
-      #  env:
-      #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Upload Release Asset conda
+      - name: 'Upload Release Asset'
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release  ${{ github.event.inputs.tags }}
+          tag_name: ${{ github.event.inputs.tags }}
+          prerelease: true
+          draft: true 
+          files: 'conda-binary/*'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: 
-          gh release upload ${{ github.event.inputs.tags }} conda-binary/* --clobber
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      #- name: Upload Release Asset conda
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #  run: 
+      #    gh release upload ${{ github.event.inputs.tags }} conda-binary/* --clobber
         
       #- name: Upload Release Asset conda tag
       #  if: github.event.inputs.git-ref != ''

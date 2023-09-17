@@ -113,21 +113,23 @@ jobs:
           path: dist/*.tar.gz
       
       
-      - name: Upload Release Asset sdist
-        if: matrix.cibw_python == 'cp39*'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-         
-        run:   gh release upload ${{ github.event.inputs.tags }} dist/*.tar.gz --clobber
-      
-      #- name: 'Upload Binary Release Asset'
-      #  uses: softprops/action-gh-release@v1
-      #  with:
-      #    name: Release  ${{ github.event.inputs.tags }}
-      #    tag_name: ${{ github.event.inputs.tags }}
-      #    files: dist/*.tar.gz
+      #- name: Upload Release Asset sdist
+      #  if: matrix.cibw_python == 'cp39*'
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   
+      #  run:   gh release upload ${{ github.event.inputs.tags }} dist/*.tar.gz --clobber
+      
+      - name: 'Upload Binary Release Asset'
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release  ${{ github.event.inputs.tags }}
+          tag_name: ${{ github.event.inputs.tags }}
+          prerelease: true
+          draft: true 
+          files: dist/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       
       - uses: actions/checkout@v3
