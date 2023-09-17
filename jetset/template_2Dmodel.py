@@ -308,7 +308,7 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
         if template_name in ['Finke_2010', 'Dominguez_2010_v2011', 'Dominguez_2023','Franceschini_2008']:
 
 
-            if file_path.endswith('fits'):
+            if file_path.endswith('fits') or file_path.endswith('fits.gz'):
                 data = Table.read(file_path,format='fits')
             elif file_path.endswith('dat'):
                 data = Table.read(file_path, format='ascii.ecsv')
