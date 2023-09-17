@@ -59,7 +59,7 @@ requirements:
     - python {{ python }}
     - setuptools"""
 
-f = open("./meta.yaml",'w')
+f = open(".github/conda-pipeline/github/meta.yaml",'w')
 print(_str_start,file=f)
 print( '    - %s'%np_str, file=f)
 
