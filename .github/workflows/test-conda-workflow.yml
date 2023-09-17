@@ -174,7 +174,7 @@ jobs:
           tag_name: ${{ github.event.inputs.tags }}
           files: 'conda-binary/*'
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}\
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #- name: Upload Release Asset
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
