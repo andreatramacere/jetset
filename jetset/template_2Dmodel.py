@@ -212,6 +212,7 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
         )
 
         self.parameters.add_par(ModelParameter(name='scale_factor',
+                                                par_type='scale_factor',
                                                 val=1.0,
                                                 val_min=0,
                                                 val_max=None,
