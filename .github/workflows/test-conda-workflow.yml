@@ -92,23 +92,23 @@ jobs:
         run: |
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
-      - name: 'build '
-        run: |
-          source ~/.bash_profile
-          micromamba activate test-env
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
-          python setup.py clean
-          python setup.py install
-          python setup.py clean
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
+      #- name: 'build '
+      #  run: |
+      #    source ~/.bash_profile
+      #    micromamba activate test-env
+      #    echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
+      #    python setup.py clean
+      #    python setup.py install
+      #    python setup.py clean
+      #    echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
-      - name: 'set pkg version'
-        run: |
-         echo "PKG_VERSION=$(micromamba activate test-env && cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
+      #- name: 'set pkg version'
+      #  run: |
+      #   echo "PKG_VERSION=$(micromamba activate test-env && cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
 
-      - name: 'echo pkg version'
-        run: |
-          echo "PKG_VERSION=${{env.PKG_VERSION}}"
+      #- name: 'echo pkg version'
+      #  run: |
+      #    echo "PKG_VERSION=${{env.PKG_VERSION}}"
       
       - name: 'generate meta.yaml from requirements.txt'
         run: |
@@ -117,9 +117,10 @@ jobs:
           python .github/workflows/requirements_to_conda_yml.py
 
       - name: 'conda build'
-        working-directory: .github/conda-pipeline/github/
+        #working-directory: .github/conda-pipeline/github/
         run: |
           cat meta.yaml
+          cat build.sh
           source ~/.bash_profile
           micromamba activate test-env
           conda config --set anaconda_upload no

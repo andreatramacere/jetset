@@ -1,3 +1,4 @@
+import shutil
 
 _str_end="""
 about:
@@ -58,7 +59,7 @@ requirements:
     - python {{ python }}
     - setuptools"""
 
-f = open(".github/conda-pipeline/github/meta.yaml",'w')
+f = open("./meta.yaml",'w')
 print(_str_start,file=f)
 print( '    - %s'%np_str, file=f)
 
@@ -69,3 +70,5 @@ for pkg_str in pkg_str_list:
     print('    - %s'%pkg_str, file=f)
 print(_str_end,file=f)
 f.close()
+
+shutil.move('.github/conda-pipeline/github/build.sh','./')
