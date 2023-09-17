@@ -161,22 +161,22 @@ jobs:
         with:
           path: wheelhouse/*.whl
   
-      # - name: 'Upload Release Asset'
-      #   if: github.event.inputs.tags != null
-      #   uses: softprops/action-gh-release@v1
-      #   with:
-      #     name: Release  ${{ github.event.inputs.tags }}
-      #     tag_name: ${{ github.event.inputs.tags }}
-      #     files: |
-      #       dist/*.tar.gz
-      #       wheelhouse/*.whl
-      #   env:
-      #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Release Asset
+      - name: 'Upload Binary Release Asset'
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release  ${{ github.event.inputs.tags }}
+          tag_name: ${{ github.event.inputs.tags }}
+          files: |
+              dist/*.tar.gz
+              wheelhouse/*.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: 
-          gh release upload ${{ github.event.inputs.tags }} wheelhouse/*.whl --clobber
+
+      #- name: Upload Release Asset
+      #  
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #  run: 
+      #    gh release upload ${{ github.event.inputs.tags }} wheelhouse/*.whl --clobber
       
       
