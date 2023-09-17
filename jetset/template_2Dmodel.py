@@ -292,7 +292,7 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
         _allowed_templates = ['Finke_2010', 'Dominguez_2010_v2011', 'Dominguez_2023','Franceschini_2008','Franceschini_2017']
 
         if template_name not in _allowed_templates:
-            raise ValueError('template EBL model', template_name, 'not in allowdr',_allowed_templates)
+            raise ValueError('template EBL model', template_name, 'not in allowed',_allowed_templates)
 
         _template_name_dict = {}
 
