@@ -117,12 +117,12 @@ jobs:
           python .github/workflows/requirements_to_conda_yml.py
 
       - name: 'conda build'
-        #working-directory: .github/conda-pipeline/github/
+        working-directory: .github/conda-pipeline/github/
         run: |
-          cat meta.yaml
-          cat build.sh
           source ~/.bash_profile
           micromamba activate test-env
+          cat meta.yaml
+          cat build.sh        
           conda config --set anaconda_upload no
           conda build purge
           echo "building"

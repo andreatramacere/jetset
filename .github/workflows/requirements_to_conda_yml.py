@@ -70,5 +70,3 @@ for pkg_str in pkg_str_list:
     print('    - %s'%pkg_str, file=f)
 print(_str_end,file=f)
 f.close()
-
-shutil.move('.github/conda-pipeline/github/build.sh','./')
