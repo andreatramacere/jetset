@@ -120,12 +120,6 @@ jobs:
          
         run:   gh release upload ${{ github.event.inputs.tags }} dist/*.tar.gz --clobber
       
-      - name: Upload Release Asset sdist tag
-        if: github.event.inputs.git-ref != ''
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: 
-          gh release upload ${{  github.event.inputs.git-ref }} dist/*.tar.gz --clobber
       #- name: 'Upload Binary Release Asset'
       #  uses: softprops/action-gh-release@v1
       #  with:
@@ -189,11 +183,11 @@ jobs:
         run: 
           gh release upload ${{ github.event.inputs.tags }} wheelhouse/*.whl --clobber
         
-      - name: Upload Release Asset whl tag
-        if: github.event.inputs.git-ref != ''
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: 
-          gh release upload ${{  github.event.inputs.git-ref }} wheelhouse/*.whl --clobber
+      #- name: Upload Release Asset whl tag
+      #  if: github.event.inputs.git-ref != ''
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #  run: 
+      #    gh release upload ${{  github.event.inputs.git-ref }} wheelhouse/*.whl --clobber
           
       
