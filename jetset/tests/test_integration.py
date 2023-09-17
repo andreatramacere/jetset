@@ -23,14 +23,14 @@ class TestIntegration(TestBase):
       t=TestJets()
       t.integration_suite()
     
-   #def test_jet_hadronic(self,plot=plot):
-   #   hadronic_func(plot)
+   def test_jet_hadronic(self,plot=plot):
+       hadronic_func(plot)
    #   #t=TestJetHadronic()
    #   #t.test_hadronic_jet(plot=plot)
    
-   #def test_galactic(self,plot=plot):
-   #   t=TestGalactic()
-   #   t.integration_suite(plot=plot)
+   def test_galactic(self,plot=plot):
+      t=TestGalactic()
+      t.integration_suite(plot=plot)
 
    def test_emitters(self,plot=plot):
       t=TestEmitters()
