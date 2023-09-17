@@ -120,7 +120,7 @@ jobs:
       #   
       #  run:   gh release upload ${{ github.event.inputs.tags }} dist/*.tar.gz --clobber
       
-      - name: 'Upload Binary Release Asset'
+      - name: 'Upload Src Release Asset'
         uses: softprops/action-gh-release@v1
         with:
           name: Release  ${{ github.event.inputs.tags }}
