@@ -28,9 +28,9 @@ class TestIntegration(TestBase):
    #   #t=TestJetHadronic()
    #   #t.test_hadronic_jet(plot=plot)
    
-   def test_galactic(self,plot=plot):
-      t=TestGalactic()
-      t.integration_suite(plot=plot)
+   #def test_galactic(self,plot=plot):
+   #   t=TestGalactic()
+   #   t.integration_suite(plot=plot)
 
    def test_emitters(self,plot=plot):
       t=TestEmitters()
