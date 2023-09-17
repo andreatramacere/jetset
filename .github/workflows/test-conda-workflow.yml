@@ -119,6 +119,7 @@ jobs:
       - name: 'conda build'
         working-directory: .github/conda-pipeline/github/
         run: |
+          cat meta.yaml
           source ~/.bash_profile
           micromamba activate test-env
           conda config --set anaconda_upload no
