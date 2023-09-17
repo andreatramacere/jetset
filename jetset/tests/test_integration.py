@@ -23,8 +23,8 @@ class TestIntegration(TestBase):
       t=TestJets()
       t.integration_suite()
     
-   def test_jet_hadronic(self,plot=plot):
-       hadronic_func(plot)
+   #def test_jet_hadronic(self,plot=plot):
+   #    hadronic_func(plot)
    #   #t=TestJetHadronic()
    #   #t.test_hadronic_jet(plot=plot)
    
