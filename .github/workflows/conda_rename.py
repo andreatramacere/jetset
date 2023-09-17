@@ -8,7 +8,7 @@ if platform.system()=='Darwin':
 else:
     system_str = 'linux'
 
-new_name=name.replace('.tar.bz2','_%s.tar.bz2'%system_str)
+new_name=name.replace('.tar.bz2','_conda_%s.tar.bz2'%system_str)
 
 shutil.move(name,new_name)
 
