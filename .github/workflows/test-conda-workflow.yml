@@ -154,8 +154,11 @@ jobs:
           echo $(running tests!)
           source ~/.bash_profile
           micromamba activate test-env
-          pytest  --pyargs  -vvv jetset.tests.test_jet_model
+          pytest  --pyargs -vvv jetset.tests.test_jet_model
+          pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
+        env:
+          WF_ENV: CONDA
           
       
       - name: 'prepare asset'
