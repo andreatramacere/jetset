@@ -1,5 +1,5 @@
 import pytest
-import sys
+import os
 from .base_class import TestBase
 
 from .test_mcmc import TestEmcee
