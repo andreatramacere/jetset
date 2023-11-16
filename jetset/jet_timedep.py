@@ -14,7 +14,6 @@ import  ast
 import copy
 import dill as pickle
 
-
 from tqdm.auto import tqdm
 
 import threading
@@ -22,7 +21,7 @@ import threading
 from astropy import constants as const
 
 from .model_parameters import _show_table
-
+from .jet_tools import clean_numba
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if on_rtd == True:
@@ -47,7 +46,7 @@ from .model_manager import FitModel
 from .plot_sedfit import  BasePlot,PlotPdistr,PlotTempEvDiagram,PlotTempEvEmitters, PlotSED
 
 
-__all__=['JetTimeEvol','TimeEmittersDistribution', 'TimeEvolvingRegion']
+__all__=['JetTimeEvol','TimeEmittersDistribution', 'TimeEvolvingRegion','merge_lcs']
 
 
 class ProgressBarTempEV(object):
@@ -406,7 +405,7 @@ class TimeEvolvingRegion(object):
                 use_cached=False,
                 R=None,
                 name=None,
-                density=False):
+                density_mono_chromatic=False):
 
         beaming = self.jet.get_beaming()
 
@@ -461,15 +460,15 @@ class TimeEvolvingRegion(object):
             else:
                 raise RuntimeError('rest frame must be src or obs or blob')
 
-            if density is True:
-                y= y/x
-            
             if nu2 is None:
-                flux_array[ID] = y.value[0]
+                if density_mono_chromatic is True:
+                    flux_array[ID] = y.value[0]
+                else:
+                    flux_array[ID] = y.value[0]*nu1
             else:
                 flux_array[ID] = np.trapz(y.value, x.value)
 
-        if density is True:
+        if density_mono_chromatic is True:
             un=Unit('erg s-1 cm-2 Hz-1')
         else:
              un=Unit('erg s-1 cm-2')
@@ -479,46 +478,46 @@ class TimeEvolvingRegion(object):
         meta_dict['no_corss_time_duration']=(time_array_out[-1]-time_array_out[0])*Unit('s')
         meta_dict['cross_time_applied']=False
         
-        t_cr = np.copy(time_array_out)
+        t_blob = np.copy(time_array_out)
         if frame == 'src':
-            t_cr_blob = self.time_sampled_emitters._time_src_to_blob(t_cr)
+            t_blob = self.time_sampled_emitters._time_src_to_blob(t_blob)
         if frame == 'obs':
-            t_cr_blob = self.time_sampled_emitters._time_obs_to_blob(t_cr)
+            t_blob = self.time_sampled_emitters._time_obs_to_blob(t_blob)
         
         if R is None:
-            R_blob = np.zeros(np.size(t_cr_blob))
-            for ID,_t in enumerate(t_cr_blob):
-                R_blob[ID] = self.temp_ev._get_R_rad_sphere(t_cr_blob[ID])
+            R_blob = np.zeros(np.size(t_blob))
+            for ID,_t in enumerate(t_blob):
+                R_blob[ID] = self.temp_ev._get_R_rad_sphere(t_blob[ID])
         elif np.iscalar(R):
-                R_blob=np.ones(t_cr_blob.size)*R
+                R_blob=np.ones(t_blob.size)*R
         else:
-            if np.shape(R)!=np.shape(t_cr_blob):
-                raise RuntimeError('R must be a scalar or match the shape of t_blob:',t_cr_blob.shape,'current R shape',np.shape(R))  
+            if np.shape(R)!=np.shape(t_blob):
+                raise RuntimeError('R must be a scalar or match the shape of t_blob:',t_blob.shape,'current R shape',np.shape(R))  
 
         if eval_cross_time is True:
             meta_dict['cross_time_applied']=True
-            flux_array_out,t_cr_blob = self.eval_R_cross_time(t_cr_blob, flux_array_out,R=R_blob, n_slices=cross_time_slices)
+            flux_array_out,t_blob = self.eval_R_cross_time(t_blob, flux_array_out,R=R_blob, n_slices=cross_time_slices)
             
-            R_blob = np.zeros(np.size(t_cr_blob))
+            R_blob = np.zeros(np.size(t_blob))
             
-            for ID,_t in enumerate(t_cr_blob):
-                R_blob[ID] = self.temp_ev._get_R_rad_sphere(t_cr_blob[ID])
+            for ID,_t in enumerate(t_blob):
+                R_blob[ID] = self.temp_ev._get_R_rad_sphere(t_blob[ID])
             if frame == 'src':
-                time_array_out = self.time_sampled_emitters._time_blob_to_src(t_cr_blob)
+                time_array_out = self.time_sampled_emitters._time_blob_to_src(t_blob)
             if frame == 'obs':
-                time_array_out = self.time_sampled_emitters._time_blob_to_obs(t_cr_blob)
+                time_array_out = self.time_sampled_emitters._time_blob_to_obs(t_blob)
             
-            meta_dict['cross_time_applied']=False
             
 
         meta_dict['duration']=(time_array_out[-1]-time_array_out[0])*Unit('s')
-        
+        meta_dict['frame']=frame
+        meta_dict['merged']=False
         columns=[time_array_out * Unit('s'), flux_array_out * un]
         names=['time', 'flux']
         
         columns.append(R_blob*Unit('cm'))
         names.append('R_blob')
-        columns.append(t_cr_blob*Unit('s'))
+        columns.append(t_blob*Unit('s'))
         names.append('t_blob')
 
         return Table(columns, names=names, meta=meta_dict)
@@ -774,7 +773,10 @@ class JetTimeEvol(object):
         _model['internals']={}
         #_model['internals']['_jet_rad']=self._jet_rad
         #_model['internals']['_jet_acc'] = self._jet_acc
-        _model['internals']['Q_inj'] = self.Q_inj
+        Q_inj=copy.deepcopy(self.Q_inj)
+        if Q_inj is not None:
+            clean_numba(Q_inj)
+        _model['internals']['Q_inj'] = Q_inj
         _model['internals']['_custom_q_jnj_profile'] = self._custom_q_jnj_profile
         _model['internals']['_custom_acc_profile'] = self._custom_acc_profile
         _model['internals']['_only_radiation'] = self._only_radiation
@@ -812,7 +814,6 @@ class JetTimeEvol(object):
         self.parameters = JetModelParameterArray(model=self)
         temp_ev_dict = self._build_par_dict()
         self.parameters.add_par_from_dict(temp_ev_dict, self, '_temp_ev', JetParameter)
-
         _par_dict = _model['pars']
         _non_user_dict={}
         _user_dict={}
@@ -831,7 +832,11 @@ class JetTimeEvol(object):
         for k in _par_dict.keys():
             #print('k,v',k,v)
             setattr(self,k,_par_dict[str(k)])
-
+        #if self.Q_inj is not None:
+        #    try:
+        #        self.Q_inj._activate_numba()
+        #    except:
+        #        pass
     def save_model(self, file_name):
 
         pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
@@ -865,8 +870,9 @@ class JetTimeEvol(object):
 
         self.temp_ev.R_H_rad_start = self.parameters.R_H_rad_start.val
         self._init_temp_ev()
-        self._custom_q_jnj_profile=None
-        self._custom_acc_profile=None
+        #self._custom_q_jnj_profile=None
+        #self._custom_acc_profile=None
+
         self._set_inj_time_profile(user_defined_array=self._custom_q_jnj_profile)
         self._set_acc_time_profile(user_defined_array=self._custom_acc_profile)
         self._fill_temp_ev_array_pre_run()
@@ -907,6 +913,7 @@ class JetTimeEvol(object):
             do_injection=2
         elif self._only_radiation is False and do_injection is True:
             do_injection=1
+        print('->',do_injection,only_injection,self.acc_region)
         if self.acc_region is not None:
             BlazarSED.Run_temp_evolution(self.rad_region.jet._blob, self.acc_region.jet._blob, self._temp_ev, int(only_injection), int(do_injection))
         else:
@@ -1198,8 +1205,8 @@ class JetTimeEvol(object):
     def _set_inj_time_profile(self,user_defined_array=None):
         if user_defined_array is None:
             self._custom_q_jnj_profile = np.zeros(self.parameters.t_size.val, dtype=np.double)
-            msk= self.time_steps_array >= self._temp_ev.TStart_Inj
-            msk*= self.time_steps_array <= self._temp_ev.TStop_Inj
+            msk= self.time_steps_array > self._temp_ev.TStart_Inj
+            msk*= self.time_steps_array < self._temp_ev.TStop_Inj
             self._custom_q_jnj_profile[msk] = 1.0
         else:
             if np.shape(user_defined_array)!=(self.parameters.t_size.val,):
@@ -1211,8 +1218,8 @@ class JetTimeEvol(object):
 
         if user_defined_array is None and self._only_radiation is False:
             self._custom_acc_profile = np.zeros(self._temp_ev.T_SIZE, dtype=np.double)
-            msk= self.time_steps_array >= self._temp_ev.TStart_Acc
-            msk*= self.time_steps_array <= self._temp_ev.TStop_Acc
+            msk= self.time_steps_array > self._temp_ev.TStart_Acc
+            msk*= self.time_steps_array < self._temp_ev.TStop_Acc
             self._custom_acc_profile[msk] = 1.0
         elif user_defined_array is not None and self._only_radiation is False:
             if np.shape(user_defined_array)!=(self.parameters.t_size.val,):
@@ -1701,3 +1708,78 @@ class JetTimeEvol(object):
                                                         val=1E39)
 
         return model_dict_temp_ev
+
+
+def merge_lcs(lcs,delta_t=None,sorted=True,name=''):
+    """This function merges two or more lightcurves, the lightcurves
+    must thave the same `frame` and the same crossing time application
+
+    Parameters
+    ----------
+    lcs : list
+        list of lightcurves to merge
+    delta_t : float, optional
+        the binning for the merged lightcurve, if None, the binning of the first lightcurve will be used, by default None
+    sorted : bool, optional
+       if the lightcurves in the list have their position time ordered, by default True
+    name : str, optional
+        the name of the merged lightcurve, by default ''
+
+    Returns
+    -------
+    astropy.table
+       the table storing the merged ligthcurve
+
+    Raises
+    ------
+    RuntimeError
+        _description_
+    """
+    
+    try:
+        assert( all(l.meta['cross_time_applied']==lcs[0].meta['cross_time_applied'] for l in lcs))
+        assert( all(l.meta['frame']==lcs[0].meta['frame'] for l in lcs))
+    except:
+        raise RuntimeError('all lcs must have same frame and same crossing time application')
+    if sorted is True:
+        first_lc_id=0
+        t_min=lcs[first_lc_id]['time'].min()
+    else:
+        t_min=np.min([l['time'].min() for l in lcs])
+        first_lc_id=np.argmin([l['time'].min() for l in lcs])
+    
+    first_lc=lcs[first_lc_id]
+   
+    t_offset=first_lc.meta['no_corss_time_duration']
+    if delta_t is None:
+        delta_t=first_lc['time'][1]-first_lc['time'][0]
+    t_offset+=delta_t*first_lc['time'].unit*0.5
+    
+    t_max=np.sum([l['time'].max() for l in lcs])
+    t_range=np.arange(t_min,t_max,delta_t)*Unit('s')
+    y=np.zeros(t_range.shape)*first_lc['flux'].unit
+    t_blob= np.zeros(t_range.shape)*first_lc['t_blob'].unit
+    R_blob=np.zeros(t_range.shape)*first_lc['R_blob'].unit
+     
+    for ID,lc in enumerate(lcs):
+        if ID==first_lc_id:
+            _t_off=0
+        else:
+            _t_off=t_offset.value
+          
+        y+=np.interp(t_range.value,lc['time'].value+_t_off,lc['flux'].value,left=0,right=0)*lcs[first_lc_id]['flux'].unit
+        t_blob+=np.interp(t_range.value,lc['time'].value+_t_off,lc['t_blob'].value,left=0,right=0)*lcs[first_lc_id]['t_blob'].unit
+        R_blob+=np.interp(t_range.value,lc['time'].value+_t_off,lc['R_blob'].value,left=0,right=0)*lcs[first_lc_id]['R_blob'].unit
+
+    meta_dict={}
+    meta_dict['duration']=(t_range[-1]-t_range[0])*Unit('s')
+        
+    columns=[t_range,y,t_blob,R_blob]
+    names=['time', 'flux','t_blob','R_blob']
+    meta_dict['merged']=True
+    meta_dict['cross_time_applied']=True
+    meta_dict['name']=name
+
+
+    return Table(columns, names=names, meta=meta_dict)
+   
