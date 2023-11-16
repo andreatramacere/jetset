@@ -2,6 +2,7 @@ __author__ = "Andrea Tramacere"
 
 from astropy.units import  Unit as u
 from astropy import cosmology 
+from astropy.cosmology import Cosmology
 
 __all__=['Cosmo']
 
@@ -45,7 +46,7 @@ class  Cosmo (object):
 
             s= 'cosmology is not defined, the luminosity distance has been set to %s'%x
         else:
-            s='you have to define either an astropy comoslogy model or set a luminosity distance in cm'
+            s='you have to define either an astropy cosmology model or set a luminosity distance in cm'
 
         return s
 
@@ -64,6 +65,25 @@ class  Cosmo (object):
 
         return _d
     
+    def _serialize_model(self):
+        _model = {}
+        _model['_c']=self._c.to_format('yaml')
+        _model['_DL_cm'] = self._DL_cm
+        return   _model 
+       
+    def __getstate__(self):
+        return  self._serialize_model()
+
+    def __setstate__(self,state):
+        astropy_cosmo=None
+        DL_cm=None
+        if '_c' in state.keys():
+           astropy_cosmo=Cosmology.from_format(state['_c'], format='yaml')
+        if '_DL_cm' in state.keys():
+            DL_cm=state['_DL_cm']
+        self.__init__(astropy_cosmo=astropy_cosmo,DL_cm=DL_cm)
+        
+
     
 
 
