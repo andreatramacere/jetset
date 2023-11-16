@@ -3,6 +3,8 @@ __author__ = "Andrea Tramacere"
 import os
 import numpy as np
 from inspect import signature
+from numba import njit
+import copy
 from astropy.constants import m_e,m_p,c
 from scipy import interpolate
 from .jetkernel_models_dic import gamma_dic_e ,gamma_dic_p, gamma_dic_pp_e_second, available_N_distr, N_distr_descr, available_emitters_type
@@ -110,9 +112,10 @@ class BaseEmittersDistribution(object):
                                                log=log,))
 
     def set_distr_func(self,distr_func):
+        
         if distr_func is not None:
             self._validate_func(distr_func)
-        self.distr_func = distr_func
+        self.distr_func=distr_func
 
     def _validate_func(self,distr_func):
         s=signature(distr_func)
@@ -617,8 +620,9 @@ class EmittersDistribution(BaseEmittersDistribution):
             self.gamma_cooling_eq_second= self._jet._blob.gamma_cooling_eq
             self._secondaries_done = True
 
-
-
+    def _activate_numba(self):
+        self._py_distr_func=copy.deepcopy(self.distr_func)
+        self.distr_func = njit(self.distr_func,fastmath=True, cache=False)
 
 class EmittersArrayDistribution(EmittersDistribution):
     def __init__(self,
@@ -668,6 +672,8 @@ class EmittersArrayDistribution(EmittersDistribution):
 
         return y
 
+    def _activate_numba(self):
+        pass
 
 class InjEmittersDistribution(BaseEmittersDistribution):
 
@@ -751,6 +757,9 @@ class InjEmittersDistribution(BaseEmittersDistribution):
         self.e_gamma_ptr = getattr(self._temp_ev, self._gammae_name)
         self._Q_inj_e_second_ptr = getattr(self._temp_ev._blob, self._Q_inj_e_second_name)
 
+    def _activate_numba(self):
+        self._py_distr_func=copy.deepcopy(self.distr_func)
+        self.distr_func = njit(self.distr_func,fastmath=True, cache=False)
 
 
 class InjEmittersArrayDistribution(InjEmittersDistribution):
@@ -796,6 +805,9 @@ class InjEmittersArrayDistribution(InjEmittersDistribution):
         y[msk_nan] = 0
 
         return y
+    
+    def _activate_numba(self):
+        pass
 
 
 

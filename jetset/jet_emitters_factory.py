@@ -1,7 +1,6 @@
 __author__ = "Andrea Tramacere"
 
 import numpy as np
-import numba as nb
 import pprint
 from jetset.jet_emitters import EmittersDistribution, InjEmittersDistribution
 __all__=['EmittersFactory']
@@ -15,7 +14,6 @@ _available_dict = {'lp': 'log-parabola',
                    'superexp': 'powerlaw with super-exp cut-off'}
 
 
-@nb.njit(fastmath=True, cache=True)
 def distr_func_bkn(gamma_break, gamma, p, p_1):
     f = np.zeros(gamma.shape)
     m = gamma < gamma_break
@@ -24,32 +22,24 @@ def distr_func_bkn(gamma_break, gamma, p, p_1):
     return f
 
 
-@nb.njit(fastmath=True, cache=True)
 def distr_func_pl(gamma, p, ):
     return np.power(gamma, -p)
 
 
-@nb.njit(fastmath=True, cache=True)
 def distr_func_plc(gamma, gamma_cut, p,):
     return np.power(gamma, -p) * np.exp(-(gamma / gamma_cut) )
 
 
-@nb.njit(fastmath=True, cache=True)
 def distr_func_super_exp(gamma, gamma_cut, p, a):
     return np.power(gamma, -p) * np.exp(-(1 / a) * (gamma / gamma_cut) ** a)
 
-
-@nb.njit(fastmath=True, cache=True)
 def distr_func_lp(gamma, gamma0_log_parab, r, s):
     return np.power((gamma / gamma0_log_parab), (-s - r * np.log10(gamma / gamma0_log_parab)))
 
 
-@nb.njit(fastmath=True, cache=True)
 def distr_func_lep(gamma, gamma_p, r):
     return np.power(10., (-r * np.power(np.log10(gamma / gamma_p), 2)))
 
-
-@nb.njit(fastmath=True, cache=True)
 def distr_func_lppl(gamma, gamma0_log_parab, r, s):
     f = np.zeros(gamma.shape)
     m = gamma < gamma0_log_parab
