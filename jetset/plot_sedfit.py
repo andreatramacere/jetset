@@ -343,7 +343,7 @@ class  PlotSED (object):
         for h in _handles[:]:
             if h._label is  None:
                 _handles.remove(h)
-            elif h._label.startswith('_line'):
+            elif h._label.startswith('_'):
                 _handles.remove(h)
             else:
                  pass
