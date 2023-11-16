@@ -50,7 +50,9 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
     double delta_log;
     double log_a, log_b;
 
-
+    pt_spec_rad->B=pt_ev->B_rad;
+    pt_spec_rad->R=pt_ev->R_rad_start;
+    pt_spec_acc->B=pt_ev->B_acc;
     pt_ev->t_unit_rad = (pt_ev->R_rad_start / vluce_cm);
     pt_ev->t_unit_acc = (pt_ev->Delta_R_acc / vluce_cm);
 
@@ -346,8 +348,8 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     pt_spec_rad->B=pt_ev->B_rad;
     pt_spec_rad->R=pt_ev->R_rad_start;
     pt_spec_acc->B=pt_ev->B_acc;
-    InitRadiative(pt_spec_acc);
-    InitRadiative(pt_spec_rad);
+    InitRadiative(pt_spec_acc,1);
+    InitRadiative(pt_spec_rad,1);
     pt_ev->R_H_jet_t=pt_ev->R_H_rad_start;
     pt_ev->R_jet_t=pt_ev->R_rad_start;
     exp_factor=1.0;
@@ -379,9 +381,10 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         pt_ev->t=t;
         E_acc_pre=eval_E_acc(pt_ev->gamma, N_acc, E_SIZE, Vol_acc);
         
-        // Evolve ACC Region
+       
         if (do_injection>0){
             
+            // Evolve ACC Region and inj into radiative
             if (do_injection==1){
                 time_evolve_emitters(pt_spec_acc,pt_ev,1,t,T,E_SIZE,E_N_SIZE,E_acc,pt_ev->T_esc_acc,N_escaped,N_acc,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
                 //--------------UPDATE ACC ENERGY--------------------
@@ -397,8 +400,10 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
                 for (TMP = 0; TMP < E_SIZE; TMP++) { 
                     N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]))*Vol_acc/pt_spec_rad->Vol_region;
                 }
+            //Only inject into radiative
             }else{
                 for (TMP = 0; TMP < E_SIZE; TMP++) { 
+                    //NOTE: fix pt_spec_acc->Vol_region to match exactly pt_spec_rad->Vol_region a T0
                     N_escaped[TMP] = pt_ev->deltat * pt_ev->Q_inj[TMP] * pt_ev->T_inj_profile[T]*pt_spec_acc->Vol_region/pt_spec_rad->Vol_region;
                     N_acc[TMP]=N_escaped[TMP];
                 }
@@ -424,6 +429,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
                 t_esc=f_Tesc(x[TMP], pt_ev->T_esc_Coeff_rad, pt_ev->Esc_Index_rad);
                 pt_ev->T_esc_rad[TMP] = t_esc;
                 if (t>=pt_ev->t_jet_exp){
+                    //t_ad_esc=1/((1/t_ad)+(1/t_esc));
                     t_ad_esc =(t_ad*t_esc)/(t_esc+t_ad);
                     pt_ev->T_esc_rad[TMP] = t_ad_esc;
                     //N_rad[TMP] = N_rad[TMP]*exp_factor;
@@ -566,7 +572,7 @@ double update_jet_expansion(struct blob *pt_spec, struct temp_ev *pt_ev, double 
     pt_spec->B=pt_ev->B_t;
     pt_spec->R=pt_ev->R_jet_t;
     pt_spec->R_H=pt_ev->R_H_jet_t;
-    InitRadiative(pt_spec);
+    InitRadiative(pt_spec,pt_ev->do_Compton_cooling);
     //if (pt_ev->R_H_jet_t>pt_ev->R_H_jet_exp){ 
     //    T_adiab=3*Adiabatic_Cooling_time(pt_ev,pt_spec,pt_ev->R_jet_t);
     //}else{
