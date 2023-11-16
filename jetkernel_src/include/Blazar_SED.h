@@ -919,7 +919,7 @@ struct blob MakeBlob( void );
 //void MakeNe(struct spettro *pt_base);
 struct temp_ev MakeTempEv( void);
 void Init(struct blob *pt, double luminosity_distance);
-void InitRadiative(struct blob *pt_base);
+void InitRadiative(struct blob *pt_base, unsigned int update_EC);
 
 //void build_photons(struct spettro *pt_base);
 //void alloc_photons(double ** pt,int size);

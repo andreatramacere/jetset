@@ -372,7 +372,7 @@ void set_seed_freq_start(struct blob *pt_base){
 
 
 //=========================================================================================
-void InitRadiative(struct blob *pt_base){
+void InitRadiative(struct blob *pt_base,unsigned int update_EC){
     //========================================================
     // Geometry Setup
     //========================================================
@@ -442,10 +442,12 @@ void InitRadiative(struct blob *pt_base){
     //========================================================
     pt_base->R_H_orig=pt_base->R_H;
     pt_base->EC_stat_orig = pt_base->EC_stat;
-    if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1 || pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1 || pt_base->do_EC_CMB == 1 || pt_base->do_Disk==1 || pt_base->do_DT==1 || pt_base->do_Star==1) 
-        {
-            spectra_External_Fields(1, pt_base, 1);
+    if (update_EC>0){
+        if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1 || pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1 || pt_base->do_EC_CMB == 1 || pt_base->do_Disk==1 || pt_base->do_DT==1 || pt_base->do_Star==1) 
+            {
+                spectra_External_Fields(1, pt_base, 1);
         }
+    }
     //========================================================
 
 }
@@ -531,7 +533,7 @@ void Init(struct blob *pt_base, double luminosity_distance) {
     pt_base->OUT_FILE = 1;
 
 
-    InitRadiative(pt_base);
+    InitRadiative(pt_base,1);
     pt_base->R_Sw = eval_R_Sw(pt_base->M_BH);
     pt_base->R_ext = pt_base->R_ext_Sw * pt_base->R_Sw;
 
