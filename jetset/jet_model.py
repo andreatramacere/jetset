@@ -215,7 +215,8 @@ class JetBase(Model):
             _model['emitters_distribution_class']='JetkernelEmittersDistribution'
         elif isinstance(self.emitters_distribution,EmittersDistribution):
             self._original_emitters_distr._copy_from_jet(self)
-            _model['custom_emitters_distribution'] =self._original_emitters_distr
+            _model['custom_emitters_distribution']=self._original_emitters_distr
+            clean_numba(_model['custom_emitters_distribution'])
             _model['emitters_distribution_class'] = 'EmittersDistribution'
         else:
             raise  RuntimeError('emitters distribution type not valid',type(self._emitters_distribution))
@@ -641,6 +642,8 @@ class JetBase(Model):
 
 
         elif isinstance(distr, EmittersDistribution):
+            if hasattr(distr,'_activate_numba'):
+                distr._activate_numba()
             self._original_emitters_distr = distr
             self.emitters_distribution = copy.deepcopy(distr)
             self._update_emitters_pars_dependence()
@@ -656,6 +659,8 @@ class JetBase(Model):
         elif isinstance(distr, str):
             nf=EmittersFactory()
             self.emitters_distribution = nf.create_emitters(distr, log_values=log_values, emitters_type=emitters_type)
+            if hasattr( self.emitters_distribution,'_activate_numba'):
+                self.emitters_distribution._activate_numba()
             self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
@@ -1351,7 +1356,7 @@ class JetBase(Model):
     @safe_run
     def set_external_fields(self):
         self.set_blob()
-        BlazarSED.spectra_External_Fields(1,self._blob)
+        BlazarSED.spectra_External_Fields(1,self._blob,1)
 
     def lin_func(self, lin_nu, init, phys_output=False, update_emitters=True):
         if self.emitters_distribution is None:
