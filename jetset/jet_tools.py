@@ -2,6 +2,7 @@ __author__ = "Andrea Tramacere"
 
 import os
 import numpy as np
+import copy
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if on_rtd == True:
@@ -17,7 +18,7 @@ from .jetkernel_models_dic import allowed_disk_type
 from .jet_paramters import *
 
 
-__all__=[ 'build_emitting_region_dict','build_ExtFields_dic','BLR_constraints','DT_constraints']
+__all__=[ 'build_emitting_region_dict','build_ExtFields_dic','BLR_constraints','DT_constraints','clean_numba']
 
 
 
@@ -147,3 +148,8 @@ def build_ExtFields_dic(EC_model_list,disk_type ):
     #print('----->', model_dic)
     return model_dic
     
+def clean_numba(distr):
+    if hasattr(distr,'_py_distr_func'):
+        setattr(distr,'distr_func',copy.deepcopy(distr._py_distr_func))
+    elif hasattr(distr.distr_func,'py_func'):
+        setattr(distr,'distr_func',copy.deepcopy(distr.distr_func.py_func))
