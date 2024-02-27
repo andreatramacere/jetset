@@ -556,10 +556,6 @@ void  * eval_j_EC(void *data){
 		if (thread_args->blob_pt->EC_stat == 1){
 			//in this case we have q_comp in the disk frame, so j_nu is in the disk rest frame
 			//and we have to use also the scattered nu in the disk rest frame
-
-			//now we go back to the blob
-			//this is the j_nu in the blob frame at nu_blob
-			//evaluated from j_disk at nu_disk
 			thread_args->blob_pt->j_EC[NU_INT]=thread_args->blob_pt->q_comp[NU_INT]*HPLANCK*thread_args->nu_array[NU_INT]*thread_args->blob_pt->beam_obj;
 		}
 		else{
