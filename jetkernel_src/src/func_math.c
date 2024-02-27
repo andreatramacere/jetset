@@ -360,7 +360,7 @@ double trapzd_array_arbritary_grid( double *x, double *y, unsigned int SIZE)
     I = 0;
     x1 = x[0];
     y1 =y[0];
-    for (INDEX = 1; INDEX <= SIZE; INDEX++)
+    for (INDEX = 1; INDEX < SIZE; INDEX++)
     {
         x2 = x[INDEX];
         y2 = y[INDEX];
