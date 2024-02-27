@@ -234,7 +234,7 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
 
 
 double f_compton_bulk(struct blob *pt_K1, double g, double nu_IC_out, double nu_IC_in_1, double nu_IC_in_2) {
-    double cost, rate,k,g2;
+    double cost, rate;
     rate=0;
     if (nu_IC_out >=  nu_IC_in_1 &&  nu_IC_out <nu_IC_in_2) {
         cost = pt_K1->COST_IC_K1/nu_IC_in_1;
@@ -358,23 +358,19 @@ void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int 
 // the [sterad-1] comes from n_seed
 //=========================================================================================
 double integrale_IC( struct blob * pt, double a, double b, int stat_frame, double nu_IC_out) {
-    double nu1, nu2, integr_gamma, integr_nu, nu_seed_max_EC, x2, cos_psi, nu_IC_in;
+    double integr_nu, nu_IC_in;
     //double test,test1,test2,N,N_IC,N_IC_1;
     //int negative;
     //double g2, g1, y_g1, y_g2, y_g3,delta_g;
-    double y_nu1, y_nu2;
-    double  delta_nu;
     unsigned int ID,ID_gamma;
-    double *Integrand_over_gamma_grid, *Ne_IC, *griglia_gamma_Ne_log_IC;
-    //double (*pf_K1) (struct blob *, double x);
+    double *Integrand_over_gamma_grid, *Ne_IC, *griglia_gamma_Ne_log_IC, *integr_gamma;
     Integrand_over_gamma_grid = (double *) calloc(pt->gamma_grid_size, sizeof (double));
     griglia_gamma_Ne_log_IC =  (double *) calloc(pt->gamma_grid_size, sizeof (double));
+    integr_gamma = (double *) calloc(pt->nu_seed_size, sizeof (double));
     Ne_IC = (double *) calloc(pt->gamma_grid_size, sizeof (double));
-    //pf_K1 = &f_compton_K1;
     double ic_kernel;
-    integr_gamma = 0.0;
     integr_nu = 0.0;
-    ID = 0;
+   
 
    
     //g = pt->gmin_griglia;
@@ -385,8 +381,10 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame, doubl
     //this must stay even if adaptive binning is set to 0!
     set_N_distr_for_Compton(pt, b, nu_IC_out, stat_frame, Ne_IC, griglia_gamma_Ne_log_IC);
 
+    ID = 0;
     while (pt->nu_seed[ID] < a && ID<pt->nu_seed_size) {
         ID++;
+        integr_gamma[ID]=0.;
     }
 
     if (pt->verbose>1) {
@@ -395,57 +393,37 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame, doubl
         printf("nu=%e a=%e b=%e  g_min_grid=%e g_max_grid=%e\n", pt->nu_seed[ID], a, b, griglia_gamma_Ne_log_IC[0], griglia_gamma_Ne_log_IC[pt->gamma_grid_size - 1]);
     }
 
-    nu1=0.;
-    y_nu1=0.;
-    if (ID<pt->nu_seed_size){
-        nu1 = pt->nu_seed[ID];
-        y_nu1 = pt->n_seed[ID];
-    }
-    
-    //Integration ove freq
-    while (pt->nu_seed[ID + 1] <= b && pt->nu_seed[ID + 1] >= a && ID<pt->nu_seed_size-1) {
-      
-        nu_IC_in= pt->nu_seed[ID];
+    for (ID=0; ID<pt->nu_seed_size; ID++){
+        if (pt->nu_seed[ID] <= b && pt->nu_seed[ID] >= a){
+            nu_IC_in= pt->nu_seed[ID];
 
-        //Integration over electron Lorentz factor
-             
-        for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
-            if (pt->bulk_compton == 0){
-                ic_kernel=f_compton_K1(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out, nu_IC_in);
-            }else{
-                ic_kernel=f_compton_bulk(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out,  pt->nu_seed[ID], pt->nu_seed[ID+1]);
+            //Integration over electron Lorentz factor
+            for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
+                if (pt->bulk_compton == 0){
+                    ic_kernel=f_compton_K1(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out, nu_IC_in);
+                }else{
+                    ic_kernel=f_compton_bulk(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out,  pt->nu_seed[ID], pt->nu_seed[ID+1]);
+                }
+                Integrand_over_gamma_grid[ID_gamma] =ic_kernel * Ne_IC[ID_gamma];
+                
             }
-            Integrand_over_gamma_grid[ID_gamma] =ic_kernel * Ne_IC[ID_gamma];
-            
+            integr_gamma[ID]= pt->n_seed[ID]*integr_simp_grid_equilog(griglia_gamma_Ne_log_IC, Integrand_over_gamma_grid, pt->gamma_grid_size);
+
+        }else{
+            integr_gamma[ID]=0;
         }
-        
-        
-        integr_gamma= integr_simp_grid_equilog(griglia_gamma_Ne_log_IC, Integrand_over_gamma_grid, pt->gamma_grid_size);
-        
-
-        //Integration over seed photons number density
-        nu2 = pt->nu_seed[ID + 1];
-        y_nu2 = pt->n_seed[ID + 1];
-        delta_nu = nu2 - nu1;
-
-        integr_nu += (y_nu2 + y_nu1) * delta_nu * (integr_gamma);
-        nu1 = nu2;
-        y_nu1 = y_nu2;
-        ID++;
     }
-
-    //pt->gmin_griglia=g;
+    integr_nu=trapzd_array_arbritary_grid( pt->nu_seed,integr_gamma, pt->nu_seed_size);
 
     //============================================================
     //0.75 fattore di correzione di GOULD
     //has been moved to spetto_sincrotrone.c
-
-    //lo 0.5 viene dalla regola del trapezio dell'integrale in nu
     //============================================================
     free(Integrand_over_gamma_grid);
     free(Ne_IC);
     free(griglia_gamma_Ne_log_IC);
-    return (integr_nu * 0.5);
+    free(integr_gamma);
+    return integr_nu;
 }
 //=========================================================================================
 
