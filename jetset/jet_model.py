@@ -233,7 +233,6 @@ class JetBase(Model):
         _model['EC_components_name'] = self.EC_components_list
         _model['basic_components_name'] = self.basic_components_list
         _model['cosmo'] = self.cosmo
-
         _model['pars'] = {}
         _model['pars']=self.parameters._serialize_pars()
 
@@ -247,17 +246,26 @@ class JetBase(Model):
         _model['internal_pars']['Norm_distr'] = self.Norm_distr
         return _model
 
-    def save_model(self,file_name):
-        f = io.StringIO()
-        with redirect_stdout(f):
-            pickle.dump(self._serialize_model(), open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+    def save_model(self,file_name, use_json=False):
+        if use_json is False:
+            f = io.StringIO()
+            with redirect_stdout(f):
+                pickle.dump(self._serialize_model(), open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+        else:
+            with open(file_name, 'w') as out_file:
+                 json.dump(self._serialize_model(), out_file)
+
       
 
     @classmethod
     @safe_run
-    def load_model(cls, file_name):
+    def load_model(cls, file_name, use_json=False):
         try:
-            _model = pickle.load(open(file_name, "rb"))
+            if use_json is False:
+                _model = pickle.load(open(file_name, "rb"))
+            else:
+                with open(file_name) as model_file:
+                    _model = json.load(model_file)        
         except Exception as e:
             raise RuntimeError('The model you loaded is not valid please check the file name', e)
 

@@ -13,17 +13,22 @@ class  Cosmo (object):
     def __init__(self,astropy_cosmo=None,DL_cm=None,verbose=False):
 
         _c = None
+        self._c_name=None
 
         if DL_cm is not None and astropy_cosmo is not None:
             raise  RuntimeError('Either you provide an astropy cosmology objet, or luminosity distance in cm, or nothing')
 
-        elif astropy_cosmo is None and DL_cm is None:
-           
+        elif  astropy_cosmo is None and DL_cm is None:
             _c = cosmology.Planck13
+            self._c_name='Planck13'
 
         elif astropy_cosmo is not None and DL_cm is None:
 
-            _c = astropy_cosmo
+            if hasattr(cosmology,astropy_cosmo):
+                _c = getattr(cosmology,astropy_cosmo)
+                self._c_name=astropy_cosmo
+            else:
+                raise RuntimeError(f'module {astropy_cosmo} not present in astropy.cosmology')
 
         elif astropy_cosmo is None and DL_cm is not None:
 
@@ -67,18 +72,29 @@ class  Cosmo (object):
     
     def _serialize_model(self):
         _model = {}
-        _model['_c']=self._c.to_format('yaml')
+        _model['_astropy_cosmo']=self._c_name
         _model['_DL_cm'] = self._DL_cm
         return   _model 
-       
+
+    @classmethod
+    def from_model(cls,model):
+        DL_cm=None
+        astropy_cosmo=None
+        if '_astropy_cosmo' in model.keys():
+           astropy_cosmo=model['_astropy_cosmo']
+        if '_DL_cm' in model.keys():
+            DL_cm=model['_DL_cm']
+        
+        return cls(astropy_cosmo=astropy_cosmo,DL_cm=DL_cm)
+          
     def __getstate__(self):
         return  self._serialize_model()
 
     def __setstate__(self,state):
         astropy_cosmo=None
         DL_cm=None
-        if '_c' in state.keys():
-           astropy_cosmo=Cosmology.from_format(state['_c'], format='yaml')
+        if '_astropy_cosmo' in state.keys():
+           astropy_cosmo=state['_astropy_cosmo']
         if '_DL_cm' in state.keys():
             DL_cm=state['_DL_cm']
         self.__init__(astropy_cosmo=astropy_cosmo,DL_cm=DL_cm)
