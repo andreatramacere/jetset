@@ -1,4 +1,5 @@
-[![pip test](https://github.com/andreatramacere/jetset/actions/workflows/test-pip-workflow.yml/badge.svg?branch=v1.3.x)](https://github.com/andreatramacere/jetset/actions/workflows/test-pip-workflow.yml)
+[![pip test](https://github.com/andreatramacere/jetset/actions/workflows/test-pip-workflow.yml/badge.svg)](https://github.com/andreatramacere/jetset/actions/workflows/test-pip-workflow.yml)
+[![conda test](https://github.com/andreatramacere/jetset/actions/workflows/test-conda-workflow.yml/badge.svg)](https://github.com/andreatramacere/jetset/actions/workflows/test-conda-workflow.yml)
 ![img](./logo/logo_git.png)
 
 
