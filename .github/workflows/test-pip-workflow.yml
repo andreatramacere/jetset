@@ -121,6 +121,7 @@ jobs:
       #  run:   gh release upload ${{ github.event.inputs.tags }} dist/*.tar.gz --clobber
       
       - name: 'Upload Src Release Asset'
+        if: matrix.cibw_python == 'cp39*'
         uses: softprops/action-gh-release@v2
         with:
           name: Release  ${{ github.event.inputs.tags }}
