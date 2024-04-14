@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       git-ref:
-        description: Git Ref (Optional)
+        description: checkout this tag (Optional,overieds branch)
         required: false
       tags:
-        description: tag for release
+        description: tag to create a release 
         required: false
       skip_test:
         description: skip test

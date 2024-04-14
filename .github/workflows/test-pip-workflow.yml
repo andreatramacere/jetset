@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       git-ref:
-        description: Git Ref (Optional)
+        description: checkout this tag (Optional,overieds branch)
         required: false
       tags:
-        description: tag for release
+        description: tag to create a release 
         required: false
       skip_test:
         description: skip test
@@ -18,17 +18,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 'Clone Repository (Latest)'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: 'Clone Repository (Custom Ref)'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       if: github.event.inputs.git-ref != ''
       with:
         ref: ${{ github.event.inputs.git-ref }}
     
     - name: 'Create release'
       if: github.event.inputs.tags != null
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v4
       id : create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -52,10 +52,10 @@ jobs:
 
     steps:
       - name: 'Clone Repository (Latest)'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 'Clone Repository (Custom Ref)'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         if: github.event.inputs.git-ref != ''
         with:
           ref: ${{ github.event.inputs.git-ref }}
@@ -83,7 +83,7 @@ jobs:
            fi
 
       - name: 'Setup pip'
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -108,7 +108,7 @@ jobs:
             
       - name: Upload SDist
         if: matrix.cibw_python == 'cp39*'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
       
@@ -121,7 +121,7 @@ jobs:
       #  run:   gh release upload ${{ github.event.inputs.tags }} dist/*.tar.gz --clobber
       
       - name: 'Upload Src Release Asset'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v4
         with:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
@@ -132,9 +132,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         if: github.event.inputs.git-ref != ''
         with:
           ref: ${{ github.event.inputs.git-ref }}
@@ -166,12 +166,12 @@ jobs:
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: wheelhouse/*.whl
   
       - name: 'Upload Binary Release Asset'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v4
         with:
           name: Release  ${{ github.event.inputs.tags }}
           prerelease: true
