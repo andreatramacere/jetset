@@ -1614,6 +1614,7 @@ class JetBase(Model):
         return x_p, y_p
 
     def set_num_c_threads(self,N):
+        print("===> setting C threads to",N)
         if isinstance(N,int):
             self._blob.N_THREADS=N
         else:
