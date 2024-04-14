@@ -107,7 +107,7 @@ jobs:
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
             
       - name: Upload SDist
-        if: matrix.cibw_python == 'cp39*'
+        if: matrix.cibw_python == 'cp39*' && matrix.os=='ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
