@@ -16,7 +16,6 @@ class  Cosmo (object):
 
         _c = None
         self._c_name=None
-
         if DL_cm is not None and astropy_cosmo is not None:
             raise  RuntimeError('Either you provide an astropy cosmology objet, or luminosity distance in cm, or nothing')
 
@@ -76,11 +75,6 @@ class  Cosmo (object):
             _model['_astropy_cosmo']=None
         _model['_DL_cm'] = self._DL_cm
         return   _model 
-
-    @classmethod
-    def from_model(cls,model):
-        astropy_cosmo,DL_cm=cls._decode_model(model)
-        return cls(astropy_cosmo=astropy_cosmo,DL_cm=DL_cm)
           
     def __getstate__(self):
         return  self._serialize_model()
@@ -92,11 +86,10 @@ class  Cosmo (object):
 
     @staticmethod
     def _decode_model(model):
-        #print("decoding cosmo")
         DL_cm=None
         astropy_cosmo=None
         if '_astropy_cosmo' in model.keys():
-            if '_astropy_cosmo' is not None:
+            if model['_astropy_cosmo'] is not None:
                 try:
                     astropy_cosmo=Cosmology.from_format(Table(model['_astropy_cosmo']),format='astropy.table')
                 except Exception as e:
@@ -104,6 +97,5 @@ class  Cosmo (object):
                     astropy_cosmo = cosmology.Planck13
         if '_DL_cm' in model.keys():
             DL_cm=model['_DL_cm']
-
-        return astropy_cosmo,DL_cm
+        return astropy_cosmo,DL_cm  
 

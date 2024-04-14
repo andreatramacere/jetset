@@ -273,7 +273,7 @@ class JetBase(Model):
         else:
             self._set_version(v='unknown(<1.1.2)')
 
-        self.cosmo = Cosmo.from_model(_model['cosmo'])
+        self.cosmo = Cosmo(astropy_cosmo=_model['cosmo']['_astropy_cosmo'],DL_cm=_model['cosmo']['_DL_cm'])
         self.model_type = 'jet'
         self.name = _model['name']
         if 'geometry' in _model.keys():
@@ -2038,15 +2038,13 @@ class GalacticBeamed(Jet):
             return 0
 
     def _handle_z(self,d=u.kpc*1):
+
         self._blob.z_cosm=0
         self.parameters.z_cosm.val=0
         self.parameters.z_cosm.hidden=True
+        self.parameters.z_cosm.frozen=True
         _dmax=1000*u.kpc.to('cm')
-       
         self.add_user_par(name='DL_cm',units='cm',val=d.value,val_min=0,val_max=_dmax)
-
-        self.make_dependent_par(par='z_cosm', depends_on=['DL_cm'], par_expr=self._dummy_z_par_func,verbose=False)
-       
         p=self.parameters.get_par_by_name('DL_cm')
         p.par_type='distance'
 
