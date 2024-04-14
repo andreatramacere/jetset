@@ -18,17 +18,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 'Clone Repository (Latest)'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: 'Clone Repository (Custom Ref)'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       if: github.event.inputs.git-ref != ''
       with:
         ref: ${{ github.event.inputs.git-ref }}
     
     - name: 'Create release'
       if: github.event.inputs.tags != null
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       id : create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -49,10 +49,10 @@ jobs:
 
     steps:
       - name: 'Clone Repository (Latest)'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 'Clone Repository (Custom Ref)'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         if: github.event.inputs.git-ref != ''
         with:
           ref: ${{ github.event.inputs.git-ref }}
@@ -168,12 +168,12 @@ jobs:
          
        
       - name: Upload packages
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: 'conda-binary/*'
       
       - name: 'Upload Release Asset'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}

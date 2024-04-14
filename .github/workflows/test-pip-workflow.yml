@@ -28,7 +28,7 @@ jobs:
     
     - name: 'Create release'
       if: github.event.inputs.tags != null
-      uses: softprops/action-gh-release@v4
+      uses: softprops/action-gh-release@v2
       id : create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -121,7 +121,7 @@ jobs:
       #  run:   gh release upload ${{ github.event.inputs.tags }} dist/*.tar.gz --clobber
       
       - name: 'Upload Src Release Asset'
-        uses: softprops/action-gh-release@v4
+        uses: softprops/action-gh-release@v2
         with:
           name: Release  ${{ github.event.inputs.tags }}
           tag_name: ${{ github.event.inputs.tags }}
@@ -171,7 +171,7 @@ jobs:
           path: wheelhouse/*.whl
   
       - name: 'Upload Binary Release Asset'
-        uses: softprops/action-gh-release@v4
+        uses: softprops/action-gh-release@v2
         with:
           name: Release  ${{ github.event.inputs.tags }}
           prerelease: true
