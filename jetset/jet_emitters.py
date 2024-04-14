@@ -5,6 +5,7 @@ import numpy as np
 from inspect import signature
 from numba import njit
 import copy
+import warnings
 from astropy.constants import m_e,m_p,c
 from scipy import interpolate
 from .jetkernel_models_dic import gamma_dic_e ,gamma_dic_p, gamma_dic_pp_e_second, available_N_distr, N_distr_descr, available_emitters_type
@@ -622,7 +623,12 @@ class EmittersDistribution(BaseEmittersDistribution):
 
     def _activate_numba(self):
         self._py_distr_func=copy.deepcopy(self.distr_func)
-        self.distr_func = njit(self.distr_func,fastmath=True, cache=False)
+        try:
+            #print("====> acitivate numba for",self.distr_func)
+            self.distr_func = njit(self.distr_func,fastmath=True, cache=False)
+        except:
+            warnings.warn("====> falied to acitivate numba for",self.distr_func)
+
 
 class EmittersArrayDistribution(EmittersDistribution):
     def __init__(self,
@@ -756,10 +762,6 @@ class InjEmittersDistribution(BaseEmittersDistribution):
     def set_temp_ev(self):
         self.e_gamma_ptr = getattr(self._temp_ev, self._gammae_name)
         self._Q_inj_e_second_ptr = getattr(self._temp_ev._blob, self._Q_inj_e_second_name)
-
-    def _activate_numba(self):
-        self._py_distr_func=copy.deepcopy(self.distr_func)
-        self.distr_func = njit(self.distr_func,fastmath=True, cache=False)
 
 
 class InjEmittersArrayDistribution(InjEmittersDistribution):
