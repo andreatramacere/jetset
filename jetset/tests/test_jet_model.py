@@ -2,8 +2,6 @@ import pytest
 import numpy as np
 from .base_class import TestBase
 from jetset.jet_model import Jet
-from jetset.jet_model import Jet
-from jetset.jet_model import Jet
 
 class TestJets(TestBase):
 
@@ -60,7 +58,42 @@ class TestJets(TestBase):
        
     def test_EC(self,plot=False):
         print('--------> test_EC', plot)
+        j=Jet()
+        j.add_EC_component(['EC_BLR','EC_Disk','EC_DT'],disk_type='MultiBB')
 
+        #kaspi+ 2007:https://iopscience.iop.org/article/10.1086/512094/pdf
+        j.make_dependent_par(par='R_BLR_in', depends_on=['L_Disk'], par_expr='1E17*(L_Disk/1E45)**0.5')
+
+        j.make_dependent_par(par='R_BLR_out', depends_on=['R_BLR_in'], par_expr='R_BLR_in*1.1')
+
+        #Cleary+ 2007:https://iopscience.iop.org/article/10.1086/511969/pdf
+        j.make_dependent_par(par='R_DT', depends_on=['L_Disk'], par_expr='2.5E18*(L_Disk/1E45)**0.5')
+    
+        j.add_user_par(name='theta_open',val=5, units='deg')
+        def f_par(R_H,theta_open):
+            return np.tan( theta_open)*R_H
+
+        j.make_dependent_par(par='R', depends_on=['R_H','theta_open'],
+                              par_expr=f_par)
+
+        j.eval()
+
+        j.parameters.R_H.val=1E20
+        R_val=j.parameters.R.val
+
+        j.save_model('test_jet_EC.pkl')
+
+        new_jet=Jet.load_model('test_jet_EC.pkl')
+       
+        #new_jet.make_dependent_par(par='R', depends_on=['R_H','theta_open'],
+        #                      par_expr=f_par)
+        new_jet.eval()
+        print("units of theta_open",new_jet.parameters.theta_open.units)
+
+        new_jet.parameters.R_H.val=1E20
+        
+        assert(new_jet.parameters.R.val==R_val)
+        new_jet.show_model()
 
 class TestJetHadronic(TestBase):
 

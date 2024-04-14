@@ -42,8 +42,19 @@ class TestDependingParameters(TestBase):
         print('done')
 
         np.testing.assert_allclose(new_jet.parameters.s2.val, new_jet.parameters.s1.val + 1)
-        j.eval()
+        new_jet.eval()
         new_jet.show_model()
+
+        copied_jet=new_jet.clone()
+
+        copied_jet = Jet.load_model('jet.pkl')
+        print('here')
+        copied_jet.parameters.s1.val = 2
+        print('done')
+
+        np.testing.assert_allclose(copied_jet.parameters.s2.val, copied_jet.parameters.s1.val + 1)
+        copied_jet.eval()
+        copied_jet.show_model()
 
 
     def test_dep_par_log_values(self,plot=False):
@@ -95,7 +106,7 @@ class TestDependingParameters(TestBase):
         new_jet = Jet.load_model('jet.pkl')
         new_jet.parameters.gmax.val = 4
         np.testing.assert_allclose(new_jet.parameters.gamma0_log_parab.val, new_jet.parameters.gmax.val -1)
-        j.eval()
+        new_jet.eval()
         new_jet.show_model()
 
 
