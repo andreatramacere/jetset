@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       git-ref:
-        description: checkout this tag (Optional,overieds branch)
+        description:  checkout this tag (overrieds branch)
         required: false
       tags:
         description: tag to create a release 
