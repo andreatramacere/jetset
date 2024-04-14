@@ -501,8 +501,8 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     }
     else
     {
-        energetic.jet_L_EC_CMB = 0;
-        energetic.L_EC_CMB_rf = 0;
+        energetic.L_EC_Star_rf = 0;
+        energetic.jet_L_EC_Star = 0;
     }
     
     energetic.jet_L_e = pt->U_e * lum_factor;
