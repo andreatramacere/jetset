@@ -1,5 +1,4 @@
-![pip build-test](https://github.com/andreatramacere/jetset/workflows/pip%20build-test/badge.svg?branch=develop)
-![conda build-test](https://github.com/andreatramacere/jetset/workflows/conda%20build-test/badge.svg)
+![test action](https://github.com/andreatramacere/jetset/workflows/test-pip-workflow.yml/badge.svg)
 
 ![img](./logo/logo_git.png)
 
