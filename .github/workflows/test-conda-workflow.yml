@@ -170,6 +170,7 @@ jobs:
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           path: 'conda-binary/*'
       
       - name: 'Upload Release Asset'
