@@ -12,6 +12,7 @@ from astropy import units as u
 from astropy import constants
 from contextlib import redirect_stdout
 import io
+import multiprocessing
 
 from .jet_spectral_components import JetSpecComponent, SpecCompList
 
@@ -109,6 +110,7 @@ class JetBase(Model):
         self._nu_static_size = BlazarSED.static_spec_arr_size
         self.nu_size = nu_size
         self.nu_grid_size=self._get_nu_grid_size_blob()
+        self.set_num_c_threads(N=multiprocessing.cpu_count())
         if jet_workplace is None:
             jet_workplace=WorkPlace()
             out_dir= jet_workplace.out_dir + '/' + self.name + '_jet_prod/'
