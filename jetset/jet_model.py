@@ -198,11 +198,13 @@ class JetBase(Model):
 
 
     def __getstate__(self):
-        return  self._serialize_model()
+        j= self._serialize_model()
+        return j 
 
     def __setstate__(self,state):
         self.__init__()
         self._decode_model(state)
+        self._fix_par_dep_on_load()
 
     def _serialize_model(self):
         _model = {}
@@ -232,7 +234,7 @@ class JetBase(Model):
         _model['spectral_components_state'] = [c.state for c in self._spectral_components_list]
         _model['EC_components_name'] = self.EC_components_list
         _model['basic_components_name'] = self.basic_components_list
-        _model['cosmo'] = self.cosmo
+        _model['cosmo'] = self.cosmo._serialize_model()
         _model['pars'] = {}
         _model['pars']=self.parameters._serialize_pars()
 
@@ -246,46 +248,20 @@ class JetBase(Model):
         _model['internal_pars']['Norm_distr'] = self.Norm_distr
         return _model
 
-    def save_model(self,file_name, use_json=False):
-        if use_json is False:
-            f = io.StringIO()
-            with redirect_stdout(f):
-                pickle.dump(self._serialize_model(), open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
-        else:
-            with open(file_name, 'w') as out_file:
-                 json.dump(self._serialize_model(), out_file)
-
+    def save_model(self,file_name):
+        pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
       
 
     @classmethod
     @safe_run
-    def load_model(cls, file_name, use_json=False):
+    def load_model(cls, file_name, verbose=True):
         try:
-            if use_json is False:
-                _model = pickle.load(open(file_name, "rb"))
-            else:
-                with open(file_name) as model_file:
-                    _model = json.load(model_file)        
+              jet=pickle.load(open(file_name, "rb"))
+              return jet
         except Exception as e:
             raise RuntimeError('The model you loaded is not valid please check the file name', e)
 
-        try:
-            jet = cls(name='no_name')
-            jet._decode_model(_model)
-            jet._fix_par_dep_on_load()
-            jet.show_pars()
-            jet.eval()
-            return jet
-        except Exception as e:
-            if 'version' in _model.keys():
-                v=_model['version']
-            else:
-                v='unknown(<1.1.2)'
-            msg = "trying  to load a model saved with jetset version %s \n "%v
-            msg += "currenlty using jetset version %s \n "%get_info()['version']
-            msg += "caused the following problem:\n %s\n"%(repr(e))
 
-            raise RuntimeError (msg)
 
 
 
@@ -297,7 +273,7 @@ class JetBase(Model):
         else:
             self._set_version(v='unknown(<1.1.2)')
 
-        self.cosmo = _model['cosmo']
+        self.cosmo = Cosmo.from_model(_model['cosmo'])
         self.model_type = 'jet'
         self.name = _model['name']
         if 'geometry' in _model.keys():
@@ -334,7 +310,7 @@ class JetBase(Model):
         elif _model['emitters_distribution_class'] == 'EmittersDistribution':
             self.set_emitters_distribution(distr=_model['custom_emitters_distribution'], init=False)
         else:
-            raise RuntimeError('emitters distribuion type not valid', type(self._emitters_distribution))
+            raise RuntimeError('emitters distribution type not valid', type(self._emitters_distribution))
 
         for c in self.basic_components_list:
             if c not in _model['basic_components_name']:
@@ -370,6 +346,7 @@ class JetBase(Model):
         _par_dict = _model['pars']
         _non_user_dict={}
         _user_dict={}
+        
         for k, v in _model['pars'].items():
             if v['par_type'] == 'user_defined':
                 _user_dict[k]=v
@@ -551,7 +528,7 @@ class JetBase(Model):
 
         blob.NH_pp = 1
 
-        blob.NH_cold_to_rel_e = 0.1        
+        blob.NH_cold_to_rel_e = 1.0       
 
         blob.L_Disk = 1E45
 
@@ -1780,9 +1757,6 @@ class Jet(JetBase):
                                      state_dict=dict((('on', 1), ('off', 0))))
 
 
-
-
-
     def set_N_from_U_emitters(self,U, gmin=None, gmax=None):
         """ Sets the normalization of N to match the energy density of the primary emitters
         Parameters
@@ -1977,14 +1951,18 @@ class Jet(JetBase):
         if plot==True:
             #import  pylab as plt
             fig, ax = plt.subplots()
-            ax.plot(b_grid,U_e)
-            ax.plot(b_grid,U_B)
+            ax.plot(b_grid,U_e,label=r'$u_e$')
+            ax.plot(b_grid,U_B,label=r'$u_B$')
             ax.plot(b_grid,U_B+U_e)
             ax.scatter(b_grid[ID_min],U_e[ID_min]+U_B[ID_min])
 
             ax.semilogy()
             ax.semilogx()
+            ax.set_xlabel(r'$B$ (G)')
+            ax.set_ylabel(r'$u$ erg cm$-^3$')
+            ax.legend
             plt.show()
+           
 
 
         self.set_par('B', val=b_grid[ID_min])
