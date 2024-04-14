@@ -324,8 +324,11 @@ class ModelParameter(object):
         self._linked_root_model = None
         self._func=None
         self._is_dependent = False
-        self._master_pars=[]
+        self._master_par_list=[]
         self._depending_pars=[]
+        self.par_expr=None
+       
+        
 
     def _add_depending_par(self,par):
         if par not in self._depending_pars:
@@ -415,7 +418,6 @@ class ModelParameter(object):
                     _par_values[_user_par_.name] = _user_par_.val_lin
                 else:
                     _par_values[_user_par_.name] = _user_par_.val_lin*_user_par_.units
-                
             res=self._depending_par_expr(**_par_values)
      
         _unit = None
@@ -785,7 +787,7 @@ class CompositeModelParameterArray(object):
             if dep_model is not None:
                 dep_par = dep_model.get_par_by_name(par_name)
                 if dep_par is not None:
-                    print('==> par:',dep_par.name, 'from model:',  dep_model.name, 'linked to same parameter in model', m_root.name )
+                    #print('==> par:',dep_par.name, 'from model:',  dep_model.name, 'linked to same parameter in model', m_root.name )
                     if p_root == dep_par:
                         raise RuntimeError(" root and linked parameter can't be the same")
                     if dep_par.immutable is True:
@@ -1490,7 +1492,11 @@ class ModelParameterArray(object):
 
             for k in _par_keys:
                 if hasattr(par,k):
-                    _val_dict[k]=getattr(par,k)
+                    if k=='units':
+                        #print("===> serialize units",str(getattr(par,k)))
+                        _val_dict[k]=str(getattr(par,k))
+                    else:
+                        _val_dict[k]=getattr(par,k)
 
             _par_dict[par.name] = _val_dict
 
