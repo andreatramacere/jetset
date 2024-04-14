@@ -135,6 +135,7 @@ class Data(object):
             self._table['dy'] = self._table['dy']  * _c
             self._table['y'].unit = 'erg/(cm2 s)'
             self._table['dy'].unit = 'erg/(cm2 s)'
+            self._table['x'] = self._table['x']/(1+self.metadata['z'])
             self.metadata['restframe'] = 'obs'
 
     def _check_table(self):
@@ -425,7 +426,7 @@ class ObsData(object):
         """
         private method to load and build the SED data
         
-        :param dupl_filter: keyword to perfrom filtering of duplicated entries
+        :param dupl_filter: keyword to perform filtering of duplicated entries
         :type dupl_filter: bool 
         :ivar dt: numpy dtype  for the SED data
          
@@ -434,7 +435,7 @@ class ObsData(object):
         **Data Processing**
         
         - checks if data errors are provided
-        - separates historical from simultaneosu (used in the fit) data
+        - separates historical from simultaneous (used in the fit) data
         - filters upper limits 
         - removes duplicate entries
         - performs restframe transformation
