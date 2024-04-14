@@ -3,7 +3,7 @@ __author__ = "Andrea Tramacere"
 
 
 import numpy as np
-import json
+import copy
 import dill as pickle
 import warnings
 import inspect
@@ -247,7 +247,7 @@ class Model(object):
     def load_model(cls, file_name):
         try:
             c = pickle.load(open(file_name, "rb"))
-            #c._fix_par_dep_on_load()
+            c._fix_par_dep_on_load()
             if isinstance(c, Model):
                 c.eval()
                 return c
@@ -260,10 +260,12 @@ class Model(object):
     def _fix_par_dep_on_load(self,):
         for p in self.parameters.par_array:
             if p._is_dependent is True and p._linked is False:
-                p._master_pars=[]
-                self._is_dependent = False     
-                #print('==> par expr',p._par_expr_text)           
-                self.make_dependent_par(p.name, p._master_par_list, p._depending_par_expr,set_par_expr_source_code=True)
+                #print('==> _master_par_list',p._master_par_list)
+                #print('==> _depending_par_expr',p._depending_par_expr)
+                _master_par_list=copy.deepcopy(p._master_par_list)
+                _depending_par_expr=copy.deepcopy(p._depending_par_expr)
+                p.reset_dependencies()    
+                self.make_dependent_par(p.name, _master_par_list, _depending_par_expr,set_par_expr_source_code=True)
         
     #def _set_pars_dep(self):
     #    for p in self.parameters.par_array:
