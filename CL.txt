@@ -2,15 +2,19 @@
 
 clean __pycache__: find . -type d -name '__pycache__' | xargs rm -r 
 
-If you want  to make a tag without github actions
+If you want  to make a tag 
 2) ./make_tag.py 1.1.2 -do_remote_tag
   OR
    ./make_tag.py stable -do_remote_tag
 
-If you want  to make a tag with github actions
-  b) set the branch in the Git Ref
-  a) set the tag in the tag field
-  this will create a remote tag and release 
+If you want  to create a release from a specific tag or branch (different from the branch of the workflow)
+  1) set the git tag in the 'checkout this tag' field
+  2) set the release tag in the 'tag to create a release' field
+
+If you want  to create a release from the branch of the workflow
+  1) set the release tag in the 'tag to create a release' field
+
+
 
 Anaconda meta.yaml is built from requirements.txt using:
 python .github/workflows/requirements_to_conda_yml.py  
@@ -26,6 +30,9 @@ pytest  --pyargs -vvv -s jetset.tests.test_jet_model
 
 integration test :
 pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
+
+a specific test method:
+pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration::tets_method
 
 4) testing remotely:
    use the github actions pipelines conda test/pip test or test
