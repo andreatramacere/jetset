@@ -11,7 +11,7 @@ mock
 setuptools
 scipy>=1.5.0
 numpy>=1.18,<1.22
-astropy>=4.0,<=5
+astropy>=5.0.1,<=6
 matplotlib>=3.1.0
 #swig>=3.0.0
 future
