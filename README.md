@@ -1,5 +1,4 @@
-![test action](https://github.com/andreatramacere/jetset/workflows/test-pip-workflow.yml/badge.svg)
-
+[![pip test](https://github.com/andreatramacere/jetset/actions/workflows/test-pip-workflow.yml/badge.svg?branch=v1.3.x)](https://github.com/andreatramacere/jetset/actions/workflows/test-pip-workflow.yml)
 ![img](./logo/logo_git.png)
 
 
