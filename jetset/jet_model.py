@@ -272,8 +272,7 @@ class JetBase(Model):
             self._set_version(_model['version'])
         else:
             self._set_version(v='unknown(<1.1.2)')
-
-        self.cosmo = Cosmo(astropy_cosmo=_model['cosmo']['_astropy_cosmo'],DL_cm=_model['cosmo']['_DL_cm'])
+        self.cosmo = Cosmo.from_model(_model['cosmo'])
         self.model_type = 'jet'
         self.name = _model['name']
         if 'geometry' in _model.keys():

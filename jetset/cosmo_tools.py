@@ -67,7 +67,6 @@ class  Cosmo (object):
         return _d
     
     def _serialize_model(self):
-        #print("serializing cosmo")
         _model = {}
         if self._c is not None:
             _model['_astropy_cosmo']=Table(self._c.to_format('astropy.table'))
@@ -82,6 +81,11 @@ class  Cosmo (object):
     def __setstate__(self,state):
         astropy_cosmo,DL_cm=self._decode_model(state)
         self.__init__(astropy_cosmo=astropy_cosmo,DL_cm=DL_cm)
+    
+    @classmethod
+    def from_model(cls,model):
+        astropy_cosmo,DL_cm  = cls._decode_model(model)
+        return cls(astropy_cosmo,DL_cm)
         
 
     @staticmethod
