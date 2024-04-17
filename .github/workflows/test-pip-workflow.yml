@@ -143,6 +143,7 @@ jobs:
           #CIBW_TEST_COMMAND: pytest  --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model && pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic && pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
   
       - name: Show files
+        if: github.event.inputs.tags != null
         run: ls -lh wheelhouse
         shell: bash
   
