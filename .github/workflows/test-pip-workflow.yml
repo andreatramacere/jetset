@@ -97,8 +97,8 @@ jobs:
                 exit 1
            fi
 
-      - name: 'Setup pip'
-        uses: actions/setup-python@v4
+      - name: 'Setup python'
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
