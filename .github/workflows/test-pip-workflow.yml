@@ -197,11 +197,11 @@ jobs:
         if: github.event.inputs.tags != null &&  github.event.inputs.tags != null
         env:
           CIBW_SKIP: "*-musllinux_*"
-          CIBW_BUILD: ${{ matrix.python-version }}-${{ matrix.platform_id }}
+          CIBW_BUILD: cp${{ matrix.python-version }}-${{ matrix.platform_id }}
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
-          #CIBW_ARCHS: ${{ matrix.cibw_arch || 'auto' }}
-          CIBW_ARCHS_LINUX: "x86_64"
-          CIBW_ARCHS_MACOS: "x86_64"
+          CIBW_ARCHS: ${{ matrix.cibw_arch || 'auto' }}
+          #CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch || 'auto' }}
+          #CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch || 'auto' }}
           #CIBW_TEST_COMMAND: pytest  --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model && pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic && pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
   
       - name: Show files
