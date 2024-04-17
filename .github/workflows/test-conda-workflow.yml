@@ -43,9 +43,60 @@ jobs:
     needs: [clone]
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [macOS-12,ubuntu-latest]
-        python-version: [ '3.9','3.10','3.11']
+        include:
+          - os: macOS-12
+            name: macOS-x86_64
+            cpython-version: 39
+            python-version: "3.9"
+            platform_id: macosx_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch: x86_64
+          - os: ubuntu-latest
+            name: x86_64
+            cpython-version: 39
+            python-version: "3.9"
+            platform_id: manylinux_x86_64            
+            cibw_manylinux: manylinux2014
+            cibw_arch: x86_64
+          
+          - os: macOS-12
+            name: macOS-x86_64
+            cpython-version: 310
+            python-version: "3.10"
+            platform_id: macosx_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch:  x86_64
+          - os: ubuntu-latest
+            name: x86_64
+            cpython-version: 310
+            python-version: "3.10"
+            platform_id: manylinux_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch: x86_64
+
+
+          - os: macOS-12
+            name:  macOS-x86_64
+            cpython-version: 311
+            python-version: "3.11"
+            platform_id: macosx_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch:  x86_64
+          - os: ubuntu-latest
+            name: x86_64
+            cpython-version: 311
+            python-version: "3.11"
+            platform_id: manylinux_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch:  x86_64
+          - os: macOS-14
+            name: MAC_ARM
+            cpython-version: 311
+            python-version: "3.11"
+            platform_id: macosx_arm64
+            cibw_manylinux:  macosx_arm64
 
     steps:
       - name: 'Clone Repository (Latest)'
@@ -60,8 +111,6 @@ jobs:
       
       - uses: mamba-org/setup-micromamba@v1
         with:
-          # the create command looks like this:
-          # `micromamba create -n test-env python=3.10 numpy`
           environment-name: test-env
           create-args: >-
             python=${{ matrix.python-version }}
@@ -162,12 +211,12 @@ jobs:
           python .github/workflows/conda_rename.py
          
        
-      - name: Upload packages
-        uses: actions/upload-artifact@v4
-        if: github.event.inputs.tags != null
-        with:
-          overwrite: true
-          path: 'conda-binary/*'
+      #- name: Upload packages
+      #  uses: actions/upload-artifact@v4
+      #  if: github.event.inputs.tags != null
+      #  with:
+      #    overwrite: true
+      #    path: 'conda-binary/*'
       
       - name: 'Upload Release Asset'
         if: github.event.inputs.tags != null
