@@ -115,22 +115,33 @@ jobs:
           conda mambabuild . --output > ./CONDABUILDJETSET.txt  
       
       - name: 'set env CONDABUILDJETSET'
+        if: github.event.inputs.tags != null     
         working-directory: .github/conda-pipeline/github/
         run: |
           echo $(cat CONDABUILDJETSET.txt)
           echo "CONDABUILDJETSET=$(tail -1 CONDABUILDJETSET.txt)"  >> $GITHUB_ENV
 
       - name: 'echo env CONDABUILDJETSET'
+        if: github.event.inputs.tags != null
         working-directory: .github/conda-pipeline/github/
         run: echo "CONDABUILDJETSET=${{env.CONDABUILDJETSET}}"
 
-      - name: 'conda install'
+      - name: 'conda install from conda build'
+        if: github.event.inputs.tags != null
         run: |
           source ~/.bash_profile
           micromamba activate test-env
           conda install --yes --offline $CONDABUILDJETSET
+          - name: 'conda install from conda build'
+      
+      - name: 'conda install from source'
+        if: github.event.inputs.tags == null
+        run: |
+          source ~/.bash_profile
+          micromamba activate test-env
+          conda install --yes --offline $CONDABUILDJETSET
+          python setup.py install
 
-   
       - name: 'test'
         if: github.event.inputs.skip_test != 'yes'
         working-directory: .github/action_test/
