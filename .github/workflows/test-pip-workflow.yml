@@ -47,67 +47,66 @@ jobs:
         include:
           - os: macOS-12
             name: macOS-x86_64
-            python-version: 39
-            platform_id: manylinux_x86_64
-            #cibw_python: ["cp38-*", "cp39*", "cp310-*"]
+            cpython-version: 39
+            python-version: 3.9
+            platform_id: macosx_x86_64
             cibw_manylinux: manylinux2014
             cibw_arch: x86_64
           - os: ubuntu-latest
             name: x86_64
-            python-version: 39
-            platform_id: manylinux_x86_64
-            #cibw_python: ["cp38-*", "cp39*", "cp310-*"]
+            cpython-version: 39
+            python-version: 3.9
+            platform_id: manylinux_x86_64            
             cibw_manylinux: manylinux2014
             cibw_arch: x86_64
           - os: macOS-14
             name: MAC_ARM
-            python-version: 39
+            cpython-version: 39
+            python-version: 3.9
             platform_id: macosx_arm64
-            #cibw_python: ["cp38-*", "cp39*", "cp310-*"]
             cibw_manylinux: macosx_arm64
-            #cibw_arch: ["x86_64"]
+
           - os: macOS-12
             name: macOS-x86_64
-            python-version: 310
+            cpython-version: 310
+            python-version: 3.10
             platform_id: macosx_x86_64
-            #cibw_python: ["cp38-*", "cp39*", "cp310-*"]
             cibw_manylinux: manylinux2014
             cibw_arch:  x86_64
           - os: ubuntu-latest
             name: x86_64
-            python-version: 310
+            cpython-version: 310
+            python-version: 3.10
             platform_id: manylinux_x86_64
-            #cibw_python: ["cp38-*", "cp39*", "cp310-*"]
             cibw_manylinux: manylinux2014
             cibw_arch: x86_64
           - os: macOS-14
             name: MAC_ARM
-            python-version: 310
+            cpython-version: 310
+            python-version: 3.10
             platform_id: macosx_arm64
-            #cibw_python: ["cp38-*", "cp39*", "cp310-*"]
-            cibw_manylinux: macosx_arm64]
-            #cibw_arch: ["x86_64"]
+            cibw_manylinux: macosx_arm64
+            
           - os: macOS-12
             name:  macOS-x86_64
-            python-version: 311
+            cpython-version: 311
+            python-version: 3.11
             platform_id: macosx_x86_64
-            #cibw_python: ["cp38-*", "cp39*", "cp310-*"]
             cibw_manylinux: manylinux2014
             cibw_arch:  x86_64
           - os: ubuntu-latest
             name: x86_64
-            python-version: 311
+            cpython-version: 311
+            python-version: 3.11
             platform_id: manylinux_x86_64
-            #cibw_python: ["cp38-*", "cp39*", "cp310-*"]
             cibw_manylinux: manylinux2014
             cibw_arch:  x86_64
           - os: macOS-14
             name: MAC_ARM
-            python-version: 311
+            cpython-version: 311
+            python-version: 3.11
             platform_id: macosx_arm64
-            #cibw_python: ["cp38-*", "cp39*", "cp310-*"]
             cibw_manylinux:  macosx_arm64
-            #cibw_arch: ["x86_64"]
             
 
 
@@ -146,7 +145,7 @@ jobs:
       - name: 'Setup python'
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version:  ${{ matrix.python-version }}
 
       - name: 'adapt req'
         run: |
@@ -169,7 +168,7 @@ jobs:
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
             
       - name: Upload SDist
-        if: matrix.python-version == '39' && matrix.os=='ubuntu-latest' &&  github.event.inputs.tags != null
+        if: matrix.python-version == '3.9' && matrix.os=='ubuntu-latest' &&  github.event.inputs.tags != null
         uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
@@ -177,7 +176,7 @@ jobs:
       
 
       - name: 'Upload Src Release Asset'
-        if: matrix.python-version == '39' &&  github.event.inputs.tags != null
+        if: matrix.python-version == '3.9' &&  github.event.inputs.tags != null
         uses: softprops/action-gh-release@v2
         with:
           name: Release  ${{ github.event.inputs.tags }}
@@ -197,7 +196,7 @@ jobs:
         if: github.event.inputs.tags != null &&  github.event.inputs.tags != null
         env:
           CIBW_SKIP: "*-musllinux_*"
-          CIBW_BUILD: cp${{ matrix.python-version }}-${{ matrix.platform_id }}
+          CIBW_BUILD: cp${{ matrix.cpython-version }}-${{ matrix.platform_id }}
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
           CIBW_ARCHS: ${{ matrix.cibw_arch || 'auto' }}
           #CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch || 'auto' }}
