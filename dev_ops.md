@@ -6,7 +6,7 @@
 
 -  If you want to make a tag you can use the script, the  `-do_remote_tag` option will create the tag remotely,
    deleting remotely the one with the same name, e.g.: 
-    - ./make_tag.py v1.1.2 -do_remote_tag
+    - ./make_tag.py 1.1.2 -do_remote_tag
     OR
     - ./make_tag.py stable -do_remote_tag
 
