@@ -133,14 +133,12 @@ jobs:
           source ~/.bash_profile
           micromamba activate test-env
           conda install --yes --offline $CONDABUILDJETSET
-          - name: 'conda install from conda build'
       
       - name: 'conda install from source'
         if: github.event.inputs.tags == null
         run: |
           source ~/.bash_profile
           micromamba activate test-env
-          conda install --yes --offline $CONDABUILDJETSET
           python setup.py install
 
       - name: 'test'
