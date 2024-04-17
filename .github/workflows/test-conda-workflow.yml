@@ -92,24 +92,8 @@ jobs:
         run: |
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
-      #- name: 'build '
-      #  run: |
-      #    source ~/.bash_profile
-      #    micromamba activate test-env
-      #    echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
-      #    python setup.py clean
-      #    python setup.py install
-      #    python setup.py clean
-      #    echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
-
-      #- name: 'set pkg version'
-      #  run: |
-      #   echo "PKG_VERSION=$(micromamba activate test-env && cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
-
-      #- name: 'echo pkg version'
-      #  run: |
-      #    echo "PKG_VERSION=${{env.PKG_VERSION}}"
-      
+    
+    
       - name: 'generate meta.yaml from requirements.txt'
         run: |
           source ~/.bash_profile
@@ -162,6 +146,7 @@ jobs:
           
       
       - name: 'prepare asset'
+        if: github.event.inputs.tags != null
         shell: bash
         run: |
           python .github/workflows/conda_rename.py
@@ -169,11 +154,13 @@ jobs:
        
       - name: Upload packages
         uses: actions/upload-artifact@v4
+        if: github.event.inputs.tags != null
         with:
           overwrite: true
           path: 'conda-binary/*'
       
       - name: 'Upload Release Asset'
+        if: github.event.inputs.tags != null
         uses: softprops/action-gh-release@v2
         with:
           name: Release  ${{ github.event.inputs.tags }}
@@ -184,15 +171,3 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      #- name: Upload Release Asset conda
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #  run: 
-      #    gh release upload ${{ github.event.inputs.tags }} conda-binary/* --clobber
-        
-      #- name: Upload Release Asset conda tag
-      #  if: github.event.inputs.git-ref != ''
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #  run: 
-      #    gh release upload ${{  github.event.inputs.git-ref }} conda-binary/* --clobber
