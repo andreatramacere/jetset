@@ -101,6 +101,7 @@ jobs:
           pip install dist/*.tar.gz
       
       - name: 'test sdist'
+        if: github.event.inputs.tags != null
         working-directory: .github/action_test/
         run: |
           echo $(running tests!)
