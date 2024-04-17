@@ -89,16 +89,9 @@ class JetBase(Model):
         nu_size
         clean_work_dir
         """
+
         super(JetBase,self).__init__(  **keywords)
 
-
-
-
-        if cosmo is not None:
-            self.cosmo=cosmo
-        else:
-            self.cosmo= Cosmo()
-        #print('cosmo', self.cosmo)
         self.name = clean_var_name(name)
 
         self.model_type='jet'
@@ -291,8 +284,7 @@ class JetBase(Model):
             emitters_type=str(_model['emitters_type'])
         else:
             emitters_type = 'electrons'
-        #self._emitters_type=emitters_type
-
+        
         if 'electron_distribution' in _model.keys():
             _v=_model['electron_distribution']
             del(_model['electron_distribution'])
@@ -324,8 +316,7 @@ class JetBase(Model):
             self.add_bremss_ep_component()
             self.T_esc_e_second=_model['T_esc_e_second']
 
-        #for k in _model['pars'].keys():
-            #print ('-->',k,_model['pars'][k])
+       
         if 'disk_type' in _model['pars'].keys():
             disk_type=_model['pars']['disk_type']['val']
         else:
@@ -340,10 +331,10 @@ class JetBase(Model):
         self.SED = self.get_spectral_component_by_name('Sum').SED
        
         self.set_emitting_region(str(_model['beaming_expr']),self.emitters_distribution.emitters_type)
-        #self.set_electron_distribution(str(_model['electron_distribution']))
         if isinstance(self,GalacticBeamed):
             self._handle_z(d=u.kpc*1)
-            
+            self.cosmo = Cosmo(DL_cm=self.parameters.get_par_by_name('DL_cm').val)
+        
         _par_dict = _model['pars']
         _non_user_dict={}
         _user_dict={}
@@ -357,72 +348,12 @@ class JetBase(Model):
         self.parameters._decode_pars(_non_user_dict)
 
         for k, v in _user_dict.items():
-            #print('==>',v)
             v['name']=k
             self.parameters.add_par(ModelParameter(**v))
 
         _par_dict = _model['internal_pars']
         for k in _par_dict.keys():
-            #print ('set', k,_par_dict[k])
             setattr(self,k,_par_dict[str(k)])
-            #self.set_par(par_name=str(k), val=_par_dict[str(k)])
-
-    @classmethod
-    def load_old_model(cls, file_name):
-
-        old_model_warning()
-        jet = cls()
-        with open(file_name, 'r') as infile:
-            _model = json.load(infile)
-
-        # print ('_model',_model)
-
-        jet.model_type = 'jet'
-
-        jet.init_BlazarSED()
-
-        jet.parameters = JetModelParameterArray(model=jet)
-
-        if 'electron_distribution' in _model.keys():
-            _v = _model['electron_distribution']
-            del (_model['electron_distribution'])
-            _model['emitters_distribution'] = _v
-
-        if 'electron_distribution_log_values' in _model.keys():
-            _v = _model['electron_distribution_log_values']
-            del (_model['electron_distribution_log_values'])
-            _model['emitters_distribution_log_values'] = _v
-
-        jet.set_emitters_distribution(name=str(_model['emitters_distribution']),
-                                       log_values=_model['emitters_distribution_log_values'],
-                                       emitters_type='electrons',
-                                       init=False)
-
-        for c in jet.basic_components_list:
-            if c not in _model['basic_components_name']:
-                jet.del_spectral_component(c)
-
-
-        jet.add_EC_component(_model['EC_components_name'])
-
-        for ID, c in enumerate(_model['spectral_components_name']):
-            comp = getattr(jet.spectral_components, c)
-            if comp._state_dict != {}:
-                comp.state = _model['spectral_components_state'][ID]
-
-        jet.SED = jet.get_spectral_component_by_name('Sum').SED
-
-        jet.set_emitting_region(str(_model['beaming_expr']),emitters_type='electrons')
-
-        _par_dict = _model['pars']
-        jet.show_pars()
-        for k in _par_dict.keys():
-            # print ('set', k,_par_dict[k])
-            jet.set_par(par_name=str(k), val=_par_dict[str(k)])
-
-        jet.eval()
-        return jet
-
 
 
     def build_blob(self, verbose=None):
@@ -2040,7 +1971,6 @@ class GalacticBeamed(Jet):
             return 0
 
     def _handle_z(self,d=u.kpc*1):
-
         self._blob.z_cosm=0
         self.parameters.z_cosm.val=0
         self.parameters.z_cosm.hidden=True
