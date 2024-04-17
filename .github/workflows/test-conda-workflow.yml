@@ -101,6 +101,7 @@ jobs:
           python .github/workflows/requirements_to_conda_yml.py
 
       - name: 'conda build'
+        if: github.event.inputs.tags != null
         working-directory: .github/conda-pipeline/github/
         run: |
           source ~/.bash_profile
