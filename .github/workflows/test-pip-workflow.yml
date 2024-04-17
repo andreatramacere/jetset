@@ -156,11 +156,11 @@ jobs:
           echo $(running tests!)
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
             
-      - name: Upload SDist
-        if: matrix.python-version == '3.9' && matrix.os=='ubuntu-latest' &&  github.event.inputs.tags != null
-        uses: actions/upload-artifact@v4
-        with:
-          path: dist/*.tar.gz
+      #- name: Upload SDist
+      #  if: matrix.python-version == '3.9' && matrix.os=='ubuntu-latest' &&  github.event.inputs.tags != null
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    path: dist/*.tar.gz
       
       
 
@@ -210,12 +210,12 @@ jobs:
           pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
 
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        if: github.event.inputs.tags != null
-        with:
-          overwrite: true
-          path: wheelhouse/*.whl
+      #- name: Upload wheels
+      #  uses: actions/upload-artifact@v4
+      #  if: github.event.inputs.tags != null
+      #  with:
+      #    overwrite: true
+      #x    path: wheelhouse/*.whl
   
       - name: 'Upload Binary Release Asset'
         uses: softprops/action-gh-release@v2
