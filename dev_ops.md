@@ -6,10 +6,13 @@
 
 -  If you want to make a tag you can use the script, the  `-do_remote_tag` option will create the tag remotely,
    deleting remotely the one with the same name, e.g.: 
-    - ./make_tag.py 1.1.2 -do_remote_tag
-    OR
-    - ./make_tag.py stable -do_remote_tag
-
+    - `./make_tag.py 1.1.2 -do_remote_tag`
+   
+   To use as tag the current version
+    - `./make_tag.py  -do_remote_tag`
+   
+   To just print the tag without creating it:
+   - `./make_tag.py  -dry`
    
 ## operations on the action workflow
 - If you want  to create a release from the same branch of the workflow
