@@ -364,9 +364,9 @@ class FitModel(Model):
                     #print(p.name,p._root_par,[p.model],p._linked_root_model,p.immutable)
                     c.parameters.link_par(p._root_par.name,[p.model.name],p._linked_root_model.name)
 
-            for m in c.components.components_list:
-                if isinstance(m,Jet):
-                    m._fix_par_dep_on_load()
+            #for m in c.components.components_list:
+            #    if isinstance(m,Jet):
+            #        m._fix_par_dep_on_load()
             if isinstance(c, Model):
                 c.eval()
                 return c

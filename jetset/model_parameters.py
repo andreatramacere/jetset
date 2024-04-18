@@ -326,6 +326,7 @@ class ModelParameter(object):
         self._is_dependent = False
         self._master_par_list=[]
         self._depending_pars=[]
+        self._master_pars=[]
         self.par_expr=None
        
         
@@ -336,6 +337,7 @@ class ModelParameter(object):
 
     def _add_master_par(self,par):
         if par not in self._master_pars :
+            print("adding par:",par.name,"to ",self.name)
             self._master_pars.append(par)
 
     #def make_dependent_par(self, master_par, func, root_model=None):
@@ -408,7 +410,7 @@ class ModelParameter(object):
                 if _user_par_.adimensional:
                     _par_values[ID] = _user_par_.val_lin
                 else:
-                    _par_values[ID] = _user_par_.val_lin*_user_par_.units
+                    _par_values[ID] = _user_par_.val_lin*u.Unit(str(_user_par_.units))
                 exec(_user_par_.name + '=_par_values[ID]')
             res = eval(self._depending_par_expr)
         elif callable(self._depending_par_expr) is True:
@@ -417,7 +419,7 @@ class ModelParameter(object):
                 if _user_par_.adimensional:
                     _par_values[_user_par_.name] = _user_par_.val_lin
                 else:
-                    _par_values[_user_par_.name] = _user_par_.val_lin*_user_par_.units
+                    _par_values[_user_par_.name] = _user_par_.val_lin*u.Unit(str(_user_par_.units))
             res=self._depending_par_expr(**_par_values)
      
         _unit = None
@@ -469,7 +471,6 @@ class ModelParameter(object):
                     self._val.val = keywords[kw]
                     if self._depending_pars is not []:
                         for p in self._depending_pars:
-                            #print("==> setting dep par",p.name, 'to',p._func(),'p=',p,'master',self,'name',self.name)
                             p.set(val=p._func(),skip_dep_par_warning=True)
 
                 elif kw == 'log':

@@ -258,15 +258,22 @@ class Model(object):
             raise RuntimeError(e)
 
     def _fix_par_dep_on_load(self,):
+        #print("\n \n ========> fix dep on load START")
         for p in self.parameters.par_array:
             if p._is_dependent is True and p._linked is False:
-                #print('==> _master_par_list',p._master_par_list)
-                #print('==> _depending_par_expr',p._depending_par_expr)
-                _master_par_list=copy.deepcopy(p._master_par_list)
+                #print('==> _master_par_list',p._master_par_list, " for", p.name)
+                #print('==> _depending_par_expr',p._depending_par_expr, " for", p.name)
+                _master_par_list=[p for p in p._master_par_list]
                 _depending_par_expr=copy.deepcopy(p._depending_par_expr)
                 p.reset_dependencies()    
                 self.make_dependent_par(p.name, _master_par_list, _depending_par_expr,set_par_expr_source_code=True)
         
+        
+    #def _set_pars_dep(self):
+    #    for p in self.parameters.par_array:
+    #        if
+
+   
     #def _set_pars_dep(self):
     #    for p in self.parameters.par_array:
     #        if
@@ -356,7 +363,8 @@ class Model(object):
             except:
                 raise RuntimeError('the parameter expression is not valid')
 
-    def make_dependent_par(self, par, depends_on, par_expr,verbose=True,set_par_expr_source_code=True):
+    def make_dependent_par(self, par, depends_on, par_expr,verbose=True,set_par_expr_source_code=True,master_pars=None):
+        #print("\n  ===> make par: ",par, "depending on : ",depends_on, " START")
         master_par_list = depends_on
 
         dep_par=self.parameters.get_par_by_name(par)
@@ -380,16 +388,20 @@ class Model(object):
                 message='problem with parameter name: %s'%p
                 message+='\nexception:%s'%str(e)
                 raise RuntimeError(message)
-
+              
         for p in master_par_list:
 
             m = self.parameters.get_par_by_name(p)
-            if m._is_dependent is False:
-                m.val=m.val
+            if m._is_dependent is False and m.par_type == 'user_defined':
+                try:
+                    m.val=m.val
+                except:
+                    pass
         if set_par_expr_source_code is True:
             dep_par._set_par_expr_source_code()
             if verbose is True:
                 dep_par.par_expression_source_code
+        #print("  ===> make par: ",par, "depending on : ",depends_on, " END\n")
     
     def add_user_par(self,name,val,units='',val_min=None,val_max=None):
         self.parameters.add_par(ModelParameter(name=name,units=units,val=val,val_min=val_min,val_max=val_max,par_type='user_defined'))

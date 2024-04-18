@@ -178,4 +178,58 @@ class TestDependingParameters(TestBase):
             
             np.testing.assert_allclose(new_fit_model.jet_leptonic.parameters.B.val, par_func(B0,R0,R_H,m_B))
 
-            
+    def test_dep_par_fit_model(self,plot=False):
+        import numpy as np
+        from jetset.model_manager import FitModel
+        from jetset.jet_model import Jet
+        j=Jet()
+        
+        j.add_EC_component(['EC_BLR','EC_Disk','EC_DT'],disk_type='MultiBB')
+
+        #kaspi+ 2007:https://iopscience.iop.org/article/10.1086/512094/pdf
+        j.make_dependent_par(par='R_BLR_in', depends_on=['L_Disk'], par_expr='1E17*(L_Disk/1E45)**0.5')
+
+        j.make_dependent_par(par='R_BLR_out', depends_on=['R_BLR_in'], par_expr='R_BLR_in*1.1')
+
+        #Cleary+ 2007:https://iopscience.iop.org/article/10.1086/511969/pdf
+        j.make_dependent_par(par='R_DT', depends_on=['L_Disk'], par_expr='2.5E18*(L_Disk/1E45)**0.5')
+    
+        j.add_user_par(name='theta_open',val=5, units='deg')
+        def f_par(R_H,theta_open):
+            return np.tan( theta_open)*R_H
+
+        j.make_dependent_par(par='R', depends_on=['R_H','theta_open'],
+                              par_expr=f_par)
+
+        j.eval()
+        
+        R_H_val=1E21
+        j.parameters.R_H.val=R_H_val
+        R_val=j.parameters.R.val
+
+        j.save_model('test_jet_EC.pkl')
+
+        fit_model = FitModel(jet=j, name='EC-best-fit-lsb', template=None)
+        fit_model.save_model('test_fit_model_EC.pkl')
+        
+        new_jet=Jet.load_model('test_jet_EC.pkl')
+       
+        new_jet.eval()
+        print("units of theta_open",new_jet.parameters.theta_open.units)
+
+
+        new_jet.parameters.R_H.val=R_H_val
+        
+        assert(new_jet.parameters.R.val==R_val)
+        new_jet.show_model()
+
+        new_fit_model=FitModel.load_model('test_fit_model_EC.pkl')
+
+
+        new_fit_model.eval()
+        print("units of theta_open",new_fit_model.jet_leptonic.parameters.theta_open.units)
+
+        new_fit_model.jet_leptonic.parameters.R_H.val=R_H_val
+        
+        assert(new_fit_model.jet_leptonic.parameters.R.val==R_val)
+        new_fit_model.show_model()
