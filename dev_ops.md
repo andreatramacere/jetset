@@ -46,4 +46,4 @@
 ## Installation 
 - installing from source without setup.py install
    - pip: rm -rf ./build
-   - pip install .
+   - pip install --verbose .
