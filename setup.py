@@ -19,7 +19,7 @@ import shutil
 import fnmatch
 import json
 import sys
-
+import numpy
 
 def check_swig():
     command = 'swig'
@@ -127,7 +127,8 @@ src_files=['jetset/jetkernel/jetkernel.i']
 src_files.extend(glob.glob ('jetkernel_src/src/*.c'))
 _module=Extension('jetset.jetkernel/_jetkernel',
                   sources=src_files,
-                  extra_compile_options='-lpthread',
+                  #extra_compile_args=['-lpthread','-O3'],
+                  language='c',
                   #extra_compile_options='-fPIC  -v  -c -m64 -I',
                   #extra_link_options='-suppress',
                   swig_opts=['-v','-threads'],
