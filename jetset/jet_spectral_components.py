@@ -22,6 +22,7 @@ from . import spectral_shapes
 from .jetkernel_models_dic import nuFnu_obs_dict, n_seed_dic
 from .plot_sedfit import PlotSpecComp,PlotSeedPhotons
 from .utils import check_frame, unexpected_behaviour
+from .jet_kernel_tools import get_spectral_c_array
 
 __all__=['JetSeedPhotons','JetSpecComponent','SpecCompList']
 
@@ -49,18 +50,7 @@ class JetSeedPhotons(object):
 
     def get_spectral_points(self,log_log=False,emiss_lim=0):
 
-        #try:
-
-        size=self._blob_object.nu_grid_size
-        x=zeros(size)
-        y=zeros(size)
-
-        for i in range(size):
-            x[i]=BlazarSED.get_spectral_array(self.nu_ptr,self._blob_object,i)
-            y[i]=BlazarSED.get_spectral_array(self.n_ptr,self._blob_object,i)
-
-            #print("->%e %e"%(x[i],y[i]))
-
+        x,y=get_spectral_c_array(self.nu_ptr,self.n_ptr ,self._blob_object.nu_grid_size,self._blob_object)
         msk_nan=np.isnan(x)
         msk_nan+=np.isnan(y)
         #print('emiss lim',self.get_emiss_lim())
@@ -204,17 +194,9 @@ class JetSpecComponent(object):
 
 
 
-    def get_SED_points(self, log_log=False, lin_nu=None,interp='linear',skip_zeros=False):
-
-        size = self._blob_object.nu_grid_size
-        x = zeros(size)
-        y = zeros(size)
-
-        for i in range(size):
-            x[i] = BlazarSED.get_spectral_array(self.nu_ptr, self._blob_object, i)
-            y[i] = BlazarSED.get_spectral_array(self.nuFnu_ptr, self._blob_object, i)
-
-
+    def get_SED_points(self, log_log=False, lin_nu=None, interp='linear', skip_zeros=False):
+        x,y= get_spectral_c_array(self.nu_ptr, self.nuFnu_ptr, self._blob_object.nu_grid_size,self._blob_object)
+  
         msk_nan = np.isnan(x)
         msk_nan += np.isnan(y)
 
@@ -227,9 +209,9 @@ class JetSpecComponent(object):
         msk_zeros = y > self.get_emiss_lim()
 
         if lin_nu is not None:
-            #f_interp=interpolate.Akima1DInterpolator(log10(x), log10(y))
             f_interp = interpolate.interp1d(log10(x), log10(y), bounds_error=False, kind=interp)
             y = np.power(10., f_interp(log10(lin_nu)))
+            #y=np.interp(log10(lin_nu), log10(x), log10(y),np.nan,np.nan)
             x=lin_nu
             msk_nan = np.isnan(y)
             y[msk_nan] = 0.
