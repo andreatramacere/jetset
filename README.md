@@ -100,7 +100,7 @@ pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser
 
      - https://github.com/andreatramacere/jetset/archive/stable.tar.gz
 
-   - Uncompress the  archive  `jetset-stable.tar.gz`
+   - Uncompress the archive `jetset-stable.tar.gz`
    
    - cd to  the dir 
     
