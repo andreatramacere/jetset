@@ -334,16 +334,16 @@ double trapzd_array_linear_grid(double *x, double *y, unsigned int SIZE)
     I = 0;
     //x1 = x[0];
     y1 = y[0];
-    delta_x=x[1]-x[0];
+    delta_x= x[1]-x[0];
 
-    for (INDEX = 1; INDEX <= SIZE; INDEX++)
+    for (INDEX = 1; INDEX < SIZE; INDEX++)
     {
         y2 = y[INDEX];
-        I += (y1 + y2) * delta_x;        
+        I += (y1 + y2);        
         y1 = y2;
         //printf("%e %e %d\n",nu2, Ptot, i);
     }
-    return I * 0.5;
+    return I * 0.5 * delta_x;
 }
 
 double trapzd_array_arbritary_grid( double *x, double *y, unsigned int SIZE)

@@ -18,28 +18,68 @@
  */
 
 
-double f_psi_EC(double R_ext,double R_H, double mu_s,double beaming,double phi){
-	double x2, cos_psi;
-	x2= (R_ext*R_ext)+(R_H*R_H);   
-    cos_psi=mu_s*(R_H/sqrt(x2))+(sqrt((1-(mu_s*mu_s)))*sqrt(1-((R_H*R_H)/x2)))*cos(phi);
-	return ((1 - cos_psi) * (1 - cos_psi)) * pow(beaming,6) / x2;
+// double f_psi_EC_sphere(double R_ext,double R_H, double mu_s,double beaming,double phi){
+// 	double x2, cos_psi, mu_star;
+// 	R_H = R_H - R_ext;
+// 	x2 =  (R_ext*R_ext)+(R_H*R_H);
+// 	mu_star = R_H/sqrt(x2);
+// 	//x2=  ((R_H*R_H)-(R_ext*R_ext));
+// 	//mu_star =sqrt(x2)/R_H;
+//     cos_psi=(mu_s*mu_star)+(sqrt((1-(mu_s*mu_s)))*sqrt(1-(mu_star*mu_star)))*cos(phi);
+// 	return ((1 - cos_psi) * (1 - cos_psi)) * pow(beaming,6) / x2;
+// }
+
+
+double f_psi_EC_sphere(double R_ext,double R_H, double mu_s, double mu_re, double beaming,double phi){
+	double x2, cos_psi, mu_star;
+	x2= (R_ext*R_ext)+(R_H*R_H) -2*R_H*R_ext*mu_re;
+	mu_star=sqrt(1- ((R_ext*R_ext/x2) *(1-mu_re*mu_re)) );
+	//printf("x2=%e mu_re=%e mu_star=%e\n", x2,mu_re,mu_star);
+	if (mu_star>1){
+		return 0.;
+	}
+	cos_psi=(mu_s*mu_star) +( sqrt(1-(mu_star*mu_star))*sqrt(1-(mu_s*mu_s))*cos(phi));
+	return ((1 - cos_psi) * (1 - cos_psi)) * pow(beaming,6)/x2;
 }
 
-double beaming_pattern_EC(double theta_s, double R_ext, double R_H, double Gamma)
-{
-	double phi[100], y[100];
-	int i;
-	double delta_phi, beaming, mu_s;
+double beaming_pattern_EC(double theta_s, double R_ext, double R_H, double Gamma){
+	unsigned  int_size = 100;
+	double phi[100], mu_re[100], y[100], z[100];
+	unsigned int i,j;
+	double delta_phi, beaming, mu_s,mu_re_max,mu_re_min,delta_mu_re;
+	
 	beaming = get_beaming(Gamma, theta_s);
-	delta_phi = 2 * pi / 100;
+
+	mu_re_min=-1;
+	if (R_H > R_ext){
+         mu_re_max= R_ext/ R_H;
+	
+    }else{
+		mu_re_max = 1;
+	}	
+
+	delta_phi = 2 * pi / (int_size-1);
+	delta_mu_re  = (mu_re_max-mu_re_min)/ (int_size-1);
+	
 	mu_s = cos(Deg_to_Rad * theta_s);
-	for (i = 0; i < 100; i++)
+	for (i = 0; i < int_size; i++)
 	{
 		phi[i] = 0 + (i * delta_phi);
-		y[i] = f_psi_EC(R_ext, R_H, mu_s, beaming, phi[i]);
-	}
+		mu_re[i] = mu_re_min + (i*delta_mu_re);
 
-	return trapzd_array_linear_grid(phi, y, 100);
+	}
+	
+	for (i = 0; i < int_size; i++)
+	{
+		for (j = 0; j < int_size; j++){
+			
+		 	z[j]= f_psi_EC_sphere(R_ext, R_H, mu_s, mu_re[j],beaming, phi[i]);
+	
+		}	
+		y[i]= trapzd_array_linear_grid(mu_re, z, int_size);
+
+	}
+	return trapzd_array_linear_grid(phi, y, int_size);
 }
 
 double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma){
@@ -50,7 +90,7 @@ double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R
 	return y_theta / y_theta_0;
 }
 
-void update_EC_for_bp(struct blob *pt, double nuFnu_obs_ref, double R_ext_emit, unsigned int SIZE, double *nuFnu_obs)
+void update_EC_for_bp(struct blob *pt, double nuFnu_obs_ref, double R_ext_emit, unsigned int SIZE, double *nuFnu_obs, double *nu_obs)
 {
 	double s_bp, s_actual, nuFnu_obs_max;
 	unsigned int I_MAX, NU_INT;
@@ -72,6 +112,7 @@ void update_EC_for_bp(struct blob *pt, double nuFnu_obs_ref, double R_ext_emit, 
 		if (nuFnu_obs[NU_INT] > pt->emiss_lim)
 		{
 			nuFnu_obs[NU_INT] = nuFnu_obs[NU_INT] * (s_bp / s_actual);
+			nu_obs[NU_INT] = nu_obs[NU_INT] * pow((s_bp /(pt->BulkFactor* s_actual)),0.25);
 			if (nuFnu_obs[NU_INT] <= pt->emiss_lim)
 			{
 					nuFnu_obs[NU_INT] = pt->emiss_lim;

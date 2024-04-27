@@ -679,7 +679,7 @@ void Run_SED(struct blob *pt_base){
                     }
                     spettro_EC(1, pt_base);
                     if (set_condition_EC_correction(pt_base, pt_base->R_inner) > 0){
-                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_inner, pt_base->nu_IC_size, pt_base->nuF_nu_EC_Disk_obs);
+                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_inner, pt_base->nu_IC_size, pt_base->nuF_nu_EC_Disk_obs, pt_base->nu_EC_Disk_obs);
                     }
                 }
                 if (pt_base->do_EC_BLR == 1) {
@@ -694,7 +694,7 @@ void Run_SED(struct blob *pt_base){
                     }
                     spettro_EC(1, pt_base);
                     if (set_condition_EC_correction(pt_base, pt_base->R_BLR_out) > 0){
-                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_BLR_out, pt_base->nu_IC_size, pt_base->nuF_nu_EC_BLR_obs);
+                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_BLR_out, pt_base->nu_IC_size, pt_base->nuF_nu_EC_BLR_obs, pt_base->nu_EC_BLR_obs);
                     }
                 }
                 if (pt_base->do_EC_DT == 1) {
@@ -714,7 +714,7 @@ void Run_SED(struct blob *pt_base){
                     //printf("RUN 4 R_H=%e c=%d \n", pt_base->R_H,set_condition_EC_correction(pt_base, pt_base->R_DT) );
                     if (set_condition_EC_correction(pt_base, pt_base->R_DT) > 0)
                     {
-                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_DT, pt_base->nu_IC_size, pt_base->nuF_nu_EC_DT_obs);
+                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_DT, pt_base->nu_IC_size, pt_base->nuF_nu_EC_DT_obs, pt_base->nu_EC_DT_obs);
                     }
                     //printf("RUN 4 R_H=%e c=%d \n", pt_base->R_H, set_condition_EC_correction(pt_base, pt_base->R_DT));
                 }

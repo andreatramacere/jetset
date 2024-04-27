@@ -1240,11 +1240,12 @@ void spettro_EC(int num_file, struct blob *);
 
 void set_EC_stat_pre(struct blob *pt, double R_lim);
 void set_EC_stat_post(struct blob *pt);
-double f_psi_EC(double R_ext,double R_H, double mu_s,double beaming,double phi);
+//double f_psi_EC_sphere(double R_ext,double R_H, double mu_s,double beaming,double phi);
+double f_psi_EC_sphere(double R_ext,double R_H, double mu_s, double mu_re, double beaming,double phi);
 double beaming_pattern_EC(double theta_s, double R_ext, double R_H, double Gamma);
 double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma);
 double get_EC_reference(struct blob *pt, double *nuFnu_obs);
-void update_EC_for_bp(struct blob *pt, double nuFnu_obs_ref, double R_ext_emit, unsigned int SIZE, double *nuFnu_obs);
+void update_EC_for_bp(struct blob *pt, double nuFnu_obs_ref, double R_ext_emit, unsigned int SIZE, double *nuFnu_obs, double *nu_obs);
 int set_condition_EC_correction(struct blob *pt, double R_ext_emit);
 
 /***  DISK PLANCK FUNCTIONS  *********/
@@ -1297,7 +1298,7 @@ double eval_I_nu_Disk_blob_RF(struct blob *pt, double nu_disk_RF);
 double eval_I_nu_theta_Disk(struct blob *pt, double mu);
 double integrand_I_nu_Disk_blob_RF(struct blob *pt, double mu);
 double integrand_I_nu_Disk_disk_RF(struct blob *pt, double mu);
-double eval_Disk_L_nu(struct blob *pt, double nu_Disk_disk_RF);
+double eval_Disk_L_nu(struct blob *pt, double L_nu_Disk_disk_RF);
 void set_Disk_geometry(struct blob *pt);
 double eval_nu_peak_Disk(double T);
 

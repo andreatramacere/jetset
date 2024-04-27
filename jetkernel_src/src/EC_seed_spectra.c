@@ -854,7 +854,8 @@ void Build_I_nu_BLR(struct blob *pt){
 
 	build_log_grid( pt->nu_start_BLR_disk_RF,  pt->nu_stop_BLR_disk_RF, pt->nu_seed_size, pt->nu_BLR_disk_RF);
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
-		pt->Lnu_BLR_disk_RF[NU_INT] = eval_Lnu_BLR_disk_RF(pt, pt->nu_BLR_disk_RF[NU_INT]);
+		//pt->Lnu_BLR_disk_RF[NU_INT] = eval_Lnu_BLR_disk_RF(pt, pt->nu_BLR_disk_RF[NU_INT]);
+		pt->Lnu_BLR_disk_RF[NU_INT] = eval_Lnu_BLR_disk_RF(pt,pt->L_nu_Disk_disk_RF[NU_INT]);
 	}
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->I_nu_BLR_disk_RF[NU_INT] = I_nu_theta_disk_RF * pt->Lnu_BLR_disk_RF[NU_INT];
@@ -1030,9 +1031,11 @@ double eval_I_nu_BLR_blob_RF(struct blob *pt)
 	return I*one_by_four_pi*c;
 }
 
-double eval_Lnu_BLR_disk_RF(struct blob *pt, double nu_disk_RF)
+//double eval_Lnu_BLR_disk_RF(struct blob *pt, double nu_disk_RF)
+double eval_Lnu_BLR_disk_RF(struct blob *pt, double Disk_L_nu)
 {
-	return eval_Disk_L_nu(pt, nu_disk_RF) * pt->n0_BLR *SIGTH;
+	return Disk_L_nu* pt->n0_BLR *SIGTH;
+	//return eval_Disk_L_nu(pt, nu_disk_RF) * pt->n0_BLR *SIGTH;
 }
 
 
@@ -1421,8 +1424,6 @@ double eval_I_nu_DT_blob_RF(struct blob *pt )
 
 double eval_DT_L_nu(struct blob *pt, double DT_disk_RF)
 {
-	//unsigned int i;
-	//i = x_to_grid_index(pt->nu_Disk_disk_RF, DT_disk_RF, pt->nu_seed_size);
 	return pt->L_Disk_radiative * pt->tau_DT * f_planck_norm(pt->T_DT, DT_disk_RF);
 }
 
