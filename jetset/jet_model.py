@@ -958,6 +958,7 @@ class JetBase(Model):
         if val not in self._external_field_transf.keys():
             raise RuntimeError('val',val,'not in allowed values',self._external_field_transf.keys())
         self._blob.EC_stat=self._external_field_transf[val]
+        self._blob.EC_stat_orig=self._external_field_transf[val]
 
     def get_external_field_transf(self):
         return dict(map(reversed, self._external_field_transf.items()))[self._blob.EC_stat]
