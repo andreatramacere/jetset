@@ -18,16 +18,13 @@
  */
 
 
-// double f_psi_EC_sphere(double R_ext,double R_H, double mu_s,double beaming,double phi){
-// 	double x2, cos_psi, mu_star;
-// 	R_H = R_H - R_ext;
-// 	x2 =  (R_ext*R_ext)+(R_H*R_H);
-// 	mu_star = R_H/sqrt(x2);
-// 	//x2=  ((R_H*R_H)-(R_ext*R_ext));
-// 	//mu_star =sqrt(x2)/R_H;
-//     cos_psi=(mu_s*mu_star)+(sqrt((1-(mu_s*mu_s)))*sqrt(1-(mu_star*mu_star)))*cos(phi);
-// 	return ((1 - cos_psi) * (1 - cos_psi)) * pow(beaming,6) / x2;
-// }
+double f_psi_EC_ring(double R_ext,double R_H, double mu_s,double beaming,double phi){
+ 	double x2, cos_psi, mu_star;
+ 	x2 =  (R_ext*R_ext)+(R_H*R_H);
+ 	mu_star = R_H/sqrt(x2);
+	cos_psi=(mu_s*mu_star)+(sqrt((1-(mu_s*mu_s)))*sqrt(1-(mu_star*mu_star)))*cos(phi);
+ 	return ((1 - cos_psi) * (1 - cos_psi)) * pow(beaming,6) / x2;
+	}
 
 
 double f_psi_EC_sphere(double R_ext,double R_H, double mu_s, double mu_re, double beaming,double phi){
@@ -42,12 +39,15 @@ double f_psi_EC_sphere(double R_ext,double R_H, double mu_s, double mu_re, doubl
 	return ((1 - cos_psi) * (1 - cos_psi)) * pow(beaming,6)/x2;
 }
 
-double beaming_pattern_EC(double theta_s, double R_ext, double R_H, double Gamma){
+double beaming_pattern_EC(double theta_s, double R_ext, double R_H, double Gamma, int geom){
+	// geom = 0 sphere
+	// geom = 1 ring
+	
 	unsigned  int_size = 100;
 	double phi[100], mu_re[100], y[100], z[100];
 	unsigned int i,j;
-	double delta_phi, beaming, mu_s,mu_re_max,mu_re_min,delta_mu_re;
-	
+	double delta_phi, beaming, mu_s,mu_re_max,mu_re_min,delta_mu_re,bp;
+
 	beaming = get_beaming(Gamma, theta_s);
 
 	mu_re_min=-1;
@@ -69,24 +69,34 @@ double beaming_pattern_EC(double theta_s, double R_ext, double R_H, double Gamma
 
 	}
 	
-	for (i = 0; i < int_size; i++)
-	{
-		for (j = 0; j < int_size; j++){
+	if (geom==0){
+		for (i = 0; i < int_size; i++){
+			for (j = 0; j < int_size; j++){
 			
 		 	z[j]= f_psi_EC_sphere(R_ext, R_H, mu_s, mu_re[j],beaming, phi[i]);
 	
-		}	
-		y[i]= trapzd_array_linear_grid(mu_re, z, int_size);
-
+			}	
+			y[i]= trapzd_array_linear_grid(mu_re, z, int_size);
+		}
+		bp= trapzd_array_linear_grid(phi, y, int_size);
+	
+	}else if(geom==1){
+		for (i = 0; i < int_size; i++){
+			y[i]=  f_psi_EC_ring(R_ext, R_H, mu_s, beaming, phi[i]);
+			}
+		bp=trapzd_array_linear_grid(phi, y, int_size);
+	}else{
+		printf("wrong geometry for beaming pattern \n ");
+        exit(0);	
 	}
-	return trapzd_array_linear_grid(phi, y, int_size);
+	return bp;
 }
 
 double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma){
 	double y_theta, y_theta_0;
 
-	y_theta = beaming_pattern_EC(theta_s, R_ext, R_H_orig, Gamma);
-	y_theta_0 = beaming_pattern_EC(theta_s, R_ext, R_H_in, Gamma);
+	y_theta = beaming_pattern_EC(theta_s, R_ext, R_H_orig, Gamma,0);
+	y_theta_0 = beaming_pattern_EC(theta_s, R_ext, R_H_in, Gamma,0);
 	return y_theta / y_theta_0;
 }
 
@@ -148,7 +158,7 @@ int set_condition_EC_correction(struct blob *pt,double R_ext_emit)
 	if ((pt->R_H > (R_ext_emit * pt->R_ext_emit_factor)) && (pt->EC_stat == 1) && R_ext_emit > 0){
 		do_EC_correction =1;
 	}
-
+	//printf("do_EC_correction=%d \n",do_EC_correction);
 	return do_EC_correction;
 }
 
@@ -496,7 +506,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
 	set_EC_stat_post(pt);
 	//printf("spettro_EC 4 R_H=%e c=%d \n", pt->R_H, set_condition_EC_correction(pt, pt->R_DT));
 
-	spectra_External_Fields(1, pt,1);
+	//spectra_External_Fields(1, pt,1);
 	//printf("spettro_EC 5 R_H=%e c=%d \n", pt->R_H, set_condition_EC_correction(pt, pt->R_DT));
 
 	//===========================================

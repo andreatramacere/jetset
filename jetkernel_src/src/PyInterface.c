@@ -288,7 +288,7 @@ struct blob MakeBlob() {
     sprintf(spettro_root.disk_type, "BB");
     spettro_root.R_H=1E17;
     spettro_root.R_H_orig = 1E17;
-    spettro_root.R_H_scale_factor=2.0;
+    spettro_root.R_H_scale_factor=1.0;
     spettro_root.R_ext_emit_factor=1.0;
     //spettro_root.EC_theta_lim=5.0;
     spettro_root.M_BH = 1E9;
@@ -676,6 +676,7 @@ void Run_SED(struct blob *pt_base){
                         spettro_EC(1, pt_base);
                         nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->nuF_nu_EC_Disk_obs);
                         pt_base->R_H = pt_base->R_H_orig;
+                        Build_I_nu_Disk(pt_base);
                     }
                     spettro_EC(1, pt_base);
                     if (set_condition_EC_correction(pt_base, pt_base->R_inner) > 0){
@@ -691,6 +692,7 @@ void Run_SED(struct blob *pt_base){
                         spettro_EC(1, pt_base);
                         nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->nuF_nu_EC_BLR_obs);
                         pt_base->R_H = pt_base->R_H_orig;
+                        Build_I_nu_BLR(pt_base);
                     }
                     spettro_EC(1, pt_base);
                     if (set_condition_EC_correction(pt_base, pt_base->R_BLR_out) > 0){
@@ -707,6 +709,7 @@ void Run_SED(struct blob *pt_base){
                         spettro_EC(1, pt_base);
                         nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->nuF_nu_EC_DT_obs);
                         pt_base->R_H = pt_base->R_H_orig;
+                        Build_I_nu_DT(pt_base);
                     }
                     //printf("RUN 2 R_H=%e c=%d , EC_stat=%d\n", pt_base->R_H, set_condition_EC_correction(pt_base, pt_base->R_DT), pt_base->EC_stat);
                     //printf("RUN 3 R_H=%e c=%d \n", pt_base->R_H, set_condition_EC_correction(pt_base, pt_base->R_DT));

@@ -1240,9 +1240,9 @@ void spettro_EC(int num_file, struct blob *);
 
 void set_EC_stat_pre(struct blob *pt, double R_lim);
 void set_EC_stat_post(struct blob *pt);
-//double f_psi_EC_sphere(double R_ext,double R_H, double mu_s,double beaming,double phi);
+double f_psi_EC_ring(double R_ext,double R_H, double mu_s,double beaming,double phi);
 double f_psi_EC_sphere(double R_ext,double R_H, double mu_s, double mu_re, double beaming,double phi);
-double beaming_pattern_EC(double theta_s, double R_ext, double R_H, double Gamma);
+double beaming_pattern_EC(double theta_s, double R_ext, double R_H, double Gamma, int geom);
 double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma);
 double get_EC_reference(struct blob *pt, double *nuFnu_obs);
 void update_EC_for_bp(struct blob *pt, double nuFnu_obs_ref, double R_ext_emit, unsigned int SIZE, double *nuFnu_obs, double *nu_obs);
