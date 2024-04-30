@@ -19,7 +19,6 @@ import shutil
 import fnmatch
 import json
 import sys
-import numpy
 
 def check_swig():
     command = 'swig'
