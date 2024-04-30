@@ -116,7 +116,12 @@ class FitModel(Model):
                  composite_expr=None,
                  **keywords):
 
-        super(FitModel,self).__init__( model_type='composite_model', **keywords)
+        
+        super(FitModel,self).__init__(model_type='composite_model',
+                                      nu_size=nu_size,
+                                      name=name,
+                                      cosmo=cosmo,
+                                       **keywords)
        
         if  jet is not None and elec_distr is not None:
             #!! warning or error?

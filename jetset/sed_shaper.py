@@ -498,7 +498,7 @@ class SEDShape(object):
         for index in self.indices.idx_list:
             do_fit=self.check_adapt_range_size(self.sed_data.data['nu_data_log'],index,3,silent=silent)
             if do_fit==True:
-                loglog_poly=LogLinear()
+                loglog_poly=LogLinear(cosmo=self.cosmo)
                 loglog_pl=FitModel(cosmo=self.cosmo, name='%s'%index.name,loglog_poly=loglog_poly)
                 self.get_initial_index_values(index,loglog_pl)
              

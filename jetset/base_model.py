@@ -27,7 +27,13 @@ __all__=['Model','MultiplicativeModel']
 class Model(object):
     
     
-    def __init__(self,name='no_name',nu_size=200,model_type='base_model',scale='lin-lin',cosmo=None,nu_min=None,nu_max=None):
+    def __init__(self,name='no_name',
+                 nu_size=200,
+                 model_type='base_model',
+                 scale='lin-lin',
+                 cosmo=None,
+                 nu_min=None,
+                 nu_max=None):
         
         self.model_type=model_type
         
@@ -48,7 +54,9 @@ class Model(object):
         self.flux_plot_lim = 1E-30
 
         if cosmo is None:
-          self.cosmo=Cosmo()
+            self.cosmo=Cosmo()
+        else:
+            self.cosmo=cosmo
 
         self._set_version(v=None)
         
@@ -226,7 +234,7 @@ class Model(object):
         if filter_UL ==True:
             msk=data['UL']==False
         else:
-            msk=np.ones(data.size,dt=True)
+            msk=np.ones(len(data),dtype=bool)
 
         residuals = (data['nuFnu_data'] - model) /  data['dnuFnu_data']
 
