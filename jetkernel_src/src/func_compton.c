@@ -349,19 +349,14 @@ void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int 
 }
 
 //=========================================================================================
-// INTEGRAZIONE SSC TRAPEZOIDALE/METODO DI SIMPSON E GRIGLIA EQUI-LOG
-// TEST MODIFICO INTERFACCIA
-// nu_Sync=>nu_seed
-// I_nu_Sync=>I_nu_seed
+// IC INTEGRATION METHOD TRAPEZOIDAL/SIMPSON_GRID_EQUI_LOG
 // a,b: boundaries for photon integration
 // returns [emitted photons, cm-3, s-1, Hz-1, sterad-1]
 // the [sterad-1] comes from n_seed
 //=========================================================================================
 double integrale_IC( struct blob * pt, double a, double b, int stat_frame, double nu_IC_out) {
     double integr_nu, nu_IC_in;
-    //double test,test1,test2,N,N_IC,N_IC_1;
-    //int negative;
-    //double g2, g1, y_g1, y_g2, y_g3,delta_g;
+    
     unsigned int ID,ID_gamma;
     double *Integrand_over_gamma_grid, *Ne_IC, *griglia_gamma_Ne_log_IC, *integr_gamma;
     Integrand_over_gamma_grid = (double *) calloc(pt->gamma_grid_size, sizeof (double));
@@ -372,27 +367,15 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame, doubl
     integr_nu = 0.0;
    
 
-   
-    //g = pt->gmin_griglia;
 
-    //if IC_adaptive_e_binning==1
-    //wit this choice gmin is set to its lowest possible
-    //value for any nu_seed in the range (a,b)
-    //this must stay even if adaptive binning is set to 0!
     set_N_distr_for_Compton(pt, b, nu_IC_out, stat_frame, Ne_IC, griglia_gamma_Ne_log_IC);
-
-    ID = 0;
-    while (pt->nu_seed[ID] < a && ID<pt->nu_seed_size) {
-        ID++;
-        integr_gamma[ID]=0.;
-    }
 
     if (pt->verbose>1) {
         printf("***** Integrale  IC ******\n");
         printf("i=%d\n", ID);
         printf("nu=%e a=%e b=%e  g_min_grid=%e g_max_grid=%e\n", pt->nu_seed[ID], a, b, griglia_gamma_Ne_log_IC[0], griglia_gamma_Ne_log_IC[pt->gamma_grid_size - 1]);
     }
-
+ 
     for (ID=0; ID<pt->nu_seed_size; ID++){
         if (pt->nu_seed[ID] <= b && pt->nu_seed[ID] >= a){
             nu_IC_in= pt->nu_seed[ID];
