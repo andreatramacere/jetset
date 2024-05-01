@@ -20,7 +20,8 @@ class  Cosmo (object):
 
         elif  astropy_cosmo is None and DL_cm is None:
             _c = self._get_custom_cosmology()
-            print("cosmology set to custom",str(_c))
+            if verbose is True:
+                print("cosmology set to custom",str(_c))
             
 
         elif astropy_cosmo is not None and DL_cm is None:
