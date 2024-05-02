@@ -105,8 +105,9 @@ class JetBase(Model):
         self.nu_grid_size=self._get_nu_grid_size_blob()
         N=multiprocessing.cpu_count()
         if N>2:
+            N=multiprocessing.cpu_count()
             N=min(N,20)
-        self.set_num_c_threads(N=multiprocessing.cpu_count())
+        self.set_num_c_threads(N=N)
         if jet_workplace is None:
             jet_workplace=WorkPlace()
             out_dir= jet_workplace.out_dir + '/' + self.name + '_jet_prod/'
