@@ -20,6 +20,7 @@ McmcSampler
       ~McmcSampler.reset_to_best_fit
       ~McmcSampler.run_sampler
       ~McmcSampler.save
+      ~McmcSampler.set_plot_label
       ~McmcSampler.show_pars
 
    .. rubric:: Methods Documentation
@@ -34,4 +35,5 @@ McmcSampler
    .. automethod:: reset_to_best_fit
    .. automethod:: run_sampler
    .. automethod:: save
+   .. automethod:: set_plot_label
    .. automethod:: show_pars

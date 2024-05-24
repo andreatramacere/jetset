@@ -1,1 +1,4 @@
+******
+output
+******
 .. automodapi:: jetset.output

@@ -1,1 +1,4 @@
+*********
+minimizer
+*********
 .. automodapi:: jetset.minimizer

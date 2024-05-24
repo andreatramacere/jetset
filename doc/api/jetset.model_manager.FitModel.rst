@@ -29,7 +29,9 @@ FitModel
       ~FitModel.link_par
       ~FitModel.load_model
       ~FitModel.plot_model
+      ~FitModel.sed_tables_dict
       ~FitModel.set
+      ~FitModel.set_fit_range
       ~FitModel.set_nu_grid
       ~FitModel.set_par
       ~FitModel.show_model
@@ -54,7 +56,9 @@ FitModel
    .. automethod:: link_par
    .. automethod:: load_model
    .. automethod:: plot_model
+   .. automethod:: sed_tables_dict
    .. automethod:: set
+   .. automethod:: set_fit_range
    .. automethod:: set_nu_grid
    .. automethod:: set_par
    .. automethod:: show_model

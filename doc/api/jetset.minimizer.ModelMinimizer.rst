@@ -13,6 +13,7 @@ ModelMinimizer
       ~ModelMinimizer.fit
       ~ModelMinimizer.get_fit_results
       ~ModelMinimizer.load_model
+      ~ModelMinimizer.plot_corr_matrix
       ~ModelMinimizer.reset_to_best_fit
       ~ModelMinimizer.save_model
       ~ModelMinimizer.show_fit_warnings
@@ -22,6 +23,7 @@ ModelMinimizer
    .. automethod:: fit
    .. automethod:: get_fit_results
    .. automethod:: load_model
+   .. automethod:: plot_corr_matrix
    .. automethod:: reset_to_best_fit
    .. automethod:: save_model
    .. automethod:: show_fit_warnings

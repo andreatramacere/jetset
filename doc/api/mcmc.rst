@@ -1,1 +1,4 @@
+****
+mcmc
+****
 .. automodapi:: jetset.mcmc

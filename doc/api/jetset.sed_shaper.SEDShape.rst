@@ -18,6 +18,7 @@ SEDShape
       ~SEDShape.do_sync_fit
       ~SEDShape.eval_indices
       ~SEDShape.find_class
+      ~SEDShape.get_initial_index_values
       ~SEDShape.get_nu_max
       ~SEDShape.plot_indices
       ~SEDShape.plot_shape_fit
@@ -37,6 +38,7 @@ SEDShape
    .. automethod:: do_sync_fit
    .. automethod:: eval_indices
    .. automethod:: find_class
+   .. automethod:: get_initial_index_values
    .. automethod:: get_nu_max
    .. automethod:: plot_indices
    .. automethod:: plot_shape_fit
