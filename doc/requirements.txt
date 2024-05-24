@@ -11,15 +11,14 @@ emcee>=3.0.0
 pyyaml
 pytest
 numba>0.55
-tqdm
-jupyter
-ipython
 dill
 swig>=4
+sphinx-bootstrap-theme
 sphinx-automodapi
 sphinx_rtd_theme>=0.3.1
 sphinxcontrib-bibtex
 sphinx-gallery
+sphinx-nbexamples
 nbsphinx
 numpydoc
 graphviz
