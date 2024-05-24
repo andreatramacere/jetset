@@ -9,7 +9,7 @@ rtd_req=['sphinx-bootstrap-theme',
     'graphviz',
     'mock']
 
-_skip_list=['pyqt','tqdm','jupyter','ipython']
+_skip_list=['pyqt','jupyter','ipython']
 f = open("../requirements.txt",'r')
 req=f.readlines()
 f.close()
