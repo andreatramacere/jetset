@@ -69,7 +69,7 @@ class ObsConstrain(object):
                 if kw =='indices':
                     self.indices=keywords[kw]
                     
-            for index in self.indices.idx_array:
+            for index in self.indices.idx_list:
                 index.show_val()
             
             self.beta_S=keywords['beta_S']
@@ -99,8 +99,7 @@ class ObsConstrain(object):
             self.z=self.SEDShape.sed_data.z
             self.rest_frame='obs'
             check_frame(self.rest_frame)
-
-        if self.z<0.:
+        if self.z<=0.:
             raise  RuntimeError('redshift value must be>0, please check z in sed_data or z in class constructor parameter')
         
         
@@ -116,7 +115,6 @@ class ObsConstrain(object):
         else:
             raise RuntimeError('''either you provide the beaming value, or both theta and the bulk factor values ''')
                 
-        
         self.B_min=B_range[0]
         self.B_max=B_range[1]
         self.B_start = (self.B_min + self.B_max)/2.0
@@ -143,7 +141,6 @@ class ObsConstrain(object):
         print(section_separator)
         print("***  constrains parameters from observable ***")
         print()
-
         model=self.get_model_constraint(name=name,
                                         jet_model=jet_model,
                                         params_grid_size=params_grid_size,
@@ -1067,9 +1064,7 @@ def constr_R_from_CD(jet,nuFnu_p_S,nu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,p
     for R in R_grid:
 
         jet.set_par('R',val=set_lin_log_val(jet.get_par_by_name('R'),R))
-
         completed = rescale_Ne(jet, nuFnu_p_S, nu_p_S, rest_frame)
-
         jet.eval()
 
         Lp_S=jet.get_SED_peak(Model_dic.Sync_nuFnu_p_dic[rest_frame])
@@ -1080,13 +1075,11 @@ def constr_R_from_CD(jet,nuFnu_p_S,nu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,p
         CD=Lp_IC/Lp_S
         CD_model_log.append(np.log10(CD))
 
-
     R_grid_log=np.log10(R_grid)
     p=polyfit(CD_model_log,R_grid_log,2)
     best_R=polyval(p, np.log10(CD_obs))
     Best_R=np.power(10., best_R)
     Best_R,failed=check_boundaries(Best_R,R_min,R_max,'R',silent=silent)
-    
 
     jet.set_par('R',val=set_lin_log_val(jet.get_par_by_name('R'),R_initial))
     jet.set_par('N',val=N_initial)

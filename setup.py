@@ -20,7 +20,6 @@ import fnmatch
 import json
 import sys
 
-
 def check_swig():
     command = 'swig'
     if shutil.which(command) is None:
@@ -127,6 +126,8 @@ src_files=['jetset/jetkernel/jetkernel.i']
 src_files.extend(glob.glob ('jetkernel_src/src/*.c'))
 _module=Extension('jetset.jetkernel/_jetkernel',
                   sources=src_files,
+                  #extra_compile_args=['-lpthread','-O3'],
+                  language='c',
                   #extra_compile_options='-fPIC  -v  -c -m64 -I',
                   #extra_link_options='-suppress',
                   swig_opts=['-v','-threads'],
@@ -161,12 +162,19 @@ setup(name='jetset',
       description="A framework for self-consistent modeling and fitting of  astrophysical relativistic jets SEDs",
       author_email='andrea.tramacere@gmail.com',
       packages=['jetset', 'jetset.leastsqbound', 'jetset.jetkernel','jetset.tests'],
-      package_data={'jetset':['Spectral_Templates_Repo/*.dat','test_data/SEDs_data/*ecsv','./requirements.txt','ebl_data/*','mathkernel/*dat'],'jetkernel':['mathkernel/*dat']},
+      package_data={  'jetset.Spectral_Templates_Repo':['*.dat'],
+                      'jetset.test_data':['SEDs_data'],
+                      'jetset.test_data.SEDs_data':['*.ecsv'],
+                      'jetset':['requirements.txt'],
+                      'jetset.ebl_data':['*.fits','*.dat','*.ecsv','*.fits.gz'],
+                      'jetset.mathkernel':['*.dat'],
+                      'jetset':['pkg_info.json'],
+                      'jetset.jetkernel':['mathkernel/*dat']},
       include_package_data = True,
       cmdclass=custom_cmdclass,
       ext_modules = [_module],
       install_requires=install_req,
       py_modules=['jetset.jetkernel/jetkernel'],
-      python_requires='>=3.7',
+      python_requires='>=3.8',
       test_suite =_test_suite,
       zip_safe=True)

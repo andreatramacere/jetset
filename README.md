@@ -1,11 +1,10 @@
-![pip build-test](https://github.com/andreatramacere/jetset/workflows/pip%20build-test/badge.svg?branch=develop)
-![conda build-test](https://github.com/andreatramacere/jetset/workflows/conda%20build-test/badge.svg)
-
+[![pip test](https://github.com/andreatramacere/jetset/actions/workflows/test-pip-workflow.yml/badge.svg?branch=v1.3.x)](https://github.com/andreatramacere/jetset/actions/workflows/test-pip-workflow.yml)
+[![conda test](https://github.com/andreatramacere/jetset/actions/workflows/test-conda-workflow.yml/badge.svg?branch=v1.3.x)](https://github.com/andreatramacere/jetset/actions/workflows/test-conda-workflow.yml)
 ![img](./logo/logo_git.png)
 
 
-JetSeT is  an open source  C/Python   framework  to reproduce radiative and accelerative processes acting in relativistic jets,  
-allowing to fit the numerical models to observed data. The main features of this framework are: 
+JetSeT is an open source C/Python framework to reproduce radiative and accelerative processes acting in relativistic jets, and galactic objects (beamed and unbeamed), 
+allowing to fit the numerical models to observed data. The main features of this framework are:
 
  * handling observed data: re-binning, definition of data sets, bindings to astropy tables and quantities
    definition of complex numerical radiative scenarios: Synchrotron Self-Compton (SSC), external Compton (EC) and EC 
@@ -101,7 +100,7 @@ pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser
 
      - https://github.com/andreatramacere/jetset/archive/stable.tar.gz
 
-   - Uncompress the  archive  `jetset-stable.tar.gz`
+   - Uncompress the archive `jetset-stable.tar.gz`
    
    - cd to  the dir 
     

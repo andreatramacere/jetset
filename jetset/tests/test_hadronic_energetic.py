@@ -1,5 +1,8 @@
 import pytest
 import numpy as np
+import os
+
+@pytest.mark.skipif(os.getenv('WF_ENV')=='CONDA', reason="not running with conda") 
 def test(plot=False):
     print('--------> test_hadronic_jet',plot)
     from jetset.jet_model import Jet

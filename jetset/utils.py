@@ -61,7 +61,7 @@ def parameters_warning():
 def old_model_warning():
     m = '\n\n' + '*'*80 + '\n'
     m+= 'you are loading a model supported for version<1.1.0, starting from version 1.1.0 \n'
-    m+= 'the saved model has changed,  plase update to the new model the new format, \n'
+    m+= 'the saved model has changed,  please update to the new model the new format, \n'
     m += 'by saving it with this version\n'
     m+= '*' * 80 + '\n'
     warnings.warn(m)

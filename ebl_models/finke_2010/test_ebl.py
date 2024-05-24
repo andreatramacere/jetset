@@ -12,7 +12,7 @@ nu=np.logspace(-1.5,3,30)
 
 def get_tau_funtcion(data_table):
     y = data_table['energies']
-    x = np.array(data_table.meta['REDSHIFT'], dtype=np.float)
+    x = np.array(data_table.meta['REDSHIFT'], dtype=np.float64)
     cn = [name for name in data_table.colnames if name != 'energies']
     z = np.array([data_table[n].data for n in cn])
     return interpolate.RectBivariateSpline(x, y, z)

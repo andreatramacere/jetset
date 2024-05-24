@@ -343,7 +343,7 @@ class  PlotSED (object):
         for h in _handles[:]:
             if h._label is  None:
                 _handles.remove(h)
-            elif h._label.startswith('_line'):
+            elif h._label.startswith('_'):
                 _handles.remove(h)
             else:
                  pass
@@ -556,7 +556,7 @@ class  PlotSED (object):
         if label is None:
             label='line %d'%self.counter
 
-        line, = self.sedplot.plot(x, y, line_style,label=label)
+        line, = self.sedplot.plot(x, y, line_style,label=label,color=color)
 
         self.lines_model_list.append(line)
 

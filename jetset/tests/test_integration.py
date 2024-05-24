@@ -1,8 +1,9 @@
 import pytest
+import os
 from .base_class import TestBase
 
 from .test_mcmc import TestEmcee
-from .test_jet_model import TestJets
+from .test_jet_model import TestJets,hadronic_func
 from .test_phenom_constr import TestPhenomenologyConstr
 from .test_model_fit import TestModelFit
 from .test_emitters import TestEmitters
@@ -12,13 +13,25 @@ from .test_depending_parameters import TestDependingParameters
 from .test_composite_model import TestCompositeModel
 from .test_temp_ev import TestTempEv
 from .test_galactic import TestGalactic
+
 @pytest.fixture
 def plot():
    input = False
    return input
 
 class TestIntegration(TestBase):
+
+   def test_jet(self,plot=plot):
+      t=TestJets()
+      t.integration_suite()
    
+   @pytest.mark.skipif(os.getenv('WF_ENV')=='CONDA', reason="not running with conda") 
+   def test_jet_hadronic(self,plot=plot):
+       hadronic_func(plot)
+   #   #t=TestJetHadronic()
+   #   #t.test_hadronic_jet(plot=plot)
+   
+   @pytest.mark.skipif(os.getenv('WF_ENV')=='CONDA', reason="not running with conda") 
    def test_galactic(self,plot=plot):
       t=TestGalactic()
       t.integration_suite(plot=plot)

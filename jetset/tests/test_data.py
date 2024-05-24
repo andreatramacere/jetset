@@ -22,13 +22,16 @@ class TestData(TestBase):
         sed_data.reset_data()
 
         data=Data.from_file(test_SEDs[sed_number])
+        
+
         sed_data=ObsData(data_table=data)
         sed_data.group_data(bin_width=0.2)
         print('sed file->',test_SEDs[sed_number])
         sed_data.add_systematics(0.1,[10.**6,10.**29])
         if plot is True:
             p=sed_data.plot_sed()
-
+        sed_data.save('test_sed_data.pkl')
+        sed_data=ObsData.load('test_sed_data.pkl')
         return sed_data
     
 

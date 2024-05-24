@@ -116,7 +116,12 @@ class FitModel(Model):
                  composite_expr=None,
                  **keywords):
 
-        super(FitModel,self).__init__( model_type='composite_model', **keywords)
+        
+        super(FitModel,self).__init__(model_type='composite_model',
+                                      nu_size=nu_size,
+                                      name=name,
+                                      cosmo=cosmo,
+                                       **keywords)
        
         if  jet is not None and elec_distr is not None:
             #!! warning or error?
@@ -134,7 +139,8 @@ class FitModel(Model):
         self.components=CompositeModelContainer()
         self.parameters=self.components.parameters
         self.composite_expr = composite_expr
-
+        self.spectral_components_table_list=[]
+        
         if elec_distr is not None:
             jet=Jet(cosmo=cosmo,name=flag, electron_distribution=elec_distr, jet_workplace=None)
             self.add_component(jet)
@@ -338,6 +344,7 @@ class FitModel(Model):
 
         return out_model
 
+    
     @classmethod
     def load_model(cls, file_name):
          c = pickle.load(open(file_name, "rb"))
@@ -362,9 +369,9 @@ class FitModel(Model):
                     #print(p.name,p._root_par,[p.model],p._linked_root_model,p.immutable)
                     c.parameters.link_par(p._root_par.name,[p.model.name],p._linked_root_model.name)
 
-            for m in c.components.components_list:
-                if isinstance(m,Jet):
-                    m._fix_par_dep_on_load()
+            #for m in c.components.components_list:
+            #    if isinstance(m,Jet):
+            #        m._fix_par_dep_on_load()
             if isinstance(c, Model):
                 c.eval()
                 return c
@@ -373,6 +380,12 @@ class FitModel(Model):
 
         except Exception as e:
             raise RuntimeError(e)
+
+
+    def set_fit_range(self,down_tol=0.1,up_tol=100):
+        for m in self.components.components_list:
+            m.set_fit_range(down_tol=down_tol,up_tol=up_tol)
+                
 
     def clone(self):
         return self._build_model(pickle.loads(pickle.dumps(self, protocol=pickle.HIGHEST_PROTOCOL)))
@@ -410,3 +423,13 @@ class FitModel(Model):
         self.components.show_model()
         print('-'*80)
 
+    def sed_tables_dict(self, restframe='obs'):
+        self.eval()
+        self._sed_tables_dict={}
+        
+        self._sed_tables_dict[self.name]=self.sed_table(restframe=restframe)
+        for comp in self.components.components_list:
+            if hasattr(comp,'spectral_components'):
+                self._sed_tables_dict[comp.name]=comp.sed_table
+        
+        return self._sed_tables_dict

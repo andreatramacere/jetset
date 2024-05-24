@@ -387,7 +387,7 @@ class ModelMinimizer(object):
             else:
                 par.set_fit_initial_value(par.val)
 
-        fit_par_free = [par for par in fit_model.parameters.par_array if par.frozen is False and (par.linked is False or par.root is True) and par._is_dependent is False]
+        fit_par_free = [par for par in fit_model.parameters.par_array if par.frozen is False and (par.linked is False ) and par._is_dependent is False]
 
         #remove duplicates and keeps the order
         fit_par_free = sorted(set(fit_par_free), key=fit_par_free.index)

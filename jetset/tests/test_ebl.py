@@ -12,12 +12,12 @@ class TestEBL(TestBase):
         import matplotlib.pyplot as plt
 
         from jetset.template_2Dmodel import EBLAbsorptionTemplate
-        ebl_dominguez = EBLAbsorptionTemplate.from_name('Dominguez_2010')
+        ebl_dominguez = EBLAbsorptionTemplate.from_name('Dominguez_2010_v2011')
         ebl_finke = EBLAbsorptionTemplate.from_name('Finke_2010')
         ebl_franceschini = EBLAbsorptionTemplate.from_name('Franceschini_2008')
 
         z = 0.1
-        nu = np.logspace(23, 30, 100)
+        nu = np.logspace(20, 30, 100)
         ebl_dominguez.parameters.z_cosm.val = z
         ebl_dominguez.eval(nu=nu)
         ebl_finke.parameters.z_cosm.val = z
@@ -25,10 +25,29 @@ class TestEBL(TestBase):
         ebl_franceschini.parameters.z_cosm.val = z
         ebl_franceschini.eval(nu=nu)
         if plot is True:
-            p = ebl_dominguez.plot_model()
+            plt.figure()
+            ebl_franceschini.eval(nu=nu)
+            p=ebl_dominguez.plot_model()
             ebl_finke.plot_model(p)
             ebl_franceschini.plot_model(p)
-            p.setlim(y_min=1E-10, x_max=1E29)
+            p.setlim(y_max=1,y_min=-10,x_max=29)
+        
+
+        z = 3
+        nu = np.logspace(20, 23, 100)
+        ebl_dominguez.parameters.z_cosm.val = z
+        ebl_dominguez.eval(nu=nu)
+        ebl_finke.parameters.z_cosm.val = z
+        ebl_finke.eval(nu=nu)
+        ebl_franceschini.parameters.z_cosm.val = z
+        ebl_franceschini.eval(nu=nu)
+        if plot is True:
+            plt.figure()
+            ebl_franceschini.eval(nu=nu)
+            p=ebl_dominguez.plot_model()
+            ebl_finke.plot_model(p)
+            ebl_franceschini.plot_model(p)
+            p.setlim(y_max=1,y_min=-.1,x_max=23)
 
         nu = 1E26
         z_range = np.linspace(0.001, 1, 100)
@@ -42,8 +61,9 @@ class TestEBL(TestBase):
             y_fr[ID] = ebl_franceschini.eval(nu=nu, get_model=True)
             y_fi[ID] = ebl_finke.eval(nu=nu, get_model=True)
             y_do[ID] = ebl_dominguez.eval(nu=nu, get_model=True)
-
+        
         if plot is True:
+            plt.figure()
             plt.plot(z_range, y_fr, label='%s' % ebl_franceschini.name)
             plt.plot(z_range, y_fi, label='%s' % ebl_finke.name)
             plt.plot(z_range, y_do, label='%s' % ebl_dominguez.name)
@@ -68,6 +88,7 @@ class TestEBL(TestBase):
             y_do[ID] = ebl_dominguez.eval(nu=nu, get_model=True)
 
         if plot is True:
+            plt.figure()
             plt.plot(z_range, y_fr, label='%s' % ebl_franceschini.name)
             plt.plot(z_range, y_fi, label='%s' % ebl_finke.name)
             plt.plot(z_range, y_do, label='%s' % ebl_dominguez.name)

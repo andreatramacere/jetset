@@ -22,6 +22,7 @@ from . import spectral_shapes
 from .jetkernel_models_dic import nuFnu_obs_dict, n_seed_dic
 from .plot_sedfit import PlotSpecComp,PlotSeedPhotons
 from .utils import check_frame, unexpected_behaviour
+from .jet_kernel_tools import get_spectral_c_array
 
 __all__=['JetSeedPhotons','JetSpecComponent','SpecCompList']
 
@@ -49,18 +50,7 @@ class JetSeedPhotons(object):
 
     def get_spectral_points(self,log_log=False,emiss_lim=0):
 
-        #try:
-
-        size=self._blob_object.nu_grid_size
-        x=zeros(size)
-        y=zeros(size)
-
-        for i in range(size):
-            x[i]=BlazarSED.get_spectral_array(self.nu_ptr,self._blob_object,i)
-            y[i]=BlazarSED.get_spectral_array(self.n_ptr,self._blob_object,i)
-
-            #print("->%e %e"%(x[i],y[i]))
-
+        x,y=get_spectral_c_array(self.nu_ptr,self.n_ptr ,self._blob_object.nu_grid_size,self._blob_object)
         msk_nan=np.isnan(x)
         msk_nan+=np.isnan(y)
         #print('emiss lim',self.get_emiss_lim())
@@ -126,7 +116,7 @@ class JetSpecComponent(object):
 
         self.SED=spectral_shapes.SED(name=self.name,beaming=jet_obj.get_beaming())
         self.seed_field=None
-
+        self._hidden=False
         # self._nu_start_src_name, self._nu_stop_src_name = nu_src_start_stop_dict[self.name]
         #
         # self.nu_ptr_start = getattr(blob_object, self._nu_name)
@@ -177,6 +167,17 @@ class JetSpecComponent(object):
     #         self._nu_start_src = nu
     #         self._nu_start_obs = convert_nu_to_src(nu, self.jet_obj.get_par_by_type('redshift').val, 'obs')
 
+    @property
+    def hidden(self):
+        return self._hidden
+
+    @hidden.setter
+    def hidden(self,val):
+        if val not in [True,False]:
+            raise RuntimeError('val must be False or True')
+        else:
+            self._hidden=val
+
     def get_emiss_lim(self,seed=False):
         return self._blob_object.emiss_lim
 
@@ -193,17 +194,9 @@ class JetSpecComponent(object):
 
 
 
-    def get_SED_points(self, log_log=False, lin_nu=None,interp='linear',skip_zeros=False):
-
-        size = self._blob_object.nu_grid_size
-        x = zeros(size)
-        y = zeros(size)
-
-        for i in range(size):
-            x[i] = BlazarSED.get_spectral_array(self.nu_ptr, self._blob_object, i)
-            y[i] = BlazarSED.get_spectral_array(self.nuFnu_ptr, self._blob_object, i)
-
-
+    def get_SED_points(self, log_log=False, lin_nu=None, interp='linear', skip_zeros=False):
+        x,y= get_spectral_c_array(self.nu_ptr, self.nuFnu_ptr, self._blob_object.nu_grid_size,self._blob_object)
+  
         msk_nan = np.isnan(x)
         msk_nan += np.isnan(y)
 
@@ -216,9 +209,9 @@ class JetSpecComponent(object):
         msk_zeros = y > self.get_emiss_lim()
 
         if lin_nu is not None:
-            #f_interp=interpolate.Akima1DInterpolator(log10(x), log10(y))
             f_interp = interpolate.interp1d(log10(x), log10(y), bounds_error=False, kind=interp)
             y = np.power(10., f_interp(log10(lin_nu)))
+            #y=np.interp(log10(lin_nu), log10(x), log10(y),np.nan,np.nan)
             x=lin_nu
             msk_nan = np.isnan(y)
             y[msk_nan] = 0.
@@ -243,16 +236,14 @@ class JetSpecComponent(object):
         return _x, _y
 
 
-
-
-    def update(self):
-        size = self._blob.nu_grid_size
-        x = zeros(size)
-        y = zeros(size)
+    def _update_jetkernel_spectral_array(self,y):
+        size = self._blob_object.nu_grid_size
+        if y.size != size:
+            raise RuntimeError('the size of the input array is different from the size of the target array in jetkernel')
 
         for i in range(size):
-            x[i] = BlazarSED.get_spectral_array(self.nu_ptr, self._blob, i)
-            y[i] = BlazarSED.get_spectral_array(self.nuFnu_ptr, self._blob, i)
+            BlazarSED.set_spectral_array(self.nuFnu_ptr, self._blob_object, i, y[i])
+            
 
 
     def show(self):
@@ -323,15 +314,16 @@ class SpecCompList(object):
             unexpected_behaviour()
 
         for ID,sc in enumerate(self._sc_list):
-            _names.append(sc.name)
-            if restframe == 'obs':
-                _cols.append(sc.SED.nuFnu)
-            else:
-                _cols.append(sc.SED.nuLnu_src)
+            if sc.hidden is False:
+                _names.append(sc.name)
+                if restframe == 'obs':
+                    _cols.append(sc.SED.nuFnu)
+                else:
+                    _cols.append(sc.SED.nuLnu_src)
 
 
 
-        _meta=dict(src_name=sc.jet_obj.name)
+        _meta=dict(model_name=sc.jet_obj.name)
         _meta['redshift']=sc.jet_obj.get_par_by_type('redshift').val
         _meta['restframe']= restframe
         self._table = Table(_cols, names=_names,meta=_meta)
@@ -348,3 +340,4 @@ class SpecCompList(object):
     @property
     def table(self):
         return self._table
+

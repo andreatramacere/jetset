@@ -210,7 +210,7 @@ class McmcSampler(object):
     def show_pars(self):
         pass
 
-    def corner_plot(self, labels = None, quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}):
+    def corner_plot(self, labels = None, quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, **kwargs):
         _id = []
 
         if labels is None:
@@ -228,7 +228,7 @@ class McmcSampler(object):
                           quantiles=quantiles, labels=[self.labels[i] for i in _id],
                           truths=[self.labels_start_val[i] for i in _id],
                           title_kwargs=title_kwargs,show_titles = True,
-                          levels = levels)
+                          levels = levels,**kwargs)
 
         title = 'quantiles ='+str(quantiles)
         f.suptitle(title,y=1.0)
@@ -326,7 +326,7 @@ class McmcSampler(object):
         ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1)
         return f
 
-    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None):
+    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None,get_model=False):
 
         if sed_data is None:
             sed_data=self.sed_data
@@ -378,8 +378,10 @@ class McmcSampler(object):
         p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density,flim=self.model.flux_plot_lim)
         p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
 
-
-        return p
+        if get_model is True:
+            return p, [x[msk],y_min[msk],y_max[msk]]
+        else:
+            return p
 
 
     def _progess_bar(self,):

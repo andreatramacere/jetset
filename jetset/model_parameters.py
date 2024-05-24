@@ -44,6 +44,7 @@ class Value(object):
         self.val=val
         self.islog=islog
         self.units=units
+        self._adimensional=False
 
     def __repr__(self):
         return '%s'%self._val
@@ -90,6 +91,10 @@ class Value(object):
     def units(self, p_unit,verbose=False):
         try:
             self._units = u.Unit(p_unit)
+            if self._units == '':
+                self._adimensional = True
+            else:
+                self._adimensional = False
             #print(units,type(self._units))
         except Exception as e:
             if verbose is True:
@@ -104,6 +109,9 @@ class Value(object):
                 else:
                     self._units = p_unit
 
+            self._adimensional = True
+            
+            
 
 class ModelParameter(object):
     """
@@ -173,6 +181,7 @@ class ModelParameter(object):
         self.allowed_keywords['_linked_root_model'] = None
         self.allowed_keywords['_master_par_list'] = []
         self.allowed_keywords['_depending_par_expr'] = None
+        self.allowed_keywords['_par_expr_text'] = None
         self._linked = False
         self._linked_root_model = None
         self._root_par = None
@@ -209,6 +218,12 @@ class ModelParameter(object):
         
         if 'units' in keywords.keys():
            _units= keywords['units']
+        
+        if '_par_expr_text' in keywords.keys():
+            if keywords['_par_expr_text'] is None:
+                pass
+            else:
+                self._par_expr_text = keywords['_par_expr_text']
 
         self._val = Value(val=_v, islog=_l,units=_units)
 
@@ -264,11 +279,19 @@ class ModelParameter(object):
     def units(self,val):
         self._val.units=val
 
-    def to(self, units):
-        if isinstance(self.units,u.Unit):
-            return self.val*self.units.to(units)
+    @property
+    def adimensional(self):
+        if hasattr(self._val,'_adimensional'):
+            return self._val._adimensional
         else:
-            message='the units of this parameter:'+self.units+', are not convertible'
+            return False
+
+    def to(self, units):
+        try:
+            return (self.val*self.units).to(units)
+        except Exception as e:
+            print(e)
+            message='the units of this parameter:'+ str(self.units) +', are not convertible'
             warnings.warn(message)
     @property
     def fit_range(self):
@@ -301,15 +324,20 @@ class ModelParameter(object):
         self._linked_root_model = None
         self._func=None
         self._is_dependent = False
-        self._master_pars=[]
+        self._master_par_list=[]
         self._depending_pars=[]
+        self._master_pars=[]
+        self.par_expr=None
+       
+        
 
     def _add_depending_par(self,par):
         if par not in self._depending_pars:
             self._depending_pars.append(par)
 
     def _add_master_par(self,par):
-        if par not in self._master_pars:
+        if par not in self._master_pars :
+            print("adding par:",par.name,"to ",self.name)
             self._master_pars.append(par)
 
     #def make_dependent_par(self, master_par, func, root_model=None):
@@ -339,13 +367,29 @@ class ModelParameter(object):
     #     pass
 
     @property
-    def print_par_expr(self):
-        if isinstance(self.par_expr,str):
-            _par_expr=self.par_expr
+    def par_expression_source_code(self):
+        if hasattr(self,'_par_expr_text'):
+            pass
         else:
-            _par_expr=inspect.getsource(self.par_expr)
-        print('==> par', self.name, 'is depending on', [_p.name for _p in self._master_pars],  f'according to expr:   {self.name} =\n{_par_expr}'.format(self.name,_par_expr))
-        
+            self._set_par_expr_source_code()
+        print('==> par', self.name, 'is depending on', [_p.name for _p in self._master_pars],  f'according to expr:   {self.name} =\n{self._par_expr_text}'.format(self.name,self._par_expr_text))
+
+
+    def _set_par_expr_source_code(self):
+        if isinstance(self.par_expr,str):
+            _par_expr_text=self.par_expr
+        else:
+            try:
+                _par_expr_text=inspect.getsource(self.par_expr)
+            except Exception as e:
+                print('the source code of the function was not accessible due to the following error: ',e)
+                if hasattr(self,'_par_expr_text'):
+                    print('recovering saved code')
+                    _par_expr_text=self._par_expr_text
+                else:
+                    _par_expr_text=None
+                    
+        self.set(_par_expr_text=_par_expr_text,skip_dep_par_warning=True)
 
     @property
     def par_expr(self):
@@ -357,22 +401,43 @@ class ModelParameter(object):
 
     def _eval_par_func(self):
         #transform par name and value into a local var
+        #print('working on ',self.name)
+        #TODO:THIS HOLDS ONLY FOR NUMPY <1.22, should be removed
+        warnings.filterwarnings('ignore', message='invalid value encountered in reciprocal*')
         if type(self._depending_par_expr) == str:
             _par_values= [None]*len(self._master_pars)
             for ID, _user_par_ in enumerate(self._master_pars):
-                _par_values[ID] = _user_par_.val_lin
-                #print('==> _eval_par_func',_user_par_.name,_par_values[ID])
+                if _user_par_.adimensional:
+                    _par_values[ID] = _user_par_.val_lin
+                else:
+                    _par_values[ID] = _user_par_.val_lin*u.Unit(str(_user_par_.units))
                 exec(_user_par_.name + '=_par_values[ID]')
             res = eval(self._depending_par_expr)
         elif callable(self._depending_par_expr) is True:
             _par_values={}
             for ID, _user_par_ in enumerate(self._master_pars):
-                _par_values[_user_par_.name] = _user_par_.val_lin
+                if _user_par_.adimensional:
+                    _par_values[_user_par_.name] = _user_par_.val_lin
+                else:
+                    _par_values[_user_par_.name] = _user_par_.val_lin*u.Unit(str(_user_par_.units))
             res=self._depending_par_expr(**_par_values)
+     
+        _unit = None
+       
+        if hasattr(res,'unit'):
+            _unit=res.unit
+ 
+        if hasattr(res,'value'):
+            res=res.value
+            
 
         if self.islog is True:
             res=np.log10(res)
-
+       
+        #if _unit is not None:
+        #    print('units,',self.units,_unit)
+        #    assert(self.units==_unit)
+            
         return res
         #return eval(self.par_expr)
 
@@ -406,7 +471,6 @@ class ModelParameter(object):
                     self._val.val = keywords[kw]
                     if self._depending_pars is not []:
                         for p in self._depending_pars:
-                            #print("==> setting dep par",p.name, 'to',p._func(),'p=',p,'master',self,'name',self.name)
                             p.set(val=p._func(),skip_dep_par_warning=True)
 
                 elif kw == 'log':
@@ -724,7 +788,7 @@ class CompositeModelParameterArray(object):
             if dep_model is not None:
                 dep_par = dep_model.get_par_by_name(par_name)
                 if dep_par is not None:
-                    print('==> par:',dep_par.name, 'from model:',  dep_model.name, 'linked to same parameter in model', m_root.name )
+                    #print('==> par:',dep_par.name, 'from model:',  dep_model.name, 'linked to same parameter in model', m_root.name )
                     if p_root == dep_par:
                         raise RuntimeError(" root and linked parameter can't be the same")
                     if dep_par.immutable is True:
@@ -743,7 +807,12 @@ class CompositeModelParameterArray(object):
                     dep_par._add_master_par(p_root)
                     p_root._add_depending_par(dep_par)
                     dep_par.freeze()
-                    p_root.val=p_root.val
+                    #try:
+                        #print('p_root',p_root.name,'jet comp',m_root.name)
+                    p_root.set(val=p_root.val,skip_dep_par_warning=True)
+                    #except Exception as e:
+                        #print('problem with p_root',p_root.name,'jet comp',m_root.name)
+                        #print(e)
             else:
                  self._handle_missing_component_error(m_name)
 
@@ -1097,9 +1166,9 @@ class ModelParameterArray(object):
                 try:
                     if None in t[n].data:
 
-                        t[n] = MaskedColumn(t[n].data, name=n, dtype=np.float, mask=t[n].data==None)
+                        t[n] = MaskedColumn(t[n].data, name=n, dtype=np.float64, mask=t[n].data==None)
                     else:
-                        t[n] = MaskedColumn(t[n].data, name=n, dtype=np.float)
+                        t[n] = MaskedColumn(t[n].data, name=n, dtype=np.float64)
                     t[n].format = '%e'
                 except:
 
@@ -1417,14 +1486,18 @@ class ModelParameterArray(object):
     def _serialize_pars(self):
         _par_keys=['val','val_min','val_max','val_start','val_last_call','fit_range_min','fit_range_max','best_fit_val',
                    'best_fit_err','frozen','allowed_values','_linked','_is_dependent','_func','_master_pars',
-                   '_linked_root_model','_depending_pars','_root_par','','_master_par_list','_depending_par_expr','units','par_type']
+                   '_linked_root_model','_depending_pars','_root_par','','_master_par_list','_depending_par_expr','_par_expr_text','units','par_type']
         _par_dict = {}
         for par in self.par_array:
             _val_dict={}
 
             for k in _par_keys:
                 if hasattr(par,k):
-                    _val_dict[k]=getattr(par,k)
+                    if k=='units':
+                        #print("===> serialize units",str(getattr(par,k)))
+                        _val_dict[k]=str(getattr(par,k))
+                    else:
+                        _val_dict[k]=getattr(par,k)
 
             _par_dict[par.name] = _val_dict
 

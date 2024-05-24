@@ -57,7 +57,7 @@ void time_evolve_emitters(struct blob *pt_spec,
             pt_spec->Ne[TMP]=N_distr_interp(E_SIZE,pt_spec->griglia_gamma_Ne_log[TMP],pt_ev->gamma,N);
         }            
         spettro_sincrotrone(1, pt_spec);
-        spectra_External_Fields(1,pt_spec);
+        spectra_External_Fields(1,pt_spec,1);
     }
     
     

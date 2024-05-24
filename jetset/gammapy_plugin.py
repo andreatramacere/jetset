@@ -23,59 +23,76 @@ except:
 import astropy.units as u
 import  numpy as np
 
-def GammapyJetsetModelFactory(jetmodel,clone=True):
-    
-    if clone is True:
-        _jetset_model = jetmodel.clone()
-    else:
-        _jetset_model= jetmodel
+class GammapyJetsetModel(SpectralModel):
     
 
-    class GammapyJetsetModel(SpectralModel):
-        """    """
-
-        for ID,p in enumerate(_jetset_model.parameters.par_array):
+    def __init__(self,jetset_model,clone=True):
+       
+        if clone is True:
+            _jetset_model = jetset_model.clone()
+        else:
+            _jetset_model= jetset_model
+        
+        self._jetset_model=_jetset_model
+    
+        self._jetset_model.add_user_par(name='fake_norm',units='',val=1,val_min=0,val_max=None)
+        self._jetset_model.parameters.fake_norm.frozen=True
+        parameters = []
+        
+        for ID,p in enumerate(self._jetset_model.parameters.par_array):
             #print(p.name)
-            exec("%s=Parameter(p.name,p.val, frozen=p.frozen)"%p.name)
+            if p.name=='fake_norm':
+                is_norm=True
+            else:
+                is_norm=False
+
+            parameter = Parameter(p.name, p.val, is_norm=is_norm,frozen=p.frozen)
             if _jetset_model.parameters.par_array[ID].units is not None:
                 try:
-                    exec("%s.unit = '%s'"%(p.name,_jetset_model.parameters.par_array[ID].units))
+                    parameter.unit = p.units
                 except:
-                    exec("%s.unit = '' "%(p.name))
+                    parameter.unit = ''
             else:
-                exec("%s.unit = '' "%(p.name))
+                  parameter.unit = ''
 
-            if _jetset_model.parameters.par_array[ID].val_min is not None:
-                exec("%s.min = %s"%(p.name,_jetset_model.parameters.par_array[ID].val_min))
 
-            if _jetset_model.parameters.par_array[ID].val_max is not None:
-                exec("%s.max = %s"%(p.name,_jetset_model.parameters.par_array[ID].val_max)) 
-       
-        def evaluate(self,energy=None,**kwargs):
+            if p.val_min is not None:
+                #exec("%s.min = %s"%(p.name,_jetset_model.parameters.par_array[ID].val_min))
+                parameter.min=p.val_min
 
-            if energy is None:
-                el1=np.log10( self._jetset_model.nu_min)
-                el2=np.log10( self._jetset_model.nu_max)
-                energy=(np.logspace(el1,el2,self._jetset_model.nu_size)*u.Hz).to('eV',equivalencies=u.spectral())
-            
-            nu = energy.to("Hz", equivalencies=u.spectral())
+            if p.val_max is not None:
+                #exec("%s.max = %s"%(p.name,_jetset_model.parameters.par_array[ID].val_max)) 
+                parameter.max=p.val_max
+      
+            parameters.append(parameter)
+        self.default_parameters = Parameters(parameters)
+        self.tag=_jetset_model.name
+        super(GammapyJetsetModel, self).__init__()
 
-            for p in self.parameters:
-                if p.name not in kwargs.keys():
-                    self._jetset_model.set_par(p.name ,val=p.value)
+    def evaluate(self,energy=None,**kwargs):
 
-            for k,v in kwargs.items():
-                self._jetset_model.set_par(k,val=v.value)
-
-            self._jetset_model.eval(nu=nu.value)
-            _spec= self._jetset_model.spectral_components.Sum.SED.nuFnu.to('eV cm-2 s-1')/(energy.to('eV')**2)
-            return _spec.to("1 / (cm2 eV s)")
+        if energy is None:
+            el1=np.log10( self._jetset_model.nu_min)
+            el2=np.log10( self._jetset_model.nu_max)
+            energy=(np.logspace(el1,el2,self._jetset_model.nu_size)*u.Hz).to('eV',equivalencies=u.spectral())
         
-        @property
-        def jetset_model(self):
-            return self._jetset_model
+        nu = energy.to("Hz", equivalencies=u.spectral())
+
+        for p in self.parameters:
+            if p.name not in kwargs.keys():
+                self._jetset_model.set_par(p.name ,val=p.value)
+
+        for k,v in kwargs.items():
+            self._jetset_model.set_par(k,val=v.value)
+
+        self._jetset_model.eval(nu=nu.value)
+        _spec= self._jetset_model.spectral_components.Sum.SED.nuFnu.to('eV cm-2 s-1')/(energy.to('eV')**2)
+        return _spec.to("1 / (cm2 eV s)")
     
-    gammapy_obj=GammapyJetsetModel()
-    setattr(gammapy_obj,'_jetset_model',_jetset_model)
-    setattr(gammapy_obj,'tag',_jetset_model.name)
-    return gammapy_obj
+    @property
+    def jetset_model(self):
+        return self._jetset_model
+    
+
+def GammapyJetsetModelFactory(jetset_model,clone=True):
+    return GammapyJetsetModel(jetset_model,clone=clone)
