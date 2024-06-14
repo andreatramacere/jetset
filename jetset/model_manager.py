@@ -149,8 +149,13 @@ class FitModel(Model):
             self.add_component(jet)
 
         if cosmo is None:
-          self.cosmo=Cosmo()
-          warnings.warn('no cosmology defined, using default %s'%self.cosmo)
+            if jet is not None:
+                  self.cosmo=jet.cosmo
+                  m='no cosmology defined, using the one from jet %s'%str(jet.cosmo)
+            else:
+                 self.cosmo = Cosmo()
+                 m='no cosmology defined, using %s'%str(self.cosmo )
+            warnings.warn(m)
         else:
             self.cosmo = cosmo
 
@@ -429,7 +434,7 @@ class FitModel(Model):
         
         self._sed_tables_dict[self.name]=self.sed_table(restframe=restframe)
         for comp in self.components.components_list:
-            if hasattr(comp,'spectral_components'):
-                self._sed_tables_dict[comp.name]=comp.sed_table
+            if hasattr(comp,'sed_table'):
+                self._sed_tables_dict[comp.name]=comp.sed_table(restframe=restframe)
         
         return self._sed_tables_dict
