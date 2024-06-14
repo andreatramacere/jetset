@@ -1,5 +1,5 @@
-
-_skip_list=['pyqt','swig']
+#_skip_list=['pyqt','swig']
+_skip_list=['pyqt']
 f = open("./requirements.txt",'r')
 req=f.readlines()
 f.close()

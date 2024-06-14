@@ -114,7 +114,7 @@ jobs:
           environment-name: test-env
           create-args: >-
             python=${{ matrix.python-version }}
-            swig>=3.0.0 
+            swig>=4
             conda-build
             pytest
             boa
