@@ -16,12 +16,15 @@ except:
     on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
     
     if on_rtd is True:
+        SpectralModel=object
         pass
     else:
         raise  ImportError('to use gammapy plugin you need to install gammapy: https://docs.gammapy.org/0.19/getting-started/install.html')
 
 import astropy.units as u
 import  numpy as np
+
+__all__=['GammapyJetsetModel','GammapyJetsetModelFactory']
 
 class GammapyJetsetModel(SpectralModel):
     
@@ -57,13 +60,17 @@ class GammapyJetsetModel(SpectralModel):
 
 
             if p.val_min is not None:
-                #exec("%s.min = %s"%(p.name,_jetset_model.parameters.par_array[ID].val_min))
                 parameter.min=p.val_min
+            
+            if p.fit_range_min is not None:
+                 parameter.min=p.fit_range_min
 
             if p.val_max is not None:
-                #exec("%s.max = %s"%(p.name,_jetset_model.parameters.par_array[ID].val_max)) 
                 parameter.max=p.val_max
-      
+            
+            if p.fit_range_max is not None:
+                 parameter.max=p.fit_range_max
+
             parameters.append(parameter)
         self.default_parameters = Parameters(parameters)
         self.tag=_jetset_model.name
