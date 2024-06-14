@@ -29,11 +29,11 @@ def _show_table(t):
         try:
             from IPython.display import display
             display(t.show_in_notebook(show_row_index=False, display_length=100))
-        except:
+        except Exception as e:
             try:
                 from IPython.display import display
                 display(t)
-            except:
+            except Exception as e:
                 t.pprint_all()
     else:
         t.pprint_all()
