@@ -1,0 +1,1297 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Temporal evolution, two zones, cooling+acc &#8212; jetset  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=a93b4d3c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/documentation_notebooks/temporal_evolution/Temp_Ev_two_zones_acc_and_cooling';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Temporal evolution, two zones, cooling+acc+adb exp" href="Temp_Ev_two_zones_acc_and_cooling_adb_exp.html" />
+    <link rel="prev" title="Temporal evolution, one zone, only cooling" href="Temp_Ev_one_zone_only_cooling.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo_large_no_border.png" class="logo__image only-light" alt="JetSeT "/>
+    <script>document.write(`<img src="../../../_static/logo_large_no_border.png" class="logo__image only-dark" alt="JetSeT "/>`);</script>
+  
+  
+    <p class="title logo__title">documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/andreatramacere/jetset" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../new_release.html">changelog</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../user_guide.html">user guide</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../model_basic.html">model basic features</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../jet_model_phys_SSC/Jet_example_phys_SSC.html"> jet model physical setup (basic features and SSC) -  *New (v1.3.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../jet_model_phys_EC/Jet_example_phys_EC.html">External Compton</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="../jet_model_num/Jet_example_num.html"> jet model numerical setup - *New (v1.3.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hadronic_pp_jet/hadronic.html"> jet hadronic pp model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../galactic/galactic.html"> galactic beamed/unbeamed objects - *New (v1.3.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cosmology/Jet_example_cosmo.html"> change cosmology model - *New (v1.3.0)*</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../model_advanced.html">model advanced features</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../composite_model/Composite_model.html"> composite models  *New (v1.2.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../depending_pars/depending_pars.html"> depending parameters  *New (v1.2.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../custom_emitters_distr/custom_emitters.html"> jet model custom  emitters distributions *New (v1.2.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../EBL/EBL.html"> EBL models  *New (v1.2.0)*</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../data_and_phenomenology.html">data and phenomenology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../load_data/Jet_example_load_data.html"> data format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../phen_constr/SSC_th_bkg.html"> phenomenological model constraining: theoretical background on SSC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../phen_constr/Jet_example_phenom_constr.html"> phenomenological model constraining: application</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../model_fitting.html">model fitting</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../model_fitting_intro.html"> caveats and introduction on model fitting and minimizers</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../model_fitting_examples.html"> model fitting examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../model_fit_1/Jet_example_model_fit.html"> 1: SSC model fit, minuit contours, and MCMC for Mrk 421 *New (v1.3.0)*</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model_fit_2/Jet_example_model_fit_wiht_gal_template.html"> 2: SSC (jet+galaxy template) model fit and MCMC for Mrk 501 *New (v1.3.0)*</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model_fit_3/Jet_example_model_fit_EC.html"> 3: SSC and EC fit for 3C 454.3 *New (v1.3.0)*</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model_fit_4/Jet_example_only_synchrotron.html"> 4: Only Synchroton for Mrk 421 fit, minuit contours, and MCMC *New (v1.3.0)*</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../sherpa_plugin/sherpa-plugin-jetset-interface.html"> 5: Mrk 521 SSC+EBL with Sherpa plugin and jetset interface  *New (v1.3.0)*</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../temp_ev.html">temporal evolution</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="Temp_Ev_one_zone_only_cooling.html"> Temporal evolution, one zone, only cooling *New (v1.2.0)*</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#"> Temporal evolution, two zones,  cooling+acc *New (v1.2.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Temp_Ev_two_zones_acc_and_cooling_adb_exp.html"> Temporal evolution, two zones,  cooling+acc+adiabatic expansion *New (v1.2.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hadronic_pp_jet/hadronic_validate_temp_ev.html"> Temporal evolution, validation of the hadronic pp secondaries evolution *New (v1.2.0)*</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../plugins.html">plugins</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../sherpa_plugin/sherpa-plugin-sherpa-interface.html"> Example to use the sherpa plugin with the Sherpa interface *New (v1.3.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gammapy_plugin/gammapy_plugin.html"> Example to use the Gamma-py plugin with the JeSeT interface *New (v1.3.0)*</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/modules.html">code documentation (API)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/analytical_model.html">analytical_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.analytical_model.AnalyticalParameter.html">AnalyticalParameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.analytical_model.Disk.html">Disk</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/base_model.html">base_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.base_model.Model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.base_model.MultiplicativeModel.html">MultiplicativeModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/convert_qdp.html">convert_qdp</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.convert_qdp.check_is_number.html">check_is_number</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.convert_qdp.do_convert.html">do_convert</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/cosmo_tools.html">cosmo_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.cosmo_tools.Cosmo.html">Cosmo</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/data_loader.html">data_loader</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.data_loader.get_data_set_msk.html">get_data_set_msk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.data_loader.get_freq_range_msk.html">get_freq_range_msk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.data_loader.lin_to_log.html">lin_to_log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.data_loader.log_to_lin.html">log_to_lin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.data_loader.ObsData.html">ObsData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.data_loader.Data.html">Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/frame_converter.html">frame_converter</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.frame_converter.convert_nu_to_blob.html">convert_nu_to_blob</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.frame_converter.convert_nu_to_src.html">convert_nu_to_src</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.frame_converter.convert_nuFnu_to_nuLnu_src.html">convert_nuFnu_to_nuLnu_src</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/gammapy_plugin.html">gammapy_plugin</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.gammapy_plugin.GammapyJetsetModelFactory.html">GammapyJetsetModelFactory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.gammapy_plugin.GammapyJetsetModel.html">GammapyJetsetModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/jet_emitters.html">jet_emitters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_emitters.EmittersDistribution.html">EmittersDistribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_emitters.BaseEmittersDistribution.html">BaseEmittersDistribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_emitters.ArrayDistribution.html">ArrayDistribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_emitters.EmittersArrayDistribution.html">EmittersArrayDistribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_emitters.InjEmittersDistribution.html">InjEmittersDistribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_emitters.JetkernelEmittersDistribution.html">JetkernelEmittersDistribution</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/jet_emitters_factory.html">jet_emitters_factory</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_emitters_factory.EmittersFactory.html">EmittersFactory</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/jet_kernel_tools.html">jet_kernel_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_kernel_tools.get_spectral_c_array.html">get_spectral_c_array</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/jet_model.html">jet_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_model.Jet.html">Jet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_model.JetBase.html">JetBase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_model.GalacticBeamed.html">GalacticBeamed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_model.GalacticUnbeamed.html">GalacticUnbeamed</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/jet_paramters.html">jet_paramters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_paramters.JetParameter.html">JetParameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_paramters.JetModelDictionaryPar.html">JetModelDictionaryPar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_paramters.JetModelParameterArray.html">JetModelParameterArray</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/jet_spectral_components.html">jet_spectral_components</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_spectral_components.JetSeedPhotons.html">JetSeedPhotons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_spectral_components.JetSpecComponent.html">JetSpecComponent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_spectral_components.SpecCompList.html">SpecCompList</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/jet_timedep.html">jet_timedep</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_timedep.merge_lcs.html">merge_lcs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_timedep.JetTimeEvol.html">JetTimeEvol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_timedep.TimeEmittersDistribution.html">TimeEmittersDistribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_timedep.TimeEvolvingRegion.html">TimeEvolvingRegion</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/jet_tools.html">jet_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_tools.build_emitting_region_dict.html">build_emitting_region_dict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_tools.build_ExtFields_dic.html">build_ExtFields_dic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_tools.BLR_constraints.html">BLR_constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_tools.DT_constraints.html">DT_constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.jet_tools.clean_numba.html">clean_numba</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/loglog_poly_model.html">loglog_poly_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.loglog_poly_model.find_max_cubic.html">find_max_cubic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.loglog_poly_model.LogCubic.html">LogCubic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.loglog_poly_model.LogLinear.html">LogLinear</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.loglog_poly_model.LogLogModel.html">LogLogModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.loglog_poly_model.LogParabolaEp.html">LogParabolaEp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.loglog_poly_model.LogParabolaPL.html">LogParabolaPL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.loglog_poly_model.PolyParameter.html">PolyParameter</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/mathkernel_helper.html">mathkernel_helper</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/mcmc.html">mcmc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.mcmc.McmcSampler.html">McmcSampler</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/minimizer.html">minimizer</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.minimizer.fit_SED.html">fit_SED</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.minimizer.FitResults.html">FitResults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.minimizer.Minimizer.html">Minimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.minimizer.LSBMinimizerScipy.html">LSBMinimizerScipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.minimizer.MinuitMinimizer.html">MinuitMinimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.minimizer.ModelMinimizer.html">ModelMinimizer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/model_manager.html">model_manager</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.model_manager.FitModel.html">FitModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/model_parameters.html">model_parameters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.model_parameters.ModelParameter.html">ModelParameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.model_parameters.ModelParameterArray.html">ModelParameterArray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.model_parameters.Value.html">Value</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/obs_constrain.html">obs_constrain</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.check_boundaries.html">check_boundaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.check_t_var.html">check_t_var</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.constr_B_from_nu_peaks.html">constr_B_from_nu_peaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.constr_R_from_CD.html">constr_R_from_CD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.find_B_from_nu_p_S.html">find_B_from_nu_p_S</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.find_gamma0.html">find_gamma0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.find_gamma_3p_SSC.html">find_gamma_3p_SSC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.find_gamma_Synch.html">find_gamma_Synch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.find_HE_cut_off.html">find_HE_cut_off</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.find_s.html">find_s</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.find_s1.html">find_s1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.find_turn_over.html">find_turn_over</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.get_Comp_factor.html">get_Comp_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.get_R_tvar.html">get_R_tvar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.get_U_Sync_from_Ph.html">get_U_Sync_from_Ph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.rescale_Ne.html">rescale_Ne</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.set_gmin_from_nu_cut_IR.html">set_gmin_from_nu_cut_IR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.obs_constrain.ObsConstrain.html">ObsConstrain</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/output.html">output</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.output.clean_dir.html">clean_dir</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.output.makedir.html">makedir</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.output.WorkPlace.html">WorkPlace</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/plot_sedfit.html">plot_sedfit</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.plot_sedfit.PlotSED.html">PlotSED</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.plot_sedfit.BasePlot.html">BasePlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.plot_sedfit.PlotPdistr.html">PlotPdistr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.plot_sedfit.PlotSpecComp.html">PlotSpecComp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.plot_sedfit.PlotSeedPhotons.html">PlotSeedPhotons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.plot_sedfit.PlotSpectralMultipl.html">PlotSpectralMultipl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.plot_sedfit.PlotTempEvDiagram.html">PlotTempEvDiagram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.plot_sedfit.PlotTempEvEmitters.html">PlotTempEvEmitters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/poly_fit.html">poly_fit</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.check_maxima.html">check_maxima</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.cubic_peaks.html">cubic_peaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.do_cubic_fit.html">do_cubic_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.do_cubic_fit_peaks.html">do_cubic_fit_peaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.do_linear_fit.html">do_linear_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.do_log_Parab_FIT.html">do_log_Parab_FIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.filter_interval.html">filter_interval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.find_max_cubic.html">find_max_cubic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.lin.html">lin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.parab.html">parab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.residuals_cubic_peaks.html">residuals_cubic_peaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.residuals_linfit.html">residuals_linfit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit.residuals_parab.html">residuals_parab</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/poly_fit_tools.html">poly_fit_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit_tools.get_SED_log_par_fit.html">get_SED_log_par_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit_tools.get_SED_pl_fit.html">get_SED_pl_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit_tools.get_n_gamma_log_par_fit.html">get_n_gamma_log_par_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.poly_fit_tools.get_nu_p_S_delta_approx.html">get_nu_p_S_delta_approx</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/sed_shaper.html">sed_shaper</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.sed_shaper.filter_interval.html">filter_interval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.sed_shaper.find_E0.html">find_E0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.sed_shaper.IC_fit_range.html">IC_fit_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.sed_shaper.spectral_index_range.html">spectral_index_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.sed_shaper.sync_fit_range.html">sync_fit_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.sed_shaper.index.html">index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.sed_shaper.index_array.html">index_array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.sed_shaper.index_typecasting.html">index_typecasting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.sed_shaper.peak_values.html">peak_values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.sed_shaper.SEDShape.html">SEDShape</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/sherpa_plugin.html">sherpa_plugin</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.sherpa_plugin.plot_sherpa_model.html">plot_sherpa_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.sherpa_plugin.JetsetSherpaModel.html">JetsetSherpaModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/spectral_shapes.html">spectral_shapes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.spectral_shapes.SED.html">SED</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/template_2Dmodel.html">template_2Dmodel</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.template_2Dmodel.TemplateTable2D.html">TemplateTable2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.template_2Dmodel.EBLAbsorptionTemplate.html">EBLAbsorptionTemplate</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/template_model.html">template_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.template_model.SpectralTemplateLogLog.html">SpectralTemplateLogLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.template_model.TemplateParameter.html">TemplateParameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.template_model.BigBlueBumpTemplateLogLog.html">BigBlueBumpTemplateLogLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.template_model.HostGalaxyTemplateLogLog.html">HostGalaxyTemplateLogLog</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/utils.html">utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.utils.check_frame.html">check_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.utils.unexpected_behaviour.html">unexpected_behaviour</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/version_notifier.html">version_notifier</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.version_notifier.check_version.html">check_version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.version_notifier.run_version_checking.html">run_version_checking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/jetset.version_notifier.capture.html">capture</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">bibliography</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">New/updated in v 1.2.0-1.3.0:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../depending_pars/depending_pars.html">Depending parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../composite_model/Composite_model.html">Composite Models and depending pars</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_emitters_distr/custom_emitters.html">Custom emitters distribution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jet_model_phys_SSC/Jet_example_phys_SSC.html">Physical setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hadronic_pp_jet/hadronic.html">Hadronic pp jet model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Temp_Ev_one_zone_only_cooling.html">Temporal evolution, one zone, only cooling</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Temporal evolution, two zones, cooling+acc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Temp_Ev_two_zones_acc_and_cooling_adb_exp.html">Temporal evolution, two zones, cooling+acc+adb exp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../phen_constr/SSC_th_bkg.html">Phenomenological model constraining: SSC theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sherpa_plugin/sherpa-plugin-sherpa-interface.html">Example to use the Sherpa plugin with the sherpa interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sherpa_plugin/sherpa-plugin-jetset-interface.html">Example to use the Sherpa minimizer plugin with a JeSeT model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gammapy_plugin/gammapy_plugin.html">Example to use the Gamma-py plugin with the JeSeT interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../galactic/galactic.html">Galactic object models</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../../../_sources/user_guide/documentation_notebooks/temporal_evolution/Temp_Ev_two_zones_acc_and_cooling.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Temporal evolution, two zones, cooling+acc</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="temporal-evolution-two-zones-cooling-acc">
+<span id="temp-ev-two-zone-cooling-acc"></span><h1>Temporal evolution, two zones, cooling+acc<a class="headerlink" href="#temporal-evolution-two-zones-cooling-acc" title="Link to this heading">#</a></h1>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jetset</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;tested on jetset&#39;</span><span class="p">,</span><span class="n">jetset</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tested</span> <span class="n">on</span> <span class="n">jetset</span> <span class="mf">1.2.2</span>
+</pre></div>
+</div>
+<p>This is a very preliminary documentation for the temporal evolution
+capabilities of jetset. Here we show how to create a decopuled
+radiative+acceleration region, and how to evolve the system in order to
+generate both particle spectra, SEDs, and lightcurves</p>
+<p>To have full understanding of the analysis presented in this tutorial, it is advised to read the paper Tramacere et al. (2011) <a class="reference internal" href="../../../references.html#tramacere2011" id="id1"><span>[Tramacere2011]</span></a> for the understanding of stochastic and first order acceleration, and  Tramacere et al (2022) <a class="reference internal" href="../../../references.html#tramacere2022" id="id2"><span>[Tramacere2022]</span></a> for the coupling of radiative and acceleration regions.</p>
+<p>definition of the injected particle distribution (<code class="docutils literal notranslate"><span class="pre">q_inj</span></code>), and of the
+jet model for the radiative region</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jetset.jet_emitters_factory</span> <span class="kn">import</span> <span class="n">InjEmittersFactory</span>
+<span class="kn">from</span> <span class="nn">jetset.jet_model</span> <span class="kn">import</span> <span class="n">Jet</span>
+<span class="n">jet_model</span><span class="o">=</span><span class="n">Jet</span><span class="p">()</span>
+<span class="n">q_inj</span><span class="o">=</span><span class="n">InjEmittersFactory</span><span class="p">()</span><span class="o">.</span><span class="n">create_inj_emitters</span><span class="p">(</span><span class="s1">&#39;pl&#39;</span><span class="p">,</span><span class="n">emitters_type</span><span class="o">=</span><span class="s1">&#39;electrons&#39;</span><span class="p">,</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">q_inj</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">gmin</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mi">9</span>
+<span class="n">q_inj</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">gmax</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mi">10</span>
+<span class="n">q_inj</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mf">0.5</span>
+
+<span class="n">jet_model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">beam_obj</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mi">30</span>
+<span class="n">jet_model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mf">0.2</span>
+<span class="n">jet_model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">z_cosm</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mf">0.03</span>
+<span class="n">jet_model</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mf">5E15</span>
+</pre></div>
+</div>
+<p>here we set some relevant parameters taht will be described in detail in
+the next version of the documentation</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">flare_duration</span><span class="o">=</span><span class="mf">1.0E5</span>
+<span class="n">duration</span><span class="o">=</span><span class="n">flare_duration</span><span class="o">*</span><span class="mi">10</span>
+<span class="n">t_D0</span><span class="o">=</span><span class="mf">1.5E5</span>
+<span class="n">t_A0</span><span class="o">=</span><span class="mf">2.5E4</span>
+<span class="n">T_esc_rad</span><span class="o">=</span><span class="mf">1E60</span>
+<span class="n">L_inj</span><span class="o">=</span><span class="mf">5.0E39</span>
+<span class="n">E_acc_max</span><span class="o">=</span><span class="mf">4E60</span>
+<span class="n">Delta_R_acc_ratio</span><span class="o">=</span><span class="mf">0.1</span>
+<span class="n">B_ratio</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="n">T_SIZE</span><span class="o">=</span><span class="mf">2E4</span>
+<span class="n">NUM_SET</span><span class="o">=</span><span class="mi">500</span>
+<span class="n">Diff_Index</span><span class="o">=</span><span class="mf">2.0</span>
+<span class="n">Acc_Index</span><span class="o">=</span><span class="mf">1.0</span>
+</pre></div>
+</div>
+<p>Here we instantiate the <code class="docutils literal notranslate"><span class="pre">JetTimeEvol</span></code> object, passing the radiative
+region jet model, and the injected particle class.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jetset.jet_timedep</span> <span class="kn">import</span> <span class="n">JetTimeEvol</span>
+<span class="n">temp_ev_acc</span><span class="o">=</span><span class="n">JetTimeEvol</span><span class="p">(</span><span class="n">jet_rad</span><span class="o">=</span><span class="n">jet_model</span><span class="p">,</span><span class="n">Q_inj</span><span class="o">=</span><span class="n">q_inj</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">==&gt;</span> <span class="n">par</span><span class="p">:</span> <span class="n">z_cosm</span> <span class="kn">from</span> <span class="nn">model</span><span class="p">:</span> <span class="n">jet_leptonicacc_region</span> <span class="n">linked</span> <span class="n">to</span> <span class="n">same</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">model</span> <span class="n">jet_leptonic</span>
+</pre></div>
+</div>
+<p><strong>The IC cooling is switched off, as default, to make the process
+faster</strong>. to switch on the IC cooling <code class="docutils literal notranslate"><span class="pre">temp_ev_acc.IC_cooling='on'</span></code></p>
+<p>Now, we setup some relevant parameters</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">rad_region</span><span class="o">.</span><span class="n">jet</span><span class="o">.</span><span class="n">nu_min</span><span class="o">=</span><span class="mf">1E8</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">acc_region</span><span class="o">.</span><span class="n">jet</span><span class="o">.</span><span class="n">nu_min</span><span class="o">=</span><span class="mf">1E8</span>
+<span class="n">T_SIZE</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">T_SIZE</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">Delta_R_acc_ratio</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Delta_R_acc</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">R_rad_start</span><span class="o">.</span><span class="n">val</span><span class="o">*</span><span class="n">Delta_R_acc_ratio</span>
+
+<span class="n">T_esc_acc</span><span class="o">=</span><span class="n">t_A0</span><span class="o">/</span><span class="p">(</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Delta_R_acc</span><span class="o">.</span><span class="n">val</span><span class="o">/</span><span class="mf">3E10</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span>
+
+
+
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">duration</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">duration</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">TStart_Acc</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">TStop_Acc</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">flare_duration</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">TStart_Inj</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">TStop_Inj</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">flare_duration</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">T_esc_acc</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">T_esc_acc</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">T_esc_rad</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">T_esc_rad</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">t_D0</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">t_D0</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">t_A0</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">t_A0</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Esc_Index_acc</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">Diff_Index</span><span class="o">-</span><span class="mi">2</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Esc_Index_rad</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Acc_Index</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">Acc_Index</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">Diff_Index</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">Diff_Index</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">t_size</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">T_SIZE</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">num_samples</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">NUM_SET</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">E_acc_max</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">E_acc_max</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">L_inj</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">L_inj</span>
+
+
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">gmin_grid</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">gmax_grid</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mf">1E8</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">gamma_grid_size</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="mi">1500</span>
+
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">B_acc</span><span class="o">.</span><span class="n">val</span><span class="o">=</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">rad_region</span><span class="o">.</span><span class="n">jet</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">val</span><span class="o">*</span><span class="n">B_ratio</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">init_TempEv</span><span class="p">()</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">show_model</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--------------------------------------------------------------------------------</span>
+<span class="n">JetTimeEvol</span> <span class="n">model</span> <span class="n">description</span>
+<span class="o">--------------------------------------------------------------------------------</span>
+
+<span class="n">physical</span> <span class="n">setup</span><span class="p">:</span>
+
+<span class="o">--------------------------------------------------------------------------------</span>
+</pre></div>
+</div>
+<i>Table length=29</i>
+<table id="table140283158600816-480863" class="table-striped table-bordered table-condensed">
+<thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
+<tr><td>delta t</td><td>time</td><td>5.000000e+01</td><td>s</td><td>0.00029979245799999996</td><td>R/c</td><td>False</td></tr>
+<tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>R/c</td><td>time</td><td>1.667820e+05</td><td>s</td><td>1.0</td><td>R/c</td><td>False</td></tr>
+<tr><td>IC cooling</td><td></td><td>off</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Sync cooling</td><td></td><td>on</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Adiab. cooling</td><td></td><td>on</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Reg. expansion</td><td></td><td>off</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Diff coeff</td><td></td><td>6.666667e-06</td><td>s-1</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Acc coeff</td><td></td><td>4.000000e-05</td><td>s-1</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Diff index</td><td></td><td>2.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Acc index</td><td></td><td>1.000000e+00</td><td>s-1</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Tesc acc</td><td>time</td><td>5.003461e+04</td><td>s</td><td>3.0</td><td>R_acc/c</td><td>False</td></tr>
+<tr><td>Eacc max</td><td>energy</td><td>4.000000e+60</td><td>erg</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Tesc rad</td><td>time</td><td>1.667820e+65</td><td>s</td><td>1e+60</td><td>R/c</td><td>False</td></tr>
+<tr><td>Delta R acc</td><td>accelerator_width</td><td>5.000000e+14</td><td>cm</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>B acc</td><td>magnetic field</td><td>2.000000e-01</td><td>cm</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>R_rad rad start</td><td>region_position</td><td>5.000000e+15</td><td>cm</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>R_H rad start</td><td>region_position</td><td>1.000000e+17</td><td>cm</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>T_A0=1/ACC_COEFF</td><td>time</td><td>2.500000e+04</td><td>s</td><td>0.149896229</td><td>R/c</td><td>False</td></tr>
+<tr><td>T_D0=1/DIFF_COEFF</td><td>time</td><td>1.500000e+05</td><td>s</td><td>0.899377374</td><td>R/c</td><td>False</td></tr>
+<tr><td>T_DA0=1/(2*DIFF_COEFF)</td><td>time</td><td>7.500000e+04</td><td>s</td><td>0.449688687</td><td>R/c</td><td>False</td></tr>
+<tr><td>gamma Lambda Turb.  max</td><td></td><td>1.173358e+11</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>gamma Lambda Coher. max</td><td></td><td>1.173358e+10</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>gamma eq Syst. Acc (synch. cool)</td><td></td><td>7.832383e+05</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>gamma eq Diff. Acc (synch. cool)</td><td></td><td>1.309535e+05</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>T cooling(gamma_eq=gamma_eq_Diff)</td><td></td><td>1.477242e+05</td><td>s</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>T cooling(gamma_eq=gamma_eq_Sys)</td><td></td><td>2.469874e+04</td><td>s</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>T min. synch. cooling</td><td></td><td>1.934500e+02</td><td>s</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>L inj (electrons)</td><td>injected lum.</td><td>5.000000e+39</td><td>erg/s</td><td>None</td><td></td><td>False</td></tr>
+</table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+.dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+display: inline-block; margin-right: 1em; }
+.paginate_button { margin-right: 5px; }
+</style>
+<script>
+
+var astropy_sort_num = function(a, b) {
+    var a_num = parseFloat(a);
+    var b_num = parseFloat(b);
+
+    if (isNaN(a_num) && isNaN(b_num))
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    else if (!isNaN(a_num) && !isNaN(b_num))
+        return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+    else
+        return isNaN(a_num) ? -1 : 1;
+}
+
+require.config({paths: {
+    datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+}});
+require(["datatables"], function(){
+    console.log("$('#table140283158600816-480863').dataTable()");
+
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "optionalnum-asc": astropy_sort_num,
+    "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+});
+
+    $('#table140283158600816-480863').dataTable({
+        order: [],
+        pageLength: 100,
+        lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+        pagingType: "full_numbers",
+        columnDefs: [{targets: [], type: "optionalnum"}]
+    });
+});
+</script><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="n">parameters</span><span class="p">:</span>
+
+<span class="o">--------------------------------------------------------------------------------</span>
+</pre></div>
+</div>
+<i>Table length=30</i>
+<table id="table140283150237168-718542" class="table-striped table-bordered table-condensed">
+<thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+<tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>gmax_grid</td><td>gamma_grid</td><td></td><td>1.000000e+08</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>gamma_grid_size</td><td>gamma_grid</td><td></td><td>1.500000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>TStart_Acc</td><td>time_grid</td><td>s</td><td>0.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>TStop_Acc</td><td>time_grid</td><td>s</td><td>1.000000e+05</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>TStart_Inj</td><td>time_grid</td><td>s</td><td>0.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>TStop_Inj</td><td>time_grid</td><td>s</td><td>1.000000e+05</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>T_esc_acc</td><td>escape_time</td><td>(R_acc/c)*</td><td>3.000000e+00</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Esc_Index_acc</td><td>fp_coeff_index</td><td></td><td>0.000000e+00</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>t_D0</td><td>acceleration_time</td><td>s</td><td>1.500000e+05</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>t_A0</td><td>acceleration_time</td><td>s</td><td>2.500000e+04</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Diff_Index</td><td>fp_coeff_index</td><td>s</td><td>2.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Acc_Index</td><td>fp_coeff_index</td><td></td><td>1.000000e+00</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Delta_R_acc</td><td>accelerator_width</td><td>cm</td><td>5.000000e+14</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>B_acc</td><td>magnetic_field</td><td>G</td><td>2.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>E_acc_max</td><td>acc_energy</td><td>erg</td><td>4.000000e+60</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Lambda_max_Turb</td><td>turbulence_scale</td><td>cm</td><td>1.000000e+15</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Lambda_choer_Turb_factor</td><td>turbulence_scale</td><td>cm</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>T_esc_rad</td><td>escape_time</td><td>(R/c)*</td><td>1.000000e+60</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Esc_Index_rad</td><td>fp_coeff_index</td><td></td><td>0.000000e+00</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>R_rad_start</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>R_H_rad_start</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>m_B</td><td>magnetic_field_index</td><td></td><td>1.000000e+00</td><td>1.000000e+00</td><td>2.000000e+00</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>t_jet_exp</td><td>exp_start_time</td><td>s</td><td>1.000000e+05</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>beta_exp_R</td><td>beta_expansion</td><td>v/c*</td><td>1.000000e+00</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>B_rad</td><td>magnetic_field</td><td>G</td><td>2.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>t_size</td><td>time_grid</td><td></td><td>2.000000e+04</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>num_samples</td><td>time_ev_output</td><td></td><td>5.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>L_inj</td><td>inj_luminosity</td><td>erg / s</td><td>5.000000e+39</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+</table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+.dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+display: inline-block; margin-right: 1em; }
+.paginate_button { margin-right: 5px; }
+</style>
+<script>
+
+var astropy_sort_num = function(a, b) {
+    var a_num = parseFloat(a);
+    var b_num = parseFloat(b);
+
+    if (isNaN(a_num) && isNaN(b_num))
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    else if (!isNaN(a_num) && !isNaN(b_num))
+        return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+    else
+        return isNaN(a_num) ? -1 : 1;
+}
+
+require.config({paths: {
+    datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+}});
+require(["datatables"], function(){
+    console.log("$('#table140283150237168-718542').dataTable()");
+
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "optionalnum-asc": astropy_sort_num,
+    "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+});
+
+    $('#table140283150237168-718542').dataTable({
+        order: [],
+        pageLength: 100,
+        lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+        pagingType: "full_numbers",
+        columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+    });
+});
+</script><div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">plot_time_profile</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">jetset</span><span class="o">.</span><span class="n">plot_sedfit</span><span class="o">.</span><span class="n">PlotTempEvDiagram</span> <span class="n">at</span> <span class="mh">0x7f9637ab46d0</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<img alt="../../../_images/Temp_Ev_two_zones_acc_and_cooling_16_1.png" src="../../../_images/Temp_Ev_two_zones_acc_and_cooling_16_1.png" />
+<p><strong>we do not want to evolve the particle in the ``jet_rad``, so we set
+``only_injection=True``, and we set ``do_injection=True`` to injet the
+particle defined by ``q_inj``</strong></p>
+<p>setting <code class="docutils literal notranslate"><span class="pre">cache_SEDs_rad=True</span></code> will generate and cache all the SED at
+any time of the <code class="docutils literal notranslate"><span class="pre">NUM_SET</span></code>. <strong>This will increase the computational time
+during the run. Anyhow, will speed up the computation of SEDs and light
+curves. Moreover, these SEDs will be saved in the model, and read if you
+will reload the model in the future</strong>.</p>
+<p>setting <code class="docutils literal notranslate"><span class="pre">cache_SEDs_acc=True</span></code> will generate and cache also the SEDs in
+the acceleration region.</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">only_injection</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">do_injection</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">plot_fit_model</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">plot_fit_distr</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">plot_emitters</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">plot_lcs</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">delta_t_out</span><span class="o">=</span><span class="mi">1000</span>
+<span class="n">eval_cross_time</span><span class="o">=</span><span class="kc">False</span>
+<span class="n">rest_frame</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span>
+<span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">only_injection</span><span class="o">=</span><span class="n">only_injection</span><span class="p">,</span>
+                <span class="n">do_injection</span><span class="o">=</span><span class="n">do_injection</span><span class="p">,</span>
+                <span class="n">cache_SEDs_acc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">cache_SEDs_rad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">temporal</span> <span class="n">evolution</span> <span class="n">running</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>0%|          | 0/20000 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">temporal</span> <span class="n">evolution</span> <span class="n">completed</span>
+<span class="n">caching</span> <span class="n">SED</span> <span class="k">for</span> <span class="n">each</span> <span class="n">saved</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">start</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>0%|          | 0/500 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">caching</span> <span class="n">SED</span> <span class="k">for</span> <span class="n">each</span> <span class="n">saved</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">done</span>
+<span class="n">caching</span> <span class="n">SED</span> <span class="k">for</span> <span class="n">each</span> <span class="n">saved</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">start</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>0%|          | 0/500 [00:00&lt;?, ?it/s]
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">caching</span> <span class="n">SED</span> <span class="k">for</span> <span class="n">each</span> <span class="n">saved</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">done</span>
+</pre></div>
+</div>
+<p>Particle spectrum in the radiative region</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">plot_tempev_emitters</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">,</span><span class="n">loglog</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">energy_unit</span><span class="o">=</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span><span class="nb">pow</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">temp_ev</span><span class="o">.</span><span class="n">gamma_eq_t_A</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">temp_ev</span><span class="o">.</span><span class="n">gamma_eq_t_DA</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">setlim</span><span class="p">(</span><span class="n">x_max</span><span class="o">=</span><span class="mf">1E7</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">y_min</span><span class="o">=</span><span class="mf">1E-18</span><span class="p">,</span><span class="n">y_max</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../../_images/Temp_Ev_two_zones_acc_and_cooling_22_0.png" src="../../../_images/Temp_Ev_two_zones_acc_and_cooling_22_0.png" />
+<p>Particle spectrum in the acceleration region</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">plot_tempev_emitters</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="s1">&#39;acc&#39;</span><span class="p">,</span><span class="n">loglog</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">energy_unit</span><span class="o">=</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span><span class="nb">pow</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">temp_ev</span><span class="o">.</span><span class="n">gamma_eq_t_A</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">temp_ev</span><span class="o">.</span><span class="n">gamma_eq_t_DA</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">setlim</span><span class="p">(</span><span class="n">x_max</span><span class="o">=</span><span class="mf">1E7</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">y_min</span><span class="o">=</span><span class="mf">1E-30</span><span class="p">,</span><span class="n">y_max</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../../_images/Temp_Ev_two_zones_acc_and_cooling_24_0.png" src="../../../_images/Temp_Ev_two_zones_acc_and_cooling_24_0.png" />
+<p>SEDs in the acceleration region</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">plot_tempev_model</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">,</span><span class="n">sed_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_cached</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">setlim</span><span class="p">(</span><span class="n">y_min</span><span class="o">=</span><span class="mf">1E-18</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mf">1E7</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../../_images/Temp_Ev_two_zones_acc_and_cooling_26_0.png" src="../../../_images/Temp_Ev_two_zones_acc_and_cooling_26_0.png" />
+<p>SEDs in the acceleration region</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">plot_tempev_model</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="s1">&#39;acc&#39;</span><span class="p">,</span><span class="n">sed_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_cached</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">setlim</span><span class="p">(</span><span class="n">y_min</span><span class="o">=</span><span class="mf">1E-18</span><span class="p">,</span><span class="n">x_min</span><span class="o">=</span><span class="mf">1E7</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../../_images/Temp_Ev_two_zones_acc_and_cooling_28_0.png" src="../../../_images/Temp_Ev_two_zones_acc_and_cooling_28_0.png" />
+<p>We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz,
+without the effect of the light crossing time, in the observer frame</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lg</span><span class="o">=</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">rad_region</span><span class="o">.</span><span class="n">make_lc</span><span class="p">(</span><span class="n">nu1</span><span class="o">=</span><span class="mf">2.4E22</span><span class="p">,</span><span class="n">nu2</span><span class="o">=</span><span class="mf">7.2E25</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span><span class="n">eval_cross_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta_t_out</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">use_cached</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">frame</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lg</span>
+</pre></div>
+</div>
+<i>Table length=344</i>
+<table id="table140282827701168" class="table-striped table-bordered table-condensed">
+<thead><tr><th>time</th><th>flux</th><th>R_blob</th><th>t_blob</th></tr></thead>
+<thead><tr><th>s</th><th>erg / (cm2 s)</th><th>cm</th><th>s</th></tr></thead>
+<thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
+<tr><td>0.0</td><td>0.0</td><td>5000000000000000.0</td><td>0.0</td></tr>
+<tr><td>100.0</td><td>0.0</td><td>5000000000000000.0</td><td>2912.6213592233007</td></tr>
+<tr><td>200.0</td><td>0.0</td><td>5000000000000000.0</td><td>5825.242718446601</td></tr>
+<tr><td>300.0</td><td>4.4098133455386786e-86</td><td>5000000000000000.0</td><td>8737.864077669903</td></tr>
+<tr><td>400.0</td><td>1.8338347214189153e-75</td><td>5000000000000000.0</td><td>11650.485436893203</td></tr>
+<tr><td>500.0</td><td>4.619818537702253e-61</td><td>5000000000000000.0</td><td>14563.106796116504</td></tr>
+<tr><td>600.0</td><td>4.074119989099911e-55</td><td>5000000000000000.0</td><td>17475.728155339806</td></tr>
+<tr><td>700.0</td><td>4.480719706093064e-47</td><td>5000000000000000.0</td><td>20388.349514563106</td></tr>
+<tr><td>800.0</td><td>3.859369921272289e-43</td><td>5000000000000000.0</td><td>23300.970873786406</td></tr>
+<tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+<tr><td>33400.0</td><td>1.1745865571978132e-10</td><td>5000000000000000.0</td><td>972815.5339805826</td></tr>
+<tr><td>33500.0</td><td>1.1673644350909526e-10</td><td>5000000000000000.0</td><td>975728.1553398059</td></tr>
+<tr><td>33600.0</td><td>1.1601953475096658e-10</td><td>5000000000000000.0</td><td>978640.7766990291</td></tr>
+<tr><td>33700.0</td><td>1.1530745106216505e-10</td><td>5000000000000000.0</td><td>981553.3980582524</td></tr>
+<tr><td>33800.0</td><td>1.1460037834025703e-10</td><td>5000000000000000.0</td><td>984466.0194174757</td></tr>
+<tr><td>33900.0</td><td>1.1389825349049919e-10</td><td>5000000000000000.0</td><td>987378.6407766991</td></tr>
+<tr><td>34000.0</td><td>1.1320085680491812e-10</td><td>5000000000000000.0</td><td>990291.2621359223</td></tr>
+<tr><td>34100.0</td><td>1.1250852647156014e-10</td><td>5000000000000000.0</td><td>993203.8834951456</td></tr>
+<tr><td>34200.0</td><td>1.1182065068926023e-10</td><td>5000000000000000.0</td><td>996116.5048543689</td></tr>
+<tr><td>34300.0</td><td>1.1113794126859807e-10</td><td>5000000000000000.0</td><td>999029.1262135921</td></tr>
+</table><div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lg</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span><span class="n">lg</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="k">lg</span>[&#39;time&#39;].unit)
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;flux (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="k">lg</span>[&#39;flux&#39;].unit)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;flux (erg / (cm2 s))&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../../_images/Temp_Ev_two_zones_acc_and_cooling_32_1.png" src="../../../_images/Temp_Ev_two_zones_acc_and_cooling_32_1.png" />
+<p>We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz, with
+the effect of the light crossing time, in the observer frame</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lg_cross</span><span class="o">=</span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">rad_region</span><span class="o">.</span><span class="n">make_lc</span><span class="p">(</span><span class="n">nu1</span><span class="o">=</span><span class="mf">2.4E22</span><span class="p">,</span><span class="n">nu2</span><span class="o">=</span><span class="mf">7.2E25</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;gamma&#39;</span><span class="p">,</span><span class="n">eval_cross_time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">delta_t_out</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">use_cached</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">frame</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span><span class="p">,</span><span class="n">cross_time_slices</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lg</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span><span class="n">lg</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lg_cross</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span><span class="n">lg_cross</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="k">lg</span>[&#39;time&#39;].unit)
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;flux (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="k">lg</span>[&#39;flux&#39;].unit)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;flux (erg / (cm2 s))&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../../_images/Temp_Ev_two_zones_acc_and_cooling_35_1.png" src="../../../_images/Temp_Ev_two_zones_acc_and_cooling_35_1.png" />
+<p>We can save the model and reuse it later for plotting lightcurcves,
+SEDs, and electron distributions</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">temp_ev_acc</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="s1">&#39;two_zone_rad_acc.pkl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">temp_ev_acc_1</span><span class="o">=</span><span class="n">JetTimeEvol</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;two_zone_rad_acc.pkl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">temp_ev_acc_1</span><span class="o">.</span><span class="n">show_model</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--------------------------------------------------------------------------------</span>
+<span class="n">JetTimeEvol</span> <span class="n">model</span> <span class="n">description</span>
+<span class="o">--------------------------------------------------------------------------------</span>
+
+<span class="n">physical</span> <span class="n">setup</span><span class="p">:</span>
+
+<span class="o">--------------------------------------------------------------------------------</span>
+</pre></div>
+</div>
+<i>Table length=29</i>
+<table id="table140282828144160-2404" class="table-striped table-bordered table-condensed">
+<thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
+<tr><td>delta t</td><td>time</td><td>5.000000e+01</td><td>s</td><td>0.00029979245799999996</td><td>R/c</td><td>False</td></tr>
+<tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>R/c</td><td>time</td><td>1.667820e+05</td><td>s</td><td>1.0</td><td>R/c</td><td>False</td></tr>
+<tr><td>IC cooling</td><td></td><td>off</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Sync cooling</td><td></td><td>on</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Adiab. cooling</td><td></td><td>on</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Reg. expansion</td><td></td><td>off</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Diff coeff</td><td></td><td>6.666667e-06</td><td>s-1</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Acc coeff</td><td></td><td>4.000000e-05</td><td>s-1</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Diff index</td><td></td><td>2.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Acc index</td><td></td><td>1.000000e+00</td><td>s-1</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Tesc acc</td><td>time</td><td>5.003461e+04</td><td>s</td><td>3.0</td><td>R_acc/c</td><td>False</td></tr>
+<tr><td>Eacc max</td><td>energy</td><td>4.000000e+60</td><td>erg</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>Tesc rad</td><td>time</td><td>1.667820e+65</td><td>s</td><td>1e+60</td><td>R/c</td><td>False</td></tr>
+<tr><td>Delta R acc</td><td>accelerator_width</td><td>5.000000e+14</td><td>cm</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>B acc</td><td>magnetic field</td><td>2.000000e-01</td><td>cm</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>R_rad rad start</td><td>region_position</td><td>5.000000e+15</td><td>cm</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>R_H rad start</td><td>region_position</td><td>1.000000e+17</td><td>cm</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>T_A0=1/ACC_COEFF</td><td>time</td><td>2.500000e+04</td><td>s</td><td>0.149896229</td><td>R/c</td><td>False</td></tr>
+<tr><td>T_D0=1/DIFF_COEFF</td><td>time</td><td>1.500000e+05</td><td>s</td><td>0.899377374</td><td>R/c</td><td>False</td></tr>
+<tr><td>T_DA0=1/(2*DIFF_COEFF)</td><td>time</td><td>7.500000e+04</td><td>s</td><td>0.449688687</td><td>R/c</td><td>False</td></tr>
+<tr><td>gamma Lambda Turb.  max</td><td></td><td>1.173358e+11</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>gamma Lambda Coher. max</td><td></td><td>1.173358e+10</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>gamma eq Syst. Acc (synch. cool)</td><td></td><td>7.832383e+05</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>gamma eq Diff. Acc (synch. cool)</td><td></td><td>1.309535e+05</td><td></td><td>None</td><td></td><td>False</td></tr>
+<tr><td>T cooling(gamma_eq=gamma_eq_Diff)</td><td></td><td>1.477242e+05</td><td>s</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>T cooling(gamma_eq=gamma_eq_Sys)</td><td></td><td>2.469874e+04</td><td>s</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>T min. synch. cooling</td><td></td><td>1.934500e+02</td><td>s</td><td>None</td><td></td><td>False</td></tr>
+<tr><td>L inj (electrons)</td><td>injected lum.</td><td>5.000000e+39</td><td>erg/s</td><td>None</td><td></td><td>False</td></tr>
+</table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+.dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+display: inline-block; margin-right: 1em; }
+.paginate_button { margin-right: 5px; }
+</style>
+<script>
+
+var astropy_sort_num = function(a, b) {
+    var a_num = parseFloat(a);
+    var b_num = parseFloat(b);
+
+    if (isNaN(a_num) && isNaN(b_num))
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    else if (!isNaN(a_num) && !isNaN(b_num))
+        return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+    else
+        return isNaN(a_num) ? -1 : 1;
+}
+
+require.config({paths: {
+    datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+}});
+require(["datatables"], function(){
+    console.log("$('#table140282828144160-2404').dataTable()");
+
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "optionalnum-asc": astropy_sort_num,
+    "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+});
+
+    $('#table140282828144160-2404').dataTable({
+        order: [],
+        pageLength: 100,
+        lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+        pagingType: "full_numbers",
+        columnDefs: [{targets: [], type: "optionalnum"}]
+    });
+});
+</script><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="n">parameters</span><span class="p">:</span>
+
+<span class="o">--------------------------------------------------------------------------------</span>
+</pre></div>
+</div>
+<i>Table length=30</i>
+<table id="table140282819634032-98027" class="table-striped table-bordered table-condensed">
+<thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
+<tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>gmax_grid</td><td>gamma_grid</td><td></td><td>1.000000e+08</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>gamma_grid_size</td><td>gamma_grid</td><td></td><td>1.500000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>TStart_Acc</td><td>time_grid</td><td>s</td><td>0.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>TStop_Acc</td><td>time_grid</td><td>s</td><td>1.000000e+05</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>TStart_Inj</td><td>time_grid</td><td>s</td><td>0.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>TStop_Inj</td><td>time_grid</td><td>s</td><td>1.000000e+05</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>T_esc_acc</td><td>escape_time</td><td>(R_acc/c)*</td><td>3.000000e+00</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Esc_Index_acc</td><td>fp_coeff_index</td><td></td><td>0.000000e+00</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>t_D0</td><td>acceleration_time</td><td>s</td><td>1.500000e+05</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>t_A0</td><td>acceleration_time</td><td>s</td><td>2.500000e+04</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Diff_Index</td><td>fp_coeff_index</td><td>s</td><td>2.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Acc_Index</td><td>fp_coeff_index</td><td></td><td>1.000000e+00</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Delta_R_acc</td><td>accelerator_width</td><td>cm</td><td>5.000000e+14</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>B_acc</td><td>magnetic_field</td><td>G</td><td>2.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>E_acc_max</td><td>acc_energy</td><td>erg</td><td>4.000000e+60</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Lambda_max_Turb</td><td>turbulence_scale</td><td>cm</td><td>1.000000e+15</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Lambda_choer_Turb_factor</td><td>turbulence_scale</td><td>cm</td><td>1.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>T_esc_rad</td><td>escape_time</td><td>(R/c)*</td><td>1.000000e+60</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>Esc_Index_rad</td><td>fp_coeff_index</td><td></td><td>0.000000e+00</td><td>--</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>R_rad_start</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>R_H_rad_start</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>m_B</td><td>magnetic_field_index</td><td></td><td>1.000000e+00</td><td>1.000000e+00</td><td>2.000000e+00</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>t_jet_exp</td><td>exp_start_time</td><td>s</td><td>1.000000e+05</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>beta_exp_R</td><td>beta_expansion</td><td>v/c*</td><td>1.000000e+00</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>B_rad</td><td>magnetic_field</td><td>G</td><td>2.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>t_size</td><td>time_grid</td><td></td><td>2.000000e+04</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>num_samples</td><td>time_ev_output</td><td></td><td>5.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+<tr><td>jet_time_ev</td><td>L_inj</td><td>inj_luminosity</td><td>erg / s</td><td>5.000000e+39</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
+</table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
+.dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
+display: inline-block; margin-right: 1em; }
+.paginate_button { margin-right: 5px; }
+</style>
+<script>
+
+var astropy_sort_num = function(a, b) {
+    var a_num = parseFloat(a);
+    var b_num = parseFloat(b);
+
+    if (isNaN(a_num) && isNaN(b_num))
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    else if (!isNaN(a_num) && !isNaN(b_num))
+        return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
+    else
+        return isNaN(a_num) ? -1 : 1;
+}
+
+require.config({paths: {
+    datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
+}});
+require(["datatables"], function(){
+    console.log("$('#table140282819634032-98027').dataTable()");
+
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "optionalnum-asc": astropy_sort_num,
+    "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
+});
+
+    $('#table140282819634032-98027').dataTable({
+        order: [],
+        pageLength: 100,
+        lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
+        pagingType: "full_numbers",
+        columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
+    });
+});
+</script><div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">temp_ev_acc_1</span><span class="o">.</span><span class="n">plot_tempev_model</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="s1">&#39;rad&#39;</span><span class="p">,</span><span class="n">sed_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_cached</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../../_images/Temp_Ev_two_zones_acc_and_cooling_40_0.png" src="../../../_images/Temp_Ev_two_zones_acc_and_cooling_40_0.png" />
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lx</span><span class="o">=</span><span class="n">temp_ev_acc_1</span><span class="o">.</span><span class="n">rad_region</span><span class="o">.</span><span class="n">make_lc</span><span class="p">(</span><span class="n">nu1</span><span class="o">=</span><span class="mf">1E17</span><span class="p">,</span><span class="n">nu2</span><span class="o">=</span><span class="mf">1E18</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="n">eval_cross_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta_t_out</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">use_cached</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">frame</span><span class="o">=</span><span class="s1">&#39;obs&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lx</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span><span class="n">lx</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="k">lg</span>[&#39;time&#39;].unit)
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;flux (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="o">%</span><span class="k">lg</span>[&#39;flux&#39;].unit)
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;flux (erg / (cm2 s))&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../../../_images/Temp_Ev_two_zones_acc_and_cooling_41_1.png" src="../../../_images/Temp_Ev_two_zones_acc_and_cooling_41_1.png" />
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Temp_Ev_one_zone_only_cooling.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Temporal evolution, one zone, only cooling</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Temp_Ev_two_zones_acc_and_cooling_adb_exp.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Temporal evolution, two zones, cooling+acc+adb exp</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2019, andrea tramacere.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

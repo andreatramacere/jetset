@@ -1,9 +1,9 @@
-.. JetSeT documentation master file
+#.. JetSeT documentation master file
 
 
 
 
-.. image:: _static/logo_large.png
+.. image:: _static/logo_large_no_border.png
    :width: 400px
 
 
@@ -41,7 +41,7 @@ allowing to fit the numerical models to observed data. The main features of this
    :caption: Documentation:
 
    installation <install.rst>
-   what's new in jetset 1.2.2 and bug fixing  <new_release.rst>
+   changelog  <new_release.rst>
    user guide <user_guide/user_guide.rst>
    code documentation (API) <api/modules.rst>
    bibliography <references.rst>
@@ -49,7 +49,7 @@ allowing to fit the numerical models to observed data. The main features of this
 
 
 .. nbgallery::
-    :caption: New/updated in v 1.2.2-1.2.0:
+    :caption: New/updated in v 1.2.0-1.3.0:
     :name: rst-gallery
 
     user_guide/documentation_notebooks/depending_pars/depending_pars.rst
@@ -65,11 +65,12 @@ allowing to fit the numerical models to observed data. The main features of this
     user_guide/documentation_notebooks/sherpa_plugin/sherpa-plugin-jetset-interface.rst
     user_guide/documentation_notebooks/gammapy_plugin/gammapy_plugin.rst
     user_guide/documentation_notebooks/galactic/galactic.rst
+
 Testers:
 
-I would like to thanks the most active testers:
+I would like to thank the most active testers:
 
-Hubing Xiao, Cosimo Nigro, Vaidehi S. Paliya, Sara Buson, Sonal Patel
+Hubing Xiao, Cosimo Nigro, Vaidehi S. Paliya, Sara Buson, Sonal Patel, Jayant Abhir, Axel Arbet-Engels
 
 
 License:

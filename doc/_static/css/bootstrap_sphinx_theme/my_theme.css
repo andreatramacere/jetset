@@ -1,0 +1,31 @@
+  
+/* Unused samples for overrides example. */
+
+
+.container {
+    width: 98%;
+    margin-right: auto;
+    margin-left: 14px;
+    padding-left: 16px;
+    padding-right: 12px;
+}
+
+
+div.body {
+    min-width: 450px;
+    max-width: 65%;
+    padding-left: 50px;
+}
+
+.bs-sidenav {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    position:fixed; 
+    max-width: 25%;
+    overflow-y: auto;
+    top: 30px;
+    bottom:30px;
+}

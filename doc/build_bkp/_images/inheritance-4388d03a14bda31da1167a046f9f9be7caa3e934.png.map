@@ -1,0 +1,8 @@
+<map id="inheritance94e0078647" name="inheritance94e0078647">
+<area shape="rect" id="node1" href="jetset.template_model.BigBlueBumpTemplateLogLog.html#jetset.template_model.BigBlueBumpTemplateLogLog" target="_top" title="BigBlueBumpTemplateLogLog" alt="" coords="382,31,577,57"/>
+<area shape="rect" id="node2" href="jetset.template_model.SpectralTemplateLogLog.html#jetset.template_model.SpectralTemplateLogLog" target="_top" title="Class to handle spectral templates" alt="" coords="170,56,334,83"/>
+<area shape="rect" id="node3" href="jetset.template_model.HostGalaxyTemplateLogLog.html#jetset.template_model.HostGalaxyTemplateLogLog" target="_top" title="HostGalaxyTemplateLogLog" alt="" coords="387,81,572,108"/>
+<area shape="rect" id="node4" href="jetset.base_model.Model.html#jetset.base_model.Model" target="_top" title="Model" alt="" coords="28,56,100,83"/>
+<area shape="rect" id="node5" href="jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter" target="_top" title="This class is the base class for models parameters. The following keywords " alt="" coords="5,5,122,32"/>
+<area shape="rect" id="node6" href="jetset.template_model.TemplateParameter.html#jetset.template_model.TemplateParameter" target="_top" title="This class is a subclass of the :class:`.ModelParameter` class," alt="" coords="185,5,319,32"/>
+</map>

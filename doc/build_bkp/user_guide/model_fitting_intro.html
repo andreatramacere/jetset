@@ -1,0 +1,983 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Model Fitting Introduction &#8212; jetset  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=fd3f3429" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=a93b4d3c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/model_fitting_intro';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="model fitting examples" href="model_fitting_examples.html" />
+    <link rel="prev" title="model fitting" href="model_fitting.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_large_no_border.png" class="logo__image only-light" alt="JetSeT "/>
+    <script>document.write(`<img src="../_static/logo_large_no_border.png" class="logo__image only-dark" alt="JetSeT "/>`);</script>
+  
+  
+    <p class="title logo__title">documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/andreatramacere/jetset" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_release.html">changelog</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="user_guide.html">user guide</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="model_basic.html">model basic features</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/jet_model_phys_SSC/Jet_example_phys_SSC.html"> jet model physical setup (basic features and SSC) -  *New (v1.3.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/jet_model_phys_EC/Jet_example_phys_EC.html">External Compton</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/jet_model_num/Jet_example_num.html"> jet model numerical setup - *New (v1.3.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/hadronic_pp_jet/hadronic.html"> jet hadronic pp model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/galactic/galactic.html"> galactic beamed/unbeamed objects - *New (v1.3.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/cosmology/Jet_example_cosmo.html"> change cosmology model - *New (v1.3.0)*</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="model_advanced.html">model advanced features</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/composite_model/Composite_model.html"> composite models  *New (v1.2.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/depending_pars/depending_pars.html"> depending parameters  *New (v1.2.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/custom_emitters_distr/custom_emitters.html"> jet model custom  emitters distributions *New (v1.2.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/EBL/EBL.html"> EBL models  *New (v1.2.0)*</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="data_and_phenomenology.html">data and phenomenology</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/load_data/Jet_example_load_data.html"> data format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/phen_constr/SSC_th_bkg.html"> phenomenological model constraining: theoretical background on SSC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/phen_constr/Jet_example_phenom_constr.html"> phenomenological model constraining: application</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="model_fitting.html">model fitting</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#"> caveats and introduction on model fitting and minimizers</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="model_fitting_examples.html"> model fitting examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="documentation_notebooks/model_fit_1/Jet_example_model_fit.html"> 1: SSC model fit, minuit contours, and MCMC for Mrk 421 *New (v1.3.0)*</a></li>
+<li class="toctree-l4"><a class="reference internal" href="documentation_notebooks/model_fit_2/Jet_example_model_fit_wiht_gal_template.html"> 2: SSC (jet+galaxy template) model fit and MCMC for Mrk 501 *New (v1.3.0)*</a></li>
+<li class="toctree-l4"><a class="reference internal" href="documentation_notebooks/model_fit_3/Jet_example_model_fit_EC.html"> 3: SSC and EC fit for 3C 454.3 *New (v1.3.0)*</a></li>
+<li class="toctree-l4"><a class="reference internal" href="documentation_notebooks/model_fit_4/Jet_example_only_synchrotron.html"> 4: Only Synchroton for Mrk 421 fit, minuit contours, and MCMC *New (v1.3.0)*</a></li>
+<li class="toctree-l4"><a class="reference internal" href="documentation_notebooks/sherpa_plugin/sherpa-plugin-jetset-interface.html"> 5: Mrk 521 SSC+EBL with Sherpa plugin and jetset interface  *New (v1.3.0)*</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="temp_ev.html">temporal evolution</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/temporal_evolution/Temp_Ev_one_zone_only_cooling.html"> Temporal evolution, one zone, only cooling *New (v1.2.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/temporal_evolution/Temp_Ev_two_zones_acc_and_cooling.html"> Temporal evolution, two zones,  cooling+acc *New (v1.2.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/temporal_evolution/Temp_Ev_two_zones_acc_and_cooling_adb_exp.html"> Temporal evolution, two zones,  cooling+acc+adiabatic expansion *New (v1.2.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/hadronic_pp_jet/hadronic_validate_temp_ev.html"> Temporal evolution, validation of the hadronic pp secondaries evolution *New (v1.2.0)*</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="plugins.html">plugins</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/sherpa_plugin/sherpa-plugin-sherpa-interface.html"> Example to use the sherpa plugin with the Sherpa interface *New (v1.3.0)*</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_notebooks/gammapy_plugin/gammapy_plugin.html"> Example to use the Gamma-py plugin with the JeSeT interface *New (v1.3.0)*</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/modules.html">code documentation (API)</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/analytical_model.html">analytical_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.analytical_model.AnalyticalParameter.html">AnalyticalParameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.analytical_model.Disk.html">Disk</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/base_model.html">base_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.base_model.Model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.base_model.MultiplicativeModel.html">MultiplicativeModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/convert_qdp.html">convert_qdp</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.convert_qdp.check_is_number.html">check_is_number</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.convert_qdp.do_convert.html">do_convert</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/cosmo_tools.html">cosmo_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.cosmo_tools.Cosmo.html">Cosmo</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/data_loader.html">data_loader</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.data_loader.get_data_set_msk.html">get_data_set_msk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.data_loader.get_freq_range_msk.html">get_freq_range_msk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.data_loader.lin_to_log.html">lin_to_log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.data_loader.log_to_lin.html">log_to_lin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.data_loader.ObsData.html">ObsData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.data_loader.Data.html">Data</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/frame_converter.html">frame_converter</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.frame_converter.convert_nu_to_blob.html">convert_nu_to_blob</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.frame_converter.convert_nu_to_src.html">convert_nu_to_src</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.frame_converter.convert_nuFnu_to_nuLnu_src.html">convert_nuFnu_to_nuLnu_src</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/gammapy_plugin.html">gammapy_plugin</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.gammapy_plugin.GammapyJetsetModelFactory.html">GammapyJetsetModelFactory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.gammapy_plugin.GammapyJetsetModel.html">GammapyJetsetModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/jet_emitters.html">jet_emitters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_emitters.EmittersDistribution.html">EmittersDistribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_emitters.BaseEmittersDistribution.html">BaseEmittersDistribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_emitters.ArrayDistribution.html">ArrayDistribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_emitters.EmittersArrayDistribution.html">EmittersArrayDistribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_emitters.InjEmittersDistribution.html">InjEmittersDistribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_emitters.JetkernelEmittersDistribution.html">JetkernelEmittersDistribution</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/jet_emitters_factory.html">jet_emitters_factory</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_emitters_factory.EmittersFactory.html">EmittersFactory</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/jet_kernel_tools.html">jet_kernel_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_kernel_tools.get_spectral_c_array.html">get_spectral_c_array</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/jet_model.html">jet_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_model.Jet.html">Jet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_model.JetBase.html">JetBase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_model.GalacticBeamed.html">GalacticBeamed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_model.GalacticUnbeamed.html">GalacticUnbeamed</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/jet_paramters.html">jet_paramters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_paramters.JetParameter.html">JetParameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_paramters.JetModelDictionaryPar.html">JetModelDictionaryPar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_paramters.JetModelParameterArray.html">JetModelParameterArray</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/jet_spectral_components.html">jet_spectral_components</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_spectral_components.JetSeedPhotons.html">JetSeedPhotons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_spectral_components.JetSpecComponent.html">JetSpecComponent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_spectral_components.SpecCompList.html">SpecCompList</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/jet_timedep.html">jet_timedep</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_timedep.merge_lcs.html">merge_lcs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_timedep.JetTimeEvol.html">JetTimeEvol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_timedep.TimeEmittersDistribution.html">TimeEmittersDistribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_timedep.TimeEvolvingRegion.html">TimeEvolvingRegion</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/jet_tools.html">jet_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_tools.build_emitting_region_dict.html">build_emitting_region_dict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_tools.build_ExtFields_dic.html">build_ExtFields_dic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_tools.BLR_constraints.html">BLR_constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_tools.DT_constraints.html">DT_constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.jet_tools.clean_numba.html">clean_numba</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/jetkernel_models_dic.html">jetkernel_models_dic</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/loglog_poly_model.html">loglog_poly_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.loglog_poly_model.find_max_cubic.html">find_max_cubic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.loglog_poly_model.LogCubic.html">LogCubic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.loglog_poly_model.LogLinear.html">LogLinear</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.loglog_poly_model.LogLogModel.html">LogLogModel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.loglog_poly_model.LogParabolaEp.html">LogParabolaEp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.loglog_poly_model.LogParabolaPL.html">LogParabolaPL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.loglog_poly_model.PolyParameter.html">PolyParameter</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/mathkernel_helper.html">mathkernel_helper</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/mcmc.html">mcmc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.mcmc.McmcSampler.html">McmcSampler</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/minimizer.html">minimizer</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.minimizer.fit_SED.html">fit_SED</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.minimizer.FitResults.html">FitResults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.minimizer.Minimizer.html">Minimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.minimizer.LSBMinimizerScipy.html">LSBMinimizerScipy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.minimizer.MinuitMinimizer.html">MinuitMinimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.minimizer.ModelMinimizer.html">ModelMinimizer</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/model_manager.html">model_manager</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.model_manager.FitModel.html">FitModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/model_parameters.html">model_parameters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.model_parameters.ModelParameter.html">ModelParameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.model_parameters.ModelParameterArray.html">ModelParameterArray</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.model_parameters.Value.html">Value</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/obs_constrain.html">obs_constrain</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.check_boundaries.html">check_boundaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.check_t_var.html">check_t_var</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.constr_B_from_nu_peaks.html">constr_B_from_nu_peaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.constr_R_from_CD.html">constr_R_from_CD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.find_B_from_nu_p_S.html">find_B_from_nu_p_S</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.find_gamma0.html">find_gamma0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.find_gamma_3p_SSC.html">find_gamma_3p_SSC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.find_gamma_Synch.html">find_gamma_Synch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.find_HE_cut_off.html">find_HE_cut_off</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.find_s.html">find_s</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.find_s1.html">find_s1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.find_turn_over.html">find_turn_over</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.get_Comp_factor.html">get_Comp_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.get_R_tvar.html">get_R_tvar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.get_U_Sync_from_Ph.html">get_U_Sync_from_Ph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.rescale_Ne.html">rescale_Ne</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.set_gmin_from_nu_cut_IR.html">set_gmin_from_nu_cut_IR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.obs_constrain.ObsConstrain.html">ObsConstrain</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/output.html">output</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.output.clean_dir.html">clean_dir</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.output.makedir.html">makedir</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.output.WorkPlace.html">WorkPlace</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/plot_sedfit.html">plot_sedfit</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.plot_sedfit.PlotSED.html">PlotSED</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.plot_sedfit.BasePlot.html">BasePlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.plot_sedfit.PlotPdistr.html">PlotPdistr</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.plot_sedfit.PlotSpecComp.html">PlotSpecComp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.plot_sedfit.PlotSeedPhotons.html">PlotSeedPhotons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.plot_sedfit.PlotSpectralMultipl.html">PlotSpectralMultipl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.plot_sedfit.PlotTempEvDiagram.html">PlotTempEvDiagram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.plot_sedfit.PlotTempEvEmitters.html">PlotTempEvEmitters</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/poly_fit.html">poly_fit</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.check_maxima.html">check_maxima</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.cubic_peaks.html">cubic_peaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.do_cubic_fit.html">do_cubic_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.do_cubic_fit_peaks.html">do_cubic_fit_peaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.do_linear_fit.html">do_linear_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.do_log_Parab_FIT.html">do_log_Parab_FIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.filter_interval.html">filter_interval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.find_max_cubic.html">find_max_cubic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.lin.html">lin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.parab.html">parab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.residuals_cubic_peaks.html">residuals_cubic_peaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.residuals_linfit.html">residuals_linfit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit.residuals_parab.html">residuals_parab</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/poly_fit_tools.html">poly_fit_tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit_tools.get_SED_log_par_fit.html">get_SED_log_par_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit_tools.get_SED_pl_fit.html">get_SED_pl_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit_tools.get_n_gamma_log_par_fit.html">get_n_gamma_log_par_fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.poly_fit_tools.get_nu_p_S_delta_approx.html">get_nu_p_S_delta_approx</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/sed_shaper.html">sed_shaper</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.sed_shaper.filter_interval.html">filter_interval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.sed_shaper.find_E0.html">find_E0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.sed_shaper.IC_fit_range.html">IC_fit_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.sed_shaper.spectral_index_range.html">spectral_index_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.sed_shaper.sync_fit_range.html">sync_fit_range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.sed_shaper.index.html">index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.sed_shaper.index_array.html">index_array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.sed_shaper.index_typecasting.html">index_typecasting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.sed_shaper.peak_values.html">peak_values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.sed_shaper.SEDShape.html">SEDShape</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/sherpa_plugin.html">sherpa_plugin</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.sherpa_plugin.plot_sherpa_model.html">plot_sherpa_model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.sherpa_plugin.JetsetSherpaModel.html">JetsetSherpaModel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/spectral_shapes.html">spectral_shapes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.spectral_shapes.SED.html">SED</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/template_2Dmodel.html">template_2Dmodel</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.template_2Dmodel.TemplateTable2D.html">TemplateTable2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.template_2Dmodel.EBLAbsorptionTemplate.html">EBLAbsorptionTemplate</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/template_model.html">template_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.template_model.SpectralTemplateLogLog.html">SpectralTemplateLogLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.template_model.TemplateParameter.html">TemplateParameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.template_model.BigBlueBumpTemplateLogLog.html">BigBlueBumpTemplateLogLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.template_model.HostGalaxyTemplateLogLog.html">HostGalaxyTemplateLogLog</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/test_data_helper.html">test_data_helper</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/utils.html">utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.utils.check_frame.html">check_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.utils.unexpected_behaviour.html">unexpected_behaviour</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../api/version_notifier.html">version_notifier</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.version_notifier.check_version.html">check_version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.version_notifier.run_version_checking.html">run_version_checking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/jetset.version_notifier.capture.html">capture</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">bibliography</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">New/updated in v 1.2.0-1.3.0:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/depending_pars/depending_pars.html">Depending parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/composite_model/Composite_model.html">Composite Models and depending pars</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/custom_emitters_distr/custom_emitters.html">Custom emitters distribution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/jet_model_phys_SSC/Jet_example_phys_SSC.html">Physical setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/hadronic_pp_jet/hadronic.html">Hadronic pp jet model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/temporal_evolution/Temp_Ev_one_zone_only_cooling.html">Temporal evolution, one zone, only cooling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/temporal_evolution/Temp_Ev_two_zones_acc_and_cooling.html">Temporal evolution, two zones, cooling+acc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/temporal_evolution/Temp_Ev_two_zones_acc_and_cooling_adb_exp.html">Temporal evolution, two zones, cooling+acc+adb exp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/phen_constr/SSC_th_bkg.html">Phenomenological model constraining: SSC theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/sherpa_plugin/sherpa-plugin-sherpa-interface.html">Example to use the Sherpa plugin with the sherpa interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/sherpa_plugin/sherpa-plugin-jetset-interface.html">Example to use the Sherpa minimizer plugin with a JeSeT model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/gammapy_plugin/gammapy_plugin.html">Example to use the Gamma-py plugin with the JeSeT interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_notebooks/galactic/galactic.html">Galactic object models</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/user_guide/model_fitting_intro.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Model Fitting Introduction</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#frequentist-model-fitting">Frequentist model fitting</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fitmodel-creation">FitModel creation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelminimizer-creation">ModelMinimizer creation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-minimization-process">Running the minimization process</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-model-fitting-with-emcee">Bayesian model fitting with emcee</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-mcmc-object">Building the mcmc object</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-the-labels">Setting the labels</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-the-priors">Setting the priors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-sampler">Running the sampler</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="model-fitting-introduction">
+<span id="model-fitting-intro"></span><h1>Model Fitting Introduction<a class="headerlink" href="#model-fitting-introduction" title="Link to this heading">#</a></h1>
+<p>In this section we provide some guidelines and caveats for mode fitting and minimizers in JetSeT.  In general to perform a model fitting to data,</p>
+<p>you can use the <a class="reference internal" href="../api/jetset.minimizer.ModelMinimizer.html#jetset.minimizer.ModelMinimizer" title="jetset.minimizer.ModelMinimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelMinimizer</span></code></a> class from the <a class="reference internal" href="../api/minimizer.html#module-jetset.minimizer" title="jetset.minimizer"><code class="xref py py-mod docutils literal notranslate"><span class="pre">minimizer</span></code></a> module, or you can use specific plugins as for the case of sherpa and gammapy,  documented here:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="documentation_notebooks/sherpa_plugin/sherpa-plugin-jetset-interface.html#sherpa-minimizer-plugin"><span class="std std-ref">Example to use the Sherpa minimizer plugin with a JeSeT model</span></a></p></li>
+<li><p><a class="reference internal" href="documentation_notebooks/sherpa_plugin/sherpa-plugin-sherpa-interface.html#sherpa-plugin"><span class="std std-ref">Example to use the Sherpa plugin with the sherpa interface</span></a></p></li>
+<li><p><a class="reference internal" href="documentation_notebooks/gammapy_plugin/gammapy_plugin.html#gammapy-plugin"><span class="std std-ref">Example to use the Gamma-py plugin with the JeSeT interface</span></a></p></li>
+</ul>
+<p>In the following we will describe the frequentist model fitting using the <a class="reference internal" href="../api/jetset.minimizer.ModelMinimizer.html#jetset.minimizer.ModelMinimizer" title="jetset.minimizer.ModelMinimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelMinimizer</span></code></a>  using the <code class="docutils literal notranslate"><span class="pre">minuit</span></code>  minimizer (wrapping the <a class="reference external" href="https://scikit-hep.org/iminuit/">iminuit</a> package ) and the <code class="docutils literal notranslate"><span class="pre">lsb</span></code> minimizer (wrapping the scipy <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html">least_squares</a>
+package),  and the Bayesian approach using the <a class="reference internal" href="../api/jetset.mcmc.McmcSampler.html#jetset.mcmc.McmcSampler" title="jetset.mcmc.McmcSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">McmcSampler</span></code></a> interface to ecee <a class="reference external" href="https://emcee.readthedocs.io/en/stable/">emcee</a> package.</p>
+<section id="frequentist-model-fitting">
+<h2>Frequentist model fitting<a class="headerlink" href="#frequentist-model-fitting" title="Link to this heading">#</a></h2>
+<section id="fitmodel-creation">
+<span id="id1"></span><h3>FitModel creation<a class="headerlink" href="#fitmodel-creation" title="Link to this heading">#</a></h3>
+<p>The first step consists in creating a fit <a class="reference internal" href="../api/jetset.model_manager.FitModel.html#jetset.model_manager.FitModel" title="jetset.model_manager.FitModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitModel</span></code></a> object. Assuming you have already a <a class="reference internal" href="../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet" title="jetset.jet_model.Jet"><code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code></a>, in this example is the object <code class="docutils literal notranslate"><span class="pre">prefit_jet</span></code> (either constrained from data, see <a class="reference internal" href="documentation_notebooks/phen_constr/Jet_example_phenom_constr.html#phenom-constr"><span class="std std-ref">Phenomenological model constraining: application</span></a> and the examples in <a class="reference internal" href="model_fitting_examples.html#model-fitting-examples"><span class="std std-ref">model fitting examples</span></a>, or any instance of the <a class="reference internal" href="../api/jetset.jet_model.Jet.html#jetset.jet_model.Jet" title="jetset.jet_model.Jet"><code class="xref py py-class docutils literal notranslate"><span class="pre">Jet</span></code></a> class)</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jetset.model_manager</span> <span class="kn">import</span>  <span class="n">FitModel</span>
+<span class="n">fit_model_lsb</span><span class="o">=</span><span class="n">FitModel</span><span class="p">(</span> <span class="n">jet</span><span class="o">=</span><span class="n">prefit_jet</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;SSC-best-fit-lsb&#39;</span><span class="p">,</span><span class="n">template</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Starting from JetSeT <code class="docutils literal notranslate"><span class="pre">version&gt;=1.1.2</span></code> the implementation of the  composite model  <a class="reference internal" href="../api/jetset.model_manager.FitModel.html#jetset.model_manager.FitModel" title="jetset.model_manager.FitModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitModel</span></code></a>  for setting  parameters requires to specify the model component.
+and this holds also for the <cite>freeze</cite> method and for setting  <cite>fit_range</cite> intervals, and for the methods relate to parameters setting in general.
+<a class="reference internal" href="../api/jetset.model_manager.FitModel.html#jetset.model_manager.FitModel" title="jetset.model_manager.FitModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitModel</span></code></a></p>
+</div>
+<p>Before proceeding with the minimization, it is important to freeze or free the needed parameters,
+and provide fit boundaries. As default, boundaries will be set to the physical boundaries of the
+parameters, but, depending on your particular source and state, you want to provide tighter boundaries eg:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fit_model_minuit</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="s1">&#39;jet_leptonic&#39;</span><span class="p">,</span><span class="s1">&#39;z_cosm&#39;</span><span class="p">)</span>
+<span class="n">fit_model_minuit</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="s1">&#39;jet_leptonic&#39;</span><span class="p">,</span><span class="s1">&#39;R_H&#39;</span><span class="p">)</span>
+<span class="n">fit_model_minuit</span><span class="o">.</span><span class="n">freeze</span><span class="p">(</span><span class="s1">&#39;jet_leptonic&#39;</span><span class="p">,</span><span class="s1">&#39;R&#39;</span><span class="p">)</span>
+<span class="n">fit_model_minuit</span><span class="o">.</span><span class="n">jet_leptonic</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">fit_range</span><span class="o">=</span><span class="p">[</span><span class="mf">5E15</span><span class="p">,</span><span class="mf">1E17</span><span class="p">]</span>
+<span class="n">fit_model_minuit</span><span class="o">.</span><span class="n">jet_leptonic</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">gmin</span><span class="o">.</span><span class="n">fit_range</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">1000</span><span class="p">]</span>
+<span class="n">fit_model_minuit</span><span class="o">.</span><span class="n">jet_leptonic</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">gmax</span><span class="o">.</span><span class="n">fit_range</span><span class="o">=</span><span class="p">[</span><span class="mf">5E5</span><span class="p">,</span><span class="mf">1E7</span><span class="p">]</span>
+<span class="n">fit_model_minuit</span><span class="o">.</span><span class="n">jet_leptonic</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">gamma0_log_parab</span><span class="o">.</span><span class="n">fit_range</span><span class="o">=</span><span class="p">[</span><span class="mf">1E3</span><span class="p">,</span><span class="mf">1E5</span><span class="p">]</span>
+
+<span class="n">fit_model_minuit</span><span class="o">.</span><span class="n">jet_leptonic</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">beam_obj</span><span class="o">.</span><span class="n">fit_range</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">50</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Setting fit_range can speed up and improve the fit convergence and is advised. Anyhow, the ranges should be used judged by the user each time according to the physics of the particular source. Please, have look at
+the examples in <a class="reference internal" href="model_fitting_examples.html#model-fitting-examples"><span class="std std-ref">model fitting examples</span></a> to have a broader view of this topic.</p>
+</div>
+<p>A good strategy is to run first a <code class="docutils literal notranslate"><span class="pre">lsb</span></code> fit and then, using the same fit_model, run a fit with <code class="docutils literal notranslate"><span class="pre">minuit</span></code>. Using minuit we notice that sometimes the fit will converge, but the quality will not be enough (valid==false) to run minos.
+Anyhow, as shown in the MCMC sampling, it still possible to estimate asymmetric errors by means of MCMC sampling.</p>
+</section>
+<section id="modelminimizer-creation">
+<h3>ModelMinimizer creation<a class="headerlink" href="#modelminimizer-creation" title="Link to this heading">#</a></h3>
+<p>The second step consists in the creation of a  <a class="reference internal" href="../api/jetset.minimizer.ModelMinimizer.html#jetset.minimizer.ModelMinimizer" title="jetset.minimizer.ModelMinimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelMinimizer</span></code></a> object</p>
+<ul>
+<li><p>for <code class="docutils literal notranslate"><span class="pre">lsb</span></code> (wrapping: scipy.optimize.least_squares)</p>
+<blockquote>
+<div><div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jetset.minimizer</span> <span class="kn">import</span> <span class="n">ModelMinimizer</span>
+<span class="n">model_minimizer</span><span class="o">=</span><span class="n">ModelMinimizer</span><span class="p">(</span><span class="s1">&#39;lsb&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>for <code class="docutils literal notranslate"><span class="pre">minuit</span></code>:</p>
+<blockquote>
+<div><div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jetset.minimizer</span> <span class="kn">import</span> <span class="n">ModelMinimizer</span>
+<span class="n">model_minimizer</span><span class="o">=</span><span class="n">ModelMinimizer</span><span class="p">(</span><span class="s1">&#39;minuit&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<p>both for the case of <code class="docutils literal notranslate"><span class="pre">lsb</span></code> and <code class="docutils literal notranslate"><span class="pre">minuit</span></code> specific kw for the minimizer can be accessed by the dictionary:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">minimizer</span><span class="o">.</span><span class="n">conf_dict</span>
+</pre></div>
+</div>
+<p>eg: for the case of <code class="docutils literal notranslate"><span class="pre">lsb</span></code> that dictionary would be:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;xtol&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+ <span class="s1">&#39;ftol&#39;</span><span class="p">:</span> <span class="mf">1e-08</span><span class="p">,</span>
+ <span class="s1">&#39;gtol&#39;</span><span class="p">:</span> <span class="mf">1e-08</span><span class="p">,</span>
+ <span class="s1">&#39;jac&#39;</span><span class="p">:</span> <span class="s1">&#39;3-point&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+ <span class="s1">&#39;tr_solver&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+ <span class="s1">&#39;f_scale&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>avoid to change those parameters, unless you are completely aware of what you are doing, and you had a full reading the of the <code class="docutils literal notranslate"><span class="pre">lsb</span></code> / <code class="docutils literal notranslate"><span class="pre">minuit</span></code> documentation.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">minuit</span></code>, starting from JetSeT <code class="docutils literal notranslate"><span class="pre">version==1.3.0</span></code>, <code class="docutils literal notranslate"><span class="pre">simplex</span></code> will be run before <code class="docutils literal notranslate"><span class="pre">migrad</span></code>, this allows a better sampling of the parameter space. You can skip <code class="docutils literal notranslate"><span class="pre">simplex</span></code> as follows:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">minimizer</span><span class="o">.</span><span class="n">add_simplex</span><span class="o">=</span><span class="kc">False</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="running-the-minimization-process">
+<h3>Running the minimization process<a class="headerlink" href="#running-the-minimization-process" title="Link to this heading">#</a></h3>
+<p>The third step will consist in actually calling the minimization process</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">best_fit_res</span><span class="o">=</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">fit_model</span><span class="o">=</span><span class="n">fit_model</span><span class="p">,</span>
+                                 <span class="n">sed_data</span><span class="o">=</span><span class="n">sed_data</span><span class="p">,</span>
+                                 <span class="n">nu_fit_start</span><span class="o">=</span><span class="mf">1E11</span><span class="p">,</span>
+                                 <span class="n">nu_fit_stop</span><span class="o">=</span><span class="mf">1E29</span><span class="p">,</span>
+                                 <span class="n">max_ev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                 <span class="n">use_UL</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">fitname</span><span class="o">=</span><span class="s1">&#39;SSC-best-fit&#39;</span><span class="p">,</span>
+                                 <span class="n">repeat</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>notice that:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sed_data</span></code> is your <a class="reference internal" href="../api/jetset.data_loader.ObsData.html#jetset.data_loader.ObsData" title="jetset.data_loader.ObsData"><code class="xref py py-class docutils literal notranslate"><span class="pre">ObsData</span></code></a> object (see <a class="reference internal" href="documentation_notebooks/load_data/Jet_example_load_data.html#data-format"><span class="std std-ref">Data format and SED data</span></a> section from more info)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nu_fit_start</span></code> and <code class="docutils literal notranslate"><span class="pre">nu_fit_stop</span></code> correspond to the range of the data, in Hz, used for the model fitting</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">use_UL</span></code> if set to <code class="docutils literal notranslate"><span class="pre">True</span></code> will take into account also the upper limits, and will skip them in <code class="docutils literal notranslate"><span class="pre">use_UL=False</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">repeat</span></code>, introduced in version 1.1.2, allows to repeat the fit process, and will provide a better fit convergence. For example, setting <code class="docutils literal notranslate"><span class="pre">repeat=3</span></code> the fit process will be repeated 3 times.</p></li>
+</ul>
+<p>See the examples in <a class="reference internal" href="model_fitting_examples.html#model-fitting-examples"><span class="std std-ref">model fitting examples</span></a>  to inspect the output for each minimizer. The plot for the covariance matrix can be obtained</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">model_minimizer</span><span class="o">.</span><span class="n">plot_corr_matrix</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="bayesian-model-fitting-with-emcee">
+<h2>Bayesian model fitting with emcee<a class="headerlink" href="#bayesian-model-fitting-with-emcee" title="Link to this heading">#</a></h2>
+<section id="building-the-mcmc-object">
+<span id="bayesian-model-fitting"></span><h3>Building the mcmc object<a class="headerlink" href="#building-the-mcmc-object" title="Link to this heading">#</a></h3>
+<p>The  <a class="reference internal" href="../api/jetset.mcmc.McmcSampler.html#jetset.mcmc.McmcSampler" title="jetset.mcmc.McmcSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">McmcSampler</span></code></a> interface to emcee <a class="reference external" href="https://emcee.readthedocs.io/en/stable/">emcee</a> package, in the following we show how to perform a sampling of the
+model parameter space, starting from a frequentist best fit result.</p>
+<p>it could either a:</p>
+<ul>
+<li><p>previously saved instance of a model minimizer</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jetset.mcmc</span> <span class="kn">import</span> <span class="n">McmcSampler</span>
+<span class="n">model_minimizer</span> <span class="o">=</span> <span class="n">ModelMinimizer</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;model_minimizer_minuit.pkl&#39;</span><span class="p">)</span>
+<span class="n">mcmc</span><span class="o">=</span><span class="n">McmcSampler</span><span class="p">(</span><span class="n">model_minimizer</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>or  any model minimizer instance created in your notebook/script. We create the <code class="docutils literal notranslate"><span class="pre">mcmc</span></code> object</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jetset.mcmc</span> <span class="kn">import</span> <span class="n">McmcSampler</span>
+<span class="n">mcmc</span><span class="o">=</span><span class="n">McmcSampler</span><span class="p">(</span><span class="n">model_minimizer</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="setting-the-labels">
+<h3>Setting the labels<a class="headerlink" href="#setting-the-labels" title="Link to this heading">#</a></h3>
+<p>Now we need to set the parameters to perform the sample:</p>
+<ul>
+<li><p>we can use the same free parameters used in the frequentist minimizer object</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mcmc</span><span class="o">.</span><span class="n">set_labels</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p>or define a different sample (or a subsample), defining a dictionary where each key correspond to  the name of the model component, and the value of the key to the list of parameters name for that component.
+For example, assuming that the  <a class="reference internal" href="../api/jetset.model_manager.FitModel.html#jetset.model_manager.FitModel" title="jetset.model_manager.FitModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">FitModel</span></code></a> member of the <a class="reference internal" href="../api/jetset.minimizer.ModelMinimizer.html#jetset.minimizer.ModelMinimizer" title="jetset.minimizer.ModelMinimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelMinimizer</span></code></a> object has the <code class="docutils literal notranslate"><span class="pre">jet_leptonic</span></code> component</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;N&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;beam_obj&#39;</span><span class="p">,</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="s1">&#39;gamma0_log_parab&#39;</span><span class="p">]</span>
+<span class="n">model_name</span><span class="o">=</span><span class="s1">&#39;jet_leptonic&#39;</span>
+<span class="n">use_labels_dict</span><span class="o">=</span><span class="p">{</span><span class="n">model_name</span><span class="p">:</span><span class="n">labels</span><span class="p">}</span>
+
+<span class="n">mcmc</span><span class="o">.</span><span class="n">set_labels</span><span class="p">(</span><span class="n">use_labels_dict</span><span class="o">=</span><span class="n">use_labels_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>in this case the sampler will use only the <code class="docutils literal notranslate"><span class="pre">['N','B','beam_obj','s','gamma0_log_parab']</span></code> par from <cite>model_minimizer.fit_model.jet_leptonic</cite> component</p>
+</li>
+</ul>
+</section>
+<section id="setting-the-priors">
+<h3>Setting the priors<a class="headerlink" href="#setting-the-priors" title="Link to this heading">#</a></h3>
+<p>Now we need to set the priors. For the current release we are using flat priors centered on the best fit values.</p>
+<p>We provide three different approaches</p>
+<ul>
+<li><p>Relative bounds:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mcmc</span><span class="o">.</span><span class="n">set_bounds</span><span class="p">(</span><span class="n">bound</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span><span class="n">bound_rel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>setting <code class="docutils literal notranslate"><span class="pre">bound=5.0</span></code> and <code class="docutils literal notranslate"><span class="pre">bound_rel=True</span></code> means that:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the prior interval will be defined as  <code class="docutils literal notranslate"><span class="pre">[best_fit_val</span> <span class="pre">-</span> <span class="pre">delta_m</span> <span class="pre">,</span> <span class="pre">best_fit_val</span> <span class="pre">+</span> <span class="pre">delta_p]</span></code></p></li>
+<li><p>with <code class="docutils literal notranslate"><span class="pre">delta_p=delta_m=best_fit_val*bound</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>It is possible to define asymmetric boundaries e.g. <code class="docutils literal notranslate"><span class="pre">bound=[2.0,5.0]</span></code> meaning that:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">delta_p</span> <span class="pre">=</span> <span class="pre">min(par.best_fit_val*bound[1],</span> <span class="pre">par.fit_range_max)</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">delta_m</span> <span class="pre">=</span> <span class="pre">max(par.best_fit_val*bound[0],</span> <span class="pre">par.fit_range_min)</span></code></p>
+</div></blockquote>
+</li>
+<li><p>Absolute bounds:</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mcmc</span><span class="o">.</span><span class="n">set_bounds</span><span class="p">(</span><span class="n">bound</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span><span class="n">bound_rel</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>setting <code class="docutils literal notranslate"><span class="pre">bound=5.0</span></code> and <code class="docutils literal notranslate"><span class="pre">bound_rel=False</span></code> means that:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the prior interval will be defined as  <code class="docutils literal notranslate"><span class="pre">[best_fit_val</span> <span class="pre">-</span> <span class="pre">delta_m</span> <span class="pre">,</span> <span class="pre">best_fit_val</span> <span class="pre">+</span> <span class="pre">delta_p]</span></code></p></li>
+<li><p>with <code class="docutils literal notranslate"><span class="pre">delta_p</span> <span class="pre">=</span> <span class="pre">delta_m</span> <span class="pre">=</span> <span class="pre">best_fit_err*bound</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>It is possible to define asymmetric boundaries e.g. <code class="docutils literal notranslate"><span class="pre">bound=[2.0,5.0]</span></code> meaning that:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">delta_p</span> <span class="pre">=</span> <span class="pre">par.best_fit_err*bound[1]</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">delta_m</span> <span class="pre">=</span> <span class="pre">par.best_fit_err*bound[0]</span></code></p>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="running-the-sampler">
+<h3>Running the sampler<a class="headerlink" href="#running-the-sampler" title="Link to this heading">#</a></h3>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mcmc</span><span class="o">.</span><span class="n">run_sampler</span><span class="p">(</span><span class="n">nwalkers</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">burnin</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">steps</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">progress</span><span class="o">=</span><span class="s1">&#39;notebook&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The number of walkers <code class="docutils literal notranslate"><span class="pre">nwalkers</span></code>, if not specified, is set to <span class="math notranslate nohighlight">\(4 \times\)</span> (<code class="docutils literal notranslate"><span class="pre">number</span> <span class="pre">of</span> <span class="pre">sampled</span> <span class="pre">parameters</span></code>), if you pass a lower number, a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> will be raised.
+Anyhow,  <code class="docutils literal notranslate"><span class="pre">nwalkers</span></code>, <code class="docutils literal notranslate"><span class="pre">burnin</span></code> and <code class="docutils literal notranslate"><span class="pre">steps</span></code>, should be chosen depending on the particular analysis, and is strongly advised to read the  <a class="reference external" href="https://emcee.readthedocs.io/en/stable/">emcee</a>  documentation.</p>
+<p>Please, read the MCMC section of  examples in <a class="reference internal" href="model_fitting_examples.html#model-fitting-examples"><span class="std std-ref">model fitting examples</span></a> for a showcase of the usage and features of the   <a class="reference internal" href="../api/jetset.mcmc.McmcSampler.html#jetset.mcmc.McmcSampler" title="jetset.mcmc.McmcSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">McmcSampler</span></code></a>.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="model_fitting.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">model fitting</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="model_fitting_examples.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">model fitting examples</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#frequentist-model-fitting">Frequentist model fitting</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fitmodel-creation">FitModel creation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modelminimizer-creation">ModelMinimizer creation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-minimization-process">Running the minimization process</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesian-model-fitting-with-emcee">Bayesian model fitting with emcee</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-the-mcmc-object">Building the mcmc object</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-the-labels">Setting the labels</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-the-priors">Setting the priors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-sampler">Running the sampler</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2019, andrea tramacere.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

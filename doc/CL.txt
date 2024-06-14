@@ -1,15 +1,23 @@
 ##############################################################################
 # notebooks are built in the documentation_notebooks/user_guide, update them before building doc!
 ##############################################################################
+build the requirements file: python build_rtd_requirements.py
+and install the requirements
 
 1) to build proper api strucutre:
 python make_apidoc_and_uml_graphs.py
 
 2) To avoid to import the jetkernel module otherwise the build will crash
    export READTHEDOCS='True'
-   Not needed since mock introduced in conf.py
-
+   
 ----SEPARATE STEPS----------------
+2) cleaning
+  find ./user_guide/documentation_notebooks -name '*.rst' -type f -delete
+  find ./user_guide/documentation_notebooks -name '*.png' -type f -delete
+
+  find documentation_notebooks -name '*.rst' -type f -delete
+  find documentation_notebooks -name '*.png' -type f -delete
+
 3) run step A or B
     A)run all notebooks and build rst file with script
         ./build_rst_files.sh -e documentation_notebooks #run all notebooks found in documentation_notebooks
@@ -25,20 +33,33 @@ python make_apidoc_and_uml_graphs.py
 
 
 4)update the rst in user_guide from the notebooks in documentation_notebooks
+  
   find documentation_notebooks -name '*.rst' | cpio -pdm ./user_guide
   find documentation_notebooks -name '*.png' | cpio -pdm ./user_guide
 
 5)builds the docs
   sphinx-build -b html ./ build
 
+  sphinx-build -j 10 -b html ./ build
+  to use 10 parallel jobs
+
+
 OR
 ----IN ONE STEPS----------------
-to build without executing
+
+cleaning:
+find ./user_guide/documentation_notebooks -name '*.rst' -type f -delete
+find ./user_guide/documentation_notebooks -name '*.png' -type f -delete
+
+find documentation_notebooks -name '*.rst' -type f -delete
+find documentation_notebooks -name '*.png' -type f -delete
+
+to build without executing:
 ./build.sh documentation_notebooks
 OR
 ./build.sh  documentation_notebooks/dir-name
 
-to build executing
-./build.sh e- documentation_notebooks/dir-name
+to build executing:
+./build.sh -e documentation_notebooks/dir-name
 OR
 ./build.sh -e documentation_notebooks/dir-name

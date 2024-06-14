@@ -1,0 +1,7 @@
+<map id="inheritance0666716440" name="inheritance0666716440">
+<area shape="rect" id="node1" href="jetset.jet_paramters.JetModelDictionaryPar.html#jetset.jet_paramters.JetModelDictionaryPar" target="_top" title="JetModelDictionaryPar" alt="" coords="5,107,159,133"/>
+<area shape="rect" id="node2" href="jetset.jet_paramters.JetModelParameterArray.html#jetset.jet_paramters.JetModelParameterArray" target="_top" title="JetModelParameterArray" alt="" coords="207,56,372,83"/>
+<area shape="rect" id="node3" href="jetset.model_parameters.ModelParameterArray.html#jetset.model_parameters.ModelParameterArray" target="_top" title="This class provide and interface to handle an array of :class:`ModelParameter` objects." alt="" coords="8,56,156,83"/>
+<area shape="rect" id="node4" href="jetset.jet_paramters.JetParameter.html#jetset.jet_paramters.JetParameter" target="_top" title="This class is a subclass of the :class:`.ModelParameter` class," alt="" coords="240,5,339,32"/>
+<area shape="rect" id="node5" href="jetset.model_parameters.ModelParameter.html#jetset.model_parameters.ModelParameter" target="_top" title="This class is the base class for models parameters. The following keywords " alt="" coords="24,5,140,32"/>
+</map>

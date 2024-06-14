@@ -1,6 +1,6 @@
 .. _bibliography:
 
-============
+
 Bibliography 
 ============
 
@@ -31,7 +31,10 @@ Bibliography
     "Transformation Properties of External Radiation Fields, Energy-Loss Rates and Scattered Spectra, and a Model for Blazar Variability"
 
 .. [GKM01] `Georganopoulos, Kirk, and Mastichiadis (2001) <https://ui.adsabs.harvard.edu/abs/2001ApJ...561..111G>`_,
-    "The Beaming Pattern and Spectrum of Radiation from Inverse Compton Scattering in Blazars"
+    "The Beaming Pattern and Spe
+
+.. [Finke2016] `Finke et al. (2010) <https://iopscience.iop.org/article/10.3847/0004-637X/830/2/94>`_,   
+   "EXTERNAL COMPTON SCATTERING IN BLAZAR JETS AND THE LOCATION OF THE GAMMA-RAY EMITTING REGION"
 
 .. [Donea2003] `Donea & Protheroe (2003) <https://ui.adsabs.harvard.edu/abs/2003APh....18..377D>`_,
    "Radiation fields of disk, BLR and torus in quasars and blazars: implications for /γ-ray absorption"
