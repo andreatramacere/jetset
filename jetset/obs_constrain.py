@@ -156,7 +156,7 @@ class ObsConstrain(object):
     
     def constrain_SSC_EC_model(self,name=None,
                                jet_model=None,
-                               EC_componets_list=['EC_BLR'],
+                               EC_components_list=['EC_BLR'],
                                params_grid_size=10,
                                electron_distribution_log_values=False,
                                R_H=None,
@@ -177,7 +177,7 @@ class ObsConstrain(object):
         
         model=self.get_model_constraint(name=name,
                                         jet_model=jet_model,
-                                        EC_componets_list=EC_componets_list,
+                                        EC_components_list=EC_components_list,
                                         params_grid_size=params_grid_size,
                                         electron_distribution_log_values=electron_distribution_log_values,
                                         silent=silent,
@@ -199,7 +199,7 @@ class ObsConstrain(object):
     def get_model_constraint(self,
                              name=None,
                              jet_model=None,
-                             EC_componets_list=None,
+                             EC_components_list=None,
                              params_grid_size=10,
                              electron_distribution_log_values=False,
                              silent=False,
@@ -208,10 +208,6 @@ class ObsConstrain(object):
                              R_H_within_DT=False,
                              disk_type='BB'):
         
-
-
-        #out_dir='%s/obs_constrain_%s/'%(self.out_dir,name)
-        #makedir(out_dir)
 
         if silent is False:
             print(section_separator)
@@ -226,15 +222,16 @@ class ObsConstrain(object):
             else:
                 raise RuntimeError('''wrong beaming_expr value=%s, allowed 'delta' or 'bulk_theta' '''%self.beaming_expr)
         if jet_model.emitters_distribution.spectral_type not in jet_model.emitters_distribution.spectral_types_obs_constrain():
-            raise RuntimeError('''to use osb constrain the spectral type of emitters has to be ''' %jet_model.emitters_distribution.spectral_types_obs_constrain())
+            raise RuntimeError('''to use obs constrain the spectral type of emitters has to be ''' %jet_model.emitters_distribution.spectral_types_obs_constrain())
 
         if R_H is not None:
             jet_model.set_par('R_H',val=R_H)
         self.emitters_distr_spectral_type=jet_model.emitters_distribution.spectral_type
 
         nu_p_EC_seed_field=None
-        if EC_componets_list is not None:
-            jet_model.add_EC_component(EC_componets_list,disk_type=disk_type)
+        if EC_components_list is not None:
+            jet_model.add_EC_component(EC_components_list,disk_type=disk_type)
+            jet_model.set_EC_dependencies()
             if hasattr(jet_model.parameters, 'L_Disk'):
                 jet_model.set_par('L_Disk',val=self.SEDShape.L_Disk)
             if hasattr(jet_model.parameters, 'T_Disk'):
@@ -242,40 +239,25 @@ class ObsConstrain(object):
                 if silent is False:
                     print('---> EC set L_D ',jet_model.parameters.L_Disk.val)
                     print('---> EC set T_D', jet_model.parameters.T_Disk.val)
-                if hasattr(jet_model.parameters, 'R_BLR_in'):
-                    R_BLR_in=1E17*np.sqrt(self.SEDShape.L_Disk/1E45)
-                    jet_model.set_par('R_BLR_in', val=R_BLR_in)
-                    jet_model.set_par('R_BLR_out', val=R_BLR_in*2)
-
-                    if silent is False:
-                        print('---> EC set R_BLR_in', jet_model.parameters.R_BLR_in.val)
-                        print('---> EC set R_BLR_out', jet_model.parameters.R_BLR_out.val)
-                    if jet_model.parameters.R_H.val > R_BLR_in and R_H_within_BLR is True:
-                        jet_model.parameters.R_H.val = R_BLR_in * 0.8
+               
+                    if jet_model.parameters.R_H.val > jet_model.parameters.R_BLR_in.val and R_H_within_BLR is True:
+                        jet_model.parameters.R_H.val = jet_model.parameters.R_BLR_in.val * 0.8
                         if silent is False:
                             print('---> moved R_H within BLR to R_H=%e'%jet_model.parameters.R_H.val)
+                
                 if hasattr(jet_model.parameters, 'R_DT'):
-                    R_DT=2.5E18*np.sqrt(self.SEDShape.L_Disk/1E45)
-                    jet_model.set_par('R_DT', val = R_DT)
                     if silent is False:
                         print('---> EC set R_DT', jet_model.parameters.R_DT.val)
-                    if jet_model.parameters.R_H.val > R_DT and R_H_within_DT is True:
-                        jet_model.parameters.R_H.val = R_DT * 0.8
+                    if jet_model.parameters.R_H.val > jet_model.parameters.R_DT.val and R_H_within_DT is True:
+                        jet_model.parameters.R_H.val = jet_model.parameters.R_DT.val * 0.8
                         if silent is False:
                             print('---> moved R_H within DT to R_H=%e'%jet_model.parameters.R_H.val)
 
 
             nu_p_EC_seed_field=self.SEDShape.nu_p_Disk
-
         if silent is False:
             print()
-        #setting the Jet object 
-        #path_initial=jet_model.get_path()
-        #flag_initial=jet_model.get_flag()
-        
-        #jet_model.set_path(out_dir)
-        #jet_model.set_flag(name)
-
+    
         IC_nu_size_initial=jet_model.get_IC_nu_size()
         nu_seed_size_initial=jet_model.get_seed_nu_size()
 
@@ -283,33 +265,19 @@ class ObsConstrain(object):
         jet_model.set_IC_nu_size(50)
         jet_model.set_seed_nu_size(50)
 
-        #jet_model.show_pars()
-        
-        #beaming
 
-       
        
         #SEtting emetting_region parameters
-        
-        #!!Controlla beaming max
         #beaming
-
         if self.beaming_expr=='delta':
             beaming_par=jet_model.get_par_by_type('beaming')
             beaming_par.set(val=self.beaming)
-            #if silent is False:
-            #    print("--->",beaming_par.get_description())
             
-           
         elif self.beaming_expr=='bulk_theta': 
             bulk_factor_par=jet_model.get_par_by_type('jet-bulk-factor')
             theta_par=jet_model.get_par_by_type('jet-viewing-angle')
             theta_par.set(val=self.theta)
             bulk_factor_par.set(val=self.bulk_factor)
-            #if silent is False:
-            #    print("--->",theta_par.get_description())
-            #    print("--->",bulk_factor_par.get_description())
-            #self.beaming=jet_model.get_beaming(theta=self.theta,bulk_factor=self.bulk_factor,beaming=-1.0)
             self.beaming = jet_model.get_beaming()
             if silent is False:
                 print("---> setting beaming  to",self.beaming)
@@ -325,9 +293,7 @@ class ObsConstrain(object):
                 print ("---> setting par type redshift, corresponding to par %s"%(z_par.name))
                 print()
             z_par.set(val=self.z)
-            #if silent is False:
-            #    print("---> ",z_par.get_description())
-            #    print()
+     
         #B
         B_par=jet_model.get_par_by_type('magnetic_field')
         B_par.set(val=self.B_start)
@@ -342,7 +308,8 @@ class ObsConstrain(object):
         R_tvar,completed=get_R_tvar(self.beaming,self.t_var_sec,+self.z)
 
         R_par=jet_model.get_par_by_type('region_size')
-        R_par.set(val=set_lin_log_val(R_par, R_tvar))
+        if R_par._is_dependent is False:
+            R_par.set(val=set_lin_log_val(R_par, R_tvar))
         if R_par is not None and completed is True:
             if silent is False:
 
@@ -487,7 +454,7 @@ class ObsConstrain(object):
             print()
 
         if B_par is not None:
-            if EC_componets_list is None:
+            if EC_components_list is None:
                 (B_from_nu_peaks, failed), completed = constr_B_from_nu_peaks (jet_model,self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,self.B_min,self.B_max,self.beaming,params_grid_size,silent=silent)
             else:
                 (B_from_nu_peaks, failed), completed = constr_B_from_nu_peaks (jet_model,self.nu_p_S_obs,self.nu_p_IC_obs,self.rest_frame,self.B_min,self.B_max,self.beaming,params_grid_size,EC=True,silent=silent)
@@ -566,7 +533,7 @@ class ObsConstrain(object):
             print ("---> setting R from Compton Dominance (CD)")
 
         R_start=R_tvar
-        if EC_componets_list  is None:
+        if EC_components_list  is None:
             (R_from_CD,failed),completed=constr_R_from_CD(jet_model,self.nuFnu_p_S_obs,self.nu_p_S_obs,self.nuFnu_p_IC_obs,self.nu_p_IC_obs,self.rest_frame,R_tvar,params_grid_size,silent=silent)
         else:
             (R_from_CD,failed),completed=constr_R_from_CD(jet_model,self.nuFnu_p_S_obs,self.nu_p_S_obs,self.nuFnu_p_IC_obs,self.nu_p_IC_obs,self.rest_frame,R_tvar,params_grid_size,EC=True,silent=silent)
