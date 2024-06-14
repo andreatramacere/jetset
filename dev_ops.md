@@ -2,7 +2,7 @@
 
 -  update version: update the tag in  `jetset/pkg_info.json`
 
--  clean `__pycache__`: find . -type d -name '__pycache__' | xargs rm -r 
+-  clean `__pycache__`: ```find . -type d -name __pycache__ | xargs rm -r```
 
 -  If you want to make a tag you can use the script, the  `-do_remote_tag` option will create the tag remotely,
    deleting remotely the one with the same name, e.g.: 
