@@ -46,13 +46,10 @@ __all__=['Jet','JetBase','GalacticBeamed','GalacticUnbeamed']
 
 class JetBase(Model):
     """ JetBase class.
-    This class allows to build a ``Jet`` model providing the interface to the
-    C code, giving  full access to the physical parameters and
+    This is the base  class for the jet models providing the interface to the C code, giving  full access to the physical parameters and
     providing the methods to run the code.
-    A :class:`Jet` object  will store the
-    the physical parameters in  the ::py:attr:`Jet.parameters`  that is :class:`.ModelParameterArray` class,
-    i.e. a collection of :class:`JetParameter` objects.
-    All the physical parameters are  also accessible as attributes of
+    The object  will store the the physical parameters in  the ::py:attr:`Jet.parameters`  which is :class:`.ModelParameterArray` object,
+    i.e. a collection of :class:`JetParameter` objects.  All the physical parameters are  also accessible as attributes of
     the  ::py:attr:`Jet.parameters`
     """
     def __repr__(self):
@@ -73,21 +70,31 @@ class JetBase(Model):
                  clean_work_dir=True,
                  geometry='spherical',
                  **keywords):
-
         """
-
         Parameters
         ----------
-        cosmo
-        name
-        emitters_type
-        emitters_distribution
-        emitters_distribution_log_values
-        beaming_expr
-        jet_workplace
-        verbose
-        nu_size
-        clean_work_dir
+        cosmo : _type_, optional
+            instance of the`Cosmo` class, by default None
+        name : str, optional
+            name of the model, by default 'test'
+        emitters_type : str, optional
+            , by default 'electrons'
+        emitters_distribution : str, optional
+            , by default 'pl'
+        emitters_distribution_log_values : bool, optional
+            , by default False
+        beaming_expr : str, optional
+            expression for the beaming , by default 'delta'
+        jet_workplace : _type_, optional
+            , by default None
+        verbose : _type_, optional
+            , by default None
+        nu_size : int, optional
+            size of the nu grid, by default 500
+        clean_work_dir : bool, optional
+            , by default True
+        geometry : str, optional
+            , by default 'spherical'
         """
 
         super(JetBase,self).__init__(  **keywords)
@@ -98,14 +105,13 @@ class JetBase(Model):
         #self._emitters_type=emitters_type
         self._scale='lin-lin'
     
-        self._blob = self.build_blob(verbose=verbose)
+        self._blob = self._build_blob(verbose=verbose)
         self._static_spec_arr_grid_size = BlazarSED.static_spec_arr_grid_size
         self._nu_static_size = BlazarSED.static_spec_arr_size
         self.nu_size = nu_size
         self.nu_grid_size=self._get_nu_grid_size_blob()
         N=multiprocessing.cpu_count()
         if N>2:
-            N=multiprocessing.cpu_count()
             N=min(N,20)
         self.set_num_c_threads(N=N)
         if jet_workplace is None:
@@ -157,6 +163,19 @@ class JetBase(Model):
 
 
     def _setup(self, emitters_distribution, emitters_distribution_log_values, beaming_expr, emitters_type):
+        """_summary_
+
+        Parameters
+        ----------
+        emitters_distribution : _type_
+            _description_
+        emitters_distribution_log_values : _type_
+            _description_
+        beaming_expr : _type_
+            _description_
+        emitters_type : _type_
+            _description_
+        """
         self.EC_components_list = []
         self._spectral_components_list = []
 
@@ -236,6 +255,7 @@ class JetBase(Model):
         _model['cosmo'] = self.cosmo._serialize_model()
         _model['pars'] = {}
         _model['pars']=self.parameters._serialize_pars()
+        _model['external_field_transf']=self.get_external_field_transf()
 
         _model['internal_pars'] = {}
         _model['internal_pars']['nu_size'] = self.nu_size
@@ -253,9 +273,30 @@ class JetBase(Model):
 
     @classmethod
     @safe_run
-    def load_model(cls, file_name, verbose=True):
+    def load_model(cls, file_name):
+        """Load a save model
+
+        Parameters
+        ----------
+        file_name : _type_
+            _description_
+        verbose : bool, optional
+            _description_, by default True
+
+        Returns
+        -------
+        _type_
+            _description_
+
+        Raises
+        ------
+        RuntimeError
+            _description_
+        """
         try:
               jet=pickle.load(open(file_name, "rb"))
+              jet.set_blob()
+              jet._update_spectral_components()
               return jet
         except Exception as e:
             raise RuntimeError('The model you loaded is not valid please check the file name', e)
@@ -325,7 +366,9 @@ class JetBase(Model):
             disk_type=_model['pars']['disk_type']['val']
         else:
             disk_type=None
+
         self.add_EC_component(_model['EC_components_name'],disk_type=disk_type)
+        self.set_external_field_transf(_model['external_field_transf'])
 
         for ID, c in enumerate(_model['spectral_components_name']):
             comp = getattr(self.spectral_components, c)
@@ -360,7 +403,7 @@ class JetBase(Model):
             setattr(self,k,_par_dict[str(k)])
 
 
-    def build_blob(self, verbose=None):
+    def _build_blob(self, verbose=None):
 
         blob = BlazarSED.MakeBlob()
 
@@ -486,7 +529,13 @@ class JetBase(Model):
         return blob
 
     def set_emitting_region(self,beaming_expr,emitters_type):
-        
+        """sets the emitting region
+
+        Parameters
+        ----------
+        beaming_expr : str
+        emitters_type : str
+        """
         if  self._emitting_region_dict is not None:
             self.del_par_from_dic(self._emitting_region_dict)
 
@@ -511,6 +560,12 @@ class JetBase(Model):
     
     @property
     def spectral_components_list(self):
+        """provides a list of the spectral components
+
+        Returns
+        -------
+        list of spectral components
+        """
         return [s for s in self._spectral_components_list if s.hidden is False]
 
     @property
@@ -524,6 +579,63 @@ class JetBase(Model):
         else:
             raise RuntimeError("geometry %s not allowed" % geometry, "please choose among ",
                                    self._allowed_geometry)
+
+
+    def make_conical_jet(self, R=None,theta_open=5.,theta_open_min=1,theta_open_max=10):
+        """Convenience method to set functional dependency of parameters to have conical jet
+
+        Parameters
+        ----------
+        R : double, optional
+           , by default None
+        theta_open : double, optional
+            semi opening angle of the jet in deg, by default 5
+        theta_open_min : int, optional
+            min value for theta_open, by default 1
+        theta_open_max : int, optional
+            max value for theta_open, by default 10
+
+        Raises
+        ------
+        RuntimeError
+            
+        """
+        if R is None:
+            R=self.parameters.R.val
+        try:
+            self.add_user_par(name='theta_open',val=theta_open,units='deg',val_min=theta_open_min,val_max=theta_open_max)
+            self.make_dependent_par(par='R', depends_on=['R_H','theta_open'],
+                              par_expr='np.tan(np.radians(theta_open))*R_H')
+            self.parameters.R_H.free()
+           
+            R_H=R/(np.tan(np.radians(self.parameters.theta_open.val)))
+            print('setting R_H to',R_H)
+            self.parameters.R_H.val=R_H
+        except RuntimeError as e:
+            print('functional dependencies already invoked',str(e))
+        
+        except Exception as e:
+            raise RuntimeError('unexpected exception',str(e))
+    
+
+    def set_EC_dependencies(self):
+        """Convenience method to set the functional dependency of BLR and DT radius according to the disk luminosity
+        """
+        try:
+            if  self.parameters.get_par_by_name('L_Disk') is not None and self.parameters.get_par_by_name('R_BLR_in') is not None:
+                try:            
+                    self.make_dependent_par(par='R_BLR_in', depends_on=['L_Disk'], par_expr='3E17*(L_Disk/1E46)**0.5')
+                    self.make_dependent_par(par='R_BLR_out', depends_on=['R_BLR_in'], par_expr='R_BLR_in*1.1')
+                except RuntimeError as e:
+                    print('functional dependencies already invoked for BLR',str(e))
+            if  self.parameters.get_par_by_name('L_Disk') is not None and self.parameters.get_par_by_name('R_DT') is not None:
+                try:           
+                    self.make_dependent_par(par='R_DT', depends_on=['L_Disk'], par_expr='2E19*(L_Disk/1E46)**0.5')
+                except RuntimeError as e:
+                    print('functional dependencies already invoked for DT',str(e)) 
+
+        except Exception as e:
+            print('unexpected exception',str(e))
 
     @property
     def IC_adaptive_e_binning(self,):
@@ -629,8 +741,19 @@ class JetBase(Model):
         print()
 
 
-    @property
+   
     def sed_table(self, restframe='obs'):
+        """Provide the astropy table with SED spectral components
+
+        Parameters
+        ----------
+        restframe : str, optional
+            , by default 'obs'
+
+        Returns
+        -------
+        astropy table
+        """
         try:
             self.spectral_components.build_table(restframe=restframe)
         except:
@@ -717,6 +840,20 @@ class JetBase(Model):
         self._add_spectral_component('SSC', var_name='do_SSC', state_dict=dict((('on', 1), ('off', 0))),state=state)
 
     def del_EC_component(self,EC_components_list, disk_type='BB'):
+        """Remove EC components
+
+        Parameters
+        ----------
+        EC_components_list : list
+            list of the components to remove
+        disk_type : str, optional
+             by default 'BB'
+
+        Raises
+        ------
+        RuntimeError
+            _description_
+        """
         if isinstance(EC_components_list, six.string_types):
             EC_components_list = [EC_components_list]
 
@@ -797,7 +934,23 @@ class JetBase(Model):
 
 
 
-    def add_EC_component(self,EC_components_list=[],disk_type='BB'):
+    def add_EC_component(self,EC_components_list=[],disk_type=None):
+        """Method to add external Compton components 
+
+        Parameters
+        ----------
+        EC_components_list : list, optional
+            list of components to add, by default []
+        disk_type : str, optional
+            the type of the disk, by default 'BB'
+
+        Raises
+        ------
+        RuntimeError
+            _description_
+        RuntimeError
+            _description_
+        """
 
         if disk_type is not None:
             if disk_type not in self._allwed_disk_type:
@@ -805,6 +958,8 @@ class JetBase(Model):
         else:
             if self.get_par_by_name('disk_type') is not None:
                 disk_type=self.get_par_by_name('disk_type').val
+            else:
+                disk_type='BB'
 
         if isinstance(EC_components_list, six.string_types):
             EC_components_list=[EC_components_list]
@@ -917,9 +1072,9 @@ class JetBase(Model):
 
 
 
-    def get_DL_cm(self,eval=False):
+    def get_DL_cm(self,eval_model=False):
 
-        if eval is True:
+        if eval_model is True:
             self.set_blob()
 
         if self.cosmo._c is not None:
@@ -1048,6 +1203,17 @@ class JetBase(Model):
 
     @Norm_distr.setter
     def Norm_distr(self, val):
+        """_summary_
+
+        Parameters
+        ----------
+        val : 1/0 or False/True
+
+        Raises
+        ------
+        RuntimeError
+            _description_
+        """
         if hasattr(self, 'emitters_distribution'):
 
                 if val == 1 or val is True:
@@ -1220,6 +1386,36 @@ class JetBase(Model):
         print('-' * 80)
 
     def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-',frame='obs', density=False):
+        """plot the model
+
+        Parameters
+        ----------
+        plot_obj : _type_, optional
+            _description_, by default None
+        clean : bool, optional
+            _description_, by default False
+        label : _type_, optional
+            _description_, by default None
+        comp : _type_, optional
+            _description_, by default None
+        sed_data : _type_, optional
+            _description_, by default None
+        color : _type_, optional
+            _description_, by default None
+        auto_label : bool, optional
+            _description_, by default True
+        line_style : str, optional
+            _description_, by default '-'
+        frame : str, optional
+            _description_, by default 'obs'
+        density : bool, optional
+            _description_, by default False
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
         plot_obj=self._set_up_plot(plot_obj,sed_data,frame,density)
 
         if clean is True:
@@ -1347,8 +1543,7 @@ class JetBase(Model):
              plot=None,
              label=None,
              phys_output=False,
-             update_emitters=True,
-             update_EC_beaming_pattern=True):
+             update_emitters=True):
         out_model = None
         lin_nu, log_nu = self._prepare_nu_model(nu, loglog)
         
@@ -1376,8 +1571,20 @@ class JetBase(Model):
 
     def _build_energetic_dict(self):
         self.energetic_dict={}
-        BlazarSED.SetBeaming(self._blob)        
+        BlazarSED.SetBeaming(self._blob)
+
+        #NOTE: workaround for the users be sure they  evaluate correctly the jet energetics for 'disk' frame
+        _change_frame=False
+        if self.get_external_field_transf()=='disk':
+            self.set_external_field_transf('blob')
+            self.eval()
+            _change_frame=True
         self._energetic = BlazarSED.EnergeticOutput(self._blob)
+        
+        if _change_frame is True:
+            self.set_external_field_transf('disk')
+            self.eval()
+
         _par_array=ModelParameterArray()
 
         _name = [i for i in self._energetic.__class__.__dict__.keys() if i[:1] != '_']
@@ -1516,6 +1723,7 @@ class JetBase(Model):
 
 
     def get_SED_peak(self,peak_name=None,freq_range=None,log_log=False):
+
 
         if peak_name is not None and freq_range is not None:
             print ("either you provide peak_name or freq_range")
@@ -1710,13 +1918,7 @@ class Jet(JetBase):
 
         """
         N = self.parameters.N.val
-        #gamma_grid_size = self._blob.gamma_grid_size
-        #self.emitters_distribution.set_grid_size(1000)
-        #self.emitters_distribution._fill()
-        #self.set_blob()
-        #BlazarSED.EvalU_e(self._blob)
         ratio = U/self.emitters_distribution.eval_U(gmin=gmin, gmax=gmax)
-        #self.emitters_distribution.set_grid_size(gamma_grid_size)
         self.emitters_distribution._fill()
         self.set_par('N', val=N *ratio)
         self.set_blob()
@@ -1738,11 +1940,7 @@ class Jet(JetBase):
         -------
 
         """
-        #gamma_grid_size = self._blob.gamma_grid_size
-        #self.emitters_distribution.set_grid_size(1000)
-        #self.set_blob()
         U=U_vol/ self._blob.Vol_sphere
-        #self.emitters_distribution.set_grid_size(gamma_grid_size)
         self.set_N_from_U_emitters(U, gmin=gmin, gmax=gmax)
 
 
