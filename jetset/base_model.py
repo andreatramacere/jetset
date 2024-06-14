@@ -453,8 +453,8 @@ class Model(object):
         _meta=dict(model_name=self.name)       
         _meta['restframe']= restframe
         self._SED_table = Table(_cols, names=_names,meta=_meta)
-    
-    
+
+   
     def sed_table(self, restframe='obs'):
         try:
             self.build_table(restframe=restframe)
