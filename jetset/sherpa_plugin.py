@@ -18,6 +18,7 @@ except:
     on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
     
     if on_rtd is True:
+        RegriddableModel1D=object
         pass
     else:
         raise  ImportError('to use sherpa plugin you need to install sherpa: https://sherpa.readthedocs.io/en/latest/install.html')
@@ -125,11 +126,17 @@ def plot_sherpa_model(sherpa_model, fit_range=None, model_range=[1E10, 1E30], nu
 
 class SherpaMinimizer(Minimizer):
 
-    def __init__(self, model,method=LevMar(),stat=Chi2()):
+    def __init__(self, model,method=None,stat=None):
         if sherpa_installed is True:
             pass
         else:
             raise ImportError('sherpa not installed, \n to use sherpa plugin you need to install sherpa: https://sherpa.readthedocs.io/en/latest/install.html')
+
+        if method is None:
+            method=LevMar()
+        
+        if stat is None:
+            stat=Chi2()
 
         super(SherpaMinimizer, self).__init__(model)
         self._method=method
