@@ -64,7 +64,7 @@ class ProgressBarTempEV(object):
         step_tqdm = self.target_class.temp_ev.T_COUNTER +1 - self.pbar.n
         self.pbar.update(step_tqdm)
 
-    def finalzie(self,max_try=10):
+    def finalize(self,max_try=10):
         n_try=1
         while (self.pbar.n<self.N and n_try<max_try):
             system_time.sleep(.1)
@@ -913,13 +913,13 @@ class JetTimeEvol(object):
             do_injection=2
         elif self._only_radiation is False and do_injection is True:
             do_injection=1
-        print('->',do_injection,only_injection,self.acc_region)
+        #print('->',do_injection,only_injection,self.acc_region)
         if self.acc_region is not None:
             BlazarSED.Run_temp_evolution(self.rad_region.jet._blob, self.acc_region.jet._blob, self._temp_ev, int(only_injection), int(do_injection))
         else:
             BlazarSED.Run_temp_evolution(self.rad_region.jet._blob, self._bkp_acc_region.jet._blob, self._temp_ev, int(only_injection), int(do_injection))
         pbar.stop = True
-        pbar.finalzie()
+        pbar.finalize()
         #self._fill_temp_ev_array_post_run()
         self.rad_region._fill_temp_ev_array_post_run()
         if self.acc_region is not None:
@@ -1205,8 +1205,8 @@ class JetTimeEvol(object):
     def _set_inj_time_profile(self,user_defined_array=None):
         if user_defined_array is None:
             self._custom_q_jnj_profile = np.zeros(self.parameters.t_size.val, dtype=np.double)
-            msk= self.time_steps_array > self._temp_ev.TStart_Inj
-            msk*= self.time_steps_array < self._temp_ev.TStop_Inj
+            msk= self.time_steps_array >= self._temp_ev.TStart_Inj
+            msk*= self.time_steps_array <= self._temp_ev.TStop_Inj
             self._custom_q_jnj_profile[msk] = 1.0
         else:
             if np.shape(user_defined_array)!=(self.parameters.t_size.val,):
@@ -1218,8 +1218,8 @@ class JetTimeEvol(object):
 
         if user_defined_array is None and self._only_radiation is False:
             self._custom_acc_profile = np.zeros(self._temp_ev.T_SIZE, dtype=np.double)
-            msk= self.time_steps_array > self._temp_ev.TStart_Acc
-            msk*= self.time_steps_array < self._temp_ev.TStop_Acc
+            msk= self.time_steps_array >= self._temp_ev.TStart_Acc
+            msk*= self.time_steps_array <= self._temp_ev.TStop_Acc
             self._custom_acc_profile[msk] = 1.0
         elif user_defined_array is not None and self._only_radiation is False:
             if np.shape(user_defined_array)!=(self.parameters.t_size.val,):
