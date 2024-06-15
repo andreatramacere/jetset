@@ -983,7 +983,7 @@ class ObsData(object):
         
         #remove empty bins
         msk=self.data_reb['nu_data_log']!=0
-        print('msk',msk)
+        #print('msk',msk)
         self.data_reb=self.data_reb[msk]
         
         
