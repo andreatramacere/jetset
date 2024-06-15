@@ -4,6 +4,7 @@ import os
 import numpy as np
 from inspect import signature
 from numba import njit
+from numba.extending import is_jitted
 import copy
 import warnings
 from astropy.constants import m_e,m_p,c
@@ -624,10 +625,12 @@ class EmittersDistribution(BaseEmittersDistribution):
     def _activate_numba(self):
         self._py_distr_func=copy.deepcopy(self.distr_func)
         try:
-            #print("====> acitivate numba for",self.distr_func)
-            self.distr_func = njit(self.distr_func,fastmath=True, cache=False)
-        except:
-            warnings.warn("====> falied to acitivate numba for",self.distr_func)
+            if is_jitted(self.distr_func) is False:
+                self.distr_func = njit(self.distr_func,fastmath=True, cache=False)
+            else:
+                print("===> function already jitted")
+        except Exception as e:
+           print("====> failed to activate numba for",str(e))
 
 
 class EmittersArrayDistribution(EmittersDistribution):
