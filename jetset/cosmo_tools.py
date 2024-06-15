@@ -1,9 +1,11 @@
 __author__ = "Andrea Tramacere"
 
 from astropy.units import  Unit as u
+from astropy.units.quantity import Quantity
 from astropy import cosmology 
 from astropy.table import Table
 from astropy.cosmology import Cosmology
+
 import warnings
 
 __all__=['Cosmo']
@@ -13,6 +15,7 @@ class  Cosmo (object):
 
 
     def __init__(self,astropy_cosmo=None,DL_cm=None,verbose=False):
+        
         _c = None
         self._c_name=None
         if DL_cm is not None and astropy_cosmo is not None:
@@ -38,13 +41,21 @@ class  Cosmo (object):
 
 
         self._c = _c
+        if DL_cm is not None:
+            if isinstance(DL_cm,Quantity):
+                if u(DL_cm)=='cm':
+                    pass
+                else:
+                    DL_cm=DL_cm.to('cm')
+            else:
+                DL_cm=DL_cm*u('cm')
         self._DL_cm = DL_cm
 
     def __repr__(self):
         if self._c is not None:
             s= '%s' % self._c
         elif self._DL_cm is not None:
-            x=self._DL_cm*u('cm')
+            x=self._DL_cm
 
             s= 'cosmology is not defined, the luminosity distance has been set to %s'%x
         else:
@@ -73,7 +84,7 @@ class  Cosmo (object):
             _model['_astropy_cosmo']=Table(self._c.to_format('astropy.table'))
         else:
             _model['_astropy_cosmo']=None
-        _model['_DL_cm'] = self._DL_cm
+            _model['_DL_cm'] = self._DL_cm.value
         return   _model 
           
     def __getstate__(self):
@@ -111,6 +122,6 @@ class  Cosmo (object):
             if '_DL_cm' in model.keys():
                 DL_cm=model['_DL_cm']
         except Exception as e:
-            warnings.warn('failed to decode saved astropy model, reason: %s'%str(e))        
+            warnings.warn('failed to decode saved astropy model, reason: %s'%str(e))       
         return astropy_cosmo,DL_cm  
 

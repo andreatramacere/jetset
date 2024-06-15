@@ -97,7 +97,7 @@ class JetBase(Model):
             , by default 'spherical'
         """
 
-        super(JetBase,self).__init__(  **keywords)
+        super(JetBase,self).__init__( cosmo=cosmo, **keywords)
 
         self.name = clean_var_name(name)
 
@@ -379,8 +379,7 @@ class JetBase(Model):
        
         self.set_emitting_region(str(_model['beaming_expr']),self.emitters_distribution.emitters_type)
         if isinstance(self,GalacticBeamed):
-            self._handle_z(d=u.kpc*1)
-            self.cosmo = Cosmo(DL_cm=self.parameters.get_par_by_name('DL_cm').val)
+            self._handle_z(d=self.cosmo._DL_cm)
         
         _par_dict = _model['pars']
         _non_user_dict={}
@@ -2111,7 +2110,7 @@ class Jet(JetBase):
 class GalacticBeamed(Jet):
 
     def __init__(self,
-                distance=3*u.kpc,
+                 distance=3*u.kpc,
                  name=None,
                  emitters_type='electrons',
                  emitters_distribution='plc',
@@ -2138,9 +2137,9 @@ class GalacticBeamed(Jet):
                 _d=distance.to('cm')
             except:
                 raise RuntimeError('distance must be either an astropy unit object convertible to cm, or a scalar in cm')
+
         
         cosmo=Cosmo(DL_cm=_d,verbose=False)
-        
         super(GalacticBeamed,self).__init__(cosmo=cosmo,
                                     T_esc_e_second=T_esc_e_second,
                                     name=_name,
@@ -2156,7 +2155,7 @@ class GalacticBeamed(Jet):
                                     verbose=verbose,
                                     clean_work_dir=clean_work_dir,
                                     geometry=geometry)
-        
+
         if name is None or name == '':
             if self.emitters_distribution.emitters_type == 'electrons':
                 name = 'galactic_beamed_leptonic'
@@ -2167,7 +2166,6 @@ class GalacticBeamed(Jet):
 
         self.name = clean_var_name(name)
         self._handle_z(d=_d)
-        
 
     def _dummy_z_par_func(self,DL_cm):
             self.cosmo._DL_cm=DL_cm*u.cm
