@@ -70,7 +70,7 @@ class JetsetSherpaModel(RegriddableModel1D):
                 else:
                     val_max = p.val_max
 
-                sh_p = Parameter(self._jetset_model.name, name, p.val, min=val_min, max=val_max, units=p.units)
+                sh_p = Parameter(self._jetset_model.name, name, p.val, min=val_min, max=val_max, units=p.units, frozen=p.frozen)
                 setattr(self, sh_p.name, sh_p)
                 p._sherpa_ref = sh_p
                 if np.isnan(sh_p.max):
