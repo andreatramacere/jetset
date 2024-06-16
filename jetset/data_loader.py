@@ -971,10 +971,10 @@ class ObsData(object):
                     #print"x", x_bin[id],len(w)
                 else:
                     #print "xxx"
-                    x_bin[id]=self.data['nu_data_log'][msk]
-                    y_bin[id]=self.data['nuFnu_data'][msk]
+                    x_bin[id]=self.data['nu_data_log'][msk][0]
+                    y_bin[id]=self.data['nuFnu_data'][msk][0]
                     dx_bin[id]=bin_width/2
-                    dy_bin[id]=self.data['dnuFnu_data'][msk]
+                    dy_bin[id]=self.data['dnuFnu_data'][msk][0]
                     
         self.data_reb['nu_data_log']=x_bin
         self.data_reb['nuFnu_data']=y_bin
