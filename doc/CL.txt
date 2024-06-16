@@ -11,31 +11,34 @@ python make_apidoc_and_uml_graphs.py
    export READTHEDOCS='True'
    
 ----SEPARATE STEPS----------------
-2) cleaning
-  find ./user_guide/documentation_notebooks -name '*.rst' -type f -delete
-  find ./user_guide/documentation_notebooks -name '*.png' -type f -delete
+cleaning:
 
-  find documentation_notebooks -name '*.rst' -type f -delete
-  find documentation_notebooks -name '*.png' -type f -delete
+
+find documentation_notebooks/notebooks -name '*.png' -delete
+find user_guide/documentation_notebooks/notebooks -name '*.png' -delete
+
 
 3) run step A or B
     A)run all notebooks and build rst file with script
-        ./build_rst_files.sh -e documentation_notebooks #run all notebooks found in documentation_notebooks
+        ./build_rst_files.sh -e documentation_notebooks/notebooks #run all notebooks found in documentation_notebooks
         OR
-        ./build_rst_files.sh -e documentation_notebooks/dir-name #runs only specific sub-directory
+        ./build_rst_files.sh -e documentation_notebooks/notebooks/dir-name #runs only specific sub-directory
 
 
     B) or ONLY BUILD RST
-        ./build_rst_files.sh documentation_notebooks
+        ./build_rst_files.sh documentation_notebooks/notebooks
         OR
-        ./build_rst_files.sh  documentation_notebooks/dir-name
+        ./build_rst_files.sh  documentation_notebooks/notebooks/dir-name
 
 
 
 4)update the rst in user_guide from the notebooks in documentation_notebooks
   
-  find documentation_notebooks -name '*.rst' | cpio -pdm ./user_guide
-  find documentation_notebooks -name '*.png' | cpio -pdm ./user_guide
+  find documentation_notebooks/notebooks -name '*.rst' | cpio -pdm ./user_guide
+  find documentation_notebooks/notebooks -name '*.png' | cpio -pdm ./user_guide
+
+  find documentation_notebooks/slides -name '*.png' | cpio -pdm ./user_guide
+  find documentation_notebooks/images -name '*.png' | cpio -pdm ./user_guide
 
 5)builds the docs
   sphinx-build -b html ./ build
@@ -47,19 +50,13 @@ python make_apidoc_and_uml_graphs.py
 OR
 ----IN ONE STEPS----------------
 
-cleaning:
-find ./user_guide/documentation_notebooks -name '*.rst' -type f -delete
-find ./user_guide/documentation_notebooks -name '*.png' -type f -delete
-
-find documentation_notebooks -name '*.rst' -type f -delete
-find documentation_notebooks -name '*.png' -type f -delete
 
 to build without executing:
-./build.sh documentation_notebooks
+./build.sh documentation_notebooks/notebooks
 OR
-./build.sh  documentation_notebooks/dir-name
+./build.sh  documentation_notebooks/notebooks/dir-name
 
 to build executing:
-./build.sh -e documentation_notebooks/dir-name
+./build.sh -e documentation_notebooks/notebooks/dir-name
 OR
-./build.sh -e documentation_notebooks/dir-name
+./build.sh -e documentation_notebooks/notebooks/dir-name

@@ -214,6 +214,11 @@ if theme=='sphinx_book_theme':
     html_theme = "sphinx_book_theme"
     html_static_path = ["_static/css/sphinx_book_theme"]
     html_css_files = ["custom.css"]
+    
+    #html_sidebars = {
+    #"**": ["sbt-sidebar-nav.html"]
+    #}
+
 
     html_theme_options = {
         "icon_links": [
@@ -226,17 +231,22 @@ if theme=='sphinx_book_theme':
             "icon": "fa-brands fa-square-github",
             # The type of image to be used (see below for details)
             "type": "fontawesome",
-            }
+            }        
          ],
-        
+        #"show_version_warning_banner": True,
+        #"collapse_navigation": True,
+        #"navbar_start": ["navbar-logo"],
+        #"navbar_center": ["navbar-nav"],
+        #"navbar_end": ["navbar-icon-links"],
+        #"navbar_persistent": ["search-button"],
         "logo": {
-        # In a left-to-right context, screen readers will read the alt text
-        # first, then the text, so this example will be read as "P-G-G-P-Y
-        # (short pause) Home A pretty good geometry package"
-        "alt_text": "JetSeT ",
-        "text": "documentation",
-        "image_light": "_static/logo_large_no_border.png",
-        "image_dark": "_static/logo_large_no_border.png",
+            # In a left-to-right context, screen readers will read the alt text
+            # first, then the text, so this example will be read as "P-G-G-P-Y
+            # (short pause) Home A pretty good geometry package"
+            "alt_text": "JetSeT ",
+            #text": "documentation",
+            "image_light": "_static/logo_book_sphinx.svg",
+            "image_dark": "_static/logo_book_sphinx.svg",
         },
         "show_toc_level": 3,
 

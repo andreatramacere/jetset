@@ -79,24 +79,25 @@ The second step consists in the creation of a  :class:`.ModelMinimizer` object
 
 - for ``lsb`` (wrapping: scipy.optimize.least_squares)
  
+  .. code:: ipython3
     
-
-    .. code:: ipython3
-
-
-
-        from jetset.minimizer import ModelMinimizer
-        model_minimizer=ModelMinimizer('lsb')
+    from jetset.minimizer import ModelMinimizer
+    model_minimizer=ModelMinimizer('lsb')
 
 - for ``minuit``:
-
-    .. code:: ipython3
-
-
+  
+  .. code:: ipython3
 
         from jetset.minimizer import ModelMinimizer
         model_minimizer=ModelMinimizer('minuit')
 
+
+  .. note::
+    For ``minuit``, starting from JetSeT ``version==1.3.0``, ``simplex`` will be run before ``migrad``, this allows a better sampling of the parameter space. You can skip ``simplex`` as follows:
+
+  .. code:: ipython3
+
+    model_minimizer.minimizer.add_simplex=False
 
 both for the case of ``lsb`` and ``minuit`` specific kw for the minimizer can be accessed by the dictionary:
 
@@ -124,12 +125,7 @@ eg: for the case of ``lsb`` that dictionary would be:
 .. warning::
     avoid to change those parameters, unless you are completely aware of what you are doing, and you had a full reading the of the ``lsb`` / ``minuit`` documentation.
 
-.. note::
-    For ``minuit``, starting from JetSeT ``version==1.3.0``, ``simplex`` will be run before ``migrad``, this allows a better sampling of the parameter space. You can skip ``simplex`` as follows:
 
-    .. code:: ipython3
-
-        model_minimizer.minimizer.add_simplex=False
 
 
 
@@ -238,15 +234,15 @@ We provide three different approaches
 
   setting ``bound=5.0`` and ``bound_rel=True`` means that: 
   
-    - the prior interval will be defined as  ``[best_fit_val - delta_m , best_fit_val + delta_p]``
+  - the prior interval will be defined as  ``[best_fit_val - delta_m , best_fit_val + delta_p]``
 
-    - with ``delta_p=delta_m=best_fit_val*bound``
+  - with ``delta_p=delta_m=best_fit_val*bound``
 
   It is possible to define asymmetric boundaries e.g. ``bound=[2.0,5.0]`` meaning that: 
 
-     ``delta_p = min(par.best_fit_val*bound[1], par.fit_range_max)``
+  - ``delta_p = min(par.best_fit_val*bound[1], par.fit_range_max)``
  
-     ``delta_m = max(par.best_fit_val*bound[0], par.fit_range_min)``
+  - ``delta_m = max(par.best_fit_val*bound[0], par.fit_range_min)``
 
 - Absolute bounds:
   
@@ -257,15 +253,15 @@ We provide three different approaches
 
   setting ``bound=5.0`` and ``bound_rel=False`` means that: 
   
-    - the prior interval will be defined as  ``[best_fit_val - delta_m , best_fit_val + delta_p]``
+  - the prior interval will be defined as  ``[best_fit_val - delta_m , best_fit_val + delta_p]``
 
-    - with ``delta_p = delta_m = best_fit_err*bound``
+  - with ``delta_p = delta_m = best_fit_err*bound``
 
   It is possible to define asymmetric boundaries e.g. ``bound=[2.0,5.0]`` meaning that:
  
-    ``delta_p = par.best_fit_err*bound[1]``
+  - ``delta_p = par.best_fit_err*bound[1]``
   
-    ``delta_m = par.best_fit_err*bound[0]``
+  -  ``delta_m = par.best_fit_err*bound[0]``
 
 
 

@@ -18,12 +18,12 @@ McmcSampler
       ~McmcSampler.plot_model
       ~McmcSampler.plot_par
       ~McmcSampler.reset_to_best_fit
+      ~McmcSampler.reset_to_mcmc
       ~McmcSampler.run_sampler
       ~McmcSampler.save
       ~McmcSampler.set_bounds
       ~McmcSampler.set_labels
       ~McmcSampler.set_plot_label
-      ~McmcSampler.show_pars
 
    .. rubric:: Methods Documentation
 
@@ -35,9 +35,9 @@ McmcSampler
    .. automethod:: plot_model
    .. automethod:: plot_par
    .. automethod:: reset_to_best_fit
+   .. automethod:: reset_to_mcmc
    .. automethod:: run_sampler
    .. automethod:: save
    .. automethod:: set_bounds
    .. automethod:: set_labels
    .. automethod:: set_plot_label
-   .. automethod:: show_pars

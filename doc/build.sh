@@ -34,9 +34,13 @@ echo
 echo
 
 echo '--------------------------------'
-echo 'copying rst files'
-find ./documentation_notebooks -name '*.rst' | cpio -pdm ./user_guide
-find ./documentation_notebooks -name '*.png' | cpio -pdm ./user_guide
+echo 'copying rst files and images'
+find documentation_notebooks/notebooks -name '*.rst' | cpio -pdm ./user_guide
+find documentation_notebooks/notebooks -name '*.png' | cpio -pdm ./user_guide
+
+find documentation_notebooks/slides -name '*.png' | cpio -pdm ./user_guide
+find documentation_notebooks/images -name '*.png' | cpio -pdm ./user_guide
+
 echo '--------------------------------'
 echo
 echo

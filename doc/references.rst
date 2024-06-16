@@ -1,6 +1,6 @@
 .. _bibliography:
 
-
+============
 Bibliography 
 ============
 
@@ -56,6 +56,12 @@ Bibliography
 
 .. [Dominguez2011] `Dominguez et al. (2011) <https://ui.adsabs.harvard.edu/abs/2011MNRAS.410.2556D/abstract>`_,
    "Extragalactic background light inferred from AEGIS galaxy-SED-type fractions"
+
+.. [Dominguez2023] `Dominguez et al. (2023) <https://ui.adsabs.harvard.edu/abs/2024MNRAS.527.4632D/abstract>`_,
+   "A new derivation of the Hubble constant from γ-ray attenuation using improved optical depths for the Fermi and CTA era"
+
+.. [Saldana-Lopez2021] `Saldana-Lopez, et al. (2021) <https://ui.adsabs.harvard.edu/abs/2021MNRAS.507.5144S/abstract>`_,
+   "An observational determination of the evolving extragalactic background light from the multiwavelength HST/CANDELS survey in the Fermi and CTA era"
 
 .. [Tramacere2022] `Tramacere et al (2022) <https://ui.adsabs.harvard.edu/abs/2022A%26A...658A.173T/abstract>`_,
    "Radio-γ-ray response in blazars as a signature of adiabatic blob expansion"

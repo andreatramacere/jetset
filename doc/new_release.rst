@@ -35,6 +35,8 @@ New features
   
   - Dominguez et al. (2011) [Dominguez2011]_
 
+  - Dominguez & Saldana-Lopez (2023) [Dominguez2023]_, [Saldana-Lopez2021]_
+
 - Improved EC computation for large angles
 
 - Added convenience methods for conical jet and EC fields:
