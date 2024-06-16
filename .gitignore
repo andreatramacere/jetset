@@ -19,6 +19,7 @@ __pycache__/
 *.xcodeproj
 *.pkl
 *.ipynb_checkpoints
+*.jupyter
 
 .vscode
 /testing
