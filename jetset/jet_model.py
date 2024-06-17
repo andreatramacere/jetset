@@ -2106,6 +2106,30 @@ class Jet(JetBase):
         print ('setting N to ',N[ID_min])
         return b_grid[ID_min],b_grid,U_B,U_e
 
+    def eval_synch_pol(self,nu_range):
+        """_summary_
+        evluates the synchrotron polarization for
+        Parameters
+        ----------
+      
+        nu_range : numpy array
+            array of frequencies for the polarization evaluation
+
+        Returns
+        -------
+        arrrays of polarization and nuF_nu 
+        """
+        nuF_nu=self.eval(get_model=True,nu=nu_range)
+   
+        pol_nu=np.zeros(nu_range.size)
+        for ID,nu in enumerate(nu_range):
+            pol_nu[ID]=BlazarSED.eval_Sync_polarization(self._blob,nu)
+        
+        m=np.logical_or(nuF_nu<=0,np.isnan(pol_nu))
+        pol_nu[m]=0
+        nuF_nu[m]=0
+        return pol_nu,nuF_nu
+
 
 class GalacticBeamed(Jet):
 

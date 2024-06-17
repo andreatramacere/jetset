@@ -10,7 +10,6 @@ class TestJets(TestBase):
         self.test_build_bessel(plot=plot)
         
         self.test_set_N_from_nuFnu(plot=plot)
-        #self.test_EC(plot=plot)
         
     def test_build_bessel(self,plot=False):
         print('--------> test_build_bessel',plot)
@@ -55,7 +54,16 @@ class TestJets(TestBase):
         y = j.eval(nu=[nu], get_model=True)
         np.testing.assert_allclose(y, nuFnu, rtol=1E-2)
 
-    
+    def test_synch_pol(self):
+        p=2.0
+        jet=Jet(name='test',electron_distribution='plc')
+        jet.spectral_components.SSC.state='off'
+        jet.parameters.p.val=p
+        nu_range=np.logspace(10,22,50)
+        p_nu,nuF_nu=jet.eval_synch_pol(nu_range)
+        th_pol_power_law=(p+1)/(p+7/3)
+        np.testing.assert_allclose(p_nu[:10],th_pol_power_law,rtol=0.1,atol=0.1)
+
 class TestJetHadronic(TestBase):
 
     def integration_suite(self,plot=False):

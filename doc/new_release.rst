@@ -25,6 +25,8 @@ New features
     It is not advised to exceed the actual number of threads offered by your CPU, 
     since will not increase the speed performance.
 
+- Introduction of leptonic synchrotron polarization 
+  
 - Improved MCMC functionalities
   
   - labels setting and bounds have been placed in specific methods
