@@ -355,19 +355,28 @@ struct blob MakeBlob() {
 
 //=========================================================================================
 void set_seed_freq_start(struct blob *pt_base){
-    pt_base->nu_start_Sync = 1e6;
-    pt_base->nu_stop_Sync = 1e20;
-    pt_base->nu_start_SSC = 1e14;
-    pt_base->nu_stop_SSC = 1e30;
+    //pt_base->nu_start_Sync = min(1e6, pt_base->nu_start_grid);
+    pt_base->nu_start_Sync = 1E6;
+    
+    pt_base->nu_stop_Sync = 1E20;
+    pt_base->nu_start_SSC = 1E14;
+    
+    //pt_base->nu_stop_SSC = max(1e30, pt_base->nu_stop_grid);
+    pt_base->nu_stop_SSC=1E30;
 
-
-    pt_base->nu_start_EC_Disk = 1e13;
-    pt_base->nu_stop_EC_Disk = 1e30;
-    pt_base->nu_start_EC_BLR = 1e13;
-    pt_base->nu_stop_EC_BLR = 1e30;
-    pt_base->nu_start_EC_DT = 1e13;
-    pt_base->nu_start_EC_CMB = 1e13;
-    pt_base->nu_stop_EC_CMB = 1e30;
+    pt_base->nu_start_EC_Disk = 1E13;
+    //pt_base->nu_stop_EC_Disk =  max(1e30, pt_base->nu_stop_grid);
+    pt_base->nu_stop_EC_Disk =1E30;
+    
+    pt_base->nu_start_EC_BLR = 1E13;
+    //pt_base->nu_stop_EC_BLR =  max(1e30, pt_base->nu_stop_grid);
+    pt_base->nu_stop_EC_BLR = 1E30;
+    
+    pt_base->nu_start_EC_DT = 1E13;
+    pt_base->nu_start_EC_CMB = 1E13;
+    
+    //pt_base->nu_stop_EC_CMB =  max(1e30, pt_base->nu_stop_grid);
+    pt_base->nu_stop_EC_CMB = 1E30;
 }
 
 
