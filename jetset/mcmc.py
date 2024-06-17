@@ -33,14 +33,28 @@ class Counter(object):
         self._progress_iter = cycle(['|', '/', '-', '\\'])
 
 
-class RunThread(object):
-    def __init__(self, target_class):
-        self.target_class = target_class
+#class RunThread(object):
+#    def __init__(self, target_class):
+#        self.target_class = target_class
 
-    def run(self):
-        self.target_class.model=self.target_class.model.clone()
-        self.target_class.sampler.run_mcmc(self.target_class._pos, self.target_class._npernode, rstate0=np.random.get_state(), progress=True,store = True)
+#    def run(self):
+#        self.target_class.model=self.target_class.model.clone()
+#        self.target_class.sampler.run_mcmc(self.target_class._pos, self.target_class._npernode, rstate0=np.random.get_state(), progress=True,store = True)
 
+#to prevent from deprecation to error in emcee 
+def sample_ball(p0, std, size=1):
+    """
+    Produce a ball of walkers around an initial parameter value.
+
+    :param p0: The initial parameter value.
+    :param std: The axis-aligned standard deviation.
+    :param size: The number of samples to produce.
+
+    """
+    assert len(p0) == len(std)
+    return np.vstack(
+        [p0 + std * np.random.normal(size=len(p0)) for i in range(size)]
+    )
 
 class McmcSampler(object):
 
@@ -104,7 +118,10 @@ class McmcSampler(object):
                     threads=None,
                     walker_start_bound=0.005,
                     loglog = False,
-                    progress='notebook'):
+                    progress='notebook',
+                    use_labels_dict=None,
+                    bound=None,
+                    bound_rel=False):
 
         
         self.calls = 0
@@ -112,14 +129,19 @@ class McmcSampler(object):
         self.use_UL = use_UL
 
     
-        
 
+        if use_labels_dict is not None or bound is not None:
+            warnings.warn('use_labels_dict, and bounds in run_sampler are deprecated and will result in an error in the next version, please use the .set_labels and .set_bounds methods as explained in the documentation')
+            self.set_labels(use_labels_dict=use_labels_dict)
+            self.set_bounds(bound=bound,bound_rel=bound_rel)
+        
+        
         self.plot_labels=copy.deepcopy(self.labels)
         self.par_array_best_fit=copy.deepcopy(self.par_array)
         self.ndim = len(self.labels)
         self.pos = pos
         self.burnin=burnin
-        
+       
         if nwalkers is None:
             self.nwalkers = 4*len(self.labels)
             print('setting nwalkers to:', self.nwalkers)
@@ -134,30 +156,24 @@ class McmcSampler(object):
         self.calls_tot = self.nwalkers * steps
 
         if pos is None:
-            pos = emcee.utils.sample_ball(np.array([p.best_fit_val for p in self.par_array]),
-                                          np.array([p.best_fit_val * walker_start_bound for p in self.par_array]),
-                                          self.nwalkers)
+            pos = sample_ball(np.array([p.best_fit_val for p in self.par_array]),
+                              np.array([p.best_fit_val * walker_start_bound for p in self.par_array]),
+                              self.nwalkers)
 
         
         print('mcmc run starting')
         print('')
         start = time.time()
-        #if progress == 'notebook':
-        #    pass
-
-        #if progress is True:
-        #    tqdm=None
-
 
         if threads is not None and threads>1:
 
-            warnings.warn('multithreadign not implemented yet')
+            warnings.warn('python multithreading is not effective, JetSeT uses C threads to speedup computation')
             threads=1
             self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self.par_array, loglog))
             self.sampler.run_mcmc(pos, steps, progress=progress)
         else:
             threads=1
-            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob,args=(self.model, self.data, use_UL, counter,self._bounds, self.par_array, loglog))
+            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self.par_array, loglog))
             self.sampler.run_mcmc(pos, steps, progress=progress)
 
 
