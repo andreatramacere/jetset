@@ -4,7 +4,6 @@ from .base_class import TestBase
 
 from .test_mcmc import TestEmcee
 from .test_jet_model import TestJets,hadronic_func
-from .test_phenom_constr import TestPhenomenologyConstr
 from .test_model_fit import TestModelFit
 from .test_emitters import TestEmitters
 from .test_ebl import TestEBL
@@ -54,11 +53,11 @@ class TestIntegration(TestBase):
 
       
    def test_model_fit(self,phenom_dict=None,plot=plot):
-      t=TestPhenomenologyConstr()
-      phenom_dict=t.integration_suite(sed_number=1)
+      from .test_phenom_constr import prepare_asset
+      phenom_dict=prepare_asset(sed_number=1)
       t=TestModelFit()
-      fit_dict=t.integration_suite(sed_number=None,phenom_dict=phenom_dict,use_ebl=False,use_dep_pars=False,skip_minuit=True,plot=plot)
-      return fit_dict  
+      t.integration_suite(sed_number=None,phenom_dict=phenom_dict,use_ebl=False,use_dep_pars=False,skip_minuit=True,plot=plot)
+   
 
    def test_emcee(self,fit_dict=None,plot=plot):
       t=TestEmcee()

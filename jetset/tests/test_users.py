@@ -2,16 +2,12 @@ import sys
 import pytest
 from .base_class import TestBase
 
-#from .test_mcmc import TestEmcee
+
 from .test_jet_model import TestJets,hadronic_func
-#from .test_phenom_constr import TestPhenomenologyConstr
-#from .test_model_fit import TestModelFit
 from .test_emitters import TestEmitters
 from .test_ebl import TestEBL
-#from .test_mcmc import TestEmcee
 from .test_depending_parameters import TestDependingParameters
 from .test_composite_model import TestCompositeModel
-#from .test_temp_ev import TestTempEv
 
 @pytest.fixture
 def plot():
