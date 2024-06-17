@@ -773,7 +773,11 @@ class LSBMinimizerScipy(Minimizer):
                             max_nfev=max_nfev,
                             verbose=0,
                             **self.conf_dict)
-        self.covar=np.linalg.inv(2 * np.dot(fit.jac.T, fit.jac))
+        try:
+            self.covar=np.linalg.inv(2 * np.dot(fit.jac.T, fit.jac))
+        except Exception as e:
+            warnings.warn('covariance failed')
+            self.covar=None
         self.chisq=sum(fit.fun * fit.fun)
         self.mesg = fit.message
         self.pout = fit.x
