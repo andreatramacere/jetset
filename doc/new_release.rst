@@ -10,9 +10,9 @@ New features
 ^^^^^^^^^^^^
 
 - Introduction of C threads: Starting from version 1.3.0 the :class:`.JetBase` class and all the derived classes, perform the C computation using threads. 
-    This increase the computational speed Each time you create a new Jet object, you will get a log noticing how many C threads have been created.
-    The number of threads is automatically determined according to the number of cores and threads of your CPU.
-    You can revert to single thread, or set a custom number of threads, using the :meth:`.JetBase.set_num_c_threads` and passing the number of threads:
+  This increase the computational speed Each time you create a new Jet object, you will get a log noticing how many C threads have been created.
+  The number of threads is automatically determined according to the number of cores and threads of your CPU.
+  You can revert to single thread, or set a custom number of threads, using the :meth:`.JetBase.set_num_c_threads` and passing the number of threads:
 
     .. code-block:: python
 
@@ -26,6 +26,38 @@ New features
     since will not increase the speed performance.
 
 - Improved MCMC functionalities
+  
+  - labels setting and bounds have been placed in specific methods
+   
+    .. code-block:: python
+
+        from jetset.mcmc import McmcSampler
+        model_minimizer = ModelMinimizer.load_model('model_minimizer_minuit.pkl')
+        mcmc=McmcSampler(model_minimizer)
+        
+        labels=['N','B','beam_obj','s','gamma0_log_parab']
+        model_name='jet_leptonic'
+        use_labels_dict={model_name:labels}
+
+        mcmc.set_labels(use_labels_dict=use_labels_dict)
+
+        mcmc.set_bounds(bound=5.0,bound_rel=True)
+
+  - added option to plot model and residuals, for the mcmc best fit (obtained setting the pars to their  quantiles=0.5 posterior), instead of the frequentist best-fit model, passing ``plot_mcmc_best_fit_model=True``
+    
+    .. code-block:: python
+
+        p=mcmc.plot_model(sed_data=sed_data,fit_range=[1E11, 2E27],size=100,quantiles=[0.05,0.95], plot_mcmc_best_fit_model=True)
+
+  - customization of lables for plotting
+
+    .. code-block:: python
+
+        mcmc.set_plot_label('N',r'$N$')
+        mcmc.set_plot_label('B',r'$B$')
+        mcmc.set_plot_label('beam_obj',r'$\delta$')
+        mcmc.set_plot_label('s',r'$s$')
+        mcmc.set_plot_label('gamma0_log_parab',r'$\gamma_0$')
 
 - Updated EBL models
   
@@ -37,15 +69,15 @@ New features
 
   - Dominguez & Saldana-Lopez (2023) [Dominguez2023]_, [Saldana-Lopez2021]_
 
-- Improved EC computation for large angles
+- Improved EC computation for large angles for anisotropic external fields
 
 - Added convenience methods for conical jet and EC fields:
   
- - method :meth:`.JetBase.make_conical_jet` class will set parameters dependencies to have  conical jet constraining the blob radius
+  - method :meth:`.JetBase.make_conical_jet` class will set parameters dependencies to have  conical jet constraining the blob radius
 
- - method :meth:`.JetBase.set_EC_dependencies` class  will set parameters dependencies to have scaling relations between BLR and DT radius and disk luminosity
+  - method :meth:`.JetBase.set_EC_dependencies` class  will set parameters dependencies to have scaling relations between BLR and DT radius and disk luminosity
   
-- Improved dependent parameters:: handling of astropy units has been improved  the functional dependency of the parameters
+- Improved dependent parameters: handling of astropy units has been improved  the functional dependency of the parameters
 
 - Improved serialization: saved models will not break if astropy or numba break their interface in future releases
 

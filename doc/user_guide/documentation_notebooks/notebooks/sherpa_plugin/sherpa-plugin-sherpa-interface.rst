@@ -141,7 +141,7 @@ sed shaper
 .. raw:: html
 
     <i>Table length=6</i>
-    <table id="table5649283680-986278" class="table-striped table-bordered table-condensed">
+    <table id="table5707020176-777451" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-6.522794e-02</td><td>-6.522794e-02</td><td>5.892905e-03</td><td>--</td><td>-4.913172e-02</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-1.908748e-03</td><td>-1.908748e-03</td><td>8.488797e-04</td><td>--</td><td>5.440153e-03</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -172,14 +172,14 @@ sed shaper
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5649283680-986278').dataTable()");
+        console.log("$('#table5707020176-777451').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5649283680-986278').dataTable({
+        $('#table5707020176-777451').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -226,7 +226,7 @@ sed shaper
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table5682878384-841831" class="table-striped table-bordered table-condensed">
+    <table id="table5707208192-715694" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-1.569967e-01</td><td>-1.569967e-01</td><td>2.511269e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-4.422595e-02</td><td>-4.422595e-02</td><td>2.000320e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -255,14 +255,14 @@ sed shaper
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5682878384-841831').dataTable()");
+        console.log("$('#table5707208192-715694').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5682878384-841831').dataTable({
+        $('#table5707208192-715694').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -321,7 +321,7 @@ ore least-square bound, as shown below
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5686893568-96240" class="table-striped table-bordered table-condensed">
+    <table id="table5703916112-149628" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>1.153385e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -358,14 +358,14 @@ ore least-square bound, as shown below
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5686893568-96240').dataTable()");
+        console.log("$('#table5703916112-149628').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5686893568-96240').dataTable({
+        $('#table5703916112-149628').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1058,89 +1058,8 @@ https://sherpa.readthedocs.io/en/latest/fit/index.html
     iproj.plot()
 
 
-::
 
-
-    ---------------------------------------------------------------------------
-
-    KeyboardInterrupt                         Traceback (most recent call last)
-
-    Cell In[32], line 4
-          2 iproj = IntervalProjection()
-          3 iproj.prepare(fac=5, nloop=15)
-    ----> 4 iproj.calc(fitter, sherpa_model_jet.s)
-          5 iproj.plot()
-
-
-    File ~/miniforge3/envs/jetset/lib/python3.10/site-packages/sherpa/plot/__init__.py:2764, in IntervalProjection.calc(self, fit, par, methoddict, cache)
-       2761     teardown = fit.model.teardown
-       2762     fit.model.teardown = return_none
-    -> 2764     self.y = numpy.asarray(parallel_map(IntervalProjectionWorker(self.log, par, thawed, fit),
-       2765                                         xvals,
-       2766                                         self.numcores)
-       2767                            )
-       2769 finally:
-       2770     # Set back data that we changed
-       2771     par.thaw()
-
-
-    File ~/miniforge3/envs/jetset/lib/python3.10/site-packages/sherpa/utils/__init__.py:3097, in parallel_map(function, sequence, numcores)
-       3091 sequence = split_array(sequence, numcores)
-       3093 procs = [multiprocessing.Process(target=worker,
-       3094                                  args=(function, ii, chunk, out_q, err_q, lock))
-       3095          for ii, chunk in enumerate(sequence)]
-    -> 3097 return run_tasks(procs, err_q, out_q, numcores)
-
-
-    File ~/miniforge3/envs/jetset/lib/python3.10/site-packages/sherpa/utils/__init__.py:2967, in run_tasks(procs, err_q, out_q, num)
-       2964 except KeyboardInterrupt as e:
-       2965     # kill all slave processes on ctrl-C
-       2966     die(procs)
-    -> 2967     raise e
-       2969 if not err_q.empty():
-       2970     die(procs)
-
-
-    File ~/miniforge3/envs/jetset/lib/python3.10/site-packages/sherpa/utils/__init__.py:2962, in run_tasks(procs, err_q, out_q, num)
-       2959         proc.start()
-       2961     for proc in procs:
-    -> 2962         proc.join()
-       2964 except KeyboardInterrupt as e:
-       2965     # kill all slave processes on ctrl-C
-       2966     die(procs)
-
-
-    File ~/miniforge3/envs/jetset/lib/python3.10/multiprocessing/process.py:149, in BaseProcess.join(self, timeout)
-        147 assert self._parent_pid == os.getpid(), 'can only join a child process'
-        148 assert self._popen is not None, 'can only join a started process'
-    --> 149 res = self._popen.wait(timeout)
-        150 if res is not None:
-        151     _children.discard(self)
-
-
-    File ~/miniforge3/envs/jetset/lib/python3.10/multiprocessing/popen_fork.py:43, in Popen.wait(self, timeout)
-         41             return None
-         42     # This shouldn't block if wait() returned successfully.
-    ---> 43     return self.poll(os.WNOHANG if timeout == 0.0 else 0)
-         44 return self.returncode
-
-
-    File ~/miniforge3/envs/jetset/lib/python3.10/multiprocessing/popen_fork.py:27, in Popen.poll(self, flag)
-         25 if self.returncode is None:
-         26     try:
-    ---> 27         pid, sts = os.waitpid(self.pid, flag)
-         28     except OSError:
-         29         # Child process not yet created. See #1731717
-         30         # e.errno == errno.ECHILD == 10
-         31         return None
-
-
-    File ~/miniforge3/envs/jetset/lib/python3.10/site-packages/sherpa/fit.py:582, in IterFit._sig_handler(self, signum, frame)
-        581 def _sig_handler(self, signum, frame):
-    --> 582     raise KeyboardInterrupt()
-
-
-    KeyboardInterrupt: 
+.. image:: sherpa-plugin-sherpa-interface_files/sherpa-plugin-sherpa-interface_48_0.png
 
 
 

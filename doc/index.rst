@@ -10,8 +10,14 @@
 
 :Author: `Andrea Tramacere <andrea.tramacere@gmail.com>`_
 
-
-
+.. _least_squares:  https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html
+.. _iminuit: https://scikit-hep.org/iminuit/ 
+.. _emcee: https://emcee.readthedocs.io/en/stable/   
+.. _astropy: https://www.astropy.org/
+.. _gammapy: https://gammapy.org/
+.. _scipy: https://scipy.org/
+.. _numpy: https://numpy.org/
+.. _matplotlib: https://matplotlib.org/stable/
 
 JetSeT is an open source  C/Python   framework  to reproduce radiative and accelerative processes acting in relativistic jets, and galactic objects (beamed and unbeamed),
 allowing to fit the numerical models to observed data. The main features of this framework are:
@@ -21,7 +27,7 @@ allowing to fit the numerical models to observed data. The main features of this
 * Constraining of the model in the pre-fitting stage, based on accurate  and already published phenomenological trends. In particular, starting from phenomenological parameters, such as spectral indices, peak fluxes and frequencies, and
   spectral  curvatures, that the code evaluates automatically, the pre-fitting algorithm is able to provide a good
   starting model,following the phenomenological trends that I have implemented. fitting of multiwavelength SEDs using
-  both frequentist approach (iminuit) and bayesian MCMC sampling (emcee)
+  both frequentist approach (`iminuit`_, scipy `least_squares`_) and bayesian MCMC sampling (`emcee`_)
 
 * Self-consistent temporal evolution of the plasma under the effect of radiative, accelerative processes, and adiabatic expansion. Both first order and second order (stochastic acceleration) processes are implemented.
 
@@ -32,7 +38,7 @@ allowing to fit the numerical models to observed data. The main features of this
     * `Tramacere A. et al. 2011 <http://adsabs.harvard.edu/abs/2011ApJ...739...66T>`_
     * `Tramacere A. et al. 2009 <http://adsabs.harvard.edu/abs/2009A%26A...501..879T>`_
 
-
+    Please, consider also citing `astropy`_, `gammapy`_, `scipy`_, `iminuit`_, `emcee`_, and `matplotlib`_, if you use functionalities involving the corresponding package 
 
 .. _user-docs:
 
@@ -52,7 +58,7 @@ allowing to fit the numerical models to observed data. The main features of this
     :caption: New/updated in v 1.2.0-1.3.0:
     :name: rst-gallery
 
-    user_guide/documentation_notebooks/notebooks/depending_pars/depending_pars.rst
+    documentation_notebooks/notebooks/depending_pars/depending_pars.ipynb
     user_guide/documentation_notebooks/notebooks/composite_model/Composite_model.rst
     user_guide/documentation_notebooks/notebooks/custom_emitters_distr/custom_emitters.rst
     user_guide/documentation_notebooks/notebooks/jet_model_phys_SSC/Jet_example_phys_SSC.rst
@@ -70,7 +76,7 @@ Testers:
 
 I would like to thank the most active testers:
 
-Hubing Xiao, Cosimo Nigro, Vaidehi S. Paliya, Sara Buson, Sonal Patel, Jayant Abhir, Axel Arbet-Engels
+Hubing Xiao, Cosimo Nigro, Vaidehi S. Paliya, Sara Buson, Sonal Patel, Jayant Abhir, Axel Arbet-Engels, Jessica Luna Cervantes
 
 
 License:

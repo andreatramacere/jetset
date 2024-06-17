@@ -4,7 +4,7 @@ Installation
 ============
 
 .. important::
-    Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.7 is suggested, older python 3 versions (<3.7)  should work.
+    Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.9 is suggested.
 
 
 Windows prerequisites
@@ -18,7 +18,7 @@ to get anaconda: https://www.anaconda.com/download/
 
 or you can use mamba: https://mamba.readthedocs.io/en/latest/
 
-if you use mamba replace `conda` with mamba in the following
+if you use mamba replace ``conda`` with ``mamba`` in the following
 
 - create a virtual environment (not necessary, but suggested):
 
@@ -54,7 +54,7 @@ Install  JetSeT from pip
 
     pip install virtualenv
 
-    virtualenv -p python3.9 jetset
+    virtualenv -p python3.10 jetset
 
     source jetset/bin/activate
 
@@ -74,11 +74,11 @@ Install  JetSeT from pip
 
   if fails, use one of the following methods 
 
-  -) Use anaconda
+  - Use anaconda
 
   OR
 
-  -) Install from source
+  - Install from source
   
   
 
@@ -131,7 +131,7 @@ Installation from source using Anaconda
 
        pip install .
 
-- run the test (optional, **run all the examples outside  the installation dir**)
+- run the test (optional, **run all the examples outside the installation directory**)
 
   .. code-block:: bash
 
@@ -164,9 +164,9 @@ Installation from source using PIP
 
   .. code-block:: bash
 
-        pip install --verbose .
+        pip install .
 
-- run the test  (optional, **run all the examples outside of the installation dir**)
+- run the test  (optional, **run all the examples outside the installation directory **)
 
   .. code-block:: bash
 

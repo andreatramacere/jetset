@@ -1,14 +1,15 @@
 rtd_req=['sphinx-bootstrap-theme',
-    'sphinx-automodapi',
-    'sphinx_rtd_theme>=0.3.1',
-    'sphinxcontrib-bibtex',
-    'sphinx-gallery',
-    'sphinx-nbexamples',
-    'sphinx=5.1.0',
-    'nbsphinx',
-    'numpydoc',
-    'graphviz',
-    'mock']
+        'sphinx_book_theme',
+        'sphinx-automodapi',
+        'sphinx_rtd_theme>=0.3.1',
+        'sphinxcontrib-bibtex',
+        'sphinx-gallery',
+        'sphinx-nbexamples',
+        'sphinx>=7,<=8',
+        'nbsphinx',
+        'numpydoc',
+        'graphviz',
+        'mock']
 
 _skip_list=['pyqt','jupyter','ipython']
 f = open("../requirements.txt",'r')

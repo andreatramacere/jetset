@@ -40,13 +40,13 @@ if on_rtd==False:  # only import and set the  if we're building docs locally
     
 
     #theme='bootstrap'
-    theme = 'sphinx_book_theme'
+    #theme = 'sphinx_book_theme'
     #theme='sphinx_rtd_theme'
-    #
+    theme='sphinx_book_theme'
 else:
+    theme='sphinx_book_theme'
     #theme = 'bootstrap'
-    theme = 'sphinx_book_theme'
-
+    #theme = 'sphinx_book_theme'
 
 
 
@@ -69,7 +69,7 @@ extensions = [
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.autosummary',
     'nbsphinx',
-#    'sphinxcontrib.bibtex',
+#   'sphinxcontrib.bibtex',
     'sphinx.ext.mathjax',
 ]
 
@@ -121,15 +121,17 @@ pygments_style = 'sphinx'
 
 
 #def setup(app):
-#    #app.add_stylesheet("my_theme.css") # also can be a full URL
-#    app.add_css_file("css/my_theme.css")
+ #   app.add_stylesheet("my_theme.css") # also can be a full URL
+ #   app.add_css_file("css/my_theme.css")
 
 if theme=='bootstrap':
+    templates_path = ['_templates']
+    html_static_path = ["_static/css/bootstrap_sphinx_theme"]
     html_sidebars = {'**': ['localtoc.html','my_side_bar.html']}
 
     html_logo = "_static/logo_small_color_neg_transparent.png"
     html_theme = 'bootstrap'
-    html_static_path = ['_static']
+    
     if not on_rtd:
         html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
     #else:
@@ -254,6 +256,42 @@ if theme=='sphinx_book_theme':
 
     pass
 
+if theme=='furo':
+   pygments_style = "default"
+   pygments_dark_style = "monokai"
+   html_theme = "furo"
+   #html_theme = 'insipid'
+   #html_static_path = ["_static/css/sphinx_book_theme"]
+   #html_css_files = ["custom.css"]
+   html_static_path = ["_static"]
+   html_theme_options = {
+        "light_logo": "logo_book_sphinx.svg",
+        "dark_logo": "logo_book_sphinx.svg",
+        "sidebar_hide_name": True,
+        #"light_css_variables": {
+        #    "font-stack": "Arial, sans-serif",
+        #    "font-stack--monospace": "Courier, monospace",
+        #    "font-stack--headings": "Georgia, monospace",
+        #},
+        
+    }
+
+if theme=='piccolo':
+    html_theme = 'piccolo_theme'
+    html_logo = '_static/logo_book_sphinx.svg'
+    pygments_style = "default"
+    pygments_dark_style = "monokai"
+    html_theme_options = {
+      "source_url": 'https://github.com/andreatramacere/jetset'
+    }
+
+if theme=='awsome   ':
+    html_theme = "sphinxawesome_theme"
+    html_theme_options = {
+    "light_logo": "_static/logo_book_sphinx.svg",
+    "dark_logo": "_static/logo_book_sphinx.svg",
+    }
+#html_theme = "sphinx_rtd_theme"
 
 
 htmlhelp_basename = 'jetsetdoc'

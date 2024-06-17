@@ -15,6 +15,6 @@ model fitting examples
 
     4: Only Synchroton for Mrk 421 fit, minuit contours, and MCMC *New (v1.3.0)*  <documentation_notebooks/notebooks/model_fit_4/Jet_example_only_synchrotron.rst>
 
-    5: Mrk 521 SSC+EBL with Sherpa plugin and jetset interface  *New (v1.3.0)* <documentation_notebooks/notebooks/sherpa_plugin/sherpa-plugin-jetset-interface.rst>
+    5: Mrk 521 SSC+EBL with Sherpa minimizer and jetset model  *New (v1.3.0)* <documentation_notebooks/notebooks/sherpa_plugin/sherpa-plugin-jetset-interface.rst>
 
     

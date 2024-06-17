@@ -22,6 +22,9 @@ package),  and the Bayesian approach using the :class:`.McmcSampler` interface t
 
 
 
+Data handling
+-------------
+Before starting with the description of the model fitting implementation in JeSeT, please read  Handling errors and systematics section in the :ref:`data-format`.
 
 Frequentist model fitting
 -------------------------
