@@ -13,7 +13,7 @@ pytest
 numba>0.55,<=0.59.1
 tqdm<5
 dill
-swig>=4,<=4.2.1
+swig>=4,<=4.3
 sphinx-bootstrap-theme
 sphinx_book_theme
 sphinx-automodapi

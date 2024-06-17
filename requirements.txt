@@ -15,4 +15,4 @@ tqdm<5
 jupyter
 ipython
 dill
-swig>=4,<=4.2.1
+swig>=4,<=4.3
