@@ -65,7 +65,7 @@ print( '    - %s'%np_str, file=f)
 
 print('',file=f)
 print('  run:',file=f)
-print('    - python>=3.8', file=f)
+print('    - python>=3.9', file=f)
 for pkg_str in pkg_str_list:
     print('    - %s'%pkg_str, file=f)
 print(_str_end,file=f)

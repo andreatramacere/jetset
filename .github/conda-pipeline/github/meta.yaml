@@ -20,10 +20,10 @@ requirements:
     - swig>3.0.0
     - python {{ python }}
     - setuptools
-    - numpy>=1.22,<1.25
+    - numpy>=1.22,<=1.26
 
   run:
-    - python>=3.8
+    - python>=3.9
     - setuptools
     - scipy>=1.5.0
     - numpy>=1.22,<1.25
