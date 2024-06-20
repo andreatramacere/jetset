@@ -131,9 +131,9 @@ struct temp_ev MakeTempEv() {
     ev_root.T_esc_Coeff_R_by_c_rad=2.0;
     
     ev_root.TStart_Inj=0.0;
-    ev_root.TStop_Inj=3e4;
+    ev_root.TStop_Inj=0.0;
     ev_root.TStart_Acc=0.0;
-    ev_root.TStop_Acc=3e4;
+    ev_root.TStop_Acc=0.0;
     ev_root.Inj_temp_slope=0.0;
     ev_root.NUM_SET=50;
     ev_root.T_SIZE=1000;
