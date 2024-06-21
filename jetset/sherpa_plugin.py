@@ -1,6 +1,8 @@
 __author__ = "Andrea Tramacere"
 
 import os
+from astropy.table import Table
+
 try:
     from sherpa.models.model import ArithmeticModel, modelCacher1d, RegriddableModel1D
     from sherpa.models.parameter import Parameter
@@ -97,6 +99,9 @@ class JetsetSherpaModel(RegriddableModel1D):
         plot_obj = self._jetset_model.plot_model(plot_obj=plot_obj, sed_data=sed_data)
         plot_obj.add_model_residual_plot(data=sed_data, model=self._jetset_model,
                                          fit_range=[fit_range[0], fit_range[1]])
+        
+    
+
 
 
 def plot_sherpa_model(sherpa_model, fit_range=None, model_range=[1E10, 1E30], nu_grid_size=200, sed_data=None,
@@ -183,3 +188,14 @@ class SherpaMinimizer(Minimizer):
 
     def _set_fit_errors(self):
         self.errors = [np.sqrt(np.fabs(self.covar[pi, pi])) for pi in range(len(self.model.fit_par_free))]
+
+def sherpa_model_to_table(sherpa_model):
+    rows=[]
+    for p in sherpa_model.pars:
+        
+        if p.link is not None:
+            r=[p.modelname,p.name,p.val,p.min,p.max,p.frozen,p.units,True,p.link.name,p.link.modelname]
+        else:
+            r=[p.modelname,p.name,p.val,p.min,p.max,p.frozen,p.units,False,'','']
+        rows.append(r)
+    return Table(names=['model name' ,'name' , 'val' , 'min','max', 'frozen', 'units','linked','linked par','linked model'],rows=rows)
