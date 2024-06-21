@@ -13,32 +13,30 @@ python make_apidoc_and_uml_graphs.py
 ----SEPARATE STEPS----------------
 cleaning:
 
+to clean everything under documentation_notebooks/notebooks
+./clean_rst_and_images.sh model_fit_4
 
-find documentation_notebooks/notebooks -name '*.png' -delete
-find user_guide/documentation_notebooks/notebooks -name '*.png' -delete
+to clean everything under documentation_notebooks/notebooks/dir-name
+./clean_rst_and_images.sh dir-name
 
 
 3) run step A or B
     A)run all notebooks and build rst file with script
-        ./build_rst_files.sh -e documentation_notebooks/notebooks #run all notebooks found in documentation_notebooks
-        OR
-        ./build_rst_files.sh -e documentation_notebooks/notebooks/dir-name #runs only specific sub-directory
+        ./build_rst_files.sh -e  #run all notebooks found in documentation_notebooks/notebooks
+
+        ./build_rst_files.sh -e #dir-name #runs only documentation_notebooks/notebooks/dir-name
 
 
     B) or ONLY BUILD RST
-        ./build_rst_files.sh documentation_notebooks/notebooks
+        ./build_rst_files.sh 
         OR
-        ./build_rst_files.sh  documentation_notebooks/notebooks/dir-name
+        ./build_rst_files.sh dir-name
 
 
 
 4)update the rst in user_guide from the notebooks in documentation_notebooks
   
-  find documentation_notebooks/notebooks -name '*.rst' | cpio -pdm ./user_guide
-  find documentation_notebooks/notebooks -name '*.png' | cpio -pdm ./user_guide
-
-  find documentation_notebooks/slides -name '*.png' | cpio -pdm ./user_guide
-  find documentation_notebooks/images -name '*.png' | cpio -pdm ./user_guide
+  ./update_rts_images.sh
 
 5)builds the docs
   sphinx-build -b html ./ build
@@ -52,11 +50,11 @@ OR
 
 
 to build without executing:
-./build.sh documentation_notebooks/notebooks
+./build.sh  
 OR
-./build.sh  documentation_notebooks/notebooks/dir-name
+./build.sh   dir-name
 
 to build executing:
-./build.sh -e documentation_notebooks/notebooks/dir-name
+./build.sh -e 
 OR
-./build.sh -e documentation_notebooks/notebooks/dir-name
+./build.sh -e dir-name

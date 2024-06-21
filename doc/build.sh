@@ -35,11 +35,7 @@ echo
 
 echo '--------------------------------'
 echo 'copying rst files and images'
-find documentation_notebooks/notebooks -name '*.rst' | cpio -pdm ./user_guide
-find documentation_notebooks/notebooks -name '*.png' | cpio -pdm ./user_guide
-
-find documentation_notebooks/slides -name '*.png' | cpio -pdm ./user_guide
-find documentation_notebooks/images -name '*.png' | cpio -pdm ./user_guide
+./update_rts_images.sh $1
 
 echo '--------------------------------'
 echo
@@ -47,5 +43,5 @@ echo
 
 echo '--------------------------------'
 echo 'running sphinx-build'
-sphinx-build -b html ./ build
+sphinx-build -j 10 -b html ./ build
 echo '--------------------------------'
