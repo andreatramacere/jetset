@@ -4,7 +4,7 @@ Installation
 ============
 
 .. important::
-    Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.9 is suggested.
+    Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.9,<=3.11 is suggested. Pip and anaconda binaries for apple M processors are distributed only for python version == 3.11
 
 
 Windows prerequisites
@@ -14,6 +14,8 @@ Install the Windows Subsystem for Linux: https://learn.microsoft.com/en-us/windo
 
 Install JetSeT from Anaconda
 -----------------------------
+.. note:: anaconda binaries for apple M processors are distributed only for python version == 3.11
+
 to get anaconda: https://www.anaconda.com/download/
 
 or you can use mamba: https://mamba.readthedocs.io/en/latest/
@@ -48,6 +50,8 @@ if you use mamba replace ``conda`` with ``mamba`` in the following
 Install  JetSeT from pip
 ------------------------------------------------------------------------------
 
+.. note:: pip binaries for apple M processors are distributed only for python version == 3.11
+
 - create a virtual environment (not necessary, but suggested):
 
   .. code-block:: bash
@@ -64,13 +68,13 @@ Install  JetSeT from pip
   
   .. code-block:: bash
 
-      pip install jetset
+      pip install jetset>=1.3
 
 - Linux
   
   .. code-block:: bash
     
-      pip install jetset
+      pip install jetset>=1.3
 
   if fails, use one of the following methods 
 
@@ -96,6 +100,7 @@ To use the git release binaries, follow the instructions here: :ref:`install_pre
 
 Install the JetSeT from source
 ------------------------------
+As for the other cases, I suggest creating a specific virtual environment
 
 Download the code
 ^^^^^^^^^^^^^^^^^
@@ -166,7 +171,7 @@ Installation from source using PIP
 
         pip install .
 
-- run the test  (optional, **run all the examples outside the installation directory **)
+- run the test  (optional, **run all the examples outside the installation directory**)
 
   .. code-block:: bash
 
