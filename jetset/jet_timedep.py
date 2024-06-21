@@ -1723,7 +1723,7 @@ def merge_lcs(lcs,delta_t=None,sorted=True,name=''):
     sorted : bool, optional
        if the lightcurves in the list have their position time ordered, by default True
     name : str, optional
-        the name of the merged lightcurve, by default ''
+        the name of the merged lightcurve, by default ""
 
     Returns
     -------
