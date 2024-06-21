@@ -27,12 +27,7 @@ If you use this code in any kind of scientific publication please cite the follo
 * `Tramacere A. 2020`  https://ui.adsabs.harvard.edu/abs/2020ascl.soft09001T/abstract
 * `Tramacere A. et al. 2011` http://adsabs.harvard.edu/abs/2011ApJ...739...66T
 * `Tramacere A. et al. 2009` http://adsabs.harvard.edu/abs/2009A%26A...501..879T
-* `Massaro E. et. al 2006`   http://adsabs.harvard.edu/abs/2006A%26A...448..861M
 
-## Licence
-
-JetSeT is released under a 3-clause BSD  license,  for deatils see
-[License](https://github.com/andreatramacere/jetset/blob/master/LICENSE.txt) file 
 
 
 # Documentation
@@ -41,149 +36,40 @@ visit: https://jetset.readthedocs.io/en/latest/
 run the notebook on binder: 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/andreatramacere/jetset/master)
 # Installation 
-> **_NOTE:_** Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.8 is suggested, older python 3 versions (< 3.8) should work.
-
+Read the documentation for further details (e.g. installing form source etc...) [here](https://jetset.readthedocs.io/en/latest/install.html)
 ## Install  JetSeT from Anaconda 
  
  - create a virtual environment (not necessary, but suggested): 
  
-    `conda create --name jetset python=3.9 ipython jupyter`
+    `conda create --name jetset python=3.10 ipython jupyter`
     
-     `conda activate jetset`
+    `conda activate jetset`
      
 - install the code:
   
   `conda install -c andreatramacere jetset`
   
-  if conda fails with dependencies you can try
-    
-   `conda install -c andreatramacere -c astropy -c conda-forge 'jetset>=1.2'`
 
 ## Install  JetSeT from pip 
-- MacOS
-  - create a virtual environment (not necessary, but suggested): 
-  `pip install jetset`
 
-- Linux
-  > **_NOTE:_** currently, pip binaries for linux are not provided, so pip will build the binary on the fly. Hence:
-  
-  - install swig with of these [methods](swig.md) and check that you have a C compiler (gcc) 
-  
-  - `pip install jetset`
-  
-  if fails, use one of the following methods 
-
-  1) Use anaconda
-  
-  OR
-
-  2) Install from source
-  
-  OR
-
-  3) Install the git release binaries [from git releases](install_git_releases.md)
-
-## Install  JetSeT GitHub binaries
-Install the git release binaries [from git releases](install_git_releases.md)
-
-## run the test
-```bash
-pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser
- ```  
-
-
-## Install the JetSeT from source 
-
-
-### Download the code
-   - Get the source code from: 
-
-     - https://github.com/andreatramacere/jetset/archive/stable.tar.gz
-
-   - Uncompress the archive `jetset-stable.tar.gz`
-   
-   - cd to  the dir 
-    
-     - `cd jetset-stable` 
-
-### Installation from source using Anaconda 
+- create a virtual environment (not necessary, but suggested): 
  
- - Install requirements, run on the command line:
-    - `conda install -c astropy -c conda-forge --file requirements.txt`
-  
-   
-if anaconda fails to install swig, you can try one of the following alternative [methods](swig.md)
-
-   
- - run on the command line: 
-     * `pip install --verbose .`
-  
-
- - run the test (optional, **run all the examples outside  the installation dir**)
-```bash
-cd ~/
-mkdir test_jetset
-cd test_jetset
-pytest  --pyargs  -vvv jetset.tests.test_users::TestUser
- ```  
-
-
-
-
-### Installation from source using PIP 
+  `pip install virtualenv`
  
- - Install requirements, run on the command line:
-   * `pip install -r requirements.txt `
-    
-   if pip fails to install swig, you can try one of the following alternative [methods](swig.md)
-  
-  - run on the command line: 
-    * `pip install --verbose .`
- - run the test (optional, **run all the examples outside  the installation dir**)
-```bash
-cd ~/
-mkdir test_jetset
-cd test_jetset
-pytest  --pyargs  -vvv jetset.tests.test_users::TestUser
- ```    
-      
-   
+  `virtualenv -p python3.10 jetset`
+
+  `source jetset/bin/activate`
+
+  `pip install ipython jupyter`
+
+- install the code:
+
+  `pip install jetset>=1.3`
 
 
+## Licence
 
-##  Requirements
-The following python packages are required:
-
-        python =3.9 (python 3.9 is suggested, older python 3 versions should  work, python 2 is not supported any more from version>=1.1.0)
-        setuptools
-        scipy
-        numpy
-        astropy
-        matplotlib
-        swig
-        future
-        iminuit
-        corner
-        six
-        emcee
-        pyyaml
-        numba
-        sherpa
-         
-
-
-A C compiler is also necessary, plus the SWIG wrapper generator.
-
-All the dependencies are installed following the Anaconda method 
- **OR** the pip method, as described above.
-
-# jetset code repoistory
-
-The code is hosted here: 
- -  https://github.com/andreatramacere/jetset
- 
-
-
- 
+JetSeT is released under a 3-clause BSD  license,  for deatils see
+[License](https://github.com/andreatramacere/jetset/blob/master/LICENSE.txt) file 
 
 
