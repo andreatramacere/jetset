@@ -47,7 +47,8 @@ allowing to fit the numerical models to observed data. The main features of this
    :caption: Documentation:
 
    installation <install.rst>
-   changelog  <new_release.rst>
+   what's new in JetSeT v1.3.0? <change_log_specs/v1.3.0>
+   changelog  <changelog.rst>
    user guide <user_guide/user_guide.rst>
    code documentation (API) <api/modules.rst>
    bibliography <references.rst>

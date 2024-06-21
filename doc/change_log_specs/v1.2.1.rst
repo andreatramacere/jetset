@@ -1,0 +1,29 @@
+Version 1.2.1
+=============
+
+New features
+------------
+
+- Introduction of depending pars: model parameters can be linked via functional dependence.  See this section of the user guide  :ref:`depending_parameters`
+
+
+- Temporal Evolution: the python interface to perform self-consistent temporal evolution of leptonic emitters under acceleration and cooling has been added. See this section of the user guide  :ref:`temp_ev`
+
+- Hadronic pp emission: the python interface to perform self-consistent temporal evolution of leptonic emitters under acceleration and cooling has been added. See this section of the user guide  :ref:`hadronic_pp_jet_guide`
+
+
+- Theoretical background for SSC model: a detailed explanation of the theoretical background for SSC/EC model has been added. See this section of the user guide  :ref:`ssc_th_bkg`
+
+
+- Emitters distributions: the emitters distribution class has be improved. See this section of the user guide  :ref:`custom_emitters_guide`
+
+- EBL absorption: linking of parameters has been updated See this section of the user guide  :ref:`ebl_model`
+
+
+- Plugins:
+ - JetSeT plugins to Sherpa (:ref:`sherpa_plugin`, :ref:`sherpa_minimizer_plugin`) 
+ - Gammapy plugin  (:ref:`gammapy_plugin`)
+
+
+
+
