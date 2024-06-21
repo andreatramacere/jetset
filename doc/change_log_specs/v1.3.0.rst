@@ -47,7 +47,7 @@ Introduction of leptonic synchrotron polarization
 Minimizers
 ^^^^^^^^^^
 - Heat map for correlation matrix: added convenience method to plot correlation matrix
-- Added `simplex`` on top of `migrad` in `minuit` 
+- Added ``simplex`` on top of ``migrad`` in ``minuit`` 
 
 MCMC functionalities
 ^^^^^^^^^^^^^^^^^^^^
@@ -101,22 +101,22 @@ EC emission
 
 - Added convenience methods for conical jet and EC fields:
   
-  - method :meth:`.JetBase.make_conical_jet` class will set parameters dependencies to have  conical jet constraining the blob radius
+  - method :meth:`.JetBase.make_conical_jet` class will set parameters dependencies to have conical jet constraining the blob radius
 
-  - method :meth:`.JetBase.set_EC_dependencies` class  will set parameters dependencies to have scaling relations between BLR and DT radius and disk luminosity
+  - method :meth:`.JetBase.set_EC_dependencies` class will set parameters dependencies to have scaling relations between BLR and DT radius and disk luminosity
 
 
 
 Improved functionalities
 ^^^^^^^^^^^^^^^^^^^^^^^^
-- Improved dependent parameters: handling of astropy units has been improved  the functional dependency of the parameters
+- Improved dependent parameters: handling of astropy units has been improved the functional dependency of the parameters
 
 - Improved serialization: saved models will not break if astropy or numba break their interface in future releases
 
+- Improved functionality to merge light curves :meth:`jetset.jet_timedep.merge_lcs`
 
 
 
 bug fixing 
 ----------
 - fixed typo in `EC_components_list` kw in the method :meth:`.ObsConstrain.constrain_SSC_EC_model`
-
