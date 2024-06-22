@@ -24,7 +24,7 @@ package),  and the Bayesian approach using the :class:`.McmcSampler` interface t
 
 Data handling
 -------------
-Before starting with the description of the model fitting implementation in JeSeT, please read  Handling errors and systematics section in the :ref:`data-format`.
+Before starting with the description of the model fitting implementation in JeSeT, please read  Handling errors and systematics section in the :ref:`data_format`.
 
 Frequentist model fitting
 -------------------------
@@ -98,9 +98,9 @@ The second step consists in the creation of a  :class:`.ModelMinimizer` object
   .. note::
     For ``minuit``, starting from JetSeT ``version==1.3.0``, ``simplex`` will be run before ``migrad``, this allows a better sampling of the parameter space. You can skip ``simplex`` as follows:
 
-  .. code:: ipython3
+    .. code:: ipython3
 
-    model_minimizer.minimizer.add_simplex=False
+       model_minimizer.minimizer.add_simplex=False
 
 both for the case of ``lsb`` and ``minuit`` specific kw for the minimizer can be accessed by the dictionary:
 
@@ -149,7 +149,7 @@ The third step will consist in actually calling the minimization process
 
 notice that:
 
--   ``sed_data`` is your :class:`.ObsData` object (see :ref:`data-format` section from more info)
+-   ``sed_data`` is your :class:`.ObsData` object (see :ref:`data_format` section from more info)
 
 
 -  ``nu_fit_start`` and ``nu_fit_stop`` correspond to the range of the data, in Hz, used for the model fitting

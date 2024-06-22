@@ -14,29 +14,29 @@ python make_apidoc_and_uml_graphs.py
 cleaning:
 
 to clean everything under documentation_notebooks/notebooks
-./clean_rst_and_images.sh model_fit_4
+./scripts/clean_rst_and_images.sh 
 
 to clean everything under documentation_notebooks/notebooks/dir-name
-./clean_rst_and_images.sh dir-name
+./scripts/clean_rst_and_images.sh dir-name
 
 
 3) run step A or B
     A)run all notebooks and build rst file with script
-        ./build_rst_files.sh -e  #run all notebooks found in documentation_notebooks/notebooks
+        ./scripts/build_rst_files.sh -e  #run all notebooks found in documentation_notebooks/notebooks
 
-        ./build_rst_files.sh -e #dir-name #runs only documentation_notebooks/notebooks/dir-name
+        ./scripts/build_rst_files.sh -e #dir-name #runs only documentation_notebooks/notebooks/dir-name
 
 
     B) or ONLY BUILD RST
-        ./build_rst_files.sh 
+        ./scripts/build_rst_files.sh 
         OR
-        ./build_rst_files.sh dir-name
+        ./scripts/build_rst_files.sh dir-name
 
 
 
 4)update the rst in user_guide from the notebooks in documentation_notebooks
   
-  ./update_rts_images.sh
+  ./scripts/update_rts_images.sh
 
 5)builds the docs
   sphinx-build -b html ./ build
@@ -50,11 +50,11 @@ OR
 
 
 to build without executing:
-./build.sh  
+./scripts/build.sh  
 OR
-./build.sh   dir-name
+./scripts/build.sh   dir-name
 
 to build executing:
-./build.sh -e 
+./scripts/build.sh -e 
 OR
-./build.sh -e dir-name
+./scripts/build.sh -e dir-name

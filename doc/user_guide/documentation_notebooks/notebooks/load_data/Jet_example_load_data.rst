@@ -1,4 +1,4 @@
-.. _data-format:
+.. _data_format:
 
 Data format and SED data
 ========================

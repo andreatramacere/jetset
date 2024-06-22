@@ -16,7 +16,7 @@ Composite models allow combining different models, such as Jet, and templates, i
 
     'jet1+jet2'*Franceschini_2008
 
-which sums two jet models SEDs, and applies to both of them the `Franceschini_2008` EBL absorption.
+which sums two jet models SEDs, and applies to both of them the ``Franceschini_2008`` EBL absorption.
 
 Building composite models is very easy. Composite models are handled by  the :class:`.FitModel` class, as shown by the following examples. 
 
@@ -37,7 +37,7 @@ multiplicative model. First, we define our Jet model
     ===> setting C threads to 12
 
 
-Second, we define the EBL model, and we use in this case the `Franceschini_2008` model ( read the section :ref:`ebl_model`  for more info regarding the EBL models)
+Second, we define the EBL model, and we use in this case the ``Franceschini_2008`` model ( read the section :ref:`ebl_model`  for more info regarding the EBL models)
 
 .. code:: ipython3
 

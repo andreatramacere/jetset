@@ -1,10 +1,5 @@
 .. _ebl_model:
 
-.. code:: ipython3
-
-    import warnings
-    warnings.filterwarnings('ignore')
-
 EBL
 ===
 
@@ -18,6 +13,11 @@ EBL
 
     tested on jetset 1.3.0rc7
 
+
+.. code:: ipython3
+
+    import warnings
+    warnings.filterwarnings('ignore')
 
 EBL models
 ----------
@@ -458,9 +458,6 @@ if you want to remove the link from the parameter
 
 now the two ``z_cosm`` parameters are not linkend anymore
 
-.. bibliography:: references.bib
-
-
 Example of model fitting with EBL
 ---------------------------------
 
@@ -510,7 +507,7 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_42_1.png
+.. image:: EBL_files/EBL_41_1.png
 
 
 .. code:: ipython3
@@ -532,7 +529,7 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_43_1.png
+.. image:: EBL_files/EBL_42_1.png
 
 
 .. code:: ipython3
@@ -926,7 +923,7 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_45_9.png
+.. image:: EBL_files/EBL_44_9.png
 
 
 .. code:: ipython3
@@ -1038,7 +1035,7 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_47_1.png
+.. image:: EBL_files/EBL_46_1.png
 
 
 .. code:: ipython3
@@ -1326,7 +1323,7 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_51_1.png
+.. image:: EBL_files/EBL_50_1.png
 
 
 .. code:: ipython3
@@ -1575,5 +1572,5 @@ Example of model fitting with EBL
 
 
 
-.. image:: EBL_files/EBL_53_0.png
+.. image:: EBL_files/EBL_52_0.png
 

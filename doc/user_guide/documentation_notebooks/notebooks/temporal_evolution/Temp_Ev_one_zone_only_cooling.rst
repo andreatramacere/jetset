@@ -24,7 +24,7 @@ Cooling only the newly injecting electrons
 
 .. parsed-literal::
 
-    tested on jetset 1.2.2
+    tested on jetset 1.3.0rc8
 
 
 This is a very preliminary documentation for the temporal evolution
@@ -39,6 +39,12 @@ for the radiative region
 
     from jetset.jet_model import Jet
     jet_model=Jet()
+
+
+
+.. parsed-literal::
+
+    ===> setting C threads to 12
 
 
 .. code:: ipython3
@@ -79,6 +85,13 @@ the radiative region will be used.**
 
     from jetset.jet_timedep import JetTimeEvol
     temp_ev=JetTimeEvol(jet_rad=jet_model,Q_inj=q_inj,inplace=True,only_radiation=True)
+
+
+.. parsed-literal::
+
+    ===> setting C threads to 12
+    ===> setting C threads to 12
+
 
 **The IC cooling is switched off, as default, to make the process
 faster**. to switch on the IC cooling ``temp_ev_acc.IC_cooling='on'``
@@ -127,7 +140,7 @@ Now, we setup some relevant parameters
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140277546326192-883914" class="table-striped table-bordered table-condensed">
+    <table id="table5659285184-989455" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>1.000000e+02</td><td>s</td><td>0.0005995849159999999</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -164,14 +177,14 @@ Now, we setup some relevant parameters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140277546326192-883914').dataTable()");
+        console.log("$('#table5659285184-989455').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140277546326192-883914').dataTable({
+        $('#table5659285184-989455').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -195,7 +208,7 @@ Now, we setup some relevant parameters
 .. raw:: html
 
     <i>Table length=17</i>
-    <table id="table140277546260560-266272" class="table-striped table-bordered table-condensed">
+    <table id="table5638767328-175576" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -237,14 +250,14 @@ Now, we setup some relevant parameters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140277546260560-266272').dataTable()");
+        console.log("$('#table5638767328-175576').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140277546260560-266272').dataTable({
+        $('#table5638767328-175576').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -265,7 +278,7 @@ Now, we setup some relevant parameters
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotTempEvDiagram at 0x7f94e8c62f10>
+    <jetset.plot_sedfit.PlotTempEvDiagram at 0x1514f2080>
 
 
 
@@ -369,32 +382,32 @@ without the effect of the light crossing time, in the observer frame
 
 .. raw:: html
 
-    <i>Table length=344</i>
-    <table id="table140277098342048" class="table-striped table-bordered table-condensed">
+    <div><i>Table length=344</i>
+    <table id="table5669859680" class="table-striped table-bordered table-condensed">
     <thead><tr><th>time</th><th>flux</th><th>R_blob</th><th>t_blob</th></tr></thead>
-    <thead><tr><th>s</th><th>erg / (cm2 s)</th><th>cm</th><th>s</th></tr></thead>
+    <thead><tr><th>s</th><th>erg / (s cm2)</th><th>cm</th><th>s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
-    <tr><td>0.0</td><td>1.0025312073439857e-18</td><td>5000000000000000.0</td><td>0.0</td></tr>
-    <tr><td>100.0</td><td>2.721071237898974e-15</td><td>5000000000000000.0</td><td>2912.6213592233007</td></tr>
-    <tr><td>200.0</td><td>5.441139944590604e-15</td><td>5000000000000000.0</td><td>5825.242718446601</td></tr>
-    <tr><td>300.0</td><td>8.161208651282235e-15</td><td>5000000000000000.0</td><td>8737.864077669903</td></tr>
-    <tr><td>400.0</td><td>1.2857452255742743e-14</td><td>5000000000000000.0</td><td>11650.485436893203</td></tr>
-    <tr><td>500.0</td><td>1.9064888429085333e-14</td><td>5000000000000000.0</td><td>14563.106796116504</td></tr>
-    <tr><td>600.0</td><td>2.6938015030327216e-14</td><td>5000000000000000.0</td><td>17475.728155339806</td></tr>
-    <tr><td>700.0</td><td>3.53370922516786e-14</td><td>5000000000000000.0</td><td>20388.349514563106</td></tr>
-    <tr><td>800.0</td><td>4.524420360115135e-14</td><td>5000000000000000.0</td><td>23300.970873786406</td></tr>
+    <tr><td>0.0</td><td>1.1408428468818105e-18</td><td>5000000000000000.0</td><td>0.0</td></tr>
+    <tr><td>100.0</td><td>3.097369417739573e-15</td><td>5000000000000000.0</td><td>2912.6213592233007</td></tr>
+    <tr><td>200.0</td><td>6.193597992632264e-15</td><td>5000000000000000.0</td><td>5825.242718446601</td></tr>
+    <tr><td>300.0</td><td>9.289826567524954e-15</td><td>5000000000000000.0</td><td>8737.864077669903</td></tr>
+    <tr><td>400.0</td><td>1.4637329609431923e-14</td><td>5000000000000000.0</td><td>11650.485436893203</td></tr>
+    <tr><td>500.0</td><td>2.1706395479055697e-14</td><td>5000000000000000.0</td><td>14563.106796116504</td></tr>
+    <tr><td>600.0</td><td>3.0675289260932043e-14</td><td>5000000000000000.0</td><td>17475.728155339806</td></tr>
+    <tr><td>700.0</td><td>4.0244304966067743e-14</td><td>5000000000000000.0</td><td>20388.349514563106</td></tr>
+    <tr><td>800.0</td><td>5.153489880245247e-14</td><td>5000000000000000.0</td><td>23300.970873786406</td></tr>
     <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-    <tr><td>33400.0</td><td>2.7653273627251138e-14</td><td>5000000000000000.0</td><td>972815.5339805826</td></tr>
-    <tr><td>33500.0</td><td>2.6951267478504774e-14</td><td>5000000000000000.0</td><td>975728.1553398059</td></tr>
-    <tr><td>33600.0</td><td>2.627278245468649e-14</td><td>5000000000000000.0</td><td>978640.7766990291</td></tr>
-    <tr><td>33700.0</td><td>2.56102578769332e-14</td><td>5000000000000000.0</td><td>981553.3980582524</td></tr>
-    <tr><td>33800.0</td><td>2.4961698689486774e-14</td><td>5000000000000000.0</td><td>984466.0194174757</td></tr>
-    <tr><td>33900.0</td><td>2.4336458732562352e-14</td><td>5000000000000000.0</td><td>987378.6407766991</td></tr>
-    <tr><td>34000.0</td><td>2.3719178229843572e-14</td><td>5000000000000000.0</td><td>990291.2621359223</td></tr>
-    <tr><td>34100.0</td><td>2.3126418451267855e-14</td><td>5000000000000000.0</td><td>993203.8834951456</td></tr>
-    <tr><td>34200.0</td><td>2.2543527909109737e-14</td><td>5000000000000000.0</td><td>996116.5048543689</td></tr>
-    <tr><td>34300.0</td><td>2.197651396466689e-14</td><td>5000000000000000.0</td><td>999029.1262135921</td></tr>
-    </table>
+    <tr><td>33400.0</td><td>3.2967609352604484e-14</td><td>5000000000000000.0</td><td>972815.5339805826</td></tr>
+    <tr><td>33500.0</td><td>3.2135263240236586e-14</td><td>5000000000000000.0</td><td>975728.1553398059</td></tr>
+    <tr><td>33600.0</td><td>3.1330642085834543e-14</td><td>5000000000000000.0</td><td>978640.7766990291</td></tr>
+    <tr><td>33700.0</td><td>3.054483961812241e-14</td><td>5000000000000000.0</td><td>981553.3980582524</td></tr>
+    <tr><td>33800.0</td><td>2.977550350126395e-14</td><td>5000000000000000.0</td><td>984466.0194174757</td></tr>
+    <tr><td>33900.0</td><td>2.9033671003518136e-14</td><td>5000000000000000.0</td><td>987378.6407766991</td></tr>
+    <tr><td>34000.0</td><td>2.830122716846184e-14</td><td>5000000000000000.0</td><td>990291.2621359223</td></tr>
+    <tr><td>34100.0</td><td>2.759771276103671e-14</td><td>5000000000000000.0</td><td>993203.8834951456</td></tr>
+    <tr><td>34200.0</td><td>2.6905845496634715e-14</td><td>5000000000000000.0</td><td>996116.5048543689</td></tr>
+    <tr><td>34300.0</td><td>2.623271494057428e-14</td><td>5000000000000000.0</td><td>999029.1262135921</td></tr>
+    </table></div>
 
 
 
@@ -409,7 +422,7 @@ without the effect of the light crossing time, in the observer frame
 
 .. parsed-literal::
 
-    Text(0, 0.5, 'flux (erg / (cm2 s))')
+    Text(0, 0.5, 'flux (erg / (s cm2))')
 
 
 
@@ -439,7 +452,7 @@ setting ``eval_cross_time=True``
 
 .. parsed-literal::
 
-    Text(0, 0.5, 'flux (erg / (cm2 s))')
+    Text(0, 0.5, 'flux (erg / (s cm2))')
 
 
 
@@ -456,7 +469,7 @@ setting ``eval_cross_time=True``
 
 .. parsed-literal::
 
-    (3.3654423005727297e-08, 3.364709952845603e-08)
+    (3.878e-08, 3.877e-08)
 
 
 
@@ -470,6 +483,13 @@ SEDs, and electron distributions
 .. code:: ipython3
 
     temp_ev_1=JetTimeEvol.load_model('temp_ev_only_rad.pkl')
+
+
+.. parsed-literal::
+
+    ===> setting C threads to 12
+    ===> setting C threads to 12
+
 
 .. code:: ipython3
 
@@ -491,7 +511,7 @@ SEDs, and electron distributions
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table140277121943056-581527" class="table-striped table-bordered table-condensed">
+    <table id="table5663274560-756888" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>1.000000e+02</td><td>s</td><td>0.0005995849159999999</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -528,14 +548,14 @@ SEDs, and electron distributions
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140277121943056-581527').dataTable()");
+        console.log("$('#table5663274560-756888').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140277121943056-581527').dataTable({
+        $('#table5663274560-756888').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -559,7 +579,7 @@ SEDs, and electron distributions
 .. raw:: html
 
     <i>Table length=17</i>
-    <table id="table140277121895056-955484" class="table-striped table-bordered table-condensed">
+    <table id="table5659228240-126504" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -601,14 +621,14 @@ SEDs, and electron distributions
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140277121895056-955484').dataTable()");
+        console.log("$('#table5659228240-126504').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140277121895056-955484').dataTable({
+        $('#table5659228240-126504').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -642,7 +662,7 @@ SEDs, and electron distributions
 
 .. parsed-literal::
 
-    Text(0, 0.5, 'flux (erg / (cm2 s))')
+    Text(0, 0.5, 'flux (erg / (s cm2))')
 
 
 

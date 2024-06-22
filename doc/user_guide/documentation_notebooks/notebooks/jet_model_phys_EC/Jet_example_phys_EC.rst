@@ -132,7 +132,7 @@ black body ``BB``
 .. raw:: html
 
     <i>Table length=18</i>
-    <table id="table4590969344-873446" class="table-striped table-bordered table-condensed">
+    <table id="table4676097824-883471" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -175,14 +175,14 @@ black body ``BB``
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4590969344-873446').dataTable()");
+        console.log("$('#table4676097824-883471').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4590969344-873446').dataTable({
+        $('#table4676097824-883471').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -297,7 +297,7 @@ parameters regarding the multi temperature black body accretion disk:
 .. raw:: html
 
     <i>Table length=21</i>
-    <table id="table5678933728-761192" class="table-striped table-bordered table-condensed">
+    <table id="table5763774592-550583" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -343,14 +343,14 @@ parameters regarding the multi temperature black body accretion disk:
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5678933728-761192').dataTable()");
+        console.log("$('#table5763774592-550583').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5678933728-761192').dataTable({
+        $('#table5763774592-550583').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -457,7 +457,7 @@ Dusty Torus
 .. raw:: html
 
     <i>Table length=24</i>
-    <table id="table5689617344-187986" class="table-striped table-bordered table-condensed">
+    <table id="table5763774784-939514" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -506,14 +506,14 @@ Dusty Torus
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5689617344-187986').dataTable()");
+        console.log("$('#table5763774784-939514').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5689617344-187986').dataTable({
+        $('#table5763774784-939514').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -547,174 +547,6 @@ Dusty Torus
 
 .. code:: ipython3
 
-    my_jet.add_EC_component('EC_DT')
-    my_jet.eval()
-
-
-.. code:: ipython3
-
-    p=my_jet.plot_model()
-    p.setlim(y_min=1E-13,y_max=5E-11,x_min=1E9,x_max=1E27)
-
-
-
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_22_0.png
-
-
-.. code:: ipython3
-
-    my_jet
-
-
-.. parsed-literal::
-
-    
-    --------------------------------------------------------------------------------
-    model description: 
-    --------------------------------------------------------------------------------
-    type: Jet
-    name: EC_example  
-    geometry: spherical  
-    
-    electrons distribution:
-     type: bkn  
-     gamma energy grid size:  201
-     gmin grid : 2.000000e+00
-     gmax grid : 5.000000e+04
-     normalization:  True
-     log-values:  False
-     ratio of cold protons to relativistic electrons: 1.000000e+00
-    
-    accretion disk:
-     disk Type: MultiBB
-     L disk: 1.000000e+46 (erg/s)
-     T disk: 5.015768e+04 (K)
-     nu peak disk: 4.098790e+15 (Hz)
-     Sw radius 2.953539e+14 (cm)
-     L Edd. 1.300000e+47 (erg/s)
-     accr_rate: 2.205171e+00 (M_sun/yr)
-     accr_rate Edd.: 2.866722e+01 (M_sun/yr)
-    radiative fields:
-     seed photons grid size:  100
-     IC emission grid size:  100
-     source emissivity lower bound :  1.000000e-120
-     spectral components:
-       name:Sum, state: on
-       name:Sum, hidden: False
-       name:Sync, state: self-abs
-       name:Sync, hidden: False
-       name:SSC, state: on
-       name:SSC, hidden: False
-       name:EC_BLR, state: on
-       name:EC_BLR, hidden: False
-       name:Disk, state: on
-       name:Disk, hidden: False
-       name:EC_Disk, state: on
-       name:EC_Disk, hidden: False
-       name:DT, state: on
-       name:DT, hidden: False
-       name:EC_DT, state: on
-       name:EC_DT, hidden: False
-    external fields transformation method: blob
-    
-    SED info:
-     nu grid size jetkernel: 1000
-     nu size: 500
-     nu mix (Hz): 1.000000e+06
-     nu max (Hz): 1.000000e+30
-    
-    flux plot lower bound   :  1.000000e-30
-    
-    --------------------------------------------------------------------------------
-
-
-
-.. raw:: html
-
-    <i>Table length=24</i>
-    <table id="table5689621280-579217" class="table-striped table-bordered table-condensed">
-    <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
-    <tr><td>EC_example</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>EC_example</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>1.500000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>NH_cold_to_rel_e</td><td>cold_p_to_rel_e_ratio</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>EC_example</td><td>theta</td><td>jet-viewing-angle</td><td>deg</td><td>1.000000e+00</td><td>0.000000e+00</td><td>9.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>BulkFactor</td><td>jet-bulk-factor</td><td>lorentz-factor*</td><td>2.000000e+01</td><td>1.000000e+00</td><td>1.000000e+05</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>z_cosm</td><td>redshift</td><td></td><td>6.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>5.000000e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.126221e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>gamma_break</td><td>turn-over-energy</td><td>lorentz-factor*</td><td>5.000000e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>p</td><td>LE_spectral_slope</td><td></td><td>1.500000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>p_1</td><td>HE_spectral_slope</td><td></td><td>3.200000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>tau_BLR</td><td>BLR</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>R_BLR_in</td><td>BLR</td><td>cm</td><td>1.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>EC_example</td><td>R_BLR_out</td><td>BLR</td><td>cm</td><td>2.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
-    <tr><td>EC_example</td><td>T_DT</td><td>DT</td><td>K</td><td>1.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>R_DT</td><td>DT</td><td>cm</td><td>5.000000e+18</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>tau_DT</td><td>DT</td><td></td><td>1.000000e-01</td><td>0.000000e+00</td><td>1.000000e+00</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>L_Disk</td><td>Disk</td><td>erg / s</td><td>1.000000e+46</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>R_inner_Sw</td><td>Disk</td><td>Sw. radii*</td><td>3.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>R_ext_Sw</td><td>Disk</td><td>Sw. radii*</td><td>5.000000e+02</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>accr_eff</td><td>Disk</td><td></td><td>8.000000e-02</td><td>6.000000e-02</td><td>1.000000e-01</td><td>False</td><td>False</td></tr>
-    <tr><td>EC_example</td><td>M_BH</td><td>Disk</td><td>M_sun*</td><td>1.000000e+09</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
-    </table><style>table.dataTable {clear: both; width: auto !important; margin: 0 !important;}
-    .dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate{
-    display: inline-block; margin-right: 1em; }
-    .paginate_button { margin-right: 5px; }
-    </style>
-    <script>
-    
-    var astropy_sort_num = function(a, b) {
-        var a_num = parseFloat(a);
-        var b_num = parseFloat(b);
-    
-        if (isNaN(a_num) && isNaN(b_num))
-            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-        else if (!isNaN(a_num) && !isNaN(b_num))
-            return ((a_num < b_num) ? -1 : ((a_num > b_num) ? 1 : 0));
-        else
-            return isNaN(a_num) ? -1 : 1;
-    }
-    
-    require.config({paths: {
-        datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
-    }});
-    require(["datatables"], function(){
-        console.log("$('#table5689621280-579217').dataTable()");
-    
-    jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-        "optionalnum-asc": astropy_sort_num,
-        "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
-    });
-    
-        $('#table5689621280-579217').dataTable({
-            order: [],
-            pageLength: 100,
-            lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
-            pagingType: "full_numbers",
-            columnDefs: [{targets: [4, 5, 6], type: "optionalnum"}]
-        });
-    });
-    </script>
-
-
-
-.. parsed-literal::
-
-    --------------------------------------------------------------------------------
-
-
-
-
-.. parsed-literal::
-
-    None
-
-
-
-.. code:: ipython3
-
     my_jet.save_model('test_EC_model.pkl')
 
 
@@ -742,13 +574,13 @@ Dusty Torus
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_27_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_24_0.png
 
 
 setting the BLR and DT radius as a function of the disk luminosity
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Using the depending parameters (see :ref:`depending_parameters`, for more details) we can set the BLR and DT radius, as a function of the disk luminosity
+Using the depending parameters (see :ref:`dep_pars`, for more details) we can set the BLR and DT radius, as a function of the disk luminosity
 
 .. code:: ipython3
 
@@ -788,7 +620,7 @@ Using the depending parameters (see :ref:`depending_parameters`, for more detail
 .. raw:: html
 
     <i>Table length=24</i>
-    <table id="table5694474128-804939" class="table-striped table-bordered table-condensed">
+    <table id="table5766482000-252350" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>5.000000e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -837,14 +669,14 @@ Using the depending parameters (see :ref:`depending_parameters`, for more detail
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5694474128-804939').dataTable()");
+        console.log("$('#table5766482000-252350').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5694474128-804939').dataTable({
+        $('#table5766482000-252350').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -872,7 +704,7 @@ Using the depending parameters (see :ref:`depending_parameters`, for more detail
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_33_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_30_0.png
 
 
 .. important::
@@ -920,7 +752,7 @@ Using the depending parameters (see :ref:`depending_parameters`, for more detail
 .. raw:: html
 
     <i>Table length=25</i>
-    <table id="table5694474128-578134" class="table-striped table-bordered table-condensed">
+    <table id="table4675844800-200206" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>EC_example</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>2.000000e+00</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>EC_example</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>5.000000e+04</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -970,14 +802,14 @@ Using the depending parameters (see :ref:`depending_parameters`, for more detail
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5694474128-578134').dataTable()");
+        console.log("$('#table4675844800-200206').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5694474128-578134').dataTable({
+        $('#table4675844800-200206').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -997,8 +829,6 @@ Using the depending parameters (see :ref:`depending_parameters`, for more detail
 
 
 
-
-
 .. code:: ipython3
 
     my_jet.eval()
@@ -1007,7 +837,7 @@ Using the depending parameters (see :ref:`depending_parameters`, for more detail
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_39_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_35_0.png
 
 
 Changing the external field transformation
@@ -1029,7 +859,7 @@ frame.
 
     my_jet.set_external_field_transf('disk')
 
-.. note:: Anyhow,  the ``disk`` transformation is valid only for isotropic external fields, such as the CMB, or the BLR and Dusty torus seed photons within the  DT radius and BLR radius,                    respectively. Beyond the isotropic region, the code will reproduce the expected beaming pattern as in Fig 13 of Finke (2106) [Finke2016]_, but the spectral shape might be slightly different.
+.. note:: Anyhow,  the ``disk`` transformation is riogorously valid only for isotropic external fields, such as the CMB, or the BLR and Dusty torus seed photons within the  DT radius and BLR radius, respectively. Beyond the isotropic region, the code will reproduce the expected beaming pattern as in Fig 13 of Finke (2106) [Finke2016]_, but the spectral shape might be slightly different.
 
 External photon field energy density along the jet
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1074,14 +904,14 @@ EC seed photon fields, in the Disk rest frame
     y[6,:]=external_iso_behind_transf(my_jet._blob.L_Disk_radiative*my_jet.parameters.tau_DT.val,R_range,G)
     y[7,:]=external_iso_behind_transf(my_jet._blob.L_Disk_radiative,R_range,G)
     
-    ax.plot(np.log10(R_range),np.log10(y[0,:]),label='Disk')
-    ax.plot(np.log10(R_range),np.log10(y[1,:]),'-',label='BLR')
-    ax.plot(np.log10(R_range),np.log10(y[2,:]),label='DT')
-    ax.plot(np.log10(R_range),np.log10(y[3,:]),'--',label='BLR uniform')
-    ax.plot(np.log10(R_range),np.log10(y[4,:]),'--',label='DT uniform')
-    ax.plot(np.log10(R_range),np.log10(y[5,:]),'--',label='BLR 1/R2')
-    ax.plot(np.log10(R_range),np.log10(y[6,:]),'--',label='DT 1/R2')
-    ax.plot(np.log10(R_range),np.log10(y[7,:]),'--',label='Disk 1/R2')
+    ax.plot(np.log10(R_range),np.log10(y[0,:]),label=r'Disk')
+    ax.plot(np.log10(R_range),np.log10(y[1,:]),'-',label=r'BLR')
+    ax.plot(np.log10(R_range),np.log10(y[2,:]),label=r'DT')
+    ax.plot(np.log10(R_range),np.log10(y[3,:]),'--',label=r'BLR uniform')
+    ax.plot(np.log10(R_range),np.log10(y[4,:]),'--',label=r'DT uniform')
+    ax.plot(np.log10(R_range),np.log10(y[5,:]),'--',label=r'BLR 1/$R^2$')
+    ax.plot(np.log10(R_range),np.log10(y[6,:]),'--',label=r'DT 1/$R2^2$')
+    ax.plot(np.log10(R_range),np.log10(y[7,:]),'--',label=r'Disk 1/$R^2$')
     ax.set_xlabel('log(R_H) cm')
     ax.set_ylabel('log(Uph) erg cm-3 s-1')
     
@@ -1093,12 +923,12 @@ EC seed photon fields, in the Disk rest frame
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x153a9f7f0>
+    <matplotlib.legend.Legend at 0x157ba2530>
 
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_49_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_45_1.png
 
 
 .. code:: ipython3
@@ -1136,14 +966,14 @@ EC seed photon fields, in the Disk rest frame
     y[6,:]=external_iso_behind_transf(my_jet._blob.L_Disk_radiative*my_jet.parameters.tau_DT.val,R_range,G)
     y[7,:]=external_iso_behind_transf(my_jet._blob.L_Disk_radiative,R_range,G)
     
-    ax.plot(np.log10(R_range),np.log10(y[0,:]),label='Disk')
-    ax.plot(np.log10(R_range),np.log10(y[1,:]),'-',label='BLR')
-    ax.plot(np.log10(R_range),np.log10(y[2,:]),'-',label='DT')
-    ax.plot(np.log10(R_range),np.log10(y[3,:]),'--',label='BLR uniform')
-    ax.plot(np.log10(R_range),np.log10(y[4,:]),'--',label='DT uniform')
-    ax.plot(np.log10(R_range),np.log10(y[5,:]),'--',label='BLR 1/R2')
-    ax.plot(np.log10(R_range),np.log10(y[6,:]),'--',label='DT 1/R2')
-    ax.plot(np.log10(R_range),np.log10(y[7,:]),'--',label='Disk 1/R2')
+    ax.plot(np.log10(R_range),np.log10(y[0,:]),label=r'Disk')
+    ax.plot(np.log10(R_range),np.log10(y[1,:]),'-',label=r'BLR')
+    ax.plot(np.log10(R_range),np.log10(y[2,:]),'-',label=r'DT')
+    ax.plot(np.log10(R_range),np.log10(y[3,:]),'--',label=r'BLR uniform')
+    ax.plot(np.log10(R_range),np.log10(y[4,:]),'--',label=r'DT uniform')
+    ax.plot(np.log10(R_range),np.log10(y[5,:]),'--',label=r'BLR 1/$R^2$')
+    ax.plot(np.log10(R_range),np.log10(y[6,:]),'--',label=r'DT 1/$R^2$')
+    ax.plot(np.log10(R_range),np.log10(y[7,:]),'--',label=r'Disk 1/$R^2$')
     ax.axvline(np.log10( my_jet.parameters.R_DT.val ))
     ax.axvline(np.log10( my_jet.parameters.R_BLR_out.val))
     
@@ -1158,12 +988,12 @@ EC seed photon fields, in the Disk rest frame
 
 .. parsed-literal::
 
-    <matplotlib.legend.Legend at 0x153b41cf0>
+    <matplotlib.legend.Legend at 0x15812f3a0>
 
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_50_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_46_1.png
 
 
 IC against the CMB
@@ -1220,7 +1050,7 @@ isotropic external field.
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_54_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_50_0.png
 
 
 Equipartition
@@ -1251,7 +1081,7 @@ points (``N_pts``)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_57_1.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_53_1.png
 
 
 .. parsed-literal::
@@ -1264,7 +1094,7 @@ points (``N_pts``)
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table5687397872-359908" class="table-striped table-bordered table-condensed">
+    <table id="table5773511648-514617" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test_equipartition</td><td>R</td><td>region_size</td><td>cm</td><td>1.000000e+21</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test_equipartition</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1302,14 +1132,14 @@ points (``N_pts``)
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5687397872-359908').dataTable()");
+        console.log("$('#table5773511648-514617').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5687397872-359908').dataTable({
+        $('#table5773511648-514617').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1328,7 +1158,7 @@ points (``N_pts``)
 
 
 
-.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_58_0.png
+.. image:: Jet_example_phys_EC_files/Jet_example_phys_EC_54_0.png
 
 
 .. bibliography:: references.rst

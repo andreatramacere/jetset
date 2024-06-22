@@ -18,7 +18,7 @@ shift $((OPTIND-1))
 if [ "$#" -eq  "0" ]
 then
 	echo "No arguments supplied"
-     	files=($(find documentation_notebooks/notebooks  -name   '*.ipynb' -not -path '*/\.*'))
+     	files=($(find documentation_notebooks/notebooks/ -name   '*.ipynb' -not -path '*/\.*'))
 else
 	files=($(find documentation_notebooks/notebooks/$1 -name  '*.ipynb' -not -path '*/\.*'))
 fi	

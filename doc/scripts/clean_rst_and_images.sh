@@ -18,11 +18,13 @@ then
 	echo "No arguments supplied"
     find documentation_notebooks/notebooks -name '*.png' -delete
     find user_guide/documentation_notebooks/notebooks -name '*.png' -delete
+    find user_guide/documentation_notebooks/notebooks -name '*.rst' -delete
 
 
      	
 else
     find documentation_notebooks/notebooks/$1 -name  '*.png' -delete
     find user_guide/documentation_notebooks/notebooks/$1 -name '*.png' -delete
+    find user_guide/documentation_notebooks/notebooks/$1 -name '*.rst' -delete
 fi	
 

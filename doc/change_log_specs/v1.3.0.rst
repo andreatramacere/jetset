@@ -44,6 +44,13 @@ Introduction of leptonic synchrotron polarization
     #p_nu stores the fractional polarization for each frequency  in nu_range
 
 
+Custom Models
+^^^^^^^^^^^^^
+
+- a notebook showing how to implement a galactic expanding shell for (galactic nova) :ref:`galactic_nova`
+
+- a notebook showing the implementation of a two-zone jet with a compact and extended :ref:`composite_model_two_zones`
+
 Minimizers
 ^^^^^^^^^^
 - Heat map for correlation matrix: added convenience method to plot correlation matrix

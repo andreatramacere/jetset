@@ -1,4 +1,14 @@
-.. _depending_parameters:
+.. _dep_pars:
+
+Depending parameters
+====================
+
+In the following we show how to link parameters in the same model or
+among different models, and how to make a paramter depending on other
+parameters according to a mathematical expression.
+
+Example: linked paramters for EBL
+---------------------------------
 
 .. code:: ipython3
 
@@ -19,16 +29,6 @@
 
     tested on jetset 1.3.0rc7
 
-
-Depending parameters
-====================
-
-In the following we show how to link parameters in the same model or
-among different models, and how to make a paramter depending on other
-parameters according to a mathematical expression.
-
-Example: linked paramters for EBL
----------------------------------
 
 .. code:: ipython3
 
@@ -580,7 +580,6 @@ using the ``print_par_expr`` method:
 .. parsed-literal::
 
     None
-
 
 
 

@@ -40,16 +40,15 @@ if on_rtd==False:  # only import and set the  if we're building docs locally
     
 
     #theme='bootstrap'
-    #theme = 'sphinx_book_theme'
+    theme = 'sphinx_book_theme'
     #theme='sphinx_rtd_theme'
-    theme='sphinx_book_theme'
+    #theme='furo'
 else:
-    theme='sphinx_book_theme'
+    #theme='furo'
     #theme = 'bootstrap'
-    #theme = 'sphinx_book_theme'
+    theme = 'sphinx_book_theme'
 
-
-
+#theme='piccolo'
 extensions = [
     #'autoapi.extension'
     'sphinx.ext.autodoc',
@@ -119,10 +118,6 @@ pygments_style = 'sphinx'
 #html_static_path = ['_static']
 #html_logo = "_static/logo_small_color_transparent.png"
 
-
-#def setup(app):
- #   app.add_stylesheet("my_theme.css") # also can be a full URL
- #   app.add_css_file("css/my_theme.css")
 
 if theme=='bootstrap':
     templates_path = ['_templates']
@@ -212,6 +207,7 @@ if theme=='bootstrap':
     }
 
 
+
 if theme=='sphinx_book_theme':
     html_theme = "sphinx_book_theme"
     html_static_path = ["_static/css/sphinx_book_theme"]
@@ -220,7 +216,8 @@ if theme=='sphinx_book_theme':
     #html_sidebars = {
     #"**": ["sbt-sidebar-nav.html"]
     #}
-
+    pygments_style = "friendly"
+    pygments_dark_style = "nord"
 
     html_theme_options = {
         "icon_links": [
@@ -257,7 +254,7 @@ if theme=='sphinx_book_theme':
     pass
 
 if theme=='furo':
-   pygments_style = "default"
+   pygments_style = "friendly"
    pygments_dark_style = "monokai"
    html_theme = "furo"
    #html_theme = 'insipid'
@@ -278,14 +275,15 @@ if theme=='furo':
 
 if theme=='piccolo':
     html_theme = 'piccolo_theme'
-    html_logo = '_static/logo_book_sphinx.svg'
-    pygments_style = "default"
-    pygments_dark_style = "monokai"
+    html_logo = '_static/logo_large_no_border.png'
+    pygments_style = "friendly"
+    pygments_dark_style = "nord"
     html_theme_options = {
-      "source_url": 'https://github.com/andreatramacere/jetset'
+      "source_url": 'https://github.com/andreatramacere/jetset',
+      "globaltoc_collapse": True,
     }
 
-if theme=='awsome   ':
+if theme=='awsome':
     html_theme = "sphinxawesome_theme"
     html_theme_options = {
     "light_logo": "_static/logo_book_sphinx.svg",
