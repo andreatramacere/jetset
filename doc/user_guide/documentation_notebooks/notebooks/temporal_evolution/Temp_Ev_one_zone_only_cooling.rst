@@ -24,7 +24,7 @@ Cooling only the newly injecting electrons
 
 .. parsed-literal::
 
-    tested on jetset 1.3.0rc8
+    tested on jetset 1.3.0rc9
 
 
 This is a very preliminary documentation for the temporal evolution
@@ -93,8 +93,7 @@ the radiative region will be used.**
     ===> setting C threads to 12
 
 
-**The IC cooling is switched off, as default, to make the process
-faster**. to switch on the IC cooling ``temp_ev_acc.IC_cooling='on'``
+.. note::  **The IC cooling is switched off, as default, to make the process faster**.  to switch on the IC cooling `temp_ev_acc.IC_cooling='on'`
 
 Now, we setup some relevant parameters
 
@@ -140,7 +139,7 @@ Now, we setup some relevant parameters
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5659285184-989455" class="table-striped table-bordered table-condensed">
+    <table id="table4571350016-208640" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>1.000000e+02</td><td>s</td><td>0.0005995849159999999</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -177,14 +176,14 @@ Now, we setup some relevant parameters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5659285184-989455').dataTable()");
+        console.log("$('#table4571350016-208640').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5659285184-989455').dataTable({
+        $('#table4571350016-208640').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -208,7 +207,7 @@ Now, we setup some relevant parameters
 .. raw:: html
 
     <i>Table length=17</i>
-    <table id="table5638767328-175576" class="table-striped table-bordered table-condensed">
+    <table id="table5680842064-54430" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -250,14 +249,14 @@ Now, we setup some relevant parameters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5638767328-175576').dataTable()");
+        console.log("$('#table5680842064-54430').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5638767328-175576').dataTable({
+        $('#table5680842064-54430').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -278,7 +277,7 @@ Now, we setup some relevant parameters
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotTempEvDiagram at 0x1514f2080>
+    <jetset.plot_sedfit.PlotTempEvDiagram at 0x1529ac9a0>
 
 
 
@@ -296,11 +295,7 @@ Now, we setup some relevant parameters
 .. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_18_0.png
 
 
-setting ``cache_SEDs_rad=True`` will generate and cache all the SED at
-any time of the ``NUM_SET``. **This will increase the computational time
-during the run. Anyhow, will speed up the computation of SEDs and light
-curves. Moreover, these SEDs will be saved in the model, and read if you
-will reload the model in the future**.
+.. note:: setting ``cache_SEDs_rad=True`` will generate and cache all the SED at any time of the ``NUM_SET``. **This will increase the computational time during the run. Anyhow, will speed up the computation of SEDs and light curves. Moreover, these SEDs will be saved in the model, and read if you will reload the model in the future**.
 
 .. code:: ipython3
 
@@ -383,7 +378,7 @@ without the effect of the light crossing time, in the observer frame
 .. raw:: html
 
     <div><i>Table length=344</i>
-    <table id="table5669859680" class="table-striped table-bordered table-condensed">
+    <table id="table5695343536" class="table-striped table-bordered table-condensed">
     <thead><tr><th>time</th><th>flux</th><th>R_blob</th><th>t_blob</th></tr></thead>
     <thead><tr><th>s</th><th>erg / (s cm2)</th><th>cm</th><th>s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -430,9 +425,7 @@ without the effect of the light crossing time, in the observer frame
 .. image:: Temp_Ev_one_zone_only_cooling_files/Temp_Ev_one_zone_only_cooling_28_1.png
 
 
-We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz, with
-the effect of the **light crossing time**, in the observer frame,
-setting ``eval_cross_time=True``
+.. note:: we generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz, with the effect of the **light crossing time**, in the observer frame, setting ``eval_cross_time=True``
 
 .. code:: ipython3
 
@@ -511,7 +504,7 @@ SEDs, and electron distributions
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5663274560-756888" class="table-striped table-bordered table-condensed">
+    <table id="table5676262560-787936" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>1.000000e+02</td><td>s</td><td>0.0005995849159999999</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -548,14 +541,14 @@ SEDs, and electron distributions
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5663274560-756888').dataTable()");
+        console.log("$('#table5676262560-787936').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5663274560-756888').dataTable({
+        $('#table5676262560-787936').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -579,7 +572,7 @@ SEDs, and electron distributions
 .. raw:: html
 
     <i>Table length=17</i>
-    <table id="table5659228240-126504" class="table-striped table-bordered table-condensed">
+    <table id="table4422424784-788395" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -621,14 +614,14 @@ SEDs, and electron distributions
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5659228240-126504').dataTable()");
+        console.log("$('#table4422424784-788395').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5659228240-126504').dataTable({
+        $('#table4422424784-788395').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],

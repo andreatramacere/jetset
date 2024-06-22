@@ -109,8 +109,12 @@ EC emission
 - Added convenience methods for conical jet and EC fields:
   
   - method :meth:`.JetBase.make_conical_jet` class will set parameters dependencies to have conical jet constraining the blob radius
+    
+    .. important:: if you use a ``jet`` model with ``R`` depending (i.e. you used :meth:`.JetBase.make_conical_jet`) to perform a temporal evolution (in the :class:`.JetTimeEvol` class), the dependencies on ``R`` will be removed, and to have ``R`` dependent on the position across the jet axis, use the parameter ``beta_exp_R`` in the :class:`.JetTimeEvol` instead. In the next release a more flexible and direct approach will be provided.
+
 
   - method :meth:`.JetBase.set_EC_dependencies` class will set parameters dependencies to have scaling relations between BLR and DT radius and disk luminosity
+
 
 
 

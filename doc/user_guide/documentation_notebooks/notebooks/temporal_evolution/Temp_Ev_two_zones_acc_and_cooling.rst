@@ -21,7 +21,7 @@ Temporal evolution, two zones, cooling+acc
 
 .. parsed-literal::
 
-    tested on jetset 1.2.2
+    tested on jetset 1.3.0rc9
 
 
 This is a very preliminary documentation for the temporal evolution
@@ -49,6 +49,12 @@ jet model for the radiative region
     jet_model.parameters.z_cosm.val=0.03
     jet_model.parameters.R.val=5E15
     
+
+
+
+.. parsed-literal::
+
+    ===> setting C threads to 12
 
 
 here we set some relevant parameters taht will be described in detail in
@@ -81,11 +87,13 @@ region jet model, and the injected particle class.
 
 .. parsed-literal::
 
-    ==> par: z_cosm from model: jet_leptonicacc_region linked to same parameter in model jet_leptonic
+    ===> setting C threads to 12
+    ===> setting C threads to 12
+    adding par: z_cosm to  z_cosm
 
 
-**The IC cooling is switched off, as default, to make the process
-faster**. to switch on the IC cooling ``temp_ev_acc.IC_cooling='on'``
+.. Note:: 
+**The IC cooling is switched off, as default, to make the process faster**.  to switch on the IC cooling `temp_ev_acc.IC_cooling='on'`
 
 Now, we setup some relevant parameters
 
@@ -146,7 +154,7 @@ Now, we setup some relevant parameters
 .. raw:: html
 
     <i>Table length=29</i>
-    <table id="table140283158600816-480863" class="table-striped table-bordered table-condensed">
+    <table id="table5785058896-369048" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>5.000000e+01</td><td>s</td><td>0.00029979245799999996</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -200,14 +208,14 @@ Now, we setup some relevant parameters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140283158600816-480863').dataTable()");
+        console.log("$('#table5785058896-369048').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140283158600816-480863').dataTable({
+        $('#table5785058896-369048').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -231,7 +239,7 @@ Now, we setup some relevant parameters
 .. raw:: html
 
     <i>Table length=30</i>
-    <table id="table140283150237168-718542" class="table-striped table-bordered table-condensed">
+    <table id="table5784500064-583824" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -286,14 +294,14 @@ Now, we setup some relevant parameters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140283150237168-718542').dataTable()");
+        console.log("$('#table5784500064-583824').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140283150237168-718542').dataTable({
+        $('#table5784500064-583824').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -314,7 +322,7 @@ Now, we setup some relevant parameters
 
 .. parsed-literal::
 
-    <jetset.plot_sedfit.PlotTempEvDiagram at 0x7f9637ab46d0>
+    <jetset.plot_sedfit.PlotTempEvDiagram at 0x158be6b60>
 
 
 
@@ -322,18 +330,10 @@ Now, we setup some relevant parameters
 .. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_16_1.png
 
 
-**we do not want to evolve the particle in the ``jet_rad``, so we set
-``only_injection=True``, and we set ``do_injection=True`` to injet the
-particle defined by ``q_inj``**
-
-setting ``cache_SEDs_rad=True`` will generate and cache all the SED at
-any time of the ``NUM_SET``. **This will increase the computational time
-during the run. Anyhow, will speed up the computation of SEDs and light
-curves. Moreover, these SEDs will be saved in the model, and read if you
-will reload the model in the future**.
-
-setting ``cache_SEDs_acc=True`` will generate and cache also the SEDs in
-the acceleration region.
+.. note:: 
+    - **we do not want to evolve the particle in the `jet_rad`, so we set `only_injection=True`, and we set `do_injection=True` to injet the particle defined by `q_inj`**    
+    - setting `cache_SEDs_rad=True` will generate and cache all the SED at any time of the `NUM_SET`. **This will increase the computational time during the run. Anyhow, will speed up the computation of SEDs and light curves. Moreover, these SEDs will be saved in the model, and read if you will reload the model in the future**.
+    - setting `cache_SEDs_acc=True` will generate and cache also the SEDs in the acceleration region.
 
 .. code:: ipython3
 
@@ -403,7 +403,7 @@ Particle spectrum in the radiative region
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_22_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_20_0.png
 
 
 Particle spectrum in the acceleration region
@@ -418,7 +418,7 @@ Particle spectrum in the acceleration region
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_24_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_22_0.png
 
 
 SEDs in the acceleration region
@@ -430,7 +430,7 @@ SEDs in the acceleration region
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_26_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_24_0.png
 
 
 SEDs in the acceleration region
@@ -442,7 +442,7 @@ SEDs in the acceleration region
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_28_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_26_0.png
 
 
 We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz,
@@ -462,32 +462,32 @@ without the effect of the light crossing time, in the observer frame
 
 .. raw:: html
 
-    <i>Table length=344</i>
-    <table id="table140282827701168" class="table-striped table-bordered table-condensed">
+    <div><i>Table length=344</i>
+    <table id="table5813176256" class="table-striped table-bordered table-condensed">
     <thead><tr><th>time</th><th>flux</th><th>R_blob</th><th>t_blob</th></tr></thead>
-    <thead><tr><th>s</th><th>erg / (cm2 s)</th><th>cm</th><th>s</th></tr></thead>
+    <thead><tr><th>s</th><th>erg / (s cm2)</th><th>cm</th><th>s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
     <tr><td>0.0</td><td>0.0</td><td>5000000000000000.0</td><td>0.0</td></tr>
     <tr><td>100.0</td><td>0.0</td><td>5000000000000000.0</td><td>2912.6213592233007</td></tr>
     <tr><td>200.0</td><td>0.0</td><td>5000000000000000.0</td><td>5825.242718446601</td></tr>
-    <tr><td>300.0</td><td>4.4098133455386786e-86</td><td>5000000000000000.0</td><td>8737.864077669903</td></tr>
-    <tr><td>400.0</td><td>1.8338347214189153e-75</td><td>5000000000000000.0</td><td>11650.485436893203</td></tr>
-    <tr><td>500.0</td><td>4.619818537702253e-61</td><td>5000000000000000.0</td><td>14563.106796116504</td></tr>
-    <tr><td>600.0</td><td>4.074119989099911e-55</td><td>5000000000000000.0</td><td>17475.728155339806</td></tr>
-    <tr><td>700.0</td><td>4.480719706093064e-47</td><td>5000000000000000.0</td><td>20388.349514563106</td></tr>
-    <tr><td>800.0</td><td>3.859369921272289e-43</td><td>5000000000000000.0</td><td>23300.970873786406</td></tr>
+    <tr><td>300.0</td><td>7.684633148016865e-86</td><td>5000000000000000.0</td><td>8737.864077669903</td></tr>
+    <tr><td>400.0</td><td>3.183380180128441e-75</td><td>5000000000000000.0</td><td>11650.485436893203</td></tr>
+    <tr><td>500.0</td><td>7.931984536411245e-61</td><td>5000000000000000.0</td><td>14563.106796116504</td></tr>
+    <tr><td>600.0</td><td>6.94642582804193e-55</td><td>5000000000000000.0</td><td>17475.728155339806</td></tr>
+    <tr><td>700.0</td><td>7.506058875474857e-47</td><td>5000000000000000.0</td><td>20388.349514563106</td></tr>
+    <tr><td>800.0</td><td>6.3996495618931105e-43</td><td>5000000000000000.0</td><td>23300.970873786406</td></tr>
     <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-    <tr><td>33400.0</td><td>1.1745865571978132e-10</td><td>5000000000000000.0</td><td>972815.5339805826</td></tr>
-    <tr><td>33500.0</td><td>1.1673644350909526e-10</td><td>5000000000000000.0</td><td>975728.1553398059</td></tr>
-    <tr><td>33600.0</td><td>1.1601953475096658e-10</td><td>5000000000000000.0</td><td>978640.7766990291</td></tr>
-    <tr><td>33700.0</td><td>1.1530745106216505e-10</td><td>5000000000000000.0</td><td>981553.3980582524</td></tr>
-    <tr><td>33800.0</td><td>1.1460037834025703e-10</td><td>5000000000000000.0</td><td>984466.0194174757</td></tr>
-    <tr><td>33900.0</td><td>1.1389825349049919e-10</td><td>5000000000000000.0</td><td>987378.6407766991</td></tr>
-    <tr><td>34000.0</td><td>1.1320085680491812e-10</td><td>5000000000000000.0</td><td>990291.2621359223</td></tr>
-    <tr><td>34100.0</td><td>1.1250852647156014e-10</td><td>5000000000000000.0</td><td>993203.8834951456</td></tr>
-    <tr><td>34200.0</td><td>1.1182065068926023e-10</td><td>5000000000000000.0</td><td>996116.5048543689</td></tr>
-    <tr><td>34300.0</td><td>1.1113794126859807e-10</td><td>5000000000000000.0</td><td>999029.1262135921</td></tr>
-    </table>
+    <tr><td>33400.0</td><td>1.4426695701183453e-10</td><td>5000000000000000.0</td><td>972815.5339805826</td></tr>
+    <tr><td>33500.0</td><td>1.4339732703617928e-10</td><td>5000000000000000.0</td><td>975728.1553398059</td></tr>
+    <tr><td>33600.0</td><td>1.4253399065766648e-10</td><td>5000000000000000.0</td><td>978640.7766990291</td></tr>
+    <tr><td>33700.0</td><td>1.4167638069528754e-10</td><td>5000000000000000.0</td><td>981553.3980582524</td></tr>
+    <tr><td>33800.0</td><td>1.4082471832460238e-10</td><td>5000000000000000.0</td><td>984466.0194174757</td></tr>
+    <tr><td>33900.0</td><td>1.399789291822232e-10</td><td>5000000000000000.0</td><td>987378.6407766991</td></tr>
+    <tr><td>34000.0</td><td>1.3913875298994561e-10</td><td>5000000000000000.0</td><td>990291.2621359223</td></tr>
+    <tr><td>34100.0</td><td>1.3830459175970436e-10</td><td>5000000000000000.0</td><td>993203.8834951456</td></tr>
+    <tr><td>34200.0</td><td>1.3747571962196792e-10</td><td>5000000000000000.0</td><td>996116.5048543689</td></tr>
+    <tr><td>34300.0</td><td>1.3665298229570238e-10</td><td>5000000000000000.0</td><td>999029.1262135921</td></tr>
+    </table></div>
 
 
 
@@ -502,12 +502,12 @@ without the effect of the light crossing time, in the observer frame
 
 .. parsed-literal::
 
-    Text(0, 0.5, 'flux (erg / (cm2 s))')
+    Text(0, 0.5, 'flux (erg / (s cm2))')
 
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_32_1.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_30_1.png
 
 
 We generate a lightcurve in the range nu1=2.4E22 Hz, nu2=7.2E25 Hz, with
@@ -531,12 +531,12 @@ the effect of the light crossing time, in the observer frame
 
 .. parsed-literal::
 
-    Text(0, 0.5, 'flux (erg / (cm2 s))')
+    Text(0, 0.5, 'flux (erg / (s cm2))')
 
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_35_1.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_33_1.png
 
 
 We can save the model and reuse it later for plotting lightcurcves,
@@ -549,6 +549,13 @@ SEDs, and electron distributions
 .. code:: ipython3
 
     temp_ev_acc_1=JetTimeEvol.load_model('two_zone_rad_acc.pkl')
+
+
+.. parsed-literal::
+
+    ===> setting C threads to 12
+    ===> setting C threads to 12
+
 
 .. code:: ipython3
 
@@ -570,7 +577,7 @@ SEDs, and electron distributions
 .. raw:: html
 
     <i>Table length=29</i>
-    <table id="table140282828144160-2404" class="table-striped table-bordered table-condensed">
+    <table id="table4673812800-64039" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>par type</th><th>val</th><th>units</th><th>val*</th><th>units*</th><th>log</th></tr></thead>
     <tr><td>delta t</td><td>time</td><td>5.000000e+01</td><td>s</td><td>0.00029979245799999996</td><td>R/c</td><td>False</td></tr>
     <tr><td>log. sampling</td><td>time</td><td>0.000000e+00</td><td></td><td>None</td><td></td><td>False</td></tr>
@@ -624,14 +631,14 @@ SEDs, and electron distributions
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140282828144160-2404').dataTable()");
+        console.log("$('#table4673812800-64039').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140282828144160-2404').dataTable({
+        $('#table4673812800-64039').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -655,7 +662,7 @@ SEDs, and electron distributions
 .. raw:: html
 
     <i>Table length=30</i>
-    <table id="table140282819634032-98027" class="table-striped table-bordered table-condensed">
+    <table id="table5794517568-970127" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_time_ev</td><td>duration</td><td>time_grid</td><td>s</td><td>1.000000e+06</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
     <tr><td>jet_time_ev</td><td>gmin_grid</td><td>gamma_grid</td><td></td><td>1.000000e+00</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -710,14 +717,14 @@ SEDs, and electron distributions
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table140282819634032-98027').dataTable()");
+        console.log("$('#table5794517568-970127').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table140282819634032-98027').dataTable({
+        $('#table5794517568-970127').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -736,7 +743,7 @@ SEDs, and electron distributions
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_40_0.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_38_0.png
 
 
 .. code:: ipython3
@@ -751,11 +758,11 @@ SEDs, and electron distributions
 
 .. parsed-literal::
 
-    Text(0, 0.5, 'flux (erg / (cm2 s))')
+    Text(0, 0.5, 'flux (erg / (s cm2))')
 
 
 
 
-.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_41_1.png
+.. image:: Temp_Ev_two_zones_acc_and_cooling_files/Temp_Ev_two_zones_acc_and_cooling_39_1.png
 
 
