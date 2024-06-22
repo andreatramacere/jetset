@@ -36,11 +36,19 @@ for mod_name in autodoc_mock_imports:
 
 import sphinx_bootstrap_theme
 if on_rtd==False:  # only import and set the  if we're building docs locally
+
+    
+
+    #theme='bootstrap'
     theme = 'sphinx_book_theme'
+    #theme='sphinx_rtd_theme'
+    #theme='furo'
 else:
+    #theme='furo'
+    #theme = 'bootstrap'
     theme = 'sphinx_book_theme'
 
-
+#theme='piccolo'
 extensions = [
     #'autoapi.extension'
     'sphinx.ext.autodoc',
@@ -100,8 +108,8 @@ copyright = u'2019, andrea tramacere'
 
 
 
-#add_module_names = False
-#pygments_style = 'sphinx'
+add_module_names = False
+pygments_style = 'sphinx'
 
 
 
@@ -109,6 +117,94 @@ copyright = u'2019, andrea tramacere'
 
 #html_static_path = ['_static']
 #html_logo = "_static/logo_small_color_transparent.png"
+
+
+if theme=='bootstrap':
+    templates_path = ['_templates']
+    html_static_path = ["_static/css/bootstrap_sphinx_theme"]
+    html_sidebars = {'**': ['localtoc.html','my_side_bar.html']}
+
+    html_logo = "_static/logo_small_color_neg_transparent.png"
+    html_theme = 'bootstrap'
+    
+    if not on_rtd:
+        html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+    #else:
+    #    html_static_path = ['_static']
+
+
+    html_theme_options = {
+        # Navigation bar title. (Default: ``project`` value)
+        'navbar_title': "JetSeT doc",
+
+        # Tab name for entire site. (Default: "Site")
+        'navbar_site_name': "JetSeT",
+
+        # A list of tuples containing pages or urls to link to.
+        # Valid tuples should be in the following forms:
+        #    (name, page)                 # a link to a page
+        #    (name, "/aa/bb", 1)          # a link to an arbitrary relative url
+        #    (name, "http://example.com", True) # arbitrary absolute url
+        # Note the "1" or "True" value above as the third argument to indicate
+        # an arbitrary url.
+        #'navbar_links': [
+        #    ("Examples", "examples"),
+        #    ("Link", "http://example.com", True),
+        #],
+
+        # Render the next and previous page links in navbar. (Default: true)
+        'navbar_sidebarrel': True,
+
+        # Render the current pages TOC in the navbar. (Default: true)
+        'navbar_pagenav': True,
+
+        # Tab name for the current pages TOC. (Default: "Page")
+        'navbar_pagenav_name': "Page",
+
+        # Global TOC depth for "site" navbar tab. (Default: 1)
+        # Switching to -1 shows all levels.
+        'globaltoc_depth': 2,
+
+        # Include hidden TOCs in Site navbar?
+        #
+        # Note: If this is "false", you cannot have mixed ``:hidden:`` and
+        # non-hidden ``toctree`` directives in the same page, or else the build
+        # will break.
+        #
+        # Values: "true" (default) or "false"
+        'globaltoc_includehidden': True,
+
+        # HTML navbar class (Default: "navbar") to attach to <div> element.
+        # For black navbar, do "navbar navbar-inverse"
+        'navbar_class': "navbar navbar-inverse",
+
+
+        # Fix navigation bar to top of page?
+        # Values: "true" (default) or "false"
+        'navbar_fixed_top': True,
+
+        # Location of link to source.
+        # Options are "nav" (default), "footer" or anything else to exclude.
+        'source_link_position': "nav",
+        # Bootswatch (http://bootswatch.com/) theme.
+        #
+        # Options are nothing (default) or the name of a valid theme
+        # such as "cosmo" or "sandstone".
+        #
+        # The set of valid themes depend on the version of Bootstrap
+        # that's used (the next config option).
+        #
+        # Currently, the supported themes are:
+        # - Bootstrap 2: https://bootswatch.com/2
+        # - Bootstrap 3: https://bootswatch.com/3
+        'bootswatch_theme': "spacelab",
+
+        #'nosidebar': True,
+
+        # Choose Bootstrap version.
+        # Values: "3" (default) or "2" (in quotes)
+        'bootstrap_version': "3",
+    }
 
 
 
@@ -157,7 +253,46 @@ if theme=='sphinx_book_theme':
 
     }
 
- 
+    pass
+
+if theme=='furo':
+   pygments_style = "friendly"
+   pygments_dark_style = "monokai"
+   html_theme = "furo"
+   #html_theme = 'insipid'
+   #html_static_path = ["_static/css/sphinx_book_theme"]
+   #html_css_files = ["custom.css"]
+   html_static_path = ["_static"]
+   html_theme_options = {
+        "light_logo": "logo_book_sphinx.svg",
+        "dark_logo": "logo_book_sphinx.svg",
+        "sidebar_hide_name": True,
+        #"light_css_variables": {
+        #    "font-stack": "Arial, sans-serif",
+        #    "font-stack--monospace": "Courier, monospace",
+        #    "font-stack--headings": "Georgia, monospace",
+        #},
+        
+    }
+
+if theme=='piccolo':
+    html_theme = 'piccolo_theme'
+    html_logo = '_static/logo_large_no_border.png'
+    pygments_style = "friendly"
+    pygments_dark_style = "nord"
+    html_theme_options = {
+      "source_url": 'https://github.com/andreatramacere/jetset',
+      "globaltoc_collapse": True,
+    }
+
+if theme=='awsome':
+    html_theme = "sphinxawesome_theme"
+    html_theme_options = {
+    "light_logo": "_static/logo_book_sphinx.svg",
+    "dark_logo": "_static/logo_book_sphinx.svg",
+    }
+#html_theme = "sphinx_rtd_theme"
+
 
 htmlhelp_basename = 'jetsetdoc'
 
