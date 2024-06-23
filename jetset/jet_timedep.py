@@ -716,7 +716,7 @@ class JetTimeEvol(object):
         try:
             _jet_rad.parameters.R.reset_dependencies()
         except Exception as e:
-            raise (e)
+            raise e
 
         self._only_radiation=only_radiation
         self._bkp_acc_region=None
