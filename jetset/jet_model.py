@@ -611,7 +611,14 @@ class JetBase(Model):
             print('setting R_H to',R_H)
             self.parameters.R_H.val=R_H
         except RuntimeError as e:
-            print('functional dependencies already invoked',str(e))
+            msg='\n'
+            msg+='something wrong, probably theta_open has already been added, or R is already dependant\n'
+            msg+='please, try to reset the dependency on R: e.g my_jet.parameters.R.reset_dependencies()\n'
+            msg+='or, try to remove theta_open: e.g my_jet.parameters.del_par(my_jet.parameters.theta_open)\n'
+            msg+='the error is in:\n'
+            msg+=str(e)
+
+            raise RuntimeError(msg)
         
         except Exception as e:
             raise RuntimeError('unexpected exception',str(e))

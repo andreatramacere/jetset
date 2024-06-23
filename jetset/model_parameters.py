@@ -320,6 +320,9 @@ class ModelParameter(object):
             raise RuntimeError('par',self.name, 'value',self.val,'> fit range max',fit_range[1])
 
     def reset_dependencies(self):
+        for mp in self._master_pars:
+            if self in mp._depending_pars:
+                mp._depending_pars.remove(self)
         self._linked = False
         self._linked_root_model = None
         self._func=None
