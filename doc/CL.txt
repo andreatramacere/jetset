@@ -47,14 +47,16 @@ to clean everything under documentation_notebooks/notebooks/dir-name
 
 OR
 ----IN ONE STEPS----------------
-
+-c will clean rst/png prods
+-e the notebook will be executed
+-b will build the doc
 
 to build without executing:
-./scripts/build.sh  
+./scripts/build.sh  -cb
 OR
-./scripts/build.sh   dir-name
+./scripts/build.sh  -cb dir-name
 
 to build executing:
-./scripts/build.sh -e 
+./scripts/build.sh -cbe 
 OR
-./scripts/build.sh -e dir-name
+./scripts/build.sh -cbe dir-name

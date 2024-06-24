@@ -29,7 +29,7 @@ import  numpy as np
 from .plot_sedfit import  PlotSED
 from .minimizer import  Minimizer
 
-__all__=['JetsetSherpaModel','plot_sherpa_model']
+__all__=['JetsetSherpaModel','plot_sherpa_model','SherpaMinimizer']
 
 
 class JetsetSherpaModel(RegriddableModel1D):

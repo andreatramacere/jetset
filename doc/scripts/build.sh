@@ -1,6 +1,7 @@
-
 execute=0
-while getopts "h?e" opt; do
+clean=0
+build=0
+while getopts "h?ecb" opt; do
     case "$opt" in
     h|\?)
         echo ''
@@ -8,6 +9,9 @@ while getopts "h?e" opt; do
         ;;
     e)  execute=1
         ;;
+    c)  clean=1
+        ;;
+    b)  build=1
     esac
 done
 
@@ -18,8 +22,19 @@ then
 	echo "No arguments supplied, please provide the directory with documentation_notebooks to convert"
 fi
 
+
 echo '--------------------------------'
-echo 'generating rst files'
+echo 'cleam rst/png files'
+if [ $clean -eq 1 ]
+then 
+   ./scripts/clean_rst_and_images.sh $1
+fi
+echo '--------------------------------'
+echo
+echo
+
+echo '--------------------------------'
+echo 'generating rst/png files'
 if [ $execute -eq 1 ]
 then 
     echo 'execute'
@@ -34,14 +49,22 @@ echo
 echo
 
 echo '--------------------------------'
-echo 'copying rst files and images'
+echo 'copying rs/png files and images'
 ./scripts/update_rts_images.sh $1
 
 echo '--------------------------------'
 echo
 echo
 
-echo '--------------------------------'
-echo 'running sphinx-build'
-sphinx-build -j 10 -b html ./ build
-echo '--------------------------------'
+
+
+if [ $build -eq 1 ]
+then 
+    echo '--------------------------------'
+    echo 'running sphinx-build'
+    sphinx-build -j 10 -b html ./ build
+    echo '--------------------------------'
+else
+    echo 'not running sphinx-build '
+fi
+

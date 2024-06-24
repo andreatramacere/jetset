@@ -613,7 +613,7 @@ class JetBase(Model):
         except RuntimeError as e:
             msg='\n'
             msg+='something wrong, probably theta_open has already been added, or R is already dependant\n'
-            msg+='please, try to reset the dependency on R: e.g my_jet.parameters.R.reset_dependencies()\n'
+            msg+='please, try to reset the dependency of R: e.g my_jet.parameters.R.reset_dependencies()\n'
             msg+='or, try to remove theta_open: e.g my_jet.parameters.del_par(my_jet.parameters.theta_open)\n'
             msg+='the error is in:\n'
             msg+=str(e)

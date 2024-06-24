@@ -11,7 +11,7 @@ Physical setup
 
 .. parsed-literal::
 
-    tested on jetset 1.3.0rc7
+    tested on jetset 1.3.0rc9
 
 
 In this section we describe how  to build a model of jet able to reproduce SSC/EC emission processes, using the :class:`.Jet` class from the :mod:`.jet_model` module.  
@@ -93,7 +93,7 @@ let’s try how changes the computational speed with the number of threads
 
 .. parsed-literal::
 
-    71.8 ms ± 430 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    45 ms ± 492 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
 
 .. code:: ipython3
@@ -113,7 +113,7 @@ let’s try how changes the computational speed with the number of threads
 
 .. parsed-literal::
 
-    26.7 ms ± 139 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    17.7 ms ± 639 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
 .. code:: ipython3
@@ -133,7 +133,7 @@ let’s try how changes the computational speed with the number of threads
 
 .. parsed-literal::
 
-    29.9 ms ± 11.3 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    16.7 ms ± 260 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
 
 .. code:: ipython3
@@ -153,11 +153,11 @@ let’s try how changes the computational speed with the number of threads
 
 .. parsed-literal::
 
-    24.9 ms ± 456 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
+    17.9 ms ± 1.36 ms per loop (mean ± std. dev. of 7 runs, 10 loops each)
 
 
-as you can see, the computational speed saturates at 8 threads, to a
-value fo ~ 20 ms per computation ~50 computation per second, on an 2/6
+as you can see, the computational speed saturates at 10 threads, to a
+value of ~ 17 ms per computation ~60 computation per second, on an 2.6
 GHz 6-Core Intel Core i7 (I7-9750H)
 
 basic configurations
@@ -192,7 +192,7 @@ to view all the paramters of the jet model:
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table4782800752-772301" class="table-striped table-bordered table-condensed">
+    <table id="table5833097072-831438" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -229,14 +229,14 @@ to view all the paramters of the jet model:
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4782800752-772301').dataTable()");
+        console.log("$('#table5833097072-831438').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4782800752-772301').dataTable({
+        $('#table5833097072-831438').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -261,7 +261,7 @@ Each parameter has a default value. All the parameters listed are handled by :cl
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table4782800752-2345" class="table-striped table-bordered table-condensed">
+    <table id="table5833097072-953969" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -298,14 +298,14 @@ Each parameter has a default value. All the parameters listed are handled by :cl
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4782800752-2345').dataTable()");
+        console.log("$('#table5833097072-953969').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4782800752-2345').dataTable({
+        $('#table5833097072-953969').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -387,7 +387,7 @@ To get a full description of the model you can use the instruction
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table4801834208-817811" class="table-striped table-bordered table-condensed">
+    <table id="table5833094720-683415" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -424,14 +424,14 @@ To get a full description of the model you can use the instruction
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4801834208-817811').dataTable()");
+        console.log("$('#table5833094720-683415').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4801834208-817811').dataTable({
+        $('#table5833094720-683415').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -521,7 +521,7 @@ for setting custom electron distributions can be created by the user as describe
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table4801834208-419432" class="table-striped table-bordered table-condensed">
+    <table id="table5833094720-916011" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>B</td><td>magnetic_field</td><td>gauss</td><td>2.000000e-01</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>N</td><td>emitters_density</td><td>1 / cm3</td><td>1.000000e+03</td><td>0.000000e+00</td><td>--</td><td>False</td><td>False</td></tr>
@@ -558,14 +558,14 @@ for setting custom electron distributions can be created by the user as describe
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4801834208-419432').dataTable()");
+        console.log("$('#table5833094720-916011').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4801834208-419432').dataTable({
+        $('#table5833094720-916011').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -689,7 +689,7 @@ Using log values for electron distribution parameters
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table4811393824-904126" class="table-striped table-bordered table-condensed">
+    <table id="table5831368784-988482" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -726,14 +726,14 @@ Using log values for electron distribution parameters
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4811393824-904126').dataTable()");
+        console.log("$('#table5831368784-988482').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4811393824-904126').dataTable({
+        $('#table5831368784-988482').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -769,7 +769,7 @@ instruction
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table4795583696-764339" class="table-striped table-bordered table-condensed">
+    <table id="table5831544640-389395" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -806,14 +806,14 @@ instruction
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4795583696-764339').dataTable()");
+        console.log("$('#table5831544640-389395').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4795583696-764339').dataTable({
+        $('#table5831544640-389395').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -985,7 +985,7 @@ method reports information for the SED ``nu_min``, ``nu_max``,
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table4799605072-720551" class="table-striped table-bordered table-condensed">
+    <table id="table5849728672-752350" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1022,14 +1022,14 @@ method reports information for the SED ``nu_min``, ``nu_max``,
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4799605072-720551').dataTable()");
+        console.log("$('#table5849728672-752350').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4799605072-720551').dataTable({
+        $('#table5849728672-752350').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1270,7 +1270,7 @@ OR
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table4795987280-616192" class="table-striped table-bordered table-condensed">
+    <table id="table5842873088-757791" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1307,14 +1307,14 @@ OR
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4795987280-616192').dataTable()");
+        console.log("$('#table5842873088-757791').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4795987280-616192').dataTable({
+        $('#table5842873088-757791').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1381,7 +1381,7 @@ It is possible to set the beaming factor according to the relativistic BulkFacto
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table4811790544-236513" class="table-striped table-bordered table-condensed">
+    <table id="table5850932144-343251" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1419,14 +1419,14 @@ It is possible to set the beaming factor according to the relativistic BulkFacto
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4811790544-236513').dataTable()");
+        console.log("$('#table5850932144-343251').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4811790544-236513').dataTable({
+        $('#table5850932144-343251').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1494,7 +1494,7 @@ expression as in the default case
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5757282448-29189" class="table-striped table-bordered table-condensed">
+    <table id="table5830816816-712368" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1531,14 +1531,14 @@ expression as in the default case
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5757282448-29189').dataTable()");
+        console.log("$('#table5830816816-712368').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5757282448-29189').dataTable({
+        $('#table5830816816-712368').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1605,7 +1605,7 @@ Switch ON/OFF Synchrotron sefl-absorption and IC emission
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table4813310080-534754" class="table-striped table-bordered table-condensed">
+    <table id="table5830804144-462810" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -1642,14 +1642,14 @@ Switch ON/OFF Synchrotron sefl-absorption and IC emission
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4813310080-534754').dataTable()");
+        console.log("$('#table5830804144-462810').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4813310080-534754').dataTable({
+        $('#table5830804144-462810').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -1892,7 +1892,7 @@ Moreover, you can access the corresponding astropy table
 .. raw:: html
 
     <div><i>Table length=50</i>
-    <table id="table5757874192" class="table-striped table-bordered table-condensed">
+    <table id="table5836894896" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / (s cm2)</th><th>erg / (s cm2)</th><th>erg / (s cm2)</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -1905,33 +1905,7 @@ Moreover, you can access the corresponding astropy table
     <tr><td>768725952.1663721</td><td>4.746132990060179e-21</td><td>4.746132957910235e-21</td><td>3.2149712394627884e-29</td></tr>
     <tr><td>2326662911.331458</td><td>2.2893129865238557e-19</td><td>2.289312967845199e-19</td><td>1.8678480792336018e-27</td></tr>
     <tr><td>7041989785.449296</td><td>1.0966208792227018e-17</td><td>1.0966208685756238e-17</td><td>1.064527310710398e-25</td></tr>
-    <tr><td>21313624718.414333</td><td>1.8373391925984397e-16</td><td>1.837339164979042e-16</td><td>2.7594342970944333e-24</td></tr>
-    <tr><td>64508840892.677124</td><td>4.1113579939584686e-16</td><td>4.111357687244127e-16</td><td>3.0649001085072766e-23</td></tr>
-    <tr><td>195245558101.6861</td><td>7.217452173223052e-16</td><td>7.21745035518903e-16</td><td>1.8173910289576096e-22</td></tr>
-    <tr><td>590939589534.0952</td><td>1.2558176489278755e-15</td><td>1.2558169671503148e-15</td><td>6.81696111297198e-22</td></tr>
-    <tr><td>1788566161883.4656</td><td>2.1836336700477045e-15</td><td>2.1836318098746114e-15</td><td>1.860089446152923e-21</td></tr>
-    <tr><td>5413360302965.376</td><td>3.793840076222717e-15</td><td>3.7938356685683746e-15</td><td>4.407555713355863e-21</td></tr>
-    <tr><td>16384336455779.848</td><td>6.578343589533983e-15</td><td>6.578333874972737e-15</td><td>9.71442266567319e-21</td></tr>
-    <tr><td>49589620138372.22</td><td>1.1350123615308075e-14</td><td>1.1350103170723414e-14</td><td>2.0444378457089687e-20</td></tr>
-    <tr><td>150090327557973.34</td><td>1.9358597962143978e-14</td><td>1.935855628475884e-14</td><td>4.1677039471748554e-20</td></tr>
-    <tr><td>454270598637404.3</td><td>3.214307262226785e-14</td><td>3.214298947301396e-14</td><td>8.31484748695644e-20</td></tr>
-    <tr><td>1374917225806420.5</td><td>5.069396875263241e-14</td><td>5.0693806110657886e-14</td><td>1.626398766134844e-19</td></tr>
-    <tr><td>4161390553316715.5</td><td>7.369118641741149e-14</td><td>7.369087378064904e-14</td><td>3.126306533382791e-19</td></tr>
-    <tr><td>1.2595064642583616e+16</td><td>9.771185152606807e-14</td><td>9.771126033092245e-14</td><td>5.9117995952915085e-19</td></tr>
     <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-    <tr><td>9.682153059967095e+18</td><td>3.178273076119708e-14</td><td>3.17631756023561e-14</td><td>1.9547232856585933e-17</td></tr>
-    <tr><td>2.9304469769721385e+19</td><td>2.4307606323607617e-15</td><td>2.397107852227158e-15</td><td>3.3553024123860876e-17</td></tr>
-    <tr><td>8.869431656014668e+19</td><td>5.758868946575589e-17</td><td>8.885199812705549e-19</td><td>5.667587332078147e-17</td></tr>
-    <tr><td>2.6844648109619652e+20</td><td>9.407943419173862e-17</td><td>7.477805809126e-29</td><td>9.40794341916455e-17</td></tr>
-    <tr><td>8.124930210614097e+20</td><td>1.5343997652657038e-16</td><td>0.0</td><td>1.5343997652657038e-16</td></tr>
-    <tr><td>2.459130425468051e+21</td><td>2.459603692212681e-16</td><td>0.0</td><td>2.459603692212681e-16</td></tr>
-    <tr><td>7.442922330043758e+21</td><td>3.874834760928319e-16</td><td>0.0</td><td>3.874834760928319e-16</td></tr>
-    <tr><td>2.2527106426459734e+22</td><td>5.98977072597333e-16</td><td>0.0</td><td>5.98977072597333e-16</td></tr>
-    <tr><td>6.818162294944493e+22</td><td>9.050491218484525e-16</td><td>0.0</td><td>9.050491218484525e-16</td></tr>
-    <tr><td>2.0636177678638565e+23</td><td>1.328146971768062e-15</td><td>0.0</td><td>1.328146971768062e-15</td></tr>
-    <tr><td>6.245844712439592e+23</td><td>1.8718853701304056e-15</td><td>0.0</td><td>1.8718853701304056e-15</td></tr>
-    <tr><td>1.8903973778192233e+24</td><td>2.4815350094970205e-15</td><td>0.0</td><td>2.4815350094970205e-15</td></tr>
-    <tr><td>5.72156755506324e+24</td><td>2.9948879213537642e-15</td><td>0.0</td><td>2.9948879213537642e-15</td></tr>
     <tr><td>1.7317171337233599e+25</td><td>3.1108073206153626e-15</td><td>0.0</td><td>3.1108073206153626e-15</td></tr>
     <tr><td>5.2412983022060615e+25</td><td>2.583262880430937e-15</td><td>0.0</td><td>2.583262880430937e-15</td></tr>
     <tr><td>1.5863565335085865e+26</td><td>1.5673161713761437e-15</td><td>0.0</td><td>1.5673161713761437e-15</td></tr>
@@ -1963,7 +1937,7 @@ and also in the ``src`` restframe
 .. raw:: html
 
     <div><i>Table length=50</i>
-    <table id="table5757868192" class="table-striped table-bordered table-condensed">
+    <table id="table5836884816" class="table-striped table-bordered table-condensed">
     <thead><tr><th>nu</th><th>Sum</th><th>Sync</th><th>SSC</th></tr></thead>
     <thead><tr><th>Hz</th><th>erg / s</th><th>erg / s</th><th>erg / s</th></tr></thead>
     <thead><tr><th>float64</th><th>float64</th><th>float64</th><th>float64</th></tr></thead>
@@ -1976,33 +1950,7 @@ and also in the ``src`` restframe
     <tr><td>845598547.3830093</td><td>1.2820178760999728e+35</td><td>1.2820178674156813e+35</td><td>8.684229052937516e+26</td></tr>
     <tr><td>2559329202.464604</td><td>6.183855738678291e+36</td><td>6.183855688223801e+36</td><td>5.045401450889629e+28</td></tr>
     <tr><td>7746188763.994226</td><td>2.9621748345702107e+38</td><td>2.9621748058104933e+38</td><td>2.875484199000618e+30</td></tr>
-    <tr><td>23444987190.255768</td><td>4.962991332740602e+39</td><td>4.962991258135525e+39</td><td>7.453739927236154e+31</td></tr>
-    <tr><td>70959724981.94484</td><td>1.1105534662302938e+40</td><td>1.110553383381105e+40</td><td>8.278859306715832e+32</td></tr>
-    <tr><td>214770113911.85474</td><td>1.9495666736155294e+40</td><td>1.9495661825310782e+40</td><td>4.9091076711650177e+33</td></tr>
-    <tr><td>650033548487.5048</td><td>3.392194610684439e+40</td><td>3.3921927690777626e+40</td><td>1.841386666958448e+34</td></tr>
-    <tr><td>1967422778071.8123</td><td>5.898396453950717e+40</td><td>5.898391429280816e+40</td><td>5.024443954914775e+34</td></tr>
-    <tr><td>5954696333261.914</td><td>1.0247860325381098e+41</td><td>1.0247848419495463e+41</td><td>1.1905619219399787e+35</td></tr>
-    <tr><td>18022770101357.832</td><td>1.7769316819761714e+41</td><td>1.776929057894376e+41</td><td>2.6240443618976355e+35</td></tr>
-    <tr><td>54548582152209.445</td><td>3.065877294471873e+41</td><td>3.065871772013261e+41</td><td>5.5224029125677384e+35</td></tr>
-    <tr><td>165099360313770.7</td><td>5.229113616427845e+41</td><td>5.229102358599022e+41</td><td>1.1257735452758212e+36</td></tr>
-    <tr><td>499697658501144.8</td><td>8.682435528213993e+41</td><td>8.682413068070106e+41</td><td>2.2459933460878286e+36</td></tr>
-    <tr><td>1512408948387062.8</td><td>1.3693374013631282e+42</td><td>1.3693330081040437e+42</td><td>4.393202415984916e+36</td></tr>
-    <tr><td>4577529608648387.0</td><td>1.990534578276517e+42</td><td>1.9905261333821364e+42</td><td>8.444729362533213e+36</td></tr>
-    <tr><td>1.3854571106841978e+16</td><td>2.639376954366745e+42</td><td>2.6393609850977307e+42</td><td>1.5968858809808022e+37</td></tr>
     <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-    <tr><td>1.0650368365963805e+19</td><td>8.585100559226115e+41</td><td>8.579818350898489e+41</td><td>5.2800673733573894e+38</td></tr>
-    <tr><td>3.2234916746693526e+19</td><td>6.5659318643893655e+40</td><td>6.475029511248192e+40</td><td>9.06328937981526e+38</td></tr>
-    <tr><td>9.756374821616135e+19</td><td>1.5555764979803717e+39</td><td>2.4000560069565626e+37</td><td>1.5309196538105874e+39</td></tr>
-    <tr><td>2.952911292058162e+20</td><td>2.5412586764799147e+39</td><td>2.019892982641053e+27</td><td>2.5412586764773993e+39</td></tr>
-    <tr><td>8.937423231675508e+20</td><td>4.1446961816577584e+39</td><td>0.0</td><td>4.1446961816577584e+39</td></tr>
-    <tr><td>2.7050434680148564e+21</td><td>6.643842277791231e+39</td><td>0.0</td><td>6.643842277791231e+39</td></tr>
-    <tr><td>8.187214563048134e+21</td><td>1.0466641876338746e+40</td><td>0.0</td><td>1.0466641876338746e+40</td></tr>
-    <tr><td>2.477981706910571e+22</td><td>1.6179473184843802e+40</td><td>0.0</td><td>1.6179473184843802e+40</td></tr>
-    <tr><td>7.499978524438943e+22</td><td>2.4447042579470295e+40</td><td>0.0</td><td>2.4447042579470295e+40</td></tr>
-    <tr><td>2.2699795446502424e+23</td><td>3.5875694243306733e+40</td><td>0.0</td><td>3.5875694243306733e+40</td></tr>
-    <tr><td>6.870429183683552e+23</td><td>5.056306916690014e+40</td><td>0.0</td><td>5.056306916690014e+40</td></tr>
-    <tr><td>2.0794371156011458e+24</td><td>6.703082802369509e+40</td><td>0.0</td><td>6.703082802369509e+40</td></tr>
-    <tr><td>6.293724310569564e+24</td><td>8.08974350304232e+40</td><td>0.0</td><td>8.08974350304232e+40</td></tr>
     <tr><td>1.904888847095696e+25</td><td>8.402863136123344e+40</td><td>0.0</td><td>8.402863136123344e+40</td></tr>
     <tr><td>5.765428132426668e+25</td><td>6.977868505399752e+40</td><td>0.0</td><td>6.977868505399752e+40</td></tr>
     <tr><td>1.744992186859445e+26</td><td>4.2336094530282163e+40</td><td>0.0</td><td>4.2336094530282163e+40</td></tr>
@@ -2131,7 +2079,7 @@ case of beaming expression ‘bulk_theta’
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table4800128496-894632" class="table-striped table-bordered table-condensed">
+    <table id="table5832560112-200893" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -2169,14 +2117,14 @@ case of beaming expression ‘bulk_theta’
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4800128496-894632').dataTable()");
+        console.log("$('#table5832560112-200893').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4800128496-894632').dataTable({
+        $('#table5832560112-200893').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -2214,7 +2162,7 @@ case of beaming expression ‘bulk_theta’
 .. raw:: html
 
     <i>Table length=39</i>
-    <table id="table4805465072-602791" class="table-striped table-bordered table-condensed">
+    <table id="table5837760032-905383" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <tr><td>BulkLorentzFactor</td><td>jet-bulk-factor</td><td></td><td>1.500000e+01</td></tr>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.736635e-03</td></tr>
@@ -2278,14 +2226,14 @@ case of beaming expression ‘bulk_theta’
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4805465072-602791').dataTable()");
+        console.log("$('#table5837760032-905383').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4805465072-602791').dataTable({
+        $('#table5837760032-905383').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -2367,7 +2315,7 @@ If you want to evaluate the energetic report in non verbose mode:
 .. raw:: html
 
     <div><i>Table length=39</i>
-    <table id="table4805464448" class="table-striped table-bordered table-condensed">
+    <table id="table5837756768" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <thead><tr><th>str17</th><th>str29</th><th>object</th><th>float64</th></tr></thead>
     <tr><td>BulkLorentzFactor</td><td>jet-bulk-factor</td><td></td><td>1.500000e+01</td></tr>
@@ -2380,25 +2328,7 @@ If you want to evaluate the energetic report in non verbose mode:
     <tr><td>U_BLR</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_DT</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
     <tr><td>U_CMB</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_Star</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_Disk_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_BLR_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_DT_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_CMB_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_Star_DRF</td><td>Energy dens. disk rest. frame</td><td>erg / cm3</td><td>0.000000e+00</td></tr>
-    <tr><td>U_seed_tot</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.831568e-05</td></tr>
-    <tr><td>L_Sync_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>1.725018e+38</td></tr>
-    <tr><td>L_SSC_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>3.823311e+36</td></tr>
-    <tr><td>L_EC_Disk_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>L_EC_BLR_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>L_EC_DT_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>L_EC_CMB_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>L_EC_Star_rf</td><td>Lum. blob rest. frame.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>jet_L_Sync</td><td>jet Lum.</td><td>erg / s</td><td>9.681638e+39</td></tr>
-    <tr><td>jet_L_SSC</td><td>jet Lum.</td><td>erg / s</td><td>2.145828e+38</td></tr>
-    <tr><td>jet_L_EC_Disk</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>jet_L_EC_BLR</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
-    <tr><td>jet_L_EC_Star</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
+    <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
     <tr><td>jet_L_EC_DT</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_EC_CMB</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
     <tr><td>jet_L_pp_gamma</td><td>jet Lum.</td><td>erg / s</td><td>0.000000e+00</td></tr>
@@ -2466,7 +2396,7 @@ If you want to evaluate the energetic report in non verbose mode:
 .. raw:: html
 
     <i>Table length=13</i>
-    <table id="table4813130816-685826" class="table-striped table-bordered table-condensed">
+    <table id="table5832569616-47774" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>test</td><td>R</td><td>region_size</td><td>cm</td><td>5.000000e+15</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>test</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -2504,14 +2434,14 @@ If you want to evaluate the energetic report in non verbose mode:
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4813130816-685826').dataTable()");
+        console.log("$('#table5832569616-47774').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4813130816-685826').dataTable({
+        $('#table5832569616-47774').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -2555,7 +2485,7 @@ case of beaming expression ‘delta’
 .. raw:: html
 
     <i>Table length=39</i>
-    <table id="table4808790448-178254" class="table-striped table-bordered table-condensed">
+    <table id="table5851252480-450406" class="table-striped table-bordered table-condensed">
     <thead><tr><th>name</th><th>type</th><th>units</th><th>val</th></tr></thead>
     <tr><td>BulkLorentzFactor</td><td>jet-bulk-factor</td><td></td><td>2.500000e+01</td></tr>
     <tr><td>U_e</td><td>Energy dens. blob rest. frame</td><td>erg / cm3</td><td>1.736635e-03</td></tr>
@@ -2619,14 +2549,14 @@ case of beaming expression ‘delta’
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4808790448-178254').dataTable()");
+        console.log("$('#table5851252480-450406').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4808790448-178254').dataTable({
+        $('#table5851252480-450406').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],

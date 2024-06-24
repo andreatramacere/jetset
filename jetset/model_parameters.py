@@ -328,6 +328,9 @@ class ModelParameter(object):
         self._func=None
         self._is_dependent = False
         self._master_par_list=[]
+        #NOTE: probably I have commented out self._depending_pars=[]
+        #NOTE  since I don't want to remove the depending pars
+        #NOTE: probably is to be done only on model loading?
         self._depending_pars=[]
         self._master_pars=[]
         self.par_expr=None
