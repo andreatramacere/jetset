@@ -23,7 +23,7 @@ Model fitting 4: Only Synchrotron
 
 .. parsed-literal::
 
-    1.3.0rc7
+    1.3.0rc9
 
 
 .. code:: ipython3
@@ -76,14 +76,6 @@ see the :ref:`data_format` user guide for further information about loading data
     ***  binning data  ***
     ---> N bins= 89
     ---> bin_widht= 0.2
-    msk [False  True False  True  True  True  True  True False False False  True
-     False False False False False False False False False False False False
-      True  True  True  True  True  True  True False False False False False
-     False False  True  True  True  True  True  True  True  True  True  True
-      True False False False False False False False False False False False
-     False False False False False False  True False  True False  True False
-      True  True False  True False  True False  True  True  True  True  True
-      True  True  True  True False]
     ================================================================================
     
 
@@ -154,7 +146,7 @@ Sed shaper
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table5577330400-578265" class="table-striped table-bordered table-condensed">
+    <table id="table5806949760-424090" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-1.585748e-01</td><td>-1.585748e-01</td><td>6.470535e-03</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-1.089513e-02</td><td>-1.089513e-02</td><td>9.764985e-04</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -183,14 +175,14 @@ Sed shaper
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5577330400-578265').dataTable()");
+        console.log("$('#table5806949760-424090').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5577330400-578265').dataTable({
+        $('#table5806949760-424090').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -237,7 +229,7 @@ Sed shaper
 .. raw:: html
 
     <i>Table length=4</i>
-    <table id="table5579977728-719338" class="table-striped table-bordered table-condensed">
+    <table id="table5807208576-605511" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>LogCubic</td><td>b</td><td>-1.971111e-01</td><td>-1.971111e-01</td><td>2.679732e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>0.000000e+00</td><td>False</td></tr>
     <tr><td>LogCubic</td><td>c</td><td>-4.037544e-02</td><td>-4.037544e-02</td><td>2.119803e-02</td><td>--</td><td>-1.000000e+00</td><td>-1.000000e+01</td><td>1.000000e+01</td><td>False</td></tr>
@@ -266,14 +258,14 @@ Sed shaper
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5579977728-719338').dataTable()");
+        console.log("$('#table5807208576-605511').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5579977728-719338').dataTable({
+        $('#table5807208576-605511').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -329,7 +321,7 @@ Model constraining
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5589548672-75611" class="table-striped table-bordered table-condensed">
+    <table id="table5810148096-143405" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>R</td><td>region_size</td><td>cm</td><td>3.460321e+16</td><td>1.000000e+03</td><td>1.000000e+30</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>R_H</td><td>region_position</td><td>cm</td><td>1.000000e+17</td><td>0.000000e+00</td><td>--</td><td>False</td><td>True</td></tr>
@@ -366,14 +358,14 @@ Model constraining
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5589548672-75611').dataTable()");
+        console.log("$('#table5810148096-143405').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5589548672-75611').dataTable({
+        $('#table5810148096-143405').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -481,7 +473,7 @@ we switch off the IC component
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table4473374944-78733" class="table-striped table-bordered table-condensed">
+    <table id="table5819152752-134151" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>False</td></tr>
@@ -518,14 +510,14 @@ we switch off the IC component
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4473374944-78733').dataTable()");
+        console.log("$('#table5819152752-134151').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4473374944-78733').dataTable({
+        $('#table5819152752-134151').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -626,7 +618,7 @@ we switch off the IC component
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table4473374944-426683" class="table-striped table-bordered table-condensed">
+    <table id="table5819152656-129356" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>par type</th><th>units</th><th>val</th><th>phys. bound. min</th><th>phys. bound. max</th><th>log</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>low-energy-cut-off</td><td>lorentz-factor*</td><td>4.226997e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>high-energy-cut-off</td><td>lorentz-factor*</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>False</td><td>True</td></tr>
@@ -663,14 +655,14 @@ we switch off the IC component
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table4473374944-426683').dataTable()");
+        console.log("$('#table5819152656-129356').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table4473374944-426683').dataTable({
+        $('#table5819152656-129356').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -703,7 +695,7 @@ we switch off the IC component
         </tr>
         <tr>
             <td colspan="2" style="text-align:left" title="Estimated distance to minimum and goal"> EDM = 3.3e-05 (Goal: 0.0002) </td>
-            <td colspan="3" style="text-align:center" title="Total run time of algorithms"> time = 2.0 sec </td>
+            <td colspan="3" style="text-align:center" title="Total run time of algorithms"> time = 3.9 sec </td>
         </tr>
         <tr>
             <td colspan="2" style="text-align:center;background-color:#92CCA6;color:black"> Valid Minimum </td>
@@ -824,7 +816,7 @@ we switch off the IC component
 .. raw:: html
 
     <i>Table length=12</i>
-    <table id="table5596513232-566396" class="table-striped table-bordered table-condensed">
+    <table id="table5822846416-899400" class="table-striped table-bordered table-condensed">
     <thead><tr><th>model name</th><th>name</th><th>val</th><th>bestfit val</th><th>err +</th><th>err -</th><th>start val</th><th>fit range min</th><th>fit range max</th><th>frozen</th></tr></thead>
     <tr><td>jet_leptonic</td><td>gmin</td><td>4.226997e+02</td><td>4.226997e+02</td><td>1.139513e+02</td><td>--</td><td>4.697542e+02</td><td>1.000000e+00</td><td>1.000000e+09</td><td>False</td></tr>
     <tr><td>jet_leptonic</td><td>gmax</td><td>1.373160e+06</td><td>--</td><td>--</td><td>--</td><td>1.373160e+06</td><td>1.000000e+00</td><td>1.000000e+15</td><td>True</td></tr>
@@ -861,14 +853,14 @@ we switch off the IC component
         datatables: 'https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min'
     }});
     require(["datatables"], function(){
-        console.log("$('#table5596513232-566396').dataTable()");
+        console.log("$('#table5822846416-899400').dataTable()");
     
     jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         "optionalnum-asc": astropy_sort_num,
         "optionalnum-desc": function (a,b) { return -astropy_sort_num(a, b); }
     });
     
-        $('#table5596513232-566396').dataTable({
+        $('#table5822846416-899400').dataTable({
             order: [],
             pageLength: 100,
             lengthMenu: [[10, 25, 50, 100, 500, 1000, -1], [10, 25, 50, 100, 500, 1000, 'All']],
@@ -930,6 +922,9 @@ MCMC sampling
     Please, read the introduction and the caveat :ref:`for the Bayesian model fitting <bayesian_model_fitting>` to understand the MCMC sampler workflow.
 
 
+creating and setting the sampler
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 .. code:: ipython3
 
     from jetset.mcmc import McmcSampler
@@ -989,7 +984,7 @@ MCMC sampling
 
 .. parsed-literal::
 
-    mcmc run done, with 1 threads took 227.12 seconds
+    mcmc run done, with 1 threads took 313.02 seconds
 
 
 .. code:: ipython3
@@ -999,8 +994,13 @@ MCMC sampling
 
 .. parsed-literal::
 
-    0.3519
+    0.3696
 
+
+plotting the model
+~~~~~~~~~~~~~~~~~~
+
+To plot the sampled model range against the input best-fit model
 
 .. code:: ipython3
 
@@ -1009,17 +1009,33 @@ MCMC sampling
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_40_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_43_0.png
 
+
+To plot the sampled model range,providing quantiles, against the input
+best-fit model, providing quantiles
 
 .. code:: ipython3
 
     p=mcmc.plot_model(sed_data=sed_data,fit_range=[1E15, 1E20],size=100,quantiles=[0.05,0.95])
-    p.setlim(y_min=1E-14,x_min=1E6,x_max=2E20)
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_41_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_45_0.png
+
+
+To plot the sampled model range,providing quantiles, against the input
+mcmc model at 0.5 quantile (``plot_mcmc_best_fit_model==True`` provides
+the 0.5 quantile sampled model)
+
+.. code:: ipython3
+
+    p=mcmc.plot_model(sed_data=sed_data,fit_range=[1E15, 1E20],size=100,quantiles=[0.05,0.95], plot_mcmc_best_fit_model=True)
+    p.setlim(y_min=1E-14,x_min=1E6,x_max=2E28)
+
+
+
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_47_0.png
 
 
 .. code:: ipython3
@@ -1063,7 +1079,7 @@ the code below lets you tuning the output
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_46_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_52_0.png
 
 
 .. code:: ipython3
@@ -1075,8 +1091,8 @@ the code below lets you tuning the output
 
 .. parsed-literal::
 
-    (array([1.21353916, 1.15178803, 1.0995533 , ..., 1.9475931 , 0.59723078,
-            1.90069347]),
+    (array([0.98484506, 1.09568988, 0.9554807 , ..., 1.82525111, 1.70817598,
+            1.66367392]),
      0)
 
 
@@ -1087,7 +1103,7 @@ the code below lets you tuning the output
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_48_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_54_0.png
 
 
 .. code:: ipython3
@@ -1096,7 +1112,7 @@ the code below lets you tuning the output
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_49_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_55_0.png
 
 
 Save and reuse MCMC
@@ -1144,7 +1160,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_54_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_60_0.png
 
 
 .. code:: ipython3
@@ -1154,7 +1170,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_55_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_61_0.png
 
 
 .. code:: ipython3
@@ -1164,7 +1180,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_56_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_62_0.png
 
 
 .. code:: ipython3
@@ -1174,7 +1190,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_57_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_63_0.png
 
 
 .. code:: ipython3
@@ -1183,7 +1199,7 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_58_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_64_0.png
 
 
 .. code:: ipython3
@@ -1192,6 +1208,6 @@ Save and reuse MCMC
 
 
 
-.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_59_0.png
+.. image:: Jet_example_only_synchrotron_files/Jet_example_only_synchrotron_65_0.png
 
 
