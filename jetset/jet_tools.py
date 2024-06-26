@@ -1,7 +1,8 @@
 __author__ = "Andrea Tramacere"
 
 import os
-
+import numpy as np
+import copy
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if on_rtd == True:
@@ -17,7 +18,7 @@ from .jetkernel_models_dic import allowed_disk_type
 from .jet_paramters import *
 
 
-__all__=[ 'build_emitting_region_dict','build_ExtFields_dic','BLR_constraints','DT_constraints']
+__all__=[ 'build_emitting_region_dict','build_ExtFields_dic','BLR_constraints','DT_constraints','clean_numba']
 
 
 
@@ -53,13 +54,13 @@ def build_emitting_region_dict(cosmo, beaming_expr='delta',emitters_type='electr
         model_dic['NH_cold_to_rel_e'] = JetModelDictionaryPar(ptype='cold_p_to_rel_e_ratio', vmin=0, vmax=None, punit='',froz=True, log=False)
 
     if beaming_expr == 'bulk_theta':
-        model_dic['theta'] = JetModelDictionaryPar(ptype='jet-viewing-angle', vmin=0, vmax=None, punit='deg')
+        model_dic['theta'] = JetModelDictionaryPar(ptype='jet-viewing-angle', vmin=0, vmax=90, punit='deg')
         # ['jet-viewing-angle',0.0,None,'deg']
         model_dic['BulkFactor'] = JetModelDictionaryPar(ptype='jet-bulk-factor', vmin=1.0, vmax=1E5,
                                                         punit='lorentz-factor')
         # ['jet-bulk-factor',1.0,None,'Lorentz-factor']
     elif beaming_expr == 'delta' or beaming_expr == '':
-        model_dic['beam_obj'] = JetModelDictionaryPar(ptype='beaming', vmin=1E-4, vmax=None, punit='lorentz-factor')
+        model_dic['beam_obj'] = JetModelDictionaryPar(ptype='beaming', vmin=1E-4, vmax=None, punit='')
         # ['beaming', 1, None, '']
     else:
         raise RuntimeError('''wrong beaming_expr="%s" value, allowed 'delta' or 'bulk_theta' ''' % (beaming_expr))
@@ -113,7 +114,7 @@ def build_ExtFields_dic(EC_model_list,disk_type ):
 
                     model_dic['R_ext_Sw'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='Sw. radii')
 
-                    model_dic['accr_eff'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='')
+                    model_dic['accr_eff'] = JetModelDictionaryPar(ptype='Disk', vmin=0.06, vmax=0.1, punit='')
 
                     model_dic['M_BH'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='M_sun')
 
@@ -135,12 +136,20 @@ def build_ExtFields_dic(EC_model_list,disk_type ):
             # ['DT',0.0,1.0,'']
 
         if 'Star' in EC_model:
-            model_dic['R_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='cm')
+            model_dic['L_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='erg s-1')
             # ['DT',0.0,None,'K']
-            model_dic['T_Star_max'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='K')
+            model_dic['T_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='K')
+            model_dic['theta_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=180, punit='deg')
+            model_dic['R_H_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='cm')
+
             # ['DT',0,None,'cm',True]
             #model_dic['tau_DT'] = JetModelDictionaryPar(ptype='DT', vmin=0, vmax=1.0, punit='')
             ## ['DT',0.0,1.0,'']
     #print('----->', model_dic)
     return model_dic
-
+    
+def clean_numba(distr):
+    if hasattr(distr,'_py_distr_func'):
+        setattr(distr,'distr_func',copy.deepcopy(distr._py_distr_func))
+    elif hasattr(distr.distr_func,'py_func'):
+        setattr(distr,'distr_func',copy.deepcopy(distr.distr_func.py_func))

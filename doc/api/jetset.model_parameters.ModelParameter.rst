@@ -10,13 +10,14 @@ ModelParameter
 
    .. autosummary::
 
+      ~ModelParameter.adimensional
       ~ModelParameter.fit_range
       ~ModelParameter.frozen
       ~ModelParameter.immutable
       ~ModelParameter.islog
       ~ModelParameter.linked
       ~ModelParameter.par_expr
-      ~ModelParameter.print_par_expr
+      ~ModelParameter.par_expression_source_code
       ~ModelParameter.units
       ~ModelParameter.val
       ~ModelParameter.val_lin
@@ -42,13 +43,14 @@ ModelParameter
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: adimensional
    .. autoattribute:: fit_range
    .. autoattribute:: frozen
    .. autoattribute:: immutable
    .. autoattribute:: islog
    .. autoattribute:: linked
    .. autoattribute:: par_expr
-   .. autoattribute:: print_par_expr
+   .. autoattribute:: par_expression_source_code
    .. autoattribute:: units
    .. autoattribute:: val
    .. autoattribute:: val_lin

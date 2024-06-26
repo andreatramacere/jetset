@@ -25,9 +25,9 @@ except:
 from tqdm.auto import tqdm
 
 
-from .plot_sedfit import plt
+from .plot_sedfit import plt,heatmap,annotate_heatmap
 
-from scipy.optimize import least_squares
+from scipy.optimize import least_squares,minimize
 
 from .leastsqbound.leastsqbound import leastsqbound
 
@@ -41,7 +41,7 @@ from .data_loader import lin_to_log
 
 
 
-__all__ = ['FitResults','fit_SED','Minimizer','LSMinimizer','LSBMinimizer', 'MinuitMinimizer', 'ModelMinimizer']
+__all__ = ['FitResults','fit_SED','Minimizer','LSBMinimizerScipy', 'MinuitMinimizer', 'ModelMinimizer']
 
 
 
@@ -199,25 +199,18 @@ class FitResults(object):
 
 
 
-
-
-
-
-
-
-
 class ModelMinimizer(object):
 
 
     def __init__(self,minimizer_type):
-        __accepted__ = ['lsb', 'minuit', 'ls','sherpa']
+        __accepted__ = ['lsb', 'minuit', 'sherpa']
 
 
-        if minimizer_type == 'lsb':
-            self.minimizer=LSBMinimizer(self)
+        #if minimizer_type == 'lsb-old':
+        #    self.minimizer=LSBMinimizer(self)
 
-        elif minimizer_type=='ls':
-            self.minimizer=LSMinimizer(self)
+        if minimizer_type=='lsb':
+            self.minimizer=LSBMinimizerScipy(self)
 
         elif minimizer_type=='minuit':
             self.minimizer=MinuitMinimizer(self)
@@ -387,7 +380,7 @@ class ModelMinimizer(object):
             else:
                 par.set_fit_initial_value(par.val)
 
-        fit_par_free = [par for par in fit_model.parameters.par_array if par.frozen is False and (par.linked is False or par.root is True) and par._is_dependent is False]
+        fit_par_free = [par for par in fit_model.parameters.par_array if par.frozen is False and (par.linked is False ) and par._is_dependent is False]
 
         #remove duplicates and keeps the order
         fit_par_free = sorted(set(fit_par_free), key=fit_par_free.index)
@@ -423,7 +416,7 @@ class ModelMinimizer(object):
 
 
 
-        if len(fit_par_free)>self.data['x'].size and isinstance(self.minimizer,LSBMinimizer):
+        if len(fit_par_free)>self.data['x'].size and isinstance(self.minimizer,LSBMinimizerScipy):
             m='number of data points: %d is lower than number of free pars: %d'%(self.data['x'], len(fit_par_free))
             raise  JetkerneltException(message=m)
 
@@ -444,7 +437,6 @@ class ModelMinimizer(object):
             repeat=1):
 
         self.silent=silent
-        #print('-->nu_fit_start', nu_fit_start)
 
         self._prepare_fit( fit_model, sed_data, nu_fit_start, nu_fit_stop, fitname=fitname, fit_workplace=fit_workplace,
                      loglog=loglog, silent=silent, get_conf_int=get_conf_int, use_fake_err=use_fake_err,use_UL=use_UL)
@@ -469,7 +461,8 @@ class ModelMinimizer(object):
                 self.errors = self.minimizer.errors
                 if hasattr(self.minimizer, 'asymm_errors'):
                     self.asymm_errors = self.minimizer.asymm_errors
-
+                self.covar=self.minimizer.covar
+                self.corr=self.minimizer.corr
 
                 self.reset_to_best_fit()
                 self.minimizer._fit_stats()
@@ -480,23 +473,6 @@ class ModelMinimizer(object):
                 new_chisq = self.minimizer.chisq
                 if i==0:
                     old_chisq = new_chisq
-
-                chisq_min = min(new_chisq, old_chisq)
-                #if i==0 or new_chisq<=chisq_min:
-                #    self.pout = self.minimizer.pout
-                #    self.errors = self.minimizer.errors
-                #    if  hasattr(self.minimizer,'asymm_errors'):
-                #        self.asymm_errors = self.minimizer.asymm_errors
-                #elif new_chisq>=chisq_min:
-                #    self.pout = self.minimizer.pout
-                #    self.errors = self.minimizer.errors
-                #    if hasattr(self.minimizer, 'asymm_errors'):
-                #        self.asymm_errors = self.minimizer.asymm_errors
-
-                #if i<repeat-1:
-                #    self.pinit = [par.val for par in self.fit_par_free]
-                #    if silent is False:
-                #        print()
             else:
                 pass
 
@@ -551,6 +527,7 @@ class ModelMinimizer(object):
         if self.minimizer._post_fit_warnings!='':
                 print('there are  fit warnings messages, use  the .show_fit_warnings() or access the member .minimizer._post_fit_warnings')
 
+        
         return best_fit
 
     def show_fit_warnings(self):
@@ -568,6 +545,18 @@ class ModelMinimizer(object):
                 self.fit_par_free[pi].err_m=self.asymm_errors[pi][1]
 
         self.fit_model.eval()
+    
+    def plot_corr_matrix(self):
+        fig, ax = plt.subplots()
+        labels=[p.name for p in  self.fit_par_free]
+        im, cbar = heatmap(self.corr, labels, labels, ax=ax,
+                        cmap="coolwarm", cbarlabel="corr")
+        texts = annotate_heatmap(im, valfmt="{x:.2f}")
+
+        fig.tight_layout()
+        
+
+        return fig
 
 
 class Minimizer(object):
@@ -577,6 +566,7 @@ class Minimizer(object):
         self._progress_iter = cycle(['|', '/', '-', '\\'])
         self._post_fit_warnings=''
         self.pbar=None
+        self.covar=None
             #self._progess_bar(pbar, _res_sum, _res_sum_UL)
 
     def fit(self,model,
@@ -634,13 +624,8 @@ class Minimizer(object):
 
 
     def _progess_bar(self, _res_sum, res_sum_UL):
-        #if self.calls==1:
-        #    print("minim function calls=%d, chisq=%5.5e UL part=%f" %(self.calls, _res_sum, -2.0*np.sum(res_UL)))
-        #    print()
         if (np.mod(self.calls, 10) == 0 and self.calls != 0)  :
-            #_c= ' ' * 256
-            #print("\r%s"%_c,end="")
-            #print("\r%s minim function calls=%d, chisq=%5.5e UL part=%f" % (next(self._progress_iter),self.calls, _res_sum, res_sum_UL), end="")
+    
             m="minim. function calls=%d, chisq=%5.5e UL part=%f" %(self.calls, _res_sum, res_sum_UL)
             self.pbar.n=self.calls
             self.pbar.set_description(m)
@@ -655,12 +640,11 @@ class Minimizer(object):
                       chisq=False,
                       use_UL=False,
                       silent=False):
-        #print('==>p', p)
-        #print('==>fit_par_fre', self.model.fit_par_free)
-        _warn=False
+   
+        #_warn=False
         for pi in range(len(fit_par)):
-            _old_v=fit_par[pi].val
-            #print('==> set', fit_par[pi].val,fit_par[pi].val_min,p[pi])
+            #_old_v=fit_par[pi].val
+             
             fit_par[pi].set(val=p[pi])
             if np.isnan(p[pi]):
                 _warn=True
@@ -669,13 +653,7 @@ class Minimizer(object):
                 s =s1 + s2
                 warnings.warn(s)
                 self._post_fit_warnings+=s+'\n'
-        #if _warn==True:
-        #    best_fit_SEDModel.show_pars()
-        #    print('res_sum',self._res_sum_chekc)
-        #    print('res_chekc', self._res_chekc)
-        #    print('res_UL_chekc', self._res_UL_chekc)
-
-
+       
         model = best_fit_SEDModel.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
 
 
@@ -684,8 +662,6 @@ class Minimizer(object):
         self._res_sum_chekc=_res_sum
         self._res_chekc = _res
         self._res_UL_chekc = _res_sum_UL
-        #self._par_check=p
-        #print('--> model', model[0],_res_sum)
         self.calls +=1
 
         if silent==False:
@@ -715,6 +691,21 @@ class Minimizer(object):
                                             self.model.data['UL'],
                                             use_UL=self.use_UL)
         return _res_sum
+    
+    
+    @property
+    def corr(self):
+        if self.covar is not None:
+            v = np.sqrt(np.diag(self.covar))
+            outer_v = np.outer(v, v)
+            correlation = self.covar / outer_v
+            correlation[self.covar == 0] = 0
+            return correlation
+        else:
+            return None
+    
+
+
 
 def _eval_res(data, model, data_error, UL, use_UL=False):
 
@@ -744,58 +735,30 @@ def _eval_res_UL(y_UL,y_model,y_err):
 
 
 
-class LSBMinimizer(Minimizer):
 
-    def __init__(self, model):
+class LSBMinimizerScipy(Minimizer):
 
-        super(LSBMinimizer, self).__init__(model)
-        self.xtol=5.0E-8
-        self.ftol = 5.0E-8
-        self.factor=100.
-
-    def _fit(self, max_ev,):
-        #if self.use_UL is True:
-        #    raise  RuntimeError('lsb minimizer currently is not supporting UL')
-
-        bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model.fit_par_free]
-        max_nfev = 0 if (max_ev == 0 or max_ev == None) else max_ev
-        pout, covar, info, mesg, success = leastsqbound(self.residuals_Fit,
-                                                        self.model.pinit,
-                                                        args=(self.model.fit_par_free,
-                                                              self.model.data,
-                                                              self.model.fit_model,
-                                                              self.model.loglog,
-                                                              False,
-                                                              self.use_UL,
-                                                              self.silent,),
-                                                        xtol=self.xtol,
-                                                        ftol=self.ftol,
-                                                        factor=self.factor,
-                                                        full_output=1,
-                                                        bounds=bounds,
-                                                        maxfev=max_nfev)
-
-        self.mesg = mesg
-        self.covar = covar
-        #self.chisq =  sum(info["fvec"] * info["fvec"])
-
-        self.pout = pout
-
-    #def get_chisq(self):
-    #    return self.chisq
-
-
-class LSMinimizer(Minimizer):
-
-    def __init__(self,model ):
-        super(LSMinimizer, self).__init__(model)
-
+    def __init__(self,
+                 model):
+        super(LSBMinimizerScipy, self).__init__(model)
+        self.conf_dict=dict(
+                    xtol=None,
+                    ftol=1E-8,
+                    gtol=1E-8, 
+                    jac='3-point',
+                    loss='linear',
+                    tr_solver=None,
+                    f_scale=1.0)
+    
 
     def _fit(self,max_ev):
         bounds = ([-np.inf if par.fit_range_min is None else par.fit_range_min for par in self.model.fit_par_free],
                   [np.inf if par.fit_range_max is None else par.fit_range_max for par in self.model.fit_par_free])
 
         max_nfev = None if (max_ev == 0 or max_ev is None) else max_ev
+        if self.conf_dict['xtol'] is None and  max_nfev is not None:
+            max_nfev=None
+            print('for xtol set to None max_ev condition is disabled')
         fit = least_squares(self.residuals_Fit,
                             self.model.pinit,
                             args=(self.model.fit_par_free,
@@ -803,50 +766,57 @@ class LSMinimizer(Minimizer):
                                   self.model.fit_model,
                                   self.model.loglog,
                                   False,
-                                  False,
+                                  True,
                                   self.silent),
-
-                            xtol=1.0E-8,
-                            ftol=1.0E-8,
-                            jac='3-point',
-                            loss='linear',
-                            f_scale=0.01,
+                            method='trf',
                             bounds=bounds,
                             max_nfev=max_nfev,
-                            verbose=0)
-        #print(vars(fit))
-        self.covar=np.linalg.inv(2 * np.dot(fit.jac.T, fit.jac))
+                            verbose=0,
+                            **self.conf_dict)
+        try:
+            self.covar=np.linalg.inv(2 * np.dot(fit.jac.T, fit.jac))
+        except Exception as e:
+            warnings.warn('covariance failed')
+            self.covar=None
         self.chisq=sum(fit.fun * fit.fun)
         self.mesg = fit.message
         self.pout = fit.x
-
-    #def get_chisq(self):
-    #    return self.chisq
 
 
 
 
 class MinuitMinimizer(Minimizer):
 
-    def __init__(self,model):
+    def __init__(self,
+                 model,
+                 add_simplex=True,
+                 conf_dict=dict(tol=0.1)):
+        
         if minuit_installed==True:
             pass
         else:
             raise RuntimeError('iminuit non installed')
 
         super(MinuitMinimizer, self).__init__(model)
-
-
+        self.conf_dict=conf_dict
+        self.add_simplex=add_simplex
 
     def _fit(self,max_ev=None):
         bounds = [(par.fit_range_min, par.fit_range_max) for par in self.model.fit_par_free]
         self._set_minuit_func(self.model.pinit, bounds)
-        #print('=>,')
         if max_ev is None or max_ev==0:
             max_ev =10000
 
-        self.mesg=self.minuit_fun.migrad(ncall=max_ev)
-        #print('==> mesg',self.mesg)
+        self.minuit_fun.tol=self.conf_dict['tol']
+        if self.add_simplex is True:
+            print('====> simplex')
+            _=self.minuit_fun.simplex(ncall=max_ev)
+            print('====> migrad')
+            self.mesg=self.minuit_fun.simplex(ncall=max_ev).migrad(ncall=max_ev)
+        else:
+            print('====> migrad')
+            self.mesg=self.minuit_fun.simplex(ncall=max_ev).migrad(ncall=max_ev)
+        
         if iminuit.__version__ < "2":
             self.pout=[self.minuit_fun.values[k] for k in self.minuit_fun.values.keys()]
             self.p=[self.minuit_fun.values[k] for k in self.minuit_fun.values.keys()]
@@ -856,7 +826,10 @@ class MinuitMinimizer(Minimizer):
             for ID,val in enumerate(self.minuit_fun.values):
                 self.pout[ID] = val
                 self.p[ID] = val
-
+        
+        self.covar=np.array(self.minuit_fun.covariance)
+        if hasattr(self.mesg,'_covariance'):
+            self.mesg._covariance=None
     def _set_fit_errors(self):
         if iminuit.__version__ < "2":
             self.errors = [self.minuit_fun.errors[k] for k in self.minuit_fun.errors]
@@ -870,7 +843,6 @@ class MinuitMinimizer(Minimizer):
 
 
     def _set_minuit_func(self, p_init, bounds,p_error=None):
-        #print('=>Hi')
         if p_error==None:
             p_error=[0.1]*len(p_init)
 
@@ -885,12 +857,11 @@ class MinuitMinimizer(Minimizer):
             kwdarg[n] = p
             kwdarg[bn] = b
             kwdarg[en] = e
-            #print( kwdarg[n] ,p, kwdarg[bn] ,b, kwdarg[en] ,e)
-
+        
         self.minuit_par_name_dict={}
         self.minuit_bounds_dict={}
         self.par_dict = {}
-        #print('==> iminuit.__version__',iminuit.__version__)
+       
         for ID,par in enumerate(self.model.fit_par_free):
             self.minuit_par_name_dict[par.name]=p_names[ID]
             self.minuit_bounds_dict[par.name]=bounds[ID]
@@ -903,21 +874,22 @@ class MinuitMinimizer(Minimizer):
                 **kwdarg)
         else:
             values=tuple(par.val for ID,par in enumerate(self.model.fit_par_free))
-            #print('=> values',values)
+            
             self.minuit_fun = iminuit.Minuit(self.chisq_func,
                                              values,
                                              name=p_names)
+            
             self.minuit_fun.limits=[ bounds[ID] for ID,par in enumerate(self.model.fit_par_free) ]
             #print('=>  self.minuit_fun.limits',  self.minuit_fun.limits)
             self.minuit_fun.errordef = Minuit.LEAST_SQUARES
+
     def chisq_func(self, *p):
         if iminuit.__version__ < "2":
             self.p = p
         else:
             self.p = p[0]
 
-        #print('==>p',self.p)
-        #print('==>fit_par_fre', self.model.fit_par_free)
+
         return self.residuals_Fit(self.p,
                           self.model.fit_par_free,
                           self.model.data,
@@ -927,11 +899,6 @@ class MinuitMinimizer(Minimizer):
                           use_UL=self.use_UL,
                           silent=self.silent)
 
-
-
-    #def get_chisq(self):
-    #    #print ('p',self.p)
-    #    return self.chisq_func(*self.p)
 
     def minos_errors(self,par=None):
         try:

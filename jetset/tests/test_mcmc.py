@@ -5,9 +5,8 @@ class TestEmcee(TestBase):
 
     def integration_suite(self,fit_dict=None,sed_number=None,plot=False):
         if sed_number is not None and fit_dict is None:
-            from .test_model_fit import TestModelFit
-            t=TestModelFit()
-            fit_dict=t.integration_suite(plot=plot,sed_number=sed_number,skip_minuit=True)
+            from .test_model_fit import prepare_asset
+            fit_dict=prepare_asset(plot=plot,sed_number=sed_number,skip_minuit=True)
         elif fit_dict and sed_number is None:
             pass
         else:
@@ -15,9 +14,8 @@ class TestEmcee(TestBase):
         self.run_emcee(fit_dict,plot=plot)
 
     def test(self,plot=False):
-        from .test_model_fit import TestModelFit
-        t=TestModelFit()
-        fit_dict=t.integration_suite(plot=plot,sed_number=1,skip_minuit=True)
+        from .test_model_fit import prepare_asset
+        fit_dict=prepare_asset(plot=plot,sed_number=1,skip_minuit=True)
         self.run_emcee(fit_dict=fit_dict,plot=plot)
 
     def run_emcee(self,fit_dict=None,model_minimizer=None,sed_data=None,plot=False):
@@ -31,13 +29,13 @@ class TestEmcee(TestBase):
             pass
 
         from jetset.mcmc import McmcSampler
-
         mcmc = McmcSampler(model_minimizer)
         labels = ['N', 'B', 'beam_obj', 's', 'gamma0_log_parab']
         model_name = 'jet_leptonic'
         use_labels_dict = {model_name: labels}
-        mcmc.run_sampler(nwalkers=64, burnin=10, steps=50, bound=5.0, bound_rel=True, threads=None,
-                        walker_start_bound=0.005, use_labels_dict=use_labels_dict)
+        mcmc.set_labels(use_labels_dict=use_labels_dict)
+        mcmc.set_bounds(bound=5.0,bound_rel=True)
+        mcmc.run_sampler(nwalkers=64, burnin=10, steps=50)
 
         print(mcmc.acceptance_fraction)
         if plot is True:

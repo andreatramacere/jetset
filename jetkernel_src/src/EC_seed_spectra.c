@@ -21,7 +21,7 @@
 // Evaluation of external radiative fields
 //===============================================================
 
-void spectra_External_Fields(int Num_file, struct blob *pt) {
+void spectra_External_Fields(int Num_file, struct blob *pt, int set_EC){
 
     //==================================================================
 	//if (pt->verbose){
@@ -39,43 +39,70 @@ void spectra_External_Fields(int Num_file, struct blob *pt) {
     //=====================================================
 	pt->beaming_EC = pt->BulkFactor;
 
-
+	//printf("spectra_External_Fields 1  R_H_orig=%e, R_H=%e\n", pt->R_H_orig, pt->R_H);
 	if (pt->do_EC_Star==1 || pt->do_Star==1){
-		set_EC_stat_pre(pt, pt->R_Star);
+		//if (set_EC==1){
+		//	set_EC_stat_pre(pt, -1);
+		//}
     	Build_I_nu_Star(pt);
-    }
+		//if (set_EC == 1)
+		//{
+		//	set_EC_stat_post(pt);
+		//}
+	}
 	if (pt->do_EC_Disk == 1 || pt->do_EC_BLR == 1 || pt->do_Disk == 1 || pt->do_EC_DT == 1 || pt->do_DT ==1)
 	{
-		set_EC_stat_pre(pt, pt->R_ext);
+		//if (set_EC == 1){
+		//	set_EC_stat_pre(pt, pt->R_ext);
+		//}
 		Build_I_nu_Disk(pt);
-		set_EC_stat_post(pt);
-    }
+		//if (set_EC == 1)
+		//{
+		//	set_EC_stat_post(pt);
+		//}
+	}
     if (pt->do_EC_BLR==1){
-		set_EC_stat_pre(pt, pt->R_BLR_out);
+		//if (set_EC == 1)
+		//{
+		//	set_EC_stat_pre(pt, pt->R_BLR_out);
+		//}
 		Build_I_nu_BLR(pt);
-		set_EC_stat_post(pt);
+		//if (set_EC == 1)
+		//{
+		//	set_EC_stat_post(pt);
+		//}
 	}
     if (pt->do_EC_DT==1 || pt->do_DT==1){
 		//printf("EC_stat=%d, R_H=%e\n",pt->EC_stat,pt->R_H);
-		set_EC_stat_pre(pt, pt->R_DT);
-    	Build_I_nu_DT(pt);
-		//printf("EC_stat=%d, R_H=%e\n",pt->EC_stat,pt->R_H);
-		set_EC_stat_post(pt);
-    }
-    if (pt->do_EC_CMB==1){
-		set_EC_stat_pre(pt, -1);
-    	Build_I_nu_CMB(pt);
-		set_EC_stat_post(pt);
-    }
-
-    //if (pt->do_EC_CMB_stat==1){
+		//if (set_EC == 1)
+		//{
+		//	set_EC_stat_pre(pt, pt->R_DT);
+		//}
+		Build_I_nu_DT(pt);
+		//if (set_EC == 1)
+		//{
+		//	set_EC_stat_post(pt);
+		//}
+	}
+	if (pt->do_EC_CMB==1){
+		//if (set_EC == 1)
+		//{
+		//	set_EC_stat_pre(pt, -1);
+		//}
+		Build_I_nu_CMB(pt);
+		//if (set_EC == 1)
+		//{
+		//	set_EC_stat_post(pt);
+		//}
+	}
+	//if (pt->do_EC_CMB_stat==1){
     //	Build_I_nu_CMB_stat(pt);
     //}
+	//printf("spectra_External_Fields 2  R_H_orig=%e, R_H=%e\n", pt->R_H_orig, pt->R_H);
 	if (pt->verbose > 1)
 	{
 		printf("#-> ********************************\n\n");
 	}
-	
 }
 //=========================================================================================
 
@@ -103,19 +130,19 @@ void Build_I_nu_Star(struct blob *pt){
 	}
 	*/
 
-	//set_Star_geometry(pt);
+	set_Star_geometry(pt);
 
-	pt->Star_mu_1=0;
-	pt->Star_mu_2=1;
-	pt->Star_surface = 4 * pi * pt->R_Star * pt->R_Star;
+	//pt->Star_mu_1=0;
+	//pt->Star_mu_2=1;
+	
    
-	nu_peak_BB=eval_nu_peak_Disk(pt->T_Star_max);
+	nu_peak_BB=eval_nu_peak_Disk(pt->T_Star);
 
 	nu_start_disk_RF = nu_peak_BB*pt->nu_planck_min_factor;
 	nu_stop_disk_RF  = nu_peak_BB*pt->nu_planck_max_factor;
 
-	pt->nu_start_Star = eval_nu_min_blob_RF(pt,pt->Star_mu_1, pt->Star_mu_2, nu_start_disk_RF);
-	pt->nu_stop_Star  = eval_nu_max_blob_RF(pt,pt->Star_mu_1, pt->Star_mu_2, nu_stop_disk_RF);
+	pt->nu_start_Star = eval_nu_min_blob_RF(pt,pt->mu_star, pt->mu_star, nu_start_disk_RF);
+	pt->nu_stop_Star  = eval_nu_max_blob_RF(pt,pt->mu_star, pt->mu_star, nu_stop_disk_RF);
 
 	pt->nu_start_Star_DRF = nu_start_disk_RF;
 	pt->nu_stop_Star_DRF = nu_stop_disk_RF;
@@ -143,13 +170,12 @@ void Build_I_nu_Star(struct blob *pt){
 		printf("nu_start_Star_obs=%e  nu_stop_Star_obs=%e \n",
 			   pt->nu_start_Star_obs,
 			   pt->nu_stop_Star_obs);
+		
 	}
-
 	build_log_grid( nu_start_disk_RF,  nu_stop_disk_RF, pt->nu_seed_size, pt->nu_Star_disk_RF);
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->I_nu_Star_disk_RF[NU_INT]=eval_I_nu_Star_disk_RF(pt, pt->nu_Star_disk_RF[NU_INT]);
 		//pt->J_nu_Star_disk_RF[NU_INT]=eval_J_nu_Star_disk_RF(pt, pt->I_nu_Star_disk_RF[NU_INT]);
-
 	}
 
 
@@ -158,13 +184,11 @@ void Build_I_nu_Star(struct blob *pt){
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		nu_obs = nu_disk_to_nu_obs_disk(pt->nu_Star_disk_RF[NU_INT],pt->z_cosm);
 		pt->nu_Star_obs[NU_INT]=nu_obs;
-
 		pt->I_nu_Star[NU_INT]=eval_I_nu_Star_blob_RF(pt,pt->nu_Star[NU_INT]);
 		pt->n_Star[NU_INT] =I_nu_to_n(pt->I_nu_Star[NU_INT], pt->nu_Star[NU_INT]);
 		//EC with n(gamma) transf
-		pt->n_Star_DRF[NU_INT] = I_nu_to_n(pt->J_nu_Star_disk_RF[NU_INT], pt->nu_Star_disk_RF[NU_INT]);
+		pt->n_Star_DRF[NU_INT] = I_nu_to_n(pt->I_nu_Star_disk_RF[NU_INT], pt->nu_Star_disk_RF[NU_INT]);
 		
-
 		if (pt->I_nu_Star[NU_INT]>pt->emiss_lim){
 			pt->nu_stop_Star = pt->nu_Star[NU_INT];
 			pt->NU_INT_MAX_Star = NU_INT;
@@ -203,6 +227,7 @@ void Build_I_nu_Star(struct blob *pt){
 		*/
 
 	}
+	
 	/*
 	if (pt->WRITE_TO_FILE == 1)
 	{
@@ -217,41 +242,40 @@ void Build_I_nu_Star(struct blob *pt){
 //========================
 
 double eval_I_nu_Star_disk_RF(struct blob *pt,double nu_Star_disk_RF){
-	return f_planck(pt->T_Star_max, nu_Star_disk_RF);
-	
+	return eval_Star_L_nu(pt,nu_Star_disk_RF)/(16*pi*pi*pt->R_H_Star*pt->R_H_Star);
 }
 
-//TODO!! THIS MUST BE IMPROVED FOR PROPER ANGULAR INTEGRATION
-//double eval_J_nu_Star_disk_RF(struct spettro *pt, double I_nu_Star_disk_RF){
-//	return I_nu_Star_disk_RF*(2.0*pi/(4*pi))*(pt->Star_mu_2- pt->Star_mu_1);
-//}
+// double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu){
+// 	int i;
+// 	double nu_disk_RF=nu_blob_RF_to_nu_disk_RF(pt->nu_blob_RF,pt->BulkFactor,pt->beta_Gamma,mu);
 
+// 	i=x_to_grid_index( pt->nu_Star_disk_RF,nu_disk_RF,pt->nu_seed_size);
+// 	if (i>0){
+// 		return pt->I_nu_Star_disk_RF[i]*pt->BulkFactor*(1-pt->beta_Gamma*mu);
+// 	}
+// 	else{
+// 		return 0;
+// 	}
+// }
 
-double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu){
+double eval_I_nu_Star_blob_RF(struct blob *pt, double nu_blob_RF){
 	int i;
-	double nu_disk_RF=nu_blob_RF_to_nu_disk_RF(pt->nu_blob_RF,pt->BulkFactor,pt->beta_Gamma,mu);
-
+	double nu_disk_RF=nu_blob_RF_to_nu_disk_RF(nu_blob_RF,pt->BulkFactor,pt->beta_Gamma,pt->mu_star);
 	i=x_to_grid_index( pt->nu_Star_disk_RF,nu_disk_RF,pt->nu_seed_size);
 	if (i>0){
-		return pt->J_nu_Star_disk_RF[i]*pt->BulkFactor*(1-pt->beta_Gamma*mu);
+		return pt->I_nu_Star_disk_RF[i]*pt->BulkFactor*(1-pt->beta_Gamma*pt->mu_star);
 	}
 	else{
 		return 0;
 	}
 }
 
-
-
-double eval_I_nu_Star_blob_RF(struct blob *pt, double nu_blob_RF){
-	pt->nu_blob_RF=nu_blob_RF;
-	double (*pf) (struct blob *, double x);
-	pf = &integrand_I_nu_Star_blob_RF;
-	//0.5 comes from 2pi/(4pi)
-	return  0.5*integrale_simp_struct(pf, pt, pt->Star_mu_1, pt->Star_mu_2,pt->theta_n_int);
+double eval_Star_L_nu(struct blob *pt, double nu_Star_disk_RF){
+	return  pi*pt->Star_surface *f_planck(pt->T_Star, nu_Star_disk_RF);
 }
 
-double eval_Star_L_nu(struct blob *pt, double nu_Star_disk_RF){
-	return  pt->Star_surface *eval_I_nu_Star_disk_RF(pt, nu_Star_disk_RF)*pi;
+double eval_Star_L(struct blob *pt, double T_Star){
+	return  sigma_steph_boltz *T_Star*T_Star*T_Star*T_Star*pt->Star_surface;
 }
 
 
@@ -260,55 +284,21 @@ double eval_Star_L_nu(struct blob *pt, double nu_Star_disk_RF){
 //========================
 
 void set_Star_geometry(struct blob *pt){
-	double mu1,mu2,mu,mu_star,c,b,a,psi_star;
+	//double theta_c;
+	pt->theta_c_Star=asin(pt->theta_Star/pt->R_H_Star);
+	
+	// b=sqrt(pt->R_H*pt->R_H - pt->R_Star*pt->R_Star);	
+	// mu1=b/pt->R_H;
 
-	mu=1.0;
-	b=pt->R_H-pt->R_Star*cos(pt->Star_psi_1* pi/ 180.0);
-	a=pt->R_Star*sin(pt->Star_psi_1* pi/ 180.0);
-	c=sqrt(a*a+b*b);
-	printf("%e %e %e\n",a,b,c);
-	mu_star=b/c;
+	// pt->Star_mu_1=min(mu1,mu2);
+	// pt->Star_mu_2=max(mu1,mu2);
 
-	//max cos=> min angle (0-pi)
-	mu1=min(mu,mu_star);
-
-	if (pt->verbose){
-		printf("mu1=%e mu_star=%e  mu=%e \n",mu1,mu_star,mu);
-	}
-
-
-	b=sqrt(pt->R_H*pt->R_H - pt->R_Star*pt->R_Star  );
-	mu_star=b/pt->R_H;
-	psi_star = asin(mu_star) * 180.0 / pi;
-
-
-	mu2=min(pt->Star_psi_2,psi_star);
-	mu2=cos(mu2* pi/ 180.0);
-
-
-	if (psi_star<=pt->Star_psi_2){
-		c=pt->R_H;
-		a=pt->R_Star;
-		b=sqrt(c*c - a*a);
-		mu2=b/c;
-	}else{
-		b=pt->R_H - pt->R_Star*cos(pt->Star_psi_2* pi/ 180.0);
-		a=pt->R_Star*sin(pt->Star_psi_2* pi/ 180.0);
-		c=sqrt(b*b + a*a);
-		mu2=b/c;
-	}
-	//printf("mu2=%e mu_star=%e  psi_star=%e Star_psi_2=%e \n",mu2,mu_star,psi_star,pt->Star_psi_2);
-
-	pt->Star_mu_1=min(mu1,mu2);
-	pt->Star_mu_2=max(mu1,mu2);
-
-
-	if (pt->verbose){
-		printf("mu1=%e mu2=%e psi_star=%e ,mu=%e \n",pt->Star_mu_1,pt->Star_mu_2,psi_star,mu);
-	}
-
+	// if (pt->verbose){
+	//printf("theta_c_Star=%20.20e\n",pt->theta_c_Star);
+	// 
+	pt->mu_star = cos(pt->theta_Star*M_PI / 180.0);
+	pt->R_Star=sqrt(pt->L_Star/(4*pi*pt->T_Star*pt->T_Star*pt->T_Star*pt->T_Star*sigma_steph_boltz));
 	pt->Star_surface=4*pi*pt->R_Star*pt->R_Star;
-
 }
 //=========================================================================================
 
@@ -457,6 +447,10 @@ void Build_I_nu_Disk(struct blob *pt){
 		printf("wrong disk type, option BB, MultiBB, Mono \n ");
 		exit(1);
 	}
+
+	//if (pt->corona==1){
+	//	pt->nu_stop_disk_RF=1E21;
+	//}
 
 	pt->nu_start_Disk = eval_nu_min_blob_RF(pt, pt->Disk_mu_1, pt->Disk_mu_2, nu_start_disk_RF);
 	pt->nu_stop_Disk = eval_nu_max_blob_RF(pt,pt->Disk_mu_1, pt->Disk_mu_2, nu_stop_disk_RF);
@@ -641,7 +635,7 @@ double Disk_Spectrum(struct blob *pt, double nu_Disk_disk_RF){
 	else if (pt->disk==3){
 		I= eval_nu_peak_Disk(pt->T_Disk)*(pt->mono_planck_max_factor-pt->mono_planck_min_factor);
 	}
-	return I;
+	return I*cos(pt->theta * Deg_to_Rad);
 }
 
 double eval_I_nu_theta_Disk(struct blob *pt, double mu)
@@ -676,7 +670,10 @@ double integrand_I_nu_Disk_blob_RF(struct blob *pt, double mu)
 {
 	//double psi, sin_theta;
 	//sin_theta=sqrt(1.0 - mu*mu);
-	return 2 * pi  * eval_I_nu_theta_Disk(pt, mu) * pt->BulkFactor * (1.0 - pt->beta_Gamma * mu);
+	double f;
+	f=  (pt->BulkFactor * (1.0 - pt->beta_Gamma * mu));
+	//f=1/( (pt->BulkFactor * (1.0 - pt->beta_Gamma * mu)) * (pt->BulkFactor * (1.0 - pt->beta_Gamma * mu)) );
+	return 2 * pi  * eval_I_nu_theta_Disk(pt, mu) *f;
 }
 
 double integrand_I_nu_Disk_disk_RF(struct blob *pt, double mu)
@@ -740,7 +737,7 @@ double eval_Disk_L_nu(struct blob *pt, double nu_Disk_disk_RF)
 {
 	if (pt->disk == 2) {
 		//in this case no multiplication by L_Disk, because we acutally integrate every annluar BB along the disk
-		//printf("=> %e\n", Disk_Spectrum(pt, nu_Disk_disk_RF));
+		//printf("=> %e\n", `(pt, nu_Disk_disk_RF));
 		//printf("=> nu_Disk_disk_RF %e\n", nu_Disk_disk_RF);
 		return  Disk_Spectrum(pt, nu_Disk_disk_RF);
 	}
@@ -857,7 +854,8 @@ void Build_I_nu_BLR(struct blob *pt){
 
 	build_log_grid( pt->nu_start_BLR_disk_RF,  pt->nu_stop_BLR_disk_RF, pt->nu_seed_size, pt->nu_BLR_disk_RF);
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
-		pt->Lnu_BLR_disk_RF[NU_INT] = eval_Lnu_BLR_disk_RF(pt, pt->nu_BLR_disk_RF[NU_INT]);
+		//pt->Lnu_BLR_disk_RF[NU_INT] = eval_Lnu_BLR_disk_RF(pt, pt->nu_BLR_disk_RF[NU_INT]);
+		pt->Lnu_BLR_disk_RF[NU_INT] = eval_Lnu_BLR_disk_RF(pt,pt->L_nu_Disk_disk_RF[NU_INT]);
 	}
 	for (NU_INT = 0; NU_INT<= NU_INT_MAX; NU_INT++) {
 		pt->I_nu_BLR_disk_RF[NU_INT] = I_nu_theta_disk_RF * pt->Lnu_BLR_disk_RF[NU_INT];
@@ -967,9 +965,11 @@ double integrand_I_nu_BLR_blob_RF(struct blob *pt, double theta)
 	//mu = cos(theta);
 	//mu1 = (pt->beta_Gamma - mu )/(pt->beta_Gamma*mu - 1.0 );
 	//c=(pt->BulkFactor * pt->BulkFactor * pt->BulkFactor );
+	double f;
 	//c = c * (1.0 + pt->BulkFactor * mu + 1.0) * (1.0 + pt->BulkFactor * mu + 1.0) * (1.0 + pt->BulkFactor * mu + 1.0);
-
-	return 2 * pi * sin(theta) * eval_I_nu_theta_BLR(pt, cos(theta)) * pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta));
+	f=pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta));
+	//f=1/( (pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta))) * (pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta))));
+	return 2 * pi * sin(theta) * eval_I_nu_theta_BLR(pt, cos(theta)) *f;
 }
 
 double integrand_I_nu_BLR_disk_RF(struct blob * pt, double theta)
@@ -1031,9 +1031,11 @@ double eval_I_nu_BLR_blob_RF(struct blob *pt)
 	return I*one_by_four_pi*c;
 }
 
-double eval_Lnu_BLR_disk_RF(struct blob *pt, double nu_disk_RF)
+//double eval_Lnu_BLR_disk_RF(struct blob *pt, double nu_disk_RF)
+double eval_Lnu_BLR_disk_RF(struct blob *pt, double Disk_L_nu)
 {
-	return eval_Disk_L_nu(pt, nu_disk_RF) * pt->n0_BLR *SIGTH;
+	return Disk_L_nu* pt->n0_BLR *SIGTH;
+	//return eval_Disk_L_nu(pt, nu_disk_RF) * pt->n0_BLR *SIGTH;
 }
 
 
@@ -1351,7 +1353,10 @@ double eval_I_nu_theta_DT(struct blob *pt, double mu, double theta)
 double integrand_I_nu_DT_blob_RF(struct blob *pt, double theta)
 {
 	//double psi;
-	return 2 * pi * sin(theta) * eval_I_nu_theta_DT(pt, cos(theta), theta) * pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta));
+	double f;
+	//f=1/( (pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta))) * (pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta))));
+	f=pt->BulkFactor * (1.0 - pt->beta_Gamma * cos(theta));
+	return 2 * pi * sin(theta) * eval_I_nu_theta_DT(pt, cos(theta), theta)*f;
 }
 
 double integrand_I_nu_DT_disk_RF(struct blob *pt, double theta)
@@ -1419,8 +1424,6 @@ double eval_I_nu_DT_blob_RF(struct blob *pt )
 
 double eval_DT_L_nu(struct blob *pt, double DT_disk_RF)
 {
-	//unsigned int i;
-	//i = x_to_grid_index(pt->nu_Disk_disk_RF, DT_disk_RF, pt->nu_seed_size);
 	return pt->L_Disk_radiative * pt->tau_DT * f_planck_norm(pt->T_DT, DT_disk_RF);
 }
 
@@ -1492,7 +1495,7 @@ double eval_accr_rate(double L_Disk,double accr_eff){
 
 
 double eval_L_Edd(double M_BH){
-	return 4*pi*G_cgs*M_BH*m_sun*vluce_cm/0.3;
+	return 1.3E38*M_BH;
 }
 
 double eval_accr_Edd(double L_Edd, double accr_eff){

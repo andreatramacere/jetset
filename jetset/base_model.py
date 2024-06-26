@@ -3,17 +3,19 @@ __author__ = "Andrea Tramacere"
 
 
 import numpy as np
-import json
+import copy
 import dill as pickle
 import warnings
 import inspect
+import numbers
+from astropy.table import Table
 
 from .model_parameters import ModelParameterArray, ModelParameter
 from .spectral_shapes import SED
 from .data_loader import  ObsData
 from .utils import  get_info
 from .plot_sedfit import  PlotSED
-
+from .utils import check_frame,unexpected_behaviour
 
 from .cosmo_tools import  Cosmo
 
@@ -25,14 +27,20 @@ __all__=['Model','MultiplicativeModel']
 class Model(object):
     
     
-    def __init__(self,name='no_name',nu_size=200,model_type='base_model',scale='lin-lin',cosmo=None,nu_min=None,nu_max=None):
+    def __init__(self,name='no_name',
+                 nu_size=200,
+                 model_type='base_model',
+                 scale='lin-lin',
+                 cosmo=None,
+                 nu_min=None,
+                 nu_max=None):
         
         self.model_type=model_type
         
         self.name=name
 
         self.SED = SED(name=self.name)
-    
+
         self.parameters = ModelParameterArray()    
         
         self._scale=scale
@@ -46,7 +54,9 @@ class Model(object):
         self.flux_plot_lim = 1E-30
 
         if cosmo is None:
-          self.cosmo=Cosmo()
+            self.cosmo=Cosmo()
+        else:
+            self.cosmo=cosmo
 
         self._set_version(v=None)
         
@@ -98,7 +108,6 @@ class Model(object):
         return lin_model,log_model
 
     def _fill(self, lin_nu, lin_model):
-
         if hasattr(self,'SED'):
             self.SED.fill(nu=lin_nu, nuFnu=lin_model)
             z=self.get_par_by_type('redshift')
@@ -225,7 +234,7 @@ class Model(object):
         if filter_UL ==True:
             msk=data['UL']==False
         else:
-            msk=np.ones(data.size,dt=True)
+            msk=np.ones(len(data),dtype=bool)
 
         residuals = (data['nuFnu_data'] - model) /  data['dnuFnu_data']
 
@@ -257,13 +266,22 @@ class Model(object):
             raise RuntimeError(e)
 
     def _fix_par_dep_on_load(self,):
+        #print("\n \n ========> fix dep on load START")
         for p in self.parameters.par_array:
-            #print("==> 1", p.name, p._master_par_list, p._depending_par_expr,p.model.name)
             if p._is_dependent is True and p._linked is False:
-                self._is_dependent = False
-                #print("==> 2", p.name, p._master_par_list, p._depending_par_expr)
-                self.make_dependent_par(p.name, p._master_par_list, p._depending_par_expr)
+                #print('==> _master_par_list',p._master_par_list, " for", p.name)
+                #print('==> _depending_par_expr',p._depending_par_expr, " for", p.name)
+                _master_par_list=[p for p in p._master_par_list]
+                _depending_par_expr=copy.deepcopy(p._depending_par_expr)
+                p.reset_dependencies()    
+                self.make_dependent_par(p.name, _master_par_list, _depending_par_expr,set_par_expr_source_code=True)
+        
+        
+    #def _set_pars_dep(self):
+    #    for p in self.parameters.par_array:
+    #        if
 
+   
     #def _set_pars_dep(self):
     #    for p in self.parameters.par_array:
     #        if
@@ -353,7 +371,8 @@ class Model(object):
             except:
                 raise RuntimeError('the parameter expression is not valid')
 
-    def make_dependent_par(self, par, depends_on, par_expr,verbose=True):
+    def make_dependent_par(self, par, depends_on, par_expr,verbose=True,set_par_expr_source_code=True,master_pars=None):
+        #print("\n  ===> make par: ",par, "depending on : ",depends_on, " START")
         master_par_list = depends_on
 
         dep_par=self.parameters.get_par_by_name(par)
@@ -369,25 +388,82 @@ class Model(object):
         dep_par._func = dep_par._eval_par_func
         dep_par._master_par_list=master_par_list
         for p in master_par_list:
-            m = self.parameters.get_par_by_name(p)
-            dep_par._add_master_par(m)
-            m._add_depending_par(dep_par)
-
+            try:
+                m = self.parameters.get_par_by_name(p)
+                dep_par._add_master_par(m)
+                m._add_depending_par(dep_par)
+            except Exception as e:
+                message='problem with parameter name: %s'%p
+                message+='\nexception:%s'%str(e)
+                raise RuntimeError(message)
+              
         for p in master_par_list:
 
             m = self.parameters.get_par_by_name(p)
-            if m._is_dependent is False:
-                m.val=m.val
-        if isinstance(par_expr,str):
-            _par_expr=par_expr
-        else:
-            _par_expr=inspect.getsource(par_expr)
-        if verbose is True:
-            print('==> par', dep_par.name, 'is now depending on', master_par_list, f'according to expr:{dep_par.name} =\n{_par_expr}'.format(dep_par.name,_par_expr))
-
+            if m._is_dependent is False and m.par_type == 'user_defined':
+                try:
+                    m.val=m.val
+                except:
+                    pass
+        if set_par_expr_source_code is True:
+            dep_par._set_par_expr_source_code()
+            if verbose is True:
+                dep_par.par_expression_source_code
+        #print("  ===> make par: ",par, "depending on : ",depends_on, " END\n")
+    
     def add_user_par(self,name,val,units='',val_min=None,val_max=None):
         self.parameters.add_par(ModelParameter(name=name,units=units,val=val,val_min=val_min,val_max=val_max,par_type='user_defined'))
 
+
+
+    def set_fit_range(self,down_tol=0.1,up_tol=100):
+        for p in self.parameters.par_array:
+            if isinstance(p.val, numbers.Number):
+                if p.val_min is not None:
+                    p.fit_range_min=max(p.val_min,p.val_lin*down_tol)
+                else:
+                    p.fit_range_min = p.val_lin*down_tol
+                if p.val_max is not None:
+                    p.fit_range_max=min(p.val_max,p.val_lin *(1+up_tol))
+                else:
+                    p.fit_range_max = p.val_lin*(1+up_tol)
+
+
+    def build_table(self, restframe='obs'):
+
+        _names = ['nu']
+        _cols=[]
+        if hasattr(self,'SED'):
+            check_frame(restframe)
+            if restframe=='obs':
+                 _cols.append(self.SED.nu)
+            elif restframe=='src':
+                _cols.append(self.SED.nu_src)
+            else:
+                unexpected_behaviour()
+
+            
+            if restframe == 'obs':
+                _names.append('nuFnu')
+                _cols.append(self.SED.nuFnu)
+            else:
+                _names.append('nuLnu_src')
+                _cols.append(self.SED.nuLnu_src)
+        
+        _meta=dict(model_name=self.name)       
+        _meta['restframe']= restframe
+        self._SED_table = Table(_cols, names=_names,meta=_meta)
+
+   
+    def sed_table(self, restframe='obs'):
+        try:
+            self.build_table(restframe=restframe)
+        except:
+            self.eval()
+            self.build_table(restframe=restframe)
+                 
+        return  self._SED_table
+   
 
 class MultiplicativeModel(Model):
 

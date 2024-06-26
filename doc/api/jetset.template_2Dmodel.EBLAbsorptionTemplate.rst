@@ -10,6 +10,9 @@ EBLAbsorptionTemplate
 
    .. autosummary::
 
+      ~EBLAbsorptionTemplate.energy_array
+      ~EBLAbsorptionTemplate.redshift_array
+      ~EBLAbsorptionTemplate.tau_array
       ~EBLAbsorptionTemplate.z
 
    .. rubric:: Methods Summary
@@ -23,6 +26,9 @@ EBLAbsorptionTemplate
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: energy_array
+   .. autoattribute:: redshift_array
+   .. autoattribute:: tau_array
    .. autoattribute:: z
 
    .. rubric:: Methods Documentation

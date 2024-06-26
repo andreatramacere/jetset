@@ -10,6 +10,7 @@ JetSpecComponent
 
    .. autosummary::
 
+      ~JetSpecComponent.hidden
       ~JetSpecComponent.state
 
    .. rubric:: Methods Summary
@@ -22,10 +23,10 @@ JetSpecComponent
       ~JetSpecComponent.get_var_state
       ~JetSpecComponent.plot
       ~JetSpecComponent.show
-      ~JetSpecComponent.update
 
    .. rubric:: Attributes Documentation
 
+   .. autoattribute:: hidden
    .. autoattribute:: state
 
    .. rubric:: Methods Documentation
@@ -36,4 +37,3 @@ JetSpecComponent
    .. automethod:: get_var_state
    .. automethod:: plot
    .. automethod:: show
-   .. automethod:: update

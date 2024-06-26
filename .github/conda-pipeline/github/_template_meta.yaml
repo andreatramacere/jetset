@@ -1,0 +1,37 @@
+{% set data = load_setup_py_data(setup_file='../../../setup.py', from_recipe_dir=True) %}
+{% set version = data.get('version')  %}
+
+package:
+  name: jetset
+  version:  {{ version }}
+
+source:
+  path: ../../../
+
+build:
+  preserve_egg_dir: True
+  script_env:
+    - JETSETBESSELBUILD
+
+requirements:
+
+  build:
+    - swig>3.0.0
+    - python {{ python }}
+    - setuptools
+   # - numpy this will come from requirements.txt
+
+  run:
+    # - entries from requirements.txt
+
+
+
+about:
+  home: https://github.com/andreatramacere/jetset
+  license: BSD-3
+  summary: ''
+  license_family: BSD
+
+extra:
+  recipe-maintainers:
+    - andreatramacere

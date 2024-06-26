@@ -17,43 +17,173 @@
  *
  */
 
-void set_EC_stat_pre(struct blob *pt, double R_ext_emit){
-	double R_H_lim;
-	//printf(" pre 1 pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
-	pt->EC_stat_orig=pt->EC_stat;
-	pt->EC_factor=1.0;
-	pt->R_H_orig=pt->R_H;
-	//theta_lim=2*(1/pt->BulkFactor)/Deg_to_Rad;
-	R_ext_emit=R_ext_emit*pt->R_ext_factor;
-	if ((pt->R_H>R_ext_emit) && (pt->EC_stat==1) && R_ext_emit>0){
-		pt->EC_stat=0;
 
-		if (pt->theta>pt->EC_theta_lim){
-			pt->R_H=R_ext_emit*pt->R_H_scale_factor;
-			pt->EC_factor=((pt->R_H/pt->R_H_orig)*(pt->R_H/pt->R_H_orig));
-		}
-	
-		//else{
-		//	pt->R_H=R_lim;
-		//	pt->EC_factor=1.0/((pt->R_H/pt->R_H_orig)*(pt->R_H/pt->R_H_orig));
-		//}
+double f_psi_EC_ring(double R_ext,double R_H, double mu_s,double beaming,double phi){
+ 	double x2, cos_psi, mu_star;
+ 	x2 =  (R_ext*R_ext)+(R_H*R_H);
+ 	mu_star = R_H/sqrt(x2);
+	cos_psi=(mu_s*mu_star)+(sqrt((1-(mu_s*mu_s)))*sqrt(1-(mu_star*mu_star)))*cos(phi);
+ 	return ((1 - cos_psi) * (1 - cos_psi)) * pow(beaming,6) / x2;
 	}
-	//printf(" pre 2 pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
-	//printf("pt->R_H=%e pt->R_H_orig=%e R_H_lim=%e pt->EC_factor=%e\n",pt->R_H,pt->R_H_orig,R_lim, pt->EC_factor);
+
+
+double f_psi_EC_sphere(double R_ext,double R_H, double mu_s, double mu_re, double beaming,double phi){
+	double x2, cos_psi, mu_star;
+	x2= (R_ext*R_ext)+(R_H*R_H) -2*R_H*R_ext*mu_re;
+	mu_star=sqrt(1- ((R_ext*R_ext/x2) *(1-mu_re*mu_re)) );
+	//printf("x2=%e mu_re=%e mu_star=%e\n", x2,mu_re,mu_star);
+	if (mu_star>1){
+		return 0.;
+	}
+	cos_psi=(mu_s*mu_star) +( sqrt(1-(mu_star*mu_star))*sqrt(1-(mu_s*mu_s))*cos(phi));
+	return ((1 - cos_psi) * (1 - cos_psi)) * pow(beaming,6)/x2;
 }
 
+double beaming_pattern_EC(double theta_s, double R_ext, double R_H, double Gamma, int geom){
+	// geom = 0 sphere
+	// geom = 1 ring
 	
-    
+	unsigned  int_size = 100;
+	double phi[100], mu_re[100], y[100], z[100];
+	unsigned int i,j;
+	double delta_phi, beaming, mu_s,mu_re_max,mu_re_min,delta_mu_re,bp;
 
+	beaming = get_beaming(Gamma, theta_s);
 
+	mu_re_min=-1;
+	if (R_H > R_ext){
+         mu_re_max= R_ext/ R_H;
+	
+    }else{
+		mu_re_max = 1;
+	}	
 
-void set_EC_stat_post(struct blob *pt){
-		pt->EC_stat=pt->EC_stat_orig;
-		pt->EC_factor=1.0;
-		pt->R_H=pt->R_H_orig;
-		//printf("post pt->EC_stat_orig=%d pt->EC_stat=%d \n",pt->EC_stat_orig,pt->EC_stat);
+	delta_phi = 2 * pi / (int_size-1);
+	delta_mu_re  = (mu_re_max-mu_re_min)/ (int_size-1);
+	
+	mu_s = cos(Deg_to_Rad * theta_s);
+	for (i = 0; i < int_size; i++)
+	{
+		phi[i] = 0 + (i * delta_phi);
+		mu_re[i] = mu_re_min + (i*delta_mu_re);
+
+	}
+	
+	if (geom==0){
+		for (i = 0; i < int_size; i++){
+			for (j = 0; j < int_size; j++){
+			
+		 	z[j]= f_psi_EC_sphere(R_ext, R_H, mu_s, mu_re[j],beaming, phi[i]);
+	
+			}	
+			y[i]= trapzd_array_linear_grid(mu_re, z, int_size);
+		}
+		bp= trapzd_array_linear_grid(phi, y, int_size);
+	
+	}else if(geom==1){
+		for (i = 0; i < int_size; i++){
+			y[i]=  f_psi_EC_ring(R_ext, R_H, mu_s, beaming, phi[i]);
+			}
+		bp=trapzd_array_linear_grid(phi, y, int_size);
+	}else{
+		printf("wrong geometry for beaming pattern \n ");
+        exit(0);	
+	}
+	return bp;
 }
+
+double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma){
+	double y_theta, y_theta_0;
+
+	y_theta = beaming_pattern_EC(theta_s, R_ext, R_H_orig, Gamma,0);
+	y_theta_0 = beaming_pattern_EC(theta_s, R_ext, R_H_in, Gamma,0);
+	return y_theta / y_theta_0;
+}
+
+void update_EC_for_bp(struct blob *pt, double nuFnu_obs_ref, double R_ext_emit, unsigned int SIZE, double *nuFnu_obs, double *nu_obs)
+{
+	double s_bp, s_actual, nuFnu_obs_max;
+	unsigned int I_MAX, NU_INT;
+
+	s_bp = scaling_function_EC(pt->theta, R_ext_emit, 0, pt->R_H_orig, pt->BulkFactor);
+
+	I_MAX = pt->nu_IC_size - 1;	
+	nuFnu_obs_max = nuFnu_obs[0];
+	for (NU_INT = 0; NU_INT < I_MAX; NU_INT++)
+	{
+		if (nuFnu_obs[NU_INT] > nuFnu_obs_max)
+		{
+			nuFnu_obs_max = nuFnu_obs[NU_INT];
+		}
+	}
+	s_actual = nuFnu_obs_max / nuFnu_obs_ref;
+	for (NU_INT = 0; NU_INT <= I_MAX; NU_INT++)
+	{
+		if (nuFnu_obs[NU_INT] > pt->emiss_lim)
+		{
+			nuFnu_obs[NU_INT] = nuFnu_obs[NU_INT] * (s_bp / s_actual);
+			nu_obs[NU_INT] = nu_obs[NU_INT] * pow((s_bp /(pt->BulkFactor* s_actual)),0.25);
+			if (nuFnu_obs[NU_INT] <= pt->emiss_lim)
+			{
+					nuFnu_obs[NU_INT] = pt->emiss_lim;
+			}
+			
+		}
+	}
+
+}
+
+double get_EC_reference(struct blob *pt, double *nuFnu_obs)
+{
+	double nuFnu_obs_ref;
+	unsigned int I_MAX, NU_INT;
 	
+
+	I_MAX = pt->nu_IC_size - 1;
+
+	nuFnu_obs_ref = nuFnu_obs[0];
+	for (NU_INT = 0; NU_INT < I_MAX; NU_INT++)
+	{
+		if (nuFnu_obs[NU_INT] > nuFnu_obs_ref)
+		{
+			nuFnu_obs_ref = nuFnu_obs[NU_INT];
+		}
+	}
+	return nuFnu_obs_ref;
+}
+
+int set_condition_EC_correction(struct blob *pt,double R_ext_emit)
+{
+	int do_EC_correction =0;
+	if ((pt->R_H > (R_ext_emit * pt->R_ext_emit_factor)) && (pt->EC_stat == 1) && R_ext_emit > 0){
+		do_EC_correction =1;
+	}
+	//printf("do_EC_correction=%d \n",do_EC_correction);
+	return do_EC_correction;
+}
+
+void set_EC_stat_pre(struct blob *pt, double R_ext_emit)
+{
+	
+	//printf("set_EC_stat_pre 1 R_ext_emit =%e, R_H_orig=%e, R_H=%e\n", R_ext_emit, pt->R_H_orig, pt->R_H);
+
+	if (set_condition_EC_correction(pt, R_ext_emit) > 0 && R_ext_emit > 0 && pt->EC_stat==1)
+	{
+		pt->R_H_scale_factor = pt->BulkFactor / get_beaming( pt->BulkFactor,pt->theta);
+		if ((pt->R_H / (R_ext_emit * pt->R_ext_emit_factor)) > pt->R_H_scale_factor)
+		{
+			pt->EC_stat = 0;
+		}
+		//pt->R_H = R_ext_emit * pt->R_H_scale_factor;
+	}
+}
+
+void set_EC_stat_post(struct blob *pt)
+{
+	pt->EC_stat = pt->EC_stat_orig;
+	pt->R_H = pt->R_H_orig;
+	pt->R_H_scale_factor=1.0;
+}
 
 
 void spettro_EC(int Num_file, struct blob *pt) {
@@ -65,9 +195,9 @@ void spettro_EC(int Num_file, struct blob *pt) {
     double * nu_start_EC, * nu_stop_EC, * nu_start_EC_obs, * nu_stop_EC_obs, nu_seed_max;
     unsigned int * NU_INT_STOP_EC;
     unsigned int NU_INT, I_MAX, stop;
-    
-
-    //============================================================
+	double R_ext_emit;
+	void *(*eval_j_ptr)(void * args);
+	//============================================================
     //         inizio  loop sulle freq per spettro  compton
     //============================================================
     pt->TOT = 0;
@@ -99,8 +229,8 @@ void spettro_EC(int Num_file, struct blob *pt) {
 		nu_start_EC_obs = &(pt->nu_start_EC_Disk_obs);
     	nu_stop_EC_obs = &(pt->nu_stop_EC_Disk_obs);
     	NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_Disk);
-		set_EC_stat_pre(pt, pt->R_ext);
-    	if (pt->verbose>0) {
+		R_ext_emit= pt->R_ext;
+		if (pt->verbose>0) {
     		printf("nu_star_Disk=%e    nu_stop_Disk=%e\n",
     			pt->nu_start_Disk,
     			pt->nu_stop_Disk);
@@ -117,8 +247,8 @@ void spettro_EC(int Num_file, struct blob *pt) {
     	nu_start_EC_obs = &(pt->nu_start_EC_BLR_obs);
     	nu_stop_EC_obs = &(pt->nu_stop_EC_BLR_obs);
     	NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_BLR);
-		set_EC_stat_pre(pt, pt->R_BLR_out);
-    	if (pt->verbose>0) {
+		R_ext_emit = pt->R_BLR_out;
+		if (pt->verbose>0) {
 			printf("nu_star_BLR=%e    nu_stop_BLR=%e\n",
 					pt->nu_start_BLR,
 					pt->nu_stop_BLR);
@@ -136,7 +266,7 @@ void spettro_EC(int Num_file, struct blob *pt) {
     	nu_start_EC_obs = &(pt->nu_start_EC_DT_obs);
     	nu_stop_EC_obs = &(pt->nu_stop_EC_DT_obs);
     	NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_DT);
-		set_EC_stat_pre(pt, pt->R_DT);
+		R_ext_emit = pt->R_DT;
 		//printf("pre R_H=%e R_DT=%e EC_Stat=%d\n",pt->R_H,pt->R_DT,pt->EC_stat);
     	if (pt->verbose>0) {
 			printf("nu_star_DT=%e    nu_stop_DT=%e\n",
@@ -157,8 +287,8 @@ void spettro_EC(int Num_file, struct blob *pt) {
     	nu_start_EC_obs = &(pt->nu_start_EC_Star_obs);
     	nu_stop_EC_obs = &(pt->nu_stop_EC_Star_obs);
     	NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_Star);
-		set_EC_stat_pre(pt, pt->R_Star);
-    	if (pt->verbose>0) {
+		R_ext_emit = -1;
+		if (pt->verbose>0) {
 			printf("nu_start_Star=%e    nu_stop_Star=%e\n",
 					pt->nu_start_Star,
 					pt->nu_stop_Star);
@@ -177,8 +307,9 @@ void spettro_EC(int Num_file, struct blob *pt) {
     	nu_start_EC_obs = &(pt->nu_start_EC_CMB_obs);
     	nu_stop_EC_obs = &(pt->nu_stop_EC_CMB_obs);
     	NU_INT_STOP_EC= &(pt->NU_INT_STOP_EC_CMB);
-	    set_EC_stat_pre(pt, -1);
-    	if (pt->verbose>0) {
+		R_ext_emit = -1;
+		
+		if (pt->verbose>0) {
     		printf("nu_start_CMB=%e    nu_stop_CMB=%e\n",
     				pt->nu_start_CMB,
     				pt->nu_stop_CMB);
@@ -189,11 +320,13 @@ void spettro_EC(int Num_file, struct blob *pt) {
     }else{
 		printf("wrong EC \n ");
         exit(0);
+		
 	}
-	
-    
+	//printf("spettro_EC 1 R_H=%e c=%d \n", pt->R_H, set_condition_EC_correction(pt, pt->R_DT));
+	set_EC_stat_pre(pt, R_ext_emit);
+	//printf("spettro_EC 2 R_H=%e c=%d \n", pt->R_H, set_condition_EC_correction(pt, pt->R_DT));
 
-    gmax=Find_gmax(pt,pt->Ne,pt->griglia_gamma_Ne_log);
+	gmax=Find_gmax(pt,pt->Ne,pt->griglia_gamma_Ne_log);
 	numax_KN = 1000 * gmax * MEC2 / HPLANCK;
 	numax_TH = 1000 * (4.0 / 3.0) * pow(gmax, 2) * nu_seed_max;
 	if (HPLANCK * nu_seed_max * gmax / MEC2 > 0.1) {
@@ -242,40 +375,20 @@ void spettro_EC(int Num_file, struct blob *pt) {
 		printf("emiss limit=%e\n", pt->emiss_lim);
 	}
 
-	I_MAX = pt->nu_IC_size-1;
+	I_MAX = pt->nu_IC_size -1;
 	stop=0;
+
+	eval_j_ptr = &eval_j_EC;
+    threaded_j_evaluation(pt, eval_j_ptr, pt->j_EC, freq_array, *nu_start_EC, *nu_stop_EC,I_MAX,pt->N_THREADS);
+
 	for (NU_INT = 0; NU_INT <= I_MAX; NU_INT++) {
-
-        pt->nu_1 = freq_array[NU_INT];
         nuFnu_obs_array[NU_INT]=pt->emiss_lim;
-        pt->j_EC[NU_INT] = pt->emiss_lim;
-
         if (pt->verbose>1) {
             printf("#-> nu_em=%e  nu_obs=%e  i=%d\n", freq_array[NU_INT], freq_array_obs[NU_INT], NU_INT);
         }
         if ((freq_array[NU_INT] >= *nu_start_EC) && (freq_array[NU_INT] <= *nu_stop_EC)) {
 			if (!stop) {
 				
-				pt->q_comp[NU_INT] = rate_compton_GR(pt);
-				if (pt->EC_stat == 1){
-					//in this case we have q_comp in the disk frame, so j_nu is in the disk rest frame
-					//and we have to use also the scattered nu in the disk rest frame
-					j_nu_disk=pt->q_comp[NU_INT]*HPLANCK*freq_array[NU_INT]*pt->beam_obj;
-
-					//now we go back to the blob
-					//this is the j_nu in the blob frame at nu_blob
-					//evaluated from j_disk at nu_disk
-					pt->j_EC[NU_INT]=j_nu_disk;
-				
-				}
-				else{
-					pt->j_EC[NU_INT] = pt->q_comp[NU_INT] *
-									   HPLANCK * freq_array[NU_INT];
-				}
-				
-				pt->j_EC[NU_INT]= pt->j_EC[NU_INT] *pt->EC_factor;
-
-
 				if (pt->verbose > 1) {
 					printf("#-> q_comp[%d]=%e j[%d]=%e nu_1=%e \n", NU_INT,
 							pt->q_comp[NU_INT], NU_INT, pt->j_EC[NU_INT],
@@ -286,11 +399,11 @@ void spettro_EC(int Num_file, struct blob *pt) {
 				//		pt->z_cosm);
 				if (pt->EC_stat == 1)
 				{
-					L_nu_EC = j_nu_src_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_sphere,
+					L_nu_EC = j_nu_src_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_region,
 												   pt->beam_obj);
 				}
 				else{
-					L_nu_EC = j_nu_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_sphere,
+					L_nu_EC = j_nu_to_L_nu_src(pt->j_EC[NU_INT], pt->Vol_region,
 						pt->beam_obj);
 				}
 				//nuL_nu_EC = L_nu_EC * nu_src;
@@ -388,8 +501,14 @@ void spettro_EC(int Num_file, struct blob *pt) {
             //}
     	}
     }
+	//printf("spettro_EC 3 R_H=%e c=%d \n", pt->R_H, set_condition_EC_correction(pt, pt->R_DT));
+
 	set_EC_stat_post(pt);
-	//printf("post R_H=%e R_DT=%e EC_Stat=%d\n",pt->R_H,pt->R_DT,pt->EC_stat);
+	//printf("spettro_EC 4 R_H=%e c=%d \n", pt->R_H, set_condition_EC_correction(pt, pt->R_DT));
+
+	//spectra_External_Fields(1, pt,1);
+	//printf("spettro_EC 5 R_H=%e c=%d \n", pt->R_H, set_condition_EC_correction(pt, pt->R_DT));
+
 	//===========================================
 	//    trova nu peak e Flux peak
 	//===========================================
@@ -471,6 +590,35 @@ void spettro_EC(int Num_file, struct blob *pt) {
 
 
 
+void  * eval_j_EC(void *data){
+    unsigned int NU_INT;
+    double nu_IC_out;
+	struct j_args *thread_args = data;
+    for (NU_INT = thread_args->NU_INT_START; NU_INT <= thread_args->NU_INT_STOP; NU_INT++) {
+        nu_IC_out=thread_args->nu_array[NU_INT];
+        thread_args->blob_pt->q_comp[NU_INT] = 0.;
+        thread_args->blob_pt->j_EC[NU_INT] = 0.;
+       
+        if (thread_args->blob_pt->verbose > 1) {
+                printf("#->1 in eval_j_EC   NU_INT=%d eval_j_EC  nu_1=%e \n", NU_INT, thread_args->nu_array[NU_INT]);
+        }
 
+		thread_args->blob_pt->q_comp[NU_INT] = rate_compton_GR(thread_args->blob_pt,nu_IC_out);
+		if (thread_args->blob_pt->EC_stat == 1){
+			//in this case we have q_comp in the disk frame, so j_nu is in the disk rest frame
+			//and we have to use also the scattered nu in the disk rest frame
+			thread_args->blob_pt->j_EC[NU_INT]=thread_args->blob_pt->q_comp[NU_INT]*HPLANCK*thread_args->nu_array[NU_INT]*thread_args->blob_pt->beam_obj;
+		}
+		else{
+			thread_args->blob_pt->j_EC[NU_INT] = thread_args->blob_pt->q_comp[NU_INT] * HPLANCK * thread_args->nu_array[NU_INT];
+		}
+        if (thread_args->blob_pt->verbose > 1) {
+                printf("#->2 in  eval_j_EC NU_INT=%d q_comp[%d]=%e j[%d]=%e nu_1=%e \n", NU_INT,NU_INT,
+                        thread_args->blob_pt->q_comp[NU_INT], NU_INT, thread_args->blob_pt->j_EC[NU_INT],
+                        thread_args->nu_array[NU_INT]);
+        }
+    }
+	return NULL; 
+}
 
 

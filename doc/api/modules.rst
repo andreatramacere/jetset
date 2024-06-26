@@ -6,7 +6,7 @@ Modules
 In the following the package modules are listed.
  
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
     
    analytical_model    <analytical_model.rst>
    base_model    <base_model.rst>
@@ -17,6 +17,7 @@ In the following the package modules are listed.
    gammapy_plugin    <gammapy_plugin.rst>
    jet_emitters    <jet_emitters.rst>
    jet_emitters_factory    <jet_emitters_factory.rst>
+   jet_kernel_tools    <jet_kernel_tools.rst>
    jet_model    <jet_model.rst>
    jet_paramters    <jet_paramters.rst>
    jet_spectral_components    <jet_spectral_components.rst>
@@ -27,7 +28,6 @@ In the following the package modules are listed.
    mathkernel_helper    <mathkernel_helper.rst>
    mcmc    <mcmc.rst>
    minimizer    <minimizer.rst>
-   mock    <mock.rst>
    model_manager    <model_manager.rst>
    model_parameters    <model_parameters.rst>
    obs_constrain    <obs_constrain.rst>

@@ -9,8 +9,10 @@ import copy
 import warnings
 import os
 from astropy import units as u
+from astropy import constants
 from contextlib import redirect_stdout
 import io
+import multiprocessing
 
 from .jet_spectral_components import JetSpecComponent, SpecCompList
 
@@ -44,13 +46,10 @@ __all__=['Jet','JetBase','GalacticBeamed','GalacticUnbeamed']
 
 class JetBase(Model):
     """ JetBase class.
-    This class allows to build a ``Jet`` model providing the interface to the
-    C code, giving  full access to the physical parameters and
+    This is the base  class for the jet models providing the interface to the C code, giving  full access to the physical parameters and
     providing the methods to run the code.
-    A :class:`Jet` object  will store the
-    the physical parameters in  the ::py:attr:`Jet.parameters`  that is :class:`.ModelParameterArray` class,
-    i.e. a collection of :class:`JetParameter` objects.
-    All the physical parameters are  also accessible as attributes of
+    The object  will store the the physical parameters in  the ::py:attr:`Jet.parameters`  which is :class:`.ModelParameterArray` object,
+    i.e. a collection of :class:`JetParameter` objects.  All the physical parameters are  also accessible as attributes of
     the  ::py:attr:`Jet.parameters`
     """
     def __repr__(self):
@@ -69,54 +68,66 @@ class JetBase(Model):
                  verbose=None,
                  nu_size=500,
                  clean_work_dir=True,
+                 geometry='spherical',
                  **keywords):
-
         """
-
         Parameters
         ----------
-        cosmo
-        name
-        emitters_type
-        emitters_distribution
-        emitters_distribution_log_values
-        beaming_expr
-        jet_workplace
-        verbose
-        nu_size
-        clean_work_dir
+        cosmo : _type_, optional
+            instance of the`Cosmo` class, by default None
+        name : str, optional
+            name of the model, by default 'test'
+        emitters_type : str, optional
+            , by default 'electrons'
+        emitters_distribution : str, optional
+            , by default 'pl'
+        emitters_distribution_log_values : bool, optional
+            , by default False
+        beaming_expr : str, optional
+            expression for the beaming , by default 'delta'
+        jet_workplace : _type_, optional
+            , by default None
+        verbose : _type_, optional
+            , by default None
+        nu_size : int, optional
+            size of the nu grid, by default 500
+        clean_work_dir : bool, optional
+            , by default True
+        geometry : str, optional
+            , by default 'spherical'
         """
-        super(JetBase,self).__init__(  **keywords)
 
+        super(JetBase,self).__init__( cosmo=cosmo, **keywords)
 
-
-
-        if cosmo is not None:
-            self.cosmo=cosmo
-        else:
-            self.cosmo= Cosmo()
-        #print('cosmo', self.cosmo)
         self.name = clean_var_name(name)
 
         self.model_type='jet'
-        self._emitters_type=emitters_type
+        #self._emitters_type=emitters_type
         self._scale='lin-lin'
-
-        self._blob = self.build_blob(verbose=verbose)
+    
+        self._blob = self._build_blob(verbose=verbose)
         self._static_spec_arr_grid_size = BlazarSED.static_spec_arr_grid_size
         self._nu_static_size = BlazarSED.static_spec_arr_size
         self.nu_size = nu_size
         self.nu_grid_size=self._get_nu_grid_size_blob()
+        N=multiprocessing.cpu_count()
+        if N>2:
+            N=min(N,20)
+        self.set_num_c_threads(N=N)
         if jet_workplace is None:
             jet_workplace=WorkPlace()
             out_dir= jet_workplace.out_dir + '/' + self.name + '_jet_prod/'
         else:
             out_dir=jet_workplace.out_dir+'/'+self.name+'_jet_prod/'
 
+        self._allowed_geometry=['spherical','spherical_shell']
+
+        self.geometry=geometry
         self.set_path(out_dir,clean_work_dir=clean_work_dir)
 
         self.set_flag(self.name)
 
+        
 
         self._allowed_EC_components_list=['EC_BLR',
                                           'DT',
@@ -133,10 +144,10 @@ class JetBase(Model):
 
         self._allwed_disk_type =['BB', 'Mono', 'MultiBB']
         self.EC_components_list =[]
-        self.spectral_components_list=[]
+        self._spectral_components_list=[]
+        self._hidden_spectral_components_list = []
 
-
-        self.spectral_components= SpecCompList(self.spectral_components_list)
+        self.spectral_components= SpecCompList(self._spectral_components_list)
 
         self.add_basic_components()
         self.SED=self.get_spectral_component_by_name('Sum').SED
@@ -147,15 +158,28 @@ class JetBase(Model):
         self._electron_distribution_dic= None
         self._external_photon_fields_dic= None
         self._original_emitters_distr = None
-
+        self._energetic = None
         self._setup(emitters_distribution,emitters_distribution_log_values,beaming_expr,emitters_type)
 
 
     def _setup(self, emitters_distribution, emitters_distribution_log_values, beaming_expr, emitters_type):
-        self.EC_components_list = []
-        self.spectral_components_list = []
+        """_summary_
 
-        self.spectral_components = SpecCompList(self.spectral_components_list)
+        Parameters
+        ----------
+        emitters_distribution : _type_
+            _description_
+        emitters_distribution_log_values : _type_
+            _description_
+        beaming_expr : _type_
+            _description_
+        emitters_type : _type_
+            _description_
+        """
+        self.EC_components_list = []
+        self._spectral_components_list = []
+
+        self.spectral_components = SpecCompList(self._spectral_components_list)
         self.add_basic_components()
 
         self.SED = self.get_spectral_component_by_name('Sum').SED
@@ -192,40 +216,46 @@ class JetBase(Model):
 
 
     def __getstate__(self):
-        return  self._serialize_model()
+        j= self._serialize_model()
+        return j 
 
     def __setstate__(self,state):
         self.__init__()
         self._decode_model(state)
+        self._fix_par_dep_on_load()
 
     def _serialize_model(self):
         _model = {}
         _model['version']=get_info()['version']
         _model['name'] = self.name
+        _model['emitters_type'] = self.emitters_distribution.emitters_type
         if isinstance(self.emitters_distribution,JetkernelEmittersDistribution):
             _model['emitters_distribution'] = self._emitters_distribution_name
             _model['emitters_distribution_log_values'] = self._emitters_distribution_log_values
-            _model['emitters_type'] = self._emitters_type
             _model['emitters_distribution_class']='JetkernelEmittersDistribution'
         elif isinstance(self.emitters_distribution,EmittersDistribution):
             self._original_emitters_distr._copy_from_jet(self)
-            _model['custom_emitters_distribution'] =self._original_emitters_distr
+            _model['custom_emitters_distribution']=self._original_emitters_distr
+            clean_numba(_model['custom_emitters_distribution'])
             _model['emitters_distribution_class'] = 'EmittersDistribution'
         else:
-            raise  RuntimeError('emitters distribuion type not valid',type(self._emitters_distribution))
+            raise  RuntimeError('emitters distribution type not valid',type(self._emitters_distribution))
 
         if hasattr(self,'T_esc_e_second'):
             _model['T_esc_e_second']=self.T_esc_e_second
+        
+        if hasattr(self,'geometry'):
+            _model['geometry']=self.geometry
 
         _model['beaming_expr'] = self._beaming_expr
         _model['spectral_components_name'] = self.get_spectral_component_names_list()
-        _model['spectral_components_state'] = [c.state for c in self.spectral_components_list]
+        _model['spectral_components_state'] = [c.state for c in self._spectral_components_list]
         _model['EC_components_name'] = self.EC_components_list
         _model['basic_components_name'] = self.basic_components_list
-        _model['cosmo'] = self.cosmo
-
+        _model['cosmo'] = self.cosmo._serialize_model()
         _model['pars'] = {}
         _model['pars']=self.parameters._serialize_pars()
+        _model['external_field_transf']=self.get_external_field_transf()
 
         _model['internal_pars'] = {}
         _model['internal_pars']['nu_size'] = self.nu_size
@@ -238,36 +268,40 @@ class JetBase(Model):
         return _model
 
     def save_model(self,file_name):
-        f = io.StringIO()
-        with redirect_stdout(f):
-            pickle.dump(self._serialize_model(), open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
       
 
     @classmethod
     @safe_run
     def load_model(cls, file_name):
+        """Load a save model
+
+        Parameters
+        ----------
+        file_name : _type_
+            _description_
+        verbose : bool, optional
+            _description_, by default True
+
+        Returns
+        -------
+        _type_
+            _description_
+
+        Raises
+        ------
+        RuntimeError
+            _description_
+        """
         try:
-            _model = pickle.load(open(file_name, "rb"))
+              jet=pickle.load(open(file_name, "rb"))
+              jet.set_blob()
+              jet._update_spectral_components()
+              return jet
         except Exception as e:
             raise RuntimeError('The model you loaded is not valid please check the file name', e)
 
-        try:
-            jet = cls(name='no_name')
-            jet._decode_model(_model)
-            jet._fix_par_dep_on_load()
-            jet.show_pars()
-            jet.eval()
-            return jet
-        except Exception as e:
-            if 'version' in _model.keys():
-                v=_model['version']
-            else:
-                v='unknown(<1.1.2)'
-            msg = "trying  to load a model saved with jetset version %s \n "%v
-            msg += "currenlty using jetset version %s \n "%get_info()['version']
-            msg += "caused the following problem:\n %s\n"%(repr(e))
 
-            raise RuntimeError (msg)
 
 
 
@@ -278,10 +312,15 @@ class JetBase(Model):
             self._set_version(_model['version'])
         else:
             self._set_version(v='unknown(<1.1.2)')
-
-        self.cosmo = _model['cosmo']
+        self.cosmo = Cosmo.from_model(_model['cosmo'])
         self.model_type = 'jet'
         self.name = _model['name']
+        if 'geometry' in _model.keys():
+            self.geometry=_model['geometry']
+        else:
+             warnings.warn('the model you are loading has not geometry specification. Assuming it is spherical!')
+             self.geometry='spherical'
+             
         self.set_blob()
         self.parameters = JetModelParameterArray(model=self)
 
@@ -290,7 +329,7 @@ class JetBase(Model):
             emitters_type=str(_model['emitters_type'])
         else:
             emitters_type = 'electrons'
-
+        
         if 'electron_distribution' in _model.keys():
             _v=_model['electron_distribution']
             del(_model['electron_distribution'])
@@ -309,7 +348,7 @@ class JetBase(Model):
         elif _model['emitters_distribution_class'] == 'EmittersDistribution':
             self.set_emitters_distribution(distr=_model['custom_emitters_distribution'], init=False)
         else:
-            raise RuntimeError('emitters distribuion type not valid', type(self._emitters_distribution))
+            raise RuntimeError('emitters distribution type not valid', type(self._emitters_distribution))
 
         for c in self.basic_components_list:
             if c not in _model['basic_components_name']:
@@ -322,13 +361,14 @@ class JetBase(Model):
             self.add_bremss_ep_component()
             self.T_esc_e_second=_model['T_esc_e_second']
 
-        #for k in _model['pars'].keys():
-            #print ('-->',k,_model['pars'][k])
+       
         if 'disk_type' in _model['pars'].keys():
             disk_type=_model['pars']['disk_type']['val']
         else:
             disk_type=None
+
         self.add_EC_component(_model['EC_components_name'],disk_type=disk_type)
+        self.set_external_field_transf(_model['external_field_transf'])
 
         for ID, c in enumerate(_model['spectral_components_name']):
             comp = getattr(self.spectral_components, c)
@@ -338,13 +378,13 @@ class JetBase(Model):
         self.SED = self.get_spectral_component_by_name('Sum').SED
        
         self.set_emitting_region(str(_model['beaming_expr']),self.emitters_distribution.emitters_type)
-        #self.set_electron_distribution(str(_model['electron_distribution']))
         if isinstance(self,GalacticBeamed):
-            self._handle_z(d=u.kpc*1)
-            
+            self._handle_z(d=self.cosmo._DL_cm)
+        
         _par_dict = _model['pars']
         _non_user_dict={}
         _user_dict={}
+        
         for k, v in _model['pars'].items():
             if v['par_type'] == 'user_defined':
                 _user_dict[k]=v
@@ -354,75 +394,15 @@ class JetBase(Model):
         self.parameters._decode_pars(_non_user_dict)
 
         for k, v in _user_dict.items():
-            #print('==>',v)
             v['name']=k
             self.parameters.add_par(ModelParameter(**v))
 
         _par_dict = _model['internal_pars']
         for k in _par_dict.keys():
-            #print ('set', k,_par_dict[k])
             setattr(self,k,_par_dict[str(k)])
-            #self.set_par(par_name=str(k), val=_par_dict[str(k)])
-
-    @classmethod
-    def load_old_model(cls, file_name):
-
-        old_model_warning()
-        jet = cls()
-        with open(file_name, 'r') as infile:
-            _model = json.load(infile)
-
-        # print ('_model',_model)
-
-        jet.model_type = 'jet'
-
-        jet.init_BlazarSED()
-
-        jet.parameters = JetModelParameterArray(model=jet)
-
-        if 'electron_distribution' in _model.keys():
-            _v = _model['electron_distribution']
-            del (_model['electron_distribution'])
-            _model['emitters_distribution'] = _v
-
-        if 'electron_distribution_log_values' in _model.keys():
-            _v = _model['electron_distribution_log_values']
-            del (_model['electron_distribution_log_values'])
-            _model['emitters_distribution_log_values'] = _v
-
-        jet.set_emitters_distribution(name=str(_model['emitters_distribution']),
-                                       log_values=_model['emitters_distribution_log_values'],
-                                       emitters_type='electrons',
-                                       init=False)
-
-        for c in jet.basic_components_list:
-            if c not in _model['basic_components_name']:
-                jet.del_spectral_component(c)
 
 
-        jet.add_EC_component(_model['EC_components_name'])
-
-        for ID, c in enumerate(_model['spectral_components_name']):
-            comp = getattr(jet.spectral_components, c)
-            if comp._state_dict != {}:
-                comp.state = _model['spectral_components_state'][ID]
-
-        jet.SED = jet.get_spectral_component_by_name('Sum').SED
-
-        jet.set_emitting_region(str(_model['beaming_expr']),emitters_type='electrons')
-
-        _par_dict = _model['pars']
-        jet.show_pars()
-        for k in _par_dict.keys():
-            # print ('set', k,_par_dict[k])
-            jet.set_par(par_name=str(k), val=_par_dict[str(k)])
-
-        jet.eval()
-        return jet
-
-
-
-    def build_blob(self, verbose=None):
+    def _build_blob(self, verbose=None):
 
         blob = BlazarSED.MakeBlob()
 
@@ -446,6 +426,11 @@ class JetBase(Model):
 
         F_Sync_y_ptr = getattr(blob,  'F_Sync_y')
 
+        G_Sync_x_ptr = getattr(blob, 'G_Sync_x')
+
+        G_Sync_y_ptr = getattr(blob,  'G_Sync_y')
+
+
         F_ave_Sync_x_ptr = getattr(blob,  'F_ave_Sync_x')
 
         F_ave_Sync_y_ptr = getattr(blob, 'F_ave_Sync_y')
@@ -458,23 +443,32 @@ class JetBase(Model):
 
         log_F_ave_Sync_y_ptr = getattr(blob, 'log_F_ave_Sync_y')
 
+        log_G_Sync_x_ptr = getattr(blob, 'log_G_Sync_x')
 
-        d = np.genfromtxt(bessel_table_file_path)
+        log_G_Sync_y_ptr = getattr(blob, 'log_G_Sync_y')
+        d = np.genfromtxt(bessel_table_file_path,comments='#')
         log_F_Sync_x=np.log10(d[:,0])
         log_F_Sync_y=np.log10(d[:,1])
         log_F_ave_Sync_x=np.log10(d[:,2])
         log_F_ave_Sync_y=np.log10(d[:,3])
+        log_G_Sync_x=np.log10(d[:,4])
+        log_G_Sync_y=np.log10(d[:,5])
 
         for ID, l in enumerate(d):
             BlazarSED.set_bessel_table(F_Sync_x_ptr,blob, l[0], ID)
             BlazarSED.set_bessel_table(F_Sync_y_ptr, blob,  l[1], ID)
             BlazarSED.set_bessel_table(F_ave_Sync_x_ptr, blob,  l[2], ID)
             BlazarSED.set_bessel_table(F_ave_Sync_y_ptr, blob,  l[3], ID)
+            BlazarSED.set_bessel_table(G_Sync_x_ptr,blob, l[4], ID)
+            BlazarSED.set_bessel_table(G_Sync_y_ptr, blob,  l[5], ID)
+
 
             BlazarSED.set_bessel_table(log_F_Sync_x_ptr, blob, log_F_Sync_x[ID], ID)
             BlazarSED.set_bessel_table(log_F_Sync_y_ptr, blob, log_F_Sync_y[ID], ID)
             BlazarSED.set_bessel_table(log_F_ave_Sync_x_ptr, blob, log_F_ave_Sync_x[ID], ID)
             BlazarSED.set_bessel_table(log_F_ave_Sync_y_ptr, blob, log_F_ave_Sync_y[ID], ID)
+            BlazarSED.set_bessel_table(log_G_Sync_x_ptr, blob, log_G_Sync_x[ID], ID)
+            BlazarSED.set_bessel_table(log_G_Sync_y_ptr, blob, log_G_Sync_y[ID], ID)
 
         blob.BESSEL_TABLE_DONE=1
 
@@ -499,6 +493,7 @@ class JetBase(Model):
         blob.do_SSC = 1
 
         blob.R = 5.0e15
+        blob.h_sh=0.1
 
         blob.B = 0.1
 
@@ -511,7 +506,7 @@ class JetBase(Model):
 
         blob.NH_pp = 1
 
-        blob.NH_cold_to_rel_e = 0.1        
+        blob.NH_cold_to_rel_e = 1.0       
 
         blob.L_Disk = 1E45
 
@@ -533,7 +528,13 @@ class JetBase(Model):
         return blob
 
     def set_emitting_region(self,beaming_expr,emitters_type):
+        """sets the emitting region
 
+        Parameters
+        ----------
+        beaming_expr : str
+        emitters_type : str
+        """
         if  self._emitting_region_dict is not None:
             self.del_par_from_dic(self._emitting_region_dict)
 
@@ -542,12 +543,109 @@ class JetBase(Model):
         set_str_attr(self._blob,'BEAMING_EXPR',beaming_expr)
 
         self._emitting_region_dict=build_emitting_region_dict(self.cosmo,beaming_expr=beaming_expr,emitters_type=emitters_type)
-
+        self._set_geometry()
         self.parameters.add_par_from_dict(self._emitting_region_dict,self,'_blob',JetParameter)
+        
+
+    def _set_geometry(self):
+        self._blob.GEOMETRY=self.geometry
+        if self.geometry == 'spherical':
+            pass
+        elif self.geometry == 'spherical_shell':
+            self._emitting_region_dict.pop('R')
+            self._emitting_region_dict['R_sh'] = JetModelDictionaryPar(ptype='region_size', vmin=1E3, vmax=1E30, punit='cm', froz=False, log=False)
+            self._emitting_region_dict['h_sh'] = JetModelDictionaryPar(ptype='scaling_factor',val=0.1, vmin=0, punit='', vmax=1, froz=False, log=False)
+
+    
+    @property
+    def spectral_components_list(self):
+        """provides a list of the spectral components
+
+        Returns
+        -------
+        list of spectral components
+        """
+        return [s for s in self._spectral_components_list if s.hidden is False]
+
+    @property
+    def geometry(self,):
+        return self._geometry
+
+    @geometry.setter
+    def geometry(self,geometry):
+        if geometry in self._allowed_geometry:
+            self._geometry=geometry
+        else:
+            raise RuntimeError("geometry %s not allowed" % geometry, "please choose among ",
+                                   self._allowed_geometry)
+
+
+    def make_conical_jet(self, R=None,theta_open=5.,theta_open_min=1,theta_open_max=10):
+        """Convenience method to set functional dependency of parameters to have conical jet
+
+        Parameters
+        ----------
+        R : double, optional
+           , by default None
+        theta_open : double, optional
+            semi opening angle of the jet in deg, by default 5
+        theta_open_min : int, optional
+            min value for theta_open, by default 1
+        theta_open_max : int, optional
+            max value for theta_open, by default 10
+
+        Raises
+        ------
+        RuntimeError
+            
+        """
+        if R is None:
+            R=self.parameters.R.val
+        try:
+            self.add_user_par(name='theta_open',val=theta_open,units='deg',val_min=theta_open_min,val_max=theta_open_max)
+            self.make_dependent_par(par='R', depends_on=['R_H','theta_open'],
+                              par_expr='np.tan(np.radians(theta_open))*R_H')
+            self.parameters.R_H.free()
+           
+            R_H=R/(np.tan(np.radians(self.parameters.theta_open.val)))
+            print('setting R_H to',R_H)
+            self.parameters.R_H.val=R_H
+        except RuntimeError as e:
+            msg='\n'
+            msg+='something wrong, probably theta_open has already been added, or R is already dependant\n'
+            msg+='please, try to reset the dependency of R: e.g my_jet.parameters.R.reset_dependencies()\n'
+            msg+='or, try to remove theta_open: e.g my_jet.parameters.del_par(my_jet.parameters.theta_open)\n'
+            msg+='the error is in:\n'
+            msg+=str(e)
+
+            raise RuntimeError(msg)
+        
+        except Exception as e:
+            raise RuntimeError('unexpected exception',str(e))
+    
+
+    def set_EC_dependencies(self):
+        """Convenience method to set the functional dependency of BLR and DT radius according to the disk luminosity
+        """
+        try:
+            if  self.parameters.get_par_by_name('L_Disk') is not None and self.parameters.get_par_by_name('R_BLR_in') is not None:
+                try:            
+                    self.make_dependent_par(par='R_BLR_in', depends_on=['L_Disk'], par_expr='3E17*(L_Disk/1E46)**0.5')
+                    self.make_dependent_par(par='R_BLR_out', depends_on=['R_BLR_in'], par_expr='R_BLR_in*1.1')
+                except RuntimeError as e:
+                    print('functional dependencies already invoked for BLR',str(e))
+            if  self.parameters.get_par_by_name('L_Disk') is not None and self.parameters.get_par_by_name('R_DT') is not None:
+                try:           
+                    self.make_dependent_par(par='R_DT', depends_on=['L_Disk'], par_expr='2E19*(L_Disk/1E46)**0.5')
+                except RuntimeError as e:
+                    print('functional dependencies already invoked for DT',str(e)) 
+
+        except Exception as e:
+            print('unexpected exception',str(e))
 
     @property
     def IC_adaptive_e_binning(self,):
-        return np.int(self._blob.IC_adaptive_e_binning)
+        return np.intc(self._blob.IC_adaptive_e_binning)
 
     @IC_adaptive_e_binning.setter
     def IC_adaptive_e_binning(self,state):
@@ -555,7 +653,7 @@ class JetBase(Model):
             pass
         else:
             raise RuntimeError('state has to be boolean')
-        self._blob.IC_adaptive_e_binning=np.int(state)
+        self._blob.IC_adaptive_e_binning=np.intc(state)
 
     @staticmethod
     def available_emitters_distributions():
@@ -583,6 +681,8 @@ class JetBase(Model):
 
 
         elif isinstance(distr, EmittersDistribution):
+            if hasattr(distr,'_activate_numba'):
+                distr._activate_numba()
             self._original_emitters_distr = distr
             self.emitters_distribution = copy.deepcopy(distr)
             self._update_emitters_pars_dependence()
@@ -598,6 +698,8 @@ class JetBase(Model):
         elif isinstance(distr, str):
             nf=EmittersFactory()
             self.emitters_distribution = nf.create_emitters(distr, log_values=log_values, emitters_type=emitters_type)
+            if hasattr( self.emitters_distribution,'_activate_numba'):
+                self.emitters_distribution._activate_numba()
             self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
             self.emitters_distribution.set_jet(self)
             self.emitters_distribution._update_parameters_dict()
@@ -638,17 +740,38 @@ class JetBase(Model):
 
         print ("Spectral components for Jet model:%s"%(self.name))
 
-        for comp in self.spectral_components_list:
+        for comp in self._spectral_components_list:
 
             print ("comp: %s "%(comp.name))
 
         print()
 
 
+   
+    def sed_table(self, restframe='obs'):
+        """Provide the astropy table with SED spectral components
+
+        Parameters
+        ----------
+        restframe : str, optional
+            , by default 'obs'
+
+        Returns
+        -------
+        astropy table
+        """
+        try:
+            self.spectral_components.build_table(restframe=restframe)
+        except:
+            self.eval()
+            
+        self._SED_table = self.spectral_components.table
+        return  self._SED_table
+
     def get_spectral_component_by_name(self,name,verbose=True):
-        for i in range(len(self.spectral_components_list)):
-            if self.spectral_components_list[i].name==name:
-                return self.spectral_components_list[i]
+        for i in range(len(self._spectral_components_list)):
+            if self._spectral_components_list[i].name==name:
+                return self._spectral_components_list[i]
         else:
             if verbose==True:
                 print ("no spectral components with name %s found"%name)
@@ -658,13 +781,13 @@ class JetBase(Model):
             return None
 
     def list_spectral_components(self):
-        for i in range(len(self.spectral_components_list)):
-            print (self.spectral_components_list[i].name)
+        for i in range(len(self._spectral_components_list)):
+            print (self._spectral_components_list[i].name)
 
     def get_spectral_component_names_list(self):
         _l=[]
-        for i in range(len(self.spectral_components_list)):
-            _l.append(self.spectral_components_list[i].name)
+        for i in range(len(self._spectral_components_list)):
+            _l.append(self._spectral_components_list[i].name)
         return _l
 
     def del_spectral_component(self,name):
@@ -686,7 +809,7 @@ class JetBase(Model):
 
         if comp is not None:
 
-            self.spectral_components_list.remove(comp)
+            self._spectral_components_list.remove(comp)
 
             self.spectral_components.__delattr__(name)
 
@@ -694,17 +817,18 @@ class JetBase(Model):
 
     def _add_spectral_component(self, name, var_name=None, state_dict=None,state=None):
 
-        self.spectral_components_list.append(
+        self._spectral_components_list.append(
             JetSpecComponent(self, name, self._blob, var_name=var_name, state_dict=state_dict, state=state))
-        setattr(self.spectral_components,name,self.spectral_components_list[-1])
+        setattr(self.spectral_components,name,self._spectral_components_list[-1])
 
     def _update_spectral_components(self):
-        _l=[]
-        for ID,s in enumerate(self.spectral_components_list):
-            self.spectral_components_list[ID]= JetSpecComponent(self, s.name, self._blob, var_name=s._var_name, state_dict=s._state_dict, state=s.state)
-            setattr(self.spectral_components, self.spectral_components_list[ID].name, self.spectral_components_list[ID])
+        for ID,s in enumerate(self._spectral_components_list):
+            self._spectral_components_list[ID]= JetSpecComponent(self, s.name, self._blob, var_name=s._var_name, state_dict=s._state_dict, state=s.state)
+            self._spectral_components_list[ID].hidden = s.hidden
+            setattr(self.spectral_components, self._spectral_components_list[ID].name, self._spectral_components_list[ID])
+            
 
-
+    
     def add_basic_components(self):
         self.basic_components_list=['Sum','Sync','SSC']
 
@@ -722,6 +846,20 @@ class JetBase(Model):
         self._add_spectral_component('SSC', var_name='do_SSC', state_dict=dict((('on', 1), ('off', 0))),state=state)
 
     def del_EC_component(self,EC_components_list, disk_type='BB'):
+        """Remove EC components
+
+        Parameters
+        ----------
+        EC_components_list : list
+            list of the components to remove
+        disk_type : str, optional
+             by default 'BB'
+
+        Raises
+        ------
+        RuntimeError
+            _description_
+        """
         if isinstance(EC_components_list, six.string_types):
             EC_components_list = [EC_components_list]
 
@@ -802,7 +940,23 @@ class JetBase(Model):
 
 
 
-    def add_EC_component(self,EC_components_list=[],disk_type='BB'):
+    def add_EC_component(self,EC_components_list=[],disk_type=None):
+        """Method to add external Compton components 
+
+        Parameters
+        ----------
+        EC_components_list : list, optional
+            list of components to add, by default []
+        disk_type : str, optional
+            the type of the disk, by default 'BB'
+
+        Raises
+        ------
+        RuntimeError
+            _description_
+        RuntimeError
+            _description_
+        """
 
         if disk_type is not None:
             if disk_type not in self._allwed_disk_type:
@@ -810,6 +964,8 @@ class JetBase(Model):
         else:
             if self.get_par_by_name('disk_type') is not None:
                 disk_type=self.get_par_by_name('disk_type').val
+            else:
+                disk_type='BB'
 
         if isinstance(EC_components_list, six.string_types):
             EC_components_list=[EC_components_list]
@@ -922,9 +1078,9 @@ class JetBase(Model):
 
 
 
-    def get_DL_cm(self,eval=False):
+    def get_DL_cm(self,eval_model=False):
 
-        if eval is True:
+        if eval_model is True:
             self.set_blob()
 
         if self.cosmo._c is not None:
@@ -966,8 +1122,8 @@ class JetBase(Model):
     def set_external_field_transf(self,val):
         if val not in self._external_field_transf.keys():
             raise RuntimeError('val',val,'not in allowed values',self._external_field_transf.keys())
-
         self._blob.EC_stat=self._external_field_transf[val]
+        self._blob.EC_stat_orig=self._external_field_transf[val]
 
     def get_external_field_transf(self):
         return dict(map(reversed, self._external_field_transf.items()))[self._blob.EC_stat]
@@ -1053,6 +1209,17 @@ class JetBase(Model):
 
     @Norm_distr.setter
     def Norm_distr(self, val):
+        """_summary_
+
+        Parameters
+        ----------
+        val : 1/0 or False/True
+
+        Raises
+        ------
+        RuntimeError
+            _description_
+        """
         if hasattr(self, 'emitters_distribution'):
 
                 if val == 1 or val is True:
@@ -1146,7 +1313,7 @@ class JetBase(Model):
 
     def show_emitters_distribution(self):
         print('-'*80)
-        print('%s distribution:'%self._emitters_type)
+        print('%s distribution:'%self.emitters_distribution.emitters_type)
         print(" type: %s  " % (self._emitters_distribution_name))
         print(" gamma energy grid size: ", self.gamma_grid_size)
         print(" gmin grid : %e" % self._blob.
@@ -1171,8 +1338,9 @@ class JetBase(Model):
         print('-'*80)
         print("type:",self.__class__.__name__)
         print("name: %s  " % (self.name))
+        print("geometry: %s  " % (self.geometry))
         print('')
-        print('%s distribution:'%self._emitters_type)
+        print('%s distribution:'%self.emitters_distribution.emitters_type)
         print(" type: %s  " % (self._emitters_distribution_name))
         print (" gamma energy grid size: ",self.gamma_grid_size)
         print (" gmin grid : %e"%self._blob.gmin_griglia)
@@ -1197,15 +1365,18 @@ class JetBase(Model):
                 print(' accr_rate: %e (M_sun/yr)'%(yr*self._blob.accr_rate/BlazarSED.m_sun))
                 print(' accr_rate Edd.: %e (M_sun/yr)'%(yr*self._blob.accr_Edd/BlazarSED.m_sun))
 
-
+        if 'EC_Star' in self.EC_components_list:
+            print('Star:')
+            print(' Star radius %e (cm)'%self._blob.R_Star, ',%e (R_Sun)'%(self._blob.R_Star/constants.R_sun.to('cm').value))
             print('')
         print('radiative fields:')
         print (" seed photons grid size: ", self.nu_seed_size)
         print (" IC emission grid size: ", self.get_IC_nu_size())
         print (' source emissivity lower bound :  %e' % self._blob.emiss_lim)
         print (' spectral components:')
-        for _s in self.spectral_components_list:
+        for _s in self._spectral_components_list:
             print("   name:%s,"%_s.name, 'state:', _s.state)
+            print("   name:%s,"%_s.name, 'hidden:', _s.hidden)
         print('external fields transformation method:', self.get_external_field_transf())
         print ('')
         print ('SED info:')
@@ -1221,6 +1392,36 @@ class JetBase(Model):
         print('-' * 80)
 
     def plot_model(self,plot_obj=None,clean=False,label=None,comp=None,sed_data=None,color=None,auto_label=True,line_style='-',frame='obs', density=False):
+        """plot the model
+
+        Parameters
+        ----------
+        plot_obj : _type_, optional
+            _description_, by default None
+        clean : bool, optional
+            _description_, by default False
+        label : _type_, optional
+            _description_, by default None
+        comp : _type_, optional
+            _description_, by default None
+        sed_data : _type_, optional
+            _description_, by default None
+        color : _type_, optional
+            _description_, by default None
+        auto_label : bool, optional
+            _description_, by default True
+        line_style : str, optional
+            _description_, by default '-'
+        frame : str, optional
+            _description_, by default 'obs'
+        density : bool, optional
+            _description_, by default False
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
         plot_obj=self._set_up_plot(plot_obj,sed_data,frame,density)
 
         if clean is True:
@@ -1263,7 +1464,10 @@ class JetBase(Model):
     def set_blob(self):
         if hasattr(self, 'T_esc_e_second'):
             if self.T_esc_e_second is None:
-                self._blob.T_esc_e_second = self.parameters.R.val / BlazarSED.vluce_cm
+                if self.geometry == 'spherical':
+                    self._blob.T_esc_e_second = self.parameters.R.val / BlazarSED.vluce_cm
+                else:
+                    self._blob.T_esc_e_second = self.parameters.R_sh.val*self.parameters.h_sh.val / BlazarSED.vluce_cm
             else:
                 self._blob.T_esc_e_second = self.T_esc_e_second
         if self.emitters_distribution._user_defined is True:
@@ -1276,7 +1480,7 @@ class JetBase(Model):
     @safe_run
     def set_external_fields(self):
         self.set_blob()
-        BlazarSED.spectra_External_Fields(1,self._blob)
+        BlazarSED.spectra_External_Fields(1,self._blob,1)
 
     def lin_func(self, lin_nu, init, phys_output=False, update_emitters=True):
         if self.emitters_distribution is None:
@@ -1296,7 +1500,17 @@ class JetBase(Model):
             else:
                 self.emitters_distribution._fill()
 
+        
         nu_sed_sum, nuFnu_sed_sum = self.spectral_components.Sum.get_SED_points(lin_nu=lin_nu,log_log=False,interp=self._jetkernel_interp)
+        
+        nuFnu_sed_hidden=0.
+        for _sc in self._spectral_components_list:
+            if _sc.hidden is True:
+                _, _nuFnu_sed= _sc.get_SED_points(lin_nu=lin_nu,log_log=False,interp=self._jetkernel_interp)
+                nuFnu_sed_hidden += _nuFnu_sed
+        
+        nuFnu_sed_sum = nuFnu_sed_sum - nuFnu_sed_hidden
+       
         return nu_sed_sum, nuFnu_sed_sum
 
     def _eval_model(self, lin_nu, log_nu, init, loglog, phys_output=False, update_emitters=True):
@@ -1338,13 +1552,14 @@ class JetBase(Model):
              update_emitters=True):
         out_model = None
         lin_nu, log_nu = self._prepare_nu_model(nu, loglog)
-
+        
         lin_model, log_model= self._eval_model(lin_nu, log_nu ,init, loglog, phys_output=phys_output,
                                                 update_emitters=update_emitters)
-        #print('-->',lin_nu.min(),lin_nu.max())
+
         if fill_SED is True:
             self._fill(lin_nu,lin_model)
-
+            self.spectral_components.Sum.SED.nuFnu=lin_model
+        
         if get_model is True:
 
             if loglog is True:
@@ -1362,11 +1577,23 @@ class JetBase(Model):
 
     def _build_energetic_dict(self):
         self.energetic_dict={}
-        BlazarSED.SetBeaming(self._blob)        
-        _energetic = BlazarSED.EnergeticOutput(self._blob)
+        BlazarSED.SetBeaming(self._blob)
+
+        #NOTE: workaround for the users be sure they  evaluate correctly the jet energetics for 'disk' frame
+        _change_frame=False
+        if self.get_external_field_transf()=='disk':
+            self.set_external_field_transf('blob')
+            self.eval()
+            _change_frame=True
+        self._energetic = BlazarSED.EnergeticOutput(self._blob)
+        
+        if _change_frame is True:
+            self.set_external_field_transf('disk')
+            self.eval()
+
         _par_array=ModelParameterArray()
 
-        _name = [i for i in _energetic.__class__.__dict__.keys() if i[:1] != '_']
+        _name = [i for i in self._energetic.__class__.__dict__.keys() if i[:1] != '_']
         _par_array.add_par(ModelParameter(name='BulkLorentzFactor', val=self._blob.BulkFactor, units='',par_type='jet-bulk-factor'))
         self.energetic_dict['BulkLorentzFactor']= self._blob.BulkFactor
         try:
@@ -1391,11 +1618,11 @@ class JetBase(Model):
                 if units == 'skip_this':
                     pass
                 else:
-                    self.energetic_dict[_n]=getattr(_energetic, _n)
+                    self.energetic_dict[_n]=getattr(self._energetic, _n)
 
-                    _par_array.add_par(ModelParameter(name=_n, val=getattr(_energetic, _n), units=units,par_type=par_type))
+                    _par_array.add_par(ModelParameter(name=_n, val=getattr(self._energetic, _n), units=units,par_type=par_type))
         except Exception as e:
-            print('_energetic',_energetic)
+            print('_energetic',self._energetic)
             raise RuntimeError('energetic_report failed',e)
 
         return  _par_array
@@ -1453,7 +1680,7 @@ class JetBase(Model):
             i=np.argwhere(i==True)
             self.energetic_report_table.remove_rows(i)
 
-            _d_l=['U_Disk','U_BLR','U_DT','U_CMB','U_Synch_DRF']
+            _d_l=['U_Disk','U_BLR','U_DT','U_CMB','U_Synch_DRF','U_Star']
             i=[]
             for n in self.energetic_report_table['name']:
                 if n in _d_l:
@@ -1503,6 +1730,7 @@ class JetBase(Model):
 
     def get_SED_peak(self,peak_name=None,freq_range=None,log_log=False):
 
+
         if peak_name is not None and freq_range is not None:
             print ("either you provide peak_name or freq_range")
             raise ValueError
@@ -1535,6 +1763,12 @@ class JetBase(Model):
 
         return x_p, y_p
 
+    def set_num_c_threads(self,N):
+        print("===> setting C threads to",N)
+        if isinstance(N,int):
+            self._blob.N_THREADS=N
+        else:
+            raise RuntimeError('N must be integer')
 
 
 
@@ -1557,7 +1791,8 @@ class Jet(JetBase):
                  electron_distribution=None,
                  proton_distribution=None,
                  electron_distribution_log_values=None,
-                 proton_distribution_log_values=None):
+                 proton_distribution_log_values=None,
+                 geometry='spherical'):
         """
 
         Parameters
@@ -1577,6 +1812,7 @@ class Jet(JetBase):
         electron_distribution_log_values
         proton_distribution_log_values
         """
+
         if electron_distribution is not None:
             emitters_type = 'electrons'
             emitters_distribution= electron_distribution
@@ -1588,6 +1824,15 @@ class Jet(JetBase):
             emitters_distribution= proton_distribution
         if proton_distribution_log_values is not None:
             emitters_distribution_log_values = proton_distribution_log_values
+
+
+        if electron_distribution is not None and emitters_type == 'protons':
+            raise RuntimeError("if you provide an electron_distribution, you can't set emitters_type=",emitters_type, 'use emitters_distribution instead')
+        
+        if proton_distribution is not None and emitters_type == 'electrons':
+            raise RuntimeError("if you provide a proton_distribution, you can't set emitters_type=",emitters_type, 'use emitters_distribution instead')
+
+        
 
 
         if name is None:
@@ -1603,7 +1848,8 @@ class Jet(JetBase):
                                  beaming_expr=beaming_expr,
                                  jet_workplace=jet_workplace,
                                  verbose=verbose,
-                                 clean_work_dir=clean_work_dir)
+                                 clean_work_dir=clean_work_dir,
+                                 geometry=geometry)
 
         if name is None or name == '':
             if self.emitters_distribution.emitters_type == 'electrons':
@@ -1663,9 +1909,6 @@ class Jet(JetBase):
                                      state_dict=dict((('on', 1), ('off', 0))))
 
 
-
-
-
     def set_N_from_U_emitters(self,U, gmin=None, gmax=None):
         """ Sets the normalization of N to match the energy density of the primary emitters
         Parameters
@@ -1681,13 +1924,7 @@ class Jet(JetBase):
 
         """
         N = self.parameters.N.val
-        #gamma_grid_size = self._blob.gamma_grid_size
-        #self.emitters_distribution.set_grid_size(1000)
-        #self.emitters_distribution._fill()
-        #self.set_blob()
-        #BlazarSED.EvalU_e(self._blob)
         ratio = U/self.emitters_distribution.eval_U(gmin=gmin, gmax=gmax)
-        #self.emitters_distribution.set_grid_size(gamma_grid_size)
         self.emitters_distribution._fill()
         self.set_par('N', val=N *ratio)
         self.set_blob()
@@ -1697,7 +1934,7 @@ class Jet(JetBase):
 
         Parameters
         ----------
-        U_vol: float (erg)
+        U_vol: float (erg/s)
 
         gmin: float, optional,
             minimum value to evaluate the integral
@@ -1709,11 +1946,7 @@ class Jet(JetBase):
         -------
 
         """
-        #gamma_grid_size = self._blob.gamma_grid_size
-        #self.emitters_distribution.set_grid_size(1000)
-        #self.set_blob()
         U=U_vol/ self._blob.Vol_sphere
-        #self.emitters_distribution.set_grid_size(gamma_grid_size)
         self.set_N_from_U_emitters(U, gmin=gmin, gmax=gmax)
 
 
@@ -1731,13 +1964,11 @@ class Jet(JetBase):
         self.set_par('N', val=1.0)
         #gamma_grid_size = self._blob.gamma_grid_size
         #self.emitters_distribution.set_grid_size(100)
-        #self.set_blob()
-        delta = self._blob.beam_obj
+        self.set_blob()
+        delta = self.get_beaming()
         ratio = L_sync/(BlazarSED.Power_Sync_Electron(self._blob)* delta ** 4)
-        #self.emitters_distribution.set_grid_size(gamma_grid_size)
         self.set_par('N', val=ratio)
-
-
+       
     def set_N_from_F_sync(self, F_sync):
         """Sets the normalization of N to match the observed integrated synchrotron flux
 
@@ -1862,14 +2093,18 @@ class Jet(JetBase):
         if plot==True:
             #import  pylab as plt
             fig, ax = plt.subplots()
-            ax.plot(b_grid,U_e)
-            ax.plot(b_grid,U_B)
+            ax.plot(b_grid,U_e,label=r'$u_e$')
+            ax.plot(b_grid,U_B,label=r'$u_B$')
             ax.plot(b_grid,U_B+U_e)
             ax.scatter(b_grid[ID_min],U_e[ID_min]+U_B[ID_min])
 
             ax.semilogy()
             ax.semilogx()
+            ax.set_xlabel(r'$B$ (G)')
+            ax.set_ylabel(r'$u$ erg cm$-^3$')
+            ax.legend
             plt.show()
+           
 
 
         self.set_par('B', val=b_grid[ID_min])
@@ -1878,11 +2113,35 @@ class Jet(JetBase):
         print ('setting N to ',N[ID_min])
         return b_grid[ID_min],b_grid,U_B,U_e
 
+    def eval_synch_pol(self,nu_range):
+        """_summary_
+        evluates the synchrotron polarization for
+        Parameters
+        ----------
+      
+        nu_range : numpy array
+            array of frequencies for the polarization evaluation
+
+        Returns
+        -------
+        arrrays of polarization and nuF_nu 
+        """
+        nuF_nu=self.eval(get_model=True,nu=nu_range)
+   
+        pol_nu=np.zeros(nu_range.size)
+        for ID,nu in enumerate(nu_range):
+            pol_nu[ID]=BlazarSED.eval_Sync_polarization(self._blob,nu)
+        
+        m=np.logical_or(nuF_nu<=0,np.isnan(pol_nu))
+        pol_nu[m]=0
+        nuF_nu[m]=0
+        return pol_nu,nuF_nu
+
 
 class GalacticBeamed(Jet):
 
     def __init__(self,
-                distance=3*u.kpc,
+                 distance=3*u.kpc,
                  name=None,
                  emitters_type='electrons',
                  emitters_distribution='plc',
@@ -1895,24 +2154,12 @@ class GalacticBeamed(Jet):
                  electron_distribution=None,
                  proton_distribution=None,
                  electron_distribution_log_values=None,
-                 proton_distribution_log_values=None):
-        
+                 proton_distribution_log_values=None,
+                 geometry='spherical'):
         if name is None:
             _name = 'unbeamed'
         else:
             _name = name = clean_var_name(name)
-
-        if electron_distribution is not None:
-            emitters_type = 'electrons'
-            emitters_distribution= electron_distribution
-        if electron_distribution_log_values is not None:
-            emitters_distribution_log_values = electron_distribution_log_values
-
-        if proton_distribution is not None:
-            emitters_type = 'protons'
-            emitters_distribution= proton_distribution
-        if proton_distribution_log_values is not None:
-            emitters_distribution_log_values = proton_distribution_log_values
 
         if np.isscalar(distance):
             _d=distance
@@ -1921,19 +2168,24 @@ class GalacticBeamed(Jet):
                 _d=distance.to('cm')
             except:
                 raise RuntimeError('distance must be either an astropy unit object convertible to cm, or a scalar in cm')
+
         
         cosmo=Cosmo(DL_cm=_d,verbose=False)
-
         super(GalacticBeamed,self).__init__(cosmo=cosmo,
                                     T_esc_e_second=T_esc_e_second,
                                     name=_name,
                                     emitters_type=emitters_type,
                                     emitters_distribution=emitters_distribution,
                                     emitters_distribution_log_values=emitters_distribution_log_values,
+                                    electron_distribution=electron_distribution,
+                                    proton_distribution=proton_distribution,
+                                    electron_distribution_log_values=electron_distribution_log_values,
+                                    proton_distribution_log_values=proton_distribution_log_values,
                                     beaming_expr=beaming_expr,
                                     jet_workplace=jet_workplace,
                                     verbose=verbose,
-                                    clean_work_dir=clean_work_dir)
+                                    clean_work_dir=clean_work_dir,
+                                    geometry=geometry)
 
         if name is None or name == '':
             if self.emitters_distribution.emitters_type == 'electrons':
@@ -1945,7 +2197,6 @@ class GalacticBeamed(Jet):
 
         self.name = clean_var_name(name)
         self._handle_z(d=_d)
-        
 
     def _dummy_z_par_func(self,DL_cm):
             self.cosmo._DL_cm=DL_cm*u.cm
@@ -1955,12 +2206,9 @@ class GalacticBeamed(Jet):
         self._blob.z_cosm=0
         self.parameters.z_cosm.val=0
         self.parameters.z_cosm.hidden=True
+        self.parameters.z_cosm.frozen=True
         _dmax=1000*u.kpc.to('cm')
-       
         self.add_user_par(name='DL_cm',units='cm',val=d.value,val_min=0,val_max=_dmax)
-
-        self.make_dependent_par(par='z_cosm', depends_on=['DL_cm'], par_expr=self._dummy_z_par_func,verbose=False)
-       
         p=self.parameters.get_par_by_name('DL_cm')
         p.par_type='distance'
 
@@ -1980,11 +2228,8 @@ class GalacticUnbeamed(GalacticBeamed):
                  electron_distribution=None,
                  proton_distribution=None,
                  electron_distribution_log_values=None,
-                 proton_distribution_log_values=None):
-        
-   
-        
-
+                 proton_distribution_log_values=None,
+                 geometry='spherical'):
         super(GalacticUnbeamed,self).__init__(distance=distance,
                                             name=name,
                                             emitters_type=emitters_type,
@@ -1998,9 +2243,8 @@ class GalacticUnbeamed(GalacticBeamed):
                                             electron_distribution=electron_distribution,
                                             proton_distribution=proton_distribution,
                                             electron_distribution_log_values=electron_distribution_log_values,
-                                            proton_distribution_log_values=proton_distribution_log_values)
-
-        
+                                            proton_distribution_log_values=proton_distribution_log_values,
+                                            geometry=geometry)
 
         if name is None or name == '':
             if self.emitters_distribution.emitters_type == 'electrons':
@@ -2016,5 +2260,6 @@ class GalacticUnbeamed(GalacticBeamed):
         self.parameters.beam_obj.val=1
         self.parameters.beam_obj.hidden=True
         self.parameters.R_H.hidden=True
-        self.set_external_field_transf('disk')
     
+        self.set_external_field_transf('disk')
+  

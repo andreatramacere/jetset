@@ -3,6 +3,10 @@ __author__ = "Andrea Tramacere"
 import os
 import numpy as np
 from inspect import signature
+from numba import njit
+from numba.extending import is_jitted
+import copy
+import warnings
 from astropy.constants import m_e,m_p,c
 from scipy import interpolate
 from .jetkernel_models_dic import gamma_dic_e ,gamma_dic_p, gamma_dic_pp_e_second, available_N_distr, N_distr_descr, available_emitters_type
@@ -110,9 +114,10 @@ class BaseEmittersDistribution(object):
                                                log=log,))
 
     def set_distr_func(self,distr_func):
+        
         if distr_func is not None:
             self._validate_func(distr_func)
-        self.distr_func = distr_func
+        self.distr_func=distr_func
 
     def _validate_func(self,distr_func):
         s=signature(distr_func)
@@ -210,7 +215,7 @@ class BaseEmittersDistribution(object):
         else:
             raise  RuntimeError('emitters type',self.emitters_type, 'not valid')
 
-        msk = np.ones(x.shape, dtype=np.bool)
+        msk = np.ones(x.shape, dtype=bool)
         if gmin is not None:
             msk = x>=gmin
         if gmax is not None:
@@ -255,7 +260,7 @@ class BaseEmittersDistribution(object):
             self.n_gamma_e_second_inj[np.isinf(self.n_gamma_e_second_inj)] = 0
 
 
-    def _plot(self,m, p, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None):
+    def _plot(self,m, p, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None, loglog=False):
 
         if hasattr(self,'_jet'):
             if self._jet is not None:
@@ -302,8 +307,9 @@ class BaseEmittersDistribution(object):
                         eq= self.gamma_cooling_eq_second* (m_e * c * c).to(energy_unit).value
                     else:
                         eq = self.gamma_cooling_eq_second
-
-                    p.ax.axvline(np.log10(eq), ls='--', label='cooling. eq. second.', lw=0.5, c='r')
+                    if loglog is True:
+                        eq = np.log10(eq)
+                    p.ax.axvline(eq, ls='--', label='cooling. eq. second.', lw=0.5, c='r')
 
                 if hasattr(self, 'gamma_e_second_inj'):
                     m(self.gamma_e_second_inj,
@@ -322,14 +328,14 @@ class BaseEmittersDistribution(object):
         if p is None:
             p = PlotPdistr(loglog=loglog)
         m=getattr(p,'plot_distr')
-        self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label)
+        self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label,loglog=loglog)
         return p
 
     def plot2p(self, p=None, y_min=None, y_max=None, x_min=None, x_max=None, energy_unit='gamma',label=None,loglog=False):
         if p is None:
             p = PlotPdistr(loglog=loglog)
         m=getattr(p,'plot_distr2p')
-        self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label)
+        self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label,loglog=loglog)
 
         return p
 
@@ -337,7 +343,7 @@ class BaseEmittersDistribution(object):
         if p is None:
             p = PlotPdistr(loglog=loglog)
         m=getattr(p,'plot_distr3p')
-        self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label)
+        self._plot(m,p,y_min=y_min,y_max=y_max,x_min=x_min,x_max=x_max,energy_unit=energy_unit,label=label,loglog=loglog)
         return p
 
 
@@ -616,7 +622,15 @@ class EmittersDistribution(BaseEmittersDistribution):
             self.gamma_cooling_eq_second= self._jet._blob.gamma_cooling_eq
             self._secondaries_done = True
 
-
+    def _activate_numba(self):
+        self._py_distr_func=copy.deepcopy(self.distr_func)
+        try:
+            if is_jitted(self.distr_func) is False:
+                self.distr_func = njit(self.distr_func,fastmath=True, cache=False)
+            else:
+                print("===> function already jitted")
+        except Exception as e:
+           print("====> failed to activate numba for",str(e))
 
 
 class EmittersArrayDistribution(EmittersDistribution):
@@ -667,6 +681,8 @@ class EmittersArrayDistribution(EmittersDistribution):
 
         return y
 
+    def _activate_numba(self):
+        pass
 
 class InjEmittersDistribution(BaseEmittersDistribution):
 
@@ -751,7 +767,6 @@ class InjEmittersDistribution(BaseEmittersDistribution):
         self._Q_inj_e_second_ptr = getattr(self._temp_ev._blob, self._Q_inj_e_second_name)
 
 
-
 class InjEmittersArrayDistribution(InjEmittersDistribution):
     def __init__(self,
                  name,
@@ -795,6 +810,9 @@ class InjEmittersArrayDistribution(InjEmittersDistribution):
         y[msk_nan] = 0
 
         return y
+    
+    def _activate_numba(self):
+        pass
 
 
 

@@ -2,7 +2,7 @@
 __author__ = "Andrea Tramacere"
 
 from scipy.optimize import leastsq
-import scipy as s
+#import scipy as s
 from numpy import polyfit,polyval,polyder
 import  numpy as np
 
@@ -33,7 +33,7 @@ def do_linear_fit(x,y,dy=None,x_range=None):
         dy_fit=dy
     
     if dy is None:
-        dy_fit=s.ones(len(x_fit))
+        dy_fit=np.ones(len(x_fit))
    
         
 
@@ -49,14 +49,14 @@ def do_linear_fit(x,y,dy=None,x_range=None):
     chisq=(infodict['fvec']**2).sum()
     dof=len(x_fit)-len(p)
     if dof>0:
-        rmse=s.sqrt(chisq/dof)
+        rmse=np.sqrt(chisq/dof)
     else:
         rmse=0
         
     if cov is not None  :
-        err=s.sqrt(cov.diagonal())*rmse
+        err=np.sqrt(cov.diagonal())*rmse
     else:
-        err=s.zeros(len(p))
+        err=np.zeros(len(p))
     #print p
     return p,err
 
@@ -82,9 +82,9 @@ def cubic_peaks(p,x):
 
 def residuals_cubic_peaks(p,x,y,dy,template):
     if template is not None  :
-        model1=s.power(10,cubic_peaks(p[:4],x))
-        model2=s.power(10,template.func(x,nuFnu_scale=p[4]))
-        model=s.log10(model1+model2)
+        model1=np.power(10,cubic_peaks(p[:4],x))
+        model2=np.power(10,template.func(x,nuFnu_scale=p[4]))
+        model=np.log10(model1+model2)
     else:
         model=cubic_peaks(p[:4],x)
     
@@ -106,7 +106,7 @@ def do_cubic_fit_peaks(x,y,xp,yp,dy=None,x_range=None,template=None):
         dy_fit=dy
     
     if dy is None:
-        dy_fit=s.ones(len(x_fit))
+        dy_fit=np.ones(len(x_fit))
     
     
     if template is not None  :
@@ -122,15 +122,15 @@ def do_cubic_fit_peaks(x,y,xp,yp,dy=None,x_range=None,template=None):
     # dof is degrees of freedom
     dof=len(x_fit)-len(p)
     if dof>0:
-        rmse=s.sqrt(chisq/dof)
+        rmse=np.sqrt(chisq/dof)
     else:
         rmse=0
         
     #print "--> chi_red", rmse
     if cov is not None  :
-        err=s.sqrt(cov.diagonal())*rmse
+        err=np.sqrt(cov.diagonal())*rmse
     else:
-        err=s.zeros(len(p))
+        err=np.zeros(len(p))
     #print p[3]
     #print "--> fit log: ",mesg,ier
     #print infodict['fvec']
@@ -150,8 +150,8 @@ def find_max_cubic(p,x,y,dy=None,x_range=None):
     delta=der[1]*der[1] -(4*der[0]*der[2])
     if delta>=0:
         #print p,der
-        root1=(-der[1]+s.sqrt(delta))/(2*der[0])
-        root2=(-der[1]-s.sqrt(delta))/(2*der[0])
+        root1=(-der[1]+np.sqrt(delta))/(2*der[0])
+        root2=(-der[1]-np.sqrt(delta))/(2*der[0])
         #print root1,root2
         if der[0]>0:
             xp=min(root1,root2)
@@ -204,7 +204,7 @@ def do_cubic_fit(x,y,dy=None,x_range=None):
         dy_fit=dy
     
     if dy is None:
-        dy_fit=s.ones(len(x_fit))
+        dy_fit=np.ones(len(x_fit))
     
     
     
@@ -230,7 +230,7 @@ def do_log_Parab_FIT(x,y,xp,yp,beta,dy=None,x_range=None,template=None):
         dy_fit=dy
     
     if dy is None:
-        dy_fit=s.ones(len(x_fit))
+        dy_fit=np.ones(len(x_fit))
     
     
   
@@ -247,15 +247,15 @@ def do_log_Parab_FIT(x,y,xp,yp,beta,dy=None,x_range=None,template=None):
     dof=len(x_fit)-len(p)
     
     if dof>0:
-        rmse=s.sqrt(chisq/dof)
+        rmse=np.sqrt(chisq/dof)
     else:
         rmse=0
         
     
     if cov is not None  :
-        err=s.sqrt(cov.diagonal())*rmse
+        err=np.sqrt(cov.diagonal())*rmse
     else:
-        err=s.zeros(len(p))
+        err=np.zeros(len(p))
     
     
     #print p,err
@@ -269,9 +269,9 @@ def parab(p,x):
 def residuals_parab(p,x,y,dy,template):
     #print p
     if template is not None  :
-        model1=s.power(10,parab(p[:3],x))
-        model2=s.power(10,template.interp_template(template.func,x,p[3]))
-        model=s.log10(model1+model2)
+        model1=np.power(10,parab(p[:3],x))
+        model2=np.power(10,template.interp_template(template.func,x,p[3]))
+        model=np.log10(model1+model2)
     else:
         model=parab(p,x)
 

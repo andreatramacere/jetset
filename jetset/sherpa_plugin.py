@@ -1,6 +1,8 @@
 __author__ = "Andrea Tramacere"
 
 import os
+from astropy.table import Table
+
 try:
     from sherpa.models.model import ArithmeticModel, modelCacher1d, RegriddableModel1D
     from sherpa.models.parameter import Parameter
@@ -18,6 +20,7 @@ except:
     on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
     
     if on_rtd is True:
+        RegriddableModel1D=object
         pass
     else:
         raise  ImportError('to use sherpa plugin you need to install sherpa: https://sherpa.readthedocs.io/en/latest/install.html')
@@ -26,7 +29,7 @@ import  numpy as np
 from .plot_sedfit import  PlotSED
 from .minimizer import  Minimizer
 
-__all__=['JetsetSherpaModel','plot_sherpa_model']
+__all__=['JetsetSherpaModel','plot_sherpa_model','SherpaMinimizer']
 
 
 class JetsetSherpaModel(RegriddableModel1D):
@@ -69,7 +72,7 @@ class JetsetSherpaModel(RegriddableModel1D):
                 else:
                     val_max = p.val_max
 
-                sh_p = Parameter(self._jetset_model.name, name, p.val, min=val_min, max=val_max, units=p.units)
+                sh_p = Parameter(self._jetset_model.name, name, p.val, min=val_min, max=val_max, units=p.units, frozen=p.frozen)
                 setattr(self, sh_p.name, sh_p)
                 p._sherpa_ref = sh_p
                 if np.isnan(sh_p.max):
@@ -96,6 +99,9 @@ class JetsetSherpaModel(RegriddableModel1D):
         plot_obj = self._jetset_model.plot_model(plot_obj=plot_obj, sed_data=sed_data)
         plot_obj.add_model_residual_plot(data=sed_data, model=self._jetset_model,
                                          fit_range=[fit_range[0], fit_range[1]])
+        
+    
+
 
 
 def plot_sherpa_model(sherpa_model, fit_range=None, model_range=[1E10, 1E30], nu_grid_size=200, sed_data=None,
@@ -125,11 +131,17 @@ def plot_sherpa_model(sherpa_model, fit_range=None, model_range=[1E10, 1E30], nu
 
 class SherpaMinimizer(Minimizer):
 
-    def __init__(self, model,method=LevMar(),stat=Chi2()):
+    def __init__(self, model,method=None,stat=None):
         if sherpa_installed is True:
             pass
         else:
             raise ImportError('sherpa not installed, \n to use sherpa plugin you need to install sherpa: https://sherpa.readthedocs.io/en/latest/install.html')
+
+        if method is None:
+            method=LevMar()
+        
+        if stat is None:
+            stat=Chi2()
 
         super(SherpaMinimizer, self).__init__(model)
         self._method=method
@@ -176,3 +188,14 @@ class SherpaMinimizer(Minimizer):
 
     def _set_fit_errors(self):
         self.errors = [np.sqrt(np.fabs(self.covar[pi, pi])) for pi in range(len(self.model.fit_par_free))]
+
+def sherpa_model_to_table(sherpa_model):
+    rows=[]
+    for p in sherpa_model.pars:
+        
+        if p.link is not None:
+            r=[p.modelname,p.name,p.val,p.min,p.max,p.frozen,p.units,True,p.link.name,p.link.modelname]
+        else:
+            r=[p.modelname,p.name,p.val,p.min,p.max,p.frozen,p.units,False,'','']
+        rows.append(r)
+    return Table(names=['model name' ,'name' , 'val' , 'min','max', 'frozen', 'units','linked','linked par','linked model'],rows=rows)

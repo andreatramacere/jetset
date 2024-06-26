@@ -110,7 +110,6 @@ class JetParameter(ModelParameter):
         super(JetParameter,self).set(**keywords )
 
         if 'val' in keywords.keys():
-            #print('val',keywords['val'],'to',(self.name))
             self.assign_val_to_jetkernel(self.name,keywords['val'])
 
             #This instruction is not requested since it is performed in

@@ -14,11 +14,13 @@ JetBase
       ~JetBase.IC_nu_size
       ~JetBase.Norm_distr
       ~JetBase.gamma_grid_size
+      ~JetBase.geometry
       ~JetBase.nu_grid_size
       ~JetBase.nu_max
       ~JetBase.nu_min
       ~JetBase.nu_seed_size
       ~JetBase.nu_size
+      ~JetBase.spectral_components_list
 
    .. rubric:: Methods Summary
 
@@ -29,7 +31,6 @@ JetBase
       ~JetBase.add_basic_components
       ~JetBase.add_sync_component
       ~JetBase.available_emitters_distributions
-      ~JetBase.build_blob
       ~JetBase.debug_SSC
       ~JetBase.debug_synch
       ~JetBase.del_EC_component
@@ -55,9 +56,11 @@ JetBase
       ~JetBase.lin_func
       ~JetBase.list_spectral_components
       ~JetBase.load_model
-      ~JetBase.load_old_model
+      ~JetBase.make_conical_jet
       ~JetBase.plot_model
       ~JetBase.save_model
+      ~JetBase.sed_table
+      ~JetBase.set_EC_dependencies
       ~JetBase.set_IC_nu_size
       ~JetBase.set_blob
       ~JetBase.set_emiss_lim
@@ -68,6 +71,7 @@ JetBase
       ~JetBase.set_flag
       ~JetBase.set_gamma_grid_size
       ~JetBase.set_nu_grid_size
+      ~JetBase.set_num_c_threads
       ~JetBase.set_path
       ~JetBase.set_seed_nu_size
       ~JetBase.set_verbosity
@@ -83,11 +87,13 @@ JetBase
    .. autoattribute:: IC_nu_size
    .. autoattribute:: Norm_distr
    .. autoattribute:: gamma_grid_size
+   .. autoattribute:: geometry
    .. autoattribute:: nu_grid_size
    .. autoattribute:: nu_max
    .. autoattribute:: nu_min
    .. autoattribute:: nu_seed_size
    .. autoattribute:: nu_size
+   .. autoattribute:: spectral_components_list
 
    .. rubric:: Methods Documentation
 
@@ -96,7 +102,6 @@ JetBase
    .. automethod:: add_basic_components
    .. automethod:: add_sync_component
    .. automethod:: available_emitters_distributions
-   .. automethod:: build_blob
    .. automethod:: debug_SSC
    .. automethod:: debug_synch
    .. automethod:: del_EC_component
@@ -122,9 +127,11 @@ JetBase
    .. automethod:: lin_func
    .. automethod:: list_spectral_components
    .. automethod:: load_model
-   .. automethod:: load_old_model
+   .. automethod:: make_conical_jet
    .. automethod:: plot_model
    .. automethod:: save_model
+   .. automethod:: sed_table
+   .. automethod:: set_EC_dependencies
    .. automethod:: set_IC_nu_size
    .. automethod:: set_blob
    .. automethod:: set_emiss_lim
@@ -135,6 +142,7 @@ JetBase
    .. automethod:: set_flag
    .. automethod:: set_gamma_grid_size
    .. automethod:: set_nu_grid_size
+   .. automethod:: set_num_c_threads
    .. automethod:: set_path
    .. automethod:: set_seed_nu_size
    .. automethod:: set_verbosity

@@ -4,23 +4,29 @@ Installation
 ============
 
 .. important::
-    Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.7 is suggested, older python 3 versions (<3.7)  should work.
+    Starting from version 1.1.0, python 2 is not supported anymore. Python >=3.9,<=3.11 is suggested. Pip and anaconda binaries for apple M processors are distributed only for python version == 3.11
 
 
-Windows 10 prerequisites
+Windows prerequisites
 ------------------------
-Install the Windows Subsystem for Linux: https://docs.microsoft.com/en-us/windows/wsl/install-win10
+Install the Windows Subsystem for Linux: https://learn.microsoft.com/en-us/windows/wsl/install
 
 
-Install  JetSeT from Anaconda
-------------------------------------------------------------------------------
+Install JetSeT from Anaconda
+-----------------------------
+.. note:: anaconda binaries for apple M processors are distributed only for python version == 3.11
+
 to get anaconda: https://www.anaconda.com/download/
+
+or you can use mamba: https://mamba.readthedocs.io/en/latest/
+
+if you use mamba replace ``conda`` with ``mamba`` in the following
 
 - create a virtual environment (not necessary, but suggested):
 
   .. code-block:: bash
 
-      conda create --name jetset python=3.9 ipython jupyter
+      conda create --name jetset python=3.10 ipython jupyter
 
   .. code-block:: bash
 
@@ -30,7 +36,7 @@ to get anaconda: https://www.anaconda.com/download/
 
   .. code-block:: bash
 
-      conda install -c andreatramacere -c astropy -c conda-forge 'jetset>=1.2'
+      conda install -c andreatramacere -c astropy -c conda-forge 'jetset>=1.3'
 
 
 
@@ -44,13 +50,15 @@ to get anaconda: https://www.anaconda.com/download/
 Install  JetSeT from pip
 ------------------------------------------------------------------------------
 
+.. note:: pip binaries for apple M processors are distributed only for python version == 3.11
+
 - create a virtual environment (not necessary, but suggested):
 
   .. code-block:: bash
 
     pip install virtualenv
 
-    virtualenv -p python3.9 jetset
+    virtualenv -p python3.10 jetset
 
     source jetset/bin/activate
 
@@ -60,32 +68,23 @@ Install  JetSeT from pip
   
   .. code-block:: bash
 
-      pip install jetset
+      pip install jetset>=1.3
 
 - Linux
   
-  .. important:: LINUX: currently, pip binaries for linux are not provided, so pip will build the binary on the fly. Hence:
-            install swig following the :ref:`swig` method, and check that you have a C compiler (gcc) then  
- 
   .. code-block:: bash
     
-      pip install jetset
+      pip install jetset>=1.3
 
   if fails, use one of the following methods 
 
-  -) Use anaconda
+  - Use anaconda
 
   OR
 
-  -) Install from source
+  - Install from source
   
-  OR
   
-  -) Use the git release binaries follow the instructions here: :ref:`install_pre_file`
-
-
-  
-
 
 - run the test (optional)
 
@@ -94,19 +93,22 @@ Install  JetSeT from pip
     pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_users::TestUser
 
 
-Install binaries from GitHUb
+Install binaries from GitHub
 ------------------------------
 To use the git release binaries, follow the instructions here: :ref:`install_pre_file`
 
 
 Install the JetSeT from source
 ------------------------------
+As for the other cases, I suggest creating a specific virtual environment
 
 Download the code
 ^^^^^^^^^^^^^^^^^
 
+To install from source a C compiler is also necessary, plus the SWIG wrapper generator.
 
 - Get the source code from: https://github.com/andreatramacere/jetset/archive/stable.tar.gz
+
 - Uncompress the  archive:  `jetset-stable.tar.gz`
 
 - cd to  the dir source code dir
@@ -122,8 +124,6 @@ Installation from source using Anaconda
 
   .. code-block:: bash
 
-      conda install --yes   swig">=3.0.0"
-
       conda install -c astropy -c conda-forge --file requirements.txt
 
 .. important::
@@ -134,11 +134,9 @@ Installation from source using Anaconda
 
    .. code-block:: bash
 
-       python setup.py clean
+       pip install .
 
-       python setup.py install
-
-- run the test (optional, **run all the examples outside  the installation dir**)
+- run the test (optional, **run all the examples outside the installation directory**)
 
   .. code-block:: bash
 
@@ -161,8 +159,6 @@ Installation from source using PIP
 
   .. code-block:: bash
 
-    pip install swig>=3.0.0
-
     pip install -r requirements.txt
 
 .. important::
@@ -173,11 +169,9 @@ Installation from source using PIP
 
   .. code-block:: bash
 
-        python setup.py clean
+        pip install .
 
-        python setup.py install
-
-- run the test  (optional, **run all the examples outside of the installation dir**)
+- run the test  (optional, **run all the examples outside the installation directory**)
 
   .. code-block:: bash
 
@@ -190,8 +184,5 @@ Installation from source using PIP
 
 
 
-To install from source a C compiler is also necessary, plus the SWIG wrapper generator.
-
-All the dependencies are installed following the Anaconda method **OR** the pip method, as described below.
 
 

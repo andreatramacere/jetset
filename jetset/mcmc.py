@@ -33,51 +33,53 @@ class Counter(object):
         self._progress_iter = cycle(['|', '/', '-', '\\'])
 
 
-class RunThread(object):
-    def __init__(self, target_class):
-        self.target_class = target_class
+#class RunThread(object):
+#    def __init__(self, target_class):
+#        self.target_class = target_class
 
-    def run(self):
-        self.target_class.model=self.target_class.model.clone()
-        self.target_class.sampler.run_mcmc(self.target_class._pos, self.target_class._npernode, rstate0=np.random.get_state(), progress=True,store = True)
+#    def run(self):
+#        self.target_class.model=self.target_class.model.clone()
+#        self.target_class.sampler.run_mcmc(self.target_class._pos, self.target_class._npernode, rstate0=np.random.get_state(), progress=True,store = True)
 
+#to prevent from deprecation to error in emcee 
+def sample_ball(p0, std, size=1):
+    """
+    Produce a ball of walkers around an initial parameter value.
+
+    :param p0: The initial parameter value.
+    :param std: The axis-aligned standard deviation.
+    :param size: The number of samples to produce.
+
+    """
+    assert len(p0) == len(std)
+    return np.vstack(
+        [p0 + std * np.random.normal(size=len(p0)) for i in range(size)]
+    )
 
 class McmcSampler(object):
 
     def __init__(self,model_minimizer):
-
+        if emcee.__version__ < "3":
+            raise RuntimeError('Please update to emcee v>=3.0.0')
+        
         self.model = model_minimizer.fit_model
         self.data = model_minimizer.data
         self.fit_par_free = model_minimizer.fit_par_free
 
         self._progress_iter = cycle(['|', '/', '-', '\\'])
+        self.labels=None
+        self.par_array=None
+        self._bounds=None
 
 
+    def set_labels(self,use_labels_dict=None):
+        """_summary_
 
-    def run_sampler(self,
-                    nwalkers=500,
-                    steps=100,
-                    pos=None,
-                    burnin=50,
-                    use_UL=False,
-                    bound=0.2,
-                    bound_rel=False,
-                    threads=None,
-                    walker_start_bound=0.002,
-                    use_labels_dict=None,
-                    loglog = False,
-                    progress='notebook'):
-
-        counter=Counter(nwalkers*steps)
-        self.calls = 0
-        self.calls_OK = 0
-        self.use_UL = use_UL
-
-        self.pos = pos
-        self.nwalkers = nwalkers
-        self.steps = steps
-        self.calls_tot = nwalkers * steps
-
+        Parameters
+        ----------
+        use_labels_dict : _type_, optional
+            _description_, by default None
+        """
         if use_labels_dict is None:
             self.par_array =  self.fit_par_free
 
@@ -98,51 +100,80 @@ class McmcSampler(object):
                         self.labels_units.append(p.units)
                         self.labels_start_val.append(p.best_fit_val)
                     else:
-                        warnings.warn('par %s'%par_name+' not present in model, will be sckipped')
+                        warnings.warn('par %s'%par_name+' not present in model, will be skipped')
 
-        self.par_array_best_fit=copy.deepcopy(self.par_array)
-        self.ndim = len(self.labels)
-        if pos is None:
-            pos = emcee.utils.sample_ball(np.array([p.best_fit_val for p in self.par_array]),
-                                          np.array([p.best_fit_val * walker_start_bound for p in self.par_array]),
-                                          nwalkers)
+
+    def set_bounds(self,bound=0.2,bound_rel=False,):
 
         self._build_bounds(bound=bound,bound_rel=bound_rel)
-        if emcee.__version__ < "3":
-            raise RuntimeError('Please update to emcee v>=3.0.0')
+   
 
+        
+    def run_sampler(self,
+                    nwalkers=None,
+                    steps=100,
+                    pos=None,
+                    burnin=50,
+                    use_UL=False,
+                    threads=None,
+                    walker_start_bound=0.005,
+                    loglog = False,
+                    progress='notebook',
+                    use_labels_dict=None,
+                    bound=None,
+                    bound_rel=False):
+
+        
+        self.calls = 0
+        self.calls_OK = 0
+        self.use_UL = use_UL
+
+    
+
+        if use_labels_dict is not None or bound is not None:
+            warnings.warn('use_labels_dict, and bounds in run_sampler are deprecated and will result in an error in the next version, please use the .set_labels and .set_bounds methods as explained in the documentation')
+            self.set_labels(use_labels_dict=use_labels_dict)
+            self.set_bounds(bound=bound,bound_rel=bound_rel)
+        
+        
+        self.plot_labels=copy.deepcopy(self.labels)
+        self.par_array_best_fit=copy.deepcopy(self.par_array)
+        self.ndim = len(self.labels)
+        self.pos = pos
+        self.burnin=burnin
+       
+        if nwalkers is None:
+            self.nwalkers = 4*len(self.labels)
+            print('setting nwalkers to:', self.nwalkers)
+        else:
+            self.nwalkers = nwalkers
+        
+        if self.nwalkers < 2*len(self.labels):
+            raise RuntimeError("numbers of walkers has to be at least two times the number of sampling pars")
+
+        counter=Counter( self.nwalkers*steps)
+        self.steps = steps
+        self.calls_tot = self.nwalkers * steps
+
+        if pos is None:
+            pos = sample_ball(np.array([p.best_fit_val for p in self.par_array]),
+                              np.array([p.best_fit_val * walker_start_bound for p in self.par_array]),
+                              self.nwalkers)
+
+        
         print('mcmc run starting')
         print('')
         start = time.time()
-        if progress == 'notebook':
-            pass
-
-        if progress is True:
-            tqdm=None
-
 
         if threads is not None and threads>1:
-            # if threads > cpu_count():
-            #     threads = cpu_count()
-            #     warnings.warn('number of threads has been reduced to cpu_count=%d'%cpu_count())
-            #
 
-
-            # with Pool(processes=threads) as pool:
-            #
-            #     self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob, threads=threads,
-            #                                          args=(self.model, self.data, use_UL, counter,self._bounds, self.par_array, loglog),pool=pool)
-            #     self.sampler.run_mcmc(pos, steps, progress=True)
-
-
-
-            warnings.warn('multithreadign not implemented yet')
+            warnings.warn('python multithreading is not effective, JetSeT uses C threads to speedup computation')
             threads=1
-            self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self.par_array, loglog))
+            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self.par_array, loglog))
             self.sampler.run_mcmc(pos, steps, progress=progress)
         else:
             threads=1
-            self.sampler = emcee.EnsembleSampler(nwalkers, self.ndim, log_prob,args=(self.model, self.data, use_UL, counter,self._bounds, self.par_array, loglog))
+            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self.par_array, loglog))
             self.sampler.run_mcmc(pos, steps, progress=progress)
 
 
@@ -159,6 +190,9 @@ class McmcSampler(object):
         self.reset_to_best_fit()
 
 
+    def set_plot_label(self,label,plot_label):
+        self.plot_labels[self.labels.index(label)]=plot_label
+
 
     def get_par_quantiles(self,p,quantiles=(0.16,0.5,0.84)):
         _d, idx=self.get_par(p)
@@ -169,6 +203,12 @@ class McmcSampler(object):
         for ID,par in enumerate(self.par_array):
             par.val = self.par_array_best_fit[ID].val
 
+
+    def reset_to_mcmc(self,quantile=0.5):
+        for ID,par in enumerate(self.par_array):
+            q_vals=self.get_par_quantiles(ID,quantiles=quantile)
+            par.val = q_vals
+
     def _build_bounds(self, bound=0.2,bound_rel=True):
 
         self._bounds=[]
@@ -178,7 +218,7 @@ class McmcSampler(object):
         elif np.shape(bound) == (2,):
             pass
         else:
-            raise RuntimeError('bound shape', np.shape(bound), 'it is wrong, has to be scalare or (2,)')
+            raise RuntimeError('bound shape', np.shape(bound), 'it is wrong, has to be a scalar or (2,)')
 
         for par in self.par_array:
             if  bound_rel is False and par.best_fit_err is not None:
@@ -203,14 +243,13 @@ class McmcSampler(object):
 
             if par.fit_range_max is not None:
                 _max= min(_max, par.fit_range_max)
-
+            
+            print('par:',par.name,' best fit value: ',par.best_fit_val,' mcmc bounds:',[_min, _max])
             self._bounds.append([_min, _max])
 
 
-    def show_pars(self):
-        pass
 
-    def corner_plot(self, labels = None, quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}):
+    def corner_plot(self, labels = None, quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, **kwargs):
         _id = []
 
         if labels is None:
@@ -225,16 +264,16 @@ class McmcSampler(object):
             _id.append(self.labels.index(l))
 
         f = corner.corner(self.samples[:, _id],
-                          quantiles=quantiles, labels=[self.labels[i] for i in _id],
+                          quantiles=quantiles, labels=self.plot_labels,
                           truths=[self.labels_start_val[i] for i in _id],
                           title_kwargs=title_kwargs,show_titles = True,
-                          levels = levels)
+                          levels = levels,**kwargs)
 
         title = 'quantiles ='+str(quantiles)
         f.suptitle(title,y=1.0)
         return f
 
-    def get_par(self, p):
+    def get_par(self, p,):
         if type(p) == int:
             pass
 
@@ -242,7 +281,7 @@ class McmcSampler(object):
             try:
                 p = self.labels.index(p)
             except:
-                raise RuntimeError('paramter p', p, 'not found')
+                raise RuntimeError('parameter p', p, 'not found')
 
         if p > len(self.labels):
             raise RuntimeError('label id larger then labels size')
@@ -250,10 +289,24 @@ class McmcSampler(object):
         return self.samples[:, p].flatten(), p
 
 
-    def plot_chain(self, p, log_plot=False):
+    def plot_chain(self,p=None,log_plot=False):
+        if p is None:
+            p=self.labels
+        else:
+            p=np.atleast_1d(p)
+
+        f, axes = plt.subplots(len(p), sharex=True)
+        axes=np.atleast_1d(axes)
+        for ID,_p in enumerate(p):
+            self._plot_chain(_p,axes[ID],log_plot=log_plot)
+        
+        axes[-1].set_xlabel('steps')
+        return f
+
+    def _plot_chain(self, p,ax, log_plot=False):
         _d, idx = self.get_par(p)
 
-        n = self.labels[idx]
+        n = self.plot_labels[idx]
 
         traces=self.sampler.chain[:, :, idx]
 
@@ -263,8 +316,7 @@ class McmcSampler(object):
 
         alpha_true = np.median(_d)
 
-        f = plt.figure()
-        ax = f.add_subplot(111)
+       
 
         if log_plot == True:
             n = 'log10(%s)'%n
@@ -279,17 +331,19 @@ class McmcSampler(object):
 
 
         ax.axhline(alpha_true, color='blue')
+        if hasattr(self,'burnin'):
+            ax.axvline(self.burnin, ls='--',color='orange',alpha=0.5)
 
         ax.set_ylabel(n)
-        ax.set_xlabel('steps')
-        return f
+        
+        
 
     def plot_par(self, p, nbins=20, log_plot=False,quantiles=(0.16,0.5,0.84),figsize=None):
         set_mpl()
 
         _d, idx = self.get_par(p)
 
-        par_name = self.labels[idx]
+        par_name = self.plot_labels[idx]
 
         x_name = par_name
         if self.labels_units is not None:
@@ -326,7 +380,7 @@ class McmcSampler(object):
         ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1)
         return f
 
-    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None):
+    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None, get_model=False, plot_mcmc_best_fit_model=False):
 
         if sed_data is None:
             sed_data=self.sed_data
@@ -375,11 +429,20 @@ class McmcSampler(object):
         self.reset_to_best_fit()
         self.model.eval(fill_SED=True)
 
-        p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density,flim=self.model.flux_plot_lim)
-        p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
-
-
-        return p
+        if plot_mcmc_best_fit_model is False:
+            p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density,flim=self.model.flux_plot_lim)
+            p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
+        else:
+            self.reset_to_mcmc(quantile=0.5)
+            self.model.eval()
+            p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density,flim=self.model.flux_plot_lim,label='mcmc 0.5 quantile')
+            p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
+            #self.reset_to_best_fit()
+        
+        if get_model is True:
+            return p, [x[msk],y_min[msk],y_max[msk]]
+        else:
+            return p
 
 
     def _progess_bar(self,):

@@ -4,7 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       git-ref:
-        description: Git Ref (Optional)
+        description:  checkout this tag (overrieds branch)
+        required: false
+      tags:
+        description: tag to create a release 
         required: false
       skip_test:
         description: skip test
@@ -15,48 +18,119 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 'Clone Repository (Latest)'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: 'Clone Repository (Custom Ref)'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       if: github.event.inputs.git-ref != ''
       with:
         ref: ${{ github.event.inputs.git-ref }}
+    
+    - name: 'Create release'
+      if: github.event.inputs.tags != null
+      uses: softprops/action-gh-release@v2
+      id : create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: Release  ${{ github.event.inputs.tags }}
+        tag_name: ${{ github.event.inputs.tags }}
+        draft: true
+        prerelease: true
 
 
   build_conda:
     needs: [clone]
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ ubuntu-latest, macos-10.15 ]
-        python-version: [ 3.8,3.9,'3.10']
+        include:
+          - os: macOS-12
+            name: macOS-x86_64
+            cpython-version: 39
+            python-version: "3.9"
+            platform_id: macosx_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch: x86_64
+          - os: ubuntu-latest
+            name: x86_64
+            cpython-version: 39
+            python-version: "3.9"
+            platform_id: manylinux_x86_64            
+            cibw_manylinux: manylinux2014
+            cibw_arch: x86_64
+          
+          - os: macOS-12
+            name: macOS-x86_64
+            cpython-version: 310
+            python-version: "3.10"
+            platform_id: macosx_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch:  x86_64
+          - os: ubuntu-latest
+            name: x86_64
+            cpython-version: 310
+            python-version: "3.10"
+            platform_id: manylinux_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch: x86_64
+
+
+          - os: macOS-12
+            name:  macOS-x86_64
+            cpython-version: 311
+            python-version: "3.11"
+            platform_id: macosx_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch:  x86_64
+          - os: ubuntu-latest
+            name: x86_64
+            cpython-version: 311
+            python-version: "3.11"
+            platform_id: manylinux_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch:  x86_64
+          - os: macOS-14
+            name: MAC_ARM
+            cpython-version: 311
+            python-version: "3.11"
+            platform_id: macosx_arm64
+            cibw_manylinux:  macosx_arm64
 
     steps:
       - name: 'Clone Repository (Latest)'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: 'Clone Repository (Custom Ref)'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         if: github.event.inputs.git-ref != ''
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - name: 'setup conda'
-        uses: s-weigand/setup-conda@v1
+      
+      - uses: mamba-org/setup-micromamba@v1
         with:
-          update-conda: true
-          python-version: ${{ matrix.python-version }}
-          conda-channels: conda-forge, astropy
+          environment-name: test-env
+          create-args: >-
+            python=${{ matrix.python-version }}
+            swig>=4
+            conda-build
+            pytest
+            boa
+          
+          generate-run-shell: true
+          init-shell: bash
 
       - name: 'Install dependencies'
+        shell: bash
         run: |
-          conda config --set always_yes yes
-          conda install conda-build pytest
-          conda install -c conda-forge swig">=3.0.0" 
-          conda install -c astropy -c conda-forge --file requirements.txt
-
-
+          source ~/.bash_profile
+          micromamba activate test-env
+          micromamba install -c astropy -c conda-forge --file requirements.txt
+         
+          
+  
 
       - name: 'set env JETSETBESSELBUILD'
         run: |
@@ -67,53 +141,92 @@ jobs:
         run: |
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
-      - name: 'build '
+    
+    
+      - name: 'generate meta.yaml from requirements.txt'
         run: |
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
-          python setup.py clean
-          python setup.py install
-          python setup.py clean
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
-
-      - name: 'set pkg version'
-        run: |
-         echo "PKG_VERSION=$(cd ../../ && python -c "import jetset;print(jetset.__version__)")" >> $GITHUB_ENV
-
-      - name: 'echo pkg version'
-        run: |
-          echo "PKG_VERSION=${{env.PKG_VERSION}}"
+          source ~/.bash_profile
+          micromamba activate test-env
+          python .github/workflows/requirements_to_conda_yml.py
 
       - name: 'conda build'
+        if: github.event.inputs.tags != null
         working-directory: .github/conda-pipeline/github/
         run: |
+          source ~/.bash_profile
+          micromamba activate test-env
+          cat meta.yaml
+          cat build.sh        
           conda config --set anaconda_upload no
           conda build purge
-          conda build .  -c conda-forge -c astrop
-          conda build  . --output > ./CONDABUILDJETSET.txt  
+          echo "building"
+          conda mambabuild .  -c conda-forge -c astropy
+          echo "redirect output"
+          conda mambabuild . --output > ./CONDABUILDJETSET.txt  
       
       - name: 'set env CONDABUILDJETSET'
+        if: github.event.inputs.tags != null     
         working-directory: .github/conda-pipeline/github/
         run: |
           echo $(cat CONDABUILDJETSET.txt)
           echo "CONDABUILDJETSET=$(tail -1 CONDABUILDJETSET.txt)"  >> $GITHUB_ENV
 
       - name: 'echo env CONDABUILDJETSET'
+        if: github.event.inputs.tags != null
         working-directory: .github/conda-pipeline/github/
         run: echo "CONDABUILDJETSET=${{env.CONDABUILDJETSET}}"
 
-      - name: 'conda install'
+      - name: 'conda install from conda build'
+        if: github.event.inputs.tags != null
         run: |
+          source ~/.bash_profile
+          micromamba activate test-env
           conda install --yes --offline $CONDABUILDJETSET
-
-      #- name: 'make test env'
-      #  run: |
-      #    cp -r jetset/tests/test*.py  .github/action_test/
+      
+      - name: 'conda install from source'
+        if: github.event.inputs.tags == null
+        run: |
+          source ~/.bash_profile
+          micromamba activate test-env
+          python setup.py install
 
       - name: 'test'
         if: github.event.inputs.skip_test != 'yes'
         working-directory: .github/action_test/
         run: |
           echo $(running tests!)
-          pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
+          source ~/.bash_profile
+          micromamba activate test-env
+          pytest  --pyargs -vvv jetset.tests.test_jet_model
           pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
+        env:
+          WF_ENV: CONDA
+          
+      
+      - name: 'prepare asset'
+        if: github.event.inputs.tags != null
+        shell: bash
+        run: |
+          python .github/workflows/conda_rename.py
+         
+       
+      #- name: Upload packages
+      #  uses: actions/upload-artifact@v4
+      #  if: github.event.inputs.tags != null
+      #  with:
+      #    overwrite: true
+      #    path: 'conda-binary/*'
+      
+      - name: 'Upload Release Asset'
+        if: github.event.inputs.tags != null
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release  ${{ github.event.inputs.tags }}
+          tag_name: ${{ github.event.inputs.tags }}
+          prerelease: true
+          draft: true 
+          files: 'conda-binary/*'
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      

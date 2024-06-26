@@ -12,12 +12,12 @@ class TestEBL(TestBase):
         import matplotlib.pyplot as plt
 
         from jetset.template_2Dmodel import EBLAbsorptionTemplate
-        ebl_dominguez = EBLAbsorptionTemplate.from_name('Dominguez_2010')
+        ebl_dominguez = EBLAbsorptionTemplate.from_name('Dominguez_2010_v2011')
         ebl_finke = EBLAbsorptionTemplate.from_name('Finke_2010')
         ebl_franceschini = EBLAbsorptionTemplate.from_name('Franceschini_2008')
 
         z = 0.1
-        nu = np.logspace(23, 30, 100)
+        nu = np.logspace(20, 30, 100)
         ebl_dominguez.parameters.z_cosm.val = z
         ebl_dominguez.eval(nu=nu)
         ebl_finke.parameters.z_cosm.val = z
@@ -25,10 +25,29 @@ class TestEBL(TestBase):
         ebl_franceschini.parameters.z_cosm.val = z
         ebl_franceschini.eval(nu=nu)
         if plot is True:
-            p = ebl_dominguez.plot_model()
+            plt.figure()
+            ebl_franceschini.eval(nu=nu)
+            p=ebl_dominguez.plot_model()
             ebl_finke.plot_model(p)
             ebl_franceschini.plot_model(p)
-            p.setlim(y_min=1E-10, x_max=1E29)
+            p.setlim(y_max=1,y_min=-10,x_max=29)
+        
+
+        z = 3
+        nu = np.logspace(20, 23, 100)
+        ebl_dominguez.parameters.z_cosm.val = z
+        ebl_dominguez.eval(nu=nu)
+        ebl_finke.parameters.z_cosm.val = z
+        ebl_finke.eval(nu=nu)
+        ebl_franceschini.parameters.z_cosm.val = z
+        ebl_franceschini.eval(nu=nu)
+        if plot is True:
+            plt.figure()
+            ebl_franceschini.eval(nu=nu)
+            p=ebl_dominguez.plot_model()
+            ebl_finke.plot_model(p)
+            ebl_franceschini.plot_model(p)
+            p.setlim(y_max=1,y_min=-.1,x_max=23)
 
         nu = 1E26
         z_range = np.linspace(0.001, 1, 100)
@@ -39,14 +58,15 @@ class TestEBL(TestBase):
             ebl_franceschini.parameters.z_cosm.val = z
             ebl_finke.parameters.z_cosm.val = z
             ebl_dominguez.parameters.z_cosm.val = z
-            y_fr[ID] = ebl_franceschini.eval(nu=nu, get_model=True)
-            y_fi[ID] = ebl_finke.eval(nu=nu, get_model=True)
-            y_do[ID] = ebl_dominguez.eval(nu=nu, get_model=True)
-
+            y_fr[ID] = ebl_franceschini.eval(nu=nu, get_model=True)[0]
+            y_fi[ID] = ebl_finke.eval(nu=nu, get_model=True)[0]
+            y_do[ID] = ebl_dominguez.eval(nu=nu, get_model=True)[0]
+        
         if plot is True:
-            plt.plot(z_range, y_fr, label='%s' % ebl_franceschini.name)
-            plt.plot(z_range, y_fi, label='%s' % ebl_finke.name)
-            plt.plot(z_range, y_do, label='%s' % ebl_dominguez.name)
+            plt.figure()
+            plt.plot(z_range, y_fr, label='%s' % ebl_franceschini.name)[0]
+            plt.plot(z_range, y_fi, label='%s' % ebl_finke.name)[0]
+            plt.plot(z_range, y_do, label='%s' % ebl_dominguez.name)[0]
 
             plt.xlabel('z')
             plt.ylabel(r'$exp^{-\tau}$')
@@ -63,11 +83,12 @@ class TestEBL(TestBase):
             ebl_franceschini.parameters.z_cosm.val = z
             ebl_finke.parameters.z_cosm.val = z
             ebl_dominguez.parameters.z_cosm.val = z
-            y_fr[ID] = ebl_franceschini.eval(nu=nu, get_model=True)
-            y_fi[ID] = ebl_finke.eval(nu=nu, get_model=True)
-            y_do[ID] = ebl_dominguez.eval(nu=nu, get_model=True)
+            y_fr[ID] = ebl_franceschini.eval(nu=nu, get_model=True)[0]
+            y_fi[ID] = ebl_finke.eval(nu=nu, get_model=True)[0]
+            y_do[ID] = ebl_dominguez.eval(nu=nu, get_model=True)[0]
 
         if plot is True:
+            plt.figure()
             plt.plot(z_range, y_fr, label='%s' % ebl_franceschini.name)
             plt.plot(z_range, y_fi, label='%s' % ebl_finke.name)
             plt.plot(z_range, y_do, label='%s' % ebl_dominguez.name)
@@ -115,11 +136,11 @@ class TestEBL(TestBase):
         assert (new_composite_model.Franceschini_2008.parameters.z_cosm.linked == True)
 
     def test_ebl_jet_fit(self,plot=True,sed_number=2,minimizer='lsb'):
-        from .test_model_fit import TestModelFit
+        from .test_model_fit import prepare_model
         
 
-        template, jet,sed_data = TestModelFit().prepare_model(sed_number=sed_number)
-
+        template, jet,sed_data = prepare_model(sed_number=sed_number)
+        
         from jetset.template_2Dmodel import EBLAbsorptionTemplate
         ebl_franceschini = EBLAbsorptionTemplate.from_name('Franceschini_2008')
         ebl_franceschini.show_model()

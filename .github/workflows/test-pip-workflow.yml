@@ -4,7 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       git-ref:
-        description: Git Ref (Optional)
+        description: checkout this tag (overrieds branch)
+        required: false
+      tags:
+        description: tag to create a release 
         required: false
       skip_test:
         description: skip test
@@ -15,31 +18,93 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 'Clone Repository (Latest)'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: 'Clone Repository (Custom Ref)'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       if: github.event.inputs.git-ref != ''
       with:
         ref: ${{ github.event.inputs.git-ref }}
-
+    
+    - name: 'Create release'
+      if: github.event.inputs.tags != null
+      uses: softprops/action-gh-release@v2
+      id : create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: Release  ${{ github.event.inputs.tags }}
+        tag_name: ${{ github.event.inputs.tags }}
+        draft: true
+        prerelease: true
 
   build_pip:
     needs: [clone]
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        #os: [ubuntu-latest]
-        #python-version: [ 3.8]
-        os: [ubuntu-latest, macos-10.15]
-        python-version: [3.7,3.8,3.9]
+        include:
+          - os: macOS-12
+            name: macOS-x86_64
+            cpython-version: 39
+            python-version: "3.9"
+            platform_id: macosx_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch: x86_64
+          - os: ubuntu-latest
+            name: x86_64
+            cpython-version: 39
+            python-version: "3.9"
+            platform_id: manylinux_x86_64            
+            cibw_manylinux: manylinux2014
+            cibw_arch: x86_64
+          
+          - os: macOS-12
+            name: macOS-x86_64
+            cpython-version: 310
+            python-version: "3.10"
+            platform_id: macosx_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch:  x86_64
+          - os: ubuntu-latest
+            name: x86_64
+            cpython-version: 310
+            python-version: "3.10"
+            platform_id: manylinux_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch: x86_64
+
+
+          - os: macOS-12
+            name:  macOS-x86_64
+            cpython-version: 311
+            python-version: "3.11"
+            platform_id: macosx_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch:  x86_64
+          - os: ubuntu-latest
+            name: x86_64
+            cpython-version: 311
+            python-version: "3.11"
+            platform_id: manylinux_x86_64
+            cibw_manylinux: manylinux2014
+            cibw_arch:  x86_64
+          - os: macOS-14
+            name: MAC_ARM
+            cpython-version: 311
+            python-version: "3.11"
+            platform_id: macosx_arm64
+            cibw_manylinux:  macosx_arm64
+            
+
 
     steps:
       - name: 'Clone Repository (Latest)'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: 'Clone Repository (Custom Ref)'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         if: github.event.inputs.git-ref != ''
         with:
           ref: ${{ github.event.inputs.git-ref }}
@@ -52,6 +117,7 @@ jobs:
       - name: 'echo env TEST'
         run: |
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
+          python -v
 
 
       - name: 'Install swig'
@@ -65,53 +131,87 @@ jobs:
                 exit 1
            fi
 
-      - name: 'Setup pip'
-        uses: actions/setup-python@v2
+      - name: 'Setup python'
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version:  ${{ matrix.python-version }}
 
       - name: 'adapt req'
         run: |
           python .github/workflows/adapt_reqirements_to_git_action.py
 
-      - name: 'Install dependencies'
+  
+      - name: Build SDist and install
         run: |
           python -m pip install --upgrade pip
           pip install pytest
           pip install wheel
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-      - name: 'pip build'
-        run: |
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
-          python setup.py clean
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
-      
-      - name: 'pip build install sdist'
-        run: |
-          python setup.py sdist 
+          pipx run build --sdist
           pip install dist/*.tar.gz
-          
+      
       - name: 'test sdist'
+        if: github.event.inputs.tags != null
         working-directory: .github/action_test/
         run: |
           echo $(running tests!)
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
+            
+      - name: 'Upload Src Release Asset'
+        if: matrix.python-version == '3.9' &&  github.event.inputs.tags != null
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release  ${{ github.event.inputs.tags }}
+          tag_name: ${{ github.event.inputs.tags }}
+          prerelease: true
+          draft: true 
+          files: dist/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: actions/checkout@v4
+        if: github.event.inputs.git-ref != '' &&  github.event.inputs.tags != null
+        with:
+          ref: ${{ github.event.inputs.git-ref }}
+
+      - uses: pypa/cibuildwheel@v2.11.4
+        if: github.event.inputs.tags != null &&  github.event.inputs.tags != null
+        env:
+          CIBW_SKIP: "*-musllinux_*"
+          CIBW_BUILD: cp${{ matrix.cpython-version }}-${{ matrix.platform_id }}
+          CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.cibw_manylinux }}
+          CIBW_ARCHS: ${{ matrix.cibw_arch || 'auto' }}
+          #CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch || 'auto' }}
+          #CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch || 'auto' }}
+          #CIBW_TEST_COMMAND: pytest  --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model && pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic && pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
+  
+      - name: Show files
+        if: github.event.inputs.tags != null
+        run: ls -lh wheelhouse
+        shell: bash
+  
+      - name: Verify clean directory
+        run: git diff --exit-code
+        shell: bash
       
-
-      - name: 'pip build install wheel'
-        run: |
-          pip uninstall --yes jetset
-          python setup.py clean 
-          python setup.py  bdist_wheel 
-          pip install dist/*.whl
-
       - name: 'test'
         if: github.event.inputs.skip_test != 'yes'
         working-directory: .github/action_test/
         run: |
           echo $(running tests!)
-          pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
+          pytest  --pyargs  -vvv jetset.tests.test_jet_model
           pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
+  
+      - name: 'Upload Binary Release Asset'
+        uses: softprops/action-gh-release@v2
+        if: github.event.inputs.tags != null
+        with:
+          name: Release  ${{ github.event.inputs.tags }}
+          prerelease: true
+          draft: true
+          tag_name: ${{ github.event.inputs.tags }}
+          files: wheelhouse/*.whl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+

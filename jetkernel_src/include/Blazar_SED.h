@@ -100,7 +100,8 @@
 //     double nu_obs[static_spec_arr_size];
 //     double nuFnu_grid[static_spec_arr_grid_size];
 // };
-
+//#include <pthread.h>
+//pthread_mutex_t mutex ;
 
 struct blob {
     int verbose;
@@ -117,6 +118,7 @@ struct blob {
     char PARTICLE[16];
     int OUT_FILE;
     int START_FILE;
+    unsigned int N_THREADS;
     int Num_file;
     int SSC, EC, TOT;
     int WRITE_TO_FILE;
@@ -138,8 +140,13 @@ struct blob {
     double beta_Gamma;
     double dist;
     double z_cosm;
-    double Vol_sphere;
-    double Surf_sphere;
+    double Vol_region;
+    double R_sh,h_sh,R_ext_sh;
+    double Surf_region,R_sync;
+    double R_sync_self_abs;
+    double R_sync_n_photons;
+    double n_sync_corr_factor;
+    char GEOMETRY[64];
 
     //----- Summed Spectra-----//
     //double nuF_nu_Sum_obs[static_spec_arr_size];
@@ -213,6 +220,10 @@ struct blob {
     double log_F_Sync_y[static_bess_table_size];
     double log_F_ave_Sync_x[static_bess_table_size];
     double log_F_ave_Sync_y[static_bess_table_size];
+    double G_Sync_x[static_bess_table_size];
+    double log_G_Sync_x[static_bess_table_size];
+    double G_Sync_y[static_bess_table_size];
+    double log_G_Sync_y[static_bess_table_size];
     double t_Bessel_min, t_Bessel_max;
     double x_Bessel_min, x_Bessel_max;
     double x_ave_Bessel_min, x_ave_Bessel_max;
@@ -224,8 +235,8 @@ struct blob {
     //-----------pp-gamma-emission---//
     //--- CONST
     double NH_pp;
-    double MPI_kernel_delta;
-    double MPI_kernel_delta_Emin;
+    //double MPI_kernel_delta;
+    //double MPI_kernel_delta_Emin;
 
     //--- FREQ BOUNDARIES
     double nu_stop_pp_gamma_pred,nu_stop_pp_gamma;
@@ -327,6 +338,7 @@ struct blob {
     int ord_comp;
     int IC_adaptive_e_binning;
     int do_IC_down_scattering; 
+    int bulk_compton;
     double COST_IC_K1,COST_IC_COOLING ;
 
     //--- FREQ BOUNDARIES
@@ -341,12 +353,12 @@ struct blob {
 
     //--- IC Kernel computation
     double Gamma;
-    double nu; /*freq spettro sinc */
+    //double nu; /*freq spettro sinc */
     double nu_1; /*freq spettro comp */
-    double nu_compton_0; /* freq campo fot Sync per spettro IC */
+    //double nu_compton_0; /* freq campo fot Sync per spettro IC */
     double * nu_seed;
     double * n_seed;
-    double g_min_IC;
+    //double g_min_IC;
 
     //--- FREQ/FLUX array
     double q_comp[static_spec_arr_size];
@@ -386,20 +398,21 @@ struct blob {
     //dist BLOB/DISK or STAR
     double R_H;
     double R_H_orig;
-    double EC_factor;
+    //double EC_factor;
+    double R_ext_emit_factor;
     double R_H_scale_factor;
-    double R_ext_factor;
-    double EC_theta_lim;
 
     //--- STAR
     //-PARAMTERS
     double L_Star;
-    double T_Star_max;
+    double T_Star;
     double R_Star;
+    double R_H_Star;
     double Star_psi_1, Star_psi_2;
     //
     double Star_surface;
-    double Star_mu_1, Star_mu_2;
+    //double Star_mu_1, Star_mu_2;
+    double theta_Star, mu_star, theta_c_Star;
     //-FREQ BOUNDARIES
 	double nu_start_EC_Star;
 	double nu_stop_EC_Star;
@@ -657,8 +670,8 @@ struct blob {
     double *gam;
     double *Ne;
     double *Ne_jetset;
-    double *Ne_IC;
-    double *Ne_stat;
+    //double *Ne_IC;
+    //double *Ne_stat;
     double *Np;
     double *Np_jetset;
     double *Q_inj_e_second;
@@ -670,7 +683,6 @@ struct blob {
     double * griglia_gamma_Ne_log;
     double * griglia_gamma_jetset_Ne_log;
     
-    double * griglia_gamma_Ne_log_IC;
     double * griglia_gamma_Ne_log_stat;
 
     double * griglia_gamma_Np_log;
@@ -680,7 +692,6 @@ struct blob {
     //double *griglia_gamma_log_IC;
     //double *N_IC;
 
-    unsigned int i_griglia_gamma;
     double N_tot_e_Sferic;
     double N_tot_p_Sferic;
     double N;
@@ -732,10 +743,11 @@ struct jet_energetic{
     double U_e, U_p_cold,U_B;
     double U_p, U_p_target;
     double U_Synch, U_Synch_DRF;
-    double U_Disk, U_BLR, U_DT, U_CMB;
-    double U_Disk_DRF, U_BLR_DRF, U_DT_DRF, U_CMB_DRF;
-    double L_Sync_rf, L_SSC_rf, L_EC_Disk_rf,L_EC_BLR_rf, L_EC_DT_rf,L_EC_CMB_rf, L_pp_gamma_rf;
-    double jet_L_Sync,jet_L_SSC, jet_L_EC_Disk, jet_L_EC_BLR, jet_L_EC_DT,jet_L_EC_CMB,jet_L_pp_gamma;
+    double U_Disk, U_BLR, U_DT, U_CMB, U_Star;
+    double U_Disk_DRF, U_BLR_DRF, U_DT_DRF, U_CMB_DRF, U_Star_DRF;
+    double U_seed_tot;
+    double L_Sync_rf, L_SSC_rf, L_EC_Disk_rf,L_EC_BLR_rf, L_EC_DT_rf,L_EC_CMB_rf, L_EC_Star_rf, L_pp_gamma_rf;
+    double jet_L_Sync,jet_L_SSC, jet_L_EC_Disk, jet_L_EC_BLR, jet_L_EC_Star, jet_L_EC_DT,jet_L_EC_CMB,jet_L_pp_gamma;
     double jet_L_rad,jet_L_kin, jet_L_tot, jet_L_e, jet_L_B, jet_L_p_cold, jet_L_p;
 };
 
@@ -833,7 +845,7 @@ struct temp_ev{
 	double TStop_Acc;
 	double Inj_temp_slope;
 	unsigned int NUM_SET;
-    unsigned int LOG_SET;
+    int LOG_SET;
 	unsigned int T_SIZE;
     //unsigned int T_EVALUATED;
 	double duration,t_D0,t_DA0,t_A0;
@@ -860,7 +872,7 @@ double Adiabatic_Cooling_time(struct temp_ev *pt, struct blob *pt_spec, double R
 int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],unsigned int size);
 //void free_tempe_ev(struct temp_ev *pt_ev);
 void alloc_temp_ev_array(double ** pt,int size);
-void CooolingEquilibrium(struct blob * pt, double T_esc);
+void CoolingEquilibrium(struct blob * pt, double T_esc);
 double IntegrateCooolingEquilibrium( struct blob *pt,double gamma, double T_esc );
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1);
 double update_jet_expansion(struct blob *pt_spec, struct temp_ev *pt_ev, double t);
@@ -907,7 +919,7 @@ struct blob MakeBlob( void );
 //void MakeNe(struct spettro *pt_base);
 struct temp_ev MakeTempEv( void);
 void Init(struct blob *pt, double luminosity_distance);
-void InitRadiative(struct blob *pt_base);
+void InitRadiative(struct blob *pt_base, unsigned int update_EC);
 
 //void build_photons(struct spettro *pt_base);
 //void alloc_photons(double ** pt,int size);
@@ -917,7 +929,8 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
 void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, struct temp_ev *pt_ev, double luminosity_distance);
 
 double get_spectral_array(double * arr, struct blob *pt, unsigned int id);
-double get_array(double * arr, unsigned int id, unsigned int size);
+void set_spectral_array(double *arr, struct blob *pt, unsigned int id, double val);
+double get_array(double *arr, unsigned int id, unsigned int size);
 double get_elec_array(double * arr, struct blob *pt, unsigned int id);
 double get_temp_ev_N_gamma_array(double *arr, struct temp_ev *pt_ev, unsigned int row, unsigned int col);
 double get_temp_ev_N_time_array(double *arr, struct temp_ev *pt_ev, unsigned int id);
@@ -960,7 +973,7 @@ void build_Ne(struct blob *pt);
 void build_Np(struct blob *pt);
 void build_Ne_jetset(struct blob *pt);
 void build_Np_jetset(struct blob *pt);
-void Fill_Ne_IC(struct blob *pt, double gmin, int stat_frame);
+void Fill_Ne_IC(struct blob *pt, double g_min_IC, int stat_frame, double * Ne_IC, double * griglia_gamma_Ne_log_IC);
 void InitNe(struct blob *pt);
 void Init_Np_Ne_pp(struct blob *pt);
 double N_distr(struct blob *, double Gamma);
@@ -1045,8 +1058,8 @@ double PowerPhotons_disk_rest_frame(struct blob *pt, double *nu, double *nu_Fnu,
 
 //======================================================================================
 /************************************ GEOMETRY/REL.SPEC. *******************************/
-double V_sphere(double R);
-double S_sphere(double R);
+double V_region(struct blob *pt);
+double S_sphere(struct blob *pt);
 
 double get_beaming(double BulkFactor, double theta);
 void   SetBeaming(struct blob *pt);
@@ -1096,17 +1109,22 @@ double nu_obs_to_nu_src(double nu, double z);
 /****************************** FUNZIONI SPETTRO SINCROTRONE ********************************/
 void spettro_sincrotrone(int Num_file, struct blob *);
 double F_K_53(struct blob *, double x);
+double F_K_23(struct blob *, double x);
 double F_K_ave(struct blob *, double x);
-double F_int_fix(struct blob *, unsigned int ID);
-double F_int_ave(struct blob *, unsigned int  ID);
-double Sync_self_abs_int(struct blob *, unsigned int ID);
-double j_nu_Sync(struct blob *);
+double F_int_fix(struct blob *, unsigned int ID, double nu_sync);
+double F_int_fix_parallel(struct blob *, unsigned int ID, double nu_sync);
+double F_int_ave(struct blob *, unsigned int  ID, double nu_sync);
+double Sync_self_abs_int(struct blob *, unsigned int ID, double nu_sync);
+double j_nu_Sync(struct blob *, double nu_sync);
+double j_nu_Sync(struct blob *, double nu_sync);
+double eval_Sync_polarization(struct blob * f, double nu_sync);
 double solve_S_nu_Sync(struct blob *pt, unsigned int NU_INT);
 double eval_S_nu_Sync(struct blob *pt, double j_nu, double alpha_nu);
-double alfa_nu_Sync(struct blob *);
-double integrale_Sync(double (*pf)(struct blob *, unsigned int ID), struct blob *pt);
+double alfa_nu_Sync(struct blob *, double nu_sync);
+double integrale_Sync(double (*pf)(struct blob *, unsigned int ID, double nu_sync), struct blob *pt, double nu_sync);
 double Sync_tcool(struct blob * , double g);
 double Sync_cool(struct blob * , double g);
+void set_R_Sync(struct blob *);
 //===========================================================================================
 
 
@@ -1127,25 +1145,26 @@ double sigma_pp_inel(double Ep_TeV);
 double  check_pp_kernel(double res,struct blob *pt,double E_p_TeV, double x );
 
 
-double rate_gamma_pp(struct blob *pt);
-double rate_electrons_pp(struct blob *pt, double Gamma);
-double rate_neutrino_mu_1_pp(struct blob *pt, double nu_nu_mu);
+double rate_gamma_pp(struct blob *pt, double nu_out, int eval_only_racc);
+double rate_electrons_pp(struct blob *pt, double Gamma, int eval_only_racc);
+double rate_neutrino_mu_1_pp(struct blob *pt, double nu_nu_mu, int eval_only_racc);
 
-double pp_gamma_kernel(double gamma_p, double E_out_TeV,struct blob * pt);
-double pp_gamma_kernel_delta(struct blob *pt, double E_pi);
+double pp_gamma_kernel(double gamma_p, double E_out_TeV,struct blob * pt, unsigned int i_griglia_gamma);
+double pp_gamma_kernel_delta(struct blob *pt, double E_pi, double pp_racc_gamma);
 
-double pp_electron_kernel_delta(struct blob *pt,double E_pi);
-double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct blob *pt);
+double pp_electron_kernel_delta(struct blob *pt,double E_pi, double pp_racc_elec);
+double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct blob *pt, unsigned int i_griglia_gamma);
 
-double pp_neturino_mu_1_kernel(double gamma_p, double E_out_TeV, struct blob *pt);
-double pp_neutrino_mu_1_kernel_delta(struct blob *pt, double E_pi);
+double pp_neturino_mu_1_kernel(double gamma_p, double E_out_TeV, struct blob *pt, unsigned int i_griglia_gamma);
+double pp_neutrino_mu_1_kernel_delta(struct blob *pt,double E_pi, double pp_racc_nu_mu );
 
-double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, double E_out_TeV, struct blob *pt), double E_out_TeV, struct blob * pt, unsigned int i_start);
-double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) ( struct blob *pt,double E),
+double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, double E_out_TeV, struct blob *pt, unsigned int i_griglia_gamma), double E_out_TeV, struct blob * pt, unsigned int i_start);
+double integrale_pp_second_low_en_rate(double (*pf_pp_delta_kernel) ( struct blob *pt,double E, double pp_racc_elec),
                               double (*E_min_pi) (double gamma_p, struct blob *pt),
                               double (*E_max_pi) (struct blob *pt),  
                               double E_out_TeV,
-                              struct blob * pt);
+                              struct blob * pt,
+                              double pp_racc_elec);
 
 
 unsigned int E_min_p_grid_even(struct blob *pt, double * gamma_p_grid, double E_start_TeV, unsigned int i_start, unsigned int gamma_p_grid_size );
@@ -1193,10 +1212,11 @@ int x_to_grid_index(double *nu_grid, double nu, unsigned int SIZE);
 
 //=================================================================================
 /************************************ FUNCTIONS  IC  *****************************/
-double f_compton_K1(struct blob *, double Gamma);
-void set_N_distr_for_Compton(struct blob *, double nu_in, double nu_out, int stat_frame);
-double rate_compton_GR(struct blob *);
-double integrale_IC(struct blob * pt, double a, double b,int stat_frame);
+double f_compton_K1(struct blob *, double Gamma, double nu_IC_out, double nu_IC_in);
+double f_compton_bulk(struct blob *pt_K1, double g, double nu_IC_out, double nu_IC_in_1, double nu_IC_in_2);
+void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int stat_frame, double * Ne_IC, double * griglia_gamma_Ne_log_IC);
+double rate_compton_GR(struct blob *, double nu_IC_out);
+double integrale_IC(struct blob * pt, double a, double b,int stat_frame, double nu_IC_out);
 double integrale_IC_cooling(struct blob * pt, double a, double b, double gamma);
 double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma);
 double f_compton_cooling(double b);
@@ -1215,11 +1235,18 @@ void spettro_compton(int num_file, struct blob *);
 
 //===================================================================================
 /********************* FUNZIONI EXTERNAL COMPOTON************************************/
-void spectra_External_Fields(int Num_file, struct blob *pt_d);
+void spectra_External_Fields(int Num_file, struct blob *pt_d, int set_EC);
 void spettro_EC(int num_file, struct blob *);
 
 void set_EC_stat_pre(struct blob *pt, double R_lim);
 void set_EC_stat_post(struct blob *pt);
+double f_psi_EC_ring(double R_ext,double R_H, double mu_s,double beaming,double phi);
+double f_psi_EC_sphere(double R_ext,double R_H, double mu_s, double mu_re, double beaming,double phi);
+double beaming_pattern_EC(double theta_s, double R_ext, double R_H, double Gamma, int geom);
+double scaling_function_EC(double theta_s, double R_ext, double R_H_in, double R_H_orig, double Gamma);
+double get_EC_reference(struct blob *pt, double *nuFnu_obs);
+void update_EC_for_bp(struct blob *pt, double nuFnu_obs_ref, double R_ext_emit, unsigned int SIZE, double *nuFnu_obs, double *nu_obs);
+int set_condition_EC_correction(struct blob *pt, double R_ext_emit);
 
 /***  DISK PLANCK FUNCTIONS  *********/
 double eval_T_disk(struct blob *pt, double R);
@@ -1249,8 +1276,10 @@ void Build_I_nu_Star(struct blob *pt_d);
 double eval_I_nu_Star_disk_RF(struct blob *pt,double nu_Star_disk_RF);
 //double eval_J_nu_Star_disk_RF(struct spettro *pt, double I_nu_Star_disk_RF);
 double eval_I_nu_Star_blob_RF(struct blob *pt, double nu_blob_RF);
-double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu);
+//double integrand_I_nu_Star_blob_RF(struct blob *pt, double mu);
 double eval_Star_L_nu(struct blob *pt, double nu_Star_disk_RF);
+double eval_Star_L(struct blob *pt, double T_Star);
+
 void set_Star_geometry(struct blob *pt);
 
 /***  SPECTRAL/GEOMETRIC FUNCTIONS EC DISK ****/
@@ -1269,7 +1298,7 @@ double eval_I_nu_Disk_blob_RF(struct blob *pt, double nu_disk_RF);
 double eval_I_nu_theta_Disk(struct blob *pt, double mu);
 double integrand_I_nu_Disk_blob_RF(struct blob *pt, double mu);
 double integrand_I_nu_Disk_disk_RF(struct blob *pt, double mu);
-double eval_Disk_L_nu(struct blob *pt, double nu_Disk_disk_RF);
+double eval_Disk_L_nu(struct blob *pt, double L_nu_Disk_disk_RF);
 void set_Disk_geometry(struct blob *pt);
 double eval_nu_peak_Disk(double T);
 
@@ -1324,6 +1353,7 @@ void beschb(double x, double *gam1, double *gam2, double *gampl,
 double chebev(float a, float b, float c[], int m, float x);
 void bessik(double x, double xnu, double *ri, double *rk, double *rip, double *rkp);
 double bessel_K_53(struct blob *, double x);
+double bessel_K_23(struct blob *, double x);
 double bessel_K_pitch_ave(struct blob *pt, double x);
 void tabella_Bessel(struct blob *);
 double derivata(double (*pf) (struct blob *, double x), struct blob *pt, double x);
@@ -1357,4 +1387,23 @@ double test_solid_anlge(struct blob *pt, double mu);
 
 
 
+//===========================================================================================
+/**********************        THREADS                     ************************/
+struct j_args{
+    struct blob * blob_pt;
+    unsigned int NU_INT_START;
+    unsigned int NU_INT_STOP;
+    unsigned int NU_INT_MAX;
+    double * nu_array;
 
+
+};
+void threaded_j_evaluation(struct blob * pt,  void  *(*eval_j)(void *data), 
+    double * j_nu_array, double * nu_array, double nu_start, double nu_stop, unsigned int I_MAX, unsigned int N_THREADS);
+
+void  * eval_j_SSC(void *data);
+void  * eval_j_Sync(void *data);
+void  * eval_j_EC(void *data);
+void  * eval_j_pp_gamma(void *data);
+void  * eval_j_pp_bremss_ep(void *data);
+void  * eval_j_pp_neutrino(void *data);

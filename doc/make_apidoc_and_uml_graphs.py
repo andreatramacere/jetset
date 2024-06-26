@@ -49,20 +49,23 @@ Modules
 In the following the package modules are listed.
  
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
     """
     print(text, file=f)
     
     for modname in mod_list:
+        
         print("   %s    <%s.rst>"%(modname,modname),file=f)
 
         f1=open('../doc/api/%s.rst'%modname,'w')
+        #print("*"*len(modname),file=f1)
+        #print(modname,file=f1)
+        #print("*"*len(modname),file=f1)
 
-        under_title="-"*len(modname)
 
         text=""".. automodapi:: jetset.%s"""%(modname)
-
         print(text, file=f1)
+        #text="""   :no-inherited-members:"""
 
         f1.close()
     
@@ -73,11 +76,16 @@ In the following the package modules are listed.
 
 def main():
     mod_list=[]
+    skip_list=[]
+    skip_list=['jetkernel','mock']
+    #skip_list=['jetkernel','mock']
     for importer, modname, ispkg in pkgutil.iter_modules(package.__path__):
         if ispkg==False:
-            print("Found submodule %s " % (modname))
-            print("generating classes uml graph")
-            mod_list.append(modname)
+          
+            #print("generating classes uml graph")
+            if modname not in skip_list:
+                print("Found submodule %s " % (modname))
+                mod_list.append(modname)
             
     print (mod_list)
     #mod_list=['jet_model']
