@@ -11,7 +11,7 @@ from numpy import log10,power,sqrt,shape,zeros
 
 import numpy as np
 
-from numpy import polyfit,polyval,polyder
+from numpy import polyfit,polyder
 
 
 __all__=['find_max_cubic','LogCubic','LogLinear','LogLogModel','LogParabolaEp','LogParabolaPL','PolyParameter']

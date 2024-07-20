@@ -6,9 +6,6 @@ try:
     SpectralModel,
 )
     from gammapy.modeling.parameter import Parameter,Parameters
-    from gammapy.estimators import FluxPoints
-    from gammapy.datasets import FluxPointsDataset
-    from gammapy.modeling import Fit
 
     gammapy_installed = True
 

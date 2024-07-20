@@ -1,7 +1,6 @@
 __author__ = "Andrea Tramacere"
 
 import os
-import numpy as np
 import copy
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 

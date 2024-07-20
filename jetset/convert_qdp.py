@@ -5,15 +5,12 @@
 
 __author__ = "Andrea Tramacere"
 
-import os
 import sys
 import glob
 
 from .cosmo_tools import  Cosmo
 from string import *
 import math as m
-from astropy.io import fits as pyfits
-import numpy as n
 
 __all__=['check_is_number','do_convert']
 

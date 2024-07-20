@@ -2,7 +2,7 @@ __author__ = "Andrea Tramacere"
 
 
 
-from .data_loader import log_to_lin, lin_to_log
+from .data_loader import log_to_lin
 
 from scipy.interpolate import interp1d
 
@@ -12,7 +12,6 @@ import numpy as np
 import os
 
 from .spectral_shapes import SED
-from .plot_sedfit import PlotSED,PlotSpecComp
 
 from .model_parameters import ModelParameter,ModelParameterArray
 from .base_model import  Model

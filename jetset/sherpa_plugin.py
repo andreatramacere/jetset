@@ -4,7 +4,7 @@ import os
 from astropy.table import Table
 
 try:
-    from sherpa.models.model import ArithmeticModel, modelCacher1d, RegriddableModel1D
+    from sherpa.models.model import egriddableModel1D
     from sherpa.models.parameter import Parameter
     from sherpa import data
     from sherpa.fit import Fit

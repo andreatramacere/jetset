@@ -14,7 +14,7 @@ from astropy.io import fits as pf
 
 import os
 
-from  .plot_sedfit import PlotSED,PlotSpectralMultipl
+from  .plot_sedfit import PlotSpectralMultipl
 
 from .model_parameters import ModelParameter
 from .base_model import  Model, MultiplicativeModel

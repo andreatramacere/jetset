@@ -1,6 +1,5 @@
 import sys
 import io
-import pip
 from contextlib import redirect_stdout
 from packaging import version
 import subprocess

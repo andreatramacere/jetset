@@ -1,7 +1,6 @@
 __author__ = "Andrea Tramacere"
 
 
-import json
 import dill as pickle
 import six
 import numpy as np
@@ -10,8 +9,6 @@ import warnings
 import os
 from astropy import units as u
 from astropy import constants
-from contextlib import redirect_stdout
-import io
 import multiprocessing
 
 from .jet_spectral_components import JetSpecComponent, SpecCompList
@@ -19,9 +16,9 @@ from .jet_spectral_components import JetSpecComponent, SpecCompList
 from .model_parameters import ModelParameterArray, ModelParameter, _show_table
 from .base_model import Model
 from .output import makedir,WorkPlace
-from  .plot_sedfit import PlotSED,plt
+from  .plot_sedfit import plt
 from .cosmo_tools import Cosmo
-from .utils import safe_run,set_str_attr, old_model_warning, get_info, clean_var_name
+from .utils import safe_run,set_str_attr, get_info, clean_var_name
 from .jet_paramters import *
 from .jet_emitters import *
 from .jet_emitters_factory import EmittersFactory

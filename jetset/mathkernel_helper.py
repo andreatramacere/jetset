@@ -2,7 +2,6 @@
 __author__ = "Andrea Tramacere"
 
 import os
-import glob
 
 __all__=[]
 

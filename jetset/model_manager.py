@@ -6,8 +6,6 @@ import warnings
 
 import numpy as np
 
-from  . import minimizer
-
 
 
 from .model_parameters import  CompositeModelParameterArray
@@ -15,8 +13,6 @@ from .model_parameters import  CompositeModelParameterArray
 from .spectral_shapes import  SED
    
 from .base_model import  Model
-
-from .plot_sedfit import  PlotSED
 
 from .utils import  clean_var_name
 

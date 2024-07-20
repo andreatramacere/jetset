@@ -6,7 +6,6 @@ from inspect import signature
 from numba import njit
 from numba.extending import is_jitted
 import copy
-import warnings
 from astropy.constants import m_e,m_p,c
 from scipy import interpolate
 from .jetkernel_models_dic import gamma_dic_e ,gamma_dic_p, gamma_dic_pp_e_second, available_N_distr, N_distr_descr, available_emitters_type

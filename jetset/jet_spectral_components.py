@@ -5,7 +5,7 @@ __author__ = "Andrea Tramacere"
 import numpy as np
 import os
 from astropy.table import Table
-from numpy.core._multiarray_umath import zeros, log10
+from numpy.core._multiarray_umath import log10
 from scipy import interpolate
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'

@@ -1,7 +1,5 @@
 import pytest
-from astropy import constants as const
 from astropy import units as u
-import matplotlib.pyplot as plt
 import numpy as np
 from .base_class import TestBase
 

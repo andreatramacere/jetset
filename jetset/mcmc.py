@@ -7,17 +7,12 @@ from itertools import cycle
 
 
 import numpy as np
-import scipy as sp
-from scipy import stats
 import corner
 import dill as pickle
-from multiprocessing import cpu_count, Pool
-import multiprocessing as mp
 import warnings
 import  time
 import copy
-import threading
-from .plot_sedfit import  plt, PlotSED, set_mpl
+from .plot_sedfit import  plt, set_mpl
 
 __all__=['McmcSampler']
 

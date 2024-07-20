@@ -27,8 +27,6 @@ from astropy.constants import m_e,m_p,c
 import matplotlib.ticker as ticker
 import warnings
 
-from collections import namedtuple
-
 from .output import section_separator,WorkPlace
 
 from .utils import *
