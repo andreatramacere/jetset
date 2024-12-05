@@ -906,51 +906,47 @@ class ObsData(object):
             raise ValueError
 
         if nu_min is None:
-         xmin= self.data['nu_data_log'].min() * 0.99
+            xmin= self.data['nu_data'].min() * 0.99
         else:
-           xmin= np.log10(nu_min)
+            xmin= nu_min
 
         if nu_max is None:
-            xmax= self.data['nu_data_log'].max() * 1.01
+            xmax= self.data['nu_data'].max() * 1.01
         else:
-            xmax = np.log10(nu_max)
+            xmax= nu_max
 
 
         if N_bin is None:
-            N_bin=int((xmax-xmin)/bin_width)
+            N_bin=int((np.log10(xmax)-np.log10(xmin))/bin_width)
 
         if bin_width is None:
-            bin_width=(xmax-xmin)/N_bin
+            bin_width=(np.log10(xmax)-np.log10(xmin))/N_bin
 
 
-        bin_grid=np.linspace(xmin,xmax,N_bin)
-        
-        
+        bin_grid=np.logspace(np.log10(xmin),np.log10(xmax),N_bin+1)
+        dx_bin=(bin_grid[1:]-bin_grid[:-1])*0.5
+        x_bin=(bin_grid[1:]+bin_grid[:-1])*0.5
+        y_bin=np.zeros(x_bin.size)
+        dy_bin=np.zeros(x_bin.size)    
+        x_UL=np.zeros(0)
+        dx_UL=np.zeros(0)   
+        dy_UL=np.zeros(0)   
+        y_UL=np.zeros(0)   
         print ("***  binning data  ***")
         print ("---> N bins=",N_bin)
-        print ("---> bin_widht=",bin_width)
-  
-        self.data_reb=self._build_empty_table(n_rows=bin_grid.size)
-
-    
-        x_bin=np.zeros(bin_grid.size)
-        y_bin=np.zeros(bin_grid.size)
-        dx_bin=np.zeros(bin_grid.size)
-        dy_bin=np.zeros(bin_grid.size)    
-
-        #gives the id of element falling in each bin
-        bin_elements_id=np.digitize(self.data['nu_data_log'], bin_grid)
-        
-        
-        for id in range(bin_grid.size):
-            msk1=[bin_elements_id==id][0]
-            #Remove UL
-            msk2=np.invert(self.data['UL'])
-            msk=msk1*msk2
+        print ("---> bin_width=",bin_width)
+      
+        for id in range(bin_grid.size-1):
+            if id<bin_grid.size-2:
+                msk_bin=np.logical_and(self.data['nu_data']<bin_grid[id+1],self.data['nu_data']>=bin_grid[id])
+            else:
+                msk_bin=np.logical_and(self.data['nu_data']<=bin_grid[id+1],self.data['nu_data']>=bin_grid[id])
             
-            if msk.any()==True>0:
-                sample_size=len(self.data['dnuFnu_data'][msk])
-                if sample_size>1:
+            if msk_bin.sum()>0:               
+                msk_UL=np.invert(self.data['UL'])
+                msk=np.logical_and(msk_bin,msk_UL)
+                if msk.sum()>1:
+                    sample_size=len(self.data['dnuFnu_data'][msk])
                     sigma_2_i=self.data['dnuFnu_data'][msk]**2
                     w=1.0/sigma_2_i
                     
@@ -964,38 +960,44 @@ class ObsData(object):
                         corr_term=np.sum(w * (self.data['nuFnu_data'][msk] - y_bin[id]) * (self.data['nuFnu_data'][msk] - y_bin[id]))/(sample_size-1)
                     else:
                         corr_term=1
-                    
-
+            
                     dy_bin[id]=np.sqrt(sigma_y_2_bar*corr_term)
-                    dx_bin[id]=bin_width/2
-                    x_bin[id]=bin_grid[id]-dx_bin[id]
-                    #print"x", x_bin[id],len(w)
-                else:
-                    #print "xxx"
-                    x_bin[id]=self.data['nu_data_log'][msk][0]
+    
+                elif msk.sum()==1 :
                     y_bin[id]=self.data['nuFnu_data'][msk][0]
-                    dx_bin[id]=bin_width/2
                     dy_bin[id]=self.data['dnuFnu_data'][msk][0]
+                elif np.invert(msk_UL).sum()>0:
+                    x_UL=np.append(x_UL,self.data['nu_data'][ np.invert(msk_UL)])
+                    dx_UL=np.append(dx_UL,self.data['dnu_data'][ np.invert(msk_UL)])
+                    y_UL=np.append(y_UL,self.data['nuFnu_data'][ np.invert(msk_UL)])
+                    dy_UL=np.append(dy_UL,self.data['dnuFnu_data'][ np.invert(msk_UL)])
+            
+            else:
+                y_bin[id]=-1.
                     
-        self.data_reb['nu_data_log']=x_bin
+       
+
+        self.data_reb=self._build_empty_table(n_rows=x_bin.size)
+        self.data_reb['nu_data']=x_bin
+        self.data_reb['dnu_data']=dx_bin
         self.data_reb['nuFnu_data']=y_bin
-        self.data_reb['dnu_data_log']=dx_bin
         self.data_reb['dnuFnu_data']=dy_bin
         
+        self.data_reb_UL=self._build_empty_table(n_rows=x_UL.size)
+        self.data_reb_UL['nu_data']=x_UL
+        self.data_reb_UL['dnu_data']=dx_UL
+        self.data_reb_UL['nuFnu_data']=y_UL
+        self.data_reb_UL['dnuFnu_data']=dy_UL
+        self.data_reb_UL['UL']=True
+        self.data_reb=vstack([self.data_reb,self.data_reb_UL])
+       
+        
         #remove empty bins
-        msk=self.data_reb['nu_data_log']!=0
-        #print('msk',msk)
+        msk=self.data_reb['nuFnu_data']>0
         self.data_reb=self.data_reb[msk]
         
-        
-         
-        #self.data_reb['nuFnu_data'],self.data_reb['dnuFnu_data']=self.log_to_lin(log_val=self.data_reb['nuFnu_data_log'], log_err=self.data_reb['dnuFnu_data_log'])
-          
-        self.data_reb['nu_data'],self.data_reb['dnu_data']=self.log_to_lin(log_val=self.data_reb['nu_data_log'], log_err=self.data_reb['dnu_data_log'])
-
         self.data_reb['nuFnu_data_log'],self.data_reb['dnuFnu_data_log']=self.lin_to_log(val=self.data_reb['nuFnu_data'], err=self.data_reb['dnuFnu_data'])
-          
-        #self.data_reb['nu_data_log'],self.data_reb['dnu_data']=self.lin_to_log(val=self.data_reb['nu_data'], err=self.data_reb['dnu_data'])
+        self.data_reb['nu_data_log'],self.data_reb['dnu_data_log']=self.lin_to_log(val=self.data_reb['nu_data'], err=self.data_reb['dnu_data'])
         
         #set original units
         for c in self.data.colnames:
@@ -1005,7 +1007,7 @@ class ObsData(object):
         if nu_min is None and nu_max is None:
             self.data=self.data_reb
         else:
-            msk=np.logical_and(self.data['nu_data']>=nu_min,self.data['nu_data']<=nu_max)
+            msk=np.logical_and(self.data['nu_data']>=xmin,self.data['nu_data']<=xmax)
             self.data.remove_rows(msk)
             self.data=vstack([self.data,self.data_reb])
         
