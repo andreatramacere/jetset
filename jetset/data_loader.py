@@ -6,6 +6,7 @@ import copy
 
 
 from astropy.table  import  Table,Column
+from astropy.table import vstack
 from astropy import  units as u
 from astropy.units import cds
 import  pickle
@@ -881,7 +882,7 @@ class ObsData(object):
             
             
             
-    def group_data(self,N_bin=None,bin_width=None,correct_dispersions=True):
+    def group_data(self,N_bin=None,bin_width=None,correct_dispersions=True,nu_min=None,nu_max=None):
         
         """
         function to perform a spectral group of the data
@@ -904,15 +905,15 @@ class ObsData(object):
             print ("you must provide either N_bin or bin_width")
             raise ValueError
 
-        #if nu_min is None:
-        xmin= self.data['nu_data_log'].min() * 0.99
-        #else:
-        #   xmin= np.log10(nu_min)
+        if nu_min is None:
+         xmin= self.data['nu_data_log'].min() * 0.99
+        else:
+           xmin= np.log10(nu_min)
 
-        #if nu_max is None:
-        xmax= self.data['nu_data_log'].max() * 1.01
-        #else:
-        #xmin = np.log10(nu_max)
+        if nu_max is None:
+            xmax= self.data['nu_data_log'].max() * 1.01
+        else:
+            xmax = np.log10(nu_max)
 
 
         if N_bin is None:
@@ -1001,7 +1002,12 @@ class ObsData(object):
             if self.data[c].unit is not None:
                 self.data_reb[c] = self.data_reb[c]*self.data[c].unit
 
-        self.data=self.data_reb
+        if nu_min is None and nu_max is None:
+            self.data=self.data_reb
+        else:
+            msk=np.logical_and(self.data['nu_data']>=nu_min,self.data['nu_data']<=nu_max)
+            self.data.remove_rows(msk)
+            self.data=vstack([self.data,self.data_reb])
         
         self.set_fake_error(self.fake_error)
 
