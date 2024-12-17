@@ -48,24 +48,24 @@ jobs:
 
           # MacOS x86_64
           - os: macos-13
-            python: 310
+            python-version: "3.10"
             cpython-version: 310
             platform_id: macosx_x86_64
             cibw_arch: x86_64
           - os: macos-13
-            python: 311
+            python-version: "3.11"
             cpython-version: 311
             platform_id: macosx_x86_64
             cibw_arch: x86_64
           - os: macos-13
-            python: 312
+            python-version: "3.12"
             cpython-version: 312
             platform_id: macosx_x86_64
             cibw_arch: x86_64
 
           #linux
           - os: ubuntu-latest
-            python: 310
+            python-version: "3.10"
             cpython-version: 310
             platform_id: manylinux_x86_64
             cibw_manylinux: manylinux2014
@@ -73,13 +73,13 @@ jobs:
 
           - os: ubuntu-latest
             python: 311
-            cpython-version: 311
+            python-version: "3.11"
             platform_id: manylinux_x86_64
             cibw_manylinux: manylinux2014
             cibw_arch: x86_64
 
           - os: ubuntu-latest
-            python: 312
+            python-version: "3.12"
             cpython-version: 312
             platform_id: manylinux_x86_64
             cibw_manylinux: manylinux2014
@@ -88,17 +88,17 @@ jobs:
 
           # MacOS arm64
           - os: macos-14
-            python: 310
+            python-version: "3.10"
             cpython-version: 310
             platform_id: macosx_arm64
             cibw_archs:  arm64
           - os: macos-14
-            python: 311
+            python-version: "3.11"
             cpython-version: 311
             platform_id: macosx_arm64
             cibw_archs:  arm64
           - os: macos-14
-            python: 312
+            python-version: "3.12"
             cpython-version: 312
             platform_id: macosx_arm64
             cibw_archs:  arm64
