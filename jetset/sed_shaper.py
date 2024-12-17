@@ -71,7 +71,7 @@ class index(object):
         if name in index_names:
             self.name=name
         else:
-            raise RuntimeError("index name=%s not allowed, allowed names=%"%(name,index_names))
+            raise RuntimeError("index name=%s not allowed, allowed names=s%"%(name,index_names))
 
         if data_type in data_type_allowed:
             self.data_type=data_type
@@ -89,8 +89,10 @@ class index(object):
             self.err=None
         
         if idx_range!=[]:
+            #print("===>",idx_range)
             self.idx_range=tuple(idx_range)
         else:
+            #print("===>",spectral_index_range(name))
             self.idx_range=spectral_index_range(name)
             
     
@@ -173,14 +175,14 @@ class index_array(object):
 #----------------------------------------------------
 def spectral_index_range(name):
         spectral_range_dic={}
-        spectral_range_dic['radio']=[6,10]
-        spectral_range_dic['radio_mm']=[10,11]
-        spectral_range_dic['mm_IR']=[11,13]
-        spectral_range_dic['IR_Opt']=[13,14]
-        spectral_range_dic['Opt_UV']=[14,16]
-        spectral_range_dic['UV_X']=[15,17.5]
-        spectral_range_dic['BBB']=[15,16]
-        spectral_range_dic['X']=[16,19]
+        spectral_range_dic['radio']=[6.,10.]
+        spectral_range_dic['radio_mm']=[10.,11.]
+        spectral_range_dic['mm_IR']=[11.,13.]
+        spectral_range_dic['IR_Opt']=[13.,14.]
+        spectral_range_dic['Opt_UV']=[14.,16.]
+        spectral_range_dic['UV_X']=[15.,17.5]
+        spectral_range_dic['BBB']=[15.,16.]
+        spectral_range_dic['X']=[16.,19.]
         spectral_range_dic['Fermi']=[22.38,25.38]
         spectral_range_dic['TeV'] = [25.00, 28.38]
         return spectral_range_dic[name]
@@ -188,10 +190,10 @@ def spectral_index_range(name):
         
 def sync_fit_range(name,indices):
         spectral_range_dic={}
-        spectral_range_dic['blind']=[9,19]        
-        spectral_range_dic['ISP']=[10,17]
-        spectral_range_dic['LSP']=[10,17]
-        spectral_range_dic['HSP']=[11,20]
+        spectral_range_dic['blind']=[9.,19.]        
+        spectral_range_dic['ISP']=[10.,17.]
+        spectral_range_dic['LSP']=[10.,17.]
+        spectral_range_dic['HSP']=[11.,20.]
 
         if name=='ISP' and indices.get_by_name('X').val is not None  :
             if  indices.get_by_name('X').val.sed<0:
