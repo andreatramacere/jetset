@@ -695,14 +695,21 @@ class Minimizer(object):
     
     @property
     def corr(self):
-        if self.covar is not None:
-            v = np.sqrt(np.diag(self.covar))
-            outer_v = np.outer(v, v)
-            correlation = self.covar / outer_v
-            correlation[self.covar == 0] = 0
-            return correlation
-        else:
-            return None
+        try:
+            if self.covar is not None:
+                v = np.sqrt(np.diag(self.covar))
+                outer_v = np.outer(v, v)
+                correlation = self.covar / outer_v
+                correlation[self.covar == 0] = 0
+            else:
+                correlation= None
+        except Exception as e:
+            warnings.warn('correlation matrix computation  failed')
+            correlation=None
+        
+        return correlation
+
+        
     
 
 
