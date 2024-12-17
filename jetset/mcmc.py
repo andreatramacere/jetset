@@ -103,9 +103,9 @@ class McmcSampler(object):
                         warnings.warn('par %s'%par_name+' not present in model, will be skipped')
 
 
-    def set_bounds(self,bound=0.2,bound_rel=False,):
+    def set_bounds(self,bound=0.2,bound_rel=False,preserve_fit_range=True):
 
-        self._build_bounds(bound=bound,bound_rel=bound_rel)
+        self._build_bounds(bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range)
    
 
         
@@ -209,7 +209,7 @@ class McmcSampler(object):
             q_vals=self.get_par_quantiles(ID,quantiles=quantile)
             par.val = q_vals
 
-    def _build_bounds(self, bound=0.2,bound_rel=True):
+    def _build_bounds(self, bound=0.2,bound_rel=True,preserve_fit_range=True):
 
         self._bounds=[]
 
@@ -221,8 +221,9 @@ class McmcSampler(object):
             raise RuntimeError('bound shape', np.shape(bound), 'it is wrong, has to be a scalar or (2,)')
 
         for par in self.par_array:
-            if  bound_rel is False and par.best_fit_err is not None:
-
+            if  not bound_rel  and par.best_fit_err is not None:
+                #print('1',par.best_fit_err, bound[1])
+                #print('1',par.best_fit_err, bound[0])
                 #_min =  par.best_fit_val - par.best_fit_err * bound[0]
                 #_max =  par.best_fit_val + par.best_fit_err * bound[1]
                 delta_p = par.best_fit_err * bound[1]
@@ -238,11 +239,15 @@ class McmcSampler(object):
             _max = par.best_fit_val + delta_p
 
 
-            if par.fit_range_min is not None:
+            if par.fit_range_min is not None and preserve_fit_range is True:
                 _min= max(_min, par.fit_range_min)
+            elif par.val_min is not None:
+                _min= max(_min, par.val_min)
 
             if par.fit_range_max is not None:
                 _max= min(_max, par.fit_range_max)
+            elif par.val_max is not None:
+                _max= min(_max, par.val_max)
             
             print('par:',par.name,' best fit value: ',par.best_fit_val,' mcmc bounds:',[_min, _max])
             self._bounds.append([_min, _max])
