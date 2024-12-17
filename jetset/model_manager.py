@@ -435,6 +435,7 @@ class FitModel(Model):
         self._sed_tables_dict[self.name]=self.sed_table(restframe=restframe)
         for comp in self.components.components_list:
             if hasattr(comp,'sed_table'):
-                self._sed_tables_dict[comp.name]=comp.sed_table(restframe=restframe)
+                if comp.sed_table(restframe=restframe) is not None:
+                    self._sed_tables_dict[comp.name]=comp.sed_table(restframe=restframe)
         
         return self._sed_tables_dict

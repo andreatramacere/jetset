@@ -450,9 +450,11 @@ class Model(object):
                 _names.append('nuLnu_src')
                 _cols.append(self.SED.nuLnu_src)
         
-        _meta=dict(model_name=self.name)       
-        _meta['restframe']= restframe
-        self._SED_table = Table(_cols, names=_names,meta=_meta)
+            _meta=dict(model_name=self.name)       
+            _meta['restframe']= restframe
+            self._SED_table = Table(_cols, names=_names,meta=_meta)
+        else:
+            self._SED_table = None
 
    
     def sed_table(self, restframe='obs'):
