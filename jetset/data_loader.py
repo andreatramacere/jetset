@@ -535,8 +535,8 @@ class ObsData(object):
         
             self.data['dnuFnu_data_log']= np.ones(self.data['nu_data_log'].size) * self.fake_error
             
-            print ("Warning: error were not provided ")
-            print ("         assigning %f           ")
+            print ("Warning: errors were not provided ")
+            print ("         assigning                ")
             print ("         set error with .set_error"%self.fake_error)
 
     
@@ -983,13 +983,14 @@ class ObsData(object):
         self.data_reb['nuFnu_data']=y_bin
         self.data_reb['dnuFnu_data']=dy_bin
         
-        self.data_reb_UL=self._build_empty_table(n_rows=x_UL.size)
-        self.data_reb_UL['nu_data']=x_UL
-        self.data_reb_UL['dnu_data']=dx_UL
-        self.data_reb_UL['nuFnu_data']=y_UL
-        self.data_reb_UL['dnuFnu_data']=dy_UL
-        self.data_reb_UL['UL']=True
-        self.data_reb=vstack([self.data_reb,self.data_reb_UL])
+        if x_UL.size>0:
+            self.data_reb_UL=self._build_empty_table(n_rows=x_UL.size)
+            self.data_reb_UL['nu_data']=x_UL
+            self.data_reb_UL['dnu_data']=dx_UL
+            self.data_reb_UL['nuFnu_data']=y_UL
+            self.data_reb_UL['dnuFnu_data']=dy_UL
+            self.data_reb_UL['UL']=True
+            self.data_reb=vstack([self.data_reb,self.data_reb_UL])
        
         
         #remove empty bins
