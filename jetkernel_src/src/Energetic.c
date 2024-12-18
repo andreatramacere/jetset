@@ -398,20 +398,20 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     energetic.jet_L_rad=0.;
 
     //energetic.U_Synch = PowerPhotons_blob_rest_frame (pt, pt->nu_Sync, pt->nuF_nu_Sync_obs, pt->NU_INT_STOP_Sync_SSC)/(4*pi*pt->R*pt->R*vluce_cm);
-    energetic.U_BLR = I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR);
-    energetic.U_DT=I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT);
-    energetic.U_CMB = I_nu_to_Uph(pt->nu_CMB, pt->I_nu_CMB, pt->NU_INT_MAX_CMB);
-    energetic.U_Disk = I_nu_to_Uph(pt->nu_Disk, pt->I_nu_Disk, pt->NU_INT_MAX_Disk);
-    energetic.U_Star = I_nu_to_Uph(pt->nu_Star, pt->I_nu_Star, pt->NU_INT_MAX_Star);
+    //energetic.U_BLR = I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR);
+    //energetic.U_DT=I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT);
+    //energetic.U_CMB = I_nu_to_Uph(pt->nu_CMB, pt->I_nu_CMB, pt->NU_INT_MAX_CMB);
+    //energetic.U_Disk = I_nu_to_Uph(pt->nu_Disk, pt->I_nu_Disk, pt->NU_INT_MAX_Disk);
+    //energetic.U_Star = I_nu_to_Uph(pt->nu_Star, pt->I_nu_Star, pt->NU_INT_MAX_Star);
 
     energetic.U_seed_tot = energetic.U_Synch+ energetic.U_BLR + energetic.U_DT + energetic.U_Disk + energetic.U_Star;
 
     energetic.U_Synch_DRF = energetic.U_Synch*(pt->beam_obj*pt->beam_obj*pt->beam_obj*pt->beam_obj);
-    energetic.U_BLR_DRF = I_nu_to_Uph(pt->nu_BLR_disk_RF, pt->I_nu_BLR_disk_RF, pt->NU_INT_MAX_BLR);
-    energetic.U_DT_DRF = I_nu_to_Uph(pt->nu_DT_disk_RF, pt->I_nu_DT_disk_RF, pt->NU_INT_MAX_DT);
-    energetic.U_CMB_DRF = I_nu_to_Uph(pt->nu_CMB_disk_RF, pt->I_nu_CMB_disk_RF, pt->NU_INT_MAX_CMB);
-    energetic.U_Disk_DRF = I_nu_to_Uph(pt->nu_Disk_disk_RF, pt->I_nu_Disk_disk_RF, pt->NU_INT_MAX_Disk);
-    energetic.U_Star_DRF =  I_nu_to_Uph(pt->nu_Star_disk_RF, pt->I_nu_Star_disk_RF, pt->NU_INT_MAX_Star);
+    //energetic.U_BLR_DRF = I_nu_to_Uph(pt->nu_BLR_disk_RF, pt->I_nu_BLR_disk_RF, pt->NU_INT_MAX_BLR);
+    //energetic.U_DT_DRF = I_nu_to_Uph(pt->nu_DT_disk_RF, pt->I_nu_DT_disk_RF, pt->NU_INT_MAX_DT);
+    //energetic.U_CMB_DRF = I_nu_to_Uph(pt->nu_CMB_disk_RF, pt->I_nu_CMB_disk_RF, pt->NU_INT_MAX_CMB);
+    //energetic.U_Disk_DRF = I_nu_to_Uph(pt->nu_Disk_disk_RF, pt->I_nu_Disk_disk_RF, pt->NU_INT_MAX_Disk);
+    //energetic.U_Star_DRF =  I_nu_to_Uph(pt->nu_Star_disk_RF, pt->I_nu_Star_disk_RF, pt->NU_INT_MAX_Star);
 
     //energetic.L_Sync_rf = PowerPhotons_blob_rest_frame (pt, pt->nu_Sync, pt->nuF_nu_Sync_obs, pt->NU_INT_STOP_Sync_SSC);
     energetic.jet_L_Sync = energetic.L_Sync_rf * lum_factor_rad;
