@@ -761,7 +761,8 @@ class InjEmittersDistribution(BaseEmittersDistribution):
             pass
         #print('==>',self.eval_U()*volume*delta_t)
         self.update()
-
+    
+    #NOTE: not used, to be removed
     def set_temp_ev(self):
         self.e_gamma_ptr = getattr(self._temp_ev, self._gammae_name)
         self._Q_inj_e_second_ptr = getattr(self._temp_ev._blob, self._Q_inj_e_second_name)
