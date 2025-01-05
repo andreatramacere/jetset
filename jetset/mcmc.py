@@ -164,9 +164,7 @@ class McmcSampler(object):
         print('mcmc run starting')
         print('')
         start = time.time()
-
         if threads is not None and threads>1:
-
             warnings.warn('python multithreading is not effective, JetSeT uses C threads to speedup computation')
             threads=1
             self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self.par_array, loglog))
@@ -182,11 +180,10 @@ class McmcSampler(object):
         comp_time = end - start
         print("mcmc run done, with %d threads took %2.2f seconds"%(threads,comp_time))
 
-        #self.samples = self.sampler.chain[:, burnin:, :].reshape((-1, self.ndim))
+        
         self.samples = self.sampler.get_chain(flat=True,discard=burnin)
         self.samples_log_prob  = self.sampler.get_log_prob(flat=True,discard=burnin)
         self.acceptance_fraction=np.mean(self.sampler.acceptance_fraction)
-
         self.reset_to_best_fit()
 
 
@@ -203,11 +200,22 @@ class McmcSampler(object):
         for ID,par in enumerate(self.par_array):
             par.val = self.par_array_best_fit[ID].val
 
+    #def reset_to_mcmc(self,quantile=0.5):
+    #    for ID,par in enumerate(self.par_array):
+    #        q_vals=self.get_par_quantiles(ID,quantiles=quantile)
+    #        par.val = q_vals
 
-    def reset_to_mcmc(self,quantile=0.5):
-        for ID,par in enumerate(self.par_array):
-            q_vals=self.get_par_quantiles(ID,quantiles=quantile)
-            par.val = q_vals
+    def reset_to_mcmc_best_fit(self):
+        _prob_max = np.argmax(self.samples_log_prob)
+        _id_prob_max = np.unravel_index(_prob_max, self.samples_log_prob.shape)
+        
+        print("----------------------------")
+        print("MCMC best fit solution")
+        for par in self.par_array:
+            _sample, _idx = self.get_par(par.name)
+            par.val = _sample[_id_prob_max]
+            print(f"{par.name}: {_sample[_id_prob_max]:}")
+        print("----------------------------")
 
     def _build_bounds(self, bound=0.2,bound_rel=True,preserve_fit_range=True):
 
@@ -255,6 +263,24 @@ class McmcSampler(object):
 
 
     def corner_plot(self, labels = None, quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, **kwargs):
+        """_summary_
+
+        Parameters
+        ----------
+        labels : _type_, optional
+            _description_, by default None
+        quantiles : tuple, optional
+            _description_, by default (0.16, 0.5, 0.84)
+        levels :levels=(1 - np.exp(-0.5),)
+            check for proper levels definition for 2d: https://corner.readthedocs.io/en/latest/pages/sigmas/
+        title_kwargs : dict, optional
+            _description_, by default {}
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
         _id = []
 
         if labels is None:
@@ -385,8 +411,35 @@ class McmcSampler(object):
         ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1)
         return f
 
-    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None, get_model=False, plot_mcmc_best_fit_model=False):
+    def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None, get_model=False, plot_mcmc_best_fit_model=False,rnd_seed=0):
+        """_summary_
 
+        Parameters
+        ----------
+        sed_data : _type_, optional
+            _description_, by default None
+        fit_range : _type_, optional
+            _description_, by default None
+        size : int, optional
+            _description_, by default 100
+        frame : str, optional
+            _description_, by default 'obs'
+        density : bool, optional
+            _description_, by default False
+        quantiles : _type_, optional
+            _description_, by default None
+        get_model : bool, optional
+            _description_, by default False
+        plot_mcmc_best_fit_model : bool, optional
+            _description_, by default False
+        rnd_seed : int, optional
+            _description_, by default 0
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
         if sed_data is None:
             sed_data=self.sed_data
 
@@ -394,61 +447,64 @@ class McmcSampler(object):
             fit_range = [self.model.nu_min_fit, self.model.nu_max_fit]
 
         p = self.model._set_up_plot(None, sed_data, frame, density)
-
-        self.reset_to_best_fit()
-        self.model.eval(fill_SED=True)
-
-        x, y = self.model.SED.get_model_points(log_log=False, frame=frame)
-        #if density is True:
-        #    y=y-x
-        if size is None:
-            size = len(self.samples)
-            ID_mcmc = np.arange(size)
-        else:
-            size = min(len(self.samples), int(size))
-            ID_mcmc = np.random.randint(len(self.samples), size=size)
-
-        y = np.zeros((size,x.size))
-
-        for ID,ID_rand in enumerate(ID_mcmc):
-
-            for ID_par, pi in enumerate(self.par_array):
-                pi.set(val=self.get_par(ID_par)[0][ID_rand])
-
-            self.model.eval(fill_SED=True)
-            x, y[ID] = self.model.SED.get_model_points(log_log=False, frame=frame)
-
+        x,y=self._get_model_samples(size=size,rnd_seed=rnd_seed,frame=frame)
+       
         if density is True:
             y=y/x
         
         if quantiles is None:
             y_min=np.amin(y, axis=0)
             y_max=np.amax(y, axis=0)
-            msk = y_min > self.model.flux_plot_lim
-            l=p.sedplot.fill_between(x[msk],y_max[msk],y_min[msk],color='gray',alpha=0.3,label='mcmc model range')
+            _l='mcmc model range'
+            #msk = y_min > self.model.flux_plot_lim
+            #l=p.sedplot.fill_between(x[msk],y_max[msk],y_min[msk],color='gray',alpha=0.3,label='mcmc model range')
         else:
+            _l='mcmc model conf. %s'%quantiles
             y_min,y_max=np.quantile(y, quantiles, axis=0)
-            msk = y_min > self.model.flux_plot_lim
-            l=p.sedplot.fill_between(x[msk],y_max[msk],y_min[msk],color='gray',alpha=0.3,label='mcmc model conf %s'%quantiles)
-        p.lines_model_list.append(l)
-        self.reset_to_best_fit()
-        self.model.eval(fill_SED=True)
+        
+        msk = y_min > self.model.flux_plot_lim
+        l=p.sedplot.fill_between(x[msk],y_max[msk],y_min[msk],color='gray',alpha=0.3,label=_l)
 
+        p.lines_model_list.append(l)
+        msk = y_min > self.model.flux_plot_lim
         if plot_mcmc_best_fit_model is False:
-            p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density,flim=self.model.flux_plot_lim)
-            p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
+            self.reset_to_best_fit()
+            label=None
         else:
-            self.reset_to_mcmc(quantile=0.5)
-            self.model.eval()
-            p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density,flim=self.model.flux_plot_lim,label='mcmc 0.5 quantile')
-            p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
-            #self.reset_to_best_fit()
+            label='mcmc best fit'
+            self.reset_to_mcmc_best_fit()
+        
+        self.model.eval(fill_SED=True)
+        p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density,flim=self.model.flux_plot_lim,label=label)
+        p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
         
         if get_model is True:
             return p, [x[msk],y_min[msk],y_max[msk]]
         else:
             return p
 
+
+    def _get_model_samples(self,size,rnd_seed,frame):
+        x, _y = self.model.SED.get_model_points(log_log=False, frame=frame)
+        
+        if size is None:
+            size = len(self.samples)
+        else:
+            size = min(len(self.samples), int(size))
+            
+        rng = np.random.default_rng(rnd_seed)
+        ID_mcmc = rng.integers(0,len(self.samples),size=size)
+
+        y = np.zeros((size,x.size))
+
+        for ID,ID_rand in enumerate(ID_mcmc):
+            for ID_par, pi in enumerate(self.par_array):
+                pi.set(val=self.get_par(ID_par)[0][ID_rand])
+
+            self.model.eval(fill_SED=True)
+            x, y[ID] = self.model.SED.get_model_points(log_log=False, frame=frame)
+        
+        return x,y
 
     def _progess_bar(self,):
         if np.mod(self.calls, 10) == 0 and self.calls != 0:
@@ -472,14 +528,13 @@ def emcee_log_like(theta,fit_model,data,use_UL,par_array,loglog):
         if np.isnan(theta[pi]):
             _warn=True
 
-    _m = fit_model.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
+    _model = fit_model.eval(nu=data['x'], fill_SED=False, get_model=True, loglog=loglog)
 
     _res_sum, _res, _res_UL = _eval_res(data['y'],
-                                        _m,
+                                        _model,
                                         data['dy'],
                                         data['UL'],
                                         use_UL=use_UL)
-    #_progess_bar(counter)
     return  _res_sum *-0.5
 
 
@@ -494,11 +549,12 @@ def log_prob(theta,fit_model,data,use_UL,counter,bounds,par_array,loglog):
     lp = log_prior(theta,bounds)
     counter.count += 1
     if not np.isfinite(lp):
-        lp = -np.inf
+        res = -np.inf
     else:
-        lp += emcee_log_like(theta,fit_model,data,use_UL,par_array,loglog)
+        ll= emcee_log_like(theta,fit_model,data,use_UL,par_array,loglog)
+        res= lp+ll
     counter.count_OK += 1
-    return lp
+    return res
 
 
 
