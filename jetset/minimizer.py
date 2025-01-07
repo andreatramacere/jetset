@@ -41,6 +41,8 @@ from .data_loader import lin_to_log
 
 
 
+
+
 __all__ = ['FitResults','fit_SED','Minimizer','LSBMinimizerScipy', 'MinuitMinimizer', 'ModelMinimizer']
 
 
@@ -242,6 +244,8 @@ class ModelMinimizer(object):
             c = pickle.load(open(file_name, "rb"))
             if isinstance(c, ModelMinimizer):
                 c.__init__(c.minimizer)
+                if hasattr(c,'fit_model'):
+                    c.fit_model=c.fit_model._build_model(c.fit_model)
                 return  c
             else:
                 raise RuntimeError('The model you loaded is not valid please check the file name')
