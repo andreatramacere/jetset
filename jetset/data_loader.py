@@ -1180,11 +1180,11 @@ class ObsData(object):
 
         if show_dataset is False:
 
-            plot_obj.add_data_plot(self, color=color, fmt=fmt, ms=ms, mew=mew, density=density)
+            plot_obj.add_data_plot(self, color=color, fmt=fmt, ms=ms, mew=mew)
         else:
             for ds in self.get_data_sets():
                 self.filter_data_set(filters=ds,silent=True,exclude=False)
-                plot_obj.add_data_plot(self, color=color, fmt=fmt, ms=ms, mew=mew ,label='dataset %s'%ds, density=density)
+                plot_obj.add_data_plot(self, color=color, fmt=fmt, ms=ms, mew=mew ,label='dataset %s'%ds)
                 self.reset_data()
             self.reset_data()
 

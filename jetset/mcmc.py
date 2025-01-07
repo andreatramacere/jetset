@@ -497,7 +497,7 @@ class McmcSampler(object):
             self.reset_to_mcmc_best_fit()
         
         self.model.eval(fill_SED=True)
-        p.add_model_plot(self.model, color='red',fit_range = fit_range,density=density,flim=self.model.flux_plot_lim,label=label)
+        p.add_model_plot(self.model, color='red',fit_range = fit_range,flim=self.model.flux_plot_lim,label=label)
         p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
         
         if get_model is True:

@@ -78,7 +78,8 @@ class  PlotSED (object):
         check_frame(frame)
 
         self.frame=frame
-
+        self._sed_data=None
+        self.density=density
         self.axis_kw=['x_min','x_max','y_min','y_max']
         self.interactive=interactive
 
@@ -113,7 +114,7 @@ class  PlotSED (object):
         self.sedplot= self.fig.add_subplot(self.gs[0])
         self._add_res_plot()
 
-        self.set_plot_axis_labels(density=density)
+        self.set_plot_axis_labels(density=self.density)
 
         #if autoscale==True:
         self.sedplot.set_autoscalex_on(True)
@@ -146,9 +147,10 @@ class  PlotSED (object):
                 self.fig.canvas.manager.toolbar.update()
         except:
             pass
-
+        
+       
         if sed_data is not None :
-            self.add_data_plot(sed_data,density=density)
+            self.add_data_plot(sed_data)
 
         if model is not  None:
             self.add_model_plot(model)
@@ -296,14 +298,22 @@ class  PlotSED (object):
         self.update_plot()
 
     def update_plot(self):
-        self.fig.canvas.draw()
-       
-        y_s = []
-        x_min = []
-        x_max = []
-        y_min = None
-        y_max = None
-        if len(self.sedplot.lines)>0:
+      
+        if self._sed_data is not None:
+            x,y,dx,dy,=self._sed_data.get_data_points(log_log=False,frame=self.frame, density=self.density)
+      
+            self.fig.canvas.draw()
+            self.sedplot.relim()
+            self.sedplot.set_xlim(np.min(x)/10,np.max(x)*10)
+            self.sedplot.set_ylim(np.min(y)/10,np.max(y)*10)
+           
+
+        elif len(self.sedplot.lines)>0:
+            y_s = []
+            x_min = []
+            x_max = []
+            y_min = None
+            y_max = None
 
             for l in self.sedplot.lines:
                 if len(l.get_ydata())>0:
@@ -353,7 +363,7 @@ class  PlotSED (object):
 
 
 
-    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None,density=False, update=True, lw=1.0 ,frame=None):
+    def add_model_plot(self, model, label=None, color=None, line_style=None, flim=None,auto_label=True,fit_range=None, update=True, lw=1.0 ,frame=None):
 
         frame=self._check_frame(frame=frame)
 
@@ -368,7 +378,7 @@ class  PlotSED (object):
             except Exception as e:
                 raise RuntimeError('for model',model.name, "problem with SED.get_model_points()",e)
 
-        if density is True:
+        if self.density is True:
             y=y/x
         if line_style is None:
             line_style = '-'
@@ -415,7 +425,6 @@ class  PlotSED (object):
                           time_slice_bin=None,
                           time=None,
                           time_bin=None,
-                          density=False,
                           use_cached=False,
                           sed_data=None,
                           average=False):
@@ -493,7 +502,7 @@ class  PlotSED (object):
                 label = 'stop, t=%2.2e (s)' % t
 
             self.add_model_plot(model=s, label=label, line_style=ls, color=color, update=False, lw=lw,
-                                    auto_label=False,density=density)
+                                    auto_label=False)
 
         if sed_data is not None:
             self.add_data_plot(sed_data)
@@ -502,11 +511,11 @@ class  PlotSED (object):
         return
 
 
-    def add_data_plot(self,sed_data,label=None,color=None,frame=None,fmt='o',ms=4,mew=0.5,fit_range=None, density = False):
-
+    def add_data_plot(self,sed_data,label=None,color=None,frame=None,fmt='o',ms=4,mew=0.5,fit_range=None):
+        self._sed_data=sed_data
         frame = self._check_frame(frame)
         try:
-            x,y,dx,dy,=sed_data.get_data_points(log_log=False,frame=self.frame, density=density)
+            x,y,dx,dy,=sed_data.get_data_points(log_log=False,frame=self.frame)
         except Exception as e:
             raise RuntimeError("!!! ERROR failed to get data points from", sed_data,e)
 

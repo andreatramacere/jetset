@@ -116,7 +116,7 @@ class TemplateTable2D(Model):
         if label is None:
             label=self.name
 
-        plot_obj.add_model_plot(self.SED, line_style='-', label=label, flim=self.flux_plot_lim,color=color, density=density,frame=frame)
+        plot_obj.add_model_plot(self.SED, line_style='-', label=label, flim=self.flux_plot_lim,color=color,frame=frame)
 
         return plot_obj
 
