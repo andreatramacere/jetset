@@ -16,7 +16,7 @@ import multiprocessing as mp
 import warnings
 import  time
 import copy
-import threading
+from collections import OrderedDict
 from .plot_sedfit import  plt, PlotSED, set_mpl
 
 __all__=['McmcSampler']
@@ -61,15 +61,16 @@ class McmcSampler(object):
     def __init__(self,model_minimizer):
         if emcee.__version__ < "3":
             raise RuntimeError('Please update to emcee v>=3.0.0')
-        
-        self.model = model_minimizer.fit_model
+        #self.model_minimizer
+        self.model = model_minimizer.fit_model.clone()
         self.data = model_minimizer.data
-        self.fit_par_free = model_minimizer.fit_par_free
-
-        self._progress_iter = cycle(['|', '/', '-', '\\'])
-        self.labels=None
-        self.par_array=None
+        #self._fit_par_free = self.model_minimizer.fit_par_free
+        self._par_array=None
         self._bounds=None
+        
+        
+        self._progress_iter = cycle(['|', '/', '-', '\\'])
+       
 
 
     def set_labels(self,use_labels_dict=None):
@@ -80,125 +81,113 @@ class McmcSampler(object):
         use_labels_dict : _type_, optional
             _description_, by default None
         """
-        if use_labels_dict is None:
-            self.par_array =  self.fit_par_free
 
-            self.labels = [par.name for par in self.par_array]
-            self.labels_units = [par.units for par in self.par_array]
-            self.labels_start_val = [p.best_fit_val for p in self.par_array]
+        self._par_array=[]
+        self._bounds=None
+        if use_labels_dict is None:
+            for comp in  self.model.components._components_list:
+                mod = getattr(self.model,comp.name)
+                for p in mod.parameters.par_array:
+                    if p.frozen == False:
+                        self._append_label_dict(comp.name,p)
         else:
-            self.labels=[]
-            self.par_array=[]
-            self.labels_units=[]
-            self.labels_start_val=[]
             for model_name in use_labels_dict.keys():
                 for par_name in use_labels_dict[model_name]:
                     p= self.model.parameters.get_par_by_name(model_name,par_name)
                     if p is not None:
-                        self.par_array.append(p)
-                        self.labels.append( p.name)
-                        self.labels_units.append(p.units)
-                        self.labels_start_val.append(p.best_fit_val)
-                    else:
-                        warnings.warn('par %s'%par_name+' not present in model, will be skipped')
+                        if p.frozen == False:
+                            self._append_label_dict(model_name,p)
+
+    def _append_label_dict(self,comp_name,p):
+        self._par_array.append(OrderedDict(comp_name=comp_name,
+                                            name=p.name,
+                                            full_name=f"{comp_name}.{p.name}",
+                                            val=p.val,
+                                            val_mix=p.val_min,
+                                            val_max=p.val_max,
+                                            labels_start_val=p.val,
+                                            minimizer_best_fit_val=p.best_fit_val,
+                                            minimizer_best_fit_err=p.best_fit_err,
+                                            minimizer_fit_range_min=p.fit_range_min,
+                                            minimizer_fit_range_max=p.fit_range_max,
+                                            units=p.units,
+                                            plot_label=p.name,
+                                            bounds=[None,None])) 
 
 
     def set_bounds(self,bound=0.2,bound_rel=False,preserve_fit_range=True):
-
-        self._build_bounds(bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range)
-   
-
-        
-    def run_sampler(self,
-                    nwalkers=None,
-                    steps=100,
-                    pos=None,
-                    burnin=50,
-                    use_UL=False,
-                    threads=None,
-                    walker_start_bound=0.005,
-                    loglog = False,
-                    progress='notebook',
-                    use_labels_dict=None,
-                    bound=None,
-                    bound_rel=False):
-
-        
-        self.calls = 0
-        self.calls_OK = 0
-        self.use_UL = use_UL
-
+        self._set_bounds(bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range)
     
+    def _set_bounds(self, bound=0.2,bound_rel=True,preserve_fit_range=True):
 
-        if use_labels_dict is not None or bound is not None:
-            warnings.warn('use_labels_dict, and bounds in run_sampler are deprecated and will result in an error in the next version, please use the .set_labels and .set_bounds methods as explained in the documentation')
-            self.set_labels(use_labels_dict=use_labels_dict)
-            self.set_bounds(bound=bound,bound_rel=bound_rel)
-        
-        
-        self.plot_labels=copy.deepcopy(self.labels)
-        self.par_array_best_fit=copy.deepcopy(self.par_array)
-        self.ndim = len(self.labels)
-        self.pos = pos
-        self.burnin=burnin
-       
-        if nwalkers is None:
-            self.nwalkers = 4*len(self.labels)
-            print('setting nwalkers to:', self.nwalkers)
+        self._bounds=[]
+
+        if np.shape(bound) == ():
+            bound=[bound,bound]
+        elif np.shape(bound) == (2,):
+            pass
         else:
-            self.nwalkers = nwalkers
+            raise RuntimeError('bound shape', np.shape(bound), 'it is wrong, has to be a scalar or (2,)')
+
+        for par in self._par_array:
+            if  not bound_rel  and par['best_fit_err'] is not None:
+                delta_p = par['minimizer_best_fit_err'] * bound[1]
+                delta_m = par['minimizer_best_fit_err'] * bound[0]
+
+            else:
+                delta_p = np.fabs(par['minimizer_best_fit_val'])*bound[1]
+                delta_m = np.fabs(par['minimizer_best_fit_val'])*bound[0]
         
-        if self.nwalkers < 2*len(self.labels):
-            raise RuntimeError("numbers of walkers has to be at least two times the number of sampling pars")
+            _min = par['minimizer_best_fit_val'] - delta_m
+            _max = par['minimizer_best_fit_val'] + delta_p
 
-        counter=Counter( self.nwalkers*steps)
-        self.steps = steps
-        self.calls_tot = self.nwalkers * steps
 
-        if pos is None:
-            pos = sample_ball(np.array([p.best_fit_val for p in self.par_array]),
-                              np.array([p.best_fit_val * walker_start_bound for p in self.par_array]),
-                              self.nwalkers)
+            if par['minimizer_fit_range_min'] is not None and preserve_fit_range is True:
+                _min= max(_min, par['minimizer_fit_range_min'] )
+            elif par['val_min'] is not None:
+                _min= max(_min, par['val_min'])
 
-        
-        print('mcmc run starting')
-        print('')
-        start = time.time()
-        if threads is not None and threads>1:
-            warnings.warn('python multithreading is not effective, JetSeT uses C threads to speedup computation')
-            threads=1
-            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self.par_array, loglog))
-            self.sampler.run_mcmc(pos, steps, progress=progress)
+            if par['minimizer_fit_range_max'] is not None:
+                _max= min(_max, par['minimizer_fit_range_max'])
+            elif par['val_max'] is not None:
+                _max= min(_max, par['val_max'])
+            
+            print('par:',par['name'],' best fit value: ',par['minimizer_best_fit_val'],' mcmc bounds:',[_min, _max])
+            par['bounds']=[_min, _max]
+
+    def _build_sampler_bounds(self):
+        self._bounds=[]
+        for par in self._par_array:
+            self._bounds.append(par['bounds'])
+
+    def get_par(self, par_name_or_idx, get_index=False):
+        if type(par_name_or_idx) == int:
+            par_idx=par_name_or_idx
+
         else:
-            threads=1
-            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self.par_array, loglog))
-            self.sampler.run_mcmc(pos, steps, progress=progress)
+            par_name=par_name_or_idx
+            try:
+                par_idx = [par['name'] for par in self._par_array].index(par_name)
+            except:
+                raise RuntimeError('parameter p', par_name, 'not found')
 
+        if par_idx > len(self._par_array):
+            raise RuntimeError('label id larger then labels size')
 
-
-        end = time.time()
-        comp_time = end - start
-        print("mcmc run done, with %d threads took %2.2f seconds"%(threads,comp_time))
-
+        if get_index is True:
+            return self._par_array[par_idx], par_idx
+        else:
+            return self._par_array[par_idx]
         
-        self.samples = self.sampler.get_chain(flat=True,discard=burnin)
-        self.samples_log_prob  = self.sampler.get_log_prob(flat=True,discard=burnin)
-        self.acceptance_fraction=np.mean(self.sampler.acceptance_fraction)
-        self.reset_to_best_fit()
 
 
-    def set_plot_label(self,label,plot_label):
-        self.plot_labels[self.labels.index(label)]=plot_label
+    def set_plot_label(self,par_name,plot_label):
+        p=self.get_par(par_name)
+        p['plot_label']=plot_label
 
-
-    def get_par_quantiles(self,p,quantiles=(0.16,0.5,0.84)):
-        _d, idx=self.get_par(p)
-
-        return np.array(np.quantile(_d,quantiles))
-
-    def reset_to_best_fit(self):
-        for ID,par in enumerate(self.par_array):
-            par.val = self.par_array_best_fit[ID].val
+    def reset_to_minimizer_best_fit(self):
+        for par in  self._par_array:
+            par['val'] = par['minimizer_best_fit_val']
 
     #def reset_to_mcmc(self,quantile=0.5):
     #    for ID,par in enumerate(self.par_array):
@@ -211,56 +200,87 @@ class McmcSampler(object):
         
         print("----------------------------")
         print("MCMC best fit solution")
-        for par in self.par_array:
-            _sample, _idx = self.get_par(par.name)
-            par.val = _sample[_id_prob_max]
-            print(f"{par.name}: {_sample[_id_prob_max]:}")
+        for ID,par in enumerate(self._par_array):
+            par['val'] = self.get_sample(ID)[_id_prob_max]
+            print(f"{par['name']}: {par['val']}")
         print("----------------------------")
 
-    def _build_bounds(self, bound=0.2,bound_rel=True,preserve_fit_range=True):
+        
+    def run_sampler(self,
+                    nwalkers=None,
+                    steps=100,
+                    pos=None,
+                    burnin=50,
+                    use_UL=False,
+                    threads=None,
+                    walker_start_bound=0.005,
+                    loglog = False,
+                    progress='notebook'):
 
-        self._bounds=[]
 
-        if np.shape(bound) == ():
-            bound=[bound,bound]
-        elif np.shape(bound) == (2,):
-            pass
+        if self._par_array is None:
+            raise RuntimeError('please set the labels, using .set_labels, before running the sampler')
+
+        self._build_sampler_bounds()
+
+        self.calls = 0
+        self.calls_OK = 0
+        self.use_UL = use_UL
+    
+       
+        self.ndim = len(self._par_array)
+        self.pos = pos
+        self.burnin=burnin
+       
+        if nwalkers is None:
+            self.nwalkers = 4*len(self._par_array)
+            print('setting nwalkers to:', self.nwalkers)
         else:
-            raise RuntimeError('bound shape', np.shape(bound), 'it is wrong, has to be a scalar or (2,)')
+            self.nwalkers = nwalkers
+        
+        if self.nwalkers < 2*len(self._par_array):
+            raise RuntimeError("numbers of walkers has to be at least two times the number of sampling pars")
 
-        for par in self.par_array:
-            if  not bound_rel  and par.best_fit_err is not None:
-                #print('1',par.best_fit_err, bound[1])
-                #print('1',par.best_fit_err, bound[0])
-                #_min =  par.best_fit_val - par.best_fit_err * bound[0]
-                #_max =  par.best_fit_val + par.best_fit_err * bound[1]
-                delta_p = par.best_fit_err * bound[1]
-                delta_m = par.best_fit_err * bound[0]
+        counter=Counter( self.nwalkers*steps)
+        self.steps = steps
+        self.calls_tot = self.nwalkers * steps
 
-            else:
-                delta_p = np.fabs(par.best_fit_val)*bound[1]
-                delta_m = np.fabs(par.best_fit_val)*bound[0]
-                #_min = par.best_fit_val * (1.0  - bound[0])
-                #_max = par.best_fit_val * (1.0  + bound[1])
+        if pos is None:
+            pos = sample_ball(np.array([p['minimizer_best_fit_val'] for p in self._par_array]),
+                              np.array([p['minimizer_best_fit_val'] * walker_start_bound for p in self._par_array]),
+                              self.nwalkers)
 
-            _min = par.best_fit_val - delta_m
-            _max = par.best_fit_val + delta_p
-
-
-            if par.fit_range_min is not None and preserve_fit_range is True:
-                _min= max(_min, par.fit_range_min)
-            elif par.val_min is not None:
-                _min= max(_min, par.val_min)
-
-            if par.fit_range_max is not None:
-                _max= min(_max, par.fit_range_max)
-            elif par.val_max is not None:
-                _max= min(_max, par.val_max)
-            
-            print('par:',par.name,' best fit value: ',par.best_fit_val,' mcmc bounds:',[_min, _max])
-            self._bounds.append([_min, _max])
+        
+        print('mcmc run starting')
+        print('')
+        start = time.time()
+        if threads is not None and threads>1:
+            warnings.warn('python multithreading is not effective, JetSeT uses C threads to speedup computation')
+            threads=1
+            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self._par_array, loglog))
+            self.sampler.run_mcmc(pos, steps, progress=progress)
+        else:
+            threads=1
+            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, log_prob, args=(self.model, self.data, use_UL, counter, self._bounds, self._par_array, loglog))
+            self.sampler.run_mcmc(pos, steps, progress=progress)
 
 
+
+        end = time.time()
+        comp_time = end - start
+        print("mcmc run done, with %d threads took %2.2f seconds"%(threads,comp_time))
+
+        
+        self.samples = self.sampler.get_chain(flat=True,discard=burnin)
+        self.samples_log_prob  = self.sampler.get_log_prob(flat=True,discard=burnin)
+        self.acceptance_fraction=np.mean(self.sampler.acceptance_fraction)
+        self.reset_to_minimizer_best_fit()
+
+
+    def get_par_quantiles(self,par_name,quantiles=(0.16,0.5,0.84)):
+        return np.array(np.quantile(self.get_sample(par_name),quantiles))
+
+    
 
     def corner_plot(self, labels = None, quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, **kwargs):
         """_summary_
@@ -281,77 +301,68 @@ class McmcSampler(object):
         _type_
             _description_
         """
-        _id = []
+        _idxs = []
 
         if labels is None:
-            labels=self.labels
-
+            labels= [par['name'] for par in self._par_array]
+        
         if type(labels) == list:
             pass
         else:
             labels = [labels]
 
         for l in labels:
-            _id.append(self.labels.index(l))
+            _idxs.append(self.get_par(l,get_index=True)[1])
 
-        f = corner.corner(self.samples[:, _id],
-                          quantiles=quantiles, labels=self.plot_labels,
-                          truths=[self.labels_start_val[i] for i in _id],
-                          title_kwargs=title_kwargs,show_titles = True,
+        truths=[]
+        labels=[]
+        for _idx in _idxs:
+            truths.append(self.get_par(_idx)['minimizer_best_fit_val'])
+            labels.append(self.get_par(_idx)['plot_label'])
+
+        f = corner.corner(self.samples[:, _idxs],
+                          quantiles=quantiles, 
+                          labels=labels,
+                          truths=truths,
+                          title_kwargs=title_kwargs,
+                          show_titles = True,
                           levels = levels,**kwargs)
 
         title = 'quantiles ='+str(quantiles)
         f.suptitle(title,y=1.0)
         return f
 
-    def get_par(self, p,):
-        if type(p) == int:
-            pass
-
+    
+    def plot_chain(self,par_name=None,log_plot=False):
+        if par_name is None:
+            par_names=[par['name'] for par in self._par_array]
         else:
-            try:
-                p = self.labels.index(p)
-            except:
-                raise RuntimeError('parameter p', p, 'not found')
+            par_names=np.atleast_1d(par_name)
 
-        if p > len(self.labels):
-            raise RuntimeError('label id larger then labels size')
-
-        return self.samples[:, p].flatten(), p
-
-
-    def plot_chain(self,p=None,log_plot=False):
-        if p is None:
-            p=self.labels
-        else:
-            p=np.atleast_1d(p)
-
-        f, axes = plt.subplots(len(p), sharex=True)
+        f, axes = plt.subplots(len(par_names), sharex=True)
         axes=np.atleast_1d(axes)
-        for ID,_p in enumerate(p):
-            self._plot_chain(_p,axes[ID],log_plot=log_plot)
+        for ID,_p_name in enumerate(par_names):
+            self._plot_chain(_p_name,axes[ID],log_plot=log_plot)
         
         axes[-1].set_xlabel('steps')
         return f
 
-    def _plot_chain(self, p,ax, log_plot=False):
-        _d, idx = self.get_par(p)
+    def _plot_chain(self, par_name,ax, log_plot=False):
+        par = self.get_par(par_name)
 
-        n = self.plot_labels[idx]
+        n = par['plot_label']
 
-        traces=self.sampler.chain[:, :, idx]
+        traces=self.get_trace(par_name)
 
-        if self.labels_units is not None:
-            if self.labels_units[idx] is not None:
-                n += ' (%s)' % self.labels_units[idx]
+        if par['units'] is not None:
+           n += ' (%s)' % par['units']
 
-        alpha_true = np.median(_d)
-
-       
+        _s=self.get_sample(par_name)
+        alpha_true = np.median(_s)       
 
         if log_plot == True:
             n = 'log10(%s)'%n
-            if np.any(_d <= 0):
+            if np.any(_s <= 0):
                 raise RuntimeWarning('negative values in p')
             else:
                 traces = np.log10(traces)
@@ -367,23 +378,30 @@ class McmcSampler(object):
 
         ax.set_ylabel(n)
         
-        
+      
+    
+    def get_trace(self, par_name):
+        _p,p_idx=self.get_par(par_name,get_index=True)
+        return self.sampler.chain[:, :, p_idx]
 
-    def plot_par(self, p, nbins=20, log_plot=False,quantiles=(0.16,0.5,0.84),figsize=None):
+
+    def plot_par(self, par_name, nbins=20, log_plot=False,quantiles=(0.16,0.5,0.84),figsize=None):
         set_mpl()
 
-        _d, idx = self.get_par(p)
+        par = self.get_par(par_name)
 
-        par_name = self.plot_labels[idx]
+        par_name = par['name']
 
         x_name = par_name
-        if self.labels_units is not None:
-            if self.labels_units[idx] is not None and str(self.labels_units[idx]).strip() != '' :
-                x_name += ' (%s)' % self.labels_units[idx]
+        if par['units'] is not None:
+            x_name += ' (%s)' % par['units']
+
+        _d=self.get_sample(par_name)
+        
 
         f = plt.figure(figsize=figsize)
         ax = f.add_subplot(111)
-
+        
         if log_plot == True:
             x_name = 'log10(%s)' % x_name
             if np.any(_d <= 0):
@@ -391,7 +409,7 @@ class McmcSampler(object):
             else:
                 _d = np.log10(_d)
 
-        q_vals=self.get_par_quantiles(p,quantiles=quantiles)
+        q_vals=self.get_par_quantiles(par_name,quantiles=quantiles)
 
         q_diff = np.diff(q_vals)
 
@@ -410,6 +428,10 @@ class McmcSampler(object):
         f.suptitle('quantiles = %s'%str(quantiles))
         ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1)
         return f
+    
+    def get_sample(self, par_name):
+        _p,p_idx=self.get_par(par_name,get_index=True)
+        return self.samples[:,p_idx]
 
     def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None, get_model=False, plot_mcmc_best_fit_model=False,rnd_seed=0):
         """_summary_
@@ -468,7 +490,7 @@ class McmcSampler(object):
         p.lines_model_list.append(l)
         msk = y_min > self.model.flux_plot_lim
         if plot_mcmc_best_fit_model is False:
-            self.reset_to_best_fit()
+            self.reset_to_minimizer_best_fit()
             label=None
         else:
             label='mcmc best fit'
@@ -498,9 +520,10 @@ class McmcSampler(object):
         y = np.zeros((size,x.size))
 
         for ID,ID_rand in enumerate(ID_mcmc):
-            for ID_par, pi in enumerate(self.par_array):
-                pi.set(val=self.get_par(ID_par)[0][ID_rand])
-
+            for id_p,par in enumerate(self._par_array):
+                par['val']=self.get_sample(id_p)[ID_rand]
+                self.model.parameters.set_par(model_name= par['comp_name'],par_name=par['name'],val=par['val'])
+                
             self.model.eval(fill_SED=True)
             x, y[ID] = self.model.SED.get_model_points(log_log=False, frame=frame)
         
@@ -515,16 +538,33 @@ class McmcSampler(object):
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
 
     @classmethod
-    def load(self, name):
-        with open(name, 'rb') as input:
-            return pickle.load(input)
+    #def load(self, name):
+    #    with open(name, 'rb') as input:
+    #        return pickle.load(input)
+    def load(cls, file_name):
+
+        try:
+            c = pickle.load(open(file_name, "rb"))
+            if isinstance(c, McmcSampler):
+                #c.__init__(c.minimizer)
+                if hasattr(c,'model'):
+                    c.model=c.model._build_model(c.model)
+                return  c
+            else:
+                raise RuntimeError('The model you loaded is not valid please check the file name')
+
+        except Exception as e:
+            raise RuntimeError(e)
 
 
 
 def emcee_log_like(theta,fit_model,data,use_UL,par_array,loglog):
     _warn = False
     for pi in range(len(theta)):
-        par_array[pi].set(val=theta[pi])
+        
+        
+        par_array[pi]['val']=theta[pi]
+        fit_model.parameters.set_par(model_name= par_array[pi]['comp_name'],par_name=par_array[pi]['name'],val=par_array[pi]['val'])
         if np.isnan(theta[pi]):
             _warn=True
 
@@ -561,8 +601,7 @@ def log_prob(theta,fit_model,data,use_UL,counter,bounds,par_array,loglog):
 
 def log_prior(theta,bounds):
     _r=0.
-    #bounds = [(par.fit_range_min, par.fit_range_max) for par in model_minimizer.fit_par_free]
-    #skip=False
+
     for pi in range(len(theta)):
 
         if bounds[pi][1] is not None:
@@ -573,10 +612,6 @@ def log_prior(theta,bounds):
             if theta[pi]<bounds[pi][0]:
                 _r=-np.inf
 
-
-    #if skip is True:
-    #_r=-np.inf
-    #print(theta[pi],bounds)
     return _r
 
 
