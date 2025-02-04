@@ -321,8 +321,9 @@ class ModelParameter(object):
 
     def reset_dependencies(self):
         for mp in self._master_pars:
-            if self in mp._depending_pars:
-                mp._depending_pars.remove(self)
+            if hasattr(mp, '_depending_pars'):
+                if self in mp._depending_pars:
+                    mp._depending_pars.remove(self)
         self._linked = False
         self._linked_root_model = None
         self._func=None
