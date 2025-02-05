@@ -351,8 +351,8 @@ class FitModel(Model):
 
     
     @classmethod
-    def load_model(cls, file_name):
-         c = pickle.load(open(file_name, "rb"))
+    def load_model(cls, file_name_or_obj, from_string=False):
+         c = cls._load_pickle(file_name_or_obj,from_string=from_string)
          return cls._build_model(c)
     
     @staticmethod
@@ -392,8 +392,8 @@ class FitModel(Model):
             m.set_fit_range(down_tol=down_tol,up_tol=up_tol)
                 
 
-    def clone(self):
-        return self._build_model(pickle.loads(pickle.dumps(self, protocol=pickle.HIGHEST_PROTOCOL)))
+    #def clone(self):
+    #    return self.load_model(pickle.loads(pickle.dumps(self, protocol=pickle.HIGHEST_PROTOCOL)))
 
     def show_model_components(self):
         print("")

@@ -245,14 +245,16 @@ class Model(object):
             return  np.log10(nu_residuals[msk]),  residuals[msk]
 
     def save_model(self, file_name):
+        pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
+    def save_model(self, file_name):
         pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
 
 
     @classmethod
-    def load_model(cls, file_name):
+    def load_model(cls, file_name_or_obj,from_string=False):
         try:
-            c = pickle.load(open(file_name, "rb"))
+            c=cls._load_pickle(file_name_or_obj,from_string=from_string)
             c._fix_par_dep_on_load()
             if isinstance(c, Model):
                 c.eval()
@@ -274,18 +276,16 @@ class Model(object):
                 p.reset_dependencies()    
                 self.make_dependent_par(p.name, _master_par_list, _depending_par_expr,set_par_expr_source_code=True)
         
-        
-    #def _set_pars_dep(self):
-    #    for p in self.parameters.par_array:
-    #        if
-
-   
-    #def _set_pars_dep(self):
-    #    for p in self.parameters.par_array:
-    #        if
-
+    @staticmethod
+    def _load_pickle(file_name_or_obj,from_string=False):
+        if from_string:
+            c = pickle.loads(file_name_or_obj)
+        else:
+            c = pickle.load(open(file_name_or_obj, "rb"))
+        return c
+    
     def clone(self):
-        return  pickle.loads(pickle.dumps(self))
+        return self.load_model(pickle.dumps(self, protocol=pickle.HIGHEST_PROTOCOL),from_string=True)
 
     def show_model(self):
         print("")

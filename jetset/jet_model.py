@@ -267,13 +267,13 @@ class JetBase(Model):
         _model['internal_pars']['Norm_distr'] = self.Norm_distr
         return _model
 
-    def save_model(self,file_name):
-        pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
+    #def save_model(self,file_name,to_string=False):
+    #    pickle.dump(self, open(file_name, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
       
 
     @classmethod
     @safe_run
-    def load_model(cls, file_name):
+    def load_model(cls, file_name_or_obj, from_string=False):
         """Load a save model
 
         Parameters
@@ -294,10 +294,10 @@ class JetBase(Model):
             _description_
         """
         try:
-              jet=pickle.load(open(file_name, "rb"))
-              jet.set_blob()
-              jet._update_spectral_components()
-              return jet
+            jet=cls._load_pickle(file_name_or_obj,from_string=from_string)
+            jet.set_blob()
+            jet._update_spectral_components()
+            return jet
         except Exception as e:
             raise RuntimeError('The model you loaded is not valid please check the file name', e)
 
