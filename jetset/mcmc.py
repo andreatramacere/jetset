@@ -113,7 +113,7 @@ class McmcSampler(object):
                                             units=p.units,
                                             plot_label=p.name,
                                             bounds=[None,None])) 
-
+        
 
     def set_bounds(self,bound=0.2,bound_rel=False,preserve_fit_range=True):
         self._set_bounds(bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range)
@@ -160,14 +160,17 @@ class McmcSampler(object):
         for par in self._par_array:
             self._bounds.append(par['bounds'])
 
-    def get_par(self, par_name_or_idx, get_index=False):
+    def get_par(self, par_name_or_idx, comp_name=None, get_index=False):
         if type(par_name_or_idx) == int:
             par_idx=par_name_or_idx
 
         else:
             par_name=par_name_or_idx
             try:
-                par_idx = [par['name'] for par in self._par_array].index(par_name)
+                if comp_name is None:
+                    par_idx = [par['name'] for par in self._par_array].index(par_name)
+                else:
+                    par_idx = [par['name']+par['comp_name'] for par in self._par_array].index(par_name+comp_name)
             except:
                 raise RuntimeError('parameter p', par_name, 'not found')
 
@@ -181,8 +184,8 @@ class McmcSampler(object):
         
 
 
-    def set_plot_label(self,par_name,plot_label):
-        p=self.get_par(par_name)
+    def set_plot_label(self,par_name,plot_label,comp_name=None):
+        p=self.get_par(par_name,comp_name=comp_name)
         p['plot_label']=plot_label
 
     def reset_to_minimizer_best_fit(self):
@@ -277,12 +280,12 @@ class McmcSampler(object):
         self.reset_to_minimizer_best_fit()
 
 
-    def get_par_quantiles(self,par_name,quantiles=(0.16,0.5,0.84)):
-        return np.array(np.quantile(self.get_sample(par_name),quantiles))
+    def get_par_quantiles(self,par_name,comp_name=None,quantiles=(0.16,0.5,0.84)):
+        return np.array(np.quantile(self.get_sample(par_name,comp_name=comp_name),quantiles))
 
     
 
-    def corner_plot(self, labels = None, quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, **kwargs):
+    def corner_plot(self, labels = None, comp_name=None,quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, **kwargs):
         """_summary_
 
         Parameters
@@ -301,63 +304,92 @@ class McmcSampler(object):
         _type_
             _description_
         """
-        _idxs = []
-
-        if labels is None:
-            labels= [par['name'] for par in self._par_array]
-        
-        if type(labels) == list:
-            pass
+       
+        if comp_name is None:
+            components=np.unique([p['comp_name'] for  p in self._par_array])
         else:
-            labels = [labels]
+            components=[comp_name]
+        f_list=[]
+        for c in components:
+            _idxs = []
+            truths = []
+            
+            
+            msk=np.array([p['comp_name']==c for  p in self._par_array])
+            #print('component',c,msk)
+            #for p in np.array(self._par_array)[msk]:
+            #    labels.append(p)
+            
+            if labels is None:
+                plot_labels= [p['name'] for p in np.array(self._par_array)[msk]]
+            
+            elif type(labels) == list:
+                plot_labels=labels
+            else:
+                plot_labels = [labels]
 
-        for l in labels:
-            _idxs.append(self.get_par(l,get_index=True)[1])
+            if len(plot_labels)>0:
+                for l in plot_labels:
+                    print(l,c)
+                    _idxs.append(self.get_par(l,comp_name=c,get_index=True)[1])
 
-        truths=[]
-        labels=[]
-        for _idx in _idxs:
-            truths.append(self.get_par(_idx)['minimizer_best_fit_val'])
-            labels.append(self.get_par(_idx)['plot_label'])
+                print(_idxs)
+                for _idx in _idxs:
+                    truths.append(self.get_par(_idx)['minimizer_best_fit_val'])
+                    plot_labels.append(self.get_par(_idx)['plot_label'])
 
-        f = corner.corner(self.samples[:, _idxs],
-                          quantiles=quantiles, 
-                          labels=labels,
-                          truths=truths,
-                          title_kwargs=title_kwargs,
-                          show_titles = True,
-                          levels = levels,**kwargs)
+                f = corner.corner(self.samples[:, _idxs],
+                                quantiles=quantiles, 
+                                labels=plot_labels,
+                                truths=truths,
+                                title_kwargs=title_kwargs,
+                                show_titles = True,
+                                levels = levels,**kwargs)
 
-        title = 'quantiles ='+str(quantiles)
-        f.suptitle(title,y=1.0)
-        return f
+                
+                #print(c,str(quantiles))
+                title = c + ' quantiles ='+str(quantiles)
+
+                f.suptitle(title,y=1.0)
+                f_list.append(f)
+        return f_list
 
     
-    def plot_chain(self,par_name=None,log_plot=False):
-        if par_name is None:
-            par_names=[par['name'] for par in self._par_array]
+    def plot_chain(self,par_name=None, comp_name=None,log_plot=False):
+        f_list=[]
+        if comp_name is None:
+            components=np.unique([p['comp_name'] for  p in self._par_array])
         else:
-            par_names=np.atleast_1d(par_name)
+            components=[comp_name]
+        for c in components:
+            msk=np.array([p['comp_name']==c for  p in self._par_array])
+            if par_name is None:
+                
+                par_names=[par['name'] for par in  np.array(self._par_array)[msk]]
+            else:
+                par_names=np.atleast_1d(par_name)
 
-        f, axes = plt.subplots(len(par_names), sharex=True)
-        axes=np.atleast_1d(axes)
-        for ID,_p_name in enumerate(par_names):
-            self._plot_chain(_p_name,axes[ID],log_plot=log_plot)
-        
-        axes[-1].set_xlabel('steps')
-        return f
+            f, axes = plt.subplots(len(par_names), sharex=True)
+            axes=np.atleast_1d(axes)
+            for ID,_p_name in enumerate(par_names):
+                self._plot_chain(_p_name,axes[ID],comp_name=comp_name,log_plot=log_plot)
+            
+            axes[-1].set_xlabel('steps')
+            f_list.append(f)
+            
+        return f_list
 
-    def _plot_chain(self, par_name,ax, log_plot=False):
-        par = self.get_par(par_name)
+    def _plot_chain(self, par_name,ax,comp_name=None, log_plot=False):
+        par = self.get_par(par_name,comp_name=comp_name)
 
         n = par['plot_label']
 
-        traces=self.get_trace(par_name)
+        traces=self.get_trace(par_name,comp_name=comp_name)
 
         if par['units'] is not None:
            n += ' (%s)' % par['units']
 
-        _s=self.get_sample(par_name)
+        _s=self.get_sample(par_name,comp_name=comp_name)
         alpha_true = np.median(_s)       
 
         if log_plot == True:
@@ -380,15 +412,15 @@ class McmcSampler(object):
         
       
     
-    def get_trace(self, par_name):
-        _p,p_idx=self.get_par(par_name,get_index=True)
+    def get_trace(self, par_name,comp_name=None):
+        _p,p_idx=self.get_par(par_name,comp_name=comp_name,get_index=True)
         return self.sampler.chain[:, :, p_idx]
 
 
-    def plot_par(self, par_name, nbins=20, log_plot=False,quantiles=(0.16,0.5,0.84),figsize=None):
+    def plot_par(self, par_name, comp_name=None,nbins=20, log_plot=False,quantiles=(0.16,0.5,0.84),figsize=None):
         set_mpl()
 
-        par = self.get_par(par_name)
+        par = self.get_par(par_name,comp_name=comp_name)
 
         par_name = par['name']
 
@@ -396,7 +428,7 @@ class McmcSampler(object):
         if par['units'] is not None:
             x_name += ' (%s)' % par['units']
 
-        _d=self.get_sample(par_name)
+        _d=self.get_sample(par_name,comp_name=comp_name)
         
 
         f = plt.figure(figsize=figsize)
@@ -409,7 +441,7 @@ class McmcSampler(object):
             else:
                 _d = np.log10(_d)
 
-        q_vals=self.get_par_quantiles(par_name,quantiles=quantiles)
+        q_vals=self.get_par_quantiles(par_name,comp_name=comp_name,quantiles=quantiles)
 
         q_diff = np.diff(q_vals)
 
@@ -429,8 +461,8 @@ class McmcSampler(object):
         ax.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), ncol=1)
         return f
     
-    def get_sample(self, par_name):
-        _p,p_idx=self.get_par(par_name,get_index=True)
+    def get_sample(self, par_name,comp_name=None):
+        _p,p_idx=self.get_par(par_name,comp_name=comp_name,get_index=True)
         return self.samples[:,p_idx]
 
     def plot_model(self, sed_data=None, fit_range=None, size=100, frame='obs', density=False,quantiles=None, get_model=False, plot_mcmc_best_fit_model=False,rnd_seed=0):
@@ -507,6 +539,7 @@ class McmcSampler(object):
 
 
     def _get_model_samples(self,size,rnd_seed,frame):
+        self.model.eval()
         x, _y = self.model.SED.get_model_points(log_log=False, frame=frame)
         
         if size is None:
