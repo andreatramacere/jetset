@@ -316,10 +316,7 @@ class McmcSampler(object):
             
             
             msk=np.array([p['comp_name']==c for  p in self._par_array])
-            #print('component',c,msk)
-            #for p in np.array(self._par_array)[msk]:
-            #    labels.append(p)
-            
+
             if labels is None:
                 plot_labels= [p['name'] for p in np.array(self._par_array)[msk]]
             
@@ -330,10 +327,10 @@ class McmcSampler(object):
 
             if len(plot_labels)>0:
                 for l in plot_labels:
-                    print(l,c)
+                    
                     _idxs.append(self.get_par(l,comp_name=c,get_index=True)[1])
 
-                print(_idxs)
+    
                 for _idx in _idxs:
                     truths.append(self.get_par(_idx)['minimizer_best_fit_val'])
                     plot_labels.append(self.get_par(_idx)['plot_label'])
