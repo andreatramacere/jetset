@@ -416,8 +416,8 @@ void InitRadiative(struct blob *pt_base,unsigned int update_EC){
     //COSTANTI PER ALFA=FIXED E KERNEL DELTA O KERNEL 2
     pt_base->C1_Sync_K53 = pow(3, 0.5) * pow(q_esu, 3.0) * pt_base->sin_psi;
     pt_base->C1_Sync_K53 *= pt_base->B / (MEC2) * one_by_four_pi;
-    pt_base->C2_Sync_K53 = 2.0/(3*pt_base->nu_B);
-
+    pt_base->C2_Sync_K53 = 2.0/(3*pt_base->nu_B* pt_base->sin_psi);
+    
     pt_base->C1_Sync_K_AVE= 4*pi*pow(3, 0.5) * pow(q_esu, 2.0)*pt_base->nu_B/(vluce_cm) * one_by_four_pi;
     pt_base->C2_Sync_K_AVE=1.0/(3*pt_base->nu_B);
 

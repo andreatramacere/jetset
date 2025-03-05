@@ -2113,7 +2113,7 @@ class Jet(JetBase):
         print ('setting N to ',N[ID_min])
         return b_grid[ID_min],b_grid,U_B,U_e
 
-    def eval_synch_pol(self,nu_range):
+    def eval_synch_pol(self,nu_range_obs):
         """_summary_
         evluates the synchrotron polarization for
         Parameters
@@ -2126,10 +2126,12 @@ class Jet(JetBase):
         -------
         arrrays of polarization and nuF_nu 
         """
-        nuF_nu=self.eval(get_model=True,nu=nu_range)
+        nuF_nu=self.eval(get_model=True,nu=nu_range_obs)
    
-        pol_nu=np.zeros(nu_range.size)
-        for ID,nu in enumerate(nu_range):
+        pol_nu=np.zeros(nu_range_obs.size)
+        #TODO: this will be removed when eval_Sync_polarization will follow the same pattern of synch flux
+        nu_range_pol_blob=nu_range_obs/self.get_beaming()*(1+self.parameters.z_cosm.val)
+        for ID,nu in enumerate(nu_range_pol_blob):
             pol_nu[ID]=BlazarSED.eval_Sync_polarization(self._blob,nu)
         
         m=np.logical_or(nuF_nu<=0,np.isnan(pol_nu))
