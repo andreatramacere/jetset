@@ -828,10 +828,10 @@ class SEDShape(object):
                  
         fit_model.add_component(host_gal)
 
-        #print('nuFnu_p_host',self.S_peak.nuFnu_p_val)
+
         fit_model.set('host_galaxy','nuFnu_p_host',val=(self.S_peak.nuFnu_p_val),fit_range=[self.S_peak.nuFnu_p_val-2,self.S_peak.nuFnu_p_val+2 ])
         
-        fit_model.set('host_galaxy','nu_scale',val=0,fit_range=[-0.5,0.5])
+        fit_model.set('host_galaxy','nu_scale',val=0,fit_range=[-np.log10(1+self.sed_data.z*.2),np.log10(1+self.sed_data.z*.2)])
    
         self.host_gal=host_gal
     
