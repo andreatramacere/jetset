@@ -28,7 +28,8 @@ def _show_table(t):
     if is_notebook():
         try:
             from IPython.display import display
-            display(t.show_in_notebook(show_row_index=False, display_length=100))
+            display(t.show_in_notebook(show_row_index=False, display_length=100, backend='classic'))
+            #display(t.show_in_notebook(show_row_index=False, display_length=100, auto_fit_columns=True  ))
         except Exception as e:
             try:
                 from IPython.display import display
