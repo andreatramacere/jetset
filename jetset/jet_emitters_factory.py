@@ -61,10 +61,10 @@ def distr_func_lppl_pileup(gamma, gamma0_log_parab,  gamma_inj, r,  s, gamma_eq,
     m1 = np.logical_and(gamma < gamma0_log_parab,gamma>gamma_inj)
     f1[m1] = np.power(gamma[m1]/gamma0_log_parab, -s)
     f1[~m1] = np.power(gamma[~m1]/gamma0_log_parab, (-s -r*np.log10(gamma[~m1] / gamma0_log_parab )))
-    b[~m] = np.pow(gamma_inj/gamma0_log_parab,s1+s)*f1[~m]*np.exp(-np.pow((gamma[~m]/gamma_cut_acc),alpha)/alpha)
+    b[~m] = np.power(gamma_inj/gamma0_log_parab,s1+s)*f1[~m]*np.exp(-np.power((gamma[~m]/gamma_cut_acc),alpha)/alpha)
     
-    pile_up=gamma*gamma*np.exp(-np.pow((gamma/gamma_eq),alpha)/alpha)
-    pile_up=pile_up/(gamma_eq*gamma_eq*np.exp(-np.pow((gamma_eq/gamma_eq),alpha)/alpha))
+    pile_up=gamma*gamma*np.exp(-np.power((gamma/gamma_eq),alpha)/alpha)
+    pile_up=pile_up/(gamma_eq*gamma_eq*np.exp(-np.power((gamma_eq/gamma_eq),alpha)/alpha))
     g_ID=np.argmin(np.fabs(gamma-gamma_eq))
     c=b[g_ID]*ratio_pile_up
     a=pile_up*c
