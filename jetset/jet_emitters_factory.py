@@ -9,6 +9,7 @@ _available_dict = {'lp': 'log-parabola',
                    'pl': 'powerlaw',
                    'lppl': 'log-parabola with low-energy powerlaw branch',
                    'lpep': 'log-parabola defined by peak energy',
+                   'lppl_pileup': 'log-parabola with low-energy powerlaw branch and pileup',
                    'plc': 'powerlaw with cut-off',
                    'bkn': 'broken powerlaw',
                    'superexp': 'powerlaw with super-exp cut-off'}
@@ -48,6 +49,28 @@ def distr_func_lppl(gamma, gamma0_log_parab, r, s):
     return f
 
 
+def distr_func_lppl_pileup(gamma, gamma0_log_parab,  gamma_inj, r,  s, gamma_eq,  ratio_pile_up , alpha, gamma_cut_acc):
+    b = np.zeros(gamma.shape)
+    a = np.zeros(gamma.shape)
+    m = gamma < gamma_inj
+    s1=s+0.5
+    b[m] = np.power(gamma[m]/gamma0_log_parab, s1)
+    
+    
+    f1 = np.zeros(gamma.shape)
+    m1 = np.logical_and(gamma < gamma0_log_parab,gamma>gamma_inj)
+    f1[m1] = np.power(gamma[m1]/gamma0_log_parab, -s)
+    f1[~m1] = np.power(gamma[~m1]/gamma0_log_parab, (-s -r*np.log10(gamma[~m1] / gamma0_log_parab )))
+    b[~m] = np.pow(gamma_inj/gamma0_log_parab,s1+s)*f1[~m]*np.exp(-np.pow((gamma[~m]/gamma_cut_acc),alpha)/alpha)
+    
+    pile_up=gamma*gamma*np.exp(-np.pow((gamma/gamma_eq),alpha)/alpha)
+    pile_up=pile_up/(gamma_eq*gamma_eq*np.exp(-np.pow((gamma_eq/gamma_eq),alpha)/alpha))
+    g_ID=np.argmin(np.fabs(gamma-gamma_eq))
+    c=b[g_ID]*ratio_pile_up
+    a=pile_up*c
+    return a+b
+
+
 class EmittersFactory:
     def __repr__(self):
         return str(pprint.pprint(self._available_dict))
@@ -60,6 +83,7 @@ class EmittersFactory:
                            'plc': self._create_plc,
                            'lp': self._create_lp,
                            'lppl': self._create_lppl,
+                           'lppl_pileup': self._create_lppl_pileup,
                            'lpep': self._create_lpep,
                            'superexp': self._create_super_exp}
 
@@ -236,6 +260,33 @@ class EmittersFactory:
 
         return n_lppl
 
+
+    def _create_lppl_pileup(self, gamma_grid_size, log_values, normalize, skip_build, emitters_type):
+        n_lppl_pileup  = self._emitters_class(name='lppl_pileup',
+                                    spectral_type='lp',
+                                    normalize=normalize,
+                                    emitters_type=emitters_type,
+                                    log_values=log_values,
+                                    skip_build=skip_build,
+                                    gamma_grid_size=gamma_grid_size)
+        
+
+        a_t, b_t = n_lppl_pileup.set_bounds(1, 1E9, log_val=n_lppl_pileup._log_values)
+        gamma0_log_parab_val = n_lppl_pileup._set_log_val(1E4,log_val=log_values)
+
+        n_lppl_pileup.add_par('gamma0_log_parab', par_type='turn-over-energy', val=gamma0_log_parab_val, vmin=a_t, vmax=b_t,
+                     unit='lorentz-factor',log=log_values)
+        n_lppl_pileup.add_par('s', par_type='LE_spectral_slope', val=2.0, vmin=-10., vmax=10, unit='')
+        n_lppl_pileup.add_par('r', par_type='spectral_curvature', val=0.4, vmin=-15., vmax=15., unit='')
+        n_lppl_pileup.add_par('alpha', par_type='spectral_curvature', val=0.4, vmin=1E-3, vmax=2., unit='')
+        n_lppl_pileup.add_par('gamma_inj', par_type='low-energy-cut-off', val=1E2, vmin=1, vmax=1E6, unit='')
+        n_lppl_pileup.add_par('gamma_eq', par_type='turn-over-energy', val=1E5, vmin=1E1, vmax=1E9, unit='')
+        n_lppl_pileup.add_par('gamma_cut_acc', par_type='high-energy-cut-off', val=1E6, vmin=1E1, vmax=1E9, unit='')
+        n_lppl_pileup.add_par('ratio_pile_up', par_type='scaling_factor', val=1E-3, vmin=1E-10, vmax=1E3, unit='')
+
+        n_lppl_pileup.set_distr_func(distr_func_lppl_pileup)
+
+        return n_lppl_pileup
 
 class InjEmittersFactory(EmittersFactory):
 
