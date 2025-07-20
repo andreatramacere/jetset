@@ -134,7 +134,7 @@ Installation from source using Anaconda
 
    .. code-block:: bash
 
-       pip install .
+      ./install.sh
 
 - run the test (optional, **run all the examples outside the installation directory**)
 
@@ -169,7 +169,7 @@ Installation from source using PIP
 
   .. code-block:: bash
 
-        pip install .
+        ./install.sh
 
 - run the test  (optional, **run all the examples outside the installation directory**)
 
