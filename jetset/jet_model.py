@@ -27,7 +27,7 @@ from .jet_emitters import *
 from .jet_emitters_factory import EmittersFactory
 from .jet_tools import *
 from .mathkernel_helper import bessel_table_file_path
-
+from .internal_absorption import InternalAbsorption
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
@@ -146,7 +146,7 @@ class JetBase(Model):
         self.EC_components_list =[]
         self._spectral_components_list=[]
         self._hidden_spectral_components_list = []
-
+        self._internal_absorption_comp={}
         self.spectral_components= SpecCompList(self._spectral_components_list)
 
         self.add_basic_components()
@@ -159,6 +159,7 @@ class JetBase(Model):
         self._external_photon_fields_dic= None
         self._original_emitters_distr = None
         self._energetic = None
+        self.skip_internal_absorption_serial=False
         self._setup(emitters_distribution,emitters_distribution_log_values,beaming_expr,emitters_type)
 
 
@@ -214,7 +215,6 @@ class JetBase(Model):
                                        init=False)
         self.set_blob()
 
-
     def __getstate__(self):
         j= self._serialize_model()
         return j 
@@ -223,7 +223,11 @@ class JetBase(Model):
         self.__init__()
         self._decode_model(state)
         self._fix_par_dep_on_load()
-
+        if '_internal_absorption_comp' in state:
+            for c in state['_internal_absorption_comp'].keys():
+                p=state['_internal_absorption_comp'][c]['pars']
+                self.add_internal_absorption(**p)
+        
     def _serialize_model(self):
         _model = {}
         _model['version']=get_info()['version']
@@ -256,7 +260,9 @@ class JetBase(Model):
         _model['pars'] = {}
         _model['pars']=self.parameters._serialize_pars()
         _model['external_field_transf']=self.get_external_field_transf()
-
+        #print('self.skip_internal_absorption_serial',self.self.skip_internal_absorption_serial)
+        if self.skip_internal_absorption_serial is False:
+            _model['_internal_absorption_comp']=self._internal_absorption_comp
         _model['internal_pars'] = {}
         _model['internal_pars']['nu_size'] = self.nu_size
         _model['internal_pars']['nu_seed_size'] = self.nu_seed_size
@@ -300,9 +306,6 @@ class JetBase(Model):
             return jet
         except Exception as e:
             raise RuntimeError('The model you loaded is not valid please check the file name', e)
-
-
-
 
 
 
@@ -369,7 +372,7 @@ class JetBase(Model):
 
         self.add_EC_component(_model['EC_components_name'],disk_type=disk_type)
         self.set_external_field_transf(_model['external_field_transf'])
-
+        
         for ID, c in enumerate(_model['spectral_components_name']):
             comp = getattr(self.spectral_components, c)
             if comp._state_dict != {}:
@@ -400,6 +403,8 @@ class JetBase(Model):
         _par_dict = _model['internal_pars']
         for k in _par_dict.keys():
             setattr(self,k,_par_dict[str(k)])
+
+    
 
 
     def _build_blob(self, verbose=None):
@@ -821,9 +826,9 @@ class JetBase(Model):
             JetSpecComponent(self, name, self._blob, var_name=var_name, state_dict=state_dict, state=state))
         setattr(self.spectral_components,name,self._spectral_components_list[-1])
 
-    def _update_spectral_components(self):
+    def _update_spectral_components(self,tau=None):
         for ID,s in enumerate(self._spectral_components_list):
-            self._spectral_components_list[ID]= JetSpecComponent(self, s.name, self._blob, var_name=s._var_name, state_dict=s._state_dict, state=s.state)
+            self._spectral_components_list[ID]= JetSpecComponent(self, s.name, self._blob, var_name=s._var_name, state_dict=s._state_dict, state=s.state, tau=tau)
             self._spectral_components_list[ID].hidden = s.hidden
             setattr(self.spectral_components, self._spectral_components_list[ID].name, self._spectral_components_list[ID])
             
@@ -1065,7 +1070,47 @@ class JetBase(Model):
             self.parameters.disk_type.val = disk_type
 
 
+    def add_internal_absorption(self,
+                                comp,
+                                nu_min,
+                                N_soft=25,
+                                N_hard=50,
+                                N_R_H=20,
+                                N_theta=25,):
+        
+        self._internal_absorption_comp[comp]={}
+        self._internal_absorption_comp[comp]['pars']=dict(N_hard=N_hard,
+                                                          N_soft=N_soft,
+                                                          N_theta=N_theta,
+                                                          N_R_H=N_R_H,
+                                                          nu_min=nu_min,
+                                                          comp=comp)
+        
+        self._internal_absorption_comp[comp]['method']=InternalAbsorption(jet=self,
+                                                                nu_min=nu_min,
+                                                                seed_photons_name=comp,
+                                                                N_soft=N_soft,
+                                                                N_hard=N_hard,
+                                                                N_R_H=N_R_H,
+                                                                N_theta=N_theta)
+    
+    def remove_internal_absorption(self,comp):
+        if comp in self._internal_absorption_comp.keys():
+            del self._internal_absorption_comp[comp]
+    
+    def show_internal_absorption_components(self):
+        for comp in  self._internal_absorption_comp.keys():
+            print('internal absorption evaluated for:', comp)
+            for p in self._internal_absorption_comp[comp]['pars'].items():
+                print(p)
+            print()
+            
 
+    def eval_internal_absorption(self,comp,skip_check=True):
+        if comp in self._internal_absorption_comp.keys():
+            return self._internal_absorption_comp[comp]['method'].eval(get_tau=True,skip_check=skip_check)
+        return None,None
+    
     def del_par_from_dic(self,model_dic):
         """
         """
@@ -1486,9 +1531,15 @@ class JetBase(Model):
         if self.emitters_distribution is None:
             raise RuntimeError('emitters distribution not defined')
 
+        tau_tot=np.zeros(lin_nu.shape)
+        for  iac in self._internal_absorption_comp.keys():
+                int_abs=self._internal_absorption_comp[iac]['method']
+                tau_c,nu_src=int_abs.eval(get_tau=True)
+                tau_tot+=tau_c
+
         if init is True:
             self.set_blob()
-            self._update_spectral_components()
+            self._update_spectral_components(tau=tau_tot)
         BlazarSED.Run_SED(self._blob)
 
         if phys_output==True:
@@ -1500,7 +1551,6 @@ class JetBase(Model):
             else:
                 self.emitters_distribution._fill()
 
-        
         nu_sed_sum, nuFnu_sed_sum = self.spectral_components.Sum.get_SED_points(lin_nu=lin_nu,log_log=False,interp=self._jetkernel_interp)
         
         nuFnu_sed_hidden=0.
@@ -1511,7 +1561,7 @@ class JetBase(Model):
         
         nuFnu_sed_sum = nuFnu_sed_sum - nuFnu_sed_hidden
        
-        return nu_sed_sum, nuFnu_sed_sum
+        return nu_sed_sum, nuFnu_sed_sum*np.exp(-tau_tot)
 
     def _eval_model(self, lin_nu, log_nu, init, loglog, phys_output=False, update_emitters=True):
         log_model = None
@@ -1934,7 +1984,7 @@ class Jet(JetBase):
 
         Parameters
         ----------
-        U_vol: float (erg/s)
+        U_vol: float (erg)
 
         gmin: float, optional,
             minimum value to evaluate the integral

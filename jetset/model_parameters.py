@@ -38,7 +38,6 @@ def _show_table(t):
                 t.pprint_all()
     else:
         t.pprint_all()
-
 class Value(object):
 
     def __init__(self,val,units,islog=False):
@@ -1349,7 +1348,21 @@ class ModelParameterArray(object):
                 return param
 
         return None
+    
 
+    def get_pars_by_type(self,par_type):
+        """
+
+        get parameter by type
+
+        """
+        pars=[]
+        for param in self.par_array:
+            if param.par_type==par_type:
+                pars.append(param)
+
+        return pars
+    
     @property
     def par_table(self):
         self._build_par_table()
