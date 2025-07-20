@@ -7,16 +7,12 @@ __author__ = 'andrea tramacere'
 
 
 from setuptools import setup, find_packages,Extension
-# from setuptools.command.install import install
-# from distutils.extension import Extension
-# import distutils.command.install as orig
 from distutils.command.build import build
 from setuptools.command.install import install
 from distutils.sysconfig import get_python_lib
 import os
 import glob
 import shutil
-import fnmatch
 import json
 import sys
 
@@ -175,6 +171,6 @@ setup(name='jetset',
       ext_modules = [_module],
       install_requires=install_req,
       py_modules=['jetset.jetkernel/jetkernel'],
-      python_requires='>=3.8',
+      python_requires='>=3.9',
       test_suite =_test_suite,
       zip_safe=True)
