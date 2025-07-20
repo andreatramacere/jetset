@@ -59,8 +59,8 @@ def main(argv=None):
     args = parser.parse_args()
 
     tag=args.tag
-
-    tag=get_tag_from_version()
+    if tag is None:
+        tag=get_tag_from_version()
     print("tag is ",tag)
     if args.dry is False:
         do_tag(tag,remote=args.do_remote_tag)
