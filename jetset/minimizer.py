@@ -18,7 +18,8 @@ try:
     import iminuit
     from iminuit import Minuit
     minuit_installed=True
-except:
+except Exception as e:
+    print('not able to import iminuit:',e)
     minuit_installed=False
 
 
