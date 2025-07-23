@@ -63,7 +63,7 @@ class InternalAbsorption(object):
                         R_H,
                         nu_src,
                         nu_min,
-                        skip_check=False,
+                        skip_check=True,
                         peak=False):
 
         for p_orig in self._jet_orig.parameters.par_array:
@@ -214,11 +214,15 @@ class InternalAbsorption(object):
 
 
 
-    def eval(self, get_tau=False,skip_check=True):
+    def eval(self, get_tau=False,skip_check=True,lin_nu=None):
         """
         """
-        nu_src=self._jet_orig.spectral_components.Sum.SED.nu_src
-        nu_abs=np.logspace(np.log10(self._nu_min),np.log10(nu_src.max().value),self._N_hard)
+        if lin_nu is None:
+            nu_src=self._jet_orig.spectral_components.Sum.SED.nu_src.value
+        else:
+            nu_src=lin_nu
+            nu_src=np.atleast_1d(nu_src)
+        nu_abs=np.logspace(np.log10(self._nu_min),np.log10(nu_src.max()),self._N_hard)
         tau=np.zeros(nu_src.shape)
         tau=self.eval_tau_photons(nu_src=nu_abs,
                                   nu_min=self._nu_min,
@@ -226,7 +230,7 @@ class InternalAbsorption(object):
                                   skip_check=skip_check,
                                   )
         self._old_tau=tau
-        tau_interp = np.interp(nu_src.value, nu_abs, tau,left=0,right=0)
+        tau_interp = np.interp(nu_src, nu_abs, tau,left=0,right=0)
        
      
         
