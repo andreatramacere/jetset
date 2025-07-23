@@ -1534,7 +1534,7 @@ class JetBase(Model):
         tau_tot=np.zeros(lin_nu.shape)
         for  iac in self._internal_absorption_comp.keys():
                 int_abs=self._internal_absorption_comp[iac]['method']
-                tau_c,nu_src=int_abs.eval(get_tau=True)
+                tau_c,nu_src=int_abs.eval(get_tau=True,lin_nu=lin_nu)
                 tau_tot+=tau_c
 
         if init is True:
