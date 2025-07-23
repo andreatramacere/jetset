@@ -26,6 +26,21 @@ import  numpy as np
 
 __all__=['GammapyJetsetModel','GammapyJetsetModelFactory']
 
+def string_to_int(s: str) -> int:
+    """Convert a string into a unique integer using base-256 encoding."""
+    result = 0
+    for ch in s:
+        result = result * 256 + ord(ch)
+    return result
+
+def int_to_string(n: int) -> str:
+    """Recover the original string from the integer representation."""
+    chars = []
+    while n > 0:
+        chars.append(chr(n % 256))
+        n //= 256
+    return ''.join(reversed(chars))
+
 class GammapyJetsetModel(SpectralModel):
     
 
@@ -38,18 +53,24 @@ class GammapyJetsetModel(SpectralModel):
         
         self._jetset_model=_jetset_model
     
-        self._jetset_model.add_user_par(name='fake_norm',units='',val=1,val_min=0,val_max=None)
-        self._jetset_model.parameters.fake_norm.frozen=True
+        #self._jetset_model.add_user_par(name='fake_norm',units='',val=1,val_min=0,val_max=None)
+        #self._jetset_model.parameters.fake_norm.frozen=True
         parameters = []
+        self.parameter_values_string = {}
         
         for ID,p in enumerate(self._jetset_model.parameters.par_array):
             #print(p.name)
-            if p.name=='fake_norm':
-                is_norm=True
-            else:
-                is_norm=False
+            #if p.name=='fake_norm':
+            #    is_norm=True
+            #else:
+            #    is_norm=False
 
-            parameter = Parameter(p.name, p.val, is_norm=is_norm,frozen=p.frozen)
+            if type(p.val) is str:
+                self.parameter_values_string[p.name]=p.val
+                parameter = Parameter(p.name, string_to_int(p.val), frozen=p.frozen)
+            else:
+                parameter = Parameter(p.name, p.val, frozen=p.frozen)
+            
             if _jetset_model.parameters.par_array[ID].units is not None:
                 try:
                     parameter.unit = p.units
@@ -87,10 +108,16 @@ class GammapyJetsetModel(SpectralModel):
 
         for p in self.parameters:
             if p.name not in kwargs.keys():
-                self._jetset_model.set_par(p.name ,val=p.value)
+                if p.name in self.parameter_values_string:
+                    self._jetset_model.set_par(p.name ,val=self.parameter_values_string[p.name])
+                else:
+                    self._jetset_model.set_par(p.name ,val=p.value)
 
         for k,v in kwargs.items():
-            self._jetset_model.set_par(k,val=v.value)
+            if k in self.parameter_values_string:
+                self._jetset_model.set_par(k ,val=self.parameter_values_string[k])
+            else:
+                self._jetset_model.set_par(k ,val=v.value)
 
         self._jetset_model.eval(nu=nu.value)
         _spec= self._jetset_model.spectral_components.Sum.SED.nuFnu.to('eV cm-2 s-1')/(energy.to('eV')**2)
