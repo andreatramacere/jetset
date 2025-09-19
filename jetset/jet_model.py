@@ -278,7 +278,7 @@ class JetBase(Model):
       
 
     @classmethod
-    @safe_run
+    #@safe_run
     def load_model(cls, file_name_or_obj, from_string=False):
         """Load a save model
 
@@ -1134,7 +1134,7 @@ class JetBase(Model):
             return self.cosmo.get_DL_cm()
 
 
-    @safe_run
+    #@safe_run
     def get_beaming(self,):
 
         BlazarSED.SetBeaming(self._blob)
@@ -1505,7 +1505,7 @@ class JetBase(Model):
 
         return plot_obj
 
-    @safe_run
+    #@safe_run
     def set_blob(self):
         if hasattr(self, 'T_esc_e_second'):
             if self.T_esc_e_second is None:
@@ -1522,7 +1522,7 @@ class JetBase(Model):
             self.emitters_distribution._set_blob()
 
 
-    @safe_run
+    #@safe_run
     def set_external_fields(self):
         self.set_blob()
         BlazarSED.spectra_External_Fields(1,self._blob,1)
@@ -1589,7 +1589,7 @@ class JetBase(Model):
 
         return lin_nu, log_nu
 
-    @safe_run
+    #@safe_run
     def eval(self,
              init=True,
              fill_SED=True,

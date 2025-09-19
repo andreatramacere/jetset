@@ -1,6 +1,7 @@
 __author__ = "Andrea Tramacere"
 
 import os
+from .model_parameters import SettingDependentParError
 try:
     from gammapy.modeling.models import (
     SpectralModel,
@@ -64,7 +65,6 @@ class GammapyJetsetModel(SpectralModel):
             #    is_norm=True
             #else:
             #    is_norm=False
-
             if type(p.val) is str:
                 self.parameter_values_string[p.name]=p.val
                 parameter = Parameter(p.name, string_to_int(p.val), frozen=p.frozen)
@@ -92,13 +92,15 @@ class GammapyJetsetModel(SpectralModel):
             if p.fit_range_max is not None:
                  parameter.max=p.fit_range_max
 
+            parameter._is_jetset_dependent=p._is_dependent
             parameters.append(parameter)
+            
         self.default_parameters = Parameters(parameters)
         self.tag=_jetset_model.name
         super(GammapyJetsetModel, self).__init__()
 
     def evaluate(self,energy=None,**kwargs):
-
+        print(kwargs)
         if energy is None:
             el1=np.log10( self._jetset_model.nu_min)
             el2=np.log10( self._jetset_model.nu_max)
@@ -107,17 +109,23 @@ class GammapyJetsetModel(SpectralModel):
         nu = energy.to("Hz", equivalencies=u.spectral())
 
         for p in self.parameters:
-            if p.name not in kwargs.keys():
+            if p.name not in kwargs.keys()  and not p._is_jetset_dependent:
                 if p.name in self.parameter_values_string:
                     self._jetset_model.set_par(p.name ,val=self.parameter_values_string[p.name])
                 else:
                     self._jetset_model.set_par(p.name ,val=p.value)
 
         for k,v in kwargs.items():
-            if k in self.parameter_values_string:
-                self._jetset_model.set_par(k ,val=self.parameter_values_string[k])
-            else:
-                self._jetset_model.set_par(k ,val=v.value)
+            try:
+                if k in self.parameter_values_string:
+                    self._jetset_model.set_par(k ,val=self.parameter_values_string[k])
+                else:
+                    self._jetset_model.set_par(k ,val=v.value)
+            except SettingDependentParError:
+                pass
+            except Exception as e:
+                raise(e)
+          
 
         self._jetset_model.eval(nu=nu.value)
         _spec= self._jetset_model.spectral_components.Sum.SED.nuFnu.to('eV cm-2 s-1')/(energy.to('eV')**2)

@@ -12,6 +12,11 @@ import inspect
 
 __all__=['ModelParameter','ModelParameterArray','Value']
 
+class SettingDependentParError(Exception):
+    """custom error for dependent error"""
+    def __init__(self, message):
+        super().__init__(message)
+        
 
 def is_notebook():
     try:
@@ -461,7 +466,7 @@ class ModelParameter(object):
             pass
         else:
             #warnings.warn('\n\n *** you are trying to set a dependent parameter:%s *** \n'%self.name)
-            raise RuntimeError('\n\n *** you are trying to set a dependent parameter:%s *** \n'%self.name)
+            raise SettingDependentParError('\n\n *** you are trying to set a dependent parameter:%s *** \n'%self.name)
             #return
 
 

@@ -2,7 +2,7 @@
 __author__ = "Andrea Tramacere"
 
 from .model_parameters import ModelParameterArray, ModelParameter
-from .utils import safe_run
+#from .utils import safe_run
 import  numpy as np
 
 
@@ -101,7 +101,7 @@ class JetParameter(ModelParameter):
             val=keywords['val']
             self.assign_val_to_jetkernel(self.name,val)
 
-    @safe_run
+    #@safe_run
     def set(self,**keywords):
         """
         overrides the  :meth:`.ModelParameter.set` method in order to propagate the
