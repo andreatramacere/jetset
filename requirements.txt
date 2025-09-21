@@ -16,3 +16,4 @@ jupyter
 ipython
 dill
 swig>=4
+gammapy>=1.3
