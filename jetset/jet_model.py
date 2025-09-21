@@ -1,8 +1,8 @@
 __author__ = "Andrea Tramacere"
 
 
-import json
-import dill as pickle
+#import json
+#import dill as pickle
 import six
 import numpy as np
 import copy
@@ -10,8 +10,8 @@ import warnings
 import os
 from astropy import units as u
 from astropy import constants
-from contextlib import redirect_stdout
-import io
+#from contextlib import redirect_stdout
+#import io
 import multiprocessing
 
 from .jet_spectral_components import JetSpecComponent, SpecCompList
@@ -19,9 +19,9 @@ from .jet_spectral_components import JetSpecComponent, SpecCompList
 from .model_parameters import ModelParameterArray, ModelParameter, _show_table
 from .base_model import Model
 from .output import makedir,WorkPlace
-from  .plot_sedfit import PlotSED,plt
+from  .plot_sedfit import plt
 from .cosmo_tools import Cosmo
-from .utils import safe_run,set_str_attr, old_model_warning, get_info, clean_var_name
+from .utils import set_str_attr, old_model_warning, get_info, clean_var_name
 from .jet_paramters import *
 from .jet_emitters import *
 from .jet_emitters_factory import EmittersFactory
@@ -224,9 +224,10 @@ class JetBase(Model):
         self._decode_model(state)
         self._fix_par_dep_on_load()
         if '_internal_absorption_comp' in state:
-            for c in state['_internal_absorption_comp'].keys():
-                p=state['_internal_absorption_comp'][c]['pars']
-                self.add_internal_absorption(**p)
+            self._internal_absorption_comp=state['_internal_absorption_comp']
+        #    for c in state['_internal_absorption_comp'].keys():
+        #        p=state['_internal_absorption_comp'][c]['pars']
+        #        self.add_internal_absorption(**p)
         
     def _serialize_model(self):
         _model = {}
@@ -303,6 +304,10 @@ class JetBase(Model):
             jet=cls._load_pickle(file_name_or_obj,from_string=from_string)
             jet.set_blob()
             jet._update_spectral_components()
+            if hasattr(jet,'_internal_absorption_comp'):
+                for c in jet._internal_absorption_comp:
+                    p=jet._internal_absorption_comp[c]['pars']
+                    jet.add_internal_absorption(**p)
             return jet
         except Exception as e:
             raise RuntimeError('The model you loaded is not valid please check the file name', e)

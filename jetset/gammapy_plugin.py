@@ -1,7 +1,7 @@
 __author__ = "Andrea Tramacere"
 
 import os
-from .model_parameters import SettingDependentParError
+
 try:
     from gammapy.modeling.models import (
     SpectralModel,
@@ -24,6 +24,8 @@ except:
 
 import astropy.units as u
 import  numpy as np
+from .model_parameters import SettingDependentParError
+from .model_manager import FitModel
 
 __all__=['GammapyJetsetModel','GammapyJetsetModelFactory']
 
@@ -54,22 +56,24 @@ class GammapyJetsetModel(SpectralModel):
         
         self._jetset_model=_jetset_model
     
-        #self._jetset_model.add_user_par(name='fake_norm',units='',val=1,val_min=0,val_max=None)
-        #self._jetset_model.parameters.fake_norm.frozen=True
+         
         parameters = []
-        self.parameter_values_string = {}
-        
+        self._parameter_values_string = {}
+        self._parameters_hash_dict={}
         for ID,p in enumerate(self._jetset_model.parameters.par_array):
-            #print(p.name)
-            #if p.name=='fake_norm':
-            #    is_norm=True
-            #else:
-            #    is_norm=False
-            if type(p.val) is str:
-                self.parameter_values_string[p.name]=p.val
-                parameter = Parameter(p.name, string_to_int(p.val), frozen=p.frozen)
+            
+            if isinstance(self._jetset_model,FitModel):
+                gp_name=f'{p.name}_{p.model.name}'
+                
             else:
-                parameter = Parameter(p.name, p.val, frozen=p.frozen)
+                gp_name=f'{p.name}'
+
+            self._parameters_hash_dict[gp_name]=p
+            if type(p.val) is str:
+                self._parameter_values_string[gp_name]=p.val
+                parameter = Parameter(gp_name, string_to_int(p.val), frozen=p.frozen)
+            else:
+                parameter = Parameter(gp_name, p.val, frozen=p.frozen)
             
             if _jetset_model.parameters.par_array[ID].units is not None:
                 try:
@@ -110,17 +114,21 @@ class GammapyJetsetModel(SpectralModel):
 
         for p in self.parameters:
             if p.name not in kwargs.keys()  and not p._is_jetset_dependent:
-                if p.name in self.parameter_values_string:
-                    self._jetset_model.set_par(p.name ,val=self.parameter_values_string[p.name])
+                if p.name in self._parameter_values_string:
+                    #self._jetset_model.set_par(p.name ,val=self._parameter_values_string[p.name])
+                    self._parameters_hash_dict[p.name].set(val=self._parameter_values_string[p.name])
                 else:
-                    self._jetset_model.set_par(p.name ,val=p.value)
+                    #self._jetset_model.set_par(p.name ,val=p.value)
+                    self._parameters_hash_dict[p.name].set(val=p.value)
 
         for k,v in kwargs.items():
             try:
-                if k in self.parameter_values_string:
-                    self._jetset_model.set_par(k ,val=self.parameter_values_string[k])
+                if k in self._parameter_values_string:
+                    #self._jetset_model.set_par(k ,val=self._parameter_values_string[k])
+                    self._parameters_hash_dict[k].set(val=self._parameter_values_string[k])
                 else:
-                    self._jetset_model.set_par(k ,val=v.value)
+                    #self._jetset_model.set_par(k ,val=v.value)
+                    self._parameters_hash_dict[k].set(val=v.value)
             except SettingDependentParError:
                 pass
             except Exception as e:
@@ -128,7 +136,12 @@ class GammapyJetsetModel(SpectralModel):
           
 
         self._jetset_model.eval(nu=nu.value)
-        _spec= self._jetset_model.spectral_components.Sum.SED.nuFnu.to('eV cm-2 s-1')/(energy.to('eV')**2)
+        if isinstance(self._jetset_model,FitModel):
+            nuFnu = self._jetset_model.SED.nuFnu
+            raw_flux = u.Quantity(np.asarray(nuFnu), unit=u.erg / (u.cm**2 * u.s))
+            _spec = (raw_flux.to(u.eV / (u.cm**2 * u.s)) / (energy.to(u.eV)**2)).to(1 / (u.cm**2 * u.s * u.eV))
+        else:
+            _spec= self._jetset_model.spectral_components.Sum.SED.nuFnu.to("eV/(cm2 s)")/(energy.to('eV')**2)
         return _spec.to("1 / (cm2 eV s)")
     
     @property

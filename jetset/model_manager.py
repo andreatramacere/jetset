@@ -6,7 +6,7 @@ import warnings
 
 import numpy as np
 
-from  . import minimizer
+#from  . import minimizer
 
 
 
@@ -16,7 +16,7 @@ from .spectral_shapes import  SED
    
 from .base_model import  Model
 
-from .plot_sedfit import  PlotSED
+#from .plot_sedfit import  PlotSED
 
 from .utils import  clean_var_name
 
@@ -24,7 +24,7 @@ from .jet_model import Jet
 
 from .cosmo_tools import  Cosmo
 
-import  dill as pickle
+#import  dill as pickle
 
 __all__=['FitModel']
 
@@ -77,10 +77,10 @@ class CompositeModelContainer(object):
     def del_component(self,model_name,fit_model):
         m,ID=self.get_model_by_name(model_name,get_idx=True)
         if m is not None:
-            _p = self._components_list.pop(ID)
-            _p = self._components_value.pop(ID)
-            _p = self.parameters.del_model_parameters(m)
-            del self._components_value_dict[m]
+            _ = self._components_list.pop(ID)
+            _ = self._components_value.pop(ID)
+            _ = self.parameters.del_model_parameters(m)
+            del self._components_value_dict[m.name]
 
         delattr(self,model_name)
         delattr(fit_model, model_name)
@@ -361,9 +361,10 @@ class FitModel(Model):
             ml=c.components.components_list[::]
             for m in ml:
                 try:
+                    #print("===> m.name",m.name)
                     c.del_component(m.name)
-                except:
-                    pass
+                except Exception as e:
+                    raise RuntimeError('for model',m.name,e)
             for m in ml:
                 c.add_component(m)
 

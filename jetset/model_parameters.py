@@ -483,6 +483,8 @@ class ModelParameter(object):
                     self._val.val = keywords[kw]
                     if self._depending_pars is not []:
                         for p in self._depending_pars:
+                            #print("===> intro",p)
+                            #print("===> name",p.val)
                             p.set(val=p._func(),skip_dep_par_warning=True)
 
                 elif kw == 'log':
