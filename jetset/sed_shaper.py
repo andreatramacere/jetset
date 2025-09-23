@@ -482,7 +482,7 @@ class SEDShape(object):
         t=Table(_out)
         t.write(name,overwrite=True)
 
-    def eval_indices(self,minimizer='lsb',silent=True,show_fit_report=False):
+    def eval_indices(self,minimizer='lsb',silent=True,show_fit_report=False,min_size=3):
         """
         
         This methods evaluates the indices for the SED
@@ -498,7 +498,7 @@ class SEDShape(object):
         self.index_models=[]
         
         for index in self.indices.idx_list:
-            do_fit=self.check_adapt_range_size(self.sed_data.data['nu_data_log'],index,3,silent=silent)
+            do_fit=self.check_adapt_range_size(self.sed_data.data['nu_data_log'],index,min_size=min_size,silent=silent)
             if do_fit==True:
                 loglog_poly=LogLinear(cosmo=self.cosmo)
                 loglog_pl=FitModel(cosmo=self.cosmo, name='%s'%index.name,loglog_poly=loglog_poly)
