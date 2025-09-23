@@ -335,7 +335,6 @@ class McmcSampler(object):
                     truths.append(self.get_par(_idx)['minimizer_best_fit_val'])
                     plot_labels.append(self.get_par(_idx)['plot_label'])
 
-                print("==> plot_labels",plot_labels)
                 f = corner.corner(self.samples[:, _idxs],
                                 quantiles=quantiles, 
                                 labels=plot_labels,
