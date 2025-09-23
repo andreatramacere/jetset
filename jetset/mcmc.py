@@ -285,13 +285,12 @@ class McmcSampler(object):
 
     
 
-    def corner_plot(self, labels = None, comp_name=None,quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, **kwargs):
+    def corner_plot(self, comp_name=None,quantiles = (0.16, 0.5, 0.84), levels = None, title_kwargs = {}, **kwargs):
         """_summary_
 
         Parameters
         ----------
-        labels : _type_, optional
-            _description_, by default None
+ 
         quantiles : tuple, optional
             _description_, by default (0.16, 0.5, 0.84)
         levels :levels=(1 - np.exp(-0.5),)
@@ -317,24 +316,26 @@ class McmcSampler(object):
             
             msk=np.array([p['comp_name']==c for  p in self._par_array])
 
-            if labels is None:
-                plot_labels= [p['name'] for p in np.array(self._par_array)[msk]]
+            #if labels is None:
+            #    plot_labels= [p['plot_label'] for p in np.array(self._par_array)[msk]]
             
-            elif type(labels) == list:
-                plot_labels=labels
-            else:
-                plot_labels = [labels]
-
-            if len(plot_labels)>0:
-                for l in plot_labels:
+            #elif type(labels) == list:
+            #    plot_labels=labels
+            #else:
+            #    plot_labels = [labels]
+            names=[p['name'] for p in np.array(self._par_array)[msk]]
+            plot_labels=[]
+            if msk.sum()>0:
+                for name in names:
                     
-                    _idxs.append(self.get_par(l,comp_name=c,get_index=True)[1])
+                    _idxs.append(self.get_par(name,comp_name=c,get_index=True)[1])
 
     
                 for _idx in _idxs:
                     truths.append(self.get_par(_idx)['minimizer_best_fit_val'])
                     plot_labels.append(self.get_par(_idx)['plot_label'])
 
+                print("==> plot_labels",plot_labels)
                 f = corner.corner(self.samples[:, _idxs],
                                 quantiles=quantiles, 
                                 labels=plot_labels,
