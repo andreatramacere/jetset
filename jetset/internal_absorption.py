@@ -210,7 +210,7 @@ class InternalAbsorption(object):
         for i in range(size):
             x[i]=BlazarSED.get_spectral_array(nu_ptr,self._jet._blob,i)
             y[i]=BlazarSED.get_spectral_array(n_ptr,self._jet._blob,i)
-        msk=np.logical_and(x>=nu_start,y<=nu_stop)
+        msk=np.logical_and(x>=nu_start,x<=nu_stop)
         x=x[msk]
         y=y[msk]
         if peak is True:
