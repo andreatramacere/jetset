@@ -93,7 +93,7 @@ class InternalAbsorption(object):
         n=np.zeros(shape)
         mu_range=np.zeros(shape)
         tau=np.zeros(nu_src.size)
-        integrand_nu=np.zeros(n.shape)
+        #integrand_nu=np.zeros(n.shape)
         
         for ID_RH,R_H in enumerate(R_H_range):
             self._jet.set_par('R_H',val=R_H)
@@ -105,53 +105,75 @@ class InternalAbsorption(object):
             if self._seed_photons_name == "BLR":
                 if R_H<self._jet.parameters.R_BLR_in.val:
                     mu_max=1.0
+                    mu_min=-1
                 else:
-                    mu_max=self._jet.parameters.R_BLR_in.val/R_H 
+                    mu_max=1.0
+                    mu_min = np.sqrt(1.0 - (self._jet.parameters.R_BLR_out.val / R_H)**2)
             
             elif self._seed_photons_name == "DT":
                 if R_H<self._jet.parameters.R_DT.val:
                     mu_max=1.0
+                    mu_min=-1
                 else:
-                    mu_max=self._jet.parameters.R_DT.val/R_H
+                    mu_max=1.0
+                    mu_min = np.sqrt(1.0 - (self._jet.parameters.R_DT.val / R_H)**2)
             else:
                 raise RuntimeError('seed_photons_name %s not valid'%self._seed_photons_name)
+     
+            mu_range[ID_RH]=(np.ones((self._N_theta,N_soft)).T*np.linspace(mu_min,mu_max,self._N_theta).T).T
+            one_minus_mu = 1.0 - mu_range
+            # avoid exactly zero to prevent division by zero
+            one_minus_mu = np.clip(one_minus_mu, 1e-20, None)
 
-            mu_range[ID_RH]=(np.ones((self._N_theta,N_soft)).T*np.linspace(-mu_max,mu_max,self._N_theta).T).T
-            
-        for ID,nu_gamma in enumerate(nu_src):
-            if nu_gamma<nu_min:
-                tau[ID]=0
-            else:
-                eps_gamma=np.ones(shape)*nu_gamma*h/mec2
-                eps_soft=nu*h/mec2
-                E_th=mec2**2/(eps_soft*mec2*(1-mu_range))
-                s =eps_soft * eps_gamma* (1 - mu_range)/ 2   
-                s[eps_gamma*mec2<E_th]=0
-                integrand_nu=self.sigma(s)*n*(1+mu_range)
-                if peak is False:
-                    int_d_nu=np.trapz(integrand_nu,nu,axis=2)
-                    int_d_mu=np.trapz(int_d_nu,mu_range[::,::,0],axis=1)
-                else:
-                    int_d_nu=integrand_nu*nu
-                    int_d_mu=np.trapz(int_d_nu[::,::,0],mu_range[::,::,0],axis=1) 
-                tau[ID]=np.pi*2*np.trapz(int_d_mu,R_H_range)
+        nu_src = np.atleast_1d(nu_src)
+        if nu_min is not None:
+            nu_src=nu_src[nu_src>=nu_min]
+        tau = np.zeros_like(nu_src)
+        eps_soft = nu * h / mec2  # shape: (N_R_H, N_theta, N_soft)
+       
+        # convert all gamma-ray frequencies to eps_gamma (broadcastable)
+        eps_gamma = (nu_src * h / mec2)[:, None, None, None]  # shape: (N_gamma,1,1,1)
+
+        # compute s (dimensionless CM energy squared)
+        s = eps_gamma * eps_soft[None, :, :, :] * one_minus_mu[None, :, :, :] / 2.0
+
+        # compute threshold E_th for all eps_soft, mu
+        E_th = mec2**2 / (eps_soft * mec2 * one_minus_mu)
+        mask_thr = (eps_gamma * mec2) < E_th[None, :, :, :]
+        s[mask_thr] = 0.0
+
+        # compute σ_γγ(s) safely (vectorized)
+        sigma_vals = self.sigma(s)
+
+         # integrand: σ * n * (1-μ)
+        integrand = sigma_vals * n[None, :, :, :] * one_minus_mu[None, :, :, :]
+
+        # integrate over ν and μ first (axis=-1: soft photons, axis=-2: μ)
+        int_over_nu = np.trapz(integrand, nu[None, :, :, :], axis=-1)
+        int_over_mu = np.trapz(int_over_nu, mu_range[None, :, :, 0], axis=-1)
+
+        # integrate over RH
+        tau = 2.0 * np.pi * np.trapz(int_over_mu, R_H_range, axis=-1)
         
         return tau
 
 
 
-    def sigma(self,s=np.array([[[]]])):
-        a = 3 / 8 * SIGTH /(s*s*s)
-        b = (s**2+s-0.5)
-        s_sqr=np.sqrt(s)
-        s_sqr_1=np.sqrt(s-1)
-        c=np.log((s_sqr+s_sqr_1)/(s_sqr-s_sqr_1))
-        d=-np.sqrt((s*(s-1)))*(s+1)
-        
-        e = a * (b*c+d)
-        e[s<1] = 0
-
-        return e
+    def sigma(self, s):
+        """
+        Pair-production cross section [cm^2], s = dimensionless CM energy squared
+        s must satisfy s >= 1
+        """
+        out = np.zeros_like(s)
+        mask = s >= 1.0
+        if not np.any(mask):
+            return out
+        sm = s[mask]
+        beta = np.sqrt(1.0 - 1.0/sm)
+        pref = 0.75 * SIGTH * 0.5  # 3/16 * σ_T = 0.1875 σ_T
+        term = (3 - beta**4) * np.log((1 + beta)/(1 - beta)) - 2*beta*(2 - beta**2)
+        out[mask] = pref * (1 - beta**2) * term
+        return out
 
     def get_n(self,
             seed_photons_name,
@@ -202,8 +224,8 @@ class InternalAbsorption(object):
             
             
         else:
-            x=x[y>y.max()/100]
-            y=y[y>y.max()/100]
+            x=x[y>y.max()/100000]
+            y=y[y>y.max()/100000]
             x_int=np.logspace(np.log10(x[0]),np.log10(x[-1]),N_soft)
             y_int = np.interp(np.log10(x_int),np.log10(x), np.log10(y),left=1E-200,right=1E-200)
             y_int = np.power(10., y_int)
@@ -214,7 +236,7 @@ class InternalAbsorption(object):
 
 
 
-    def eval(self, get_tau=False,skip_check=True,lin_nu=None):
+    def eval(self, get_tau=False,skip_check=True,lin_nu=None,peak=False):
         """
         """
         if lin_nu is None:
@@ -228,6 +250,7 @@ class InternalAbsorption(object):
                                   nu_min=self._nu_min,
                                   R_H=self._jet_orig.parameters.R_H.val,
                                   skip_check=skip_check,
+                                  peak=peak,
                                   )
         self._old_tau=tau
         tau_interp = np.interp(nu_src, nu_abs, tau,left=0,right=0)

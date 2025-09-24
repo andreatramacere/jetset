@@ -1111,9 +1111,9 @@ class JetBase(Model):
             print()
             
 
-    def eval_internal_absorption(self,comp,skip_check=True):
+    def eval_internal_absorption(self,comp,skip_check=True,peak=False):
         if comp in self._internal_absorption_comp.keys():
-            return self._internal_absorption_comp[comp]['method'].eval(get_tau=True,skip_check=skip_check)
+            return self._internal_absorption_comp[comp]['method'].eval(get_tau=True,skip_check=skip_check,peak=peak)
         return None,None
     
     def del_par_from_dic(self,model_dic):
