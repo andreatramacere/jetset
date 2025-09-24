@@ -3,7 +3,6 @@ from jetset.jetkernel.jetkernel import HPLANCK as h
 from jetset.jetkernel.jetkernel import MEC2 as mec2
 from jetset.jetkernel.jetkernel import SIGTH 
 from jetset.jetkernel import jetkernel as BlazarSED
-
 import numpy as np
 
 
@@ -37,6 +36,13 @@ class InternalAbsorption(object):
         self._old_tau=None
         self._parameters_old=None
         #self._DT_pars=['R_H','tau_DT','R_DT','T_DT']
+    
+    
+    def _update_parameters_old(self):
+        self._parameters_old={}
+        for p_orig in self._jet_orig.parameters.par_array:
+            if not p_orig.frozen and not p_orig._is_dependent:
+                self._parameters_old[p_orig.name]=p_orig.val
 
     def _check_eval_needed(self,ptype):
         changed=False
@@ -49,13 +55,12 @@ class InternalAbsorption(object):
         pars_new.extend(self._jet_orig.parameters.get_pars_by_type('Disk'))
         pars_new.extend([self._jet_orig.parameters.get_par_by_name('R_H')])
         for p_new in pars_new:
-            p_old = self._parameters_old.get_par_by_name(p_new.name)
-            if p_old is None:
+            if p_new.name in self._parameters_old.keys():   
+                if p_new.val != self._parameters_old[p_new.name]:
+                    changed=True
+            else:
                 changed=True
-            if p_new.val != p_old.val:
-                changed=True
-            #print('p_old',p_old.name,p_old.val,'p_new',p_new.name,p_new.val)
-        #print('-> testing',changed)
+
         return changed
 
 
@@ -76,7 +81,7 @@ class InternalAbsorption(object):
         else:
             tau_changed=self._check_eval_needed(ptype=self._seed_photons_name)
     
-        self._parameters_old=self._jet_orig.parameters
+        self._update_parameters_old()
 
         if not tau_changed:
             return self._old_tau
