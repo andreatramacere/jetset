@@ -14,6 +14,7 @@ from .plot_sedfit import PlotPdistr
 from .jet_paramters import *
 from .utils import set_str_attr
 from .model_parameters import ModelParameterArray, ModelParameter
+from .jet_kernel_tools import get_emitters_c_array1d
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd is True:
@@ -548,11 +549,13 @@ class EmittersDistribution(BaseEmittersDistribution):
             else:
                 raise RuntimeError('emitters type', self.emitters_type, 'not valid')
 
-            #size = self._jet._blob.gamma_grid_size
-            #self._gamma_grid = np.zeros(size)
-            #for ID in range(size):
-            self._gamma_grid = BlazarSED.get_elec_array_np(gamma_ptr, self._jet._blob)
+            size = self._jet._blob.gamma_grid_size
+            self._gamma_grid = np.zeros(size)
+            for ID in range(size):
+                self._gamma_grid[ID] = BlazarSED.get_elec_array(gamma_ptr, self._jet._blob, ID)
             self._gamma_grid_size=self._jet.gamma_grid_size
+            #self._gamma_grid = BlazarSED.get_elec_array_np(gamma_ptr, self._jet._blob)
+            #self._gamma_grid_size=self._jet.gamma_grid_size
 
 
 
@@ -596,7 +599,7 @@ class EmittersDistribution(BaseEmittersDistribution):
             self._Q_inj_e_second_ptr = getattr(self._jet._blob, self._Q_inj_e_second_name)
             self.e_inj_second_gamma_ptr = getattr(self._jet._blob, self._gammae_inj_sec_name)
 
-        #size = self._jet._blob.gamma_grid_size
+        size = self._jet._blob.gamma_grid_size
         #self.gamma_e = np.zeros(size)
         #self.n_gamma_e = np.zeros(size)
         #self.gamma_p = np.zeros(size)
@@ -607,18 +610,21 @@ class EmittersDistribution(BaseEmittersDistribution):
         #self.q_gamma_e_second_inj = np.zeros(size)
 
         #for ID in range(size):
-        self.gamma_e= BlazarSED.get_elec_array_np(self.e_gamma_ptr, self._jet._blob)
-        self.n_gamma_e= BlazarSED.get_elec_array_np(self.Ne_ptr, self._jet._blob)
+        self.gamma_e,self.n_gamma_e=get_emitters_c_array1d(self.e_gamma_ptr,self.Ne_ptr, self._jet._blob,size)
+        #self.gamma_e= BlazarSED.get_elec_array_np(self.e_gamma_ptr, self._jet._blob)
+        #self.n_gamma_e= BlazarSED.get_elec_array_np(self.Ne_ptr, self._jet._blob)
 
         if self.emitters_type == 'protons':
             #for ID in range(size):
-            self.gamma_p= BlazarSED.get_elec_array_np(self.p_gamma_ptr, self._jet._blob)
-            self.n_gamma_p= BlazarSED.get_elec_array_np(self.Np_ptr, self._jet._blob)
+            #self.gamma_p= BlazarSED.get_elec_array_np(self.p_gamma_ptr, self._jet._blob)
+            #self.n_gamma_p= BlazarSED.get_elec_array_np(self.Np_ptr, self._jet._blob)
+            self.gamma_p,self.n_gamma_p=get_emitters_c_array1d(self.p_gamma_ptr,self.Np_ptr, self._jet._blob,size)
 
             #for ID in range(size):
 
-            self.gamma_e_second_inj = BlazarSED.get_elec_array_np(self.e_inj_second_gamma_ptr, self._jet._blob)
-            self.n_gamma_e_second_inj = BlazarSED.get_elec_array_np(self._Q_inj_e_second_ptr, self._jet._blob)
+            #self.gamma_e_second_inj = BlazarSED.get_elec_array_np(self.e_inj_second_gamma_ptr, self._jet._blob)
+            #self.n_gamma_e_second_inj = BlazarSED.get_elec_array_np(self._Q_inj_e_second_ptr, self._jet._blob)
+            self.gamma_e_second_inj,self.n_gamma_e_second_inj=get_emitters_c_array1d(self.e_inj_second_gamma_ptr,self._Q_inj_e_second_ptr, self._jet._blob,size)
             self.gamma_cooling_eq_second= self._jet._blob.gamma_cooling_eq
             self._secondaries_done = True
 
@@ -917,7 +923,7 @@ class JetkernelEmittersDistribution(EmittersDistribution):
             raise RuntimeError('')
 
     def _fill(self):
-        #size = self._jet._blob.gamma_grid_size
+        size = self._jet._blob.gamma_grid_size
         #self.gamma_e = np.zeros(size)
         #self.n_gamma_e = np.zeros(size)
         #self.gamma_p = np.zeros(size)
@@ -926,17 +932,23 @@ class JetkernelEmittersDistribution(EmittersDistribution):
         #self.n_gamma_e_second_inj = np.zeros(size)
 
         #for ID in range(size):
-        self.gamma_e = BlazarSED.get_elec_array_np(self.e_gamma_ptr, self._jet._blob)
-        self.n_gamma_e = BlazarSED.get_elec_array_np(self.Ne_ptr, self._jet._blob)
+        #self.gamma_e = BlazarSED.get_elec_array_np(self.e_gamma_ptr, self._jet._blob)
+        #self.n_gamma_e = BlazarSED.get_elec_array_np(self.Ne_ptr, self._jet._blob)
+        self.gamma_e,self.n_gamma_e=get_emitters_c_array1d(self.e_gamma_ptr,self.Ne_ptr, self._jet._blob,size)
+
+
 
         if self.emitters_type=='protons':
             #for ID in range(size):
-            self.gamma_p = BlazarSED.get_elec_array_np(self.p_gamma_ptr, self._jet._blob)
-            self.n_gamma_p = BlazarSED.get_elec_array_np(self.Np_ptr, self._jet._blob)
+            #self.gamma_p = BlazarSED.get_elec_array_np(self.p_gamma_ptr, self._jet._blob)
+            #self.n_gamma_p = BlazarSED.get_elec_array_np(self.Np_ptr, self._jet._blob)
+            self.gamma_p,self.n_gamma_p=get_emitters_c_array1d(self.p_gamma_ptr,self.Np_ptr, self._jet._blob,size)
 
             #for ID in range(size):
-            self.gamma_e_second_inj = BlazarSED.get_elec_array_np(self.e_inj_second_gamma_ptr, self._jet._blob)
-            self.n_gamma_e_second_inj = BlazarSED.get_elec_array_np(self._Q_inj_e_second_ptr, self._jet._blob)
+            #self.gamma_e_second_inj = BlazarSED.get_elec_array_np(self.e_inj_second_gamma_ptr, self._jet._blob)
+            #self.n_gamma_e_second_inj = BlazarSED.get_elec_array_np(self._Q_inj_e_second_ptr, self._jet._blob)
+            self.gamma_e_second_inj,self.n_gamma_e_second_inj=get_emitters_c_array1d(self.e_inj_second_gamma_ptr,self._Q_inj_e_second_ptr, self._jet._blob,size)
+
 
         self.n_gamma_p[np.isnan(self.n_gamma_p)]=0
         self.n_gamma_p[np.isinf(self.n_gamma_p)]=0

@@ -118,6 +118,7 @@ req=f.readlines()
 f.close()
 req=[n.strip() for n in req  if n.startswith('#') is False]
 
+numpy_include = np.get_include()
 
 src_files=['jetset/jetkernel/jetkernel.i']
 src_files.extend(glob.glob ('jetkernel_src/src/*.c'))
@@ -127,8 +128,8 @@ _module=Extension('jetset.jetkernel/_jetkernel',
                   language='c',
                   #extra_compile_options='-fPIC  -v  -c -m64 -I',
                   #extra_link_options='-suppress',
-                  swig_opts=['-v','-threads'],
-include_dirs=['jetkernel_src/include', np.get_include()])
+                  swig_opts=['-v','-threads', "-I" + 'jetset/jetkernel', ],
+include_dirs=['jetkernel_src/include', numpy_include])
 
 
 if os.getenv('JETSETBESSELBUILD') == 'TRUE':
