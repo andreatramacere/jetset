@@ -1535,8 +1535,7 @@ class JetBase(Model):
     def lin_func(self, lin_nu, init, phys_output=False, update_emitters=True):
         if self.emitters_distribution is None:
             raise RuntimeError('emitters distribution not defined')
-
-        tau_tot=np.zeros(np.size(lin_nu.shape))
+        tau_tot=np.zeros(lin_nu.shape)
         for  iac in self._internal_absorption_comp.keys():
                 int_abs=self._internal_absorption_comp[iac]['method']
                 tau_c,nu_src=int_abs.eval(get_tau=True,lin_nu=lin_nu)

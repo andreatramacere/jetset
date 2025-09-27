@@ -20,11 +20,11 @@ from .jetkernel_models_dic import allowed_disk_type
 from .jet_paramters import *
 
 
-__all__=[ 'get_spectral_c_array']
+__all__=[ 'get_spectral_c_array','get_emitters_c_array1d']
 
 
 
-def get_spectral_c_array(x_ptr, y_ptr, size, blob_object):
+def get_spectral_c_array(x_ptr, y_ptr, blob_object, size):
     x = np.zeros(size)
     y = np.zeros(size)
 

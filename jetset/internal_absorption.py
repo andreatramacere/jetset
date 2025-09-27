@@ -3,6 +3,7 @@ from jetset.jetkernel.jetkernel import HPLANCK as h
 from jetset.jetkernel.jetkernel import MEC2 as mec2
 from jetset.jetkernel.jetkernel import SIGTH 
 from jetset.jetkernel import jetkernel as BlazarSED
+from .jet_kernel_tools import get_spectral_c_array
 from numba import njit, prange
 import numpy as np
 
@@ -280,14 +281,15 @@ class InternalAbsorption(object):
         n_ptr = getattr(self._jet._blob, n_name)
         nu_ptr = getattr(self._jet._blob, nu_name)
         
-        #size=self._jet._blob.nu_grid_size
+        size=self._jet._blob.nu_grid_size
         #x=np.zeros(size)
         #y=np.zeros(size)
         
     
         #for i in range(size):
-        x=BlazarSED.get_spectral_array_np(nu_ptr,self._jet._blob)
-        y=BlazarSED.get_spectral_array_np(n_ptr,self._jet._blob)
+        #x=BlazarSED.get_spectral_array_np(nu_ptr,self._jet._blob)
+        #y=BlazarSED.get_spectral_array_np(n_ptr,self._jet._blob)
+        x,y=get_spectral_c_array(nu_ptr,n_ptr,self._jet._blob,size)
         msk=np.logical_and(x>=nu_start,x<=nu_stop)
         x=x[msk]
         y=y[msk]

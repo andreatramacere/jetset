@@ -50,7 +50,7 @@ class JetSeedPhotons(object):
 
     def get_spectral_points(self,log_log=False,emiss_lim=0):
 
-        x,y=get_spectral_c_array(self.nu_ptr,self.n_ptr ,self._blob_object.nu_grid_size,self._blob_object)
+        x,y=get_spectral_c_array(self.nu_ptr,self.n_ptr ,self._blob_object,self._blob_object.nu_grid_size)
         msk_nan=np.isnan(x)
         msk_nan+=np.isnan(y)
         #print('emiss lim',self.get_emiss_lim())
@@ -197,7 +197,7 @@ class JetSpecComponent(object):
 
 
     def get_SED_points(self, log_log=False, lin_nu=None, interp='linear', skip_zeros=False):
-        x,y= get_spectral_c_array(self.nu_ptr, self.nuFnu_ptr, self._blob_object.nu_grid_size,self._blob_object)
+        x,y= get_spectral_c_array(self.nu_ptr, self.nuFnu_ptr,self._blob_object, self._blob_object.nu_grid_size)
   
         msk_nan = np.isnan(x)
         msk_nan += np.isnan(y)
