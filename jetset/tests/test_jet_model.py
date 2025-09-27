@@ -51,7 +51,7 @@ class TestJets(TestBase):
         nuFnu = 1E-15
         j = Jet()
         j.set_N_from_nuFnu(nuFnu_obs=nuFnu,nu_obs=nu)
-        y = j.eval(nu=[nu], get_model=True)
+        y = j.eval(nu=np.array(nu), get_model=True)
         np.testing.assert_allclose(y, nuFnu, rtol=1E-2)
 
     def test_synch_pol(self):
