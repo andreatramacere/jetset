@@ -3,7 +3,82 @@ from jetset.jetkernel.jetkernel import HPLANCK as h
 from jetset.jetkernel.jetkernel import MEC2 as mec2
 from jetset.jetkernel.jetkernel import SIGTH 
 from jetset.jetkernel import jetkernel as BlazarSED
+from numba import njit, prange
 import numpy as np
+
+H_OVER_MEC2 = h / mec2
+SIGMA_PREF = 0.75 * SIGTH * 0.5
+
+
+@njit(fastmath=True)
+def _sigma_numba(s, pref):
+    beta = np.sqrt(1.0 - 1.0 / s)
+    term = (3.0 - beta ** 4) * np.log((1.0 + beta) / (1.0 - beta)) - 2.0 * beta * (2.0 - beta ** 2)
+    return pref * (1.0 - beta ** 2) * term
+
+
+@njit(parallel=True, fastmath=True)
+def _compute_tau_numba(nu_src,
+                       nu_grid,
+                       n_grid,
+                       mu_grid,
+                       R_H_grid,
+                       h_over_mec2,
+                       sigma_pref):
+
+    n_gamma = nu_src.shape[0]
+    n_rh, n_theta, n_soft = nu_grid.shape
+    two_pi = 2.0 * np.pi
+    tau = np.zeros(n_gamma)
+
+    for gamma_idx in prange(n_gamma):
+        eps_gamma = nu_src[gamma_idx] * h_over_mec2
+        tau_gamma = 0.0
+        prev_rh_integral = 0.0
+        for rh_idx in range(n_rh):
+            mu_vals = mu_grid[rh_idx]
+            mu_integral = 0.0
+            prev_mu_integral = 0.0
+            for theta_idx in range(n_theta):
+                mu_val = mu_vals[theta_idx]
+                one_minus_mu = 1.0 - mu_val
+                if one_minus_mu < 1e-20:
+                    one_minus_mu = 1e-20
+
+                nu_integral = 0.0
+                prev_nu_val = nu_grid[rh_idx, theta_idx, 0]
+                prev_integrand = 0.0
+                for soft_idx in range(n_soft):
+                    nu_val = nu_grid[rh_idx, theta_idx, soft_idx]
+                    eps_soft = nu_val * h_over_mec2
+                    s_val = eps_gamma * eps_soft * one_minus_mu * 0.5
+
+                    integrand = 0.0
+                    if s_val >= 1.0:
+                        integrand = _sigma_numba(s_val, sigma_pref) * n_grid[rh_idx, theta_idx, soft_idx] * one_minus_mu
+
+                    if soft_idx > 0:
+                        dnu = nu_val - prev_nu_val
+                        nu_integral += 0.5 * (prev_integrand + integrand) * dnu
+
+                    prev_nu_val = nu_val
+                    prev_integrand = integrand
+
+                if theta_idx > 0:
+                    dmu = mu_val - mu_vals[theta_idx - 1]
+                    mu_integral += 0.5 * (prev_mu_integral + nu_integral) * dmu
+
+                prev_mu_integral = nu_integral
+
+            if rh_idx > 0:
+                d_rh = R_H_grid[rh_idx] - R_H_grid[rh_idx - 1]
+                tau_gamma += 0.5 * (prev_rh_integral + mu_integral) * d_rh
+
+            prev_rh_integral = mu_integral
+
+        tau[gamma_idx] = two_pi * tau_gamma
+
+    return tau
 
 
 class InternalAbsorption(object):
@@ -97,9 +172,6 @@ class InternalAbsorption(object):
         nu=np.zeros(shape)
         n=np.zeros(shape)
         mu_range=np.zeros(shape)
-        tau=np.zeros(nu_src.size)
-        #integrand_nu=np.zeros(n.shape)
-        
         for ID_RH,R_H in enumerate(R_H_range):
             self._jet.set_par('R_H',val=R_H)
             nu[ID_RH],n[ID_RH]=self.get_n(R_H=R_H,
@@ -126,40 +198,41 @@ class InternalAbsorption(object):
                 raise RuntimeError('seed_photons_name %s not valid'%self._seed_photons_name)
      
             mu_range[ID_RH]=(np.ones((self._N_theta,N_soft)).T*np.linspace(mu_min,mu_max,self._N_theta).T).T
-            one_minus_mu = 1.0 - mu_range
-            # avoid exactly zero to prevent division by zero
-            one_minus_mu = np.clip(one_minus_mu, 1e-20, None)
 
         nu_src = np.atleast_1d(nu_src)
         if nu_min is not None:
-            nu_src=nu_src[nu_src>=nu_min]
-        tau = np.zeros_like(nu_src)
-        eps_soft = nu * h / mec2  # shape: (N_R_H, N_theta, N_soft)
-       
-        # convert all gamma-ray frequencies to eps_gamma (broadcastable)
-        eps_gamma = (nu_src * h / mec2)[:, None, None, None]  # shape: (N_gamma,1,1,1)
+            nu_src = nu_src[nu_src >= nu_min]
 
-        # compute s (dimensionless CM energy squared)
-        s = eps_gamma * eps_soft[None, :, :, :] * one_minus_mu[None, :, :, :] / 2.0
+        if nu_src.size == 0:
+            return np.zeros(0, dtype=np.float64)
 
-        # compute threshold E_th for all eps_soft, mu
-        E_th = mec2**2 / (eps_soft * mec2 * one_minus_mu)
-        mask_thr = (eps_gamma * mec2) < E_th[None, :, :, :]
-        s[mask_thr] = 0.0
+        nu_grid = np.ascontiguousarray(nu, dtype=np.float64)
+        n_grid = np.ascontiguousarray(n, dtype=np.float64)
+        mu_grid = np.ascontiguousarray(mu_range[:, :, 0], dtype=np.float64)
+        R_H_grid = np.ascontiguousarray(R_H_range, dtype=np.float64)
+        nu_src_grid = np.ascontiguousarray(nu_src, dtype=np.float64)
 
-        # compute σ_γγ(s) safely (vectorized)
-        sigma_vals = self.sigma(s)
+        try:
+            tau = _compute_tau_numba(
+                nu_src_grid,
+                nu_grid,
+                n_grid,
+                mu_grid,
+                R_H_grid,
+                H_OVER_MEC2,
+                SIGMA_PREF,
+            )
+        except Exception:
+            one_minus_mu = np.clip(1.0 - mu_range, 1e-20, None)
+            eps_soft = nu_grid * H_OVER_MEC2
+            eps_gamma = (nu_src_grid * H_OVER_MEC2)[:, None, None, None]
+            s = eps_gamma * eps_soft[None, :, :, :] * one_minus_mu[None, :, :, :] / 2.0
+            sigma_vals = self.sigma(s)
+            integrand = sigma_vals * n_grid[None, :, :, :] * one_minus_mu[None, :, :, :]
+            int_over_nu = np.trapz(integrand, nu_grid[None, :, :, :], axis=-1)
+            int_over_mu = np.trapz(int_over_nu, mu_range[None, :, :, 0], axis=-1)
+            tau = 2.0 * np.pi * np.trapz(int_over_mu, R_H_grid, axis=-1)
 
-         # integrand: σ * n * (1-μ)
-        integrand = sigma_vals * n[None, :, :, :] * one_minus_mu[None, :, :, :]
-
-        # integrate over ν and μ first (axis=-1: soft photons, axis=-2: μ)
-        int_over_nu = np.trapz(integrand, nu[None, :, :, :], axis=-1)
-        int_over_mu = np.trapz(int_over_nu, mu_range[None, :, :, 0], axis=-1)
-
-        # integrate over RH
-        tau = 2.0 * np.pi * np.trapz(int_over_mu, R_H_range, axis=-1)
-        
         return tau
 
 
@@ -207,14 +280,14 @@ class InternalAbsorption(object):
         n_ptr = getattr(self._jet._blob, n_name)
         nu_ptr = getattr(self._jet._blob, nu_name)
         
-        size=self._jet._blob.nu_grid_size
-        x=np.zeros(size)
-        y=np.zeros(size)
+        #size=self._jet._blob.nu_grid_size
+        #x=np.zeros(size)
+        #y=np.zeros(size)
         
     
-        for i in range(size):
-            x[i]=BlazarSED.get_spectral_array(nu_ptr,self._jet._blob,i)
-            y[i]=BlazarSED.get_spectral_array(n_ptr,self._jet._blob,i)
+        #for i in range(size):
+        x=BlazarSED.get_spectral_array_np(nu_ptr,self._jet._blob)
+        y=BlazarSED.get_spectral_array_np(n_ptr,self._jet._blob)
         msk=np.logical_and(x>=nu_start,x<=nu_stop)
         x=x[msk]
         y=y[msk]

@@ -255,7 +255,7 @@ class Model(object):
     def load_model(cls, file_name_or_obj,from_string=False):
         try:
             c=cls._load_pickle(file_name_or_obj,from_string=from_string)
-            c._fix_par_dep_on_load()
+            c._fix_par_dep_on_load(verbose=True)
             if isinstance(c, Model):
                 c.eval()
                 return c
@@ -265,7 +265,7 @@ class Model(object):
         except Exception as e:
             raise RuntimeError(e)
 
-    def _fix_par_dep_on_load(self,):
+    def _fix_par_dep_on_load(self,verbose=True):
         #print("\n \n ========> fix dep on load START")
         for p in self.parameters.par_array:
             if p._is_dependent is True and p._linked is False:
@@ -274,7 +274,7 @@ class Model(object):
                 _master_par_list=[p for p in p._master_par_list]
                 _depending_par_expr=copy.deepcopy(p._depending_par_expr)
                 p.reset_dependencies()    
-                self.make_dependent_par(p.name, _master_par_list, _depending_par_expr,set_par_expr_source_code=True)
+                self.make_dependent_par(p.name, _master_par_list, _depending_par_expr,set_par_expr_source_code=True,verbose=verbose)
         
     @staticmethod
     def _load_pickle(file_name_or_obj,from_string=False):
@@ -388,7 +388,7 @@ class Model(object):
         for p in master_par_list:
             try:
                 m = self.parameters.get_par_by_name(p)
-                dep_par._add_master_par(m)
+                dep_par._add_master_par(m,verbose=verbose)
                 m._add_depending_par(dep_par)
             except Exception as e:
                 message='problem with parameter name: %s'%p

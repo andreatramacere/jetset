@@ -347,9 +347,10 @@ class ModelParameter(object):
         if par not in self._depending_pars:
             self._depending_pars.append(par)
 
-    def _add_master_par(self,par):
+    def _add_master_par(self,par,verbose=False):
         if par not in self._master_pars :
-            print("adding par:",par.name,"to ",self.name)
+            if verbose:
+                print("adding par:",par.name,"to ",self.name)
             self._master_pars.append(par)
 
     #def make_dependent_par(self, master_par, func, root_model=None):

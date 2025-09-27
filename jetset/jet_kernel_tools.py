@@ -25,12 +25,12 @@ __all__=[ 'get_spectral_c_array']
 
 
 def get_spectral_c_array(x_ptr, y_ptr, size, blob_object):
-    x = np.zeros(size)
-    y = np.zeros(size)
+    #x = np.zeros(size)
+    #y = np.zeros(size)
 
-    for i in range(size):
-        x[i] = BlazarSED.get_spectral_array(x_ptr, blob_object, i)
-        y[i] = BlazarSED.get_spectral_array(y_ptr, blob_object, i)
+    #for i in range(size):
+    #    x[i] = BlazarSED.get_spectral_array(x_ptr, blob_object, i)
+    #    y[i] = BlazarSED.get_spectral_array(y_ptr, blob_object, i)
 
 
     #if deep_copy is True:
@@ -39,5 +39,7 @@ def get_spectral_c_array(x_ptr, y_ptr, size, blob_object):
 
     #x=copy.deepcopy(np.asarray(x))
     #y=copy.deepcopy(np.asarray(y)) 
+    x = BlazarSED.get_spectral_array_np(x_ptr, blob_object)
+    y = BlazarSED.get_spectral_array_np(y_ptr, blob_object)
 
     return x,y

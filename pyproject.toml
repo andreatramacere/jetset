@@ -1,4 +1,4 @@
 [build-system]
 # Specify the build requirements
-requires = ["setuptools>=42", "wheel", "swig"]
+requires = ["setuptools>=42", "wheel", "swig", "numpy>=1.21"]
 build-backend = "setuptools.build_meta"

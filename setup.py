@@ -15,6 +15,7 @@ import glob
 import shutil
 import json
 import sys
+import numpy as np
 
 def check_swig():
     command = 'swig'
@@ -127,7 +128,7 @@ _module=Extension('jetset.jetkernel/_jetkernel',
                   #extra_compile_options='-fPIC  -v  -c -m64 -I',
                   #extra_link_options='-suppress',
                   swig_opts=['-v','-threads'],
-                  include_dirs=['jetkernel_src/include'])
+include_dirs=['jetkernel_src/include', np.get_include()])
 
 
 if os.getenv('JETSETBESSELBUILD') == 'TRUE':
