@@ -1,7 +1,7 @@
 setuptools
 scipy>=1.5.0,<=1.15.2
 numpy==2
-astropy>=6g
+astropy>=6
 matplotlib>=3.1.0
 future
 iminuit>=2.30.0,<=2.31.2
