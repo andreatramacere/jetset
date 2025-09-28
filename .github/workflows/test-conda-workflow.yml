@@ -161,7 +161,11 @@ jobs:
           cat build.sh        
           conda config --set anaconda_upload no
           conda build purge
-          
+
+          echo "Python version from matrix: ${{ matrix.python-version }}"
+
+          conda render . --python ${{ matrix.python-version }}
+
           echo "building package for Python ${{ matrix.python-version }}"
           conda mambabuild --python ${{ matrix.python-version }} . -c conda-forge -c astropy
 
