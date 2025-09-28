@@ -1,4 +1,5 @@
-
+import  pytest
+from .base_class import TestBase
 import astropy.units as u
 import  numpy as np
 
@@ -60,15 +61,14 @@ class RadioSpectrum(Model):
         return res*_Norm
 
 
-import  pytest
-from .base_class import TestBase
+
 
 class TestGammapy(TestBase):
 
     def integration_suite(self,plot=False):
-        self.test_composite_model(plot=plot)
+        self.test_composite_model_gp(plot=plot)
 
-    def test_composite_model(self,plot=False):
+    def test_composite_model_gp(self,plot=False):
         data=Data.from_file(test_SEDs[1])
         sed_data=ObsData(data_table=data)
         sed_data.group_data(bin_width=0.1)
