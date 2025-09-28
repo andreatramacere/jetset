@@ -515,7 +515,7 @@ class  PlotSED (object):
         self._sed_data=sed_data
         frame = self._check_frame(frame)
         try:
-            x,y,dx,dy,=sed_data.get_data_points(log_log=False,frame=self.frame)
+            x,y,dx,dy,=sed_data.get_data_points(log_log=False,frame=self.frame,density=self.density)
         except Exception as e:
             raise RuntimeError("!!! ERROR failed to get data points from", sed_data,e)
 
