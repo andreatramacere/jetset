@@ -28,7 +28,7 @@ jobs:
     
     - name: 'Create release'
       if: github.event.inputs.tags != null
-      uses: softprops/action-gh-release@v2
+      uses: pypa/cibuildwheel@v2.19.2
       id : create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
