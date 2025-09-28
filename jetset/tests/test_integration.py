@@ -12,6 +12,7 @@ from .test_depending_parameters import TestDependingParameters
 from .test_composite_model import TestCompositeModel
 from .test_temp_ev import TestTempEv
 from .test_galactic import TestGalactic
+from .test_gammapy_plugin import TestGammapy
 
 @pytest.fixture
 def plot():
@@ -72,3 +73,6 @@ class TestIntegration(TestBase):
       t.integration_suite(plot=plot)  
 
 
+   def test_gammapy(self,plot=plot):
+      t=TestGammapy()
+      t.integration_suite(plot=plot)
