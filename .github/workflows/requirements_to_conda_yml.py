@@ -61,10 +61,10 @@ requirements:
     - python
     - numpy >=2.0
 
-build:
-  - swig>4.0.0
-  - python {{ python }}
-  - setuptools"""
+  build:
+    - swig>4.0.0
+    - python {{ python }}
+    - setuptools"""
 
 f = open(".github/conda-pipeline/github/meta.yaml",'w')
 print(_str_start,file=f)
