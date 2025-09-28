@@ -165,10 +165,10 @@ jobs:
           echo "Python version from matrix: ${{ matrix.python-version }}"
 
           echo "building package for Python ${{ matrix.python-version }}"
-          conda mambabuild  -c conda-forge -c astropy
+          conda mambabuild .  -c conda-forge -c astropy
 
           echo "computing output path for Python ${{ matrix.python-version }}"
-          conda mambabuild --output > ./CONDABUILDJETSET.txt
+          conda mambabuild . --output > ./CONDABUILDJETSET.txt
 
       
       - name: 'set env CONDABUILDJETSET'
