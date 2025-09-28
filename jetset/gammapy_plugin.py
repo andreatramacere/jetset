@@ -104,7 +104,6 @@ class GammapyJetsetModel(SpectralModel):
         super(GammapyJetsetModel, self).__init__()
 
     def evaluate(self,energy=None,**kwargs):
-        print(kwargs)
         if energy is None:
             el1=np.log10( self._jetset_model.nu_min)
             el2=np.log10( self._jetset_model.nu_max)
