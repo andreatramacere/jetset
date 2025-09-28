@@ -45,21 +45,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          #- os: macOS-13
-          #  name: macOS-x86_64
-          #  cpython-version: 39
-          #  python-version: "3.9"
-          #  platform_id: macosx_x86_64
-          #  cibw_arch: x86_64
-
-          #- os: ubuntu-latest
-          #  name: x86_64
-          #  cpython-version: 39
-          #  python-version: "3.9"
-          #  platform_id: manylinux_x86_64            
-          #  cibw_manylinux: manylinux2014
-          #  cibw_arch: x86_64
-          
           - os: macOS-13
             name: macOS-x86_64
             cpython-version: 310
@@ -173,7 +158,7 @@ jobs:
           pytest --disable-warnings  --pyargs  -vvv jetset.tests.test_jet_model
             
       - name: 'Upload Src Release Asset'
-        if: matrix.python-version == '3.9' &&  github.event.inputs.tags != null
+        if: matrix.python-version == '3.10' &&  github.event.inputs.tags != null
         uses: softprops/action-gh-release@v2
         with:
           name: Release  ${{ github.event.inputs.tags }}
