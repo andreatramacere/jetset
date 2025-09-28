@@ -118,7 +118,7 @@ jobs:
             channels:
               - conda-forge
               - defaults
-            channel_priority: strict
+              - astropy
           create-args: >-
             python=${{ matrix.python-version }}
             swig>=4
