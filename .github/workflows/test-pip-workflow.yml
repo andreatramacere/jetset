@@ -28,7 +28,7 @@ jobs:
     
     - name: 'Create release'
       if: github.event.inputs.tags != null
-      uses: pypa/cibuildwheel@v2.19.2
+      uses: softprops/action-gh-release@v2
       id : create_release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -189,7 +189,7 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - uses: pypa/cibuildwheel@v2
+      - uses: pypa/cibuildwheel@v2.19.2 
         if: github.event.inputs.tags != null &&  github.event.inputs.tags != null
         env:
           CIBW_SKIP: "*-musllinux_*"
