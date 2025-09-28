@@ -62,7 +62,7 @@ requirements:
     - numpy >=2.0
 
   build:
-    - swig>4.0.0
+    - swig>3.0.0
     - python {{ python }}
     - setuptools"""
 
