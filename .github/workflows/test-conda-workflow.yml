@@ -114,6 +114,7 @@ jobs:
       - uses: mamba-org/setup-micromamba@v1
         with:
           environment-name: test-env
+          channels: conda-forge,defaults
           create-args: >-
             python=${{ matrix.python-version }}
             swig>=4
@@ -121,7 +122,6 @@ jobs:
             pytest
             boa
             pyyaml
-          
           generate-run-shell: true
           init-shell: bash
 
@@ -145,12 +145,14 @@ jobs:
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
     
-    
-      - name: 'generate meta.yaml from requirements.txt'
+      - name: Generate conda_build_config.yaml
+        shell: bash
         run: |
           source ~/.bash_profile
           micromamba activate test-env
-          python .github/workflows/requirements_to_conda_yml.py
+          python .github/workflows/generate_conda_build_config.py
+        env:
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
       
       - name: 'generate conda_build_config.yaml'
         run: |
