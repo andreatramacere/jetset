@@ -216,6 +216,7 @@ jobs:
           micromamba activate test-env
           pytest  --pyargs -vvv jetset.tests.test_jet_model
           pytest  --pyargs -vvv jetset.tests.test_hadronic_energetic
+          pytest  --pyargs -vvv -s  jetset.tests.test_gammapy_plugin 
           pytest  --pyargs -vvv jetset.tests.test_integration::TestIntegration
         env:
           WF_ENV: CONDA
