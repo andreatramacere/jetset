@@ -166,6 +166,12 @@ jobs:
         env:
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
       
+      - name: 'debug conda render'
+        working-directory: .github/conda-pipeline/github/
+        run: |
+          micromamba activate test-env
+          conda render . --python ${{ matrix.python-version }}
+
       - name: 'conda build'
         if: github.event.inputs.tags != null
         working-directory: .github/conda-pipeline/github/
@@ -180,10 +186,10 @@ jobs:
           echo "Python version from matrix: ${{ matrix.python-version }}"
 
           echo "building package for Python ${{ matrix.python-version }}"
-          conda mambabuild .  -c conda-forge -c astropy --variants "{'numpy': '2.0'}"
+          conda mambabuild .  -c conda-forge -c astropy --variants "{'numpy': '2.0'}" --python ${{ matrix.python-version }}
 
           echo "computing output path for Python ${{ matrix.python-version }}"
-          conda mambabuild . --output > ./CONDABUILDJETSET.txt --variants "{'numpy': '2.0'}"
+          conda mambabuild . --output > ./CONDABUILDJETSET.txt --variants "{'numpy': '2.0'}" --python ${{ matrix.python-version }}
 
       
       - name: 'set env CONDABUILDJETSET'
