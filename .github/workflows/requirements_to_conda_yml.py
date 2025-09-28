@@ -53,6 +53,13 @@ build:
     - JETSETBESSELBUILD
 
   requirements:
+    host:
+      - python {{ python }}
+      - setuptools
+      - numpy >=2.0
+    run:
+      - python >=3.10
+      - numpy >=2.0
 
   build:
     - swig>4.0.0
@@ -64,8 +71,7 @@ print(_str_start,file=f)
 print( '    - %s'%np_str, file=f)
 
 print('',file=f)
-print('  run:',file=f)
-print('    - python>=3.10', file=f)
+
 for pkg_str in pkg_str_list:
     print('    - %s'%pkg_str, file=f)
 print(_str_end,file=f)
