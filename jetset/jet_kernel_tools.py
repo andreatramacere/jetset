@@ -2,8 +2,8 @@ __author__ = "Andrea Tramacere"
 
 import os
 import numpy as np
-#import copy
-#import ctypes
+import copy
+import ctypes
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
@@ -28,9 +28,15 @@ def get_spectral_c_array(x_ptr, y_ptr, blob_object, size):
     x = np.zeros(size)
     y = np.zeros(size)
 
-    for i in range(size):
-        x[i] = BlazarSED.get_spectral_array(x_ptr, blob_object, i)
-        y[i] = BlazarSED.get_spectral_array(y_ptr, blob_object, i)
+    x_ctype = (ctypes.c_double * size).from_address(int(x_ptr))
+    y_ctype = (ctypes.c_double * size).from_address(int(y_ptr))
+
+    x = np.ctypeslib.as_array(x_ctype)
+    y = np.ctypeslib.as_array(y_ctype)
+
+    #for i in range(size):
+    #    x[i] = BlazarSED.get_spectral_array(x_ptr, blob_object, i)
+    #    y[i] = BlazarSED.get_spectral_array(y_ptr, blob_object, i)
 
 
     #if deep_copy is True:
