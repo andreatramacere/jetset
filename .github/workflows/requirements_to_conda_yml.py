@@ -51,12 +51,11 @@ build:
   preserve_egg_dir: True
   script_env:
     - JETSETBESSELBUILD
-  script: python -m pip install . --no-deps -vv
 
   requirements:
 
   build:
-    - swig>3.0.0
+    - swig>4.0.0
     - python {{ python }}
     - setuptools"""
 
