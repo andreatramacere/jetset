@@ -145,17 +145,19 @@ jobs:
           echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
 
     
-      - name: Generate conda_build_config.yaml
+    
+      - name: 'generate meta.yaml from requirements.txt'
         shell: bash
         run: |
           source ~/.bash_profile
           micromamba activate test-env
-          python .github/workflows/generate_conda_build_config.py
-        env:
-          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+          python .github/workflows/requirements_to_conda_yml.py
       
       - name: 'generate conda_build_config.yaml'
+        shell: bash
         run: |
+          source ~/.bash_profile
+          micromamba activate test-env
           python .github/workflows/generate_conda_build_config.py
         env:
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
