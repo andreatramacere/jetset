@@ -56,7 +56,7 @@ requirements:
   host:
     - python {{ python }}
     - setuptools
-    - numpy >=2.0
+    - numpy {{ numpy }}
   run:
     - python
     - numpy >=2.0
