@@ -1,0 +1,11 @@
+# This file tells conda-build which variants to build for Python and NumPy.
+# Conda will automatically create one build for each combination.
+
+python:
+  - 3.10
+  - 3.11
+  - 3.12
+
+numpy:
+  - 2.0
+  - 2.1
