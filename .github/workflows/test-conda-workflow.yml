@@ -150,7 +150,13 @@ jobs:
           source ~/.bash_profile
           micromamba activate test-env
           python .github/workflows/requirements_to_conda_yml.py
-
+      
+      - name: 'generate conda_build_config.yaml'
+        run: |
+          python .github/workflows/generate_conda_build_config.py
+        env:
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+      
       - name: 'conda build'
         if: github.event.inputs.tags != null
         working-directory: .github/conda-pipeline/github/
