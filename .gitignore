@@ -1,6 +1,7 @@
 *.so
 *.py[cod]
 __pycache__/
+.pytest_cache
 /doc/out.txt
 /doc/err.txt
 /doc/build/*
