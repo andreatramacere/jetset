@@ -1,6 +1,6 @@
-import pathlib
+import shutil
 
-_str_end = """
+_str_end="""
 about:
   home: https://github.com/andreatramacere/jetset
   license: BSD-3
@@ -12,27 +12,37 @@ extra:
     - andreatramacere
 """
 
-_skip_list = ["pyqt", "swig"]
 
-# Read requirements.txt
-req_file = pathlib.Path("./requirements.txt")
-req = [line.strip() for line in req_file.read_text().splitlines()]
-req = [r for r in req if r and not any(skip in r for skip in _skip_list) and not r.startswith("#")]
 
-np_str = ""
-pkg_str_list = []
+
+_skip_list=['pyqt','swig']
+f = open("./requirements.txt",'r')
+req=f.readlines()
+f.close()
+
+req=[n.strip() for n in req]
+for r in req[:]:
+    for s in _skip_list[:]:
+
+        if s in r:
+            req.remove(r)
+
+
+np_str=''
+pkg_str_list=[]
 for r in req:
-    if "numpy" in r:
-        np_str = r
-    pkg_str_list.append(r)
+    if r.startswith('#') is False:
+      if 'numpy' in r:
+          np_str=r
+      pkg_str_list.append(r)
 
-_str_start = f"""
-{{% set data = load_setup_py_data(setup_file='../../../setup.py', from_recipe_dir=True) %}}
-{{% set version = data.get('version')  %}}
+_str_start="""
+{% set data = load_setup_py_data(setup_file='../../../setup.py', from_recipe_dir=True) %}
+{% set version = data.get('version')  %}
 
 package:
   name: jetset
-  version: {{ version }}
+  version:  {{ version }}
 
 source:
   path: ../../../
@@ -43,20 +53,21 @@ build:
     - JETSETBESSELBUILD
   script: python -m pip install . --no-deps -vv
 
-requirements:
-  host:
-    - python {{ '{{ python }}' }}
-    - setuptools
-    - {np_str}
-"""
+  requirements:
 
-meta_path = pathlib.Path(".github/conda-pipeline/github/meta.yaml")
-with meta_path.open("w") as f:
-    print(_str_start, file=f)
-    print("\n  run:", file=f)
-    print("    - python", file=f)
-    for pkg_str in pkg_str_list:
-        print(f"    - {pkg_str}", file=f)
-    print(_str_end, file=f)
+  build:
+    - swig>3.0.0
+    - python {{ python }}
+    - setuptools"""
 
-print(f"Generated meta.yaml at {meta_path}")
+f = open(".github/conda-pipeline/github/meta.yaml",'w')
+print(_str_start,file=f)
+print( '    - %s'%np_str, file=f)
+
+print('',file=f)
+print('  run:',file=f)
+print('    - python>=3.10', file=f)
+for pkg_str in pkg_str_list:
+    print('    - %s'%pkg_str, file=f)
+print(_str_end,file=f)
+f.close()
