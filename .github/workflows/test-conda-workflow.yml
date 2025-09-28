@@ -167,10 +167,10 @@ jobs:
           conda render . --python ${{ matrix.python-version }}
 
           echo "building package for Python ${{ matrix.python-version }}"
-          conda mambabuild --python ${{ matrix.python-version }} . -c conda-forge -c astropy
+          conda mambabuild  -c conda-forge -c astropy
 
           echo "computing output path for Python ${{ matrix.python-version }}"
-          conda mambabuild --python ${{ matrix.python-version }} . --output > ./CONDABUILDJETSET.txt
+          conda mambabuild --output > ./CONDABUILDJETSET.txt
 
       
       - name: 'set env CONDABUILDJETSET'
