@@ -22,7 +22,7 @@ from . import spectral_shapes
 from .jetkernel_models_dic import nuFnu_obs_dict, n_seed_dic
 from .plot_sedfit import PlotSpecComp,PlotSeedPhotons
 from .utils import check_frame, unexpected_behaviour
-from .jet_kernel_tools import get_spectral_c_array
+from .jet_kernel_tools import get_spectral_c_array_read_only
 
 __all__=['JetSeedPhotons','JetSpecComponent','SpecCompList']
 
@@ -50,7 +50,7 @@ class JetSeedPhotons(object):
 
     def get_spectral_points(self,log_log=False,emiss_lim=0):
 
-        x,y=get_spectral_c_array(self.nu_ptr,self.n_ptr ,self._blob_object,self._blob_object.nu_grid_size)
+        x,y=get_spectral_c_array_read_only(self.nu_ptr,self.n_ptr,self._blob_object.nu_grid_size)
         msk_nan=np.isnan(x)
         msk_nan+=np.isnan(y)
         #print('emiss lim',self.get_emiss_lim())
@@ -197,7 +197,7 @@ class JetSpecComponent(object):
 
 
     def get_SED_points(self, log_log=False, lin_nu=None, interp='linear', skip_zeros=False):
-        x,y= get_spectral_c_array(self.nu_ptr, self.nuFnu_ptr,self._blob_object, self._blob_object.nu_grid_size)
+        x,y= get_spectral_c_array_read_only(self.nu_ptr, self.nuFnu_ptr, self._blob_object.nu_grid_size)
   
         msk_nan = np.isnan(x)
         msk_nan += np.isnan(y)

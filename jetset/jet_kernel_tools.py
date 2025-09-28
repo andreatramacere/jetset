@@ -20,19 +20,24 @@ from .jetkernel_models_dic import allowed_disk_type
 from .jet_paramters import *
 
 
-__all__=[ 'get_spectral_c_array','get_emitters_c_array1d']
+__all__=[ 'get_spectral_c_array_read_only','get_emitters_c_array1d']
 
 
 
-def get_spectral_c_array(x_ptr, y_ptr, blob_object, size):
-    x = np.zeros(size)
-    y = np.zeros(size)
+def get_spectral_c_array_read_only(x_ptr, y_ptr, size):
+    
 
     x_ctype = (ctypes.c_double * size).from_address(int(x_ptr))
     y_ctype = (ctypes.c_double * size).from_address(int(y_ptr))
 
     x = np.ctypeslib.as_array(x_ctype)
     y = np.ctypeslib.as_array(y_ctype)
+     
+    return x.copy(),y.copy()
+    
+
+    #x = np.zeros(size)
+    #y = np.zeros(size)
 
     #for i in range(size):
     #    x[i] = BlazarSED.get_spectral_array(x_ptr, blob_object, i)
@@ -45,8 +50,7 @@ def get_spectral_c_array(x_ptr, y_ptr, blob_object, size):
 
     #x=copy.deepcopy(np.asarray(x))
     #y=copy.deepcopy(np.asarray(y)) 
-    return x,y
-    
+   
     #x = BlazarSED.get_spectral_array_np(x_ptr, blob_object)
     #y = BlazarSED.get_spectral_array_np(y_ptr, blob_object)
 
