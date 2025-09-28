@@ -120,6 +120,7 @@ jobs:
             conda-build
             pytest
             boa
+            pyyaml
           
           generate-run-shell: true
           init-shell: bash
