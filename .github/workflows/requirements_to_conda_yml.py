@@ -58,7 +58,7 @@ build:
       - setuptools
       - numpy >=2.0
     run:
-      - python >=3.10
+      - python
       - numpy >=2.0
 
   build:
