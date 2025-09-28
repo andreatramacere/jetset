@@ -51,7 +51,6 @@ build:
   preserve_egg_dir: True
   script_env:
     - JETSETBESSELBUILD
-  script: bash build.sh
 
 requirements:
   host:
