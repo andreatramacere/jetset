@@ -189,7 +189,7 @@ jobs:
           conda mambabuild .  -c conda-forge -c astropy --variants "{'numpy': '2.0'}" --python ${{ matrix.python-version }}
 
           echo "computing output path for Python ${{ matrix.python-version }}"
-          conda mambabuild . --output > ./CONDABUILDJETSET.txt --variants "{'numpy': '2.0'}" --python ${{ matrix.python-version }}
+          conda mambabuild . --python ${{ matrix.python-version }} --variants "{'numpy': '2.0'}" --output > ./CONDABUILDJETSET.txt 
 
       
       - name: 'set env CONDABUILDJETSET'
