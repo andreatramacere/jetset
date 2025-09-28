@@ -166,15 +166,6 @@ jobs:
         env:
           MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
       
-      - name: 'debug conda render'
-        working-directory: .github/conda-pipeline/github/
-        run: |
-          micromamba run -n test-env conda render . \
-          -c conda-forge \
-          -c astropy \
-          --python ${{ matrix.python-version }} \
-          --variants "{'numpy': '2.0'}"
-
       - name: 'conda build'
         if: github.event.inputs.tags != null
         working-directory: .github/conda-pipeline/github/
