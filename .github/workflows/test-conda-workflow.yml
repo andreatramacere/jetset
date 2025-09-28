@@ -164,8 +164,6 @@ jobs:
 
           echo "Python version from matrix: ${{ matrix.python-version }}"
 
-          conda render . --python ${{ matrix.python-version }}
-
           echo "building package for Python ${{ matrix.python-version }}"
           conda mambabuild  -c conda-forge -c astropy
 
