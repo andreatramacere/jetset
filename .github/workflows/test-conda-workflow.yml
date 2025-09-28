@@ -114,7 +114,11 @@ jobs:
       - uses: mamba-org/setup-micromamba@v1
         with:
           environment-name: test-env
-          channels: conda-forge,defaults
+          condarc: |
+            channels:
+              - conda-forge
+              - defaults
+            channel_priority: strict
           create-args: >-
             python=${{ matrix.python-version }}
             swig>=4
