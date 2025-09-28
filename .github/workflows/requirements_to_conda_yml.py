@@ -52,19 +52,19 @@ build:
   script_env:
     - JETSETBESSELBUILD
 
-  requirements:
-    host:
-      - python {{ python }}
-      - setuptools
-      - numpy >=2.0
-    run:
-      - python
-      - numpy >=2.0
-
-  build:
-    - swig>4.0.0
+requirements:
+  host:
     - python {{ python }}
-    - setuptools"""
+    - setuptools
+    - numpy >=2.0
+  run:
+    - python
+    - numpy >=2.0
+
+build:
+  - swig>4.0.0
+  - python {{ python }}
+  - setuptools"""
 
 f = open(".github/conda-pipeline/github/meta.yaml",'w')
 print(_str_start,file=f)
