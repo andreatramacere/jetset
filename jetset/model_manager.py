@@ -306,7 +306,7 @@ class FitModel(Model):
         return eval(self.composite_expr)
 
     def _eval_model(self, lin_nu, log_nu, loglog,fill_SED):
-        lin_model = np.zeros(lin_nu.size)
+        lin_model = np.zeros(lin_nu.shape)
         log_model = None
         for model_comp in self.components._components_list:
             model_comp.cosmo=self.cosmo
