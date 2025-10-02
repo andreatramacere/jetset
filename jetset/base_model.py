@@ -216,7 +216,7 @@ class Model(object):
 
 
     def lin_func(self,lin_nu):
-        return np.ones(lin_nu.size) * self.flux_plot_lim
+        return np.ones(lin_nu.shape) * self.flux_plot_lim
     
     def log_func(self,log_nu):
         return np.log10(self.lin_func(np.power(10,log_nu)))
