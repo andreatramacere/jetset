@@ -372,15 +372,13 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
 
         z=self.parameters.get_par_by_name('z_cosm').val
         s=self.parameters.scale_factor.val
-
-        model = np.exp(-s*self._func(z,log_nu).T).flatten()
+        model = np.exp(-s*self._func(z,log_nu).T).reshape(log_nu.shape)
         model[np.isnan(model)]=self._zero
         if get_model == True:
             if loglog == False:
                 out_model=model
             else:
                 out_model=  np.log10(model)
-
         if fill_SED is True:
             if loglog is False:
                 _nu=np.power(10.,log_nu)
@@ -389,7 +387,6 @@ class EBLAbsorptionTemplate(TemplateTable2D,MultiplicativeModel):
 
             self.nu=_nu
             self.tau=model
-
         return out_model
 
     def plot_model(self, plot_obj=None,  label=None, line_style='-',color=None,frame='obs'):
