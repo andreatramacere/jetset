@@ -6,6 +6,7 @@ from jetset.jetkernel import jetkernel as BlazarSED
 from .jet_kernel_tools import get_spectral_c_array_read_only
 from numba import njit, prange
 import numpy as np
+import warnings
 
 H_OVER_MEC2 = h / mec2
 SIGMA_PREF = 0.75 * SIGTH * 0.5
@@ -223,7 +224,12 @@ class InternalAbsorption(object):
                 H_OVER_MEC2,
                 SIGMA_PREF,
             )
-        except Exception:
+        except Exception as exc:
+            warnings.warn(
+                f"Falling back to NumPy tau computation because the optimized implementation failed: {exc}",
+                RuntimeWarning,
+                stacklevel=2,
+            )
             one_minus_mu = np.clip(1.0 - mu_range, 1e-20, None)
             eps_soft = nu_grid * H_OVER_MEC2
             eps_gamma = (nu_src_grid * H_OVER_MEC2)[:, None, None, None]

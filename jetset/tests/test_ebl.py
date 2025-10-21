@@ -58,15 +58,15 @@ class TestEBL(TestBase):
             ebl_franceschini.parameters.z_cosm.val = z
             ebl_finke.parameters.z_cosm.val = z
             ebl_dominguez.parameters.z_cosm.val = z
-            y_fr[ID] = ebl_franceschini.eval(nu=nu, get_model=True)[0]
-            y_fi[ID] = ebl_finke.eval(nu=nu, get_model=True)[0]
-            y_do[ID] = ebl_dominguez.eval(nu=nu, get_model=True)[0]
+            y_fr[ID] = ebl_franceschini.eval(nu=nu, get_model=True)
+            y_fi[ID] = ebl_finke.eval(nu=nu, get_model=True)
+            y_do[ID] = ebl_dominguez.eval(nu=nu, get_model=True)
         
         if plot is True:
             plt.figure()
-            plt.plot(z_range, y_fr, label='%s' % ebl_franceschini.name)[0]
-            plt.plot(z_range, y_fi, label='%s' % ebl_finke.name)[0]
-            plt.plot(z_range, y_do, label='%s' % ebl_dominguez.name)[0]
+            plt.plot(z_range, y_fr, label='%s' % ebl_franceschini.name)
+            plt.plot(z_range, y_fi, label='%s' % ebl_finke.name)
+            plt.plot(z_range, y_do, label='%s' % ebl_dominguez.name)
 
             plt.xlabel('z')
             plt.ylabel(r'$exp^{-\tau}$')
@@ -83,9 +83,9 @@ class TestEBL(TestBase):
             ebl_franceschini.parameters.z_cosm.val = z
             ebl_finke.parameters.z_cosm.val = z
             ebl_dominguez.parameters.z_cosm.val = z
-            y_fr[ID] = ebl_franceschini.eval(nu=nu, get_model=True)[0]
-            y_fi[ID] = ebl_finke.eval(nu=nu, get_model=True)[0]
-            y_do[ID] = ebl_dominguez.eval(nu=nu, get_model=True)[0]
+            y_fr[ID] = ebl_franceschini.eval(nu=nu, get_model=True)
+            y_fi[ID] = ebl_finke.eval(nu=nu, get_model=True)
+            y_do[ID] = ebl_dominguez.eval(nu=nu, get_model=True)
 
         if plot is True:
             plt.figure()
