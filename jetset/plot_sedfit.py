@@ -427,6 +427,7 @@ class  PlotSED (object):
                           time_bin=None,
                           use_cached=False,
                           sed_data=None,
+                          density=False,
                           average=False):
 
         frame=self._check_frame(frame)

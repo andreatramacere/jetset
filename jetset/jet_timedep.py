@@ -1317,7 +1317,7 @@ class JetTimeEvol(object):
 
 
         if plot_obj is None:
-            plot_obj=PlotSED(frame=frame)
+            plot_obj=PlotSED(frame=frame,density=density)
 
         region = self.get_region(region)
         plot_obj.plot_tempev_model(temp_ev=self,
@@ -1329,7 +1329,6 @@ class JetTimeEvol(object):
                                    time_slice_bin=time_slice_bin,
                                    time=time,
                                    time_bin=time_bin,
-                                   density=density,
                                    sed_data=sed_data,
                                    use_cached=use_cached,
                                    average=average,)
