@@ -482,7 +482,7 @@ class  PlotSED (object):
             label = None
             ls = '-'
             color = r[ID]
-            if temp_ev.custom_q_jnj_profile[temp_ev._get_time_slice_T_array(t)] > 0:
+            if temp_ev.custom_q_inj_profile[temp_ev._get_time_slice_T_array(t)] > 0:
                 color = g[ID]
                 ls = '-'
                 lw = 0.2
@@ -853,7 +853,7 @@ class  PlotTempEvEmitters (PlotPdistr):
             ls = '-'
             color = r[ID]
 
-            if temp_ev.custom_q_jnj_profile[temp_ev._get_time_slice_T_array(t)] > 0:
+            if temp_ev.custom_q_inj_profile[temp_ev._get_time_slice_T_array(t)] > 0:
                 color = g[ID]
                 ls = '-'
                 lw = 0.2

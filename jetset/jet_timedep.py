@@ -741,7 +741,7 @@ class JetTimeEvol(object):
         self.Q_inj=Q_inj
         self.name=name
 
-        self._custom_q_jnj_profile = None
+        self._custom_q_inj_profile = None
         self._custom_acc_profile = None
         self.time_steps_array = None
         self.IC_cooling = 'off'
@@ -782,7 +782,7 @@ class JetTimeEvol(object):
         if Q_inj is not None:
             clean_numba(Q_inj)
         _model['internals']['Q_inj'] = Q_inj
-        _model['internals']['_custom_q_jnj_profile'] = self._custom_q_jnj_profile
+        _model['internals']['_custom_q_inj_profile'] = self._custom_q_inj_profile
         _model['internals']['_custom_acc_profile'] = self._custom_acc_profile
         _model['internals']['_only_radiation'] = self._only_radiation
         _model['internals']['_bkp_acc_region'] = self._bkp_acc_region
@@ -875,10 +875,10 @@ class JetTimeEvol(object):
 
         self.temp_ev.R_H_rad_start = self.parameters.R_H_rad_start.val
         self._init_temp_ev()
-        #self._custom_q_jnj_profile=None
+        #self._custom_q_inj_profile=None
         #self._custom_acc_profile=None
 
-        self._set_inj_time_profile(user_defined_array=self._custom_q_jnj_profile)
+        self._set_inj_time_profile(user_defined_array=self._custom_q_inj_profile)
         self._set_acc_time_profile(user_defined_array=self._custom_acc_profile)
         self._fill_temp_ev_array_pre_run()
         self.tempev_table
@@ -984,7 +984,7 @@ class JetTimeEvol(object):
 
         for i in range(self.parameters.t_size.val):
             T_inj_profile_ptr = getattr(self._temp_ev, 'T_inj_profile')
-            BlazarSED.set_temp_ev_Time_array(T_inj_profile_ptr, self._temp_ev, self.custom_q_jnj_profile[i], i)
+            BlazarSED.set_temp_ev_Time_array(T_inj_profile_ptr, self._temp_ev, self.custom_q_inj_profile[i], i)
             Acc_profile_ptr = getattr(self._temp_ev, 'T_acc_profile')
             BlazarSED.set_temp_ev_Time_array(Acc_profile_ptr, self._temp_ev, self.custom_acc_profile[i], i)
 
@@ -1192,11 +1192,11 @@ class JetTimeEvol(object):
 
 
     @property
-    def custom_q_jnj_profile(self):
-        return self._custom_q_jnj_profile
+    def custom_q_inj_profile(self):
+        return self._custom_q_inj_profile
 
-    @custom_q_jnj_profile.setter
-    def custom_q_jnj_profile(self,user_defined_array):
+    @custom_q_inj_profile.setter
+    def custom_q_inj_profile(self,user_defined_array):
         self._set_inj_time_profile(user_defined_array)
 
     @property
@@ -1209,14 +1209,14 @@ class JetTimeEvol(object):
 
     def _set_inj_time_profile(self,user_defined_array=None):
         if user_defined_array is None:
-            self._custom_q_jnj_profile = np.zeros(self.parameters.t_size.val, dtype=np.double)
+            self._custom_q_inj_profile = np.zeros(self.parameters.t_size.val, dtype=np.double)
             msk= self.time_steps_array >= self._temp_ev.TStart_Inj
             msk*= self.time_steps_array <= self._temp_ev.TStop_Inj
-            self._custom_q_jnj_profile[msk] = 1.0
+            self._custom_q_inj_profile[msk] = 1.0
         else:
             if np.shape(user_defined_array)!=(self.parameters.t_size.val,):
                 raise  RuntimeError('user_defined_array must be 1d array with size =',self._temp_ev.T_SIZE)
-            self._custom_q_jnj_profile = np.double(user_defined_array)
+            self._custom_q_inj_profile = np.double(user_defined_array)
 
     def _set_acc_time_profile(self,user_defined_array=None):
         self._custom_acc_profile = np.zeros(self._temp_ev.T_SIZE, dtype=np.double)
@@ -1284,7 +1284,7 @@ class JetTimeEvol(object):
     def plot_time_profile(self,figsize=(8,8),dpi=120):
         p=PlotTempEvDiagram(figsize=figsize,dpi=dpi,expanding_region=self.region_expansion=='on')
         p.plot(self.time_steps_array,
-               self.custom_q_jnj_profile,
+               self.custom_q_inj_profile,
                self.custom_acc_profile,
                self.R_t_pre_run,
                self.B_t_pre_run,
