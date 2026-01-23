@@ -88,12 +88,13 @@ class InternalAbsorption(object):
 
     def __init__(self,
                  jet,
-                 nu_min,
+                 nu_min=None,
                  seed_photons_name='BLR',
                  N_soft=50,
                  N_hard=50,
                  N_R_H=20,
                  N_theta=20,
+                 use_R_H_profile_extrapolation=False,
                  ):
         if seed_photons_name in ['BLR','DT']:
             self._seed_photons_name=seed_photons_name
@@ -112,6 +113,8 @@ class InternalAbsorption(object):
         self._jet_orig=jet
         self._old_tau=None
         self._parameters_old=None
+        self._use_R_H_profile_extrapolation=use_R_H_profile_extrapolation
+        
         #self._DT_pars=['R_H','tau_DT','R_DT','T_DT']
     
     
@@ -141,12 +144,31 @@ class InternalAbsorption(object):
         return changed
 
 
+    def _get_R_seed(self):
+        if self._seed_photons_name not in ["BLR","DT"]:
+             raise RuntimeError('seed_photons_name %s not valid'%self._seed_photons_name)
+
+        if self._seed_photons_name == "BLR":
+            R_seed=self._jet.parameters.R_BLR_out.val
+        elif self._seed_photons_name == "DT":
+            R_seed=self._jet.parameters.R_DT.val
+
+        return R_seed
+    
+    def _get_R_seed_field(self,R_seed,N_soft,peak):
+        nu_soft_0,n_soft_0=self.get_n(R_H=R_seed/1000,
+                        seed_photons_name=self._seed_photons_name,
+                        N_soft=N_soft,
+                        peak=peak)
+        
+        return nu_soft_0,n_soft_0
+
     def eval_tau_photons(self,
-                        R_H,
-                        nu_src,
-                        nu_min,
-                        skip_check=True,
-                        peak=False):
+                         nu_src,
+                         R_H,
+                         skip_check=True,
+                         peak=False,
+                         use_R_H_profile_extrapolation=False):
 
         for p_orig in self._jet_orig.parameters.par_array:
             if not p_orig.frozen and not p_orig._is_dependent:
@@ -163,7 +185,7 @@ class InternalAbsorption(object):
         if not tau_changed:
             return self._old_tau
     
-        R_H_range=np.logspace(0,5,self._N_R_H)*R_H
+        R_H_range=np.logspace(0,3,self._N_R_H)*R_H
         if peak is True:
             N_soft=1
         else:
@@ -171,45 +193,58 @@ class InternalAbsorption(object):
 
         
         shape=(self._N_R_H,self._N_theta,N_soft)
-        nu=np.zeros(shape)
-        n=np.zeros(shape)
+        nu_soft=np.zeros(shape)
+        n_soft=np.zeros(shape)
         mu_range=np.zeros(shape)
+
+        R_seed=self._get_R_seed()
+
+        nu_soft_0,n_soft_0=self._get_R_seed_field(R_seed,N_soft,peak)
+        
+            
+        if self._nu_min is None:
+            nu_min=1E40/(nu_soft_0.max())
+        else:
+            nu_min = self._nu_min
+
+        nu_src=np.logspace(np.log10(nu_min),np.log10(nu_src.max()),self._N_hard)
         for ID_RH,R_H in enumerate(R_H_range):
             self._jet.set_par('R_H',val=R_H)
-            nu[ID_RH],n[ID_RH]=self.get_n(R_H=R_H,
-                                        seed_photons_name=self._seed_photons_name,
-                                        N_soft=N_soft,
-                                        peak=peak)
-            
-            if self._seed_photons_name == "BLR":
-                if R_H<self._jet.parameters.R_BLR_in.val:
-                    mu_max=1.0
-                    mu_min=-1
+           
+            if use_R_H_profile_extrapolation:
+                if R_H<=R_seed:
+                    R_x=1
                 else:
-                    mu_max=1.0
-                    mu_min = np.sqrt(1.0 - (self._jet.parameters.R_BLR_out.val / R_H)**2)
-            
-            elif self._seed_photons_name == "DT":
-                if R_H<self._jet.parameters.R_DT.val:
-                    mu_max=1.0
-                    mu_min=-1
-                else:
-                    mu_max=1.0
-                    mu_min = np.sqrt(1.0 - (self._jet.parameters.R_DT.val / R_H)**2)
+                    R_x=R_seed/R_H
+
+                n_soft[ID_RH]=n_soft_0*(R_x)**2
+                nu_soft[ID_RH]=nu_soft_0
+
             else:
-                raise RuntimeError('seed_photons_name %s not valid'%self._seed_photons_name)
-     
+                nu_soft[ID_RH],n_soft[ID_RH]=self.get_n(R_H=R_H,
+                                            seed_photons_name=self._seed_photons_name,
+                                            N_soft=N_soft,
+                                            peak=peak)
+            
+            if R_H<R_seed:
+                mu_max=1.0
+                mu_min=-1
+            else:
+                mu_max=1.0
+                mu_min = np.sqrt(1.0 - (R_seed / R_H)**2)
+            
+
             mu_range[ID_RH]=(np.ones((self._N_theta,N_soft)).T*np.linspace(mu_min,mu_max,self._N_theta).T).T
 
         nu_src = np.atleast_1d(nu_src)
-        if nu_min is not None:
-            nu_src = nu_src[nu_src >= nu_min]
+        #if nu_min is not None:
+        nu_src = nu_src[nu_src >= nu_min]
 
         if nu_src.size == 0:
             return np.zeros(0, dtype=np.float64)
 
-        nu_grid = np.ascontiguousarray(nu, dtype=np.float64)
-        n_grid = np.ascontiguousarray(n, dtype=np.float64)
+        nu_soft_grid = np.ascontiguousarray(nu_soft, dtype=np.float64)
+        n_soft_grid = np.ascontiguousarray(n_soft, dtype=np.float64)
         mu_grid = np.ascontiguousarray(mu_range[:, :, 0], dtype=np.float64)
         R_H_grid = np.ascontiguousarray(R_H_range, dtype=np.float64)
         nu_src_grid = np.ascontiguousarray(nu_src, dtype=np.float64)
@@ -217,8 +252,8 @@ class InternalAbsorption(object):
         try:
             tau = _compute_tau_numba(
                 nu_src_grid,
-                nu_grid,
-                n_grid,
+                nu_soft_grid,
+                n_soft_grid,
                 mu_grid,
                 R_H_grid,
                 H_OVER_MEC2,
@@ -231,16 +266,16 @@ class InternalAbsorption(object):
                 stacklevel=2,
             )
             one_minus_mu = np.clip(1.0 - mu_range, 1e-20, None)
-            eps_soft = nu_grid * H_OVER_MEC2
+            eps_soft = nu_soft_grid * H_OVER_MEC2
             eps_gamma = (nu_src_grid * H_OVER_MEC2)[:, None, None, None]
             s = eps_gamma * eps_soft[None, :, :, :] * one_minus_mu[None, :, :, :] / 2.0
             sigma_vals = self.sigma(s)
-            integrand = sigma_vals * n_grid[None, :, :, :] * one_minus_mu[None, :, :, :]
-            int_over_nu = np.trapz(integrand, nu_grid[None, :, :, :], axis=-1)
+            integrand = sigma_vals * n_soft_grid[None, :, :, :] * one_minus_mu[None, :, :, :]
+            int_over_nu = np.trapz(integrand, nu_soft_grid[None, :, :, :], axis=-1)
             int_over_mu = np.trapz(int_over_nu, mu_range[None, :, :, 0], axis=-1)
             tau = 2.0 * np.pi * np.trapz(int_over_mu, R_H_grid, axis=-1)
 
-        return tau
+        return tau,nu_src
 
 
 
@@ -300,18 +335,18 @@ class InternalAbsorption(object):
         x=x[msk]
         y=y[msk]
         if peak is True:
-            id=np.argmax(y)
+            idx=np.argmax(y)
             scale_factor=np.trapz(y,x)
-            x=np.atleast_1d(x[id])
-            y=np.atleast_1d(y[id])
+            x=np.atleast_1d(x[idx])
+            y=np.atleast_1d(y[idx])
             if rescale is True:
                 scale_factor=y*x/scale_factor
                 y=y/scale_factor
             
             
         else:
-            x=x[y>y.max()/100000]
-            y=y[y>y.max()/100000]
+            x=x[y>y.max()/100]
+            y=y[y>y.max()/100]
             x_int=np.logspace(np.log10(x[0]),np.log10(x[-1]),N_soft)
             y_int = np.interp(np.log10(x_int),np.log10(x), np.log10(y),left=1E-200,right=1E-200)
             y_int = np.power(10., y_int)
@@ -325,25 +360,34 @@ class InternalAbsorption(object):
     def eval(self, get_tau=False,skip_check=True,lin_nu=None,peak=False):
         """
         """
+
         if lin_nu is None:
             nu_src=self._jet_orig.spectral_components.Sum.SED.nu_src.value
         else:
             nu_src=lin_nu
             nu_src=np.atleast_1d(nu_src)
-        nu_abs=np.logspace(np.log10(self._nu_min),np.log10(nu_src.max()),self._N_hard)
-        tau=np.zeros(nu_src.shape)
-        tau=self.eval_tau_photons(nu_src=nu_abs,
-                                  nu_min=self._nu_min,
-                                  R_H=self._jet_orig.parameters.R_H.val,
-                                  skip_check=skip_check,
-                                  peak=peak,
-                                  )
-        self._old_tau=tau
-        tau_interp = np.interp(nu_src, nu_abs, tau,left=0,right=0)
+        
        
-     
+        tau,nu_tau=self.eval_tau_photons(nu_src,
+                                        R_H=self._jet_orig.parameters.R_H.val,
+                                        skip_check=skip_check,
+                                        peak=peak,
+                                        use_R_H_profile_extrapolation=self._use_R_H_profile_extrapolation)
+
+        self._old_tau=tau
+        EPS = 1e-300   
+        nu_src_pos = np.maximum(nu_src, EPS)
+        nu_tau_pos = np.maximum(nu_tau, EPS)
+        tau_pos    = np.maximum(tau,    EPS)
+
+        tau_interp = 10**np.interp(
+            np.log10(nu_src_pos),
+            np.log10(nu_tau_pos),
+            np.log10(tau_pos),
+            left=None,
+            right=None
+        )
         
         if get_tau:
-
-            return tau_interp,nu_src
+            return tau_interp,nu_src_pos
         

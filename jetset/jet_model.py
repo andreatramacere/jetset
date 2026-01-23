@@ -65,7 +65,7 @@ class JetBase(Model):
                  emitters_distribution_log_values=False,
                  beaming_expr='delta',
                  jet_workplace=None,
-                 verbose=None,
+                 verbose=False,
                  nu_size=500,
                  clean_work_dir=True,
                  geometry='spherical',
@@ -87,8 +87,8 @@ class JetBase(Model):
             expression for the beaming , by default 'delta'
         jet_workplace : _type_, optional
             , by default None
-        verbose : _type_, optional
-            , by default None
+        verbose : bool, optional
+            , by default False
         nu_size : int, optional
             size of the nu grid, by default 500
         clean_work_dir : bool, optional
@@ -104,7 +104,7 @@ class JetBase(Model):
         self.model_type='jet'
         #self._emitters_type=emitters_type
         self._scale='lin-lin'
-    
+        self.verbose=verbose
         self._blob = self._build_blob(verbose=verbose)
         self._static_spec_arr_grid_size = BlazarSED.static_spec_arr_grid_size
         self._nu_static_size = BlazarSED.static_spec_arr_size
@@ -227,7 +227,7 @@ class JetBase(Model):
             self._internal_absorption_comp=state['_internal_absorption_comp']
         #    for c in state['_internal_absorption_comp'].keys():
         #        p=state['_internal_absorption_comp'][c]['pars']
-        #        self.add_internal_absorption(**p)
+        #        self.enable_internal_absorption(**p)
         
     def _serialize_model(self):
         _model = {}
@@ -307,7 +307,7 @@ class JetBase(Model):
             if hasattr(jet,'_internal_absorption_comp'):
                 for c in jet._internal_absorption_comp:
                     p=jet._internal_absorption_comp[c]['pars']
-                    jet.add_internal_absorption(**p)
+                    jet.enable_internal_absorption(**p)
             return jet
         except Exception as e:
             raise RuntimeError('The model you loaded is not valid please check the file name', e)
@@ -412,7 +412,7 @@ class JetBase(Model):
     
 
 
-    def _build_blob(self, verbose=None):
+    def _build_blob(self, verbose=False):
 
         blob = BlazarSED.MakeBlob()
 
@@ -482,10 +482,10 @@ class JetBase(Model):
 
         blob.BESSEL_TABLE_DONE=1
 
-        if verbose is None:
+        if verbose is False:
             blob.verbose = 0
         else:
-            blob.verbose = verbose
+            blob.verbose = 1
 
         set_str_attr(blob, 'path', './')
 
@@ -1075,13 +1075,14 @@ class JetBase(Model):
             self.parameters.disk_type.val = disk_type
 
 
-    def add_internal_absorption(self,
+    def enable_internal_absorption(self,
                                 comp,
-                                nu_min,
-                                N_soft=25,
+                                nu_min=None,
+                                N_soft=50,
                                 N_hard=50,
-                                N_R_H=20,
-                                N_theta=25,):
+                                N_R_H=50,
+                                N_theta=50,
+                                use_R_H_profile_extrapolation=False):
         
         self._internal_absorption_comp[comp]={}
         self._internal_absorption_comp[comp]['pars']=dict(N_hard=N_hard,
@@ -1089,31 +1090,36 @@ class JetBase(Model):
                                                           N_theta=N_theta,
                                                           N_R_H=N_R_H,
                                                           nu_min=nu_min,
-                                                          comp=comp)
+                                                          comp=comp,
+                                                          use_R_H_profile_extrapolation=use_R_H_profile_extrapolation)
         
-        self._internal_absorption_comp[comp]['method']=InternalAbsorption(jet=self,
+        self._internal_absorption_comp[comp]['obj']=InternalAbsorption(jet=self,
                                                                 nu_min=nu_min,
                                                                 seed_photons_name=comp,
                                                                 N_soft=N_soft,
                                                                 N_hard=N_hard,
                                                                 N_R_H=N_R_H,
-                                                                N_theta=N_theta)
+                                                                N_theta=N_theta,
+                                                                use_R_H_profile_extrapolation=use_R_H_profile_extrapolation)
     
     def remove_internal_absorption(self,comp):
         if comp in self._internal_absorption_comp.keys():
             del self._internal_absorption_comp[comp]
     
     def show_internal_absorption_components(self):
-        for comp in  self._internal_absorption_comp.keys():
-            print('internal absorption evaluated for:', comp)
-            for p in self._internal_absorption_comp[comp]['pars'].items():
-                print(p)
-            print()
+        if len(self._internal_absorption_comp.keys())>0:
+            for comp in  self._internal_absorption_comp.keys():
+                print('internal absorption  for component:', comp)
+                for p in self._internal_absorption_comp[comp]['pars'].items():
+                    print(p)
+                print()
+        else:
+            print('internal absorption not enabled in this jet model')
             
 
     def eval_internal_absorption(self,comp,skip_check=True,peak=False):
         if comp in self._internal_absorption_comp.keys():
-            return self._internal_absorption_comp[comp]['method'].eval(get_tau=True,skip_check=skip_check,peak=peak)
+            return self._internal_absorption_comp[comp]['obj'].eval(get_tau=True,skip_check=skip_check,peak=peak)
         return None,None
     
     def del_par_from_dic(self,model_dic):
@@ -1537,7 +1543,7 @@ class JetBase(Model):
             raise RuntimeError('emitters distribution not defined')
         tau_tot=np.zeros(lin_nu.shape)
         for  iac in self._internal_absorption_comp.keys():
-                int_abs=self._internal_absorption_comp[iac]['method']
+                int_abs=self._internal_absorption_comp[iac]['obj']
                 tau_c,nu_src=int_abs.eval(get_tau=True,lin_nu=lin_nu)
                 tau_tot+=tau_c
 
@@ -1818,7 +1824,8 @@ class JetBase(Model):
         return x_p, y_p
 
     def set_num_c_threads(self,N):
-        print("===> setting C threads to",N)
+        if self.verbose:
+            print("===> setting C threads to",N)
         if isinstance(N,int):
             self._blob.N_THREADS=N
         else:
@@ -1840,7 +1847,7 @@ class Jet(JetBase):
                  beaming_expr='delta',
                  T_esc_e_second=None,
                  jet_workplace=None,
-                 verbose=None,
+                 verbose=False,
                  clean_work_dir=True,
                  electron_distribution=None,
                  proton_distribution=None,
@@ -2174,11 +2181,11 @@ class Jet(JetBase):
         ----------
       
         nu_range : numpy array
-            array of frequencies for the polarization evaluation
+            array of observed frequencies for the polarization evaluation
 
         Returns
         -------
-        arrrays of polarization and nuF_nu 
+        arrrays of polarization and nuF_nu  in the observer frame
         """
         nuF_nu=self.eval(get_model=True,nu=nu_range_obs)
    
@@ -2192,6 +2199,33 @@ class Jet(JetBase):
         pol_nu[m]=0
         nuF_nu[m]=0
         return pol_nu,nuF_nu
+    
+    def eval_synch_pol_blob(self,nu_range_blob):
+        """_summary_
+        evluates the synchrotron polarization for
+        Parameters
+        ----------
+      
+        nu_range_blob : numpy array
+            array of blob frequencies for the polarization evaluation
+
+        Returns
+        -------
+        arrrays of polarization and nuL_nu in the blob frame
+        """
+        #TODO: this will be removed when eval_Sync_polarization will follow the same pattern of synch flux
+        nu_range_obs=nu_range_blob*self.get_beaming()/(1+self.parameters.z_cosm.val)
+        self.eval(nu=nu_range_obs)
+        nuLnu_blob=self.spectral_components.Sync.SED.nuLnu_blob
+        pol_nu_blob=np.zeros(nu_range_blob.size)
+        #TODO: this will be removed when eval_Sync_polarization will follow the same pattern of synch flux
+        for ID,nu in enumerate(nu_range_blob):
+            pol_nu_blob[ID]=BlazarSED.eval_Sync_polarization(self._blob,nu)
+        
+        m=np.logical_or(nuLnu_blob<=0,np.isnan(pol_nu_blob))
+        pol_nu_blob[m]=0
+        nuLnu_blob[m]=0
+        return pol_nu_blob,nuLnu_blob
 
 
 class GalacticBeamed(Jet):
@@ -2205,7 +2239,7 @@ class GalacticBeamed(Jet):
                  beaming_expr='delta',
                  T_esc_e_second=None,
                  jet_workplace=None,
-                 verbose=None,
+                 verbose=False,
                  clean_work_dir=True,
                  electron_distribution=None,
                  proton_distribution=None,
@@ -2279,7 +2313,7 @@ class GalacticUnbeamed(GalacticBeamed):
                  emitters_distribution_log_values=False,
                  T_esc_e_second=None,
                  jet_workplace=None,
-                 verbose=None,
+                 verbose=False,
                  clean_work_dir=True,
                  electron_distribution=None,
                  proton_distribution=None,
