@@ -488,7 +488,7 @@ class TimeEvolvingRegion(object):
             R_blob = np.zeros(np.size(t_blob))
             for ID,_t in enumerate(t_blob):
                 R_blob[ID] = self.temp_ev._get_R_rad_sphere(t_blob[ID])
-        elif np.iscalar(R):
+        elif np.isscalar(R):
                 R_blob=np.ones(t_blob.size)*R
         else:
             if np.shape(R)!=np.shape(t_blob):
