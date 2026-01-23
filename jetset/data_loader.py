@@ -63,7 +63,7 @@ class Data(object):
         self._allowed_meta['data_scale'] = ['lin-lin','log-log']
         self._allowed_meta['obj_name'] = None
 
-        self._names = ['x', 'dx', 'y', 'dy', 'T_start', 'T_stop', 'UL', 'data_set']
+        self._names = ['x', 'dx', 'y', 'dy', 'T_start', 'T_stop', 'UL', 'dataset']
         self._dt = ('f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'bool', 'S16')
 
         self._units = [u.Hz, u.Hz,(u.erg / (u.cm ** 2 * u.s)) ,(u.erg / (u.cm ** 2 * u.s)), cds.MJD, cds.MJD, None, None]
@@ -398,7 +398,7 @@ class ObsData(object):
         sed_dt.append(('zero_error', 'bool'))
         sed_dt.append(('T_start', 'f8'))
         sed_dt.append(('T_stop', 'f8'))
-        sed_dt.append(('data_set', 'S16'))
+        sed_dt.append(('dataset', 'S16'))
 
         self.dt = np.dtype(sed_dt)
 
@@ -456,7 +456,7 @@ class ObsData(object):
         self._col_dict['dy'] = 'dnuFnu_data'
         self._col_dict['T_start'] = 'T_start'
         self._col_dict['T_stop'] = 'T_stop'
-        self._col_dict['data_set'] = 'data_set'
+        self._col_dict['dataset'] = 'dataset'
         self._col_dict['UL'] = 'UL'
 
         self._log_col_dict = {'x': 'nu_data_log'}
@@ -465,7 +465,7 @@ class ObsData(object):
         self._log_col_dict['dy'] = 'dnuFnu_data_log'
         self._log_col_dict['T_start'] = 'T_start'
         self._log_col_dict['T_stop'] = 'T_stop'
-        self._log_col_dict['data_set'] = 'data_set'
+        self._log_col_dict['dataset'] = 'dataset'
         self._log_col_dict['UL'] = 'UL'
         
         if self.data_scale=='lin-lin':
@@ -649,9 +649,9 @@ class ObsData(object):
 
         if silent is False:
             if exclude==False:
-                print ("---> including  only data_set/s",filters)
+                print ("---> including  only dataset/s",filters)
             else:
-                print ("---> excluding  data_set/s",filters)
+                print ("---> excluding  dataset/s",filters)
 
         
         msk=np.ones(self.data['nu_data'].size, dtype=bool)
@@ -664,7 +664,7 @@ class ObsData(object):
 
         for filter in filters:
             #print ('filter',filter)
-            msk1= self.data['data_set'] == filter
+            msk1= self.data['dataset'] == filter
             if exclude == True:
                 msk1 = np.invert(msk1)
                 msk = np.logical_and(msk, msk1)
@@ -1018,7 +1018,7 @@ class ObsData(object):
        
         print (section_separator)
     
-    def add_systematics(self,syst,nu_range=None,data_set=None):
+    def add_systematics(self,syst,nu_range=None,dataset=None):
         """
         add systematics to errors
         
@@ -1026,15 +1026,15 @@ class ObsData(object):
         :param nu_range:  array_like of floats, [nu_min,nu_max], optional, range of frequencies to apply sistematics
         """
         
-        if nu_range is not None and data_set  is not  None:
-            print ("!!! error, either you provide a range of frequencies or a data_set")
+        if nu_range is not None and dataset  is not  None:
+            print ("!!! error, either you provide a range of frequencies or a dataset")
             return
         
         if self.data['dnuFnu_data'] is None:
             self.data['dnuFnu_data']=np.zeros(self.data['nuFnu_data'].size)
 
         msk=None
-        if data_set is None:
+        if dataset is None:
             if nu_range is None:
 
                 msk=np.ones(len(self.data),dtype=bool)
@@ -1042,7 +1042,7 @@ class ObsData(object):
             else:
                 msk=get_freq_range_msk(self.data['nu_data'], nu_range)
         else:
-              msk=get_data_set_msk(self.data, data_set)
+              msk=get_data_set_msk(self.data, dataset)
         
         if msk is not None:
             self.data['dnuFnu_data'][msk]=np.sqrt(self.data['dnuFnu_data'][msk] * self.data['dnuFnu_data'][msk] + (self.data['nuFnu_data'][msk] * self.data['nuFnu_data'][msk] * syst * syst))
@@ -1055,7 +1055,7 @@ class ObsData(object):
         self.data.sort('nu_data')
         
     
-    def set_error(self,error_value,nu_range=None,data_set=None,data_msk=None):
+    def set_error(self,error_value,nu_range=None,dataset=None,data_msk=None):
         """
          set all the paramters to same error
             
@@ -1064,12 +1064,12 @@ class ObsData(object):
         """
         #print self.data['dnuFnu_data']
         
-        if nu_range is not None and data_set is not None:
-            print ("!!! error, either you provide a range of frequencies or a data_set")
+        if nu_range is not None and dataset is not None:
+            print ("!!! error, either you provide a range of frequencies or a dataset")
             return
         
         msk=None     
-        if data_set is None:
+        if dataset is None:
             if nu_range is None:
                 #for log errors
                 msk=None
@@ -1077,7 +1077,7 @@ class ObsData(object):
                 msk=get_freq_range_msk(self.data['nu_data'], nu_range)
             
         else:
-            msk=get_data_set_msk(self.data, data_set)
+            msk=get_data_set_msk(self.data, dataset)
                 
         if data_msk is not None:
             
@@ -1158,7 +1158,7 @@ class ObsData(object):
     def show_data_sets(self):
         shown=[]
         print('current datasets')
-        for entry in self.data['data_set']:
+        for entry in self.data['dataset']:
             if entry not in shown:
                 shown.append(entry)
                 print ('dataset', entry)
@@ -1166,7 +1166,7 @@ class ObsData(object):
     
     def get_data_sets(self):
         shown=[]
-        for entry in np.unique(self.data['data_set']):
+        for entry in np.unique(self.data['dataset']):
             if entry not in shown:
                 shown.append(entry)
         
@@ -1200,18 +1200,18 @@ class ObsData(object):
         data_sets=self.get_data_sets()
         y=0
         line_style='-'
-        for data_set in data_sets:
-            print (data_set)
+        for dataset in data_sets:
+            print (dataset)
 
 
 
-            T1,T2,dT,n=self.get_time_span(data_set=data_set)
+            T1,T2,dT,n=self.get_time_span(dataset=dataset)
             print(T1,T2,dT,n)
             if T1!=-1:
-                ax1.plot([T1,T2],[y,y],label=data_set,lw=3,marker='o')
+                ax1.plot([T1,T2],[y,y],label=dataset,lw=1,marker='o')
                 x=(T1+T2)/2
-                ax1.text(x,y+0.3,data_set+' (%d)'%n)
-                y=y+1
+                ax1.text(x,y+1,dataset+' (%d)'%n,fontsize=5)
+                y=y+30
 
         ax1.set_ylim(-0.5,y+0.5)
 
@@ -1222,16 +1222,16 @@ class ObsData(object):
        
         
     
-    def get_time_span(self,data_set=None):
-        return self.find_time_span(data_set=data_set,get_values=True)
+    def get_time_span(self,dataset=None):
+        return self.find_time_span(dataset=dataset,get_values=True)
     
-    def show_time_span(self,data_set=None):
-        self.find_time_span(data_set=data_set,silent=False)
+    def show_time_span(self,dataset=None):
+        self.find_time_span(dataset=dataset,silent=False)
     
-    def find_time_span(self,data_set=None,silent=True,get_values=False):
+    def find_time_span(self,dataset=None,silent=True,get_values=False):
         """
         returns Tstart, Tstop, and Delta T for the full data set (if no dat_set
-        is provided), or for a specific data_set
+        is provided), or for a specific dataset
         """
 
         time_span_found = False
@@ -1242,7 +1242,7 @@ class ObsData(object):
         nT = 0
 
 
-        if data_set is None:
+        if dataset is None:
             #m1= self.data['T_start'] != 0
 
             T1 = self.data['T_start'].min()
@@ -1252,11 +1252,11 @@ class ObsData(object):
             time_span_found=True
 
             
-        elif  data_set  in self.data['data_set'].astype(str):
+        elif  dataset  in self.data['dataset'].astype(str):
         
             #m1= self.data['T_start'] != 0
-            m2= self.data['data_set'].astype(str) == data_set
-            if self.data['data_set'][m2].size>0:
+            m2= self.data['dataset'].astype(str) == dataset
+            if self.data['dataset'][m2].size>0:
                 try:
 
                     T1=self.data['T_start'][m2].min()
@@ -1270,13 +1270,13 @@ class ObsData(object):
                     T2=-1
                     DT=-1
                     nT=0
-                    print ('something wrong with T_start and T_stop columns, check the values please, for data_set=',data_set)
+                    print ('something wrong with T_start and T_stop columns, check the values please, for dataset=',dataset)
         else:
             time_span_found = False
-            print ("no data found for this selection, data_set= ",data_set)
-            if data_set not in self.data['data_set']:
-                print ("the data_set %s is not present in the data"%data_set)
-                print ("possible data_set: ")
+            print ("no data found for this selection, dataset= ",dataset)
+            if dataset not in self.data['dataset']:
+                print ("the dataset %s is not present in the data"%dataset)
+                print ("possible dataset: ")
                 print (self.show_data_sets())
                     
 
@@ -1364,5 +1364,5 @@ def get_freq_range_msk(x,x_range):
     msk2=x<=x_range[1]
     return msk1*msk2
 
-def get_data_set_msk(x,data_set):
-    return x['data_set']==data_set
+def get_data_set_msk(x,dataset):
+    return x['dataset']==dataset
