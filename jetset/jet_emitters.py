@@ -14,7 +14,8 @@ from .plot_sedfit import PlotPdistr
 from .jet_paramters import *
 from .utils import set_str_attr
 from .model_parameters import ModelParameterArray, ModelParameter
-from .jet_kernel_tools import get_emitters_c_array1d
+from .jet_kernel_tools import get_emitters_c_array1d_fast as get_emitters
+from .jet_kernel_tools import set_emitters_c_array1d_fast as set_emitters
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if on_rtd is True:
@@ -193,9 +194,9 @@ class BaseEmittersDistribution(object):
     def eval_N(self):
         self.update()
         if self.emitters_type=='electrons':
-            return np.trapz(self.n_gamma_e,self.gamma_e)
+            return np.trapezoid(self.n_gamma_e,self.gamma_e)
         elif self.emitters_type=='protons':
-            return np.trapz(self.n_gamma_p, self.gamma_p)
+            return np.trapezoid(self.n_gamma_p, self.gamma_p)
         else:
             raise  RuntimeError('emitters type',self.emitters_type, 'not valid')
 
@@ -220,7 +221,7 @@ class BaseEmittersDistribution(object):
         if gmax is not None:
             msk = np.logical_and(msk, x<=gmax)
 
-        return np.trapz(y[msk],x[msk]) * cost
+        return np.trapezoid(y[msk],x[msk]) * cost
 
     def _fill(self,):
         self.set_grid()
@@ -229,7 +230,7 @@ class BaseEmittersDistribution(object):
         self._Norm=1.0
 
         if self.normalize is True:
-            self._Norm=1.0/np.trapz(self.f,self._gamma_grid)
+            self._Norm=1.0/np.trapezoid(self.f,self._gamma_grid)
 
         self.f = self.f*self._Norm*self.parameters.get_par_by_name('N').val
 
@@ -385,7 +386,7 @@ class EmittersDistribution(BaseEmittersDistribution):
             p = jet.emitters_distribution.parameters.get_par_by_name(par.name)
             par.set(val=p.val, skip_dep_par_warning=True)
 
-    def _build(self,jet,name,log_values, gamma_grid_size,normalize):
+    def _build(self, jet, name, log_values, gamma_grid_size, normalize):
         self._user_defined=True
         self._name = name
         self._log_values = log_values
@@ -563,16 +564,13 @@ class EmittersDistribution(BaseEmittersDistribution):
             if self.emitters_type == 'electrons':
                 size = self._gamma_grid_size
                 Ne_ptr = getattr(self._jet._blob, 'Ne_jetset')
-
-                for ID in range(size):
-                    BlazarSED.set_elec_array(Ne_ptr, self._jet._blob, self.f[ID], ID)
+                set_emitters(Ne_ptr,self._jet._blob,size,self.f)
 
             if self.emitters_type == 'protons':
                 size = self._gamma_grid_size
                 Np_ptr = getattr(self._jet._blob, 'Np_jetset')
-                for ID in range(size):
-                    BlazarSED.set_elec_array(Np_ptr, self._jet._blob, self.f[ID], ID)
-
+                set_emitters(Np_ptr,self._jet._blob,size,self.f)
+ 
 
 
     def _set_blob(self):
@@ -597,23 +595,15 @@ class EmittersDistribution(BaseEmittersDistribution):
 
         size = self._jet._blob.gamma_grid_size
        
-        
-        self.gamma_e,self.n_gamma_e=get_emitters_c_array1d(self.e_gamma_ptr,self.Ne_ptr, self._jet._blob,size)
-        
-
+    
         if self.emitters_type == 'protons':
-           
-
-            self.gamma_p,self.n_gamma_p=get_emitters_c_array1d(self.p_gamma_ptr,self.Np_ptr, self._jet._blob,size)
-
-          
-
-           
-
-            self.gamma_e_second_inj,self.n_gamma_e_second_inj=get_emitters_c_array1d(self.e_inj_second_gamma_ptr,self._Q_inj_e_second_ptr, self._jet._blob,size)
+            self.gamma_p,self.n_gamma_p=get_emitters(self.p_gamma_ptr,self.Np_ptr, self._jet._blob,size)
+            self.gamma_e_second_inj,self.n_gamma_e_second_inj=get_emitters(self.e_inj_second_gamma_ptr,self._Q_inj_e_second_ptr, self._jet._blob,size)
             self.gamma_cooling_eq_second= self._jet._blob.gamma_cooling_eq
             self._secondaries_done = True
-
+        else:
+            self.gamma_e,self.n_gamma_e=get_emitters(self.e_gamma_ptr,self.Ne_ptr, self._jet._blob,size)
+    
     def _activate_numba(self):
         self._py_distr_func=copy.deepcopy(self.distr_func)
         try:
@@ -730,7 +720,7 @@ class InjEmittersDistribution(BaseEmittersDistribution):
         self._Norm=1.0
 
         if self.normalize is True:
-            self._Norm=1.0/np.trapz(self.f,self._gamma_grid)
+            self._Norm=1.0/np.trapezoid(self.f,self._gamma_grid)
 
         self.f = self.f*self._Norm*self.parameters.get_par_by_name('Q').val
 

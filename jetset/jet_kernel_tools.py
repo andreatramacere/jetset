@@ -20,7 +20,7 @@ from .jetkernel_models_dic import allowed_disk_type
 from .jet_paramters import *
 
 
-__all__=[ 'get_spectral_c_array_read_only','get_emitters_c_array1d']
+__all__=[ 'get_spectral_c_array_read_only','get_emitters_c_array1d','get_emitters_c_array1d_fast','set_emitters_c_array1d','set_emitters_c_array1d_fast']
 
 
 
@@ -56,13 +56,56 @@ def get_spectral_c_array_read_only(x_ptr, y_ptr, size):
 
     #return np.array(x_ptr),np.array(y_ptr)
 
-def get_emitters_c_array1d(gamma_prt,n_ptr,blob_object,size):
+
+
+def get_emitters_c_array1d(gamma_prt, n_ptr, blob_object, size):
     x = np.zeros(size)
     y = np.zeros(size)
+    if size != int(blob_object.gamma_grid_size):
+        raise RuntimeError("mismatch between expected and actual c-array size")
+    
     for ID in range(size):
         x[ID] = BlazarSED.get_elec_array(gamma_prt, blob_object, ID)
         y[ID] = BlazarSED.get_elec_array(n_ptr, blob_object, ID)
 
     return x,y
 
-    #return np.array(gamma_prt),np.array(n_ptr)
+def get_emitters_c_array1d_fast(gamma_ptr, n_ptr, blob_object, size):
+    
+    if size != int(blob_object.gamma_grid_size):
+        raise RuntimeError("mismatch between expected and actual c-array size")
+
+    # hard guard: NULL pointers
+    if int(gamma_ptr) == 0 or int(n_ptr) == 0:
+        raise RuntimeError("emitters arrays not allocated yet")
+
+    gamma_ct = (ctypes.c_double * size).from_address(int(gamma_ptr))
+    n_ct     = (ctypes.c_double * size).from_address(int(n_ptr))
+
+    gamma = np.ctypeslib.as_array(gamma_ct).copy()
+    n     = np.ctypeslib.as_array(n_ct).copy()
+    return gamma, n
+
+
+
+def set_emitters_c_array1d(n_ptr, blob_object, size, values):
+    if size != int(blob_object.gamma_grid_size):
+        raise RuntimeError("mismatch between expected and actual c-array size")
+    for idx in range(size):
+        BlazarSED.set_elec_array(n_ptr,blob_object,values[idx], idx)
+
+
+def set_emitters_c_array1d_fast(n_ptr, blob_object, size, values):
+    if size != int(blob_object.gamma_grid_size):
+        raise RuntimeError("mismatch between expected and actual c-array size")
+    if int(n_ptr) == 0:
+        raise RuntimeError("emitters array not allocated yet")
+
+    arr = np.ascontiguousarray(values, dtype=np.float64)
+    if arr.size != size:
+        raise ValueError("size mismatch")
+
+    dest = (ctypes.c_double * size).from_address(int(n_ptr))
+    ctypes.memmove(dest, arr.ctypes.data, arr.nbytes)
+
+
