@@ -277,9 +277,9 @@ class InternalAbsorption(object):
             s = eps_gamma * eps_soft[None, :, :, :] * one_minus_mu[None, :, :, :] / 2.0
             sigma_vals = self.sigma(s)
             integrand = sigma_vals * n_soft_grid[None, :, :, :] * one_minus_mu[None, :, :, :]
-            int_over_nu = np.trapz(integrand, nu_soft_grid[None, :, :, :], axis=-1)
-            int_over_mu = np.trapz(int_over_nu, mu_range[None, :, :, 0], axis=-1)
-            tau = 2.0 * np.pi * np.trapz(int_over_mu, R_H_grid, axis=-1)
+            int_over_nu = np.trapezoid(integrand, nu_soft_grid[None, :, :, :], axis=-1)
+            int_over_mu = np.trapezoid(int_over_nu, mu_range[None, :, :, 0], axis=-1)
+            tau = 2.0 * np.pi * np.trapezoid(int_over_mu, R_H_grid, axis=-1)
 
         return tau,nu_tau
 
@@ -342,7 +342,7 @@ class InternalAbsorption(object):
         y=y[msk]
         if peak is True:
             idx=np.argmax(y)
-            scale_factor=np.trapz(y,x)
+            scale_factor=np.trapezoid(y,x)
             x=np.atleast_1d(x[idx])
             y=np.atleast_1d(y[idx])
             if rescale is True:

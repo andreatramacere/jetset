@@ -466,7 +466,7 @@ class TimeEvolvingRegion(object):
                 else:
                     flux_array[ID] = y.value[0]*nu1
             else:
-                flux_array[ID] = np.trapz(y.value, x.value)
+                flux_array[ID] = np.trapezoid(y.value, x.value)
 
         if density_mono_chromatic is True:
             un=Unit('erg s-1 cm-2 Hz-1')
