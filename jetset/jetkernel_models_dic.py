@@ -90,9 +90,9 @@ n_seed_dic['Star']=['n_Star','nu_Sync']
 
 #Electron distributions
 
-gamma_dic_e={'electron_distr':['Ne','griglia_gamma_Ne_log']}
+gamma_dic_e={'electron_distr':['Ne_jetset','griglia_gamma_Ne_log']}
 
-gamma_dic_p={'proton_distr':['Np','griglia_gamma_Np_log']}
+gamma_dic_p={'proton_distr':['Np_jetset','griglia_gamma_Np_log']}
 gamma_dic_pp_e_second={'e_second_inj':['Q_inj_e_second','griglia_gamma_Ne_log']}
 
 s_dic={'pl':'p'}
