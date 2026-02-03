@@ -112,6 +112,7 @@ class InternalAbsorption(object):
         jet.skip_internal_absorption_serial=False
         self._jet_orig=jet
         self._old_tau=None
+        self._old_nu_tau=None
         self._parameters_old=None
         self._use_R_H_profile_extrapolation=use_R_H_profile_extrapolation
         
@@ -163,6 +164,8 @@ class InternalAbsorption(object):
         
         return nu_soft_0,n_soft_0
 
+
+    
     def eval_tau_photons(self,
                          nu_src,
                          R_H,
@@ -175,28 +178,12 @@ class InternalAbsorption(object):
                 p=self._jet.get_par_by_name(p_orig.name)
                 p.val=p_orig.val
         
-        if  skip_check:
-            tau_changed=True
-        else:
-            tau_changed=self._check_eval_needed(ptype=self._seed_photons_name)
-    
-        self._update_parameters_old()
-
-        if not tau_changed:
-            return self._old_tau
-    
         R_H_range=np.logspace(0,3,self._N_R_H)*R_H
+        
         if peak is True:
             N_soft=1
         else:
             N_soft=self._N_soft
-
-        
-        shape=(self._N_R_H,self._N_theta,N_soft)
-        nu_soft=np.zeros(shape)
-        n_soft=np.zeros(shape)
-        mu_range=np.zeros(shape)
-
         R_seed=self._get_R_seed()
 
         nu_soft_0,n_soft_0=self._get_R_seed_field(R_seed,N_soft,peak)
@@ -207,7 +194,26 @@ class InternalAbsorption(object):
         else:
             nu_min = self._nu_min
 
-        nu_src=np.logspace(np.log10(nu_min),np.log10(nu_src.max()),self._N_hard)
+        nu_tau=np.logspace(np.log10(nu_min),np.log10(nu_src.max()),self._N_hard)
+
+        if  skip_check:
+            tau_changed=True
+        else:
+            tau_changed=self._check_eval_needed(ptype=self._seed_photons_name)
+    
+        self._update_parameters_old()
+
+        if self._old_tau is not None:
+            if not tau_changed and np.array_equal(self._old_nu_tau, nu_tau):
+                return self._old_tau,nu_tau
+    
+
+        shape=(self._N_R_H,self._N_theta,N_soft)
+        nu_soft=np.zeros(shape)
+        n_soft=np.zeros(shape)
+        mu_range=np.zeros(shape)
+
+       
         for ID_RH,R_H in enumerate(R_H_range):
             self._jet.set_par('R_H',val=R_H)
            
@@ -236,22 +242,22 @@ class InternalAbsorption(object):
 
             mu_range[ID_RH]=(np.ones((self._N_theta,N_soft)).T*np.linspace(mu_min,mu_max,self._N_theta).T).T
 
-        nu_src = np.atleast_1d(nu_src)
+        nu_tau = np.atleast_1d(nu_tau)
         #if nu_min is not None:
-        nu_src = nu_src[nu_src >= nu_min]
+        nu_tau = nu_tau[nu_tau >= nu_min]
 
-        if nu_src.size == 0:
-            return np.zeros(0, dtype=np.float64)
+        if nu_tau.size == 0:
+            return np.zeros(0, dtype=np.float64),nu_tau
 
         nu_soft_grid = np.ascontiguousarray(nu_soft, dtype=np.float64)
         n_soft_grid = np.ascontiguousarray(n_soft, dtype=np.float64)
         mu_grid = np.ascontiguousarray(mu_range[:, :, 0], dtype=np.float64)
         R_H_grid = np.ascontiguousarray(R_H_range, dtype=np.float64)
-        nu_src_grid = np.ascontiguousarray(nu_src, dtype=np.float64)
+        nu_tau_grid = np.ascontiguousarray(nu_tau, dtype=np.float64)
 
         try:
             tau = _compute_tau_numba(
-                nu_src_grid,
+                nu_tau_grid,
                 nu_soft_grid,
                 n_soft_grid,
                 mu_grid,
@@ -267,7 +273,7 @@ class InternalAbsorption(object):
             )
             one_minus_mu = np.clip(1.0 - mu_range, 1e-20, None)
             eps_soft = nu_soft_grid * H_OVER_MEC2
-            eps_gamma = (nu_src_grid * H_OVER_MEC2)[:, None, None, None]
+            eps_gamma = (nu_tau_grid * H_OVER_MEC2)[:, None, None, None]
             s = eps_gamma * eps_soft[None, :, :, :] * one_minus_mu[None, :, :, :] / 2.0
             sigma_vals = self.sigma(s)
             integrand = sigma_vals * n_soft_grid[None, :, :, :] * one_minus_mu[None, :, :, :]
@@ -275,7 +281,7 @@ class InternalAbsorption(object):
             int_over_mu = np.trapz(int_over_nu, mu_range[None, :, :, 0], axis=-1)
             tau = 2.0 * np.pi * np.trapz(int_over_mu, R_H_grid, axis=-1)
 
-        return tau,nu_src
+        return tau,nu_tau
 
 
 
@@ -375,6 +381,7 @@ class InternalAbsorption(object):
                                         use_R_H_profile_extrapolation=self._use_R_H_profile_extrapolation)
 
         self._old_tau=tau
+        self._old_nu_tau=nu_tau
         EPS = 1e-300   
         nu_src_pos = np.maximum(nu_src, EPS)
         nu_tau_pos = np.maximum(nu_tau, EPS)
@@ -384,7 +391,7 @@ class InternalAbsorption(object):
             np.log10(nu_src_pos),
             np.log10(nu_tau_pos),
             np.log10(tau_pos),
-            left=None,
+            left=0,
             right=None
         )
         
