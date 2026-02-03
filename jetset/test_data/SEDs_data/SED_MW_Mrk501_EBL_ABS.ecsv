@@ -8,14 +8,14 @@
 # - {name: T_start, unit: MJD, datatype: float64}
 # - {name: T_stop, unit: MJD, datatype: float64}
 # - {name: UL, datatype: bool}
-# - {name: data_set, datatype: string}
+# - {name: dataset, datatype: string}
 # meta: !!omap
 # - {z: 0.0336}
 # - {restframe: obs}
 # - {data_scale: lin-lin}
 # - {obj_name: Mrk-501-ebl-abs}
 # schema: astropy-2.0
-x dx y dy T_start T_stop UL data_set
+x dx y dy T_start T_stop UL dataset
 2299540000.0 0.0 3.6892e-14 2.668e-15 0.0 0.0 False 0.0
 2639697000.0 0.0 4.12456e-14 9.712535e-26 0.0 0.0 False 0.0
 4799040000.0 0.0 7.0368e-14 4.8e-16 0.0 0.0 False 0.0

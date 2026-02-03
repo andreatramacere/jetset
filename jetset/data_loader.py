@@ -3,7 +3,7 @@ __author__ = "Andrea Tramacere"
 
 import numpy as np
 import copy
-
+import warnings
 
 from astropy.table  import  Table,Column
 from astropy.table import vstack
@@ -21,6 +21,15 @@ cds.enable()
 
 __all__=['get_data_set_msk','get_freq_range_msk','lin_to_log','log_to_lin','ObsData','Data']
 
+def legacy_name_update(t):
+    if 'data_set' in t.colnames and 'dataset' not in t.colnames:
+        t.rename_column('data_set', 'dataset')
+        warnings.warn(
+            "Column 'data_set' has been renamed to 'dataset'. "
+            "Please update your files; support for the old name will be removed in a future release.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
 class Data(object):
     """
@@ -80,8 +89,10 @@ class Data(object):
                 for k in import_dictionary.keys():
                     data_table.rename_column(k, import_dictionary[k])
 
+            legacy_name_update(data_table)
             self._table = copy.deepcopy(data_table)
 
+        
         if meta_data is not None:
             self._table.meta = {}
             for k in meta_data.keys():
@@ -337,6 +348,7 @@ class ObsData(object):
 
         if self._input_data_table is not None:
             self._set_kw(self._input_data_table.meta)
+            legacy_name_update(self._input_data_table)
 
         self._set_kw(keywords,_skip)
 
@@ -439,7 +451,7 @@ class ObsData(object):
         - separates historical from simultaneous (used in the fit) data
         - filters upper limits 
         - removes duplicate entries
-        - performs restframe transformation
+        - performs rest frame transformation
         - performs `lin-lin`, `log-log` transformations
         
 
