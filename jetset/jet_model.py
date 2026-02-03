@@ -234,11 +234,11 @@ class JetBase(Model):
         _model['version']=get_info()['version']
         _model['name'] = self.name
         _model['emitters_type'] = self.emitters_distribution.emitters_type
-        if isinstance(self.emitters_distribution,JetkernelEmittersDistribution):
-            _model['emitters_distribution'] = self._emitters_distribution_name
-            _model['emitters_distribution_log_values'] = self._emitters_distribution_log_values
-            _model['emitters_distribution_class']='JetkernelEmittersDistribution'
-        elif isinstance(self.emitters_distribution,EmittersDistribution):
+        #if isinstance(self.emitters_distribution,JetkernelEmittersDistribution):
+        #    _model['emitters_distribution'] = self._emitters_distribution_name
+        #    _model['emitters_distribution_log_values'] = self._emitters_distribution_log_values
+        #    _model['emitters_distribution_class']='JetkernelEmittersDistribution'
+        if isinstance(self.emitters_distribution,EmittersDistribution):
             self._original_emitters_distr._copy_from_jet(self)
             _model['custom_emitters_distribution']=self._original_emitters_distr
             clean_numba(_model['custom_emitters_distribution'])
@@ -348,12 +348,12 @@ class JetBase(Model):
             del(_model['electron_distribution_log_values'])
             _model['emitters_distribution_log_values']=_v
 
-        if _model['emitters_distribution_class'] == 'JetkernelEmittersDistribution':
-            self.set_emitters_distribution(distr=_model['emitters_distribution'],
-                                           log_values=_model['emitters_distribution_log_values'],
-                                           emitters_type=emitters_type,
-                                           init=False)
-        elif _model['emitters_distribution_class'] == 'EmittersDistribution':
+        #if _model['emitters_distribution_class'] == 'JetkernelEmittersDistribution':
+        #    self.set_emitters_distribution(distr=_model['emitters_distribution'],
+        #                                   log_values=_model['emitters_distribution_log_values'],
+        #                                   emitters_type=emitters_type,
+        #                                   init=False)
+        if _model['emitters_distribution_class'] == 'EmittersDistribution':
             self.set_emitters_distribution(distr=_model['custom_emitters_distribution'], init=False)
         else:
             raise RuntimeError('emitters distribution type not valid', type(self._emitters_distribution))
@@ -679,15 +679,15 @@ class JetBase(Model):
 
         if isinstance(distr, ArrayDistribution):
             self._emitters_distribution_name = 'from_array'
-            self.emitters_distribution = JetkernelEmittersDistribution.from_array(self, distr, emitters_type=emitters_type)
+            self.emitters_distribution = EmittersDistribution.from_array(self, distr, emitters_type=emitters_type)
 
-        elif isinstance(distr, JetkernelEmittersDistribution):
-            self.emitters_distribution = distr
-
-            self._emitters_distribution_name = self.emitters_distribution.name
-            self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
-
-            self.parameters.add_par_from_dict(self._emitters_distribution_dic,self,'_blob',JetParameter)
+        #elif isinstance(distr, JetkernelEmittersDistribution):
+        #    self.emitters_distribution = distr
+        #
+        #    self._emitters_distribution_name = self.emitters_distribution.name
+        #    self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
+        #
+        #    self.parameters.add_par_from_dict(self._emitters_distribution_dic,self,'_blob',JetParameter)
 
 
         elif isinstance(distr, EmittersDistribution):
