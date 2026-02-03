@@ -93,11 +93,11 @@ class TestEmitters(TestBase):
         # gamma array this is n(\gamma) in 1/cm^3/gamma
         n_gamma = gamma ** -2 * 1E-5 * np.exp(-gamma / 1E5)
 
-        N1 = np.trapz(n_gamma, gamma)
+        N1 = np.trapezoid(n_gamma, gamma)
 
         n_distr = EmittersArrayDistribution(name='array_distr', emitters_type='protons', gamma_array=gamma, n_gamma_array=n_gamma,normalize=False)
 
-        N2 = np.trapz(n_distr._array_n_gamma, n_distr._array_gamma)
+        N2 = np.trapezoid(n_distr._array_n_gamma, n_distr._array_gamma)
 
         j = Jet(emitters_distribution=n_distr, verbose=False)
 
@@ -110,7 +110,7 @@ class TestEmitters(TestBase):
         j.set_IC_nu_size(100)
         j.gamma_grid_size = 200
 
-        N3 = np.trapz(j.emitters_distribution.n_gamma_p, j.emitters_distribution.gamma_p)
+        N3 = np.trapezoid(j.emitters_distribution.n_gamma_p, j.emitters_distribution.gamma_p)
 
         np.testing.assert_allclose(N1, N2, rtol=1E-5)
         np.testing.assert_allclose(N1, N3, rtol=1E-2)
@@ -145,6 +145,6 @@ class TestEmitters(TestBase):
         gmin=1.0/jetkernel.MPC2_TeV
         j.set_N_from_U_emitters(1.0, gmin=gmin)
         m = j.emitters_distribution.gamma_p>gmin
-        N1 = jetkernel.MPC2*np.trapz(j.emitters_distribution.n_gamma_p[m]*j.emitters_distribution.gamma_p[m],j.emitters_distribution.gamma_p[m])
+        N1 = jetkernel.MPC2*np.trapezoid(j.emitters_distribution.n_gamma_p[m]*j.emitters_distribution.gamma_p[m],j.emitters_distribution.gamma_p[m])
         N2 = j.emitters_distribution.eval_U(gmin=gmin)
         np.testing.assert_allclose(N1, N2, rtol=1E-5)
