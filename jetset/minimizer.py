@@ -29,7 +29,7 @@ from tqdm.auto import tqdm
 from .plot_sedfit import plt,heatmap,annotate_heatmap
 
 from scipy.optimize import least_squares,minimize
-
+from scipy import interpolate
 from .leastsqbound.leastsqbound import leastsqbound
 
 from .output import section_separator,WorkPlace,makedir
@@ -208,10 +208,6 @@ class ModelMinimizer(object):
     def __init__(self,minimizer_type):
         __accepted__ = ['lsb', 'minuit', 'sherpa']
 
-
-        #if minimizer_type == 'lsb-old':
-        #    self.minimizer=LSBMinimizer(self)
-
         if minimizer_type=='lsb':
             self.minimizer=LSBMinimizerScipy(self)
 
@@ -260,6 +256,7 @@ class ModelMinimizer(object):
 
         if loglog is False:
             nu_fit = sed_data.data['nu_data']
+            err_nu_fit = sed_data.data['dnu_data']
             nuFnu_fit = sed_data.data['nuFnu_data']
             if use_fake_err == False:
                 err_nuFnu_fit = sed_data.data['dnuFnu_data']
@@ -267,6 +264,7 @@ class ModelMinimizer(object):
                 err_nuFnu_fit = sed_data.data['dnuFnu_fake']
         else:
             nu_fit = sed_data.data['nu_data_log']
+            err_nu_fit = sed_data.data['dnu_data_log']
             nuFnu_fit = sed_data.data['nuFnu_data_log']
             err_nuFnu_fit = sed_data.data['dnuFnu_data_log']
             if use_fake_err == False:
@@ -277,9 +275,10 @@ class ModelMinimizer(object):
         UL = sed_data.data['UL']
 
         data = np.zeros(nu_fit.size,
-                             dtype=[('x', nu_fit.dtype), ('y', nuFnu_fit.dtype), ('dy', err_nuFnu_fit.dtype),
+                             dtype=[('x', nu_fit.dtype), ('dx',nu_fit.dtype), ('y', nuFnu_fit.dtype), ('dy', err_nuFnu_fit.dtype),
                                     ('UL', UL.dtype)])
         data['x'] = nu_fit
+        data['dx']= err_nu_fit
         data['y'] = nuFnu_fit
         data['dy'] = err_nuFnu_fit
         data['UL'] = UL
@@ -291,13 +290,15 @@ class ModelMinimizer(object):
 
         if loglog is False:
             x = data.table['x']
+            dx= data.table['dx']
             y = data.table['y']
             if use_fake_err == False:
                 dy = data.table['dy']
             else:
                 dy = data.table['dy_fake']
         else:
-            x = np.log10(data.table['x'])
+            x,dx = lin_to_log(val=data.table['x'], err=data.table['dx'])
+
             y, dy = lin_to_log(val=data.table['y'], err=data.table['dy'])
             if use_fake_err == False:
                 pass
@@ -310,6 +311,7 @@ class ModelMinimizer(object):
                         dtype=[('x', x.dtype), ('y', y.dtype), ('dy', dy.dtype),
                                ('UL', UL.dtype)])
         _data['x'] = x
+        _data['dx'] = dx
         _data['y'] = y
         _data['dy'] = dy
         _data['UL'] = UL
@@ -577,10 +579,12 @@ class Minimizer(object):
     def fit(self,model,
             max_ev=None,
             use_UL=False,
+            use_dx=False,
             silent=False):
         if silent is False:
             self.pbar = tqdm(total=None)
         self.use_UL = use_UL
+        self.use_dx=use_dx
         self.calls=0
         self.res_check=None
         self.model=model
@@ -685,18 +689,57 @@ class Minimizer(object):
 
 
     def get_chisq(self):
-        model = self.model.fit_model.eval(nu=self.model.data['x'],
-                                fill_SED=False,
-                                get_model=True,
-                                loglog=self.model.loglog)
+        sig2_x_term=None
+        
+        if self.use_dx is True:
+            dx=self.model.data['dx']
+            
+            #NOTE here we work in logspace to get a smoother derivative
+            lin_nu,log_nu=self.fit_model._prepare_nu_model(log_log=self.model.loglog)
+            log_y = self.model.fit_model.eval(fill_SED=False,
+                                              get_model=True,
+                                              loglog=True)
+            
+            log_y_deriv=np.gradient(log_y, log_nu)
+            log_y_deriv_interpolator=interpolate.ininterp1d(log_nu, log_y_deriv, kind='linear',bounds_error=False)
+               
+            
+            log_model_deriv=log_y_deriv_interpolator(self.model.data['x'])
+
+            if self.model.loglog:
+                log_model_interpolator=interpolate.ininterp1d(log_nu, log_y, kind='linear',bounds_error=False)
+                model =  log_model_interpolator(self.model.data['x'])
+
+                sig2_x_term=(log_model_deriv*dx)**2
+            else:
+                
+                y_log_interpolator = interpolate.interp1d(np.log10(log_nu), log_y, bounds_error=False, kind='linear')
+                model = np.power(10., y_log_interpolator(np.log10(self.model.data['x'])))
+                
+                #NOTE this is needed to go back to linear derivative
+                y=10**(log_y)
+                lin_y_deriv=(y/lin_nu)*log_y_deriv
+                
+                #NOTE now I log-iterpolate linear derivative, and get 10**
+                model_deriv_log_interpolator=interpolate.ininterp1d(log_nu, np.log10(lin_y_deriv), kind='linear',bounds_error=False)
+                model_deriv=np.power(10., model_deriv_log_interpolator(np.log10(self.model.data['x'])))
+                sig2_x_term=(model_deriv*dx)**2
+
+        else:
+            model = self.model.fit_model.eval(nu=self.model.data['x'],
+                                            fill_SED=False,
+                                            get_model=True,
+                                            loglog=self.model.loglog)
+        
+
 
         _res_sum, _res, _res_sum_UL = _eval_res(self.model.data['y'],
-                                            model,
-                                            self.model.data['dy'],
-                                            self.model.data['UL'],
-                                            use_UL=self.use_UL)
+                                                model,
+                                                self.model.data['dy'],
+                                                self.model.data['UL'],
+                                                sig_x_term=sig2_x_term,
+                                                use_UL=self.use_UL)
         return _res_sum
-    
     
     @property
     def corr(self):
@@ -719,9 +762,12 @@ class Minimizer(object):
 
 
 
-def _eval_res(data, model, data_error, UL, use_UL=False):
+def _eval_res(data, model, data_error, UL, use_UL=False,sig_x_term=None):
 
-    res_no_UL = (data[~UL] - model[~UL]) / (data_error[~UL])
+    if sig_x_term is not None:
+        res_no_UL = (data[~UL] - model[~UL]) / (data_error[~UL]+np.sqrt(sig_x_term))
+    else:
+        res_no_UL = (data[~UL] - model[~UL]) / (data_error[~UL])
     res = (data - model) / (data_error)
     res_UL_log = [0]
     #print('UL.sum() ',UL.sum(),use_UL)
@@ -821,12 +867,12 @@ class MinuitMinimizer(Minimizer):
 
         self.minuit_fun.tol=self.conf_dict['tol']
         if self.add_simplex is True:
-            print('====> simplex')
+            #print('====> simplex')
             _=self.minuit_fun.simplex(ncall=max_ev)
-            print('====> migrad')
+            #print('====> migrad')
             self.mesg=self.minuit_fun.simplex(ncall=max_ev).migrad(ncall=max_ev)
         else:
-            print('====> migrad')
+            #print('====> migrad')
             self.mesg=self.minuit_fun.simplex(ncall=max_ev).migrad(ncall=max_ev)
         
         if iminuit.__version__ < "2":
