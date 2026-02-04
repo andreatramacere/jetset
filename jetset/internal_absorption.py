@@ -391,7 +391,7 @@ class InternalAbsorption(object):
             np.log10(nu_src_pos),
             np.log10(nu_tau_pos),
             np.log10(tau_pos),
-            left=0,
+            left=np.log10(EPS),
             right=None
         )
         
