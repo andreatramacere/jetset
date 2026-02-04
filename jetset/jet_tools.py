@@ -45,30 +45,40 @@ def build_emitting_region_dict(cosmo, beaming_expr='delta',emitters_type='electr
     """
 
     model_dic = {}
-    model_dic['R'] = JetModelDictionaryPar(ptype='region_size', vmin=1E3, vmax=1E30, punit='cm', froz=False, log=False)
+    model_dic['R'] = JetModelDictionaryPar(ptype='region_size', vmin=1E3, vmax=1E30, punit='cm', froz=False, log=False,
+                                           jetkernel_par_name='core.R')
     #    ['region_size',0,30,'cm',False,True]
-    model_dic['R_H'] = JetModelDictionaryPar(ptype='region_position', vmin=0, vmax=None, punit='cm', froz=True)
+    model_dic['R_H'] = JetModelDictionaryPar(ptype='region_position', vmin=0, vmax=None, punit='cm', froz=True,
+                                             jetkernel_par_name='core.R_H')
     # ['region_position', 0, None, 'cm']
-    model_dic['B'] = JetModelDictionaryPar(ptype='magnetic_field', vmin=0, vmax=None, punit='gauss')
+    model_dic['B'] = JetModelDictionaryPar(ptype='magnetic_field', vmin=0, vmax=None, punit='gauss',
+                                           jetkernel_par_name='core.B')
     if emitters_type=='electrons':
-        model_dic['NH_cold_to_rel_e'] = JetModelDictionaryPar(ptype='cold_p_to_rel_e_ratio', vmin=0, vmax=None, punit='',froz=True, log=False)
+        model_dic['NH_cold_to_rel_e'] = JetModelDictionaryPar(ptype='cold_p_to_rel_e_ratio', vmin=0, vmax=None, punit='',
+                                                              froz=True, log=False,
+                                                              jetkernel_par_name='emitters.NH_cold_to_rel_e')
 
     if beaming_expr == 'bulk_theta':
-        model_dic['theta'] = JetModelDictionaryPar(ptype='jet-viewing-angle', vmin=0, vmax=90, punit='deg')
+        model_dic['theta'] = JetModelDictionaryPar(ptype='jet-viewing-angle', vmin=0, vmax=90, punit='deg',
+                                                   jetkernel_par_name='core.theta')
         # ['jet-viewing-angle',0.0,None,'deg']
         model_dic['BulkFactor'] = JetModelDictionaryPar(ptype='jet-bulk-factor', vmin=1.0, vmax=1E5,
-                                                        punit='lorentz-factor')
+                                                        punit='lorentz-factor',
+                                                        jetkernel_par_name='core.BulkFactor')
         # ['jet-bulk-factor',1.0,None,'Lorentz-factor']
     elif beaming_expr == 'delta' or beaming_expr == '':
-        model_dic['beam_obj'] = JetModelDictionaryPar(ptype='beaming', vmin=1E-4, vmax=None, punit='')
+        model_dic['beam_obj'] = JetModelDictionaryPar(ptype='beaming', vmin=1E-4, vmax=None, punit='',
+                                                      jetkernel_par_name='core.beam_obj')
         # ['beaming', 1, None, '']
     else:
         raise RuntimeError('''wrong beaming_expr="%s" value, allowed 'delta' or 'bulk_theta' ''' % (beaming_expr))
 
     if cosmo._c is not None:
-        model_dic['z_cosm'] = JetModelDictionaryPar(ptype='redshift', vmin=0, vmax=None, punit='')
+        model_dic['z_cosm'] = JetModelDictionaryPar(ptype='redshift', vmin=0, vmax=None, punit='',
+                                                    jetkernel_par_name='core.z_cosm')
     else:
-        model_dic['z_cosm'] = JetModelDictionaryPar(ptype='redshift', vmin=0, vmax=None, val=0, punit='', froz=True)
+        model_dic['z_cosm'] = JetModelDictionaryPar(ptype='redshift', vmin=0, vmax=None, val=0, punit='', froz=True,
+                                                    jetkernel_par_name='core.z_cosm')
 
     return model_dic
 
@@ -101,46 +111,64 @@ def build_ExtFields_dic(EC_model_list,disk_type ):
         if 'Disk' in EC_model:
             if disk_type is not None:
                 model_dic['disk_type'] = JetModelDictionaryPar(ptype='Disk', vmin=None, vmax=None, punit='', froz=True,
-                                                               allowed_values=allowed_disk_type)
+                                                               allowed_values=allowed_disk_type,
+                                                               jetkernel_par_name='core.disk_type')
 
-                model_dic['L_Disk'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='erg/s')
+                model_dic['L_Disk'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='erg/s',
+                                                            jetkernel_par_name='Disk.L_Disk')
 
                 if disk_type == 'BB' or disk_type == 'Mono':
 
-                    model_dic['T_Disk'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='K')
+                    model_dic['T_Disk'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='K',
+                                                                jetkernel_par_name='Disk.T_Disk')
 
                 if disk_type == 'MultiBB':
-                    model_dic['R_inner_Sw'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='Sw. radii')
+                    model_dic['R_inner_Sw'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None,
+                                                                    punit='Sw. radii',
+                                                                    jetkernel_par_name='Disk.R_inner_Sw')
 
-                    model_dic['R_ext_Sw'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='Sw. radii')
+                    model_dic['R_ext_Sw'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='Sw. radii',
+                                                                  jetkernel_par_name='Disk.R_ext_Sw')
 
-                    model_dic['accr_eff'] = JetModelDictionaryPar(ptype='Disk', vmin=0.06, vmax=0.1, punit='')
+                    model_dic['accr_eff'] = JetModelDictionaryPar(ptype='Disk', vmin=0.06, vmax=0.1, punit='',
+                                                                  jetkernel_par_name='Disk.accr_eff')
 
-                    model_dic['M_BH'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='M_sun')
+                    model_dic['M_BH'] = JetModelDictionaryPar(ptype='Disk', vmin=0, vmax=None, punit='M_sun',
+                                                              jetkernel_par_name='Disk.M_BH')
 
         if 'BLR' in EC_model:
             # r1_BLR_min, r2_BLR_min, r2_BLR_max = BLR_constraints(L_Disk)
-            model_dic['tau_BLR'] = JetModelDictionaryPar(ptype='BLR', vmin=0, vmax=1.0, punit='')
+            model_dic['tau_BLR'] = JetModelDictionaryPar(ptype='BLR', vmin=0, vmax=1.0, punit='',
+                                                         jetkernel_par_name='BLR.tau_BLR')
             # ['BLR',0.0,1.0,'']
-            model_dic['R_BLR_in'] = JetModelDictionaryPar(ptype='BLR', vmin=0, vmax=None, punit='cm', froz=True)
+            model_dic['R_BLR_in'] = JetModelDictionaryPar(ptype='BLR', vmin=0, vmax=None, punit='cm', froz=True,
+                                                          jetkernel_par_name='BLR.R_BLR_in')
             # ['BLR',0,None,'cm',True]
-            model_dic['R_BLR_out'] = JetModelDictionaryPar(ptype='BLR', vmin=0, vmax=None, punit='cm', froz=True)
+            model_dic['R_BLR_out'] = JetModelDictionaryPar(ptype='BLR', vmin=0, vmax=None, punit='cm', froz=True,
+                                                           jetkernel_par_name='BLR.R_BLR_out')
             # ['BLR',0,None,'cm',True]
 
         if 'DT' in EC_model:
-            model_dic['T_DT'] = JetModelDictionaryPar(ptype='DT', vmin=0, vmax=None, punit='K')
+            model_dic['T_DT'] = JetModelDictionaryPar(ptype='DT', vmin=0, vmax=None, punit='K',
+                                                      jetkernel_par_name='DT.T_DT')
             # ['DT',0.0,None,'K']
-            model_dic['R_DT'] = JetModelDictionaryPar(ptype='DT', vmin=0, vmax=None, punit='cm')
+            model_dic['R_DT'] = JetModelDictionaryPar(ptype='DT', vmin=0, vmax=None, punit='cm',
+                                                      jetkernel_par_name='DT.R_DT')
             # ['DT',0,None,'cm',True]
-            model_dic['tau_DT'] = JetModelDictionaryPar(ptype='DT', vmin=0, vmax=1.0, punit='')
+            model_dic['tau_DT'] = JetModelDictionaryPar(ptype='DT', vmin=0, vmax=1.0, punit='',
+                                                        jetkernel_par_name='DT.tau_DT')
             # ['DT',0.0,1.0,'']
 
         if 'Star' in EC_model:
-            model_dic['L_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='erg s-1')
+            model_dic['L_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='erg s-1',
+                                                        jetkernel_par_name='Star.L_Star')
             # ['DT',0.0,None,'K']
-            model_dic['T_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='K')
-            model_dic['theta_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=180, punit='deg')
-            model_dic['R_H_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='cm')
+            model_dic['T_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='K',
+                                                        jetkernel_par_name='Star.T_Star')
+            model_dic['theta_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=180, punit='deg',
+                                                            jetkernel_par_name='Star.theta_Star')
+            model_dic['R_H_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='cm',
+                                                          jetkernel_par_name='Star.R_H_Star')
 
             # ['DT',0,None,'cm',True]
             #model_dic['tau_DT'] = JetModelDictionaryPar(ptype='DT', vmin=0, vmax=1.0, punit='')

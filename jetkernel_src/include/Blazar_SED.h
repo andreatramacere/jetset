@@ -103,10 +103,70 @@
 //#include <pthread.h>
 //pthread_mutex_t mutex ;
 
-struct blob {
+typedef enum {
+    RAD_SYNC, RAD_SSC, RAD_EC_DISK, RAD_EC_BLR, RAD_EC_DT,
+    RAD_EC_STAR, RAD_EC_CMB, RAD_PP_GAMMA, RAD_BREMSS_EP,
+    NUM_RAD_COMP
+} rad_comp_t;
+
+typedef enum {
+    EXT_DISK, EXT_BLR, EXT_DT, EXT_STAR, EXT_CMB, NUM_EXT_COMP
+} ext_comp_t;
+
+struct spectrum {
+    double nu_min;
+    double nu_max;
+    double nu_min_obs;
+    double nu_max_obs;
+    unsigned int NU_INT_MAX;
+    double j_nu[static_spec_arr_size];
+    double I_nu[static_spec_arr_size];
+    double n_nu[static_spec_arr_size];
+    double nuFnu_obs[static_spec_arr_size];
+    double nu[static_spec_arr_size];
+    double nu_obs[static_spec_arr_size];
+    double nuFnu_grid[static_spec_arr_grid_size];
+
+    double nu_peak_blob;
+    double nuLnu_peak_blob;
+    double nu_peak_src;
+    double nuLnu_peak_src;
+    double nu_peak_obs;
+    double nuFnu_peak_obs;
+};
+
+struct spectrum_external{
+    double nu_min;
+    double nu_max;
+    double nu_min_obs;
+    double nu_max_obs;
+    double nu_min_DRF;
+    double nu_max_DRF;
+    unsigned int NU_INT_MAX;
+    double j_nu[static_spec_arr_size];
+    double I_nu[static_spec_arr_size];
+    double I_nu_DRF[static_spec_arr_size];
+    double J_nu_DRF[static_spec_arr_size];
+    double L_nu_DRF[static_spec_arr_size];
+    double n_nu[static_spec_arr_size];
+    double n_nu_DRF[static_spec_arr_size];
+    double nuFnu_obs[static_spec_arr_size];
+    double nu[static_spec_arr_size];
+    double nu_obs[static_spec_arr_size];
+    double nu_DRF[static_spec_arr_size];
+    double nuFnu_grid[static_spec_arr_grid_size];
+
+    double nu_peak_blob;
+    double nuLnu_peak_blob;
+    double nu_peak_src;
+    double nuLnu_peak_src;
+    double nu_peak_obs;
+    double nuFnu_peak_obs;
+};
+
+struct blob_core {
     int verbose;
     int BESSEL_TABLE_DONE;
-    
     int CICCIO;
 
     char * SYSPATH;
@@ -123,13 +183,13 @@ struct blob {
     int SSC, EC, TOT;
     int WRITE_TO_FILE;
 
-    int do_Sync, do_SSC,do_IC,Sync_kernel;
-    //int attesa_Sync_cooling, attesa_compton_cooling;
+    int do_Sync, do_SSC, do_IC, Sync_kernel;
 
     unsigned int spec_array_size;
 
     int disk;
     double emiss_lim;
+
     //--- EMITTING SOURCE PARAMETERS
     double R; /* raggio blob sferica o raggio shell cilindrica */
     double B;
@@ -141,42 +201,140 @@ struct blob {
     double dist;
     double z_cosm;
     double Vol_region;
-    double R_sh,h_sh,R_ext_sh;
-    double Surf_region,R_sync;
+    double R_sh, h_sh, R_ext_sh;
+    double Surf_region, R_sync;
     double R_sync_self_abs;
     double R_sync_n_photons;
     double n_sync_corr_factor;
     char GEOMETRY[64];
 
-    //----- Summed Spectra-----//
-    //double nuF_nu_Sum_obs[static_spec_arr_size];
-
-
     //---- somma observer frame
-    unsigned int nu_grid_size ;
+    unsigned int nu_grid_size;
     double nu_start_grid;
     double nu_stop_grid;
 
     double nu_grid[static_spec_arr_grid_size];
     double nuFnu_sum_grid[static_spec_arr_grid_size];
 
-    double nuFnu_Sync_grid[static_spec_arr_grid_size];
-    double nuFnu_SSC_grid[static_spec_arr_grid_size];
-    double nuFnu_Disk_grid[static_spec_arr_grid_size];
-    double nuFnu_DT_grid[static_spec_arr_grid_size];
-    double nuFnu_Star_grid[static_spec_arr_grid_size];
-    double nuFnu_EC_CMB_grid[static_spec_arr_grid_size];
-    double nuFnu_pp_gamma_grid[static_spec_arr_grid_size];
-    double nuFnu_pp_neutrino_tot_grid[static_spec_arr_grid_size];
-    double nuFnu_pp_neutrino_mu_grid[static_spec_arr_grid_size];
-    double nuFnu_pp_neutrino_e_grid[static_spec_arr_grid_size];
-    double nuFnu_bremss_ep_grid[static_spec_arr_grid_size];
-    double nuFnu_EC_BLR_grid[static_spec_arr_grid_size];
-    double nuFnu_EC_DT_grid[static_spec_arr_grid_size];
-    double nuFnu_EC_Disk_grid[static_spec_arr_grid_size];
-    double nuFnu_EC_Star_grid[static_spec_arr_grid_size];
+    //-----------SSC-IC--------------//
+    int ord_comp;
+    int IC_adaptive_e_binning;
+    int do_IC_down_scattering;
+    int bulk_compton;
+    double COST_IC_K1, COST_IC_COOLING;
 
-    //-----------Sync --------------//
+    //--- IC Kernel computation
+    double Gamma;
+    double nu_1; /*freq spettro comp */
+
+    //----------- INTEGRATION MESH--------------//
+    unsigned int nu_seed_size;
+    unsigned int nu_IC_size;
+
+    //-----------EC--------------//
+    int do_EC_Disk, do_EC_BLR, do_EC_DT, do_EC_Star, do_EC_CMB, EC_stat, EC_stat_orig;
+    int do_Disk, do_DT, do_Star;
+    double nu_planck_min_factor;
+    double nu_planck_max_factor;
+    double mono_planck_min_factor;
+    double mono_planck_max_factor;
+    unsigned int theta_n_int;
+    unsigned int l_n_int;
+
+    double nu_blob_RF;
+    double nu_disk_RF;
+    double L_nu_disk_RF;
+
+    //dist BLOB/DISK or STAR
+    double R_H;
+    double R_H_orig;
+    double R_ext_emit_factor;
+    double R_H_scale_factor;
+
+    double beaming_EC;
+};
+
+struct emitters {
+    int Norm_distr;
+    int Distr_e_done;
+    int Distr_p_done;
+    int Distr_e_pp_done;
+
+    int TIPO_DISTR;
+    int grid_bounded_to_gamma;
+
+    double *Ne;
+    double *Np;
+    double *Ne_jetset;
+    double *Np_jetset;
+    double *Q_inj_e_second;
+    double *Ne_custom;
+    double *Np_custom;
+    double *gamma_e_custom;
+    double *gamma_p_custom;
+    double *gam;
+    double *griglia_gamma_Ne_log;
+    double *griglia_gamma_Ne_log_stat;
+    double *griglia_gamma_Np_log;
+    double *griglia_gamma_jetset_Ne_log;
+    double *griglia_gamma_jetset_Np_log;
+    double *Integrand_over_gamma_grid;
+
+    unsigned int gamma_grid_size;
+    unsigned int gamma_custom_grid_size;
+
+    double N;
+    double N_e;
+    double N_p;
+    double N_e_pp;
+    double N_0;
+    double N_0e;
+    double N_0p;
+    double N_tot_e_Sferic;
+    double N_tot_p_Sferic;
+    double NH_cold_to_rel_e;
+
+    double T_esc_e_second;
+
+    double gmin;
+    double gmax;
+    double gmin_secondaries;
+    double gmax_secondaries;
+    double gmin_griglia;
+    double gmax_griglia;
+    double gmin_griglia_secondaries;
+    double gmax_griglia_secondaries;
+    double gamma_cooling_eq;
+
+    double U_e, E_tot_e;
+    double U_p, E_tot_p;
+
+    //PL,PLC,BKN
+    double p, p_1;
+    double gamma_break;
+    double gamma_cut;
+
+    //LP+LPPL
+    double s;
+    double r;
+    double gamma0_log_parab;
+    //LPEP
+    double gammap_log_parab;
+    //LPEP PILEUP
+    double gamma_inj;
+    //Spit
+    double spit_index, spit_temp, spit_gamma_th;
+
+    //LPPL Pile-Up
+    double gamma_pile_up, gamma_pile_up_cut, alpha_pile_up;
+    double ratio_pile_up;
+
+    double Gamma_p2; //gamma peak of N(gamma)*gamma^2
+    double Gamma_p3; //gamma peak of N(gamma)*gamma^3
+    double Np2, Np3; //peak of N(gamma)*gamma^2 and  N(gamma)*gamma^3
+};
+
+struct rad_sync {
     //--- CONST
     double C1_Sync_K53, C2_Sync_K53, C3_Sync_K53;
     double C1_Sync_K_AVE, C2_Sync_K_AVE;
@@ -187,29 +345,11 @@ struct blob {
     double nu_B;
 
     //--- FREQ BOUNDARIES
-    double nu_start_Sync;
-    double nu_stop_Sync;
-    double nu_start_Sync_obs;
-    double nu_stop_Sync_obs;
     double nu_stop_Sync_ssc;
     unsigned int NU_INT_STOP_Sync_SSC;
 
-    //--- FREQ/FLUX scalars
-    double nu_peak_Sync_blob;
-	double nuLnu_peak_Sync_blob;
-	double nu_peak_Sync_src;
-	double nuLnu_peak_Sync_src;
-	double nu_peak_Sync_obs;
-	double nuFnu_peak_Sync_obs;
-
-	//--- FREQ/FLUX array
-    double j_Sync[static_spec_arr_size];
+    //--- FREQ/FLUX array
     double alfa_Sync[static_spec_arr_size];
-    double I_nu_Sync[static_spec_arr_size];
-    double nu_Sync[static_spec_arr_size];
-    double nu_Sync_obs[static_spec_arr_size];
-    double n_Sync[static_spec_arr_size];
-    double nuF_nu_Sync_obs[static_spec_arr_size];
 
     //--- Tabelle Bessel
     double F_Sync_x[static_bess_table_size];
@@ -230,511 +370,152 @@ struct blob {
     double log_x_Bessel_min, log_x_Bessel_max;
     double log_x_ave_Bessel_min, log_x_ave_Bessel_max;
 
-    //--------------------------------//
+    struct spectrum spec;
+};
 
-    //-----------pp-gamma-emission---//
-    //--- CONST
-    double NH_pp;
-    //double MPI_kernel_delta;
-    //double MPI_kernel_delta_Emin;
-
-    //--- FREQ BOUNDARIES
-    double nu_stop_pp_gamma_pred,nu_stop_pp_gamma;
-    double nu_start_pp_gamma;
-    double nu_start_pp_gamma_obs;
-    double nu_stop_pp_gamma_obs;
-    unsigned int NU_INT_STOP_PP_GAMMA;
-
-    double nu_stop_pp_neutrino_pred,nu_stop_pp_neutrino;
-    double nu_start_pp_neutrino;
-    double nu_start_pp_neutrino_obs;
-    double nu_stop_pp_neutrino_obs;
-    unsigned int NU_INT_STOP_PP_NUETRINO;
-                 
-
-    //
-    int do_pp_gamma;
-    int do_pp_neutrino;
-    int set_pp_racc_gamma, set_pp_racc_elec, set_pp_racc_nu_mu;
-    double pp_racc_gamma, pp_racc_elec, pp_racc_nu_mu;
-    double E_th_pp_delta_approx,E_pp_x_delta_approx;
-    double E_out_e_TeV_pp;
-
-    //--- FREQ/FLUX scalars
-    double nu_peak_PP_gamma_blob;
-    double nuLnu_peak_PP_gamma_blob;
-    double nu_peak_PP_gamma_src;
-    double nuLnu_peak_PP_gamma_src;
-    double nu_peak_PP_gamma_obs;
-    double nuFnu_peak_PP_gamma_obs;
-
-    double nu_peak_PP_neutrino_blob;
-    double nuLnu_peak_PP_neutrino_blob;
-    double nu_peak_PP_neutrino_src;
-    double nuLnu_peak_PP_neutrino_src;
-    double nu_peak_PP_neutrino_obs;
-    double nuFnu_peak_PP_neutrino_obs;
-
-
-
-    //--- FREQ/FLUX array
-    
-    double j_pp_gamma[static_spec_arr_size];
-    double nu_pp_gamma[static_spec_arr_size];
-    double nu_pp_gamma_obs[static_spec_arr_size];
-    double nuFnu_pp_gamma_obs[static_spec_arr_size];
-
-    double j_pp_neutrino_tot[static_spec_arr_size];
-    double j_pp_neutrino_mu[static_spec_arr_size];
-    double j_pp_neutrino_e[static_spec_arr_size];
-
-    double nu_pp_neutrino_tot[static_spec_arr_size];
-    double nu_pp_neutrino_mu[static_spec_arr_size];
-    double nu_pp_neutrino_e[static_spec_arr_size];
-
-    double nu_pp_neutrino_mu_obs[static_spec_arr_size];
-    double nu_pp_neutrino_e_obs[static_spec_arr_size];
-    double nu_pp_neutrino_tot_obs[static_spec_arr_size];
-
-    double nuFnu_pp_neutrino_tot_obs[static_spec_arr_size];
-    double nuFnu_pp_neutrino_mu_obs[static_spec_arr_size];
-    double nuFnu_pp_neutrino_e_obs[static_spec_arr_size];
-
-    //--------------------------------//
-
-    //-----------pp-bremss_ep-emission---//
-    //--- CONST
-
-
-    //--- FREQ BOUNDARIES
-    double nu_stop_bremss_ep_pred,nu_stop_bremss_ep;
-    double nu_start_bremss_ep;
-    double nu_start_bremss_ep_obs;
-    double nu_stop_bremss_ep_obs;    
-    unsigned int NU_INT_STOP_BREMSS_EP;
-
-    //
-    int do_bremss_ep;
-   
-    //--- FREQ/FLUX scalars
-    double nu_peak_bremss_ep_blob;
-    double nuLnu_peak_bremss_ep_blob;
-    double nu_peak_bremss_ep_src;
-    double nuLnu_peak_bremss_ep_src;
-    double nu_peak_bremss_ep_obs;
-    double nuFnu_peak_bremss_ep_obs;
-
-    //--- FREQ/FLUX array
-    double j_bremss_ep[static_spec_arr_size];
-    double nu_bremss_ep[static_spec_arr_size];
-    double nu_bremss_ep_obs[static_spec_arr_size];
-    double nuFnu_bremss_ep_obs[static_spec_arr_size];
-    //--------------------------------//
-
-
-
-    //-----------SSC-IC--------------//
-    //--- CONST
-    int ord_comp;
-    int IC_adaptive_e_binning;
-    int do_IC_down_scattering; 
-    int bulk_compton;
-    double COST_IC_K1,COST_IC_COOLING ;
-
-    //--- FREQ BOUNDARIES
-
-
-    double nu_start_SSC;
-    double nu_stop_SSC;
-    double nu_start_SSC_obs;
-    double nu_stop_SSC_obs;
-
+struct rad_ssc {
     unsigned int NU_INT_STOP_COMPTON_SSC;
 
-    //--- IC Kernel computation
-    double Gamma;
-    //double nu; /*freq spettro sinc */
-    double nu_1; /*freq spettro comp */
-    //double nu_compton_0; /* freq campo fot Sync per spettro IC */
-    //double * nu_seed;
-    //double * n_seed;
-    //double g_min_IC;
-
-    //--- FREQ/FLUX array
     double q_comp[static_spec_arr_size];
-    double j_comp[static_spec_arr_size];
-    double j_EC[static_spec_arr_size];
-    double nu_SSC[static_spec_arr_size];
-    double nu_SSC_obs[static_spec_arr_size];
-    double nuF_nu_SSC_obs[static_spec_arr_size];
 
-    //--- FREQ/FLUX scalars
-    double nu_peak_SSC_blob;
-    double nuLnu_peak_SSC_blob;
-    double nu_peak_SSC_src;
-    double nuLnu_peak_SSC_src;
-    double nu_peak_SSC_obs;
-    double nuFnu_peak_SSC_obs;
+    struct spectrum spec;
+};
 
+struct rad_pp_gamma {
+    double NH_pp;
 
-    //-----------EC--------------//
-    
+    //--- FREQ BOUNDARIES
+    double nu_stop_pp_gamma_pred;
+    unsigned int NU_INT_STOP_PP_GAMMA;
 
-    //Const
-    int do_EC_Disk,do_EC_BLR,do_EC_DT,do_EC_Star,do_EC_CMB,EC_stat,EC_stat_orig;
-    int do_Disk,do_DT,do_Star;
-    double nu_planck_min_factor;
-    double nu_planck_max_factor;
-    double mono_planck_min_factor;
-    double mono_planck_max_factor;
-    //double EC_field_interp_factor;
-    unsigned int theta_n_int;
-    unsigned int l_n_int;
+    int do_pp_gamma;
+    int set_pp_racc_gamma, set_pp_racc_elec, set_pp_racc_nu_mu;
+    double pp_racc_gamma, pp_racc_elec, pp_racc_nu_mu;
+    double E_th_pp_delta_approx, E_pp_x_delta_approx;
+    double E_out_e_TeV_pp;
 
-    double nu_blob_RF;
-    double nu_disk_RF;
-    double L_nu_disk_RF;
+    struct spectrum spec;
+};
 
-    //dist BLOB/DISK or STAR
-    double R_H;
-    double R_H_orig;
-    //double EC_factor;
-    double R_ext_emit_factor;
-    double R_H_scale_factor;
+struct rad_pp_neutrino {
+    //--- FREQ BOUNDARIES
+    double nu_stop_pp_neutrino_pred;
+    unsigned int NU_INT_STOP_PP_NUETRINO;
 
-    //--- STAR
-    //-PARAMTERS
-    double L_Star;
-    double T_Star;
-    double R_Star;
-    double R_H_Star;
-    double Star_psi_1, Star_psi_2;
-    //
-    double Star_surface;
-    //double Star_mu_1, Star_mu_2;
-    double theta_Star, mu_star, theta_c_Star;
-    //-FREQ BOUNDARIES
-	double nu_start_EC_Star;
-	double nu_stop_EC_Star;
-	double nu_start_EC_Star_obs;
-	double nu_stop_EC_Star_obs;
-	double nu_start_Star_obs;
-	double nu_stop_Star_obs;
-	double nu_start_Star;
-	double nu_stop_Star;
-    double nu_start_Star_DRF;
-    double nu_stop_Star_DRF;
+    int do_pp_neutrino;
 
-    unsigned int NU_INT_MAX_Star;
-	unsigned int NU_INT_STOP_EC_Star;
-	//-FREQ/FLUX arrays
-	double I_nu_Star[static_spec_arr_size];
-	double J_nu_Star_disk_RF[static_spec_arr_size];
-	double I_nu_Star_disk_RF[static_spec_arr_size];
-	double nu_Star[static_spec_arr_size];
-	double nu_Star_obs[static_spec_arr_size];
-	double nu_Star_disk_RF[static_spec_arr_size];
-	double nuF_nu_Star_obs[static_spec_arr_size];
-	double nu_EC_Star[static_spec_arr_size];
-	double nu_EC_Star_obs[static_spec_arr_size];
-	double nuF_nu_EC_Star_obs[static_spec_arr_size];
-	double n_Star[static_spec_arr_size];
-    double n_Star_DRF[static_spec_arr_size];
+    struct spectrum spec_tot;
+    struct spectrum spec_mu;
+    struct spectrum spec_e;
+};
 
-    //--- CMB
-	//-PARAMTERS
-	double T_CMB_0;
-	double CMB_mu_1,CMB_mu_2;
-	//-FREQ BOUNDARIES
-	double nu_start_CMB, nu_stop_CMB;
-	double nu_start_EC_CMB;
-	double nu_stop_EC_CMB;
-	double nu_start_EC_CMB_obs;
-	double nu_stop_EC_CMB_obs;
-    double nu_start_CMB_DRF;
-    double nu_stop_CMB_DRF;
-    unsigned int NU_INT_MAX_CMB,NU_INT_STOP_EC_CMB;
-    //-FREQ/FLUX arrays
-	double I_nu_CMB[static_spec_arr_size];
-	double I_nu_CMB_disk_RF[static_spec_arr_size];
-	double nu_CMB[static_spec_arr_size];
-	double nu_CMB_disk_RF[static_spec_arr_size];
+struct rad_bremss_ep {
+    //--- FREQ BOUNDARIES
+    double nu_stop_bremss_ep_pred;
+    unsigned int NU_INT_STOP_BREMSS_EP;
 
-	double nu_EC_CMB[static_spec_arr_size];
-	double nu_EC_CMB_obs[static_spec_arr_size];
-	double nuF_nu_EC_CMB_obs[static_spec_arr_size];
-    double n_CMB[static_spec_arr_size];
-    double n_CMB_DRF[static_spec_arr_size];
+    int do_bremss_ep;
 
-    //TODO REMOVE UNSUED FROM THE CODE
-    //--- CMB stat
-    //-FREQ BOUNDARIES
-    //double nu_start_CMB_stat, nu_stop_CMB_stat;
-    //double nu_start_EC_CMB_stat;
-    //double nu_stop_EC_CMB_stat;
-    //double nu_start_EC_CMB_stat_obs;
-    //double nu_stop_EC_CMB_stat_obs;
-    //unsigned int NU_INT_MAX_CMB_stat,NU_INT_STOP_EC_CMB_stat;
-    //-FREQ/FLUX arrays
-    //double I_nu_CMB_stat[static_spec_arr_size];
-    //double I_nu_CMB_disk_RF_stat[static_spec_arr_size];
-    //double nu_CMB_stat[static_spec_arr_size];
-    //double nu_CMB_disk_RF_stat[static_spec_arr_size];
+    struct spectrum spec;
+};
 
-    //double nu_EC_CMB_stat[static_spec_arr_size];
-    //double nu_EC_CMB_stat_obs[static_spec_arr_size];
-    //double nuF_nu_EC_CMB_stat_obs[static_spec_arr_size];
-    //double n_CMB_stat[static_spec_arr_size];
+struct ec_comp {
+    unsigned int NU_INT_STOP;
+    struct spectrum spec;
+};
 
-
-    //--- DISK
-    //-PARAMTERS
+struct ext_disk {
     double L_Disk;
     double L_Disk_radiative;
     double T_Disk;
     double accr_eff;
-    double M_BH,accr_rate,L_Edd,accr_Edd;
+    double M_BH, accr_rate, L_Edd, accr_Edd;
     double R_inner_Sw, R_ext_Sw;
     double R_Disk_interp;
-    //
     double R_Sw;
     double T_disk_max_4;
     double R_inner, R_ext;
     double Cost_disk_Mulit_BB;
-    //double Cost_Norm_disk_Mulit_BB;
     double Disk_surface;
-    double Disk_mu_1,Disk_mu_2;
+    double Disk_mu_1, Disk_mu_2;
     double Disk_geom_factor;
-    //-FREQ BOUNDARIES
     double nu_disk_Multi_BB;
-    double nu_start_EC_Disk;
-    double nu_stop_EC_Disk;
-    double nu_start_EC_Disk_obs;
-    double nu_stop_EC_Disk_obs;
-    double nu_start_Disk;
-    double nu_stop_Disk;
-    double nu_start_Disk_obs;
-    double nu_stop_Disk_obs;
-    double nu_start_Disk_DRF;
-    double nu_stop_Disk_DRF;
-    unsigned int NU_INT_MAX_Disk;
-    unsigned int NU_INT_STOP_EC_Disk;
 
-    //-FREQ/FLUX arrays
-    double L_nu_Disk_disk_RF[static_spec_arr_size];
-    double I_nu_Disk[static_spec_arr_size];
-    //double J_nu_Disk_disk_RF[static_spec_arr_size];
-    double I_nu_Disk_disk_RF[static_spec_arr_size];
-    double nu_Disk[static_spec_arr_size];
-    double nu_Disk_obs[static_spec_arr_size];
-    double nu_Disk_disk_RF[static_spec_arr_size];
-    double nuF_nu_Disk_obs[static_spec_arr_size];
-    double nu_EC_Disk[static_spec_arr_size];
-    double nu_EC_Disk_obs[static_spec_arr_size];
-    double nuF_nu_EC_Disk_obs[static_spec_arr_size];
-    double n_Disk[static_spec_arr_size];
-    double n_Disk_DRF[static_spec_arr_size];
+    struct spectrum_external spec;
+    struct ec_comp ec;
+};
 
-    //--- FREQ/FLUX scalars
-
-    //--- BLR
-    //-PARAMETERS
+struct ext_blr {
     double tau_BLR;
     double R_BLR_in;
     double R_BLR_out;
     double R_BLR_interp_val;
     double R_BLR_interp_start;
 
-    //
     double BLR_Volume;
     double n0_BLR;
     double mu_j;
     double BLR_mu_1, BLR_mu_2;
-    //double BLR_mu_r_J_1,BLR_mu_r_J_2;
-    //double BLR_mu_r_in;
     double BLR_inner_Surface;
     double Delta_R_BLR;
-    //double BLR_geom_factor;
-    //-FREQ BOUNDARIES
-    double nu_stop_BLR;
-    double nu_start_BLR;
-    double nu_stop_BLR_disk_RF;
-    double nu_start_BLR_disk_RF;
-    double nu_stop_EC_BLR;
-    double nu_start_EC_BLR;
-    double nu_stop_EC_BLR_obs;
-    double nu_start_EC_BLR_obs;
-    unsigned int NU_INT_MAX_BLR;
-    unsigned int NU_INT_STOP_EC_BLR;
-    
-    //-FREQ/FLUX arrays
-    double I_nu_BLR[static_spec_arr_size];
-    double Lnu_BLR_disk_RF[static_spec_arr_size];
-    double nu_BLR[static_spec_arr_size];
-    double I_nu_BLR_disk_RF[static_spec_arr_size];
-    double nuF_nu_EC_BLR_obs[static_spec_arr_size];
-    double nu_EC_BLR[static_spec_arr_size];
-    double nu_EC_BLR_obs[static_spec_arr_size];
-    double nu_BLR_disk_RF[static_spec_arr_size];
-    double n_BLR[static_spec_arr_size];
-    double n_BLR_DRF[static_spec_arr_size];
 
-    //--- DT
-    //-PARAMETERS
+    struct spectrum_external spec;
+    struct ec_comp ec;
+};
+
+struct ext_dt {
     double T_DT;
     double tau_DT;
     double L_DT;
     double R_DT;
-    double R_DT_interp_val ;
+    double R_DT_interp_val;
     double R_DT_interp_start;
 
-    //
-    double DT_mu_1,DT_mu_2;
+    double DT_mu_1, DT_mu_2;
     double DT_mu_r_J_1;
     double DT_mu_r_J_2;
     double DT_Volume;
-    //-FREQ BOUNDARIES
-    double nu_stop_DT;
-    double nu_start_DT;
-    double nu_start_DT_DRF;
-    double nu_stop_DT_DRF;
-    double nu_start_DT_obs;
-    double nu_stop_DT_obs;
-    double nu_stop_EC_DT;
-    double nu_start_EC_DT;
-    double nu_stop_EC_DT_obs;
-    double nu_start_EC_DT_obs;
-    unsigned int NU_INT_MAX_DT;
-    unsigned int NU_INT_STOP_EC_DT;
 
-    //-FREQ/FLUX arrays
-    double I_nu_DT[static_spec_arr_size];
-    double I_nu_DT_disk_RF[static_spec_arr_size];
-    double nu_DT_obs[static_spec_arr_size];
-    double nu_DT[static_spec_arr_size];
-    double nu_DT_disk_RF[static_spec_arr_size];
-    double nuF_nu_EC_DT_obs[static_spec_arr_size];
-    double n_DT[static_spec_arr_size];
-    double n_DT_DRF[static_spec_arr_size];
-    double L_nu_DT_disk_RF[static_spec_arr_size];
-    double nuF_nu_DT_obs[static_spec_arr_size];
-    double nu_EC_DT[static_spec_arr_size];
-    double nu_EC_DT_obs[static_spec_arr_size];
+    struct spectrum_external spec;
+    struct ec_comp ec;
+};
 
+struct ext_star {
+    double L_Star;
+    double T_Star;
+    double R_Star;
+    double R_H_Star;
+    double Star_psi_1, Star_psi_2;
+    double Star_surface;
+    double theta_Star, mu_star, theta_c_Star;
 
-    //--- FREQ/FLUX scalars
-    double nu_peak_EC_Disk_blob;
-	double nuLnu_peak_EC_Disk_blob;
-	double nu_peak_EC_Disk_src;
-	double nuLnu_peak_EC_Disk_src;
-	double nu_peak_EC_Disk_obs;
-	double nuFnu_peak_EC_Disk_obs;
-    double nu_peak_EC_BLR_blob;
-	double nuLnu_peak_EC_BLR_blob;
-	double nu_peak_EC_BLR_src;
-	double nuLnu_peak_EC_BLR_src;
-	double nu_peak_EC_BLR_obs;
-	double nuFnu_peak_EC_BLR_obs;
-	double nu_peak_EC_DT_blob;
-	double nuLnu_peak_EC_DT_blob;
-	double nu_peak_EC_DT_src;
-	double nuLnu_peak_EC_DT_src;
-	double nu_peak_EC_DT_obs;
-	double nuFnu_peak_EC_DT_obs;
+    struct spectrum_external spec;
+    struct ec_comp ec;
+};
 
-    double beaming_EC;
+struct ext_cmb {
+    double T_CMB_0;
+    double CMB_mu_1, CMB_mu_2;
 
-    
-   
+    struct spectrum_external spec;
+    struct ec_comp ec;
+};
 
-    //----------- INTEGRATION MESH--------------//
-    unsigned int nu_seed_size;
-    unsigned int nu_IC_size;
-    
-    //unsigned int mesh_intComp;
-    //unsigned int mesh_intComp1;
+struct blob {
+    struct blob_core core;
+    struct emitters emitters;
 
-    //----------- PARTICLE DISTRIBUTION --------------//
-    int Norm_distr;
-    //double Norm_distr_L_e_Sync;
-    int Distr_e_done;
-    int Distr_p_done;
-    int Distr_e_pp_done;
+    struct rad_sync Sync;
+    struct rad_ssc SSC;
+    struct rad_pp_gamma PP_gamma;
+    struct rad_pp_neutrino PP_neutrino;
+    struct rad_bremss_ep Bremss_ep;
 
-    int TIPO_DISTR;
-    double *Ne_custom;
-    double *gamma_e_custom;
-    double *Np_custom;
-    double *gamma_p_custom;
-    unsigned int gamma_custom_grid_size;
-    double *gam;
-    double *Ne;
-    double *Ne_jetset;
-    //double *Ne_IC;
-    //double *Ne_stat;
-    double *Np;
-    double *Np_jetset;
-    double *Q_inj_e_second;
-    double *Integrand_over_gamma_grid;
-    
-    
-
-    unsigned int gamma_grid_size;
-    double * griglia_gamma_Ne_log;
-    double * griglia_gamma_jetset_Ne_log;
-    
-    double * griglia_gamma_Ne_log_stat;
-
-    double * griglia_gamma_Np_log;
-    double * griglia_gamma_jetset_Np_log;
-
-    double T_esc_e_second;
-    //double *griglia_gamma_log_IC;
-    //double *N_IC;
-
-    double N_tot_e_Sferic;
-    double N_tot_p_Sferic;
-    double N;
-    double N_e_pp, N_p, N_e;
-    double NH_cold_to_rel_e;
-    double N_0,N_0p,N_0e; /* costante di normalizzazione per distrib elettr staz */
-    double gmin;
-    double gmax;
-    double gmin_secondaries;
-    double gmax_secondaries;
-    double gamma_cooling_eq;
-    int grid_bounded_to_gamma;
-    //unsigned int pt_griglia_max;
-    double gmin_griglia;
-    double gmax_griglia;
-    double gmin_griglia_secondaries;
-    double gmax_griglia_secondaries;
-    double U_e, E_tot_e;
-    double U_p, E_tot_p;
-    double Gamma_p2; //gamma peak of N(gamma)*gamma^2
-    double Gamma_p3; //gamma peak of N(gamma)*gamma^3
-    double Np2, Np3; //peak of N(gamma)*gamma^2 and  N(gamma)*gamma^3
-
-    //PL,PLC,BKN
-    double p, p_1;
-    double gamma_break;
-    double gamma_cut;
-
-    //LP+LPPL
-    double s;
-    double r;
-    double gamma0_log_parab;
-    //LPEP
-    double gammap_log_parab;
-    //LPEP PILEUP
-    double gamma_inj;
-    //Spit
-    double spit_index,spit_temp,spit_gamma_th;
-
-    //LPPL Pile-Up
-    double gamma_pile_up,gamma_pile_up_cut,alpha_pile_up;
-    double ratio_pile_up;
-
+    struct ext_disk Disk;
+    struct ext_blr BLR;
+    struct ext_dt DT;
+    struct ext_star Star;
+    struct ext_cmb CMB;
 };
 
 //===================================================================================
@@ -1397,6 +1178,7 @@ struct j_args{
     unsigned int NU_INT_STOP;
     unsigned int NU_INT_MAX;
     double * nu_array;
+    double * j_array;
 
 
 };

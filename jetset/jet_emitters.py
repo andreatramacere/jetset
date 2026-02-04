@@ -12,7 +12,7 @@ from scipy import interpolate
 from .jetkernel_models_dic import gamma_dic_e ,gamma_dic_p, gamma_dic_pp_e_second, available_N_distr, N_distr_descr, available_emitters_type
 from .plot_sedfit import PlotPdistr
 from .jet_paramters import *
-from .utils import set_str_attr
+from .utils import set_str_attr, get_nested_attr, set_nested_attr
 from .model_parameters import ModelParameterArray, ModelParameter
 from .jet_kernel_tools import get_emitters_c_array1d_fast as get_emitters
 from .jet_kernel_tools import set_emitters_c_array1d_fast as set_emitters
@@ -481,17 +481,22 @@ class EmittersDistribution(BaseEmittersDistribution):
         a_l, b_l = self.set_bounds(1, 1E9, log_val=self._log_values)
         a_t, b_t = self.set_bounds(1, 1E9, log_val=self._log_values)
         model_dic['gmin'] = JetModelDictionaryPar(ptype='low-energy-cut-off', vmin=a_l, vmax=b_l,
-                                                  punit='lorentz-factor', log=self._log_values)
+                                                  punit='lorentz-factor', log=self._log_values,
+                                                  jetkernel_par_name='emitters.gmin')
         model_dic['gmax'] = JetModelDictionaryPar(ptype='high-energy-cut-off', vmin=a_h, vmax=b_h,
-                                                  punit='lorentz-factor', log=self._log_values)
+                                                  punit='lorentz-factor', log=self._log_values,
+                                                  jetkernel_par_name='emitters.gmax')
 
-        model_dic['N'] = JetModelDictionaryPar(ptype='emitters_density', vmin=0, vmax=None, punit='cm^-3')
+        model_dic['N'] = JetModelDictionaryPar(ptype='emitters_density', vmin=0, vmax=None, punit='cm^-3',
+                                               jetkernel_par_name='emitters.N')
 
         if self.emitters_type =='protons':
-            model_dic['NH_pp'] = JetModelDictionaryPar(ptype='target_density', vmin=0, vmax=None, punit='cm^-3',froz =False)
+            model_dic['NH_pp'] = JetModelDictionaryPar(ptype='target_density', vmin=0, vmax=None, punit='cm^-3',
+                                                       froz=False, jetkernel_par_name='PP_gamma.NH_pp')
 
         if isinstance(self, EmittersArrayDistribution):
-            model_dic['N'] = JetModelDictionaryPar(ptype='scaling_factor', vmin=0, vmax=None, punit='')
+            model_dic['N'] = JetModelDictionaryPar(ptype='scaling_factor', vmin=0, vmax=None, punit='',
+                                                   jetkernel_par_name='emitters.N')
         return model_dic, a_h, b_h, a_l, b_l, a_t, b_t
 
     def set_jet(self, jet):
@@ -502,24 +507,24 @@ class EmittersDistribution(BaseEmittersDistribution):
             name = 'jetset'
 
             self._jet = jet
-            set_str_attr(jet._blob, 'DISTR', name)
-            set_str_attr(jet._blob, 'PARTICLE', self.emitters_type)
+            set_str_attr(jet._blob, 'core.DISTR', name)
+            set_str_attr(jet._blob, 'core.PARTICLE', self.emitters_type)
 
             p = self._jet.get_par_by_name('gmin')
             if p is not None:
                 p.set(value=self.parameters.get_par_by_name('gmin').val_lin)
             else:
                 p=self.parameters.get_par_by_name('gmin')
-            setattr(jet._blob, 'gmin', p.val_lin)
+            set_nested_attr(jet._blob, 'emitters.gmin', p.val_lin)
 
             p = self._jet.get_par_by_name('gmax')
             if p is not None:
                 p.set(value=self.parameters.get_par_by_name('gmax').val_lin)
             else:
                 p = self.parameters.get_par_by_name('gmax')
-            setattr(jet._blob, 'gmax', p.val_lin)
+            set_nested_attr(jet._blob, 'emitters.gmax', p.val_lin)
 
-            self._jet._blob.gamma_grid_size = self._gamma_grid_size
+            self._jet._blob.emitters.gamma_grid_size = self._gamma_grid_size
         else:
             self._jet=jet
 
@@ -527,7 +532,7 @@ class EmittersDistribution(BaseEmittersDistribution):
     def set_grid_size(self,gamma_grid_size):
         if gamma_grid_size is not None:
             if self._jet is not  None:
-              setattr(self._jet._blob,'gamma_grid_size' ,gamma_grid_size)
+              set_nested_attr(self._jet._blob, 'emitters.gamma_grid_size', gamma_grid_size)
         self._fill()
 
     def set_grid(self):
@@ -540,15 +545,15 @@ class EmittersDistribution(BaseEmittersDistribution):
             if self.emitters_type == 'electrons':
                 #print('==> Build Ne start')
                 BlazarSED.build_Ne_jetset(self._jet._blob)
-                gamma_ptr = getattr(self._jet._blob, 'griglia_gamma_jetset_Ne_log')
+                gamma_ptr = get_nested_attr(self._jet._blob, 'emitters.griglia_gamma_jetset_Ne_log')
                 #print('==> Build Ne done')
             elif self.emitters_type == 'protons':
                 BlazarSED.build_Np_jetset(self._jet._blob)
-                gamma_ptr = getattr(self._jet._blob, 'griglia_gamma_jetset_Np_log')
+                gamma_ptr = get_nested_attr(self._jet._blob, 'emitters.griglia_gamma_jetset_Np_log')
             else:
                 raise RuntimeError('emitters type', self.emitters_type, 'not valid')
 
-            size = self._jet._blob.gamma_grid_size
+            size = self._jet._blob.emitters.gamma_grid_size
             self._gamma_grid = np.zeros(size)
             for ID in range(size):
                 self._gamma_grid[ID] = BlazarSED.get_elec_array(gamma_ptr, self._jet._blob, ID)
@@ -563,12 +568,12 @@ class EmittersDistribution(BaseEmittersDistribution):
 
             if self.emitters_type == 'electrons':
                 size = self._gamma_grid_size
-                Ne_ptr = getattr(self._jet._blob, 'Ne_jetset')
+                Ne_ptr = get_nested_attr(self._jet._blob, 'emitters.Ne_jetset')
                 set_emitters(Ne_ptr,self._jet._blob,size,self.f)
 
             if self.emitters_type == 'protons':
                 size = self._gamma_grid_size
-                Np_ptr = getattr(self._jet._blob, 'Np_jetset')
+                Np_ptr = get_nested_attr(self._jet._blob, 'emitters.Np_jetset')
                 set_emitters(Np_ptr,self._jet._blob,size,self.f)
  
 
@@ -577,29 +582,29 @@ class EmittersDistribution(BaseEmittersDistribution):
         if self.emitters_type == 'electrons':
 
             self._Ne_name, self._gammae_name = gamma_dic_e['electron_distr']
-            self.Ne_ptr = getattr(self._jet._blob, self._Ne_name)
-            self.e_gamma_ptr = getattr(self._jet._blob, self._gammae_name)
+            self.Ne_ptr = get_nested_attr(self._jet._blob, self._Ne_name)
+            self.e_gamma_ptr = get_nested_attr(self._jet._blob, self._gammae_name)
 
         elif self.emitters_type == 'protons':
             self._Ne_name, self._gammae_name = gamma_dic_e['electron_distr']
             self._Np_name, self._gammap_name = gamma_dic_p['proton_distr']
             self._Q_inj_e_second_name, self._gammae_inj_sec_name = gamma_dic_pp_e_second['e_second_inj']
 
-            self.Np_ptr = getattr(self._jet._blob, self._Np_name)
-            self.p_gamma_ptr = getattr(self._jet._blob, self._gammap_name)
-            self.Ne_ptr = getattr(self._jet._blob, self._Ne_name)
-            self.e_gamma_ptr = getattr(self._jet._blob, self._gammae_name)
+            self.Np_ptr = get_nested_attr(self._jet._blob, self._Np_name)
+            self.p_gamma_ptr = get_nested_attr(self._jet._blob, self._gammap_name)
+            self.Ne_ptr = get_nested_attr(self._jet._blob, self._Ne_name)
+            self.e_gamma_ptr = get_nested_attr(self._jet._blob, self._gammae_name)
 
-            self._Q_inj_e_second_ptr = getattr(self._jet._blob, self._Q_inj_e_second_name)
-            self.e_inj_second_gamma_ptr = getattr(self._jet._blob, self._gammae_inj_sec_name)
+            self._Q_inj_e_second_ptr = get_nested_attr(self._jet._blob, self._Q_inj_e_second_name)
+            self.e_inj_second_gamma_ptr = get_nested_attr(self._jet._blob, self._gammae_inj_sec_name)
 
-        size = self._jet._blob.gamma_grid_size
+        size = self._jet._blob.emitters.gamma_grid_size
        
     
         if self.emitters_type == 'protons':
             self.gamma_p,self.n_gamma_p=get_emitters(self.p_gamma_ptr,self.Np_ptr, self._jet._blob,size)
             self.gamma_e_second_inj,self.n_gamma_e_second_inj=get_emitters(self.e_inj_second_gamma_ptr,self._Q_inj_e_second_ptr, self._jet._blob,size)
-            self.gamma_cooling_eq_second= self._jet._blob.gamma_cooling_eq
+            self.gamma_cooling_eq_second= self._jet._blob.emitters.gamma_cooling_eq
             self._secondaries_done = True
         else:
             self.gamma_e,self.n_gamma_e=get_emitters(self.e_gamma_ptr,self.Ne_ptr, self._jet._blob,size)
@@ -747,7 +752,7 @@ class InjEmittersDistribution(BaseEmittersDistribution):
     #NOTE: not used, to be removed
     def set_temp_ev(self):
         self.e_gamma_ptr = getattr(self._temp_ev, self._gammae_name)
-        self._Q_inj_e_second_ptr = getattr(self._temp_ev._blob, self._Q_inj_e_second_name)
+        self._Q_inj_e_second_ptr = get_nested_attr(self._temp_ev._blob, self._Q_inj_e_second_name)
 
 
 class InjEmittersArrayDistribution(InjEmittersDistribution):
@@ -796,4 +801,3 @@ class InjEmittersArrayDistribution(InjEmittersDistribution):
     
     def _activate_numba(self):
         pass
-

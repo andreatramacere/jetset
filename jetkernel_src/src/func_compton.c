@@ -39,224 +39,224 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
     double * n_seed;
     unsigned int nu_seed_size;
 
-    nu_seed_size=pt_GR->nu_seed_size;
-    nu_IC_out_stat = nu_IC_out * pt_GR->beam_obj;
+    nu_seed_size=pt_GR->core.nu_seed_size;
+    nu_IC_out_stat = nu_IC_out * pt_GR->core.beam_obj;
 
-    if (pt_GR->verbose>1) {
+    if (pt_GR->core.verbose>1) {
         printf("GR\n");
-        printf("#-> SSC=%d EC=%d\n", pt_GR->SSC, pt_GR->EC);
-        printf("#-> gmin=%e gmax=%e\n", pt_GR->gmin, pt_GR->gmax);
+        printf("#-> SSC=%d EC=%d\n", pt_GR->core.SSC, pt_GR->core.EC);
+        printf("#-> gmin=%e gmax=%e\n", pt_GR->emitters.gmin, pt_GR->emitters.gmax);
     }
 
     //SSC
-    if (nu_IC_out < pt_GR->nu_stop_SSC && pt_GR->ord_comp == 1) {
-        if (pt_GR->SSC == 1 && pt_GR->EC == 0) {
-            if (pt_GR->verbose>1) {
-                printf("nu_start_Sync=%e\n", pt_GR->nu_start_Sync);
-                printf("nu_stop_Sync_ssc=%e\n", pt_GR->nu_stop_Sync_ssc);
+    if (nu_IC_out < pt_GR->SSC.spec.nu_max && pt_GR->core.ord_comp == 1) {
+        if (pt_GR->core.SSC == 1 && pt_GR->core.EC == 0) {
+            if (pt_GR->core.verbose>1) {
+                printf("nu_start_Sync=%e\n", pt_GR->Sync.spec.nu_min);
+                printf("nu_stop_Sync_ssc=%e\n", pt_GR->Sync.nu_stop_Sync_ssc);
             }
-            nu_seed = pt_GR->nu_Sync;
-            n_seed = pt_GR->n_Sync;
-            //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
-            //pt_GR->N_IC=pt_GR->Ne;
+            nu_seed = pt_GR->Sync.spec.nu;
+            n_seed = pt_GR->Sync.spec.n_nu;
+            //pt_GR->griglia_gamma_log_IC=pt_GR->emitters.griglia_gamma_Ne_log;
+            //pt_GR->N_IC=pt_GR->emitters.Ne;
             rate_comp = integrale_IC(pt_GR,
                     nu_seed,
                     n_seed,
                     nu_seed_size,
-                    pt_GR->nu_start_Sync,
-                    pt_GR->nu_stop_Sync_ssc,
+                    pt_GR->Sync.spec.nu_min,
+                    pt_GR->Sync.nu_stop_Sync_ssc,
                     0,
                     nu_IC_out);
         }
     }
     //EC Disk
-    if (nu_IC_out < pt_GR->nu_stop_EC_Disk && pt_GR->ord_comp == 1) {
-		if (pt_GR->SSC == 0 && pt_GR->EC == 1) {
+    if (nu_IC_out < pt_GR->Disk.ec.spec.nu_max && pt_GR->core.ord_comp == 1) {
+		if (pt_GR->core.SSC == 0 && pt_GR->core.EC == 1) {
 
-			if (pt_GR->verbose>1) {
+			if (pt_GR->core.verbose>1) {
 				printf("Disk\n");
-				printf("(blob rest frame) nu_start_EC_seed=%e\n", pt_GR->nu_start_Disk);
-                printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->nu_stop_Disk);
+				printf("(blob rest frame) nu_start_EC_seed=%e\n", pt_GR->Disk.spec.nu_min);
+                printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->Disk.spec.nu_max);
             }
-            if (pt_GR->EC_stat == 0)
+            if (pt_GR->core.EC_stat == 0)
             {
-                nu_seed = pt_GR->nu_Disk;
-                n_seed = pt_GR->n_Disk;
+                nu_seed = pt_GR->Disk.spec.nu;
+                n_seed = pt_GR->Disk.spec.n_nu;
                 rate_comp = integrale_IC(pt_GR,
                                         nu_seed,
                                         n_seed,
                                         nu_seed_size,
-                                        pt_GR->nu_start_Disk,
-                                        pt_GR->nu_stop_Disk,
-                                        pt_GR->EC_stat,
+                                        pt_GR->Disk.spec.nu_min,
+                                        pt_GR->Disk.spec.nu_max,
+                                        pt_GR->core.EC_stat,
                                         nu_IC_out);
             }
             else{
-                nu_seed = pt_GR->nu_Disk_disk_RF;
-                n_seed = pt_GR->n_Disk_DRF;
+                nu_seed = pt_GR->Disk.spec.nu_DRF;
+                n_seed = pt_GR->Disk.spec.n_nu_DRF;
                 rate_comp = integrale_IC(pt_GR,
                                         nu_seed,
                                         n_seed,
                                         nu_seed_size,
-                                        pt_GR->nu_start_Disk_DRF,
-                                        pt_GR->nu_stop_Disk_DRF,
-                                        pt_GR->EC_stat,
+                                        pt_GR->Disk.spec.nu_min_DRF,
+                                        pt_GR->Disk.spec.nu_max_DRF,
+                                        pt_GR->core.EC_stat,
                                         nu_IC_out_stat);
             }
 			
 		}
     }
     //EC BLR
-    if (nu_IC_out < pt_GR->nu_stop_EC_BLR && pt_GR->ord_comp == 1) {
-    	if (pt_GR->SSC == 0 && pt_GR->EC == 2) {
+    if (nu_IC_out < pt_GR->BLR.ec.spec.nu_max && pt_GR->core.ord_comp == 1) {
+    	if (pt_GR->core.SSC == 0 && pt_GR->core.EC == 2) {
 
-            if (pt_GR->verbose>1) {
+            if (pt_GR->core.verbose>1) {
                 printf("BLR\n");
-                printf("(blob rest frame) nu_start_EC_seed=%e\n", pt_GR->nu_start_BLR);
-                printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->nu_stop_BLR);
+                printf("(blob rest frame) nu_start_EC_seed=%e\n", pt_GR->BLR.spec.nu_min);
+                printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->BLR.spec.nu_max);
             }
 
-            if (pt_GR->EC_stat == 0)
+            if (pt_GR->core.EC_stat == 0)
             {
-                nu_seed = pt_GR->nu_BLR;
-                n_seed = pt_GR->n_BLR;
+                nu_seed = pt_GR->BLR.spec.nu;
+                n_seed = pt_GR->BLR.spec.n_nu;
                 rate_comp = integrale_IC(pt_GR,
                                         nu_seed,
                                         n_seed,
                                         nu_seed_size,
-                                        pt_GR->nu_start_BLR,
-                                        pt_GR->nu_stop_BLR,
-                                        pt_GR->EC_stat,
+                                        pt_GR->BLR.spec.nu_min,
+                                        pt_GR->BLR.spec.nu_max,
+                                        pt_GR->core.EC_stat,
                                         nu_IC_out);
             }
             else
             {             
-                nu_seed = pt_GR->nu_BLR_disk_RF;
-                n_seed = pt_GR->n_BLR_DRF;
+                nu_seed = pt_GR->BLR.spec.nu_DRF;
+                n_seed = pt_GR->BLR.spec.n_nu_DRF;
                 rate_comp = integrale_IC(pt_GR,
                                          nu_seed,
                                          n_seed,
                                          nu_seed_size,
-                                         pt_GR->nu_start_BLR_disk_RF,
-                                         pt_GR->nu_stop_BLR_disk_RF,
-                                         pt_GR->EC_stat,
+                                         pt_GR->BLR.spec.nu_min_DRF,
+                                         pt_GR->BLR.spec.nu_max_DRF,
+                                         pt_GR->core.EC_stat,
                                          nu_IC_out_stat);
 
             }
         }
     }
     //EC DT
-    if (nu_IC_out < pt_GR->nu_stop_EC_DT && pt_GR->ord_comp == 1) {
-    	if (pt_GR->SSC == 0 && pt_GR->EC == 3) {
-            if (pt_GR->verbose>1) {
+    if (nu_IC_out < pt_GR->DT.ec.spec.nu_max && pt_GR->core.ord_comp == 1) {
+    	if (pt_GR->core.SSC == 0 && pt_GR->core.EC == 3) {
+            if (pt_GR->core.verbose>1) {
                 printf("DT\n");
-                printf("(blob rest frame) nu_start_EC_seed DT=%e\n", pt_GR->nu_start_DT);
-                printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->nu_stop_DT);
+                printf("(blob rest frame) nu_start_EC_seed DT=%e\n", pt_GR->DT.spec.nu_min);
+                printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->DT.spec.nu_max);
             }
 
-            if (pt_GR->EC_stat == 0){
+            if (pt_GR->core.EC_stat == 0){
                
-                nu_seed = pt_GR->nu_DT;
-                n_seed = pt_GR->n_DT;
+                nu_seed = pt_GR->DT.spec.nu;
+                n_seed = pt_GR->DT.spec.n_nu;
                 rate_comp = integrale_IC(pt_GR,
                                          nu_seed,
                                          n_seed,
                                          nu_seed_size,
-                                         pt_GR->nu_start_DT,
-                                         pt_GR->nu_stop_DT,
-                                         pt_GR->EC_stat,
+                                         pt_GR->DT.spec.nu_min,
+                                         pt_GR->DT.spec.nu_max,
+                                         pt_GR->core.EC_stat,
                                          nu_IC_out);
             }
             else
             {
-                nu_seed = pt_GR->nu_DT_disk_RF;
-                n_seed = pt_GR->n_DT_DRF;
+                nu_seed = pt_GR->DT.spec.nu_DRF;
+                n_seed = pt_GR->DT.spec.n_nu_DRF;
                 rate_comp = integrale_IC(pt_GR,
                                          nu_seed,
                                          n_seed,
                                          nu_seed_size,
-                                         pt_GR->nu_start_DT,
-                                         pt_GR->nu_stop_DT_DRF,
-                                         pt_GR->EC_stat,
+                                         pt_GR->DT.spec.nu_min,
+                                         pt_GR->DT.spec.nu_max_DRF,
+                                         pt_GR->core.EC_stat,
                                          nu_IC_out_stat);
             }
        }
     }
 
     //EC Star
-    if (nu_IC_out < pt_GR->nu_stop_EC_Star && pt_GR->ord_comp == 1) {
-    	if (pt_GR->SSC == 0 && pt_GR->EC == 4) {
+    if (nu_IC_out < pt_GR->Star.ec.spec.nu_max && pt_GR->core.ord_comp == 1) {
+    	if (pt_GR->core.SSC == 0 && pt_GR->core.EC == 4) {
 
-		   if (pt_GR->verbose>1) {
+		   if (pt_GR->core.verbose>1) {
 			   printf("DT\n");
-               printf("(blob rest frame) nu_start_EC_seed Star=%e\n", pt_GR->nu_start_Star);
-               printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->nu_stop_Star);
+               printf("(blob rest frame) nu_start_EC_seed Star=%e\n", pt_GR->Star.spec.nu_min);
+               printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->Star.spec.nu_max);
            }
-		   nu_seed = pt_GR->nu_Star;
-		   n_seed = pt_GR->n_Star;
-           if (pt_GR->EC_stat == 0)
+		   nu_seed = pt_GR->Star.spec.nu;
+		   n_seed = pt_GR->Star.spec.n_nu;
+           if (pt_GR->core.EC_stat == 0)
            {
-               nu_seed = pt_GR->nu_Star;
-               n_seed = pt_GR->n_Star;
+               nu_seed = pt_GR->Star.spec.nu;
+               n_seed = pt_GR->Star.spec.n_nu;
                rate_comp = integrale_IC(pt_GR,
                                         nu_seed,
                                         n_seed,
                                         nu_seed_size,
-                                        pt_GR->nu_start_Star,
-                                        pt_GR->nu_stop_Star,
-                                        pt_GR->EC_stat,
+                                        pt_GR->Star.spec.nu_min,
+                                        pt_GR->Star.spec.nu_max,
+                                        pt_GR->core.EC_stat,
                                         nu_IC_out);
            }
            else
            {
-               nu_seed = pt_GR->nu_Star_disk_RF;
-               n_seed = pt_GR->n_Star_DRF;
+               nu_seed = pt_GR->Star.spec.nu_DRF;
+               n_seed = pt_GR->Star.spec.n_nu_DRF;
                rate_comp = integrale_IC(pt_GR,
                                         nu_seed,
                                         n_seed,
                                         nu_seed_size,
-                                        pt_GR->nu_start_Star_DRF,
-                                        pt_GR->nu_stop_Star_DRF,
-                                        pt_GR->EC_stat,
+                                        pt_GR->Star.spec.nu_min_DRF,
+                                        pt_GR->Star.spec.nu_max_DRF,
+                                        pt_GR->core.EC_stat,
                                         nu_IC_out_stat);
            }
        }
     }
 
     //EC CMB
-    if (nu_IC_out < pt_GR->nu_stop_EC_CMB && pt_GR->ord_comp == 1) {
-    	if (pt_GR->SSC == 0 && pt_GR->EC == 5) {
+    if (nu_IC_out < pt_GR->CMB.ec.spec.nu_max && pt_GR->core.ord_comp == 1) {
+    	if (pt_GR->core.SSC == 0 && pt_GR->core.EC == 5) {
 
-    		if (pt_GR->verbose>1) {
+    		if (pt_GR->core.verbose>1) {
     			printf("CMB\n");
-    			printf("nu_start_CMB_seed=%e\n", pt_GR->nu_start_CMB);
-    			printf("nu_stop_CMB_seed=%e\n", pt_GR->nu_stop_CMB);
+    			printf("nu_start_CMB_seed=%e\n", pt_GR->CMB.spec.nu_min);
+    			printf("nu_stop_CMB_seed=%e\n", pt_GR->CMB.spec.nu_max);
     		}
     		
-            if (pt_GR->EC_stat == 0)
+            if (pt_GR->core.EC_stat == 0)
             {
-                nu_seed = pt_GR->nu_CMB;
-                n_seed = pt_GR->n_CMB;
+                nu_seed = pt_GR->CMB.spec.nu;
+                n_seed = pt_GR->CMB.spec.n_nu;
                 rate_comp = integrale_IC(pt_GR,
                                          nu_seed,
                                          n_seed,
                                          nu_seed_size,
-                                         pt_GR->nu_start_CMB,
-                                         pt_GR->nu_stop_CMB,
-                                         pt_GR->EC_stat,
+                                         pt_GR->CMB.spec.nu_min,
+                                         pt_GR->CMB.spec.nu_max,
+                                         pt_GR->core.EC_stat,
                                          nu_IC_out);
             }
             else
             {
-                nu_seed = pt_GR->nu_CMB_disk_RF;
-                n_seed = pt_GR->n_CMB_DRF;
+                nu_seed = pt_GR->CMB.spec.nu_DRF;
+                n_seed = pt_GR->CMB.spec.n_nu_DRF;
                 rate_comp = integrale_IC(pt_GR,
                                          nu_seed,
                                          n_seed,
                                          nu_seed_size,
-                                         pt_GR->nu_start_CMB_DRF,
-                                         pt_GR->nu_stop_CMB_DRF,
-                                         pt_GR->EC_stat,
+                                         pt_GR->CMB.spec.nu_min_DRF,
+                                         pt_GR->CMB.spec.nu_max_DRF,
+                                         pt_GR->core.EC_stat,
                                          nu_IC_out_stat);
             }
         }
@@ -273,7 +273,7 @@ double f_compton_bulk(struct blob *pt_K1, double g, double nu_IC_out, double nu_
     double cost, rate;
     rate=0;
     if (nu_IC_out >=  nu_IC_in_1 &&  nu_IC_out <nu_IC_in_2) {
-        cost = pt_K1->COST_IC_K1/nu_IC_in_1;
+        cost = pt_K1->core.COST_IC_K1/nu_IC_in_1;
        
         rate = cost;
     }
@@ -298,7 +298,7 @@ double f_compton_K1(struct blob *pt_K1, double g, double nu_IC_out, double nu_IC
      */
     double cost, rate,a, c, k, nu_1_min, nu_1_max, g2;
     double epsilon_0, epsilon_1,Gamma_e;
-    //pt_K1->Gamma = g;
+    //pt_K1->core.Gamma = g;
     g2 = g*g;
     epsilon_0 = HPLANCK * nu_IC_in*one_by_MEC2;
     epsilon_1 = HPLANCK * nu_IC_out*one_by_MEC2;
@@ -314,12 +314,12 @@ double f_compton_K1(struct blob *pt_K1, double g, double nu_IC_out, double nu_IC
     }
     if (nu_IC_out >=  nu_1_min &&  nu_IC_out <nu_IC_in) {
 
-        if (pt_K1->do_IC_down_scattering==1){
+        if (pt_K1->core.do_IC_down_scattering==1){
         //------------------------------------------
         //Eq 8 Jones 1968 
         //Eq IV.I  Band & Grindlay 1985 ApJ 298
         //This is the down-scattering and is optional
-        cost = pt_K1->COST_IC_K1 / (4.0*(g2*g2) * nu_IC_in);
+        cost = pt_K1->core.COST_IC_K1 / (4.0*(g2*g2) * nu_IC_in);
         k=4.0*g2*nu_IC_out/nu_IC_in ;
         rate=k-1;
         rate *= cost;
@@ -339,7 +339,7 @@ double f_compton_K1(struct blob *pt_K1, double g, double nu_IC_out, double nu_IC
 
         Gamma_e=4.0*g*epsilon_0;
 
-        cost = pt_K1->COST_IC_K1 / ((g2) *nu_IC_in);
+        cost = pt_K1->core.COST_IC_K1 / ((g2) *nu_IC_in);
 
         a = 2.0 * k * log(k) ;
 
@@ -370,17 +370,17 @@ void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int 
     g_min_IC = 0.5 * epsilon_1 *(1 + sqrt(1.0 + (1.0 / (epsilon_1 * epsilon_0))));
     
     
-    if (pt->EC_stat == 1)
+    if (pt->core.EC_stat == 1)
     {
-        g_min_IC = g_min_IC / pt->beam_obj;
+        g_min_IC = g_min_IC / pt->core.beam_obj;
     }
-    if (g_min_IC > pt->gmin_griglia)
+    if (g_min_IC > pt->emitters.gmin_griglia)
     {
         Fill_Ne_IC(pt, g_min_IC, stat_frame, Ne_IC, griglia_gamma_Ne_log_IC);
     }
     else
     {
-        Fill_Ne_IC(pt, pt->gmin_griglia, stat_frame, Ne_IC, griglia_gamma_Ne_log_IC);
+        Fill_Ne_IC(pt, pt->emitters.gmin_griglia, stat_frame, Ne_IC, griglia_gamma_Ne_log_IC);
     }
 }
 
@@ -396,10 +396,10 @@ double integrale_IC(struct blob *pt, const double *nu_seed, const double *n_seed
     
     unsigned int ID,ID_gamma;
     double *Integrand_over_gamma_grid, *Ne_IC, *griglia_gamma_Ne_log_IC, *integr_gamma;
-    Integrand_over_gamma_grid = (double *) calloc(pt->gamma_grid_size, sizeof (double));
-    griglia_gamma_Ne_log_IC =  (double *) calloc(pt->gamma_grid_size, sizeof (double));
+    Integrand_over_gamma_grid = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
+    griglia_gamma_Ne_log_IC =  (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
     integr_gamma = (double *) calloc(nu_seed_size, sizeof (double));
-    Ne_IC = (double *) calloc(pt->gamma_grid_size, sizeof (double));
+    Ne_IC = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
     double ic_kernel;
     integr_nu = 0.0;
    
@@ -412,8 +412,8 @@ double integrale_IC(struct blob *pt, const double *nu_seed, const double *n_seed
             nu_IC_in= nu_seed[ID];
 
             //Integration over electron Lorentz factor
-            for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
-                if (pt->bulk_compton == 0){
+            for (ID_gamma = 0; ID_gamma < pt->emitters.gamma_grid_size ; ID_gamma++){
+                if (pt->core.bulk_compton == 0){
                     ic_kernel=f_compton_K1(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out, nu_IC_in);
                 }else{
                     if (ID<nu_seed_size-1){
@@ -425,7 +425,7 @@ double integrale_IC(struct blob *pt, const double *nu_seed, const double *n_seed
                 Integrand_over_gamma_grid[ID_gamma] =ic_kernel * Ne_IC[ID_gamma];
                 
             }
-            integr_gamma[ID]= n_seed[ID]*integr_simp_grid_equilog(griglia_gamma_Ne_log_IC, Integrand_over_gamma_grid, pt->gamma_grid_size);
+            integr_gamma[ID]= n_seed[ID]*integr_simp_grid_equilog(griglia_gamma_Ne_log_IC, Integrand_over_gamma_grid, pt->emitters.gamma_grid_size);
 
         }else{
             integr_gamma[ID]=0;
@@ -467,132 +467,132 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
 
     unsigned int nu_seed_size;
 
-    nu_seed_size=pt_spec->nu_seed_size;
+    nu_seed_size=pt_spec->core.nu_seed_size;
     
-    if (pt_spec->verbose>1) {
+    if (pt_spec->core.verbose>1) {
         printf("GR\n");
-        printf("#-> SSC=%d EC=%d\n", pt_spec->SSC, pt_spec->EC);
-        printf("#-> gmin=%e gmax=%e\n", pt_spec->gmin, pt_spec->gmax);
+        printf("#-> SSC=%d EC=%d\n", pt_spec->core.SSC, pt_spec->core.EC);
+        printf("#-> gmin=%e gmax=%e\n", pt_spec->emitters.gmin, pt_spec->emitters.gmax);
     }
 
     //SSC
-    if (pt_spec->do_Sync) {
-        if (pt_spec->verbose>1) {
-            printf("nu_start_Sync=%e\n", pt_spec->nu_start_Sync);
-            printf("nu_stop_Sync_ssc=%e\n", pt_spec->nu_stop_Sync_ssc);
+    if (pt_spec->core.do_Sync) {
+        if (pt_spec->core.verbose>1) {
+            printf("nu_start_Sync=%e\n", pt_spec->Sync.spec.nu_min);
+            printf("nu_stop_Sync_ssc=%e\n", pt_spec->Sync.nu_stop_Sync_ssc);
 
         }
          
-        nu_seed = pt_spec->nu_Sync;
-        n_seed = pt_spec->n_Sync;
+        nu_seed = pt_spec->Sync.spec.nu;
+        n_seed = pt_spec->Sync.spec.n_nu;
         comp_cooling += integrale_IC_cooling(pt_spec,
                                              nu_seed,
                                              n_seed,
                                              nu_seed_size,
-                                             pt_spec->nu_start_Sync,
-                                             pt_spec->nu_stop_Sync_ssc,
+                                             pt_spec->Sync.spec.nu_min,
+                                             pt_spec->Sync.nu_stop_Sync_ssc,
                                              gamma);
-        //printf("evaluate IC cooling, gamma=%e cooling_rate=%e, Sync_cooling_rate_ratio=%e\n",gamma,comp_cooling,comp_cooling/Sync_cool(pt_spec->B,gamma));
+        //printf("evaluate IC cooling, gamma=%e cooling_rate=%e, Sync_cooling_rate_ratio=%e\n",gamma,comp_cooling,comp_cooling/Sync_cool(pt_spec->core.B,gamma));
     }
 
     //EC Disk
 
-    if (pt_spec->do_EC_Disk == 1 ) {
+    if (pt_spec->core.do_EC_Disk == 1 ) {
 
-        if (pt_spec->verbose>1) {
+        if (pt_spec->core.verbose>1) {
             printf("Disk\n");
-            printf("nu_start_EC_seed=%e\n", pt_spec->nu_start_Disk);
-            printf("nu_stop_EC_seed=%e\n", pt_spec->nu_stop_Disk);
+            printf("nu_start_EC_seed=%e\n", pt_spec->Disk.spec.nu_min);
+            printf("nu_stop_EC_seed=%e\n", pt_spec->Disk.spec.nu_max);
         }
-        nu_seed = pt_spec->nu_Disk;
-        n_seed = pt_spec->n_Disk;
+        nu_seed = pt_spec->Disk.spec.nu;
+        n_seed = pt_spec->Disk.spec.n_nu;
         comp_cooling += integrale_IC_cooling(pt_spec,
                 nu_seed,
                 n_seed,
                 nu_seed_size,
-                pt_spec->nu_start_Disk,
-                pt_spec->nu_stop_Disk,
+                pt_spec->Disk.spec.nu_min,
+                pt_spec->Disk.spec.nu_max,
                 gamma);
         //printf("%e\n",rate_comp);
     }
 
     //EC BLR
-    if (pt_spec->do_EC_BLR == 1 ) {
+    if (pt_spec->core.do_EC_BLR == 1 ) {
 
-    	if (pt_spec->verbose>1) {
+    	if (pt_spec->core.verbose>1) {
     		printf("BLR\n");
-    		printf("nu_start_EC_seed=%e\n", pt_spec->nu_start_BLR);
-    		printf("nu_stop_EC_seed=%e\n", pt_spec->nu_stop_BLR);
+    		printf("nu_start_EC_seed=%e\n", pt_spec->BLR.spec.nu_min);
+    		printf("nu_stop_EC_seed=%e\n", pt_spec->BLR.spec.nu_max);
     	}
-    	nu_seed = pt_spec->nu_BLR;
-    	n_seed = pt_spec->n_BLR;
+    	nu_seed = pt_spec->BLR.spec.nu;
+    	n_seed = pt_spec->BLR.spec.n_nu;
     	comp_cooling += integrale_IC_cooling(pt_spec,
                 nu_seed,
                 n_seed,
                 nu_seed_size,
-    			pt_spec->nu_start_BLR,
-    			pt_spec->nu_stop_BLR,
+    			pt_spec->BLR.spec.nu_min,
+    			pt_spec->BLR.spec.nu_max,
     			gamma);
     	//printf("%e\n",rate_comp);
     }
 
 
     //EC DT
-    if (pt_spec->do_EC_DT == 1 ) {
+    if (pt_spec->core.do_EC_DT == 1 ) {
 
-    	if (pt_spec->verbose>1) {
+    	if (pt_spec->core.verbose>1) {
     		printf("DT\n");
-    		printf("nu_start_EC_seed=%e\n", pt_spec->nu_start_DT);
-    		printf("nu_stop_EC_seed=%e\n", pt_spec->nu_stop_DT);
+    		printf("nu_start_EC_seed=%e\n", pt_spec->DT.spec.nu_min);
+    		printf("nu_stop_EC_seed=%e\n", pt_spec->DT.spec.nu_max);
     	}
-    	nu_seed = pt_spec->nu_DT;
-    	n_seed = pt_spec->n_DT;
+    	nu_seed = pt_spec->DT.spec.nu;
+    	n_seed = pt_spec->DT.spec.n_nu;
     	comp_cooling += integrale_IC_cooling(pt_spec,
                 nu_seed,
                 n_seed,
                 nu_seed_size,
-    			pt_spec->nu_start_DT,
-    			pt_spec->nu_stop_DT,
+    			pt_spec->DT.spec.nu_min,
+    			pt_spec->DT.spec.nu_max,
     			gamma);
     	//printf("%e\n",rate_comp);
     }
 
     //EC Star
-    if (pt_spec->do_EC_Star == 1 ) {
+    if (pt_spec->core.do_EC_Star == 1 ) {
 
-    	if (pt_spec->verbose>1) {
+    	if (pt_spec->core.verbose>1) {
     		printf("Star\n");
-    		printf("nu_start_EC_seed=%e\n", pt_spec->nu_start_Star);
-    		printf("nu_stop_EC_seed=%e\n", pt_spec->nu_stop_Star);
+    		printf("nu_start_EC_seed=%e\n", pt_spec->Star.spec.nu_min);
+    		printf("nu_stop_EC_seed=%e\n", pt_spec->Star.spec.nu_max);
     	}
-    	nu_seed = pt_spec->nu_Star;
-    	n_seed = pt_spec->n_Star;
+    	nu_seed = pt_spec->Star.spec.nu;
+    	n_seed = pt_spec->Star.spec.n_nu;
     	comp_cooling += integrale_IC_cooling(pt_spec,
                 nu_seed,
                 n_seed,
                 nu_seed_size,
-    			pt_spec->nu_start_Star,
-    			pt_spec->nu_stop_Star,
+    			pt_spec->Star.spec.nu_min,
+    			pt_spec->Star.spec.nu_max,
     			gamma);
     	//printf("%e\n",rate_comp);
     }
 
     //EC CMB
-    if (pt_spec->do_EC_CMB == 1 ) {
+    if (pt_spec->core.do_EC_CMB == 1 ) {
 
-    	if (pt_spec->verbose>1) {
+    	if (pt_spec->core.verbose>1) {
     		printf("CMB\n");
-    		printf("nu_start_EC_seed=%e\n", pt_spec->nu_start_CMB);
-    		printf("nu_stop_EC_seed=%e\n", pt_spec->nu_stop_CMB);
+    		printf("nu_start_EC_seed=%e\n", pt_spec->CMB.spec.nu_min);
+    		printf("nu_stop_EC_seed=%e\n", pt_spec->CMB.spec.nu_max);
     	}
-    	nu_seed = pt_spec->nu_CMB;
-    	n_seed = pt_spec->n_CMB;
+    	nu_seed = pt_spec->CMB.spec.nu;
+    	n_seed = pt_spec->CMB.spec.n_nu;
     	comp_cooling += integrale_IC_cooling(pt_spec,
                 nu_seed,
                 n_seed,
                 nu_seed_size,
-    			pt_spec->nu_start_CMB,
-    			pt_spec->nu_stop_CMB,
+    			pt_spec->CMB.spec.nu_min,
+    			pt_spec->CMB.spec.nu_max,
     			gamma);
     	//printf("%e\n",rate_comp);
     }
@@ -623,7 +623,7 @@ double integrale_IC_cooling(struct blob *pt, const double *nu_seed, const double
         i++;
     }
 
-    if (pt->verbose>1) {
+    if (pt->core.verbose>1) {
         printf("***** Integrale IC cooling ******\n");
         printf("i=%d\n", i);
         printf("nu=%e a=%e i=%d\n", nu_seed[i], a, i);
@@ -652,7 +652,7 @@ double integrale_IC_cooling(struct blob *pt, const double *nu_seed, const double
         y_nu1 = y_nu2;
         i++;
     }
-    integr_nu *= gamma * gamma * pt->COST_IC_COOLING;
+    integr_nu *= gamma * gamma * pt->core.COST_IC_COOLING;
     //printf("integr_nu=%e\n",integr_nu);
     //============================================================
     //lo 0.5 viene dalla regola del trapezio dell'integrale in nu

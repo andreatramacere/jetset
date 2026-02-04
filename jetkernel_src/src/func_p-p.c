@@ -47,8 +47,8 @@ unsigned int E_min_p_grid_even(struct blob *pt, double * gamma_p_grid, double E_
     double  gamma_p_min;
     unsigned i_start_out;
     i_start_out=i_start;
-    if (E_start_TeV<pt->E_th_pp_delta_approx){
-        E_start_TeV=pt->E_th_pp_delta_approx;
+    if (E_start_TeV<pt->PP_gamma.E_th_pp_delta_approx){
+        E_start_TeV=pt->PP_gamma.E_th_pp_delta_approx;
     }
     gamma_p_min =  E_start_TeV/ MPC2_TeV;
     while ((gamma_p_grid[i_start_out] < gamma_p_min) && (i_start_out < gamma_p_grid_size)) {
@@ -71,11 +71,11 @@ unsigned int E_min_p_grid_even(struct blob *pt, double * gamma_p_grid, double E_
 double  check_pp_kernel(double res,struct blob *pt,double E_p_TeV, double x ){
     double res_out;
     res_out=res;
-    if (E_p_TeV<pt->E_th_pp_delta_approx){
+    if (E_p_TeV<pt->PP_gamma.E_th_pp_delta_approx){
         res_out=0.0;
 
     }
-    if (x<pt->E_pp_x_delta_approx){
+    if (x<pt->PP_gamma.E_pp_x_delta_approx){
         res_out=0.0;
 
     }
@@ -110,12 +110,12 @@ double rate_electrons_pp(struct blob *pt, double Gamma_e, int eval_only_racc) {
     //pt->MPI_kernel_delta_Emin=MPICC2_TeV;
 
 
-    //if (pt->set_pp_racc_elec == 0) {
-        //pt->set_pp_racc_elec = 1;
-    Ee_TeV =  pt->E_th_pp_delta_approx;
-    pt->E_out_e_TeV_pp=Ee_TeV;
+    //if (pt->PP_gamma.set_pp_racc_elec == 0) {
+        //pt->PP_gamma.set_pp_racc_elec = 1;
+    Ee_TeV =  pt->PP_gamma.E_th_pp_delta_approx;
+    pt->PP_gamma.E_out_e_TeV_pp=Ee_TeV;
     
-    i_start = E_min_p_grid_even(pt,pt->griglia_gamma_Np_log,Ee_TeV, 0, pt->gamma_grid_size );
+    i_start = E_min_p_grid_even(pt,pt->emitters.griglia_gamma_Np_log,Ee_TeV, 0, pt->emitters.gamma_grid_size );
     if (eval_only_racc>0){
         //Eq. 71
         a2 = integrale_pp_second_high_en_rate(pf_K, Ee_TeV, pt, i_start);
@@ -125,15 +125,15 @@ double rate_electrons_pp(struct blob *pt, double Gamma_e, int eval_only_racc) {
         pp_racc_elec = a2 / a1;
         return pp_racc_elec;
     }else{
-        pp_racc_elec=pt->pp_racc_elec;
+        pp_racc_elec=pt->PP_gamma.pp_racc_elec;
     }
         
     //}
     Ee_TeV = Gamma_e * MEC2_TeV;
-    pt->E_out_e_TeV_pp=Ee_TeV;
+    pt->PP_gamma.E_out_e_TeV_pp=Ee_TeV;
     //Eq. 71
-    if (Ee_TeV > pt->E_th_pp_delta_approx) {
-        i_start = E_min_p_grid_even(pt,pt->griglia_gamma_Np_log,E_min_e_pp(Ee_TeV,pt), 0, pt->gamma_grid_size );
+    if (Ee_TeV > pt->PP_gamma.E_th_pp_delta_approx) {
+        i_start = E_min_p_grid_even(pt,pt->emitters.griglia_gamma_Np_log,E_min_e_pp(Ee_TeV,pt), 0, pt->emitters.gamma_grid_size );
         //i_start=0;
         res= integrale_pp_second_high_en_rate(pf_K, Ee_TeV, pt, i_start);
     } else {        
@@ -150,7 +150,7 @@ double E_min_e_pp(double E_e, struct blob *pt){
     return (E_e/psida)+(MPICC2_TeV * MPICC2_TeV)*psida/ (4 * E_e);
 }
 double E_max_e_pp(struct blob *pt){
-    return (pt->gmax*MPC2_TeV - MPC2_TeV);
+    return (pt->emitters.gmax*MPC2_TeV - MPC2_TeV);
 }
 
 double f_mu_2_pp(double x, double r){
@@ -203,8 +203,8 @@ double pp_electron_kernel_delta(struct blob *pt,double E_pi, double pp_racc_elec
     gamma_p = Ep0_TeV / MPC2_TeV;
     //0.573 from Kelner et al. 2006, after Eq. 36
     qe = pp_racc_elec / (Kpi) * sigma_pp_inel(Ep0_TeV)*
-        N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
-    f=f_mu_2_pp(( pt->E_out_e_TeV_pp/E_pi),0.573);
+        N_distr_interp(pt->emitters.gamma_grid_size, gamma_p, pt->emitters.griglia_gamma_Np_log, pt->emitters.Np);
+    f=f_mu_2_pp(( pt->PP_gamma.E_out_e_TeV_pp/E_pi),0.573);
     res =2.0*qe*f/E_pi;
     return res;
 }
@@ -217,8 +217,8 @@ double pp_electrons_kernel(double gamma_p, double E_out_TeV, struct blob *pt, un
     Ep_TeV = gamma_p*MPC2_TeV;
     x=E_out_TeV / Ep_TeV;
     res= sigma_pp_inel(Ep_TeV) *
-            pt->Np[i_griglia_gamma] *
-            F_electrons((x), Ep_TeV) / pt->griglia_gamma_Np_log[i_griglia_gamma];
+            pt->emitters.Np[i_griglia_gamma] *
+            F_electrons((x), Ep_TeV) / pt->emitters.griglia_gamma_Np_log[i_griglia_gamma];
     return check_pp_kernel(res,pt,Ep_TeV,x);
 }
 
@@ -274,11 +274,11 @@ double rate_neutrino_mu_1_pp(struct blob *pt, double nu_nu_mu, int eval_only_rac
 
     //pt->MPI_kernel_delta=MPICC2_TeV;
     //pt->MPI_kernel_delta_Emin=MPICC2_TeV;
-    //if (pt->set_pp_racc_nu_mu == 0) {
-    //    pt->set_pp_racc_nu_mu = 1;
-    Emu_TeV =  pt->E_th_pp_delta_approx;
+    //if (pt->PP_gamma.set_pp_racc_nu_mu == 0) {
+    //    pt->PP_gamma.set_pp_racc_nu_mu = 1;
+    Emu_TeV =  pt->PP_gamma.E_th_pp_delta_approx;
     
-    i_start = E_min_p_grid_even(pt,pt->griglia_gamma_Np_log,Emu_TeV, 0, pt->gamma_grid_size );
+    i_start = E_min_p_grid_even(pt,pt->emitters.griglia_gamma_Np_log,Emu_TeV, 0, pt->emitters.gamma_grid_size );
     
     //Eq. 71
     if (eval_only_racc>0){
@@ -289,7 +289,7 @@ double rate_neutrino_mu_1_pp(struct blob *pt, double nu_nu_mu, int eval_only_rac
         pp_racc_nu_mu = a2 / a1;
         return pp_racc_nu_mu;
     }else{
-        pp_racc_nu_mu=pt->pp_racc_nu_mu;
+        pp_racc_nu_mu=pt->PP_gamma.pp_racc_nu_mu;
     }
  
     //}
@@ -297,9 +297,9 @@ double rate_neutrino_mu_1_pp(struct blob *pt, double nu_nu_mu, int eval_only_rac
 
     Emu_TeV =nu_nu_mu*HPLANCK;
     
-    if (Emu_TeV > pt->E_th_pp_delta_approx) {
+    if (Emu_TeV > pt->PP_gamma.E_th_pp_delta_approx) {
         //Eq. 71
-        i_start = E_min_p_grid_even(pt,pt->griglia_gamma_Np_log,Emu_TeV, 0, pt->gamma_grid_size );
+        i_start = E_min_p_grid_even(pt,pt->emitters.griglia_gamma_Np_log,Emu_TeV, 0, pt->emitters.gamma_grid_size );
         //i_start=0;
         return integrale_pp_second_high_en_rate(pf_K,Emu_TeV, pt, i_start);
         //printf("i_start=%d gamma_p_min=%e\n", i_start, gamma_p_min);
@@ -320,7 +320,7 @@ double E_min_neutrino_mu_1_pp(double E_mu, struct blob * pt){
     return (E_mu/psida)+(MPICC2_TeV * MPICC2_TeV) / (4 * E_mu)*psida;
 }
 double E_max_neutrino_mu_1_pp(struct blob *pt){
-    return (pt->gmax*MPC2_TeV - MPC2_TeV);
+    return (pt->emitters.gmax*MPC2_TeV - MPC2_TeV);
 }
 
 
@@ -333,7 +333,7 @@ double pp_neutrino_mu_1_kernel_delta(struct blob *pt,double E_pi, double pp_racc
     gamma_p = Ep0_TeV / MPC2_TeV;
    
     q_nu_mu = pp_racc_nu_mu / (Kpi) * sigma_pp_inel(Ep0_TeV)*
-            N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
+            N_distr_interp(pt->emitters.gamma_grid_size, gamma_p, pt->emitters.griglia_gamma_Np_log, pt->emitters.Np);
     q_nu_mu = 2.0 * q_nu_mu / sqrt(E_pi * E_pi - MPICC2_TeV * MPICC2_TeV);
 
     return q_nu_mu;
@@ -347,8 +347,8 @@ double pp_neturino_mu_1_kernel(double gamma_p, double E_out_TeV, struct blob *pt
     Ep_TeV = gamma_p*MPC2_TeV;
     x=E_out_TeV / Ep_TeV;
     res= sigma_pp_inel(Ep_TeV) *
-            pt->Np[i_griglia_gamma] *
-            F_neutrino_mu_1((E_out_TeV / Ep_TeV), Ep_TeV) / pt->griglia_gamma_Np_log[i_griglia_gamma];
+            pt->emitters.Np[i_griglia_gamma] *
+            F_neutrino_mu_1((E_out_TeV / Ep_TeV), Ep_TeV) / pt->emitters.griglia_gamma_Np_log[i_griglia_gamma];
      return check_pp_kernel(res,pt,Ep_TeV,x);
 }
 
@@ -432,11 +432,11 @@ double rate_gamma_pp(struct blob *pt, double nu_out, int eval_only_racc) {
     //to find the connection between the standard kernel and the delta-approx
     // At 100 GeV
     //set_pp_racc_gamma=0 means you have to evaluate the connection factor
-    //if (pt->set_pp_racc_gamma == 0) {
-    //    pt->set_pp_racc_gamma = 1;
-    E_gamma_TeV =  pt->E_th_pp_delta_approx;
+    //if (pt->PP_gamma.set_pp_racc_gamma == 0) {
+    //    pt->PP_gamma.set_pp_racc_gamma = 1;
+    E_gamma_TeV =  pt->PP_gamma.E_th_pp_delta_approx;
     
-    i_start = E_min_p_grid_even(pt,pt->griglia_gamma_Np_log,E_gamma_TeV, 0, pt->gamma_grid_size );
+    i_start = E_min_p_grid_even(pt,pt->emitters.griglia_gamma_Np_log,E_gamma_TeV, 0, pt->emitters.gamma_grid_size );
     //Eq. 71
     pf_K = &pp_gamma_kernel;
     if (eval_only_racc>0){
@@ -450,16 +450,16 @@ double rate_gamma_pp(struct blob *pt, double nu_out, int eval_only_racc) {
         return pp_racc_gamma;
     }
     else{
-        pp_racc_gamma=pt->pp_racc_gamma;
+        pp_racc_gamma=pt->PP_gamma.pp_racc_gamma;
     }
    // }
 
     E_gamma_TeV = nu_out * HPLANCK_TeV;
 
     //Eq. 71
-    if (E_gamma_TeV > pt->E_th_pp_delta_approx) {
+    if (E_gamma_TeV > pt->PP_gamma.E_th_pp_delta_approx) {
         pf_K = &pp_gamma_kernel;
-        i_start = E_min_p_grid_even(pt,pt->griglia_gamma_Np_log,E_gamma_TeV, 0, pt->gamma_grid_size );
+        i_start = E_min_p_grid_even(pt,pt->emitters.griglia_gamma_Np_log,E_gamma_TeV, 0, pt->emitters.gamma_grid_size );
         //i_start=0;
         return integrale_pp_second_high_en_rate(pf_K, E_gamma_TeV, pt, i_start);
 
@@ -475,7 +475,7 @@ double E_min_gamma_pp(double E_gamma, struct blob *pt){
     return (E_gamma)+(MPI0C2_TeV * MPI0C2_TeV) / (4 * E_gamma);
 }
 double E_max_gamma_pp(struct blob *pt){
-    return (pt->gmax*MPC2_TeV - MPC2_TeV);
+    return (pt->emitters.gmax*MPC2_TeV - MPC2_TeV);
 }
 
 double pp_gamma_kernel_delta(struct blob *pt, double E_pi, double pp_racc_gamma ) {
@@ -486,7 +486,7 @@ double pp_gamma_kernel_delta(struct blob *pt, double E_pi, double pp_racc_gamma 
     Ep0_TeV = MPC2_TeV+ E_pi/Kpi;
     gamma_p=Ep0_TeV/MPC2_TeV;
   
-    qpi = pp_racc_gamma / (Kpi)*sigma_pp_inel(Ep0_TeV) * N_distr_interp(pt->gamma_grid_size, gamma_p, pt->griglia_gamma_Np_log, pt->Np);
+    qpi = pp_racc_gamma / (Kpi)*sigma_pp_inel(Ep0_TeV) * N_distr_interp(pt->emitters.gamma_grid_size, gamma_p, pt->emitters.griglia_gamma_Np_log, pt->emitters.Np);
     return 2.0 * qpi / sqrt(E_pi * E_pi - MPI0C2_TeV * MPI0C2_TeV);
     
 }
@@ -499,8 +499,8 @@ double pp_gamma_kernel(double gamma_p, double E_out_TeV, struct blob *pt, unsign
     Ep_TeV = gamma_p*MPC2_TeV;
     x=E_out_TeV / Ep_TeV;  
     res= sigma_pp_inel(Ep_TeV) *
-            pt->Np[i_griglia_gamma] *
-            F_gamma((E_out_TeV / Ep_TeV), Ep_TeV) / pt->griglia_gamma_Np_log[i_griglia_gamma];
+            pt->emitters.Np[i_griglia_gamma] *
+            F_gamma((E_out_TeV / Ep_TeV), Ep_TeV) / pt->emitters.griglia_gamma_Np_log[i_griglia_gamma];
     return check_pp_kernel(res,pt,Ep_TeV,x);
 }
 
@@ -624,7 +624,7 @@ double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, 
     double integr;
     unsigned int ID_gamma;
     double *Integrand_over_gamma_grid;
-    Integrand_over_gamma_grid = (double *) calloc(pt->gamma_grid_size, sizeof (double));
+    Integrand_over_gamma_grid = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
     integr = 0;
 
     //define i_start
@@ -637,15 +637,15 @@ double integrale_pp_second_high_en_rate(double (*pf_pp_kernel) (double gamma_p, 
     if (i_start % 2 != 0) {
         i_start = max(0,i_start-1);
     }
-    if (i_start<=pt->gamma_grid_size -2){
+    if (i_start<=pt->emitters.gamma_grid_size -2){
         //sets to zero everything before i_start
         for (ID_gamma = 0; ID_gamma < i_start ; ID_gamma++){
             Integrand_over_gamma_grid[ID_gamma]=0;
         }
-        for (ID_gamma = i_start; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
-                Integrand_over_gamma_grid[ID_gamma] =pf_pp_kernel(pt->griglia_gamma_Np_log[ID_gamma], E_out_TeV, pt, ID_gamma);
+        for (ID_gamma = i_start; ID_gamma < pt->emitters.gamma_grid_size ; ID_gamma++){
+                Integrand_over_gamma_grid[ID_gamma] =pf_pp_kernel(pt->emitters.griglia_gamma_Np_log[ID_gamma], E_out_TeV, pt, ID_gamma);
         }
-        integr= integr_simp_grid_equilog(pt->griglia_gamma_Np_log, Integrand_over_gamma_grid, pt->gamma_grid_size);
+        integr= integr_simp_grid_equilog(pt->emitters.griglia_gamma_Np_log, Integrand_over_gamma_grid, pt->emitters.gamma_grid_size);
         
     }
     free(Integrand_over_gamma_grid);

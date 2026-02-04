@@ -974,10 +974,10 @@ def get_U_Sync_from_Ph(jet,re_eval_sync=False):
 
     """
     if re_eval_sync==True:
-        comp_old=jet.blob.do_SSC
-        jet.blob.do_SSC=0
+        comp_old=jet.blob.core.do_SSC
+        jet.blob.core.do_SSC=0
         jet.eval()
-        jet.blob.do_SSC=comp_old
+        jet.blob.core.do_SSC=comp_old
     
     return BlazarSED.Uph_Sync(jet.blob)
 
@@ -1160,7 +1160,7 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
 #     jet.set_IC_mode('off')
 #
 #
-#     #nu_IC_blob=convert_nu_to_blob(nu_IC_data,rest_frame,blob.beam_obj,blob.z_cosm)
+#     #nu_IC_blob=convert_nu_to_blob(nu_IC_data,rest_frame,blob.core.beam_obj,blob.core.z_cosm)
 #     #target_nu_blob = SED.MEC2 * SED.MEC2 / (SED.HPLANCK * SED.HPLANCK * nu_IC_blob)
 #     target_nu_obs=BlazarSED.MEC2 * BlazarSED.MEC2 / (BlazarSED.HPLANCK * BlazarSED.HPLANCK * nu_IC_data)
 #     #print nu_IC_blob,target_nu,target_nu*nu_IC_blob
@@ -1190,7 +1190,7 @@ def constr_B_from_nu_peaks(jet,nu_p_S,nu_p_IC,rest_frame,B_min,B_max,beaming,par
 #         nu_IC_data=sp.array([nu_IC_data ])
 #
 #     for i in range(len(target_nu_obs)):
-#         #print nuFnu_target,blob.beam_obj,blob.z_cosm,blob.dist
+#         #print nuFnu_target,blob.core.beam_obj,blob.core.z_cosm,blob.core.dist
 #
 #
 #

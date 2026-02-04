@@ -17,63 +17,63 @@
 //=========================================================================================
 
 void show_blob(struct blob pt ) {
-    printf("verbose=%d\n", pt.verbose);
-    printf("path=%s\n", pt.path);
-    printf("STEM=%s\n", pt.STEM);
-    printf("do_Sync=%d\n", pt.do_Sync);
-    printf("do_SSC=%d\n", pt.do_SSC);
-    printf("MODE=%s\n", pt.MODE);
-    printf("PARTICLE=%s\n", pt.PARTICLE);
-    printf("nu_seed_size=%d\n", pt.nu_seed_size);
-    printf("nu_IC_size=%d\n", pt.nu_IC_size);
-    printf("nu_start_Sync=%e\n", pt.nu_start_Sync);
-    printf("nu_stop_Sync=%e\n", pt.nu_stop_Sync);
-    printf("nu_start_SSC=%e\n", pt.nu_start_SSC);
-    printf("nu_stop_SSC=%e\n", pt.nu_stop_SSC);
-    printf("nu_grid_size=%d\n", pt.nu_grid_size);
-    printf("nu_start_grid=%e\n", pt.nu_start_grid);
-    printf("nu_stop_grid=%e\n", pt.nu_stop_grid);
-    printf("B=%e\n", pt.B);
-    printf("R=%e\n", pt.R);
-    printf("BulkFactor=%e\n", pt.BulkFactor);
-    printf("theta=%e\n", pt.theta);
-    printf("z_cosm=%e\n", pt.z_cosm);
-    printf("NH_pp=%e\n", pt.NH_pp);
-    printf("N=%e\n", pt.N);
-    printf("Norm_distr=%d\n", pt.Norm_distr);
-    printf("DISTR=%s\n", pt.DISTR);
-    printf("p=%e\n", pt.p);
-    printf("p_1=%e\n", pt.p_1);
-    printf("gamma_break=%e\n", pt.gamma_break);
-    printf("gamma_cut=%e\n", pt.gamma_cut);
-    printf("spit_index=%e\n", pt.spit_index);
-    printf("spit_temp=%e\n", pt.spit_temp);
-    printf("spit_gamma_th=%e\n", pt.spit_gamma_th);
-    printf("r=%e\n", pt.r);
-    printf("s=%e\n", pt.s);
-    printf("gamma0_log_parab(lp,lppl)=%e\n", pt.gamma0_log_parab);
-    printf("gammap_log_parab(lpep)=%e\n", pt.gammap_log_parab);
-    printf("gmin=%e\n", pt.gmin);
-    printf("gmax=%e\n", pt.gmax);
-    printf("do_EC_Disk=%d\n", pt.do_EC_Disk);
-    printf("do_EC_BLR=%d\n", pt.do_EC_BLR);
-    printf("do_EC_DT=%d\n", pt.do_EC_DT);
-    printf("disk type =%s\n", pt.disk_type);
-    printf("nu_start_EC_BLR %e\n", pt.nu_start_EC_BLR);
-    printf("nu_stop_EC_BLR %e\n", pt.nu_stop_EC_BLR);
-    printf("Lum Diks %e\n", pt.L_Disk);
-    printf("tau BLR %e\n", pt.tau_BLR);
-    printf("R_inner_Sw %e (Rs)\n", pt.R_inner_Sw);
-    printf("R_ext_Sw %e (Rs)\n", pt.R_ext_Sw);
-    printf("accr eff %e \n", pt.accr_eff);
-    printf("T disk max (T max for MultiBB) %e\n", pt.T_Disk);
-    printf("dist disk BLR (cm))%e\n", pt.R_BLR_in);
-    printf("test array=%e\n", pt.nuF_nu_SSC_obs[0]);
-    printf("nu_start_EC_DT %e\n", pt.nu_start_EC_DT);
-    printf("nu_stop_EC_DT %e\n", pt.nu_stop_EC_DT);
-    printf("T_DT (T Dusty Torus) %e\n", pt.T_DT);
-    printf("dist disk DT (cm))%e\n", pt.R_DT);
-    printf("tau DT %e\n", pt.tau_DT);
+    printf("verbose=%d\n", pt.core.verbose);
+    printf("path=%s\n", pt.core.path);
+    printf("STEM=%s\n", pt.core.STEM);
+    printf("do_Sync=%d\n", pt.core.do_Sync);
+    printf("do_SSC=%d\n", pt.core.do_SSC);
+    printf("MODE=%s\n", pt.core.MODE);
+    printf("PARTICLE=%s\n", pt.core.PARTICLE);
+    printf("nu_seed_size=%d\n", pt.core.nu_seed_size);
+    printf("nu_IC_size=%d\n", pt.core.nu_IC_size);
+    printf("nu_start_Sync=%e\n", pt.Sync.spec.nu_min);
+    printf("nu_stop_Sync=%e\n", pt.Sync.spec.nu_max);
+    printf("nu_start_SSC=%e\n", pt.SSC.spec.nu_min);
+    printf("nu_stop_SSC=%e\n", pt.SSC.spec.nu_max);
+    printf("nu_grid_size=%d\n", pt.core.nu_grid_size);
+    printf("nu_start_grid=%e\n", pt.core.nu_start_grid);
+    printf("nu_stop_grid=%e\n", pt.core.nu_stop_grid);
+    printf("B=%e\n", pt.core.B);
+    printf("R=%e\n", pt.core.R);
+    printf("BulkFactor=%e\n", pt.core.BulkFactor);
+    printf("theta=%e\n", pt.core.theta);
+    printf("z_cosm=%e\n", pt.core.z_cosm);
+    printf("NH_pp=%e\n", pt.PP_gamma.NH_pp);
+    printf("N=%e\n", pt.emitters.N);
+    printf("Norm_distr=%d\n", pt.emitters.Norm_distr);
+    printf("DISTR=%s\n", pt.core.DISTR);
+    printf("p=%e\n", pt.emitters.p);
+    printf("p_1=%e\n", pt.emitters.p_1);
+    printf("gamma_break=%e\n", pt.emitters.gamma_break);
+    printf("gamma_cut=%e\n", pt.emitters.gamma_cut);
+    printf("spit_index=%e\n", pt.emitters.spit_index);
+    printf("spit_temp=%e\n", pt.emitters.spit_temp);
+    printf("spit_gamma_th=%e\n", pt.emitters.spit_gamma_th);
+    printf("r=%e\n", pt.emitters.r);
+    printf("s=%e\n", pt.emitters.s);
+    printf("gamma0_log_parab(lp,lppl)=%e\n", pt.emitters.gamma0_log_parab);
+    printf("gammap_log_parab(lpep)=%e\n", pt.emitters.gammap_log_parab);
+    printf("gmin=%e\n", pt.emitters.gmin);
+    printf("gmax=%e\n", pt.emitters.gmax);
+    printf("do_EC_Disk=%d\n", pt.core.do_EC_Disk);
+    printf("do_EC_BLR=%d\n", pt.core.do_EC_BLR);
+    printf("do_EC_DT=%d\n", pt.core.do_EC_DT);
+    printf("disk type =%s\n", pt.core.disk_type);
+    printf("nu_start_EC_BLR %e\n", pt.BLR.ec.spec.nu_min);
+    printf("nu_stop_EC_BLR %e\n", pt.BLR.ec.spec.nu_max);
+    printf("Lum Diks %e\n", pt.Disk.L_Disk);
+    printf("tau BLR %e\n", pt.BLR.tau_BLR);
+    printf("R_inner_Sw %e (Rs)\n", pt.Disk.R_inner_Sw);
+    printf("R_ext_Sw %e (Rs)\n", pt.Disk.R_ext_Sw);
+    printf("accr eff %e \n", pt.Disk.accr_eff);
+    printf("T disk max (T max for MultiBB) %e\n", pt.Disk.T_Disk);
+    printf("dist disk BLR (cm))%e\n", pt.BLR.R_BLR_in);
+    printf("test array=%e\n", pt.SSC.spec.nuFnu_obs[0]);
+    printf("nu_start_EC_DT %e\n", pt.DT.ec.spec.nu_min);
+    printf("nu_stop_EC_DT %e\n", pt.DT.ec.spec.nu_max);
+    printf("T_DT (T Dusty Torus) %e\n", pt.DT.T_DT);
+    printf("dist disk DT (cm))%e\n", pt.DT.R_DT);
+    printf("tau DT %e\n", pt.DT.tau_DT);
 }
 
 void show_temp_ev(  struct temp_ev pt_ev){
@@ -181,169 +181,169 @@ struct blob MakeBlob() {
 
     struct blob spettro_root;
 
-    spettro_root.N_THREADS = 0;
-    spettro_root.spec_array_size=static_spec_arr_size;
+    spettro_root.core.N_THREADS = 0;
+    spettro_root.core.spec_array_size=static_spec_arr_size;
 
-    spettro_root.WRITE_TO_FILE=0;
-    spettro_root.BESSEL_TABLE_DONE=0;
-    spettro_root.verbose = 0;
-    sprintf(spettro_root.path, "./");
-    sprintf(spettro_root.STEM, "TEST");
+    spettro_root.core.WRITE_TO_FILE=0;
+    spettro_root.core.BESSEL_TABLE_DONE=0;
+    spettro_root.core.verbose = 0;
+    sprintf(spettro_root.core.path, "./");
+    sprintf(spettro_root.core.STEM, "TEST");
 
-    sprintf(spettro_root.PARTICLE, "electrons");
-    spettro_root.do_Sync = 1;
-    spettro_root.Sync_kernel=1;
-    spettro_root.do_SSC = 1;
-    spettro_root.do_IC=1;
-    spettro_root.do_pp_gamma=0;
-    spettro_root.do_bremss_ep=0;
-    //spettro_root.set_pp_racc_elec = 0;
-    //spettro_root.set_pp_racc_gamma = 0;
-    //spettro_root.set_pp_racc_nu_mu = 0;
-    spettro_root.pp_racc_elec = 1.0;
-    spettro_root.pp_racc_gamma = 1.0;
-    spettro_root.pp_racc_nu_mu = 1.0;
-    spettro_root.E_th_pp_delta_approx=0.1;
-    spettro_root.E_pp_x_delta_approx=0.001;
+    sprintf(spettro_root.core.PARTICLE, "electrons");
+    spettro_root.core.do_Sync = 1;
+    spettro_root.core.Sync_kernel=1;
+    spettro_root.core.do_SSC = 1;
+    spettro_root.core.do_IC=1;
+    spettro_root.PP_gamma.do_pp_gamma=0;
+    spettro_root.Bremss_ep.do_bremss_ep=0;
+    //spettro_root.PP_gamma.set_pp_racc_elec = 0;
+    //spettro_root.PP_gamma.set_pp_racc_gamma = 0;
+    //spettro_root.PP_gamma.set_pp_racc_nu_mu = 0;
+    spettro_root.PP_gamma.pp_racc_elec = 1.0;
+    spettro_root.PP_gamma.pp_racc_gamma = 1.0;
+    spettro_root.PP_gamma.pp_racc_nu_mu = 1.0;
+    spettro_root.PP_gamma.E_th_pp_delta_approx=0.1;
+    spettro_root.PP_gamma.E_pp_x_delta_approx=0.001;
     
-    spettro_root.IC_adaptive_e_binning =0;
-    spettro_root.do_IC_down_scattering =0;
-    spettro_root.bulk_compton = 0;
-    sprintf(spettro_root.MODE, "fast");
+    spettro_root.core.IC_adaptive_e_binning =0;
+    spettro_root.core.do_IC_down_scattering =0;
+    spettro_root.core.bulk_compton = 0;
+    sprintf(spettro_root.core.MODE, "fast");
     //GRID SIZE FOR SEED
-    spettro_root.nu_seed_size = 200;
+    spettro_root.core.nu_seed_size = 200;
     //GRID SIZE FOR IC
-    spettro_root.nu_IC_size = 100;
-    spettro_root.gamma_grid_size = 1000;
-    spettro_root.gamma_custom_grid_size=1000;
-    spettro_root.nu_start_Sync = 1e8;
-    spettro_root.nu_stop_Sync = 1e20;
-    spettro_root.nu_start_SSC = 1e16;
-    spettro_root.nu_stop_SSC = 1e27;
+    spettro_root.core.nu_IC_size = 100;
+    spettro_root.emitters.gamma_grid_size = 1000;
+    spettro_root.emitters.gamma_custom_grid_size=1000;
+    spettro_root.Sync.spec.nu_min = 1e8;
+    spettro_root.Sync.spec.nu_max = 1e20;
+    spettro_root.SSC.spec.nu_min = 1e16;
+    spettro_root.SSC.spec.nu_max = 1e27;
     //GRID SIZE FOR INTERP
-    spettro_root.nu_grid_size = 200;
-    spettro_root.nu_start_grid = 1e8;
-    spettro_root.nu_stop_grid = 1e27;
-    spettro_root.emiss_lim=1.0E-120;
-    spettro_root.B = 0.1;
-    spettro_root.sin_psi = 1.0;
-    spettro_root.R = 1e15;
-    spettro_root.h_sh = 1;
-    spettro_root.R_ext_sh =  0;
-    spettro_root.R_sh =  spettro_root.R;
-    sprintf(spettro_root.GEOMETRY, "spherical");
-    sprintf(spettro_root.BEAMING_EXPR, "delta");
-    spettro_root.BulkFactor = 10;
-    spettro_root.beta_Gamma=eval_beta_gamma(spettro_root.BulkFactor);
-    spettro_root.theta = 3.5;
-    spettro_root.beam_obj=10.0;
-    spettro_root.z_cosm = 0.1;
-    spettro_root.NH_pp = 0.1;
-    spettro_root.NH_cold_to_rel_e = 0.1;
-    spettro_root.N = 10;
-    spettro_root.Norm_distr = 1;
+    spettro_root.core.nu_grid_size = 200;
+    spettro_root.core.nu_start_grid = 1e8;
+    spettro_root.core.nu_stop_grid = 1e27;
+    spettro_root.core.emiss_lim=1.0E-120;
+    spettro_root.core.B = 0.1;
+    spettro_root.Sync.sin_psi = 1.0;
+    spettro_root.core.R = 1e15;
+    spettro_root.core.h_sh = 1;
+    spettro_root.core.R_ext_sh =  0;
+    spettro_root.core.R_sh =  spettro_root.core.R;
+    sprintf(spettro_root.core.GEOMETRY, "spherical");
+    sprintf(spettro_root.core.BEAMING_EXPR, "delta");
+    spettro_root.core.BulkFactor = 10;
+    spettro_root.core.beta_Gamma=eval_beta_gamma(spettro_root.core.BulkFactor);
+    spettro_root.core.theta = 3.5;
+    spettro_root.core.beam_obj=10.0;
+    spettro_root.core.z_cosm = 0.1;
+    spettro_root.PP_gamma.NH_pp = 0.1;
+    spettro_root.emitters.NH_cold_to_rel_e = 0.1;
+    spettro_root.emitters.N = 10;
+    spettro_root.emitters.Norm_distr = 1;
     //spettro_root.Norm_distr_L_e_Sync=-1.0;
-    spettro_root.Distr_e_done = 0;
-    sprintf(spettro_root.DISTR, "lp");
-    spettro_root.grid_bounded_to_gamma=1;
-    spettro_root.p = 2.0;
-    spettro_root.p_1 = 3.0;
-    spettro_root.gamma_break = 1.0e4;
-    spettro_root.gamma_cut = 1.e4;
-    spettro_root.spit_index = 2.4;
-    spettro_root.spit_temp = 1.0e3;
-    spettro_root.spit_gamma_th = 1.0e4;
-    spettro_root.r = 0.4;
-    spettro_root.s = 2.0;
-    spettro_root.gamma0_log_parab = 1.0e4;
-    spettro_root.gammap_log_parab = 1.0e4;
-    spettro_root.gamma_inj = 1.0e3;
-    spettro_root.gmin = 1.0e1;
-    spettro_root.gmax = 1.0e5;
-    spettro_root.gmin_secondaries=spettro_root.gmin;
-    spettro_root.gmax_secondaries=spettro_root.gmax*mp_by_me;
-    spettro_root.gmin_griglia = -1.0;
-    spettro_root.gmax_griglia = -1.0;
-    spettro_root.gamma_pile_up=1E5;
-    spettro_root.gamma_pile_up_cut=5E5;
-    spettro_root.alpha_pile_up=1;
-    spettro_root.gamma_cooling_eq=0;
+    spettro_root.emitters.Distr_e_done = 0;
+    sprintf(spettro_root.core.DISTR, "lp");
+    spettro_root.emitters.grid_bounded_to_gamma=1;
+    spettro_root.emitters.p = 2.0;
+    spettro_root.emitters.p_1 = 3.0;
+    spettro_root.emitters.gamma_break = 1.0e4;
+    spettro_root.emitters.gamma_cut = 1.e4;
+    spettro_root.emitters.spit_index = 2.4;
+    spettro_root.emitters.spit_temp = 1.0e3;
+    spettro_root.emitters.spit_gamma_th = 1.0e4;
+    spettro_root.emitters.r = 0.4;
+    spettro_root.emitters.s = 2.0;
+    spettro_root.emitters.gamma0_log_parab = 1.0e4;
+    spettro_root.emitters.gammap_log_parab = 1.0e4;
+    spettro_root.emitters.gamma_inj = 1.0e3;
+    spettro_root.emitters.gmin = 1.0e1;
+    spettro_root.emitters.gmax = 1.0e5;
+    spettro_root.emitters.gmin_secondaries=spettro_root.emitters.gmin;
+    spettro_root.emitters.gmax_secondaries=spettro_root.emitters.gmax*mp_by_me;
+    spettro_root.emitters.gmin_griglia = -1.0;
+    spettro_root.emitters.gmax_griglia = -1.0;
+    spettro_root.emitters.gamma_pile_up=1E5;
+    spettro_root.emitters.gamma_pile_up_cut=5E5;
+    spettro_root.emitters.alpha_pile_up=1;
+    spettro_root.emitters.gamma_cooling_eq=0;
 
-    spettro_root.EC_stat=0; 
-    spettro_root.EC_stat_orig=0;
+    spettro_root.core.EC_stat=0; 
+    spettro_root.core.EC_stat_orig=0;
     //spettro_root.EC_factor=1.0;
-    spettro_root.do_EC_Disk = 0;
-    spettro_root.do_EC_BLR = 0;
-    spettro_root.do_EC_DT = 0;
-    spettro_root.do_EC_CMB=0;
+    spettro_root.core.do_EC_Disk = 0;
+    spettro_root.core.do_EC_BLR = 0;
+    spettro_root.core.do_EC_DT = 0;
+    spettro_root.core.do_EC_CMB=0;
 
-    spettro_root.do_EC_Star=0;
-    spettro_root.do_Disk=0;
-    spettro_root.do_DT=0;
+    spettro_root.core.do_EC_Star=0;
+    spettro_root.core.do_Disk=0;
+    spettro_root.core.do_DT=0;
 
-    spettro_root.nu_planck_min_factor=1E-4;
-    spettro_root.nu_planck_max_factor=1E2;
-    spettro_root.mono_planck_min_factor=0.5;
-    spettro_root.mono_planck_max_factor=2.0;
-    sprintf(spettro_root.disk_type, "BB");
-    spettro_root.R_H=1E17;
-    spettro_root.R_H_orig = 1E17;
-    spettro_root.R_H_scale_factor=1.0;
-    spettro_root.R_ext_emit_factor=1.0;
+    spettro_root.core.nu_planck_min_factor=1E-4;
+    spettro_root.core.nu_planck_max_factor=1E2;
+    spettro_root.core.mono_planck_min_factor=0.5;
+    spettro_root.core.mono_planck_max_factor=2.0;
+    sprintf(spettro_root.core.disk_type, "BB");
+    spettro_root.core.R_H=1E17;
+    spettro_root.core.R_H_orig = 1E17;
+    spettro_root.core.R_H_scale_factor=1.0;
+    spettro_root.core.R_ext_emit_factor=1.0;
     //spettro_root.EC_theta_lim=5.0;
-    spettro_root.M_BH = 1E9;
+    spettro_root.Disk.M_BH = 1E9;
 
-    spettro_root.theta_n_int=50;
-    spettro_root.l_n_int=50;
-    spettro_root.nu_start_EC_Disk = 1e13;
-    spettro_root.nu_stop_EC_Disk = 1e26;
-    spettro_root.nu_start_EC_BLR = 1e13;
-    spettro_root.nu_stop_EC_BLR = 1e26;
-    spettro_root.nu_start_EC_DT = 1e13;
-    spettro_root.nu_stop_EC_BLR = 1e26;
-    spettro_root.nu_start_EC_CMB = 1e13;
-    spettro_root.nu_stop_EC_CMB = 1e30;
+    spettro_root.core.theta_n_int=50;
+    spettro_root.core.l_n_int=50;
+    spettro_root.Disk.ec.spec.nu_min = 1e13;
+    spettro_root.Disk.ec.spec.nu_max = 1e26;
+    spettro_root.BLR.ec.spec.nu_min = 1e13;
+    spettro_root.BLR.ec.spec.nu_max = 1e26;
+    spettro_root.DT.ec.spec.nu_min = 1e13;
+    spettro_root.BLR.ec.spec.nu_max = 1e26;
+    spettro_root.CMB.ec.spec.nu_min = 1e13;
+    spettro_root.CMB.ec.spec.nu_max = 1e30;
 
 
-    spettro_root.L_Disk = 1e47;
-    spettro_root.tau_BLR = 1e-1;
-    spettro_root.R_inner_Sw = 3.0;
-    spettro_root.R_ext_Sw = 500;
-    spettro_root.T_Disk = 1e5;
-    spettro_root.T_CMB_0=2.725;
-    spettro_root.accr_eff = 0.08;
-    spettro_root.R_BLR_in = 1e18;
-    spettro_root.R_BLR_out=spettro_root.R_BLR_in*2;
-    spettro_root.T_DT = 100;
-    spettro_root.R_DT = 5.0e18;
-    spettro_root.tau_DT = 1e-1;
-    spettro_root.L_Star = 1e33;
-    spettro_root.R_H_Star = 1e14;
-    spettro_root.T_Star =6000.;
-    spettro_root.theta_Star=90;
+    spettro_root.Disk.L_Disk = 1e47;
+    spettro_root.BLR.tau_BLR = 1e-1;
+    spettro_root.Disk.R_inner_Sw = 3.0;
+    spettro_root.Disk.R_ext_Sw = 500;
+    spettro_root.Disk.T_Disk = 1e5;
+    spettro_root.CMB.T_CMB_0=2.725;
+    spettro_root.Disk.accr_eff = 0.08;
+    spettro_root.BLR.R_BLR_in = 1e18;
+    spettro_root.BLR.R_BLR_out=spettro_root.BLR.R_BLR_in*2;
+    spettro_root.DT.T_DT = 100;
+    spettro_root.DT.R_DT = 5.0e18;
+    spettro_root.DT.tau_DT = 1e-1;
+    spettro_root.Star.L_Star = 1e33;
+    spettro_root.Star.R_H_Star = 1e14;
+    spettro_root.Star.T_Star =6000.;
+    spettro_root.Star.theta_Star=90;
 
-    spettro_root.gam=NULL;
-    spettro_root.Q_inj_e_second=NULL;
+    spettro_root.emitters.gam=NULL;
+    spettro_root.emitters.Q_inj_e_second=NULL;
 
-    spettro_root.Ne=NULL;
-    spettro_root.Ne_custom=NULL;
+    spettro_root.emitters.Ne=NULL;
+    spettro_root.emitters.Ne_custom=NULL;
     //spettro_root.Ne_IC=NULL;
-    spettro_root.Ne_jetset=NULL;
+    spettro_root.emitters.Ne_jetset=NULL;
     //spettro_root.Ne_stat=NULL;
     
-    spettro_root.griglia_gamma_Ne_log=NULL;
-    spettro_root.gamma_e_custom=NULL;
-    spettro_root.griglia_gamma_Ne_log_stat=NULL;
-    spettro_root.griglia_gamma_jetset_Ne_log=NULL;
+    spettro_root.emitters.griglia_gamma_Ne_log=NULL;
+    spettro_root.emitters.gamma_e_custom=NULL;
+    spettro_root.emitters.griglia_gamma_Ne_log_stat=NULL;
+    spettro_root.emitters.griglia_gamma_jetset_Ne_log=NULL;
 
-    spettro_root.Np=NULL;
-    spettro_root.Np_jetset=NULL;
-    spettro_root.Np_custom=NULL;
+    spettro_root.emitters.Np=NULL;
+    spettro_root.emitters.Np_jetset=NULL;
+    spettro_root.emitters.Np_custom=NULL;
      
-    spettro_root.griglia_gamma_Np_log=NULL;
-    spettro_root.griglia_gamma_jetset_Np_log=NULL;
-    spettro_root.gamma_p_custom=NULL;
-    spettro_root.Integrand_over_gamma_grid=NULL;
+    spettro_root.emitters.griglia_gamma_Np_log=NULL;
+    spettro_root.emitters.griglia_gamma_jetset_Np_log=NULL;
+    spettro_root.emitters.gamma_p_custom=NULL;
+    spettro_root.emitters.Integrand_over_gamma_grid=NULL;
     
     return spettro_root;
 }
@@ -355,34 +355,34 @@ struct blob MakeBlob() {
 
 //=========================================================================================
 void set_seed_freq_start(struct blob *pt_base){
-    //pt_base->nu_start_Sync = min(1e6, pt_base->nu_start_grid);
-    pt_base->nu_start_Sync = 1E6;
-    pt_base->NU_INT_STOP_Sync_SSC=0;
+    //pt_base->Sync.spec.nu_min = min(1e6, pt_base->core.nu_start_grid);
+    pt_base->Sync.spec.nu_min = 1E6;
+    pt_base->Sync.NU_INT_STOP_Sync_SSC=0;
     
-    pt_base->nu_stop_Sync = 1E20;
-    pt_base->nu_start_SSC = 1E14;
-    pt_base->NU_INT_STOP_COMPTON_SSC=0;
+    pt_base->Sync.spec.nu_max = 1E20;
+    pt_base->SSC.spec.nu_min = 1E14;
+    pt_base->SSC.NU_INT_STOP_COMPTON_SSC=0;
 
-    //pt_base->nu_stop_SSC = max(1e30, pt_base->nu_stop_grid);
-    pt_base->nu_stop_SSC=1E30;
+    //pt_base->SSC.spec.nu_max = max(1e30, pt_base->core.nu_stop_grid);
+    pt_base->SSC.spec.nu_max=1E30;
 
-    pt_base->nu_start_EC_Disk = 1E13;
-    //pt_base->nu_stop_EC_Disk =  max(1e30, pt_base->nu_stop_grid);
-    pt_base->nu_stop_EC_Disk =1E30;
-    pt_base->NU_INT_MAX_Disk=0;
+    pt_base->Disk.ec.spec.nu_min = 1E13;
+    //pt_base->Disk.ec.spec.nu_max =  max(1e30, pt_base->core.nu_stop_grid);
+    pt_base->Disk.ec.spec.nu_max =1E30;
+    pt_base->Disk.spec.NU_INT_MAX=0;
     
-    pt_base->nu_start_EC_BLR = 1E13;
-    //pt_base->nu_stop_EC_BLR =  max(1e30, pt_base->nu_stop_grid);
-    pt_base->nu_stop_EC_BLR = 1E30;
-    pt_base->NU_INT_MAX_BLR=0;
+    pt_base->BLR.ec.spec.nu_min = 1E13;
+    //pt_base->BLR.ec.spec.nu_max =  max(1e30, pt_base->core.nu_stop_grid);
+    pt_base->BLR.ec.spec.nu_max = 1E30;
+    pt_base->BLR.spec.NU_INT_MAX=0;
     
-    pt_base->nu_start_EC_DT = 1E13;
-    pt_base->NU_INT_MAX_DT=0;
-    pt_base->nu_start_EC_CMB = 1E13;
-    pt_base->NU_INT_MAX_CMB=0;
-    pt_base->NU_INT_MAX_Star=0;
-    //pt_base->nu_stop_EC_CMB =  max(1e30, pt_base->nu_stop_grid);
-    pt_base->nu_stop_EC_CMB = 1E30;
+    pt_base->DT.ec.spec.nu_min = 1E13;
+    pt_base->DT.spec.NU_INT_MAX=0;
+    pt_base->CMB.ec.spec.nu_min = 1E13;
+    pt_base->CMB.spec.NU_INT_MAX=0;
+    pt_base->Star.spec.NU_INT_MAX=0;
+    //pt_base->CMB.ec.spec.nu_max =  max(1e30, pt_base->core.nu_stop_grid);
+    pt_base->CMB.ec.spec.nu_max = 1E30;
 }
 
 
@@ -391,46 +391,46 @@ void InitRadiative(struct blob *pt_base,unsigned int update_EC){
     //========================================================
     // Geometry Setup
     //========================================================
-    pt_base->R_ext_sh =  pt_base->R_sh*(1+pt_base->h_sh);
+    pt_base->core.R_ext_sh =  pt_base->core.R_sh*(1+pt_base->core.h_sh);
     set_R_Sync(pt_base);
-    pt_base->Vol_region = V_region(pt_base);
-    pt_base->Surf_region = S_sphere(pt_base);
+    pt_base->core.Vol_region = V_region(pt_base);
+    pt_base->core.Surf_region = S_sphere(pt_base);
     SetBeaming(pt_base);
-    pt_base->beta_Gamma=eval_beta_gamma(pt_base->BulkFactor);
+    pt_base->core.beta_Gamma=eval_beta_gamma(pt_base->core.BulkFactor);
     
 
     
     //========================================================
     // Synchrotron Parameter Initialization
     //========================================================
-    pt_base->nu_B = (q_esu * pt_base->B) / (2 * pi * me_g * vluce_cm);
-    pt_base->UB = pow(pt_base->B, 2.0) / (8.0 * pi); /*dens. ener. B */
+    pt_base->Sync.nu_B = (q_esu * pt_base->core.B) / (2 * pi * me_g * vluce_cm);
+    pt_base->Sync.UB = pow(pt_base->core.B, 2.0) / (8.0 * pi); /*dens. ener. B */
     
-    if (pt_base->verbose>0) {
-        printf("gmin %e   gmax %e \n", pt_base->gmin, pt_base->gmax);
-        printf("UB=%e \n", pt_base->UB);
-        printf("nu_B_non_rel=%e \n", pt_base->nu_B);
-        printf("beaming factor =%e\n", pt_base->beam_obj);
+    if (pt_base->core.verbose>0) {
+        printf("gmin %e   gmax %e \n", pt_base->emitters.gmin, pt_base->emitters.gmax);
+        printf("UB=%e \n", pt_base->Sync.UB);
+        printf("nu_B_non_rel=%e \n", pt_base->Sync.nu_B);
+        printf("beaming factor =%e\n", pt_base->core.beam_obj);
     }
     
     //COSTANTI PER ALFA=FIXED E KERNEL DELTA O KERNEL 2
-    pt_base->C1_Sync_K53 = pow(3, 0.5) * pow(q_esu, 3.0) * pt_base->sin_psi;
-    pt_base->C1_Sync_K53 *= pt_base->B / (MEC2) * one_by_four_pi;
-    pt_base->C2_Sync_K53 = 2.0/(3*pt_base->nu_B* pt_base->sin_psi);
+    pt_base->Sync.C1_Sync_K53 = pow(3, 0.5) * pow(q_esu, 3.0) * pt_base->Sync.sin_psi;
+    pt_base->Sync.C1_Sync_K53 *= pt_base->core.B / (MEC2) * one_by_four_pi;
+    pt_base->Sync.C2_Sync_K53 = 2.0/(3*pt_base->Sync.nu_B* pt_base->Sync.sin_psi);
     
-    pt_base->C1_Sync_K_AVE= 4*pi*pow(3, 0.5) * pow(q_esu, 2.0)*pt_base->nu_B/(vluce_cm) * one_by_four_pi;
-    pt_base->C2_Sync_K_AVE=1.0/(3*pt_base->nu_B);
+    pt_base->Sync.C1_Sync_K_AVE= 4*pi*pow(3, 0.5) * pow(q_esu, 2.0)*pt_base->Sync.nu_B/(vluce_cm) * one_by_four_pi;
+    pt_base->Sync.C2_Sync_K_AVE=1.0/(3*pt_base->Sync.nu_B);
 
-    pt_base->C3_Sync_K53 = -1.0 * pow(3, 0.5) * pow(q_esu, 3.0) / (8 * pi * MEC2 * me_g);
+    pt_base->Sync.C3_Sync_K53 = -1.0 * pow(3, 0.5) * pow(q_esu, 3.0) / (8 * pi * MEC2 * me_g);
 
-    pt_base->COST_Sync_COOLING = SIGTH * vluce_cm/MEC2;
+    pt_base->Sync.COST_Sync_COOLING = SIGTH * vluce_cm/MEC2;
 
 
     //==================================
     //  Bessel Fucntion Setup
     //==================================
     //exit(1);
-    if (pt_base->BESSEL_TABLE_DONE == 0){
+    if (pt_base->core.BESSEL_TABLE_DONE == 0){
         printf("Bessel Functions\n");
         tabella_Bessel(pt_base);
     }
@@ -438,27 +438,27 @@ void InitRadiative(struct blob *pt_base,unsigned int update_EC){
     //========================================================
     // Compton Parameter Initialization
     //========================================================
-    pt_base->COST_IC_K1 = 3.0 * SIGTH * vluce_cm / 4.0;
-    pt_base->COST_IC_COOLING = (4.0/3.0) * SIGTH * vluce_cm*HPLANCK/MEC2;
+    pt_base->core.COST_IC_K1 = 3.0 * SIGTH * vluce_cm / 4.0;
+    pt_base->core.COST_IC_COOLING = (4.0/3.0) * SIGTH * vluce_cm*HPLANCK/MEC2;
 
 
     //========================================================
     // pp parameters initialization
     //========================================================
-    //pt_base->set_pp_racc_elec = 0;
-    //pt_base->set_pp_racc_gamma = 0;
-    //pt_base->set_pp_racc_nu_mu = 0;
-    //pt_base->pp_racc_elec = 1.0;
-    //pt_base->pp_racc_gamma = 1.0;
-    //pt_base->pp_racc_nu_mu = 1.0;
+    //pt_base->PP_gamma.set_pp_racc_elec = 0;
+    //pt_base->PP_gamma.set_pp_racc_gamma = 0;
+    //pt_base->PP_gamma.set_pp_racc_nu_mu = 0;
+    //pt_base->PP_gamma.pp_racc_elec = 1.0;
+    //pt_base->PP_gamma.pp_racc_gamma = 1.0;
+    //pt_base->PP_gamma.pp_racc_nu_mu = 1.0;
 
     //========================================================
     // EC  Initialization
     //========================================================
-    pt_base->R_H_orig=pt_base->R_H;
-    pt_base->EC_stat_orig = pt_base->EC_stat;
+    pt_base->core.R_H_orig=pt_base->core.R_H;
+    pt_base->core.EC_stat_orig = pt_base->core.EC_stat;
     if (update_EC>0){
-        if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1 || pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1 || pt_base->do_EC_CMB == 1 || pt_base->do_Disk==1 || pt_base->do_DT==1 || pt_base->do_Star==1) 
+        if (pt_base->core.do_EC_Disk == 1 || pt_base->core.do_EC_BLR == 1 || pt_base->core.do_EC_DT == 1  || pt_base->core.do_EC_Star == 1 || pt_base->core.do_EC_CMB == 1 || pt_base->core.do_Disk==1 || pt_base->core.do_DT==1 || pt_base->core.do_Star==1) 
             {
                 spectra_External_Fields(1, pt_base, 1);
         }
@@ -476,152 +476,156 @@ void Init(struct blob *pt_base, double luminosity_distance) {
     
     unsigned int i;
     //char * ENV;
-    pt_base->SYSPATH=getenv("BLAZARSED");
+    pt_base->core.SYSPATH=getenv("BLAZARSED");
     set_seed_freq_start(pt_base);
 
-    //pt_base->emiss_lim=1.0E-120;
+    //pt_base->core.emiss_lim=1.0E-120;
 
     //sprintf(ENV,'%s',getenv("BLAZARSED"));
     //return;
-    //printf("CIAO =%s\n",pt_base->SYSPATH);
+    //printf("CIAO =%s\n",pt_base->core.SYSPATH);
 
-    //sprintf(pt_base->SYSPATH,'%s', ENV);
+    //sprintf(pt_base->core.SYSPATH,'%s', ENV);
     //return;
-    if (pt_base->verbose) {
-        printf("SYSPATH =%s\n", pt_base->SYSPATH);
-        printf("STEM=%s\n", pt_base->STEM);
-        printf("PATH =%s\n", pt_base->path);
+    if (pt_base->core.verbose) {
+        printf("SYSPATH =%s\n", pt_base->core.SYSPATH);
+        printf("STEM=%s\n", pt_base->core.STEM);
+        printf("PATH =%s\n", pt_base->core.path);
         printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> Satic Case Initilization <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
     }
 
     //======================================
     // Arrays SetUp
     //======================================
-    if (pt_base->nu_seed_size>=pt_base->spec_array_size){
-    	pt_base->nu_seed_size=pt_base->spec_array_size-1;
-    	if (pt_base->verbose){
+    if (pt_base->core.nu_seed_size>=pt_base->core.spec_array_size){
+    	pt_base->core.nu_seed_size=pt_base->core.spec_array_size-1;
+    	if (pt_base->core.verbose){
             printf("!!! Warning nu_seed_size  was gt spec_array size \n");
-            printf("now set  to spec_array size %d \n ",pt_base->spec_array_size-1);
+            printf("now set  to spec_array size %d \n ",pt_base->core.spec_array_size-1);
         }
     }
-    if (pt_base->nu_IC_size>=pt_base->spec_array_size){
-    	pt_base->nu_IC_size=pt_base->spec_array_size-1;
-    	if (pt_base->verbose){
+    if (pt_base->core.nu_IC_size>=pt_base->core.spec_array_size){
+    	pt_base->core.nu_IC_size=pt_base->core.spec_array_size-1;
+    	if (pt_base->core.verbose){
             printf("!!! Warning  nu_IC_size  was gt spec_array size \n ");
-            printf("now set  to spec_array size %d\n ",pt_base->spec_array_size-1);
+            printf("now set  to spec_array size %d\n ",pt_base->core.spec_array_size-1);
         }
     }
     for (i = 0; i < static_spec_arr_size; i++) {
-        pt_base->q_comp[i] = 0.0;
-        pt_base->j_Sync[i] = 0.0;
-        pt_base->j_comp[i] = 0.0;
-        pt_base->j_EC[i] = 0.0;
-        pt_base->alfa_Sync[i] = 0.0;
-        pt_base->I_nu_Sync[i] = 0.0;
-        pt_base->j_pp_neutrino_tot[i]=0.0;
-        pt_base->j_pp_neutrino_mu[i]=0.0;
-        pt_base->j_pp_neutrino_e[i]=0.0;
-        pt_base->j_pp_gamma[i]=0.0;
-        pt_base->j_bremss_ep[i]=0.0;
+        pt_base->SSC.q_comp[i] = 0.0;
+        pt_base->Sync.spec.j_nu[i] = 0.0;
+        pt_base->SSC.spec.j_nu[i] = 0.0;
+        pt_base->Disk.ec.spec.j_nu[i] = 0.0;
+        pt_base->BLR.ec.spec.j_nu[i] = 0.0;
+        pt_base->DT.ec.spec.j_nu[i] = 0.0;
+        pt_base->Star.ec.spec.j_nu[i] = 0.0;
+        pt_base->CMB.ec.spec.j_nu[i] = 0.0;
+        pt_base->Sync.alfa_Sync[i] = 0.0;
+        pt_base->Sync.spec.I_nu[i] = 0.0;
+        pt_base->PP_neutrino.spec_tot.j_nu[i]=0.0;
+        pt_base->PP_neutrino.spec_mu.j_nu[i]=0.0;
+        pt_base->PP_neutrino.spec_e.j_nu[i]=0.0;
+        pt_base->PP_gamma.spec.j_nu[i]=0.0;
+        pt_base->Bremss_ep.spec.j_nu[i]=0.0;
     }
 
     for (i = 0; i < static_spec_arr_size; i++){
-        pt_base->nuF_nu_Sync_obs[i]=0.0;
-        pt_base->nuF_nu_SSC_obs[i]=0.0;
-        pt_base->nuF_nu_EC_Disk_obs[i]=0;
-        pt_base->nuF_nu_EC_BLR_obs[i]=0;
-        pt_base->nuF_nu_EC_DT_obs[i]=0;
-        pt_base->nuF_nu_EC_Star_obs[i]=0;
-        pt_base->nuF_nu_EC_CMB_obs[i]=0;
-        pt_base->nuF_nu_Disk_obs[i]=0;
-        pt_base->nuF_nu_DT_obs[i]=0;
-        pt_base->nuF_nu_Star_obs[i]=0;
-        pt_base->nuFnu_pp_gamma_obs[i]=0;
-        pt_base->nuFnu_pp_neutrino_tot_obs[i]=0;
-        pt_base->nuFnu_pp_neutrino_mu_obs[i]=0;
-        pt_base->nuFnu_pp_neutrino_e_obs[i]=0;
-        pt_base->nuFnu_bremss_ep_obs[i]=0;
+        pt_base->Sync.spec.nuFnu_obs[i]=0.0;
+        pt_base->SSC.spec.nuFnu_obs[i]=0.0;
+        pt_base->Disk.ec.spec.nuFnu_obs[i]=0;
+        pt_base->BLR.ec.spec.nuFnu_obs[i]=0;
+        pt_base->DT.ec.spec.nuFnu_obs[i]=0;
+        pt_base->Star.ec.spec.nuFnu_obs[i]=0;
+        pt_base->CMB.ec.spec.nuFnu_obs[i]=0;
+        pt_base->Disk.spec.nuFnu_obs[i]=0;
+        pt_base->DT.spec.nuFnu_obs[i]=0;
+        pt_base->Star.spec.nuFnu_obs[i]=0;
+        pt_base->PP_gamma.spec.nuFnu_obs[i]=0;
+        pt_base->PP_neutrino.spec_tot.nuFnu_obs[i]=0;
+        pt_base->PP_neutrino.spec_mu.nuFnu_obs[i]=0;
+        pt_base->PP_neutrino.spec_e.nuFnu_obs[i]=0;
+        pt_base->Bremss_ep.spec.nuFnu_obs[i]=0;
     }
 
 
     //set file number counter
-    pt_base->OUT_FILE = 1;
+    pt_base->core.OUT_FILE = 1;
 
 
     InitRadiative(pt_base,1);
-    pt_base->R_Sw = eval_R_Sw(pt_base->M_BH);
-    pt_base->R_ext = pt_base->R_ext_Sw * pt_base->R_Sw;
+    pt_base->Disk.R_Sw = eval_R_Sw(pt_base->Disk.M_BH);
+    pt_base->Disk.R_ext = pt_base->Disk.R_ext_Sw * pt_base->Disk.R_Sw;
 
     if (luminosity_distance<0){
 
-        pt_base->dist = dist_lum_cm(pt_base->z_cosm);
+        pt_base->core.dist = dist_lum_cm(pt_base->core.z_cosm);
     }
     else{
-        pt_base->dist = luminosity_distance;
+        pt_base->core.dist = luminosity_distance;
     }
 
-    if (pt_base->verbose) {
-        printf("Distanza rigorosa=%e in Mpc \n", pt_base->dist/(1.0e6*1.0e2));
-        printf("Distanza rigorosa=%e in cm \n", pt_base->dist);
+    if (pt_base->core.verbose) {
+        printf("Distanza rigorosa=%e in Mpc \n", pt_base->core.dist/(1.0e6*1.0e2));
+        printf("Distanza rigorosa=%e in cm \n", pt_base->core.dist);
     }
 
-    pt_base->Distr_e_done = 0;
-    pt_base->Distr_e_pp_done = 0;
+    pt_base->emitters.Distr_e_done = 0;
+    pt_base->emitters.Distr_e_pp_done = 0;
 
-    if (pt_base->verbose) {     
+    if (pt_base->core.verbose) {     
         printf("******************************  Geometry  *********************************\n");
-        printf("Volume Geom.=%e\n", pt_base->Vol_region);
+        printf("Volume Geom.=%e\n", pt_base->core.Vol_region);
     }
     
-    if (strcmp(pt_base->PARTICLE, "electrons") == 0) {
+    if (strcmp(pt_base->core.PARTICLE, "electrons") == 0) {
         InitNe(pt_base);
-        pt_base->N_tot_e_Sferic = pt_base->Vol_region * pt_base->N_e;
+        pt_base->emitters.N_tot_e_Sferic = pt_base->core.Vol_region * pt_base->emitters.N_e;
         FindNe_NpGp(pt_base);
         EvalU_e(pt_base);
         
-        if (pt_base->verbose) {     
+        if (pt_base->core.verbose) {     
             printf("********************       Leptonic Scenario       ********************\n");
-            printf("type of distr=%d\n", pt_base->TIPO_DISTR);
+            printf("type of distr=%d\n", pt_base->emitters.TIPO_DISTR);
             printf("*******  Leptonic Energetic   **********\n");
-            printf("N_e=%e Ne/Ne_0=%e\n", pt_base->N_e, pt_base->N / pt_base->N_0e);
-            printf("Total number of electrons    =%e\n", pt_base->N_tot_e_Sferic);
-            printf("Gamma_p of N(gamma)*gamma^2 = %e\n", pt_base->Gamma_p2);
-            printf("Gamma_p of N(gamma)*gamma^3 = %e\n", pt_base->Gamma_p3);
-            printf("Peak of  N(gamma)*gamma^2 = %e\n", pt_base->Np2);
-            printf("Peak of  N(gamma)*gamma^3 = %e\n", pt_base-> Np3);
-            printf("U_e   blob rest frame =%e erg/cm^3\n", pt_base->U_e);
-            printf("U_e/U_b =%e\n", pt_base->U_e / pt_base->UB);
-            printf("E_tot (electron)  blob rest frame =%e erg     \n", pt_base->E_tot_e);
+            printf("N_e=%e Ne/Ne_0=%e\n", pt_base->emitters.N_e, pt_base->emitters.N / pt_base->emitters.N_0e);
+            printf("Total number of electrons    =%e\n", pt_base->emitters.N_tot_e_Sferic);
+            printf("Gamma_p of N(gamma)*gamma^2 = %e\n", pt_base->emitters.Gamma_p2);
+            printf("Gamma_p of N(gamma)*gamma^3 = %e\n", pt_base->emitters.Gamma_p3);
+            printf("Peak of  N(gamma)*gamma^2 = %e\n", pt_base->emitters.Np2);
+            printf("Peak of  N(gamma)*gamma^3 = %e\n", pt_base->emitters.Np3);
+            printf("U_e   blob rest frame =%e erg/cm^3\n", pt_base->emitters.U_e);
+            printf("U_e/U_b =%e\n", pt_base->emitters.U_e / pt_base->Sync.UB);
+            printf("E_tot (electron)  blob rest frame =%e erg     \n", pt_base->emitters.E_tot_e);
             printf("************************************************************************\n");
         }
 
-    } else if (strcmp(pt_base->PARTICLE, "protons") == 0) {
+    } else if (strcmp(pt_base->core.PARTICLE, "protons") == 0) {
         Init_Np_Ne_pp(pt_base);        
-        pt_base->N_tot_p_Sferic = pt_base->Vol_region * pt_base->N_p;             
+        pt_base->emitters.N_tot_p_Sferic = pt_base->core.Vol_region * pt_base->emitters.N_p;             
         EvalU_p(pt_base);             
-        pt_base->N_tot_e_Sferic = pt_base->Vol_region * pt_base->N_e_pp;
+        pt_base->emitters.N_tot_e_Sferic = pt_base->core.Vol_region * pt_base->emitters.N_e_pp;
         EvalU_e(pt_base);
         FindNe_NpGp(pt_base);
-        if (pt_base->verbose) {
+        if (pt_base->core.verbose) {
             printf("***********************       Hadronic Scenario           ********************\n");
             printf("****** Generate Np and Ne form secondaries **************\n");
           
             printf("******************      Hadronic Energetic    **********\n");
-            printf("N_p=%e N_p/N_0p=%e\n", pt_base->N, pt_base->N / pt_base->N_0p);
-            printf("Total number of p    =%e\n", pt_base->N_tot_p_Sferic);
-            printf("U_p   blob rest frame =%e erg/cm^3\n", pt_base->U_p);
-            printf("U_p/U_b =%e\n", pt_base->U_p / pt_base->UB);
-            printf("E_tot (protons)  blob rest frame =%e erg     \n", pt_base->E_tot_p);
+            printf("N_p=%e N_p/N_0p=%e\n", pt_base->emitters.N, pt_base->emitters.N / pt_base->emitters.N_0p);
+            printf("Total number of p    =%e\n", pt_base->emitters.N_tot_p_Sferic);
+            printf("U_p   blob rest frame =%e erg/cm^3\n", pt_base->emitters.U_p);
+            printf("U_p/U_b =%e\n", pt_base->emitters.U_p / pt_base->Sync.UB);
+            printf("E_tot (protons)  blob rest frame =%e erg     \n", pt_base->emitters.E_tot_p);
             printf("*******  Scondaries Leptonic Energetic  ****************\n");
-            printf("In this case N_0e=1, leptons come from pp, N_e_pp=%e\n", pt_base->N_e_pp);
-            printf("Total number of secondary electrons    =%e\n", pt_base->N_tot_e_Sferic);
-            printf("U_e   blob rest frame =%e erg/cm^3\n", pt_base->U_e);
-            printf("U_e/U_b =%e\n", pt_base->U_e / pt_base->UB);
-            printf("E_tot (electron)  blob rest frame =%e erg     \n", pt_base->E_tot_e);
-            printf("Gamma_p of N(gamma)*gamma^2 = %e\n", pt_base->Gamma_p2);
-            printf("Gamma_p of N(gamma)*gamma^3 = %e\n", pt_base->Gamma_p3);
-            printf("Peak of  N(gamma)*gamma^2 = %e\n", pt_base->Np2);
-            printf("Peak of  N(gamma)*gamma^3 = %e\n", pt_base-> Np3);
+            printf("In this case N_0e=1, leptons come from pp, N_e_pp=%e\n", pt_base->emitters.N_e_pp);
+            printf("Total number of secondary electrons    =%e\n", pt_base->emitters.N_tot_e_Sferic);
+            printf("U_e   blob rest frame =%e erg/cm^3\n", pt_base->emitters.U_e);
+            printf("U_e/U_b =%e\n", pt_base->emitters.U_e / pt_base->Sync.UB);
+            printf("E_tot (electron)  blob rest frame =%e erg     \n", pt_base->emitters.E_tot_e);
+            printf("Gamma_p of N(gamma)*gamma^2 = %e\n", pt_base->emitters.Gamma_p2);
+            printf("Gamma_p of N(gamma)*gamma^3 = %e\n", pt_base->emitters.Gamma_p3);
+            printf("Peak of  N(gamma)*gamma^2 = %e\n", pt_base->emitters.Np2);
+            printf("Peak of  N(gamma)*gamma^3 = %e\n", pt_base->emitters.Np3);
         }
     }
 
@@ -629,26 +633,26 @@ void Init(struct blob *pt_base, double luminosity_distance) {
  
 void Run_SED(struct blob *pt_base){
     double nuFnu_obs_ref_EC;
-    if (pt_base->verbose) {
-        printf("STEM=%s\n", pt_base->STEM);
+    if (pt_base->core.verbose) {
+        printf("STEM=%s\n", pt_base->core.STEM);
         printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> RUN      <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
     }
     //==================================================
     // Evaluate hadronic pp Spectrum
     //==================================================
-    if ((strcmp(pt_base->PARTICLE, "protons") == 0) && pt_base->do_pp_gamma) {
+    if ((strcmp(pt_base->core.PARTICLE, "protons") == 0) && pt_base->PP_gamma.do_pp_gamma) {
 
         spettro_pp_gamma(1, pt_base);
     }
 
-    if ((strcmp(pt_base->PARTICLE, "protons") == 0) && pt_base->do_pp_neutrino) {
+    if ((strcmp(pt_base->core.PARTICLE, "protons") == 0) && pt_base->PP_neutrino.do_pp_neutrino) {
         spettro_pp_neutrino(1,pt_base);
     }
 
     //==================================================
     // Evaluate Bremms sp Spectrum
     //==================================================
-    if (pt_base->do_bremss_ep) {
+    if (pt_base->Bremss_ep.do_bremss_ep) {
         spettro_bremss_ep(1, pt_base);
     }
 
@@ -656,7 +660,7 @@ void Run_SED(struct blob *pt_base){
     //==================================================
     // Evaluate Synchrotron Spectrum
     //==================================================
-    if (pt_base->do_Sync != 0) {
+    if (pt_base->core.do_Sync != 0) {
         spettro_sincrotrone(1, pt_base);
     }
 
@@ -665,7 +669,7 @@ void Run_SED(struct blob *pt_base){
     //==================================================
     // Evaluate SSC Spectrum
     //==================================================
-    if (pt_base->do_SSC && pt_base->do_IC) {
+    if (pt_base->core.do_SSC && pt_base->core.do_IC) {
        spettro_compton(1, pt_base);
     }
 
@@ -673,72 +677,72 @@ void Run_SED(struct blob *pt_base){
     //==================================================
     // Evaluate EC Spectrum
     //==================================================
-	if (pt_base->do_IC) {
-		if (pt_base->do_EC_Disk == 1 || pt_base->do_EC_BLR == 1 || pt_base->do_EC_DT == 1  || pt_base->do_EC_Star == 1 || pt_base->do_EC_CMB == 1 || pt_base->do_Disk==1 || pt_base->do_DT==1 || pt_base->do_Star==1) 
+	if (pt_base->core.do_IC) {
+		if (pt_base->core.do_EC_Disk == 1 || pt_base->core.do_EC_BLR == 1 || pt_base->core.do_EC_DT == 1  || pt_base->core.do_EC_Star == 1 || pt_base->core.do_EC_CMB == 1 || pt_base->core.do_Disk==1 || pt_base->core.do_DT==1 || pt_base->core.do_Star==1) 
         {
-                if (pt_base->do_EC_Star == 1) {
+                if (pt_base->core.do_EC_Star == 1) {
                     
-                    pt_base->EC = 4;
+                    pt_base->core.EC = 4;
                     spettro_EC(1, pt_base);
                 }
-                if (pt_base->do_EC_Disk == 1 || pt_base->do_Disk==1) {
+                if (pt_base->core.do_EC_Disk == 1 || pt_base->core.do_Disk==1) {
                    
-                    pt_base->EC = 1;
-                    if (set_condition_EC_correction(pt_base, pt_base->R_inner) > 0)
+                    pt_base->core.EC = 1;
+                    if (set_condition_EC_correction(pt_base, pt_base->Disk.R_inner) > 0)
                     {
-                        pt_base->R_H = pt_base->R_inner/10;
+                        pt_base->core.R_H = pt_base->Disk.R_inner/10;
                         Build_I_nu_Disk(pt_base);
                         spettro_EC(1, pt_base);
-                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->nuF_nu_EC_Disk_obs);
-                        pt_base->R_H = pt_base->R_H_orig;
+                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->Disk.ec.spec.nuFnu_obs);
+                        pt_base->core.R_H = pt_base->core.R_H_orig;
                         Build_I_nu_Disk(pt_base);
                     }
                     spettro_EC(1, pt_base);
-                    if (set_condition_EC_correction(pt_base, pt_base->R_inner) > 0){
-                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_inner, pt_base->nu_IC_size, pt_base->nuF_nu_EC_Disk_obs, pt_base->nu_EC_Disk_obs);
+                    if (set_condition_EC_correction(pt_base, pt_base->Disk.R_inner) > 0){
+                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->Disk.R_inner, pt_base->core.nu_IC_size, pt_base->Disk.ec.spec.nuFnu_obs, pt_base->Disk.ec.spec.nu_obs);
                     }
                 }
-                if (pt_base->do_EC_BLR == 1) {
-                    pt_base->EC = 2;
-                    if (set_condition_EC_correction(pt_base, pt_base->R_BLR_out) > 0)
+                if (pt_base->core.do_EC_BLR == 1) {
+                    pt_base->core.EC = 2;
+                    if (set_condition_EC_correction(pt_base, pt_base->BLR.R_BLR_out) > 0)
                     {
-                        pt_base->R_H = max(1,pt_base->R_BLR_in/1E10);
+                        pt_base->core.R_H = max(1,pt_base->BLR.R_BLR_in/1E10);
                         Build_I_nu_BLR(pt_base);
                         spettro_EC(1, pt_base);
-                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->nuF_nu_EC_BLR_obs);
-                        pt_base->R_H = pt_base->R_H_orig;
+                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->BLR.ec.spec.nuFnu_obs);
+                        pt_base->core.R_H = pt_base->core.R_H_orig;
                         Build_I_nu_BLR(pt_base);
                     }
                     spettro_EC(1, pt_base);
-                    if (set_condition_EC_correction(pt_base, pt_base->R_BLR_out) > 0){
-                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_BLR_out, pt_base->nu_IC_size, pt_base->nuF_nu_EC_BLR_obs, pt_base->nu_EC_BLR_obs);
+                    if (set_condition_EC_correction(pt_base, pt_base->BLR.R_BLR_out) > 0){
+                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->BLR.R_BLR_out, pt_base->core.nu_IC_size, pt_base->BLR.ec.spec.nuFnu_obs, pt_base->BLR.ec.spec.nu_obs);
                     }
                 }
-                if (pt_base->do_EC_DT == 1) {
-                    pt_base->EC = 3;
-                    //printf("RUN 1 R_H=%e c=%d , EC_stat=%d\n", pt_base->R_H, set_condition_EC_correction(pt_base, pt_base->R_DT), pt_base->EC_stat);
-                    if (set_condition_EC_correction(pt_base, pt_base->R_DT) > 0)
+                if (pt_base->core.do_EC_DT == 1) {
+                    pt_base->core.EC = 3;
+                    //printf("RUN 1 R_H=%e c=%d , EC_stat=%d\n", pt_base->core.R_H, set_condition_EC_correction(pt_base, pt_base->DT.R_DT), pt_base->core.EC_stat);
+                    if (set_condition_EC_correction(pt_base, pt_base->DT.R_DT) > 0)
                     {
-                        pt_base->R_H = 0;
+                        pt_base->core.R_H = 0;
                         Build_I_nu_DT(pt_base);
                         spettro_EC(1, pt_base);
-                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->nuF_nu_EC_DT_obs);
-                        pt_base->R_H = pt_base->R_H_orig;
+                        nuFnu_obs_ref_EC = get_EC_reference(pt_base, pt_base->DT.ec.spec.nuFnu_obs);
+                        pt_base->core.R_H = pt_base->core.R_H_orig;
                         Build_I_nu_DT(pt_base);
                     }
-                    //printf("RUN 2 R_H=%e c=%d , EC_stat=%d\n", pt_base->R_H, set_condition_EC_correction(pt_base, pt_base->R_DT), pt_base->EC_stat);
-                    //printf("RUN 3 R_H=%e c=%d \n", pt_base->R_H, set_condition_EC_correction(pt_base, pt_base->R_DT));
+                    //printf("RUN 2 R_H=%e c=%d , EC_stat=%d\n", pt_base->core.R_H, set_condition_EC_correction(pt_base, pt_base->DT.R_DT), pt_base->core.EC_stat);
+                    //printf("RUN 3 R_H=%e c=%d \n", pt_base->core.R_H, set_condition_EC_correction(pt_base, pt_base->DT.R_DT));
                     spettro_EC(1, pt_base);
-                    //printf("RUN 4 R_H=%e c=%d \n", pt_base->R_H,set_condition_EC_correction(pt_base, pt_base->R_DT) );
-                    if (set_condition_EC_correction(pt_base, pt_base->R_DT) > 0)
+                    //printf("RUN 4 R_H=%e c=%d \n", pt_base->core.R_H,set_condition_EC_correction(pt_base, pt_base->DT.R_DT) );
+                    if (set_condition_EC_correction(pt_base, pt_base->DT.R_DT) > 0)
                     {
-                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->R_DT, pt_base->nu_IC_size, pt_base->nuF_nu_EC_DT_obs, pt_base->nu_EC_DT_obs);
+                        update_EC_for_bp(pt_base, nuFnu_obs_ref_EC, pt_base->DT.R_DT, pt_base->core.nu_IC_size, pt_base->DT.ec.spec.nuFnu_obs, pt_base->DT.ec.spec.nu_obs);
                     }
-                    //printf("RUN 4 R_H=%e c=%d \n", pt_base->R_H, set_condition_EC_correction(pt_base, pt_base->R_DT));
+                    //printf("RUN 4 R_H=%e c=%d \n", pt_base->core.R_H, set_condition_EC_correction(pt_base, pt_base->DT.R_DT));
                 }
-                if (pt_base->do_EC_CMB == 1) {
+                if (pt_base->core.do_EC_CMB == 1) {
                     
-                    pt_base->EC = 5;
+                    pt_base->core.EC = 5;
                     spettro_EC(1, pt_base);
                 }
               
@@ -780,7 +784,7 @@ double get_array(double * arr, unsigned int id, unsigned int size){
 
 
 double get_spectral_array(double * arr, struct blob * pt, unsigned int id){
-	if ((id >=0) && (id <= pt->nu_grid_size)){
+	if ((id >=0) && (id <= pt->core.nu_grid_size)){
 		return arr[id];
 	}
 	else{
@@ -791,7 +795,7 @@ double get_spectral_array(double * arr, struct blob * pt, unsigned int id){
 
 void set_spectral_array(double *arr, struct blob *pt, unsigned int id, double val)
 {
-    if ((id >= 0) && (id <= pt->nu_grid_size))
+    if ((id >= 0) && (id <= pt->core.nu_grid_size))
     {
         arr[id]=val;
     }
@@ -803,7 +807,7 @@ void set_spectral_array(double *arr, struct blob *pt, unsigned int id, double va
 }
 
 double get_elec_array(double * arr, struct blob *pt, unsigned int id){
-	if ((id>=0) && (id<=pt->gamma_grid_size)){
+	if ((id>=0) && (id<=pt->emitters.gamma_grid_size)){
 		return arr[id];
 	}
 	else{
@@ -865,7 +869,7 @@ double get_temp_ev_gamma_array(double *arr, struct temp_ev *pt_ev, unsigned int 
     }
 
 void set_elec_array(double * arr,struct blob *pt, double val, unsigned int id){
-    if ((id>=0) && (id<=pt->gamma_grid_size)){
+    if ((id>=0) && (id<=pt->emitters.gamma_grid_size)){
            arr[id]=val;
         }
         else{
@@ -896,7 +900,7 @@ void set_temp_ev_Time_array(double * arr,struct temp_ev *pt, double val, unsigne
 
 
 void set_elec_custom_array(double * arr, struct blob *pt,double val, unsigned int id){
-    if ((id>=0) && (id<=pt->gamma_custom_grid_size)){
+    if ((id>=0) && (id<=pt->emitters.gamma_custom_grid_size)){
            arr[id]=val;
         }
         else{
@@ -932,13 +936,13 @@ double get_temp_ev_array_static(double *arr, unsigned int id){
 //=========================================================================================
 void SetBeaming(struct blob *pt){
 
-	if (strcmp(pt->BEAMING_EXPR, "delta") == 0) {
-	        pt->beam_obj = pt->beam_obj;
-            pt->BulkFactor = pt->beam_obj;
+	if (strcmp(pt->core.BEAMING_EXPR, "delta") == 0) {
+	        pt->core.beam_obj = pt->core.beam_obj;
+            pt->core.BulkFactor = pt->core.beam_obj;
     }
 
-	else if (strcmp(pt->BEAMING_EXPR, "bulk_theta") == 0) {
-		pt->beam_obj = get_beaming(pt->BulkFactor,pt->theta);
+	else if (strcmp(pt->core.BEAMING_EXPR, "bulk_theta") == 0) {
+		pt->core.beam_obj = get_beaming(pt->core.BulkFactor,pt->core.theta);
 	}
 
 	else {
@@ -946,10 +950,9 @@ void SetBeaming(struct blob *pt){
 		exit(0);
 	}
 
-	if (pt->verbose) {
-	     printf("beaming set to  %e\n",pt->beam_obj);
+	if (pt->core.verbose) {
+	     printf("beaming set to  %e\n",pt->core.beam_obj);
 	}
 }
-
 
 

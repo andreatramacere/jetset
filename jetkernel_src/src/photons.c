@@ -11,10 +11,10 @@
 void build_photons(struct spettro *pt_base){
 
 // Grid
-    alloc_photons(&(pt_base->nu_grid),pt_base->nu_grid_size );
-    alloc_photons(&(pt_base->nuFnu_sum_grid),pt_base->nu_grid_size);
-    //pt_base->nu_grid = malloc(200 * sizeof (double));
-    //pt_base->nuFnu_sum_grid = malloc(200 * sizeof (double));
+    alloc_photons(&(pt_base->core.nu_grid),pt_base->core.nu_grid_size );
+    alloc_photons(&(pt_base->core.nuFnu_sum_grid),pt_base->core.nu_grid_size);
+    //pt_base->core.nu_grid = malloc(200 * sizeof (double));
+    //pt_base->core.nuFnu_sum_grid = malloc(200 * sizeof (double));
     //double nu_grid[static_spec_arr_size];
     //double nuFnu_sum_grid[static_spec_arr_size];
 
@@ -32,15 +32,15 @@ void build_photons(struct spettro *pt_base){
 //  double n_Sync[static_spec_arr_size];
 //  double nuF_nu_Sync_obs[static_spec_arr_size];
 
-    alloc_photons(&(pt_base->nuFnu_Sync_grid),pt_base->nu_grid_size);
+    alloc_photons(&(pt_base->Sync.spec.nuFnu_grid),pt_base->core.nu_grid_size);
 
-    alloc_photons(&(pt_base->j_Sync),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->alfa_Sync),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->I_nu_Sync),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_Sync),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_Sync_obs),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->n_Sync),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nuF_nu_Sync_obs),pt_base->nu_seed_size);
+    alloc_photons(&(pt_base->Sync.spec.j_nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Sync.alfa_Sync),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Sync.spec.I_nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Sync.spec.nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Sync.spec.nu_obs),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Sync.spec.n_nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Sync.spec.nuFnu_obs),pt_base->core.nu_seed_size);
 
 
 
@@ -49,9 +49,9 @@ void build_photons(struct spettro *pt_base){
 //  double nu_pp[static_spec_arr_size];
 //  double nuF_nu_pp_obs[static_spec_arr_size];
 //
-    alloc_photons(&(pt_base->j_pp),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_pp),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nuF_nu_pp_obs),pt_base->nu_seed_size);
+    alloc_photons(&(pt_base->j_pp),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->nu_pp),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->nuF_nu_pp_obs),pt_base->core.nu_seed_size);
 
 
 
@@ -64,14 +64,14 @@ void build_photons(struct spettro *pt_base){
 //  double nu_SSC_obs[static_spec_arr_size];
 //  double nuF_nu_SSC_obs[static_spec_arr_size];
 
-    alloc_photons(&(pt_base->nuFnu_SSC_grid),pt_base->nu_grid_size);
+    alloc_photons(&(pt_base->SSC.spec.nuFnu_grid),pt_base->core.nu_grid_size);
 
-    alloc_photons(&(pt_base->q_comp),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->j_comp),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->j_EC),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nu_SSC),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nu_SSC_obs),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nuF_nu_SSC_obs),pt_base->nu_IC_size);
+    alloc_photons(&(pt_base->SSC.q_comp),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->SSC.spec.j_nu),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->j_EC),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->SSC.spec.nu),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->SSC.spec.nu_obs),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->SSC.spec.nuFnu_obs),pt_base->core.nu_IC_size);
 
 
 //EC star
@@ -82,11 +82,11 @@ void build_photons(struct spettro *pt_base){
 
 
 
-    alloc_photons(&(pt_base->nuFnu_EC_Star_grid),pt_base->nu_grid_size);
+    alloc_photons(&(pt_base->Star.ec.spec.nuFnu_grid),pt_base->core.nu_grid_size);
 
-    alloc_photons(&(pt_base->nuF_nu_EC_Star_obs),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nu_EC_Star_obs),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nu_EC_Star),pt_base->nu_IC_size);
+    alloc_photons(&(pt_base->Star.ec.spec.nuFnu_obs),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->Star.ec.spec.nu_obs),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->Star.ec.spec.nu),pt_base->core.nu_IC_size);
 
 //  double nuFnu_Star_grid[static_spec_arr_size];
 //  double I_nu_Star[static_spec_arr_size];
@@ -99,16 +99,16 @@ void build_photons(struct spettro *pt_base){
 //	double n_Star[static_spec_arr_size];
 
 
-    alloc_photons(&(pt_base->nuFnu_Star_grid),pt_base->nu_grid_size);
+    alloc_photons(&(pt_base->Star.spec.nuFnu_grid),pt_base->core.nu_grid_size);
 
-    alloc_photons(&(pt_base->I_nu_Star),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->J_nu_Star_disk_RF),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->I_nu_Star_disk_RF),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_Star),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_Star_obs),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_Star_disk_RF),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nuF_nu_Star_obs),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->n_Star),pt_base->nu_seed_size);
+    alloc_photons(&(pt_base->Star.spec.I_nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Star.spec.J_nu_DRF),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Star.spec.I_nu_DRF),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Star.spec.nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Star.spec.nu_obs),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Star.spec.nu_DRF),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Star.spec.nuFnu_obs),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Star.spec.n_nu),pt_base->core.nu_seed_size);
 
 
 
@@ -122,11 +122,11 @@ void build_photons(struct spettro *pt_base){
 //	double nu_EC_CMB_obs[static_spec_arr_size];
 //	double nuF_nu_EC_CMB_obs[static_spec_arr_size];
 
-    alloc_photons(&(pt_base->nuFnu_EC_CMB_grid),pt_base->nu_grid_size);
+    alloc_photons(&(pt_base->CMB.ec.spec.nuFnu_grid),pt_base->core.nu_grid_size);
 
-    alloc_photons(&(pt_base->nu_EC_CMB),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nu_EC_CMB_obs),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nuF_nu_EC_CMB_obs),pt_base->nu_IC_size);
+    alloc_photons(&(pt_base->CMB.ec.spec.nu),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->CMB.ec.spec.nu_obs),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->CMB.ec.spec.nuFnu_obs),pt_base->core.nu_IC_size);
 
 //	double I_nu_CMB[static_spec_arr_size];
 //	double I_nu_CMB_disk_RF[static_spec_arr_size];
@@ -134,11 +134,11 @@ void build_photons(struct spettro *pt_base){
 //	double nu_CMB_disk_RF[static_spec_arr_size];
 //	double n_CMB[static_spec_arr_size];
 
-    alloc_photons(&(pt_base->I_nu_CMB),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->I_nu_CMB_disk_RF),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_CMB),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_CMB_disk_RF),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->n_CMB),pt_base->nu_seed_size);
+    alloc_photons(&(pt_base->CMB.spec.I_nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->CMB.spec.I_nu_DRF),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->CMB.spec.nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->CMB.spec.nu_DRF),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->CMB.spec.n_nu),pt_base->core.nu_seed_size);
 
 
 
@@ -150,11 +150,11 @@ void build_photons(struct spettro *pt_base){
 //  double nu_EC_CMB_stat_obs[static_spec_arr_size];
 //  double nuF_nu_EC_CMB_stat_obs[static_spec_arr_size];
 
-//    alloc_photons(&(pt_base->nuFnu_EC_CMB_stat_grid),pt_base->nu_grid_size);
+//    alloc_photons(&(pt_base->nuFnu_EC_CMB_stat_grid),pt_base->core.nu_grid_size);
 
-//    alloc_photons(&(pt_base->nuF_nu_EC_CMB_stat_obs),pt_base->nu_IC_size);
-//    alloc_photons(&(pt_base->nu_EC_CMB_stat),pt_base->nu_IC_size);
-//    alloc_photons(&(pt_base->nu_EC_CMB_stat_obs),pt_base->nu_IC_size);
+//    alloc_photons(&(pt_base->nuF_nu_EC_CMB_stat_obs),pt_base->core.nu_IC_size);
+//    alloc_photons(&(pt_base->nu_EC_CMB_stat),pt_base->core.nu_IC_size);
+//    alloc_photons(&(pt_base->nu_EC_CMB_stat_obs),pt_base->core.nu_IC_size);
 
 //  double I_nu_CMB_stat[static_spec_arr_size];
 //  double I_nu_CMB_disk_RF_stat[static_spec_arr_size];
@@ -162,11 +162,11 @@ void build_photons(struct spettro *pt_base){
 //  double nu_CMB_disk_RF_stat[static_spec_arr_size];
 //  double n_CMB_stat[static_spec_arr_size];
 
- //   alloc_photons(&(pt_base->I_nu_CMB_stat),pt_base->nu_seed_size);
- //   alloc_photons(&(pt_base->I_nu_CMB_disk_RF_stat),pt_base->nu_seed_size);
- //   alloc_photons(&(pt_base->nu_CMB_stat),pt_base->nu_seed_size);
- //   alloc_photons(&(pt_base->nu_CMB_disk_RF_stat),pt_base->nu_seed_size);
- //   alloc_photons(&(pt_base->n_CMB_stat),pt_base->nu_seed_size);
+ //   alloc_photons(&(pt_base->I_nu_CMB_stat),pt_base->core.nu_seed_size);
+ //   alloc_photons(&(pt_base->I_nu_CMB_disk_RF_stat),pt_base->core.nu_seed_size);
+ //   alloc_photons(&(pt_base->nu_CMB_stat),pt_base->core.nu_seed_size);
+ //   alloc_photons(&(pt_base->nu_CMB_disk_RF_stat),pt_base->core.nu_seed_size);
+ //   alloc_photons(&(pt_base->n_CMB_stat),pt_base->core.nu_seed_size);
 
 
 
@@ -178,11 +178,11 @@ void build_photons(struct spettro *pt_base){
 //  double nuF_nu_EC_Disk_obs[static_spec_arr_size];
 //  double nuFnu_EC_Disk_grid[static_spec_arr_size];
 
-    alloc_photons(&(pt_base->nuFnu_EC_Disk_grid),pt_base->nu_grid_size);
+    alloc_photons(&(pt_base->Disk.ec.spec.nuFnu_grid),pt_base->core.nu_grid_size);
 
-    alloc_photons(&(pt_base->nu_EC_Disk),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nu_EC_Disk_obs),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nuF_nu_EC_Disk_obs),pt_base->nu_IC_size);
+    alloc_photons(&(pt_base->Disk.ec.spec.nu),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->Disk.ec.spec.nu_obs),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->Disk.ec.spec.nuFnu_obs),pt_base->core.nu_IC_size);
 
 
 //  double nuFnu_Disk_grid[static_spec_arr_size];
@@ -195,16 +195,16 @@ void build_photons(struct spettro *pt_base){
 //  double nuF_nu_Disk_obs[static_spec_arr_size];
 //  double n_Disk[static_spec_arr_size];
 
-    alloc_photons(&(pt_base->nuFnu_Disk_grid),pt_base->nu_grid_size);
+    alloc_photons(&(pt_base->Disk.spec.nuFnu_grid),pt_base->core.nu_grid_size);
 
-    alloc_photons(&(pt_base->I_nu_Disk),pt_base->nu_seed_size);
-    //alloc_photons(&(pt_base->J_nu_Disk_disk_RF),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->I_nu_Disk_disk_RF),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_Disk),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_Disk_obs),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_Disk_disk_RF),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nuF_nu_Disk_obs),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->n_Disk),pt_base->nu_seed_size);
+    alloc_photons(&(pt_base->Disk.spec.I_nu),pt_base->core.nu_seed_size);
+    //alloc_photons(&(pt_base->J_nu_Disk_disk_RF),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Disk.spec.I_nu_DRF),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Disk.spec.nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Disk.spec.nu_obs),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Disk.spec.nu_DRF),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Disk.spec.nuFnu_obs),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->Disk.spec.n_nu),pt_base->core.nu_seed_size);
 
 
 
@@ -215,11 +215,11 @@ void build_photons(struct spettro *pt_base){
 //  double nu_EC_BLR_obs[static_spec_arr_size];
 
 
-    alloc_photons(&(pt_base->nuFnu_EC_BLR_grid),pt_base->nu_grid_size);
+    alloc_photons(&(pt_base->BLR.ec.spec.nuFnu_grid),pt_base->core.nu_grid_size);
 
-    alloc_photons(&(pt_base->nuF_nu_EC_BLR_obs),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nu_EC_BLR),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nu_EC_BLR_obs),pt_base->nu_IC_size);
+    alloc_photons(&(pt_base->BLR.ec.spec.nuFnu_obs),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->BLR.ec.spec.nu),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->BLR.ec.spec.nu_obs),pt_base->core.nu_IC_size);
 
 
 //  double I_nu_BLR[static_spec_arr_size];
@@ -229,11 +229,11 @@ void build_photons(struct spettro *pt_base){
 //  double n_BLR[static_spec_arr_size];
 
 
-    alloc_photons(&(pt_base->I_nu_BLR),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_BLR),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->I_nu_BLR_disk_RF),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_BLR_disk_RF),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->n_BLR),pt_base->nu_seed_size);
+    alloc_photons(&(pt_base->BLR.spec.I_nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->BLR.spec.nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->BLR.spec.I_nu_DRF),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->BLR.spec.nu_DRF),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->BLR.spec.n_nu),pt_base->core.nu_seed_size);
 
 
 
@@ -243,11 +243,11 @@ void build_photons(struct spettro *pt_base){
 //  double nu_EC_DT_obs[static_spec_arr_size];
 //  double nuF_nu_EC_DT_obs[static_spec_arr_size];
 
-    alloc_photons(&(pt_base->nuFnu_EC_DT_grid),pt_base->nu_grid_size);
+    alloc_photons(&(pt_base->DT.ec.spec.nuFnu_grid),pt_base->core.nu_grid_size);
 
-    alloc_photons(&(pt_base->nu_EC_DT),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nu_EC_DT_obs),pt_base->nu_IC_size);
-    alloc_photons(&(pt_base->nuF_nu_EC_DT_obs),pt_base->nu_IC_size);
+    alloc_photons(&(pt_base->DT.ec.spec.nu),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->DT.ec.spec.nu_obs),pt_base->core.nu_IC_size);
+    alloc_photons(&(pt_base->DT.ec.spec.nuFnu_obs),pt_base->core.nu_IC_size);
 
 
 //  double nuFnu_DT_grid[static_spec_arr_size];
@@ -259,15 +259,15 @@ void build_photons(struct spettro *pt_base){
 //  double n_DT[static_spec_arr_size];
 //  double nuF_nu_DT_obs[static_spec_arr_size];
 
-    alloc_photons(&(pt_base->nuFnu_DT_grid),pt_base->nu_grid_size);
+    alloc_photons(&(pt_base->DT.spec.nuFnu_grid),pt_base->core.nu_grid_size);
 
-    alloc_photons(&(pt_base->I_nu_DT),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->I_nu_DT_disk_RF),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_DT_obs),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_DT),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nu_DT_disk_RF),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->n_DT),pt_base->nu_seed_size);
-    alloc_photons(&(pt_base->nuF_nu_DT_obs),pt_base->nu_seed_size);
+    alloc_photons(&(pt_base->DT.spec.I_nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->DT.spec.I_nu_DRF),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->DT.spec.nu_obs),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->DT.spec.nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->DT.spec.nu_DRF),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->DT.spec.n_nu),pt_base->core.nu_seed_size);
+    alloc_photons(&(pt_base->DT.spec.nuFnu_obs),pt_base->core.nu_seed_size);
 
 }
 

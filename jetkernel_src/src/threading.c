@@ -40,7 +40,8 @@ void threaded_j_evaluation(struct blob * pt, void *(*eval_j)(void *data),
         thread_args[THREAD].NU_INT_START = 0;
         thread_args[THREAD].NU_INT_STOP =I_MAX;
         thread_args[THREAD].nu_array = nu_array;
-        if (pt->verbose>0) {
+        thread_args[THREAD].j_array = j_nu_array;
+        if (pt->core.verbose>0) {
             printf("NO THREAD, nu_start_int=%d, nu_stop_int=%d\n",thread_args[0].NU_INT_START,thread_args[0].NU_INT_STOP);
         }
         eval_j(thread_args);
@@ -62,7 +63,8 @@ void threaded_j_evaluation(struct blob * pt, void *(*eval_j)(void *data),
             thread_args[THREAD].NU_INT_STOP = min(NU_INT_MAX,I_MAX);
 
             thread_args[THREAD].nu_array = nu_array;
-            if (pt->verbose>0) {
+        thread_args[THREAD].j_array = j_nu_array;
+            if (pt->core.verbose>0) {
                 printf("THREAD=%d, nu_start_int<=%d, nu_stop_int<=%d\n",THREAD,thread_args[THREAD].NU_INT_START,thread_args[THREAD].NU_INT_STOP);
             }
             int result = pthread_create(&threads[THREAD], NULL, eval_j, &thread_args[THREAD]);

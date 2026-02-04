@@ -50,9 +50,9 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
     double delta_log;
     double log_a, log_b;
 
-    pt_spec_rad->B=pt_ev->B_rad;
-    pt_spec_rad->R=pt_ev->R_rad_start;
-    pt_spec_acc->B=pt_ev->B_acc;
+    pt_spec_rad->core.B=pt_ev->B_rad;
+    pt_spec_rad->core.R=pt_ev->R_rad_start;
+    pt_spec_acc->core.B=pt_ev->B_acc;
     pt_ev->t_unit_rad = (pt_ev->R_rad_start / vluce_cm);
     pt_ev->t_unit_acc = (pt_ev->Delta_R_acc / vluce_cm);
 
@@ -66,8 +66,8 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
     pt_ev->Acc_Coeff = 1.0 / (pt_ev->t_A0);
     
 
-    pt_ev->Gamma_Max_Turb_L_max = Larmor_radius_to_gamma(pt_ev->Lambda_max_Turb, pt_spec_acc->B, pt_spec_acc->sin_psi);
-    pt_ev->Gamma_Max_Turb_L_coher = Larmor_radius_to_gamma(pt_ev->Lambda_max_Turb * pt_ev->Lambda_choer_Turb_factor, pt_spec_acc->B, pt_spec_acc->sin_psi);
+    pt_ev->Gamma_Max_Turb_L_max = Larmor_radius_to_gamma(pt_ev->Lambda_max_Turb, pt_spec_acc->core.B, pt_spec_acc->Sync.sin_psi);
+    pt_ev->Gamma_Max_Turb_L_coher = Larmor_radius_to_gamma(pt_ev->Lambda_max_Turb * pt_ev->Lambda_choer_Turb_factor, pt_spec_acc->core.B, pt_spec_acc->Sync.sin_psi);
     pt_ev->Diff_coeff_CD = pt_ev->Diff_Coeff * pow((pt_ev->Gamma_Max_Turb_L_coher), pt_ev->Diff_Index);
     pt_ev->Diff_coeff_CA = pt_ev->Diff_Coeff * 2 * pow((pt_ev->Gamma_Max_Turb_L_coher), pt_ev->Diff_Index);
 
@@ -133,7 +133,7 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
     }
     else if (delta_t_eq_t_A_old <= 0 && pt_ev->gamma_eq_t_A < 0)
     {
-        pt_ev->gamma_eq_t_A = pt_spec_acc->griglia_gamma_Ne_log[0];
+        pt_ev->gamma_eq_t_A = pt_spec_acc->emitters.griglia_gamma_Ne_log[0];
     }
     
     if (delta_t_eq_t_D_old >= 0 && pt_ev->gamma_eq_t_D < 0)
@@ -142,7 +142,7 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
     }
     else if (delta_t_eq_t_D_old <= 0 && pt_ev->gamma_eq_t_D < 0)
     {
-        pt_ev->gamma_eq_t_D = pt_spec_acc->griglia_gamma_Ne_log[0];
+        pt_ev->gamma_eq_t_D = pt_spec_acc->emitters.griglia_gamma_Ne_log[0];
     }
 
     if (pt_ev->gamma_eq_t_A > pt_ev->Gamma_Max_Turb_L_max)
@@ -160,7 +160,7 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
     }
     else if (delta_t_eq_t_DA_old <= 0 && pt_ev->gamma_eq_t_DA < 0)
     {
-        pt_ev->gamma_eq_t_DA = pt_spec_acc->griglia_gamma_Ne_log[0];
+        pt_ev->gamma_eq_t_DA = pt_spec_acc->emitters.griglia_gamma_Ne_log[0];
     }
     if (pt_ev->gamma_eq_t_DA > pt_ev->Gamma_Max_Turb_L_max)
     {
@@ -189,11 +189,11 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
 void expansion_profile_pre_run(struct blob *pt_spec, struct temp_ev *pt_ev){
     unsigned int i;
     double deltat,t;
-    //t_spec->B=pt_ev->B_rad;
-    //pt_spec->R=pt_ev->R_rad_start;
+    //t_spec->core.B=pt_ev->B_rad;
+    //pt_spec->core.R=pt_ev->R_rad_start;
    
     deltat = pt_ev->duration / (double)static_ev_arr_grid_size;
-    pt_spec->beta_Gamma=eval_beta_gamma(pt_spec->BulkFactor);
+    pt_spec->core.beta_Gamma=eval_beta_gamma(pt_spec->core.BulkFactor);
     t=0;
     //pt_ev->theta_exp_rad=pt_ev->R_jet_exp*Deg_to_Rad;
     //pt_ev->theta_exp_AR=tan(pt_ev->theta_exp_rad);
@@ -240,7 +240,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     //--------------ALLOCATION OF DYNAMICAL ARRAYS-----------------------
     //--------------SIZE DEFINITION------------------
     
-    //---Useful size definition for 0..N-1----------
+    //---Useful size definition for 0..emitters.N-1----------
     E_SIZE = pt_ev->gamma_grid_size;
     E_N_SIZE = pt_ev->gamma_grid_size - 1;
     //------ALLOCATION-------------------------------
@@ -345,9 +345,9 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     E_acc=0;
     Vol_acc=pi*(pt_ev->R_rad_start*pt_ev->R_rad_start*pt_ev->Delta_R_acc);
     Vol_rad=four_by_three_pi*(pt_ev->R_rad_start*pt_ev->R_rad_start*pt_ev->R_rad_start);
-    pt_spec_rad->B=pt_ev->B_rad;
-    pt_spec_rad->R=pt_ev->R_rad_start;
-    pt_spec_acc->B=pt_ev->B_acc;
+    pt_spec_rad->core.B=pt_ev->B_rad;
+    pt_spec_rad->core.R=pt_ev->R_rad_start;
+    pt_spec_acc->core.B=pt_ev->B_acc;
     InitRadiative(pt_spec_acc,1);
     InitRadiative(pt_spec_rad,1);
     pt_ev->R_H_jet_t=pt_ev->R_H_rad_start;
@@ -360,7 +360,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     if (only_injection<1){
         for (TMP = 0; TMP < E_SIZE; TMP++) {
                //iterpolate N from Ne
-               N_rad[TMP] =N_distr_interp(pt_spec_rad->gamma_grid_size,pt_ev->gamma[TMP],pt_spec_rad->griglia_gamma_Ne_log,pt_spec_rad->Ne);
+               N_rad[TMP] =N_distr_interp(pt_spec_rad->emitters.gamma_grid_size,pt_ev->gamma[TMP],pt_spec_rad->emitters.griglia_gamma_Ne_log,pt_spec_rad->emitters.Ne);
                //*Vol_rad;
        }
     }
@@ -398,13 +398,13 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
                 E_acc+=delta_E_acc;
                 //--- Inj from ACC To Radiative
                 for (TMP = 0; TMP < E_SIZE; TMP++) { 
-                    N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]))*Vol_acc/pt_spec_rad->Vol_region;
+                    N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]))*Vol_acc/pt_spec_rad->core.Vol_region;
                 }
             //Only inject into radiative
             }else{
                 for (TMP = 0; TMP < E_SIZE; TMP++) { 
-                    //NOTE: fix pt_spec_acc->Vol_region to match exactly pt_spec_rad->Vol_region a T0
-                    N_escaped[TMP] = pt_ev->deltat * pt_ev->Q_inj[TMP] * pt_ev->T_inj_profile[T]*pt_spec_acc->Vol_region/pt_spec_rad->Vol_region;
+                    //NOTE: fix pt_spec_acc->core.Vol_region to match exactly pt_spec_rad->core.Vol_region a T0
+                    N_escaped[TMP] = pt_ev->deltat * pt_ev->Q_inj[TMP] * pt_ev->T_inj_profile[T]*pt_spec_acc->core.Vol_region/pt_spec_rad->core.Vol_region;
                     N_acc[TMP]=N_escaped[TMP];
                 }
             }
@@ -516,25 +516,25 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
 }
 
 double time_blob_to_obs(double time_blob, struct blob *pt_spec){
-    return time_blob*(1+pt_spec->z_cosm)*pt_spec->BulkFactor;
+    return time_blob*(1+pt_spec->core.z_cosm)*pt_spec->core.BulkFactor;
 }
 
 double time_obs_to_blob(double time_obs, struct blob *pt_spec){
-    return time_obs/((1+pt_spec->z_cosm)*pt_spec->BulkFactor);
+    return time_obs/((1+pt_spec->core.z_cosm)*pt_spec->core.BulkFactor);
 }
 
 //double time_blob_to_RH(struct temp_ev *pt, struct blob *pt_spec,double R_H_jet_t){
- //   //t_obs=(pt->R_H_jet_t-pt->R_H_jet)/pt_spec->beta_Gamma*vluce_cm
+ //   //t_obs=(pt->R_H_jet_t-pt->R_H_jet)/pt_spec->core.beta_Gamma*vluce_cm
 //    double t_obs;
-//    t_obs=(R_H_jet_t-pt->R_H_jet_exp)/(pt_spec->beta_Gamma*vluce_cm);
+//    t_obs=(R_H_jet_t-pt->R_H_jet_exp)/(pt_spec->core.beta_Gamma*vluce_cm);
 //    return time_obs_to_blob(t_obs,pt_spec);
-//    //return (pt->R_H_jet_t-pt->R_H_jet)/(pt_spec->beta_Gamma*vluce_cm*(1+pt_spec->z_cosm)*pt_spec->BulkFactor);
+//    //return (pt->R_H_jet_t-pt->R_H_jet)/(pt_spec->core.beta_Gamma*vluce_cm*(1+pt_spec->core.z_cosm)*pt_spec->core.BulkFactor);
 //}
 
 double eval_R_H_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev, double time_blob){
     //position R_H measured in obs frame at time_blob
-    //printf("t=%e, t_obs=%e, R_H_rad_start=%e, time_blob_to_obs=%e, betac=%e\n",time_blob,time_blob_to_obs(time_blob, pt_spec), pt_ev->R_H_rad_start,time_blob_to_obs(time_blob, pt_spec),pt_spec->beta_Gamma);
-    return pt_ev->R_H_rad_start + (pt_spec->beta_Gamma*vluce_cm*time_blob_to_obs(time_blob, pt_spec));
+    //printf("t=%e, t_obs=%e, R_H_rad_start=%e, time_blob_to_obs=%e, betac=%e\n",time_blob,time_blob_to_obs(time_blob, pt_spec), pt_ev->R_H_rad_start,time_blob_to_obs(time_blob, pt_spec),pt_spec->core.beta_Gamma);
+    return pt_ev->R_H_rad_start + (pt_spec->core.beta_Gamma*vluce_cm*time_blob_to_obs(time_blob, pt_spec));
 }
 
 
@@ -563,15 +563,15 @@ double eval_B_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev,double R_jet_t, 
 double update_jet_expansion(struct blob *pt_spec, struct temp_ev *pt_ev, double t){
     double R_jet_old,exp_factor;
     R_jet_old=pt_ev->R_jet_t;
-    pt_spec->beta_Gamma=eval_beta_gamma(pt_spec->BulkFactor);
+    pt_spec->core.beta_Gamma=eval_beta_gamma(pt_spec->core.BulkFactor);
 
     pt_ev->R_H_jet_t=eval_R_H_jet_t( pt_spec,  pt_ev, t);
     pt_ev->R_jet_t=eval_R_jet_t(pt_spec,  pt_ev,t);
     pt_ev->B_t=eval_B_jet_t(pt_spec,  pt_ev,pt_ev->R_jet_t,t);
     
-    pt_spec->B=pt_ev->B_t;
-    pt_spec->R=pt_ev->R_jet_t;
-    pt_spec->R_H=pt_ev->R_H_jet_t;
+    pt_spec->core.B=pt_ev->B_t;
+    pt_spec->core.R=pt_ev->R_jet_t;
+    pt_spec->core.R_H=pt_ev->R_H_jet_t;
     InitRadiative(pt_spec,pt_ev->do_Compton_cooling);
     //if (pt_ev->R_H_jet_t>pt_ev->R_H_jet_exp){ 
     //    T_adiab=3*Adiabatic_Cooling_time(pt_ev,pt_spec,pt_ev->R_jet_t);
@@ -610,7 +610,7 @@ void alloc_temp_ev_array(double ** pt,int size){
 
 
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1){
-    return N_distr_interp(pt->gamma_grid_size,gamma_1,pt->griglia_gamma_Ne_log,pt->Q_inj_e_second)*exp(pt->gamma_cooling_eq*(1/gamma_1-(1.0/pt->Gamma)));
+    return N_distr_interp(pt->emitters.gamma_grid_size,gamma_1,pt->emitters.griglia_gamma_Ne_log,pt->emitters.Q_inj_e_second)*exp(pt->emitters.gamma_cooling_eq*(1/gamma_1-(1.0/pt->core.Gamma)));
 }
 
 
@@ -620,17 +620,17 @@ double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc
     double a,b,res,delta;
     unsigned int integ_size;
     pf_K1 = &IntegrandCooolingEquilibrium;
-    pt->Gamma=gamma;
+    pt->core.Gamma=gamma;
     a=gamma;
-    b=pt->griglia_gamma_Ne_log[pt->gamma_grid_size-1];
-    delta=pt->griglia_gamma_Ne_log[pt->gamma_grid_size-1]-gamma;
-    integ_size=delta*1000/(pt->griglia_gamma_Ne_log[pt->gamma_grid_size-1]-pt->griglia_gamma_Ne_log[0]);
+    b=pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1];
+    delta=pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-gamma;
+    integ_size=delta*1000/(pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-pt->emitters.griglia_gamma_Ne_log[0]);
     if (integ_size<3){
         integ_size=3;
     }
 
     res=integrale_trap_log_struct(pf_K1,pt,a,b,integ_size);
-    return res*pt->gamma_cooling_eq*T_esc/(gamma*gamma);
+    return res*pt->emitters.gamma_cooling_eq*T_esc/(gamma*gamma);
 }
 
 
@@ -643,19 +643,19 @@ void CoolingEquilibrium(struct blob * pt, double T_esc){
     double Uph;
     Uph=0;
     //Uph += Power_Sync_Electron(pt);
-    Uph += I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR);
-    Uph += I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT);
-    Uph += I_nu_to_Uph(pt->nu_CMB, pt->I_nu_CMB, pt->NU_INT_MAX_CMB);
-    Uph += I_nu_to_Uph(pt->nu_Disk, pt->I_nu_Disk, pt->NU_INT_MAX_Disk);
-    Uph += I_nu_to_Uph(pt->nu_Star, pt->I_nu_Star, pt->NU_INT_MAX_Star);
+    Uph += I_nu_to_Uph(pt->BLR.spec.nu, pt->BLR.spec.I_nu, pt->BLR.spec.NU_INT_MAX);
+    Uph += I_nu_to_Uph(pt->DT.spec.nu, pt->DT.spec.I_nu, pt->DT.spec.NU_INT_MAX);
+    Uph += I_nu_to_Uph(pt->CMB.spec.nu, pt->CMB.spec.I_nu, pt->CMB.spec.NU_INT_MAX);
+    Uph += I_nu_to_Uph(pt->Disk.spec.nu, pt->Disk.spec.I_nu, pt->Disk.spec.NU_INT_MAX);
+    Uph += I_nu_to_Uph(pt->Star.spec.nu, pt->Star.spec.I_nu, pt->Star.spec.NU_INT_MAX);
 
-    a=3.0*MEC2/(4.0*vluce_cm*(pt->UB + Uph)*SIGTH);
-    pt->gamma_cooling_eq=(a/T_esc);
+    a=3.0*MEC2/(4.0*vluce_cm*(pt->Sync.UB + Uph)*SIGTH);
+    pt->emitters.gamma_cooling_eq=(a/T_esc);
     
-    for (ID = 0; ID < pt->gamma_grid_size ; ID++){
+    for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
         
-        pt->Ne[ID]=IntegrateCooolingEquilibrium(pt,
-                                                pt->griglia_gamma_Ne_log[ID], 
+        pt->emitters.Ne[ID]=IntegrateCooolingEquilibrium(pt,
+                                                pt->emitters.griglia_gamma_Ne_log[ID], 
                                                 T_esc);
     }
 }

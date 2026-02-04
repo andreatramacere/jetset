@@ -70,7 +70,7 @@ double Cooling(double x,struct temp_ev *pt, struct blob *pt_spec){
 	double cooling;
 	//gamma-1=x
 	//gamma=x+1
-	// printf("Sync cooling =%e\n",Sync_cool(pt_spec->B,x+1));
+	// printf("Sync cooling =%e\n",Sync_cool(pt_spec->core.B,x+1));
 
 	cooling=0;
 	if ((x+1)>1){

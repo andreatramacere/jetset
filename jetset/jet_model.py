@@ -21,7 +21,7 @@ from .base_model import Model
 from .output import makedir,WorkPlace
 from  .plot_sedfit import plt
 from .cosmo_tools import Cosmo
-from .utils import set_str_attr, old_model_warning, get_info, clean_var_name
+from .utils import set_str_attr, old_model_warning, get_info, clean_var_name, get_nested_attr
 from .jet_paramters import *
 from .jet_emitters import *
 from .jet_emitters_factory import EmittersFactory
@@ -193,8 +193,8 @@ class JetBase(Model):
 
 
 
-        self._blob.IC_adaptive_e_binning = 0
-        self._blob.do_IC_down_scattering = 0
+        self._blob.core.IC_adaptive_e_binning = 0
+        self._blob.core.do_IC_down_scattering = 0
         if hasattr(emitters_distribution,'emitters_type'):
             emitters_type=emitters_distribution.emitters_type
 
@@ -416,46 +416,46 @@ class JetBase(Model):
 
         blob = BlazarSED.MakeBlob()
 
-        blob.x_Bessel_min = 1E-17
-        blob.x_Bessel_max = 7.2E2
+        blob.Sync.x_Bessel_min = 1E-17
+        blob.Sync.x_Bessel_max = 7.2E2
 
-        blob.x_ave_Bessel_min = 1E-16
-        blob.x_ave_Bessel_max = 3.5E2
+        blob.Sync.x_ave_Bessel_min = 1E-16
+        blob.Sync.x_ave_Bessel_max = 3.5E2
 
-        blob.log_x_Bessel_min = np.log10( blob.x_Bessel_min)
-        blob.log_x_Bessel_max = np.log10( blob.x_Bessel_max)
-
-
-        blob.log_x_ave_Bessel_min = np.log10( blob.x_ave_Bessel_min)
-        blob.log_x_ave_Bessel_max = np.log10( blob.x_ave_Bessel_max)
+        blob.Sync.log_x_Bessel_min = np.log10( blob.Sync.x_Bessel_min)
+        blob.Sync.log_x_Bessel_max = np.log10( blob.Sync.x_Bessel_max)
 
 
+        blob.Sync.log_x_ave_Bessel_min = np.log10( blob.Sync.x_ave_Bessel_min)
+        blob.Sync.log_x_ave_Bessel_max = np.log10( blob.Sync.x_ave_Bessel_max)
 
 
-        F_Sync_x_ptr = getattr(blob, 'F_Sync_x')
-
-        F_Sync_y_ptr = getattr(blob,  'F_Sync_y')
-
-        G_Sync_x_ptr = getattr(blob, 'G_Sync_x')
-
-        G_Sync_y_ptr = getattr(blob,  'G_Sync_y')
 
 
-        F_ave_Sync_x_ptr = getattr(blob,  'F_ave_Sync_x')
+        F_Sync_x_ptr = get_nested_attr(blob, 'Sync.F_Sync_x')
 
-        F_ave_Sync_y_ptr = getattr(blob, 'F_ave_Sync_y')
+        F_Sync_y_ptr = get_nested_attr(blob, 'Sync.F_Sync_y')
 
-        log_F_Sync_x_ptr = getattr(blob, 'log_F_Sync_x')
+        G_Sync_x_ptr = get_nested_attr(blob, 'Sync.G_Sync_x')
 
-        log_F_Sync_y_ptr = getattr(blob, 'log_F_Sync_y')
+        G_Sync_y_ptr = get_nested_attr(blob, 'Sync.G_Sync_y')
 
-        log_F_ave_Sync_x_ptr = getattr(blob, 'log_F_ave_Sync_x')
 
-        log_F_ave_Sync_y_ptr = getattr(blob, 'log_F_ave_Sync_y')
+        F_ave_Sync_x_ptr = get_nested_attr(blob, 'Sync.F_ave_Sync_x')
 
-        log_G_Sync_x_ptr = getattr(blob, 'log_G_Sync_x')
+        F_ave_Sync_y_ptr = get_nested_attr(blob, 'Sync.F_ave_Sync_y')
 
-        log_G_Sync_y_ptr = getattr(blob, 'log_G_Sync_y')
+        log_F_Sync_x_ptr = get_nested_attr(blob, 'Sync.log_F_Sync_x')
+
+        log_F_Sync_y_ptr = get_nested_attr(blob, 'Sync.log_F_Sync_y')
+
+        log_F_ave_Sync_x_ptr = get_nested_attr(blob, 'Sync.log_F_ave_Sync_x')
+
+        log_F_ave_Sync_y_ptr = get_nested_attr(blob, 'Sync.log_F_ave_Sync_y')
+
+        log_G_Sync_x_ptr = get_nested_attr(blob, 'Sync.log_G_Sync_x')
+
+        log_G_Sync_y_ptr = get_nested_attr(blob, 'Sync.log_G_Sync_y')
         d = np.genfromtxt(bessel_table_file_path,comments='#')
         log_F_Sync_x=np.log10(d[:,0])
         log_F_Sync_y=np.log10(d[:,1])
@@ -480,60 +480,60 @@ class JetBase(Model):
             BlazarSED.set_bessel_table(log_G_Sync_x_ptr, blob, log_G_Sync_x[ID], ID)
             BlazarSED.set_bessel_table(log_G_Sync_y_ptr, blob, log_G_Sync_y[ID], ID)
 
-        blob.BESSEL_TABLE_DONE=1
+        blob.core.BESSEL_TABLE_DONE=1
 
         if verbose is False:
-            blob.verbose = 0
+            blob.core.verbose = 0
         else:
-            blob.verbose = 1
+            blob.core.verbose = 1
 
-        set_str_attr(blob, 'path', './')
+        set_str_attr(blob, 'core.path', './')
 
-        set_str_attr(blob, 'MODE', 'custom')
+        set_str_attr(blob, 'core.MODE', 'custom')
 
-        blob.gamma_grid_size = 200
+        blob.emitters.gamma_grid_size = 200
 
-        blob.nu_IC_size = 100
-        blob.nu_seed_size = 100
+        blob.core.nu_IC_size = 100
+        blob.core.nu_seed_size = 100
 
-        blob.nu_grid_size= 1000
+        blob.core.nu_grid_size= 1000
 
-        blob.do_Sync = 2
+        blob.core.do_Sync = 2
 
-        blob.do_SSC = 1
+        blob.core.do_SSC = 1
 
-        blob.R = 5.0e15
-        blob.h_sh=0.1
+        blob.core.R = 5.0e15
+        blob.core.h_sh=0.1
 
-        blob.B = 0.1
+        blob.core.B = 0.1
 
-        blob.z_cosm = 0.1
+        blob.core.z_cosm = 0.1
 
-        blob.BulkFactor = 10
-        blob.theta = 0.1
+        blob.core.BulkFactor = 10
+        blob.core.theta = 0.1
 
-        blob.N = 100
+        blob.emitters.N = 100
 
-        blob.NH_pp = 1
+        blob.PP_gamma.NH_pp = 1
 
-        blob.NH_cold_to_rel_e = 1.0       
+        blob.emitters.NH_cold_to_rel_e = 1.0       
 
-        blob.L_Disk = 1E45
+        blob.Disk.L_Disk = 1E45
 
-        blob.L_DT = 1E45
+        blob.DT.L_DT = 1E45
 
-        blob.gmin = 2
+        blob.emitters.gmin = 2
 
-        blob.gmax = 1e6
+        blob.emitters.gmax = 1e6
 
-        blob.nu_start_Sync = 1e6
-        blob.nu_stop_Sync = 1e20
+        blob.Sync.spec.nu_min = 1e6
+        blob.Sync.spec.nu_max = 1e20
 
-        blob.nu_start_SSC = 1e14
-        blob.nu_stop_SSC = 1e30
+        blob.SSC.spec.nu_min = 1e14
+        blob.SSC.spec.nu_max = 1e30
 
-        blob.nu_start_grid = 1e6
-        blob.nu_stop_grid = 1e30
+        blob.core.nu_start_grid = 1e6
+        blob.core.nu_stop_grid = 1e30
         
         return blob
 
@@ -550,7 +550,7 @@ class JetBase(Model):
 
         self._beaming_expr=beaming_expr
 
-        set_str_attr(self._blob,'BEAMING_EXPR',beaming_expr)
+        set_str_attr(self._blob,'core.BEAMING_EXPR',beaming_expr)
 
         self._emitting_region_dict=build_emitting_region_dict(self.cosmo,beaming_expr=beaming_expr,emitters_type=emitters_type)
         self._set_geometry()
@@ -558,13 +558,17 @@ class JetBase(Model):
         
 
     def _set_geometry(self):
-        self._blob.GEOMETRY=self.geometry
+        self._blob.core.GEOMETRY=self.geometry
         if self.geometry == 'spherical':
             pass
         elif self.geometry == 'spherical_shell':
             self._emitting_region_dict.pop('R')
-            self._emitting_region_dict['R_sh'] = JetModelDictionaryPar(ptype='region_size', vmin=1E3, vmax=1E30, punit='cm', froz=False, log=False)
-            self._emitting_region_dict['h_sh'] = JetModelDictionaryPar(ptype='scaling_factor',val=0.1, vmin=0, punit='', vmax=1, froz=False, log=False)
+            self._emitting_region_dict['R_sh'] = JetModelDictionaryPar(ptype='region_size', vmin=1E3, vmax=1E30,
+                                                                       punit='cm', froz=False, log=False,
+                                                                       jetkernel_par_name='core.R_sh')
+            self._emitting_region_dict['h_sh'] = JetModelDictionaryPar(ptype='scaling_factor', val=0.1, vmin=0,
+                                                                       punit='', vmax=1, froz=False, log=False,
+                                                                       jetkernel_par_name='core.h_sh')
 
     
     @property
@@ -655,7 +659,7 @@ class JetBase(Model):
 
     @property
     def IC_adaptive_e_binning(self,):
-        return np.intc(self._blob.IC_adaptive_e_binning)
+        return np.intc(self._blob.core.IC_adaptive_e_binning)
 
     @IC_adaptive_e_binning.setter
     def IC_adaptive_e_binning(self,state):
@@ -663,7 +667,7 @@ class JetBase(Model):
             pass
         else:
             raise RuntimeError('state has to be boolean')
-        self._blob.IC_adaptive_e_binning=np.intc(state)
+        self._blob.core.IC_adaptive_e_binning=np.intc(state)
 
     @staticmethod
     def available_emitters_distributions():
@@ -891,25 +895,25 @@ class JetBase(Model):
 
                 if self.get_spectral_component_by_name('EC_Disk',verbose=False) is not None:
                     self._del_spectral_component('EC_Disk')
-                    self._blob.do_EC_Disk = 0
+                    self._blob.core.do_EC_Disk = 0
                     self.EC_components_list.remove('EC_Disk')
 
                 if self.get_spectral_component_by_name('EC_BLR', verbose=False) is not None:
-                    self._blob.do_EC_BLR=0
+                    self._blob.core.do_EC_BLR=0
                     self._del_spectral_component('EC_BLR', verbose=False)
                     self.EC_components_list.remove('EC_BLR')
 
 
             if EC_component=='EC_Disk':
                 if self.get_spectral_component_by_name('EC_Disk', verbose=False) is not None:
-                    self._blob.do_EC_Disk=0
+                    self._blob.core.do_EC_Disk=0
                     self._del_spectral_component('EC_Disk', verbose=False)
                     self.EC_components_list.remove('EC_Disk')
 
 
             if EC_component=='EC_BLR':
                 if self.get_spectral_component_by_name('EC_BLR', verbose=False) is not None:
-                    self._blob.do_EC_BLR=0
+                    self._blob.core.do_EC_BLR=0
                     self._del_spectral_component('EC_BLR', verbose=False)
                     self.EC_components_list.remove('EC_BLR')
 
@@ -918,31 +922,31 @@ class JetBase(Model):
                     self._del_spectral_component('DT', verbose=False)
                     self.EC_components_list.remove('DT')
                 if self.get_spectral_component_by_name('EC_DT', verbose=False) is not None:
-                    self._blob.do_EC_DT = 0
+                    self._blob.core.do_EC_DT = 0
                     self._del_spectral_component('EC_DT', verbose=False)
                     self.EC_components_list.remove('EC_DT')
 
             if EC_component=='EC_DT':
                 if self.get_spectral_component_by_name('EC_DT', verbose=False) is not None:
-                    self._blob.do_EC_DT=0
+                    self._blob.core.do_EC_DT=0
                     self._del_spectral_component('EC_DT', verbose=False)
                     self.EC_components_list.remove('EC_DT')
 
             if EC_component=='EC_CMB':
                 if self.get_spectral_component_by_name('EC_CMB', verbose=False) is not None:
-                    self._blob.do_EC_CMB=0
+                    self._blob.core.do_EC_CMB=0
                     self._del_spectral_component('EC_CMB', verbose=False)
                     self.EC_components_list.remove('EC_CMB')
 
             if EC_component=='Star':
                 if self.get_spectral_component_by_name('Star', verbose=False) is not None:
-                    self._blob.do_star=0
+                    self._blob.core.do_Star=0
                     self._del_spectral_component('Star', verbose=False)
                     self.EC_components_list.remove('Star')
 
             if EC_component=='EC_Star':
                 if self.get_spectral_component_by_name('EC_Star', verbose=False) is not None:
-                    self._blob.do_EC_Satr=0
+                    self._blob.core.do_EC_Star=0
                     self._del_spectral_component('EC_Star', verbose=False)
                     self.EC_components_list.remove('EC_Star')
 
@@ -994,7 +998,7 @@ class JetBase(Model):
                     self.EC_components_list.append('Disk')
 
             if EC_component=='EC_Disk':
-                #self._blob.do_EC_Disk=1
+                #self._blob.core.do_EC_Disk=1
                 if self.get_spectral_component_by_name('EC_Disk',verbose=False) is None:
                     self._add_spectral_component('EC_Disk', var_name='do_EC_Disk', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_Disk')
@@ -1004,7 +1008,7 @@ class JetBase(Model):
                     self.EC_components_list.append('Disk')
 
             if EC_component=='EC_BLR':
-                #self._blob.do_EC_BLR=1
+                #self._blob.core.do_EC_BLR=1
                 if self.get_spectral_component_by_name('EC_BLR',verbose=False) is None:
                     self._add_spectral_component('EC_BLR', var_name='do_EC_BLR', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_BLR')
@@ -1042,7 +1046,7 @@ class JetBase(Model):
 
 
             if EC_component=='EC_DT':
-                #self._blob.do_EC_DT=1
+                #self._blob.core.do_EC_DT=1
                 if self.get_spectral_component_by_name('EC_DT',verbose=False) is None:
                     self._add_spectral_component('EC_DT', var_name='do_EC_DT', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_DT')
@@ -1056,7 +1060,7 @@ class JetBase(Model):
                     self.EC_components_list.append('Disk')
 
             if EC_component=='EC_CMB':
-                #self._blob.do_EC_CMB=1
+                #self._blob.core.do_EC_CMB=1
                 if self.get_spectral_component_by_name('EC_CMB',verbose=False) is None:
                     self._add_spectral_component('EC_CMB', var_name='do_EC_CMB', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_CMB')
@@ -1149,17 +1153,17 @@ class JetBase(Model):
     def get_beaming(self,):
 
         BlazarSED.SetBeaming(self._blob)
-        return self._blob.beam_obj
+        return self._blob.core.beam_obj
 
 
     def set_flag(self,flag):
-        self._blob.STEM=flag
+        self._blob.core.STEM=flag
 
     def get_flag(self):
-        return self._blob.STEM
+        return self._blob.core.STEM
 
     def get_path(self):
-        return self._blob.path
+        return self._blob.core.path
 
     def set_path(self,path,clean_work_dir=True):
         if path.endswith('/'):
@@ -1167,52 +1171,52 @@ class JetBase(Model):
         else:
             path+='/'
 
-        set_str_attr(self._blob,'path',path)
+        set_str_attr(self._blob,'core.path',path)
         makedir(path,clean_work_dir=clean_work_dir)
 
     def get_IC_mode(self):
-        return dict(map(reversed, self._IC_states.items()))[self._blob.do_IC]
+        return dict(map(reversed, self._IC_states.items()))[self._blob.core.do_IC]
 
 
 
     def set_external_field_transf(self,val):
         if val not in self._external_field_transf.keys():
             raise RuntimeError('val',val,'not in allowed values',self._external_field_transf.keys())
-        self._blob.EC_stat=self._external_field_transf[val]
-        self._blob.EC_stat_orig=self._external_field_transf[val]
+        self._blob.core.EC_stat=self._external_field_transf[val]
+        self._blob.core.EC_stat_orig=self._external_field_transf[val]
 
     def get_external_field_transf(self):
-        return dict(map(reversed, self._external_field_transf.items()))[self._blob.EC_stat]
+        return dict(map(reversed, self._external_field_transf.items()))[self._blob.core.EC_stat]
 
     def set_emiss_lim(self,val):
-        self._blob.emiss_lim=val
+        self._blob.core.emiss_lim=val
 
     def get_emiss_lim(self):
-        return self._blob.emiss_lim
+        return self._blob.core.emiss_lim
 
 
     @property
     def IC_nu_size(self):
-        return self._blob.nu_IC_size
+        return self._blob.core.nu_IC_size
 
     @IC_nu_size.setter
     def IC_nu_size(self, val):
         self.set_IC_nu_size(val)
 
     def get_IC_nu_size(self):
-        return self._blob.nu_IC_size
+        return self._blob.core.nu_IC_size
 
     def set_IC_nu_size(self, val):
         if val > self._nu_static_size:
             raise RuntimeError('value can not exceed',self._nu_static_size)
-        self._blob.nu_IC_size = val
+        self._blob.core.nu_IC_size = val
 
     @property
     def nu_seed_size(self):
-        return self._blob.nu_seed_size
+        return self._blob.core.nu_seed_size
 
     def get_seed_nu_size(self):
-        return self._blob.nu_seed_size
+        return self._blob.core.nu_seed_size
 
     @nu_seed_size.setter
     def nu_seed_size(self,val):
@@ -1221,7 +1225,7 @@ class JetBase(Model):
     def set_seed_nu_size(self,val):
         if val>self._nu_static_size:
             raise RuntimeError('value can not exceed',self._nu_static_size)
-        self._blob.nu_seed_size=val
+        self._blob.core.nu_seed_size=val
 
 
 
@@ -1230,7 +1234,7 @@ class JetBase(Model):
 
     @property
     def gamma_grid_size(self):
-        return self._blob.gamma_grid_size
+        return self._blob.emitters.gamma_grid_size
 
     @gamma_grid_size.setter
     def gamma_grid_size(self,val):
@@ -1246,17 +1250,17 @@ class JetBase(Model):
             self._set_nu_min_grid(val)
 
     def _get_nu_min_grid(self):
-        return  self._blob.nu_start_grid
+        return  self._blob.core.nu_start_grid
 
 
     def _set_nu_min_grid(self, val):
-        self._blob.nu_start_grid=val
+        self._blob.core.nu_start_grid=val
 
     @property
     def Norm_distr(self):
         if hasattr(self,'emitters_distribution'):
             if self.emitters_distribution._user_defined is False:
-                return self._blob.Norm_distr
+                return self._blob.emitters.Norm_distr
             else:
                 return self.emitters_distribution.normalize
         else:
@@ -1280,14 +1284,14 @@ class JetBase(Model):
 
                 if val == 1 or val is True:
                     if self.emitters_distribution._user_defined is False:
-                        self._blob.Norm_distr = 1
+                        self._blob.emitters.Norm_distr = 1
                     else:
                         self.emitters_distribution.normalize = val
                     self.parameters.N.par_type='emitters_density'
                     self.parameters.N.units ='1/cm3'
                 elif val == 0 or val is False:
                     if self.emitters_distribution._user_defined is False:
-                        self._blob.Norm_distr = 0
+                        self._blob.emitters.Norm_distr = 0
                     else:
                         self.emitters_distribution.normalize = val
                         self.parameters.N.par_type = 'scaling_factor'
@@ -1313,10 +1317,10 @@ class JetBase(Model):
             self._set_nu_max_grid(val)
 
     def _set_nu_max_grid(self, val):
-        self._blob.nu_stop_grid=val
+        self._blob.core.nu_stop_grid=val
 
     def _get_nu_max_grid(self):
-        return  self._blob.nu_stop_grid
+        return  self._blob.core.nu_stop_grid
 
     @property
     def nu_size(self):
@@ -1343,28 +1347,28 @@ class JetBase(Model):
             val = 100
         if val > self._static_spec_arr_grid_size:
             raise RuntimeError('value can not exceed', self._nu_static_size)
-        self._blob.nu_grid_size=val
+        self._blob.core.nu_grid_size=val
 
     def _get_nu_grid_size_blob(self):
-        return  self._blob.nu_grid_size
+        return  self._blob.core.nu_grid_size
 
 
 
     def set_verbosity(self,val):
-        self._blob.verbose=val
+        self._blob.core.verbose=val
 
     def get_verbosity(self):
-        return  self._blob.verbose
+        return  self._blob.core.verbose
 
     def debug_synch(self):
-        print ("nu stop synch", self._blob.nu_stop_Sync)
-        print ("nu stop synch ssc", self._blob.nu_stop_Sync_ssc)
-        print ("ID MAX SYNCH", self._blob.NU_INT_STOP_Sync_SSC)
+        print ("nu stop synch", self._blob.Sync.spec.nu_max)
+        print ("nu stop synch ssc", self._blob.Sync.nu_stop_Sync_ssc)
+        print ("ID MAX SYNCH", self._blob.Sync.NU_INT_STOP_Sync_SSC)
 
     def debug_SSC(self):
-        print ("nu start SSC", self._blob.nu_start_SSC)
-        print ("nu stop SSC", self._blob.nu_stop_SSC)
-        print ("ID MAX SSC", self._blob.NU_INT_STOP_COMPTON_SSC)
+        print ("nu start SSC", self._blob.SSC.spec.nu_min)
+        print ("nu stop SSC", self._blob.SSC.spec.nu_max)
+        print ("ID MAX SSC", self._blob.SSC.NU_INT_STOP_COMPTON_SSC)
 
 
     def show_emitters_distribution(self):
@@ -1372,9 +1376,8 @@ class JetBase(Model):
         print('%s distribution:'%self.emitters_distribution.emitters_type)
         print(" type: %s  " % (self._emitters_distribution_name))
         print(" gamma energy grid size: ", self.gamma_grid_size)
-        print(" gmin grid : %e" % self._blob.
-              gmin_griglia)
-        print(" gmax grid : %e" % self._blob.gmax_griglia)
+        print(" gmin grid : %e" % self._blob.emitters.gmin_griglia)
+        print(" gmax grid : %e" % self._blob.emitters.gmax_griglia)
         print(" normalization ", self.Norm_distr)
         print(" log-values ", self._emitters_distribution_log_values)
         print('')
@@ -1399,8 +1402,8 @@ class JetBase(Model):
         print('%s distribution:'%self.emitters_distribution.emitters_type)
         print(" type: %s  " % (self._emitters_distribution_name))
         print (" gamma energy grid size: ",self.gamma_grid_size)
-        print (" gmin grid : %e"%self._blob.gmin_griglia)
-        print (" gmax grid : %e"%self._blob.gmax_griglia)
+        print (" gmin grid : %e"%self._blob.emitters.gmin_griglia)
+        print (" gmax grid : %e"%self._blob.emitters.gmax_griglia)
         print(" normalization: ", self.Norm_distr)
         print(" log-values: ", self._emitters_distribution_log_values)
         _p = self.parameters.get_par_by_name('NH_cold_to_rel_e') 
@@ -1412,23 +1415,23 @@ class JetBase(Model):
             BlazarSED.set_Disk(self._blob)
             print(' disk Type: %s'%self.parameters.get_par_by_name('disk_type').val)
             print(' L disk: %e (erg/s)'%self.parameters.get_par_by_name('L_Disk').val)
-            print(' T disk: %e (K)'%self._blob.T_Disk)
-            print(' nu peak disk: %e (Hz)'%BlazarSED.eval_nu_peak_Disk(self._blob.T_Disk))
+            print(' T disk: %e (K)'%self._blob.Disk.T_Disk)
+            print(' nu peak disk: %e (Hz)'%BlazarSED.eval_nu_peak_Disk(self._blob.Disk.T_Disk))
             if self.parameters.get_par_by_name('disk_type').val == 'MultiBB':
-                print(' Sw radius %e (cm)'%self._blob.R_Sw)
-                print(' L Edd. %e (erg/s)'%self._blob.L_Edd)
+                print(' Sw radius %e (cm)'%self._blob.Disk.R_Sw)
+                print(' L Edd. %e (erg/s)'%self._blob.Disk.L_Edd)
                 yr=86400*365
-                print(' accr_rate: %e (M_sun/yr)'%(yr*self._blob.accr_rate/BlazarSED.m_sun))
-                print(' accr_rate Edd.: %e (M_sun/yr)'%(yr*self._blob.accr_Edd/BlazarSED.m_sun))
+                print(' accr_rate: %e (M_sun/yr)'%(yr*self._blob.Disk.accr_rate/BlazarSED.m_sun))
+                print(' accr_rate Edd.: %e (M_sun/yr)'%(yr*self._blob.Disk.accr_Edd/BlazarSED.m_sun))
 
         if 'EC_Star' in self.EC_components_list:
             print('Star:')
-            print(' Star radius %e (cm)'%self._blob.R_Star, ',%e (R_Sun)'%(self._blob.R_Star/constants.R_sun.to('cm').value))
+            print(' Star radius %e (cm)'%self._blob.Star.R_Star, ',%e (R_Sun)'%(self._blob.Star.R_Star/constants.R_sun.to('cm').value))
             print('')
         print('radiative fields:')
         print (" seed photons grid size: ", self.nu_seed_size)
         print (" IC emission grid size: ", self.get_IC_nu_size())
-        print (' source emissivity lower bound :  %e' % self._blob.emiss_lim)
+        print (' source emissivity lower bound :  %e' % self._blob.core.emiss_lim)
         print (' spectral components:')
         for _s in self._spectral_components_list:
             print("   name:%s,"%_s.name, 'state:', _s.state)
@@ -1521,11 +1524,11 @@ class JetBase(Model):
         if hasattr(self, 'T_esc_e_second'):
             if self.T_esc_e_second is None:
                 if self.geometry == 'spherical':
-                    self._blob.T_esc_e_second = self.parameters.R.val / BlazarSED.vluce_cm
+                    self._blob.emitters.T_esc_e_second = self.parameters.R.val / BlazarSED.vluce_cm
                 else:
-                    self._blob.T_esc_e_second = self.parameters.R_sh.val*self.parameters.h_sh.val / BlazarSED.vluce_cm
+                    self._blob.emitters.T_esc_e_second = self.parameters.R_sh.val*self.parameters.h_sh.val / BlazarSED.vluce_cm
             else:
-                self._blob.T_esc_e_second = self.T_esc_e_second
+                self._blob.emitters.T_esc_e_second = self.T_esc_e_second
         if self.emitters_distribution._user_defined is True:
             self.emitters_distribution._fill()
         BlazarSED.Init(self._blob, self.get_DL_cm())
@@ -1654,8 +1657,8 @@ class JetBase(Model):
         _par_array=ModelParameterArray()
 
         _name = [i for i in self._energetic.__class__.__dict__.keys() if i[:1] != '_']
-        _par_array.add_par(ModelParameter(name='BulkLorentzFactor', val=self._blob.BulkFactor, units='',par_type='jet-bulk-factor'))
-        self.energetic_dict['BulkLorentzFactor']= self._blob.BulkFactor
+        _par_array.add_par(ModelParameter(name='BulkLorentzFactor', val=self._blob.core.BulkFactor, units='',par_type='jet-bulk-factor'))
+        self.energetic_dict['BulkLorentzFactor']= self._blob.core.BulkFactor
         try:
             for _n in _name:
                 units = 'skip_this'
@@ -1797,9 +1800,9 @@ class JetBase(Model):
         elif   peak_name is not None:
             try:
                 if log_log==False:
-                    return getattr(self._blob,peak_name)
+                    return get_nested_attr(self._blob, peak_name)
                 else:
-                     return np.log10(getattr(self._blob,peak_name) )
+                     return np.log10(get_nested_attr(self._blob, peak_name))
             except:
                 print ("peak name %s, not found, check name"%peak_name)
                 raise ValueError
@@ -1827,7 +1830,7 @@ class JetBase(Model):
         if self.verbose:
             print("===> setting C threads to",N)
         if isinstance(N,int):
-            self._blob.N_THREADS=N
+            self._blob.core.N_THREADS=N
         else:
             raise RuntimeError('N must be integer')
 
@@ -2007,7 +2010,7 @@ class Jet(JetBase):
         -------
 
         """
-        U=U_vol/ self._blob.Vol_sphere
+        U=U_vol/ self._blob.core.Vol_region
         self.set_N_from_U_emitters(U, gmin=gmin, gmax=gmax)
 
 
@@ -2023,7 +2026,7 @@ class Jet(JetBase):
 
         """
         self.set_par('N', val=1.0)
-        #gamma_grid_size = self._blob.gamma_grid_size
+        #gamma_grid_size = self._blob.emitters.gamma_grid_size
         #self.emitters_distribution.set_grid_size(100)
         self.set_blob()
         delta = self.get_beaming()
@@ -2062,10 +2065,10 @@ class Jet(JetBase):
 
         """
         self.set_par('N',val=1.0)
-        #gamma_grid_size = self._blob.gamma_grid_size
+        #gamma_grid_size = self._blob.emitters.gamma_grid_size
         #self.emitters_distribution.set_grid_size(100)
         self.set_blob()
-        delta = self._blob.beam_obj
+        delta = self._blob.core.beam_obj
         nu_blob = nu_src / delta
         L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
         N_out = nuLnu_src / L_out
@@ -2144,8 +2147,8 @@ class Jet(JetBase):
             N[ID]=self.get_par_by_name('N').val
             self.set_blob()
             #
-            U_e[ID] = self._blob.U_e
-            U_B[ID] = self._blob.UB
+            U_e[ID] = self._blob.emitters.U_e
+            U_B[ID] = self._blob.Sync.UB
             # delta=Jet.get_beaming()
             # print "check L_in=%4.4e L_out=%4.4e"%(L_0,(L_0/delta**4)/BlazarSED.Power_Sync_Electron(Jet._Jet__blob))
 
@@ -2293,7 +2296,7 @@ class GalacticBeamed(Jet):
             return 0
 
     def _handle_z(self,d=u.kpc*1):
-        self._blob.z_cosm=0
+        self._blob.core.z_cosm=0
         self.parameters.z_cosm.val=0
         self.parameters.z_cosm.hidden=True
         self.parameters.z_cosm.frozen=True

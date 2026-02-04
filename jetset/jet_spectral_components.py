@@ -21,7 +21,7 @@ else:
 from . import spectral_shapes
 from .jetkernel_models_dic import nuFnu_obs_dict, n_seed_dic
 from .plot_sedfit import PlotSpecComp,PlotSeedPhotons
-from .utils import check_frame, unexpected_behaviour
+from .utils import check_frame, unexpected_behaviour, get_nested_attr
 from .jet_kernel_tools import get_spectral_c_array_read_only
 
 __all__=['JetSeedPhotons','JetSpecComponent','SpecCompList']
@@ -36,21 +36,21 @@ class JetSeedPhotons(object):
         self._blob_object = blob_object
         self._n_name, self._nu_name = n_seed_dic[self.name]
 
-        self.n_ptr = getattr(blob_object, self._n_name)
+        self.n_ptr = get_nested_attr(blob_object, self._n_name)
 
-        self.nu_ptr = getattr(blob_object, self._nu_name)
+        self.nu_ptr = get_nested_attr(blob_object, self._nu_name)
         #self.SED = spectral_shapes.SED(name=self.name)
         if var_name is not None:
             self._var_name=var_name
 
-        self.fill(emiss_lim=self._blob_object.emiss_lim)
+        self.fill(emiss_lim=self._blob_object.core.emiss_lim)
 
     def fill(self,log_log=False,emiss_lim=0):
         self.nu,self.n=self.get_spectral_points(log_log=log_log,emiss_lim=emiss_lim)
 
     def get_spectral_points(self,log_log=False,emiss_lim=0):
 
-        x,y=get_spectral_c_array_read_only(self.nu_ptr,self.n_ptr,self._blob_object.nu_grid_size)
+        x,y=get_spectral_c_array_read_only(self.nu_ptr,self.n_ptr,self._blob_object.core.nu_grid_size)
         msk_nan=np.isnan(x)
         msk_nan+=np.isnan(y)
         #print('emiss lim',self.get_emiss_lim())
@@ -83,7 +83,7 @@ class JetSeedPhotons(object):
 
 
     def plot(self, y_min=None,y_max=None):
-        self.fill(emiss_lim=self._blob_object.emiss_lim)
+        self.fill(emiss_lim=self._blob_object.core.emiss_lim)
         p=PlotSeedPhotons()
         p.plot(nu=self.nu,nuFnu=self.n,y_min=y_min,y_max=y_max)
 
@@ -110,9 +110,9 @@ class JetSpecComponent(object):
         self._blob_object=blob_object
         self._nuFnu_name, self._nu_name=nuFnu_obs_dict[self.name]
 
-        self.nuFnu_ptr=getattr(blob_object,self._nuFnu_name)
+        self.nuFnu_ptr=get_nested_attr(blob_object, self._nuFnu_name)
 
-        self.nu_ptr=getattr(blob_object,self._nu_name)
+        self.nu_ptr=get_nested_attr(blob_object, self._nu_name)
 
         self.SED=spectral_shapes.SED(name=self.name,beaming=jet_obj.get_beaming())
         self.seed_field=None
@@ -120,8 +120,8 @@ class JetSpecComponent(object):
         self._tau=tau
         # self._nu_start_src_name, self._nu_stop_src_name = nu_src_start_stop_dict[self.name]
         #
-        # self.nu_ptr_start = getattr(blob_object, self._nu_name)
-        # self.nu_ptr_stop = getattr(blob_object, self._nu_name)
+        # self.nu_ptr_start = get_nested_attr(blob_object, self._nu_name)
+        # self.nu_ptr_stop = get_nested_attr(blob_object, self._nu_name)
         #
         # self._nu_start_src = 'auto'
         # self._nu_stop_src = 'auto'
@@ -180,7 +180,7 @@ class JetSpecComponent(object):
             self._hidden=val
 
     def get_emiss_lim(self,seed=False):
-        return self._blob_object.emiss_lim
+        return self._blob_object.core.emiss_lim
 
 
     def fill_SED(self,log_log=False,lin_nu=None,skip_zeros=False):
@@ -197,7 +197,7 @@ class JetSpecComponent(object):
 
 
     def get_SED_points(self, log_log=False, lin_nu=None, interp='linear', skip_zeros=False):
-        x,y= get_spectral_c_array_read_only(self.nu_ptr, self.nuFnu_ptr, self._blob_object.nu_grid_size)
+        x,y= get_spectral_c_array_read_only(self.nu_ptr, self.nuFnu_ptr, self._blob_object.core.nu_grid_size)
   
         msk_nan = np.isnan(x)
         msk_nan += np.isnan(y)
@@ -239,7 +239,7 @@ class JetSpecComponent(object):
 
 
     def _update_jetkernel_spectral_array(self,y):
-        size = self._blob_object.nu_grid_size
+        size = self._blob_object.core.nu_grid_size
         if y.size != size:
             raise RuntimeError('the size of the input array is different from the size of the target array in jetkernel')
 
@@ -275,7 +275,7 @@ class JetSpecComponent(object):
 
     def get_var_state(self,):
         if self._var_name is not None:
-            return  getattr(self._blob_object,self._var_name)
+            return  get_nested_attr(self._blob_object, self._var_name)
         else:
             return None
 
