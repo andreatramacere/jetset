@@ -334,9 +334,9 @@ class SpecCompList(object):
         for i in range(len(self._sc_list)):
             if self._sc_list[i].name==name:
                 return self._sc_list[i]
-        else:
-            if verbose==True:
-                print ("no spectral components with name %s found"%name)
+    
+        if verbose==True:
+            print ("no spectral components with name %s found"%name)
 
 
     @property
