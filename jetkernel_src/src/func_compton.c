@@ -35,8 +35,11 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
     //double (*pf_K) (struct blob *, double x);
     double nu_IC_out_stat;
 
-    //pf_K = &f_compton_K1;
+    double * nu_seed;
+    double * n_seed;
+    unsigned int nu_seed_size;
 
+    nu_seed_size=pt_GR->nu_seed_size;
     nu_IC_out_stat = nu_IC_out * pt_GR->beam_obj;
 
     if (pt_GR->verbose>1) {
@@ -52,11 +55,14 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
                 printf("nu_start_Sync=%e\n", pt_GR->nu_start_Sync);
                 printf("nu_stop_Sync_ssc=%e\n", pt_GR->nu_stop_Sync_ssc);
             }
-            pt_GR->nu_seed = pt_GR->nu_Sync;
-            pt_GR->n_seed = pt_GR->n_Sync;
+            nu_seed = pt_GR->nu_Sync;
+            n_seed = pt_GR->n_Sync;
             //pt_GR->griglia_gamma_log_IC=pt_GR->griglia_gamma_Ne_log;
             //pt_GR->N_IC=pt_GR->Ne;
             rate_comp = integrale_IC(pt_GR,
+                    nu_seed,
+                    n_seed,
+                    nu_seed_size,
                     pt_GR->nu_start_Sync,
                     pt_GR->nu_stop_Sync_ssc,
                     0,
@@ -74,22 +80,28 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
             }
             if (pt_GR->EC_stat == 0)
             {
-                pt_GR->nu_seed = pt_GR->nu_Disk;
-                pt_GR->n_seed = pt_GR->n_Disk;
+                nu_seed = pt_GR->nu_Disk;
+                n_seed = pt_GR->n_Disk;
                 rate_comp = integrale_IC(pt_GR,
-                                         pt_GR->nu_start_Disk,
-                                         pt_GR->nu_stop_Disk,
-                                         pt_GR->EC_stat,
-                                         nu_IC_out);
+                                        nu_seed,
+                                        n_seed,
+                                        nu_seed_size,
+                                        pt_GR->nu_start_Disk,
+                                        pt_GR->nu_stop_Disk,
+                                        pt_GR->EC_stat,
+                                        nu_IC_out);
             }
             else{
-                pt_GR->nu_seed = pt_GR->nu_Disk_disk_RF;
-                pt_GR->n_seed = pt_GR->n_Disk_DRF;
+                nu_seed = pt_GR->nu_Disk_disk_RF;
+                n_seed = pt_GR->n_Disk_DRF;
                 rate_comp = integrale_IC(pt_GR,
-                                         pt_GR->nu_start_Disk_DRF,
-                                         pt_GR->nu_stop_Disk_DRF,
-                                         pt_GR->EC_stat,
-                                         nu_IC_out_stat);
+                                        nu_seed,
+                                        n_seed,
+                                        nu_seed_size,
+                                        pt_GR->nu_start_Disk_DRF,
+                                        pt_GR->nu_stop_Disk_DRF,
+                                        pt_GR->EC_stat,
+                                        nu_IC_out_stat);
             }
 			
 		}
@@ -106,19 +118,25 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
 
             if (pt_GR->EC_stat == 0)
             {
-                pt_GR->nu_seed = pt_GR->nu_BLR;
-                pt_GR->n_seed = pt_GR->n_BLR;
+                nu_seed = pt_GR->nu_BLR;
+                n_seed = pt_GR->n_BLR;
                 rate_comp = integrale_IC(pt_GR,
-                                         pt_GR->nu_start_BLR,
-                                         pt_GR->nu_stop_BLR,
-                                         pt_GR->EC_stat,
-                                         nu_IC_out);
+                                        nu_seed,
+                                        n_seed,
+                                        nu_seed_size,
+                                        pt_GR->nu_start_BLR,
+                                        pt_GR->nu_stop_BLR,
+                                        pt_GR->EC_stat,
+                                        nu_IC_out);
             }
             else
             {             
-                pt_GR->nu_seed = pt_GR->nu_BLR_disk_RF;
-                pt_GR->n_seed = pt_GR->n_BLR_DRF;
+                nu_seed = pt_GR->nu_BLR_disk_RF;
+                n_seed = pt_GR->n_BLR_DRF;
                 rate_comp = integrale_IC(pt_GR,
+                                         nu_seed,
+                                         n_seed,
+                                         nu_seed_size,
                                          pt_GR->nu_start_BLR_disk_RF,
                                          pt_GR->nu_stop_BLR_disk_RF,
                                          pt_GR->EC_stat,
@@ -136,11 +154,14 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
                 printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->nu_stop_DT);
             }
 
-            if (pt_GR->EC_stat == 0)
-            {
-                pt_GR->nu_seed = pt_GR->nu_DT;
-                pt_GR->n_seed = pt_GR->n_DT;
+            if (pt_GR->EC_stat == 0){
+               
+                nu_seed = pt_GR->nu_DT;
+                n_seed = pt_GR->n_DT;
                 rate_comp = integrale_IC(pt_GR,
+                                         nu_seed,
+                                         n_seed,
+                                         nu_seed_size,
                                          pt_GR->nu_start_DT,
                                          pt_GR->nu_stop_DT,
                                          pt_GR->EC_stat,
@@ -148,9 +169,12 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
             }
             else
             {
-                pt_GR->nu_seed = pt_GR->nu_DT_disk_RF;
-                pt_GR->n_seed = pt_GR->n_DT_DRF;
+                nu_seed = pt_GR->nu_DT_disk_RF;
+                n_seed = pt_GR->n_DT_DRF;
                 rate_comp = integrale_IC(pt_GR,
+                                         nu_seed,
+                                         n_seed,
+                                         nu_seed_size,
                                          pt_GR->nu_start_DT,
                                          pt_GR->nu_stop_DT_DRF,
                                          pt_GR->EC_stat,
@@ -168,13 +192,16 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
                printf("(blob rest frame) nu_start_EC_seed Star=%e\n", pt_GR->nu_start_Star);
                printf("(blob rest frame) nu_stop_EC_seed=%e\n", pt_GR->nu_stop_Star);
            }
-		   pt_GR->nu_seed = pt_GR->nu_Star;
-		   pt_GR->n_seed = pt_GR->n_Star;
+		   nu_seed = pt_GR->nu_Star;
+		   n_seed = pt_GR->n_Star;
            if (pt_GR->EC_stat == 0)
            {
-               pt_GR->nu_seed = pt_GR->nu_Star;
-               pt_GR->n_seed = pt_GR->n_Star;
+               nu_seed = pt_GR->nu_Star;
+               n_seed = pt_GR->n_Star;
                rate_comp = integrale_IC(pt_GR,
+                                        nu_seed,
+                                        n_seed,
+                                        nu_seed_size,
                                         pt_GR->nu_start_Star,
                                         pt_GR->nu_stop_Star,
                                         pt_GR->EC_stat,
@@ -182,9 +209,12 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
            }
            else
            {
-               pt_GR->nu_seed = pt_GR->nu_Star_disk_RF;
-               pt_GR->n_seed = pt_GR->n_Star_DRF;
+               nu_seed = pt_GR->nu_Star_disk_RF;
+               n_seed = pt_GR->n_Star_DRF;
                rate_comp = integrale_IC(pt_GR,
+                                        nu_seed,
+                                        n_seed,
+                                        nu_seed_size,
                                         pt_GR->nu_start_Star_DRF,
                                         pt_GR->nu_stop_Star_DRF,
                                         pt_GR->EC_stat,
@@ -205,9 +235,12 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
     		
             if (pt_GR->EC_stat == 0)
             {
-                pt_GR->nu_seed = pt_GR->nu_CMB;
-                pt_GR->n_seed = pt_GR->n_CMB;
+                nu_seed = pt_GR->nu_CMB;
+                n_seed = pt_GR->n_CMB;
                 rate_comp = integrale_IC(pt_GR,
+                                         nu_seed,
+                                         n_seed,
+                                         nu_seed_size,
                                          pt_GR->nu_start_CMB,
                                          pt_GR->nu_stop_CMB,
                                          pt_GR->EC_stat,
@@ -215,9 +248,12 @@ double rate_compton_GR(struct blob *pt_GR, double nu_IC_out) {
             }
             else
             {
-                pt_GR->nu_seed = pt_GR->nu_CMB_disk_RF;
-                pt_GR->n_seed = pt_GR->n_CMB_DRF;
+                nu_seed = pt_GR->nu_CMB_disk_RF;
+                n_seed = pt_GR->n_CMB_DRF;
                 rate_comp = integrale_IC(pt_GR,
+                                         nu_seed,
+                                         n_seed,
+                                         nu_seed_size,
                                          pt_GR->nu_start_CMB_DRF,
                                          pt_GR->nu_stop_CMB_DRF,
                                          pt_GR->EC_stat,
@@ -354,14 +390,15 @@ void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int 
 // returns [emitted photons, cm-3, s-1, Hz-1, sterad-1]
 // the [sterad-1] comes from n_seed
 //=========================================================================================
-double integrale_IC( struct blob * pt, double a, double b, int stat_frame, double nu_IC_out) {
+//double integrale_IC( struct blob * pt, double a, double b, int stat_frame, double nu_IC_out) 
+double integrale_IC(struct blob *pt, const double *nu_seed, const double *n_seed, unsigned int nu_seed_size, double a, double b, int stat_frame, double nu_IC_out){
     double integr_nu, nu_IC_in;
     
     unsigned int ID,ID_gamma;
     double *Integrand_over_gamma_grid, *Ne_IC, *griglia_gamma_Ne_log_IC, *integr_gamma;
     Integrand_over_gamma_grid = (double *) calloc(pt->gamma_grid_size, sizeof (double));
     griglia_gamma_Ne_log_IC =  (double *) calloc(pt->gamma_grid_size, sizeof (double));
-    integr_gamma = (double *) calloc(pt->nu_seed_size, sizeof (double));
+    integr_gamma = (double *) calloc(nu_seed_size, sizeof (double));
     Ne_IC = (double *) calloc(pt->gamma_grid_size, sizeof (double));
     double ic_kernel;
     integr_nu = 0.0;
@@ -370,33 +407,31 @@ double integrale_IC( struct blob * pt, double a, double b, int stat_frame, doubl
 
     set_N_distr_for_Compton(pt, b, nu_IC_out, stat_frame, Ne_IC, griglia_gamma_Ne_log_IC);
 
-    if (pt->verbose>1) {
-        printf("***** Integrale  IC ******\n");
-        printf("i=%d\n", ID);
-        printf("nu=%e a=%e b=%e  g_min_grid=%e g_max_grid=%e\n", pt->nu_seed[ID], a, b, griglia_gamma_Ne_log_IC[0], griglia_gamma_Ne_log_IC[pt->gamma_grid_size - 1]);
-    }
- 
-    for (ID=0; ID<pt->nu_seed_size; ID++){
-        if (pt->nu_seed[ID] <= b && pt->nu_seed[ID] >= a){
-            nu_IC_in= pt->nu_seed[ID];
+    for (ID=0; ID<nu_seed_size; ID++){
+        if (nu_seed[ID] <= b && nu_seed[ID] >= a){
+            nu_IC_in= nu_seed[ID];
 
             //Integration over electron Lorentz factor
             for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
                 if (pt->bulk_compton == 0){
                     ic_kernel=f_compton_K1(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out, nu_IC_in);
                 }else{
-                    ic_kernel=f_compton_bulk(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out,  pt->nu_seed[ID], pt->nu_seed[ID+1]);
-                }
+                    if (ID<nu_seed_size-1){
+                        ic_kernel=f_compton_bulk(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out,   nu_seed[ID],  nu_seed[ID+1]);
+                    }else{
+                        ic_kernel=f_compton_bulk(pt, griglia_gamma_Ne_log_IC[ID_gamma], nu_IC_out,   nu_seed[ID-1],  nu_seed[ID]);
+                    }
+                }    
                 Integrand_over_gamma_grid[ID_gamma] =ic_kernel * Ne_IC[ID_gamma];
                 
             }
-            integr_gamma[ID]= pt->n_seed[ID]*integr_simp_grid_equilog(griglia_gamma_Ne_log_IC, Integrand_over_gamma_grid, pt->gamma_grid_size);
+            integr_gamma[ID]= n_seed[ID]*integr_simp_grid_equilog(griglia_gamma_Ne_log_IC, Integrand_over_gamma_grid, pt->gamma_grid_size);
 
         }else{
             integr_gamma[ID]=0;
         }
     }
-    integr_nu=trapzd_array_arbritary_grid( pt->nu_seed,integr_gamma, pt->nu_seed_size);
+    integr_nu=trapzd_array_arbritary_grid( nu_seed,integr_gamma, nu_seed_size);
 
     //============================================================
     //0.75 fattore di correzione di GOULD
@@ -427,6 +462,12 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
     double comp_cooling;
 
     comp_cooling=0;
+    double * nu_seed;
+    double * n_seed;
+
+    unsigned int nu_seed_size;
+
+    nu_seed_size=pt_spec->nu_seed_size;
     
     if (pt_spec->verbose>1) {
         printf("GR\n");
@@ -442,12 +483,15 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
 
         }
          
-        pt_spec->nu_seed = pt_spec->nu_Sync;
-        pt_spec->n_seed = pt_spec->n_Sync;
+        nu_seed = pt_spec->nu_Sync;
+        n_seed = pt_spec->n_Sync;
         comp_cooling += integrale_IC_cooling(pt_spec,
-                pt_spec->nu_start_Sync,
-                pt_spec->nu_stop_Sync_ssc,
-                gamma);
+                                             nu_seed,
+                                             n_seed,
+                                             nu_seed_size,
+                                             pt_spec->nu_start_Sync,
+                                             pt_spec->nu_stop_Sync_ssc,
+                                             gamma);
         //printf("evaluate IC cooling, gamma=%e cooling_rate=%e, Sync_cooling_rate_ratio=%e\n",gamma,comp_cooling,comp_cooling/Sync_cool(pt_spec->B,gamma));
     }
 
@@ -460,9 +504,12 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
             printf("nu_start_EC_seed=%e\n", pt_spec->nu_start_Disk);
             printf("nu_stop_EC_seed=%e\n", pt_spec->nu_stop_Disk);
         }
-        pt_spec->nu_seed = pt_spec->nu_Disk;
-        pt_spec->n_seed = pt_spec->n_Disk;
+        nu_seed = pt_spec->nu_Disk;
+        n_seed = pt_spec->n_Disk;
         comp_cooling += integrale_IC_cooling(pt_spec,
+                nu_seed,
+                n_seed,
+                nu_seed_size,
                 pt_spec->nu_start_Disk,
                 pt_spec->nu_stop_Disk,
                 gamma);
@@ -477,9 +524,12 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
     		printf("nu_start_EC_seed=%e\n", pt_spec->nu_start_BLR);
     		printf("nu_stop_EC_seed=%e\n", pt_spec->nu_stop_BLR);
     	}
-    	pt_spec->nu_seed = pt_spec->nu_BLR;
-    	pt_spec->n_seed = pt_spec->n_BLR;
+    	nu_seed = pt_spec->nu_BLR;
+    	n_seed = pt_spec->n_BLR;
     	comp_cooling += integrale_IC_cooling(pt_spec,
+                nu_seed,
+                n_seed,
+                nu_seed_size,
     			pt_spec->nu_start_BLR,
     			pt_spec->nu_stop_BLR,
     			gamma);
@@ -495,9 +545,12 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
     		printf("nu_start_EC_seed=%e\n", pt_spec->nu_start_DT);
     		printf("nu_stop_EC_seed=%e\n", pt_spec->nu_stop_DT);
     	}
-    	pt_spec->nu_seed = pt_spec->nu_DT;
-    	pt_spec->n_seed = pt_spec->n_DT;
+    	nu_seed = pt_spec->nu_DT;
+    	n_seed = pt_spec->n_DT;
     	comp_cooling += integrale_IC_cooling(pt_spec,
+                nu_seed,
+                n_seed,
+                nu_seed_size,
     			pt_spec->nu_start_DT,
     			pt_spec->nu_stop_DT,
     			gamma);
@@ -512,9 +565,12 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
     		printf("nu_start_EC_seed=%e\n", pt_spec->nu_start_Star);
     		printf("nu_stop_EC_seed=%e\n", pt_spec->nu_stop_Star);
     	}
-    	pt_spec->nu_seed = pt_spec->nu_Star;
-    	pt_spec->n_seed = pt_spec->n_Star;
+    	nu_seed = pt_spec->nu_Star;
+    	n_seed = pt_spec->n_Star;
     	comp_cooling += integrale_IC_cooling(pt_spec,
+                nu_seed,
+                n_seed,
+                nu_seed_size,
     			pt_spec->nu_start_Star,
     			pt_spec->nu_stop_Star,
     			gamma);
@@ -529,9 +585,12 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
     		printf("nu_start_EC_seed=%e\n", pt_spec->nu_start_CMB);
     		printf("nu_stop_EC_seed=%e\n", pt_spec->nu_stop_CMB);
     	}
-    	pt_spec->nu_seed = pt_spec->nu_CMB;
-    	pt_spec->n_seed = pt_spec->n_CMB;
+    	nu_seed = pt_spec->nu_CMB;
+    	n_seed = pt_spec->n_CMB;
     	comp_cooling += integrale_IC_cooling(pt_spec,
+                nu_seed,
+                n_seed,
+                nu_seed_size,
     			pt_spec->nu_start_CMB,
     			pt_spec->nu_stop_CMB,
     			gamma);
@@ -550,7 +609,8 @@ double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma
 //=========================================================================================
 // INTEGRAZIONE DEL COMPTON COOLING CON METODO TRAPEZIO
 //=========================================================================================
-double integrale_IC_cooling(struct blob * pt, double a, double b, double gamma) {
+//double integrale_IC_cooling(struct blob * pt, double a, double b, double gamma) 
+double integrale_IC_cooling(struct blob *pt, const double *nu_seed, const double *n_seed, unsigned int nu_seed_size, double a, double b, double gamma) {
     double nu1, nu2, integr_nu;
     double y_nu1, y_nu2;
     double delta_nu,b_kn;
@@ -558,7 +618,7 @@ double integrale_IC_cooling(struct blob * pt, double a, double b, double gamma) 
 
     i = 0;
     integr_nu=0;
-    while (pt->nu_seed[i] < a) {
+    while (i<nu_seed_size-1 && nu_seed[i] < a) {
         //  printf("i=%d\n",i);
         i++;
     }
@@ -566,23 +626,23 @@ double integrale_IC_cooling(struct blob * pt, double a, double b, double gamma) 
     if (pt->verbose>1) {
         printf("***** Integrale IC cooling ******\n");
         printf("i=%d\n", i);
-        printf("nu=%e a=%e i=%d\n", pt->nu_seed[i], a, i);
+        printf("nu=%e a=%e i=%d\n", nu_seed[i], a, i);
     }
 
-    nu1 = pt->nu_seed[i];
-    b_kn=4*gamma*pt->nu_seed[i]*HPLANCK*one_by_MEC2;
-    y_nu1 = pt->n_seed[i] * f_compton_cooling(b_kn)*nu1;
+    nu1 = nu_seed[i];
+    b_kn=4*gamma*nu_seed[i]*HPLANCK*one_by_MEC2;
+    y_nu1 = n_seed[i] * f_compton_cooling(b_kn)*nu1;
     
 
-    while (pt->nu_seed[i + 1] <= b && pt->nu_seed[i + 1] >= a) {
+    while ( i<nu_seed_size-1 && nu_seed[i + 1] <= b && nu_seed[i + 1] >= a) {
        
 
-        b_kn=4*gamma*pt->nu_seed[i+1]*HPLANCK*one_by_MEC2;
+        b_kn=4*gamma*nu_seed[i+1]*HPLANCK*one_by_MEC2;
         //printf("b=%e nu=%e f_kn=%e\n",b_kn,pt->nu_seed[i+1],f_compton_cooling(b_kn));
 
         
-        nu2=pt->nu_seed[i+1];
-        y_nu2 = pt->n_seed[i + 1] * f_compton_cooling(b_kn)*nu2;
+        nu2=nu_seed[i+1];
+        y_nu2 = n_seed[i + 1] * f_compton_cooling(b_kn)*nu2;
 
 
         delta_nu = nu2 - nu1;

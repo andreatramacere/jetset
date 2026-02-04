@@ -356,8 +356,8 @@ struct blob {
     //double nu; /*freq spettro sinc */
     double nu_1; /*freq spettro comp */
     //double nu_compton_0; /* freq campo fot Sync per spettro IC */
-    double * nu_seed;
-    double * n_seed;
+    //double * nu_seed;
+    //double * n_seed;
     //double g_min_IC;
 
     //--- FREQ/FLUX array
@@ -1216,8 +1216,10 @@ double f_compton_K1(struct blob *, double Gamma, double nu_IC_out, double nu_IC_
 double f_compton_bulk(struct blob *pt_K1, double g, double nu_IC_out, double nu_IC_in_1, double nu_IC_in_2);
 void set_N_distr_for_Compton(struct blob * pt, double nu_in, double nu_out, int stat_frame, double * Ne_IC, double * griglia_gamma_Ne_log_IC);
 double rate_compton_GR(struct blob *, double nu_IC_out);
-double integrale_IC(struct blob * pt, double a, double b,int stat_frame, double nu_IC_out);
-double integrale_IC_cooling(struct blob * pt, double a, double b, double gamma);
+//double integrale_IC(struct blob * pt, double a, double b,int stat_frame, double nu_IC_out);
+double integrale_IC(struct blob *pt, const double *nu_seed, const double *n_seed, unsigned int nu_seed_size, double a, double b, int stat_frame, double nu_IC_out);
+//double integrale_IC_cooling(struct blob * pt, double a, double b, double gamma);
+double integrale_IC_cooling(struct blob *pt, const double *nu_seed, const double *n_seed, unsigned int nu_seed_size, double a, double b, double gamma);
 double compton_cooling(struct blob *pt_spec, struct temp_ev *pt_ev, double gamma);
 double f_compton_cooling(double b);
 double I_nu_to_n(double I_nu, double nu);

@@ -19,9 +19,16 @@ void threaded_j_evaluation(struct blob * pt, void *(*eval_j)(void *data),
 
     if (N_THREADS>1){
         CHUNK_SIZE= (I_MAX+1)/N_THREADS;
+        CHUNK_SIZE = (CHUNK_SIZE + 7) & ~7;  // round up to multiple of 8
+
     }else{
         N_THREADS = 1;
         CHUNK_SIZE= 0;
+    }
+
+    if (CHUNK_SIZE<1){
+        CHUNK_SIZE= 0;
+        N_THREADS=1;
     }
 
    
@@ -71,8 +78,8 @@ void threaded_j_evaluation(struct blob * pt, void *(*eval_j)(void *data),
                   printf("Error joining thread %d\n", THREAD);
             }
         }
-        free(threads);
-        free(thread_args);
+        free(threads);   
     }
+    free(thread_args);
 }
 
