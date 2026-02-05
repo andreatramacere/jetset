@@ -309,26 +309,6 @@ struct emitters {
     double U_e, E_tot_e;
     double U_p, E_tot_p;
 
-    //PL,PLC,BKN
-    double p, p_1;
-    double gamma_break;
-    double gamma_cut;
-
-    //LP+LPPL
-    double s;
-    double r;
-    double gamma0_log_parab;
-    //LPEP
-    double gammap_log_parab;
-    //LPEP PILEUP
-    double gamma_inj;
-    //Spit
-    double spit_index, spit_temp, spit_gamma_th;
-
-    //LPPL Pile-Up
-    double gamma_pile_up, gamma_pile_up_cut, alpha_pile_up;
-    double ratio_pile_up;
-
     double Gamma_p2; //gamma peak of N(gamma)*gamma^2
     double Gamma_p3; //gamma peak of N(gamma)*gamma^3
     double Np2, Np3; //peak of N(gamma)*gamma^2 and  N(gamma)*gamma^3
@@ -765,17 +745,6 @@ double N_distr_integranda(struct blob *, double Gamma);
 void FindNe_NpGp(struct blob *pt);
 double N_distr_interp(unsigned int size, double Gamma, double *griglia_gamma, double *N);
 double Find_gmax(struct blob *pt, double *g, double *N);
-double pl_func(double Gamma,double p);
-double plc_func(double Gamma,double gamma_cut,double p);
-double bkn_func(double Gamma,double gamma_break,double p, double p_1);
-//double pile_up_ratio(double Gamma,double sigma,double gamma_inj,double gamma_eq);
-double bkn_pile_up_func(double Gamma,double gamma_inj, double p, double p_1,double gamma_eq, double gamma_cut ,double alpha);
-double lp_func(double Gamma,double gamma0,double r, double s);
-double lp_ep_func(double Gamma,double gamma_p,double r);
-double lppl_func(double Gamma,double gamma0, double r, double s);
-double pile_up_func(double Gamma, double gamma_pile_up_cut, double alpha_pile_up );
-double lppl_pile_up_func(double Gamma,double gamma0, double gamma_inj, double r, double s,double gamma_eq,double gamma_cut, double alpha);
-double spit_func(double Gamma,double gamma_th,double temp, double index);
 double N_tot(struct blob *pt, double (*pf_distr)(struct blob *, double x));
 //===================================================================================
 

@@ -391,7 +391,7 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     //char f_Energetic[static_file_name_max_legth];
     //FILE *fp_Energetic;
 
-    //Lum factor consistent with Eq. 3 and 4, Ghisellini 2010, doi:10.1111/j.1365-2966.2009.15898.x
+    //lum_factor and  lum_factor_rad consistent with Eq. 3 and 4, Ghisellini 2010, doi:10.1111/j.1365-2966.2009.15898.x
     lum_factor_rad =0.25 *eval_beta_gamma(pt->core.BulkFactor) * pt->core.BulkFactor * pt->core.BulkFactor ;
     lum_factor = pi * pt->core.R * pt->core.R * vluce_cm * eval_beta_gamma(pt->core.BulkFactor) * pt->core.BulkFactor * pt->core.BulkFactor ;
     energetic.U_B= pt->Sync.UB;
@@ -415,6 +415,8 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     energetic.U_Star_DRF =  I_nu_to_Uph(pt->Star.spec.nu_DRF, pt->Star.spec.I_nu_DRF, pt->Star.spec.NU_INT_MAX);
 
     energetic.L_Sync_rf = PowerPhotons_blob_rest_frame (pt, pt->Sync.spec.nu, pt->Sync.spec.nuFnu_obs, pt->Sync.NU_INT_STOP_Sync_SSC);
+    //NOTE: PowerPhotons_blob_rest_frame*lum_factor_rad already takes into account
+    //NOTE: U=L/(4 pi R^2 c) and pi R^2 U, the R^2 and pi cancel out  
     energetic.jet_L_Sync = energetic.L_Sync_rf * lum_factor_rad;
     energetic.jet_L_rad = +energetic.jet_L_Sync;
     
@@ -422,6 +424,8 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     if (pt->core.do_SSC) 
     {
         energetic.L_SSC_rf = PowerPhotons_blob_rest_frame(pt, pt->SSC.spec.nu, pt->SSC.spec.nuFnu_obs, pt->SSC.NU_INT_STOP_COMPTON_SSC);
+        //NOTE: PowerPhotons_blob_rest_frame*lum_factor_rad already takes into account
+        //NOTE: U=L/(4 pi R^2 c) and pi R^2 U, the R^2 and pi cancel out  
         energetic.jet_L_SSC = energetic.L_SSC_rf * lum_factor_rad;
         energetic.jet_L_rad += energetic.jet_L_SSC;
     }   
@@ -435,6 +439,8 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
         energetic.U_p_target = pt->PP_gamma.NH_pp  * MPC2;
         energetic.U_p = pt->emitters.U_p;
         energetic.L_pp_gamma_rf = PowerPhotons_blob_rest_frame(pt, pt->PP_gamma.spec.nu, pt->PP_gamma.spec.nuFnu_obs, pt->PP_gamma.NU_INT_STOP_PP_GAMMA);
+        //NOTE: PowerPhotons_blob_rest_frame*lum_factor_rad already takes into account
+        //NOTE: U=L/(4 pi R^2 c) and pi R^2 U, the R^2 and pi cancel out  
         energetic.jet_L_pp_gamma = energetic.L_pp_gamma_rf* lum_factor_rad;
         energetic.jet_L_rad += energetic.jet_L_pp_gamma;
         energetic.U_p_cold = 0.;
@@ -450,6 +456,8 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
 
     if (pt->core.do_EC_Disk == 1 ) {
         energetic.L_EC_Disk_rf = PowerPhotons_blob_rest_frame(pt, pt->Disk.ec.spec.nu, pt->Disk.ec.spec.nuFnu_obs, pt->Disk.ec.NU_INT_STOP);
+        //NOTE: PowerPhotons_blob_rest_frame*lum_factor_rad already takes into account
+        //NOTE: U=L/(4 pi R^2 c) and pi R^2 U, the R^2 and pi cancel out  
         energetic.jet_L_EC_Disk = energetic.L_EC_Disk_rf * lum_factor_rad;
         energetic.jet_L_rad += energetic.jet_L_EC_Disk;
     }
@@ -462,6 +470,8 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     if (pt->core.do_EC_Disk == 1 || pt->core.do_EC_BLR == 1)
     {
         energetic.L_EC_BLR_rf = PowerPhotons_blob_rest_frame(pt, pt->BLR.ec.spec.nu, pt->BLR.ec.spec.nuFnu_obs, pt->BLR.ec.NU_INT_STOP);
+        //NOTE: PowerPhotons_blob_rest_frame*lum_factor_rad already takes into account
+        //NOTE: U=L/(4 pi R^2 c) and pi R^2 U, the R^2 and pi cancel out  
         energetic.jet_L_EC_BLR = energetic.L_EC_BLR_rf * lum_factor_rad;
         energetic.jet_L_rad += energetic.jet_L_EC_BLR;
     }
@@ -473,6 +483,8 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     
     if (pt->core.do_EC_DT == 1) {
         energetic.L_EC_DT_rf = PowerPhotons_blob_rest_frame(pt, pt->DT.ec.spec.nu, pt->DT.ec.spec.nuFnu_obs, pt->DT.ec.NU_INT_STOP);
+        //NOTE: PowerPhotons_blob_rest_frame*lum_factor_rad already takes into account
+        //NOTE: U=L/(4 pi R^2 c) and pi R^2 U, the R^2 and pi cancel out  
         energetic.jet_L_EC_DT = energetic.L_EC_DT_rf * lum_factor_rad;
         energetic.jet_L_rad += energetic.jet_L_EC_DT;
     }
@@ -485,6 +497,8 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     if (pt->core.do_EC_CMB == 1)
     {
         energetic.L_EC_CMB_rf = PowerPhotons_blob_rest_frame(pt, pt->CMB.ec.spec.nu, pt->CMB.ec.spec.nuFnu_obs, pt->CMB.ec.NU_INT_STOP);
+        //NOTE: PowerPhotons_blob_rest_frame*lum_factor_rad already takes into account
+        //NOTE: U=L/(4 pi R^2 c) and pi R^2 U, the R^2 and pi cancel out  
         energetic.jet_L_EC_CMB = energetic.L_EC_CMB_rf * lum_factor_rad;
         energetic.jet_L_rad += energetic.jet_L_EC_CMB;
     }
@@ -497,6 +511,8 @@ struct jet_energetic EnergeticOutput(struct blob * pt) {
     if (pt->core.do_EC_Star == 1)
     {
         energetic.L_EC_Star_rf = PowerPhotons_blob_rest_frame(pt, pt->Star.ec.spec.nu, pt->Star.ec.spec.nuFnu_obs, pt->Star.ec.NU_INT_STOP);
+        //NOTE: PowerPhotons_blob_rest_frame*lum_factor_rad already takes into account
+        //NOTE: U=L/(4 pi R^2 c) and pi R^2 U, the R^2 and pi cancel out  
         energetic.jet_L_EC_Star = energetic.L_EC_Star_rf * lum_factor_rad;
         energetic.jet_L_rad += energetic.jet_L_EC_Star;
     }
