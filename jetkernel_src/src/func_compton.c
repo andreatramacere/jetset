@@ -623,11 +623,11 @@ double integrale_IC_cooling(struct blob *pt, const double *nu_seed, const double
         i++;
     }
 
-    if (pt->core.verbose>1) {
-        printf("***** Integrale IC cooling ******\n");
-        printf("i=%d\n", i);
-        printf("nu=%e a=%e i=%d\n", nu_seed[i], a, i);
-    }
+    //if (pt->core.verbose>1) {
+    //    printf("***** Integrale IC cooling ******\n");
+    //    printf("i=%d\n", i);
+    //    printf("nu=%e a=%e i=%d\n", nu_seed[i], a, i);
+    //}
 
     nu1 = nu_seed[i];
     b_kn=4*gamma*nu_seed[i]*HPLANCK*one_by_MEC2;
