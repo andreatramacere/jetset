@@ -739,14 +739,6 @@ void SetDistr(struct blob *pt) {
         }
 
     }
-    
-
-   
-
-
-
-
-
     //if (pt->core.verbose) {
      //printf("tipo di distribuzione %d\n",pt->emitters.TIPO_DISTR);
     //}
