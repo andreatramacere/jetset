@@ -268,7 +268,7 @@ class InternalAbsorption(object):
             )
         except Exception as exc:
             warnings.warn(
-                f"Falling back to NumPy tau computation because the optimized implementation failed: {exc}",
+                f"Falling back to NumPy tau computation because the numba implementation failed: {exc}",
                 RuntimeWarning,
                 stacklevel=2,
             )
