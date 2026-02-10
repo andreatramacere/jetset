@@ -600,7 +600,6 @@ class JetTimeEvol(object):
         name
         inplace
         jet_gamma_grid_size
-        log_sampling
 
 
 
@@ -690,20 +689,20 @@ class JetTimeEvol(object):
                  Q_inj=None,
                  name='jet_time_ev',
                  inplace=True,
-                 log_sampling=False,
+                 #log_sampling=False,
                  jet_gamma_grid_size=200,
                  setup=True):
 
 
         self._temp_ev = BlazarSED.MakeTempEv()
         if setup is True:
-            self._setup_(jet_rad,Q_inj,name,log_sampling,jet_gamma_grid_size,inplace,only_radiation)
+            self._setup_(jet_rad,Q_inj,name,jet_gamma_grid_size,inplace,only_radiation)
 
     def _setup_(self,
                 jet_rad,
                 Q_inj,
                 name,
-                log_sampling,
+                #log_sampling,
                 jet_gamma_grid_size,
                 inplace,
                 only_radiation):
@@ -748,7 +747,7 @@ class JetTimeEvol(object):
         self.Sync_cooling = 'on'
         self.Adiabatic_cooling='on'
         self.region_expansion = 'off'
-        self.log_sampling = log_sampling
+        #self.log_sampling = log_sampling
         #self.time_sampled_emitters = None
 
         self.parameters = JetModelParameterArray(model=self)
@@ -791,7 +790,7 @@ class JetTimeEvol(object):
         _model['internals']['Sync_cooling'] = self.Sync_cooling
         _model['internals']['Adiabatic_cooling'] = self.Adiabatic_cooling
         _model['internals']['region_expansion'] = self.region_expansion
-        _model['internals']['log_sampling'] = self.log_sampling
+        #_model['internals']['log_sampling'] = self.log_sampling
         #_model['internals']['time_sampled_emitters'] = self.time_sampled_emitters
         _model['internals']['acc_region'] = self.acc_region
     
@@ -1086,31 +1085,31 @@ class JetTimeEvol(object):
     def show_pars(self, sort_key='par type'):
         self.parameters.show_pars(sort_key=sort_key)
 
-    @property
-    def log_sampling(self):
-        """
-        logarithmically spaced bool
-        Returns
-        -------
+    #@property
+    #def log_sampling(self):
+    #    """
+    #    logarithmically spaced bool
+    #    Returns
+    #    -------
 
-        """
-        return self._log_sampling
+    #    """
+    #    return self._log_sampling
 
-    @log_sampling.setter
-    def log_sampling(self, v):
-        """
-        if True, the time grid is logarithmically spaced
-        Returns
-        -------
-
-        """
-        if v is False or v is True:
-            pass
-        else:
-            raise RuntimeError('this parameter must be bolean')
-
-        self._log_sampling = v
-        self.temp_ev.LOG_SET= int(v)
+    #@log_sampling.setter
+    #def log_sampling(self, v):
+    #    """
+    #    if True, the time grid is logarithmically spaced
+    #    Returns
+    #    -------
+    #
+    #    """
+    #    if v is False or v is True:
+    #        pass
+    #    else:
+    #        raise RuntimeError('this parameter must be bolean')
+    #
+    #    self._log_sampling = v
+    #    self.temp_ev.LOG_SET= int(v)
 
     @property
     def t_unit_rad(self):
@@ -1396,7 +1395,7 @@ class JetTimeEvol(object):
         rows = []
         rows.append(self._build_row_dict('delta t', 'time', 's', val=self.delta_t, val_by=self.t_unit_rad,
                                          unit1='R/c', islog=False))
-        rows.append(self._build_row_dict('log. sampling', 'time', '', val=self.log_sampling, islog=False))
+        #rows.append(self._build_row_dict('log. sampling', 'time', '', val=self.log_sampling, islog=False))
         rows.append(
             self._build_row_dict('R/c', 'time', 's', val=self.t_unit_rad, val_by=self.t_unit_rad, unit1='R/c',
                                  islog=False))
@@ -1565,8 +1564,6 @@ class JetTimeEvol(object):
         num_samples: int
             number of the time steps saved in the output
 
-        log_sampling: bool
-           if True, the time grid is logarithmically spaced
 
         L_inj: float (erg/s)
             if not None, the inj function is rescaled to match L_inj

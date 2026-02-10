@@ -218,10 +218,10 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     // if luminosity_distance is negative is evaluated internally
     // otherwise the passed value is used
 
-    unsigned int i, E_SIZE, E_N_SIZE, Gamma, T, TMP,NUM_OUT;
+    unsigned int i, E_SIZE, E_N_SIZE, Gamma, T, TMP, NUM_OUT, CURRENT_T_SIZE;
     //double Q_scalig_factor;
 
-    double STEP_FILE, COUNT_FILE, OUT_FILE;
+    unsigned int STEP_T_SIZE;
     double *x, *N_swap, *N_acc, *N_rad, *N_escaped;
     double  t;
     //double g, t_D, t_DA, t_A, t_Sync_cool;
@@ -300,14 +300,17 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     //---- x grids -------------
     
     //---------------------------------------------------------
-    if (pt_ev->LOG_SET >=1){
-        STEP_FILE=log10((double) pt_ev->T_SIZE)/(double) pt_ev->NUM_SET;
-        STEP_FILE =  pow(10,STEP_FILE);
-    } else{
-        STEP_FILE = (double)pt_ev->T_SIZE / (double)pt_ev->NUM_SET;
-    }
-    COUNT_FILE = STEP_FILE;
-    OUT_FILE=-1.0;
+    //if (pt_ev->LOG_SET >=1){
+    //    STEP_T_SIZE=log10((double) pt_ev->T_SIZE)/(double) pt_ev->NUM_SET;
+    //    STEP_T_SIZE =  pow(10,STEP_T_SIZE);
+    //} else{
+    STEP_T_SIZE = (double)pt_ev->T_SIZE / (double)pt_ev->NUM_SET;
+    //}
+    //if (STEP_FILE<1){
+    //    STEP_FILE=1;
+    //}
+    CURRENT_T_SIZE = 0;
+    //OUT_FILE=-1.0;
     //------------------------------------------
 
 
@@ -337,7 +340,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
 
     
     t = 0;
-    pt_ev->t=t;
+    //pt_ev->t=t;
     NUM_OUT=0;
     delta_E_acc=0;
     E_acc_pre=0;
@@ -449,8 +452,8 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         time_evolve_emitters(pt_spec_rad,pt_ev,2,t,T,E_SIZE,E_N_SIZE,E_acc,pt_ev->T_esc_rad,N_escaped,N_rad,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
 
         //------------- OUT FILE and SED Computations ----------------
-        OUT_FILE=(double)T-COUNT_FILE;
-        if ((OUT_FILE >= 0) || (T==0) || (T==pt_ev->T_SIZE-1)) {
+        //OUT_FILE=(T % STEP_FILE) == 0;
+        if ((CURRENT_T_SIZE != 0 && (T % CURRENT_T_SIZE == 0)) || (T==0) || (T==pt_ev->T_SIZE-1)) {
         //if ((OUT_FILE >= 0) || (T==pt_ev->T_SIZE-1)) {
             
             //printf("-> NUM_OUT=%d T_SIZE=%d T=%d\n",NUM_OUT,pt_ev->T_SIZE,T);
@@ -473,11 +476,11 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
                 //printf("NUM_SET=%d NUM_OUT=%d t=%e T=%d T_SIZE=%d\n",pt_ev->NUM_SET,NUM_OUT,t,T,pt_ev->T_SIZE);
             }
             //if (T>0){
-            if (pt_ev->LOG_SET >=1){
-                COUNT_FILE*=STEP_FILE;
-            } else {
-                COUNT_FILE += STEP_FILE;
-            }
+            //if (pt_ev->LOG_SET >=1){
+            //    COUNT_FILE*=STEP_T_SIZE;
+            //} else {
+            CURRENT_T_SIZE += STEP_T_SIZE;
+            //}
             //}
             NUM_OUT++;
         }

@@ -53,7 +53,7 @@
 #define three_by_four 0.75 /* 4/3 */
 #define fake_nu_err 1.0
 #define fake_flux_err 1.0
-#define static_spec_arr_grid_size 10000
+#define static_spec_arr_grid_size 1000
 #define static_ev_arr_grid_size 1000
 #define static_spec_arr_size 1000 /* num elementi dei vettori */
 #define static_bess_table_size 1000 /* num elementi tabelle di Bessel */
@@ -72,36 +72,6 @@
  *
  */
 
-/************ ENV VARIBLE *************************/
-
-/********************************     STRUTTURA BASE    ************************************/
-// struct spectrum {
-//     double nu_min, nu_max;
-//     unsigned int NU_INT_MAX;
-//     double j_nu[static_spec_arr_size];
-//     double I_nu[static_spec_arr_size];
-//     double n_nu[static_spec_arr_size];
-//     double nuFnu_obs[static_spec_arr_size];
-//     double nu[static_spec_arr_size];
-//     double nu_obs[static_spec_arr_size];
-//     double nuFnu_grid[static_spec_arr_grid_size];
-// };
-
-// struct spectrum_external{
-//     double nu_min, nu_max;
-//     unsigned int NU_INT_MAX;
-//     double j_nu[static_spec_arr_size];
-//     double I_nu[static_spec_arr_size];
-//     double I_nu_DRF[static_spec_arr_size];
-//     double n_nu[static_spec_arr_size];
-//     double n_nu_DRF[static_spec_arr_size];
-//     double nuFnu_obs[static_spec_arr_size];
-//     double nu[static_spec_arr_size];
-//     double nu_obs[static_spec_arr_size];
-//     double nuFnu_grid[static_spec_arr_grid_size];
-// };
-//#include <pthread.h>
-//pthread_mutex_t mutex ;
 
 typedef enum {
     RAD_SYNC, RAD_SSC, RAD_EC_DISK, RAD_EC_BLR, RAD_EC_DT,
@@ -606,7 +576,7 @@ struct temp_ev{
 	double TStop_Acc;
 	double Inj_temp_slope;
 	unsigned int NUM_SET;
-    int LOG_SET;
+    //int LOG_SET;
 	unsigned int T_SIZE;
     //unsigned int T_EVALUATED;
 	double duration,t_D0,t_DA0,t_A0;

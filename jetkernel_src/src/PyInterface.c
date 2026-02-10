@@ -146,7 +146,7 @@ struct temp_ev MakeTempEv() {
     ev_root.Lambda_choer_Turb_factor=0.1;
     ev_root.Gamma_Max_Turb_L_max=Larmor_radius_to_gamma(ev_root.Lambda_max_Turb,0.1, 1.0);
     ev_root.Gamma_Max_Turb_L_coher=Larmor_radius_to_gamma(ev_root.Lambda_max_Turb*ev_root.Lambda_choer_Turb_factor,0.1, 1.0);
-    ev_root.LOG_SET = 1;
+    //ev_root.LOG_SET = 1;
     ev_root.Q_inj=NULL;
     ev_root.gamma=NULL;
     ev_root.Q_inj_jetset=NULL;
