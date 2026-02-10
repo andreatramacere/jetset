@@ -6,9 +6,9 @@
 #include <math.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
 //#include "libmia.h"
 #include "Blazar_SED.h"
-
 /**
  * \file temp_evol.c
  * \author Andrea Tramacere
@@ -218,10 +218,11 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     // if luminosity_distance is negative is evaluated internally
     // otherwise the passed value is used
 
-    unsigned int i, E_SIZE, E_N_SIZE, Gamma, T, TMP, NUM_OUT, CURRENT_T_SIZE;
+    unsigned int i, E_SIZE, E_N_SIZE, Gamma, T, TMP, NUM_OUT, CURRENT_T_SIZE, STEP_T_SIZE;
+    double STEP_T_SIZE_LOG;
+    bool OUTPUT_SAMPLES = false;
     //double Q_scalig_factor;
 
-    unsigned int STEP_T_SIZE;
     double *x, *N_swap, *N_acc, *N_rad, *N_escaped;
     double  t;
     //double g, t_D, t_DA, t_A, t_Sync_cool;
@@ -300,16 +301,22 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     //---- x grids -------------
     
     //---------------------------------------------------------
-    //if (pt_ev->LOG_SET >=1){
-    //    STEP_T_SIZE=log10((double) pt_ev->T_SIZE)/(double) pt_ev->NUM_SET;
-    //    STEP_T_SIZE =  pow(10,STEP_T_SIZE);
-    //} else{
-    STEP_T_SIZE = (double)pt_ev->T_SIZE / (double)pt_ev->NUM_SET;
-    //}
-    //if (STEP_FILE<1){
-    //    STEP_FILE=1;
-    //}
-    CURRENT_T_SIZE = 0;
+    if (pt_ev->LOG_SET >=1){
+        STEP_T_SIZE_LOG=log10((double) pt_ev->T_SIZE)/(double) pt_ev->NUM_SET;
+        STEP_T_SIZE_LOG =  pow(10,STEP_T_SIZE_LOG);
+        if (STEP_T_SIZE_LOG<0){
+            STEP_T_SIZE_LOG=0;
+        }
+    } else{
+        STEP_T_SIZE = (double)pt_ev->T_SIZE / (double)pt_ev->NUM_SET;
+        CURRENT_T_SIZE = 0;
+        if (STEP_T_SIZE<1){
+            STEP_T_SIZE=1;
+        }
+    }
+   
+
+    
     //OUT_FILE=-1.0;
     //------------------------------------------
 
@@ -451,9 +458,21 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         }
         time_evolve_emitters(pt_spec_rad,pt_ev,2,t,T,E_SIZE,E_N_SIZE,E_acc,pt_ev->T_esc_rad,N_escaped,N_rad,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
 
-        //------------- OUT FILE and SED Computations ----------------
-        //OUT_FILE=(T % STEP_FILE) == 0;
-        if ((CURRENT_T_SIZE != 0 && (T % CURRENT_T_SIZE == 0)) || (T==0) || (T==pt_ev->T_SIZE-1)) {
+        //------------- OUT SAMPLES and SED Computations ----------------
+        if (pt_ev->LOG_SET >=1){
+            if ( T*pt_ev->deltat >= pow(STEP_T_SIZE_LOG,NUM_OUT+1) || (T==0) || (T==pt_ev->T_SIZE-1)){
+                OUTPUT_SAMPLES=true;
+            }else{
+                OUTPUT_SAMPLES=false;
+            }
+        }else{
+            if ((CURRENT_T_SIZE != 0 && (T % CURRENT_T_SIZE == 0)) || (T==0) || (T==pt_ev->T_SIZE-1)){
+                OUTPUT_SAMPLES=true;
+            }else{
+                OUTPUT_SAMPLES=false;
+            }
+        }
+        if (OUTPUT_SAMPLES == true) {
         //if ((OUT_FILE >= 0) || (T==pt_ev->T_SIZE-1)) {
             
             //printf("-> NUM_OUT=%d T_SIZE=%d T=%d\n",NUM_OUT,pt_ev->T_SIZE,T);
@@ -476,11 +495,9 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
                 //printf("NUM_SET=%d NUM_OUT=%d t=%e T=%d T_SIZE=%d\n",pt_ev->NUM_SET,NUM_OUT,t,T,pt_ev->T_SIZE);
             }
             //if (T>0){
-            //if (pt_ev->LOG_SET >=1){
-            //    COUNT_FILE*=STEP_T_SIZE;
-            //} else {
-            CURRENT_T_SIZE += STEP_T_SIZE;
-            //}
+            if (pt_ev->LOG_SET <1){
+                CURRENT_T_SIZE += STEP_T_SIZE;
+            }
             //}
             NUM_OUT++;
         }
