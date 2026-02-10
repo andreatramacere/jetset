@@ -830,7 +830,7 @@ class JetBase(Model):
 
 
     def _add_spectral_component(self, name, var_name=None, state_dict=None,state=None):
-
+        #print("==> adding",  name, var_name)
         self._spectral_components_list.append(
             JetSpecComponent(self, name, self._blob, var_name=var_name, state_dict=state_dict, state=state))
         setattr(self.spectral_components,name,self._spectral_components_list[-1])
@@ -847,17 +847,17 @@ class JetBase(Model):
         self.basic_components_list=['Sum','Sync','SSC']
 
         self._add_spectral_component('Sum')
-        self._add_spectral_component('Sync', var_name='do_Sync', state_dict=dict((('on', 1), ('off', 0), ('self-abs', 2))),state='self-abs')
+        self._add_spectral_component('Sync', var_name='core.do_Sync', state_dict=dict((('on', 1), ('off', 0), ('self-abs', 2))),state='self-abs')
 
-        self._add_spectral_component('SSC', var_name='do_SSC', state_dict=dict((('on', 1), ('off', 0))))
+        self._add_spectral_component('SSC', var_name='core.do_SSC', state_dict=dict((('on', 1), ('off', 0))))
 
 
     def add_sync_component(self,state='self-abs'):
-        self._add_spectral_component('Sync', var_name='do_Sync',
+        self._add_spectral_component('Sync', var_name='core,do_Sync',
                                      state_dict=dict((('on', 1), ('off', 0), ('self-abs', 2))), state=state)
 
     def add_SSC_component(self,state='on'):
-        self._add_spectral_component('SSC', var_name='do_SSC', state_dict=dict((('on', 1), ('off', 0))),state=state)
+        self._add_spectral_component('SSC', var_name='core.do_SSC', state_dict=dict((('on', 1), ('off', 0))),state=state)
 
     def del_EC_component(self,EC_components_list, disk_type='BB'):
         """Remove EC components
@@ -994,75 +994,75 @@ class JetBase(Model):
 
             if EC_component == 'Disk':
                 if self.get_spectral_component_by_name('Disk',verbose=False) is None:
-                    self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('Disk',var_name='core.do_Disk', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('Disk')
 
             if EC_component=='EC_Disk':
                 #self._blob.core.do_EC_Disk=1
                 if self.get_spectral_component_by_name('EC_Disk',verbose=False) is None:
-                    self._add_spectral_component('EC_Disk', var_name='do_EC_Disk', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('EC_Disk', var_name='core.do_EC_Disk', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_Disk')
 
                 if self.get_spectral_component_by_name('Disk',verbose=False) is None:
-                    self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('Disk',var_name='core.do_Disk', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('Disk')
 
             if EC_component=='EC_BLR':
                 #self._blob.core.do_EC_BLR=1
                 if self.get_spectral_component_by_name('EC_BLR',verbose=False) is None:
-                    self._add_spectral_component('EC_BLR', var_name='do_EC_BLR', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('EC_BLR', var_name='core.do_EC_BLR', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_BLR')
 
                 if self.get_spectral_component_by_name('Disk',verbose=False) is None:
-                    self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('Disk',var_name='core.do_Disk', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('Disk')
 
 
             if EC_component == 'DT':
                 if self.get_spectral_component_by_name('DT',verbose=False) is None:
-                    self._add_spectral_component('DT',var_name='do_DT', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('DT',var_name='core.do_DT', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('DT')
 
                 if self.get_spectral_component_by_name('Disk',verbose=False) is None:
-                    self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('Disk',var_name='core.do_Disk', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('Disk')
 
 
 
             if EC_component == 'Star':
                 if self.get_spectral_component_by_name('Star',verbose=False) is None:
-                    self._add_spectral_component('Star',var_name='do_Star', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('Star',var_name='core.do_Star', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('Star')
 
 
             if EC_component == 'EC_Star':
                 if self.get_spectral_component_by_name('Star',verbose=False) is None:
-                    self._add_spectral_component('Star',var_name='do_Star', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('Star',var_name='core.do_Star', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('Star')
 
                 if self.get_spectral_component_by_name('EC_Star',verbose=False) is None:
-                    self._add_spectral_component('EC_Star', var_name='do_EC_Star', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('EC_Star', var_name='core.do_EC_Star', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_Star')
 
 
             if EC_component=='EC_DT':
                 #self._blob.core.do_EC_DT=1
                 if self.get_spectral_component_by_name('EC_DT',verbose=False) is None:
-                    self._add_spectral_component('EC_DT', var_name='do_EC_DT', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('EC_DT', var_name='core.do_EC_DT', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_DT')
 
                 if self.get_spectral_component_by_name('DT',verbose=False) is None:
-                    self._add_spectral_component('DT',var_name='do_DT', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('DT',var_name='core.do_DT', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('DT')
 
                 if self.get_spectral_component_by_name('Disk',verbose=False) is None:
-                    self._add_spectral_component('Disk',var_name='do_Disk', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('Disk',var_name='core.do_Disk', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('Disk')
 
             if EC_component=='EC_CMB':
                 #self._blob.core.do_EC_CMB=1
                 if self.get_spectral_component_by_name('EC_CMB',verbose=False) is None:
-                    self._add_spectral_component('EC_CMB', var_name='do_EC_CMB', state_dict=dict((('on', 1), ('off', 0))))
+                    self._add_spectral_component('EC_CMB', var_name='core.do_EC_CMB', state_dict=dict((('on', 1), ('off', 0))))
                     self.EC_components_list.append('EC_CMB')
 
         #IF disk_type is already a parameter it has to be updated here to make it effective
@@ -1959,17 +1959,17 @@ class Jet(JetBase):
         self.show_emitters_distribution()
 
     def add_bremss_ep_component(self):
-        self._add_spectral_component('Bremss_ep', var_name='do_bremss_ep', state_dict=dict((('on', 1), ('off', 0))))
+        self._add_spectral_component('Bremss_ep', var_name='core.do_bremss_ep', state_dict=dict((('on', 1), ('off', 0))))
 
     def add_pp_gamma_component(self):
-        self._add_spectral_component('PP_gamma', var_name='do_pp_gamma', state_dict=dict((('on', 1), ('off', 0))))
+        self._add_spectral_component('PP_gamma', var_name='core.do_pp_gamma', state_dict=dict((('on', 1), ('off', 0))))
 
     def add_pp_neutrino_component(self):
-        self._add_spectral_component('PP_neutrino_tot', var_name='do_pp_neutrino',
+        self._add_spectral_component('PP_neutrino_tot', var_name='core.do_pp_neutrino',
                                      state_dict=dict((('on', 1), ('off', 0))))
-        self._add_spectral_component('PP_neutrino_mu', var_name='do_pp_neutrino',
+        self._add_spectral_component('PP_neutrino_mu', var_name='core.do_pp_neutrino',
                                      state_dict=dict((('on', 1), ('off', 0))))
-        self._add_spectral_component('PP_neutrino_e', var_name='do_pp_neutrino',
+        self._add_spectral_component('PP_neutrino_e', var_name='core.do_pp_neutrino',
                                      state_dict=dict((('on', 1), ('off', 0))))
 
 

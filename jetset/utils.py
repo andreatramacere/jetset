@@ -23,6 +23,7 @@ def unexpected_behaviour():
 
 
 def get_nested_attr(obj, name):
+    #print("==> get",obj,name)
     parts = name.split('.')
     for part in parts:
         obj = getattr(obj, part)

@@ -21,7 +21,7 @@ else:
 from . import spectral_shapes
 from .jetkernel_models_dic import nuFnu_obs_dict, n_seed_dic
 from .plot_sedfit import PlotSpecComp,PlotSeedPhotons
-from .utils import check_frame, unexpected_behaviour, get_nested_attr
+from .utils import check_frame, unexpected_behaviour, get_nested_attr, set_nested_attr
 from .jet_kernel_tools import get_spectral_c_array_read_only
 
 __all__=['JetSeedPhotons','JetSpecComponent','SpecCompList']
@@ -109,11 +109,10 @@ class JetSpecComponent(object):
 
         self._blob_object=blob_object
         self._nuFnu_name, self._nu_name=nuFnu_obs_dict[self.name]
-
+        #print("==> ", self._nuFnu_name, blob_object,self._nu_name )
         self.nuFnu_ptr=get_nested_attr(blob_object, self._nuFnu_name)
-
         self.nu_ptr=get_nested_attr(blob_object, self._nu_name)
-
+        #print("==> ", self.nu_ptr,  self.nuFnu_ptr)
         self.SED=spectral_shapes.SED(name=self.name,beaming=jet_obj.get_beaming())
         self.seed_field=None
         self._hidden=False
@@ -269,7 +268,9 @@ class JetSpecComponent(object):
                 raise RuntimeError('val', val, 'not in allowed', self._state_dict.keys())
             self._state = val
             if self._var_name is not None:
-                setattr(self._blob_object, self._var_name, self._state_dict[val])
+                #print("==> setting state",self._blob_object,self._var_name)
+                set_nested_attr(self._blob_object, self._var_name, self._state_dict[val])
+                #setattr(self._blob_object, self._var_name, self._state_dict[val])
         else:
             raise Warning('the state of the spectral component',self.name,' can not be changed')
 
