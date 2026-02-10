@@ -834,7 +834,7 @@ class JetTimeEvol(object):
 
         _par_dict = _model['internals']
         if '_custom_q_jnj_profile' in _par_dict.keys():
-            _par_dict['_custom_q_inj_profile']=_par_dict.pop('')
+            _par_dict['_custom_q_jnj_profile']=_par_dict.pop('')
         for k in _par_dict.keys():
             #print('k,v',k,v)
             setattr(self,k,_par_dict[str(k)])
