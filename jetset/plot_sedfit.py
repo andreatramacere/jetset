@@ -296,24 +296,17 @@ class  PlotSED (object):
         self.resplot.set_xlim(x_min,x_max)
         self.resplot.set_ylim(y_min,y_max)
         self.update_plot()
-
+    
+    
     def update_plot(self):
-      
-        if self._sed_data is not None:
-            x,y,dx,dy,=self._sed_data.get_data_points(log_log=False,frame=self.frame, density=self.density)
-      
-            self.fig.canvas.draw()
-            self.sedplot.relim()
-            self.sedplot.set_xlim(np.min(x)/10,np.max(x)*10)
-            self.sedplot.set_ylim(np.min(y)/10,np.max(y)*10)
-           
-
-        elif len(self.sedplot.lines)>0:
-            y_s = []
-            x_min = []
-            x_max = []
-            y_min = None
-            y_max = None
+        self.fig.canvas.draw()
+       
+        y_s = []
+        x_min = []
+        x_max = []
+        y_min = None
+        y_max = None
+        if len(self.sedplot.lines)>0:
 
             for l in self.sedplot.lines:
                 if len(l.get_ydata())>0:
