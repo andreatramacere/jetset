@@ -594,20 +594,19 @@ class EmittersDistribution(BaseEmittersDistribution):
             self.p_gamma_ptr = get_nested_attr(self._jet._blob, self._gammap_name)
             self.Ne_ptr = get_nested_attr(self._jet._blob, self._Ne_name)
             self.e_gamma_ptr = get_nested_attr(self._jet._blob, self._gammae_name)
-
             self._Q_inj_e_second_ptr = get_nested_attr(self._jet._blob, self._Q_inj_e_second_name)
             self.e_inj_second_gamma_ptr = get_nested_attr(self._jet._blob, self._gammae_inj_sec_name)
 
         size = self._jet._blob.emitters.gamma_grid_size
-       
-    
+        
+        #NOTE: thisi is needed to get the pointers to Ne also in the case of protons
+        self.gamma_e,self.n_gamma_e=get_emitters(self.e_gamma_ptr,self.Ne_ptr, self._jet._blob,size)
         if self.emitters_type == 'protons':
             self.gamma_p,self.n_gamma_p=get_emitters(self.p_gamma_ptr,self.Np_ptr, self._jet._blob,size)
             self.gamma_e_second_inj,self.n_gamma_e_second_inj=get_emitters(self.e_inj_second_gamma_ptr,self._Q_inj_e_second_ptr, self._jet._blob,size)
             self.gamma_cooling_eq_second= self._jet._blob.emitters.gamma_cooling_eq
             self._secondaries_done = True
-        else:
-            self.gamma_e,self.n_gamma_e=get_emitters(self.e_gamma_ptr,self.Ne_ptr, self._jet._blob,size)
+        
     
     def _activate_numba(self):
         self._py_distr_func=copy.deepcopy(self.distr_func)

@@ -245,7 +245,7 @@ void build_Np_jetset(struct blob *pt) {
     Genera_griglia_gamma_N_log(pt, pt->emitters.griglia_gamma_jetset_Np_log,pt->emitters.gmin_griglia, pt->emitters.gmax_griglia);
     //printf("build_Np_jetset Set array per Ne %s \n",pt->core.DISTR);
     alloc_N_distr(&(pt->emitters.Np_jetset), pt->emitters.gamma_grid_size);
-
+    alloc_N_distr(&(pt->emitters.Ne_jetset),pt->emitters.gamma_grid_size);
 }
 
 void build_Ne_jetset(struct blob *pt) {
@@ -421,11 +421,15 @@ void Init_Np_Ne_pp(struct blob *pt)
     pt->PP_gamma.pp_racc_elec=rate_electrons_pp(pt, pt->emitters.griglia_gamma_Ne_log[0],1);
     Fill_N(pt, pt->emitters.griglia_gamma_Ne_log, pt->emitters.Q_inj_e_second);
     CoolingEquilibrium(pt,pt->emitters.T_esc_e_second);
+    //Filling Ne_jetset with secondaries
+    unsigned int i;
+    for (i = 0; i < pt->emitters.gamma_grid_size; i++) {
+        pt->emitters.Ne_jetset[i]=pt->emitters.Ne[i];
+    }
     pt->emitters.Distr_e_done = 1;
     pt->emitters.N_0e = pt->emitters.N_0;
     
 
-    
     //printf("--> N0e %e N0 %e N0p %e\n", pt->emitters.N_0e, pt->emitters.N_0, pt->emitters.N_0p);
     //printf("-->\n");
     pt->emitters.N_e_pp = N_tot(pt, N_distr_integranda);
