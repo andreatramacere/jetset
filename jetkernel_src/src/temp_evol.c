@@ -630,7 +630,7 @@ void alloc_temp_ev_array(double ** pt,int size){
 
 
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1){
-    return N_distr_interp(pt->emitters.gamma_grid_size,gamma_1,pt->emitters.griglia_gamma_Ne_log,pt->emitters.Q_inj_e_second)*exp(pt->emitters.gamma_cooling_eq*(1/gamma_1-(1.0/pt->core.Gamma)));
+    return N_distr_interp(pt->emitters.gamma_grid_size,gamma_1,pt->emitters.griglia_gamma_Ne_log,pt->emitters.Q_inj_e_second)*exp(pt->emitters.gamma_cooling_eq*(1/gamma_1-(1.0/pt->core.gamma_e_IC)));
 }
 
 
@@ -640,7 +640,7 @@ double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc
     double a,b,res,delta;
     unsigned int integ_size;
     pf_K1 = &IntegrandCooolingEquilibrium;
-    pt->core.Gamma=gamma;
+    pt->core.gamma_e_IC=gamma;
     a=gamma;
     b=pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1];
     delta=pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-gamma;

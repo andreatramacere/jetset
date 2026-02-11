@@ -298,7 +298,7 @@ double f_compton_K1(struct blob *pt_K1, double g, double nu_IC_out, double nu_IC
      */
     double cost, rate,a, c, k, nu_1_min, nu_1_max, g2;
     double epsilon_0, epsilon_1,Gamma_e;
-    //pt_K1->core.Gamma = g;
+    
     g2 = g*g;
     epsilon_0 = HPLANCK * nu_IC_in*one_by_MEC2;
     epsilon_1 = HPLANCK * nu_IC_out*one_by_MEC2;

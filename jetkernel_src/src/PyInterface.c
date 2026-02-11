@@ -298,6 +298,8 @@ struct blob MakeBlob() {
 
     spettro_root.emitters.gam=NULL;
     spettro_root.emitters.Q_inj_e_second=NULL;
+    spettro_root.emitters.Q_inj_e=NULL;
+
 
     spettro_root.emitters.Ne=NULL;
     spettro_root.emitters.Ne_custom=NULL;

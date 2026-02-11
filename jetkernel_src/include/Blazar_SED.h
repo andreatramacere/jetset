@@ -194,7 +194,7 @@ struct blob_core {
     double COST_IC_K1, COST_IC_COOLING;
 
     //--- IC Kernel computation
-    double Gamma;
+    double gamma_e_IC;
     double nu_1; /*freq spettro comp */
 
     //----------- INTEGRATION MESH--------------//
@@ -238,6 +238,7 @@ struct emitters {
     double *Ne_jetset;
     double *Np_jetset;
     double *Q_inj_e_second;
+    double *Q_inj_e;
     double *Ne_custom;
     double *Np_custom;
     double *gamma_e_custom;

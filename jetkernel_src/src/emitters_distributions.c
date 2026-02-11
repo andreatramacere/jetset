@@ -586,7 +586,7 @@ double N_distr(struct blob *pt_N, double Gamma) {
 
     a=0.;
     if (Gamma >= pt_N->emitters.gmin_secondaries && Gamma <= pt_N->emitters.gmax_secondaries && pt_N->emitters.TIPO_DISTR == -1) {
-        //pt_N->core.Gamma = Gamma;
+        
         a= vluce_cm * pt_N->PP_gamma.NH_pp * MEC2_TeV * bn_to_cm2 * rate_electrons_pp(pt_N, Gamma,-1);
     }else{
 
