@@ -411,7 +411,7 @@ double integr_simp_grid_equilog(double * x, double *y, unsigned int size) {
 //============================================================================
 
 double integrale_trap_log_struct(double (*pf) (struct blob *, double x), struct blob * pt, double a, double b, unsigned int n_intervalli) {
-    double integr, k, griglia, ordinata, ordinata1;
+    double integr, k, griglia, ordinata, ordinata1, log10_a;
     double delta;
     integr = 0.0;
     griglia = 0.0;
@@ -423,12 +423,13 @@ double integrale_trap_log_struct(double (*pf) (struct blob *, double x), struct 
     //sulla griglia logaritmica
 
     ordinata = a;
-    ordinata1 = pow(10, log10(a)+(delta * ((1) / ((double) n_intervalli - 1))));
+    log10_a=log10(a);
+    ordinata1 = pow(10,log10_a+(delta * ((1) / ((double) n_intervalli - 1))));
     griglia = ordinata1 - ordinata;
     //printf("n_int=%e oridinata=%e ordinata1=%e,griglia=%e \n",n_intervalli,ordinata,ordinata1,griglia);
     integr += griglia * (pf(pt, ordinata) + pf(pt, ordinata1));
 
-    ordinata = pow(10, log10(a)+(delta * (((double) n_intervalli - 2) / ((double) n_intervalli - 1))));
+    ordinata = pow(10, log10_a+(delta * (((double) n_intervalli - 2) / ((double) n_intervalli - 1))));
     ordinata1 = b;
     griglia = ordinata1 - ordinata;
     //printf("n_int=%e oridinata=%e ordinata1=%e griglia=%e \n",n_intervalli,ordinata,ordinata1,griglia);
@@ -436,8 +437,8 @@ double integrale_trap_log_struct(double (*pf) (struct blob *, double x), struct 
 
 
     for (k = 1; k < n_intervalli - 2; k = k + 1.0) {
-        ordinata = pow(10, log10(a)+(delta * (k / ((double) n_intervalli - 1))));
-        ordinata1 = pow(10, log10(a)+(delta * ((k + 1) / ((double) n_intervalli - 1))));
+        ordinata = pow(10, log10_a+(delta * (k / ((double) n_intervalli - 1))));
+        ordinata1 = pow(10, log10_a+(delta * ((k + 1) / ((double) n_intervalli - 1))));
         griglia = ordinata1 - ordinata;
         integr += griglia * (pf(pt, ordinata) + pf(pt, ordinata1));
         //if(k==0 || k==n_intervalli-1) printf("n_int=%e k=%e,oridinata=%e,griglia=%e ba=%e\n",n_intervalli,k,ordinata,griglia,ba);
