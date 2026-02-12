@@ -649,10 +649,13 @@ double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc
     a=gamma;
     b=pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1];
     delta=pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-gamma;
-    integ_size=delta*10000/(pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-pt->emitters.griglia_gamma_Ne_log[0]);
+    integ_size=delta*10*pt->emitters.gamma_grid_size/(pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-pt->emitters.griglia_gamma_Ne_log[0]);
     if (integ_size<3){
         integ_size=3;
-      }
+    }
+    if (integ_size>5000){
+        integ_size=5000;
+    }
     // choose between escape dominate regime and full solution
     // to avoid divergence in the integral 
     if (gamma<pt->emitters.gamma_cooling_eq/100){
