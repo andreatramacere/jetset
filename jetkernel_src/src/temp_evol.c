@@ -629,15 +629,20 @@ void alloc_temp_ev_array(double ** pt,int size){
     }
 
 
+
+
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1){
-    return N_distr_interp(pt->emitters.gamma_grid_size,gamma_1,pt->emitters.griglia_gamma_Ne_log,pt->emitters.Q_inj_e_second)*exp(pt->emitters.gamma_cooling_eq*(1/gamma_1-(1.0/pt->core.gamma_e_IC)));
+    double n,a,c;
+    n=N_distr_interp(pt->emitters.gamma_grid_size,gamma_1,pt->emitters.griglia_gamma_Ne_log,pt->emitters.Q_inj_e_second);
+    c=(gamma_1-pt->core.gamma_e_IC)/(gamma_1*pt->core.gamma_e_IC)*(pt->emitters.gamma_cooling_eq);
+    return n*exp(-c);
 }
 
 
-double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc ){
+double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc, unsigned int id_gamma ){
 
     double (*pf_K1) (struct blob * pt, double x);
-    double a,b,res,delta;
+    double a,b,res,delta,c;
     unsigned int integ_size;
     pf_K1 = &IntegrandCooolingEquilibrium;
     pt->core.gamma_e_IC=gamma;
@@ -647,19 +652,26 @@ double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc
     integ_size=delta*1000/(pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-pt->emitters.griglia_gamma_Ne_log[0]);
     if (integ_size<3){
         integ_size=3;
+      }
+    // choose between escape dominate regime and full solution
+    // to avoid divergence in the integral 
+    if (gamma<pt->emitters.gamma_cooling_eq/1000){
+        res=pt->emitters.Q_inj_e_second[id_gamma]*T_esc;
+    }else{
+        res=integrale_trap_log_struct(pf_K1,pt,a,b,integ_size);
+        c=T_esc*pt->emitters.gamma_cooling_eq;
+        res=res*c/(gamma*gamma);
     }
-
-    res=integrale_trap_log_struct(pf_K1,pt,a,b,integ_size);
-    return res*pt->emitters.gamma_cooling_eq*T_esc/(gamma*gamma);
+    
+    return res;
 }
 
 
 void CoolingEquilibrium(struct blob * pt, double T_esc){
-    //using Eq. 2.26 in Inoue&Takahara
-    //http://adsabs.harvard.edu/doi/10.1086/177270
-    struct jet_energetic energetic;
+    //rearranged form of Eq. 2.26 in Inoue&Takahara
+    //http://adsabs.harvard.edu/doi/10.1086/17727
     double  a;
-    unsigned int ID;
+    unsigned int id_gamma;
     double Uph;
     Uph=0;
     //Uph += Power_Sync_Electron(pt);
@@ -669,13 +681,13 @@ void CoolingEquilibrium(struct blob * pt, double T_esc){
     Uph += I_nu_to_Uph(pt->Disk.spec.nu, pt->Disk.spec.I_nu, pt->Disk.spec.NU_INT_MAX);
     Uph += I_nu_to_Uph(pt->Star.spec.nu, pt->Star.spec.I_nu, pt->Star.spec.NU_INT_MAX);
 
-    a=3.0*MEC2/(4.0*vluce_cm*(pt->Sync.UB + Uph)*SIGTH);
-    pt->emitters.gamma_cooling_eq=(a/T_esc);
-    
-    for (ID = 0; ID < pt->emitters.gamma_grid_size ; ID++){
+    a=(4.0/3.0)*((SIGTH*vluce_cm)/(MEC2))*(pt->Sync.UB + Uph);
+    pt->emitters.gamma_cooling_eq=1/(a*T_esc);
+    for (id_gamma = 0; id_gamma < pt->emitters.gamma_grid_size ; id_gamma++){
         
-        pt->emitters.Ne[ID]=IntegrateCooolingEquilibrium(pt,
-                                                pt->emitters.griglia_gamma_Ne_log[ID], 
-                                                T_esc);
+        pt->emitters.Ne[id_gamma]=IntegrateCooolingEquilibrium(pt,
+                                                pt->emitters.griglia_gamma_Ne_log[id_gamma], 
+                                                T_esc,
+                                                id_gamma);
     }
 }

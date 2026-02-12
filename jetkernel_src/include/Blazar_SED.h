@@ -193,8 +193,9 @@ struct blob_core {
     int bulk_compton;
     double COST_IC_K1, COST_IC_COOLING;
 
-    //--- IC Kernel computation
+    //--- eq solution
     double gamma_e_IC;
+    // IC Kernel
     double nu_1; /*freq spettro comp */
 
     //----------- INTEGRATION MESH--------------//
@@ -605,7 +606,7 @@ int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],uns
 //void free_tempe_ev(struct temp_ev *pt_ev);
 void alloc_temp_ev_array(double ** pt,int size);
 void CoolingEquilibrium(struct blob * pt, double T_esc);
-double IntegrateCooolingEquilibrium( struct blob *pt,double gamma, double T_esc );
+double IntegrateCooolingEquilibrium( struct blob *pt,double gamma, double T_esc,  unsigned int id_gamma);
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1);
 double update_jet_expansion(struct blob *pt_spec, struct temp_ev *pt_ev, double t);
 double eval_R_H_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev, double time);
@@ -1083,6 +1084,10 @@ double derivata(double (*pf) (struct blob *, double x), struct blob *pt, double 
 double theta_heaviside(double x);
 double integrale_trap_log_struct(double (*pf)(struct blob *, double x),
                                  struct blob *pt, double a, double b, unsigned int intervalli);
+double integrale_trap_log_jacob_struct(double (*pf)(struct blob *, double),
+                                 struct blob *pt,
+                                 double a, double b,
+                                 unsigned int n_intervalli);
 double integrale_simp_struct(double (*pf)(struct blob *, double x),
                              struct blob *pt, double a, double b, unsigned int intervalli);
 double integrale_simp(double (*pf)(double x), double a, double b, unsigned int n_intervalli);
