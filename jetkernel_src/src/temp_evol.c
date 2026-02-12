@@ -655,7 +655,7 @@ double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc
       }
     // choose between escape dominate regime and full solution
     // to avoid divergence in the integral 
-    if (gamma<pt->emitters.gamma_cooling_eq/1000){
+    if (gamma<pt->emitters.gamma_cooling_eq/100){
         t_cool=pt->emitters.gamma_cooling_eq*T_esc/gamma;
         t_eff=(t_cool*T_esc/(T_esc+t_cool));
         res=pt->emitters.Q_inj_e_second[id_gamma]*t_eff;
