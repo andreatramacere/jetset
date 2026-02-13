@@ -678,8 +678,7 @@ void CoolingEquilibrium(struct blob * pt, double T_esc){
     double  a;
     unsigned int id_gamma;
     double Uph;
-    Uph=0;
-    //Uph += Power_Sync_Electron(pt);
+    Uph=0.;
     Uph += I_nu_to_Uph(pt->BLR.spec.nu, pt->BLR.spec.I_nu, pt->BLR.spec.NU_INT_MAX);
     Uph += I_nu_to_Uph(pt->DT.spec.nu, pt->DT.spec.I_nu, pt->DT.spec.NU_INT_MAX);
     Uph += I_nu_to_Uph(pt->CMB.spec.nu, pt->CMB.spec.I_nu, pt->CMB.spec.NU_INT_MAX);
