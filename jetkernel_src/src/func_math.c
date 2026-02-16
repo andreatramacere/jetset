@@ -407,6 +407,97 @@ double integr_simp_grid_equilog(double * x, double *y, unsigned int size) {
 }
 
 //============================================================================
+// SIMPSON CON INT CHIUSO E GRIGLIA EQUI_LOG10 (log-spaced in gamma, integral in dγ)
+//============================================================================
+
+
+double integrale_simp_log_struct(double (*pf)(struct blob *, double),
+                                 struct blob *pt,
+                                 double a, double b,
+                                 unsigned int n_intervalli)
+{
+    if (!(a > 0.0) || !(b > a)) return 0.0;
+
+    // Simpson requires an even number of subintervals
+    if (n_intervalli < 2) n_intervalli = 2;
+    if (n_intervalli % 2 != 0) n_intervalli++;
+
+    const double log10_a = log10(a);
+    const double delta   = log10(b) - log10_a;
+    const double denom   = (double)n_intervalli;
+
+    // We will build points γ_i on a uniform log10 grid:
+    // x_i = log10(a) + delta * (i / n_intervalli),  i=0..n_intervalli
+    // γ_i = 10^{x_i}
+    //
+    // Composite Simpson with non-uniform steps in γ can be applied
+    // per pair of intervals using the local widths:
+    // For i=0,2,4,...:
+    //   h0 = γ_{i+1} - γ_i
+    //   h1 = γ_{i+2} - γ_{i+1}
+    //   contribution = (h0+h1)/6 * [ f_i*(2 - h1/h0) + f_{i+1}*( (h0+h1)^2/(h0*h1) ) + f_{i+2}*(2 - h0/h1) ]
+    //
+    // This reduces to standard Simpson when h0==h1, and works well on log meshes.
+
+    double integr = 0.0;
+
+    // initialize i=0,1,2
+    double x0 = log10_a;
+    double x1 = log10_a + delta * (1.0 / denom);
+    double x2 = log10_a + delta * (2.0 / denom);
+
+    double g0 = a;
+    double g1 = pow(10.0, x1);
+    double g2 = pow(10.0, x2);
+
+    double f0 = pf(pt, g0);
+    double f1 = pf(pt, g1);
+    double f2 = pf(pt, g2);
+
+    for (unsigned int i = 0; i < n_intervalli; i += 2) {
+
+        // enforce exact endpoint on the final point
+        if (i + 2 == n_intervalli) {
+            g2 = b;
+            f2 = pf(pt, g2);
+        }
+
+        double h0 = g1 - g0;
+        double h1 = g2 - g1;
+
+        if (h0 > 0.0 && h1 > 0.0) {
+            double r0 = h1 / h0;
+            double r1 = h0 / h1;
+            double H  = h0 + h1;
+
+            // Composite Simpson for unequal adjacent steps (quadratic through 3 points)
+            double term0 = f0 * (2.0 - r0);
+            double term1 = f1 * (H * H / (h0 * h1));
+            double term2 = f2 * (2.0 - r1);
+
+            integr += (H / 6.0) * (term0 + term1 + term2);
+        }
+
+        // advance by 2: (0,1,2) -> (2,3,4)
+        if (i + 2 >= n_intervalli) break;
+
+        // new indices: i0=i+2, i1=i+3, i2=i+4
+        g0 = g2; f0 = f2;
+
+        double x3 = log10_a + delta * ((double)(i + 3) / denom);
+        double x4 = log10_a + delta * ((double)(i + 4) / denom);
+
+        g1 = pow(10.0, x3);
+        g2 = pow(10.0, x4);
+
+        f1 = pf(pt, g1);
+        f2 = pf(pt, g2);
+    }
+
+    return integr;
+}
+
+//============================================================================
 // INTEGRAZIONE TRAPEZOIDALE CON INT CHIUSO E GRIGLIA  EQUI_LOG
 //============================================================================
 

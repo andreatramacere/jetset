@@ -1084,9 +1084,13 @@ double derivata(double (*pf) (struct blob *, double x), struct blob *pt, double 
 double theta_heaviside(double x);
 double integrale_trap_log_struct(double (*pf)(struct blob *, double x),
                                  struct blob *pt, double a, double b, unsigned int intervalli);
-
 double integrale_simp_struct(double (*pf)(struct blob *, double x),
                              struct blob *pt, double a, double b, unsigned int intervalli);
+
+double integrale_simp_log_struct(double (*pf)(struct blob *, double),
+                                 struct blob *pt,
+                                 double a, double b,
+                                 unsigned int n_intervalli);
 double integrale_simp(double (*pf)(double x), double a, double b, unsigned int n_intervalli);
 double integr_simp_grid_equilog(double * x, double *y, unsigned int size);
 double trapzd_array_linear_grid(double *x, double *y, unsigned int SIZE);

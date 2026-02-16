@@ -642,20 +642,22 @@ double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1){
 double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc, unsigned int id_gamma ){
 
     double (*pf_K1) (struct blob * pt, double x);
-    double a,b,res,delta,c,t_eff,t_cool;
+    double a,b,res;
+    double delta,t_eff,t_cool;
     unsigned int integ_size;
     pf_K1 = &IntegrandCooolingEquilibrium;
     pt->core.gamma_e_IC=gamma;
     a=gamma;
     b=pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1];
-    delta=pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-gamma;
-    integ_size=delta*10*pt->emitters.gamma_grid_size/(pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-pt->emitters.griglia_gamma_Ne_log[0]);
-    if (integ_size<3){
-        integ_size=3;
-    }
-    if (integ_size>5000){
-        integ_size=5000;
-    }
+    //delta=pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-gamma;
+    //integ_size=delta*10*pt->emitters.gamma_grid_size/(pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-pt->emitters.griglia_gamma_Ne_log[0]);
+    //if (integ_size<3){
+    //    integ_size=3;
+    //}
+    //if (integ_size>1000){
+    //    integ_size=1000;
+    //}
+    integ_size=1000;
     // choose between escape dominate regime and full solution
     // to avoid divergence in the integral 
     if (gamma<pt->emitters.gamma_cooling_eq/100){
@@ -663,9 +665,8 @@ double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc
         t_eff=(t_cool*T_esc/(T_esc+t_cool));
         res=pt->emitters.Q_inj_e_second[id_gamma]*t_eff;
     }else{
-        res=integrale_trap_log_struct(pf_K1,pt,a,b,integ_size);
-        c=T_esc*pt->emitters.gamma_cooling_eq;
-        res=res*c/(gamma*gamma);
+        res=integrale_simp_log_struct(pf_K1,pt,a,b,integ_size);
+        res=res*T_esc*pt->emitters.gamma_cooling_eq/(gamma*gamma);
     }
     
     return res;
