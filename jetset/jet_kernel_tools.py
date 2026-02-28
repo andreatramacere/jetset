@@ -61,7 +61,7 @@ def get_spectral_c_array_read_only(x_ptr, y_ptr, size):
 def get_emitters_c_array1d(gamma_prt, n_ptr, blob_object, size):
     x = np.zeros(size)
     y = np.zeros(size)
-    if size != int(blob_object.gamma_grid_size):
+    if size != int(blob_object.emitters.gamma_grid_size):
         raise RuntimeError("mismatch between expected and actual c-array size")
     
     for ID in range(size):
@@ -72,7 +72,7 @@ def get_emitters_c_array1d(gamma_prt, n_ptr, blob_object, size):
 
 def get_emitters_c_array1d_fast(gamma_ptr, n_ptr, blob_object, size):
     
-    if size != int(blob_object.gamma_grid_size):
+    if size != int(blob_object.emitters.gamma_grid_size):
         raise RuntimeError("mismatch between expected and actual c-array size")
 
     # hard guard: NULL pointers
@@ -89,14 +89,14 @@ def get_emitters_c_array1d_fast(gamma_ptr, n_ptr, blob_object, size):
 
 
 def set_emitters_c_array1d(n_ptr, blob_object, size, values):
-    if size != int(blob_object.gamma_grid_size):
+    if size != int(blob_object.emitters.gamma_grid_size):
         raise RuntimeError("mismatch between expected and actual c-array size")
     for idx in range(size):
         BlazarSED.set_elec_array(n_ptr,blob_object,values[idx], idx)
 
 
 def set_emitters_c_array1d_fast(n_ptr, blob_object, size, values):
-    if size != int(blob_object.gamma_grid_size):
+    if size != int(blob_object.emitters.gamma_grid_size):
         raise RuntimeError("mismatch between expected and actual c-array size")
     if int(n_ptr) == 0:
         raise RuntimeError("emitters array not allocated yet")

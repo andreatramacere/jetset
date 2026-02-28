@@ -34,67 +34,67 @@ void spettro_pp_gamma(int Num_file, struct blob *pt) {
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     // massima e minima freq pp
-    gmax=Find_gmax(pt,pt->Np,pt->griglia_gamma_Np_log);
-    pt->nu_stop_pp_gamma_pred = gmax * MPC2 / HPLANCK * 100;
-    pt->nu_start_pp_gamma = E_th_pp * 1E12 * ev_to_erg / HPLANCK / 100/10;
-    pt->nu_start_pp_gamma_obs = nu_blob_to_nu_obs(pt->nu_start_pp_gamma, pt->beam_obj, pt->z_cosm);
-    pt->nu_stop_pp_gamma_obs = nu_blob_to_nu_obs(pt->nu_stop_pp_gamma_pred, pt->beam_obj, pt->z_cosm);
+    gmax=Find_gmax(pt,pt->emitters.Np,pt->emitters.griglia_gamma_Np_log);
+    pt->PP_gamma.nu_stop_pp_gamma_pred = gmax * MPC2 / HPLANCK * 100;
+    pt->PP_gamma.spec.nu_min = E_th_pp * 1E12 * ev_to_erg / HPLANCK / 100/10;
+    pt->PP_gamma.spec.nu_min_obs = nu_blob_to_nu_obs(pt->PP_gamma.spec.nu_min, pt->core.beam_obj, pt->core.z_cosm);
+    pt->PP_gamma.spec.nu_max_obs = nu_blob_to_nu_obs(pt->PP_gamma.nu_stop_pp_gamma_pred, pt->core.beam_obj, pt->core.z_cosm);
    
     NU_INT = 0;
-    //k = (log10(pt->nu_stop_pp_gamma_pred) - log10(pt->nu_start_pp_gamma));
+    //k = (log10(pt->PP_gamma.nu_stop_pp_gamma_pred) - log10(pt->PP_gamma.spec.nu_min));
 
-    build_log_grid(pt->nu_start_pp_gamma,  pt->nu_stop_pp_gamma_pred, pt->nu_IC_size, pt->nu_pp_gamma);
-    build_log_grid(pt->nu_start_pp_gamma_obs,  pt->nu_stop_pp_gamma_obs, pt->nu_IC_size, pt->nu_pp_gamma_obs);
+    build_log_grid(pt->PP_gamma.spec.nu_min,  pt->PP_gamma.nu_stop_pp_gamma_pred, pt->core.nu_IC_size, pt->PP_gamma.spec.nu);
+    build_log_grid(pt->PP_gamma.spec.nu_min_obs,  pt->PP_gamma.spec.nu_max_obs, pt->core.nu_IC_size, pt->PP_gamma.spec.nu_obs);
 
 
-    I_MAX = pt->nu_IC_size -1;
+    I_MAX = pt->core.nu_IC_size -1;
     eval_j_ptr = &eval_j_pp_gamma;
-    pt->pp_racc_gamma=rate_gamma_pp(pt ,pt->nu_start_pp_gamma,1);
-    threaded_j_evaluation(pt, eval_j_ptr, pt->j_pp_gamma,pt->nu_pp_gamma,pt->nu_start_pp_gamma, pt->nu_stop_pp_gamma_pred,I_MAX,pt->N_THREADS);
-    if (pt->verbose){
+    pt->PP_gamma.pp_racc_gamma=rate_gamma_pp(pt ,pt->PP_gamma.spec.nu_min,1);
+    threaded_j_evaluation(pt, eval_j_ptr, pt->PP_gamma.spec.j_nu,pt->PP_gamma.spec.nu,pt->PP_gamma.spec.nu_min, pt->PP_gamma.nu_stop_pp_gamma_pred,I_MAX,pt->core.N_THREADS);
+    if (pt->core.verbose){
         printf("**********************  CALCOLO DELLO SPETTRO pp   ****************************\n");
 
         printf("nu_start_pp=%e nu_stop_pp=%e\n",
-               pt->nu_start_pp_gamma,
-               pt->nu_stop_pp_gamma_pred);
+               pt->PP_gamma.spec.nu_min,
+               pt->PP_gamma.nu_stop_pp_gamma_pred);
         printf("Number of freq to eval=%d\n", I_MAX);
     }
 
     for (i = 0; i <= I_MAX; i++) {
-        if ((pt->nu_pp_gamma[i] >= pt->nu_start_pp_gamma) && (pt->nu_pp_gamma[i] <= pt->nu_stop_pp_gamma_pred)) {
+        if ((pt->PP_gamma.spec.nu[i] >= pt->PP_gamma.spec.nu_min) && (pt->PP_gamma.spec.nu[i] <= pt->PP_gamma.nu_stop_pp_gamma_pred)) {
             //printf("hi\n");
             if (!stop) {
 
-                L_nu_pp = j_nu_to_L_nu_src(pt->j_pp_gamma[NU_INT], pt->Vol_region, pt->beam_obj);
+                L_nu_pp = j_nu_to_L_nu_src(pt->PP_gamma.spec.j_nu[NU_INT], pt->core.Vol_region, pt->core.beam_obj);
                 //nuL_nu_pp = L_nu_pp*nu_src;
-                F_nu_pp_obs = L_nu_src_to_F_nu(L_nu_pp, pt->beam_obj, pt->z_cosm, pt->dist);
-                pt->nuFnu_pp_gamma_obs[NU_INT] = F_nu_pp_obs * pt->nu_pp_gamma_obs[NU_INT];
+                F_nu_pp_obs = L_nu_src_to_F_nu(L_nu_pp, pt->core.beam_obj, pt->core.z_cosm, pt->core.dist);
+                pt->PP_gamma.spec.nuFnu_obs[NU_INT] = F_nu_pp_obs * pt->PP_gamma.spec.nu_obs[NU_INT];
 
-                pt->nu_stop_pp_gamma = pt->nu_pp_gamma[i];
-                pt->NU_INT_STOP_PP_GAMMA = NU_INT;
-                if (pt->verbose) {
+                pt->PP_gamma.spec.nu_max = pt->PP_gamma.spec.nu[i];
+                pt->PP_gamma.NU_INT_STOP_PP_GAMMA = NU_INT;
+                if (pt->core.verbose) {
                     printf("nu_stop_pp_pred=%e nu_stop_pp=%e NU_INT=%d\n ",
-                            pt->nu_stop_pp_gamma_pred,
-                            pt->nu_stop_pp_gamma,
+                            pt->PP_gamma.nu_stop_pp_gamma_pred,
+                            pt->PP_gamma.spec.nu_max,
                             NU_INT);
                 }
             }
-            if (pt->j_pp_gamma[NU_INT] < pt->emiss_lim) {
+            if (pt->PP_gamma.spec.j_nu[NU_INT] < pt->core.emiss_lim) {
                 //stop = 1;
-                pt->j_pp_gamma[NU_INT] = pt->emiss_lim;
-                pt->nuFnu_pp_gamma_obs[NU_INT] = pt->emiss_lim;
-                F_nu_pp_obs = pt->emiss_lim;
-                if (pt->verbose) {
-                    printf("%e %d\n ", pt->nu_pp_gamma[i], NU_INT);
+                pt->PP_gamma.spec.j_nu[NU_INT] = pt->core.emiss_lim;
+                pt->PP_gamma.spec.nuFnu_obs[NU_INT] = pt->core.emiss_lim;
+                F_nu_pp_obs = pt->core.emiss_lim;
+                if (pt->core.verbose) {
+                    printf("%e %d\n ", pt->PP_gamma.spec.nu[i], NU_INT);
                 }
             }
 
-            if (pt->verbose) {
+            if (pt->core.verbose) {
                 printf("nuFnu_pp_gamma_obs= %e j=%e nu_stop_pp_pred=%e nu_stop_pp=%e NU_INT=%d\n ",
-                pt->nuFnu_pp_gamma_obs[NU_INT], 
-                pt->j_pp_gamma[NU_INT],
-                pt->nu_stop_pp_gamma_pred,
-                pt->nu_stop_pp_gamma,
+                pt->PP_gamma.spec.nuFnu_obs[NU_INT], 
+                pt->PP_gamma.spec.j_nu[NU_INT],
+                pt->PP_gamma.nu_stop_pp_gamma_pred,
+                pt->PP_gamma.spec.nu_max,
                 NU_INT);
                 printf("#-> ********************************\n\n");
             }
@@ -105,32 +105,32 @@ void spettro_pp_gamma(int Num_file, struct blob *pt) {
 
     //Se ancora non ha trovato nu_stop
     if (!stop) {
-        pt->NU_INT_STOP_PP_GAMMA = NU_INT - 1;
+        pt->PP_gamma.NU_INT_STOP_PP_GAMMA = NU_INT - 1;
     }
     //printf("nu_stop_pp=%e NU_INT_STOP_PP=%d\n", pt->nu_stop_pp, pt->NU_INT_STOP_PP);
-    pt->nu_stop_pp_gamma_obs = nu_blob_to_nu_obs(pt->nu_stop_pp_gamma, pt->beam_obj, pt->z_cosm);
+    pt->PP_gamma.spec.nu_max_obs = nu_blob_to_nu_obs(pt->PP_gamma.spec.nu_max, pt->core.beam_obj, pt->core.z_cosm);
     
     //===========================================
     //    trova nu peak e Flux peak
     //===========================================
 
-        FindEpSp(pt->nu_pp_gamma, pt->nuFnu_pp_gamma_obs,   pt->NU_INT_STOP_PP_GAMMA, pt,
-                &(pt->nu_peak_PP_gamma_obs),
-                &(pt->nu_peak_PP_gamma_src),
-                &(pt->nu_peak_PP_gamma_blob),
-                &(pt->nuFnu_peak_PP_gamma_obs),
-                &(pt->nuLnu_peak_PP_gamma_src),
-                &(pt->nuLnu_peak_PP_gamma_blob));
+        FindEpSp(pt->PP_gamma.spec.nu, pt->PP_gamma.spec.nuFnu_obs,   pt->PP_gamma.NU_INT_STOP_PP_GAMMA, pt,
+                &(pt->PP_gamma.spec.nu_peak_obs),
+                &(pt->PP_gamma.spec.nu_peak_src),
+                &(pt->PP_gamma.spec.nu_peak_blob),
+                &(pt->PP_gamma.spec.nuFnu_peak_obs),
+                &(pt->PP_gamma.spec.nuLnu_peak_src),
+                &(pt->PP_gamma.spec.nuLnu_peak_blob));
 
-        if (pt->verbose)
+        if (pt->core.verbose)
         {
-            printf("nu_PP_blob peak=%e\n", pt->nu_peak_PP_gamma_blob);
-            printf("nu_PP_src   peak=%e\n", pt->nu_peak_PP_gamma_src);
-            printf("nu_PP_obs  peak=%e\n", pt->nu_peak_PP_gamma_obs);
+            printf("nu_PP_blob peak=%e\n", pt->PP_gamma.spec.nu_peak_blob);
+            printf("nu_PP_src   peak=%e\n", pt->PP_gamma.spec.nu_peak_src);
+            printf("nu_PP_obs  peak=%e\n", pt->PP_gamma.spec.nu_peak_obs);
 
-            printf("nuFnu PP  blob    peak=%e\n", pt->nuFnu_peak_PP_gamma_obs);
-            printf("nuLnu PP  src      peak=%e\n", pt->nuLnu_peak_PP_gamma_src);
-            printf("nuLnu PP  obs     peak=%e\n", pt->nuLnu_peak_PP_gamma_blob);
+            printf("nuFnu PP  blob    peak=%e\n", pt->PP_gamma.spec.nuFnu_peak_obs);
+            printf("nuLnu PP  src      peak=%e\n", pt->PP_gamma.spec.nuLnu_peak_src);
+            printf("nuLnu PP  obs     peak=%e\n", pt->PP_gamma.spec.nuLnu_peak_blob);
         }
         return;
 }
@@ -142,9 +142,9 @@ void * eval_j_pp_gamma(void *data){
     double nu_out;
     for (NU_INT = thread_args->NU_INT_START; NU_INT <= thread_args->NU_INT_STOP; NU_INT++) {
         nu_out=thread_args->nu_array[NU_INT];
-        thread_args->blob_pt->j_pp_gamma[NU_INT] = 0.;
+        thread_args->blob_pt->PP_gamma.spec.j_nu[NU_INT] = 0.;
        
-        if (thread_args->blob_pt->verbose > 1) {
+        if (thread_args->blob_pt->core.verbose > 1) {
                 printf("#->1 in eval_j_pp_gamma   NU_INT=%d   nu_out=%e \n", NU_INT, thread_args->nu_array[NU_INT]);
         }
         //rate_gamma_pp is (dN/dEg)/(c*NH_pp)   TeV^-1 cm^-3 s^-1/(c*NH_pp)
@@ -153,12 +153,12 @@ void * eval_j_pp_gamma(void *data){
         //the you multiply by HPLANCK in  to get erg/( cm^3 Hz s) 
         //and then you divide by 4pi to get erg/( cm^3 Hz s setard) that are j_nu units 
 
-        thread_args->blob_pt->j_pp_gamma[NU_INT] = vluce_cm * thread_args->blob_pt->NH_pp * bn_to_cm2 *
+        thread_args->blob_pt->PP_gamma.spec.j_nu[NU_INT] = vluce_cm * thread_args->blob_pt->PP_gamma.NH_pp * bn_to_cm2 *
                         (HPLANCK)* (HPLANCK_TeV * nu_out) *one_by_four_pi* rate_gamma_pp(thread_args->blob_pt,nu_out,-1);
-        if (thread_args->blob_pt->verbose > 1) {
+        if (thread_args->blob_pt->core.verbose > 1) {
                  printf("#-> NU_INT=%d j[NU_INT]=%e nu_out=%e  \n",
                             NU_INT,
-                            thread_args->blob_pt->j_pp_gamma[NU_INT],
+                            thread_args->blob_pt->PP_gamma.spec.j_nu[NU_INT],
                             nu_out);
         }
     }

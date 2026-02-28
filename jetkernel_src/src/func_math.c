@@ -103,49 +103,49 @@ void tabella_Bessel(struct blob *pt_TB) {
     char f_bessel_file[static_file_name_max_legth];
     double _x,_y,_in_ave_y, _in_ave_x;
     /*** kernel Sync per alfa fisso e kernel delta ***/
-        if (pt_TB->verbose > 0)
+        if (pt_TB->core.verbose > 0)
     {
         printf("Evaluation of Bessel Tables\n");
     }
-	//printf("start=%e\n", pt_TB->x_Bessel_min = (pt_TB->nu_start_Sync) /
-	//	((3.0 * pt_TB->nu_B * (pt_TB->gmax_griglia * pt_TB->gmax_griglia) / 2.0) * pt_TB->sin_psi));
-	//printf("stop=%e\n", pt_TB->x_Bessel_max = (pt_TB->nu_stop_Sync) /
-	//	((3.0 * pt_TB->nu_B * (pt_TB->gmin_griglia * pt_TB->gmin_griglia) / 2.0) * pt_TB->sin_psi));
+	//printf("start=%e\n", pt_TB->Sync.x_Bessel_min = (pt_TB->Sync.spec.nu_min) /
+	//	((3.0 * pt_TB->Sync.nu_B * (pt_TB->emitters.gmax_griglia * pt_TB->emitters.gmax_griglia) / 2.0) * pt_TB->Sync.sin_psi));
+	//printf("stop=%e\n", pt_TB->Sync.x_Bessel_max = (pt_TB->Sync.spec.nu_max) /
+	//	((3.0 * pt_TB->Sync.nu_B * (pt_TB->emitters.gmin_griglia * pt_TB->emitters.gmin_griglia) / 2.0) * pt_TB->Sync.sin_psi));
     //}
-    pt_TB->x_Bessel_min = 1E-17;
-    pt_TB->x_Bessel_max = 7.2E2;
+    pt_TB->Sync.x_Bessel_min = 1E-17;
+    pt_TB->Sync.x_Bessel_max = 7.2E2;
 
-    pt_TB->x_ave_Bessel_min = 1E-16;
-    pt_TB->x_ave_Bessel_max = 3.5E2;
+    pt_TB->Sync.x_ave_Bessel_min = 1E-16;
+    pt_TB->Sync.x_ave_Bessel_max = 3.5E2;
 
-    pt_TB->log_x_Bessel_min = log10(pt_TB->x_Bessel_min);
-    pt_TB->log_x_Bessel_max = log10(pt_TB->x_Bessel_max);
+    pt_TB->Sync.log_x_Bessel_min = log10(pt_TB->Sync.x_Bessel_min);
+    pt_TB->Sync.log_x_Bessel_max = log10(pt_TB->Sync.x_Bessel_max);
     
 
-    pt_TB->log_x_ave_Bessel_min = log10(pt_TB->x_ave_Bessel_min);
-    pt_TB->log_x_ave_Bessel_max = log10(pt_TB->x_ave_Bessel_max);
+    pt_TB->Sync.log_x_ave_Bessel_min = log10(pt_TB->Sync.x_ave_Bessel_min);
+    pt_TB->Sync.log_x_ave_Bessel_max = log10(pt_TB->Sync.x_ave_Bessel_max);
 
-    //if(pt_TB->x_Bessel_max>Bessel_MAX)pt_TB->x_Bessel_max=Bessel_MAX;
+    //if(pt_TB->Sync.x_Bessel_max>Bessel_MAX)pt_TB->Sync.x_Bessel_max=Bessel_MAX;
     pf_53 = &bessel_K_53;
-    //printf("SYSPATH =%s\n", pt_TB->SYSPATH);
+    //printf("SYSPATH =%s\n", pt_TB->core.SYSPATH);
     //return;
-    //strcpy(f_bessel_file, pt_TB->SYSPATH);
-    //printf('SYSPATH: %s\n', pt_TB->SYSPATH);
+    //strcpy(f_bessel_file, pt_TB->core.SYSPATH);
+    //printf('SYSPATH: %s\n', pt_TB->core.SYSPATH);
     //return;
 
-    sprintf(f_bessel_file, "%s/F_Sync.dat",  pt_TB->SYSPATH);
-    if (pt_TB->verbose>1) {
+    sprintf(f_bessel_file, "%s/F_Sync.dat",  pt_TB->core.SYSPATH);
+    if (pt_TB->core.verbose>1) {
 	//printf("gmax_griglia=%e -> x/xc_min=%e    gmin_griglia=%e -> x/xc_max=%e\n",
-    //        pt_TB->gmax_griglia, pt_TB->x_Bessel_min,
-     //       pt_TB->gmin_griglia, pt_TB->x_Bessel_max);
+    //        pt_TB->emitters.gmax_griglia, pt_TB->Sync.x_Bessel_min,
+     //       pt_TB->emitters.gmin_griglia, pt_TB->Sync.x_Bessel_max);
     	printf("Bessel Tables  in  file: %s\n", f_bessel_file);
     }
 
 
     fp = fopen(f_bessel_file, "r");
 
-	build_log_grid( pt_TB->x_Bessel_min,  pt_TB->x_Bessel_max, static_bess_table_size,  pt_TB->F_Sync_x);
-	build_log_grid( pt_TB->x_ave_Bessel_min,  pt_TB->x_ave_Bessel_max, static_bess_table_size, pt_TB->F_ave_Sync_x);
+	build_log_grid( pt_TB->Sync.x_Bessel_min,  pt_TB->Sync.x_Bessel_max, static_bess_table_size,  pt_TB->Sync.F_Sync_x);
+	build_log_grid( pt_TB->Sync.x_ave_Bessel_min,  pt_TB->Sync.x_ave_Bessel_max, static_bess_table_size, pt_TB->Sync.F_ave_Sync_x);
 
  
     //fclose(fp);
@@ -157,56 +157,56 @@ void tabella_Bessel(struct blob *pt_TB) {
     fprintf(fp, "# F_x F_y F_x_ave F_y_ave G_x G_y\n");
     
     for (i = 0; i < static_bess_table_size; i++) {
-        //x = pt_TB->x_Bessel_min *
-        //        pow((pt_TB->x_Bessel_max / pt_TB->x_Bessel_min),
+        //x = pt_TB->Sync.x_Bessel_min *
+        //        pow((pt_TB->Sync.x_Bessel_max / pt_TB->Sync.x_Bessel_min),
         //        ((double) i) / ((double) elementi_tabelle - 1.0));
         
-        //pt_TB->F_Sync_x[i] = x;
-        pt_TB->F_Sync_y[i]= pt_TB->F_Sync_x[i] * integrale_trap_log_struct(pf_53, pt_TB, pt_TB->F_Sync_x[i], 1000, 1000);
+        //pt_TB->Sync.F_Sync_x[i] = x;
+        pt_TB->Sync.F_Sync_y[i]= pt_TB->Sync.F_Sync_x[i] * integrale_trap_log_struct(pf_53, pt_TB, pt_TB->Sync.F_Sync_x[i], 1000, 1000);
         
-        pt_TB->G_Sync_x[i]= pt_TB->F_Sync_x[i];
-        pt_TB->G_Sync_y[i]= pt_TB->G_Sync_x[i] * bessel_K_23(pt_TB,pt_TB->G_Sync_x[i]);
-        pt_TB->log_F_Sync_x[i] = log10(pt_TB->F_Sync_x[i]);
-        pt_TB->log_G_Sync_x[i] = log10(pt_TB->G_Sync_x[i]);
-        if (pt_TB->F_Sync_y[i]>0.0){
-            pt_TB->log_F_Sync_y[i] = log10(pt_TB->F_Sync_y[i]);
+        pt_TB->Sync.G_Sync_x[i]= pt_TB->Sync.F_Sync_x[i];
+        pt_TB->Sync.G_Sync_y[i]= pt_TB->Sync.G_Sync_x[i] * bessel_K_23(pt_TB,pt_TB->Sync.G_Sync_x[i]);
+        pt_TB->Sync.log_F_Sync_x[i] = log10(pt_TB->Sync.F_Sync_x[i]);
+        pt_TB->Sync.log_G_Sync_x[i] = log10(pt_TB->Sync.G_Sync_x[i]);
+        if (pt_TB->Sync.F_Sync_y[i]>0.0){
+            pt_TB->Sync.log_F_Sync_y[i] = log10(pt_TB->Sync.F_Sync_y[i]);
         }
         else{
-            pt_TB->log_F_Sync_y[i] = -300.0;
+            pt_TB->Sync.log_F_Sync_y[i] = -300.0;
         }
 
-        if ( pt_TB->G_Sync_y[i]>0.0){
-            pt_TB->log_G_Sync_y[i] = log10(pt_TB->G_Sync_y[i]);
+        if ( pt_TB->Sync.G_Sync_y[i]>0.0){
+            pt_TB->Sync.log_G_Sync_y[i] = log10(pt_TB->Sync.G_Sync_y[i]);
         }
         else{
-            pt_TB->log_G_Sync_y[i] = -300.0;
+            pt_TB->Sync.log_G_Sync_y[i] = -300.0;
         }
 
-        //pt_TB->F_ave_Sync_x[i] = x;
-        pt_TB->F_ave_Sync_y[i]= pt_TB->F_ave_Sync_x[i] *pt_TB->F_ave_Sync_x[i]*  bessel_K_pitch_ave(pt_TB,  pt_TB->F_ave_Sync_x[i]);
-        pt_TB->log_F_ave_Sync_x[i] = log10(pt_TB->F_ave_Sync_x[i]);
-        if(pt_TB->F_ave_Sync_y[i]>0.0){
-            pt_TB->log_F_ave_Sync_y[i] = log10(pt_TB->F_ave_Sync_y[i]);
+        //pt_TB->Sync.F_ave_Sync_x[i] = x;
+        pt_TB->Sync.F_ave_Sync_y[i]= pt_TB->Sync.F_ave_Sync_x[i] *pt_TB->Sync.F_ave_Sync_x[i]*  bessel_K_pitch_ave(pt_TB,  pt_TB->Sync.F_ave_Sync_x[i]);
+        pt_TB->Sync.log_F_ave_Sync_x[i] = log10(pt_TB->Sync.F_ave_Sync_x[i]);
+        if(pt_TB->Sync.F_ave_Sync_y[i]>0.0){
+            pt_TB->Sync.log_F_ave_Sync_y[i] = log10(pt_TB->Sync.F_ave_Sync_y[i]);
         }
         else{
-            pt_TB->log_F_ave_Sync_y[i]=-300.0;
+            pt_TB->Sync.log_F_ave_Sync_y[i]=-300.0;
         }
         fprintf(fp, "%e %e %e %e %e %e\n",
-                pt_TB->F_Sync_x[i] , pt_TB->F_Sync_y[i] , pt_TB->F_ave_Sync_x[i], pt_TB->F_ave_Sync_y[i], pt_TB->F_Sync_x[i], pt_TB->G_Sync_y[i]);
+                pt_TB->Sync.F_Sync_x[i] , pt_TB->Sync.F_Sync_y[i] , pt_TB->Sync.F_ave_Sync_x[i], pt_TB->Sync.F_ave_Sync_y[i], pt_TB->Sync.F_Sync_x[i], pt_TB->Sync.G_Sync_y[i]);
         
         //printf("i=%d i_max=%d x=%e F(x)=%e\n",i,elementi_tabelle,x,pt_TB->tabella_F[i][1]);
             
     }
     
-    if (pt_TB->verbose > 0)
+    if (pt_TB->core.verbose > 0)
     {
         printf("i_max=%d elementi_tabelle=%d \n", i, static_bess_table_size);
-        printf("F_Sync_x min=%e, %e\n", pt_TB->F_Sync_x[0], pt_TB->x_Bessel_min);
-        printf("F_Sync_x max=%e, %e\n", pt_TB->F_Sync_x[static_bess_table_size - 1], pt_TB->x_Bessel_max);
-        printf("F_Sync_y max=%e\n", pt_TB->F_Sync_y[static_bess_table_size - 1]);
+        printf("F_Sync_x min=%e, %e\n", pt_TB->Sync.F_Sync_x[0], pt_TB->Sync.x_Bessel_min);
+        printf("F_Sync_x max=%e, %e\n", pt_TB->Sync.F_Sync_x[static_bess_table_size - 1], pt_TB->Sync.x_Bessel_max);
+        printf("F_Sync_y max=%e\n", pt_TB->Sync.F_Sync_y[static_bess_table_size - 1]);
     }
     fclose(fp);
-    pt_TB->BESSEL_TABLE_DONE=1;
+    pt_TB->core.BESSEL_TABLE_DONE=1;
 }
 //=========================================================================================
 
@@ -407,11 +407,102 @@ double integr_simp_grid_equilog(double * x, double *y, unsigned int size) {
 }
 
 //============================================================================
+// SIMPSON CON INT CHIUSO E GRIGLIA EQUI_LOG10 (log-spaced in gamma, integral in dγ)
+//============================================================================
+
+
+double integrale_simp_log_struct(double (*pf)(struct blob *, double),
+                                 struct blob *pt,
+                                 double a, double b,
+                                 unsigned int n_intervalli)
+{
+    if (!(a > 0.0) || !(b > a)) return 0.0;
+
+    // Simpson requires an even number of subintervals
+    if (n_intervalli < 2) n_intervalli = 2;
+    if (n_intervalli % 2 != 0) n_intervalli++;
+
+    const double log10_a = log10(a);
+    const double delta   = log10(b) - log10_a;
+    const double denom   = (double)n_intervalli;
+
+    // We will build points γ_i on a uniform log10 grid:
+    // x_i = log10(a) + delta * (i / n_intervalli),  i=0..n_intervalli
+    // γ_i = 10^{x_i}
+    //
+    // Composite Simpson with non-uniform steps in γ can be applied
+    // per pair of intervals using the local widths:
+    // For i=0,2,4,...:
+    //   h0 = γ_{i+1} - γ_i
+    //   h1 = γ_{i+2} - γ_{i+1}
+    //   contribution = (h0+h1)/6 * [ f_i*(2 - h1/h0) + f_{i+1}*( (h0+h1)^2/(h0*h1) ) + f_{i+2}*(2 - h0/h1) ]
+    //
+    // This reduces to standard Simpson when h0==h1, and works well on log meshes.
+
+    double integr = 0.0;
+
+    // initialize i=0,1,2
+    double x0 = log10_a;
+    double x1 = log10_a + delta * (1.0 / denom);
+    double x2 = log10_a + delta * (2.0 / denom);
+
+    double g0 = a;
+    double g1 = pow(10.0, x1);
+    double g2 = pow(10.0, x2);
+
+    double f0 = pf(pt, g0);
+    double f1 = pf(pt, g1);
+    double f2 = pf(pt, g2);
+
+    for (unsigned int i = 0; i < n_intervalli; i += 2) {
+
+        // enforce exact endpoint on the final point
+        if (i + 2 == n_intervalli) {
+            g2 = b;
+            f2 = pf(pt, g2);
+        }
+
+        double h0 = g1 - g0;
+        double h1 = g2 - g1;
+
+        if (h0 > 0.0 && h1 > 0.0) {
+            double r0 = h1 / h0;
+            double r1 = h0 / h1;
+            double H  = h0 + h1;
+
+            // Composite Simpson for unequal adjacent steps (quadratic through 3 points)
+            double term0 = f0 * (2.0 - r0);
+            double term1 = f1 * (H * H / (h0 * h1));
+            double term2 = f2 * (2.0 - r1);
+
+            integr += (H / 6.0) * (term0 + term1 + term2);
+        }
+
+        // advance by 2: (0,1,2) -> (2,3,4)
+        if (i + 2 >= n_intervalli) break;
+
+        // new indices: i0=i+2, i1=i+3, i2=i+4
+        g0 = g2; f0 = f2;
+
+        double x3 = log10_a + delta * ((double)(i + 3) / denom);
+        double x4 = log10_a + delta * ((double)(i + 4) / denom);
+
+        g1 = pow(10.0, x3);
+        g2 = pow(10.0, x4);
+
+        f1 = pf(pt, g1);
+        f2 = pf(pt, g2);
+    }
+
+    return integr;
+}
+
+//============================================================================
 // INTEGRAZIONE TRAPEZOIDALE CON INT CHIUSO E GRIGLIA  EQUI_LOG
 //============================================================================
 
 double integrale_trap_log_struct(double (*pf) (struct blob *, double x), struct blob * pt, double a, double b, unsigned int n_intervalli) {
-    double integr, k, griglia, ordinata, ordinata1;
+    double integr, k, griglia, ordinata, ordinata1, log10_a;
     double delta;
     integr = 0.0;
     griglia = 0.0;
@@ -423,12 +514,13 @@ double integrale_trap_log_struct(double (*pf) (struct blob *, double x), struct 
     //sulla griglia logaritmica
 
     ordinata = a;
-    ordinata1 = pow(10, log10(a)+(delta * ((1) / ((double) n_intervalli - 1))));
+    log10_a=log10(a);
+    ordinata1 = pow(10,log10_a+(delta * ((1) / ((double) n_intervalli - 1))));
     griglia = ordinata1 - ordinata;
     //printf("n_int=%e oridinata=%e ordinata1=%e,griglia=%e \n",n_intervalli,ordinata,ordinata1,griglia);
     integr += griglia * (pf(pt, ordinata) + pf(pt, ordinata1));
 
-    ordinata = pow(10, log10(a)+(delta * (((double) n_intervalli - 2) / ((double) n_intervalli - 1))));
+    ordinata = pow(10, log10_a+(delta * (((double) n_intervalli - 2) / ((double) n_intervalli - 1))));
     ordinata1 = b;
     griglia = ordinata1 - ordinata;
     //printf("n_int=%e oridinata=%e ordinata1=%e griglia=%e \n",n_intervalli,ordinata,ordinata1,griglia);
@@ -436,8 +528,8 @@ double integrale_trap_log_struct(double (*pf) (struct blob *, double x), struct 
 
 
     for (k = 1; k < n_intervalli - 2; k = k + 1.0) {
-        ordinata = pow(10, log10(a)+(delta * (k / ((double) n_intervalli - 1))));
-        ordinata1 = pow(10, log10(a)+(delta * ((k + 1) / ((double) n_intervalli - 1))));
+        ordinata = pow(10, log10_a+(delta * (k / ((double) n_intervalli - 1))));
+        ordinata1 = pow(10, log10_a+(delta * ((k + 1) / ((double) n_intervalli - 1))));
         griglia = ordinata1 - ordinata;
         integr += griglia * (pf(pt, ordinata) + pf(pt, ordinata1));
         //if(k==0 || k==n_intervalli-1) printf("n_int=%e k=%e,oridinata=%e,griglia=%e ba=%e\n",n_intervalli,k,ordinata,griglia,ba);
@@ -523,13 +615,13 @@ double theta_heaviside(double x){
 
 double V_region(struct blob *pt ) {
     double V;
-    if (strcmp(pt->GEOMETRY, "spherical") == 0) {
-	    V = four_by_three_pi * pt->R * pt->R* pt->R;
+    if (strcmp(pt->core.GEOMETRY, "spherical") == 0) {
+	    V = four_by_three_pi * pt->core.R * pt->core.R* pt->core.R;
     }
 
-	else if (strcmp(pt->GEOMETRY, "spherical_shell") == 0) {
-        V = four_by_three_pi * pt->R_sh * pt->R_sh* pt->R_sh;
-		V = four_by_three_pi * pt->R_ext_sh * pt->R_ext_sh * pt->R_ext_sh -V;
+	else if (strcmp(pt->core.GEOMETRY, "spherical_shell") == 0) {
+        V = four_by_three_pi * pt->core.R_sh * pt->core.R_sh* pt->core.R_sh;
+		V = four_by_three_pi * pt->core.R_ext_sh * pt->core.R_ext_sh * pt->core.R_ext_sh -V;
 	}
 
 	else {
@@ -542,12 +634,12 @@ double V_region(struct blob *pt ) {
 
 double S_sphere(struct blob *pt ) {
     double S;
-    if (strcmp(pt->GEOMETRY, "spherical") == 0) {
-	    S = four_pi * pt->R * pt->R;
+    if (strcmp(pt->core.GEOMETRY, "spherical") == 0) {
+	    S = four_pi * pt->core.R * pt->core.R;
     }
 
-	else if (strcmp(pt->GEOMETRY, "spherical_shell") == 0) {
-        S = four_pi * pt->R_ext_sh * pt->R_ext_sh;
+	else if (strcmp(pt->core.GEOMETRY, "spherical_shell") == 0) {
+        S = four_pi * pt->core.R_ext_sh * pt->core.R_ext_sh;
 	}
 
 	else {
@@ -586,7 +678,7 @@ double get_beaming(double BulkFactor, double theta) {
 double derivata(double (*pf) (struct blob *, double x), struct blob *pt_d, double x) {
     double h;
     h = x * 1e-7;
-    if ((x - h) < pt_d->gmin) return (pf(pt_d, x + h) - pf(pt_d, x)) / (h);
+    if ((x - h) < pt_d->emitters.gmin) return (pf(pt_d, x + h) - pf(pt_d, x)) / (h);
     return (pf(pt_d, x + h) - pf(pt_d, x - h)) / (2 * h);
 }
 //=========================================================================================

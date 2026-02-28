@@ -52,9 +52,9 @@ void time_evolve_emitters(struct blob *pt_spec,
         
     
     if (pt_ev->do_Compton_cooling > 0 && T>0) {
-        for (TMP = 0; TMP < pt_spec->gamma_grid_size; TMP++) {
+        for (TMP = 0; TMP < pt_spec->emitters.gamma_grid_size; TMP++) {
             //iterpolate Ne from N
-            pt_spec->Ne[TMP]=N_distr_interp(E_SIZE,pt_spec->griglia_gamma_Ne_log[TMP],pt_ev->gamma,N);
+            pt_spec->emitters.Ne[TMP]=N_distr_interp(E_SIZE,pt_spec->emitters.griglia_gamma_Ne_log[TMP],pt_ev->gamma,N);
         }            
         spettro_sincrotrone(1, pt_spec);
         spectra_External_Fields(1,pt_spec,1);

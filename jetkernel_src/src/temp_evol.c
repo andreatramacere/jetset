@@ -6,9 +6,9 @@
 #include <math.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
 //#include "libmia.h"
 #include "Blazar_SED.h"
-
 /**
  * \file temp_evol.c
  * \author Andrea Tramacere
@@ -50,9 +50,9 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
     double delta_log;
     double log_a, log_b;
 
-    pt_spec_rad->B=pt_ev->B_rad;
-    pt_spec_rad->R=pt_ev->R_rad_start;
-    pt_spec_acc->B=pt_ev->B_acc;
+    pt_spec_rad->core.B=pt_ev->B_rad;
+    pt_spec_rad->core.R=pt_ev->R_rad_start;
+    pt_spec_acc->core.B=pt_ev->B_acc;
     pt_ev->t_unit_rad = (pt_ev->R_rad_start / vluce_cm);
     pt_ev->t_unit_acc = (pt_ev->Delta_R_acc / vluce_cm);
 
@@ -66,8 +66,8 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
     pt_ev->Acc_Coeff = 1.0 / (pt_ev->t_A0);
     
 
-    pt_ev->Gamma_Max_Turb_L_max = Larmor_radius_to_gamma(pt_ev->Lambda_max_Turb, pt_spec_acc->B, pt_spec_acc->sin_psi);
-    pt_ev->Gamma_Max_Turb_L_coher = Larmor_radius_to_gamma(pt_ev->Lambda_max_Turb * pt_ev->Lambda_choer_Turb_factor, pt_spec_acc->B, pt_spec_acc->sin_psi);
+    pt_ev->Gamma_Max_Turb_L_max = Larmor_radius_to_gamma(pt_ev->Lambda_max_Turb, pt_spec_acc->core.B, pt_spec_acc->Sync.sin_psi);
+    pt_ev->Gamma_Max_Turb_L_coher = Larmor_radius_to_gamma(pt_ev->Lambda_max_Turb * pt_ev->Lambda_choer_Turb_factor, pt_spec_acc->core.B, pt_spec_acc->Sync.sin_psi);
     pt_ev->Diff_coeff_CD = pt_ev->Diff_Coeff * pow((pt_ev->Gamma_Max_Turb_L_coher), pt_ev->Diff_Index);
     pt_ev->Diff_coeff_CA = pt_ev->Diff_Coeff * 2 * pow((pt_ev->Gamma_Max_Turb_L_coher), pt_ev->Diff_Index);
 
@@ -133,7 +133,7 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
     }
     else if (delta_t_eq_t_A_old <= 0 && pt_ev->gamma_eq_t_A < 0)
     {
-        pt_ev->gamma_eq_t_A = pt_spec_acc->griglia_gamma_Ne_log[0];
+        pt_ev->gamma_eq_t_A = pt_spec_acc->emitters.griglia_gamma_Ne_log[0];
     }
     
     if (delta_t_eq_t_D_old >= 0 && pt_ev->gamma_eq_t_D < 0)
@@ -142,7 +142,7 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
     }
     else if (delta_t_eq_t_D_old <= 0 && pt_ev->gamma_eq_t_D < 0)
     {
-        pt_ev->gamma_eq_t_D = pt_spec_acc->griglia_gamma_Ne_log[0];
+        pt_ev->gamma_eq_t_D = pt_spec_acc->emitters.griglia_gamma_Ne_log[0];
     }
 
     if (pt_ev->gamma_eq_t_A > pt_ev->Gamma_Max_Turb_L_max)
@@ -160,7 +160,7 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
     }
     else if (delta_t_eq_t_DA_old <= 0 && pt_ev->gamma_eq_t_DA < 0)
     {
-        pt_ev->gamma_eq_t_DA = pt_spec_acc->griglia_gamma_Ne_log[0];
+        pt_ev->gamma_eq_t_DA = pt_spec_acc->emitters.griglia_gamma_Ne_log[0];
     }
     if (pt_ev->gamma_eq_t_DA > pt_ev->Gamma_Max_Turb_L_max)
     {
@@ -189,11 +189,11 @@ void Init_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, str
 void expansion_profile_pre_run(struct blob *pt_spec, struct temp_ev *pt_ev){
     unsigned int i;
     double deltat,t;
-    //t_spec->B=pt_ev->B_rad;
-    //pt_spec->R=pt_ev->R_rad_start;
+    //t_spec->core.B=pt_ev->B_rad;
+    //pt_spec->core.R=pt_ev->R_rad_start;
    
     deltat = pt_ev->duration / (double)static_ev_arr_grid_size;
-    pt_spec->beta_Gamma=eval_beta_gamma(pt_spec->BulkFactor);
+    pt_spec->core.beta_Gamma=eval_beta_gamma(pt_spec->core.BulkFactor);
     t=0;
     //pt_ev->theta_exp_rad=pt_ev->R_jet_exp*Deg_to_Rad;
     //pt_ev->theta_exp_AR=tan(pt_ev->theta_exp_rad);
@@ -218,10 +218,11 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     // if luminosity_distance is negative is evaluated internally
     // otherwise the passed value is used
 
-    unsigned int i, E_SIZE, E_N_SIZE, Gamma, T, TMP,NUM_OUT;
+    unsigned int i, E_SIZE, E_N_SIZE, Gamma, T, TMP, NUM_OUT, CURRENT_T_SIZE, STEP_T_SIZE;
+    double STEP_T_SIZE_LOG;
+    bool OUTPUT_SAMPLES = false;
     //double Q_scalig_factor;
 
-    double STEP_FILE, COUNT_FILE, OUT_FILE;
     double *x, *N_swap, *N_acc, *N_rad, *N_escaped;
     double  t;
     //double g, t_D, t_DA, t_A, t_Sync_cool;
@@ -240,7 +241,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     //--------------ALLOCATION OF DYNAMICAL ARRAYS-----------------------
     //--------------SIZE DEFINITION------------------
     
-    //---Useful size definition for 0..N-1----------
+    //---Useful size definition for 0..emitters.N-1----------
     E_SIZE = pt_ev->gamma_grid_size;
     E_N_SIZE = pt_ev->gamma_grid_size - 1;
     //------ALLOCATION-------------------------------
@@ -301,13 +302,22 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     
     //---------------------------------------------------------
     if (pt_ev->LOG_SET >=1){
-        STEP_FILE=log10((double) pt_ev->T_SIZE)/(double) pt_ev->NUM_SET;
-        STEP_FILE =  pow(10,STEP_FILE);
+        STEP_T_SIZE_LOG=log10((double) pt_ev->T_SIZE)/(double) pt_ev->NUM_SET;
+        STEP_T_SIZE_LOG =  pow(10,STEP_T_SIZE_LOG);
+        if (STEP_T_SIZE_LOG<0){
+            STEP_T_SIZE_LOG=0;
+        }
     } else{
-        STEP_FILE = (double)pt_ev->T_SIZE / (double)pt_ev->NUM_SET;
+        STEP_T_SIZE = (double)pt_ev->T_SIZE / (double)pt_ev->NUM_SET;
+        CURRENT_T_SIZE = 0;
+        if (STEP_T_SIZE<1){
+            STEP_T_SIZE=1;
+        }
     }
-    COUNT_FILE = STEP_FILE;
-    OUT_FILE=-1.0;
+   
+
+    
+    //OUT_FILE=-1.0;
     //------------------------------------------
 
 
@@ -337,7 +347,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
 
     
     t = 0;
-    pt_ev->t=t;
+    //pt_ev->t=t;
     NUM_OUT=0;
     delta_E_acc=0;
     E_acc_pre=0;
@@ -345,9 +355,9 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     E_acc=0;
     Vol_acc=pi*(pt_ev->R_rad_start*pt_ev->R_rad_start*pt_ev->Delta_R_acc);
     Vol_rad=four_by_three_pi*(pt_ev->R_rad_start*pt_ev->R_rad_start*pt_ev->R_rad_start);
-    pt_spec_rad->B=pt_ev->B_rad;
-    pt_spec_rad->R=pt_ev->R_rad_start;
-    pt_spec_acc->B=pt_ev->B_acc;
+    pt_spec_rad->core.B=pt_ev->B_rad;
+    pt_spec_rad->core.R=pt_ev->R_rad_start;
+    pt_spec_acc->core.B=pt_ev->B_acc;
     InitRadiative(pt_spec_acc,1);
     InitRadiative(pt_spec_rad,1);
     pt_ev->R_H_jet_t=pt_ev->R_H_rad_start;
@@ -360,7 +370,7 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
     if (only_injection<1){
         for (TMP = 0; TMP < E_SIZE; TMP++) {
                //iterpolate N from Ne
-               N_rad[TMP] =N_distr_interp(pt_spec_rad->gamma_grid_size,pt_ev->gamma[TMP],pt_spec_rad->griglia_gamma_Ne_log,pt_spec_rad->Ne);
+               N_rad[TMP] =N_distr_interp(pt_spec_rad->emitters.gamma_grid_size,pt_ev->gamma[TMP],pt_spec_rad->emitters.griglia_gamma_Ne_log,pt_spec_rad->emitters.Ne);
                //*Vol_rad;
        }
     }
@@ -398,13 +408,13 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
                 E_acc+=delta_E_acc;
                 //--- Inj from ACC To Radiative
                 for (TMP = 0; TMP < E_SIZE; TMP++) { 
-                    N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]))*Vol_acc/pt_spec_rad->Vol_region;
+                    N_escaped[TMP] = N_acc[TMP]*(1-exp(-pt_ev->deltat/pt_ev->T_esc_acc[TMP]))*Vol_acc/pt_spec_rad->core.Vol_region;
                 }
             //Only inject into radiative
             }else{
                 for (TMP = 0; TMP < E_SIZE; TMP++) { 
-                    //NOTE: fix pt_spec_acc->Vol_region to match exactly pt_spec_rad->Vol_region a T0
-                    N_escaped[TMP] = pt_ev->deltat * pt_ev->Q_inj[TMP] * pt_ev->T_inj_profile[T]*pt_spec_acc->Vol_region/pt_spec_rad->Vol_region;
+                    //NOTE: fix pt_spec_acc->core.Vol_region to match exactly pt_spec_rad->core.Vol_region a T0
+                    N_escaped[TMP] = pt_ev->deltat * pt_ev->Q_inj[TMP] * pt_ev->T_inj_profile[T]*pt_spec_acc->core.Vol_region/pt_spec_rad->core.Vol_region;
                     N_acc[TMP]=N_escaped[TMP];
                 }
             }
@@ -448,9 +458,21 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
         }
         time_evolve_emitters(pt_spec_rad,pt_ev,2,t,T,E_SIZE,E_N_SIZE,E_acc,pt_ev->T_esc_rad,N_escaped,N_rad,N_swap,A,B,C,R,x,xm_p,xm_m,dxm_p,dxm_m,dxm);
 
-        //------------- OUT FILE and SED Computations ----------------
-        OUT_FILE=(double)T-COUNT_FILE;
-        if ((OUT_FILE >= 0) || (T==0) || (T==pt_ev->T_SIZE-1)) {
+        //------------- OUT SAMPLES and SED Computations ----------------
+        if (pt_ev->LOG_SET >=1){
+            if ( T*pt_ev->deltat >= pow(STEP_T_SIZE_LOG,NUM_OUT+1) || (T==0) || (T==pt_ev->T_SIZE-1)){
+                OUTPUT_SAMPLES=true;
+            }else{
+                OUTPUT_SAMPLES=false;
+            }
+        }else{
+            if ((CURRENT_T_SIZE != 0 && (T % CURRENT_T_SIZE == 0)) || (T==0) || (T==pt_ev->T_SIZE-1)){
+                OUTPUT_SAMPLES=true;
+            }else{
+                OUTPUT_SAMPLES=false;
+            }
+        }
+        if (OUTPUT_SAMPLES == true) {
         //if ((OUT_FILE >= 0) || (T==pt_ev->T_SIZE-1)) {
             
             //printf("-> NUM_OUT=%d T_SIZE=%d T=%d\n",NUM_OUT,pt_ev->T_SIZE,T);
@@ -473,10 +495,8 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
                 //printf("NUM_SET=%d NUM_OUT=%d t=%e T=%d T_SIZE=%d\n",pt_ev->NUM_SET,NUM_OUT,t,T,pt_ev->T_SIZE);
             }
             //if (T>0){
-            if (pt_ev->LOG_SET >=1){
-                COUNT_FILE*=STEP_FILE;
-            } else {
-                COUNT_FILE += STEP_FILE;
+            if (pt_ev->LOG_SET <1){
+                CURRENT_T_SIZE += STEP_T_SIZE;
             }
             //}
             NUM_OUT++;
@@ -516,25 +536,25 @@ void Run_temp_evolution(struct blob *pt_spec_rad, struct blob *pt_spec_acc, stru
 }
 
 double time_blob_to_obs(double time_blob, struct blob *pt_spec){
-    return time_blob*(1+pt_spec->z_cosm)*pt_spec->BulkFactor;
+    return time_blob*(1+pt_spec->core.z_cosm)*pt_spec->core.BulkFactor;
 }
 
 double time_obs_to_blob(double time_obs, struct blob *pt_spec){
-    return time_obs/((1+pt_spec->z_cosm)*pt_spec->BulkFactor);
+    return time_obs/((1+pt_spec->core.z_cosm)*pt_spec->core.BulkFactor);
 }
 
 //double time_blob_to_RH(struct temp_ev *pt, struct blob *pt_spec,double R_H_jet_t){
- //   //t_obs=(pt->R_H_jet_t-pt->R_H_jet)/pt_spec->beta_Gamma*vluce_cm
+ //   //t_obs=(pt->R_H_jet_t-pt->R_H_jet)/pt_spec->core.beta_Gamma*vluce_cm
 //    double t_obs;
-//    t_obs=(R_H_jet_t-pt->R_H_jet_exp)/(pt_spec->beta_Gamma*vluce_cm);
+//    t_obs=(R_H_jet_t-pt->R_H_jet_exp)/(pt_spec->core.beta_Gamma*vluce_cm);
 //    return time_obs_to_blob(t_obs,pt_spec);
-//    //return (pt->R_H_jet_t-pt->R_H_jet)/(pt_spec->beta_Gamma*vluce_cm*(1+pt_spec->z_cosm)*pt_spec->BulkFactor);
+//    //return (pt->R_H_jet_t-pt->R_H_jet)/(pt_spec->core.beta_Gamma*vluce_cm*(1+pt_spec->core.z_cosm)*pt_spec->core.BulkFactor);
 //}
 
 double eval_R_H_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev, double time_blob){
     //position R_H measured in obs frame at time_blob
-    //printf("t=%e, t_obs=%e, R_H_rad_start=%e, time_blob_to_obs=%e, betac=%e\n",time_blob,time_blob_to_obs(time_blob, pt_spec), pt_ev->R_H_rad_start,time_blob_to_obs(time_blob, pt_spec),pt_spec->beta_Gamma);
-    return pt_ev->R_H_rad_start + (pt_spec->beta_Gamma*vluce_cm*time_blob_to_obs(time_blob, pt_spec));
+    //printf("t=%e, t_obs=%e, R_H_rad_start=%e, time_blob_to_obs=%e, betac=%e\n",time_blob,time_blob_to_obs(time_blob, pt_spec), pt_ev->R_H_rad_start,time_blob_to_obs(time_blob, pt_spec),pt_spec->core.beta_Gamma);
+    return pt_ev->R_H_rad_start + (pt_spec->core.beta_Gamma*vluce_cm*time_blob_to_obs(time_blob, pt_spec));
 }
 
 
@@ -563,15 +583,15 @@ double eval_B_jet_t(struct blob *pt_spec, struct temp_ev *pt_ev,double R_jet_t, 
 double update_jet_expansion(struct blob *pt_spec, struct temp_ev *pt_ev, double t){
     double R_jet_old,exp_factor;
     R_jet_old=pt_ev->R_jet_t;
-    pt_spec->beta_Gamma=eval_beta_gamma(pt_spec->BulkFactor);
+    pt_spec->core.beta_Gamma=eval_beta_gamma(pt_spec->core.BulkFactor);
 
     pt_ev->R_H_jet_t=eval_R_H_jet_t( pt_spec,  pt_ev, t);
     pt_ev->R_jet_t=eval_R_jet_t(pt_spec,  pt_ev,t);
     pt_ev->B_t=eval_B_jet_t(pt_spec,  pt_ev,pt_ev->R_jet_t,t);
     
-    pt_spec->B=pt_ev->B_t;
-    pt_spec->R=pt_ev->R_jet_t;
-    pt_spec->R_H=pt_ev->R_H_jet_t;
+    pt_spec->core.B=pt_ev->B_t;
+    pt_spec->core.R=pt_ev->R_jet_t;
+    pt_spec->core.R_H=pt_ev->R_H_jet_t;
     InitRadiative(pt_spec,pt_ev->do_Compton_cooling);
     //if (pt_ev->R_H_jet_t>pt_ev->R_H_jet_exp){ 
     //    T_adiab=3*Adiabatic_Cooling_time(pt_ev,pt_spec,pt_ev->R_jet_t);
@@ -609,53 +629,70 @@ void alloc_temp_ev_array(double ** pt,int size){
     }
 
 
+
+
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1){
-    return N_distr_interp(pt->gamma_grid_size,gamma_1,pt->griglia_gamma_Ne_log,pt->Q_inj_e_second)*exp(pt->gamma_cooling_eq*(1/gamma_1-(1.0/pt->Gamma)));
+    double n,a,c;
+    n=N_distr_interp(pt->emitters.gamma_grid_size,gamma_1,pt->emitters.griglia_gamma_Ne_log,pt->emitters.Q_inj_e_second);
+    c=(gamma_1-pt->core.gamma_e_IC)/(gamma_1*pt->core.gamma_e_IC)*(pt->emitters.gamma_cooling_eq);
+    return n*exp(-c);
 }
 
 
-double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc ){
+double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc, unsigned int id_gamma ){
 
     double (*pf_K1) (struct blob * pt, double x);
-    double a,b,res,delta;
+    double a,b,res;
+    double delta,t_eff,t_cool;
     unsigned int integ_size;
     pf_K1 = &IntegrandCooolingEquilibrium;
-    pt->Gamma=gamma;
+    pt->core.gamma_e_IC=gamma;
     a=gamma;
-    b=pt->griglia_gamma_Ne_log[pt->gamma_grid_size-1];
-    delta=pt->griglia_gamma_Ne_log[pt->gamma_grid_size-1]-gamma;
-    integ_size=delta*1000/(pt->griglia_gamma_Ne_log[pt->gamma_grid_size-1]-pt->griglia_gamma_Ne_log[0]);
-    if (integ_size<3){
-        integ_size=3;
+    b=pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1];
+    //delta=pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-gamma;
+    //integ_size=delta*10*pt->emitters.gamma_grid_size/(pt->emitters.griglia_gamma_Ne_log[pt->emitters.gamma_grid_size-1]-pt->emitters.griglia_gamma_Ne_log[0]);
+    //if (integ_size<3){
+    //    integ_size=3;
+    //}
+    //if (integ_size>1000){
+    //    integ_size=1000;
+    //}
+    integ_size=1000;
+    // choose between escape dominate regime and full solution
+    // to avoid divergence in the integral 
+    if (gamma<pt->emitters.gamma_cooling_eq/100){
+        t_cool=pt->emitters.gamma_cooling_eq*T_esc/gamma;
+        t_eff=(t_cool*T_esc/(T_esc+t_cool));
+        res=pt->emitters.Q_inj_e_second[id_gamma]*t_eff;
+    }else{
+        res=integrale_simp_log_struct(pf_K1,pt,a,b,integ_size);
+        res=res*T_esc*pt->emitters.gamma_cooling_eq/(gamma*gamma);
     }
-
-    res=integrale_trap_log_struct(pf_K1,pt,a,b,integ_size);
-    return res*pt->gamma_cooling_eq*T_esc/(gamma*gamma);
+    
+    return res;
 }
 
 
 void CoolingEquilibrium(struct blob * pt, double T_esc){
-    //using Eq. 2.26 in Inoue&Takahara
-    //http://adsabs.harvard.edu/doi/10.1086/177270
-    struct jet_energetic energetic;
+    //rearranged form of Eq. 2.26 in Inoue&Takahara
+    //http://adsabs.harvard.edu/doi/10.1086/17727
     double  a;
-    unsigned int ID;
+    unsigned int id_gamma;
     double Uph;
-    Uph=0;
-    //Uph += Power_Sync_Electron(pt);
-    Uph += I_nu_to_Uph(pt->nu_BLR, pt->I_nu_BLR, pt->NU_INT_MAX_BLR);
-    Uph += I_nu_to_Uph(pt->nu_DT, pt->I_nu_DT, pt->NU_INT_MAX_DT);
-    Uph += I_nu_to_Uph(pt->nu_CMB, pt->I_nu_CMB, pt->NU_INT_MAX_CMB);
-    Uph += I_nu_to_Uph(pt->nu_Disk, pt->I_nu_Disk, pt->NU_INT_MAX_Disk);
-    Uph += I_nu_to_Uph(pt->nu_Star, pt->I_nu_Star, pt->NU_INT_MAX_Star);
+    Uph=0.;
+    Uph += I_nu_to_Uph(pt->BLR.spec.nu, pt->BLR.spec.I_nu, pt->BLR.spec.NU_INT_MAX);
+    Uph += I_nu_to_Uph(pt->DT.spec.nu, pt->DT.spec.I_nu, pt->DT.spec.NU_INT_MAX);
+    Uph += I_nu_to_Uph(pt->CMB.spec.nu, pt->CMB.spec.I_nu, pt->CMB.spec.NU_INT_MAX);
+    Uph += I_nu_to_Uph(pt->Disk.spec.nu, pt->Disk.spec.I_nu, pt->Disk.spec.NU_INT_MAX);
+    Uph += I_nu_to_Uph(pt->Star.spec.nu, pt->Star.spec.I_nu, pt->Star.spec.NU_INT_MAX);
 
-    a=3.0*MEC2/(4.0*vluce_cm*(pt->UB + Uph)*SIGTH);
-    pt->gamma_cooling_eq=(a/T_esc);
-    
-    for (ID = 0; ID < pt->gamma_grid_size ; ID++){
+    a=(4.0/3.0)*((SIGTH*vluce_cm)/(MEC2))*(pt->Sync.UB + Uph);
+    pt->emitters.gamma_cooling_eq=1/(a*T_esc);
+    for (id_gamma = 0; id_gamma < pt->emitters.gamma_grid_size ; id_gamma++){
         
-        pt->Ne[ID]=IntegrateCooolingEquilibrium(pt,
-                                                pt->griglia_gamma_Ne_log[ID], 
-                                                T_esc);
+        pt->emitters.Ne[id_gamma]=IntegrateCooolingEquilibrium(pt,
+                                                pt->emitters.griglia_gamma_Ne_log[id_gamma], 
+                                                T_esc,
+                                                id_gamma);
     }
 }

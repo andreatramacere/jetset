@@ -30,109 +30,109 @@ void spettro_compton(int Num_file, struct blob *pt){
     //============================================================
     //         inizio  loop sulle freq per spettro  compton
     //============================================================
-    pt->TOT=0;
-    pt->EC=0;
-    pt->ord_comp=1;
-    pt->SSC=pt->do_SSC;
+    pt->core.TOT=0;
+    pt->core.EC=0;
+    pt->core.ord_comp=1;
+    pt->core.SSC=pt->core.do_SSC;
     
 
     // massima e minima freq compton
-    gmax=Find_gmax(pt,pt->Ne,pt->griglia_gamma_Ne_log);
+    gmax=Find_gmax(pt,pt->emitters.Ne,pt->emitters.griglia_gamma_Ne_log);
     numax_KN=100000*gmax*MEC2/HPLANCK;
-    numax_TH=100000*(4.0/3.0)*pow(gmax, 2)*pt->nu_stop_Sync;
-    if (HPLANCK*pt->nu_stop_Sync*gmax/MEC2>0.1){
-        pt->nu_stop_SSC=numax_KN;
+    numax_TH=100000*(4.0/3.0)*pow(gmax, 2)*pt->Sync.spec.nu_max;
+    if (HPLANCK*pt->Sync.spec.nu_max*gmax/MEC2>0.1){
+        pt->SSC.spec.nu_max=numax_KN;
     }
     else{
-        pt->nu_stop_SSC=numax_TH;
+        pt->SSC.spec.nu_max=numax_TH;
     }
    
 
-    if (HPLANCK *pt->nu_peak_Sync_blob * pt->Gamma_p3 / MEC2 > 0.1) {
-		nu_peak = pt->Gamma_p3 * pt->nu_peak_Sync_blob;
+    if (HPLANCK *pt->Sync.spec.nu_peak_blob * pt->emitters.Gamma_p3 / MEC2 > 0.1) {
+		nu_peak = pt->emitters.Gamma_p3 * pt->Sync.spec.nu_peak_blob;
 	} else {
-		nu_peak = (4.0 / 3.0) * pow(pt->Gamma_p3, 2) * pt->nu_peak_Sync_blob;
+		nu_peak = (4.0 / 3.0) * pow(pt->emitters.Gamma_p3, 2) * pt->Sync.spec.nu_peak_blob;
 	}
 
-    nu_min_TH_1=pt->gmax*pt->gmax*pt->nu_start_Sync;
-    nu_min_TH_2=pt->gmin*pt->gmin*pt->nu_start_Sync;
-    pt->nu_start_SSC=min(nu_min_TH_1,nu_min_TH_2);
+    nu_min_TH_1=pt->emitters.gmax*pt->emitters.gmax*pt->Sync.spec.nu_min;
+    nu_min_TH_2=pt->emitters.gmin*pt->emitters.gmin*pt->Sync.spec.nu_min;
+    pt->SSC.spec.nu_min=min(nu_min_TH_1,nu_min_TH_2);
 
-    pt->nu_start_SSC_obs =nu_blob_to_nu_obs(pt->nu_start_SSC, pt->beam_obj, pt->z_cosm);
-    pt->nu_stop_SSC_obs = nu_blob_to_nu_obs(pt->nu_stop_SSC, pt->beam_obj, pt->z_cosm);
+    pt->SSC.spec.nu_min_obs =nu_blob_to_nu_obs(pt->SSC.spec.nu_min, pt->core.beam_obj, pt->core.z_cosm);
+    pt->SSC.spec.nu_max_obs = nu_blob_to_nu_obs(pt->SSC.spec.nu_max, pt->core.beam_obj, pt->core.z_cosm);
 
-    build_log_grid(pt->nu_start_SSC,  pt->nu_stop_SSC, pt->nu_IC_size, pt->nu_SSC);
-    build_log_grid(pt->nu_start_SSC_obs,  pt->nu_stop_SSC_obs, pt->nu_IC_size, pt->nu_SSC_obs);
+    build_log_grid(pt->SSC.spec.nu_min,  pt->SSC.spec.nu_max, pt->core.nu_IC_size, pt->SSC.spec.nu);
+    build_log_grid(pt->SSC.spec.nu_min_obs,  pt->SSC.spec.nu_max_obs, pt->core.nu_IC_size, pt->SSC.spec.nu_obs);
 
 
-	I_MAX = pt->nu_IC_size-1;
-	if (pt->verbose>0) {
+	I_MAX = pt->core.nu_IC_size-1;
+	if (pt->core.verbose>0) {
 		printf("**********************  SSC spectrum 1st Order   ****************************\n");
 		printf("gmax from Ne>0 = %e\n", gmax);
 		printf("nu_star_Sync_ssc=%e nu_stop_Sync_ssc=%e\n",
-				pt->nu_start_Sync,
-				pt->nu_stop_Sync_ssc);
+				pt->Sync.spec.nu_min,
+				pt->Sync.nu_stop_Sync_ssc);
 		printf("nu_stop_compton_TH=%e nu_stop_compton_KN=%e\n",
 				numax_TH,
 				numax_KN);
 		printf("nu_start_comp=%e nu_stop_compton=%e nu_peak(estim.)=%e\n",
-				pt->nu_start_SSC,
-				pt->nu_stop_SSC,
+				pt->SSC.spec.nu_min,
+				pt->SSC.spec.nu_max,
 				nu_peak);
 		printf("SSC=%d EC=%d TOT=%d\n",
-				pt->SSC, pt->EC,
-				pt->TOT);
+				pt->core.SSC, pt->core.EC,
+				pt->core.TOT);
 		printf("Number of freq to eval=%d\n",I_MAX);
 	}
 
 	stop=0;
     eval_j_ptr = &eval_j_SSC;
-    threaded_j_evaluation(pt, eval_j_ptr, pt->j_comp,pt->nu_SSC,pt->nu_start_SSC, pt->nu_stop_SSC,I_MAX,pt->N_THREADS);
+    threaded_j_evaluation(pt, eval_j_ptr, pt->SSC.spec.j_nu,pt->SSC.spec.nu,pt->SSC.spec.nu_min, pt->SSC.spec.nu_max,I_MAX,pt->core.N_THREADS);
     for (NU_INT = 0; NU_INT <= I_MAX; NU_INT++) {
         
-        //pt->nu_1=pt->nu_SSC[NU_INT];
-        if(pt->verbose>1){
-            printf("#-> nu_em=%e  nu_obs=%e  i=%d\n", pt->nu_SSC[NU_INT], pt->nu_SSC_obs[NU_INT], NU_INT);
+        //pt->core.nu_1=pt->SSC.spec.nu[NU_INT];
+        if(pt->core.verbose>1){
+            printf("#-> nu_em=%e  nu_obs=%e  i=%d\n", pt->SSC.spec.nu[NU_INT], pt->SSC.spec.nu_obs[NU_INT], NU_INT);
         }
-        if((pt->nu_SSC[NU_INT]>=pt->nu_start_SSC) &&(pt->nu_SSC[NU_INT]<=pt->nu_stop_SSC)){
+        if((pt->SSC.spec.nu[NU_INT]>=pt->SSC.spec.nu_min) &&(pt->SSC.spec.nu[NU_INT]<=pt->SSC.spec.nu_max)){
 			if (!stop) {
-				if (pt->verbose > 1) {
+				if (pt->core.verbose > 1) {
 					printf("#-> q_comp[%d]=%e j[%d]=%e nu_1=%e \n", NU_INT,
-							pt->q_comp[NU_INT], NU_INT, pt->j_comp[NU_INT],
-							pt->nu_SSC[NU_INT]);
+							pt->SSC.q_comp[NU_INT], NU_INT, pt->SSC.spec.j_nu[NU_INT],
+							pt->SSC.spec.nu[NU_INT]);
 				}
-				//nu_src = nu_blob_to_nu_src(pt->nu_SSC[NU_INT], pt->beam_obj,
-				//		pt->z_cosm);
-				L_nu_SSC = j_nu_to_L_nu_src(pt->j_comp[NU_INT], pt->Vol_region,
-						pt->beam_obj);
+				//nu_src = nu_blob_to_nu_src(pt->SSC.spec.nu[NU_INT], pt->core.beam_obj,
+				//		pt->core.z_cosm);
+				L_nu_SSC = j_nu_to_L_nu_src(pt->SSC.spec.j_nu[NU_INT], pt->core.Vol_region,
+						pt->core.beam_obj);
 				//nuL_nu_SSC = L_nu_SSC * nu_src;
-				F_nu_SSC_obs = L_nu_src_to_F_nu(L_nu_SSC, pt->beam_obj,
-						pt->z_cosm, pt->dist);
-				pt->nuF_nu_SSC_obs[NU_INT] = F_nu_SSC_obs
-						* pt->nu_SSC_obs[NU_INT];
+				F_nu_SSC_obs = L_nu_src_to_F_nu(L_nu_SSC, pt->core.beam_obj,
+						pt->core.z_cosm, pt->core.dist);
+				pt->SSC.spec.nuFnu_obs[NU_INT] = F_nu_SSC_obs
+						* pt->SSC.spec.nu_obs[NU_INT];
 
-				if (pt->verbose > 1) {
-					printf("nu_stop_comp_SSC=%e NU_INT=%d\n ", pt->nu_stop_SSC,
+				if (pt->core.verbose > 1) {
+					printf("nu_stop_comp_SSC=%e NU_INT=%d\n ", pt->SSC.spec.nu_max,
 							NU_INT);
 				}
 
 			
-                if (pt->j_comp[NU_INT] < pt->emiss_lim) {
-                    pt->j_comp[NU_INT] = pt->emiss_lim;
-                    pt->nuF_nu_SSC_obs[NU_INT] = pt->emiss_lim;
+                if (pt->SSC.spec.j_nu[NU_INT] < pt->core.emiss_lim) {
+                    pt->SSC.spec.j_nu[NU_INT] = pt->core.emiss_lim;
+                    pt->SSC.spec.nuFnu_obs[NU_INT] = pt->core.emiss_lim;
                 }
 				
-				pt->NU_INT_STOP_COMPTON_SSC = NU_INT;
+				pt->SSC.NU_INT_STOP_COMPTON_SSC = NU_INT;
 				
 			}
             else{
-				pt->j_comp[NU_INT]=pt->emiss_lim;
-				pt->q_comp[NU_INT]=pt->emiss_lim;
-				pt->nuF_nu_SSC_obs[NU_INT]=pt->emiss_lim;
+				pt->SSC.spec.j_nu[NU_INT]=pt->core.emiss_lim;
+				pt->SSC.q_comp[NU_INT]=pt->core.emiss_lim;
+				pt->SSC.spec.nuFnu_obs[NU_INT]=pt->core.emiss_lim;
 			 }
             
            
-            if(pt->verbose>1){
+            if(pt->core.verbose>1){
                 printf("#-> ********************************\n\n");
             }
             //==========================  END of Loop ove frequencies ====================================
@@ -140,35 +140,35 @@ void spettro_compton(int Num_file, struct blob *pt){
     }
     //Se ancora non ha trovato nu_stop
     //if (!stop){
-    //    pt->nu_stop_SSC = pt->nu_SSC[NU_INT-1];
-    //    pt->nu_stop_SSC_obs = pt->nu_SSC_obs[NU_INT-1];
-    //    pt->NU_INT_STOP_COMPTON_SSC = NU_INT-1;
-    //    if (pt->verbose > 1) {
-    //        printf("%e %d\n ", pt->nu_SSC[NU_INT-1], NU_INT-1);
+    //    pt->SSC.spec.nu_max = pt->SSC.spec.nu[NU_INT-1];
+    //    pt->SSC.spec.nu_max_obs = pt->SSC.spec.nu_obs[NU_INT-1];
+    //    pt->SSC.NU_INT_STOP_COMPTON_SSC = NU_INT-1;
+    //    if (pt->core.verbose > 1) {
+    //        printf("%e %d\n ", pt->SSC.spec.nu[NU_INT-1], NU_INT-1);
     //    }
     
     
     //===========================================
     //    trova nu peak e Flux peak
     //===========================================
-    FindEpSp(pt->nu_SSC, pt->nuF_nu_SSC_obs,   pt->NU_INT_STOP_COMPTON_SSC, pt,
-            &(pt->nu_peak_SSC_obs),
-            &(pt->nu_peak_SSC_src),
-            &(pt->nu_peak_SSC_blob),
-            &(pt->nuFnu_peak_SSC_obs),
-            &(pt->nuLnu_peak_SSC_src),
-            &(pt->nuLnu_peak_SSC_blob));
+    FindEpSp(pt->SSC.spec.nu, pt->SSC.spec.nuFnu_obs,   pt->SSC.NU_INT_STOP_COMPTON_SSC, pt,
+            &(pt->SSC.spec.nu_peak_obs),
+            &(pt->SSC.spec.nu_peak_src),
+            &(pt->SSC.spec.nu_peak_blob),
+            &(pt->SSC.spec.nuFnu_peak_obs),
+            &(pt->SSC.spec.nuLnu_peak_src),
+            &(pt->SSC.spec.nuLnu_peak_blob));
     
-    if (pt->verbose>0) {
-        printf("nu_stop=%e NU_INT_STOP_COMPTON_SSC=%d\n", pt->nu_stop_SSC, pt->NU_INT_STOP_COMPTON_SSC);
+    if (pt->core.verbose>0) {
+        printf("nu_stop=%e NU_INT_STOP_COMPTON_SSC=%d\n", pt->SSC.spec.nu_max, pt->SSC.NU_INT_STOP_COMPTON_SSC);
 
-        printf("nu_SSC_blob peak=%e\n", pt->nu_peak_SSC_blob);
-        printf("nu_SSC_src   peak=%e\n", pt->nu_peak_SSC_src);
-        printf("nu_SSC_obs  peak=%e\n", pt->nu_peak_SSC_obs);
+        printf("nu_SSC_blob peak=%e\n", pt->SSC.spec.nu_peak_blob);
+        printf("nu_SSC_src   peak=%e\n", pt->SSC.spec.nu_peak_src);
+        printf("nu_SSC_obs  peak=%e\n", pt->SSC.spec.nu_peak_obs);
         
-        printf("nuFnu SSC  blob    peak=%e\n", pt->nuFnu_peak_SSC_obs);
-        printf("nuLnu SSC  src      peak=%e\n", pt->nuLnu_peak_SSC_src);
-        printf("nuLnu SSC  obs     peak=%e\n", pt->nuLnu_peak_SSC_blob);
+        printf("nuFnu SSC  blob    peak=%e\n", pt->SSC.spec.nuFnu_peak_obs);
+        printf("nuLnu SSC  src      peak=%e\n", pt->SSC.spec.nuLnu_peak_src);
+        printf("nuLnu SSC  obs     peak=%e\n", pt->SSC.spec.nuLnu_peak_blob);
     }
     
    
@@ -183,18 +183,18 @@ void  * eval_j_SSC(void *data){
     struct j_args *thread_args = data;
     for (NU_INT = thread_args->NU_INT_START; NU_INT <= thread_args->NU_INT_STOP; NU_INT++) {
         nu_IC_out=thread_args->nu_array[NU_INT];
-        thread_args->blob_pt->q_comp[NU_INT] = 0.;
-        thread_args->blob_pt->j_comp[NU_INT] = 0.;
+        thread_args->blob_pt->SSC.q_comp[NU_INT] = 0.;
+        thread_args->blob_pt->SSC.spec.j_nu[NU_INT] = 0.;
        
-        if (thread_args->blob_pt->verbose > 1) {
+        if (thread_args->blob_pt->core.verbose > 1) {
                 printf("#->1 in eval_j_SSC   NU_INT=%d eval_j_SSC  nu_1=%e \n", NU_INT, thread_args->nu_array[NU_INT]);
         }
         
-        thread_args->blob_pt->q_comp[NU_INT] = rate_compton_GR(thread_args->blob_pt,nu_IC_out);
-        thread_args->blob_pt->j_comp[NU_INT] = thread_args->blob_pt->q_comp[NU_INT] *HPLANCK * thread_args->nu_array[NU_INT];
-        if (thread_args->blob_pt->verbose > 1) {
+        thread_args->blob_pt->SSC.q_comp[NU_INT] = rate_compton_GR(thread_args->blob_pt,nu_IC_out);
+        thread_args->blob_pt->SSC.spec.j_nu[NU_INT] = thread_args->blob_pt->SSC.q_comp[NU_INT] *HPLANCK * thread_args->nu_array[NU_INT];
+        if (thread_args->blob_pt->core.verbose > 1) {
                 printf("#->2 in  eval_j_SSC NU_INT=%d q_comp[%d]=%e j[%d]=%e nu_1=%e \n", NU_INT,NU_INT,
-                        thread_args->blob_pt->q_comp[NU_INT], NU_INT, thread_args->blob_pt->j_comp[NU_INT],
+                        thread_args->blob_pt->SSC.q_comp[NU_INT], NU_INT, thread_args->blob_pt->SSC.spec.j_nu[NU_INT],
                         thread_args->nu_array[NU_INT]);
         }
     }

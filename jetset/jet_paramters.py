@@ -2,7 +2,8 @@
 __author__ = "Andrea Tramacere"
 
 from .model_parameters import ModelParameterArray, ModelParameter
-#from .utils import safe_run
+from .utils import get_nested_attr, set_nested_attr
+#from .utils import safe_run, get_nested_attr, set_nested_attr
 import  numpy as np
 
 
@@ -128,11 +129,14 @@ class JetParameter(ModelParameter):
         _jetkernel_struct = getattr(self._model, self._jetkernel_struct_name)
 
         if self._is_in_jetkernel is True:
-            if hasattr(_jetkernel_struct,name):
+            if '.' in name:
+                b = get_nested_attr(_jetkernel_struct, name)
+            elif hasattr(_jetkernel_struct,name):
                 b=getattr(_jetkernel_struct,name)
+            else:
+                b = None
 
-
-
+            if b is not None:
                 if type(b)==int:
                     if self._val.islog is True:
                         val=10**val
@@ -145,7 +149,11 @@ class JetParameter(ModelParameter):
 
                 elif type(b)==str:
                     val=val
-                setattr(_jetkernel_struct,name,val)
+
+                if '.' in name:
+                    set_nested_attr(_jetkernel_struct, name, val)
+                else:
+                    setattr(_jetkernel_struct,name,val)
 
 
 
@@ -178,8 +186,22 @@ class JetModelParameterArray(ModelParameterArray):
 
             _jetkernel_struct=getattr(model,struct_name)
             if p_test is None:
-                if hasattr(_jetkernel_struct, jetkernel_par_name) and model_dic[key].is_in_jetkernel is True:
-                    pval = getattr(_jetkernel_struct, jetkernel_par_name)
+                if model_dic[key].is_in_jetkernel is True:
+                    if '.' in jetkernel_par_name:
+                        try:
+                            pval = get_nested_attr(_jetkernel_struct, jetkernel_par_name)
+                        except Exception:
+                            pval = None
+                    elif hasattr(_jetkernel_struct, jetkernel_par_name):
+                        pval = getattr(_jetkernel_struct, jetkernel_par_name)
+                    else:
+                        pval = None
+
+                    if pval is None:
+                        if model_dic[key].val is not None:
+                            pval = model_dic[key].val
+                        else:
+                            raise RuntimeError('par', pname, 'not found in jetkernel and model dict')
                 elif model_dic[key].val is not None:
                     pval = model_dic[key].val
                 else:

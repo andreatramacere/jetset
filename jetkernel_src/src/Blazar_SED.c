@@ -97,10 +97,10 @@
 //            printf("******************************************************************************\n");
 //            if (argc == 5 && strcmp(argv[4], verbose) == 0) {
 //                printf("verbose mode \n");
-//                spettro_root.verbose = 1;
+//                spettro_root.core.verbose = 1;
 
 //            } else {
-//                spettro_root.verbose = 0;
+//                spettro_root.core.verbose = 0;
 //            }
 
 
@@ -120,7 +120,7 @@
 
 //            if (argc > 5) {
 //                if (strcmp(argv[5], EVOLVE) == 0) {
-//                    pt_spec->Norm_distr = 0;
+//                    pt_spec->emitters.Norm_distr = 0;
 //                    temp_evolution(pt_spec, pt_temporal);
 //                } else {
 //                    Run_SED(pt_spec);
@@ -170,10 +170,10 @@
 
 
 //    if (strcmp(argv[2], make_log) != 0) {
-//        sprintf(pt_spec->path, argv[2]);
-//        sprintf(pt_spec->STEM, argv[3]);
-//        printf("PATH=%s\n", pt_spec->path);
-//        printf("STEM=%s\n", pt_spec->STEM);
+//        sprintf(pt_spec->core.path, argv[2]);
+//        sprintf(pt_spec->core.STEM, argv[3]);
+//        printf("PATH=%s\n", pt_spec->core.path);
+//        printf("STEM=%s\n", pt_spec->core.STEM);
 //        fp_log = fopen(argv[4], "r");
 //        if (fp_log == NULL) {
 //            perror("non trovo il file.log :-((  \n");
@@ -428,8 +428,8 @@
 //        // Particles
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%s %s\n", stringa, stringa1);
-//            sprintf(pt_spec->PARTICLE, stringa);
-//            printf("PARTICLES %s\n", pt_spec->PARTICLE);
+//            sprintf(pt_spec->core.PARTICLE, stringa);
+//            printf("PARTICLES %s\n", pt_spec->core.PARTICLE);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "leptons \t\t\t PARTICLES(leptons,hadrons)\n");
@@ -439,8 +439,8 @@
 //        // Synch
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->do_Sync = (int) dato;
-//            printf("do_Sync %d\n", pt_spec->do_Sync);
+//            pt_spec->core.do_Sync = (int) dato;
+//            printf("do_Sync %d\n", pt_spec->core.do_Sync);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1 \t\t\t do_Sync(0=no/1=yes/2=self_abs)\n");
@@ -449,8 +449,8 @@
 //        // compton
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->do_SSC = (int) dato;
-//            printf("do_SSC %d\n", pt_spec->do_SSC);
+//            pt_spec->core.do_SSC = (int) dato;
+//            printf("do_SSC %d\n", pt_spec->core.do_SSC);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1 \t\t\t do_SSC(0=no/1=si)\n");
@@ -459,7 +459,7 @@
 //        // mode
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%s %s\n", MODE, stringa);
-//            sprintf(pt_spec->MODE, MODE);
+//            sprintf(pt_spec->core.MODE, MODE);
 //            printf("mode %s\n", MODE);
 //        }
 //        if (out_log == 1) {
@@ -480,8 +480,8 @@
 //        // gamma min griglia
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->gmin_griglia = dato;
-//            printf("gmin_griglia %e\n", pt_spec->gmin_griglia);
+//            pt_spec->emitters.gmin_griglia = dato;
+//            printf("gmin_griglia %e\n", pt_spec->emitters.gmin_griglia);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1 \t\t\t gmin_griglia(double)\n");
@@ -490,8 +490,8 @@
 //        // gamma min griglia
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->gmax_griglia = dato;
-//            printf("gmax_griglia %e\n", pt_spec->gmax_griglia);
+//            pt_spec->emitters.gmax_griglia = dato;
+//            printf("gmax_griglia %e\n", pt_spec->emitters.gmax_griglia);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1e5 \t\t\t gmax_griglia(double)\n");
@@ -501,8 +501,8 @@
 //        // nu_seed_size
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->nu_seed_size = (int) dato; /* determina quanti punti calcolare per il Sync */
-//            printf("nu_seed_size %d\n", pt_spec->nu_seed_size);
+//            pt_spec->core.nu_seed_size = (int) dato; /* determina quanti punti calcolare per il Sync */
+//            printf("nu_seed_size %d\n", pt_spec->core.nu_seed_size);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "100 \t\t\t mesh_spettro_Sync(int)\n");
@@ -511,8 +511,8 @@
 //        // mesh_spettro_comp
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->nu_IC_size = (int) dato; /* determina quanti punti calcolare per il compton */
-//            printf("nu_IC_size %d\n", pt_spec->nu_IC_size);
+//            pt_spec->core.nu_IC_size = (int) dato; /* determina quanti punti calcolare per il compton */
+//            printf("nu_IC_size %d\n", pt_spec->core.nu_IC_size);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "200 \t\t\t mesh_spettro_comp(int)\n");
@@ -521,8 +521,8 @@
 //        // nu_start_Sync
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->nu_start_Sync = dato;
-//            printf("nu_start_Sync %e Hz\n", pt_spec->nu_start_Sync);
+//            pt_spec->Sync.spec.nu_min = dato;
+//            printf("nu_start_Sync %e Hz\n", pt_spec->Sync.spec.nu_min);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e12 \t\t\t nu_start_Sync(double)\n");
@@ -531,8 +531,8 @@
 //        // nu_stop_Sync
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->nu_stop_Sync = dato;
-//            printf("nu_stop_Sync %e Hz\n", pt_spec->nu_stop_Sync);
+//            pt_spec->Sync.spec.nu_max = dato;
+//            printf("nu_stop_Sync %e Hz\n", pt_spec->Sync.spec.nu_max);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e20 \t\t\t nu_stop_Sync(double)\n");
@@ -541,8 +541,8 @@
 //        // nu_start_comp
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->nu_start_SSC = dato;
-//            printf("nu_start_comp %e Hz\n", pt_spec->nu_start_SSC);
+//            pt_spec->SSC.spec.nu_min = dato;
+//            printf("nu_start_comp %e Hz\n", pt_spec->SSC.spec.nu_min);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e18 \t\t\t nu_start_compton(double)\n");
@@ -551,8 +551,8 @@
 //        // nu_stop_comp
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->nu_stop_SSC = dato;
-//            printf("nu_stop_comp %e Hz\n", pt_spec->nu_stop_SSC);
+//            pt_spec->SSC.spec.nu_max = dato;
+//            printf("nu_stop_comp %e Hz\n", pt_spec->SSC.spec.nu_max);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e27 \t\t\t nu_stop_compton(double)\n");
@@ -572,8 +572,8 @@
 //        //nu_start_grid
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->nu_start_grid = dato;
-//            printf("nu_start_grid %e Hz\n", pt_spec->nu_start_grid);
+//            pt_spec->core.nu_start_grid = dato;
+//            printf("nu_start_grid %e Hz\n", pt_spec->core.nu_start_grid);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e9 \t\t\t nu_start_grid(double)\n");
@@ -582,8 +582,8 @@
 //        //nu_stop_grid
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->nu_stop_grid = dato;
-//            printf("nu_stop_grid %e Hz\n", pt_spec->nu_stop_grid);
+//            pt_spec->core.nu_stop_grid = dato;
+//            printf("nu_stop_grid %e Hz\n", pt_spec->core.nu_stop_grid);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e20 \t\t\t nu_stop_grid(double)\n");
@@ -592,8 +592,8 @@
 //        // B campo mag
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->B = dato;
-//            printf("B %e G\n", pt_spec->B);
+//            pt_spec->core.B = dato;
+//            printf("B %e G\n", pt_spec->core.B);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "0.1 \t\t\t B_campo_mag_in_Gauss(double)\n");
@@ -602,8 +602,8 @@
 //        // R raggio blob
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->R = pow(10.0, dato); /* raggio blob o raggio shell cilindrica in centimetri */
-//            printf("R %ecm\n", pt_spec->R);
+//            pt_spec->core.R = pow(10.0, dato); /* raggio blob o raggio shell cilindrica in centimetri */
+//            printf("R %ecm\n", pt_spec->core.R);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "15 \t\t\t log10(R_blob(cm,double))\n");
@@ -613,8 +613,8 @@
 //        // fattore di beaming
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->BulkFactor = dato;
-//            printf("Bulk Factor=%e\n", pt_spec->BulkFactor);
+//            pt_spec->core.BulkFactor = dato;
+//            printf("Bulk Factor=%e\n", pt_spec->core.BulkFactor);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "10 \t\t\t Gamma(BulkFactor,double)\n");
@@ -624,8 +624,8 @@
 //        // viewing angle
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->theta = dato;
-//            printf("viewing angle=%e\n", pt_spec->theta);
+//            pt_spec->core.theta = dato;
+//            printf("viewing angle=%e\n", pt_spec->core.theta);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0 \t\t\t viewing_angle\n");
@@ -636,8 +636,8 @@
 //        // red shifht
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->z_cosm = dato;
-//            printf("red shift %e\n", pt_spec->z_cosm);
+//            pt_spec->core.z_cosm = dato;
+//            printf("red shift %e\n", pt_spec->core.z_cosm);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "0.1 \t\t\t z(red_shift,double)\n");
@@ -647,8 +647,8 @@
 //        // NH_pp
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->NH_pp = dato;
-//            printf("NH_pp %e\n", pt_spec->NH_pp);
+//            pt_spec->PP_gamma.NH_pp = dato;
+//            printf("NH_pp %e\n", pt_spec->PP_gamma.NH_pp);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0 \t\t\t  NH_pp(#cm^-3,double)\n");
@@ -658,8 +658,8 @@
 //        // Norm Distr
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->Norm_distr = (int) dato; // 1=Nomr, 0 not Norm
-//            printf("NormDistr %d  \n", pt_spec->Norm_distr);
+//            pt_spec->emitters.Norm_distr = (int) dato; // 1=Nomr, 0 not Norm
+//            printf("NormDistr %d  \n", pt_spec->emitters.Norm_distr);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1  \t\t\t 1=Distribution_Normalized,0=Not\n");
@@ -670,8 +670,8 @@
 //        // N elettroni
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->N = dato; /*numero di elettroni per cm^3 */
-//            printf("N %e e/cm^3\n", pt_spec->N);
+//            pt_spec->emitters.N = dato; /*numero di elettroni per cm^3 */
+//            printf("N %e e/cm^3\n", pt_spec->emitters.N);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "10 \t\t\t N_e-_#e-/cm^3(double)\n");
@@ -680,7 +680,7 @@
 //        // Tipo di distribuzione Stazionaria
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%s %s\n", TIPO_DISTR, stringa);
-//            sprintf(pt_spec->DISTR, TIPO_DISTR);
+//            sprintf(pt_spec->core.DISTR, TIPO_DISTR);
 //            printf("Tipo di distribuzione %s\n", TIPO_DISTR);
 //        }
 //        if (out_log == 1) {
@@ -690,8 +690,8 @@
 //        // p indice_pl
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->p = dato;
-//            printf("p %e indic. distr_e- power law\n", pt_spec->p);
+//            pt_spec->emitters.p = dato;
+//            printf("p %e indic. distr_e- power law\n", pt_spec->emitters.p);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "2.0 \t\t\t p(indice_pl,double)\n");
@@ -700,8 +700,8 @@
 //        // p_1 indice per broken pl
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->p_1 = dato;
-//            printf("p_1 %e indic. distr_e- power law broken \n", pt_spec->p_1);
+//            pt_spec->emitters.p_1 = dato;
+//            printf("p_1 %e indic. distr_e- power law broken \n", pt_spec->emitters.p_1);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "3.0 \t\t\t p1(indice_pl_broken,double)\n");
@@ -710,8 +710,8 @@
 //        // gamma_break
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->gamma_break = pow(10.0, dato);
-//            printf("gamma_break %e\n", pt_spec->gamma_break);
+//            pt_spec->emitters.gamma_break = pow(10.0, dato);
+//            printf("gamma_break %e\n", pt_spec->emitters.gamma_break);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "4.0 \t\t\t log10(gamma_breack_distr_e-(double))\n");
@@ -720,8 +720,8 @@
 //        // gamma cut off distr e- static
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->gamma_cut = pow(10.0, dato);
-//            printf("gamma_cut %e\n", pt_spec->gamma_cut);
+//            pt_spec->emitters.gamma_cut = pow(10.0, dato);
+//            printf("gamma_cut %e\n", pt_spec->emitters.gamma_cut);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "4.0 \t\t\t log10(gamma_cut_off_distr_e-(double))\n");
@@ -731,8 +731,8 @@
 //        //Spitkovsky
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->spit_index = dato;
-//            printf("spit_index %e\n", pt_spec->spit_index);
+//            pt_spec->emitters.spit_index = dato;
+//            printf("spit_index %e\n", pt_spec->emitters.spit_index);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "2.4 \t\t\t spit_index\n");
@@ -782,8 +782,8 @@
 //        // r   indice r log par LP+LPPL
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->r = dato;
-//            printf("r   indic.  r distr e- log par %e\n", pt_spec->r);
+//            pt_spec->emitters.r = dato;
+//            printf("r   indic.  r distr e- log par %e\n", pt_spec->emitters.r);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.5 \t\t\t r(indice_log_par,double)\n");
@@ -792,8 +792,8 @@
 //        // s   indice s log par LPPL
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->s = dato;
-//            printf("s   indic.  s distr e- log par  %e\n", pt_spec->s);
+//            pt_spec->emitters.s = dato;
+//            printf("s   indic.  s distr e- log par  %e\n", pt_spec->emitters.s);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "2.0 \t\t\t s(indice_log_par,double)\n");
@@ -803,8 +803,8 @@
 //        // gamma_0   indice gamma_0 log par statica LP+LPPL
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->gamma0_log_parab = pow(10.0, dato);
-//            printf("gamma0_log_parab   indic.  gamma0  distr e- log par LP,LPPL %e\n", pt_spec->gamma0_log_parab);
+//            pt_spec->emitters.gamma0_log_parab = pow(10.0, dato);
+//            printf("gamma0_log_parab   indic.  gamma0  distr e- log par LP,LPPL %e\n", pt_spec->emitters.gamma0_log_parab);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "4.0 \t\t\t log10(gamma0_log_par(indice_gamma0_log_pa-LP-LPPL,double))\n");
@@ -814,8 +814,8 @@
 //        // gamma_p   indice gamma_p log par statica LPEP
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->gammap_log_parab = pow(10.0, dato);
-//            printf("gammap_log_parab   indic.  gamma_p  distr e- log par LPEP %e\n", pt_spec->gammap_log_parab);
+//            pt_spec->emitters.gammap_log_parab = pow(10.0, dato);
+//            printf("gammap_log_parab   indic.  gamma_p  distr e- log par LPEP %e\n", pt_spec->emitters.gammap_log_parab);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "4.0 \t\t\t log10(gammap_log_par(indice_gammap_log_par-LPEP,double))\n");
@@ -826,8 +826,8 @@
 //        // gamma min distr e- statico/inj
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->gmin = pow(10.0, dato);
-//            printf("gamma_min %e\n", pt_spec->gmin);
+//            pt_spec->emitters.gmin = pow(10.0, dato);
+//            printf("gamma_min %e\n", pt_spec->emitters.gmin);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0 \t\t\t log10(gamma_min_distr_e-(double))\n");
@@ -836,8 +836,8 @@
 //        // gamma max distr e- statico/inj*
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->gmax = pow(10.0, dato);
-//            printf("gamma_max %e\n", pt_spec->gmax);
+//            pt_spec->emitters.gmax = pow(10.0, dato);
+//            printf("gamma_max %e\n", pt_spec->emitters.gmax);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "6.0 \t\t\t log10(gamma_max_distr_e-(double))\n");
@@ -855,8 +855,8 @@
 //        // EC Disk
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->do_EC_Disk = (int) dato;
-//            printf("do_EC_Disk %d\n", pt_spec->do_EC_Disk);
+//            pt_spec->core.do_EC_Disk = (int) dato;
+//            printf("do_EC_Disk %d\n", pt_spec->core.do_EC_Disk);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1 \t\t\t do_EC_Disk(0/1)\n");
@@ -865,8 +865,8 @@
 //        // EC BLR
 // 		if (out_log == 0) {
 // 			fscanf(fp_log, "%lf %s\n", &dato, stringa);
-// 			pt_spec->do_EC_BLR = (int) dato;
-// 			printf("do_EC_BLR %d\n", pt_spec->do_EC_BLR);
+// 			pt_spec->core.do_EC_BLR = (int) dato;
+// 			printf("do_EC_BLR %d\n", pt_spec->core.do_EC_BLR);
 // 		}
 // 		if (out_log == 1) {
 // 			fprintf(fp_log, "1 \t\t\t do_EC_BLR(0/1)\n");
@@ -874,8 +874,8 @@
 // 		 // EC DT
 // 		if (out_log == 0) {
 // 			fscanf(fp_log, "%lf %s\n", &dato, stringa);
-// 			pt_spec->do_EC_DT = (int) dato;
-// 			printf("do_EC_DT %d\n", pt_spec->do_EC_DT);
+// 			pt_spec->core.do_EC_DT = (int) dato;
+// 			printf("do_EC_DT %d\n", pt_spec->core.do_EC_DT);
 // 		}
 // 		if (out_log == 1) {
 // 			fprintf(fp_log, "1 \t\t\t do_EC_DT(0/1)\n");
@@ -884,8 +884,8 @@
 //        // Diks Type
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%s %s\n", TIPO_DISTR, stringa);
-//            sprintf(pt_spec->disk_type, TIPO_DISTR);
-//            printf("Disk Type %s \n", pt_spec->disk_type);
+//            sprintf(pt_spec->core.disk_type, TIPO_DISTR);
+//            printf("Disk Type %s \n", pt_spec->core.disk_type);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "BB \t\t\t Disk_Type(BB,MultiBB,Mono)\n");
@@ -894,8 +894,8 @@
 //        // nu_start_EC_BLR
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->nu_start_EC_BLR = dato;
-//            printf("nu_start_EC_BLR %e Hz\n", pt_spec->nu_start_EC_BLR);
+//            pt_spec->BLR.ec.spec.nu_min = dato;
+//            printf("nu_start_EC_BLR %e Hz\n", pt_spec->BLR.ec.spec.nu_min);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e18 \t\t\t nu_start_BLR_EC(double)\n");
@@ -904,8 +904,8 @@
 //        // nu_stop_BLR_EC
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->nu_stop_EC_BLR = dato;
-//            printf("nu_stop_EC_BLR %e Hz\n", pt_spec->nu_stop_EC_BLR);
+//            pt_spec->BLR.ec.spec.nu_max = dato;
+//            printf("nu_stop_EC_BLR %e Hz\n", pt_spec->BLR.ec.spec.nu_max);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e27 \t\t\t nu_stop_EC_BLR(double)\n");
@@ -914,8 +914,8 @@
 //        // R_inner
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->R_inner_Sw = dato;
-//            printf("R_inner_Sw %e(R_s)\n", pt_spec->R_inner_Sw);
+//            pt_spec->Disk.R_inner_Sw = dato;
+//            printf("R_inner_Sw %e(R_s)\n", pt_spec->Disk.R_inner_Sw);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "3.0 \t\t\t R_inner_Sw(Rs)\n");
@@ -924,8 +924,8 @@
 //        // R_ext
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->R_ext_Sw = dato;
-//            printf("R_ext_Sw %e (Rs)\n", pt_spec->R_ext_Sw);
+//            pt_spec->Disk.R_ext_Sw = dato;
+//            printf("R_ext_Sw %e (Rs)\n", pt_spec->Disk.R_ext_Sw);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "500.0 \t\t\t R_ext_Sw(Rs)\n");
@@ -934,8 +934,8 @@
 //        // Lum Disk
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->L_Disk = pow(10.0, dato);
-//            printf("Lum Diks %e\n", pt_spec->L_Disk);
+//            pt_spec->Disk.L_Disk = pow(10.0, dato);
+//            printf("Lum Diks %e\n", pt_spec->Disk.L_Disk);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "48 \t\t\t log10(L_Disk)\n");
@@ -944,8 +944,8 @@
 //        // accr eff
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->accr_eff = dato;
-//            printf("accr eff %e\n", pt_spec->accr_eff);
+//            pt_spec->Disk.accr_eff = dato;
+//            printf("accr eff %e\n", pt_spec->Disk.accr_eff);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "0.1 \t\t\t log10(accr_eff)\n");
@@ -955,8 +955,8 @@
 //        // tau BLR
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->tau_BLR = dato;
-//            printf("tau BLR %e\n", pt_spec->tau_BLR);
+//            pt_spec->BLR.tau_BLR = dato;
+//            printf("tau BLR %e\n", pt_spec->BLR.tau_BLR);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1e-3 \t\t\t tau_BLR\n");
@@ -966,8 +966,8 @@
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
 //            //pt_spec->T_disk=dato;
-//            pt_spec->T_Disk = dato;
-//            printf("T disk max%e (K)\n", pt_spec->T_Disk);
+//            pt_spec->Disk.T_Disk = dato;
+//            printf("T disk max%e (K)\n", pt_spec->Disk.T_Disk);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1e5 \t\t\t T_Disk(K)(T_max_for_MultiBB)\n");
@@ -976,8 +976,8 @@
 //        // Dist disk BLR
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->R_BLR_in = pow(10, dato);
-//            printf("dist disk BLR %e\n", pt_spec->R_BLR_in);
+//            pt_spec->BLR.R_BLR_in = pow(10, dato);
+//            printf("dist disk BLR %e\n", pt_spec->BLR.R_BLR_in);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "18 \t\t\t log10(R_BLR_in)(cm)\n");
@@ -987,8 +987,8 @@
 //        // nu_start_DT_EC
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->nu_start_EC_DT = dato;
-//            printf("nu_start_EC_DT %e Hz\n", pt_spec->nu_start_EC_DT);
+//            pt_spec->DT.ec.spec.nu_min = dato;
+//            printf("nu_start_EC_DT %e Hz\n", pt_spec->DT.ec.spec.nu_min);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e13 \t\t\t nu_start_EC_DT(double)\n");
@@ -997,8 +997,8 @@
 //        // nu_stop_EC_DT
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->nu_stop_EC_DT = dato;
-//            printf("nu_stop_EC_DT %e Hz\n", pt_spec->nu_stop_EC_DT);
+//            pt_spec->DT.ec.spec.nu_max = dato;
+//            printf("nu_stop_EC_DT %e Hz\n", pt_spec->DT.ec.spec.nu_max);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1.0e27 \t\t\t nu_stop_EC_DT(double)\n");
@@ -1008,8 +1008,8 @@
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
 //            //pt_spec->T_disk=dato;
-//            pt_spec->T_DT = dato;
-//            printf("T Dusty Torus %e\n", pt_spec->T_DT);
+//            pt_spec->DT.T_DT = dato;
+//            printf("T Dusty Torus %e\n", pt_spec->DT.T_DT);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "1e2 \t\t\t T_DT(K)(T_Dusty_Torus)\n");
@@ -1018,8 +1018,8 @@
 //        // Dist disk DT
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->R_DT = pow(10, dato);
-//            printf("dist disk DT %e\n", pt_spec->R_DT);
+//            pt_spec->DT.R_DT = pow(10, dato);
+//            printf("dist disk DT %e\n", pt_spec->DT.R_DT);
 //        }
 //        if (out_log == 1) {
 //            fprintf(fp_log, "18.5 \t\t\t log10(R_DT)(cm)\n");
@@ -1029,8 +1029,8 @@
 //        // tau DT
 //        if (out_log == 0) {
 //            fscanf(fp_log, "%lf %s\n", &dato, stringa);
-//            pt_spec->tau_DT = dato;
-//            printf("tau BLR %e\n", pt_spec->tau_DT);
+//            pt_spec->DT.tau_DT = dato;
+//            printf("tau BLR %e\n", pt_spec->DT.tau_DT);
 //            fclose(fp_log);
 //            return;
 //        }

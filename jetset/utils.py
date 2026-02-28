@@ -9,7 +9,7 @@ import json
 
 
 
-__all__=['check_frame','unexpected_behaviour']
+__all__=['check_frame','unexpected_behaviour','get_nested_attr','set_nested_attr']
 
 
 
@@ -20,6 +20,22 @@ def check_frame(frame):
 
 def unexpected_behaviour():
     raise RuntimeError('the code reached a condition that should never happen!')
+
+
+def get_nested_attr(obj, name):
+    #print("==> get",obj,name)
+    parts = name.split('.')
+    for part in parts:
+        obj = getattr(obj, part)
+    return obj
+
+
+def set_nested_attr(obj, name, val):
+    parts = name.split('.')
+    target = obj
+    for part in parts[:-1]:
+        target = getattr(target, part)
+    setattr(target, parts[-1], val)
 
 
 def clean_var_name(s):
@@ -106,11 +122,16 @@ def safe_run(func):
 def set_str_attr(obj,name,val):
     #print('set obj', obj,'name',name ,'to', val)
     try:
-
-        try:
-            setattr(obj, name,val)
-        except:
-            setattr(obj, name, val.encode('ascii'))
+        if '.' in name:
+            try:
+                set_nested_attr(obj, name, val)
+            except Exception:
+                set_nested_attr(obj, name, val.encode('ascii'))
+        else:
+            try:
+                setattr(obj, name,val)
+            except Exception:
+                setattr(obj, name, val.encode('ascii'))
     except Exception as e:
         raise RuntimeError('error setting attr',name,'execption:',e)
 

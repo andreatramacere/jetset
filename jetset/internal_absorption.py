@@ -4,6 +4,7 @@ from jetset.jetkernel.jetkernel import MEC2 as mec2
 from jetset.jetkernel.jetkernel import SIGTH 
 from jetset.jetkernel import jetkernel as BlazarSED
 from .jet_kernel_tools import get_spectral_c_array_read_only
+from .utils import get_nested_attr
 from numba import njit, prange
 import numpy as np
 import warnings
@@ -267,7 +268,7 @@ class InternalAbsorption(object):
             )
         except Exception as exc:
             warnings.warn(
-                f"Falling back to NumPy tau computation because the optimized implementation failed: {exc}",
+                f"Falling back to NumPy tau computation because the numba implementation failed: {exc}",
                 RuntimeWarning,
                 stacklevel=2,
             )
@@ -311,24 +312,24 @@ class InternalAbsorption(object):
         self._jet.set_par('R_H',val=R_H)
         BlazarSED.Build_I_nu_Disk(self._jet._blob)
         if seed_photons_name == "BLR":
-            n_name='n_%s_DRF'%self._seed_photons_name
-            nu_name='nu_%s_disk_RF'%self._seed_photons_name
+            n_name='BLR.spec.n_nu_DRF'
+            nu_name='BLR.spec.nu_DRF'
             BlazarSED.Build_I_nu_BLR(self._jet._blob)
-            nu_start=self._jet._blob.nu_start_BLR_disk_RF
-            nu_stop=self._jet._blob.nu_stop_BLR_disk_RF
+            nu_start=self._jet._blob.BLR.spec.nu_min_DRF
+            nu_stop=self._jet._blob.BLR.spec.nu_max_DRF
         elif seed_photons_name== "DT":
-            n_name='n_%s_DRF'%self._seed_photons_name
-            nu_name='nu_%s_disk_RF'%self._seed_photons_name
+            n_name='DT.spec.n_nu_DRF'
+            nu_name='DT.spec.nu_DRF'
             BlazarSED.Build_I_nu_DT(self._jet._blob)
-            nu_start=self._jet._blob.nu_start_DT_DRF
-            nu_stop=self._jet._blob.nu_stop_DT_DRF
+            nu_start=self._jet._blob.DT.spec.nu_min_DRF
+            nu_stop=self._jet._blob.DT.spec.nu_max_DRF
         else:
             raise RuntimeError('seed_photons_name %s not valid'%seed_photons_name)
         
-        n_ptr = getattr(self._jet._blob, n_name)
-        nu_ptr = getattr(self._jet._blob, nu_name)
+        n_ptr = get_nested_attr(self._jet._blob, n_name)
+        nu_ptr = get_nested_attr(self._jet._blob, nu_name)
         
-        size=self._jet._blob.nu_grid_size
+        size=self._jet._blob.core.nu_grid_size
         #x=np.zeros(size)
         #y=np.zeros(size)
         

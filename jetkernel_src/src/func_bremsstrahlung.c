@@ -21,14 +21,14 @@ double j_nu_bremss_ee(struct blob * pt, double nu_out) {
     //double integr;
     unsigned int ID_gamma;
     double *Integrand_over_gamma_grid;
-    Integrand_over_gamma_grid = (double *) calloc(pt->gamma_grid_size, sizeof (double));
+    Integrand_over_gamma_grid = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
 
-    for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
-            Integrand_over_gamma_grid[ID_gamma] =b_ee_sigma(pt->griglia_gamma_Ne_log[ID_gamma],nu_out*HPLANCK*one_by_MEC2)*pt->Ne[ID_gamma];
+    for (ID_gamma = 0; ID_gamma < pt->emitters.gamma_grid_size ; ID_gamma++){
+            Integrand_over_gamma_grid[ID_gamma] =b_ee_sigma(pt->emitters.griglia_gamma_Ne_log[ID_gamma],nu_out*HPLANCK*one_by_MEC2)*pt->emitters.Ne[ID_gamma];
         }
    
     free(Integrand_over_gamma_grid);
-    return vluce_cm*one_by_four_pi*one_by_MEC2*HPLANCK*HPLANCK*nu_out*integr_simp_grid_equilog(pt->griglia_gamma_Ne_log, pt->Integrand_over_gamma_grid, pt->gamma_grid_size);
+    return vluce_cm*one_by_four_pi*one_by_MEC2*HPLANCK*HPLANCK*nu_out*integr_simp_grid_equilog(pt->emitters.griglia_gamma_Ne_log, pt->emitters.Integrand_over_gamma_grid, pt->emitters.gamma_grid_size);
 }
 
 double j_nu_bremss_ep(struct blob *pt, double nu_out) {
@@ -36,13 +36,13 @@ double j_nu_bremss_ep(struct blob *pt, double nu_out) {
     unsigned int ID_gamma;
     double *Integrand_over_gamma_grid;
     double res;
-    Integrand_over_gamma_grid = (double *) calloc(pt->gamma_grid_size, sizeof (double));
+    Integrand_over_gamma_grid = (double *) calloc(pt->emitters.gamma_grid_size, sizeof (double));
 
-    for (ID_gamma = 0; ID_gamma < pt->gamma_grid_size ; ID_gamma++){
-            Integrand_over_gamma_grid[ID_gamma] =b_ep_sigma(pt->griglia_gamma_Ne_log[ID_gamma],nu_out*HPLANCK*one_by_MEC2)*pt->Ne[ID_gamma];
+    for (ID_gamma = 0; ID_gamma < pt->emitters.gamma_grid_size ; ID_gamma++){
+            Integrand_over_gamma_grid[ID_gamma] =b_ep_sigma(pt->emitters.griglia_gamma_Ne_log[ID_gamma],nu_out*HPLANCK*one_by_MEC2)*pt->emitters.Ne[ID_gamma];
         }
     
-    res= vluce_cm*one_by_four_pi*one_by_MEC2*HPLANCK*HPLANCK*nu_out*integr_simp_grid_equilog(pt->griglia_gamma_Ne_log, Integrand_over_gamma_grid, pt->gamma_grid_size);
+    res= vluce_cm*one_by_four_pi*one_by_MEC2*HPLANCK*HPLANCK*nu_out*integr_simp_grid_equilog(pt->emitters.griglia_gamma_Ne_log, Integrand_over_gamma_grid, pt->emitters.gamma_grid_size);
     free(Integrand_over_gamma_grid);
     return res;
 }

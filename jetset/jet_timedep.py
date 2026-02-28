@@ -600,7 +600,6 @@ class JetTimeEvol(object):
         name
         inplace
         jet_gamma_grid_size
-        log_sampling
 
 
 
@@ -749,7 +748,7 @@ class JetTimeEvol(object):
         self.Adiabatic_cooling='on'
         self.region_expansion = 'off'
         self.log_sampling = log_sampling
-        #self.time_sampled_emitters = None
+        self.time_sampled_emitters = None
 
         self.parameters = JetModelParameterArray(model=self)
         temp_ev_dict = self._build_par_dict()
@@ -834,6 +833,8 @@ class JetTimeEvol(object):
             self.parameters.add_par(ModelParameter(**v))
 
         _par_dict = _model['internals']
+        if '_custom_q_jnj_profile' in _par_dict.keys():
+            _par_dict['_custom_q_inj_profile']=_par_dict.pop('_custom_q_jnj_profile')
         for k in _par_dict.keys():
             #print('k,v',k,v)
             setattr(self,k,_par_dict[str(k)])
@@ -1088,29 +1089,29 @@ class JetTimeEvol(object):
 
     @property
     def log_sampling(self):
-        """
-        logarithmically spaced bool
-        Returns
-        -------
+       """
+       logarithmically spaced bool
+       Returns
+       -------
 
-        """
-        return self._log_sampling
+       """
+       return self._log_sampling
 
     @log_sampling.setter
     def log_sampling(self, v):
-        """
-        if True, the time grid is logarithmically spaced
-        Returns
-        -------
-
-        """
-        if v is False or v is True:
-            pass
-        else:
-            raise RuntimeError('this parameter must be bolean')
-
-        self._log_sampling = v
-        self.temp_ev.LOG_SET= int(v)
+       """
+       if True, the time grid is logarithmically spaced
+       Returns
+       -------
+    
+       """
+       if v is False or v is True:
+           pass
+       else:
+           raise RuntimeError('this parameter must be bolean')
+    
+       self._log_sampling = v
+       self.temp_ev.LOG_SET= int(v)
 
     @property
     def t_unit_rad(self):
