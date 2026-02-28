@@ -70,6 +70,11 @@ class GammapyJetsetModel(SpectralModel):
 
             self._parameters_hash_dict[gp_name]=p
             if type(p.val) is str:
+                if p.frozen is not True:
+                    raise RuntimeError(
+                        'string parameter %s is not frozen; freeze it before using GammapyJetsetModel'
+                        % gp_name
+                    )
                 self._parameter_values_string[gp_name]=p.val
                 parameter = Parameter(gp_name, string_to_int(p.val), frozen=p.frozen)
             else:
