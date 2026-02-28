@@ -9,7 +9,7 @@ import copy
 import warnings
 from astropy.constants import m_e,m_p,c
 from scipy import interpolate
-from .jetkernel_models_dic import gamma_dic_e ,gamma_dic_p, gamma_dic_pp_e_second, available_N_distr, N_distr_descr, available_emitters_type
+from .jetkernel_models_dic import gamma_dic_e ,gamma_dic_p, gamma_dic_pp_e_second, available_emitters_type #, gamma_dic_e_equilibrium
 from .plot_sedfit import PlotPdistr
 from .jet_paramters import *
 from .utils import set_str_attr, get_nested_attr, set_nested_attr
@@ -84,6 +84,8 @@ class BaseEmittersDistribution(object):
         self.normalize = normalize
         self.gamma_cooling_eq_second = None
         self._secondaries_done = False
+        #self._primaries_done = False
+
 
     def _set_spectral_type(self,spectral_type):
         if spectral_type not in self._allowed_spectral_types:
@@ -197,12 +199,15 @@ class BaseEmittersDistribution(object):
             return np.trapezoid(self.n_gamma_e,self.gamma_e)
         elif self.emitters_type=='protons':
             return np.trapezoid(self.n_gamma_p, self.gamma_p)
+        #NOTE: to be added for leptonic-equilibrium
+        #elif self.emitters_type=='electrons-equilibrium':
+        #    return np.trapezoid(self.n_gamma_e,self.gamma_e)
         else:
             raise  RuntimeError('emitters type',self.emitters_type, 'not valid')
 
     def eval_U(self, gmin=None, gmax=None):
         self.update()
-        if self.emitters_type == 'electrons':
+        if self.emitters_type == 'electrons':# or self.emitters_type == 'electrons-equilibrium':
             x=self.gamma_e
             y=self.n_gamma_e * self.gamma_e
             cost=m_e.cgs.value * (c.cgs ** 2).value
@@ -233,6 +238,13 @@ class BaseEmittersDistribution(object):
             self._Norm=1.0/np.trapezoid(self.f,self._gamma_grid)
 
         self.f = self.f*self._Norm*self.parameters.get_par_by_name('N').val
+
+        #NOTE: to be added for leptonic-equilibrium
+        # if self.emitters_type == 'electrons-equilibrium':
+        #     #TODO implement here
+        #     if self._primaries_done is False:
+        #         self.gamma_e_inj = np.zeros(self._gamma_grid_size)
+        #         self.n_gamma_e_inj = np.zeros(self._gamma_grid_size)
 
         if self.emitters_type == 'electrons':
             self.gamma_e = np.zeros(self._gamma_grid_size)
@@ -279,6 +291,43 @@ class BaseEmittersDistribution(object):
                          particle='electrons',
                          energy_unit=energy_unit,
                          label=label)
+        
+        #NOTE: to be added for leptonic equilibrium
+        # if self.emitters_type == 'electrons-equilibrium':
+        #     if label is None:
+        #         label = 'electrons'
+  
+        #     if self._primaries_done is True:
+        #         if hasattr(self,'n_gamma_e'):
+        #             m(self.gamma_e,
+        #                          self.n_gamma_e,
+        #                          y_min=y_min,
+        #                          y_max=y_max,
+        #                          x_min=x_min,
+        #                          x_max=x_max,
+        #                          particle='electrons',
+        #                          energy_unit=energy_unit,
+        #                          label='electrons sec.')
+        #             if energy_unit != 'gamma':
+
+        #                 eq= self.gamma_cooling_eq* (m_e * c * c).to(energy_unit).value
+        #             else:
+        #                 eq = self.gamma_cooling_eq
+        #             if loglog is True:
+        #                 eq = np.log10(eq)
+        #             p.ax.axvline(eq, ls='--', label='cooling. eq. second.', lw=0.5, c='r')
+
+        #         if hasattr(self, 'gamma_e_inj'):
+        #             m(self.gamma_e_inj,
+        #               self.n_gamma_e_inj,
+        #               y_min=y_min,
+        #               y_max=y_max,
+        #               x_min=x_min,
+        #               x_max=x_max,
+        #               particle='electrons',
+        #               energy_unit=energy_unit,
+        #               label='electrons (inj)')
+
         if self.emitters_type == 'protons':
             if label is None:
                 label = 'protons'
@@ -321,6 +370,7 @@ class BaseEmittersDistribution(object):
                       particle='electrons',
                       energy_unit=energy_unit,
                       label='electrons sec. (inj)')
+            
 
         return p
 
@@ -396,6 +446,8 @@ class EmittersDistribution(BaseEmittersDistribution):
         self.normalize = normalize
         self.gamma_cooling_eq_second=None
         self._secondaries_done=False
+        #NOTE: to be added for leptonic-equilibrium
+        #self._primaries_done=False
         self.set_jet(jet)
 
 
@@ -550,6 +602,11 @@ class EmittersDistribution(BaseEmittersDistribution):
             elif self.emitters_type == 'protons':
                 BlazarSED.build_Np_jetset(self._jet._blob)
                 gamma_ptr = get_nested_attr(self._jet._blob, 'emitters.griglia_gamma_jetset_Np_log')
+            #NOTE: to be added for leptonic-equilibrium
+            # elif self.emitters_type == 'electrons-equilibrium':
+            #     BlazarSED.build_Ne_jetset(self._jet._blob)
+            #     gamma_ptr = get_nested_attr(self._jet._blob, 'emitters.griglia_gamma_jetset_Ne_log')
+            #     #print('==> Build Ne done')
             else:
                 raise RuntimeError('emitters type', self.emitters_type, 'not valid')
 
@@ -579,6 +636,16 @@ class EmittersDistribution(BaseEmittersDistribution):
 
 
     def _set_blob(self):
+        #NOTE: to be added for leptonic-equilibrium
+        # if self.emitters_type == 'electrons-equilibrium':
+
+        #     self._Ne_name, self._gammae_name = gamma_dic_e['electron_distr']
+        #     self._Q_inj_e_name, self._gammae_inj_name = gamma_dic_e_equilibrium['e_inj']
+        #     self.Ne_ptr = get_nested_attr(self._jet._blob, self._Ne_name)
+        #     self.e_gamma_ptr = get_nested_attr(self._jet._blob, self._gammae_name)
+        #     self._Q_inj_e_ptr = get_nested_attr(self._jet._blob, self._Q_inj_e__name)
+        #     self.e_inj_gamma_ptr = get_nested_attr(self._jet._blob, self._gammae_inj_name)
+
         if self.emitters_type == 'electrons':
 
             self._Ne_name, self._gammae_name = gamma_dic_e['electron_distr']
@@ -597,6 +664,9 @@ class EmittersDistribution(BaseEmittersDistribution):
             self._Q_inj_e_second_ptr = get_nested_attr(self._jet._blob, self._Q_inj_e_second_name)
             self.e_inj_second_gamma_ptr = get_nested_attr(self._jet._blob, self._gammae_inj_sec_name)
 
+        else:
+            raise RuntimeError(f"emitters type {self.emitters_type} not valid ", available_emitters_type)
+       
         size = self._jet._blob.emitters.gamma_grid_size
         
         #NOTE: thisi is needed to get the pointers to Ne also in the case of protons
@@ -606,6 +676,12 @@ class EmittersDistribution(BaseEmittersDistribution):
             self.gamma_e_second_inj,self.n_gamma_e_second_inj=get_emitters(self.e_inj_second_gamma_ptr,self._Q_inj_e_second_ptr, self._jet._blob,size)
             self.gamma_cooling_eq_second= self._jet._blob.emitters.gamma_cooling_eq
             self._secondaries_done = True
+        
+        #NOTE: to be added for leptonic-equilibrium
+        #if self.emitters_type == 'electrons-equilibrium':
+        #    self.gamma_e_inj,self.n_gamma_e_inj=get_emitters(self.e_inj_gamma_ptr,self._Q_inj_e_ptr, self._jet._blob,size)
+        #    self.gamma_cooling_eq= self._jet._blob.emitters.gamma_cooling_eq
+        #    self._primaries_done = True
         
     
     def _activate_numba(self):

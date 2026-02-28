@@ -69,6 +69,14 @@ void setNgrid(struct blob *pt)
       gmax_griglia = &(pt->emitters.gmax_griglia_secondaries);
       gmin_griglia = &(pt->emitters.gmin_griglia_secondaries);
     }
+    // NOTE: to be added for leptonic equilibrium
+    // else if (strcmp(pt->core.PARTICLE, "primaries_el") == 0){
+    //   gamma_grid_size = &(pt->emitters.gamma_grid_size);
+    //   gmax = &(pt->emitters.gmax_primaries);
+    //   gmin = &(pt->emitters.gmin_primaries);
+    //   gmax_griglia = &(pt->emitters.gmax_griglia_primaries);
+    //   gmin_griglia = &(pt->emitters.gmin_griglia_primaries)
+    // }
     else{
         gamma_grid_size = &(pt->emitters.gamma_grid_size);
         gmax = &(pt->emitters.gmax);
@@ -125,12 +133,6 @@ void setNgrid(struct blob *pt)
     // gamma min griglia
     if (*gmin_griglia < 0.0 || *gmin < *gmin_griglia)
     {
-        //		if(pt->emitters.gmin>2.0){
-        //			pt->emitters.gmin_griglia=pt->emitters.gmin/2.0;
-        //		}
-        //		else{
-        //		   pt->emitters.gmin_griglia=1.0;
-        //		}
         *gmin_griglia = *gmin;
     }
 
@@ -164,6 +166,11 @@ void setNgrid(struct blob *pt)
         {
             *gmin_griglia=1.0;
         }
+        // NOTE: to be added for leptonic equilibrium
+        // if (strcmp(pt->core.PARTICLE, "primaries_el") == 0)
+        // {
+        //     *gmin_griglia=1.0;
+        // }
     }
 }
 
@@ -174,86 +181,70 @@ void setNgrid(struct blob *pt)
 void build_Ne(struct blob *pt) {
    
 
-    //printf("Set array per Ne %s \n",pt->core.DISTR);
-    //printf("build_Ne Set array per Ne 1 %s \n",pt->core.DISTR);
     alloc_N_distr(&(pt->emitters.griglia_gamma_Ne_log),pt->emitters.gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->emitters.griglia_gamma_Ne_log, pt->emitters.gmin_griglia, pt->emitters.gmax_griglia);
-    //printf("build_Ne Set array per Ne 2%s \n",pt->core.DISTR);
     alloc_N_distr(&(pt->emitters.Ne),pt->emitters.gamma_grid_size);
 
-    //stationary frame
-    //printf("stationary build_Ne Set array per Ne 3%s \n",pt->core.DISTR);
     alloc_N_distr(&(pt->emitters.griglia_gamma_Ne_log_stat),pt->emitters.gamma_grid_size);
-    //printf("stationarybuild_Ne Set array per Ne 4%s \n",pt->core.DISTR);
-    //alloc_N_distr(&(pt->Ne_stat),pt->emitters.gamma_grid_size);
-    
-    //if (pt->core.verbose>1) {
-    //    printf("DONE \n");
-    //}
-
-    //N for IC and simpson equilog integration over N_grid
-    //printf("N for IC and simpson build_Ne Set array per Ne 5%s \n",pt->core.DISTR);
-    //alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->emitters.gamma_grid_size);
-    //printf("N for IC and simpson build_Ne Set array per Ne 6%s \n",pt->core.DISTR);
-    //alloc_N_distr(&(pt->Ne_IC),pt->emitters.gamma_grid_size);
-    //printf("N for IC and simpson build_Ne Set array per Ne 7%s \n",pt->core.DISTR);
     alloc_N_distr(&(pt->emitters.Integrand_over_gamma_grid),pt->emitters.gamma_grid_size);
 
 }
 
 void build_Ne_secondaries(struct blob *pt) {
-    //printf("Set array per Ne %s \n",pt->core.DISTR);
-    //printf("build_Ne_secondaries Set array per Ne %s \n",pt->core.DISTR);
+
     alloc_N_distr(&(pt->emitters.griglia_gamma_Ne_log),pt->emitters.gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->emitters.griglia_gamma_Ne_log,pt->emitters.gmin_griglia_secondaries, pt->emitters.gmax_griglia_secondaries);
-    //printf("build_Ne_secondaries Set array per Ne %s \n",pt->core.DISTR);
     alloc_N_distr(&(pt->emitters.Ne),pt->emitters.gamma_grid_size);
 
-    //stationary frame
-    //printf("build_Ne_secondaries Set array per Ne %s \n",pt->core.DISTR);
     alloc_N_distr(&(pt->emitters.griglia_gamma_Ne_log_stat),pt->emitters.gamma_grid_size);
-    //printf("build_Ne_secondaries Set array per Ne %s \n",pt->core.DISTR);
-    //alloc_N_distr(&(pt->Ne_stat),pt->emitters.gamma_grid_size);
-    //if (pt->core.verbose>1) {
-    //    printf("DONE \n");
-    //}
-
-    //N for IC and simpson equilog integration over N_grid
-    //alloc_N_distr(&(pt->griglia_gamma_Ne_log_IC),pt->emitters.gamma_grid_size);
-    //alloc_N_distr(&(pt->Ne_IC),pt->emitters.gamma_grid_size);
+   
     alloc_N_distr(&(pt->emitters.Integrand_over_gamma_grid),pt->emitters.gamma_grid_size);
 
 }
 
 void build_Q_inj_e_second(struct blob *pt) {
-    //printf("build_Q_inj_e_second Set array per Ne %s \n",pt->core.DISTR);
-    alloc_N_distr(&(pt->emitters.Q_inj_e_second),pt->emitters.gamma_grid_size);
+     alloc_N_distr(&(pt->emitters.Q_inj_e_second),pt->emitters.gamma_grid_size);
 }
+
+
+// NOTE: to be added for leptonic equilibrium
+// void build_Ne_primaries(struct blob *pt) {
+ 
+//     alloc_N_distr(&(pt->emitters.griglia_gamma_Ne_log),pt->emitters.gamma_grid_size);
+//     Genera_griglia_gamma_N_log(pt, pt->emitters.griglia_gamma_Ne_log,pt->emitters.gmin_griglia_primaries, pt->emitters.gmax_griglia_primaries);
+//     alloc_N_distr(&(pt->emitters.Ne),pt->emitters.gamma_grid_size);
+
+     
+//     alloc_N_distr(&(pt->emitters.griglia_gamma_Ne_log_stat),pt->emitters.gamma_grid_size);
+     
+//     alloc_N_distr(&(pt->emitters.Integrand_over_gamma_grid),pt->emitters.gamma_grid_size);
+
+// }
+
+// void build_Q_inj_e_primaries(struct blob *pt) {
+//      alloc_N_distr(&(pt->emitters.Q_inj_e_primaries),pt->emitters.gamma_grid_size);
+// }
+
+
 
 void build_Np(struct blob *pt)
 {
-    //printf("build_Np Set array per Ne %s \n",pt->core.DISTR);
-    alloc_N_distr(&(pt->emitters.griglia_gamma_Np_log), pt->emitters.gamma_grid_size);
-    Genera_griglia_gamma_N_log(pt, pt->emitters.griglia_gamma_Np_log,pt->emitters.gmin_griglia, pt->emitters.gmax_griglia);
-    //printf("build_Np Set array per Ne %s \n",pt->core.DISTR);
-    alloc_N_distr(&(pt->emitters.Np), pt->emitters.gamma_grid_size);
+     alloc_N_distr(&(pt->emitters.griglia_gamma_Np_log), pt->emitters.gamma_grid_size);
+     Genera_griglia_gamma_N_log(pt, pt->emitters.griglia_gamma_Np_log,pt->emitters.gmin_griglia, pt->emitters.gmax_griglia);
+     alloc_N_distr(&(pt->emitters.Np), pt->emitters.gamma_grid_size);
 }
 
 void build_Np_jetset(struct blob *pt) {
-    //printf("build_Np_jetset Set array per Ne %s \n",pt->core.DISTR);
     alloc_N_distr(&(pt->emitters.griglia_gamma_jetset_Np_log), pt->emitters.gamma_grid_size);
     Genera_griglia_gamma_N_log(pt, pt->emitters.griglia_gamma_jetset_Np_log,pt->emitters.gmin_griglia, pt->emitters.gmax_griglia);
-    //printf("build_Np_jetset Set array per Ne %s \n",pt->core.DISTR);
     alloc_N_distr(&(pt->emitters.Np_jetset), pt->emitters.gamma_grid_size);
     alloc_N_distr(&(pt->emitters.Ne_jetset),pt->emitters.gamma_grid_size);
 }
 
 void build_Ne_jetset(struct blob *pt) {
-    //printf("build_Ne_jetset Set array per Ne %s \n",pt->core.DISTR);
-    alloc_N_distr(&(pt->emitters.griglia_gamma_jetset_Ne_log),pt->emitters.gamma_grid_size);
-    Genera_griglia_gamma_N_log(pt, pt->emitters.griglia_gamma_jetset_Ne_log, pt->emitters.gmin_griglia, pt->emitters.gmax_griglia);
-    //printf("build_Ne_jetset Set array per Ne %s \n",pt->core.DISTR);
-    alloc_N_distr(&(pt->emitters.Ne_jetset),pt->emitters.gamma_grid_size);
+     alloc_N_distr(&(pt->emitters.griglia_gamma_jetset_Ne_log),pt->emitters.gamma_grid_size);
+     Genera_griglia_gamma_N_log(pt, pt->emitters.griglia_gamma_jetset_Ne_log, pt->emitters.gmin_griglia, pt->emitters.gmax_griglia);
+     alloc_N_distr(&(pt->emitters.Ne_jetset),pt->emitters.gamma_grid_size);
 }
 
 
@@ -273,8 +264,7 @@ void Fill_Ne_IC(struct blob *pt, double g_min_IC, int stat_frame, double * Ne_IC
         printf("Set array per Ne IC\n");
         printf("elements number is pt->emitters.gamma_grid_size=%d\n", pt->emitters.gamma_grid_size);
     }
-    //printf("Set array per Ne %s \n",pt->core.DISTR);
-    
+
     if (strcmp(pt->core.PARTICLE, "protons") == 0) {
         
         if(pt->core.IC_adaptive_e_binning ==1){
@@ -286,7 +276,6 @@ void Fill_Ne_IC(struct blob *pt, double g_min_IC, int stat_frame, double * Ne_IC
     }
     else{
         if(pt->core.IC_adaptive_e_binning ==1){
-            //gmin_grid=max(pt->emitters.gmin_griglia,g_min_IC/10);
             Genera_griglia_gamma_N_log(pt, griglia_gamma_Ne_log_IC,g_min_IC, pt->emitters.gmax_griglia);
         }else{
             Genera_griglia_gamma_N_log(pt, griglia_gamma_Ne_log_IC,pt->emitters.gmin_griglia, pt->emitters.gmax_griglia);
@@ -329,7 +318,6 @@ void build_Ne_custom(struct blob *pt,  unsigned int size) {
         printf("Set array for Ne for from_array mode \n");
         printf("elements number is pt->emitters.gamma_grid_size=%d\n", pt->emitters.gamma_grid_size);
     }
-    //printf("build_Ne_custom Set array per Ne %s \n",pt->core.DISTR);
     alloc_N_distr(&(pt->emitters.gamma_e_custom),size);
     alloc_N_distr(&(pt->emitters.Ne_custom),size);
 
@@ -341,7 +329,6 @@ void build_Np_custom(struct blob *pt,  unsigned int size) {
         printf("Set array for Np for from_array mode \n");
         printf("elements number is pt->emitters.gamma_grid_size=%d\n", pt->emitters.gamma_grid_size);
     }
-    //printf("build_Np_custom Set array per Ne %s \n",pt->core.DISTR);
     alloc_N_distr(&(pt->emitters.gamma_p_custom),size);
     alloc_N_distr(&(pt->emitters.Np_custom),size);
 
@@ -350,17 +337,10 @@ void build_Np_custom(struct blob *pt,  unsigned int size) {
 
 
 void InitNe(struct blob *pt){
-    //double (*pf_distr)(struct blob *, double x);
-    //pf_distr = &N_distr_integranda;
-
-    //printf("==> InitNe start\n");
-    //printf("==> setNgrid\n");
+    
     setNgrid(pt);
-    //printf("==> build_Ne\n");
     build_Ne(pt);
-    //printf("==> SetDistr\n");
     SetDistr(pt);
-    //printf("==> SetDistr\n");
     Fill_N(pt, pt->emitters.griglia_gamma_Ne_log, pt->emitters.Ne);
 
 
@@ -368,10 +348,33 @@ void InitNe(struct blob *pt){
 	pt->emitters.Distr_e_done = 1;
 
     pt->emitters.N_0e = pt->emitters.N_0;
-    //printf("==> N_tot\n");
     pt->emitters.N_e  = N_tot(pt, N_distr_integranda);
-    //printf("==> InitNe stop\n");
 }
+
+
+// NOTE: to be added for leptonic-equilibrium
+// void InitNeEquilibirum(struct blob *pt){
+//     pt->emitters.gmin_primaries=pt->emitters.gmin;
+//     pt->emitters.gmax_primaries=pt->emitters.gmax;
+//     sprintf(pt->core.PARTICLE, "primaries_el");
+//     setNgrid(pt);
+//     build_Ne_primaries(pt);
+//     build_Q_inj_e_primaries(pt);
+//     //TODO: fill q_inj from jetset
+//     SetDistr(pt);
+//     CoolingEquilibrium(pt,pt->emitters.T_esc_e_second);
+//     Fill_N(pt, pt->emitters.griglia_gamma_Ne_log, pt->emitters.Ne);
+
+
+// 	//This flag is set to 1 to know that
+// 	pt->emitters.Distr_e_done = 1;
+
+//     pt->emitters.N_0e = pt->emitters.N_0;
+//     pt->emitters.N_e  = N_tot(pt, N_distr_integranda);
+//     printf(pt->core.PARTICLE, "electrons");
+//     SetDistr(pt);
+// }
+
 
 
 //========================================
@@ -379,10 +382,7 @@ void InitNe(struct blob *pt){
 //========================================
 void Init_Np_Ne_pp(struct blob *pt)
 {
-    //char *name;
-    //double (*pf_distr) (struct blob *, double x);
-    //pf_distr = &N_distr_integranda;
-
+   
     pt->emitters.gmin_secondaries=pt->emitters.gmin;
     pt->emitters.gmax_secondaries=pt->emitters.gmax*mp_by_me;
     setNgrid(pt);
@@ -397,19 +397,14 @@ void Init_Np_Ne_pp(struct blob *pt)
     Fill_N(pt, pt->emitters.griglia_gamma_Np_log, pt->emitters.Np);
     //
     //This flag si set to 1 to know that
-    //N(gamma) has been properly initialized and filled
-    //printf("-->\n" );
-    //printf("--> N0e %e N0 %e N0p %e\n", pt->emitters.N_0e, pt->emitters.N_0, pt->emitters.N_0p);
+    
     
     pt->emitters.Distr_p_done = 1;
     pt->emitters.N_0p = pt->emitters.N_0;
     
-    //printf("--> N0e %e N0 %e N0p %e\n", pt->emitters.N_0e, pt->emitters.N_0, pt->emitters.N_0p);
-    
+     
     pt->emitters.N_p = N_tot(pt, N_distr_integranda);
-    //name = "distr-p.dat";
-    //Scrivi_N_file(pt, name, pt->emitters.griglia_gamma_Np_log, pt->emitters.Np);
-
+     
     // Secondaries e- from pp
 
     //Set N to e- from pp
@@ -430,20 +425,10 @@ void Init_Np_Ne_pp(struct blob *pt)
     pt->emitters.N_0e = pt->emitters.N_0;
     
 
-    //printf("--> N0e %e N0 %e N0p %e\n", pt->emitters.N_0e, pt->emitters.N_0, pt->emitters.N_0p);
-    //printf("-->\n");
+    
     pt->emitters.N_e_pp = N_tot(pt, N_distr_integranda);
 
-    //if (pt->core.verbose > 1)
-    //{
-    //    printf("****** secondary leptons *****\n");
-    //    printf("set array for secondary Ne\n");
-    //    printf("elements number is pt->emitters.gamma_grid_size=%d\n", pt->emitters.gamma_grid_size);
-    //    printf("N_e_pp =%e\n", pt->emitters.N_e_pp);
-    //}
-
-    //name = "distr-e-from-pp.dat";
-    //Scrivi_N_file(pt, name, pt->emitters.griglia_gamma_Ne_log, pt->emitters.Ne);
+    
     
     //set back pt->emitters.N_0 to the proton value and particle name
     pt->emitters.N_0 = pt->emitters.N_0p;
@@ -743,8 +728,5 @@ void SetDistr(struct blob *pt) {
         }
 
     }
-    //if (pt->core.verbose) {
-     //printf("tipo di distribuzione %d\n",pt->emitters.TIPO_DISTR);
-    //}
 }
 //=========================================================================================

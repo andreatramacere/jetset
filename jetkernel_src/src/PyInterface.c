@@ -298,7 +298,8 @@ struct blob MakeBlob() {
 
     spettro_root.emitters.gam=NULL;
     spettro_root.emitters.Q_inj_e_second=NULL;
-    spettro_root.emitters.Q_inj_e=NULL;
+    // NOTE: to be added for leptonic-equilibrium
+    //spettro_root.emitters.Q_inj_e_primaries=NULL;
 
 
     spettro_root.emitters.Ne=NULL;
@@ -325,9 +326,7 @@ struct blob MakeBlob() {
 }
 
 
-//void MakeNe(struct spettro *pt_base){
-//   build_Ne(pt_base);
-//}
+
 
 //=========================================================================================
 void set_seed_freq_start(struct blob *pt_base){
@@ -574,8 +573,13 @@ void Init(struct blob *pt_base, double luminosity_distance) {
             printf("E_tot (electron)  blob rest frame =%e erg     \n", pt_base->emitters.E_tot_e);
             printf("************************************************************************\n");
         }
-
-    } else if (strcmp(pt_base->core.PARTICLE, "protons") == 0) {
+    }
+    //}else if (strcmp(pt_base->core.PARTICLE, "electrons-equilibrium") == 0){
+    //    InitNeEquilibirum(pt_base);
+    //    pt_base->emitters.N_tot_e_Sferic = pt_base->core.Vol_region * pt_base->emitters.N_e;
+    //    FindNe_NpGp(pt_base);
+    //    EvalU_e(pt_base);
+    else if (strcmp(pt_base->core.PARTICLE, "protons") == 0) {
         Init_Np_Ne_pp(pt_base);        
         pt_base->emitters.N_tot_p_Sferic = pt_base->core.Vol_region * pt_base->emitters.N_p;             
         EvalU_p(pt_base);             
