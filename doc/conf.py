@@ -34,7 +34,6 @@ for mod_name in autodoc_mock_imports:
     sys.modules[mod_name] = mock.Mock()
 
 
-import sphinx_bootstrap_theme
 if on_rtd==False:  # only import and set the  if we're building docs locally
     theme = 'sphinx_book_theme'
 else:
