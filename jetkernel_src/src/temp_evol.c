@@ -632,8 +632,16 @@ void alloc_temp_ev_array(double ** pt,int size){
 
 
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1){
-    double n,a,c;
-    n=N_distr_interp(pt->emitters.gamma_grid_size,gamma_1,pt->emitters.griglia_gamma_Ne_log,pt->emitters.Q_inj_e_second);
+    double n,c;
+    double *Q_inj_ptr;
+    Q_inj_ptr = pt->emitters.Q_inj_e;
+    if (Q_inj_ptr == NULL) {
+        Q_inj_ptr = pt->emitters.Q_inj_e_second;
+    }
+    if (Q_inj_ptr == NULL) {
+        return 0.0;
+    }
+    n=N_distr_interp(pt->emitters.gamma_grid_size,gamma_1,pt->emitters.griglia_gamma_Ne_log,Q_inj_ptr);
     c=(gamma_1-pt->core.gamma_e_IC)/(gamma_1*pt->core.gamma_e_IC)*(pt->emitters.gamma_cooling_eq);
     return n*exp(-c);
 }
@@ -661,9 +669,17 @@ double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc
     // choose between escape dominate regime and full solution
     // to avoid divergence in the integral 
     if (gamma<pt->emitters.gamma_cooling_eq/100){
+        double *Q_inj_ptr;
+        Q_inj_ptr = pt->emitters.Q_inj_e;
+        if (Q_inj_ptr == NULL) {
+            Q_inj_ptr = pt->emitters.Q_inj_e_second;
+        }
+        if (Q_inj_ptr == NULL) {
+            return 0.0;
+        }
         t_cool=pt->emitters.gamma_cooling_eq*T_esc/gamma;
         t_eff=(t_cool*T_esc/(T_esc+t_cool));
-        res=pt->emitters.Q_inj_e_second[id_gamma]*t_eff;
+        res=Q_inj_ptr[id_gamma]*t_eff;
     }else{
         res=integrale_simp_log_struct(pf_K1,pt,a,b,integ_size);
         res=res*T_esc*pt->emitters.gamma_cooling_eq/(gamma*gamma);
@@ -685,6 +701,13 @@ void CoolingEquilibrium(struct blob * pt, double T_esc){
     Uph += I_nu_to_Uph(pt->CMB.spec.nu, pt->CMB.spec.I_nu, pt->CMB.spec.NU_INT_MAX);
     Uph += I_nu_to_Uph(pt->Disk.spec.nu, pt->Disk.spec.I_nu, pt->Disk.spec.NU_INT_MAX);
     Uph += I_nu_to_Uph(pt->Star.spec.nu, pt->Star.spec.I_nu, pt->Star.spec.NU_INT_MAX);
+
+    if (pt->emitters.Q_inj_e == NULL && pt->emitters.Q_inj_e_second == NULL) {
+        if (pt->core.verbose > 0) {
+            printf("CoolingEquilibrium: no injection array available\n");
+        }
+        return;
+    }
 
     a=(4.0/3.0)*((SIGTH*vluce_cm)/(MEC2))*(pt->Sync.UB + Uph);
     pt->emitters.gamma_cooling_eq=1/(a*T_esc);

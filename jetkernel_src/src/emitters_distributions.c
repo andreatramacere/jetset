@@ -206,6 +206,10 @@ void build_Q_inj_e_second(struct blob *pt) {
      alloc_N_distr(&(pt->emitters.Q_inj_e_second),pt->emitters.gamma_grid_size);
 }
 
+void build_Q_inj_e_primaries(struct blob *pt) {
+     alloc_N_distr(&(pt->emitters.Q_inj_e_primaries),pt->emitters.gamma_grid_size);
+}
+
 
 // NOTE: to be added for leptonic equilibrium
 // void build_Ne_primaries(struct blob *pt) {
@@ -219,10 +223,6 @@ void build_Q_inj_e_second(struct blob *pt) {
      
 //     alloc_N_distr(&(pt->emitters.Integrand_over_gamma_grid),pt->emitters.gamma_grid_size);
 
-// }
-
-// void build_Q_inj_e_primaries(struct blob *pt) {
-//      alloc_N_distr(&(pt->emitters.Q_inj_e_primaries),pt->emitters.gamma_grid_size);
 // }
 
 
@@ -343,6 +343,7 @@ void InitNe(struct blob *pt){
     SetDistr(pt);
     Fill_N(pt, pt->emitters.griglia_gamma_Ne_log, pt->emitters.Ne);
 
+    pt->emitters.Q_inj_e = NULL;
 
 	//This flag is set to 1 to know that
 	pt->emitters.Distr_e_done = 1;
@@ -352,28 +353,40 @@ void InitNe(struct blob *pt){
 }
 
 
-// NOTE: to be added for leptonic-equilibrium
-// void InitNeEquilibirum(struct blob *pt){
-//     pt->emitters.gmin_primaries=pt->emitters.gmin;
-//     pt->emitters.gmax_primaries=pt->emitters.gmax;
-//     sprintf(pt->core.PARTICLE, "primaries_el");
-//     setNgrid(pt);
-//     build_Ne_primaries(pt);
-//     build_Q_inj_e_primaries(pt);
-//     //TODO: fill q_inj from jetset
-//     SetDistr(pt);
-//     CoolingEquilibrium(pt,pt->emitters.T_esc_e_second);
-//     Fill_N(pt, pt->emitters.griglia_gamma_Ne_log, pt->emitters.Ne);
+void InitNeEquilibrium(struct blob *pt){
+    unsigned int i;
+    double T_esc;
 
+    setNgrid(pt);
+    build_Ne(pt);
+    build_Q_inj_e_primaries(pt);
+    SetDistr(pt);
 
-// 	//This flag is set to 1 to know that
-// 	pt->emitters.Distr_e_done = 1;
+    // Q_inj primaries is provided by Python through the jetset distribution buffer
+    Fill_N(pt, pt->emitters.griglia_gamma_Ne_log, pt->emitters.Q_inj_e_primaries);
 
-//     pt->emitters.N_0e = pt->emitters.N_0;
-//     pt->emitters.N_e  = N_tot(pt, N_distr_integranda);
-//     printf(pt->core.PARTICLE, "electrons");
-//     SetDistr(pt);
-// }
+    pt->emitters.Q_inj_e = pt->emitters.Q_inj_e_primaries;
+
+    T_esc = pt->emitters.T_esc_e_primaries;
+    if (T_esc <= 0) {
+        T_esc = pt->emitters.T_esc_e_second;
+    }
+    CoolingEquilibrium(pt, T_esc);
+
+    // Mirror solved Ne back to the jetset buffer for Python-side reads
+    if (pt->emitters.Ne_jetset != NULL) {
+        for (i = 0; i < pt->emitters.gamma_grid_size; i++) {
+            pt->emitters.Ne_jetset[i] = pt->emitters.Ne[i];
+        }
+    }
+
+	//This flag is set to 1 to know that
+	pt->emitters.Distr_e_done = 1;
+
+    pt->emitters.N_0e = pt->emitters.N_0;
+    pt->emitters.N_e  = N_tot(pt, N_distr_integranda);
+    pt->emitters.Q_inj_e = NULL;
+}
 
 
 
@@ -415,6 +428,7 @@ void Init_Np_Ne_pp(struct blob *pt)
     SetDistr(pt);
     pt->PP_gamma.pp_racc_elec=rate_electrons_pp(pt, pt->emitters.griglia_gamma_Ne_log[0],1);
     Fill_N(pt, pt->emitters.griglia_gamma_Ne_log, pt->emitters.Q_inj_e_second);
+    pt->emitters.Q_inj_e = pt->emitters.Q_inj_e_second;
     CoolingEquilibrium(pt,pt->emitters.T_esc_e_second);
     //Filling Ne_jetset with secondaries
     unsigned int i;
@@ -432,6 +446,7 @@ void Init_Np_Ne_pp(struct blob *pt)
     
     //set back pt->emitters.N_0 to the proton value and particle name
     pt->emitters.N_0 = pt->emitters.N_0p;
+    pt->emitters.Q_inj_e = NULL;
     sprintf(pt->core.PARTICLE, "protons");
     SetDistr(pt);
 }

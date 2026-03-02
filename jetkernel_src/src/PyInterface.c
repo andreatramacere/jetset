@@ -233,6 +233,7 @@ struct blob MakeBlob() {
     spettro_root.emitters.Norm_distr = 1;
     //spettro_root.Norm_distr_L_e_Sync=-1.0;
     spettro_root.emitters.Distr_e_done = 0;
+    spettro_root.emitters.do_equilibrium = 0;
     sprintf(spettro_root.core.DISTR, "lp");
     spettro_root.emitters.grid_bounded_to_gamma=1;
     spettro_root.emitters.gmin = 1.0e1;
@@ -242,6 +243,7 @@ struct blob MakeBlob() {
     spettro_root.emitters.gmin_griglia = -1.0;
     spettro_root.emitters.gmax_griglia = -1.0;;
     spettro_root.emitters.gamma_cooling_eq=0;
+    spettro_root.emitters.T_esc_e_primaries=0;
 
     spettro_root.core.EC_stat=0; 
     spettro_root.core.EC_stat_orig=0;
@@ -298,8 +300,8 @@ struct blob MakeBlob() {
 
     spettro_root.emitters.gam=NULL;
     spettro_root.emitters.Q_inj_e_second=NULL;
-    // NOTE: to be added for leptonic-equilibrium
-    //spettro_root.emitters.Q_inj_e_primaries=NULL;
+    spettro_root.emitters.Q_inj_e_primaries=NULL;
+    spettro_root.emitters.Q_inj_e=NULL;
 
 
     spettro_root.emitters.Ne=NULL;
@@ -553,13 +555,20 @@ void Init(struct blob *pt_base, double luminosity_distance) {
     }
     
     if (strcmp(pt_base->core.PARTICLE, "electrons") == 0) {
-        InitNe(pt_base);
+        if (pt_base->emitters.do_equilibrium == 1) {
+            InitNeEquilibrium(pt_base);
+        } else {
+            InitNe(pt_base);
+        }
         pt_base->emitters.N_tot_e_Sferic = pt_base->core.Vol_region * pt_base->emitters.N_e;
         FindNe_NpGp(pt_base);
         EvalU_e(pt_base);
         
         if (pt_base->core.verbose) {     
             printf("********************       Leptonic Scenario       ********************\n");
+            if (pt_base->emitters.do_equilibrium == 1) {
+                printf("equilibrium mode=ON\n");
+            }
             printf("type of distr=%d\n", pt_base->emitters.TIPO_DISTR);
             printf("*******  Leptonic Energetic   **********\n");
             printf("N_e=%e Ne/Ne_0=%e\n", pt_base->emitters.N_e, pt_base->emitters.N / pt_base->emitters.N_0e);
@@ -934,5 +943,4 @@ void SetBeaming(struct blob *pt){
 	     printf("beaming set to  %e\n",pt->core.beam_obj);
 	}
 }
-
 

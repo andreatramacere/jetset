@@ -230,6 +230,7 @@ struct emitters {
     int Distr_e_done;
     int Distr_p_done;
     int Distr_e_pp_done;
+    int do_equilibrium;
 
     int TIPO_DISTR;
     int grid_bounded_to_gamma;
@@ -239,8 +240,8 @@ struct emitters {
     double *Ne_jetset;
     double *Np_jetset;
     double *Q_inj_e_second;
-    //NOTE: to be added for leptonic equilibrium
-    //double *Q_inj_e_primaries;
+    double *Q_inj_e_primaries;
+    double *Q_inj_e;
     double *Ne_custom;
     double *Np_custom;
     double *gamma_e_custom;
@@ -268,6 +269,7 @@ struct emitters {
     double NH_cold_to_rel_e;
 
     double T_esc_e_second;
+    double T_esc_e_primaries;
 
     double gmin;
     double gmax;
@@ -715,8 +717,7 @@ void build_Ne_jetset(struct blob *pt);
 void build_Np_jetset(struct blob *pt);
 void Fill_Ne_IC(struct blob *pt, double g_min_IC, int stat_frame, double * Ne_IC, double * griglia_gamma_Ne_log_IC);
 void InitNe(struct blob *pt);
-//NOTE: to be added for leptonic equilibrium
-//void InitNeEquilibirum(struct blob *pt);
+void InitNeEquilibrium(struct blob *pt);
 void Init_Np_Ne_pp(struct blob *pt);
 double N_distr(struct blob *, double Gamma);
 double N_distr_U_e(struct blob *, double Gamma);
