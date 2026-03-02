@@ -353,7 +353,7 @@ class BaseEmittersDistribution(object):
                     if loglog is True:
                         eq = np.log10(eq)
                     p.ax.axvline(eq, ls='--', label='cooling. eq. second.', lw=0.5, c='r')
-
+                
                 if hasattr(self, 'gamma_e_second_inj'):
                     m(self.gamma_e_second_inj,
                       self.n_gamma_e_second_inj,
@@ -653,7 +653,7 @@ class EmittersDistribution(BaseEmittersDistribution):
                                                                     size)
                 self.gamma_cooling_eq = self._jet._blob.emitters.gamma_cooling_eq
                 self._primaries_done = True
-
+        
         elif self.emitters_type == 'protons':
             self._Ne_name, self._gammae_name = gamma_dic_e['electron_distr']
             self._Np_name, self._gammap_name = gamma_dic_p['proton_distr']
@@ -665,14 +665,18 @@ class EmittersDistribution(BaseEmittersDistribution):
             self.e_gamma_ptr = get_nested_attr(self._jet._blob, self._gammae_name)
             self._Q_inj_e_second_ptr = get_nested_attr(self._jet._blob, self._Q_inj_e_second_name)
             self.e_inj_second_gamma_ptr = get_nested_attr(self._jet._blob, self._gammae_inj_sec_name)
-            self.gamma_e,self.n_gamma_e=get_emitters(self.e_gamma_ptr,self.Ne_ptr, self._jet._blob,size)
 
+        else:
+            raise RuntimeError(f"emitters type {self.emitters_type} not valid ", available_emitters_type)
+       
+        
+        #NOTE: thisi is needed to get the pointers to Ne also in the case of protons
+        self.gamma_e,self.n_gamma_e=get_emitters(self.e_gamma_ptr,self.Ne_ptr, self._jet._blob,size)
+        if self.emitters_type == 'protons':
             self.gamma_p,self.n_gamma_p=get_emitters(self.p_gamma_ptr,self.Np_ptr, self._jet._blob,size)
             self.gamma_e_second_inj,self.n_gamma_e_second_inj=get_emitters(self.e_inj_second_gamma_ptr,self._Q_inj_e_second_ptr, self._jet._blob,size)
             self.gamma_cooling_eq_second= self._jet._blob.emitters.gamma_cooling_eq
             self._secondaries_done = True
-        else:
-            raise RuntimeError(f"emitters type {self.emitters_type} not valid ", available_emitters_type)
        
         
         
