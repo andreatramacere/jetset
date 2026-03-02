@@ -864,9 +864,6 @@ class InjEmittersDistribution(BaseEmittersDistribution):
         self._Q_inj_e_second_ptr = get_nested_attr(self._temp_ev._blob, self._Q_inj_e_second_name)
 
     def add_par(self, name, par_type, val, vmax, vmin, unit='', log=False, frozen=False):
-        #if log is True:
-        #    val = np.log10(val)
-
         if name not in self._parameters_dict.keys():
             self._parameters_dict[name]=JetModelDictionaryPar(ptype=par_type,
                                                               vmin=vmin,
@@ -879,7 +876,6 @@ class InjEmittersDistribution(BaseEmittersDistribution):
         else:
             raise ValueError('par',name,'already assigned')
 
-        #print('==> add par',name,val,log)
         self.parameters.add_par(ModelParameter(name=name,
                                                par_type=par_type,
                                                val=val,
@@ -889,34 +885,6 @@ class InjEmittersDistribution(BaseEmittersDistribution):
                                                frozen=frozen,
                                                log=log,))
 
-    def set_jet(self, jet):
-        if jet is not None:
-
-            #name passed to the C code
-            #do not change
-            name = 'jetset'
-
-            self._jet = jet
-            set_str_attr(jet._blob, 'core.DISTR', name)
-            set_str_attr(jet._blob, 'core.PARTICLE', self.emitters_type)
-
-            p = self._jet.get_par_by_name('gmin')
-            if p is not None:
-                p.set(val=self.parameters.get_par_by_name('gmin').val_lin)
-            else:
-                p = self.parameters.get_par_by_name('gmin')
-            set_nested_attr(jet._blob, 'emitters.gmin', p.val_lin)
-
-            p = self._jet.get_par_by_name('gmax')
-            if p is not None:
-                p.set(val=self.parameters.get_par_by_name('gmax').val_lin)
-            else:
-                p = self.parameters.get_par_by_name('gmax')
-            set_nested_attr(jet._blob, 'emitters.gmax', p.val_lin)
-
-            self._jet._blob.emitters.gamma_grid_size = self._gamma_grid_size
-        else:
-            self._jet=jet
 
 
 class InjEmittersArrayDistribution(InjEmittersDistribution):
