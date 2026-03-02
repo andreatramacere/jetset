@@ -2144,17 +2144,17 @@ class Jet(JetBase):
         self.show_emitters_distribution()
 
     def add_bremss_ep_component(self):
-        self._add_spectral_component('Bremss_ep', var_name='core.do_bremss_ep', state_dict=dict((('on', 1), ('off', 0))))
+        self._add_spectral_component('Bremss_ep', var_name='Bremss_ep.do_bremss_ep', state_dict=dict((('on', 1), ('off', 0))))
 
     def add_pp_gamma_component(self):
-        self._add_spectral_component('PP_gamma', var_name='core.do_pp_gamma', state_dict=dict((('on', 1), ('off', 0))))
+        self._add_spectral_component('PP_gamma', var_name='PP_gamma.do_pp_gamma', state_dict=dict((('on', 1), ('off', 0))))
 
     def add_pp_neutrino_component(self):
-        self._add_spectral_component('PP_neutrino_tot', var_name='core.do_pp_neutrino',
+        self._add_spectral_component('PP_neutrino_tot', var_name='PP_neutrino.do_pp_neutrino',
                                      state_dict=dict((('on', 1), ('off', 0))))
-        self._add_spectral_component('PP_neutrino_mu', var_name='core.do_pp_neutrino',
+        self._add_spectral_component('PP_neutrino_mu', var_name='PP_neutrino.do_pp_neutrino',
                                      state_dict=dict((('on', 1), ('off', 0))))
-        self._add_spectral_component('PP_neutrino_e', var_name='core.do_pp_neutrino',
+        self._add_spectral_component('PP_neutrino_e', var_name='PP_neutrino.do_pp_neutrino',
                                      state_dict=dict((('on', 1), ('off', 0))))
 
 
