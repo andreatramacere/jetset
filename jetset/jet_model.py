@@ -844,8 +844,10 @@ class JetBase(Model):
             self._sync_jet_parameters_from_inj_emitters_distribution()
             self.emitters_distribution._update_parameters_dict()
             self._emitters_distribution_name = self.emitters_distribution.name
-            self.parameters.add_par( ModelParameter(name='L_inj', par_type='L_inj', val=1E-3, val_min=0, val_max=None, units='erg/s'))
-
+            if self.parameters.get_par_by_name('L_inj') is None:
+                self.parameters.add_par( ModelParameter(name='L_inj', par_type='L_inj', val=1E-3, val_min=0, val_max=None, units='erg/s'))
+            
+            
         elif isinstance(distr, ArrayDistribution):
             self._disable_leptonic_equilibrium(remove_parameters=True)
             self._emitters_distribution_name = 'from_array'
@@ -1714,10 +1716,9 @@ class JetBase(Model):
                 self._blob.emitters.T_esc_e_primaries = p_tesc.val
             else:
                 self._blob.emitters.T_esc_e_primaries = 0
-        
-        if self._blob.emitters.do_equilibrium == 0:
             if self.emitters_distribution._user_defined is True:
                 self.emitters_distribution._fill()
+
 
         BlazarSED.Init(self._blob, self.get_DL_cm())
         if self.emitters_distribution._user_defined is True:

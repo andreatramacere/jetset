@@ -204,7 +204,8 @@ class BaseEmittersDistribution(object):
         self._gamma_grid = np.logspace(np.log10(gmin), np.log10(gmax), self._gamma_grid_size)
 
     def eval_N(self):
-        self.update()
+        #NOTE: commented until is fixed the setting to zero of Ne_jetset for protons
+        #self.update()
         if self.emitters_type=='electrons':
             return np.trapezoid(self.n_gamma_e,self.gamma_e)
         elif self.emitters_type=='protons':
@@ -216,7 +217,8 @@ class BaseEmittersDistribution(object):
             raise  RuntimeError('emitters type',self.emitters_type, 'not valid')
 
     def eval_U(self, gmin=None, gmax=None):
-        self.update()
+        #NOTE: commented until is fixed the setting to zero of Ne_jetset for protons
+        #self.update()
         if self.emitters_type == 'electrons':# or self.emitters_type == 'electrons-equilibrium':
             x=self.gamma_e
             y=self.n_gamma_e * self.gamma_e
@@ -287,7 +289,8 @@ class BaseEmittersDistribution(object):
         if hasattr(self,'_jet'):
             if self._jet is not None:
                 self._set_blob()
-        self.update()
+        #NOTE: commented until is fixed the setting to zero of Ne_jetset for protons
+        #self.update()
 
         if self.emitters_type == 'electrons':
             if label is None:
@@ -670,7 +673,7 @@ class EmittersDistribution(BaseEmittersDistribution):
             raise RuntimeError(f"emitters type {self.emitters_type} not valid ", available_emitters_type)
        
         
-        #NOTE: thisi is needed to get the pointers to Ne also in the case of protons
+        #NOTE: this is needed to get the pointers to Ne also in the case of protons
         self.gamma_e,self.n_gamma_e=get_emitters(self.e_gamma_ptr,self.Ne_ptr, self._jet._blob,size)
         if self.emitters_type == 'protons':
             self.gamma_p,self.n_gamma_p=get_emitters(self.p_gamma_ptr,self.Np_ptr, self._jet._blob,size)
@@ -852,15 +855,32 @@ class InjEmittersDistribution(BaseEmittersDistribution):
                 q_ptr = get_nested_attr(self._jet._blob, 'emitters.Q_inj_e_primaries')
                 set_emitters(q_ptr,self._jet._blob,size,self.n_gamma_e)
     def eval_U_q(self):
-        return self.eval_U()
+        self._fill()
+        #if self.emitters_type == 'electrons':# or self.emitters_type == 'electrons-equilibrium':
+        x=self.gamma_e
+        y=self.f
+        cost=m_e.cgs.value * (c.cgs ** 2).value
+
+
+        #msk = np.ones(x.shape, dtype=bool)
+        #if gmin is not None:
+        #    msk = x>=gmin
+        #if gmax is not None:
+        #    msk = np.logical_and(msk, x<=gmax)
+
+        return np.trapezoid(y,x) * cost
+
+        #self.update()
+        #return self.eval_U()
 
     def _set_L_inj(self, L_inj_target_erg, volume):
         if L_inj_target_erg >0:
             print(L_inj_target_erg,self.eval_U_q(), volume )
             self.parameters.Q.val *=L_inj_target_erg/(self.eval_U_q() * volume )
         else:
-            pass
-        self.update()
+            raise ValueError('L_inj_target_erg must be>0')
+        #NOTE: commented until is fixed the setting to zero of Ne_jetset for protons
+        #self.update()
     
     #NOTE: not used, to be removed
     def set_temp_ev(self):
