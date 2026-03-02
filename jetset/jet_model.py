@@ -239,10 +239,7 @@ class JetBase(Model):
         _model['version']=get_info()['version']
         _model['name'] = self.name
         _model['emitters_type'] = self.emitters_distribution.emitters_type
-        #if isinstance(self.emitters_distribution,JetkernelEmittersDistribution):
-        #    _model['emitters_distribution'] = self._emitters_distribution_name
-        #    _model['emitters_distribution_log_values'] = self._emitters_distribution_log_values
-        #    _model['emitters_distribution_class']='JetkernelEmittersDistribution'
+       
         if isinstance(self.emitters_distribution,EmittersDistribution):
             self._original_emitters_distr._copy_from_jet(self)
             _model['custom_emitters_distribution']=self._original_emitters_distr
@@ -254,14 +251,6 @@ class JetBase(Model):
         if hasattr(self,'T_esc_e_second'):
             _model['T_esc_e_second']=self.T_esc_e_second
 
-        #_model['leptonic_equilibrium'] = {'enabled': bool(getattr(self, '_leptonic_equilibrium', False))}
-        #if _model['leptonic_equilibrium']['enabled'] is True:
-        #    self._sync_inj_emitters_distribution_from_jet_parameters()
-        #    _p_tesc = self.parameters.get_par_by_name('T_esc_e_primaries')
-        #    _model['leptonic_equilibrium']['T_esc_e_primaries'] = _p_tesc.val if _p_tesc is not None else None
-        #    if self.inj_emitters_distribution is not None:
-        #        _model['leptonic_equilibrium']['inj_emitters_distribution'] = copy.deepcopy(self.inj_emitters_distribution)
-        #        clean_numba(_model['leptonic_equilibrium']['inj_emitters_distribution'])
         
         if hasattr(self,'geometry'):
             _model['geometry']=self.geometry
@@ -362,11 +351,7 @@ class JetBase(Model):
             del(_model['electron_distribution_log_values'])
             _model['emitters_distribution_log_values']=_v
 
-        #if _model['emitters_distribution_class'] == 'JetkernelEmittersDistribution':
-        #    self.set_emitters_distribution(distr=_model['emitters_distribution'],
-        #                                   log_values=_model['emitters_distribution_log_values'],
-        #                                   emitters_type=emitters_type,
-        #                                   init=False)
+
         if _model['emitters_distribution_class'] == 'EmittersDistribution':
             self.set_emitters_distribution(distr=_model['custom_emitters_distribution'], init=False)
         else:
@@ -422,21 +407,6 @@ class JetBase(Model):
         _par_dict = _model['internal_pars']
         for k in _par_dict.keys():
             setattr(self,k,_par_dict[str(k)])
-
-        # _eq = _model.get('leptonic_equilibrium', None)
-        # if _eq is not None and _eq.get('enabled', False):
-        #     q_inj = _eq.get('inj_emitters_distribution', None)
-        #     if q_inj is not None:
-        #         self.set_emitters_distribution(distr=q_inj,
-        #                                        log_values=getattr(q_inj, '_log_values', False),
-        #                                        emitters_type='electrons',
-        #                                        init=False)
-        #         _p_tesc = self.parameters.get_par_by_name('T_esc_e_primaries')
-        #         _v_tesc = _eq.get('T_esc_e_primaries', None)
-        #         if _p_tesc is not None and _v_tesc is not None:
-        #             _p_tesc.set(val=_v_tesc)
-
-    
 
 
     def _build_blob(self, verbose=False):
