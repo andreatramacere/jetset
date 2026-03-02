@@ -24,7 +24,9 @@ from .cosmo_tools import Cosmo
 from .utils import set_str_attr, old_model_warning, get_info, clean_var_name, get_nested_attr
 from .jet_paramters import *
 from .jet_emitters import *
-from .jet_emitters_factory import EmittersFactory
+from .jet_emitters_factory import EmittersFactory, InjEmittersFactory
+from .jet_kernel_tools import set_emitters_c_array1d_fast as set_emitters
+from .jet_kernel_tools import get_emitters_c_array1d_fast as get_emitters
 from .jet_tools import *
 from .mathkernel_helper import bessel_table_file_path
 from .internal_absorption import InternalAbsorption
@@ -158,6 +160,9 @@ class JetBase(Model):
         self._electron_distribution_dic= None
         self._external_photon_fields_dic= None
         self._original_emitters_distr = None
+        self._original_inj_emitters_distr = None
+        self.inj_emitters_distribution = None
+        self._leptonic_equilibrium = False
         self._energetic = None
         self.skip_internal_absorption_serial=False
         self._setup(emitters_distribution,emitters_distribution_log_values,beaming_expr,emitters_type)
@@ -248,6 +253,15 @@ class JetBase(Model):
 
         if hasattr(self,'T_esc_e_second'):
             _model['T_esc_e_second']=self.T_esc_e_second
+
+        #_model['leptonic_equilibrium'] = {'enabled': bool(getattr(self, '_leptonic_equilibrium', False))}
+        #if _model['leptonic_equilibrium']['enabled'] is True:
+        #    self._sync_inj_emitters_distribution_from_jet_parameters()
+        #    _p_tesc = self.parameters.get_par_by_name('T_esc_e_primaries')
+        #    _model['leptonic_equilibrium']['T_esc_e_primaries'] = _p_tesc.val if _p_tesc is not None else None
+        #    if self.inj_emitters_distribution is not None:
+        #        _model['leptonic_equilibrium']['inj_emitters_distribution'] = copy.deepcopy(self.inj_emitters_distribution)
+        #        clean_numba(_model['leptonic_equilibrium']['inj_emitters_distribution'])
         
         if hasattr(self,'geometry'):
             _model['geometry']=self.geometry
@@ -408,6 +422,19 @@ class JetBase(Model):
         _par_dict = _model['internal_pars']
         for k in _par_dict.keys():
             setattr(self,k,_par_dict[str(k)])
+
+        # _eq = _model.get('leptonic_equilibrium', None)
+        # if _eq is not None and _eq.get('enabled', False):
+        #     q_inj = _eq.get('inj_emitters_distribution', None)
+        #     if q_inj is not None:
+        #         self.set_emitters_distribution(distr=q_inj,
+        #                                        log_values=getattr(q_inj, '_log_values', False),
+        #                                        emitters_type='electrons',
+        #                                        init=False)
+        #         _p_tesc = self.parameters.get_par_by_name('T_esc_e_primaries')
+        #         _v_tesc = _eq.get('T_esc_e_primaries', None)
+        #         if _p_tesc is not None and _v_tesc is not None:
+        #             _p_tesc.set(val=_v_tesc)
 
     
 
@@ -673,6 +700,143 @@ class JetBase(Model):
     def available_emitters_distributions():
         EmittersFactory.available_distributions()
 
+    @staticmethod
+    def _coerce_inj_emitters_distribution(q_inj):
+        if isinstance(q_inj, InjEmittersDistribution) is False:
+            raise RuntimeError('q_inj has to be an instance of InjEmittersDistribution')
+        if q_inj.emitters_type != 'electrons':
+            raise RuntimeError('q_inj emitters_type has to be electrons')
+
+        if hasattr(q_inj, 'distr_func') is True and q_inj.distr_func is not None:
+            return q_inj
+
+        try:
+            q_inj_from_factory = InjEmittersFactory().create_inj_emitters(name=q_inj.spectral_type,
+                                                                           gamma_grid_size=q_inj._gamma_grid_size,
+                                                                           log_values=q_inj._log_values,
+                                                                           emitters_type=q_inj.emitters_type,
+                                                                           normalize=q_inj.normalize)
+            for p in q_inj.parameters.par_array:
+                _p = q_inj_from_factory.parameters.get_par_by_name(p.name)
+                if _p is not None:
+                    _p.set(val=p.val, skip_dep_par_warning=True)
+            return q_inj_from_factory
+        except Exception as e:
+            raise RuntimeError('q_inj has no distribution function; use InjEmittersFactory().create_inj_emitters(...) or set_distr_func(...)') from e
+
+    def _disable_leptonic_equilibrium(self, remove_parameters=False):
+        self._leptonic_equilibrium = False
+        self.inj_emitters_distribution = None
+        self._original_inj_emitters_distr = None
+        self._blob.emitters.do_equilibrium = 0
+        if remove_parameters is True:
+            for par_name in ('T_esc_e_primaries',):
+                p = self.parameters.get_par_by_name(par_name)
+                if p is not None:
+                    self.parameters.del_par(p)
+
+    def _ensure_leptonic_equilibrium_parameters(self):
+        if self.parameters.get_par_by_name('T_esc_e_primaries') is None:
+            self.parameters.add_par(ModelParameter(name='T_esc_e_primaries',
+                                                   val=0,
+                                                   par_type='escape_time',
+                                                   units='s',
+                                                   val_min=0,
+                                                   val_max=None,
+                                                   frozen=False,
+                                                   log=False))
+
+    def _sync_inj_emitters_distribution_from_jet_parameters(self):
+        if self.inj_emitters_distribution is None:
+            return
+        for inj_par in self.inj_emitters_distribution.parameters.par_array:
+            jet_par = self.parameters.get_par_by_name(inj_par.name)
+            if jet_par is not None:
+                inj_par.set(val=jet_par.val, skip_dep_par_warning=True)
+
+    def _sync_jet_parameters_from_inj_emitters_distribution(self):
+        if self.inj_emitters_distribution is None:
+            return
+        for inj_par in self.inj_emitters_distribution.parameters.par_array:
+            jet_par = self.parameters.get_par_by_name(inj_par.name)
+            if jet_par is not None:
+                jet_par.set(val=inj_par.val, skip_dep_par_warning=True)
+
+    def _build_equilibrium_carrier_distribution(self):
+        size = int(self.inj_emitters_distribution._gamma_grid_size)
+        gmax = self.inj_emitters_distribution.parameters.get_par_by_name('gmax').val_lin
+        gmax = max(gmax, 1.0)
+        gamma_array = np.logspace(0.0, np.log10(gmax), size)
+        n_gamma_array = np.zeros(gamma_array.size, dtype=np.float64)
+        return EmittersArrayDistribution(name=f'{self.inj_emitters_distribution.name}_eq_carrier',
+                                         emitters_type='electrons',
+                                         gamma_array=gamma_array,
+                                         n_gamma_array=n_gamma_array,
+                                         normalize=False)
+
+    def _set_equilibrium_injection_on_blob(self):
+        if self.inj_emitters_distribution is None:
+            raise RuntimeError('leptonic equilibrium mode requires an InjEmittersDistribution')
+
+        self._sync_inj_emitters_distribution_from_jet_parameters()
+
+        p_gmin = self.parameters.get_par_by_name('gmin')
+        p_gmax = self.parameters.get_par_by_name('gmax')
+        if p_gmin is None or p_gmax is None:
+            raise RuntimeError('gmin/gmax parameters are required to initialize leptonic equilibrium')
+
+        self._blob.emitters.gmin = 1
+        self._blob.emitters.gmax = p_gmax.val_lin
+        self._blob.emitters.gamma_grid_size = int(self.inj_emitters_distribution._gamma_grid_size)
+
+        p_tesc = self.parameters.get_par_by_name('T_esc_e_primaries')
+        if p_tesc is not None and p_tesc.val > 0:
+            t_esc = p_tesc.val
+        elif self.geometry == 'spherical':
+            t_esc = self.parameters.R.val / BlazarSED.vluce_cm
+        else:
+            t_esc = self.parameters.R_sh.val * self.parameters.h_sh.val / BlazarSED.vluce_cm
+        self._blob.emitters.T_esc_e_primaries = t_esc
+
+        set_str_attr(self._blob, 'core.DISTR', 'jetset')
+        set_str_attr(self._blob, 'core.PARTICLE', 'electrons')
+
+        BlazarSED.setNgrid(self._blob)
+        BlazarSED.build_Ne_jetset(self._blob)
+        size = int(self._blob.emitters.gamma_grid_size)
+        gamma_ptr = get_nested_attr(self._blob, 'emitters.griglia_gamma_jetset_Ne_log')
+        ne_ptr = get_nested_attr(self._blob, 'emitters.Ne_jetset')
+        gamma_blob, _ = get_emitters(gamma_ptr, ne_ptr, self._blob, size)
+
+        self.inj_emitters_distribution._gamma_grid_size = size
+        self.inj_emitters_distribution._gamma_grid = np.asarray(gamma_blob, dtype=np.float64)
+        f = self.inj_emitters_distribution._eval_func(gamma=self.inj_emitters_distribution._gamma_grid)
+        gmin_inj = self.inj_emitters_distribution.parameters.get_par_by_name('gmin').val_lin
+        gmax_inj = self.inj_emitters_distribution.parameters.get_par_by_name('gmax').val_lin
+        f = np.asarray(f, dtype=np.float64)
+        f[self.inj_emitters_distribution._gamma_grid < gmin_inj] = 0.0
+        f[self.inj_emitters_distribution._gamma_grid > gmax_inj] = 0.0
+        norm = 1.0
+        if self.inj_emitters_distribution.normalize is True:
+            integ = np.trapezoid(f, self.inj_emitters_distribution._gamma_grid)
+            if integ > 0:
+                norm = 1.0 / integ
+        BlazarSED.InitRadiative(self._blob,0)
+        volume=self._blob.core.Vol_region
+        self.inj_emitters_distribution._set_L_inj(self.parameters.get_par_by_name('L_inj').val,volume )
+        q_inj = f * norm * self.inj_emitters_distribution.parameters.get_par_by_name('Q').val
+        q_inj = np.asarray(q_inj, dtype=np.float64)
+        q_inj[np.isnan(q_inj)] = 0
+        q_inj[np.isinf(q_inj)] = 0
+
+        self.inj_emitters_distribution.f = q_inj
+        self.inj_emitters_distribution.gamma_e = self.inj_emitters_distribution._gamma_grid.copy()
+        self.inj_emitters_distribution.n_gamma_e = q_inj.copy()
+
+        # Safety/clarity: clear transport buffer before writing q_inj.
+        set_emitters(ne_ptr, self._blob, size, np.zeros(size, dtype=np.float64))
+        set_emitters(ne_ptr, self._blob, size, q_inj)
+
     def set_emitters_distribution(self, distr=None, log_values=False, emitters_type='electrons', init=True):
         if init is True:
             self.set_blob()
@@ -681,23 +845,52 @@ class JetBase(Model):
         if self._emitters_distribution_dic is not None:
             self.del_par_from_dic(self._emitters_distribution_dic)
 
-        if isinstance(distr, ArrayDistribution):
+        if isinstance(distr, InjEmittersDistribution):
+            q_inj = self._coerce_inj_emitters_distribution(distr)
+            if hasattr(q_inj, '_activate_numba'):
+                q_inj._activate_numba()
+
+            self._leptonic_equilibrium = True
+            self._blob.emitters.do_equilibrium = 1
+            self.inj_emitters_distribution = copy.deepcopy(q_inj)
+            self._original_inj_emitters_distr = copy.deepcopy(q_inj)
+
+            self._emitters_distribution_dic = copy.deepcopy(self.inj_emitters_distribution._parameters_dict)
+            if 'gmin' in self._emitters_distribution_dic:
+                # gmin drives only q_inj in equilibrium mode, not the solved Ne grid.
+                self._emitters_distribution_dic['gmin'].is_in_jetkernel = False
+                self._emitters_distribution_dic['gmin'].jetkernel_par_name = None
+            if 'gmax' in self._emitters_distribution_dic:
+                self._emitters_distribution_dic['gmax'].is_in_jetkernel = True
+                self._emitters_distribution_dic['gmax'].jetkernel_par_name = 'emitters.gmax'
+
+            self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
+            self._sync_jet_parameters_from_inj_emitters_distribution()
+            self._ensure_leptonic_equilibrium_parameters()
+
+            self.emitters_distribution = self._build_equilibrium_carrier_distribution()
+            self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
+            self.emitters_distribution.set_jet(self)
+            self._sync_jet_parameters_from_inj_emitters_distribution()
+            self.emitters_distribution._update_parameters_dict()
+            self._emitters_distribution_name = self.emitters_distribution.name
+            self.parameters.add_par( ModelParameter(name='L_inj', par_type='L_inj', val=1E-3, val_min=0, val_max=None, units='erg/s'))
+
+        elif isinstance(distr, ArrayDistribution):
+            self._disable_leptonic_equilibrium(remove_parameters=True)
             self._emitters_distribution_name = 'from_array'
             self.emitters_distribution = EmittersDistribution.from_array(self, distr, emitters_type=emitters_type)
-
-        #elif isinstance(distr, JetkernelEmittersDistribution):
-        #    self.emitters_distribution = distr
-        #
-        #    self._emitters_distribution_name = self.emitters_distribution.name
-        #    self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
-        #
-        #    self.parameters.add_par_from_dict(self._emitters_distribution_dic,self,'_blob',JetParameter)
-
+            self._original_emitters_distr = copy.deepcopy(self.emitters_distribution)
+            self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
+            self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
+            self._attach_emitters_pars_to_jet(preserve_value_emitters=True)
+            self.emitters_distribution.update()
 
         elif isinstance(distr, EmittersDistribution):
+            self._disable_leptonic_equilibrium(remove_parameters=True)
             if hasattr(distr,'_activate_numba'):
                 distr._activate_numba()
-            self._original_emitters_distr = distr
+            self._original_emitters_distr = copy.deepcopy(distr)
             self.emitters_distribution = copy.deepcopy(distr)
             self._update_emitters_pars_dependence()
             self.emitters_distribution.set_jet(self)
@@ -705,11 +898,12 @@ class JetBase(Model):
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
             self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
-            self._attach_pars_to_jet(preserve_value_emitters=True)
-
+            self._attach_emitters_pars_to_jet(preserve_value_emitters=True)
+            
             self.emitters_distribution.update()
             
         elif isinstance(distr, str):
+            self._disable_leptonic_equilibrium(remove_parameters=True)
             nf=EmittersFactory()
             self.emitters_distribution = nf.create_emitters(distr, log_values=log_values, emitters_type=emitters_type)
             if hasattr( self.emitters_distribution,'_activate_numba'):
@@ -720,23 +914,31 @@ class JetBase(Model):
             self._emitters_distribution_name = self.emitters_distribution.name
             self._emitters_distribution_dic = self.emitters_distribution._parameters_dict
             self.parameters.add_par_from_dict(self._emitters_distribution_dic, self, '_blob', JetParameter)
-            self._attach_pars_to_jet(preserve_value_emitters=True)
+            self._attach_emitters_pars_to_jet(preserve_value_emitters=True)
             self._update_emitters_pars_dependence()
             self.emitters_distribution.update()
         else:
             raise RuntimeError('distr',type(distr),'not valid should be a string or an',type(EmittersDistribution),'instance')
 
-    def _attach_pars_to_jet(self, preserve_value_emitters=False):
+    def _attach_emitters_pars_to_jet(self, preserve_value_emitters=False, skip=None):
+
+        if skip is None:
+            skip = []
 
         v_dict={}
         for par in self.emitters_distribution.parameters.par_array[::]:
-            self.emitters_distribution.parameters.del_par(par)
-            v_dict[par.name]=par.val
+            if par.name not in skip:
+                self.emitters_distribution.parameters.del_par(par)
+                v_dict[par.name]=par.val
         for k in self._emitters_distribution_dic.keys():
             par = self.parameters.get_par_by_name(k)
-            if preserve_value_emitters is True:
+            if par is None:
+                continue
+            if preserve_value_emitters is True and k in v_dict:
                 par.set(val=v_dict[k],skip_dep_par_warning=True)
             self.emitters_distribution.parameters.add_par(par)
+
+  
 
 
     def _update_emitters_pars_dependence(self):
@@ -746,6 +948,7 @@ class JetBase(Model):
                 self.emitters_distribution.parameters.reset_dependencies()
                 break
 
+    
     def get_emitters_distribution_name(self):
         return self.emitters_distribution.name
 
@@ -1406,6 +1609,7 @@ class JetBase(Model):
         print (" gmax grid : %e"%self._blob.emitters.gmax_griglia)
         print(" normalization: ", self.Norm_distr)
         print(" log-values: ", self._emitters_distribution_log_values)
+        #print(" leptonic equilibrium: ", getattr(self, '_leptonic_equilibrium', False))
         _p = self.parameters.get_par_by_name('NH_cold_to_rel_e') 
         if _p is not None:
             print(' ratio of cold protons to relativistic electrons: %e'%_p.val)
@@ -1529,12 +1733,23 @@ class JetBase(Model):
                     self._blob.emitters.T_esc_e_second = self.parameters.R_sh.val*self.parameters.h_sh.val / BlazarSED.vluce_cm
             else:
                 self._blob.emitters.T_esc_e_second = self.T_esc_e_second
-        if self.emitters_distribution._user_defined is True:
-            self.emitters_distribution._fill()
+
+        if self._leptonic_equilibrium is True:
+            self._blob.emitters.do_equilibrium = 1
+            self._set_equilibrium_injection_on_blob()
+        else:
+            self._blob.emitters.do_equilibrium = 0
+            p_tesc = self.parameters.get_par_by_name('T_esc_e_primaries')
+            if p_tesc is not None:
+                self._blob.emitters.T_esc_e_primaries = p_tesc.val
+            else:
+                self._blob.emitters.T_esc_e_primaries = 0
+            if self.emitters_distribution._user_defined is True:
+                self.emitters_distribution._fill()
+
         BlazarSED.Init(self._blob, self.get_DL_cm())
         if self.emitters_distribution._user_defined is True:
             self.emitters_distribution._set_blob()
-
 
     #@safe_run
     def set_external_fields(self):

@@ -305,6 +305,8 @@ class InjEmittersFactory(EmittersFactory):
 
         if name not in self._available_dict.keys():
             raise RuntimeError('name', name, 'not among available', self._available_dict.keys())
+        
+
         return self._func_dict[name](gamma_grid_size=gamma_grid_size,
                                      log_values=log_values,
                                      normalize=normalize,

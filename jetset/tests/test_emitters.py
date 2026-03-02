@@ -148,3 +148,98 @@ class TestEmitters(TestBase):
         N1 = jetkernel.MPC2*np.trapezoid(j.emitters_distribution.n_gamma_p[m]*j.emitters_distribution.gamma_p[m],j.emitters_distribution.gamma_p[m])
         N2 = j.emitters_distribution.eval_U(gmin=gmin)
         np.testing.assert_allclose(N1, N2, rtol=1E-5)
+
+    def test_leptonic_equilibrium_array_injection(self, plot=True):
+        from jetset.jet_model import Jet
+        from jetset.jet_emitters import InjEmittersArrayDistribution
+        import numpy as np
+
+        gamma = np.logspace(1, 6, 300)
+        q_gamma = np.power(gamma, -2.0) * np.exp(-gamma / 1E5)
+
+        q_inj = InjEmittersArrayDistribution(name='inj_arr',
+                                             gamma_array=gamma,
+                                             n_gamma_array=q_gamma,
+                                             normalize=False)
+
+        j = Jet(emitters_distribution=q_inj, emitters_type='electrons', verbose=False)
+        j.parameters.T_esc_e_primaries.val = 1E5
+
+        j.eval()
+
+        assert j._blob.emitters.do_equilibrium == 1
+        assert j.emitters_distribution._primaries_done is True
+        assert hasattr(j.emitters_distribution, 'gamma_e_inj')
+        assert hasattr(j.emitters_distribution, 'n_gamma_e_inj')
+        assert j.emitters_distribution.gamma_e_inj.size == j.emitters_distribution.gamma_e.size
+        assert np.any(j.emitters_distribution.n_gamma_e_inj > 0)
+        assert j.emitters_distribution.gamma_cooling_eq > 0
+
+    def test_leptonic_equilibrium_injection_parameters_on_jet(self, plot=True):
+        from jetset.jet_model import Jet
+        from jetset.jet_emitters_factory import InjEmittersFactory
+        import numpy as np
+
+        q_inj = InjEmittersFactory().create_inj_emitters('pl',
+                                                         emitters_type='electrons',
+                                                         normalize=False)
+        q_inj.parameters.p.val = 2.5
+        q_inj.parameters.Q.val = 5E-4
+
+        j = Jet(emitters_distribution=q_inj, emitters_type='electrons', verbose=False)
+        j.parameters.T_esc_e_primaries.val = 1E5
+
+        assert j.parameters.get_par_by_name('Q_inj_p') is not None
+        assert j.parameters.get_par_by_name('Q_inj_Q') is not None
+        np.testing.assert_allclose(j.parameters.Q_inj_p.val, q_inj.parameters.p.val, rtol=1E-12)
+        np.testing.assert_allclose(j.parameters.Q_inj_Q.val, q_inj.parameters.Q.val, rtol=1E-12)
+
+        j.parameters.Q_inj_p.val = 2.2
+        j.parameters.Q_inj_Q.val = 1E-3
+        j.eval()
+
+        np.testing.assert_allclose(j.inj_emitters_distribution.parameters.p.val, 2.2, rtol=1E-12)
+        np.testing.assert_allclose(j.parameters.Q_inj_Q.val, 1E-3, rtol=1E-12)
+        assert j.inj_emitters_distribution.parameters.Q.val > 0
+        assert np.any(j.emitters_distribution.n_gamma_e_inj > 0)
+
+        j._clear_leptonic_equilibrium_state(remove_parameters=True)
+        assert j.parameters.get_par_by_name('Q_inj_p') is None
+        assert j.parameters.get_par_by_name('Q_inj_Q') is None
+
+    def test_leptonic_equilibrium_plain_inj_distribution_ctor(self, plot=True):
+        from jetset.jet_model import Jet
+        from jetset.jet_emitters import InjEmittersDistribution
+        import numpy as np
+
+        q_inj = InjEmittersDistribution(name='test inj', spectral_type='pl')
+        q_inj.parameters.Q.val = 2E-4
+
+        j = Jet(emitters_distribution=q_inj, emitters_type='electrons', verbose=False)
+        j.parameters.T_esc_e_primaries.val = 1E5
+        j.eval()
+
+        assert j.parameters.get_par_by_name('Q_inj_p') is not None
+        np.testing.assert_allclose(j.parameters.Q_inj_Q.val, 2E-4, rtol=1E-12)
+        assert np.any(j.emitters_distribution.n_gamma_e_inj > 0)
+
+    def test_leptonic_equilibrium_direct_constructor(self, plot=True):
+        from jetset.jet_model import Jet
+        from jetset.jet_emitters import InjEmittersDistribution
+        import numpy as np
+
+        q_inj = InjEmittersDistribution(name='test inj', spectral_type='pl')
+        q_inj.parameters.Q.val = 3E-4
+
+        j = Jet(emitters_distribution=q_inj, emitters_type='electrons', verbose=False)
+        assert j._leptonic_equilibrium is True
+        assert j.parameters.get_par_by_name('T_esc_e_primaries') is not None
+        assert j.parameters.get_par_by_name('Q_inj_p') is not None
+        assert j.parameters.get_par_by_name('Q_inj_Q') is not None
+
+        j.parameters.T_esc_e_primaries.val = 1E5
+        j.eval()
+
+        assert j._blob.emitters.do_equilibrium == 1
+        np.testing.assert_allclose(j._blob.emitters.T_esc_e_primaries, 1E5, rtol=1E-12)
+        assert np.any(j.emitters_distribution.n_gamma_e_inj > 0)

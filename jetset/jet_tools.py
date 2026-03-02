@@ -57,6 +57,10 @@ def build_emitting_region_dict(cosmo, beaming_expr='delta',emitters_type='electr
         model_dic['NH_cold_to_rel_e'] = JetModelDictionaryPar(ptype='cold_p_to_rel_e_ratio', vmin=0, vmax=None, punit='',
                                                               froz=True, log=False,
                                                               jetkernel_par_name='emitters.NH_cold_to_rel_e')
+        model_dic['T_esc_e_primaries'] = JetModelDictionaryPar(ptype='escape_time', vmin=0, vmax=None, punit='s',
+                                                               froz=False, log=False,
+                                                               val=0.0,
+                                                               jetkernel_par_name='emitters.T_esc_e_primaries')
 
     if beaming_expr == 'bulk_theta':
         model_dic['theta'] = JetModelDictionaryPar(ptype='jet-viewing-angle', vmin=0, vmax=90, punit='deg',

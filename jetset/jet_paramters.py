@@ -68,6 +68,7 @@ class JetParameter(ModelParameter):
                               'acc_energy',
                               'time_ev_output',
                               'exp_start_time',
+                              'L_inj',
                               'emitters_density',
                               'target_density',
                               'cold_p_to_rel_e_ratio',

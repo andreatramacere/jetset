@@ -91,9 +91,7 @@ n_seed_dic['Star']=['Star.spec.n_nu','Sync.spec.nu']
 #Electron distributions
 
 gamma_dic_e={'electron_distr':['emitters.Ne_jetset','emitters.griglia_gamma_Ne_log']}
-#NOTE: to be added for leptonic-equilibrium
-#gamma_dic_e_equilibrium={'e_inj':['emitters.Q_inj_e_primaries','emitters.griglia_gamma_Ne_log']}
-
+gamma_dic_e_equilibrium={'e_inj':['emitters.Q_inj_e_primaries','emitters.griglia_gamma_Ne_log']}
 
 gamma_dic_p={'proton_distr':['emitters.Np_jetset','emitters.griglia_gamma_Np_log']}
 gamma_dic_pp_e_second={'e_second_inj':['emitters.Q_inj_e_second','emitters.griglia_gamma_Ne_log']}
