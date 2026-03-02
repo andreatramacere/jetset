@@ -1715,8 +1715,9 @@ class JetBase(Model):
             else:
                 self._blob.emitters.T_esc_e_primaries = 0
         
-        if self.emitters_distribution._user_defined is True:
-            self.emitters_distribution._fill()
+        if self._blob.emitters.do_equilibrium == 0:
+            if self.emitters_distribution._user_defined is True:
+                self.emitters_distribution._fill()
 
         BlazarSED.Init(self._blob, self.get_DL_cm())
         if self.emitters_distribution._user_defined is True:
