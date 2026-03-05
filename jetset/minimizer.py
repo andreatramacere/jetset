@@ -450,7 +450,8 @@ class ModelMinimizer(object):
 
         fit_model.set_nu_grid(nu_min=nu_fit_start*0.5, nu_max=nu_fit_stop*1.5)
 
-
+        self.corr=[]
+        self.covar=[]
         for i in range(repeat):
             if skip_minimizer == False:
                 if repeat>1:
@@ -460,7 +461,7 @@ class ModelMinimizer(object):
                         self.pinit = [v for v in self.minimizer.pout]
                         if silent is False:
                             print('- old chisq=%5.5e' % (self.minimizer.chisq))
-                        old_chisq = self.minimizer.chisq
+                        #old_chisq = self.minimizer.chisq
 
                 self.minimizer.fit(self,max_ev=max_ev,silent=silent,use_UL=use_UL)
 
@@ -468,8 +469,8 @@ class ModelMinimizer(object):
                 self.errors = self.minimizer.errors
                 if hasattr(self.minimizer, 'asymm_errors'):
                     self.asymm_errors = self.minimizer.asymm_errors
-                self.covar=self.minimizer.covar
-                self.corr=self.minimizer.corr
+                self.covar.append(self.minimizer.covar)
+                self.corr.append(self.minimizer.corr)
 
                 self.reset_to_best_fit()
                 self.minimizer._fit_stats()
@@ -554,16 +555,22 @@ class ModelMinimizer(object):
         self.fit_model.eval()
     
     def plot_corr_matrix(self):
-        fig, ax = plt.subplots()
-        labels=[p.name for p in  self.fit_par_free]
-        im, cbar = heatmap(self.corr, labels, labels, ax=ax,
-                        cmap="coolwarm", cbarlabel="corr")
-        texts = annotate_heatmap(im, valfmt="{x:.2f}")
+        if hasattr(self,'corr'):
+            if len(self.corr)>0:
+                
+                for n_rep,corr in enumerate(self.corr):
+                    fig, ax = plt.subplots()
+                    corr=self.corr[n_rep]
+                    
+                    labels=[p.name for p in  self.fit_par_free]
+                    im, cbar = heatmap(corr, labels, labels, ax=ax,
+                                    cmap="coolwarm", cbarlabel="corr")
+                    texts = annotate_heatmap(im, valfmt="{x:.2f}")
+                    ax.set_title(f'fit rep n={n_rep}')
+                    fig.tight_layout()
+                
 
-        fig.tight_layout()
-        
-
-        return fig
+            return fig
 
 
 class Minimizer(object):
