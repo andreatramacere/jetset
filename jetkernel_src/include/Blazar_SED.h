@@ -162,6 +162,7 @@ struct blob_core {
 
     //--- EMITTING SOURCE PARAMETERS
     double R; /* raggio blob sferica o raggio shell cilindrica */
+    double R_escape; /* radius to  evaluate escape time, geometry dependent*/
     double B;
     double beam_obj;
     char BEAMING_EXPR[16];
@@ -268,7 +269,7 @@ struct emitters {
     double N_tot_p_Sferic;
     double NH_cold_to_rel_e;
 
-    double T_esc_e_second;
+    double T_esc_e_secondaries;
     double T_esc_e_primaries;
 
     double gmin;

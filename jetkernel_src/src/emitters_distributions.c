@@ -367,10 +367,10 @@ void InitNeEquilibrium(struct blob *pt){
 
     pt->emitters.Q_inj_e = pt->emitters.Q_inj_e_primaries;
 
-    T_esc = pt->emitters.T_esc_e_primaries;
-    if (T_esc <= 0) {
-        T_esc = pt->emitters.T_esc_e_second;
-    }
+    T_esc = pt->emitters.T_esc_e_primaries*pt->core.R_escape/vluce_cm;
+    //if (T_esc <= 0) {
+    //    T_esc = pt->emitters.T_esc_e_primaries;
+    //}
     CoolingEquilibrium(pt, T_esc);
 
     // Mirror solved Ne back to the jetset buffer for Python-side reads
@@ -395,7 +395,7 @@ void InitNeEquilibrium(struct blob *pt){
 //========================================
 void Init_Np_Ne_pp(struct blob *pt)
 {
-   
+    double T_esc;
     pt->emitters.gmin_secondaries=pt->emitters.gmin;
     pt->emitters.gmax_secondaries=pt->emitters.gmax*mp_by_me;
     setNgrid(pt);
@@ -429,7 +429,9 @@ void Init_Np_Ne_pp(struct blob *pt)
     pt->PP_gamma.pp_racc_elec=rate_electrons_pp(pt, pt->emitters.griglia_gamma_Ne_log[0],1);
     Fill_N(pt, pt->emitters.griglia_gamma_Ne_log, pt->emitters.Q_inj_e_second);
     pt->emitters.Q_inj_e = pt->emitters.Q_inj_e_second;
-    CoolingEquilibrium(pt,pt->emitters.T_esc_e_second);
+    
+    T_esc = pt->emitters.T_esc_e_secondaries*pt->core.R_escape/vluce_cm;
+    CoolingEquilibrium(pt,T_esc);
     //Filling Ne_jetset with secondaries
     unsigned int i;
     for (i = 0; i < pt->emitters.gamma_grid_size; i++) {

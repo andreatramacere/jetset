@@ -163,7 +163,7 @@ class TestEmitters(TestBase):
                                              normalize=False)
 
         j = Jet(emitters_distribution=q_inj, emitters_type='electrons', verbose=False)
-        j.parameters.T_esc_e_primaries.val = 1E5
+        j.parameters.T_esc_e_primaries.val = 2
 
         j.eval()
 
@@ -187,7 +187,7 @@ class TestEmitters(TestBase):
         q_inj.parameters.Q.val = 5E-4
 
         j = Jet(emitters_distribution=q_inj, emitters_type='electrons', verbose=False)
-        j.parameters.T_esc_e_primaries.val = 1E5
+        j.parameters.T_esc_e_primaries.val = 2
 
         assert j.parameters.get_par_by_name('Q_inj_p') is not None
         assert j.parameters.get_par_by_name('Q_inj_Q') is not None
@@ -216,7 +216,7 @@ class TestEmitters(TestBase):
         q_inj.parameters.Q.val = 2E-4
 
         j = Jet(emitters_distribution=q_inj, emitters_type='electrons', verbose=False)
-        j.parameters.T_esc_e_primaries.val = 1E5
+        j.parameters.T_esc_e_primaries.val = 2
         j.eval()
 
         assert j.parameters.get_par_by_name('Q_inj_p') is not None
@@ -237,9 +237,9 @@ class TestEmitters(TestBase):
         assert j.parameters.get_par_by_name('Q_inj_p') is not None
         assert j.parameters.get_par_by_name('Q_inj_Q') is not None
 
-        j.parameters.T_esc_e_primaries.val = 1E5
+        j.parameters.T_esc_e_primaries.val = 2
         j.eval()
 
         assert j._blob.emitters.do_equilibrium == 1
-        np.testing.assert_allclose(j._blob.emitters.T_esc_e_primaries, 1E5, rtol=1E-12)
+        np.testing.assert_allclose(j._blob.emitters.T_esc_e_primaries, 2, rtol=1E-12)
         assert np.any(j.emitters_distribution.n_gamma_e_inj > 0)

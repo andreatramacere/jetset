@@ -240,17 +240,23 @@ class JetBase(Model):
         _model['name'] = self.name
         _model['emitters_type'] = self.emitters_distribution.emitters_type
        
-        if isinstance(self.emitters_distribution,EmittersDistribution):
-            self._original_emitters_distr._copy_from_jet(self)
-            _model['custom_emitters_distribution']=self._original_emitters_distr
-            clean_numba(_model['custom_emitters_distribution'])
-            _model['emitters_distribution_class'] = 'EmittersDistribution'
+        if self.inj_emitters_distribution is None:
+            if isinstance(self.emitters_distribution,EmittersDistribution):
+                self._original_emitters_distr._copy_from_jet(self)
+                _model['custom_emitters_distribution']=self._original_emitters_distr
+                clean_numba(_model['custom_emitters_distribution'])
+                _model['emitters_distribution_class'] = 'EmittersDistribution'
+            else:
+                raise  RuntimeError('emitters distribution type not valid',type(self._emitters_distribution))
+
         else:
-            raise  RuntimeError('emitters distribution type not valid',type(self._emitters_distribution))
-
-        if hasattr(self,'T_esc_e_second'):
-            _model['T_esc_e_second']=self.T_esc_e_second
-
+            if isinstance(self.inj_emitters_distribution ,InjEmittersDistribution):
+                #self._original_emitters_distr._copy_from_jet(self)
+                _model['custom_emitters_distribution']=self.inj_emitters_distribution
+                clean_numba(_model['custom_emitters_distribution'])
+                _model['emitters_distribution_class'] = 'InjEmittersDistribution'
+            else:
+                raise  RuntimeError('inj_emitters_distribution distribution type not valid',type(self.inj_emitters_distribution))
         
         if hasattr(self,'geometry'):
             _model['geometry']=self.geometry
@@ -318,7 +324,7 @@ class JetBase(Model):
 
 
     def _decode_model(self,_model):
-
+        
         if 'version' in _model.keys():
             self._set_version(_model['version'])
         else:
@@ -352,11 +358,12 @@ class JetBase(Model):
             _model['emitters_distribution_log_values']=_v
 
 
-        if _model['emitters_distribution_class'] == 'EmittersDistribution':
+        if _model['emitters_distribution_class'] == 'EmittersDistribution' or _model['emitters_distribution_class'] == 'InjEmittersDistribution':
             self.set_emitters_distribution(distr=_model['custom_emitters_distribution'], init=False)
         else:
             raise RuntimeError('emitters distribution type not valid', type(self._emitters_distribution))
 
+    
         for c in self.basic_components_list:
             if c not in _model['basic_components_name']:
                 self.del_spectral_component(c)
@@ -366,7 +373,6 @@ class JetBase(Model):
             self.add_pp_gamma_component()
             self.add_pp_neutrino_component()
             self.add_bremss_ep_component()
-            self.T_esc_e_second=_model['T_esc_e_second']
 
        
         if 'disk_type' in _model['pars'].keys():
@@ -397,6 +403,7 @@ class JetBase(Model):
                 _user_dict[k]=v
             else:
                 _non_user_dict[k]=v
+
 
         self.parameters._decode_pars(_non_user_dict)
 
@@ -707,14 +714,17 @@ class JetBase(Model):
 
     def _ensure_leptonic_equilibrium_parameters(self):
         if self.parameters.get_par_by_name('T_esc_e_primaries') is None:
-            self.parameters.add_par(ModelParameter(name='T_esc_e_primaries',
-                                                   val=0,
-                                                   par_type='escape_time',
-                                                   units='s',
-                                                   val_min=0,
-                                                   val_max=None,
-                                                   frozen=False,
-                                                   log=False))
+            _d={}
+            _d['T_esc_e_primaries']=JetModelDictionaryPar(ptype='escape_time', 
+                                                          vmin=1, 
+                                                          vmax=None, 
+                                                          punit='R/c',
+                                                          froz=False, log=False,
+                                                          val=1.0,
+                                                          jetkernel_par_name='emitters.T_esc_e_primaries')
+
+            self.parameters.add_par_from_dict(_d,self,'_blob',JetParameter)
+       
 
     def _sync_inj_emitters_distribution_from_jet_parameters(self):
         if self.inj_emitters_distribution is None:
@@ -756,17 +766,9 @@ class JetBase(Model):
             raise RuntimeError('gmin/gmax parameters are required to initialize leptonic equilibrium')
 
         self._blob.emitters.gmin = 1
-        self._blob.emitters.gmax = p_gmax.val_lin
+        #NOTE: safe boundary for eq. evolution
+        self._blob.emitters.gmax = p_gmax.val_lin*2
         self._blob.emitters.gamma_grid_size = int(self.inj_emitters_distribution._gamma_grid_size)
-
-        p_tesc = self.parameters.get_par_by_name('T_esc_e_primaries')
-        if p_tesc is not None and p_tesc.val > 0:
-            t_esc = p_tesc.val
-        elif self.geometry == 'spherical':
-            t_esc = self.parameters.R.val / BlazarSED.vluce_cm
-        else:
-            t_esc = self.parameters.R_sh.val * self.parameters.h_sh.val / BlazarSED.vluce_cm
-        self._blob.emitters.T_esc_e_primaries = t_esc
 
         set_str_attr(self._blob, 'core.DISTR', 'jetset')
         set_str_attr(self._blob, 'core.PARTICLE', 'electrons')
@@ -846,7 +848,8 @@ class JetBase(Model):
             self._emitters_distribution_name = self.emitters_distribution.name
             if self.parameters.get_par_by_name('L_inj') is None:
                 self.parameters.add_par( ModelParameter(name='L_inj', par_type='L_inj', val=1E-3, val_min=0, val_max=None, units='erg/s'))
-            
+            if self.parameters.get_par_by_name('Q') is not None:
+                self.parameters.del_par(self.parameters.get_par_by_name('Q'))
             
         elif isinstance(distr, ArrayDistribution):
             self._disable_leptonic_equilibrium(remove_parameters=True)
@@ -1455,7 +1458,7 @@ class JetBase(Model):
         RuntimeError
             _description_
         """
-        if hasattr(self, 'emitters_distribution'):
+        if hasattr(self, 'emitters_distribution') and self.get_par_by_name('N') is True:
 
                 if val == 1 or val is True:
                     if self.emitters_distribution._user_defined is False:
@@ -1697,25 +1700,12 @@ class JetBase(Model):
 
     #@safe_run
     def set_blob(self):
-        if hasattr(self, 'T_esc_e_second'):
-            if self.T_esc_e_second is None:
-                if self.geometry == 'spherical':
-                    self._blob.emitters.T_esc_e_second = self.parameters.R.val / BlazarSED.vluce_cm
-                else:
-                    self._blob.emitters.T_esc_e_second = self.parameters.R_sh.val*self.parameters.h_sh.val / BlazarSED.vluce_cm
-            else:
-                self._blob.emitters.T_esc_e_second = self.T_esc_e_second
-
+    
         if self._leptonic_equilibrium is True:
             self._blob.emitters.do_equilibrium = 1
             self._set_equilibrium_injection_on_blob()
         else:
             self._blob.emitters.do_equilibrium = 0
-            p_tesc = self.parameters.get_par_by_name('T_esc_e_primaries')
-            if p_tesc is not None:
-                self._blob.emitters.T_esc_e_primaries = p_tesc.val
-            else:
-                self._blob.emitters.T_esc_e_primaries = 0
             if self.emitters_distribution._user_defined is True:
                 self.emitters_distribution._fill()
 
@@ -2036,7 +2026,6 @@ class Jet(JetBase):
                  emitters_distribution='plc',
                  emitters_distribution_log_values=False,
                  beaming_expr='delta',
-                 T_esc_e_second=None,
                  jet_workplace=None,
                  verbose=False,
                  clean_work_dir=True,
@@ -2055,7 +2044,6 @@ class Jet(JetBase):
         emitters_distribution
         emitters_distribution_log_values
         beaming_expr
-        T_esc_e_second
         jet_workplace
         verbose
         clean_work_dir
@@ -2114,7 +2102,6 @@ class Jet(JetBase):
         self.name = clean_var_name(name)
 
         if self.emitters_distribution.emitters_type == 'protons':
-            self.T_esc_e_second=T_esc_e_second
             self.add_pp_gamma_component()
             self.add_pp_neutrino_component()
             self.add_bremss_ep_component()
@@ -2428,7 +2415,6 @@ class GalacticBeamed(Jet):
                  emitters_distribution='plc',
                  emitters_distribution_log_values=False,
                  beaming_expr='delta',
-                 T_esc_e_second=None,
                  jet_workplace=None,
                  verbose=False,
                  clean_work_dir=True,
@@ -2453,7 +2439,6 @@ class GalacticBeamed(Jet):
         
         cosmo=Cosmo(DL_cm=_d,verbose=False)
         super(GalacticBeamed,self).__init__(cosmo=cosmo,
-                                    T_esc_e_second=T_esc_e_second,
                                     name=_name,
                                     emitters_type=emitters_type,
                                     emitters_distribution=emitters_distribution,
@@ -2502,7 +2487,6 @@ class GalacticUnbeamed(GalacticBeamed):
                  emitters_type='electrons',
                  emitters_distribution='plc',
                  emitters_distribution_log_values=False,
-                 T_esc_e_second=None,
                  jet_workplace=None,
                  verbose=False,
                  clean_work_dir=True,
@@ -2517,7 +2501,6 @@ class GalacticUnbeamed(GalacticBeamed):
                                             emitters_distribution=emitters_distribution,
                                             emitters_distribution_log_values=emitters_distribution_log_values,
                                             beaming_expr='delta',
-                                            T_esc_e_second=T_esc_e_second,
                                             jet_workplace=jet_workplace,
                                             verbose=verbose,
                                             clean_work_dir=clean_work_dir,

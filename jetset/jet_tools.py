@@ -57,10 +57,13 @@ def build_emitting_region_dict(cosmo, beaming_expr='delta',emitters_type='electr
         model_dic['NH_cold_to_rel_e'] = JetModelDictionaryPar(ptype='cold_p_to_rel_e_ratio', vmin=0, vmax=None, punit='',
                                                               froz=True, log=False,
                                                               jetkernel_par_name='emitters.NH_cold_to_rel_e')
-        model_dic['T_esc_e_primaries'] = JetModelDictionaryPar(ptype='escape_time', vmin=0, vmax=None, punit='s',
-                                                               froz=False, log=False,
-                                                               val=0.0,
-                                                               jetkernel_par_name='emitters.T_esc_e_primaries')
+      
+    if emitters_type=='protons':
+        model_dic['T_esc_e_secondaries'] = JetModelDictionaryPar(ptype='escape_time', vmin=1, vmax=None, punit='R/c',
+                                                                froz=False, log=False,
+                                                                val=1.0,
+                                                                jetkernel_par_name='emitters.T_esc_e_secondaries')
+
 
     if beaming_expr == 'bulk_theta':
         model_dic['theta'] = JetModelDictionaryPar(ptype='jet-viewing-angle', vmin=0, vmax=90, punit='deg',
@@ -108,10 +111,6 @@ def build_ExtFields_dic(EC_model_list,disk_type ):
 
     for EC_model in EC_model_list:
 
-        # print('EC_model',EC_model)
-        # if EC_model not in allowed_EC_components_list:
-        #   raise RuntimeError("EC model %s not allowed"%EC_model,"please choose among ", allowed_EC_components_list)
-        #print('----->',EC_model_list)
         if 'Disk' in EC_model:
             if disk_type is not None:
                 model_dic['disk_type'] = JetModelDictionaryPar(ptype='Disk', vmin=None, vmax=None, punit='', froz=True,
@@ -174,10 +173,7 @@ def build_ExtFields_dic(EC_model_list,disk_type ):
             model_dic['R_H_Star'] = JetModelDictionaryPar(ptype='Star', vmin=0, vmax=None, punit='cm',
                                                           jetkernel_par_name='Star.R_H_Star')
 
-            # ['DT',0,None,'cm',True]
-            #model_dic['tau_DT'] = JetModelDictionaryPar(ptype='DT', vmin=0, vmax=1.0, punit='')
-            ## ['DT',0.0,1.0,'']
-    #print('----->', model_dic)
+
     return model_dic
     
 def clean_numba(distr):

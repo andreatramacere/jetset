@@ -217,6 +217,7 @@ struct blob MakeBlob() {
     spettro_root.core.B = 0.1;
     spettro_root.Sync.sin_psi = 1.0;
     spettro_root.core.R = 1e15;
+    spettro_root.core.R_escape= 1E15;
     spettro_root.core.h_sh = 1;
     spettro_root.core.R_ext_sh =  0;
     spettro_root.core.R_sh =  spettro_root.core.R;
@@ -243,7 +244,8 @@ struct blob MakeBlob() {
     spettro_root.emitters.gmin_griglia = -1.0;
     spettro_root.emitters.gmax_griglia = -1.0;;
     spettro_root.emitters.gamma_cooling_eq=0;
-    spettro_root.emitters.T_esc_e_primaries=0;
+    spettro_root.emitters.T_esc_e_primaries=1;
+    spettro_root.emitters.T_esc_e_secondaries=1;
 
     spettro_root.core.EC_stat=0; 
     spettro_root.core.EC_stat_orig=0;

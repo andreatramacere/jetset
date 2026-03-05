@@ -316,7 +316,6 @@ class ModelParameter(object):
         if len(fit_range)!=2:
             raise RuntimeError('fit_range bust me list or tuple with length=2')
 
-        #self._fit_range = fit_range
         self.fit_range_min=fit_range[0]
         self.fit_range_max=fit_range[1]
         if fit_range[0] is not None and self.val<fit_range[0]:
@@ -352,32 +351,6 @@ class ModelParameter(object):
             if verbose:
                 print("adding par:",par.name,"to ",self.name)
             self._master_pars.append(par)
-
-    #def make_dependent_par(self, master_par, func, root_model=None):
-
-    #    if self == master_par:
-    #        raise RuntimeError(" root and linked parameter can't be the same")
-    #    self._is_dependent = True
-    #    self._func = func
-    #    self._master_pars = master_pars
-    #    master_par._add_depending_par(self)
-
-    #    self.freeze()
-    #    if root_model is not None:
-    #        self._linked_root_model = root_model
-    #    self.set(val=self._func(self._master_par.val), skip_dep_par_warning=True)
-
-
-    # def get_default_args(self, par_expr):
-    #     #signature = inspect.signature(func)
-    #     #d={}
-    #     #for k, v in signature.parameters.items():
-    #     #    if isinstance(v.default,ModelParameter):
-    #     #        d[k]=v.default
-    #     #    else:
-    #     #        raise RuntimeError('argument',k,'is not valid, should be a model parameter')
-    #     #return d
-    #     pass
 
     @property
     def par_expression_source_code(self):
@@ -512,12 +485,7 @@ class ModelParameter(object):
         if self.fit_range is not None:
             self.fit_range_max=self.fit_range[1]
             self.fit_range_min=self.fit_range[0]
-        
-    
-        
-        #if self.frozen==True:
-        #    self.val=self.val_start
-        
+ 
         self.val_last_call=self.val    
         
         if self.val_min is not None:
@@ -710,62 +678,38 @@ class ModelParameter(object):
         return self._root_par.val
 
 
-# class LinkedParameter(ModelParameter):
-#
-#     def __init__(self,p_name,m_list):
-#         super(LinkedParameter,self).__init__()
-#         self.m_list = m_list
-#         self.name = p_name
-#
-#     #def set_par(self, par_name, val):
-#     #    for model in self.m_list:
-#
-#     #        pm = model.get_par_by_name(self.name)
-#     #        pm.set(par_name, val = val)
-#
-#     #def set(self, *args, **kw):
-#     #    self.set_par(*args, **kw)
-#
-# class ModelLinkedParameter(object):
-#     def __init__(self,name,p):
-#
-#         self.name = name
-#         self.parameters = ModelParameterArray()
-#         self.paramters.add_par(p)
-#         self.paramters.model=self
+
+
+
+# NOTE: obsolete, not used anymore
+# def compositr_parameter_setter(method):
+#     @wraps(method)
+#     def func_wrapper(self, model_name, *args, **kwargs):
+#         print('--> model_name',args,kwargs)
+#         try:
+#             if isinstance(model_name,str):
+#                 pass
+#             else:
+#                 model_name=model_name.name
+#             print('--> model_name', model_name, args,kwargs)
+#             return method(self, *args, **kwargs)
+#         except Exception as e:
+#            message = str(e)
+#            message += '\n'
+#            message += 'Starting from veriosn 1.2.0, FitModel is a CompositeModel, hence to set parameters ' \
+#                       'you have to pass as first paramter the model name or model object of the corresponing parameter e.g. \n' \
+#                       '''   
+#                             fit_model.set_par('model-name',value) 
+#                             OR 
+#                             fit_model.set_par(jet,value) 
+#                       '''
 
 
 
 
+#            raise RuntimeError(message)
 
-def compositr_parameter_setter(method):
-    @wraps(method)
-    def func_wrapper(self, model_name, *args, **kwargs):
-        print('--> model_name',args,kwargs)
-        try:
-            if isinstance(model_name,str):
-                pass
-            else:
-                model_name=model_name.name
-            print('--> model_name', model_name, args,kwargs)
-            return method(self, *args, **kwargs)
-        except Exception as e:
-           message = str(e)
-           message += '\n'
-           message += 'Starting from veriosn 1.2.0, FitModel is a CompositeModel, hence to set parameters ' \
-                      'you have to pass as first paramter the model name or model object of the corresponing parameter e.g. \n' \
-                      '''   
-                            fit_model.set_par('model-name',value) 
-                            OR 
-                            fit_model.set_par(jet,value) 
-                      '''
-
-
-
-
-           raise RuntimeError(message)
-
-    return func_wrapper
+#     return func_wrapper
 
 def create_a_function( **kwargs):
 
@@ -1044,8 +988,7 @@ class ModelParameterArray(object):
     def __repr__(self):
         return str(self.show_pars())
 
-    #def __str__(self):
-    #    return str(self.show_pars())
+
 
     def __init__(self,model=None):
             
@@ -1090,7 +1033,6 @@ class ModelParameterArray(object):
         return [p.name for p in self.par_array]
 
     def _build_par_table(self,names_list=None):
-        #, skip_hidden = False):
         _model_name = []
         _name=[]
         _type=[]
@@ -1166,7 +1108,6 @@ class ModelParameterArray(object):
 
                 _name.append(_p_name)
 
-        #_val = np.array(_val, dtype=np.object)
         t=Table(_fields,names=_names,masked=False)
 
         self._fromat_column_entry(t)
@@ -1201,7 +1142,6 @@ class ModelParameterArray(object):
 
 
     def _build_best_fit_par_table(self, names_list=None):
-        # skip_hidden=False):
 
         _name=[]
         _model_name = []
@@ -1296,10 +1236,6 @@ class ModelParameterArray(object):
                 _frozen.append(par.frozen)
                 _val.append(par.val)
 
-        #_val_start = np.array(_val_start, dtype=np.object)
-        #_best_fit_val = np.array(_val_start, dtype=np.object)
-
-        # set false to avoid string in hidden
         t = Table(_fields, names=_names, masked=False)
 
         self._fromat_column_entry(t)
@@ -1391,9 +1327,7 @@ class ModelParameterArray(object):
             return self.par_table.pformat_all()
         else:
             _show_table(self.par_table)
-            #return self.par_table
-            #.pprint_all()
-        
+ 
     
     
     def show_best_fit_pars(self,getstring=False):
@@ -1403,7 +1337,6 @@ class ModelParameterArray(object):
             return self.best_fit_par_table.pformat_all()
         else:
             return self.best_fit_par_table
-            #.pprint_all()
 
 
     def set(self,par_name,*args, **keywords):
@@ -1433,7 +1366,6 @@ class ModelParameterArray(object):
 
         """
         
-        #print "ModelParamterArray in model parameters",args,keywords
         
         par=self.get_par_by_name(par_name)
 
@@ -1494,7 +1426,6 @@ class ModelParameterArray(object):
 
         """
         
-        #print "ModelParamterArray in model parameters",args,keywords
         
         par=self.get_par_by_name(par_name)
         
@@ -1523,7 +1454,6 @@ class ModelParameterArray(object):
             for k in _par_keys:
                 if hasattr(par,k):
                     if k=='units':
-                        #print("===> serialize units",str(getattr(par,k)))
                         _val_dict[k]=str(getattr(par,k))
                     else:
                         _val_dict[k]=getattr(par,k)

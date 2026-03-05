@@ -861,24 +861,14 @@ class InjEmittersDistribution(BaseEmittersDistribution):
         y=self.f
         cost=m_e.cgs.value * (c.cgs ** 2).value
 
-
-        #msk = np.ones(x.shape, dtype=bool)
-        #if gmin is not None:
-        #    msk = x>=gmin
-        #if gmax is not None:
-        #    msk = np.logical_and(msk, x<=gmax)
+ 
 
         return np.trapezoid(y,x) * cost
-
-        #self.update()
-        #return self.eval_U()
+ 
 
     def _set_L_inj(self, L_inj_target_erg, volume):
         if L_inj_target_erg >0:
-            print(L_inj_target_erg,self.eval_U_q(), volume )
-            self.parameters.Q.val *=L_inj_target_erg/(self.eval_U_q() * volume )
-        else:
-            raise ValueError('L_inj_target_erg must be>0')
+             self.parameters.Q.val *=L_inj_target_erg/(self.eval_U_q() * volume )
         #NOTE: commented until is fixed the setting to zero of Ne_jetset for protons
         #self.update()
     

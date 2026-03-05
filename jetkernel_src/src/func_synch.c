@@ -208,6 +208,7 @@ void set_R_Sync(struct blob * pt){
             pt->core.R_sync = pt->core.R* four_by_three;
             pt->core.n_sync_corr_factor=0.75;
             pt->core.R_sync_n_photons=pt->core.R;
+            pt->core.R_escape = pt->core.R;
 
         }
 
@@ -218,6 +219,7 @@ void set_R_Sync(struct blob * pt){
             pt->core.n_sync_corr_factor=1.0;
             //NOTE: This is a crude approximation, should be improved 
             pt->core.R_sync_n_photons=pt->core.R_sh;
+            pt->core.R_escape =R_sync_Shell;
         }
         else {
             printf("GEOMETRY variable set to wrong value, possible spherical or spherical_shell \n");
