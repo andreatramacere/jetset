@@ -1,3 +1,9 @@
+import os
+
+# Prefer the portable numba backend for this kernel path to avoid OpenMP runtime
+# deprecation chatter (e.g. omp_set_nested) in environments using Intel OMP.
+os.environ.setdefault("NUMBA_THREADING_LAYER", "workqueue")
+
 from .base_model import MultiplicativeModel
 from jetset.jetkernel.jetkernel import HPLANCK as h
 from jetset.jetkernel.jetkernel import MEC2 as mec2
