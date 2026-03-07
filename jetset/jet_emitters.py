@@ -854,15 +854,12 @@ class InjEmittersDistribution(BaseEmittersDistribution):
                 size = self._gamma_grid_size
                 q_ptr = get_nested_attr(self._jet._blob, 'emitters.Q_inj_e_primaries')
                 set_emitters(q_ptr,self._jet._blob,size,self.n_gamma_e)
+
     def eval_U_q(self):
         self._fill()
-        #if self.emitters_type == 'electrons':# or self.emitters_type == 'electrons-equilibrium':
         x=self.gamma_e
-        y=self.f
+        y=self.f*x
         cost=m_e.cgs.value * (c.cgs ** 2).value
-
- 
-
         return np.trapezoid(y,x) * cost
  
 
