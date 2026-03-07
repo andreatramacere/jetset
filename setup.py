@@ -54,13 +54,6 @@ class CustomInstall(install):
         check_swig()
         self.run_command('build_ext')
         install.run(self)
-        print ('JETSETBESSELBUILD',os.getenv('JETSETBESSELBUILD') == 'TRUE')
-        if os.getenv('JETSETBESSELBUILD') == 'TRUE':
-            self.run_command('test')
-        else:
-            pass
-
-
 
 
 class CustomClean(install):
@@ -132,11 +125,7 @@ _module=Extension('jetset.jetkernel/_jetkernel',
 include_dirs=['jetkernel_src/include'])
 
 
-if os.getenv('JETSETBESSELBUILD') == 'TRUE':
-    _test_suite = 'jetset.tests.test_build_functions'
-else:
-    _test_suite = None
-
+ 
 with open("proj_descr.md", "r") as f:
     long_description = f.read()
 
@@ -174,5 +163,4 @@ setup(name='jetset',
       install_requires=install_req,
       py_modules=['jetset.jetkernel/jetkernel'],
       python_requires='>=3.9',
-      test_suite =_test_suite,
       zip_safe=True)
