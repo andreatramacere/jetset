@@ -23,6 +23,7 @@ class TestEmitters(TestBase):
         n_e.parameters.s1.val = 2.0
         n_e.parameters.s2.val = 3.5
         if plot is True:
+            n_e.update()
             n_e.plot()
 
         my_jet= Jet(emitters_distribution=n_e)
@@ -31,6 +32,7 @@ class TestEmitters(TestBase):
         my_jet.eval()
         np.testing.assert_allclose(my_jet.emitters_distribution.eval_N(), my_jet.parameters.N.val, rtol=1E-5)
         print(my_jet.emitters_distribution.eval_N(), my_jet.parameters.N.val)
+        n_e.update()
         print(n_e.eval_N(), my_jet.parameters.N.val)
         assert (my_jet.emitters_distribution.emitters_type=='electrons')
         my_jet.save_model('test_jet_custom_emitters.pkl')
@@ -55,6 +57,7 @@ class TestEmitters(TestBase):
         n_e.parameters.s1.val = 2.0
         n_e.parameters.s2.val = 3.5
         if plot is True:
+            n_e.update()
             n_e.plot()
 
         my_jet= Jet(emitters_distribution=n_e)
@@ -63,6 +66,7 @@ class TestEmitters(TestBase):
         my_jet.eval()
         np.testing.assert_allclose(my_jet.emitters_distribution.eval_N(), my_jet.parameters.N.val, rtol=1E-5)
         print(my_jet.emitters_distribution.eval_N(), my_jet.parameters.N.val)
+        n_e.update()
         print(n_e.eval_N(), my_jet.parameters.N.val)
         assert (my_jet.emitters_distribution.emitters_type=='electrons')
         my_jet.save_model('test_jet_custom_emitters.pkl')
@@ -167,6 +171,13 @@ class TestEmitters(TestBase):
 
         j.eval()
 
+        assert j.parameters.get_par_by_name('L_inj') is not None
+        j.parameters.L_inj.val = 1E39
+ 
+        j.eval()
+        L_inj=j.inj_emitters_distribution.eval_U_q()*j.parameters.R.val**3*4*np.pi/3
+        np.testing.assert_allclose(L_inj, j.parameters.L_inj.val, rtol=1E-3)
+        assert j.inj_emitters_distribution.parameters.Q.val > 0
         assert j._blob.emitters.do_equilibrium == 1
         assert j.emitters_distribution._primaries_done is True
         assert hasattr(j.emitters_distribution, 'gamma_e_inj')
@@ -174,6 +185,9 @@ class TestEmitters(TestBase):
         assert j.emitters_distribution.gamma_e_inj.size == j.emitters_distribution.gamma_e.size
         assert np.any(j.emitters_distribution.n_gamma_e_inj > 0)
         assert j.emitters_distribution.gamma_cooling_eq > 0
+
+        j._disable_leptonic_equilibrium(remove_parameters=True)
+        assert j.parameters.get_par_by_name('L_inj') is  None
 
     def test_leptonic_equilibrium_injection_parameters_on_jet(self, plot=True):
         from jetset.jet_model import Jet
@@ -189,57 +203,22 @@ class TestEmitters(TestBase):
         j = Jet(emitters_distribution=q_inj, emitters_type='electrons', verbose=False)
         j.parameters.T_esc_e_primaries.val = 2
 
-        assert j.parameters.get_par_by_name('Q_inj_p') is not None
-        assert j.parameters.get_par_by_name('Q_inj_Q') is not None
-        np.testing.assert_allclose(j.parameters.Q_inj_p.val, q_inj.parameters.p.val, rtol=1E-12)
-        np.testing.assert_allclose(j.parameters.Q_inj_Q.val, q_inj.parameters.Q.val, rtol=1E-12)
-
-        j.parameters.Q_inj_p.val = 2.2
-        j.parameters.Q_inj_Q.val = 1E-3
+        assert j.parameters.get_par_by_name('L_inj') is not None
+        j.parameters.L_inj.val = 1E39
+ 
         j.eval()
-
-        np.testing.assert_allclose(j.inj_emitters_distribution.parameters.p.val, 2.2, rtol=1E-12)
-        np.testing.assert_allclose(j.parameters.Q_inj_Q.val, 1E-3, rtol=1E-12)
+        L_inj=j.inj_emitters_distribution.eval_U_q()*j.parameters.R.val**3*4*np.pi/3
+        np.testing.assert_allclose(j.inj_emitters_distribution.parameters.p.val, 2.5, rtol=1E-12)
+        np.testing.assert_allclose(L_inj, j.parameters.L_inj.val, rtol=1E-3)
         assert j.inj_emitters_distribution.parameters.Q.val > 0
-        assert np.any(j.emitters_distribution.n_gamma_e_inj > 0)
-
-        j._clear_leptonic_equilibrium_state(remove_parameters=True)
-        assert j.parameters.get_par_by_name('Q_inj_p') is None
-        assert j.parameters.get_par_by_name('Q_inj_Q') is None
-
-    def test_leptonic_equilibrium_plain_inj_distribution_ctor(self, plot=True):
-        from jetset.jet_model import Jet
-        from jetset.jet_emitters import InjEmittersDistribution
-        import numpy as np
-
-        q_inj = InjEmittersDistribution(name='test inj', spectral_type='pl')
-        q_inj.parameters.Q.val = 2E-4
-
-        j = Jet(emitters_distribution=q_inj, emitters_type='electrons', verbose=False)
-        j.parameters.T_esc_e_primaries.val = 2
-        j.eval()
-
-        assert j.parameters.get_par_by_name('Q_inj_p') is not None
-        np.testing.assert_allclose(j.parameters.Q_inj_Q.val, 2E-4, rtol=1E-12)
-        assert np.any(j.emitters_distribution.n_gamma_e_inj > 0)
-
-    def test_leptonic_equilibrium_direct_constructor(self, plot=True):
-        from jetset.jet_model import Jet
-        from jetset.jet_emitters import InjEmittersDistribution
-        import numpy as np
-
-        q_inj = InjEmittersDistribution(name='test inj', spectral_type='pl')
-        q_inj.parameters.Q.val = 3E-4
-
-        j = Jet(emitters_distribution=q_inj, emitters_type='electrons', verbose=False)
-        assert j._leptonic_equilibrium is True
-        assert j.parameters.get_par_by_name('T_esc_e_primaries') is not None
-        assert j.parameters.get_par_by_name('Q_inj_p') is not None
-        assert j.parameters.get_par_by_name('Q_inj_Q') is not None
-
-        j.parameters.T_esc_e_primaries.val = 2
-        j.eval()
-
         assert j._blob.emitters.do_equilibrium == 1
-        np.testing.assert_allclose(j._blob.emitters.T_esc_e_primaries, 2, rtol=1E-12)
+        assert j.emitters_distribution._primaries_done is True
+        assert hasattr(j.emitters_distribution, 'gamma_e_inj')
+        assert hasattr(j.emitters_distribution, 'n_gamma_e_inj')
+        assert j.emitters_distribution.gamma_e_inj.size == j.emitters_distribution.gamma_e.size
         assert np.any(j.emitters_distribution.n_gamma_e_inj > 0)
+        assert j.emitters_distribution.gamma_cooling_eq > 0
+
+        j._disable_leptonic_equilibrium(remove_parameters=True)
+        assert j.parameters.get_par_by_name('L_inj') is  None
+
