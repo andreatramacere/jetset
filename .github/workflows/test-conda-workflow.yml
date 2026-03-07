@@ -139,14 +139,9 @@ jobs:
           
   
 
-      - name: 'set env JETSETBESSELBUILD'
-        run: |
-          echo "FALSE">JETSETBESSELBUILD
-          echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
-
       - name: 'echo env TEST'
         run: |
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
+          echo "Conda test workflow"
 
     
     

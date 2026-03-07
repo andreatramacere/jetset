@@ -49,8 +49,6 @@ source:
 
 build:
   preserve_egg_dir: True
-  script_env:
-    - JETSETBESSELBUILD
 
 requirements:
   host:

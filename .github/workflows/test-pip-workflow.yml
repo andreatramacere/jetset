@@ -110,14 +110,8 @@ jobs:
         with:
           ref: ${{ github.event.inputs.git-ref }}
 
-      - name: 'set env JETSETBESSELBUILD'
-        run: |
-          echo "FALSE">JETSETBESSELBUILD
-          echo "JETSETBESSELBUILD=$(cat JETSETBESSELBUILD)" >> $GITHUB_ENV
-
       - name: 'echo env TEST'
         run: |
-          echo "JETSETBESSELBUILD=${{ env.JETSETBESSELBUILD }}"
           python -v
 
 
@@ -215,5 +209,4 @@ jobs:
           files: wheelhouse/*.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
