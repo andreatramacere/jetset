@@ -616,6 +616,7 @@ int solve_sys1(double VX1[],double VX2[],double VX3[],double SX[],double u[],uns
 //void free_tempe_ev(struct temp_ev *pt_ev);
 void alloc_temp_ev_array(double ** pt,int size);
 void CoolingEquilibrium(struct blob * pt, double T_esc);
+void OnlyInjEquilibrium(struct blob * pt, double T_esc);
 double IntegrateCooolingEquilibrium( struct blob *pt,double gamma, double T_esc,  unsigned int id_gamma);
 double IntegrandCooolingEquilibrium( struct blob *pt, double gamma_1);
 double update_jet_expansion(struct blob *pt_spec, struct temp_ev *pt_ev, double t);

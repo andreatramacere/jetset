@@ -371,6 +371,8 @@ void InitNeEquilibrium(struct blob *pt){
     //if (T_esc <= 0) {
     //    T_esc = pt->emitters.T_esc_e_primaries;
     //}
+    OnlyInjEquilibrium(pt, T_esc);
+    pt->emitters.Distr_e_done = 1;
     CoolingEquilibrium(pt, T_esc);
 
     // Mirror solved Ne back to the jetset buffer for Python-side reads
@@ -431,6 +433,8 @@ void Init_Np_Ne_pp(struct blob *pt)
     pt->emitters.Q_inj_e = pt->emitters.Q_inj_e_second;
     
     T_esc = pt->emitters.T_esc_e_secondaries*pt->core.R_escape/vluce_cm;
+    OnlyInjEquilibrium(pt, T_esc);
+    pt->emitters.Distr_e_done = 1;
     CoolingEquilibrium(pt,T_esc);
     //Filling Ne_jetset with secondaries
     unsigned int i;

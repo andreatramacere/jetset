@@ -688,7 +688,27 @@ double IntegrateCooolingEquilibrium( struct blob *pt, double gamma, double T_esc
     return res;
 }
 
-
+void OnlyInjEquilibrium(struct blob * pt, double T_esc){
+    unsigned int id_gamma;
+    double *Q_inj_ptr;
+    double Q_interp;
+    Q_inj_ptr = pt->emitters.Q_inj_e;
+    if (Q_inj_ptr == NULL) {
+        Q_inj_ptr = pt->emitters.Q_inj_e_second;
+    }
+    if (Q_inj_ptr == NULL) {
+        for (id_gamma = 0; id_gamma < pt->emitters.gamma_grid_size ; id_gamma++){
+         
+        pt->emitters.Ne[id_gamma]=0;
+        }
+    return;
+    }
+   
+    for (id_gamma = 0; id_gamma < pt->emitters.gamma_grid_size ; id_gamma++){
+        Q_interp=N_distr_interp(pt->emitters.gamma_grid_size,pt->emitters.griglia_gamma_Ne_log[id_gamma],pt->emitters.griglia_gamma_Ne_log,Q_inj_ptr);
+        pt->emitters.Ne[id_gamma]*Q_interp*T_esc;
+    }
+}
 void CoolingEquilibrium(struct blob * pt, double T_esc){
     //rearranged form of Eq. 2.26 in Inoue&Takahara
     //http://adsabs.harvard.edu/doi/10.1086/17727
@@ -696,6 +716,13 @@ void CoolingEquilibrium(struct blob * pt, double T_esc){
     unsigned int id_gamma;
     double Uph;
     Uph=0.;
+
+    if (pt->core.do_Sync != 0) {
+        spettro_sincrotrone(1, pt);
+        Uph += I_nu_to_Uph(pt->Sync.spec.nu, pt->Sync.spec.I_nu, pt->Sync.spec.NU_INT_MAX);
+
+    };
+    //TODO: check R_H for 
     Uph += I_nu_to_Uph(pt->BLR.spec.nu, pt->BLR.spec.I_nu, pt->BLR.spec.NU_INT_MAX);
     Uph += I_nu_to_Uph(pt->DT.spec.nu, pt->DT.spec.I_nu, pt->DT.spec.NU_INT_MAX);
     Uph += I_nu_to_Uph(pt->CMB.spec.nu, pt->CMB.spec.I_nu, pt->CMB.spec.NU_INT_MAX);
