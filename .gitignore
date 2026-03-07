@@ -42,3 +42,5 @@ notebooks/*
 
 requirements_action.txt
 obsolete
+jet_wd
+tmp
