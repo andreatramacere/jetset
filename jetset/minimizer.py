@@ -28,9 +28,8 @@ from tqdm.auto import tqdm
 
 from .plot_sedfit import plt,heatmap,annotate_heatmap
 
-from scipy.optimize import least_squares,minimize
+from scipy.optimize import least_squares
 from scipy import interpolate
-from .leastsqbound.leastsqbound import leastsqbound
 
 from .output import section_separator,WorkPlace,makedir
 from .utils import JetkerneltException
