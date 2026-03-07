@@ -1458,24 +1458,23 @@ class JetBase(Model):
         RuntimeError
             _description_
         """
-        if hasattr(self, 'emitters_distribution') and self.get_par_by_name('N') is True:
+        if hasattr(self, 'emitters_distribution') and self.get_par_by_name('N') is not None:
 
-                if val == 1 or val is True:
-                    if self.emitters_distribution._user_defined is False:
-                        self._blob.emitters.Norm_distr = 1
-                    else:
-                        self.emitters_distribution.normalize = val
-                    self.parameters.N.par_type='emitters_density'
-                    self.parameters.N.units ='1/cm3'
-                elif val == 0 or val is False:
-                    if self.emitters_distribution._user_defined is False:
-                        self._blob.emitters.Norm_distr = 0
-                    else:
-                        self.emitters_distribution.normalize = val
-                        self.parameters.N.par_type = 'scaling_factor'
+            if val == 1 or val is True:
+                if self.emitters_distribution._user_defined is False:
+                    self._blob.emitters.Norm_distr = 1
                 else:
-                    raise RuntimeError('value', val, 'not allowed, allowed 0/1 or False/True')
-
+                    self.emitters_distribution.normalize = val
+                self.parameters.N.par_type='emitters_density'
+                self.parameters.N.units ='1/cm3'
+            elif val == 0 or val is False:
+                if self.emitters_distribution._user_defined is False:
+                    self._blob.emitters.Norm_distr = 0
+                else:
+                    self.emitters_distribution.normalize = val
+                    self.parameters.N.par_type = 'scaling_factor'
+            else:
+                raise RuntimeError('value', val, 'not allowed, allowed 0/1 or False/True')
 
 
 
