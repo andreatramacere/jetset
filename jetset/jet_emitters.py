@@ -289,9 +289,9 @@ class BaseEmittersDistribution(object):
         if hasattr(self,'_jet'):
             if self._jet is not None:
                 self._set_blob()
+                self._jet.eval()
         #NOTE: commented until is fixed the setting to zero of Ne_jetset for protons
         #self.update()
-
         if self.emitters_type == 'electrons':
             if label is None:
                 label = 'electrons'
