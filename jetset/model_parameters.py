@@ -391,14 +391,13 @@ class ModelParameter(object):
         #TODO:THIS HOLDS ONLY FOR NUMPY <1.22, should be removed
         warnings.filterwarnings('ignore', message='invalid value encountered in reciprocal*')
         if type(self._depending_par_expr) == str:
-            _par_values= [None]*len(self._master_pars)
-            for ID, _user_par_ in enumerate(self._master_pars):
+            _par_values = {}
+            for _user_par_ in self._master_pars:
                 if _user_par_.adimensional:
-                    _par_values[ID] = _user_par_.val_lin
+                    _par_values[_user_par_.name] = _user_par_.val_lin
                 else:
-                    _par_values[ID] = _user_par_.val_lin*u.Unit(str(_user_par_.units))
-                exec(_user_par_.name + '=_par_values[ID]')
-            res = eval(self._depending_par_expr)
+                    _par_values[_user_par_.name] = _user_par_.val_lin*u.Unit(str(_user_par_.units))
+            res = eval(self._depending_par_expr, {"np": np, "u": u, "__builtins__": __builtins__}, _par_values)
         elif callable(self._depending_par_expr) is True:
             _par_values={}
             for ID, _user_par_ in enumerate(self._master_pars):
@@ -1467,4 +1466,3 @@ class ModelParameterArray(object):
             p=self.get_par_by_name(p_name)
             if p._is_dependent is False:
                 self.set(p_name,**_par_dict[p_name])
-

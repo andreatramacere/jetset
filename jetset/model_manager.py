@@ -287,9 +287,8 @@ class FitModel(Model):
             self._composite_expr = expr_string
         else:
             try:
-                for key, val in self.components._components_value_dict.items():
-                    exec(key + '= 1.0')
-                eval(expr_string)
+                _components_namespace = {key: 1.0 for key in self.components._components_value_dict}
+                eval(expr_string, {"np": np, "__builtins__": __builtins__}, _components_namespace)
             except Exception as e:
                 raise RuntimeError('function string not valid',e)
 
@@ -297,13 +296,14 @@ class FitModel(Model):
 
     def _eval_composite_func(self,loglog):
         #transform each key into a local var
+        _components_namespace = {}
         for key, val in self.components._components_value_dict.items():
             if loglog is True:
-                exec(key + '=np.power(10.,**val)')
+                _components_namespace[key] = np.power(10., val)
             else:
-                exec(key + '=val')
+                _components_namespace[key] = val
 
-        return eval(self.composite_expr)
+        return eval(self.composite_expr, {"np": np, "__builtins__": __builtins__}, _components_namespace)
 
     def _eval_model(self, lin_nu, log_nu, loglog,fill_SED):
         lin_model = np.zeros(lin_nu.shape)

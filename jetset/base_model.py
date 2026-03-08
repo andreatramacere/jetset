@@ -361,10 +361,9 @@ class Model(object):
 
     def _test_par_expr(self,master_par_list,par_expr):
         if type(par_expr) == str:
-            for p_name in master_par_list:
-                exec(p_name + '= 1')
+            _par_values = {p_name: 1 for p_name in master_par_list}
             try:
-                eval(par_expr)
+                eval(par_expr, {"np": np, "__builtins__": __builtins__}, _par_values)
                 pass
             except:
                 raise RuntimeError('the parameter expression is not valid')
@@ -470,5 +469,4 @@ class MultiplicativeModel(Model):
     def __init__(self, name='no-name', nu_size=100, model_type='multiplicative_model', scale='lin-lin'):
         super(MultiplicativeModel, self).__init__(name=name, nu_size=nu_size, model_type=model_type,scale=scale)
         delattr(self,'SED')
-
 

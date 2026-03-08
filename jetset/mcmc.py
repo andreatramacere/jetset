@@ -17,7 +17,9 @@ import warnings
 import  time
 import copy
 from collections import OrderedDict
+from astropy.table import Table
 from .plot_sedfit import  plt, PlotSED, set_mpl
+from .model_parameters import _show_table
 
 __all__=['McmcSampler']
 
@@ -71,6 +73,63 @@ class McmcSampler(object):
         
         self._progress_iter = cycle(['|', '/', '-', '\\'])
        
+    @staticmethod
+    def _new_progress_iter():
+        return cycle(['|', '/', '-', '\\'])
+
+    def __getstate__(self):
+        # Keep serialized state free of runtime-only objects not stable across Python versions.
+        state = self.__dict__.copy()
+        state['_progress_iter'] = None
+        state['sampler'] = None
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._progress_iter = self._new_progress_iter()
+        if hasattr(self, 'chain') and self.chain is not None:
+            self.chain = self._as_walker_first_chain(self.chain)
+        if hasattr(self, 'log_prob_chain') and self.log_prob_chain is not None:
+            self.log_prob_chain = self._as_walker_first_log_prob(self.log_prob_chain)
+
+    def _as_walker_first_chain(self, chain):
+        _chain = np.asarray(chain)
+        if _chain.ndim != 3:
+            return _chain
+
+        if hasattr(self, 'nwalkers'):
+            if _chain.shape[0] == self.nwalkers:
+                return _chain
+            if _chain.shape[1] == self.nwalkers:
+                return np.swapaxes(_chain, 0, 1)
+        return _chain
+
+    def _as_walker_first_log_prob(self, log_prob_chain):
+        _logp = np.asarray(log_prob_chain)
+        if _logp.ndim != 2:
+            return _logp
+
+        if hasattr(self, 'nwalkers'):
+            if _logp.shape[0] == self.nwalkers:
+                return _logp
+            if _logp.shape[1] == self.nwalkers:
+                return np.swapaxes(_logp, 0, 1)
+        return _logp
+
+    def _cache_sampler_chains(self):
+        # Persist full (pre-burnin) traces in walker-first layout for plotting after reload.
+        _chain = None
+        try:
+            _chain = self.sampler.chain
+        except Exception:
+            _chain = self.sampler.get_chain(flat=False)
+        self.chain = self._as_walker_first_chain(_chain)
+
+        try:
+            _logp = self.sampler.lnprobability
+        except Exception:
+            _logp = self.sampler.get_log_prob(flat=False)
+        self.log_prob_chain = self._as_walker_first_log_prob(_logp)
 
 
     def set_labels(self,use_labels_dict=None):
@@ -113,8 +172,79 @@ class McmcSampler(object):
                                             units=p.units,
                                             plot_label=p.name,
                                             bounds=[None,None])) 
-        
 
+    @property
+    def par_table(self):
+        self._build_par_table()
+        return self._par_table
+
+    def _build_par_table(self, names_list=None):
+        if self._par_array is None:
+            raise RuntimeError('please set labels, using .set_labels, before showing parameters')
+
+        _rows = []
+        for idx, par in enumerate(self._par_array):
+            if names_list is not None:
+                if par['name'] not in names_list and par['full_name'] not in names_list:
+                    continue
+
+            _bounds = par.get('bounds', [None, None])
+            if isinstance(_bounds, (list, tuple, np.ndarray)) and len(_bounds) == 2:
+                _bound_min, _bound_max = _bounds[0], _bounds[1]
+            else:
+                _bound_min, _bound_max = None, None
+
+            _rows.append((
+                idx,
+                par.get('comp_name'),
+                par.get('name'),
+                par.get('full_name'),
+                par.get('val'),
+                par.get('minimizer_best_fit_val'),
+                par.get('minimizer_best_fit_err'),
+                par.get('minimizer_fit_range_min'),
+                par.get('minimizer_fit_range_max'),
+                par.get('val_min', par.get('val_mix')),
+                par.get('val_max'),
+                _bound_min,
+                _bound_max,
+                str(par.get('units')),
+                par.get('plot_label'),
+            ))
+
+        _names = [
+            'idx',
+            'model name',
+            'name',
+            'full name',
+            'current val',
+            'mcmc bestfit val',
+            'mcmc bestfit err',
+            'fit range min',
+            'fit range max',
+            'val min',
+            'val max',
+            'mcmc bound min',
+            'mcmc bound max',
+            'units',
+            'plot label',
+        ]
+        self._par_table = Table(rows=_rows, names=_names, masked=False)
+
+    def show_pars(self, getstring=False, names_list=None, sort_key=None):
+        self._build_par_table(names_list=names_list)
+        if sort_key is not None:
+            self.par_table.sort(sort_key)
+
+        if getstring is True:
+            return self.par_table.pformat_all()
+        else:
+            _show_table(self.par_table)
+
+    @property
+    def labels(self):
+        return self.par_table
+    
     def set_bounds(self,bound=0.2,bound_rel=False,preserve_fit_range=True):
         self._set_bounds(bound=bound,bound_rel=bound_rel,preserve_fit_range=preserve_fit_range)
     
@@ -276,6 +406,7 @@ class McmcSampler(object):
         
         self.samples = self.sampler.get_chain(flat=True,discard=burnin)
         self.samples_log_prob  = self.sampler.get_log_prob(flat=True,discard=burnin)
+        self._cache_sampler_chains()
         self.acceptance_fraction=np.mean(self.sampler.acceptance_fraction)
         self.reset_to_minimizer_best_fit()
 
@@ -411,7 +542,16 @@ class McmcSampler(object):
     
     def get_trace(self, par_name,comp_name=None):
         _p,p_idx=self.get_par(par_name,comp_name=comp_name,get_index=True)
-        return self.sampler.chain[:, :, p_idx]
+        if hasattr(self, 'chain') and self.chain is not None:
+            return self.chain[:, :, p_idx]
+        if hasattr(self, 'sampler') and self.sampler is not None:
+            try:
+                _chain = self._as_walker_first_chain(self.sampler.get_chain(flat=False))
+                return _chain[:, :, p_idx]
+            except Exception:
+                _chain = self._as_walker_first_chain(self.sampler.chain)
+                return _chain[:, :, p_idx]
+        raise RuntimeError('MCMC traces are not available in this sampler')
 
 
     def plot_par(self, par_name, comp_name=None,nbins=20, log_plot=False,quantiles=(0.16,0.5,0.84),figsize=None):
@@ -608,10 +748,10 @@ def emcee_log_like(theta,fit_model,data,use_UL,par_array,loglog):
     return  _res_sum *-0.5
 
 
-def _progess_bar(counter):
-
-    if np.mod(counter.count, 10) == 0 and counter.count != 0:
-        print("\r%s progress=%3.3f%% calls=%d accepted=%d" % (next( counter._progress_iter),float(100* counter.count)/( counter.count_tot),counter.count,counter.count_OK), end="")
+#def _progess_bar(counter):
+#
+#    if np.mod(counter.count, 10) == 0 and counter.count != 0:
+#        print("\r%s progress=%3.3f%% calls=%d accepted=%d" % (next( counter._progress_iter),float(100* counter.count)/( counter.count_tot),counter.count,counter.count_OK), end="")
 
 
 
@@ -643,5 +783,3 @@ def log_prior(theta,bounds):
                 _r=-np.inf
 
     return _r
-
-
