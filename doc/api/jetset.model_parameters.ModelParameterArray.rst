@@ -25,6 +25,7 @@ ModelParameterArray
       ~ModelParameterArray.get
       ~ModelParameterArray.get_par_by_name
       ~ModelParameterArray.get_par_by_type
+      ~ModelParameterArray.get_pars_by_type
       ~ModelParameterArray.reset_dependencies
       ~ModelParameterArray.set
       ~ModelParameterArray.show_best_fit_pars
@@ -45,6 +46,7 @@ ModelParameterArray
    .. automethod:: get
    .. automethod:: get_par_by_name
    .. automethod:: get_par_by_type
+   .. automethod:: get_pars_by_type
    .. automethod:: reset_dependencies
    .. automethod:: set
    .. automethod:: show_best_fit_pars

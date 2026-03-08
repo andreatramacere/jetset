@@ -47,7 +47,7 @@ allowing to fit the numerical models to observed data. The main features of this
    :caption: Documentation:
 
    installation <install.rst>
-   what's new in JetSeT v1.3.0? <change_log_specs/v1.3.0>
+   what's new in JetSeT v1.4.0? <change_log_specs/v1.4.0>
    changelog  <changelog.rst>
    user guide <user_guide/user_guide.rst>
    code documentation (API) <api/modules.rst>
@@ -59,19 +59,19 @@ allowing to fit the numerical models to observed data. The main features of this
     :caption: New/updated in v 1.2.0-1.3.0:
     :name: rst-gallery
 
-    documentation_notebooks/notebooks/depending_pars/depending_pars.ipynb
-    user_guide/documentation_notebooks/notebooks/composite_model/Composite_model.rst
-    user_guide/documentation_notebooks/notebooks/custom_emitters_distr/custom_emitters.rst
-    user_guide/documentation_notebooks/notebooks/jet_model_phys_SSC/Jet_example_phys_SSC.rst
-    user_guide/documentation_notebooks/notebooks/hadronic_pp_jet/hadronic.rst
-    user_guide/documentation_notebooks/notebooks/temporal_evolution/Temp_Ev_one_zone_only_cooling.rst
-    user_guide/documentation_notebooks/notebooks/temporal_evolution/Temp_Ev_two_zones_acc_and_cooling.rst
-    user_guide/documentation_notebooks/notebooks/temporal_evolution/Temp_Ev_two_zones_acc_and_cooling_adb_exp.rst
-    user_guide/documentation_notebooks/notebooks/phen_constr/SSC_th_bkg.rst
-    user_guide/documentation_notebooks/notebooks/sherpa_plugin/sherpa-plugin-sherpa-interface.rst
-    user_guide/documentation_notebooks/notebooks/sherpa_plugin/sherpa-plugin-jetset-interface.rst
-    user_guide/documentation_notebooks/notebooks/gammapy_plugin/gammapy_plugin.rst
-    user_guide/documentation_notebooks/notebooks/galactic/galactic.rst
+    user_guide/documentation_notebooks_rst/notebooks/depending_pars/depending_pars.ipynb
+    user_guide/documentation_notebooks_rst/notebooks/composite_model/Composite_model.rst
+    user_guide/documentation_notebooks_rst/notebooks/custom_emitters_distr/custom_emitters.rst
+    user_guide/documentation_notebooks_rst/notebooks/jet_model_phys_SSC/Jet_example_phys_SSC.rst
+    user_guide/documentation_notebooks_rst/notebooks/hadronic_pp_jet/hadronic.rst
+    user_guide/documentation_notebooks_rst/notebooks/temporal_evolution/Temp_Ev_one_zone_only_cooling.rst
+    user_guide/documentation_notebooks_rst/notebooks/temporal_evolution/Temp_Ev_two_zones_acc_and_cooling.rst
+    user_guide/documentation_notebooks_rst/notebooks/temporal_evolution/Temp_Ev_two_zones_acc_and_cooling_adb_exp.rst
+    user_guide/documentation_notebooks_rst/notebooks/phen_constr/SSC_th_bkg.rst
+    user_guide/documentation_notebooks_rst/notebooks/sherpa_plugin/sherpa-plugin-sherpa-interface.rst
+    user_guide/documentation_notebooks_rst/notebooks/sherpa_plugin/sherpa-plugin-jetset-interface.rst
+    user_guide/documentation_notebooks_rst/notebooks/gammapy_plugin/gammapy_plugin.rst
+    user_guide/documentation_notebooks_rst/notebooks/galactic/galactic.rst
 
 Testers:
 

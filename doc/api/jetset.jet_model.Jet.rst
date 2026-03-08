@@ -15,6 +15,8 @@ Jet
       ~Jet.add_pp_neutrino_component
       ~Jet.available_electron_distributions
       ~Jet.available_proton_distributions
+      ~Jet.eval_synch_pol
+      ~Jet.eval_synch_pol_blob
       ~Jet.get_electron_distribution_name
       ~Jet.get_proton_distribution_name
       ~Jet.set_B_eq
@@ -34,6 +36,8 @@ Jet
    .. automethod:: add_pp_neutrino_component
    .. automethod:: available_electron_distributions
    .. automethod:: available_proton_distributions
+   .. automethod:: eval_synch_pol
+   .. automethod:: eval_synch_pol_blob
    .. automethod:: get_electron_distribution_name
    .. automethod:: get_proton_distribution_name
    .. automethod:: set_B_eq

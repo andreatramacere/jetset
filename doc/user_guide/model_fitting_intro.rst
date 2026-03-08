@@ -275,7 +275,7 @@ Running the sampler
 
     mcmc.run_sampler(nwalkers=20, burnin=50,steps=500,progress='notebook')
 
-The number of walkers ``nwalkers``, if not specified, is set to :math:`4 \times` (``number of sampled parameters``), if you pass a lower number, a ``RuntimeError`` will be raised.
+The number of walkers ``nwalkers``, if not specified, is set to :math:`4 \times` (``number of sampled parameters``), if you pass a lower than :math:`2 \times` (``number of sampled parameters``), a ``RuntimeError`` will be raised.
 Anyhow,  ``nwalkers``, ``burnin`` and ``steps``, should be chosen depending on the particular analysis, and is strongly advised to read the  `emcee`_  documentation.
 
 

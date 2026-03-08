@@ -11,28 +11,28 @@ done
 shift $((OPTIND-1))
 
 
+mkdir -p ./user_guide/documentation_notebooks_rst
+
 
 if [ "$#" -eq  "0" ]
 then
 	echo "No arguments supplied"
-    find documentation_notebooks/notebooks -name '*.rst' | cpio -pdm ./user_guide
-    find documentation_notebooks/notebooks -name '*.png' | cpio -pdm ./user_guide
+    (cd documentation_notebooks && find notebooks -name '*.rst' | cpio -pdm ../user_guide/documentation_notebooks_rst)
+    (cd documentation_notebooks && find notebooks -name '*.png' | cpio -pdm ../user_guide/documentation_notebooks_rst)
 
-    find documentation_notebooks/slides -name '*.png' | cpio -pdm ./user_guide
-    find documentation_notebooks/images -name '*.png' | cpio -pdm ./user_guide
+    (cd documentation_notebooks && find slides -name '*.png' | cpio -pdm ../user_guide/documentation_notebooks_rst)
+    (cd documentation_notebooks && find images -name '*.png' | cpio -pdm ../user_guide/documentation_notebooks_rst)
 
 
 
      	
 else
-    find documentation_notebooks/notebooks/$1 -name '*.rst' | cpio -pdm ./user_guide
-    find documentation_notebooks/notebooks/$1 -name '*.png' | cpio -pdm ./user_guide
+    (cd documentation_notebooks && find notebooks/"$1" -name '*.rst' | cpio -pdm ../user_guide/documentation_notebooks_rst)
+    (cd documentation_notebooks && find notebooks/"$1" -name '*.png' | cpio -pdm ../user_guide/documentation_notebooks_rst)
 
-    find documentation_notebooks/slides/ -name '*.png' | cpio -pdm ./user_guide
-    find documentation_notebooks/images/ -name '*.png' | cpio -pdm ./user_guide
+    (cd documentation_notebooks && find slides -name '*.png' | cpio -pdm ../user_guide/documentation_notebooks_rst)
+    (cd documentation_notebooks && find images -name '*.png' | cpio -pdm ../user_guide/documentation_notebooks_rst)
 fi	
-
-
 
 
 

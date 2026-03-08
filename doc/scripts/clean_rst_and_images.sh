@@ -15,16 +15,18 @@ shift $((OPTIND-1))
 
 if [ "$#" -eq  "0" ]
 then
-	echo "No arguments supplied"
+	echo "No arguments supplied, deleting .rst and .png files in all notebooks dirs"
     find documentation_notebooks/notebooks -name '*.png' -delete
-    find user_guide/documentation_notebooks/notebooks -name '*.png' -delete
-    find user_guide/documentation_notebooks/notebooks -name '*.rst' -delete
+    find documentation_notebooks/notebooks -name '*.rst' -delete
+    find user_guide/documentation_notebooks_rst/notebooks -name '*.png' -delete
+    find user_guide/documentation_notebooks_rst/notebooks -name '*.rst' -delete
 
 
      	
 else
     find documentation_notebooks/notebooks/$1 -name  '*.png' -delete
-    find user_guide/documentation_notebooks/notebooks/$1 -name '*.png' -delete
-    find user_guide/documentation_notebooks/notebooks/$1 -name '*.rst' -delete
+    find documentation_notebooks/notebooks/$1 -name  '*.rst' -delete
+    find user_guide/documentation_notebooks_rst/notebooks/$1 -name '*.png' -delete
+    find user_guide/documentation_notebooks_rst/notebooks/$1 -name '*.rst' -delete
 fi	
 

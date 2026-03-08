@@ -1,16 +1,16 @@
-rtd_req=['sphinx-bootstrap-theme',
-        'sphinx_book_theme',
-        'sphinx-automodapi',
-        'sphinx_rtd_theme>=0.3.1',
-        'sphinxcontrib-bibtex',
-        'sphinx-gallery',
-        'sphinx-nbexamples',
-        'sphinx>=7,<=8',
-        'nbsphinx',
-        'numpydoc',
-        'graphviz',
-        'mock']
-
+rtd_req="""sphinx_bootstrap_theme
+sphinx-book-theme
+sphinx-automodapi
+sphinx_rtd_theme>=0.3.1
+sphinxcontrib-bibtex
+sphinx-gallery
+nbsphinx
+sphinx>=7,<=8
+nbsphinx
+numpydoc
+graphviz
+mock
+"""
 _skip_list=['pyqt','jupyter','ipython']
 f = open("../requirements.txt",'r')
 req=f.readlines()
@@ -26,6 +26,5 @@ for r in req[:]:
 f = open("./requirements.txt",'w')
 for r in req:
     print(r,file=f)
-for r in rtd_req:
-    print(r,file=f)
+print(rtd_req,file=f)
 f.close()

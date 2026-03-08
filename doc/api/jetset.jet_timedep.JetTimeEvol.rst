@@ -15,7 +15,7 @@ JetTimeEvol
       ~JetTimeEvol.IC_cooling
       ~JetTimeEvol.Sync_cooling
       ~JetTimeEvol.custom_acc_profile
-      ~JetTimeEvol.custom_q_jnj_profile
+      ~JetTimeEvol.custom_q_inj_profile
       ~JetTimeEvol.delta_t
       ~JetTimeEvol.log_sampling
       ~JetTimeEvol.region_expansion
@@ -52,7 +52,7 @@ JetTimeEvol
    .. autoattribute:: IC_cooling
    .. autoattribute:: Sync_cooling
    .. autoattribute:: custom_acc_profile
-   .. autoattribute:: custom_q_jnj_profile
+   .. autoattribute:: custom_q_inj_profile
    .. autoattribute:: delta_t
    .. autoattribute:: log_sampling
    .. autoattribute:: region_expansion

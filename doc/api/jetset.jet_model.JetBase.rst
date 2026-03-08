@@ -36,8 +36,10 @@ JetBase
       ~JetBase.del_EC_component
       ~JetBase.del_par_from_dic
       ~JetBase.del_spectral_component
+      ~JetBase.enable_internal_absorption
       ~JetBase.energetic_report
       ~JetBase.eval
+      ~JetBase.eval_internal_absorption
       ~JetBase.get_DL_cm
       ~JetBase.get_IC_mode
       ~JetBase.get_IC_nu_size
@@ -58,7 +60,7 @@ JetBase
       ~JetBase.load_model
       ~JetBase.make_conical_jet
       ~JetBase.plot_model
-      ~JetBase.save_model
+      ~JetBase.remove_internal_absorption
       ~JetBase.sed_table
       ~JetBase.set_EC_dependencies
       ~JetBase.set_IC_nu_size
@@ -76,6 +78,7 @@ JetBase
       ~JetBase.set_seed_nu_size
       ~JetBase.set_verbosity
       ~JetBase.show_emitters_distribution
+      ~JetBase.show_internal_absorption_components
       ~JetBase.show_model
       ~JetBase.show_spectral_components
       ~JetBase.switch_Norm_distr_OFF
@@ -107,8 +110,10 @@ JetBase
    .. automethod:: del_EC_component
    .. automethod:: del_par_from_dic
    .. automethod:: del_spectral_component
+   .. automethod:: enable_internal_absorption
    .. automethod:: energetic_report
    .. automethod:: eval
+   .. automethod:: eval_internal_absorption
    .. automethod:: get_DL_cm
    .. automethod:: get_IC_mode
    .. automethod:: get_IC_nu_size
@@ -129,7 +134,7 @@ JetBase
    .. automethod:: load_model
    .. automethod:: make_conical_jet
    .. automethod:: plot_model
-   .. automethod:: save_model
+   .. automethod:: remove_internal_absorption
    .. automethod:: sed_table
    .. automethod:: set_EC_dependencies
    .. automethod:: set_IC_nu_size
@@ -147,6 +152,7 @@ JetBase
    .. automethod:: set_seed_nu_size
    .. automethod:: set_verbosity
    .. automethod:: show_emitters_distribution
+   .. automethod:: show_internal_absorption_components
    .. automethod:: show_model
    .. automethod:: show_spectral_components
    .. automethod:: switch_Norm_distr_OFF

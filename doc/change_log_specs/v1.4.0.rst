@@ -1,0 +1,49 @@
+Version 1.4.0
+=============
+
+New features
+------------
+
+MCMC functionalities
+^^^^^^^^^^^^^^^^^^^^
+
+- mcmc can now return and plot the mcmc best-fit model according to the log-like
+
+  .. code-block:: python
+
+    #NOTE: plot_mcmc_best_fit_model=True, now gets the pars corresponding to the max of the log-like
+    p=mcmc.plot_model(sed_data=sed_data,fit_range=[1E11, 2E27],size=1000,quantiles=[0.01,0.99],plot_mcmc_best_fit_model=True)
+    p.setlim(y_min=1E-14,x_min=1E6,x_max=2E28)
+
+the mcmc best fit model can be easily accessed:
+
+  .. code-block:: python
+
+    mcmc.reset_to_mcmc_best_fit()
+
+- :meth:`.McmcSampler.set_bounds` method can preserve or not fit boundaries
+
+  .. code-block:: python
+
+    #NOTE: preserve_fit_range=True preserves the model fit range for each parameter used in the MCMC
+    mcmc.set_bounds(bound=5.0,bound_rel=True,preserve_fit_range=True)
+
+
+
+data handling
+^^^^^^^^^^^^^
+- UL are handled when rebinning SED data
+- added nu min/max to rebin
+
+EC emission
+^^^^^^^^^^^
+
+- added pair production absorption for Dusty Torus and Broad Line Region
+
+Improved functionalities
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+bug fixing 
+----------
+
+- bug fixed

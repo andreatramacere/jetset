@@ -63,6 +63,9 @@ extensions = [
     'sphinx.ext.mathjax',
 ]
 
+# Avoid duplicate section labels (e.g. "Functions", "Classes") across files.
+autosectionlabel_prefix_document = True
+
 #bibtex_bibfiles = ['refs.bib']
 #bibtex_bibfiles = ['references.bib']
 exclude_patterns = ['_build', 
@@ -213,5 +216,4 @@ epub_copyright = u'2016, andrea tramacere'
 
 
 epub_exclude_files = ['search.html']
-
 

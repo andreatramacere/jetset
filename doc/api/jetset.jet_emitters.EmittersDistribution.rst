@@ -15,6 +15,7 @@ EmittersDistribution
       ~EmittersDistribution.set_grid_size
       ~EmittersDistribution.set_jet
       ~EmittersDistribution.set_parameters_dict
+      ~EmittersDistribution.update
 
    .. rubric:: Methods Documentation
 
@@ -23,3 +24,4 @@ EmittersDistribution
    .. automethod:: set_grid_size
    .. automethod:: set_jet
    .. automethod:: set_parameters_dict
+   .. automethod:: update

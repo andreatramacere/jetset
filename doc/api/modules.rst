@@ -15,11 +15,13 @@ In the following the package modules are listed.
    data_loader    <data_loader.rst>
    frame_converter    <frame_converter.rst>
    gammapy_plugin    <gammapy_plugin.rst>
+   internal_absorption    <internal_absorption.rst>
    jet_emitters    <jet_emitters.rst>
    jet_emitters_factory    <jet_emitters_factory.rst>
    jet_kernel_tools    <jet_kernel_tools.rst>
    jet_model    <jet_model.rst>
    jet_paramters    <jet_paramters.rst>
+   jet_radio_plugin    <jet_radio_plugin.rst>
    jet_spectral_components    <jet_spectral_components.rst>
    jet_timedep    <jet_timedep.rst>
    jet_tools    <jet_tools.rst>
