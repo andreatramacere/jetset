@@ -16,4 +16,4 @@ jupyter
 ipython
 dill
 swig>=4
-#gammapy==2.*
+gammapy==2.*

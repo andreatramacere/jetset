@@ -1,18 +1,19 @@
 setuptools
-scipy>=1.5.0,<=1.13.1
-numpy>=1.22,<2.0
-astropy==7.*
+scipy>=1.17,<1.18
+numpy>=2.4.2,<2.5
+astropy>=7.2.0,<8
 matplotlib>=3.1.0
 future
-iminuit>=2.0.0,<=3
+iminuit>=2.30.0,<=2.31.2
 corner
 six
-emcee>=3.0.0,<=3.1.6
+emcee>=3.0.0,<=3.2
 pyyaml
 pytest
-numba>0.55,<=0.59.1
+numba >=0.64,<0.65
 tqdm<5
 jupyter
 ipython
 dill
-swig>=4,<=4.3
+swig>=4
+gammapy==2.*
