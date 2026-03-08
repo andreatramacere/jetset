@@ -4,19 +4,29 @@ import os
 # deprecation chatter (e.g. omp_set_nested) in environments using Intel OMP.
 os.environ.setdefault("NUMBA_THREADING_LAYER", "workqueue")
 
-from .base_model import MultiplicativeModel
-from jetset.jetkernel.jetkernel import HPLANCK as h
-from jetset.jetkernel.jetkernel import MEC2 as mec2
-from jetset.jetkernel.jetkernel import SIGTH 
-from jetset.jetkernel import jetkernel as BlazarSED
+import os
+
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+if on_rtd:
+    from .mock import jetkernel as BlazarSED
+else:
+    from .jetkernel.jetkernel import HPLANCK as h
+    from .jetkernel.jetkernel import MEC2 as mec2
+    from .jetkernel.jetkernel import SIGTH 
+    from .jetkernel import jetkernel as BlazarSED
+    H_OVER_MEC2 = h / mec2
+    SIGMA_PREF = 0.75 * SIGTH * 0.5
+
+
+
+
 from .jet_kernel_tools import get_spectral_c_array_read_only
 from .utils import get_nested_attr
 from numba import njit, prange
 import numpy as np
 import warnings
 
-H_OVER_MEC2 = h / mec2
-SIGMA_PREF = 0.75 * SIGTH * 0.5
 
 
 @njit(fastmath=True)
@@ -336,13 +346,7 @@ class InternalAbsorption(object):
         nu_ptr = get_nested_attr(self._jet._blob, nu_name)
         
         size=self._jet._blob.core.nu_grid_size
-        #x=np.zeros(size)
-        #y=np.zeros(size)
-        
-    
-        #for i in range(size):
-        #x=BlazarSED.get_spectral_array_np(nu_ptr,self._jet._blob)
-        #y=BlazarSED.get_spectral_array_np(n_ptr,self._jet._blob)
+       
         x,y=get_spectral_c_array_read_only(nu_ptr,n_ptr,size)
         msk=np.logical_and(x>=nu_start,x<=nu_stop)
         x=x[msk]

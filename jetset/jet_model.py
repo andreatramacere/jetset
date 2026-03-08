@@ -707,7 +707,7 @@ class JetBase(Model):
         self._original_inj_emitters_distr = None
         self._blob.emitters.do_equilibrium = 0
         if remove_parameters is True:
-            for par_name in ('T_esc_e_primaries',):
+            for par_name in ('T_esc_e_primaries','L_inj'):
                 p = self.parameters.get_par_by_name(par_name)
                 if p is not None:
                     self.parameters.del_par(p)
@@ -1699,7 +1699,6 @@ class JetBase(Model):
 
     #@safe_run
     def set_blob(self):
-    
         if self._leptonic_equilibrium is True:
             self._blob.emitters.do_equilibrium = 1
             self._set_equilibrium_injection_on_blob()

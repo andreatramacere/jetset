@@ -1,20 +1,7 @@
 __author__ = "Andrea Tramacere"
 
-import os
-import numpy as np
 import copy
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-
-if on_rtd == True:
-    try:
-        from .jetkernel import jetkernel as BlazarSED
-    except ImportError:
-        from .mock import jetkernel as BlazarSED
-else:
-    from .jetkernel import jetkernel as BlazarSED
-
 from .jetkernel_models_dic import allowed_disk_type
-
 from .jet_paramters import *
 
 
