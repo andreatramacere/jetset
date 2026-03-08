@@ -1259,7 +1259,7 @@ class JetBase(Model):
 
     def enable_internal_absorption(self,
                                 comp,
-                                nu_min=None,
+                                nu_min=1E20,
                                 N_soft=50,
                                 N_hard=50,
                                 N_R_H=50,
