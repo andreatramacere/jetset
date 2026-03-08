@@ -162,5 +162,5 @@ setup(name='jetset',
       ext_modules = [_module],
       install_requires=install_req,
       py_modules=['jetset.jetkernel/jetkernel'],
-      python_requires='>=3.9',
+      python_requires='>=3.11',
       zip_safe=True)
