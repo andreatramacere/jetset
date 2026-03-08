@@ -179,6 +179,11 @@ class McmcSampler(object):
         return self._par_table
 
     def _build_par_table(self, names_list=None):
+        if hasattr(self,'samples_log_prob') and self.samples_log_prob is not None:
+            self.reset_to_mcmc_best_fit(verbose=False)
+            _prob_max = np.argmax(self.samples_log_prob)
+            _id_prob_max = np.unravel_index(_prob_max, self.samples_log_prob.shape)
+                
         if self._par_array is None:
             raise RuntimeError('please set labels, using .set_labels, before showing parameters')
 
@@ -194,16 +199,26 @@ class McmcSampler(object):
             else:
                 _bound_min, _bound_max = None, None
 
+            if hasattr(self,'samples_log_prob') and self.samples_log_prob is not None:
+                mcmc_best_fit_val = self.get_sample(idx)[_id_prob_max]
+                q_016,q_05,q_084=self.get_par_quantiles( par['name'] )
+            else:
+                mcmc_best_fit_val=None
+                q_016,q_05,q_084=[None,None,None]
             _rows.append((
                 idx,
                 par.get('comp_name'),
                 par.get('name'),
-                par.get('full_name'),
+                #par.get('full_name'),
                 par.get('val'),
-                par.get('minimizer_best_fit_val'),
-                par.get('minimizer_best_fit_err'),
-                par.get('minimizer_fit_range_min'),
-                par.get('minimizer_fit_range_max'),
+                mcmc_best_fit_val,
+                q_016,
+                q_05,
+                q_084,
+                #par.get('minimizer_best_fit_val'),
+                #par.get('minimizer_best_fit_err'),
+                #par.get('minimizer_fit_range_min'),
+                #par.get('minimizer_fit_range_max'),
                 par.get('val_min', par.get('val_mix')),
                 par.get('val_max'),
                 _bound_min,
@@ -216,12 +231,12 @@ class McmcSampler(object):
             'idx',
             'model name',
             'name',
-            'full name',
+            #'full name',
             'current val',
-            'mcmc bestfit val',
-            'mcmc bestfit err',
-            'fit range min',
-            'fit range max',
+            'mcmc best fit val',
+            'quantile 0.16',
+            'quantile 0.50',
+            'quantile 0.84',
             'val min',
             'val max',
             'mcmc bound min',
@@ -327,16 +342,17 @@ class McmcSampler(object):
     #        q_vals=self.get_par_quantiles(ID,quantiles=quantile)
     #        par.val = q_vals
 
-    def reset_to_mcmc_best_fit(self):
+    def reset_to_mcmc_best_fit(self,verbose=True):
         _prob_max = np.argmax(self.samples_log_prob)
         _id_prob_max = np.unravel_index(_prob_max, self.samples_log_prob.shape)
         
-        print("----------------------------")
-        print("MCMC best fit solution")
-        for ID,par in enumerate(self._par_array):
-            par['val'] = self.get_sample(ID)[_id_prob_max]
-            print(f"{par['name']}: {par['val']}")
-        print("----------------------------")
+        if verbose:
+            print("----------------------------")
+            print("MCMC best fit solution")
+            for ID,par in enumerate(self._par_array):
+                par['val'] = self.get_sample(ID)[_id_prob_max]
+                print(f"{par['name']}: {par['val']}")
+            print("----------------------------")
 
         
     def run_sampler(self,
@@ -408,7 +424,7 @@ class McmcSampler(object):
         self.samples_log_prob  = self.sampler.get_log_prob(flat=True,discard=burnin)
         self._cache_sampler_chains()
         self.acceptance_fraction=np.mean(self.sampler.acceptance_fraction)
-        self.reset_to_minimizer_best_fit()
+        self.reset_to_mcmc_best_fit()
 
 
     def get_par_quantiles(self,par_name,comp_name=None,quantiles=(0.16,0.5,0.84)):
@@ -668,7 +684,7 @@ class McmcSampler(object):
         self.model.eval(fill_SED=True)
         p.add_model_plot(self.model, color='red',fit_range = fit_range,flim=self.model.flux_plot_lim,label=label)
         p.add_model_residual_plot(model = self.model, data = sed_data, fit_range =  fit_range, color='red')
-        
+        self.reset_to_mcmc_best_fit(verbose=False)
         if get_model is True:
             return p, [x[msk],y_min[msk],y_max[msk]]
         else:
