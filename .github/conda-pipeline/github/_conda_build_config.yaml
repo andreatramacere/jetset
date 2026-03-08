@@ -2,10 +2,9 @@
 # Conda will automatically create one build for each combination.
 
 python:
-  - 3.10
   - 3.11
   - 3.12
+  - 3.13
 
 numpy:
-  - 2.0
-  - 2.1
+  - 2.4.2

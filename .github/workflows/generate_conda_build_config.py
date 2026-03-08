@@ -13,7 +13,7 @@ python_version = python_version.strip()
 # Here we just write the single version from the matrix
 config = {
     "python": [python_version],
-    "numpy": ["2.0", "2.1"],  # pin to numpy >= 2
+    "numpy": ["2.4.2"],  # pin to numpy >= 2
 }
 
 # Write the conda_build_config.yaml file

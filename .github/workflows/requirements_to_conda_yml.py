@@ -15,7 +15,7 @@ extra:
 
 
 
-_skip_list=['pyqt','swig']
+_skip_list=['pyqt','swig','python','setuptools']
 f = open("./requirements.txt",'r')
 req=f.readlines()
 f.close()
@@ -53,24 +53,26 @@ build:
 requirements:
   host:
     - python {{ python }}
-    - setuptools
-    - numpy {{ numpy }}
-  run:
-    - python
-    - numpy >=2.0
+    - setuptools>=61
+    - numpy==2.4.2
+    - pip
+    - wheel
+    - swig>=4
 
   build:
-    - swig>3.0.0
+    - {{ compiler('c') }}
+    - swig>=4
     - python {{ python }}
-    - setuptools"""
-
+    - wheel
+    - setuptools>=61
+    
+  run:
+    - python {{ python }}"""
 f = open(".github/conda-pipeline/github/meta.yaml",'w')
 print(_str_start,file=f)
-print( '    - %s'%np_str, file=f)
-
-print('',file=f)
-
+print(_str_start)
 for pkg_str in pkg_str_list:
     print('    - %s'%pkg_str, file=f)
+    print(pkg_str)
 print(_str_end,file=f)
 f.close()
