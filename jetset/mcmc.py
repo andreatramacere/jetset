@@ -159,13 +159,13 @@ class McmcSampler(object):
         # Persist full (pre-burnin) traces in walker-first layout for plotting after reload.
         _chain = None
         try:
-            _chain = self.sampler.chain
+            _chain = self.sampler.get_chain()
         except Exception:
             _chain = self.sampler.get_chain(flat=False)
         self.chain = self._as_walker_first_chain(_chain)
 
         try:
-            _logp = self.sampler.lnprobability
+            _logp = self.sampler.get_log_prob()
         except Exception:
             _logp = self.sampler.get_log_prob(flat=False)
         self.log_prob_chain = self._as_walker_first_log_prob(_logp)
@@ -755,7 +755,7 @@ class McmcSampler(object):
                 _chain = self._as_walker_first_chain(self.sampler.get_chain(flat=False))
                 return _chain[:, :, p_idx]
             except Exception:
-                _chain = self._as_walker_first_chain(self.sampler.chain)
+                _chain = self._as_walker_first_chain(self.sampler.get_chain())
                 return _chain[:, :, p_idx]
         raise RuntimeError('MCMC traces are not available in this sampler')
 
