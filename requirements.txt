@@ -10,7 +10,7 @@ six
 emcee>=3.0.0,<=3.2
 pyyaml
 pytest
-numba >=0.62,<0.65
+numba >=0.60,<0.65
 tqdm<5
 jupyter
 ipython
