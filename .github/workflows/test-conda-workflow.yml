@@ -128,7 +128,6 @@ jobs:
             swig>=4
             conda-build
             pytest
-            boa
             pyyaml
           generate-run-shell: true
           init-shell: bash
@@ -179,10 +178,10 @@ jobs:
           echo "Python version from matrix: ${{ matrix.python-version }}"
 
           echo "building package for Python ${{ matrix.python-version }}"
-          conda mambabuild .  -c conda-forge -c astropy 
+          conda build .  -c conda-forge -c astropy 
 
           echo "computing output path for Python ${{ matrix.python-version }}"
-          conda mambabuild . --output > ./CONDABUILDJETSET.txt 
+          conda build . --output > ./CONDABUILDJETSET.txt 
 
       
       - name: 'set env CONDABUILDJETSET'
