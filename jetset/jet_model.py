@@ -2147,7 +2147,7 @@ class Jet(JetBase):
 
 
     def set_N_from_U_emitters(self,U, gmin=None, gmax=None):
-        """ Sets the normalization of N to match the energy density of the primary emitters
+        """ Sets the normalization of N (or L_inj) to match the energy density of the primary emitters
         Parameters
         ----------
         U: float, (erg/cm3)
@@ -2160,14 +2160,21 @@ class Jet(JetBase):
         -------
 
         """
-        N = self.parameters.N.val
+        
         ratio = U/self.emitters_distribution.eval_U(gmin=gmin, gmax=gmax)
-        self.emitters_distribution._fill()
-        self.set_par('N', val=N *ratio)
-        self.set_blob()
+        
+        if self._leptonic_equilibrium:
+            L_inj=self.parameters.L_inj.val
+            self.set_par('L_inj', val=L_inj *ratio)
+            self.set_blob()
+        else:
+            self.emitters_distribution._fill()
+            N = self.parameters.N.val
+            self.set_par('N', val=N *ratio)
+            self.set_blob()
 
     def set_N_from_U_vol_emitters(self, U_vol, gmin=None, gmax=None):
-        """Sets the normalization of N to match the volume integrated energy of the primary emitters
+        """Sets the normalization of N (or L_inj) to match the volume integrated energy of the primary emitters
 
         Parameters
         ----------
@@ -2188,7 +2195,7 @@ class Jet(JetBase):
 
 
     def set_N_from_L_sync(self,L_sync):
-        """Sets the normalization of N to match the src integrated Luminosity of the   synchrotron emission
+        """Sets the normalization of N (or L_inj) to match the src integrated Luminosity of the   synchrotron emission
 
         Parameters
         ----------
@@ -2198,16 +2205,24 @@ class Jet(JetBase):
         -------
 
         """
-        self.set_par('N', val=1.0)
-        #gamma_grid_size = self._blob.emitters.gamma_grid_size
-        #self.emitters_distribution.set_grid_size(100)
-        self.set_blob()
-        delta = self.get_beaming()
-        ratio = L_sync/(BlazarSED.Power_Sync_Electron(self._blob)* delta ** 4)
-        self.set_par('N', val=ratio)
+        if self._leptonic_equilibrium:
+            self.set_blob()
+            self.set_par('L_inj', val=1E40)
+            self.set_blob()
+            delta = self.get_beaming()
+            ratio = L_sync/(BlazarSED.Power_Sync_Electron(self._blob)* delta ** 4)*1E40
+            self.set_par('L_inj', val=ratio)
+        
+        else:
+            self.set_par('N', val=1.0)
+            
+            self.set_blob()
+            delta = self.get_beaming()
+            ratio = L_sync/(BlazarSED.Power_Sync_Electron(self._blob)* delta ** 4)
+            self.set_par('N', val=ratio)
        
     def set_N_from_F_sync(self, F_sync):
-        """Sets the normalization of N to match the observed integrated synchrotron flux
+        """Sets the normalization of N (or L_inj) to match the observed integrated synchrotron flux
 
         Parameters
         ----------
@@ -2223,7 +2238,7 @@ class Jet(JetBase):
         self.set_N_from_L_sync(L)
 
     def set_N_from_nuLnu(self,nuLnu_src, nu_src):
-        """Sets the normalization of N to match the src Luminosity of the   synchrotron emission at src frequency nu
+        """Sets the normalization of (or L_inj) to match the src Luminosity of the   synchrotron emission at src frequency nu
 
         Parameters
         ----------
@@ -2237,16 +2252,31 @@ class Jet(JetBase):
         -------
 
         """
-        self.set_par('N',val=1.0)
-        #gamma_grid_size = self._blob.emitters.gamma_grid_size
-        #self.emitters_distribution.set_grid_size(100)
-        self.set_blob()
-        delta = self._blob.core.beam_obj
-        nu_blob = nu_src / delta
-        L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
-        N_out = nuLnu_src / L_out
-        #self.emitters_distribution.set_grid_size(gamma_grid_size)
-        self.set_par('N', val=N_out)
+        if self._leptonic_equilibrium:
+            self.set_par('L_inj',val=1E40)
+            #gamma_grid_size = self._blob.emitters.gamma_grid_size
+            #self.emitters_distribution.set_grid_size(100)
+            self.set_blob()
+            delta = self._blob.core.beam_obj
+            nu_blob = nu_src / delta
+            L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
+            print("L_out",L_out,nuLnu_src)
+            L_out = nuLnu_src / L_out*1E40
+            print("L_out",L_out)
+            #self.emitters_distribution.set_grid_size(gamma_grid_size)
+            self.set_par('L_inj', val=L_out)
+        
+        else:
+            self.set_par('N',val=1.0)
+            #gamma_grid_size = self._blob.emitters.gamma_grid_size
+            #self.emitters_distribution.set_grid_size(100)
+            self.set_blob()
+            delta = self._blob.core.beam_obj
+            nu_blob = nu_src / delta
+            L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
+            N_out = nuLnu_src / L_out
+            #self.emitters_distribution.set_grid_size(gamma_grid_size)
+            self.set_par('N', val=N_out)
 
 
     def set_N_from_nuFnu(self, nuFnu_obs, nu_obs):
