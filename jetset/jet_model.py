@@ -2260,9 +2260,7 @@ class Jet(JetBase):
             delta = self._blob.core.beam_obj
             nu_blob = nu_src / delta
             L_out = BlazarSED.Lum_Sync_at_nu(self._blob, nu_blob) * delta ** 4
-            print("L_out",L_out,nuLnu_src)
             L_out = nuLnu_src / L_out*1E40
-            print("L_out",L_out)
             #self.emitters_distribution.set_grid_size(gamma_grid_size)
             self.set_par('L_inj', val=L_out)
         
