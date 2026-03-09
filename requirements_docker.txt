@@ -1,6 +1,6 @@
 setuptools
 scipy>=1.17,<1.18
-numpy>=2.4.2,<2.5
+numpy>=2,<=2.5,!=2.4.*
 astropy>=7.2.0,<8
 matplotlib>=3.1.0
 future
@@ -10,7 +10,7 @@ six
 emcee>=3.0.0,<=3.2
 pyyaml
 pytest
-numba >=0.64,<0.65
+numba >=0.62,<0.65
 tqdm<5
 jupyter
 ipython
