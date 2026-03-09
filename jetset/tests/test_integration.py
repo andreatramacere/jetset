@@ -7,11 +7,11 @@ from .test_jet_model import TestJets,hadronic_func
 from .test_model_fit import TestModelFit
 from .test_emitters import TestEmitters
 from .test_ebl import TestEBL
-from .test_mcmc import TestEmcee
 from .test_depending_parameters import TestDependingParameters
 from .test_composite_model import TestCompositeModel
 from .test_temp_ev import TestTempEv
 from .test_galactic import TestGalactic
+from .test_set_normalization import TestSetNormalization, TestSetNormalizationLeptonicEquilibrium
 
 @pytest.fixture
 def plot():
@@ -23,14 +23,18 @@ class TestIntegration(TestBase):
    def test_jet(self,plot=plot):
       t=TestJets()
       t.integration_suite()
+
+   def test_jet_synch_pol(self):
+      t=TestJets()
+      t.test_synch_pol()
    
-   @pytest.mark.skipif(os.getenv('WF_ENV')=='CONDA', reason="not running with conda") 
+   #@pytest.mark.skipif(os.getenv('WF_ENV')=='CONDA', reason="not running with conda") 
    def test_jet_hadronic(self,plot=plot):
        hadronic_func(plot)
    #   #t=TestJetHadronic()
    #   #t.test_hadronic_jet(plot=plot)
    
-   @pytest.mark.skipif(os.getenv('WF_ENV')=='CONDA', reason="not running with conda") 
+   #@pytest.mark.skipif(os.getenv('WF_ENV')=='CONDA', reason="not running with conda") 
    def test_galactic(self,plot=plot):
       t=TestGalactic()
       t.integration_suite(plot=plot)
@@ -51,6 +55,10 @@ class TestIntegration(TestBase):
       t=TestEBL()
       t.integration_suite(plot=plot)
 
+   def test_composit_ebl_fit(self,plot=plot):
+      t=TestEBL()
+      t.test_ebl_jet_fit(plot=plot,sed_number=2,minimizer='lsb')
+
       
    def test_model_fit(self,phenom_dict=None,plot=plot):
       from .test_phenom_constr import prepare_asset
@@ -69,4 +77,22 @@ class TestIntegration(TestBase):
 
    def test_temp_ev(self,plot=plot):
       t=TestTempEv() 
-      t.integration_suite(plot=plot)  
+      t.integration_suite(plot=plot)
+
+   def test_set_normalization(self):
+      t=TestSetNormalization()
+      t.test_set_N_from_U_emitters()
+      t.test_set_N_from_U_vol_emitters()
+      t.test_set_N_from_L_sync()
+      t.test_set_N_from_F_sync()
+      t.test_set_N_from_nuLnu()
+      t.test_set_N_from_nuFnu()
+
+   def test_set_normalization_leptonic_equilibrium(self):
+      t=TestSetNormalizationLeptonicEquilibrium()
+      t.test_set_N_from_U_emitters_eq()
+      t.test_set_N_from_U_vol_emitters_eq()
+      t.test_set_N_from_L_sync_eq()
+      t.test_set_N_from_F_sync_eq()
+      t.test_set_N_from_nuLnu_eq()
+      t.test_set_N_from_nuFnu_eq()

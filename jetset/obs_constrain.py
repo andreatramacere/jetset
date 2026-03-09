@@ -1017,7 +1017,10 @@ def constr_R_from_CD(jet,nuFnu_p_S,nu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,p
     # values                        #
     #################################
     R_initial=jet.get_par_by_name('R').val_lin
-    N_initial=jet.get_par_by_name('N').val
+    if jet._leptonic_equilibrium:
+        L_inj_initial=jet.get_par_by_name('L_inj').val
+    else:
+        N_initial=jet.get_par_by_name('N').val
 
     CD_model_log=[]
     CD_obs=nuFnu_p_IC/nuFnu_p_S
@@ -1046,7 +1049,10 @@ def constr_R_from_CD(jet,nuFnu_p_S,nu_p_S,nuFnu_p_IC,nu_p_IC,rest_frame,R_tvar,p
     Best_R,failed=check_boundaries(Best_R,R_min,R_max,'R',silent=silent)
 
     jet.set_par('R',val=set_lin_log_val(jet.get_par_by_name('R'),R_initial))
-    jet.set_par('N',val=N_initial)
+    if jet._leptonic_equilibrium:
+        jet.set_par('L_inj_initial',val=L_inj_initial)
+    else:
+        jet.set_par('N',val=N_initial)
     res = (Best_R,failed)
     return res
 
